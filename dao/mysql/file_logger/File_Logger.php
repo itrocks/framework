@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use mysqli_result;
 use ITRocks\Framework;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Sql\Builder;
@@ -19,11 +18,8 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	//-------------------------------------------------------------------------------- FILE_EXTENSION
 	const FILE_EXTENSION = 'sql';
 
-	//---------------------------------------------------------------------------------------- REPLAC
-	/**
-	 * A short 6-characters long version of Builder::REPLACE
-	 */
-	const REPLAC = 'REPLAC';
+	//------------------------------------------------------------------------------------------ PATH
+	const PATH = 'path';
 
 	//--------------------------------------------------------------------------------------- $buffer
 	/**
@@ -85,7 +81,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	{
 		switch (substr(ltrim($query), 0, 6)) {
 			case Builder::DELETE:
-			case self::REPLAC:
+			case substr(Builder::REPLACE, 0, 6):
 			case Builder::UPDATE:
 				return '#> ' . $mysqli->affected_rows . LF;
 			case Builder::INSERT:
