@@ -20,7 +20,7 @@ class Execute_Controller implements Feature_Controller
 	 * @param $files      array
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files)
+	public function run(Parameters $parameters, array $form, array $files)
 	{
 		/** @var $asynchronous Running\Task */
 		$asynchronous = $parameters->getMainObject();

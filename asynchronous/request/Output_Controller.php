@@ -19,7 +19,7 @@ class Output_Controller extends \ITRocks\Framework\Widget\Output\Output_Controll
 	 * @param $settings   Custom_Settings|null
 	 * @return \ITRocks\Framework\Widget\Button[]
 	 */
-	public function getGeneralButtons($object, $parameters, Custom_Settings $settings = null)
+	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null)
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 		$buttons['close'] = new Button('Close', View::link(get_class($object), 'list'));

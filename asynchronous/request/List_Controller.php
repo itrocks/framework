@@ -22,7 +22,7 @@ class List_Controller implements Default_Feature_Controller
 	 * @param string     $class_name
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, $form, $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$sort = Dao::sort([Dao::reverse('creation'), Dao::reverse('id')]);
 		$elements = Dao::readAll($class_name, [$sort, Dao::limit(15)]);
