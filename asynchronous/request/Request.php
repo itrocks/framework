@@ -175,8 +175,6 @@ class Request
 		$worker->task = $task;
 		if ($dependency) {
 			$task->condition = new Dependency($dependency);
-			// If has dependency, use the same group of execution
-			// Not mandatory, but it's choice
 		}
 		Dao::write($task);
 		return $task;

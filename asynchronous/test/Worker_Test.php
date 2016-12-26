@@ -2,7 +2,6 @@
 
 namespace ITRocks\Framework\Asynchronous\Test;
 
-use Exception;
 use ITRocks\Framework\Asynchronous;
 use ITRocks\Framework\Asynchronous\Worker;
 
@@ -46,9 +45,6 @@ class Worker_Test extends Worker
 	 */
 	public function execute()
 	{
-		if (rand(1,90) == 1) {
-			throw new Exception('Random error');
-		}
 		sleep($this->wait);
 	}
 

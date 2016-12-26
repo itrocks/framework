@@ -128,7 +128,8 @@ class Task
 			return false;
 		}
 		if ($this->condition) {
-			return $this->condition->check();
+			$condition = $this->condition->check();
+			return in_array($condition, [Condition::VALID]);
 		}
 		return true;
 	}

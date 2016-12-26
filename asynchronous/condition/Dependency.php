@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Asynchronous\Condition;
 
 use ITRocks\Framework\Asynchronous\Condition;
 use ITRocks\Framework\Asynchronous\Task;
+use ITRocks\Framework\Locale\Loc;
 
 /**
  *
@@ -16,7 +17,7 @@ class Dependency extends Condition
 	 * @link Object
 	 * @var Task
 	 */
-	public $task;
+	public $task_depend;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,7 +27,7 @@ class Dependency extends Condition
 	public function __construct(Task $task = null)
 	{
 		if ($task) {
-			$this->task = $task;
+			$this->task_depend = $task;
 		}
 	}
 
@@ -36,7 +37,7 @@ class Dependency extends Condition
 	 */
 	function __toString()
 	{
-		return 'Depend on ' . $this->task;
+		return Loc::tr('Depend on') . SP . $this->task_depend;
 	}
 
 	//----------------------------------------------------------------------------------------- check
@@ -46,8 +47,8 @@ class Dependency extends Condition
 	public function check()
 	{
 		$status = self::VALID;
-		if ($this->task) {
-			switch ($this->task->status) {
+		if ($this->task_depend) {
+			switch ($this->task_depend->status) {
 				case Task::IN_PROGRESS:
 				case Task::PENDING:
 					$status = self::PENDING;
