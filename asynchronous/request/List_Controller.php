@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
@@ -25,7 +26,12 @@ class List_Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$sort = Dao::sort([Dao::reverse('creation'), Dao::reverse('id')]);
-		$elements = Dao::readAll($class_name, [$sort, Dao::limit(15)]);
+		$month_limit = (new Date_Time())->toMonth()->add(-1, Date_Time::MONTH);
+		$elements = Dao::search(
+			['creation' => Dao\Func::greaterOrEqual($month_limit)],
+			$class_name,
+			[$sort, Dao::limit(15)]
+		);
 		$parameters->set('elements', $elements);
 		$parameters->set('title', Loc::tr(ucfirst(Names::classToDisplay($class_name))));
 		$parameters->set('uri', View::link($class_name, 'list'));
