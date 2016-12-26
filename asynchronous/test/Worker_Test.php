@@ -15,6 +15,7 @@ class Worker_Test extends Worker
 	//----------------------------------------------------------------------------------------- $wait
 	/**
 	 * Wait x seconds
+	 *
 	 * @var integer
 	 */
 	public $wait = 0;
@@ -22,6 +23,7 @@ class Worker_Test extends Worker
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Worker_Test constructor.
+	 *
 	 * @param $wait integer Time to wait
 	 */
 	public function __construct($wait = null)

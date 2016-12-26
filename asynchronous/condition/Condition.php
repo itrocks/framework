@@ -28,6 +28,7 @@ abstract class Condition
 	//----------------------------------------------------------------------------------------- check
 	/**
 	 * Check condition
+	 *
 	 * @return string valid, pending or pending_error (see Condition constants)
 	 */
 	public abstract function check();

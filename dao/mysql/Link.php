@@ -1155,7 +1155,7 @@ class Link extends Dao\Sql\Link
 	{
 		$array = [];
 		if (is_object($value)) {
-			// encode only stored data for the moment, not collection or map
+			// encode only stored data and map, not collection
 			list($array, , $maps) = $this->objectToWriteArray($value, $options);
 			// JSON comes first, like it is done by serialize()
 			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);

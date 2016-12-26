@@ -97,6 +97,7 @@ class Request
 	//------------------------------------------------------------------------- $number_of_executions
 	/**
 	 * The number of process running to execute tasks
+	 * 
 	 * @var integer
 	 */
 	public $number_of_executions = 1;

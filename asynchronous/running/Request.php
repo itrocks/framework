@@ -38,6 +38,7 @@ class Request extends Asynchronous\Request
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Request constructor.
+	 *
 	 * @param $request_class_name string
 	 * @param $request_identifier integer
 	 */

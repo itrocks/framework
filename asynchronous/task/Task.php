@@ -58,6 +58,7 @@ class Task
 	//---------------------------------------------------------------------------------------- $error
 	/**
 	 * Error message
+	 *
 	 * @var string
 	 */
 	public $error;
@@ -66,6 +67,7 @@ class Task
 	/**
 	 * Execution group.
 	 * Used for distributed task in many execution
+	 *
 	 * @var integer
 	 */
 	public $group = 0;
@@ -108,6 +110,7 @@ class Task
 	//----------------------------------------------------------------------------- calculateDuration
 	/**
 	 * Calculate difference between start and end time
+	 *
 	 * @return string
 	 */
 	public function calculateDuration()
@@ -119,6 +122,7 @@ class Task
 	//------------------------------------------------------------------------------------ canExecute
 	/**
 	 * Check if we can execute task
+	 *
 	 * @return boolean
 	 */
 	public function canExecute()

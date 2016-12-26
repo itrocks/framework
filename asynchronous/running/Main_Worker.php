@@ -57,7 +57,7 @@ class Main_Worker extends Worker
 	//--------------------------------------------------------------------------------------- execute
 	/**
 	 * Attribute tasks for all runners
-	 * Not : it's better to pass messages by socket, but for the moment, it's stay simple
+	 * Note : it's better to pass messages by socket, but for the moment, it's stay simple
 	 */
 	protected function execute()
 	{

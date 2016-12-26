@@ -12,7 +12,7 @@ use ITRocks\Framework\Locale\Loc;
 class Dependency extends Condition
 {
 
-	//----------------------------------------------------------------------------------------- $task
+	//---------------------------------------------------------------------------------- $task_depend
 	/**
 	 * @link Object
 	 * @var Task
@@ -22,6 +22,7 @@ class Dependency extends Condition
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Dependency_Condition constructor.
+	 *
 	 * @param $task Task
 	 */
 	public function __construct(Task $task = null)
@@ -42,6 +43,8 @@ class Dependency extends Condition
 
 	//----------------------------------------------------------------------------------------- check
 	/**
+	 * Check if depend task is finished
+	 *
 	 * @return string
 	 */
 	public function check()

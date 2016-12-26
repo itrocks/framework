@@ -21,6 +21,7 @@ abstract class Worker
 	//----------------------------------------------------------------------------------------- error
 	/**
 	 * Called when an error has occurred
+	 *
 	 * @param $e Exception Exception launched
 	 */
 	public function error(Exception $e) { }
