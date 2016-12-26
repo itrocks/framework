@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Asynchronous;
 
 use ITRocks\Framework\Asynchronous\Condition\Dependency;
-use ITRocks\Framework\Asynchronous\Running\Main_Worker;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -352,8 +351,7 @@ class Request
 	{
 		$running_request = Running\Request::getRequest($this);
 		if ($running_request) {
-			/** @var $task Running\Task */
-			$task = $running_request->addTask(new Main_Worker());
+			$task = $running_request->getMainTask();
 			$task->asynchronousLaunch();
 		}
 	}

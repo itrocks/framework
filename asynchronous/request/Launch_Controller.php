@@ -29,7 +29,11 @@ class Launch_Controller implements Feature_Controller
 		if ($asynchronous && $asynchronous instanceof Request) {
 			$running_request = Running\Request::getRequest($asynchronous);
 			foreach ($running_request->tasks as $task) {
-				if (in_array($task->status, [Running\Task::FINISHED, Running\Task::ERROR])) {
+				if (
+					in_array(
+						$task->status, [Running\Task::FINISHED, Running\Task::ERROR, Running\Task::STOPPED]
+					)
+				) {
 					$task->status = Running\Task::PENDING;
 					Dao::write($task, Dao::only('status'));
 				}

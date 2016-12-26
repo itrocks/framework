@@ -11,12 +11,6 @@ use ITRocks\Framework\Tools\Date_Time;
  */
 class Request extends Asynchronous\Request
 {
-	//---------------------------------------------------------------------------------------- $tasks
-	/**
-	 * @var Task[]
-	 */
-	public $tasks;
-
 	//--------------------------------------------------------------------------- $request_class_name
 	/**
 	 * Class name of request
@@ -35,6 +29,12 @@ class Request extends Asynchronous\Request
 	 */
 	public $request_identifier;
 
+	//---------------------------------------------------------------------------------------- $tasks
+	/**
+	 * @var Task[]
+	 */
+	public $tasks;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Request constructor.
@@ -49,6 +49,24 @@ class Request extends Asynchronous\Request
 			$this->request_identifier = $request_identifier;
 		}
 		parent::__construct('Running task');
+	}
+
+	//----------------------------------------------------------------------------------- getMainTask
+	/**
+	 * @return Task
+	 */
+	public function getMainTask()
+	{
+		if ($this->tasks) {
+			foreach ($this->tasks as $task) {
+				if ($task->worker instanceof Main_Worker) {
+					return $task;
+				}
+			}
+		}
+		/** @var $task Task */
+		$task = $this->addTask(new Main_Worker());
+		return $task;
 	}
 
 	//------------------------------------------------------------------------------------ getRequest
