@@ -45,7 +45,7 @@ trait Entry
 		/** @var $logger Logger */
 		$logger = Session::current()->plugins->get(Logger::class);
 		/** @var $this Framework\Logger\Entry|Entry */
-		return $logger->readFileContent($this);
+		return $logger ? $logger->readFileContent($this) : '';
 	}
 
 	//--------------------------------------------------------------------------------- userGetOutput

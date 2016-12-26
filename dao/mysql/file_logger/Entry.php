@@ -31,7 +31,7 @@ trait Entry
 		/** @var $logger File_Logger */
 		$logger = Session::current()->plugins->get(File_Logger::class);
 		/** @var $this Framework\Logger\Entry|Entry */
-		return $logger->readFileContent($this);
+		return $logger ? $logger->readFileContent($this) : '';
 	}
 
 }
