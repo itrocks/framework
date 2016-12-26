@@ -119,8 +119,8 @@ class Link_Class extends Reflection_Class
 		if (!$class_name) {
 			$class_name = $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
 		}
-		foreach ($this->getLinkProperties() as $property_name) {
-			$property = $this->getProperty($property_name);
+		foreach ($this->getLinkProperties() as $property) {
+			$property = $this->getProperty($property->name);
 			if (is_a($property->getType()->asString(), $class_name, true)) {
 				return $property;
 			}
