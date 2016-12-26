@@ -228,7 +228,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	protected function buildString($multiline = false, array $values = null)
 	{
 		$values_captions = [];
-		$values = $this->property->getListAnnotation('values')->values();
+		$values          = $this->property->getListAnnotation('values')->values();
 		foreach ($values as $value) {
 			$values_captions[$value] = Names::propertyToDisplay($value);
 		}
