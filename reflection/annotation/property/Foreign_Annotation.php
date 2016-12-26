@@ -68,9 +68,9 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	private function defaultCollection(Reflection_Property $property)
 	{
-		$composites = [];
-		$possibles = [];
-		$foreign_class = $this->getForeignClass($property);
+		$composites       = [];
+		$possibles        = [];
+		$foreign_class    = $this->getForeignClass($property);
 		$final_class_name = $property->getFinalClassName();
 		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -131,7 +131,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	private function defaultObject(Reflection_Property $property)
 	{
-		$possibles = [];
+		$possibles     = [];
 		$foreign_class = $this->getForeignClass($property);
 		foreach ($foreign_class->getProperties([T_EXTENDS, T_USE]) as $foreign_property) {
 			$foreign_type = $foreign_property->getType();
@@ -156,7 +156,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	private function getForeignClass(Reflection_Property $property)
 	{
-		$type = $property->getType();
+		$type               = $property->getType();
 		$foreign_class_name = Builder::className($type->getElementTypeAsString());
 		if ($property instanceof PHP\Reflection_Property) {
 			$foreign_class = PHP\Reflection_Class::of($foreign_class_name);
