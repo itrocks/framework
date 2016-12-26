@@ -47,6 +47,8 @@ class Request
 
 	//------------------------------------------------------------------------------------- $creation
 	/**
+	 * Creation of request date
+	 *
 	 * @link DateTime
 	 * @user readonly
 	 * @var Date_Time
@@ -55,6 +57,8 @@ class Request
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
+	 * List of errors
+	 *
 	 * @calculated
 	 * @getter
 	 * @store false
@@ -241,7 +245,7 @@ class Request
 	{
 		$buttons = [];
 		if ($this->status == self::IN_PROGRESS) {
-			$buttons[] = new Button('Recalculate', View::link($this, 'launch'), 'launch');
+			$buttons[] = new Button('Re-launch tasks', View::link($this, 'launch'), 'launch');
 		}
 		return $buttons;
 	}
