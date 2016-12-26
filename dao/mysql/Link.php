@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use Exception;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Tools\String_Class;
 use mysqli_result;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
@@ -719,14 +720,13 @@ class Link extends Dao\Sql\Link
 								$will_hex = true;
 							}
 							else {
-								$values               = $property->getListAnnotation('values')->values();
-								$write[$storage_name] = $value = is_array($value)
-									? (
-									($property->getType()->isMultipleString() && $values)
+								$values = $property->getListAnnotation('values')->values();
+								if (is_array($value)) {
+									$value = ($property->getType()->isMultipleString() && $values)
 										? join(',', $value)
-										: json_encode($value)
-									)
-									: $value;
+										: json_encode($value);
+								}
+								$write[$storage_name] = $values ? new String_Class($value) : $value;
 							}
 							if ($dao = $property->getAnnotation('dao')->value) {
 								if (($dao = Dao::get($dao)) !== $this) {

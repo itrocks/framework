@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\String_Class;
 
 /**
  * Sql value tool methods
@@ -46,6 +47,9 @@ abstract class Value
 		}
 		elseif ($value instanceof Date_Time) {
 			$string_value = DQ . ($value->toISO() ?: '0000-00-00 00:00:00') . DQ;
+		}
+		elseif ($value instanceof String_Class) {
+			$string_value = DQ . Dao::current()->escapeString(strval($value)) . DQ;
 		}
 		else {
 			if ((substr($value, 0, 2) === ('X' . Q)) && (substr($value, -1) === Q)) {
