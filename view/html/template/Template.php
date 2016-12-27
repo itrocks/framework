@@ -47,6 +47,15 @@ class Template
 	 */
 	protected $content;
 
+	//------------------------------------------------------------------------------------- $counters
+	/**
+	 * Contextual counters
+	 *
+	 * @see Functions::getCounter
+	 * @var array integer[string $context_class_name][string $context_identifier][string $class_name]
+	 */
+	public $counters;
+
 	//------------------------------------------------------------------------------------------ $css
 	/**
 	 * Css files relative directory (ie 'default')
@@ -874,12 +883,12 @@ class Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$loop = new Loop();
+		$loop           = new Loop();
 		$loop->var_name = substr($content, $i, $j - $i);
-		$length = strlen($loop->var_name);
-		$i += $length + 3;
-		$length2 = $this->parseLoopVarName($loop, $content, $j);
-		$loop->content = substr($content, $i, $j - $i);
+		$length         = strlen($loop->var_name);
+		$i             += $length + 3;
+		$length2        = $this->parseLoopVarName($loop, $content, $j);
+		$loop->content  = substr($content, $i, $j - $i);
 		$this->parseLoopContentSections($loop);
 		$elements = $this->parseValue($loop->var_name, false);
 		if (!$loop->force_condition) {
@@ -912,10 +921,10 @@ class Template
 		if (!$loop->force_condition) {
 			$this->shift();
 		}
-		$i = $i - $length - 7;
-		$j = $j + $length2 + 7;
+		$i       = $i - $length - 7;
+		$j       = $j + $length2 + 7;
 		$content = substr($content, 0, $i) . $loop_insert . substr($content, $j);
-		$i += strlen($loop_insert);
+		$i      += strlen($loop_insert);
 		return $i;
 	}
 
@@ -977,6 +986,9 @@ class Template
 			$this->shift();
 		}
 		$this->preprop();
+		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
+			$loop_insert = substr($loop_insert, 1);
+		}
 		return $loop_insert;
 	}
 

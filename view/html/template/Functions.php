@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\View\Html\Template;
 
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -83,6 +84,24 @@ class Functions
 	public function getCount(Template $template)
 	{
 		return count(reset($template->objects));
+	}
+
+	//------------------------------------------------------------------------------------ getCounter
+	/**
+	 * Gets the next value of a counter internal to the template parser :
+	 * - one counter per $class_name
+	 * - reset each time $context_object changes
+	 *
+	 * @param $template       Template
+	 * @param $class_name     string
+	 * @param $context_object object
+	 */
+	public function getCounter(Template $template, $class_name = null, $context_object = null)
+	{
+		$context_class_name = $context_object ? get_class($context_object)                : null;
+		$context_identifier = $context_object ? Dao::getObjectIdentifier($context_object) : null;
+		arraySet($template->counters, [$context_class_name, $context_identifier, $class_name], 0);
+		return ++$template->counters[$context_class_name][$context_identifier][$class_name];
 	}
 
 	//--------------------------------------------------------------------------------------- getDate
@@ -508,17 +527,20 @@ class Functions
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
 				if ($object instanceof Date_Time) {
-					$parent = current($template->objects);
-					if (is_object($parent)) {
+					do {
+						$parent = next($template->objects);
+						if ($parent instanceof Date_Time) {
+							next($template->var_names);
+						}
+					} while ($parent instanceof Date_Time);
+					if (is_object($parent) && property_exists($parent, current($template->var_names))) {
 						// call propertyToLocale to apply @show_seconds
 						return Loc::propertyToLocale(
 							new Reflection_Property(get_class($parent), current($template->var_names)),
 							$object
 						);
 					}
-					else {
-						return Loc::dateToLocale($object);
-					}
+					return Loc::dateToLocale($object);
 				}
 				else {
 					$property_name = reset($template->var_names);
@@ -526,10 +548,8 @@ class Functions
 						$method = new Reflection_Method(get_class($object), $property_name);
 						return Loc::methodToLocale($method, reset($template->objects));
 					}
-					else {
-						$property = new Reflection_Property(get_class($object), $property_name);
-						return Loc::propertyToLocale($property, reset($template->objects));
-					}
+					$property = new Reflection_Property(get_class($object), $property_name);
+					return Loc::propertyToLocale($property, reset($template->objects));
 				}
 			}
 			next($template->var_names);
@@ -846,6 +866,21 @@ class Functions
 			return $stopping_blocks;
 		}
 		return [];
+	}
+
+
+	//--------------------------------------------------------------------------------------- getTime
+	/**
+	 * @param $template Template The first object must be a Date_Time or an ISO date-time
+	 * @return string '13:12:20' or an empty string if was not an ISO date-time string
+	 */
+	public function getTime(Template $template)
+	{
+		/** @var $object Date_Time */
+		$object = $template->getObject();
+		return is_string($object)
+			? substr($object, (strpos($object, SP) ?: (strlen($object) - 1)) + 1)
+			: $object->format('H:i:s');
 	}
 
 	//---------------------------------------------------------------------------------------- getTop
