@@ -67,7 +67,7 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
-	 * @param $stored     Component[] Actual value of the property (will be returned if not null)
+	 * @param $stored     Component[]|string Actual value of the property (will be returned if not null)
 	 * @param $class_name string Class for each collection's object
 	 * @param $object     object Parent object
 	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
@@ -75,7 +75,7 @@ abstract class Getter
 	 * @return object[]
 	 */
 	public static function & getCollection(
-		array &$stored = null, $class_name, $object, $property = null
+		&$stored = null, $class_name, $object, $property = null
 	) {
 		// TODO JSON will work only if $property is set. Should add string / null case
 		if (
