@@ -189,6 +189,36 @@ function arrayNamedValues(array $array)
 	return $result;
 }
 
+/**
+ * Create missing elements into the different dimensions of the array if they do not exist
+ * If they exist : do nothing
+ *
+ * @example arraySet($array, [1, 2, 3], null);
+ * will ensure that $array[1][2][3] is set,
+ * and will initialize its value to null if not
+ * @param $array array
+ * @param $keys  integer[]|string[]|null[] multidimensional array keys
+ * @param $init  mixed initial / default value
+ */
+function arraySet(&$array, array $keys, $init)
+{
+	$has_element = true;
+	$where       =& $array;
+	if (!is_array($where)) {
+		$where = [];
+	}
+	foreach ($keys as $key) {
+		if (!isset($where[$key])) {
+			$where[$key] = [];
+			$has_element = false;
+		}
+		$where =& $where[$key];
+	}
+	if (!$has_element) {
+		$where = $init;
+	}
+}
+
 //------------------------------------------------------------------------------- arraySumRecursive
 /**
  * Returns the sum of all elements into a recursive (aka multidimensional) array
