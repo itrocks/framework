@@ -636,8 +636,8 @@ class Template
 		$i = strpos($property_name, '?');
 		if ($i !== false) {
 			$condition_path = substr($property_name, 0, $i);
-			$condition = $this->parseValue($condition_path, true);
-			$j = strrpos($property_name, ':');
+			$condition      = $this->parseValue($condition_path, true);
+			$j              = strrpos($property_name, ':');
 			if ($condition) {
 				if ($j === false) {
 					$j = strlen($property_name);
@@ -717,7 +717,7 @@ class Template
 		}
 		else {
 			$container_begin = 'BEGIN';
-			$container_end = 'END';
+			$container_end   = 'END';
 		}
 		$i = strpos($content, '<!--' . $container_begin . '-->');
 		if ($i !== false) {
@@ -727,12 +727,12 @@ class Template
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
-				$file_name = $this->getMainTemplateFile();
-				$container = $this->getContainerContent($file_name);
+				$file_name   = $this->getMainTemplateFile();
+				$container   = $this->getContainerContent($file_name);
 				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
-				$links = $this->getHeadLinks($content);
-				$metas = $this->getHeadMetas($content);
-				$title = $this->getHeadTitle($content);
+				$links       = $this->getHeadLinks($content);
+				$metas       = $this->getHeadMetas($content);
+				$title       = $this->getHeadTitle($content);
 				$content = str_replace(
 					'{@content}',
 					$root_object . substr($content, $i, $j - $i) . $root_object,

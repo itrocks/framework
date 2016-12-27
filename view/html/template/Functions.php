@@ -496,6 +496,18 @@ class Functions
 		return null;
 	}
 
+	//-------------------------------------------------------------------------------------- getLines
+	/**
+	 * Returns lines from a text
+	 *
+	 * @param Template $template
+	 * @return string[]
+	 */
+	public function getLines(Template $template)
+	{
+		return explode(LF, strval($template->getObject()));
+	}
+
 	//--------------------------------------------------------------------------------------- getLink
 	/**
 	 * Returns a link to the nearest object
