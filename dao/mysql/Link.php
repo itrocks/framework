@@ -1120,8 +1120,8 @@ class Link extends Dao\Sql\Link
 			$class_name = get_class($what);
 		}
 		$class_name = Builder::className($class_name);
-		$builder = new Select($class_name, null, $what, $this, $options);
-		$query = $builder->buildQuery();
+		$builder    = new Select($class_name, null, $what, $this, $options);
+		$query      = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
 		$result_set = $this->connection->query($query);
 		if ($options) {
@@ -1243,8 +1243,8 @@ class Link extends Dao\Sql\Link
 						foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
 							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
-							$column_name = Dao::storedAsForeign($property) ? 'id_' : '';
-							$column_name .= $properties[$property_name]->getAnnotation('storage')->value;
+							$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
+							$column_name  .= $properties[$property_name]->getAnnotation('storage')->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
 							}
