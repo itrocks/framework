@@ -291,14 +291,13 @@ class Where
 			// TODO a class annotation (@business? @string?) could help choose
 			$value = $value->toISO(false);
 		}
-		elseif ($value instanceof String_Class) {
-			$value = strval($value);
-		}
 		switch (gettype($value)) {
 			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
-			case 'array':  return $this->buildArray ($path, $value, $clause);
-			case 'object': return $this->buildObject($path, $value, $root_path);
-			default:       return $this->buildValue ($path, $value);
+			case 'array':  return $this->buildArray($path, $value, $clause);
+			case 'object': return ($value instanceof String_Class)
+				? $this->buildValue($path, $value)
+				: $this->buildObject($path, $value, $root_path);
+			default:       return $this->buildValue($path, $value);
 		}
 	}
 
@@ -313,7 +312,7 @@ class Where
 	 */
 	private function buildValue($path, $value, $prefix = '')
 	{
-		$column = $this->buildColumn($path, $prefix);
+		$column  = $this->buildColumn($path, $prefix);
 		$is_like = Value::isLike($value);
 		return $column . SP . ($is_like ? 'LIKE' : '=') . SP . Value::escape($value, $is_like);
 	}
