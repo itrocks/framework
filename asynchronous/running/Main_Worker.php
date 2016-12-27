@@ -71,6 +71,7 @@ class Main_Worker extends Worker
 			$request = $this->task->request->getRequestToRun();
 			if (!$request->isFinished()) {
 				$task_repartition = $request->getTaskToExecute(0);
+				$has_give_task = false;
 				if ($task_repartition) {
 					for ($i = 1; $i <= $request->number_of_executions; $i++) {
 						// check if all process has a job
@@ -81,12 +82,13 @@ class Main_Worker extends Worker
 								$task->group = $i;
 								Dao::write($task, Dao::only('group'));
 							}
+							$has_give_task = true;
 						}
 						$this->checkRunningTask($i);
 					}
 				}
-				else {
-					// nothing to do, wait
+				// don't spam queries, wait 1 sec
+				if (!$has_give_task) {
 					sleep(1);
 				}
 			}
