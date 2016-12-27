@@ -31,7 +31,7 @@ class Proxy
 	/**
 	 * The request data to send
 	 *
-	 * @var string[]
+	 * @var string|string[]
 	 */
 	public $data = [];
 
@@ -297,11 +297,11 @@ class Proxy
 	 * Call HTTP request
 	 *
 	 * @param $url    string
-	 * @param $data   string[]
+	 * @param $data   string|string[]
 	 * @param $method string GET, POST
 	 * @return boolean true if job done, false if any error occurred
 	 */
-	public function request($url = null, array $data = null, $method = null)
+	public function request($url = null, $data = null, $method = null)
 	{
 		if (isset($url))    $this->url    = $url;
 		if (isset($method)) $this->method = $method;
