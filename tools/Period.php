@@ -88,8 +88,8 @@ class Period
 	 */
 	public function toMonths()
 	{
-		$start  = $this->begin->toMonth();
-		$stop   = $this->end->toMonth();
+		$start  = $this->begin->month();
+		$stop   = $this->end->month();
 		$months = [];
 		while ($start->isBefore($stop)) {
 			$months[] = clone $start;

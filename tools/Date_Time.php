@@ -146,14 +146,27 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $timezone DateTimeZone
 	 * @return Date_Time
 	 */
-	public static function createFromFormat($format, $time, $timezone = null)
-	{
+	public static function createFromFormat(
+		$format, $time,
+		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection PhpStorm */ $timezone = null
+	) {
 		$dateTime = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
 			: parent::createFromFormat($format, $time);
 		return $timezone
 			? new Date_Time($dateTime->format('Y-m-d H:i:s'), $timezone)
 			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
+	}
+
+	//------------------------------------------------------------------------------------------- day
+	/**
+	 * Returns a new date with only the day of the current date (with an empty time)
+	 *
+	 * @return Date_Time
+	 */
+	public function day()
+	{
+		return new Date_Time($this->format('Y-m-d'));
 	}
 
 	//------------------------------------------------------------------------------------ dayOfMonth
@@ -456,6 +469,21 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return new Date_Time(self::$min_date);
 	}
 
+	//----------------------------------------------------------------------------------------- month
+	/**
+	 * Returns a Date_Time for the month (goes to the beginning of the month)
+	 *
+	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
+	 * @return Date_Time
+	 */
+	public function month()
+	{
+		if ($this->isMin()) {
+			return new Date_Time($this);
+		}
+		return new Date_Time($this->format('Y-m'));
+	}
+
 	//------------------------------------------------------------------------------------------- now
 	/**
 	 * Returns current date-time
@@ -501,6 +529,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
+	 * @deprecated Please use month() instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return Date_Time
 	 */

@@ -119,7 +119,7 @@ class Period_Tests extends Test
 		];
 		$this->method(__METHOD__);
 		$this->assume('several', (new Period($date1, $date2))->toMonths(), $months);
-		$this->assume('one',     (new Period($date1, $date1))->toMonths(), [$date1->toMonth()]);
+		$this->assume('one',     (new Period($date1, $date1))->toMonths(), [$date1->month()]);
 	}
 
 }
