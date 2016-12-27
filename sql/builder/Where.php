@@ -16,6 +16,7 @@ use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Join;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\String_Class;
 
 /**
  * The SQL where section of SQL queries builder
@@ -289,6 +290,9 @@ class Where
 		elseif ($value instanceof Date_Time) {
 			// TODO a class annotation (@business? @string?) could help choose
 			$value = $value->toISO(false);
+		}
+		elseif ($value instanceof String_Class) {
+			$value = strval($value);
 		}
 		switch (gettype($value)) {
 			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
