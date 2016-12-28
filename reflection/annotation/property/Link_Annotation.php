@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
@@ -14,6 +15,7 @@ use ITRocks\Framework\Tools\Date_Time;
  */
 class Link_Annotation extends Annotation implements Property_Context_Annotation
 {
+	use Has_Is;
 
 	//--------------------------------------------------------------------------------- $value values
 
@@ -92,16 +94,6 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 				: self::OBJECT;
 		}
 		return $value;
-	}
-
-	//-------------------------------------------------------------------------------------------- is
-	/**
-	 * @param $array string|string[]
-	 * @return boolean
-	 */
-	public function is($array)
-	{
-		return in_array($this->value, is_array($array) ? $array : func_get_args());
 	}
 
 	//----------------------------------------------------------------------------------------- isAll

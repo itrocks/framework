@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Has_Is;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
@@ -19,6 +20,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  */
 class Store_Annotation extends Annotation implements Property_Context_Annotation
 {
+	use Has_Is;
 
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'store';
@@ -62,6 +64,42 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- isFalse
+	/**
+	 * @return boolean
+	 */
+	public function isFalse()
+	{
+		return $this->value === self::FALSE;
+	}
+
+	//------------------------------------------------------------------------------------------ isGz
+	/**
+	 * @return boolean
+	 */
+	public function isGz()
+	{
+		return $this->value === self::GZ;
+	}
+
+	//----------------------------------------------------------------------------------------- isHex
+	/**
+	 * @return boolean
+	 */
+	public function isHex()
+	{
+		return $this->value === self::HEX;
+	}
+
+	//---------------------------------------------------------------------------------------- isJson
+	/**
+	 * @return boolean
+	 */
+	public function isJson()
+	{
+		return $this->value === self::JSON;
+	}
+
 	//-------------------------------------------------------------------------- storedPropertiesOnly
 	/**
 	 * Returns only non-static properties which @store annotation is not false
@@ -72,10 +110,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	public static function storedPropertiesOnly(array $properties)
 	{
 		foreach ($properties as $key => $property) {
-			if (
-				$property->isStatic()
-				|| ($property->getAnnotation(self::ANNOTATION)->value === self::FALSE)
-			) {
+			if ($property->isStatic() || static::of($property)->isFalse()) {
 				unset($properties[$key]);
 			}
 		}
