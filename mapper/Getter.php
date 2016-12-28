@@ -329,7 +329,7 @@ abstract class Getter
 	 */
 	public static function ignore($ignore)
 	{
-		$result = self::$ignore;
+		$result       = self::$ignore;
 		self::$ignore = $ignore;
 		return $result;
 	}
@@ -355,28 +355,31 @@ abstract class Getter
 			$class_name = $property->getType()->getElementTypeAsString();
 		}
 		if ($class_name) {
-			$more_fields = [];
-			foreach ($stored_array as $property_name => $value) {
-				if (is_array($value)) {
+			/** @var $arrays_of_objects array object[$property_name][$key] */
+			$arrays_of_objects = [];
+			foreach ($stored_array as $property_name => $stored_value) {
+				if (is_array($stored_value)) {
 					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->getType()->isClass() && $property->getType()->isMultiple()) {
 						$property_class_name = $property->getType()->getElementTypeAsString();
-						foreach ($value as $key => $val) {
-							if (is_int($val)) {
-								if (!isset($more_fields[$property_name])) {
-									$more_fields[$property_name] = [];
+						foreach ($stored_value as $key => $object_identifier) {
+							if (is_integer($object_identifier)) {
+								if (!isset($arrays_of_objects[$property_name])) {
+									$arrays_of_objects[$property_name] = [];
 								}
-								$more_fields[$property_name][$key] = Dao::read($val, $property_class_name);
+								$arrays_of_objects[$property_name][$key] = Dao::read(
+									$object_identifier, $property_class_name
+								);
 							}
 						}
 					}
 				}
 			}
-			foreach ($more_fields as $property_name => $value) {
+			foreach ($arrays_of_objects as $property_name => $value) {
 				unset($stored_array[$property_name]);
 			}
 			$stored = Builder::fromArray($class_name, $stored_array);
-			foreach ($more_fields as $property_name => $value) {
+			foreach ($arrays_of_objects as $property_name => $value) {
 				$stored->$property_name = $value;
 			}
 		}
