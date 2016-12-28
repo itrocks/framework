@@ -748,7 +748,7 @@ class Link extends Dao\Sql\Link
 						elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 							if ($store == Store_Annotation::JSON) {
 								$value = $this->valueToWriteArray($value, $options);
-								if (!is_string($value) && isset($value)) {
+								if (isset($value) && !is_string($value)) {
 									$value = json_encode($value);
 								}
 							}
@@ -1159,11 +1159,8 @@ class Link extends Dao\Sql\Link
 			list($array, , $maps) = $this->objectToWriteArray($value, $options);
 			// JSON comes first, like it is done by serialize()
 			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);
-			/**
-			 * @var $property Reflection_Property
-			 * @var $values   array
-			 */
 			foreach ($maps as list($property, $values)) {
+				/** @var $property Reflection_Property */
 				foreach ($values as $key => $value) {
 					if (Dao::getObjectIdentifier($value)) {
 						$array[$property->name][$key] = Dao::getObjectIdentifier($value);
@@ -1171,7 +1168,7 @@ class Link extends Dao\Sql\Link
 				}
 			}
 		}
-		else if (is_array($value)) {
+		elseif (is_array($value)) {
 			foreach ($value as $key => $sub_value) {
 				$array[$key] = $this->valueToWriteArray($sub_value, $options);
 			}
@@ -1203,8 +1200,7 @@ class Link extends Dao\Sql\Link
 			$options = $options ? [$options] : [];
 		}
 		if ($this->beforeWrite($object, $options)) {
-
-			if (Null_Object::isNull($object)) {
+			if (Null_Object::isNull($object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->disconnect($object);
 			}
 			$class          = new Link_Class(get_class($object));
@@ -1322,7 +1318,15 @@ class Link extends Dao\Sql\Link
 				// if link class : write linked object too
 				$id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
 				$class       = $link->value ? new Link_Class($link->value) : null;
-			} while ($class && !isset($link_class_only) && !Null_Object::isNull($object, $class->name));
+			} while (
+				$class
+				&& !isset($link_class_only)
+				&& !Null_Object::isNull($object, function($properties) use ($class) {
+					return Store_Annotation::storedPropertiesOnly(
+						Reflection_Property::filter($properties, $class->name)
+					);
+				})
+			);
 
 			/** @var $after_writes Method_Annotation[] */
 			$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');

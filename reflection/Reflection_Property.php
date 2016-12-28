@@ -152,6 +152,26 @@ class Reflection_Property extends ReflectionProperty
 		return property_exists($class_name, $property_name);
 	}
 
+	//---------------------------------------------------------------------------------------- filter
+	/**
+	 * Filter a list of properties : keep only those that match a class name
+	 * You can reduce a list of properties using a parent class name using this function
+	 *
+	 * @param $properties Reflection_Property[]
+	 * @param $class_name string
+	 * @return Reflection_Property[]
+	 */
+	public static function filter(array $properties, $class_name)
+	{
+		$class_properties = (new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]);
+		foreach ($properties as $key => $property) {
+			if (!isset($class_properties[$property->name])) {
+				unset($properties[$key]);
+			}
+		}
+		return $properties;
+	}
+
 	//------------------------------------------------------------------------ getAnnotationCachePath
 	/**
 	 * @return string[]
