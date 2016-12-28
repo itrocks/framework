@@ -322,6 +322,7 @@ class Columns
 		if ($this->expand_objects) {
 			$properties = $this->joins->getProperties($path);
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
+			$properties = Store_Annotation::storedPropertiesOnly($properties);
 			/** @var $properties Reflection_Property[] */
 			foreach ($properties as $property_name => $property) {
 				$foreign_alias = (isset($linked_join) && isset($linked_properties[$property_name]))
