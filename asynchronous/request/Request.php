@@ -205,7 +205,7 @@ class Request
 		$period = new Period(
 			new Date_Time(), (new Date_Time())->add($interval, Date_Time::SECOND)
 		);
-		return $period->formatDifference();
+		return $period->format();
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
@@ -233,7 +233,7 @@ class Request
 				$last_date = $task->end_date;
 			}
 		}
-		return (new Period($this->creation, $last_date))->formatDifference();
+		return (new Period($this->creation, $last_date))->format();
 	}
 
 	//----------------------------------------------------------------------------- getGeneralButtons

@@ -43,24 +43,25 @@ class Period
 		}
 	}
 
-	//------------------------------------------------------------------------------ formatDifference
+	//---------------------------------------------------------------------------------------- format
 	/**
 	 * Return difference between begin and end date
 	 *
 	 * @return string
+	 * @todo LOW optional parameter for custom format similar to Date_Time::format()
 	 */
-	public function formatDifference()
+	public function format()
 	{
-		$diff = $this->begin->diff($this->end, true);
+		$diff   = $this->begin->diff($this->end, true);
 		$format = [];
 		if ($diff->h) {
-			$format[] = $diff->h . SP . Loc::tr('hour');
+			$format[] = $diff->h . SP . Loc::tr(($diff->h > 1) ? 'hours' : 'hour');
 		}
 		if ($diff->i) {
-			$format[] = $diff->i . SP . Loc::tr('minutes');
+			$format[] = $diff->i . SP . Loc::tr(($diff->i > 1) ? 'minutes' : 'minute');
 		}
 		if ($diff->s) {
-			$format[] = $diff->s . SP . Loc::tr('seconds');
+			$format[] = $diff->s . SP . Loc::tr(($diff->s > 1) ? 'seconds' : 'second');
 		}
 		return join(SP, $format);
 	}

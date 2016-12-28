@@ -116,7 +116,7 @@ class Task
 	public function calculateDuration()
 	{
 		$period = new Period($this->begin_date, $this->end_date);
-		return $period->formatDifference();
+		return $period->format();
 	}
 
 	//------------------------------------------------------------------------------------ canExecute
