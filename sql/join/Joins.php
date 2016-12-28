@@ -313,9 +313,7 @@ class Joins
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
 		$class = new Link_Class($class_name);
-		$this->properties[$class_name] = Store_Annotation::storedPropertiesOnly(
-			$class->getProperties([T_EXTENDS, T_USE])
-		);
+		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
 		$linked_class_name = Class_\Link_Annotation::of($class)->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
@@ -608,15 +606,17 @@ class Joins
 	 * Gets a Reflection_Property object for a given property path
 	 *
 	 * @param $master_path   string
-	 * @param $property_name string
+	 * @param $property_name string If null, $master path contains the full path for the property
 	 * @return Reflection_Property
 	 */
-	private function getProperty($master_path, $property_name)
+	public function getProperty($master_path, $property_name = null)
 	{
+		if (!$property_name) {
+			list($master_path, $property_name) = Sql\Builder::splitPropertyPath($master_path);
+		}
 		$properties = $this->getProperties($master_path);
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;
 	}
-
 
 	//------------------------------------------------------------------------------ getStartingClass
 	/**

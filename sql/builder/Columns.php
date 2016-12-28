@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join\Joins;
@@ -242,14 +243,23 @@ class Columns
 			$sql = $concat->toSql($this, $path);
 		}
 		else {
+			$force_column = null;
+			$force_column = (
+				(new Reflection_Method(Joins::class, 'getProperty'))->isPublic()
+				&& ($property = $this->joins->getProperty($master_path, $column_name))
+				&& Store_Annotation::of($property)->isFalse()
+			) ? 'NULL' : null;
 			$sql = (
+				$force_column
+				?: (
 					$join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ)
 				)
-				. (
-					($as && ($column_name !== $path) && $this->resolve_aliases)
-					? (' AS ' . BQ . $path . BQ)
-					: ''
-				);
+			)
+			. (
+				($as && ($column_name !== $path) && $this->resolve_aliases)
+				? (' AS ' . BQ . $path . BQ)
+				: ''
+			);
 		}
 		return $sql;
 	}
