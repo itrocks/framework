@@ -92,6 +92,32 @@ class Validator implements Registerable
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- disable
+	/**
+	 * Disable validator and return previous status
+	 *
+	 * @return boolean true if was enabled, false if was disabled
+	 */
+	public function disable()
+	{
+		$validator_on       = $this->validator_on;
+		$this->validator_on = false;
+		return $validator_on;
+	}
+
+	//---------------------------------------------------------------------------------------- enable
+	/**
+	 * Disable validator and return previous status
+	 *
+	 * @return boolean true if was enabled, false if was disabled
+	 */
+	public function enable()
+	{
+		$validator_on       = $this->validator_on;
+		$this->validator_on = true;
+		return $validator_on;
+	}
+
 	//------------------------------------------------------------------------------------- getErrors
 	/**
 	 * @return Annotation[]
