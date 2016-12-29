@@ -1,14 +1,14 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 
 /**
  * A vehicle door
  */
 class Vehicle_Door
 {
-	use Component;
+	use Mapper\Component;
 
 	//----------------------------------------------------------------------------------------- $code
 	/**

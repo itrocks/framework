@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -9,7 +9,7 @@ use ITRocks\Framework\Traits\Has_Name;
  */
 class Vehicle_Door_Piece
 {
-	use Component;
+	use Mapper\Component;
 	use Has_Name;
 
 	//----------------------------------------------------------------------------------------- $door

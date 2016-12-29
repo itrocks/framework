@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 
 /**
  * A salesman with specific data for its link to a quote
@@ -13,7 +13,7 @@ use ITRocks\Framework\Mapper\Component;
  */
 class Quote_Salesman extends Salesman
 {
-	use Component;
+	use Mapper\Component;
 
 	//----------------------------------------------------------------------------------- $percentage
 	/**

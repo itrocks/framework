@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 
 /**
  * An order line class
@@ -10,7 +10,7 @@ use ITRocks\Framework\Mapper\Component;
  */
 class Order_Line
 {
-	use Component;
+	use Mapper\Component;
 
 	//--------------------------------------------------------------------------------------- $client
 	/**

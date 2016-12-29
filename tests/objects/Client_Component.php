@@ -1,14 +1,14 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper;
 
 /**
  * A component class for @component @link Object properties testing
  */
 class Client_Component
 {
-	use Component;
+	use Mapper\Component;
 
 	//--------------------------------------------------------------------------------------- $client
 	/**
