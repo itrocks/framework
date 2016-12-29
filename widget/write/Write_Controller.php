@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -69,7 +70,7 @@ class Write_Controller implements Default_Class_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		$object = $parameters->getMainObject($class_name);
+		$object     = $parameters->getMainObject($class_name);
 		$new_object = !Dao::getObjectIdentifier($object);
 
 		Dao::begin();
@@ -80,12 +81,12 @@ class Write_Controller implements Default_Class_Controller
 			$builder->null_if_empty_sub_objects = true;
 			$builder->build($form, $object);
 			$write_objects = [];
-			foreach ($builder->getBuiltObjects() as $write_object) {
+			foreach ($builder->getBuiltObjects() as $built_object) {
+				$write_object = $built_object->object;
 				if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
-					$write_objects[] = $write_object;
+					$write_objects[] = $built_object;
 				}
 			}
-
 			$write_error = $this->write($write_objects);
 			$write_error ? Dao::rollback() : Dao::commit();
 		}
@@ -101,14 +102,14 @@ class Write_Controller implements Default_Class_Controller
 
 	//----------------------------------------------------------------------------------------- write
 	/**
-	 * @param $write_objects object[]
+	 * @param $write_objects Built_Object[]
 	 * @return boolean
 	 */
 	protected function write(array $write_objects)
 	{
 		$write_error = false;
 		foreach ($write_objects as $write_object) {
-			if (!Dao::write($write_object)) {
+			if (!Dao::write($write_object->object, $write_object->write_options)) {
 				$write_error = true;
 				break;
 			}

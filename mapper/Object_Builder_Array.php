@@ -30,7 +30,7 @@ class Object_Builder_Array
 	/**
 	 * The objects that where built : get it with getBuiltObjects()
 	 *
-	 * @var array
+	 * @var Built_Object[]
 	 */
 	private $built_objects;
 
@@ -140,7 +140,7 @@ class Object_Builder_Array
 			$this->start(isset($object) ? get_class($object) : null);
 		}
 		$search = $this->initObject($array, $object);
-		$build = new Object_Builder_Array_Tool(
+		$build  = new Object_Builder_Array_Tool(
 			$array, $object, $null_if_empty, $ignore_property_name, $search
 		);
 		$this->buildProperties($build);
@@ -152,7 +152,7 @@ class Object_Builder_Array
 			if ($build->read_properties) {
 				$object = $this->readObject($object, $build->read_properties);
 			}
-			$this->built_objects[] = $build->object;
+			$this->built_objects[] = new Built_Object($build->object);
 			return $object;
 		}
 	}
@@ -261,9 +261,9 @@ class Object_Builder_Array
 	 */
 	private function buildIdProperty($object, $property_name, $value, $null_if_empty)
 	{
-		$is_null = $null_if_empty;
+		$is_null            = $null_if_empty;
 		$real_property_name = substr($property_name, 3);
-		$property = $this->properties[$real_property_name];
+		$property           = $this->properties[$real_property_name];
 		if (empty($value)) {
 			$value = $property->getAnnotation('null')->value ? null : 0;
 		}
@@ -278,7 +278,7 @@ class Object_Builder_Array
 		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
 			$property = new Reflection_Property(get_class($object), $real_property_name);
 			if ($property->getAnnotation('setter')->value) {
-				$dao = Dao::get($property->getAnnotation('dao')->value);
+				$dao                         = Dao::get($property->getAnnotation('dao')->value);
 				$object->$real_property_name = $dao->read($value, $property->getType()->asString());
 			}
 		}
@@ -317,16 +317,18 @@ class Object_Builder_Array
 
 	//------------------------------------------------------------------------------ buildObjectValue
 	/**
-	 * @param $class_name    string
-	 * @param $array         array
+	 * @param $class_name    string the class name of the object to build
+	 * @param $object        object the value of the object before build (may be null if no object)
+	 * @param $array         array  the values of the properties to be replaced into the object
 	 * @param $null_if_empty boolean
 	 * @param $composite     object The composite object (set it only if property is a @component)
 	 * @return object
 	 */
-	private function buildObjectValue($class_name, array $array, $null_if_empty, $composite)
+	private function buildObjectValue($class_name, $object, array $array, $null_if_empty, $composite)
 	{
 		$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
-		$object = $builder->build($array, null, $this->null_if_empty_sub_objects || $null_if_empty);
+		$object  = $builder->build($array, $object, $this->null_if_empty_sub_objects || $null_if_empty)
+			?: $object;
 		if ($object && $composite && isA($class_name, Component::class)) {
 			array_pop($builder->built_objects);
 		}
@@ -396,7 +398,9 @@ class Object_Builder_Array
 				if ($link->isObject()) {
 					$class_name       = $property->getType()->asString();
 					$composite_object = $property->getAnnotation('component')->value ? $object : null;
-					$value = $this->buildObjectValue($class_name, $value, $null_if_empty, $composite_object);
+					$value            = $this->buildObjectValue(
+						$class_name, $property->getValue($object), $value, $null_if_empty, $composite_object
+					);
 				}
 				// collection
 				elseif ($link->isCollection()) {
@@ -479,9 +483,9 @@ class Object_Builder_Array
 	 */
 	private function buildSubObject($object, Reflection_Property $property, $value, $null_if_empty)
 	{
-		$is_null = $null_if_empty;
+		$is_null       = $null_if_empty;
 		$property_name = $property->name;
-		$type = $property->getType();
+		$type          = $property->getType();
 		if (!isset($this->builders[$property_name])) {
 			$this->builders[$property_name] = new Object_Builder_Array(
 				$type->getElementTypeAsString(), $this->from_form
@@ -494,10 +498,11 @@ class Object_Builder_Array
 			);
 		}
 		else {
-			$value = $builder->build($value, null, $null_if_empty);
+			$sub_object = $property->getValue($object);
+			$value      = $builder->build($value, $sub_object, $null_if_empty) ?: $sub_object;
 			if (isset($value)) {
 				$object->$property_name = $value;
-				$is_null = false;
+				$is_null                = false;
 			}
 		}
 		return $is_null;
@@ -576,7 +581,7 @@ class Object_Builder_Array
 	/**
 	 * Call this after calls to build() to get all objects list set by the built
 	 *
-	 * @return object[]
+	 * @return Built_Object[]
 	 */
 	public function getBuiltObjects()
 	{
@@ -595,8 +600,8 @@ class Object_Builder_Array
 		if ($link->value) {
 			$id_property_value = null;
 			$linked_class_name = null;
-			$link_properties = $link->getLinkClass()->getUniqueProperties();
-			$search = [];
+			$link_properties   = $link->getLinkClass()->getUniqueProperties();
+			$search            = [];
 			foreach ($link_properties as $property) {
 				$property_name = $property->getName();
 				if (Dao::storedAsForeign($property)) {
@@ -722,7 +727,7 @@ class Object_Builder_Array
 		if ($this->started) {
 			$this->stop();
 		}
-		$this->class = new Reflection_Class(Builder::className($class_name));
+		$this->class    = new Reflection_Class(Builder::className($class_name));
 		$this->defaults = $this->class->getDefaultProperties();
 	}
 
@@ -739,8 +744,8 @@ class Object_Builder_Array
 			$this->stop();
 		}
 		$this->built_objects = [];
-		$this->properties = $this->class->accessProperties();
-		$this->started = true;
+		$this->properties    = $this->class->accessProperties();
+		$this->started       = true;
 	}
 
 	//------------------------------------------------------------------------------------------ stop

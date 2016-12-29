@@ -33,8 +33,8 @@ class Api_Controller implements Default_Feature_Controller
 		$builder = new Object_Builder_Array();
 		$builder->null_if_empty_sub_objects = true;
 		$builder->build($form, $object);
-		foreach ($builder->getBuiltObjects() as $object) {
-			Dao::write($object);
+		foreach ($builder->getBuiltObjects() as $built_object) {
+			Dao::write($built_object->object, $built_object->write_options);
 		}
 		Dao::commit();
 		return Dao::getObjectIdentifier($object);
