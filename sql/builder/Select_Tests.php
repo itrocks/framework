@@ -257,7 +257,7 @@ class Select_Tests extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
 			. 'WHERE t1.`name` = "Robert" AND t0.`percentage` = 100'
 		);
 	}
@@ -279,7 +279,7 @@ class Select_Tests extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
 			. 'WHERE t0.id_quote = 101 AND t0.id_salesman = 102'
 		);
 		$search->quote        = Search_Object::create(Quote::class);
@@ -291,9 +291,9 @@ class Select_Tests extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
 			. 'LEFT JOIN `quotes` t2 ON t2.id = t0.id_quote' . LF
-			. 'LEFT JOIN `salesmen` t3 ON t3.id = t0.id_salesman' . LF
+			. 'LEFT JOIN `test_salesmen` t3 ON t3.id = t0.id_salesman' . LF
 			. 'WHERE t2.`id` = 101 AND t3.`id` = 102'
 		);
 	}
@@ -312,7 +312,7 @@ class Select_Tests extends Test
 			'SELECT t2.`name`, t1.`percentage`, t0.`additional_text`' . LF
 			. 'FROM `quotes_salesmen_additional` t0' . LF
 			. 'INNER JOIN `quotes_salesmen` t1 ON t1.id = t0.id_salesman' . LF
-			. 'INNER JOIN `salesmen` t2 ON t2.id = t1.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman' . LF
 			. 'WHERE t2.`name` = "Robert" AND t1.`percentage` = 100'
 		);
 	}
@@ -330,7 +330,7 @@ class Select_Tests extends Test
 			'SELECT t0.`number`, t2.`name` AS `salesmen.name`, t1.`percentage` AS `salesmen.percentage`' . LF
 			. 'FROM `quotes` t0' . LF
 			. 'LEFT JOIN `quotes_salesmen` t1 ON t1.id_quote = t0.id' . LF
-			. 'LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman'
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman'
 		);
 	}
 
@@ -346,8 +346,8 @@ class Select_Tests extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`, t2.`name` AS `salesmen.name`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'LEFT JOIN `orders_salesmen` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `salesmen` t2 ON t2.id = t1.id_salesman'
+			. 'LEFT JOIN `orders_test_salesmen` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman'
 		);
 	}
 

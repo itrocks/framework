@@ -1,25 +1,26 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use ITRocks\Framework\Traits\Has_Name;
+
 /**
  * A salesman class
+ *
+ * @set Test_Salesmen
  */
 class Salesman
 {
+	use Has_Name;
 
-	//----------------------------------------------------------------------------------------- $name
+	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @var string
+	 * Salesman constructor
+	 *
+	 * @param $name string
 	 */
-	public $name;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
+	public function __construct($name = null)
 	{
-		return strval($this->name);
+		if (isset($name)) $this->name = $name;
 	}
 
 }

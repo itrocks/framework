@@ -89,10 +89,10 @@ class Tests extends Test
 	public function testMap()
 	{
 		$assume = Join::newInstance(
-			Join::LEFT, 't1', 'id_salesman', 't2', 'salesmen', 'id', Join::SIMPLE, Salesman::class
+			Join::LEFT, 't1', 'id_salesman', 't2', 'test_salesmen', 'id', Join::SIMPLE, Salesman::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_salesmen', 'id_order', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_order', Join::SIMPLE
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
@@ -105,7 +105,7 @@ class Tests extends Test
 				'date' => null,
 				'number' => null,
 				'salesmen-link' => Join::newInstance(
-					Join::LEFT, 't0', 'id', 't1', 'orders_salesmen', 'id_order'
+					Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_order'
 				),
 				'salesmen' => $assume,
 				'salesmen.name' => null
@@ -184,7 +184,7 @@ class Tests extends Test
 			Join::LEFT, 't1', 'id_order', 't2', 'orders', 'id', Join::SIMPLE, Order::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_salesmen', 'id_salesman', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_salesman', Join::SIMPLE
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
@@ -195,7 +195,7 @@ class Tests extends Test
 				->getJoins(),
 			[
 				'Order->salesmen-link' => Join::newInstance(
-					Join::LEFT, 't0', 'id', 't1', 'orders_salesmen', 'id_salesman'
+					Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_salesman'
 				),
 				'Order->salesmen' => $assume,
 				'Order->salesmen.number' => null,
