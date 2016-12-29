@@ -38,17 +38,17 @@ class Test extends Testable
 	protected function assume($test, $check, $assume, $diff_output = true)
 	{
 		$duration = round((microtime(true) - $this->start_time) * 1000000);
-		$check  = $this->toArray($check);
-		$assume = $this->toArray($assume);
+		$check    = $this->toArray($check);
+		$assume   = $this->toArray($assume);
 		if (is_array($check) && is_array($assume)) {
-			$diff1 = arrayDiffRecursive($check, $assume, true);
-			$diff2 = arrayDiffRecursive($assume, $check, true);
-			$ok = !$diff1 && !$diff2;
+			$diff1 = arrayDiffRecursive($check, $assume, false, true);
+			$diff2 = arrayDiffRecursive($assume, $check, false, true);
+			$ok    = !$diff1 && !$diff2;
 		}
 		else {
 			$diff1 = $check;
 			$diff2 = $assume;
-			$ok = ($check === $assume);
+			$ok    = ($check === $assume);
 		}
 		if ($ok) {
 			if ($duration > 9999) {
@@ -62,16 +62,16 @@ class Test extends Testable
 		}
 		else {
 			$result = '<span style="color:red;font-weight:bold">BAD</span>'
-			. '<pre style="color:red;font-weight:bold;">[' . print_r($check, true) . ']</pre>'
-			. '<pre style="color:blue;font-weight:bold;">[' . print_r($assume, true) . ']</pre>'
+			. '<pre style="color:red;font-weight:bold;">result ' . print_r($check, true) . '</pre>'
+			. '<pre style="color:blue;font-weight:bold;">assume ' . print_r($assume, true) . '</pre>'
 			. (
 				($diff_output && $diff1)
-				? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff1, true) . ']</pre>')
+				? ('<pre style="color:orange;font-weight:bold;">result has ' . print_r($diff1, true) . ']</pre>')
 				: ''
 			)
 			. (
 				($diff_output && $diff2)
-				? ('<pre style="color:orange;font-weight:bold;">[' . print_r($diff2, true) . ']</pre>')
+				? ('<pre style="color:orange;font-weight:bold;">assume has ' . print_r($diff2, true) . ']</pre>')
 				: ''
 			);
 			$result_code = Response::ERROR;
@@ -124,7 +124,7 @@ class Test extends Testable
 	 */
 	public function captureStart()
 	{
-		$test = $this;
+		$test          = $this;
 		$this->capture = '';
 		ob_start(function($buffer) use ($test) {
 			$test->capture .= $buffer;
@@ -133,17 +133,25 @@ class Test extends Testable
 
 	//--------------------------------------------------------------------------------------- toArray
 	/**
-	 * @param $array mixed
+	 * @param $array   mixed
+	 * @param $already object[] objects hash table to avoid recursion
 	 * @return mixed
 	 */
-	private function toArray($array)
+	private function toArray($array, array $already = [])
 	{
 		if (is_object($array)) {
-			$array = $this->toArray(get_object_vars($array));
+			if (isset($already[md5(spl_object_hash($array))])) {
+				$array = ['__CLASS__' => get_class($array), '__RECURSE__' => null];
+			}
+			else {
+				$already[md5(spl_object_hash($array))] = true;
+				$array = ['__CLASS__' => get_class($array)]
+					+ $this->toArray(get_object_vars($array), $already);
+			}
 		}
 		if (is_array($array)) {
 			foreach ($array as $key => $value) {
-				$array[$key] = $this->toArray($value);
+				$array[$key] = $this->toArray($value, $already);
 			}
 			return $array;
 		}

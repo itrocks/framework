@@ -41,10 +41,11 @@ function arrayCut(
 /**
  * @param $array1    array
  * @param $array2    array
- * @param $show_type boolean
+ * @param $strict    boolean Strict type matching
+ * @param $show_type boolean Return each value type between brackets after each different value
  * @return array|boolean
  */
-function arrayDiffRecursive(array $array1, array $array2, $show_type = false)
+function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show_type = false)
 {
 	$diff = [];
 	foreach ($array1 as $key => $value) {
@@ -56,7 +57,7 @@ function arrayDiffRecursive(array $array1, array $array2, $show_type = false)
 				$diff[$key] = $value;
 			}
 			else {
-				$sub_diff = arrayDiffRecursive($value, $array2[$key]);
+				$sub_diff = arrayDiffRecursive($value, $array2[$key], $strict, $show_type);
 				if ($sub_diff !== false) {
 					$diff[$key] = $sub_diff;
 				}
@@ -65,10 +66,10 @@ function arrayDiffRecursive(array $array1, array $array2, $show_type = false)
 		elseif (is_array($array2[$key])) {
 			$diff[$key] = $value;
 		}
-		elseif ($array2[$key] !== $value) {
+		elseif (($strict && ($value !== $array2[$key])) || (strval($value) !== strval($array2[$key]))) {
 			$diff[$key] = strval($value);
 			if ($show_type && (gettype($value) !== gettype($array2[$key]))) {
-				$diff[$key] .= '(' . gettype($value) . ')';
+				$diff[$key] .= SP . '(' . gettype($value) . ')';
 			}
 		}
 	}
