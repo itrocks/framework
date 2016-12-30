@@ -109,7 +109,9 @@ class Encoder
 				$html_images = $mail->getHtmlImages();
 				foreach ($html_images as $key => $image) {
 					if ($image['name'] == $match) {
-						$mail->$html_images[$key]['c_type'] = 'image/' . rLastParse($match, '.');
+						// php 5.6 compatibility
+						//$mail->$html_images[$key]['c_type'] = 'image/' . rLastParse($match, '.');
+						$mail->{$html_images[$key]['c_type']} = 'image/' . rLastParse($match, '.');
 						$buffer = str_replace($match, 'cid:' . $image['cid'], $buffer);
 					}
 				}

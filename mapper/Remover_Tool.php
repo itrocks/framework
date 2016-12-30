@@ -32,7 +32,9 @@ abstract class Remover_Tool
 					else {
 						foreach ($composite->$property_name as $key => $value) {
 							if ($value === $object) {
-								unset($composite->$property_name[$key]);
+								// php 5.6 compatibility
+								//unset($composite->$property_name[$key]);
+								unset($composite->{$property_name[$key]});
 								$count ++;
 							}
 						}
