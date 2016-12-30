@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Sql\Link;
@@ -202,6 +203,15 @@ class Select
 			. join('', $options);
 	}
 
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * @return string
+	 */
+	public function getClassName()
+	{
+		return $this->class_name;
+	}
+
 	//-------------------------------------------------------------------------------------- getJoins
 	/**
 	 * @return Joins
@@ -209,6 +219,15 @@ class Select
 	public function getJoins()
 	{
 		return $this->columns_builder->getJoins();
+	}
+
+	//--------------------------------------------------------------------------------- getWhereArray
+	/**
+	 * @return array|Func\Where|null
+	 */
+	public function getWhereArray()
+	{
+		return $this->where_builder->getWhereArray();
 	}
 
 	//------------------------------------------------------------------------------------ getSqlLink

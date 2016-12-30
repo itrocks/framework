@@ -352,6 +352,15 @@ class Where
 		return $this->sql_link;
 	}
 
+	//--------------------------------------------------------------------------------- getWhereArray
+	/**
+	 * @return array|Func\Where|null
+	 */
+	public function getWhereArray()
+	{
+		return $this->where_array;
+	}
+
 	//---------------------------------------------------------------------------------------- withBQ
 	/**
 	 * @param $column_name string
