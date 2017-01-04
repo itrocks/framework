@@ -43,7 +43,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	 *
 	 * @param $output_settings Output_Settings
 	 */
-	private function applyOutputSettings(Output_Settings $output_settings)
+	protected function applyOutputSettings(Output_Settings $output_settings)
 	{
 		if ($output_settings->properties) {
 			foreach ($output_settings->properties as $property_path => $property) {
