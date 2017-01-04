@@ -228,11 +228,17 @@ trait Annoted
 	 * If you want to change the annotation for a local reflection object only, please consider
 	 * using setAnnotationLocal($annotation_name) and modifying the local annotation instead.
 	 *
-	 * @param $annotation_name string
-	 * @param $annotation      Annotation
+	 * Default value for $annotation_name will be $annotation::ANNOTATION.
+	 *
+	 * @param $annotation_name string|Annotation optional forced name for the annotation
+	 * @param $annotation      Annotation the forced value for the annotation
 	 */
-	public function setAnnotation($annotation_name, Annotation $annotation)
+	public function setAnnotation($annotation_name, Annotation $annotation = null)
 	{
+		if ($annotation_name instanceof Annotation) {
+			$annotation      = $annotation_name;
+			$annotation_name = $annotation::ANNOTATION;
+		}
 		$path = $this->getAnnotationCachePath();
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][false] = $annotation;
 	}
