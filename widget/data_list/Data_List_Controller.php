@@ -307,8 +307,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$property = Builder::createClone($property, Property::class);
 			$property->search = new Reflection_Property($class_name, $property->path);
 			if (!$property->search->getType()->isString()) {
-				Var_Annotation::setLocal($property->search)->value  = Type::STRING;
-				Link_Annotation::setLocal($property->search)->value = null;
+				Var_Annotation::local($property->search)->value  = Type::STRING;
+				Link_Annotation::local($property->search)->value = null;
 			}
 			$properties[$property->path] = $property;
 		}
@@ -740,8 +740,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
 			if (!$property->getType()->isString()) {
-				Link_Annotation::setLocal($property)->value = null;
-				Var_Annotation::setLocal($property)->value  = Type::STRING;
+				Link_Annotation::local($property)->value = null;
+				Var_Annotation::local($property)->value  = Type::STRING;
 			}
 			$property->value(Loc::propertyToIso($property, $value));
 		}

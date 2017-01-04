@@ -28,9 +28,9 @@ trait Annoted
 	/**
 	 * Global annotations cache
 	 *
-	 * Annotation['Class_Name'][AT]['annotation']
-	 * Annotation['Class_Name']['property']['annotation']
-	 * Annotation['Class_Name']['methodName()']['annotation']
+	 * Annotation['Class_Name'][AT]['annotation'][$is_multiple]
+	 * Annotation['Class_Name']['property']['annotation'][$is_multiple]
+	 * Annotation['Class_Name']['methodName()']['annotation'][$is_multiple]
 	 *
 	 * @var array
 	 */

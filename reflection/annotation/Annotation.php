@@ -60,10 +60,26 @@ class Annotation
 		);
 	}
 
+	//----------------------------------------------------------------------------------------- local
+	/**
+	 * Returns a value local to $reflection_object for the annotation
+	 *
+	 * @param $reflection_object Reflection
+	 * @return static
+	 * @see Annoted::setAnnotationLocal
+	 */
+	public static function local(Reflection $reflection_object)
+	{
+		return $reflection_object->setAnnotationLocal(
+			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
+		);
+	}
+
 	//-------------------------------------------------------------------------------------------- of
 	/**
 	 * @param $reflection_object Reflection
 	 * @return static
+	 * @see Annoted::getAnnotation
 	 */
 	public static function of(Reflection $reflection_object)
 	{
@@ -74,6 +90,7 @@ class Annotation
 
 	//-------------------------------------------------------------------------------------- setLocal
 	/**
+	 * @deprecated
 	 * @param $reflection_object Reflection
 	 * @return static
 	 */

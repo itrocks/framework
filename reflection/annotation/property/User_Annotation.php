@@ -71,11 +71,12 @@ class User_Annotation extends List_Annotation
 	 * Adds a value to the annotation list of values
 	 *
 	 * @param $value string
+	 * @return boolean
 	 */
 	public function add($value)
 	{
 		parent::add($value);
-		$this->validate();
+		return $this->validate();
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -94,15 +95,17 @@ class User_Annotation extends List_Annotation
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * Check that values list are valid
+	 *
 	 * @return boolean
 	 */
 	protected function validate()
 	{
-		if ($this->has(self::IF_EMPTY) && $this->has(self::HIDE_EMPTY)) {
+		if ($this->has(self::HIDE_EMPTY) && $this->has(self::IF_EMPTY)) {
 			trigger_error(
 				self::IF_EMPTY . ' and ' . self::HIDE_EMPTY . ' values are incompatible',
 				E_USER_ERROR
 			);
+			return false;
 		}
 		return true;
 	}
