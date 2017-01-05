@@ -6,7 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 /**
  * Common code for all @validate annotations
  */
-class Validate_Annotation extends Method_Annotation
+abstract class Validate_Annotation extends Method_Annotation
 {
 	use Has_Message;
 

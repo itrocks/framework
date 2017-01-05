@@ -238,6 +238,15 @@ thead>tr>th {
 	display: inline-block;
 }
 
+.warning {
+	background-color: orange;
+	border-radius: 3px;
+	color: white;
+	font-size: 1.3em;
+	margin: -3px;
+	padding: 3px;
+}
+
 #messages {
 	background-color: white;
 	border: 1px solid lightgray;
@@ -262,7 +271,7 @@ thead>tr>th {
 	}
 
 	&:before {
-		background-color: #ff2222;
+		background-color: lightblue;
 		content: ' ';
 		cursor: move;
 		height: 13px;

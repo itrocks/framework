@@ -5,7 +5,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Widget\Validate;
 
 /**
- * Property @validate annotation
+ * Property @warning annotation for warning-level validation
  */
 class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	implements Multiple_Annotation
@@ -17,11 +17,13 @@ class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return string Message if has warning, true else
+	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
-		return $this->checkCallReturn($this->call($object, [$this->property]));
+		$result        = $this->call($object, [$this->property]);
+		$this->message = is_string($result) ? $result : null;
+		return is_string($result) ? false : $result;
 	}
 
 }

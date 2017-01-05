@@ -14,7 +14,17 @@ class Vehicle
 	/**
 	 * @link Collection
 	 * @var Vehicle_Door[]
+	 * @warning hasDoors
 	 */
 	public $doors;
+
+	//-------------------------------------------------------------------------------------- hasDoors
+	/**
+	 * @return boolean true if the vehicle has doors, else false
+	 */
+	public function hasDoors()
+	{
+		return $this->doors ? true : false;
+	}
 
 }

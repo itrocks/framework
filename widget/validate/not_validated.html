@@ -10,47 +10,43 @@
 <body>
 <!--BEGIN-->
 
-	<script>
-		$('.bad').removeClass('bad');
-	</script>
-	|¦{object.@class.display.ucfirst}¦ !{object}! is invalid| :
-	<ul>
-		<!--getMessages-->
-		<li>
-			<!--property?-->
-			|{property.alias}| {?getPropertyValue}&nbsp;: |{reportMessage}|
-			<!--value--> - |expected ¦{.}¦|<!--value-->
-			<script>
-				$('#{property.name} label + div').each(function () {
-					$(this).find("input:visible:not(:checkbox), textarea, select").addClass('bad');
-					$(this).children('span.set').closest('div').addClass('bad');
-				});
-				$('input[name="{property.name}[0]"]').next('input').addClass('bad');
-				$('.bad').first().focus();
-			</script>
-			<!--property?-->
-			<!--!property?-->
-			{reportMessage}
-			<!--!property?-->
-		</li>
-		<!--getMessages-->
-	</ul>
-	<!--!getErrors-->
-	<form method="post">
-		<!--.getPostProperties-->
-		<input type="hidden" name="{@key}" value="{value}">
-		<!--.getPostProperties-->
-		<ul class="general actions">
-			<li class="cancel">
-				<a href="#" onclick="$('#messages').empty();return false;">|Cancel|</a>
-			</li>
-			<li class="write">
-				<a class="submit" href="{.getConfirmLink}" target="#messages">|Ignore and confirm|</a>
-			</li>
-		</ul>
-	</form>
-	<!--!getErrors-->
+	<div class="not_validated">
+		|<span class="class">¦{object.@class.display.ucfirst}¦</span>
+		<span class="object">!{object}!</span>
+		<span class="state">¦is¦ ¦invalid¦</span>| :
 
+		<ul class="invalid_properties">
+			<!--getMessages-->
+			<li class="{valid}">
+				<!--property?-->
+				<span class="property" data-property="{property.name}">|{property.alias}|</span>
+				<span class="value">{?getPropertyValue}</span>&nbsp;:
+				<span class="message">|{reportMessage}|</span>
+				<!--value--> - <span class="expected">|expected ¦{.}¦|</span><!--value-->
+				<!--property?-->
+				<!--!property?-->
+				<span class="message">{reportMessage}</span>
+				<!--!property?-->
+			</li>
+			<!--getMessages-->
+		</ul>
+
+		<!--!getErrors?-->
+		<form class="invalid_properties_warning" method="post">
+			<!--getPostProperties-->
+			<input type="hidden" name="{@key}" value="{value}">
+			<!--getPostProperties-->
+			<ul class="general actions">
+				<li class="cancel">
+					<a href="edit">|Cancel|</a>
+				</li>
+				<li class="write">
+					<a class="submit" href="{getConfirmLink}" target="#messages">|Ignore and confirm|</a>
+				</li>
+			</ul>
+		</form>
+		<!--!getErrors?-->
+	</div>
 
 <!--END-->
 </body>

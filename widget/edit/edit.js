@@ -472,7 +472,7 @@ $('document').ready(function()
 							});
 						}
 						else {
-							$('#messages').html(data);
+							$('#messages').html(data).build();
 						}
 					}
 				});

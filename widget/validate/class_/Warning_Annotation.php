@@ -6,11 +6,12 @@ use ITRocks\Framework\Widget\Validate;
 use ITRocks\Framework\Widget\Validate\Annotation;
 
 /**
- * Property @validate annotation
+ * Class @warning annotation for warning-level validation
  */
 class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	implements Multiple_Annotation
 {
+	use Annotation;
 
 	//-------------------------------------------------------------------------------------- validate
 	/**
@@ -21,7 +22,9 @@ class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	 */
 	public function validate($object)
 	{
-		return $this->checkCallReturn($this->call($object));
+		$result        = $this->call($object);
+		$this->message = is_string($result) ? $result : null;
+		return is_string($result) ? false : $result;
 	}
 
 }

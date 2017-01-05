@@ -19,6 +19,7 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
+use ITRocks\Framework\Widget\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Widget\Write\Write_Controller;
 
@@ -161,9 +162,8 @@ class Validator implements Registerable
 	 */
 	public function getConfirmLink()
 	{
-		$uri = lParse('/' . rParse($_SERVER['REQUEST_URI'], '/', 2), '?', 1, true);
-		$uri .= (strpos($uri, '?') !== false ? '&' : '?') . 'confirm=1';
-		return $uri;
+		$uri = lParse(SL . rParse($_SERVER['REQUEST_URI'], SL, 2), '?', 1, true);
+		return $uri . ((strpos($uri, '?') !== false) ? '&' : '?') . 'confirm=1';
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
@@ -183,7 +183,7 @@ class Validator implements Registerable
 
 	//----------------------------------------------------------------------------------- getMessages
 	/**
-	 * Return all messages for view
+	 * Return all annotations - and their messages - for the view
 	 *
 	 * @return Annotation[]
 	 */
@@ -194,7 +194,7 @@ class Validator implements Registerable
 
 	//----------------------------------------------------------------------------- getPostProperties
 	/**
-	 * Return all properties passed in POST from form
+	 * Return all properties passed in POST originator form
 	 *
 	 * @return string[]
 	 */
@@ -205,20 +205,19 @@ class Validator implements Registerable
 
 	//------------------------------------------------------------------------- getPropertiesToString
 	/**
-	 * @param array  $elements
-	 * @param string $base_path
+	 * TODO NORMAL There is probably already a function for that somewhere. If not, should be !
+	 *
+	 * @param $elements  array
+	 * @param $base_path string
 	 * @return string[]
 	 */
-	private function getPropertiesToString($elements = [], $base_path = '')
+	private function getPropertiesToString(array $elements = [], $base_path = '')
 	{
 		$properties = [];
 		foreach ($elements as $key => $element) {
-			if ($base_path) {
-				$path = $base_path . '[' . $key . ']';
-			}
-			else {
-				$path = $key;
-			}
+			$path = $base_path
+				? ($base_path . '[' . $key . ']')
+				: $key;
 			if (is_array($element)) {
 				$properties = array_merge($properties, $this->getPropertiesToString($element, $path));
 			}
@@ -231,7 +230,7 @@ class Validator implements Registerable
 
 	//----------------------------------------------------------------------------------- getWarnings
 	/**
-	 * @return array
+	 * @return Annotation[]
 	 */
 	public function getWarnings()
 	{
@@ -345,9 +344,15 @@ class Validator implements Registerable
 			$annotation->property = $property;
 		}
 		$annotation->valid = $annotation->validate($object);
-		if ($annotation->valid === true)  $annotation->valid = Result::INFORMATION;
-		if ($annotation->valid === false) $annotation->valid = Result::ERROR;
-		if (($annotation->valid !== Result::NONE) && ($annotation->valid !== true)) {
+		if ($annotation->valid === true) {
+			$annotation->valid = Result::INFORMATION;
+		}
+		if ($annotation->valid === false) {
+			$annotation->valid = ($annotation instanceof Warning_Annotation)
+				? Result::WARNING
+				: Result::ERROR;
+		}
+		if (!in_array($annotation->valid, [Result::NONE, true], true)) {
 			$this->report[] = $annotation;
 		}
 		return $annotation->valid;
