@@ -19,6 +19,42 @@ class Period_Tests extends Test
 		$this->assume(__METHOD__, new Period($date1, $date2), new Period($date2, $date1));
 	}
 
+	//----------------------------------------------------------------------------------- testExclude
+	public function testExclude()
+	{
+		$date1  = new Date_Time('2016-05-03 12:05:15');
+		$date2  = new Date_Time('2016-06-08 13:02:00');
+		$date2b = (new Date_Time($date2))->add(-1, Date_Time::SECOND);
+		$date2c = (new Date_Time($date2))->add(1, Date_Time::SECOND);
+		$date3  = new Date_Time('2016-06-09 10:00:00');
+		$date3b = (new Date_Time($date3))->add(-1, Date_Time::SECOND);
+		$date3c = (new Date_Time($date3))->add(1, Date_Time::SECOND);
+		$date4  = new Date_Time('2016-06-09 10:05:00');
+		$date5  = new Date_Time('2016-06-09 10:05:01');
+		$begin  = new Period($date1, $date2);
+		$begin2 = new Period($date1, $date2b);
+		$middle = new Period($date2, $date3);
+		$end    = new Period($date3, $date5);
+		$end2   = new Period($date3c, $date5);
+		$full   = new Period($date1, $date5);
+		$large1 = new Period($date1, $date3);
+		$large2 = new Period($date2, $date5);
+		$large3 = new Period($date2, $date4);
+		$second = new Period($date5, $date5);
+		$this->method(__METHOD__);
+		$this->assume('inside',     $full->exclude($middle),   [$begin2, $end2]);
+		$this->assume('in1',        $full->exclude($begin),    [new Period($date2c, $date5)]);
+		$this->assume('in2',        $full->exclude($end),      [new Period($date1, $date3b)]);
+		$this->assume('out-before', $begin->exclude($end),     [$begin]);
+		$this->assume('out-after',  $end->exclude($begin),     [$end]);
+		$this->assume('exclude1',   $large1->exclude($large2), [new Period($date1, $date2b)]);
+		$this->assume('exclude2',   $large2->exclude($large1), [new Period($date3c, $date5)]);
+		$this->assume('same',       $full->exclude($full),     []);
+		$this->assume('micro',      $large2->exclude($second), [$large3]);
+		$this->assume('micro2',     $large2->exclude($large3), [$second]);
+		$this->method('-');
+	}
+
 	//---------------------------------------------------------------------------------------- testIn
 	public function testIn()
 	{
@@ -120,6 +156,35 @@ class Period_Tests extends Test
 		$this->method(__METHOD__);
 		$this->assume('several', (new Period($date1, $date2))->toMonths(), $months);
 		$this->assume('one',     (new Period($date1, $date1))->toMonths(), [$date1->month()]);
+	}
+
+	//------------------------------------------------------------------------------------- testUnion
+	public function testUnion()
+	{
+		$date1  = new Date_Time('2016-05-03 12:05:15');
+		$date2  = new Date_Time('2016-06-08 13:02:00');
+		$date3  = new Date_Time('2016-06-09 10:00:00');
+		$date4  = new Date_Time('2016-06-09 10:05:00');
+		$date5  = new Date_Time('2016-06-09 10:05:01');
+		$begin  = new Period($date1, $date2);
+		$middle = new Period($date2, $date3);
+		$end    = new Period($date3, $date5);
+		$full   = new Period($date1, $date5);
+		$large1 = new Period($date1, $date3);
+		$large2 = new Period($date2, $date5);
+		$large3 = new Period($date2, $date4);
+		$micro  = new Period($date4, $date5);
+		$this->method(__METHOD__);
+		$this->assume('inside',     $full->union($middle),   [$full]);
+		$this->assume('in1',        $full->union($begin),    [$full]);
+		$this->assume('in2',        $full->union($end),      [$full]);
+		$this->assume('out-before', $begin->union($end),     [$begin, $end]);
+		$this->assume('out-after',  $end->union($begin),     [$end, $begin]);
+		$this->assume('union1',     $large1->union($large2), [$full]);
+		$this->assume('union2',     $large2->union($large1), [$full]);
+		$this->assume('same',       $full->union($full),     [$full]);
+		$this->assume('micro',      $large3->union($micro),  [$large2]);
+		$this->method('-');
 	}
 
 }

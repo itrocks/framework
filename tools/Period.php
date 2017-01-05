@@ -43,6 +43,37 @@ class Period
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- exclude
+	/**
+	 * Return current period which is not in the period passed in parameters
+	 *
+	 * @param $period Period
+	 * @return Period[] Can return 0, 1 or 2 periods
+	 */
+	public function exclude(Period $period)
+	{
+		if ($this->out($period)) {
+			return [clone $this];
+		}
+		else if ($this->in($period)) {
+			return [];
+		}
+		else {
+			$periods = [];
+			if ($this->begin->isBefore($period->begin)) {
+				$end = new Date_Time($period->begin);
+				$end->add(-1, Date_Time::SECOND);
+				$periods[] = new Period($this->begin, $end);
+			}
+			if ($this->end->isAfter($period->end)) {
+				$begin = new Date_Time($period->end);
+				$begin->add(1, Date_Time::SECOND);
+				$periods[] = new Period($begin, $this->end);
+			}
+			return $periods;
+		}
+	}
+
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * Return difference between begin and end date
@@ -122,6 +153,25 @@ class Period
 		}
 		$months[] = $stop;
 		return $months;
+	}
+
+	//----------------------------------------------------------------------------------------- union
+	/**
+	 * Return the union of the 2 periods.
+	 *
+	 * @param $period Period
+	 * @return Period[] Can return 1 or 2 periods.
+	 */
+	public function union(Period $period)
+	{
+		if ($this->out($period)) {
+			return [clone $this, clone $period];
+		}
+		else {
+			$begin = $this->begin->earliest($period->begin);
+			$end   = $this->end->latest($period->end);
+			return [new Period($begin, $end)];
+		}
 	}
 
 }
