@@ -16,7 +16,7 @@ class Translator
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
-	 * @var array string[][] $translation[$text][$context]
+	 * @var array[] string[][] string $translation[string $text][string $context]
 	 */
 	protected $cache = [];
 
@@ -154,6 +154,22 @@ class Translator
 		return join($separator, $translation);
 	}
 
+	//-------------------------------------------------------------------------------- setTranslation
+	/**
+	 * Force a translation into the cache
+	 *
+	 * Future calls to translate() will use this instead of reading translation from the
+	 * main data link.
+	 *
+	 * @param $text        string
+	 * @param $translation string
+	 * @param $context     string
+	 */
+	public function setTranslation($text, $translation, $context = '')
+	{
+		$this->cache[strtolower($text)][$context] = $translation;
+	}
+
 	//----------------------------------------------------------------------- storeDefaultTranslation
 	/**
 	 * @param $text string
@@ -179,32 +195,36 @@ class Translator
 	{
 		// no text : no translation
 		if (!trim($text) || is_numeric($text)) {
-			return $text;
+			$translation = $text;
 		}
 		// different texts separated by dots : translate each part between dots
 		elseif (strpos($text, DOT) !== false) {
-			return $this->separatedTranslations($text, DOT, $context);
+			$translation = $this->separatedTranslations($text, DOT, $context);
 		}
 		// return cached contextual translation
-		elseif (isset($this->cache[$text][$context])) {
-			return $this->cache[$text][$context];
+		elseif (isset($this->cache[strtolower($text)][$context])) {
+			$translation = $this->cache[strtolower($text)][$context];
 		}
-		// $translations string[] $translation[$context]
-		if (!isset($this->cache[$text])) {
-			$this->cache[$text] = $this->translations($text);
+		else {
+			// $translations string[] $translation[$context]
+			if (!isset($this->cache[strtolower($text)])) {
+				$this->cache[strtolower($text)] = $this->translations($text);
+			}
+			$translations = $this->cache[strtolower($text)];
+			// no translation found and separated by commas : translate each part between commas
+			if (!$translations && (strpos($text, ', ') !== false)) {
+				return $this->separatedTranslations($text, ', ', $context);
+			}
+			// no translation found : store original text to cache and database, then return it
+			if (!$translations) {
+				$translations['']
+					= $this->cache[strtolower($text)]['']
+					= $this->storeDefaultTranslation($text);
+			}
+			$translation = $this->chooseTranslation($translations, $context)
+				?: $this->defaultTranslation($text);
+			$this->cache[strtolower($text)][$context] = $translation;
 		}
-		$translations = $this->cache[$text];
-		// no translation found and separated by commas : translate each part between commas
-		if (!$translations && (strpos($text, ', ') !== false)) {
-			return $this->separatedTranslations($text, ', ', $context);
-		}
-		// no translation found : store original text to cache and database, then return it
-		if (!$translations) {
-			$translations[''] = $this->cache[$text][''] = $this->storeDefaultTranslation($text);
-		}
-		$translation = $this->chooseTranslation($translations, $context)
-			?: $this->defaultTranslation($text);
-		$this->cache[$text][$context] = $translation;
 		return strIsCapitals($text[0]) ? ucfirsta($translation) : $translation;
 	}
 
