@@ -30,30 +30,37 @@ class Translation_String_Composer implements Registerable
 	public function onTranslate(
 		Translator $object, $text, $context, Around_Method $joinpoint
 	) {
+		if (strpos($text, '<') !== false) {
+			$text = preg_replace('/<([\w\/\?])/', '!<$1', $text);
+			$text = preg_replace('/([\w\"])>/', '$1>!', $text);
+		}
 		$context = isset($context) ? $context : '';
-		if (strpos($text, '¦') !== false) {
+		if ((strpos($text, '¦') !== false) || (strpos($text, '!') !== false)) {
+			$elements     = [];
+			$i            = 0;
+			$number       = 0;
 			$translations = $object;
-			$elements = [];
-			$number = 0;
-			$i = 0;
 			while (($i = strpos($text, '¦', $i)) !== false) {
 				$i += 2;
-				$j = strpos($text, '¦', $i);
+				$j  = strpos($text, '¦', $i);
 				if ($j >= $i) {
 					$number ++;
-					$elements['$' . $number] = $translations->translate(substr($text, $i, $j - $i), $context);
-					$text = substr($text, 0, $i - 2) . '$' . $number . substr($text, $j + 2);
-					$i += strlen($number) - 1;
+					$hex_number = dechex($number);
+					$elements['$' . $hex_number] = $translations->translate(substr($text, $i, $j - $i), $context);
+					$text = substr($text, 0, $i - 2) . '$' . $hex_number . substr($text, $j + 2);
+					$i   += strlen($hex_number) - 1;
 				}
 			}
 			$i = 0;
 			while (($i = strpos($text, '!', $i)) !== false) {
-				$i++;
+				$i ++;
 				$j = strpos($text, '!', $i);
 				if (($j > $i) && (strpos(SP . TAB . CR . LF, $text[$i]) === false)) {
 					$number ++;
-					$elements['$' . $number] = substr($text, $i, $j - $i);
-					$text = substr($text, 0, $i - 1) . '$' . $number . substr($text, $j + 1);
+					$hex_number = dechex($number);
+					$elements['$' . $hex_number] = substr($text, $i, $j - $i);
+					$text = substr($text, 0, $i - 1) . '$' . $hex_number . substr($text, $j + 1);
+					$i   += strlen($hex_number) - 1;
 				}
 			}
 			$translation = str_replace(

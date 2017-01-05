@@ -25,12 +25,14 @@ class Translation
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
+	 * @multiline
 	 * @var string
 	 */
 	public $text;
 
 	//---------------------------------------------------------------------------------- $translation
 	/**
+	 * @multiline
 	 * @var string
 	 */
 	public $translation;

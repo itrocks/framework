@@ -217,7 +217,7 @@ class Translator
 	{
 		if (endsWith($text, AT)) {
 			$str_uri = true;
-			$text = rtrim($text, AT);
+			$text    = rtrim($text, AT);
 		}
 		/** @var $translations Translation[] */
 		$translations = Dao::search(
