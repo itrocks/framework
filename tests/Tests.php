@@ -51,6 +51,7 @@ class Tests
 	{
 		/** @var $unit_test Test|Runnable */
 		$unit_test = new $class_name();
+		if (!$unit_test->enabled()) return;
 		$unit_test->show = $this->show;
 		if ($unit_test instanceof Runnable) {
 			$unit_test->begin();

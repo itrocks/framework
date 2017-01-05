@@ -131,6 +131,18 @@ class Test extends Testable
 		});
 	}
 
+	//--------------------------------------------------------------------------------------- enabled
+	/**
+	 * Returns true if this test class is enabled, else false.
+	 * If false, unit tests will not be executed for this class
+	 *
+	 * @return boolean
+	 */
+	public function enabled()
+	{
+		return true;
+	}
+
 	//--------------------------------------------------------------------------------------- toArray
 	/**
 	 * @param $array   mixed
