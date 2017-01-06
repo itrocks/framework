@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -165,13 +166,13 @@ class Object_Builder_Array
 	 */
 	private function buildBasicValue(Reflection_Property $property, $value)
 	{
-		if (!is_null($value) || !$property->getAnnotation('null')->value) {
+		if (!is_null($value) || !Null_Annotation::of($property)->value) {
 			if (is_string($value)) {
 				$value = trim($value);
 			}
 			switch ($property->getType()->asString()) {
 				case Type::BOOLEAN:
-					$value = !(empty($value) || ($value === 'false'));
+					$value = !(empty($value) || ($value === _FALSE));
 					break;
 				case Type::INTEGER:
 					$value = intval($value);

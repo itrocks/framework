@@ -32,7 +32,7 @@ class Boolean_Annotation extends Annotation
 	public function __construct($value)
 	{
 		parent::__construct(
-			($value !== null) && ($value !== 0) && ($value !== false) && ($value !== 'false')
+			($value !== null) && ($value !== 0) && ($value !== false) && ($value !== _FALSE)
 		);
 	}
 

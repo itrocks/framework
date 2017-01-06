@@ -102,14 +102,14 @@ trait Type_Boolean
 	{
 		static $words = null;
 		if (!isset($words)) {
-			$words_references = ['no', 'false'];
+			$words_references = [_FALSE, NO];
 			$words_localized  = [];
 			foreach($words_references as $word) {
 				$words_localized[] = Loc::tr($word);
 			}
 			// We can not translate directly 'n' that is confusing
 			$words_references[] = 'n';
-			$words_localized[] = self::getBooleanLetters(false);
+			$words_localized[]  = self::getBooleanLetters(false);
 			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
 		return $words;
