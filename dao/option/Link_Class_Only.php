@@ -2,6 +2,10 @@
 namespace ITRocks\Framework\Dao\Option;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Link_Class;
 
 /**
  * Set this option to write link class data only.
@@ -18,5 +22,18 @@ use ITRocks\Framework\Dao\Option;
  */
 class Link_Class_Only implements Option
 {
+
+	//---------------------------------------------------------------------------------- propertiesOf
+	/**
+	 * @param $class Reflection_Class|string
+	 * @return Reflection_Property[] link-class-only properties. empty array if not a Link_Class.
+	 */
+	public static function propertiesOf($class)
+	{
+		if (!is_a($class, Link_Class::class)) {
+			$class = new Link_Class($class);
+		}
+		return Link_Annotation::of($class)->value ? $class->getLinkProperties() : [];
+	}
 
 }
