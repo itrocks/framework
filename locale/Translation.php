@@ -15,27 +15,27 @@ class Translation
 	/**
 	 * @var string
 	 */
-	public $context;
+	public $context = '';
 
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @var string
 	 */
-	public $language;
+	public $language = '';
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
 	 * @multiline
 	 * @var string
 	 */
-	public $text;
+	public $text = '';
 
 	//---------------------------------------------------------------------------------- $translation
 	/**
 	 * @multiline
 	 * @var string
 	 */
-	public $translation;
+	public $translation = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -46,12 +46,10 @@ class Translation
 	 */
 	public function __construct($text = null, $language = null, $context = null, $translation = null)
 	{
-		if (isset($text)) {
-			$this->context     = $context;
-			$this->language    = $language;
-			$this->text        = $text;
-			$this->translation = $translation;
-		}
+		if (isset($context))     $this->context     = $context;
+		if (isset($language))    $this->language    = $language;
+		if (isset($text))        $this->text        = $text;
+		if (isset($translation)) $this->translation = $translation;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
