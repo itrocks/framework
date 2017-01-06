@@ -60,13 +60,15 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 					return true;
 				}
 				// object
-				return
-					// - accepts null if not mandatory
-					(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
-					// - accepts a string if @store allows a string
-					|| (is_string($value) && Store_Annotation::of($this->property)->isString())
-					// - accepts an object if is an instance of the class
-					|| is_a($value, $class_name, true);
+				else {
+					return
+						// - accepts null if not mandatory
+						(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
+						// - accepts a string if @store allows a string
+						|| (is_string($value) && Store_Annotation::of($this->property)->isString())
+						// - accepts an object if is an instance of the class
+						|| is_a($value, $class_name, true);
+				}
 			}
 			// string[]
 			elseif ($type->isMultipleString()) {
