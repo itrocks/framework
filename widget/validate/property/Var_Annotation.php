@@ -22,12 +22,6 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	 */
 	public function reportMessage()
 	{
-		if (strlen($this->value)) {
-			switch ($this->valid) {
-				case Result::WARNING: return 'should be !' . $this->value . '! length';
-				case Result::ERROR:   return 'must be !'   . $this->value . '! length';
-			}
-		}
 		return '';
 	}
 
@@ -57,16 +51,17 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			}
 			// object|object[]
 			if ($type->isClass()) {
+				$class_name = $type->getElementTypeAsString();
 				if ($type->isMultiple()) {
 					// object[]
 					foreach ($value as $object) {
-						if (!is_object($object)) return false;
+						if (!is_object($object) || !is_a($object, $class_name, true)) return false;
 					}
 					return true;
 				}
 				else {
 					// object
-					if (!is_object($value)) return false;
+					if (!is_object($value) || !is_a($value, $class_name, true)) return false;
 				}
 			}
 			// string[]
