@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
+use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -115,6 +116,11 @@ class Validator implements Registerable
 				}
 				elseif ($option instanceof Skip) {
 					$skip = true;
+				}
+				elseif ($option instanceof Link_Class_Only) {
+					if (!$only) {
+						$only = array_keys(Link_Class_Only::propertiesOf($object));
+					}
 				}
 			}
 			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
@@ -321,7 +327,7 @@ class Validator implements Registerable
 	 */
 	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
-		$class = new Link_Class($object);
+		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
 			$class->getAnnotation(Link_Annotation::ANNOTATION)->value
 				? $class->getLinkProperties()
@@ -354,7 +360,7 @@ class Validator implements Registerable
 		if ($annotation->valid === true) {
 			$annotation->valid = Result::INFORMATION;
 		}
-		if ($annotation->valid === false) {
+		elseif ($annotation->valid === false) {
 			$annotation->valid = ($annotation instanceof Warning_Annotation)
 				? Result::WARNING
 				: Result::ERROR;
@@ -415,13 +421,15 @@ class Validator implements Registerable
 	protected function validateProperties(
 		$object, array $properties, array $only_properties, array $exclude_properties
 	) {
-		$result = true;
+		$result             = true;
 		$exclude_properties = array_flip($exclude_properties);
 		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
 			if (
-				(!$only_properties || isset($only_properties[$property->name]))
+				!$property->isStatic()
+				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
+				&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 			) {
 				$result = Result::andResult(
 					$result, $this->validateAnnotations($object, $property->getAnnotations(), $property)
