@@ -141,7 +141,7 @@ class Parser
 		static $cache = [];
 		if (!isset($cache[$class_name][$annotation_name])) {
 			$reflection_class = $class_name;
-			$pos = strrpos($reflection_class, '_');
+			$pos              = strrpos($reflection_class, '_');
 			$reflection_class = substr($reflection_class, $pos + 1);
 			if ($reflection_class == 'Class') {
 				$reflection_class .= '_';
@@ -149,17 +149,17 @@ class Parser
 			elseif ($reflection_class == 'Value') {
 				$reflection_class = 'Property';
 			}
-			$annotation_class = __NAMESPACE__
-				. BS . $reflection_class
-				. BS . Names::propertyToClass($annotation_name) . '_Annotation';
-			if (!class_exists($annotation_class)) {
-				if (!isset(self::$default_annotations)) {
-					self::initDefaultAnnotations();
-				}
-				if (isset(self::$default_annotations[$annotation_class])) {
-					$annotation_class = self::$default_annotations[$annotation_class];
-				}
-				else {
+			if (!isset(self::$default_annotations)) {
+				self::initDefaultAnnotations();
+			}
+			if (isset(self::$default_annotations[$reflection_class . '@' . $annotation_name])) {
+				$annotation_class = self::$default_annotations[$reflection_class . '@' . $annotation_name];
+			}
+			else {
+				$annotation_class = __NAMESPACE__
+					. BS . $reflection_class
+					. BS . Names::propertyToClass($annotation_name) . '_Annotation';
+				if (!class_exists($annotation_class)) {
 					$annotation_class = Annotation::class;
 				}
 			}

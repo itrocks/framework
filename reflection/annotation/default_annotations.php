@@ -20,7 +20,7 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call after the object is read using a data link
 	 * - These methods may accept the resulting object and Dao\Option[] as arguments, if needed
 	 */
-	__NAMESPACE__ . '\Class_\After_Read_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@after_read' => Method_Annotation::class,
 
 	/**
 	 * @after_transform afterTransform
@@ -28,7 +28,7 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call after the object is being created from a transformation
 	 * - These methods may accept the source object, if needed
 	 */
-	__NAMESPACE__ . '\Class_\After_Transform_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@after_transform' => Method_Annotation::class,
 
 	/**
 	 * @after_write afterWrite
@@ -36,7 +36,7 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call after the object is written using a data link
 	 * - These methods may accept a Dao\Option[] as first argument, if needed
 	 */
-	__NAMESPACE__ . '\Class_\After_Write_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@after_write' => Method_Annotation::class,
 
 	/**
 	 * @before_build_array beforeBuildArray
@@ -44,7 +44,7 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call before the object is built from an array representation
 	 * - These methods may accept an array as first reference argument, if needed
 	 */
-	__NAMESPACE__ . '\Class_\Before_Build_Array_Annotation' => Annotation::class,
+	Parser::T_CLASS . '@before_build_array' => Annotation::class,
 
 	/**
 	 * @before_delete beforeDelete
@@ -52,7 +52,7 @@ Parser::$default_annotations = [
 	 * Declare one or several methods to call before the object is deleted using a data link
 	 * - These methods may return false to cancel the deletion of the object
 	 */
-	__NAMESPACE__ . '\Class_\Before_Delete_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@before_delete' => Method_Annotation::class,
 
 	/**
 	 * @before_write beforeWrite
@@ -61,37 +61,31 @@ Parser::$default_annotations = [
 	 * - These methods may accept a Dao\Option[] as first argument, if needed
 	 * - These methods may return false to cancel the writing of the object
 	 */
-	__NAMESPACE__ . '\Class_\Before_Write_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@before_write' => Method_Annotation::class,
 
 	/**
 	 * @business
 	 * This defines a class or a trait used to describe business objects
 	 */
-	__NAMESPACE__ . '\Class_\Business_Annotation' => Boolean_Annotation::class,
+	Parser::T_CLASS . '@business' => Boolean_Annotation::class,
 
 	/**
 	 * @default_feature output
 	 */
-	__NAMESPACE__ . '\Class_\Default_Feature_Annotation' => Annotation::class,
+	Parser::T_CLASS . '@default_feature' => Annotation::class,
 
 	/**
 	 * @deprecated [false]
 	 * Identifies a deprecated class
 	 */
-	__NAMESPACE__ . '\Class_\Deprecated_Annotation' => Boolean_Annotation::class,
+	Parser::T_CLASS . '@deprecated' => Boolean_Annotation::class,
 
 	/**
 	 * @duplicate duplicateMethod
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object has been duplicated
 	 */
-	__NAMESPACE__ . '\Class_\Duplicate_Annotation' => Method_Annotation::class,
-
-	/**
-	 * @editor editor_name
-	 * Enables online text editor (ckeditor)
-	 */
-	__NAMESPACE__ . '\Property\Editor_Annotation' => Annotation::class,
+	Parser::T_CLASS . '@duplicate' => Method_Annotation::class,
 
 	/**
 	 * @feature [[[Class/Path/]feature] Human-readable atomic end-user feature name]
@@ -99,14 +93,14 @@ Parser::$default_annotations = [
 	 * Marks the class as an atomic end-user feature
 	 * Implicit end-user features will be enabled for this class if there are no yaml files
 	 */
-	__NAMESPACE__ . '\Class_\Feature_Annotation' => Annotation::class,
+	Parser::T_CLASS . '@feature' => Annotation::class,
 
 	/**
 	 * @on_data_list onDataList
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call on data list Dao::select() call
 	 */
-	__NAMESPACE__ . '\Class_\On_Data_List_Annotation' => Method_Annotation::class,
+	Parser::T_CLASS . '@on_data_list' => Method_Annotation::class,
 
 	/**
 	 * @stored [false]
@@ -116,7 +110,7 @@ Parser::$default_annotations = [
 	 * ie "@link All", "@link Collection", "@link Map"
 	 *   will be replaced by "@var Object[] All", "@var Object[] Collection" and "@var Object[] Map"
 	 */
-	__NAMESPACE__ . '\Class_\Stored_Annotation' => Boolean_Annotation::class,
+	Parser::T_CLASS . '@stored' => Boolean_Annotation::class,
 
 	/**
 	 * @unique property1, property2, ...
@@ -124,25 +118,25 @@ Parser::$default_annotations = [
 	 * Used with @link classes to allow the same object multiple times with different link property
 	 * values (ie a client can have the same contract several times, with different dates)
 	 */
-	__NAMESPACE__ . '\Class_\Unique_Annotation' => List_Annotation::class,
+	Parser::T_CLASS . '@unique' => List_Annotation::class,
 
 	/**
 	 * @advice
 	 * This tells everybody the method is an AOP advice
 	 */
-	__NAMESPACE__ . '\Method\Advice_Annotation' => Boolean_Annotation::class,
+	Parser::T_METHOD . '@advice' => Boolean_Annotation::class,
 
 	/**
 	 * @deprecated [false]
 	 * Identifies a deprecated method
 	 */
-	__NAMESPACE__ . '\Method\Deprecated_Annotation' => Boolean_Annotation::class,
+	Parser::T_METHOD . '@deprecated' => Boolean_Annotation::class,
 
 	/**
 	 * @return string
 	 * Gets the type of the returned value (as a string) and the associated documentation
 	 */
-	__NAMESPACE__ . '\Method\Return_Annotation' => Documented_Type_Annotation::class,
+	Parser::T_METHOD . '@return' => Documented_Type_Annotation::class,
 
 	/**
 	 * @after_add_element afterAddElement
@@ -151,7 +145,7 @@ Parser::$default_annotations = [
 	 * using a data link
 	 * The called method accepts a Dao\Event\Property_Write event object as a unique argument
 	 */
-	__NAMESPACE__ . '\Property\After_Add_Element_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@after_add_element' => Method_Annotation::class,
 
 	/**
 	 * @before_add_element beforeAddElement
@@ -160,7 +154,7 @@ Parser::$default_annotations = [
 	 * using a data link
 	 * The called method accepts a Dao\Event\Property_Write event object as a unique argument
 	 */
-	__NAMESPACE__ . '\Property\Before_Add_Element_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@before_add_element' => Method_Annotation::class,
 
 	/**
 	 * @before_remove_element beforeRemoveElement
@@ -169,140 +163,146 @@ Parser::$default_annotations = [
 	 * using a data link
 	 * The called method accepts a Dao\Event\Property_Delete event object as a unique argument
 	 */
-	__NAMESPACE__ . '\Property\Before_Remove_Element_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@before_remove_element' => Method_Annotation::class,
 
 	/**
 	 * @binary
 	 * Set this boolean annotation to tell that binary data will be stored into the property value
 	 * The property should be of type 'string'
 	 */
-	__NAMESPACE__ . '\Property\Binary_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@binary' => Boolean_Annotation::class,
 
 	/**
 	 * @block The block display
 	 * The Block annotation for a property enables grouping properties into common blocks
 	 * TODO LOW explain why a property could have multiple blocks
 	 */
-	__NAMESPACE__ . '\Property\Block_Annotation' => List_Annotation::class,
+	Parser::T_PROPERTY . '@block' => List_Annotation::class,
 
 	/**
 	 * @calculated
 	 * The value of this property is calculated : it will not be stored into DAO data links
 	 */
-	__NAMESPACE__ . '\Property\Calculated_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@calculated' => Boolean_Annotation::class,
 
 	/**
 	 * @component
 	 * The object referenced by the property is a component of the main object.
 	 * It should not exist without its container.
 	 */
-	__NAMESPACE__ . '\Property\Component_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@component' => Boolean_Annotation::class,
 
 	/**
 	 * @composite
 	 * Identifies a property to link to the composite object.
 	 * To be used into a component class only, when multiple properties link to composite class(es)
 	 */
-	__NAMESPACE__ . '\Property\Composite_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@composite' => Boolean_Annotation::class,
 
 	/**
 	 * @conditions property_name, another_property
 	 * Conditions annotation declares other property names that are used to know if the property can
 	 * have a value
 	 */
-	__NAMESPACE__ . '\Property\Conditions_Annotation' => List_Annotation::class,
+	Parser::T_PROPERTY . '@conditions' => List_Annotation::class,
 
 	/**
 	 * @dao ITRocks\Framework\Dao\Mysql\Link
 	 * This annotation stores the name of the Dao that should always used for a linked object,
 	 * map or collection property. Use it in conjunction with @link and @var annotations.
 	 */
-	__NAMESPACE__ . '\Property\Dao_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@dao' => Annotation::class,
 
 	/**
 	 * @default [[\Class\Namespace\]Class_Name::]methodName
 	 * Identifies a method that gets the default value for the property
 	 * The Property will be sent as an argument to this callable
 	 */
-	__NAMESPACE__ . '\Property\Default_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@default' => Method_Annotation::class,
 
 	/**
 	 * @deprecated [false]
 	 * Identifies a deprecated property
 	 */
-	__NAMESPACE__ . '\Property\Deprecated_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@deprecated' => Boolean_Annotation::class,
 
 	/**
 	 * @display_order property_name, another_property
 	 * Declares property names' display order
 	 */
-	__NAMESPACE__ . '\Property\Display_Order_Annotation' => List_Annotation::class,
+	Parser::T_PROPERTY . '@display_order' => List_Annotation::class,
+
+	/**
+	 * @editor editor_name
+	 * Enables online text editor (ckeditor)
+	 */
+	Parser::T_PROPERTY . '@editor' => Annotation::class,
 
 	/**
 	 * @filters property_name, another_property
 	 * Declares other property names that are used to filter possible values of the property
 	 */
-	__NAMESPACE__ . '\Property\Filters_Annotation' => List_Annotation::class,
+	Parser::T_PROPERTY . '@filters' => List_Annotation::class,
 
 	/**
 	 * @length 5
 	 * Tells what is the wished count of characters for the value of the property
 	 */
-	__NAMESPACE__ . '\Property\Length_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@length' => Annotation::class,
 
 	/**
 	 * @mandatory [false]
 	 * Set this annotation to tell the data controllers that the property value is mandatory
 	 */
-	__NAMESPACE__ . '\Property\Mandatory_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@mandatory' => Boolean_Annotation::class,
 
 	/**
 	 * @max_length 100
 	 * Tells what maximal count of characters can have the value of the property
 	 */
-	__NAMESPACE__ . '\Property\Max_Length_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@max_length' => Annotation::class,
 
 	/**
 	 * @max_value 40
 	 * Tells what is the maximal allowed value for the property
 	 */
-	__NAMESPACE__ . '\Property\Max_Value_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@max_value' => Annotation::class,
 
 	/**
 	 * @min_length 10
 	 * Tells what is the minimal count of characters for the value of the property
 	 */
-	__NAMESPACE__ . '\Property\Min_Length_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@min_length' => Annotation::class,
 
 	/**
 	 * @min_value -5
 	 * Tells what is the minimal allowed value for the property
 	 */
-	__NAMESPACE__ . '\Property\Min_Value_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@min_value' => Annotation::class,
 
 	/**
 	 * @multiline [false]
 	 * This tells that the string property can store multiple lines of text (default is false)
 	 */
-	__NAMESPACE__ . '\Property\Multiline_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@multiline' => Boolean_Annotation::class,
 
 	/**
 	 * @output serialized
 	 * The serialized value of the property value will be displayed and edited
 	 */
-	__NAMESPACE__ . '\Property\Output_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@output' => Annotation::class,
 
 	/**
 	 * @override [false]
 	 * This tells that the property overrides a parent public/protected property having the same name
 	 */
-	__NAMESPACE__ . '\Property\Override_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@override' => Boolean_Annotation::class,
 
 	/**
 	 * @precision 4
 	 * Tells how many decimals are stored/displayed on a float number, ie 0.5513 in ok in this case
 	 */
-	__NAMESPACE__ . '\Property\Precision_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@precision' => Annotation::class,
 
 	/**
 	 * @read_only [false]
@@ -310,33 +310,33 @@ Parser::$default_annotations = [
 	 * Not to be confused with @user readonly, which enable the application to set a value
 	 * into this property, but does not allow the final user to alter it through the HMI
 	 */
-	__NAMESPACE__ . '\Property\Read_Only_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@read_only' => Boolean_Annotation::class,
 
 	/**
 	 * @replace_filter [false]
 	 * The property must be used as a filter when replacing the object referenced by another object
 	 */
-	__NAMESPACE__ . '\Property\Replace_Filter_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@replace_filter' => Boolean_Annotation::class,
 
 	/**
 	 * @replaces property_name
 	 * This tells the framework the property replaces an existing parent property name, so the parent
 	 * property and this property will point on the same reference and have a common value.
 	 */
-	__NAMESPACE__ . '\Property\Replaces_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@replaces' => Annotation::class,
 
 	/**
 	 * @search_range false
 	 * Search range using "from-to" with - as separator is accepted by default. Set this to false to
 	 * disable ie for properties which values often contain the - character.
 	 */
-	__NAMESPACE__ . '\Property\Search_Range_Annotation' => Default_True_Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@search_range' => Default_True_Boolean_Annotation::class,
 
 	/**
 	 * @set_store_name Store_Name
 	 * Defines the name of the automatically generated link table.
 	 */
-	__NAMESPACE__ . '\Property\Set_Store_Name_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@set_store_name' => Annotation::class,
 
 	/**
 	 * @setter [[[\Vendor\Module\]Class_Name::]methodName]
@@ -344,44 +344,44 @@ Parser::$default_annotations = [
 	 * Tells a method name that is the setter for that property.
 	 * The setter will be called each time the program changes the value of the property.
 	 */
-	__NAMESPACE__ . '\Property\Setter_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@setter' => Method_Annotation::class,
 
 	/**
 	 * @show_seconds
 	 * Tells that for a Date_Time we must show seconds to the user.
 	 * If not (default), seconds are always hidden by Loc::dateToLocale()
 	 */
-	__NAMESPACE__ . '\Property\Show_Seconds_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@show_seconds' => Boolean_Annotation::class,
 
 	/**
 	 * @signed
 	 * Tells that the numeric value can be negative.
 	 */
-	__NAMESPACE__ . '\Property\Signed_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@signed' => Boolean_Annotation::class,
 
 	/**
 	 * @textile
 	 * This tells that the property should be rendered using textile parsing
 	 */
-	__NAMESPACE__ . '\Property\Textile_Annotation' => Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
 
 	/**
 	 * @user_change [[\Vendor\Module\]Class_Name::]featureName]
 	 * associates a feature controller to call each time a property value is changed by the final user
 	 * to an input form
 	 */
-	__NAMESPACE__ . '\Property\User_Change_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@user_change' => Method_Annotation::class,
 
 	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName
 	 * Identifies a method that gets the default value for the property into forms only
 	 * The Property will be sent as an argument to this callable
 	 */
-	__NAMESPACE__ . '\Property\User_Default_Annotation' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@user_default' => Method_Annotation::class,
 
 	/**
 	 * @user_getter [Vendor\Module\Class_Name::]methodName
 	 */
-	__NAMESPACE__ . '\Property\User_Getter_Annotation' => Annotation::class,
+	Parser::T_PROPERTY . '@user_getter' => Annotation::class,
 
 ];

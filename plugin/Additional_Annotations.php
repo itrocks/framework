@@ -30,7 +30,7 @@ abstract class Additional_Annotations
 	 *
 	 * Saves a cached default_annotations.php file with standard and additional annotations
 	 */
-	static public function enableAdditionalAnnotations()
+	public static function enableAdditionalAnnotations()
 	{
 		$cached_annotations_file
 			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
@@ -83,9 +83,7 @@ abstract class Additional_Annotations
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotation
-		$namespace  = 'ITRocks\Framework\Reflection\Annotation' . BS . $context;
-		$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-		self::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
+		self::$additional_annotations[$context . '@' . $annotation_name] = $annotation_class;
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -93,7 +91,7 @@ abstract class Additional_Annotations
 	 * Defines multiple annotations classes
 	 * A very little bit faster than multiple calls to setAnnotation()
 	 *
-	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
+	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
 	public static function setAnnotations($context, array $annotations_classes)
@@ -101,10 +99,8 @@ abstract class Additional_Annotations
 		// register the shutdown function
 		self::registerShutdownFunction();
 		// add annotations
-		$namespace = 'ITRocks\Framework\Reflection\Annotation' . BS . $context;
 		foreach ($annotations_classes as $annotation_name => $annotation_class) {
-			$class_name = Names::propertyToClass($annotation_name) . '_Annotation';
-			self::$additional_annotations[$namespace . BS . $class_name] = $annotation_class;
+			self::$additional_annotations[$context . '@' . $annotation_name] = $annotation_class;
 		}
 	}
 

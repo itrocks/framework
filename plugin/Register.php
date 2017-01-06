@@ -87,7 +87,7 @@ class Register
 	 * Defines multiple annotations classes
 	 * A very little bit faster than multiple calls to setAnnotation()
 	 *
-	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_VARIABLE
+	 * @param $context             string Parser::T_CLASS, Parser::T_METHOD, Parser::T_PROPERTY
 	 * @param $annotations_classes string[] key is the annotation name, value is the annotation class
 	 */
 	public function setAnnotations($context, array $annotations_classes)
