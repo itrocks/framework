@@ -13,6 +13,7 @@ use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -321,9 +322,11 @@ class Validator implements Registerable
 	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
 		$class = new Link_Class($object);
-		$properties = $class->getAnnotation(Link_Annotation::ANNOTATION)->value
-			? $class->getLinkProperties()
-			: $class->accessProperties();
+		$properties = Replaces_Annotations::removeReplacedProperties(
+			$class->getAnnotation(Link_Annotation::ANNOTATION)->value
+				? $class->getLinkProperties()
+				: $class->accessProperties()
+		);
 
 		$this->valid = Result::andResult(
 			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),

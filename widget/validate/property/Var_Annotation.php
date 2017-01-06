@@ -3,9 +3,9 @@ namespace ITRocks\Framework\Widget\Validate\Property;
 
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
-use ITRocks\Framework\Widget\Validate\Result;
 
 /**
  * The var annotation validator
@@ -36,8 +36,8 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	{
 		if ($this->property instanceof Reflection_Property) {
 			$value = $this->property->getValue($object);
-			// null
-			if (Null_Annotation::of($this->property)->value && is_null($value)) {
+			// allowed null
+			if (is_null($value) && Null_Annotation::of($this->property)->value) {
 				return true;
 			}
 			$type = $this->property->getType();
@@ -46,23 +46,27 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			// simple
 			switch ($type->asString()) {
 				case Type::INTEGER: return isStrictNumeric($value, false); break;
-				case Type::FLOAT:   return isStrictNumeric($value); break;
-				case Type::STRING:  return is_string($value); break;
+				case Type::FLOAT:   return isStrictNumeric($value);        break;
+				case Type::STRING:  return is_string($value);              break;
 			}
 			// object|object[]
 			if ($type->isClass()) {
 				$class_name = $type->getElementTypeAsString();
+				// object[]
 				if ($type->isMultiple()) {
-					// object[]
 					foreach ($value as $object) {
-						if (!is_object($object) || !is_a($object, $class_name, true)) return false;
+						if (!is_a($object, $class_name, true)) return false;
 					}
 					return true;
 				}
-				else {
-					// object
-					if (!is_object($value) || !is_a($value, $class_name, true)) return false;
-				}
+				// object
+				return
+					// - accepts null if not mandatory
+					(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
+					// - accepts a string if @store allows a string
+					|| (is_string($value) && Store_Annotation::of($this->property)->isString())
+					// - accepts an object if is an instance of the class
+					|| is_a($value, $class_name, true);
 			}
 			// string[]
 			elseif ($type->isMultipleString()) {
@@ -70,6 +74,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 					if (!is_string($string)) return false;
 				}
 			}
+			// other cases are not tested : validate is the default
 			return true;
 		}
 		return null;

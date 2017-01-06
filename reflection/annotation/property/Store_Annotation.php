@@ -100,6 +100,17 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 		return $this->value === self::JSON;
 	}
 
+	//-------------------------------------------------------------------------------------- isString
+	/**
+	 * Returns true if @store's value allows to store a string representation of the property value
+	 *
+	 * @return boolean
+	 */
+	public function isString()
+	{
+		return in_array($this->value, [self::GZ, self::HEX, self::JSON], true);
+	}
+
 	//-------------------------------------------------------------------------- storedPropertiesOnly
 	/**
 	 * Returns only non-static properties which @store annotation is not false
