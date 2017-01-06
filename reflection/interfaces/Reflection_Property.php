@@ -59,6 +59,15 @@ interface Reflection_Property extends Reflection_Class_Component
 	 */
 	public function getType();
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets value
+	 *
+	 * @param object $object
+	 * @return mixed
+	 */
+	public function getValue($object);
+
 	//-------------------------------------------------------------------------------------- isStatic
 	/**
 	 * Checks if property is static

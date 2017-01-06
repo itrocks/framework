@@ -247,6 +247,18 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 		return new Type($this->getAnnotation('var')->value);
 	}
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets value
+	 *
+	 * @param object $object
+	 * @return mixed
+	 */
+	public function getValue($object)
+	{
+		return $object->{$this->name};
+	}
+
 	//------------------------------------------------------------------------------------- isPrivate
 	/**
 	 * @return boolean
