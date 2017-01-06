@@ -175,10 +175,10 @@ class Object_Builder_Array
 					$value = !(empty($value) || ($value === _FALSE));
 					break;
 				case Type::INTEGER:
-					$value = intval($value);
+					$value = isStrictInteger($value) ? intval($value) : $value;
 					break;
 				case Type::FLOAT:
-					$value = floatval($value);
+					$value = isStrictNumeric($value) ? floatval($value) : $value;
 					break;
 			}
 		}

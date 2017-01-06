@@ -55,13 +55,20 @@ class Number_Format
 	 */
 	public function floatToIso($float)
 	{
-		return (!isset($float) || !strlen($float))
-			? null
-			: str_replace(
+		if (!isset($float) || !strlen($float)) {
+			$result = null;
+		}
+		else {
+			$result = str_replace(
 				[$this->thousand_separator, $this->decimal_separator],
 				['', DOT],
 				$float
-			) + 0;
+			);
+			if (!isStrictNumeric($result)) {
+				$result = $float;
+			}
+		}
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- floatToLocale
@@ -93,9 +100,16 @@ class Number_Format
 	 */
 	public function integerToIso($integer)
 	{
-		return (!isset($integer) || !strlen($integer))
-			? null
-			: str_replace($this->thousand_separator, '', $integer) + 0;
+		if (!isset($integer) || !strlen($integer)) {
+			$result = null;
+		}
+		else {
+			$result = str_replace($this->thousand_separator, '', $integer);
+			if (!isStrictInteger($result)) {
+				$result = $integer;
+			}
+		}
+		return $result;
 	}
 
 	//------------------------------------------------------------------------------- integerToLocale
