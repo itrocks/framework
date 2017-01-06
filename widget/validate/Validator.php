@@ -33,6 +33,9 @@ class Validator implements Registerable
 	/**
 	 * The report is made of validate annotations that have been validated or not
 	 *
+	 * If you launch multiple validations with exception capture, don't forget to reset the report,
+	 * or it will be accumulated for your further validations !
+	 *
 	 * @var Reflection\Annotation[]|Annotation[]
 	 */
 	public $report = [];
