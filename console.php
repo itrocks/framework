@@ -240,7 +240,7 @@ class Console
 	{
 		$directory = (file_exists(self::TEMPORARY_DIRECTORY) && is_dir(self::TEMPORARY_DIRECTORY))
 			? self::TEMPORARY_DIRECTORY
-			: (__DIR__ . '../../tmp');
+			: (__DIR__ . '/../../tmp');
 		if (!file_exists($directory)) {
 			mkdir($directory, 0777, true);
 			chmod($directory, 0777);
