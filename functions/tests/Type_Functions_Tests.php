@@ -9,29 +9,38 @@ use ITRocks\Framework\Tests\Test;
 class Type_Functions_Tests extends Test
 {
 
-	//--------------------------------------------------------------------------------- NUMERIC_TESTS
-	const NUMERIC_TESTS = [
-		/* subtitle,     value,         numeric_result, integer_result, unsigned_integer_result */
-		['empty_string', ''           , false,          false,          false],
-		[_FALSE        , false        , false,          false,          false],
-		[_TRUE         , true         , false,          false,          false],
-		['null'        , null         , false,          false,          false],
-		['1'           , '1'          , true ,          true ,          true ],
-		['10'          , '10'         , true ,          true ,          true ],
-		['111111111111', '11111111111', true ,          true ,          true ],
-		['+1'          , '+1'         , false,          false,          false],
-		['-1'          , '-1'         , true ,          true ,          false],
-		['.1'          , '.1'         , false,          false,          false],
-		['-.1'         , '-.1'        , true ,          false,          false],
-		['0.1'         , '0.1'        , false,          false,          false],
-		['1.1'         , '1.1'        , true ,          false,          false],
-		['1,1'         , '1,1'        , false,          false,          false],
-		['-1.1'        , '-1.1'       , true,           false,          false],
-		['1.'          , '1.'         , true ,          false,          false],
-		['1E2'         , '1E2'        , false,          false,          false],
-		['1e2'         , '1e2'        , false,          false,          false],
-		['array'       , []           , false,          false,          false],
-		['string'      , 'string'     , false,          false,          false],
+	//-------------------------------------------------------------------------- STRICT_NUMERIC_TESTS
+	const STRICT_NUMERIC_TESTS = [
+		/* subtitle,     value,         numeric_result, integer_result, unsigned_integer_result, unsigned_numeric_result */
+		['empty_string', ''           , false,          false,          false,                   false],
+		[_FALSE        , false        , false,          false,          false,                   false],
+		[_TRUE         , true         , false,          false,          false,                   false],
+		['null'        , null         , false,          false,          false,                   false],
+		['1'           , '1'          , true ,          true ,          true ,                   true ],
+		['10'          , '10'         , true ,          true ,          true ,                   true ],
+		['111111111111', '11111111111', true ,          true ,          true ,                   true ],
+		['+1'          , '+1'         , false,          false,          false,                   false],
+		['-1'          , '-1'         , true ,          true ,          false,                   false],
+		['.1'          , '.1'         , true ,          false,          false,                   true ],
+		['-.1'         , '-.1'        , true ,          false,          false,                   false],
+		['0.1'         , '0.1'        , true ,          false,          false,                   true ],
+		['1.1'         , '1.1'        , true ,          false,          false,                   true ],
+		['1,1'         , '1,1'        , false,          false,          false,                   false],
+		['-1.1'        , '-1.1'       , true ,          false,          false,                   false],
+		['1.'          , '1.'         , true ,          false,          false,                   true ],
+		['1E2'         , '1E2'        , false,          false,          false,                   false],
+		['1e2'         , '1e2'        , false,          false,          false,                   false],
+		['array'       , []           , false,          false,          false,                   false],
+		['string'      , 'string'     , false,          false,          false,                   false],
+		['0'           , '0'          , true ,          true ,          true ,                   true ],
+		['(integer)0'  , 0            , true ,          true ,          true ,                   true ],
+		['(float)0.0'  , 0.0          , true ,          false,          false,                   true ],
+		['01'          , '01'         , false,          false,          false,                   false],
+		['-01'         , '-01'        , false,          false,          false,                   false],
+		['(float)-.1'  , -.1          , true ,          false,          false,                   false],
+		['(integer)-1' , -1           , true ,          true,           false,                   false],
+		['(float).1'   , .1           , true ,          false,          false,                   true ],
+		['(integer)1'  , 1            , true ,          true,           true,                    true ]
 	];
 
 	//--------------------------------------------------------------------------- testIsStrictInteger
@@ -42,10 +51,7 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (
-			self::NUMERIC_TESTS
-			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
-		) {
+		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,, $assume_integer)) {
 			$ok = $this->assume(
 				__METHOD__ . '(' . $subtitle . ')', isStrictInteger($check), $assume_integer
 			);
@@ -63,10 +69,7 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (
-			self::NUMERIC_TESTS
-			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
-		) {
+		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check, $assume_numeric)) {
 			$ok = $this->assume(
 				__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check), $assume_numeric
 			);
@@ -84,12 +87,27 @@ class Type_Functions_Tests extends Test
 	{
 		$result = true;
 
-		foreach (
-			self::NUMERIC_TESTS
-			as list($subtitle, $check, $assume_numeric, $assume_integer, $assume_unsigned)
-		) {
+		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,,, $assume_unsigned)) {
 			$ok = $this->assume(
 				__METHOD__ . '(' . $subtitle . ')', isStrictUnsignedInteger($check), $assume_unsigned
+			);
+			$result &= $ok;
+		}
+
+		return $result;
+	}
+
+	//------------------------------------------------------------------- testIsStrictUnsignedNumeric
+	/**
+	 * @return boolean
+	 */
+	function testIsStrictUnsignedNumeric()
+	{
+		$result = true;
+
+		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,,,, $assume_unsigned)) {
+			$ok = $this->assume(
+				__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check, true, false), $assume_unsigned
 			);
 			$result &= $ok;
 		}

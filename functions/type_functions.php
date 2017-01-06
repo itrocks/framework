@@ -120,9 +120,9 @@ function isStrictInteger($value)
 /**
  * Returns true if $value is a strict numeric.
  * Same as php's is_numeric, but :
- * - must not begin with '+', '0' or '.'
- * - exponential part is not allowed, thus 123.45e6 is not a valid numeric value
- * - if decimal not allowed, must not have '.' or ',' char
+ * - must not start with '+', '0' ('0' alone and '0.xxx' are allowed)
+ * - exponential part is not allowed, thus 123.45e6 and 123E6 are not a valid numeric value
+ * - if decimal not allowed, must not have '.' char
  * - if signed not allowed, must not start with '-' char
  *
  * @param $value           string
@@ -132,14 +132,19 @@ function isStrictInteger($value)
  */
 function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
 {
-	return (is_float($value) || is_integer($value))
+	$result = (is_float($value) && $decimal_allowed && ($signed_allowed || ($value >= 0)))
+		|| (is_integer($value) && ($signed_allowed || ($value >= 0)))
+		|| ($value === '0')
+		|| ($decimal_allowed && is_numeric($value) && (substr($value, 0, 2) === '0.'))
 		|| (
 			is_numeric($value)
-			&& (strpos('0+.', $value[0]) === false)
+			&& (substr($value, 0, 2) !== '-0')
+			&& (strpos('0+', substr($value, 0, 1)) === false)
 			&& (stripos($value, 'E')     === false)
 			&& ($decimal_allowed ?: (strpos($value, '.')    === false))
-			&& ($signed_allowed  ?: (strpos($value[0], '-') === false))
+			&& ($signed_allowed  ?: (strpos(substr($value, 0, 1), '-') === false))
 		);
+	return $result;
 }
 
 //--------------------------------------------------------------------------------- isStrictNumeric
