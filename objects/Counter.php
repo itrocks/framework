@@ -11,6 +11,7 @@ use ITRocks\Framework\View\Html\Template;
  *
  * It deals with application-side locking in order that the next number has no jumps nor replicates
  *
+ * @before_write updateLastUpdate
  * @business
  */
 class Counter
@@ -31,6 +32,7 @@ class Counter
 
 	//---------------------------------------------------------------------------------- $last_update
 	/**
+	 * @default updateLastUpdate
 	 * @link DateTime
 	 * @var Date_Time
 	 */
@@ -51,9 +53,6 @@ class Counter
 		if (isset($identifier)) {
 			$this->identifier = $identifier;
 		}
-		if (!isset($this->last_update)) {
-			$this->last_update = new Date_Time();
-		}
 	}
 
 	//------------------------------------------------------------------------------------- increment
@@ -73,7 +72,10 @@ class Counter
 		$counter = Dao::searchOne(['identifier' => $identifier], get_called_class())
 			?: new Counter($identifier);
 		$next_value = $counter->next($object);
-		Dao::write($counter);
+		Dao::write(
+			$counter,
+			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
+		);
 		Dao::commit();
 		return $next_value;
 	}
@@ -91,7 +93,7 @@ class Counter
 	public function next($object = null)
 	{
 		$next_value = ++$this->last_value;
-		$format = $this->format;
+		$format     = $this->format;
 		if (strpos($format, '{') !== false) {
 			if ($this->resetValue()) {
 				$next_value = $this->last_value = 1;
@@ -126,6 +128,12 @@ class Counter
 			((strpos($format, '{DAY}') !== false) && ($date > $last->format('Y-m-d')))
 			|| ((strpos($format, '{MONTH}') !== false) && (substr($date, 0, 7) > $last->format('Y-m')))
 			|| ((strpos($format, '{YEAR') !== false) && (substr($date, 0, 4) > $last->format('Y')));
+	}
+
+	//------------------------------------------------------------------------------ updateLastUpdate
+	public function updateLastUpdate()
+	{
+		$this->last_update = Date_Time::now();
 	}
 
 }
