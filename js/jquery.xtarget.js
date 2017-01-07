@@ -161,8 +161,13 @@
 					}
 				}
 				// track window position to target
-				if (settings.track && xhr.from.target.beginsWith('#')) {
-					window.location = xhr.from.target;
+				if (settings.track && xhr.from.target.beginsWith('#') && (window.scrollbar !== undefined)) {
+					if ($target.offset().left < window.scrollbar.left()) {
+						window.scrollbar.left($target.offset().left);
+					}
+					if ($target.offset().top < window.scrollbar.top()) {
+						window.scrollbar.top($target.offset().top);
+					}
 				}
 				// change browser's URL and title, push URL into history
 				if (settings.history != undefined) {
@@ -183,7 +188,6 @@
 					on_success.call(target, data, status, xhr);
 				}
 			}
-
 		};
 
 		//----------------------------------------------------------------------------------- urlAppend
@@ -223,12 +227,6 @@
 					if ($this.hasClass(settings.submit)) {
 						var $parent_form = $this.closest('form');
 						if ($parent_form.length) {
-							/* this does not seem to work : default form submit is not blocking !
-							if (!$parent_form[0].checkValidity()) {
-								// this will execute default form submitting code, which will stop with validation messages
-								return;
-							}
-							*/
 							if ($parent_form.ajaxSubmit != undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 									url:  urlAppend(this.href, this.search),
