@@ -343,12 +343,12 @@ function explodeStringInArrayToSimpleArray($delimiter, array $array)
  * Explodes strings in array or in array of array, and return an array of array of string.
  *
  * @example
- * explodeStringInArrayToDoubleArray(' ', ['Dot', 'a cat', 'the cat run'))
- * return : [['Dot'), ['a', 'cat'), ['the', 'cat', 'run'))
+ * explodeStringInArrayToDoubleArray(SP, ['Dot', 'a cat', 'the cat runs'])
+ * returns [['Dot'], ['a', 'cat'], ['the', 'cat', 'runs']]
  *
  * @example
- * explodeStringInArrayToDoubleArray(' ', [['Dot a'), ['the cat run'))
- * return : [['Dot', 'a'), ['the', 'cat', 'run'))
+ * explodeStringInArrayToDoubleArray(SP, [['Dot a'], ['the cat runs'])
+ * returns [['Dot', 'a'], ['the', 'cat', 'runs']]
  *
  * @param $delimiter string The boundary string.
  * @param $array     array The input array, can be an array of string or an array of array of string.
@@ -363,12 +363,7 @@ function explodeStringInArrayToDoubleArray($delimiter, array $array)
 		}
 		else {
 			$explode = explode($delimiter, $element);
-			if (!empty($explode)) {
-				$tab[] = $explode;
-			}
-			else {
-				$tab[] = [$element];
-			}
+			$tab[]   = empty($explode) ? [$element] : $explode;
 		}
 	}
 	return $tab;
