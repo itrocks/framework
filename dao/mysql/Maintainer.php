@@ -33,11 +33,20 @@ class Maintainer implements Registerable
 	/**
 	 * Create a table in database, using a data class structure
 	 *
-	 * @param $mysqli     Contextual_Mysqli
 	 * @param $class_name string
+	 * @param $mysqli     Contextual_Mysqli
 	 */
-	private function createTable(Contextual_Mysqli $mysqli, $class_name)
+	private function createTable($class_name, Contextual_Mysqli $mysqli = null)
 	{
+		if (!$mysqli) {
+			$data_link = Dao::current();
+			if ($data_link instanceof Link) {
+				$mysqli = $data_link->getConnection();
+			}
+			else {
+				user_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
+			}
+		}
 		$builder = new Table_Builder_Class();
 		$build = $builder->build($class_name);
 		foreach ($build as $table) {
@@ -133,10 +142,10 @@ class Maintainer implements Registerable
 		foreach ($class_names as $class_name) {
 			if (class_exists($class_name, false)) {
 				if (isset($created)) {
-					$this->updateTable($mysqli, $class_name);
+					$this->updateTable($class_name, $mysqli);
 				}
 				else {
-					$this->createTable($mysqli, $class_name);
+					$this->createTable($class_name, $mysqli);
 				}
 				$created = true;
 			}
@@ -331,7 +340,7 @@ class Maintainer implements Registerable
 			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
 			if (in_array($context_table, $error_table_names)) {
 				if (!is_array($context_class)) {
-					$this->createTable($mysqli, $context_class);
+					$this->createTable($context_class, $mysqli);
 				}
 				else {
 					$this->createImplicitTable($mysqli, $context_table, $context_class);
@@ -416,7 +425,7 @@ class Maintainer implements Registerable
 	private function updateContextTables(Contextual_Mysqli $mysqli, array $context)
 	{
 		foreach ($context as $context_class) {
-			if ($this->updateTable($mysqli, $context_class)) {
+			if ($this->updateTable($context_class, $mysqli)) {
 				$retry = true;
 			}
 		}
@@ -427,12 +436,21 @@ class Maintainer implements Registerable
 	/**
 	 * Update table structure corresponding to a data class
 	 *
-	 * @param $mysqli     mysqli
 	 * @param $class_name string
+	 * @param $mysqli     mysqli If null, Dao::current()->getConnection() will be taken
 	 * @return boolean true if an update query has been generated and executed
 	 */
-	public function updateTable(mysqli $mysqli, $class_name)
+	public function updateTable($class_name, mysqli $mysqli = null)
 	{
+		if (!$mysqli) {
+			$data_link = Dao::current();
+			if ($data_link instanceof Link) {
+				$mysqli = $data_link->getConnection();
+			}
+			else {
+				user_error('Must call updateTable() with a valid $mysqli link', E_USER_ERROR);
+			}
+		}
 		$result = false;
 		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
 			$table_name = $class_table->getName();
