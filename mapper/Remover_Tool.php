@@ -30,11 +30,10 @@ abstract class Remover_Tool
 						$count += call_user_func([$composite, $remover->value], $object);
 					}
 					else {
-						foreach ($composite->$property_name as $key => $value) {
+						$property_value =& $composite->$property_name;
+						foreach ($property_value as $key => $value) {
 							if ($value === $object) {
-								// php 5.6 compatibility
-								//unset($composite->$property_name[$key]);
-								unset($composite->{$property_name[$key]});
+								unset($property_value[$key]);
 								$count ++;
 							}
 						}
