@@ -58,16 +58,24 @@ class Tests extends Test
 	public function testClassPropertyValidate()
 	{
 		// test
-		$validator = new Validator();
-		$result = $validator->validate($this);
-		$messages = [];
+		$annotations = [];
+		$messages    = [];
+		$validator   = new Validator();
+		$result      = $validator->validate($this);
 		foreach ($validator->report as $annotation) {
-			/** @noinspection PhpUndefinedMethodInspection Inspector bug */
-			$messages[] = $annotation->reportMessage();
+			if ($annotation instanceof Annotation\Validate_Annotation) {
+				$annotations[] = $annotation;
+				$messages[]    = $annotation->reportMessage();
+			}
 		}
+		$check = [
+			'annotations' => $annotations,
+			'error'       => $result,
+			'messages'    => $messages
+		];
 
 		// assume
-		$class = (new Reflection_Class(get_class($this)));
+		$class    = (new Reflection_Class(get_class($this)));
 		$property = $class->getProperty('property');
 		/** @var $annotations Class_\Validate_Annotation[] */
 		$annotations = array_merge(
@@ -77,7 +85,7 @@ class Tests extends Test
 		$assume_messages = [];
 		foreach ($annotations as $annotation) {
 			$annotation->object = $this;
-			$annotation->valid = strpos($annotation->value, '::not')
+			$annotation->valid  = strpos($annotation->value, '::not')
 				? Result::ERROR
 				: Result::INFORMATION;
 			if (isA($annotation, Property\Annotation::class)) {
@@ -86,14 +94,14 @@ class Tests extends Test
 			}
 			$assume_messages[] = strpos($annotation->value, '::notValidMessage') ? self::MESSAGE : null;
 		}
-		$assume = [Result::ERROR, $annotations, $assume_messages];
+		$assume = [
+			'annotations' => $annotations,
+			'error'       => Result::ERROR,
+			'messages'    => $assume_messages
+		];
 
 		// report
-		$this->assume(
-			__METHOD__,
-			[$result, $validator->report, $messages],
-			$assume
-		);
+		$this->assume(__METHOD__, $check, $assume);
 	}
 
 	//------------------------------------------------------------------------------------- validTrue
