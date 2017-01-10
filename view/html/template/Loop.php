@@ -79,6 +79,14 @@ class Loop
 	 */
 	public $to;
 
+	//-------------------------------------------------------------------------------------- $use_end
+	/**
+	 * If true, the template uses <!--end--> instead of <!--start-condition-->
+	 *
+	 * @var boolean
+	 */
+	public $use_end;
+
 	//------------------------------------------------------------------------------------- $var_name
 	/**
 	 * @var string

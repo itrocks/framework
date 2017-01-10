@@ -884,10 +884,11 @@ class Template
 	protected function parseLoop(&$content, $i, $j)
 	{
 		$loop           = new Loop();
+		$loop->use_end  = strpos($content, '<!--end-->', $j);
 		$loop->var_name = substr($content, $i, $j - $i);
 		$length         = strlen($loop->var_name);
+		$length_end     = $this->parseLoopVarName($loop, $content, $j);
 		$i             += $length + 3;
-		$length2        = $this->parseLoopVarName($loop, $content, $j);
 		$loop->content  = substr($content, $i, $j - $i);
 		$this->parseLoopContentSections($loop);
 		$elements = $this->parseValue($loop->var_name, false);
@@ -921,8 +922,8 @@ class Template
 		if (!$loop->force_condition) {
 			$this->shift();
 		}
-		$i       = $i - $length - 7;
-		$j       = $j + $length2 + 7;
+		$i       = $i - $length     - 7;
+		$j       = $j + $length_end + 7;
 		$content = substr($content, 0, $i) . $loop_insert . substr($content, $j);
 		$i      += strlen($loop_insert);
 		return $i;
@@ -1064,6 +1065,38 @@ class Template
 		return $content;
 	}
 
+	//---------------------------------------------------------------------------- parseLoopSearchEnd
+	/**
+	 * Search '<!--end-->' into content, starting from $position.
+	 * Recurse into '<!--other_things-->' and their matching '<!--end-->' if there are some
+	 *
+	 * @param $content  string The content of the template
+	 * @param $position integer The position of the '-->' of the start of the current loop
+	 * @return integer the position of the '<!--end-->' of the current loop
+	 */
+	protected function parseLoopSearchEnd($content, $position)
+	{
+		$recurse = 0;
+		while ($position = strpos($content, '<!--', $position)) {
+			$position += 4;
+			if (substr($content, $position, 6) === 'end-->') {
+				if ($recurse) {
+					$recurse --;
+				}
+				else {
+					return $position - 4;
+				}
+			}
+			elseif (
+				(substr($content, $position, 4) !== 'use ')
+				&& $this->parseThis($content, $position)
+			) {
+				$recurse ++;
+			}
+		}
+		return strlen($content);
+	}
+
 	//------------------------------------------------------------------------------ parseLoopVarName
 	/**
 	 * @param $loop    Loop
@@ -1075,7 +1108,7 @@ class Template
 	{
 		$search_var_name = $loop->var_name;
 		if (substr($loop->var_name, -1) == '>') {
-			$end_last = true;
+			$end_last       = true;
 			$loop->var_name = substr($loop->var_name, 0, -1);
 		}
 
@@ -1096,7 +1129,7 @@ class Template
 
 		if (strpos($loop->var_name, ':')) {
 			list($loop->var_name, $loop->has_expr) = explode(':', $loop->var_name);
-			$search_var_name = lParse($search_var_name, ':');
+			$search_var_name                       = lParse($search_var_name, ':');
 			if (($sep = strpos($loop->has_expr, '-')) !== false) {
 				$loop->from = substr($loop->has_expr, 0, $sep);
 				$loop->to   = substr($loop->has_expr, $sep + 1);
@@ -1112,10 +1145,16 @@ class Template
 			$loop->to   = null;
 		}
 
-		$length2 = strlen($search_var_name);
-		$j = isset($end_last)
-			? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
-			: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
+		if ($loop->use_end) {
+			$length2 = 3;
+			$j       = $this->parseLoopSearchEnd($content, $j);
+		}
+		else {
+			$length2 = strlen($search_var_name);
+			$j       = isset($end_last)
+				? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
+				: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
+		}
 
 		return $length2;
 	}
