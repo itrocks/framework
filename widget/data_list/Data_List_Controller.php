@@ -444,8 +444,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$exception->getCode(),
 				$exception->getMessage(),
 				$exception->getFile(),
-				$exception->getLine(),
-				null
+				$exception->getLine()
 			);
 			$handler = new Report_Call_Stack_Error_Handler();
 			$handler->logError($handled);

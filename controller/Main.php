@@ -356,8 +356,8 @@ class Main
 		}
 		catch (Exception $exception) {
 			$handled_error = new Handled_Error(
-				$exception->getCode(), $exception->getMessage(), $exception->getFile(),
-				$exception->getLine(), []
+				$exception->getCode(), $exception->getMessage(),
+				$exception->getFile(), $exception->getLine()
 				);
 			$handler = new Report_Call_Stack_Error_Handler();
 			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString() . LF;
