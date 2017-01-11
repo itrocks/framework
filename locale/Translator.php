@@ -197,35 +197,38 @@ class Translator
 		if (!trim($text) || is_numeric($text)) {
 			$translation = $text;
 		}
-		// different texts separated by dots : translate each part between dots
-		elseif (strpos($text, DOT) !== false) {
-			$translation = $this->separatedTranslations($text, DOT, $context);
-		}
-		// return cached contextual translation
-		elseif (isset($this->cache[strtolower($text)][$context])) {
-			$translation = $this->cache[strtolower($text)][$context];
-		}
 		else {
-			// $translations string[] $translation[$context]
-			if (!isset($this->cache[strtolower($text)])) {
-				$this->cache[strtolower($text)] = $this->translations($text);
+			// different texts separated by dots : translate each part between dots
+			if (strpos($text, DOT) !== false) {
+				$translation = $this->separatedTranslations($text, DOT, $context);
 			}
-			$translations = $this->cache[strtolower($text)];
-			// no translation found and separated by commas : translate each part between commas
-			if (!$translations && (strpos($text, ', ') !== false)) {
-				return $this->separatedTranslations($text, ', ', $context);
+			// return cached contextual translation
+			elseif (isset($this->cache[strtolower($text)][$context])) {
+				$translation = $this->cache[strtolower($text)][$context];
 			}
-			// no translation found : store original text to cache and database, then return it
-			if (!$translations) {
-				$translations['']
-					= $this->cache[strtolower($text)]['']
-					= $this->storeDefaultTranslation($text);
+			else {
+				// $translations string[] $translation[$context]
+				if (!isset($this->cache[strtolower($text)])) {
+					$this->cache[strtolower($text)] = $this->translations($text);
+				}
+				$translations = $this->cache[strtolower($text)];
+				// no translation found and separated by commas : translate each part between commas
+				if (!$translations && (strpos($text, ', ') !== false)) {
+					return $this->separatedTranslations($text, ', ', $context);
+				}
+				// no translation found : store original text to cache and database, then return it
+				if (!$translations) {
+					$translations['']
+						= $this->cache[strtolower($text)]['']
+						= $this->storeDefaultTranslation($text);
+				}
+				$translation = $this->chooseTranslation($translations, $context)
+					?: $this->defaultTranslation($text);
+				$this->cache[strtolower($text)][$context] = $translation;
 			}
-			$translation = $this->chooseTranslation($translations, $context)
-				?: $this->defaultTranslation($text);
-			$this->cache[strtolower($text)][$context] = $translation;
+			$translation = strIsCapitals(substr($text, 0, 1)) ? ucfirsta($translation) : $translation;
 		}
-		return strIsCapitals($text[0]) ? ucfirsta($translation) : $translation;
+		return $translation;
 	}
 
 	//---------------------------------------------------------------------------------- translations
