@@ -47,6 +47,21 @@ class Annotation
 		return strval($this->value);
 	}
 
+	//----------------------------------------------------------------------------------------- allOf
+	/**
+	 * Get all annotations of a reflection object (for multiple annotations)
+	 *
+	 * @param $reflection_object Reflection
+	 * @return static[]
+	 * @see Annoted::getAnnotation
+	 */
+	public static function allOf(Reflection $reflection_object)
+	{
+		return $reflection_object->getAnnotations(
+			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
+		);
+	}
+
 	//----------------------------------------------------------------------------- getAnnotationName
 	/**
 	 * Gets annotation name (the displayable root of the annotation class name, when set)
