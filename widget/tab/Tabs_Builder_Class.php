@@ -10,7 +10,7 @@ use ITRocks\Framework\Widget\Tab;
 /**
  * Tabs builder : build tabs for a class
  */
-abstract class Tabs_Builder_Class
+class Tabs_Builder_Class
 {
 
 	//----------------------------------------------------------------------------------------- build
@@ -21,16 +21,16 @@ abstract class Tabs_Builder_Class
 	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
-	public static function build(Reflection_Class $class, array $filter_properties = null)
+	public function build(Reflection_Class $class, array $filter_properties = null)
 	{
-		/** @var $group_annotations Group_Annotation[] */
-		$group_annotations = $class->getAnnotations(Group_Annotation::ANNOTATION);
-		$properties        = $class->getProperties([T_EXTENDS, T_USE]);
+		$group_annotations = Group_Annotation::allOf($class);
+		$this->mergeGroups($group_annotations);
+		$properties = $this->groupsToProperties($class->name, $group_annotations, $filter_properties);
 		if ($filter_properties) {
 			$properties_set = new Set(Reflection_Property::class, $properties);
-			$properties = $properties_set->filterAndSort($filter_properties);
+			$properties     = $properties_set->filterAndSort($filter_properties);
 		}
-		return self::buildProperties($properties, $group_annotations);
+		return $this->buildProperties($properties, $group_annotations);
 	}
 
 	//------------------------------------------------------------------------------- buildProperties
@@ -41,7 +41,7 @@ abstract class Tabs_Builder_Class
 	 * @param $group_annotations Group_Annotation[]
 	 * @return Tab[]
 	 */
-	protected static function buildProperties(array $properties, array $group_annotations)
+	protected function buildProperties(array $properties, array $group_annotations)
 	{
 		$root_tab = new Tab();
 		if (!empty($group_annotations)) {
@@ -74,7 +74,7 @@ abstract class Tabs_Builder_Class
 					}
 					$tab = $tab->columns[0];
 				}
-				$tab->add(self::getProperties($properties, $group_annotation->value));
+				$tab->add($this->getProperties($properties, $group_annotation->value));
 			}
 		}
 		return $root_tab->includes;
@@ -88,7 +88,7 @@ abstract class Tabs_Builder_Class
 	 * @param $property_names string[]
 	 * @return Reflection_Property[]
 	 */
-	private static function getProperties(array $properties, array $property_names)
+	protected function getProperties(array $properties, array $property_names)
 	{
 		$result = [];
 		foreach ($property_names as $property_name) {
@@ -97,6 +97,100 @@ abstract class Tabs_Builder_Class
 			}
 		}
 		return $result;
+	}
+
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * @param $class_name    string
+	 * @param $property_path string
+	 * @return Reflection_Property
+	 */
+	protected function getProperty($class_name, $property_path)
+	{
+		return new Reflection_Property($class_name, $property_path);
+	}
+
+	//---------------------------------------------------------------------------- groupsToProperties
+	/**
+	 * @param $class_name        string
+	 * @param $group_annotations Group_Annotation[]
+	 * @param $filter_properties string[] if empty, then get all properties
+	 * @return Reflection_Property[]
+	 */
+	protected function groupsToProperties(
+		$class_name, array $group_annotations, array $filter_properties
+	) {
+		$properties = [];
+		foreach ($group_annotations as $group) {
+			foreach ($group->values() as $property_path) {
+				if (in_array($property_path, $filter_properties) || !$filter_properties) {
+					$property                   = $this->getProperty($class_name, $property_path);
+					$properties[$property_path] = $property;
+				}
+			}
+		}
+		return $properties;
+	}
+
+	//----------------------------------------------------------------------------------- mergeGroups
+	/**
+	 * Merge group annotations that have the same name into one
+	 *
+	 * @param $groups Group_Annotation[]
+	 */
+	protected function mergeGroups(array &$groups)
+	{
+		// merge groups that have the same name
+		$merged = [];
+		foreach ($groups as $group) {
+			if (isset($merged[$group->name])) {
+				$merged[$group->name]->value = array_merge($merged[$group->name]->value, $group->value);
+			}
+			else {
+				$merged[$group->name] = $group;
+			}
+		}
+		$groups = $merged;
+
+		// get customized group if alone, and _top and _middle groups
+		/** @var $customized Group_Annotation */
+		/** @var $middle Group_Annotation */
+		/** @var $top Group_Annotation */
+		$customized = null;
+		$custom_key = $middle_key = -1;
+		foreach ($groups as $key => $group) {
+			if ($group->name[0] != '_') {
+				if (isset($customized)) {
+					$customized = null;
+					break;
+				}
+				$customized = $group;
+				$custom_key = $key;
+			}
+			elseif ($group->name == '_top') {
+				$top = $group;
+			}
+			elseif ($group->name == '_middle') {
+				$middle     = $group;
+				$middle_key = $key;
+			}
+		}
+
+		// if customized group is alone : merge it and _top and _middle groups into _top
+		if ($customized) {
+			if (!isset($top)) {
+				$top       = $customized;
+				$top->name = '_top';
+			}
+			else {
+				$top->value = array_merge($top->value, $customized->value);
+				unset($groups[$custom_key]);
+			}
+			if (isset($middle)) {
+				$top->value = array_merge($top->value, $middle->value);
+				unset($groups[$middle_key]);
+			}
+		}
 	}
 
 }

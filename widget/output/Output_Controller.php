@@ -249,7 +249,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		}
 		else {
 			$tab = new Tab('main');
-			$tab->includes = Tabs_Builder_Object::buildObject(
+			$tab->includes = (new Tabs_Builder_Object)->buildObject(
 				$object, array_keys($output_settings->properties)
 			);
 		}

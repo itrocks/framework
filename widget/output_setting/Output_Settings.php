@@ -214,7 +214,7 @@ class Output_Settings extends Custom_Settings
 	{
 		if (!isset($this->tab)) {
 			$this->tab = new Tab('main');
-			$this->tab->includes = Tabs_Builder_Class::build(
+			$this->tab->includes = (new Tabs_Builder_Class)->build(
 				$this->getClass(), array_keys($this->properties)
 			);
 		}
