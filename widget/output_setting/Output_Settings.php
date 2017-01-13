@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Widget\Output_Setting;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_\Group_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom_Settings;
@@ -190,14 +191,22 @@ class Output_Settings extends Custom_Settings
 				}
 			}
 			else {
-				$properties = (new Reflection_Class($class_name))->getProperties(
-					[T_EXTENDS, T_USE, Reflection_Class::T_SORT]
-				);
+				$class      = new Reflection_Class($class_name);
+				$properties = $class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 				foreach ($properties as $property) {
 					if ($property->isPublic() && !$property->isStatic()) {
 						$this->properties[$property->name] = Builder::create(
 							Property::class, [$class_name, $property->name]
 						);
+					}
+				}
+				foreach (Group_Annotation::allOf($class) as $group_annotation) {
+					foreach ($group_annotation->values() as $property_path) {
+						if (strpos($property_path, DOT)) {
+							$this->properties[$property_path] = Builder::create(
+								Property::class, [$class_name, $property_path]
+							);
+						}
 					}
 				}
 			}
