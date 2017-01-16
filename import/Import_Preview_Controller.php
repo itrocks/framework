@@ -65,10 +65,11 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	{
 		// convert form files to worksheets and session files
 		if ($files) {
+			$errors = [];
+			$form   = (new Post_Files())->appendToForm($form, $files);
 			/** @var $import Import */
 			$import = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
-			$form = (new Post_Files())->appendToForm($form, $files);
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
@@ -85,8 +86,8 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 								$csv_file = Builder::create(File::class, [$temporary_file_name])
 							]);
 							$import_worksheet->errors = $errors;
-							$session_files->files[] = $csv_file;
-							$import->worksheets[] = $import_worksheet;
+							$session_files->files[]   = $csv_file;
+							$import->worksheets[]     = $import_worksheet;
 						}
 					}
 					// only one file once

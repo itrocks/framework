@@ -7,11 +7,6 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
-/*
-use PHPExcel;
-use PHPExcel_IOFactory;
-*/
-
 /**
  * Excel file
  *
@@ -28,10 +23,10 @@ class Spreadsheet_File
 	 */
 	public static function createFromFile($file_name)
 	{
-		$source_object = PHPExcel_IOFactory::load($file_name);
+		$source_object      = PHPExcel_IOFactory::load($file_name);
 		$destination_object = new Spreadsheet_File();
-		$source_class = new Reflection_Class(get_class($source_object));
-		$destination_class = new Reflection_Class(__CLASS__);
+		$source_class       = new Reflection_Class(get_class($source_object));
+		$destination_class  = new Reflection_Class(get_called_class());
 		$destination_properties = $destination_class->accessProperties();
 		foreach ($source_class->accessProperties() as $source_property) {
 			if (!$source_property->isStatic()) {
@@ -58,14 +53,14 @@ class Spreadsheet_File
 	 */
 	public static function fileToArray($file_name, array &$errors = [])
 	{
-		if (substr($file_name, -4) == '.csv') {
+		if (substr($file_name, -4) === '.csv') {
+			$count    = '';
 			$csv_file = $file_name;
-			$count = '';
 		}
 		else {
+			$count    = 0;
 			$csv_file = Application::current()->getTemporaryFilesPath() . SL . uniqid() . '.csv';
 			exec('ssconvert ' . DQ . $file_name . DQ . SP . DQ . $csv_file . DQ . ' -S 2>&1 &');
-			$count = 0;
 		}
 		$result = [];
 		while (file_exists($csv_file . (strlen($count) ? (DOT . $count) : ''))) {
@@ -87,11 +82,11 @@ class Spreadsheet_File
 	{
 		$lines = [];
 		$row   = 0;
-		$f = fopen($csv_file, 'r');
+		$f     = fopen($csv_file, 'r');
 		if ($f) while ($buf = fgetcsv($f)) {
 			$row ++;
 			if (($column = array_search('#REF!', $buf)) !== false) {
-				$column ++;
+				$column   ++;
 				$replace  = new Replace([1 => $row, 2 => $column]);
 				$errors[] = Loc::tr('unsolved reference at row $1 and column $2', $replace);
 			}
