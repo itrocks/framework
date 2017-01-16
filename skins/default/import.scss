@@ -148,16 +148,16 @@
 		option {
 			background-color: white;
 			color: black;
+		}
 
-			&[value="create_new_value"] {
-				background-color: blue;
-				color: white;
-			}
+		option[value="create_new_value"], select.create_new_value {
+			background-color: blue;
+			color: white;
+		}
 
-			&[value="tell_it_and_stop_import"] {
-				background-color: red;
-				color: white;
-			}
+		option[value="tell_it_and_stop_import"], select.tell_it_and_stop_import {
+			background-color: red;
+			color: white;
 		}
 
 		div span {

@@ -23,9 +23,9 @@ $('document').ready(function()
 					accept: $this.find('li'),
 					drop: function(event, ui)
 					{
-						var $draggable = ui.draggable;
-						var $droppable = $(this);
-						var $input = $draggable.closest('fieldset').find('input');
+						var $draggable    = ui.draggable;
+						var $droppable    = $(this);
+						var $input        = $draggable.closest('fieldset').find('input');
 						var property_name = $draggable.attr('class').split(' ')[0];
 						$droppable.css({ background: 'none', border: 'none' });
 						var niouk = (',' + $input.val() + ',').replace(',' + property_name + ',', ',');
@@ -50,9 +50,7 @@ $('document').ready(function()
 			$this.find('fieldset.class select').change(function()
 			{
 				var $this = $(this);
-				var $selected = $this.find(':selected');
-				$this.css('background',  $selected.css('background'));
-				$this.css('color',       $selected.css('color'));
+				$this.attr('class', $this.find(':selected').attr('value'));
 			}).change();
 
 		});

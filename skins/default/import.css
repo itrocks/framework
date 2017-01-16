@@ -88,12 +88,12 @@
 .import.preview.window fieldset option {
   background-color: white;
   color: black; }
-  .import.preview.window fieldset option[value="create_new_value"] {
-    background-color: blue;
-    color: white; }
-  .import.preview.window fieldset option[value="tell_it_and_stop_import"] {
-    background-color: red;
-    color: white; }
+.import.preview.window fieldset option[value="create_new_value"], .import.preview.window fieldset select.create_new_value {
+  background-color: blue;
+  color: white; }
+.import.preview.window fieldset option[value="tell_it_and_stop_import"], .import.preview.window fieldset select.tell_it_and_stop_import {
+  background-color: red;
+  color: white; }
 .import.preview.window fieldset div span {
   font-weight: bold; }
 .import.preview.window > .worksheet:not(:last-child) {
