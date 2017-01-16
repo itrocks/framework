@@ -17,7 +17,9 @@ $.getScript(path + 'itrocks/framework/js/jquery.classvar.js');
 $.getScript(path + 'itrocks/framework/js/jquery.modifiable.js');
 $.getScript(path + 'itrocks/framework/js/jquery.mouse.js');
 $.getScript(path + 'itrocks/framework/js/jquery.presstab.js');
+$.getScript(path + 'itrocks/framework/js/jquery.scrollbar.js');
 $.getScript(path + 'itrocks/framework/js/jquery.sortcontent.js');
+$.getScript(path + 'itrocks/framework/js/jquery.staytop.js');
 $.getScript(path + 'itrocks/framework/js/jquery.verticalscrollbar.js');
 $.getScript(path + 'itrocks/framework/js/jquery-ui.tabber.js');
 
