@@ -201,7 +201,10 @@
 		var urlAppend = function (url, search)
 		{
 			if (settings.url_append) {
-				url += (search ? '&' : '?') + settings.url_append;
+				url = url.lParse('#')
+					+ (search ? '&' : '?')
+					+ settings.url_append
+					+ ((url.indexOf('#') >= 0) ? '#' : '') + url.rParse('#');
 			}
 			return url;
 		};
