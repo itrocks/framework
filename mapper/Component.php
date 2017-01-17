@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -71,10 +72,10 @@ trait Component
 	public static function getCompositeProperties($class_name = null, $property_name = null)
 	{
 		// flexible parameters : first parameter can be a property name alone
-		if (!isset($property_name) && is_string($class_name) && !empty($class_name)) {
+		if (is_string($class_name) && !empty($class_name) && !isset($property_name)) {
 			if (ctype_lower($class_name[0])) {
 				$property_name = $class_name;
-				$class_name = null;
+				$class_name    = null;
 			}
 		}
 		elseif (is_object($class_name)) {
@@ -89,7 +90,8 @@ trait Component
 				: [new Reflection_Property($self, $property_name)];
 			// take the right composite property
 			foreach ($properties as $property) {
-				if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
+				$property_class = Builder::current()->sourceClassName($property->getType()->asString());
+				if (!isset($class_name) || is_a($class_name, $property_class, true)) {
 					self::$composite_properties[$path][$property->name] = $property;
 				}
 			}
@@ -98,7 +100,8 @@ trait Component
 				foreach (
 					(new Reflection_Class($self))->getProperties([T_EXTENDS, T_USE]) as $property
 				) {
-					if (!isset($class_name) || is_a($class_name, $property->getType()->asString(), true)) {
+					$property_class = Builder::current()->sourceClassName($property->getType()->asString());
+					if (!isset($class_name) || is_a($class_name, $property_class, true)) {
 						self::$composite_properties[$path][$property->name] = $property;
 					}
 				}
