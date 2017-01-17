@@ -58,6 +58,10 @@
 					$pages.removeClass('active');
 					$this.closest('.ui-tabber-tab').addClass('active');
 					$pages.filter($this.attr('href')).addClass('active');
+					var find_edit = window.location.pathname + '/edit';
+					$this.closest('.window').find('a[href="' + find_edit + '"]').each(function() {
+						$(this).attr('href', find_edit + '#' + $this.prop('href').rParse('#'));
+					});
 					window.history.pushState({reload: true}, document.title, $this.prop('href'));
 				});
 
