@@ -150,13 +150,14 @@ class Template
 	 */
 	protected $path;
 
-	//------------------------------------------------------------------------------------- $preprops
+	//---------------------------------------------------------------------------- $properties_prefix
 	/**
-	 * This prepare preprops for @edit calls : each loop adds the property name and value to $preprops
+	 * This prepare properties prefix for @edit calls : each loop adds the property name and value to
+	 * $properties_prefix
 	 *
 	 * @var string[]
 	 */
-	public $preprops = [];
+	public $properties_prefix = [];
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
@@ -938,13 +939,13 @@ class Template
 	protected function parseLoopArray(Loop $loop, array $elements)
 	{
 		$loop_insert = '';
-		$this->preprop($loop->var_name);
+		$this->propertyPrefix($loop->var_name);
 		if (is_array($elements)) foreach ($elements as $loop->key => $loop->element) {
 			$parsed_element = $this->parseLoopElement($loop);
 			if (is_null($parsed_element)) break;
 			$loop_insert .= $parsed_element;
 		}
-		$this->preprop();
+		$this->propertyPrefix();
 		if (isset($loop->to) && ($loop->counter < $loop->to)) {
 			$loop_insert .= $this->parseLoopEmptyElements($loop);
 		}
@@ -969,7 +970,7 @@ class Template
 	 */
 	protected function parseLoopElement(Loop $loop)
 	{
-		$this->preprop($loop->element);
+		$this->propertyPrefix($loop->element);
 		$loop->counter++;
 		$loop_insert = '';
 		if (isset($loop->to) && ($loop->counter > $loop->to)) {
@@ -986,7 +987,7 @@ class Template
 			$loop_insert .= $this->parseVars($loop->content);
 			$this->shift();
 		}
-		$this->preprop();
+		$this->propertyPrefix();
 		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
 			$loop_insert = substr($loop_insert, 1);
 		}
@@ -1658,7 +1659,7 @@ class Template
 			$j        = strpos($content, '}', $i);
 			$var_name = substr($content, $i, $j - $i);
 		}
-		$auto_remove = $this->parseVarWillAutoremove($var_name);
+		$auto_remove = $this->parseVarWillAutoRemove($var_name);
 		$value       = $this->parseValue($var_name);
 		$object      = reset($this->objects);
 		if (is_array($value) && ($object instanceof Reflection_Property)) {
@@ -1736,12 +1737,12 @@ class Template
 		return $content;
 	}
 
-	//------------------------------------------------------------------------ parseVarWillAutoremove
+	//------------------------------------------------------------------------ parseVarWillAutoRemove
 	/**
 	 * @param $var_name string
 	 * @return boolean
 	 */
-	protected function parseVarWillAutoremove(&$var_name)
+	protected function parseVarWillAutoRemove(&$var_name)
 	{
 		if ($var_name[0] === '?') {
 			$var_name = substr($var_name, 1);
@@ -1753,20 +1754,26 @@ class Template
 		return $auto_remove;
 	}
 
-	//--------------------------------------------------------------------------------------- preprop
+	//-------------------------------------------------------------------------------- propertyPrefix
 	/**
-	 * @param $preprop object|string
+	 * @param $property_prefix object|string
 	 */
-	protected function preprop($preprop = null)
+	protected function propertyPrefix($property_prefix = null)
 	{
-		if (isset($preprop)) {
-			array_push($this->preprops, is_string($preprop)
-				? (($i = strrpos($preprop, DOT)) ? substr($preprop, $i + 1) : $preprop)
-				: $preprop
+		if (isset($property_prefix)) {
+			array_push(
+				$this->properties_prefix,
+				is_string($property_prefix)
+					? (
+						($i = strrpos($property_prefix, DOT))
+							? substr($property_prefix, $i + 1)
+							: $property_prefix
+						)
+					: $property_prefix
 			);
 		}
 		else {
-			array_pop($this->preprops);
+			array_pop($this->properties_prefix);
 		}
 	}
 

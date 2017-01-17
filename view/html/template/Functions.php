@@ -245,11 +245,11 @@ class Functions
 		$can_always_be_null
 	) {
 		$property_value = $property->toReflectionPropertyValue($object, true);
-		if ($template->preprops && !$name) {
+		if ($template->properties_prefix && !$name) {
 			$prefix = isset($prefix)
-				? ($prefix . '[' . reset($template->preprops) . ']')
-				: reset($template->preprops);
-			while ($next = next($template->preprops)) {
+				? ($prefix . '[' . reset($template->properties_prefix) . ']')
+				: reset($template->properties_prefix);
+			while ($next = next($template->properties_prefix)) {
 				if ((strpos($next, BS) !== false) && class_exists($next)) {
 					$next = Names::classToDisplay($next);
 				}
