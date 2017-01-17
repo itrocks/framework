@@ -21,4 +21,18 @@ class Input extends Element
 		if (isset($id))    $this->setAttribute('id',    $id);
 	}
 
+	//---------------------------------------------------------------------------------- setAttribute
+	/**
+	 * @param $name  string
+	 * @param $value string
+	 * @return Attribute
+	 */
+	public function setAttribute($name, $value = null)
+	{
+		if (($name === 'value') && is_string($value)) {
+			$value = str_replace(['{', '}'], ['&lbrace;', '&rbrace;'], $value);
+		}
+		return parent::setAttribute($name, $value);
+	}
+
 }
