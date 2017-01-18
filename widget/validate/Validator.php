@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Widget\Validate;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
@@ -282,7 +282,7 @@ class Validator implements Registerable
 	public function register(Register $register)
 	{
 		$register->aop->afterMethod(
-			[Data_Link::class, 'beforeWrite'], [$this, 'beforeWrite']
+			[Write::class, 'beforeWrite'], [$this, 'beforeWrite']
 		);
 		$register->aop->afterMethod(
 			[Main::class, 'runController'], [$this, 'afterMainControllerRun']

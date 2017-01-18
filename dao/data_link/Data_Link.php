@@ -59,69 +59,6 @@ abstract class Data_Link
 		}
 	}
 
-	//----------------------------------------------------------------------------------- beforeWrite
-	/**
-	 * @param $object  object
-	 * @param $options Option[]
-	 * @return boolean
-	 */
-	protected function beforeWrite($object, array &$options)
-	{
-		/** @var $before_writes Method_Annotation[] */
-		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
-		if ($before_writes) {
-			foreach ($options as $option) {
-				if ($option instanceof Option\Only) {
-					$only = $option;
-					break;
-				}
-			}
-			foreach ($before_writes as $before_write) {
-				// TODO This is here for in-prod diagnostic. Please remove when done.
-				if (!($before_write instanceof Method_Annotation)) {
-					trigger_error(
-						'Method_Annotation awaited ' . print_r($before_write, true) . LF
-						. 'on object ' . print_r($object, true),
-						E_USER_WARNING
-					);
-					$before_write = new Method_Annotation(
-						$before_write->value, new Reflection_Class(get_class($object)), 'before_write'
-					);
-					trigger_error(
-						'Try executing before_write ' . print_r($before_write, true), E_USER_WARNING
-					);
-				}
-				$response = $before_write->call($object, [$this, &$options]);
-				if ($response === false) {
-					return false;
-				}
-				elseif (is_array($response) && isset($only)) {
-					$only->properties = array_merge($response, $only->properties);
-				}
-			}
-		}
-		return true;
-	}
-
-	//------------------------------------------------------------------------------------- callEvent
-	/**
-	 * Call event
-	 *
-	 * @param $event       Event
-	 * @param $annotations Method_Annotation[]
-	 * @return boolean
-	 */
-	protected function callEvent(Event $event, array $annotations)
-	{
-		/** @var $annotations Method_Annotation[] */
-		foreach ($annotations as $annotation) {
-			if ($annotation->call($event->object, [$event]) === false) {
-				return false;
-			}
-		}
-		return true;
-	}
-
 	//---------------------------------------------------------------------------------- classNamesOf
 	/**
 	 * Gets the names of the classes associated to a store set name
