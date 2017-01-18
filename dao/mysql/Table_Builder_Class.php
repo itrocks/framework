@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -93,20 +94,17 @@ class Table_Builder_Class
 						)
 						&& !$property->isStatic()
 						&& !$property->getAnnotation('component')->value
-						&& (
-							$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-								!== Store_Annotation::FALSE
-						)
+						&& !Store_Annotation::of($property)->isFalse()
 					) {
 						$table->addColumn(Column::buildProperty($property));
 						if (
 							Link_Annotation::of($property)->isObject()
-							&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
+							&& !Store_Annotation::of($property)->value
 						) {
 							$class_name = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;
 							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
-							$table->addIndex(Index::buildLink($property->getAnnotation('storage')->value));
+							$table->addIndex(Index::buildLink(Storage_Annotation::of($property)->value));
 						}
 					}
 				}

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
@@ -22,8 +23,8 @@ trait Foreign_Key_Builder_Property
 		return substr(
 			$table_name . DOT . (
 				Link_Annotation::of($property)->value
-				? ('id_' . $property->getAnnotation('storage')->value)
-				: $property->getAnnotation('storage')->value
+					? ('id_' . Storage_Annotation::of($property)->value)
+					: Storage_Annotation::of($property)->value
 			),
 			0,
 			64
@@ -37,7 +38,7 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyFieldsToMysql(Reflection_Property $property)
 	{
-		return 'id_' . $property->getAnnotation('storage')->value;
+		return 'id_' . Storage_Annotation::of($property)->value;
 	}
 
 	//----------------------------------------------------------------- propertyReferenceTableToMysql

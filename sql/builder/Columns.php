@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -123,8 +124,8 @@ class Columns
 	public function build()
 	{
 		if (isset($this->properties)) {
-			$sql_columns = '';
 			$first_property = true;
+			$sql_columns    = '';
 			foreach ($this->properties as $key_path => $path) {
 				if ($path instanceof Func\Column) {
 					$sql_columns .= $this->buildDaoSelectFunction($key_path, $path, $first_property);
@@ -141,16 +142,16 @@ class Columns
 		elseif ($this->joins->getJoins()) {
 			$class_name = $this->joins->getStartingClassName();
 			/** @var $properties Reflection_Property[] */
-			$properties = [];
+			$properties   = [];
 			$column_names = [];
 			foreach (
 				(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 			) {
-				$storage = $property->getAnnotation('storage')->value;
-				$type = $property->getType();
+				$storage = Storage_Annotation::of($property)->value;
+				$type    = $property->getType();
 				if (!$property->isStatic() && !($type->isClass() && $type->isMultiple())) {
 					$column_names[$property->name] = $storage;
-					$properties[$property->name] = $property;
+					$properties[$property->name]   = $property;
 					if ($storage !== $property->name) {
 						$has_storage = true;
 					}
@@ -171,8 +172,8 @@ class Columns
 							if (!$sql_columns) {
 								$sql_columns .= $join->foreign_alias . '.id, ';
 							}
-							$column_name = $column_names[$property->name];
-							$id = $property->getType()->isClass() ? 'id_' : '';
+							$column_name              = $column_names[$property->name];
+							$id                       = $property->getType()->isClass() ? 'id_' : '';
 							$already[$property->name] = true;
 							$sql_columns .= $join->foreign_alias . DOT . BQ . $id . $column_name . BQ;
 							if (($column_name !== $property->name) && $this->resolve_aliases) {
@@ -234,13 +235,13 @@ class Columns
 			$join = $this->joins->getJoin($master_path);
 		}
 		if ($resolve_objects && ($class_name = $this->joins->getClass($path))) {
-			$class = new Reflection_Class($class_name);
+			$class             = new Reflection_Class($class_name);
 			$concat_properties = [];
 			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
 				$concat_properties[] = $path . DOT . $property_name;
 			}
 			$concat = new Concat($concat_properties);
-			$sql = $concat->toSql($this, $path);
+			$sql    = $concat->toSql($this, $path);
 		}
 		else {
 			$force_column = null;
@@ -276,7 +277,12 @@ class Columns
 	private function buildNextColumn($path, $join, &$first_property)
 	{
 		$sql_columns = '';
-		if ($first_property) $first_property = false; else $sql_columns = ', ';
+		if ($first_property) {
+			$first_property = false;
+		}
+		else {
+			$sql_columns = ', ';
+		}
 		return $sql_columns . $this->buildColumn($path, !$this->append, false, $join);
 	}
 

@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -152,7 +153,7 @@ class Where
 							$link     = Link_Annotation::of($property)->value;
 							if ($link) {
 								$prefix = ($master_path ? ($master_path . DOT) : '')
-									. $property->getAnnotation('storage')->value . DOT;
+									. Storage_Annotation::of($property)->value . DOT;
 							}
 						}
 						$build = $this->buildPath($prefix . $key, $value, $sub_clause);

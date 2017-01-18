@@ -3,6 +3,9 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use Exception;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Tools\String_Class;
 use mysqli_result;
 use ITRocks\Framework\Builder;
@@ -273,11 +276,11 @@ class Link extends Dao\Sql\Link
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
 						$property_name = $link_property->getName();
 						if (Dao::storedAsForeign($link_property)) {
-							$column_name = 'id_' . $link_property->getAnnotation('storage')->value;
+							$column_name = 'id_' . Storage_Annotation::of($link_property)->value;
 							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 						}
 						else {
-							$column_name = $link_property->getAnnotation('storage')->value;
+							$column_name = Storage_Annotation::of($link_property)->value;
 							$id[$column_name] = $link_property->getValue($object);
 						}
 					}
@@ -535,7 +538,7 @@ class Link extends Dao\Sql\Link
 				if (Dao::storedAsForeign($link_property)) {
 					$id = parent::getObjectIdentifier($object, $property_name);
 					if (!isset($id)) {
-						if ($link_class->getCompositeProperty()->name == $property_name) {
+						if ($link_class->getCompositeProperty()->name === $property_name) {
 							$id = isset($object->id) ? $object->id : null;
 							if (!isset($id)) {
 								return null;
@@ -601,9 +604,9 @@ class Link extends Dao\Sql\Link
 			return null;
 		}
 		else {
-			if ($clause == 'SELECT') {
+			if ($clause === 'SELECT') {
 				$result = $this->connection->query('SELECT FOUND_ROWS()');
-				$row = $result->fetch_row();
+				$row    = $result->fetch_row();
 				$result->free();
 				return $row[0];
 			}
@@ -626,7 +629,7 @@ class Link extends Dao\Sql\Link
 	{
 		$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
-			if ($property->getAnnotation(Store_Annotation::ANNOTATION) != Store_Annotation::JSON) {
+			if (!Store_Annotation::of($property)->isJson()) {
 				$type = $property->getType();
 				if (
 					$property->isStatic()
@@ -637,7 +640,7 @@ class Link extends Dao\Sql\Link
 				}
 				elseif ($type->isClass()) {
 					$properties[$property->name] = new Column(
-						'id_' . $property->getAnnotation('storage')->value
+						'id_' . Storage_Annotation::of($property)->value
 					);
 				}
 			}
@@ -683,44 +686,36 @@ class Link extends Dao\Sql\Link
 		foreach ($properties as $property) {
 			$property_name = $property->name;
 			if (
-				(!isset($only) || in_array($property_name, $only))
-				&& !in_array($property_name, $exclude)
+				(!isset($only) || in_array($property_name, $only)) && !in_array($property_name, $exclude)
 			) {
 				if (
 					!$property->isStatic()
 					&& !in_array($property_name, $exclude_properties)
-					&& (
-						$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-						!== Store_Annotation::FALSE
-					)
+					&& !Store_Annotation::of($property)->isFalse()
 				) {
 					$value            = isset($object->$property_name) ? $property->getValue($object) : null;
-					$property_is_null = $property->getAnnotation('null')->value;
+					$property_is_null = Null_Annotation::of($property)->value;
 					if (is_null($value) && !$property_is_null) {
 						$value = '';
 					}
 					if (in_array($property_name, $table_columns_names)) {
 						$element_type = $property->getType()->getElementType();
-						$storage_name = $property->getAnnotation('storage')->value;
 						// write basic
 						if ($element_type->isBasic(false)) {
+							$storage_name = Storage_Annotation::of($property)->value;
 							if (
 								$element_type->isString()
-								&& in_array(
-									$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+								&& Store_Annotation::of($property)->is(
 									[Store_Annotation::GZ, Store_Annotation::HEX]
 								)
 							) {
-								if (
-									$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-									=== Store_Annotation::GZ
-								) {
+								if (Store_Annotation::of($property)->isGz()) {
 									$value = gzdeflate($value);
 								}
 								$will_hex = true;
 							}
 							else {
-								$values = $property->getListAnnotation('values')->values();
+								$values = Values_Annotation::of($property)->values();
 								if (is_array($value)) {
 									$value = ($property->getType()->isMultipleString() && $values)
 										? join(',', $value)
@@ -745,8 +740,10 @@ class Link extends Dao\Sql\Link
 							}
 						}
 						// write array or object into a @store gz/hex/string
-						elseif ($store = $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
-							if ($store == Store_Annotation::JSON) {
+						elseif ($store = Store_Annotation::of($property)) {
+							// TODO HIGHEST REFACTOR + VALIDATE THIS OBJECT
+							$storage_name = Storage_Annotation::of($property)->value;
+							if ($store->isJson()) {
 								$value = $this->valueToWriteArray($value, $options);
 								if (isset($value) && !is_string($value)) {
 									$value = json_encode($value);
@@ -755,10 +752,10 @@ class Link extends Dao\Sql\Link
 							else {
 								$value = is_array($value) ? serialize($value) : strval($value);
 							}
-							if ($store === Store_Annotation::GZ) {
+							if ($store->isGz()) {
 								$value = 'X' . Q . bin2hex(gzdeflate($value)) . Q;
 							}
-							elseif ($store === Store_Annotation::HEX) {
+							elseif ($store->isHex()) {
 								$value = 'X' . Q . bin2hex($value) . Q;
 							}
 							$write[$storage_name] = $value;
@@ -772,6 +769,7 @@ class Link extends Dao\Sql\Link
 						// write object id if set or object if no id is set (new object)
 						else {
 							$id_column_name = 'id_' . $property_name;
+							$storage_name   = Storage_Annotation::of($property)->value;
 							if (is_object($value)) {
 								$value_class = new Link_Class(get_class($value));
 								$id_value    = (
@@ -854,7 +852,7 @@ class Link extends Dao\Sql\Link
 					$this->prepared_fetch[$property->name][] = $dao;
 				}
 			}
-			if ($property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ) {
+			if (Store_Annotation::of($property)->isGz()) {
 				$this->prepared_fetch[$property->name][] = self::GZINFLATE;
 			}
 		}
@@ -1251,7 +1249,7 @@ class Link extends Dao\Sql\Link
 							/** @var $property Reflection_Property $link annotates a Reflection_Property */
 							$property_name = $property->getName();
 							$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
-							$column_name  .= $properties[$property_name]->getAnnotation('storage')->value;
+							$column_name  .= Storage_Annotation::of($properties[$property_name])->value;
 							if (isset($write[$column_name])) {
 								$search[$property_name] = $write[$column_name];
 							}
@@ -1265,7 +1263,7 @@ class Link extends Dao\Sql\Link
 						if ($this->search($search, $class->name)) {
 							$id = [];
 							foreach ($search as $property_name => $value) {
-								$column_name = $properties[$property_name]->getAnnotation('storage')->value;
+								$column_name = Storage_Annotation::of($properties[$property_name])->value;
 								if (isset($write['id_' . $column_name])) {
 									$column_name = 'id_' . $column_name;
 								}
