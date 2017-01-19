@@ -47,22 +47,22 @@
 	 */
 	$.fn.gettextwidth = function(read_cache, write_cache)
 	{
-		read_cache  = (read_cache  == undefined) || read_cache;
-		write_cache = (write_cache == undefined) || write_cache;
+		read_cache  = (read_cache  === undefined) || read_cache;
+		write_cache = (write_cache === undefined) || write_cache;
 		var max_width = 0;
 		var $span = $('<span>').css('position', 'absolute').css({left: 0, top: 0}).csscopyfrom(this);
 		$span.appendTo('body');
 		this.each(function() {
 			var $this = $(this);
 			var width = read_cache ? $this.data('text-width') : undefined;
-			if (width == undefined) {
+			if (width === undefined) {
 				var val = $this.val();
 				if (!val.length) {
 					val = $this.text();
 				}
 				if (!val.length) {
 					val = $this.attr('placeholder');
-					val = (val == undefined) ? '' : val;
+					val = (val === undefined) ? '' : val;
 				}
 				$span.text(val.replace(' ', '_').split("\n").join('<br>'));
 				width = $span.width();
@@ -70,7 +70,9 @@
 					$this.data('text-width', width);
 				}
 			}
-			max_width = Math.max(max_width, width);
+			if (width !== 'auto') {
+				max_width = Math.max(max_width, width);
+			}
 		});
 		$span.remove();
 		return max_width;
@@ -155,15 +157,14 @@
 			var previous_width = parseInt($this.data('text-width'));
 			var margin_right = calcMargin.call($this, settings.margin_right);
 			var new_width = $this.gettextwidth(false) + margin_right;
-			if (new_width == margin_right) {
+			if (new_width === margin_right) {
 				$this.data('text-width', 'auto');
-				$this.width('100%');
 			}
 			else if (new_width != previous_width) {
 				$this.data('text-width', new_width);
 				var tag_name = $this.parent().prop('tagName').toLowerCase();
-				var $table = (tag_name == 'td') ? $this.closest('table') : undefined;
-				if ($table == undefined) {
+				var $table = (tag_name === 'td') ? $this.closest('table') : undefined;
+				if ($table === undefined) {
 					// single element
 					$this.width(Math.min(Math.max(settings.minimum, new_width), settings.maximum));
 				}
@@ -171,7 +172,7 @@
 					// element into a collection / map
 					// is element not named and next to a named element ? next_input = true
 					var name = $this.attr('name');
-					if (name == undefined) {
+					if (name === undefined) {
 						name = $this.prev('input, textarea').attr('name');
 					}
 					// calculate th's previous max width
@@ -182,7 +183,7 @@
 						// the element became wider than the widest element
 						$td.autowidthTableColumnWidth(new_width, settings);
 					}
-					else if (previous_width == previous_max_width) {
+					else if (previous_width === previous_max_width) {
 						$table.autowidthTableColumn($td, position + 1, $this.prevAll().length + 1, settings);
 					}
 				}
