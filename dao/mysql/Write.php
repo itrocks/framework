@@ -96,6 +96,36 @@ class Write extends Data_Link\Write
 		return true;
 	}
 
+	//---------------------------------------------------------------------------------- parseOptions
+	/**
+	 * Scan options for things we need for write
+	 */
+	protected function parseOptions()
+	{
+		$this->exclude        = [];
+		$this->only           = null;
+		$this->spread_options = [];
+		foreach ($this->options as $option) {
+			if ($option instanceof Option\Add) {
+				$this->force_add = true;
+			}
+			elseif ($option instanceof Option\Exclude) {
+				$this->exclude = array_merge($this->exclude, $option->properties);
+			}
+			elseif ($option instanceof Option\Link_Class_Only) {
+				$this->link_class_only = true;
+			}
+			elseif ($option instanceof Option\Only) {
+				$this->only = isset($this->only)
+					? array_merge($this->only, $option->properties)
+					: $option->properties;
+			}
+			if ($option instanceof Option\Spreadable) {
+				$this->spread_options[] = $option;
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Run the write feature
@@ -108,30 +138,9 @@ class Write extends Data_Link\Write
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->link->disconnect($this->object);
 			}
-			$class                = new Link_Class(get_class($this->object));
-			$this->exclude        = [];
-			$this->only           = null;
-			$this->spread_options = [];
-			$this->id_property    = 'id';
-			foreach ($this->options as $option) {
-				if ($option instanceof Option\Add) {
-					$this->force_add = true;
-				}
-				elseif ($option instanceof Option\Exclude) {
-					$this->exclude = array_merge($this->exclude, $option->properties);
-				}
-				elseif ($option instanceof Option\Only) {
-					$this->only = isset($this->only)
-						? array_merge($this->only, $option->properties)
-						: $option->properties;
-				}
-				elseif ($option instanceof Option\Link_Class_Only) {
-					$this->link_class_only = true;
-				}
-				if ($option instanceof Option\Spreadable) {
-					$spread_options[] = $option;
-				}
-			}
+			$class             = new Link_Class(get_class($this->object));
+			$this->id_property = 'id';
+			$this->parseOptions();
 			do {
 				$link = Class_\Link_Annotation::of($class);
 				if ($link->value) {
