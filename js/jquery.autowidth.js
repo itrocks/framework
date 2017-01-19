@@ -157,7 +157,7 @@
 			var new_width = $this.gettextwidth(false) + margin_right;
 			if (new_width == margin_right) {
 				$this.data('text-width', 'auto');
-				$this.width('auto');
+				$this.width('100%');
 			}
 			else if (new_width != previous_width) {
 				$this.data('text-width', new_width);
