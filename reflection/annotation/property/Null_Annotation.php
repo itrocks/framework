@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * This tells that the property can take the null value as a valid value (default is false)
@@ -28,7 +29,7 @@ class Null_Annotation extends Boolean_Annotation implements Property_Context_Ann
 		// default value for @null is true when the property links to a non mandatory object
 		if (
 			!$this->value
-			&& !$property->getAnnotation('mandatory')->value
+			&& !Mandatory_Annotation::of($property)->value
 			&& Link_Annotation::of($property)->isObject()
 		) {
 			$this->value = true;
