@@ -89,7 +89,7 @@
 	$.fn.autowidthTableColumn = function($td, td_position, input_position, settings)
 	{
 		// the element was the widest element : grow or shorten
-		var $this = $(this);
+		var $this  = $(this);
 		var $input = $this.find(
 			'tr>td:nth-child(' + td_position + ')>input:nth-child(' + input_position + '), '
 			+ 'tr>td:nth-child(' + td_position + ')>textarea:nth-child(' + input_position + ')'
@@ -153,17 +153,17 @@
 		//----------------------------------------------------------------------------------- calculate
 		var calculate = function()
 		{
-			var $this = $(this);
+			var $this          = $(this);
 			var previous_width = parseInt($this.data('text-width'));
-			var margin_right = calcMargin.call($this, settings.margin_right);
-			var new_width = $this.gettextwidth(false) + margin_right;
+			var margin_right   = calcMargin.call($this, settings.margin_right);
+			var new_width      = $this.gettextwidth(false) + margin_right;
 			if (new_width === margin_right) {
 				$this.data('text-width', 'auto');
 			}
-			else if (new_width != previous_width) {
+			else if (new_width !== previous_width) {
 				$this.data('text-width', new_width);
 				var tag_name = $this.parent().prop('tagName').toLowerCase();
-				var $table = (tag_name === 'td') ? $this.closest('table') : undefined;
+				var $table   = (tag_name === 'td') ? $this.closest('table') : undefined;
 				if ($table === undefined) {
 					// single element
 					$this.width(Math.min(Math.max(settings.minimum, new_width), settings.maximum));
@@ -176,8 +176,8 @@
 						name = $this.prev('input, textarea').attr('name');
 					}
 					// calculate th's previous max width
-					var position = $this.parent().prevAll('td').length;
-					var $td = $($table.firstcolgroup().cells()[position]);
+					var position           = $this.parent().prevAll('td').length;
+					var $td                = $($table.firstcolgroup().cells()[position]);
 					var previous_max_width = $td.data('max-width');
 					if (new_width > previous_max_width) {
 						// the element became wider than the widest element
@@ -198,9 +198,9 @@
 		//------------------------------------------------------------------------------ autowidth init
 		this.not('td>input').each(function() { calculate.call($(this)); });
 		this.filter('td>input').closest('table').each(function() {
-			var $table = $(this);
+			var $table       = $(this);
 			var $first_cells = $table.firstcolgroup().cells();
-			var $last_cells = $table.lastcolgroup().cells();
+			var $last_cells  = $table.lastcolgroup().cells();
 			for (var cell_position = 0; cell_position < $first_cells.length; cell_position++) {
 				var $input = $($last_cells[cell_position]).children(
 					'input:not([type=checkbox]):visible:first, textarea:visible:first'
