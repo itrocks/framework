@@ -30,7 +30,8 @@ class Integrated_Annotation extends List_Annotation
 
 	//--------------------------------------------------------------------------- $display_properties
 	/**
-	 * use to sort and display specified properties
+	 * Uses to sort and display specified properties
+	 *
 	 * @var string[]
 	 */
 	public $display_properties = null;
@@ -48,7 +49,8 @@ class Integrated_Annotation extends List_Annotation
 	{
 		if (isset($value) && empty($value)) {
 			$integrated_type = self::FULL;
-		}else{
+		}
+		else {
 
 			$i = strpos($value, ',');
 			if ($i === false) {
@@ -58,8 +60,9 @@ class Integrated_Annotation extends List_Annotation
 			$i = strrpos(substr($value, 0, $i), SP);
 			if ($i === false) {
 				$i = strlen($value);
-			}else{
-				$this->display_properties = explode(',',str_replace(SP,'',substr($value,$i)));
+			}
+			else {
+				$this->display_properties = explode(',', str_replace(SP, '', substr($value, $i)));
 			}
 
 			$integrated_type = substr($value, 0, $i);
@@ -73,7 +76,7 @@ class Integrated_Annotation extends List_Annotation
 			&& (parent::has(self::BLOCK) || parent::has(self::ALIAS))
 		) {
 				$this->value[] = self::SIMPLE;
-			}
+		}
 
 	}
 
