@@ -21,7 +21,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Map_Delete;
@@ -33,12 +32,50 @@ use ITRocks\Framework\Sql\Builder\Map_Insert;
 class Write extends Data_Link\Write
 {
 
+	//-------------------------------------------------------------------------------------- $exclude
+	/**
+	 * @var string[]
+	 */
+	protected $exclude;
+
+	//------------------------------------------------------------------------------------ $force_add
+	/**
+	 * @var boolean
+	 */
+	protected $force_add;
+
+	//---------------------------------------------------------------------------------- $id_property
+	/**
+	 * Identifier property name
+	 *
+	 * @var string
+	 */
+	protected $id_property;
+
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * @override
 	 * @var Link
 	 */
 	protected $link;
+
+	//------------------------------------------------------------------------------ $link_class_only
+	/**
+	 * @var boolean
+	 */
+	protected $link_class_only;
+
+	//----------------------------------------------------------------------------------------- $only
+	/**
+	 * @var string[]
+	 */
+	protected $only;
+
+	//------------------------------------------------------------------------------- $spread_options
+	/**
+	 * @var Option\Spreadable[]
+	 */
+	protected $spread_options;
 
 	//------------------------------------------------------------------------------------- callEvent
 	/**
@@ -71,25 +108,25 @@ class Write extends Data_Link\Write
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->link->disconnect($this->object);
 			}
-			$class          = new Link_Class(get_class($this->object));
-			$exclude        = [];
-			$id_property    = 'id';
-			$only           = null;
-			$spread_options = [];
+			$class                = new Link_Class(get_class($this->object));
+			$this->exclude        = [];
+			$this->only           = null;
+			$this->spread_options = [];
+			$this->id_property    = 'id';
 			foreach ($this->options as $option) {
 				if ($option instanceof Option\Add) {
-					$force_add = true;
+					$this->force_add = true;
 				}
 				elseif ($option instanceof Option\Exclude) {
-					$exclude = array_merge($exclude, $option->properties);
+					$this->exclude = array_merge($this->exclude, $option->properties);
 				}
 				elseif ($option instanceof Option\Only) {
-					$only = isset($only)
-						? array_merge($only, $option->properties)
+					$this->only = isset($this->only)
+						? array_merge($this->only, $option->properties)
 						: $option->properties;
 				}
 				elseif ($option instanceof Option\Link_Class_Only) {
-					$link_class_only = true;
+					$this->link_class_only = true;
 				}
 				if ($option instanceof Option\Spreadable) {
 					$spread_options[] = $option;
@@ -106,8 +143,8 @@ class Write extends Data_Link\Write
 					}
 				}
 				$object_to_write_array
-					= (new Object_To_Write_Array($this->link, $this->object, $spread_options))
-					->setPropertiesFilters($class, $only, $exclude)
+					= (new Object_To_Write_Array($this->link, $this->object, $this->spread_options))
+					->setPropertiesFilters($class, $this->only, $this->exclude)
 					->build();
 				$write             = $object_to_write_array->array;
 				$write_collections = $object_to_write_array->collections;
@@ -119,71 +156,19 @@ class Write extends Data_Link\Write
 				$properties = $class->accessProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
 				if ($write) {
-					// link class : id is the couple of composite properties values
-					if ($link->value) {
-						$search = [];
-						foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
-							/** @var $property Reflection_Property $link annotates a Reflection_Property */
-							$property_name = $property->getName();
-							$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
-							$column_name  .= Storage_Annotation::of($properties[$property_name])->value;
-							if (isset($write[$column_name])) {
-								$search[$property_name] = $write[$column_name];
-							}
-							elseif (isset($write[$property_name])) {
-								$search[$property_name] = $write[$column_name];
-							}
-							else {
-								trigger_error("Can't search $property_name", E_USER_ERROR);
-							}
-						}
-						if ($this->link->search($search, $class->name)) {
-							$id = [];
-							foreach ($search as $property_name => $value) {
-								$column_name = Storage_Annotation::of($properties[$property_name])->value;
-								if (isset($write['id_' . $column_name])) {
-									$column_name = 'id_' . $column_name;
-								}
-								$id[$column_name] = $value;
-								unset($write[$column_name]);
-							}
-						}
-						else {
-							$id = null;
-						}
-					}
-					// standard class : get the property 'id' value
-					else {
-						$id = $this->link->getObjectIdentifier($this->object, $id_property);
-					}
-					if ($write) {
-						$this->link->setContext($class->name);
-						if (empty($id) || isset($force_add)) {
-							$this->link->disconnect($this->object);
-							if (isset($force_add) && !empty($id)) {
-								$write['id'] = $id;
-							}
-							$id = $this->link->query(Sql\Builder::buildInsert($class->name, $write));
-							if (!empty($id)) {
-								$this->link->setObjectIdentifier($this->object, $id);
-							}
-						}
-						else {
-							$this->link->query(Sql\Builder::buildUpdate($class->name, $write, $id));
-						}
-					}
+					$this->writeArray($write, $properties, $class);
 				}
 				foreach ($write_collections as $write) {
 					list($property, $value) = $write;
-					$this->writeCollection($spread_options, $property, $value);
+					$this->writeCollection($property, $value);
 				}
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
-					$this->writeMap($spread_options, $property, $value);
+					$this->writeMap($property, $value);
 				}
 				foreach ($write_objects as $write) {
 					list($property, $value) = $write;
-					$this->writeObject($spread_options, $property, $value);
+					$this->writeObject($property, $value);
 				}
 				foreach ($write_properties as $write) {
 					/** @var $dao Data_Link */
@@ -191,30 +176,85 @@ class Write extends Data_Link\Write
 					$dao->writeProperty($property, $value);
 				}
 				// if link class : write linked object too
-				$id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
-				$class       = $link->value ? new Link_Class($link->value) : null;
+				$this->id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
+				$class             = $link->value ? new Link_Class($link->value) : null;
 			} while (
 				$class
-				&& !isset($link_class_only)
+				&& !isset($this->link_class_only)
 				&& !Null_Object::isNull($this->object, function($properties) use ($class) {
 					return Store_Annotation::storedPropertiesOnly(
 						Reflection_Property::filter($properties, $class->name)
 					);
 				})
 			);
-
-			/** @var $after_writes Method_Annotation[] */
-			$after_writes
-				= (new Reflection_Class(get_class($this->object)))->getAnnotations('after_write');
-			foreach ($after_writes as $after_write) {
-				if ($after_write->call($this->object, [$this->link, &$this->options]) === false) {
-					break;
-				}
-			}
-
+			$this->afterWrite($this->object, $this->options);
 			return $this->object;
 		}
 		return null;
+	}
+
+	//------------------------------------------------------------------------------------ writeArray
+	/**
+	 * @param $write      array
+	 * @param $properties Reflection_Property[]
+	 * @param $class      Link_Class
+	 */
+	protected function writeArray(array $write, array $properties, Link_Class $class)
+	{
+		$link = Class_\Link_Annotation::of($class);
+		// link class : id is the couple of composite properties values
+		if ($link->value) {
+			$search = [];
+			foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
+				/** @var $property Reflection_Property $link annotates a Reflection_Property */
+				$property_name = $property->getName();
+				$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
+				$column_name  .= Storage_Annotation::of($properties[$property_name])->value;
+				if (isset($write[$column_name])) {
+					$search[$property_name] = $write[$column_name];
+				}
+				elseif (isset($write[$property_name])) {
+					$search[$property_name] = $write[$column_name];
+				}
+				else {
+					trigger_error("Can't search $property_name", E_USER_ERROR);
+				}
+			}
+			if ($this->link->search($search, $class->name)) {
+				$id = [];
+				foreach ($search as $property_name => $value) {
+					$column_name = Storage_Annotation::of($properties[$property_name])->value;
+					if (isset($write['id_' . $column_name])) {
+						$column_name = 'id_' . $column_name;
+					}
+					$id[$column_name] = $value;
+					unset($write[$column_name]);
+				}
+			}
+			else {
+				$id = null;
+			}
+		}
+		// standard class : get the property 'id' value
+		else {
+			$id = $this->link->getObjectIdentifier($this->object, $this->id_property);
+		}
+		if ($write) {
+			$this->link->setContext($class->name);
+			if (empty($id) || isset($this->force_add)) {
+				$this->link->disconnect($this->object);
+				if (isset($this->force_add) && !empty($id)) {
+					$write['id'] = $id;
+				}
+				$id = $this->link->query(Sql\Builder::buildInsert($class->name, $write));
+				if (!empty($id)) {
+					$this->link->setObjectIdentifier($this->object, $id);
+				}
+			}
+			else {
+				$this->link->query(Sql\Builder::buildUpdate($class->name, $write, $id));
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------- writeCollection
@@ -223,13 +263,11 @@ class Write extends Data_Link\Write
 	 *
 	 * Ie when you write an order, it's implicitly needed to write its lines
 	 *
-	 * @param $options    Option\Spreadable[]
 	 * @param $property   Reflection_Property
 	 * @param $collection Component[]
 	 */
-	protected function writeCollection(
-		array $options, Reflection_Property $property, array $collection
-	) {
+	protected function writeCollection(Reflection_Property $property, array $collection)
+	{
 		// old collection
 		$class_name = get_class($this->object);
 		$old_object = Search_Object::create($class_name);
@@ -240,8 +278,9 @@ class Write extends Data_Link\Write
 
 		$element_class = $property->getType()->asReflectionClass();
 		$element_link  = Class_\Link_Annotation::of($element_class);
+		$id_set        = [];
+		$options       = $this->spread_options;
 		// collection properties : write each of them
-		$id_set = [];
 		if ($collection) {
 			$options[]             = new Option\Link_Class_Only();
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
@@ -298,11 +337,10 @@ class Write extends Data_Link\Write
 
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
-	 * @param $options  Option\Spreadable[]
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
-	protected function writeMap(array $options, Reflection_Property $property, array $map)
+	protected function writeMap(Reflection_Property $property, array $map)
 	{
 		// old map
 		$class                   = new Link_Class(get_class($this->object));
@@ -322,10 +360,10 @@ class Write extends Data_Link\Write
 		$id_set = [];
 		foreach ($map as $element) {
 			$id = $this->link->getObjectIdentifier($element)
-				?: $this->link->getObjectIdentifier($this->link->write($element, $options));
+				?: $this->link->getObjectIdentifier($this->link->write($element, $this->spread_options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
 				$property_add_event  = new Property_Add(
-					$this->link, $this->object, $element, $options, $property
+					$this->link, $this->object, $element, $this->spread_options, $property
 				);
 				$before_add_elements = $property->getAnnotations('before_add_element');
 				if ($this->callEvent($property_add_event, $before_add_elements)) {
@@ -343,7 +381,7 @@ class Write extends Data_Link\Write
 			$id = $this->link->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
 				$remove_event = new Property_Remove(
-					$this->link, $this->object, $old_element, $options, $property
+					$this->link, $this->object, $old_element, $this->spread_options, $property
 				);
 				$before_remove_elements = $property->getAnnotations('before_remove_element');
 				if ($this->callEvent($remove_event, $before_remove_elements)) {
@@ -356,13 +394,12 @@ class Write extends Data_Link\Write
 
 	//----------------------------------------------------------------------------------- writeObject
 	/**
-	 * @param $options          Option\Spreadable[]
 	 * @param $property         Reflection_Property
 	 * @param $component_object Component
 	 * @todo And what if $component_object has a @link class type ?
 	 * @todo working with @dao property annotation
 	 */
-	protected function writeObject(array $options, Reflection_Property $property, $component_object)
+	protected function writeObject(Reflection_Property $property, $component_object)
 	{
 		// if there is already a stored component object : there must be only one
 		if (is_object($component_object)) {
@@ -383,7 +420,7 @@ class Write extends Data_Link\Write
 		// create / update
 		else {
 			$component_object->setComposite($this->object);
-			$this->link->write($component_object, $options);
+			$this->link->write($component_object, $this->spread_options);
 		}
 	}
 

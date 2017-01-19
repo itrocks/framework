@@ -44,6 +44,22 @@ abstract class Write
 		$this->options = $options;
 	}
 
+	//------------------------------------------------------------------------------------ afterWrite
+	/**
+	 * @param $object  object
+	 * @param $options Option[]
+	 */
+	protected function afterWrite($object, array &$options)
+	{
+		/** @var $after_writes Method_Annotation[] */
+		$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
+		foreach ($after_writes as $after_write) {
+			if ($after_write->call($object, [$this->link, &$options]) === false) {
+				break;
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * @param $object  object
