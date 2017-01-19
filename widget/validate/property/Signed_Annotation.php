@@ -12,6 +12,9 @@ class Signed_Annotation extends Boolean_Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'signed';
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * @return string

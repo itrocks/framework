@@ -11,4 +11,7 @@ class Widget_Annotation extends Annotation
 {
 	use Types_Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'widget';
+
 }

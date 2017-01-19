@@ -19,6 +19,9 @@ class Set_Annotation extends Annotation
 {
 	use Types_Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'set';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value string

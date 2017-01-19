@@ -12,6 +12,9 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'validate';
+
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * Validates the property value within this object context

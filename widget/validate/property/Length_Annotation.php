@@ -12,6 +12,9 @@ class Length_Annotation extends Reflection\Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'length';
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * Gets the last validate() call resulting report message

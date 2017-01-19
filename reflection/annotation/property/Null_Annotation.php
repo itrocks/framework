@@ -11,6 +11,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 class Null_Annotation extends Boolean_Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'null';
+
 	//------------------------------------------------------------------------------------------ NULL
 	const NULL = 'null';
 

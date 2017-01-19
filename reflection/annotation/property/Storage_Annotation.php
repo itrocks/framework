@@ -11,6 +11,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 class Storage_Annotation extends Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'storage';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value               string

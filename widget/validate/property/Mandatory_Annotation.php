@@ -12,6 +12,9 @@ class Mandatory_Annotation extends Boolean_Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'mandatory';
+
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
 	 * Returns true if the object property is empty

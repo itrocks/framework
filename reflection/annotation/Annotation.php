@@ -62,6 +62,18 @@ class Annotation
 		);
 	}
 
+	//--------------------------------------------------------------------- classNameToAnnotationName
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	private static function classNameToAnnotationName($class_name)
+	{
+		return Names::classToDisplay(
+			lLastParse(Namespaces::shortClassName($class_name), '_Annotation')
+		);
+	}
+
 	//----------------------------------------------------------------------------- getAnnotationName
 	/**
 	 * Gets annotation name (the displayable root of the annotation class name, when set)
@@ -70,9 +82,7 @@ class Annotation
 	 */
 	public function getAnnotationName()
 	{
-		return Names::classToDisplay(
-			lLastParse(Namespaces::shortClassName(get_class($this)), '_Annotation')
-		);
+		return self::classNameToAnnotationName(get_class($this));
 	}
 
 	//----------------------------------------------------------------------------------------- local
@@ -86,7 +96,7 @@ class Annotation
 	public static function local(Reflection $reflection_object)
 	{
 		return $reflection_object->setAnnotationLocal(
-			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
+			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)
 		);
 	}
 
@@ -99,7 +109,7 @@ class Annotation
 	public static function of(Reflection $reflection_object)
 	{
 		return $reflection_object->getAnnotation(
-			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
+			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)
 		);
 	}
 
@@ -112,7 +122,7 @@ class Annotation
 	public static function setLocal(Reflection $reflection_object)
 	{
 		return $reflection_object->setAnnotationLocal(
-			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
+			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)
 		);
 	}
 

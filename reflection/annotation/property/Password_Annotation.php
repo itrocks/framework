@@ -13,6 +13,9 @@ use ITRocks\Framework\Tools\Encryption;
 class Password_Annotation extends Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'password';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Default annotation constructor receive the full doc text content

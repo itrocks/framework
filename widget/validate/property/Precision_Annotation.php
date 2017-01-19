@@ -12,6 +12,9 @@ class Precision_Annotation extends Reflection\Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'precision';
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * @return string

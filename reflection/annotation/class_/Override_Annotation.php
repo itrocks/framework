@@ -12,6 +12,9 @@ class Override_Annotation extends List_Annotation implements Multiple_Annotation
 {
 	use Annotation_In;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'override';
+
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string

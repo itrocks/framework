@@ -12,4 +12,7 @@ class Implements_Annotation extends List_Annotation
 {
 	use Types_Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'implements';
+
 }

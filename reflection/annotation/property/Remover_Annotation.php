@@ -16,4 +16,7 @@ class Remover_Annotation extends Annotation
 {
 	use Types_Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'remover';
+
 }

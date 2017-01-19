@@ -12,6 +12,9 @@ class Min_Value_Annotation extends Reflection\Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'min_value';
+
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * Gets the last validate() call resulting report message

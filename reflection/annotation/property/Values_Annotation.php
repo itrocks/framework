@@ -17,6 +17,9 @@ use ITRocks\Framework\Reflection\Type;
 class Values_Annotation extends List_Annotation implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'values';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string

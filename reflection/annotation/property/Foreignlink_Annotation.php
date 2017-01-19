@@ -15,6 +15,9 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	implements Property_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'foreignlink';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
