@@ -1,14 +1,17 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
+use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Data_Link\Object_To_Write_Array;
 use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
+use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection;
@@ -93,6 +96,26 @@ class Validator implements Registerable
 		$this->validator_on = true;
 	}
 
+	//--------------------------------------------------------------------- beforePropertyStoreString
+	/**
+	 * This is called before an object is changed to its string value before writing it using the data
+	 * link. Objects must be validated before doing this
+	 *
+	 * @param $joinpoint Before_Method
+	 */
+	public function beforePropertyStoreString(Before_Method $joinpoint)
+	{
+		$object = $joinpoint->parameters['value'];
+		if (is_object($object) && $this->validator_on) {
+			$property = new Reflection\Reflection_Property(get_class($joinpoint->object), 'options');
+			$property->setAccessible(true);
+			$options = $property->getValue($joinpoint->object);
+			if (!Null_Object::isNull($object)) {
+				$this->beforeWrite($object, $options);
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * The validator hook is called before each Data_Link::write() call to validate the object
@@ -102,7 +125,7 @@ class Validator implements Registerable
 	 * @param  $options Option[]
 	 * @throws View_Exception
 	 */
-	public function beforeWrite($object, array &$options)
+	public function beforeWrite($object, array $options)
 	{
 		if ($this->validator_on) {
 			$exclude = [];
@@ -290,6 +313,9 @@ class Validator implements Registerable
 		$register->aop->beforeMethod(
 			[Main::class, 'runController'], [$this, 'beforeMainControllerRun']
 		);
+		$register->aop->beforeMethod(
+			[Object_To_Write_Array::class, 'propertyStoreString'], [$this, 'beforePropertyStoreString']
+		);
 		$register->aop->afterMethod(
 			[Write_Controller::class, 'run'], [$this, 'afterWriteControllerRun']
 		);
@@ -313,7 +339,7 @@ class Validator implements Registerable
 			'precision'  => Property\Precision_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
-			// 'var'        => Property\Var_Annotation::class,
+			'var'        => Property\Var_Annotation::class,
 			'warning'    => Property\Warning_Annotation::class,
 		]);
 	}
