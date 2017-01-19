@@ -60,15 +60,7 @@ input.combo {
 			border: 0;
 			cursor: pointer;
 			display: inline-block;
-			margin-left: -16px;
-		}
-
-		&.edit {
-			background: url("img/add_action.png") no-repeat center 2px;
-			display: none;
-			position: absolute;
-			right: 0;
-			top: 0;
+			margin-left: -16px !important;
 		}
 	}
 }
@@ -174,7 +166,6 @@ fieldset {
 
 					>td {
 						padding: 1px 5px 0 0;
-						position: relative;
 						white-space: nowrap;
 
 						>input, >textarea {

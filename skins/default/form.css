@@ -48,13 +48,7 @@ input.combo ~ button, input.combo ~ a {
     border: 0;
     cursor: pointer;
     display: inline-block;
-    margin-left: -16px; }
-  input.combo ~ button.edit, input.combo ~ a.edit {
-    background: url("img/add_action.png") no-repeat center 2px;
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 0; }
+    margin-left: -16px !important; }
 
 /* fieldset */
 fieldset {
@@ -115,7 +109,6 @@ fieldset {
         background-color: #defdaf; }
       fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
-        position: relative;
         white-space: nowrap; }
         fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > input, fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > input, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > textarea {
           height: 18px;
