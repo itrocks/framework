@@ -370,19 +370,6 @@ class Html_Builder_Type
 			}
 			$input->addClass('combo');
 			$this->addConditionsToElement($input);
-			// 'add' / 'edit' anchor
-			$fill_combo = isset($this->template)
-				? ['fill_combo' => $this->template->getFormId() . DOT . $this->getFieldName('id_', false)]
-				: '';
-			$edit = new Anchor(
-				View::current()->link(
-					$this->value ? get_class($this->value) : $class_name, Feature::F_ADD, null, $fill_combo
-				),
-				'edit'
-			);
-			$edit->addClass('edit');
-			$edit->setAttribute('target', Target::BLANK);
-			$edit->setAttribute('title', '|Edit ¦' . Names::classToDisplay($class_name) . '¦|');
 			// 'more' button
 			$more = new Button('more');
 			$more->addClass('more');
@@ -391,7 +378,7 @@ class Html_Builder_Type
 				$this->setOnChangeAttribute($id_input);
 			else
 				$this->setOnChangeAttribute($input);
-			return (isset($id_input) ? $id_input : '') . $input . $more . $edit;
+			return (isset($id_input) ? $id_input : '') . $input . $more;
 		}
 		return (isset($id_input) ? $id_input : '') . $input;
 	}
