@@ -17,6 +17,9 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 class Representative_Annotation extends Representative implements Class_Context_Annotation
 {
 
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'representative';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Builds representative annotation content
