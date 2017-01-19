@@ -32,19 +32,28 @@ class Object_To_Write_Array
 
 	//---------------------------------------------------------------------------------------- $array
 	/**
-	 * @var array
+	 * The resulting write array associates the database table's column name to its stored value
+	 *
+	 * @var array [string $column_name => mixed $value]
 	 */
 	public $array;
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
+	 * The class of the written object we want to write properties from
+	 *
+	 * On @link classes : Object_To_Write_Array may be called for each @link class, then for the
+	 * linked class, to restrict the written properties (one write per link class).
+	 *
 	 * @var Link_Class
 	 */
 	protected $class;
 
 	//---------------------------------------------------------------------------------- $collections
 	/**
-	 * @var array
+	 * The resulting collections of objects (matches @link Collection properties of $object)
+	 *
+	 * @var array [Reflection_Property $property, object[] $value]
 	 */
 	public $collections;
 
@@ -58,24 +67,32 @@ class Object_To_Write_Array
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
+	 * The data link used for write
+	 *
 	 * @var Identifier_Map
 	 */
 	protected $link;
 
 	//----------------------------------------------------------------------------------------- $maps
 	/**
-	 * @var array
+	 * The resulting maps of objects (matches @link Map properties of $object)
+	 *
+	 * @var array [Reflection_Property $property, object[] $value]
 	 */
 	public $maps;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
+	 * The written object : we convert values to write from it
+	 *
 	 * @var object
 	 */
 	protected $object;
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
+	 *The resulting component objects (matches @component @link Object properties of $object)
+	 *
 	 * @var array
 	 */
 	public $objects;
@@ -118,6 +135,8 @@ class Object_To_Write_Array
 
 	//----------------------------------------------------------------------------------------- build
 	/**
+	 * Build output properties values (all public properties)
+	 *
 	 * @return static
 	 * @throws Exception
 	 */
@@ -190,6 +209,8 @@ class Object_To_Write_Array
 
 	//--------------------------------------------------------------------------------- propertyBasic
 	/**
+	 * Build data to be written for a property that has a basic (Type::isBasic) type
+	 *
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
 	 * @return mixed
@@ -231,15 +252,17 @@ class Object_To_Write_Array
 
 	//----------------------------------------------------------------------------------- propertyDao
 	/**
+	 * Check if the property value has to be stored using an alternative data link (@dao)
+	 *
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
-	 * @return string[]|null [mixed $property_name, mixed $value, Data_Link $dao]
+	 * @return string[]|null [mixed $property_name, mixed $value, Data_Link $data_link]
 	 */
 	protected function propertyDao(Reflection_Property $property, $value)
 	{
-		if ($dao_name = $property->getAnnotation('dao')->value) {
-			if (($dao = Dao::get($dao_name)) !== $this) {
-				return [$property->name, $value, $dao];
+		if ($dao_identifier = $property->getAnnotation('dao')->value) {
+			if (($data_link = Dao::get($dao_identifier)) !== $this) {
+				return [$property->name, $value, $data_link];
 			}
 		}
 		return null;
@@ -247,6 +270,9 @@ class Object_To_Write_Array
 
 	//------------------------------------------------------------------------------ propertyMapValue
 	/**
+	 * For @link Map properties values : each value that is not an object is an identifier to the
+	 * final object : read it and replace the final value.
+	 *
 	 * @param $property Reflection_Property
 	 * @param $values   array
 	 * @return array $values
@@ -270,13 +296,14 @@ class Object_To_Write_Array
 
 	//-------------------------------------------------------------------------------- propertyObject
 	/**
+	 * Build data to be written for a property value that has is an object
+	 *
 	 * @param $property          Reflection_Property
 	 * @param $value             object
 	 * @param $aop_getter_ignore boolean
 	 */
-	protected function propertyObject(
-		Reflection_Property $property, $value, $aop_getter_ignore = false
-	) {
+	protected function propertyObject(Reflection_Property $property, $value, $aop_getter_ignore)
+	{
 		$class_name     = get_class($value);
 		$element_type   = $property->getType()->getElementType();
 		$id_column_name = 'id_' . $property->name;
@@ -305,13 +332,15 @@ class Object_To_Write_Array
 		}
 	}
 
-	//--------------------------------------------------------------------------------- propertyStore
+	//--------------------------------------------------------------------------- propertyStoreString
 	/**
+	 * Value to be stored as string : change an array / object to string when it has a @store option
+	 *
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
 	 * @return string
 	 */
-	protected function propertyStore(Reflection_Property $property, $value)
+	protected function propertyStoreString(Reflection_Property $property, $value)
 	{
 		$store = Store_Annotation::of($property);
 		if ($store->isJson()) {
@@ -334,9 +363,12 @@ class Object_To_Write_Array
 
 	//----------------------------------------------------------------------- propertyTableColumnName
 	/**
-	 * @param $property          Reflection_Property
-	 * @param $value             mixed
-	 * @param $aop_getter_ignore boolean
+	 * Build the value to be written for a property linked to a table column
+	 * (it must not have @store false, nor be a collection, map or component object)
+	 *
+	 * @param $property          Reflection_Property The property
+	 * @param $value             mixed The value of the property to be written
+	 * @param $aop_getter_ignore boolean The Getter::$ignore state before starting writing
 	 * @return array [string $storage_name, mixed $write_value, $write_property]
 	 */
 	protected function propertyTableColumnName(
@@ -351,7 +383,7 @@ class Object_To_Write_Array
 		}
 		// write array or object into a @store gz/hex/string
 		elseif (Store_Annotation::of($property)->value) {
-			$write_value = $this->propertyStore($property, $value);
+			$write_value = $this->propertyStoreString($property, $value);
 			if ($write_property = $this->propertyDao($property, $write_value)) {
 				$write_value = '';
 			}
@@ -371,12 +403,13 @@ class Object_To_Write_Array
 		return [$storage_name, $write_value, $write_property];
 	}
 
-
 	//-------------------------------------------------------------------------- setPropertiesFilters
 	/**
-	 * @param $class   Link_Class
-	 * @param $only    string[]|null
-	 * @param $exclude string[]
+	 * Set input data not set by __construct : $class, $only and $exclude
+	 *
+	 * @param $class   Link_Class The class of the written object we want to write properties from
+	 * @param $only    string[]|null Will write only these properties : each value is a property name
+	 * @param $exclude string[] Will exclude these properties from writing : each value is a name
 	 * @return static
 	 */
 	public function setPropertiesFilters(Link_Class $class, array $only = null, array $exclude)
