@@ -75,7 +75,7 @@ class Integrated_Annotation extends List_Annotation
 			&& !parent::has(self::SIMPLE)
 			&& (parent::has(self::BLOCK) || parent::has(self::ALIAS))
 		) {
-				$this->value[] = self::SIMPLE;
+			$this->value[] = self::SIMPLE;
 		}
 
 	}
