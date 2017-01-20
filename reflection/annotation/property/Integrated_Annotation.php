@@ -28,15 +28,12 @@ class Integrated_Annotation extends List_Annotation
 	//---------------------------------------------------------------------------------------- SIMPLE
 	const SIMPLE = 'simple';
 
-
-
 	//--------------------------------------------------------------------------- $display_properties
 	/**
 	 * use to sort and display specified properties
 	 * @var string[]
 	 */
 	public $display_properties = null;
-
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
