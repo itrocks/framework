@@ -48,7 +48,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * Allowed remote addresses (host names or IPs)
 	 *
-	 * @var string[]
+	 * @var array
 	 */
 	public $remote_addresses;
 
