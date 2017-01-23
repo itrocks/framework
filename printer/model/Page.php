@@ -11,7 +11,7 @@ use ITRocks\Framework\Tools\Has_Ordering;
  *
  * The page number : 1 is the first page, 3 is the last page, 2 is 'all others pages'
  *
- * @override $ordering @getter getNumber @setter setNumber @signed
+ * @override ordering @getter getNumber @setter setNumber @signed
  * @representative model, ordering
  * @set Printer_Model_Pages
  */
