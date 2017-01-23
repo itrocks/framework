@@ -13,6 +13,27 @@ use ITRocks\Framework\View;
  * An access control plugin for features available only from a set of IP
  *
  * The same set of IP accesses all features
+ *
+ * @example config.php :
+ *   Framework\Access\IP::class => [
+ *			'Group 1' => [
+ *				IP::REMOTE_ADDRESSES => [
+ *					'IP1', 'IP2'
+ * 				],
+ *        IP::URIS => [
+ *					'action1', 'action2'
+ *        ]
+ *      ]
+ *			'Group 2' => [
+ *				IP::REMOTE_ADDRESSES => [
+ *					'IP1', 'IP2'
+ * 				],
+ *        IP::URIS => [
+ *					'action1', 'action2'
+ *        ]
+ *      ]
+ *  ]
+ *
  */
 class IP implements Configurable, Registerable
 {
