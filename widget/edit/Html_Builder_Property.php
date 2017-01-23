@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit;
 
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
@@ -214,6 +213,9 @@ class Html_Builder_Property extends Html_Builder_Type
 				$this->on_change[] = str_replace([BS, '::'], SL, $user_change->value);
 			}
 		}
+		if ($placeholder = Placeholder_Annotation::of($this->property)->value) {
+			$this->placeholder = $placeholder;
+		}
 		return parent::build();
 	}
 
@@ -255,9 +257,6 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($this->property->getAnnotation('password')->value) {
 			$element->setAttribute('type', 'password');
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
-		}
-		if ($placeholder = $this->property->getAnnotation(Placeholder_Annotation::ANNOTATION)->value) {
-			$element->setAttribute('placeholder', Loc::tr($placeholder));
 		}
 		return $element;
 	}

@@ -61,6 +61,12 @@ class Html_Builder_Type
 	 */
 	public $on_change = [];
 
+	//---------------------------------------------------------------------------------- $placeholder
+	/**
+	 * @var string
+	 */
+	public $placeholder;
+
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
 	 * @var string
@@ -217,6 +223,9 @@ class Html_Builder_Type
 			$format ? Loc::dateToLocale($this->value) : $this->value
 		);
 		$input->setAttribute('autocomplete', 'off');
+		if ($this->placeholder) {
+			$input->setAttribute('placeholder', $this->placeholder);
+		}
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
 		}
@@ -422,6 +431,9 @@ class Html_Builder_Type
 			$input = $this->makeTextInputOrTextarea($multiline, $this->value);
 		}
 		$this->addConditionsToElement($input);
+		if ($this->placeholder) {
+			$input->setAttribute('placeholder', $this->placeholder);
+		}
 		return $input;
 	}
 
