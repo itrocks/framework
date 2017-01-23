@@ -47,8 +47,10 @@ class IP implements Configurable, Registerable
 	 */
 	public function __construct($configuration = [])
 	{
-		foreach ($configuration as $key => $value) {
-			$this->$key = is_array($value) ? array_combine($value, $value) : $value;
+		foreach ($configuration as $group_name => $group) {
+			foreach ($group as $key => $value) {
+				$this->$key[$group_name] = is_array($value) ? array_combine($value, $value) : $value;
+			}
 		}
 	}
 
@@ -58,9 +60,11 @@ class IP implements Configurable, Registerable
 	 */
 	public function checkAccess(&$uri)
 	{
-		if (pregMatchArray($this->uris, $uri, true)) {
-			if (!$this->checkIP($_SERVER['REMOTE_ADDR'])) {
-				$uri = View::link(Application::class, Controller\Feature::F_BLANK);
+		foreach ($this->uris as $group_name => $value) {
+			if (pregMatchArray($this->uris[$group_name], $uri, true)) {
+				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
+					$uri = View::link(Application::class, Controller\Feature::F_BLANK);
+				}
 			}
 		}
 	}
@@ -70,19 +74,21 @@ class IP implements Configurable, Registerable
 	 * Returns true if the remote address matches the originators list
 	 *
 	 * @param $remote_address string The remote client address (IP)
+	 * @param $group_name string
 	 * @return boolean
 	 */
-	private function checkIP($remote_address)
+	private function checkIP($remote_address, $group_name)
 	{
-		if (isset($this->remote_addresses[$remote_address])) {
+		if (isset($this->remote_addresses[$group_name][$remote_address])) {
 			return true;
 		}
-		foreach ($this->remote_addresses as $address) {
+
+		foreach ($this->remote_addresses[$group_name] as $address) {
 			if (!$this->isIP($address)) {
-				unset($this->remote_addresses[$address]);
+				unset($this->remote_addresses[$group_name][$address]);
 				$ip = gethostbyname($address);
 				if ($ip !== $address) {
-					$this->remote_addresses[$ip] = $ip;
+					$this->remote_addresses[$group_name][$ip] = $ip;
 					if ($ip === $remote_address) {
 						return true;
 					}
