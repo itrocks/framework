@@ -1,8 +1,6 @@
 (function($)
 {
 
-	// TODO all functions here are private and should be private and not set as jQuery plugins
-
 	//------------------------------------------------------------------------------------- autoWidth
 	$.fn.autoWidth = function(options)
 	{
