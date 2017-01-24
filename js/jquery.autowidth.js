@@ -13,7 +13,7 @@
 			minimum:      40,
 			margin_right: {
 				'textarea':     20,
-				':focus':       'W',
+				':focus':       'WW',
 				'.combo':       10,
 				'.combo:focus': -10
 			}
@@ -182,10 +182,7 @@
 						val = $element.attr('placeholder');
 						if (val === undefined) val = '';
 					}
-					$span.text(
-						addMargin($element, val, settings.margin_right)
-						.split("\n").join('<br>')
-					);
+					$span.text(addMargin($element, val, settings.margin_right));
 					width = $span.width();
 					if (write_cache) {
 						$element.data('text-width', width);
