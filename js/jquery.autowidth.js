@@ -88,6 +88,8 @@
 		return this;
 	};
 
+	$.fn.autowidth = $.fn.autoWidth;
+
 	//-------------------------------------------------------------------------- autoWidthTableColumn
 	$.fn.autoWidthTableColumn = function($td, td_position, input_position, settings)
 	{
