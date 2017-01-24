@@ -45,7 +45,7 @@ trait Person
 		return $result;
 	}
 
-	//------------------------------------------------------------------------------ setAutomaticName
+	//---------------------------------------------------------------------------------- generateName
 	public function generateName(){
 		if (empty($this->name)) {
 			$this->name = $this->__toString();
