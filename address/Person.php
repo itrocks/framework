@@ -46,7 +46,8 @@ trait Person
 	}
 
 	//---------------------------------------------------------------------------------- generateName
-	public function generateName(){
+	public function generateName()
+	{
 		if (empty($this->name)) {
 			$this->name = $this->__toString();
 		}
