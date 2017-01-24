@@ -5,7 +5,7 @@ $('document').ready(function()
 		if (!this.length) return;
 
 		var $input = this.inside('input.custom.name');
-		$input.autowidth();
+		$input.autoWidth();
 
 		//------------------------------------------------------------------------------- h2 span click
 		this.inside('h2>span').click(function()

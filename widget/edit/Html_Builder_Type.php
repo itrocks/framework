@@ -297,7 +297,7 @@ class Html_Builder_Type
 			$this->setInputAsReadOnly($input);
 		}
 		$input->addClass('float');
-		$input->addClass('autowidth');
+		$input->addClass('auto_width');
 		$this->addConditionsToElement($input);
 		return $input;
 	}
@@ -332,7 +332,7 @@ class Html_Builder_Type
 			$this->setInputAsReadOnly($input);
 		}
 		$input->addClass('integer');
-		$input->addClass('autowidth');
+		$input->addClass('auto_width');
 		$this->addConditionsToElement($input);
 		return $input;
 	}
@@ -352,7 +352,7 @@ class Html_Builder_Type
 		$input = new Input($input_id, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
-		$input->addClass('autowidth');
+		$input->addClass('auto_width');
 		// id input. Should always be output, except if as_string, cause can be used by other properties
 		if (!$as_string) {
 			$id_input = new Input(
@@ -500,13 +500,13 @@ class Html_Builder_Type
 	{
 		if ($multiline) {
 			$input = new Textarea($this->getFieldName(), $value);
-			$input->addClass('autoheight');
+			$input->addClass('auto_height');
 		}
 		else {
 			$input = new Input($this->getFieldName(), $value);
 			$input->setAttribute('autocomplete', 'off');
 		}
-		$input->addClass('autowidth');
+		$input->addClass('auto_width');
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
 		}
