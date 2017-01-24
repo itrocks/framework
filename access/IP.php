@@ -73,6 +73,16 @@ class IP implements Configurable, Registerable
 				$this->{$key}[$group_name] = is_array($value) ? array_combine($value, $value) : $value;
 			}
 		}
+
+		// retro-compatibility with one-group-only configuration
+		$first_uri = reset($this->uris);
+		if (!is_array($first_uri)) {
+			$this->uris = [$this->uris];
+		}
+		$first_remote_address = reset($this->remote_addresses);
+		if (!is_array($first_remote_address)) {
+			$this->remote_addresses = [$this->remote_addresses];
+		}
 	}
 
 	//----------------------------------------------------------------------------------- checkAccess
