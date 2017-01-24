@@ -12,7 +12,7 @@
 			maximum:      1024,
 			minimum:      40,
 			margin_right: {
-				'textarea':     13,
+				'textarea':     20,
 				':focus':       'W',
 				'.combo':       10,
 				'.combo:focus': -10
