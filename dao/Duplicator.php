@@ -43,8 +43,8 @@ class Duplicator
 	{
 		if ($this->dao->getObjectIdentifier($object)) {
 			// duplicate @link Collection and Map properties values
-			$class_name = get_class($object);
-			$class      = new Reflection_Class($class_name);
+			$class_name         = get_class($object);
+			$class              = new Reflection_Class($class_name);
 			$link               = Class_\Link_Annotation::of($class);
 			$exclude_properties = $link->value
 				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
