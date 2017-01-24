@@ -70,7 +70,7 @@ class IP implements Configurable, Registerable
 	{
 		foreach ($configuration as $group_name => $group) {
 			foreach ($group as $key => $value) {
-				$this->$key[$group_name] = is_array($value) ? array_combine($value, $value) : $value;
+				$this->{$key}[$group_name] = is_array($value) ? array_combine($value, $value) : $value;
 			}
 		}
 	}
