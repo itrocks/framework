@@ -48,7 +48,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * Allowed remote addresses (host names or IPs)
 	 *
-	 * @var array
+	 * @var array string[][] [string $free_group_name => string[]]
 	 */
 	public $remote_addresses;
 
@@ -56,7 +56,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * URIs restricted by originator access control, used to call a feature into the application
 	 *
-	 * @var string[]
+	 * @var array string[][] [string $free_group_name => string[]]
 	 */
 	public $uris;
 
@@ -81,8 +81,8 @@ class IP implements Configurable, Registerable
 	 */
 	public function checkAccess(&$uri)
 	{
-		foreach ($this->uris as $group_name => $value) {
-			if (pregMatchArray($this->uris[$group_name], $uri, true)) {
+		foreach ($this->uris as $group_name => $uris) {
+			if (pregMatchArray($uris, $uri, true)) {
 				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
 					$uri = View::link(Application::class, Controller\Feature::F_BLANK);
 				}
@@ -95,7 +95,7 @@ class IP implements Configurable, Registerable
 	 * Returns true if the remote address matches the originators list
 	 *
 	 * @param $remote_address string The remote client address (IP)
-	 * @param $group_name string
+	 * @param $group_name     string
 	 * @return boolean
 	 */
 	private function checkIP($remote_address, $group_name)
