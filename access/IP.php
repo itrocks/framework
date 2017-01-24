@@ -70,11 +70,18 @@ class IP implements Configurable, Registerable
 	{
 		foreach ($configuration as $group_name => $group) {
 			foreach ($group as $key => $value) {
-				$this->{$key}[$group_name] = is_array($value) ? array_combine($value, $value) : $value;
+				if (is_array($value)) {
+					$this->{$key}[$group_name] = array_combine($value, $value);
+				}
+				// retro-compatibility with one-group-only configuration (into config.php)
+				else {
+					$this->$group_name = array_combine($group, $group);
+					break;
+				}
 			}
 		}
 
-		// retro-compatibility with one-group-only configuration
+		// retro-compatibility with one-group-only configuration (running sessions are compatible too)
 		$first_uri = reset($this->uris);
 		if (!is_array($first_uri)) {
 			$this->uris = [$this->uris];
