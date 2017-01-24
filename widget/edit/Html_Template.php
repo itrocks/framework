@@ -187,7 +187,15 @@ class Html_Template extends Template
 					$this->cache[self::PARSED_ID][$this->getFormId()][$prefix] = true;
 					if ($property instanceof Reflection_Property_Value) {
 						$parent_object = $property->getObject();
-						$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object) : null;
+
+						if (is_object($parent_object->$prefix)) {
+							$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object->$prefix)
+								: null;
+						}else{
+							$id = isset($parent_object) ? Dao::getObjectIdentifier($parent_object)
+								: null;
+						}
+
 						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
 						$id_value          = $html_builder_type->setTemplate($this)->build();
 					}
