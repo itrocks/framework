@@ -135,8 +135,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		if (!isset($this->doc_comment)) {
 			$this->doc_comment = '';
-			$tokens =& $this->class->source->getTokens();
-			$token_key = $this->token_key;
+			$tokens            =& $this->class->source->getTokens();
+			$token_key         = $this->token_key;
 			while (is_array($token = $tokens[--$token_key])) {
 				if ($token[0] === T_DOC_COMMENT) {
 					$this->doc_comment = $token[1] . $this->doc_comment;

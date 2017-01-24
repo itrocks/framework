@@ -123,7 +123,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	public function getDeclaringTrait()
 	{
 		if (!isset($this->declaring_trait)) {
-			$properties = $this->getDeclaringClass()->getProperties();
+			$properties            = $this->getDeclaringClass()->getProperties();
 			$this->declaring_trait = isset($properties[$this->name])
 				? $this->getDeclaringClass()
 				: $this->getDeclaringTraitInternal($this->getDeclaringClass());
@@ -351,9 +351,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	private function scanBefore()
 	{
 		$this->doc_comment = '';
-		$this->is_static = false;
-		$tokens =& $this->class->source->getTokens();
-		$token_key = $this->token_key;
+		$this->is_static   = false;
+		$tokens            =& $this->class->source->getTokens();
+		$token_key         = $this->token_key;
 		while (is_array($token = $tokens[--$token_key])) {
 			switch ($token[0]) {
 				case T_DOC_COMMENT:
