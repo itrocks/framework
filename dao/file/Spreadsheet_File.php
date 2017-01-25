@@ -26,7 +26,7 @@ class Spreadsheet_File
 	protected function cleanupIncomingData(&$data)
 	{
 		$data = trim($data);
-		foreach (['…' => '...', '  ' => ' '] as $search => $replace) {
+		foreach (['…' => '...', ' ' => ' ', '  ' => ' '] as $search => $replace) {
 			while (strpos($data, $search) !== false) {
 				$data = str_replace($search, $replace, $data);
 			}
