@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Edit;
 
 use DateTime;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
@@ -351,7 +352,8 @@ class Html_Builder_Type
 		$input_id = $as_string ? $this->getFieldName() : null;
 		$input = new Input($input_id, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
-		$input->setAttribute('data-combo-class', Names::classToSet($class_name));
+		$input->setData('edit-class', Builder::current()->sourceClassName($class_name));
+		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')));
 		$input->addClass('auto_width');
 		// id input. Should always be output, except if as_string, cause can be used by other properties
 		if (!$as_string) {

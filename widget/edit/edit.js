@@ -323,7 +323,11 @@ $('document').ready(function()
 		.click(function(event)
 		{
 			if (event.ctrlKey) {
-				$(this).siblings('.edit').click();
+				var $this = $(this);
+				var id   = $this.prev().val();
+				var path = $this.data('edit-class').repl('\\', '/');
+				var uri  = SL + path + SL + id + SL + 'edit';
+				redirect(uri, '#main');
 			}
 		})
 
@@ -335,31 +339,6 @@ $('document').ready(function()
 				$(this).prev().val('');
 				$(this).val('');
 			}
-		});
-
-		//--------------------------------------------------------------------------- input.combo~.edit
-		/**
-		 * On clicking on [+] or when ctrl+click on a combo input : open add/edit popup form
-		 */
-		this.inside('input.combo~.edit').click(function()
-		{
-			var $this = $(this);
-			var $input = $this.siblings('input.combo');
-			if (!$this.data('link')) {
-				$this.data('link', $this.attr('href'));
-			}
-			var href = $this.data('link');
-			var id = $input.prev().val();
-			$this.attr('href', id ? href.repl('/add', SL + $input.prev().val() + SL + 'edit') : href);
-		});
-
-		this.inside('input.combo~.edit').attr('tabindex', -1);
-
-		this.inside('input.combo').each(function()
-		{
-			$(this).parent()
-				.mouseenter(function() { $(this).children('.edit').show(); })
-				.mouseleave(function() { $(this).children('.edit').hide(); });
 		});
 
 		//--------------------------------------------------------------------- input.combo~.more click

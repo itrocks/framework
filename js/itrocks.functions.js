@@ -108,26 +108,29 @@ getTextWidth = function(context, extraWidth)
 /**
  * Load an URI into target
  *
- * @param uri
- * @param target
+ * @param uri    string
+ * @param target string|object jquery set object or selector (string)
  */
 redirect = function(uri, target)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
-	var more = ((target != undefined) && (target != '') && (target[0] == '#')) ? '?as_widget' : '';
-	if (uri.substr(0, app.uri_base.length) != app.uri_base) {
+	var more = (
+		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
+	) ? '?as_widget' : '';
+	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
 		uri = app.uri_base + uri;
 	}
 	if (!more) {
 		window.location = app.addSID(uri);
 	}
 	else {
+		var $target = (target && (typeof target === 'object')) ? target : $(target);
 		$.ajax({
 			url:     app.addSID(uri + more),
 			success: function(data) {
-				$(target).html(data).build();
-				var title = $(target).find('h2').first().text();
+				$target.html(data).build();
+				var title = $target.find('h2').first().text();
 				if (!title.length) {
 					title = uri;
 				}
