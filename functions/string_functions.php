@@ -253,15 +253,41 @@ function strIsCapitals($string)
 
 //-------------------------------------------------------------------------------------- strReplace
 /**
- * Search en replace multiple couples
+ * Search en replace multiple couples with a [$search => $replace] associative notation
  *
  * @param $search_replace string[] key is 'search what', value is 'replace with'
- * @param $subject        string The text where to make the replacement
- * @return string
+ * @param $subject        string|string[] The text(s) where to make the replacement into
+ * @return string|string[] The subject with applied replacements
  */
 function strReplace(array $search_replace, $subject)
 {
-	return str_replace(array_keys($search_replace), array_values($search_replace), $subject);
+	$search  = array_keys($search_replace);
+	$replace = array_values($search_replace);
+	return is_array($subject)
+		? strReplaceArray($search, $replace, $subject)
+		: str_replace($search, $replace, $subject);
+}
+
+//--------------------------------------------------------------------------------- strReplaceArray
+/**
+ * Search and replace into multiple subjects
+ *
+ * This is the same as str_replace, but with multiple subjects.
+ *
+ * @param $search   string|string[] The searched string(s)
+ * @param $replace  string|string[] The replacement string(s)
+ * @param $subjects string[]
+ * @return string[]
+ * @see str_replace
+ */
+function strReplaceArray($search, $replace, array $subjects)
+{
+	foreach ($subjects as $key => $subject) {
+		$subjects[$key] = is_array($subject)
+			? strReplaceArray($search, $replace, $subject)
+			: str_replace($search, $replace, $subject);
+	}
+	return $subjects;
 }
 
 //------------------------------------------------------------------------------------- strSimplify

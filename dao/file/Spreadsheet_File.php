@@ -16,6 +16,24 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 class Spreadsheet_File
 {
 
+	//--------------------------------------------------------------------------- cleanupIncomingData
+	/**
+	 * Cleanup incoming data (string)
+	 *
+	 * @param $data string
+	 * @return string
+	 */
+	protected function cleanupIncomingData(&$data)
+	{
+		$data = trim($data);
+		foreach (['…' => '...', '  ' => ' '] as $search => $replace) {
+			while (strpos($data, $search) !== false) {
+				$data = str_replace($search, $replace, $data);
+			}
+		}
+		return $data;
+	}
+
 	//-------------------------------------------------------------------------------- createFromFile
 	/**
 	 * @param $file_name string The Excel file name to be read
@@ -51,7 +69,7 @@ class Spreadsheet_File
 	 * @param $errors    string[]
 	 * @return array three dimensions (worksheet, row, column) array of read data
 	 */
-	public static function fileToArray($file_name, array &$errors = [])
+	public function fileToArray($file_name, array &$errors = [])
 	{
 		if (substr($file_name, -4) === '.csv') {
 			$count    = '';
@@ -64,7 +82,7 @@ class Spreadsheet_File
 		}
 		$result = [];
 		while (file_exists($csv_file . (strlen($count) ? (DOT . $count) : ''))) {
-			$result[$csv_file . DOT . $count] = self::readCsvFile(
+			$result[$csv_file . DOT . $count] = $this->readCsvFile(
 				$csv_file . (strlen($count) ? (DOT . $count) : ''), $errors
 			);
 			$count ++;
@@ -78,19 +96,22 @@ class Spreadsheet_File
 	 * @param $errors   string[]
 	 * @return array
 	 */
-	public static function readCsvFile($csv_file, array &$errors = [])
+	public function readCsvFile($csv_file, array &$errors = [])
 	{
 		$lines = [];
 		$row   = 0;
 		$f     = fopen($csv_file, 'r');
-		if ($f) while ($buf = fgetcsv($f)) {
+		if ($f) while ($buffer = fgetcsv($f)) {
 			$row ++;
-			if (($column = array_search('#REF!', $buf)) !== false) {
+			if (($column = array_search('#REF!', $buffer)) !== false) {
 				$column   ++;
 				$replace  = new Replace([1 => $row, 2 => $column]);
 				$errors[] = Loc::tr('unsolved reference at row $1 and column $2', $replace);
 			}
-			$lines[] = $buf;
+			foreach ($buffer as &$value) {
+				$this->cleanupIncomingData($value);
+			}
+			$lines[] = $buffer;
 		}
 		fclose($f);
 		return $lines;

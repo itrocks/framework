@@ -76,7 +76,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 						/** @var $session_files Files */
 						$session_files = Builder::create(Files::class);
 					}
-					$excel = Spreadsheet_File::fileToArray($file->temporary_file_name, $errors);
+					$excel = (new Spreadsheet_File)->fileToArray($file->temporary_file_name, $errors);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {

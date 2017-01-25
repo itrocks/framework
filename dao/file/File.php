@@ -87,7 +87,7 @@ class File
 	 */
 	public function getCsvContent(array &$errors = [])
 	{
-		return Spreadsheet_File::readCsvFile($this->temporary_file_name, $errors);
+		return (new Spreadsheet_File)->readCsvFile($this->temporary_file_name, $errors);
 	}
 
 	//------------------------------------------------------------------------------------ getContent
