@@ -195,9 +195,11 @@ class Html_Builder_Property extends Html_Builder_Type
 					if ($property_properties[$filter]->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
-					if ($properties[$filter_value_name]->getType()->isClass()) {
+
+					if (array_key_exists($filter_value_name,$properties) && $properties[$filter_value_name]->getType()->isClass()) {
 						$filter_value_name = 'id_' . $filter_value_name;
 					}
+
 					$filters[$filter] = $filter_value_name;
 				}
 			}
