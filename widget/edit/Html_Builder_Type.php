@@ -203,6 +203,7 @@ class Html_Builder_Type
 			}
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);
+				$this->setInputAsReadOnly($checkbox);
 			}
 			if ($this->value) {
 				$checkbox->setAttribute('checked');
