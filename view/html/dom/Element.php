@@ -73,7 +73,17 @@ abstract class Element
 	public function __toString()
 	{
 		if ($this->styles) {
+			ksort($this->styles);
 			$this->setAttribute('style', join(';' . SP, $this->styles));
+		}
+		if ($this->attributes) {
+			$class = $this->getAttribute('class');
+			if ($class && strpos($class->value, SP)) {
+				$classes = explode(SP, $class->value);
+				sort($classes);
+				$class->value = join(SP, $classes);
+			}
+			ksort($this->attributes);
 		}
 		$content = $this->getContent();
 		return '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
@@ -185,6 +195,16 @@ abstract class Element
 			$table->body->addRow($row);
 		}
 		return $table;
+	}
+
+	//--------------------------------------------------------------------------------------- getData
+	/**
+	 * @param $name string
+	 * @return Attribute
+	 */
+	public function getData($name)
+	{
+		return $this->getAttribute('data-' . $name);
 	}
 
 	//------------------------------------------------------------------------------------ parseArray
