@@ -62,6 +62,17 @@ class Order_Line
 	 */
 	public $quantity;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $number integer
+	 */
+	public function __construct($number = null)
+	{
+		if (isset($number)) {
+			$this->number = $number;
+		}
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string

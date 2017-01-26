@@ -47,4 +47,26 @@ class Order extends Document
 	 */
 	private $salesmen;
 
+	//-------------------------------------------------------------------------------------- addLines
+	/**
+	 * Lines are added and numeric keys recalculated
+	 *
+	 * @param $lines Order_Line[]
+	 */
+	public function addLines(array $lines)
+	{
+		$this->lines = array_merge($this->lines, $lines);
+	}
+
+	//-------------------------------------------------------------------------------------- setLines
+	/**
+	 * Lines (and keys) are replaced
+	 *
+	 * @param $lines Order_Line[]
+	 */
+	public function setLines(array $lines)
+	{
+		$this->lines = $lines;
+	}
+
 }
