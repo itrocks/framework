@@ -9,6 +9,13 @@ use ITRocks\Framework\Tests\Test;
 class String_Functions_Tests extends Test
 {
 
+	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
+	public function testBase64EncodeUrlSafe()
+	{
+		$this->method(__METHOD__);
+		$this->assume('size', strlen(base64_encode_url_safe('Test encodage')), strlen('Test encodage'));
+	}
+
 	//-------------------------------------------------------------------------------- testStrReplace
 	/**
 	 * @return boolean
@@ -24,7 +31,7 @@ class String_Functions_Tests extends Test
 			'ed'   => 'ED'
 		];
 		$result = 'These are some texts where some things wanna be searchED and replacED';
-		return $this->assume(__FUNCTION__, strReplace($replace, $subject), $result);
+		return $this->assume(__METHOD__, strReplace($replace, $subject), $result);
 	}
 
 }
