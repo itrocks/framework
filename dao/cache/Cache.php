@@ -50,7 +50,7 @@ class Cache implements Registerable
 			$link = Dao::current();
 		}
 		if (is_object($object) && ($identifier = $link->getObjectIdentifier($object))) {
-			$class_name = Builder::className(get_class($object));
+			$class_name                            = Builder::className(get_class($object));
 			$this->cache[$class_name][$identifier] = new Cached($object);
 			$this->count++;
 			if ($this->count > self::MAXIMUM) {
@@ -91,6 +91,15 @@ class Cache implements Registerable
 		}
 	}
 
+	//----------------------------------------------------------------------------------------- flush
+	/**
+	 * Flush cache
+	 */
+	public function flush()
+	{
+		$this->cache = [];
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Get cached object
@@ -114,13 +123,13 @@ class Cache implements Registerable
 	private function purge()
 	{
 		$counter = 0;
-		$format = '%0' . strlen(self::MAXIMUM) . 's';
-		$list = [];
+		$format  = '%0' . strlen(self::MAXIMUM) . 's';
+		$list    = [];
 		foreach ($this->cache as $class_name => $cache) {
 			foreach ($cache as $identifier => $cached) {
 				/** @var $cached Cached */
 				$counter ++;
-				$list_id = $cached->date->toISO() . '-' . sprintf($format, $counter);
+				$list_id        = $cached->date->toISO() . '-' . sprintf($format, $counter);
 				$list[$list_id] = [$class_name, $identifier];
 			}
 		}
@@ -180,10 +189,10 @@ class Cache implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod([Link::class, 'read'], [$this, 'cacheReadObject']);
-		$aop->afterMethod([Link::class, 'write'], [$this, 'cacheWriteObject']);
-		$aop->beforeMethod([Link::class, 'read'], [$this, 'get']);
-		$aop->afterMethod([Link::class, 'delete'], [$this, 'removeObject']);
+		$aop->afterMethod ([Link::class, 'read'  ], [$this, 'cacheReadObject' ]);
+		$aop->afterMethod ([Link::class, 'write' ], [$this, 'cacheWriteObject']);
+		$aop->beforeMethod([Link::class, 'read'  ], [$this, 'get'             ]);
+		$aop->afterMethod ([Link::class, 'delete'], [$this, 'removeObject'    ]);
 	}
 
 }
