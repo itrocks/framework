@@ -2,8 +2,10 @@
 namespace ITRocks\Framework\Mapper\Tests;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Cache;
 use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Tests\Objects\Component;
 use ITRocks\Framework\Tests\Objects\Composite;
 use ITRocks\Framework\Tests\Objects\Object;
@@ -21,6 +23,19 @@ use ITRocks\Framework\Tests\Test;
 class Object_Builder_Array_Tests extends Test
 {
 
+	//------------------------------------------------------------------------------------ flushCache
+	/**
+	 * Flush DAO cache (if the plugin is enabled)
+	 */
+	protected function flushCache()
+	{
+		/** @var $cache Cache::class */
+		$cache = Session::current()->plugins->get(Cache::class);
+		if ($cache) {
+			$cache->flush();
+		}
+	}
+
 	//---------------------------------------------------------------- testExistingComponentSubObject
 	/**
 	 * What if we build an existing composite with its component sub-object
@@ -31,6 +46,7 @@ class Object_Builder_Array_Tests extends Test
 		$composite            = new Composite('Composite object');
 		$composite->component = new Component('Component object');
 		Dao::write($composite);
+		$this->flushCache();
 
 		$builder = new Object_Builder_Array(Composite::class);
 		$builder->build([
@@ -59,6 +75,7 @@ class Object_Builder_Array_Tests extends Test
 		$object->mandatory_object = new Salesman('Mandatory object');
 		$object->optional_object  = new Salesman('Optional object');
 		Dao::write($object);
+		$this->flushCache();
 
 		$builder = new Object_Builder_Array(Object::class);
 		$builder->build([
@@ -92,6 +109,7 @@ class Object_Builder_Array_Tests extends Test
 		$object->mandatory_object = new Salesman('Mandatory object');
 		$object->optional_object  = new Salesman('Optional object');
 		Dao::write($object);
+		$this->flushCache();
 
 		$builder = new Object_Builder_Array(Object::class);
 		$builder->build([
