@@ -35,7 +35,9 @@ class Encoder
 	protected function addAttachments(Mime $mail)
 	{
 		foreach ($this->email->attachments as $attachment) {
-			$mail->addAttachment($attachment->temporary_file_name);
+			$mail->addAttachment(
+				$attachment->temporary_file_name, 'application/octet-stream', $attachment->name
+			);
 		}
 	}
 
@@ -50,7 +52,7 @@ class Encoder
 	 */
 	public function encode()
 	{
-		if ($this->email->attachments || strpos($this->email->content, '<body')) {
+		if ($this->email->attachments || (strpos($this->email->content, '<body') !== false)) {
 
 			/** @var $mail Mime */
 			$mail = Builder::create(Mime::class);
@@ -71,7 +73,7 @@ class Encoder
 				'html_charset'  => 'UTF-8',
 				'head_charset'  => 'UTF-8'
 			];
-			$body = $mail->get($mime_params);
+			$body                 = $mail->get($mime_params);
 			$this->email->headers = $mail->headers($this->email->getHeadersAsStrings());
 			return $body;
 
@@ -87,7 +89,7 @@ class Encoder
 	 */
 	protected function parseImages(Mime $mail, $buffer)
 	{
-		$parent = '';
+		$parent      = '';
 		$slash_count = substr_count(__DIR__, SL);
 		while (!is_dir($parent . 'images')) {
 			$parent .= '../';
@@ -96,11 +98,14 @@ class Encoder
 				break;
 			}
 		}
-		$buffer = strReplace([
-			'src=' . DQ . '/images/' => 'src=' . DQ . $parent . 'images/',
-			'src=' . Q . '/images/'  => 'src=' . Q . $parent . 'images/',
-			'(url=/images/'          => '(url=' . $parent . 'images/)'
-		], $buffer);
+		$buffer = strReplace(
+			[
+				'src=' . DQ . '/images/' => 'src=' . DQ . $parent . 'images/',
+				'src=' . Q . '/images/'  => 'src=' . Q . $parent . 'images/',
+				'(url=/images/'          => '(url=' . $parent . 'images/)'
+			],
+			$buffer
+		);
 		foreach (['(' => ')', Q => Q, DQ => DQ] as $open => $close) {
 			$pattern = '%\\' . $open . '([\\w\\.\\/\\-\\_]+\\.(?:gif|jpg|png))\\' . $close . '%';
 			preg_match_all($pattern, $buffer, $matches);
@@ -110,7 +115,7 @@ class Encoder
 				foreach ($html_images as $key => $image) {
 					if ($image['name'] == $match) {
 						$html_images[$key]['c_type'] = 'image/' . rLastParse($match, DOT);
-						$buffer = str_replace($match, 'cid:' . $image['cid'], $buffer);
+						$buffer                      = str_replace($match, 'cid:' . $image['cid'], $buffer);
 					}
 				}
 				$mail->setHtmlImages($html_images);
