@@ -353,7 +353,7 @@ class Html_Builder_Type
 		$input = new Input($input_id, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setData('edit-class', Builder::current()->sourceClassName($class_name));
-		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')));
+		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')->value));
 		$input->addClass('auto_width');
 		// id input. Should always be output, except if as_string, cause can be used by other properties
 		if (!$as_string) {
