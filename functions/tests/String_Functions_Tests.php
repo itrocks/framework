@@ -12,8 +12,11 @@ class String_Functions_Tests extends Test
 	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
 	public function testBase64EncodeUrlSafe()
 	{
-		$this->method(__METHOD__);
-		$this->assume('size', strlen(base64_encode_url_safe('Test encodage')), strlen('Test encodage'));
+		$this->assume(
+			__METHOD__,
+			base64_encode_url_safe('Test encodage avec des +, / et ='),
+			'VGVzdCBlbmNvZGFnZSBhdmVjIGRlcyArLCAvIGV0ID0.'
+		);
 	}
 
 	//-------------------------------------------------------------------------------- testStrReplace
