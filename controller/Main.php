@@ -146,16 +146,12 @@ class Main
 			Loc::enterContext($uri->controller_name);
 			$exit_context = true;
 		}
-		if ($controller instanceof Class_Controller) {
-			$result = call_user_func_array([$controller, $method_name],
-				[$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
-			);
-		}
-		else {
-			$result = call_user_func_array([$controller, $method_name],
-				[$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name]
-			);
-		}
+		$result = call_user_func_array(
+			[$controller, $method_name],
+			($controller instanceof Class_Controller)
+			? [$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
+			: [$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name]
+		);
 		if (isset($exit_context)) {
 			Loc::exitContext();
 		}
