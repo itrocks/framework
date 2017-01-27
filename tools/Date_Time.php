@@ -162,11 +162,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a new date with only the day of the current date (with an empty time)
 	 *
+	 * @param $end_of_day boolean if true, the time will be 23:59:59 instead of an empty time
 	 * @return Date_Time
 	 */
-	public function day()
+	public function day($end_of_day = false)
 	{
-		return new Date_Time($this->format('Y-m-d'));
+		return new Date_Time($this->format('Y-m-d') . ($end_of_day ? ' 23:59:59' : ''));
 	}
 
 	//------------------------------------------------------------------------------------ dayOfMonth
