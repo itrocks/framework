@@ -20,7 +20,6 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 *
 	 * @param $value               string
 	 * @param $reflection_property Reflection_Property
 	 */

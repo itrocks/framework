@@ -346,16 +346,11 @@ class Validator implements Registerable
 	/**
 	 * @param $object     object
 	 * @param $annotation Annotation
-	 * @param $property   Reflection_Property
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateAnnotation($object, $annotation, Reflection_Property $property = null)
+	protected function validateAnnotation($object, $annotation)
 	{
 		$annotation->object = $object;
-		if ($property) {
-			/** @var $annotation Property\Annotation always when $property is set */
-			$annotation->property = $property;
-		}
 		$annotation->valid = $annotation->validate($object);
 		if ($annotation->valid === true) {
 			$annotation->valid = Result::INFORMATION;
@@ -377,23 +372,17 @@ class Validator implements Registerable
 	 *
 	 * @param $object      object
 	 * @param $annotations Annotation[]
-	 * @param $property    Reflection_Property
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateAnnotations(
-		$object, array $annotations, Reflection_Property $property = null
-	) {
+	protected function validateAnnotations($object, array $annotations)
+	{
 		$result = true;
 		foreach ($annotations as $annotation_name => $annotation) {
 			if (is_array($annotation)) {
-				$result = Result::andResult(
-					$result, $this->validateAnnotations($object, $annotation, $property)
-				);
+				$result = Result::andResult($result, $this->validateAnnotations($object, $annotation));
 			}
 			elseif (isA($annotation, Annotation::class)) {
-				$result = Result::andResult(
-					$result, $this->validateAnnotation($object, $annotation, $property)
-				);
+				$result = Result::andResult($result, $this->validateAnnotation($object, $annotation));
 			}
 		}
 		return $result;
@@ -432,7 +421,7 @@ class Validator implements Registerable
 				&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 			) {
 				$result = Result::andResult(
-					$result, $this->validateAnnotations($object, $property->getAnnotations(), $property)
+					$result, $this->validateAnnotations($object, $property->getAnnotations())
 				);
 			}
 		}

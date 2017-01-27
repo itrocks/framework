@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Widget\Validate\Property;
 
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Widget\Validate;
 
 /**
@@ -11,6 +13,18 @@ class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	implements Multiple_Annotation
 {
 	use Annotation;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $value           string
+	 * @param $property        Reflection|Reflection_Property the contextual Reflection_Property
+	 * @param $annotation_name string
+	 */
+	public function __construct($value, Reflection $property, $annotation_name = self::ANNOTATION)
+	{
+		parent::__construct($value, $property, $annotation_name);
+		$this->property = $property;
+	}
 
 	//-------------------------------------------------------------------------------------- validate
 	/**

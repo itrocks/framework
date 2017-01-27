@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 
@@ -13,6 +14,18 @@ use ITRocks\Framework\Reflection\Type;
 class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 {
 	use Annotation;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 *
+	 * @param $value    string
+	 * @param $property Interfaces\Reflection_Property
+	 */
+	public function __construct($value, Interfaces\Reflection_Property $property)
+	{
+		parent::__construct($value, $property);
+		$this->property = $property;
+	}
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
