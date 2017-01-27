@@ -11,6 +11,7 @@ use ITRocks\Framework\Dao\Func\Left_Match;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
+use ITRocks\Framework\Dao\Func\Range;
 use ITRocks\Framework\Dao\Func\Where;
 
 /**
@@ -36,6 +37,17 @@ abstract class Func
 	public static function average()
 	{
 		return new Group_By(Group_By::AVERAGE);
+	}
+
+	//--------------------------------------------------------------------------------------- between
+	/**
+	 * @param $from mixed
+	 * @param $to   mixed
+	 * @return Range
+	 */
+	public static function between($from, $to)
+	{
+		return new Range($from, $to);
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -181,6 +193,17 @@ abstract class Func
 	public static function min()
 	{
 		return new Group_By(Group_By::MIN);
+	}
+
+	//------------------------------------------------------------------------------------ notBetween
+	/**
+	 * @param $from mixed
+	 * @param $to   mixed
+	 * @return Range
+	 */
+	public static function notBetween($from, $to)
+	{
+		return new Range($from, $to, true);
 	}
 
 	//-------------------------------------------------------------------------------------- notEqual
