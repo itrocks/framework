@@ -425,19 +425,35 @@ $('document').ready(function()
 		});
 
 		//--------------------------------------------------------------- input[data-on-change] .change
-		this.inside('input[data-on-change]').change(function()
-		{
-			var $this = $(this);
-			var $form = $this.closest('form');
-			var uri = $this.data('on-change');
-			$.each(uri.split(','), function(key, uri) {
-				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
+		this.inside('input[data-on-change], select[data-on-change]')
+			.each(function()
+			{
+				var $this = $(this);
+				var $form = $this.closest('form');
+				// store previous values
+				var old_value = $this.val();
+				if ($this.hasClass('id')) {
+					var $next;
+					if (($next = $this.next('input')).length) {
+						old_value = [old_value, $next.val()];
+					}
+				}
+				$form.data('previous-'+$this.attr('name'), old_value)
+			})
+			.change(function()
+			{
+				var $this = $(this);
+				var $form = $this.closest('form');
+				var uri = $this.data('on-change');
+				$.each(uri.split(','), function(key, uri) {
+					uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
 
 				$.post(uri, $form.formSerialize(), function(data)
 				{
 					if (data) {
 						if (data.substr(0, 1) == '{') {
 							$.each(JSON.parse(data), function(name, value) {
+								// TODO should be able to set value for any form field tag (like select)
 								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
 								if (((typeof value) == 'string') && (value.substr(0, 1) == ':')) {
 									if ($input.val() == false) {
