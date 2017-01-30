@@ -383,6 +383,11 @@ class Main
 		$uri = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters = clone $uri->parameters;
+		// TODO: try to read main object once only from database
+		// Note: here by cloning parameters we read twice the main object in database.
+		// once here calling getMainObject(), the other in the specific controller of the URI
+		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
+		// we either loose menu and/or loose Json_Controller behaviors
 		try {
 			$main_object = $parameters->getMainObject();
 		}
