@@ -37,21 +37,23 @@ class Placeholder_Annotation extends Method_Annotation
 		parent::__construct($value, $class_property, $annotation_name);
 
 		if (($pos = strpos($this->value, '::')) !== false) {
-			$class_name = BS . substr($this->value, 0, $pos);
+			$class_name  = BS . substr($this->value, 0, $pos);
 			$method_name = substr($this->value, $pos + 2);
-			// value is a callable method
-			if (is_callable([$class_name, $method_name])) {
+			// value is a method
+			if (method_exists($class_name, $method_name)) {
 				$this->is_method = true;
-			}
-			// value is a method but not callable
-			elseif (method_exists($class_name, $method_name)) {
-				$this->is_method = true;
-				$this->value = '';
+				// value is not callable (private or protected?)
+				if (!is_callable([$class_name, $method_name])) {
+					$this->value     = '';
+					trigger_error(
+						"method $class_name::$method_name is not callable. Please review.", E_USER_ERROR
+					);
+				}
 			}
 			// value is a string to display prefixed by a class name to remove (method_name is the string)
 			else {
 				$this->is_method = false;
-				$this->value = $method_name;
+				$this->value     = $method_name;
 			}
 		}
 		// value is a string to display
