@@ -13,6 +13,28 @@ use ITRocks\Framework\Tests\Test;
 class Tests extends Test
 {
 
+	public function testInSelect()
+	{
+		$sub_select = new Select(
+			Order::class,
+			['date']
+		);
+		$builder = new Select(
+			Order::class,
+			null,
+			['date' => Func::inSelect($sub_select)]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.*' . LF
+			. 'FROM `orders` t0' . LF
+			. 'WHERE t0.`date` IN ('
+			. 'SELECT t0.`date`' . LF
+			. 'FROM `orders` t0)'
+		);
+	}
+
 	//-------------------------------------------------------------------------------- testIsGreatest
 	public function testIsGreatest()
 	{
