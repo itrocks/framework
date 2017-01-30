@@ -13,6 +13,7 @@ use ITRocks\Framework\Tests\Test;
 class Tests extends Test
 {
 
+	//---------------------------------------------------------------------------------- testInSelect
 	public function testInSelect()
 	{
 		$sub_select = new Select(
