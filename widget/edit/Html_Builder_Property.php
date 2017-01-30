@@ -39,21 +39,24 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
 			$user_annotations = $property->getListAnnotation(User_Annotation::ANNOTATION);
+			/** @var $user_default_annotation Method_Annotation */
+			$user_default_annotation = $property->getAnnotation('user_default');
+			if (($property instanceof Reflection_Property_Value)
+				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
+				&& $user_default_annotation->value
+			) {
+				$value = $user_default_annotation->call($property->getObject());
+			}
+
 			// 1st, get read_only from @user readonly
 			$this->readonly = $user_annotations->has(User_Annotation::READONLY);
 			if (
 				!$this->readonly
-				&& ($property instanceof Reflection_Property_Value)
 				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
 			) {
-				/** @var $user_default_annotation Method_Annotation */
-				$user_default_annotation = $property->getAnnotation('user_default');
-				if ($user_default_annotation->value) {
-					$value = $user_default_annotation->call($property->getObject());
-					// if there is @user_default, there can not be @user if_empty
-					if ($user_annotations->has(User_Annotation::IF_EMPTY)) {
-						$flag_cannot_be_if_empty = true;
-					}
+				// if there is @user_default, there can not be @user if_empty
+				if ($user_default_annotation->value && $user_annotations->has(User_Annotation::IF_EMPTY)) {
+					$flag_cannot_be_if_empty = true;
 				}
 			}
 			// 2nd, if not read_only but has a value and @user if_empty, then set read_only
