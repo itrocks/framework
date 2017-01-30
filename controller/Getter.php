@@ -64,7 +64,7 @@ if (isset($GLOBALS['D']) && $suffix) echo '- try A3 ' . $path . SL . strtolower(
 					$class = $class_name . BS . $feature_class . BS . $suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext . ' method run' . ucfirst($feature_name) . '()' . BR;
 				if (file_exists(
 					Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext
 				)) {
@@ -81,7 +81,8 @@ if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $
 					$method = 'run' . ucfirst($feature_name);
 					break 2;
 				}
-				elseif ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
+if (isset($GLOBALS['D']) && $suffix) echo '- try A6 ' . $path . SL . $suffix . $ext . ' method run()' . BR;
+				if ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $suffix;
 					$method = 'run';
 					break 2;
