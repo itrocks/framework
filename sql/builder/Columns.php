@@ -299,12 +299,45 @@ class Columns
 		return $sql_columns . $function->toSql($this, $path);
 	}
 
+	//----------------------------------------------------------------------------- buildObjectColumn
+	/**
+	 * @param $path              string
+	 * @param $property          Reflection_Property
+	 * @param $join              Join
+	 * @param $linked_join       Join
+	 * @param $linked_properties Reflection_Property[]
+	 * @param $first_property    boolean
+	 * @return string
+	 */
+	private function buildObjectColumn(
+		$path, Reflection_Property $property, Join $join = null, Join $linked_join = null,
+		array $linked_properties, &$first_property
+	) {
+		$sql           = '';
+		$foreign_alias = (isset($linked_join) && isset($linked_properties[$property->name]))
+			? $linked_join->foreign_alias
+			: $join->foreign_alias;
+		$column_name = Sql\Builder::buildColumnName($property);
+		if ($column_name) {
+			($first_property) ? ($first_property = false) : ($sql = ', ');
+			if ((substr($column_name, 0, 3) === 'id_') && Store_Annotation::of($property)->isString()) {
+				$column_name = substr($column_name, 3);
+			}
+			$sql .= $foreign_alias . DOT . BQ . $column_name . BQ
+				. (
+					($this->append || !$this->resolve_aliases)
+					? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
+				);
+		}
+		return $sql;
+	}
+
 	//---------------------------------------------------------------------------- buildObjectColumns
 	/**
 	 * Build columns list for an object, in order to instantiate this object when read
 	 *
-	 * @param $path string
-	 * @param $join Join
+	 * @param $path           string
+	 * @param $join           Join
 	 * @param $first_property boolean
 	 * @return string
 	 */
@@ -315,8 +348,12 @@ class Columns
 		// linked join and linked properties list
 		$class = new Link_Class($join->foreign_class);
 		if (Link_Annotation::of($class)->value) {
-			$linked_properties = $class->getLinkedProperties();
 			$linked_join       = $this->joins->getLinkedJoin($join);
+			$linked_properties = $class->getLinkedProperties();
+		}
+		else {
+			$linked_join       = null;
+			$linked_properties = [];
 		}
 
 		if ($this->expand_objects) {
@@ -324,55 +361,21 @@ class Columns
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
 			$properties = Store_Annotation::storedPropertiesOnly($properties);
 			/** @var $properties Reflection_Property[] */
-			foreach ($properties as $property_name => $property) {
-				$foreign_alias = (isset($linked_join) && isset($linked_properties[$property_name]))
-					? $linked_join->foreign_alias
-					: $join->foreign_alias;
-				$column_name = Sql\Builder::buildColumnName($property);
-				if ($column_name) {
-					if ($first_property) {
-						$first_property = false;
-					}
-					else {
-						$sql_columns .= ', ';
-					}
-					if (
-						(substr($column_name, 0, 3) === 'id_')
-						&& in_array(
-							$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-							[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
-						)
-					) {
-						$column_name = substr($column_name, 3);
-					}
-					$sql_columns .= $foreign_alias . DOT . BQ . $column_name . BQ . (
-						($this->append || !$this->resolve_aliases)
-						? '' : (' AS ' . BQ . $path . ':' . $property->name . BQ)
-					);
-				}
-			}
-			if ($first_property) {
-				$first_property = false;
-			}
-			else {
-				$sql_columns .= ', ';
-			}
-			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns .= $foreign_alias . '.id' . (
-				($this->append || !$this->resolve_aliases)
-					? '' : (' AS ' . BQ . $path . ':id' . BQ)
+			foreach ($properties as $property) {
+				$sql_columns .= $this->buildObjectColumn(
+					$path, $property, $join, $linked_join, $linked_properties, $first_property
 				);
+			}
+			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
+			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			$sql_columns  .= $foreign_alias . '.id'
+				. (($this->append || !$this->resolve_aliases) ? '' : (' AS ' . BQ . $path . ':id' . BQ));
 		}
 
 		else {
-			if ($first_property) {
-				$first_property = false;
-			}
-			else {
-				$sql_columns .= ', ';
-			}
+			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns .= $foreign_alias . '.id'
+			$sql_columns  .= $foreign_alias . '.id'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}
 
