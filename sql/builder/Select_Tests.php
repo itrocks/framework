@@ -76,9 +76,9 @@ class Select_Tests extends Test
 	//----------------------------------------------------------------- testArrayWhereDeepQueryObject
 	public function testArrayWhereDeepQueryObject()
 	{
-		$item = new Item();
+		$item       = new Item();
 		$item->code = 1;
-		$builder = new Select(
+		$builder    = new Select(
 			Order::class,
 			['date', 'number'],
 			['number' => 1, 'lines' => [['number' => 2, 'item' => $item]]]
@@ -266,10 +266,10 @@ class Select_Tests extends Test
 	public function testLinkedClassObjectSearch()
 	{
 		// search text with internal ids to simulate a light salesman
-		$search = Search_Object::create(Quote_Salesman::class);
+		$search              = Search_Object::create(Quote_Salesman::class);
 		$search->id_quote    = 101;
 		$search->id_salesman = 102;
-		$builder = new Select(
+		$builder             = new Select(
 			Quote_Salesman::class,
 			['name', 'percentage'],
 			$search
@@ -376,10 +376,10 @@ class Select_Tests extends Test
 	//----------------------------------------------------------------------- testObjectWhereWithNull
 	public function testObjectWhereWithNull()
 	{
-		$search = Search_Object::create(Order_Line::class);
-		$search->client = Func::isNull();
+		$search           = Search_Object::create(Order_Line::class);
+		$search->client   = Func::isNull();
 		$search->quantity = Func::greater(1);
-		$builder = new Select(
+		$builder          = new Select(
 			Order_Line::class,
 			['number', 'quantity'],
 			$search
@@ -428,9 +428,9 @@ class Select_Tests extends Test
 	//------------------------------------------------------------------------- testWhereComplexQuery
 	public function testWhereComplexQuery()
 	{
-		$client = Search_Object::create(Client::class);
+		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
-		$builder = new Select(
+		$builder        = new Select(
 			Order::class,
 			['date', 'number', 'lines'],
 			['OR' => ['lines.client.number' => $client->number, 'number' => 2]]
@@ -468,10 +468,10 @@ class Select_Tests extends Test
 	public function testWhereExistingObjectQuery()
 	{
 		/** @var $client Client */
-		$client = new Client();
+		$client     = new Client();
 		/** @noinspection PhpUndefinedFieldInspection */
 		$client->id = 12;
-		$builder = new Select(
+		$builder    = new Select(
 			Order::class,
 			['date', 'number', 'lines'],
 			['lines.client' => $client, 'number' => 2]
@@ -491,15 +491,15 @@ class Select_Tests extends Test
 	public function testWhereSearchObjectQuery()
 	{
 		/** @var $client Client */
-		$client = Search_Object::create(Client::class);
+		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
-		$client->name = 'Roger%';
-		$properties = ['number', 'name', 'client'];
-		$builder = new Select(Client::class, $properties, $client);
+		$client->name   = 'Roger%';
+		$properties     = ['number', 'name', 'client'];
+		$builder        = new Select(Client::class, $properties, $client);
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`id_client_component` AS `client:client_component`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.id AS `client:id`' . LF
+			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.id AS `client:id`' . LF
 			. 'FROM `clients` t0' . LF
 			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
 			. 'WHERE t0.`name` LIKE "Roger%" AND t0.`number` = 1'
@@ -509,9 +509,9 @@ class Select_Tests extends Test
 	//----------------------------------------------------------------- testWhereSubSearchObjectQuery
 	public function testWhereSubSearchObjectQuery()
 	{
-		$client = Search_Object::create(Client::class);
+		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
-		$builder = new Select(
+		$builder        = new Select(
 			Order::class,
 			['date', 'number', 'lines'],
 			['lines.client' => $client, 'number' => 2]

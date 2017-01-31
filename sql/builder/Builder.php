@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -40,8 +42,18 @@ abstract class Builder
 	{
 		$type = $property->getType();
 		return $type->isBasic()
-			? $property->getAnnotation('storage')->value
-			: ($type->isMultiple() ? null : ('id_' . $property->getAnnotation('storage')->value));
+			? Storage_Annotation::of($property)->value
+			: (
+				(
+					$type->isMultiple()
+					|| (
+						$property->getAnnotation('component')->value
+						&& Link_Annotation::of($property)->isObject()
+					)
+				)
+				? null
+				: ('id_' . Storage_Annotation::of($property)->value)
+			);
 	}
 
 	//----------------------------------------------------------------------------------- buildDelete
