@@ -21,7 +21,7 @@ trait Person_Having_Name
 		/** @var $this self|Has_Name */
 		$name = trim($this->first_name . SP . $this->last_name);
 		if (strlen($name)) {
-			$this->name = trim($this->first_name . SP . $this->last_name);
+			$this->name = $name;
 		}
 	}
 
