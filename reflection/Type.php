@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection;
 
 use DateTime;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection\Interfaces;
 
@@ -265,9 +266,8 @@ class Type
 	public function getElementTypeAsString()
 	{
 		$i = strpos($this->type, '[');
-		return ($i !== false)
-			? substr($this->type, 0, $i)
-			: $this->type;
+		// TODO NORMAL Builder : look where it is really useful, and remove it from all other places
+		return Builder::className(($i !== false) ? substr($this->type, 0, $i) : $this->type);
 	}
 
 	//--------------------------------------------------------------------------------------- hasSize

@@ -90,7 +90,7 @@ abstract class Getter
 				switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
 					case Store_Annotation::JSON:
 						$objects_arrays = json_decode($stored, true);
-						$stored = [];
+						$stored         = [];
 						if ($objects_arrays) {
 							foreach ($objects_arrays as $key => $object_array) {
 								$stored[$key] = static::schemaDecode($object_array, $property);
@@ -102,13 +102,14 @@ abstract class Getter
 		}
 		elseif (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
-				$class = new Reflection_Class($class_name);
+				$class_name = Builder::className($class_name);
+				$class      = new Reflection_Class($class_name);
 				if ($class->isAbstract()) {
 					$stored = self::getAbstractCollection($class_name, $object, $property);
 				}
 				else {
 					$search_element = Search_Object::create($class_name);
-					$is_component = isA($search_element, Component::class);
+					$is_component   = isA($search_element, Component::class);
 					if (isset($property)) {
 						if (!$property instanceof Reflection_Property) {
 							$property = new Reflection_Property(get_class($object), $property);
@@ -203,9 +204,7 @@ abstract class Getter
 			if (!$class->isAbstract()) {
 				$class_names[$class->name] = $class->name;
 			}
-			$class_names = array_merge(
-				$class_names, self::getFinalClasses($class->name)
-			);
+			$class_names = array_merge($class_names, self::getFinalClasses($class->name));
 		}
 		return $class_names;
 	}
@@ -226,17 +225,17 @@ abstract class Getter
 				if (!($property instanceof Reflection_Property)) {
 					$property = new Reflection_Property(get_class($object), $property);
 				}
-				$dao = Dao::get($property->getAnnotation('dao')->value);
-				$class_name = get_class($object);
+				$dao               = Dao::get($property->getAnnotation('dao')->value);
+				$class_name        = get_class($object);
 				$linked_class_name = (new Link_Class($class_name))->getLinkedClassName();
 				if ($linked_class_name) {
-					$object = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
+					$object     = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
 					$class_name = $linked_class_name;
 				}
 				$element_type = $property->getType()->getElementType();
-				$is_abstract = $element_type->asReflectionClass()->isAbstract();
-				$sort = $is_abstract ? Dao::sort(['id']) : Dao::sort();
-				$stored = $dao->search(
+				$is_abstract  = $element_type->asReflectionClass()->isAbstract();
+				$sort         = $is_abstract ? Dao::sort(['id']) : Dao::sort();
+				$stored       = $dao->search(
 					[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
 				);
 				if ($is_abstract) {
@@ -268,7 +267,7 @@ abstract class Getter
 			}
 			elseif (is_string($property) && is_object($object)) {
 				$property_name = $property;
-				$property = new Reflection_Property(get_class($object), $property_name);
+				$property      = new Reflection_Property(get_class($object), $property_name);
 			}
 			if ($property && $property->getAnnotation('component')->value) {
 				$foreign_property_name = Foreign_Annotation::of($property)->value;
@@ -306,7 +305,8 @@ abstract class Getter
 					}
 				}
 				else {
-					$stored = isset($property)
+					$class_name = Builder::className($class_name);
+					$stored     = isset($property)
 						? Dao::get($property->getAnnotation('dao')->value)->read($stored, $class_name)
 						: Dao::read($stored, $class_name);
 				}

@@ -3,20 +3,13 @@ namespace ITRocks\Framework;
 
 use ReflectionClass;
 use ITRocks\Framework\Builder\Class_Builder;
-use ITRocks\Framework\Mapper\Getter;
-use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Plugin\Activable;
-use ITRocks\Framework\Plugin\Register;
-use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Reflection\Type;
-use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Tools\Current_With_Default;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Set;
 use Serializable;
 
 /**
@@ -27,7 +20,7 @@ use Serializable;
  *
  * @todo remove dependencies
  */
-class Builder implements Activable, Registerable, Serializable
+class Builder implements Activable, Serializable
 {
 	use Current_With_Default { current as private dCurrent; }
 
@@ -356,6 +349,7 @@ class Builder implements Activable, Registerable, Serializable
 
 	//------------------------------------------------------------------------- onMethodReturnedValue
 	/**
+	 * @deprecated
 	 * @param $result string
 	 * @return string
 	 */
@@ -366,27 +360,12 @@ class Builder implements Activable, Registerable, Serializable
 
 	//------------------------------------------------------------------------- onMethodWithClassName
 	/**
+	 * @deprecated
 	 * @param $class_name string
 	 */
 	public function onMethodWithClassName(&$class_name)
 	{
 		$class_name = $this->replacementClassName($class_name);
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
-	public function register(Register $register)
-	{
-		$aop = $register->aop;
-		$aop->beforeMethod([Getter::class, 'getCollection'],        [$this, 'onMethodWithClassName']);
-		$aop->beforeMethod([Getter::class, 'getObject'],            [$this, 'onMethodWithClassName']);
-		$aop->afterMethod( [Joins::class, 'addSimpleJoin'],         [$this, 'onMethodReturnedValue']);
-		$aop->afterMethod( [Joins::class, 'getStartingClassName'],  [$this, 'onMethodReturnedValue']);
-		$aop->beforeMethod([Search_Object::class, 'create'],        [$this, 'onMethodWithClassName']);
-		$aop->afterMethod( [Set::class, 'elementClassNameOf'],      [$this, 'onMethodReturnedValue']);
-		$aop->afterMethod( [Type::class, 'getElementTypeAsString'], [$this, 'onMethodReturnedValue']);
 	}
 
 	//-------------------------------------------------------------------------- replacementClassName

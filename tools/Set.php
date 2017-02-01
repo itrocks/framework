@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use Iterator;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -109,7 +110,7 @@ class Set implements Iterator
 		elseif (!class_exists($class_name)) {
 			$class_name = Names::setToClass($class_name, false);
 		}
-		return $class_name;
+		return Builder::className($class_name);
 	}
 
 	//----------------------------------------------------------------------------------------- first

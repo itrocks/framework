@@ -370,7 +370,7 @@ class Joins
 	private function addSimpleJoin(Join $join, $master_path, $master_property_name, $foreign_path)
 	{
 		$foreign_class_name = null;
-		$master_property = $this->getProperty($master_path, $master_property_name);
+		$master_property    = $this->getProperty($master_path, $master_property_name);
 		if ($master_property) {
 			$foreign_type = $master_property->getType();
 			if ($foreign_type->isMultiple() && ($foreign_type->getElementTypeAsString() == 'string')) {
@@ -388,11 +388,11 @@ class Joins
 					: Join::LEFT;
 				// force LEFT if any of the properties in the master property path is not mandatory
 				if (($join->mode == Join::INNER) && $master_path) {
-					$root_class = new Reflection_Class($this->classes['']);
+					$root_class    = new Reflection_Class($this->classes['']);
 					$property_path = '';
 					foreach (explode(DOT, $master_path . DOT . $master_property_name) as $property_name) {
 						$property_path .= ($property_path ? DOT : '') . $property_name;
-						$property = $root_class->getProperty($property_path);
+						$property       = $root_class->getProperty($property_path);
 						if (!$property || !$property->getAnnotation('mandatory')->value) {
 							$join->mode = Join::LEFT;
 							break;
@@ -420,7 +420,7 @@ class Joins
 					}
 				}
 				else {
-					$foreign_class_name    = $foreign_type->asString();
+					$foreign_class_name    = Builder::className($foreign_type->asString());
 					$join->foreign_column  = 'id';
 					$join->master_column   = 'id_' . $master_property->getAnnotation('storage')->value;
 					$join->master_property = $master_property;
@@ -627,7 +627,7 @@ class Joins
 	public function getStartingClass()
 	{
 		if (!$this->starting_class) {
-			$class_name = $this->getStartingClassName();
+			$class_name           = $this->getStartingClassName();
 			$this->starting_class = new Reflection_Class($class_name);
 		}
 		return $this->starting_class;
@@ -641,7 +641,7 @@ class Joins
 	 */
 	public function getStartingClassName()
 	{
-		return $this->classes[''];
+		return Builder::className($this->classes['']);
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
