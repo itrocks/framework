@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Template;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
@@ -40,6 +41,29 @@ class Functions
 	 */
 	private $inside_blocks = [];
 
+	//------------------------------------------------------------------------ displayableClassNameOf
+	/**
+	 * Gets the name of the source class for $object
+	 *
+	 * @param $object object|null
+	 * @return Displayable|null
+	 */
+	protected function displayableClassNameOf($object)
+	{
+		return $object
+			? new Displayable(
+				is_object($object)
+					? (
+						($object instanceof Set)
+						? Names::classToSet(Builder::current()->sourceClassName($object->element_class_name))
+						: Builder::current()->sourceClassName(get_class($object))
+					)
+					: Builder::current()->sourceClassName($object),
+				Displayable::TYPE_CLASS
+			)
+			: null;
+	}
+
 	//-------------------------------------------------------------------------------- getApplication
 	/**
 	 * Returns application name
@@ -58,20 +82,14 @@ class Functions
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * Returns object's class name
+	 * If it is a built object (using Builder), always gets the source class name
 	 *
 	 * @param $template Template
-	 * @return string
+	 * @return Displayable
 	 */
 	public function getClass(Template $template)
 	{
-		$object = reset($template->objects);
-		return is_object($object)
-			? (
-					($object instanceof Set)
-					? new Displayable(Names::classToSet($object->element_class_name), Displayable::TYPE_CLASS)
-					: new Displayable(get_class($object), Displayable::TYPE_CLASS)
-				)
-			: new Displayable($object, Displayable::TYPE_CLASS);
+		return $this->displayableClassNameOf(reset($template->objects));
 	}
 
 	//-------------------------------------------------------------------------------------- getCount
@@ -135,6 +153,9 @@ class Functions
 		}
 		elseif ($object instanceof Reflection_Method) {
 			return Names::methodToDisplay($object->name);
+		}
+		elseif ($object instanceof Displayable) {
+			return $object->display();
 		}
 		elseif (is_object($object)) {
 			return (new Displayable(get_class($object), Displayable::TYPE_CLASS))->display();
@@ -638,10 +659,10 @@ class Functions
 	 */
 	public function getProperties(Template $template)
 	{
-		$object = reset($template->objects);
+		$object            = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
 		$properties_title  = $template->getParameter(Parameter::PROPERTIES_TITLE);
-		$class = new Reflection_Class(get_class($object));
+		$class             = new Reflection_Class(get_class($object));
 		$result_properties = [];
 
 		if ($properties_filter) {
@@ -746,17 +767,11 @@ class Functions
 	 * Returns root class from template objects stack
 	 *
 	 * @param $template Template
-	 * @return object
+	 * @return Displayable
 	 */
 	public function getRootClass(Template $template)
 	{
-		$object = null;
-		foreach (array_reverse($template->objects) as $object) {
-			if (is_object($object)) {
-				break;
-			}
-		}
-		return isset($object) ? get_class($object) : null;
+		return $this->displayableClassNameOf($this->getRootObject($template));
 	}
 
 	//--------------------------------------------------------------------------------- getRootObject
