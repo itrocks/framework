@@ -101,6 +101,7 @@ class Linked_Classes_Compiler implements ICompiler
 					// add all classes that extend source classes
 					$search['dependency_name'] = Func::equal($class->name);
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
+						/** @var $dependency Dependency */
 						if (
 							!isset($sources[$dependency->file_name])
 							&& !Builder::isBuilt($dependency->class_name)

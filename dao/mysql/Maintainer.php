@@ -27,6 +27,9 @@ class Maintainer implements Registerable
 	 *
 	 * This is a private static instead of a const because isset / defined does not work with const
 	 *
+	 * Notice : or a MAX_RETRY of 5, the query will be executed until 6 times :
+	 * the 1st try, added to the 5 retries, equals 6.
+	 *
 	 * @var integer[]
 	 */
 	private static $MAX_RETRY = [

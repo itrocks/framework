@@ -265,6 +265,7 @@ class Compiler implements ICompiler, Needs_Main
 				unset($search['dependency_name']);
 				$search['type'] = Dependency::T_CLASS;
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
+					/** @var $dependency Dependency */
 					$source = Reflection_Source::ofClass($dependency->dependency_name);
 					if (!$source->isInternal() && !isset($sources[$source->file_name])) {
 						$sources[$source->file_name] = $source;
