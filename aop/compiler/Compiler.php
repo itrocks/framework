@@ -9,6 +9,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Dependency;
@@ -217,13 +218,11 @@ class Compiler implements ICompiler, Needs_Main
 		$added = [];
 
 		// search into dependencies : used classes
-		/** @var $search Dependency */
-		$search = Search_Object::create(Dependency::class);
-		$search->type = Dependency::T_USE;
+		$search = ['type' => Dependency::T_USE];
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if ($class->type === T_TRAIT) {
-					$search->dependency_name = $class->name;
+					$search['dependency_name'] = Func::equal($class->name);
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						/** @var $dependency Dependency */
 						while ($dependency && Builder::isBuilt($dependency->class_name)) {
@@ -259,12 +258,12 @@ class Compiler implements ICompiler, Needs_Main
 
 		// search into dependencies : registered methods
 		foreach ($sources as $source) {
-			$search->file_name = $source->file_name;
-			$search->dependency_name = Registerable::class;
-			$search->type = Dependency::T_IMPLEMENTS;
+			$search['dependency_name'] = Func::equal(Registerable::class);
+			$search['file_name']       = Func::equal($source->file_name);
+			$search['type']            = Dependency::T_IMPLEMENTS;
 			if (Dao::searchOne($search, Dependency::class)) {
-				unset($search->dependency_name);
-				$search->type = Dependency::T_CLASS;
+				unset($search['dependency_name']);
+				$search['type'] = Dependency::T_CLASS;
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					$source = Reflection_Source::ofClass($dependency->dependency_name);
 					if (!$source->isInternal() && !isset($sources[$source->file_name])) {

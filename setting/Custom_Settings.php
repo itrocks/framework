@@ -3,11 +3,13 @@ namespace ITRocks\Framework\Setting;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Traits\Has_Name;
+use ITRocks\Framework\User;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration
@@ -64,8 +66,12 @@ abstract class Custom_Settings
 	public static function currentUserSetting($class_name, $feature = null)
 	{
 		$class_name = Builder::current()->sourceClassName($class_name);
-		$setting = new User_Setting($class_name . DOT . static::customId($feature));
-		$setting = Dao::searchOne($setting) ?: $setting;
+		// use a search array with Func::equal() for SQL optimization
+		$code   = $class_name . DOT . static::customId($feature);
+		$search = ['code' => Func::equal($code), 'user' => User::current()];
+		/** @var $setting User_Setting */
+		$setting = Dao::searchOne($search, User_Setting::class)
+			?: Builder::create(User_Setting::class, [$code]);
 		return $setting;
 	}
 

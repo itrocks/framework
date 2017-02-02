@@ -83,22 +83,22 @@ class Compiler implements ICompiler
 		// reading class annotation @link
 		Builder::current()->enabled = false;
 
-		/** @var $search Dependency */
-		$search = Search_Object::create(Dependency::class);
-		$search->file_name = Func::notLike('cache/%');
-		$search->type      = Func::orOp([Dependency::T_EXTENDS, Dependency::T_USE]);
+		$search = [
+			'file_name' => Func::notLike('cache/%'),
+			'type'      => Func::orOp([Dependency::T_EXTENDS, Dependency::T_USE])
+		];
 
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				while ($linked_class = Link_Annotation::of($class)->value) {
 					$source = Reflection_Class::of($linked_class)->source;
 					if (!isset($sources[$source->file_name])) {
-						$sources[$source->file_name] = $source;
+						$sources[$source->file_name]                               = $source;
 						$added[$source->getFirstClassName() ?: $source->file_name] = $source;
 					}
 					$class = $source->getClass($linked_class);
 				}
-				$search->dependency_name = $class->name;
+				$search['dependency_name'] = Func::equal($class->name);
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					if (!isset($sources[$dependency->file_name])) {

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -322,7 +323,7 @@ abstract class Names
 		}
 		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
-			['dependency_name' => $class_name, 'type' => Dependency::T_SET],
+			['dependency_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
 			Dependency::class
 		);
 		if ($dependency) {

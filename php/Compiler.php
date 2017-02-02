@@ -396,7 +396,9 @@ class Compiler implements
 			}
 		}
 		/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
-		(new Set)->replace($dependencies, Dependency::class, ['file_name' => $source->file_name]);
+		(new Set)->replace(
+			$dependencies, Dependency::class, ['file_name' => Func::equal($source->file_name)]
+		);
 	}
 
 	//------------------------------------------------------------------------------------- serialize

@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Builder;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
@@ -94,16 +94,13 @@ class Linked_Classes_Compiler implements ICompiler
 	{
 		$added = [];
 		// we will search all extends dependencies
-		/** @var $dependency Dependency */
-		$dependency_search = Search_Object::create(Dependency::class);
-		$dependency_search->type = Dependency::T_EXTENDS;
-
+		$search = ['type' => Dependency::T_EXTENDS];
 		foreach ($sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if (!Builder::isBuilt($class->name)) {
 					// add all classes that extend source classes
-					$dependency_search->dependency_name = $class->name;
-					foreach (Dao::search($dependency_search) as $dependency) {
+					$search['dependency_name'] = Func::equal($class->name);
+					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						if (
 							!isset($sources[$dependency->file_name])
 							&& !Builder::isBuilt($dependency->class_name)
