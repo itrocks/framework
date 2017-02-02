@@ -20,12 +20,27 @@ use ITRocks\Framework\Tools\Namespaces;
 class Maintainer implements Registerable
 {
 
+	//------------------------------------------------------------------------------------ $MAX_RETRY
+	/**
+	 * Maximum retries count
+	 * Mandatory for errors codes using $retry
+	 *
+	 * This is a private static instead of a const because isset / defined does not work with const
+	 *
+	 * @var integer[]
+	 */
+	private static $MAX_RETRY = [
+		Errors::ER_DUP_ENTRY => 5
+	];
+
 	//-------------------------------------------------------------------------------------- $already
 	/**
 	 * All queries that have been already solved by the maintainer
-	 * Used to avoid trying to solve the same query twice (real errors)
+	 * Used to avoid trying to solve the same query twice when they recurse (real errors)
 	 *
-	 * @var integer[] key is the query, value is the solved counter
+	 * Some errors codes allow multiple retries, setup into MAX_RETRY
+	 *
+	 * @var integer[] key is the query, value is the solved counter (/retry)
 	 */
 	private $already = [];
 
@@ -281,44 +296,59 @@ class Maintainer implements Registerable
 	public function onMysqliQueryError(
 		Contextual_Mysqli $object, $query, &$result, Before_Method $joinpoint
 	) {
-		$mysqli = $object;
-		if ($mysqli->last_errno && !isset($this->already[$query])) {
-			$last_errno = $mysqli->last_errno;
-			$last_error = $mysqli->last_error;
-			$this->already[$query] = 1;
+		$mysqli     = $object;
+		$last_errno = $mysqli->last_errno;
+		$last_error = $mysqli->last_error;
+		$max_retry  = isset(static::$MAX_RETRY[$last_errno]) ? static::$MAX_RETRY[$last_errno] : 1;
+		if (!isset($this->already[$query])) {
+			$this->already[$query] = 0;
+		}
+		if ($last_errno && ($this->already[$query] < $max_retry)) {
+			$this->already[$query] ++;
 			if (!isset($mysqli->context)) {
 				$mysqli->context = $this->guessContext($query, $mysqli);
 			}
+			$retry = false;
+			// errors solving that need a context
 			if (isset($mysqli->context)) {
-				$retry = false;
-				$context = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
+				$context            = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
 				if (
-					($last_errno == Errors::ER_CANT_CREATE_TABLE)
-					&& strpos($last_error, '(errno: 150)')
+					in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
+				) {
+					$retry = $this->updateContextTables($mysqli, $context);
+				}
+				elseif (
+					($last_errno == Errors::ER_CANT_CREATE_TABLE) && strpos($last_error, '(errno: 150)')
 				) {
 					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
 				elseif ($last_errno == Errors::ER_NO_SUCH_TABLE) {
 					$retry = $this->onNoSuchTableError($mysqli, $query, $context);
 				}
-				elseif (
-					in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
-				) {
-					$retry = $this->updateContextTables($mysqli, $context);
-				}
-				if ($retry) {
-					$result = $mysqli->query($query);
-					if (!$mysqli->last_errno && !$mysqli->last_error) {
-						$joinpoint->stop = true;
-					}
+			}
+			// errors solving that do not need a context
+			// ER_DUP_ENTRY : this is to patch a bug into MySQL 5.7
+			if ($last_errno == Errors::ER_DUP_ENTRY) {
+				$retry = true;
+			}
+			// retry
+			if ($retry) {
+				$result = $mysqli->query($query);
+				if (!$mysqli->last_errno && !$mysqli->last_error) {
+					$joinpoint->stop = true;
 				}
 			}
+			// the error has not be cleaned : reset original errors codes
 			if (!$joinpoint->stop) {
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
 			}
+			$this->already[$query] --;
+		}
+		if (!$this->already[$query]) {
+			unset($this->already[$query]);
 		}
 	}
 

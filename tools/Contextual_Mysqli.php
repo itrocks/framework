@@ -242,7 +242,7 @@ class Contextual_Mysqli extends mysqli
 		// disconnects. This may disable other warnings, but you always will have error / errno if
 		// there is a mysqli error
 		$reporting = error_reporting(E_ALL & ~E_WARNING);
-		$result = parent::query($query, $result_mode);
+		$result    = parent::query($query, $result_mode);
 		error_reporting($reporting);
 		$this->last_errno = $this->errno;
 		$this->last_error = $this->error;

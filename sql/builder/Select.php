@@ -114,9 +114,9 @@ class Select
 			}
 			elseif ($option instanceof Option\Group_By) {
 				$columns = new Columns($this->class_name, $option->properties, $this->joins);
-				$columns->expand_objects = false;
+				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
-				$group_by = $columns->build();
+				$group_by                 = $columns->build();
 				$options[10] = LF . 'GROUP BY ' . $group_by;
 			}
 			elseif ($option instanceof Option\Limit) {
@@ -133,9 +133,9 @@ class Select
 					['DESC' => $option->reverse]
 				);
 				$columns->replaceProperties($this->columns_builder);
-				$columns->expand_objects = false;
+				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
-				$order_by = $columns->build();
+				$order_by                 = $columns->build();
 				if ($order_by) {
 					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
@@ -178,7 +178,7 @@ class Select
 	private function finalize($columns, $where, $tables, array $options)
 	{
 		if (is_array($where)) {
-			$sql = '';
+			$sql            = '';
 			$options_inside = [];
 			foreach ($options as $option) {
 				if (
