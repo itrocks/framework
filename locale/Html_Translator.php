@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Locale;
 
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\View\Html\Dom\Option;
+use ITRocks\Framework\View\Html\Dom;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -28,7 +28,7 @@ class Html_Translator implements Registerable
 			[Template::class, 'parseString'], [$this, 'translateString']
 		);
 		$aop->afterMethod(
-			[Option::class, 'getContent'], [$this, 'translateOptionContent']
+			[Dom\Option::class, 'getContent'], [$this, 'translateOptionContent']
 		);
 	}
 
