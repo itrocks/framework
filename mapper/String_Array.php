@@ -18,6 +18,7 @@ abstract class String_Array
 	 * @param $joinpoint     Read_Property
 	 * @param $object        object
 	 * @param $property_name string
+	 * @return string[]
 	 */
 	public static function getter(Read_Property $joinpoint, $object, $property_name)
 	{
