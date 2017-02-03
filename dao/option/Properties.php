@@ -39,7 +39,7 @@ abstract class Properties implements Option
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * @param $properties string[]|string
+	 * @param $properties string[]|string Each property can be a property.path
 	 */
 	public function add($properties)
 	{
@@ -50,7 +50,16 @@ abstract class Properties implements Option
 				}
 			}
 			elseif (is_string($properties)) {
-				$this->properties[] = $properties;
+				if (strpos($properties, DOT)) {
+					$property = '';
+					foreach (explode(DOT, $properties) as $property_element) {
+						$property .= ($property ? DOT : '') . $property_element;
+						$this->properties[] = $property;
+					}
+				}
+				else {
+					$this->properties[] = $properties;
+				}
 			}
 		}
 	}
@@ -127,6 +136,28 @@ abstract class Properties implements Option
 			}
 		}
 		return $removed;
+	}
+
+	//------------------------------------------------------------------------------- subObjectOption
+	/**
+	 * @param $property_path string
+	 * @return static|null null if there is no path for $property_path into
+	 */
+	public function subObjectOption($property_path)
+	{
+		$property_path .= DOT;
+		$length         = strlen($property_path);
+		foreach ($this->properties as $property) {
+			if (substr($property, 0, $length) === $property_path) {
+				$properties[] = substr($property, $length);
+			}
+		}
+		if (isset($properties)) {
+			$option             = clone $this;
+			$option->properties = $properties;
+			return $option;
+		}
+		return null;
 	}
 
 }

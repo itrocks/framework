@@ -1212,10 +1212,10 @@ class Link extends Dao\Sql\Link
 				if ($option instanceof Option\Add) {
 					$force_add = true;
 				}
-				elseif ($option instanceof Option\Exclude) {
+				elseif (($option instanceof Option\Exclude) && Dao::getObjectIdentifier($object)) {
 					$exclude = array_merge($exclude, $option->properties);
 				}
-				elseif ($option instanceof Option\Only) {
+				elseif (($option instanceof Option\Only) && Dao::getObjectIdentifier($object)) {
 					$only = isset($only)
 						? array_merge($only, $option->properties)
 						: $option->properties;
@@ -1300,14 +1300,17 @@ class Link extends Dao\Sql\Link
 				}
 				foreach ($write_collections as $write) {
 					list($property, $value) = $write;
+					$this->spreadExcludeAndOnly($spread_options, $property->name, $exclude, $only);
 					$this->writeCollection($object, $spread_options, $property, $value);
 				}
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
+					$this->spreadExcludeAndOnly($spread_options, $property->name, $exclude, $only);
 					$this->writeMap($object, $spread_options, $property, $value);
 				}
 				foreach ($write_objects as $write) {
 					list($property, $value) = $write;
+					$this->spreadExcludeAndOnly($spread_options, $property->name, $exclude, $only);
 					$this->writeObject($object, $spread_options, $property, $value);
 				}
 				foreach ($write_properties as $write) {
