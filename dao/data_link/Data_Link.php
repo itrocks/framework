@@ -377,6 +377,32 @@ abstract class Data_Link
 	 */
 	abstract public function select($class, $properties, $filter_object = null, $options = []);
 
+	//-------------------------------------------------------------------------- spreadExcludeAndOnly
+	/**
+	 * Spread the Only option when it contains some $property_name.*
+	 *
+	 * @example 'property_name' with $only = ['property_name.thing'] will return ['thing']
+	 * @param $options       Option[]
+	 * @param $property_name string
+	 * @param $exclude       string[]
+	 * @param $only          string[]
+	 */
+	protected function spreadExcludeAndOnly(array &$options, $property_name, $exclude, $only)
+	{
+		if ($exclude) {
+			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
+			if ($spread_only) {
+				$options[] = $spread_only;
+			}
+		}
+		if ($only) {
+			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
+			if ($spread_only) {
+				$options[] = $spread_only;
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
 	 * Gets the store name for records typed as $class_name
