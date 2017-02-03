@@ -16,6 +16,16 @@ abstract class Property_Joinpoint extends Joinpoint
 	 */
 	public $class_name;
 
+	//-------------------------------------------------------------------------------------- $disable
+	/**
+	 * The advice can set this to true in order to stop to definitively disable AOP on this property
+	 * This disables all AOP advices, not only the current one : this is to be used for optimization
+	 * purpose on property you known they need AOP one time only
+	 *
+	 * @var boolean
+	 */
+	public $disable = false;
+
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object

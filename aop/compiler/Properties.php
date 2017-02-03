@@ -15,6 +15,9 @@ class Properties
 	//----------------------------------------------------------------------------------------- DEBUG
 	const DEBUG = false;
 
+	//-------------------------------------------------------------------------------- INIT_JOINPOINT
+	const INIT_JOINPOINT = '2.joinpoint';
+
 	//------------------------------------------------------------------------------ $SETTER_RESERVED
 	private static $SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
@@ -123,7 +126,7 @@ class Properties
 			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
-				$init['2.joinpoint'] = '$joinpoint = new \ITRocks\Framework\AOP' . BS . ucfirst($type) . '_Property('
+				$init[self::INIT_JOINPOINT] = '$joinpoint = new \ITRocks\Framework\AOP\Joinpoint' . BS . ucfirst($type) . '_Property('
 					. LF . TAB . TAB . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 					. ');';
 			}
@@ -381,11 +384,27 @@ class Properties
 			}
 		}
 		if (isset($prototype)) {
-			// todo missing call of setters if value has been changed
-			return $prototype . $this->initCode($init) . $code . '
+			if (isset($init[self::INIT_JOINPOINT])) {
+				$reset_aop = '
+
+		if ($joinpoint->disable) {
+			unset($this->' . $property_name . '_);
+		}
+		else {
+			unset($this->' . $property_name . ');
+			$this->_[' . Q . $property_name . Q . '] = true;
+		}
+				';
+			}
+			else {
+				$reset_aop = '
 
 		unset($this->' . $property_name . ');
 		$this->_[' . Q . $property_name . Q . '] = true;
+				';
+			}
+			// todo missing call of setters if value has been changed
+			return $prototype . $this->initCode($init) . $code . $reset_aop . '
 		return $value;
 	}
 ';
