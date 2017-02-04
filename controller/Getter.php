@@ -26,15 +26,15 @@ abstract class Getter
 	 */
 	static public function get($base_class, $feature_name, $suffix, $extension, $class_form = true)
 	{
-		// ie : $feature_class = 'featureName' transformed into 'Feature_Name'
-		$feature_class = Names::methodToClass($feature_name);
-		// $feature_what is $feature_class or $feature_name depending on $class_name
-		$feature_what = $class_form ? $feature_class : $feature_name;
-		$_suffix = $suffix ? ('_' . $suffix) : '';
-		$class_name = $base_class;
-		$ext = DOT . $extension;
-		$method = 'run';
+		// $feature_class : 'featureName' transformed into 'Feature_Name'
+		// $feature_what : is $feature_class or $feature_name depending on $class_name
+		$_suffix             = $suffix ? ('_' . $suffix) : '';
 		$application_classes = Application::current()->getClassesTree();
+		$class_name          = $base_class;
+		$ext                 = DOT . $extension;
+		$feature_class       = Names::methodToClass($feature_name);
+		$feature_what        = $class_form ? $feature_class : $feature_name;
+		$method              = 'run';
 
 		// $classes : the controller class name and its parents and traits
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
@@ -48,43 +48,42 @@ abstract class Getter
 			// for the controller class and its parents
 			foreach ($classes as $short_class_name) {
 				$class_name = $namespace . BS . $short_class_name;
-				$path = strtolower(str_replace(BS, SL, $class_name));
-if (isset($GLOBALS['D'])) echo '- try A1 ' . $path . SL . $feature_what . $_suffix . $ext . BR;
+				$path       = strtolower(str_replace(BS, SL, $class_name));
+if (isset($GLOBALS['D'])) echo '- try A1 ' . $path . SL . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists($path . SL . $feature_what . $_suffix . $ext)) {
 					$class = $class_name . BS . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D'])) echo '- try A2 ' . $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try A2 ' . $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists($path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext)) {
 					$class = $class_name . BS . $feature_class . BS . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) echo '- try A3 ' . $path . SL . strtolower($feature_class) . SL . $suffix . $ext . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try A3 ' . $path . SL . strtolower($feature_class) . SL . $suffix . $ext . '::run' . BR;
 				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $feature_class . BS . $suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext . ' method run' . ucfirst($feature_name) . '()' . BR;
+if (isset($GLOBALS['D'])) echo '- try A4 ' . Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists(
 					Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext
 				)) {
 					$class = $class_name . '_' . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $ext . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try A5 ' . $path . SL . $suffix . $ext . '::run' . ucfirst($feature_name) . BR;
 				if (
 					$suffix
 					&& file_exists($path . SL . $suffix . $ext)
 					&& method_exists($class_name . BS . $suffix, 'run' . ucfirst($feature_name))
 				) {
-					$class = $class_name . BS . $suffix;
+					$class  = $class_name . BS . $suffix;
 					$method = 'run' . ucfirst($feature_name);
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) echo '- try A6 ' . $path . SL . $suffix . $ext . ' method run()' . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try A6 ' . $path . SL . $suffix . $ext . '::run' . BR;
 				if ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $suffix;
-					$method = 'run';
 					break 2;
 				}
 			}
@@ -100,26 +99,26 @@ if (isset($GLOBALS['D']) && $suffix) echo '- try A6 ' . $path . SL . $suffix . $
 			do {
 				// looking for default controller
 				$path = strtolower(str_replace(BS, SL, $namespace));
-if (isset($GLOBALS['D']) && $suffix) echo '- try B1 ' . $path . SL . strtolower($feature_class) . SL . $suffix . $ext . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try B1 ' . $path . SL . strtolower($feature_class) . SL . $suffix . $ext . '::run' . BR;
 				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
 					$class = $namespace . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) echo '- try B2 ' . $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try B2 ' . $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists(
 					$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
 				)) {
 					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) echo '- try B3 ' . $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try B3 ' . $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext . '::run' . BR;
 				if ($suffix && file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) echo '- try B4 ' . $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try B4 ' . $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL
 					. $feature_what . $_suffix . $ext
@@ -128,14 +127,14 @@ if (isset($GLOBALS['D'])) echo '- try B4 ' . $path . SL . 'widget' . SL . strtol
 						. $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) echo '- try B5 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext . BR;
+if (isset($GLOBALS['D']) && $suffix) echo '- try B5 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext . '::run' . BR;
 				if ($suffix && file_exists(
 						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext
 					)) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext . '::run' . BR;
 				if (file_exists(
 					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL
 					. $feature_what . $_suffix . $ext
@@ -149,7 +148,7 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 			} while(next($application_classes));
 
 			// Looking for direct feature call, without using any controller
-			static $last_controller_class = '';
+			static $last_controller_class  = '';
 			static $last_controller_method = '';
 			if (
 				empty($class)
@@ -166,8 +165,9 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 					$last_controller_class  = $base_class;
 					$last_controller_method = $feature_name;
 				}
+if (isset($GLOBALS['D'])) echo '- try C1 ' . $base_class . '::' . $feature_name . BR;
 				if (method_exists($base_class, $feature_name)) {
-					$class = $base_class;
+					$class  = $base_class;
 					$method = $feature_name;
 				}
 			}
@@ -178,15 +178,15 @@ if (isset($GLOBALS['D'])) echo '- try B6 ' . $path . SL . 'webservice' . SL . st
 				// $suffix == 'Html_View' => $sub = 'View/Html', $suffix = 'View'
 				if (strpos($suffix, '_')) {
 					$elements = explode('_', $suffix);
-					$sub = join(SL, array_reverse($elements));
-					$suffix = end($elements);
+					$sub      = join(SL, array_reverse($elements));
+					$suffix   = end($elements);
 				}
 				// $suffix == 'Controller' => $sub = 'Controller', $suffix = 'Controller'
 				else {
 					$sub = $suffix;
 				}
 				do {
-if (isset($GLOBALS['D'])) echo '- try C2 ' . $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext . BR;
+if (isset($GLOBALS['D'])) echo '- try C2 ' . $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext . '::run' . BR;
 					if (file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
@@ -248,7 +248,7 @@ if (isset($GLOBALS['D'])) echo '- FOUND ' . join('::', $result) . BR;
 		$traits = [];
 		foreach ($class->getTraits() as $trait) {
 			$traits[$trait->name] = self::classNameWithoutVendorProject($trait->name);
-			$traits = array_merge($traits, self::getTraitsRecursive($trait));
+			$traits               = array_merge($traits, self::getTraitsRecursive($trait));
 		}
 		return $traits;
 	}
