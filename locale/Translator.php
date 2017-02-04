@@ -46,7 +46,7 @@ class Translator
 	 *
 	 * @example
 	 * $translations = [
-	 *   ''                                    => 'default user translation',
+	 *   ''                                        => 'default user translation',
 	 *   ITRocks\Framework\User::class             => 'user translation',
 	 *   ITRocks\Framework\User\Account::class     => 'account user translation',
 	 *   ITRocks\Framework\Traits\Has_Email::class => 'has email translation'
@@ -228,10 +228,6 @@ class Translator
 						?: $this->defaultTranslation($text);
 					// store text for context to cache
 					$this->cache[$lower_text][$context] = $translation;
-					// also, if default cache text is empty, update with this translation
-					if (isset($this->cache[$lower_text]['']) && !strlen($this->cache[$lower_text][''])) {
-						$this->cache[$lower_text][''] = $translation;
-					}
 				}
 			}
 			$translation = strIsCapitals(substr($text, 0, 1)) ? ucfirsta($translation) : $translation;
@@ -255,9 +251,8 @@ class Translator
 			['language' => $this->language, 'text' => $text], Translation::class, [Dao::key('context')]
 		);
 		foreach ($translations as $context => $translation) {
-			$translations[$context] = isset($str_uri)
-				? strUri($translation->translation)
-				: $translation->translation;
+			$translated_text        = $translation->translation ?: $this->defaultTranslation($text);
+			$translations[$context] = isset($str_uri) ? strUri($translated_text) : $translated_text;
 		}
 		/** @var $translations string[] */
 		return $translations;
