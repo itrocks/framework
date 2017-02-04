@@ -198,38 +198,40 @@ class Translator
 			$translation = $text;
 		}
 		else {
-			$lower_text = strtolower($text);
 			// different texts separated by dots : translate each part between dots
 			if (strpos($text, DOT) !== false) {
 				$translation = $this->separatedTranslations($text, DOT, $context);
 			}
-			// return cached contextual translation
-			elseif (isset($this->cache[$lower_text][$context])) {
-				$translation = $this->cache[$lower_text][$context];
-			}
 			else {
-				// $translations string[] $translation[$context]
-				if (!isset($this->cache[$lower_text])) {
-					$this->cache[$lower_text] = $this->translations($text);
+				$lower_text = strtolower($text);
+				// return cached contextual translation
+				if (isset($this->cache[$lower_text][$context])) {
+					$translation = $this->cache[$lower_text][$context];
 				}
-				$translations = $this->cache[$lower_text];
-				// no translation found and separated by commas : translate each part between commas
-				if (!$translations && (strpos($text, ', ') !== false)) {
-					return $this->separatedTranslations($text, ', ', $context);
-				}
-				// no translation found : store original text to cache and database, then return it
-				if (!$translations) {
-					$translations['']
-						= $this->cache[$lower_text]['']
-						= $this->storeDefaultTranslation($text);
-				}
-				$translation = $this->chooseTranslation($translations, $context)
-					?: $this->defaultTranslation($text);
-				// store text for context to cache
-				$this->cache[$lower_text][$context] = $translation;
-				// also, if default cache text is empty, update with this translation
-				if (isset($this->cache[$lower_text]['']) && !strlen($this->cache[$lower_text][''])) {
-					$this->cache[$lower_text][''] = $translation;
+				else {
+					// $translations string[] $translation[$context]
+					if (!isset($this->cache[$lower_text])) {
+						$this->cache[$lower_text] = $this->translations($text);
+					}
+					$translations = $this->cache[$lower_text];
+					// no translation found and separated by commas : translate each part between commas
+					if (!$translations && (strpos($text, ', ') !== false)) {
+						return $this->separatedTranslations($text, ', ', $context);
+					}
+					// no translation found : store original text to cache and database, then return it
+					if (!$translations) {
+						$translations['']
+							= $this->cache[$lower_text]['']
+							= $this->storeDefaultTranslation($text);
+					}
+					$translation = $this->chooseTranslation($translations, $context)
+						?: $this->defaultTranslation($text);
+					// store text for context to cache
+					$this->cache[$lower_text][$context] = $translation;
+					// also, if default cache text is empty, update with this translation
+					if (isset($this->cache[$lower_text]['']) && !strlen($this->cache[$lower_text][''])) {
+						$this->cache[$lower_text][''] = $translation;
+					}
 				}
 			}
 			$translation = strIsCapitals(substr($text, 0, 1)) ? ucfirsta($translation) : $translation;
