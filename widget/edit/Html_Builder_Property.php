@@ -31,16 +31,20 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
-	 * @param $preprop  string
+	 * @param $prefix   string prefix to property name
 	 */
-	public function __construct(Reflection_Property $property = null, $value = null, $preprop = null)
+	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
 	{
 		if (isset($property)) {
 			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
-			$user_annotations = $property->getListAnnotation(User_Annotation::ANNOTATION);
+
+			/** @var $user_annotation User_Annotation */
+			$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 			/** @var $user_default_annotation Method_Annotation */
 			$user_default_annotation = $property->getAnnotation('user_default');
+
+			// get default value
 			if (($property instanceof Reflection_Property_Value)
 				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
 				&& $user_default_annotation->value
@@ -49,37 +53,41 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 
 			// 1st, get read_only from @user readonly
-			$this->readonly = $user_annotations->has(User_Annotation::READONLY);
+			$this->readonly = $user_annotation->has(User_Annotation::READONLY);
 			if (
 				!$this->readonly
-				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
+				&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))
 			) {
 				// if there is @user_default, there can not be @user if_empty
-				if ($user_default_annotation->value && $user_annotations->has(User_Annotation::IF_EMPTY)) {
+				if ($user_default_annotation->value && $user_annotation->has(User_Annotation::IF_EMPTY)) {
 					$flag_cannot_be_if_empty = true;
 				}
 			}
+
 			// 2nd, if not read_only but has a value and @user if_empty, then set read_only
 			if (
 				!$this->readonly
 				&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
 				&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)
 			) {
-				$this->readonly = $user_annotations->has(User_Annotation::IF_EMPTY);
+				$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
 			}
+
+			// if name contains [...], recalculate name and prefix. TODO explain those rules
 			$name = $property->pathAsField();
 			if (strpos($name, '[')) {
-				$preprop2 = lLastParse($name, '[');
-				$preprop = $preprop
-					? ($preprop . '[' . lParse($preprop2, '[') . '[' . rParse($preprop2, '['))
-					: $preprop2;
+				$prefix2 = lLastParse($name, '[');
+				$prefix  = $prefix
+					? ($prefix . '[' . lParse($prefix2, '[') . '[' . rParse($prefix2, '['))
+					: $prefix2;
 				$name = lParse(rLastParse($name, '['), ']');
 			}
+
 			$this->loadConditions();
-			parent::__construct($name, $property->getType(), $value, $preprop);
+			parent::__construct($name, $property->getType(), $value, $prefix);
 		}
 		else {
-			parent::__construct(null, null, $value, $preprop);
+			parent::__construct(null, null, $value, $prefix);
 		}
 	}
 
