@@ -44,7 +44,7 @@ class Placeholder_Annotation extends Method_Annotation
 				$this->is_method = true;
 				// value is not callable (private or protected?)
 				if (!is_callable([$class_name, $method_name])) {
-					$this->value     = '';
+					$this->value = '';
 					trigger_error(
 						"method $class_name::$method_name is not callable. Please review.", E_USER_ERROR
 					);
