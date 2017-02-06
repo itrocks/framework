@@ -173,10 +173,12 @@ class Write extends Data_Link\Write
 				}
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
+					$this->spreadExcludeAndOnly($this->spread_options, $property->name, $this->exclude, $this->only);
 					$this->writeMap($property, $value);
 				}
 				foreach ($write_objects as $write) {
 					list($property, $value) = $write;
+					$this->spreadExcludeAndOnly($this->spread_options, $property->name, $this->exclude, $this->only);
 					$this->writeObject($property, $value);
 				}
 				foreach ($write_properties as $write) {
@@ -200,6 +202,32 @@ class Write extends Data_Link\Write
 			return $this->object;
 		}
 		return null;
+	}
+
+	//-------------------------------------------------------------------------- spreadExcludeAndOnly
+	/**
+	 * Spread the Only option when it contains some $property_name.*
+	 *
+	 * @example 'property_name' with $only = ['property_name.thing'] will return ['thing']
+	 * @param $options       Option[]
+	 * @param $property_name string
+	 * @param $exclude       string[]
+	 * @param $only          string[]
+	 */
+	protected function spreadExcludeAndOnly(array &$options, $property_name, $exclude, $only)
+	{
+		if ($exclude) {
+			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
+			if ($spread_only) {
+				$options[] = $spread_only;
+			}
+		}
+		if ($only) {
+			$spread_only = (new Option\Only($only))->subObjectOption($property_name);
+			if ($spread_only) {
+				$options[] = $spread_only;
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------ writeArray
