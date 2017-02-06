@@ -418,9 +418,9 @@ class Object_Builder_Array
 				$value = call_user_func([$property->getType()->asString(), 'fromString'], trim($value));
 			}
 		}
-		// if object exit, the property value is set only for official properties, if not default and not empty
+		// the property value is set only for official properties, if not default and not empty
 		$property_name = $property->name;
-		if (is_object($object) && ($value !== '' || !$property->getType()->isClass())) {
+		if (($value !== '') || !$property->getType()->isClass()) {
 			if (!isset($object->$property_name) || ($value != $object->$property_name)) {
 				$object->$property_name = $value;
 			}
