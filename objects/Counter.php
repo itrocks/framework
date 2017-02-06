@@ -125,12 +125,9 @@ class Counter
 		$format = $this->format;
 		$last   = $this->last_update;
 
-		if ($last === null){
-			return true;
-		}
-
 		return
-			((strpos($format, '{DAY}') !== false) && ($date > $last->format('Y-m-d')))
+			!$last
+			|| ((strpos($format, '{DAY}') !== false) && ($date > $last->format('Y-m-d')))
 			|| ((strpos($format, '{MONTH}') !== false) && (substr($date, 0, 7) > $last->format('Y-m')))
 			|| ((strpos($format, '{YEAR') !== false) && (substr($date, 0, 4) > $last->format('Y')));
 	}
