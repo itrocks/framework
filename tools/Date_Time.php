@@ -139,6 +139,18 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this;
 	}
 
+	//--------------------------------------------------------------------------------------- compare
+	/**
+	 * Dates comparison for sorting
+	 *
+	 * @param $date Date_Time
+	 * @return integer -1 if $this < $date, 1 if $this > $date, 0 if they are equal
+	 */
+	public function compare(Date_Time $date)
+	{
+		return $this->isBefore($date) ? -1 : ($this->isAfter($date) ? 1 : 0);
+	}
+
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
 	 * @param $format   string
