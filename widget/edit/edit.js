@@ -256,7 +256,6 @@ $('document').ready(function()
 
 			source: function(request, response)
 			{
-
 				var $element = this.element;
 				$.getJSON(
 					comboUri($element),
@@ -267,7 +266,6 @@ $('document').ready(function()
 
 			select: function(event, ui)
 			{
-
 				// caption of the combo
 				var $caption = $(this);
 				// does value is an id managed with a previous input, or same string as caption?
@@ -289,12 +287,6 @@ $('document').ready(function()
 					$caption.val(ui.item.value);
 				}
 				$caption.data('value', ui.item.value);
-
-				if (ui.item.data_attributes) {
-					jQuery.each(ui.item.data_attributes, function (attr_key,attr_value){
-						$value.attr('data-'+attr_key, attr_value);
-					});
-				}
 
 				if (!comboMatches($caption)) {
 					//console.log('> ' + $caption.val() + ' does not match ' + $caption.data('value'));

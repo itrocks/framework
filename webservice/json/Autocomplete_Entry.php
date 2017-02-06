@@ -5,6 +5,8 @@ namespace ITRocks\Framework\Webservice\Json;
  * An autocomplete entry class
  *
  * This object is recognized by jQuery-ui autocomplete component to be an entry for <option>
+ *
+ * TODO Json controller is not only for Autocomplete : name must be more global
  */
 class Autocomplete_Entry
 {
@@ -21,24 +23,15 @@ class Autocomplete_Entry
 	 */
 	public $value;
 
-	//------------------------------------------------------------------------------ $data_attributes
-	/**
-	 * @var string[]
-	 */
-	public $data_attributes;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $id    integer
 	 * @param $value string
-	 * @param $data_attributes string[] use in the input field
-	 *    example : $data_attribute["key"] = "value" render html data-key="value"
 	 */
-	public function __construct($id = null, $value = null, $data_attributes = null)
+	public function __construct($id = null, $value = null)
 	{
 		if (isset($id))    $this->id = $id;
 		if (isset($value)) $this->value = $value;
-		if (isset($data_attributes)) $this->data_attributes = $data_attributes;
 	}
 
 }
