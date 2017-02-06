@@ -49,7 +49,7 @@ class Json_Controller implements Default_Feature_Controller
 	{
 		if (is_array($objects)) {
 			$entries = [];
-			foreach($objects as $source_object) {
+			foreach ($objects as $source_object) {
 				$entries[] = new Autocomplete_Entry(
 					Dao::getObjectIdentifier($source_object), strval($source_object)
 				);

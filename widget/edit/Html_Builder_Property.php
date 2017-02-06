@@ -196,7 +196,10 @@ class Html_Builder_Property extends Html_Builder_Type
 						$filter = 'id_' . $filter;
 					}
 
-					if (array_key_exists($filter_value_name,$properties) && $properties[$filter_value_name]->getType()->isClass()) {
+					if (
+						isset($properties[$filter_value_name])
+						&& $properties[$filter_value_name]->getType()->isClass()
+					) {
 						$filter_value_name = 'id_' . $filter_value_name;
 					}
 

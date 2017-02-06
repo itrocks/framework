@@ -539,10 +539,10 @@ class Html_Builder_Type
 	 */
 	private function setInputAsReadOnly($input)
 	{
-		if ($input->getAttribute('name')!==null) {
+		if ($input->getAttribute('name')) {
 			$input->setData('name', $input->getAttribute('name')->value);
+			$input->removeAttribute('name');
 		}
-		$input->removeAttribute('name');
 		$input->setAttribute('readonly');
 	}
 
