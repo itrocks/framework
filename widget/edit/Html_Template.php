@@ -186,11 +186,8 @@ class Html_Template extends Template
 				) {
 					$this->cache[self::PARSED_ID][$this->getFormId()][$prefix] = true;
 					if ($property instanceof Reflection_Property_Value) {
-						$parent_object = $property->getObject();
-
-						// TODO HIGHEST Check in what case it is useful : check for problems it may cause
-						$id = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
-
+						$parent_object     = $property->getObject();
+						$id                = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
 						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
 						$id_value          = $html_builder_type->setTemplate($this)->build();
 					}

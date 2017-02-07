@@ -141,7 +141,16 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 	 */
 	public function getObject()
 	{
-		return $this->object;
+		$object = $this->object;
+		if (strpos($this->path, DOT)) {
+			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
+				if (!$object) {
+					break;
+				}
+				$object = $object->$property_name;
+			}
+		}
+		return $object;
 	}
 
 	//-------------------------------------------------------------------------------------- isHidden
