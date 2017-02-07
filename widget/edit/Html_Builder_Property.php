@@ -177,12 +177,11 @@ class Html_Builder_Property extends Html_Builder_Type
 	public function buildObject(array $filters = null, $as_string = null)
 	{
 		if (!isset($filters)) {
-			$filters_values = $this->property->getListAnnotation('filters')->values();
+			$filters_annotation = $this->property->getListAnnotation('filters');
+			$filters_values     = $filters_annotation->values();
 			if ($filters_values) {
-				$properties = $this->property->getDeclaringClass()->getProperties([T_EXTENDS, T_USE]);
-				$property_properties = $this->property->getType()->asReflectionClass()->getProperties([
-					T_EXTENDS, T_USE
-				]);
+				$class_name         = $this->property->getFinalClassName();
+				$foreign_class_name = $this->property->getType()->getElementTypeAsString();
 				foreach ($filters_values as $filter) {
 					if (strpos($filter, '=')) {
 						list($filter, $filter_value_name) = explode('=', $filter);
@@ -192,18 +191,11 @@ class Html_Builder_Property extends Html_Builder_Type
 					else {
 						$filter_value_name = $filter;
 					}
-					if ($property_properties[$filter]->getType()->isClass()) {
+					if ((new Reflection_Property($foreign_class_name, $filter))->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
-
-					if (
-						isset($properties[$filter_value_name])
-						&& $properties[$filter_value_name]->getType()->isClass()
-					) {
-						$filter_value_name = 'id_' . $filter_value_name;
-					}
-
-					$filters[$filter] = $filter_value_name;
+					$property         = (new Reflection_Property($class_name, $filter_value_name));
+					$filters[$filter] = $property->pathAsField(true);
 				}
 			}
 		}

@@ -109,9 +109,9 @@ class Html_Builder_Type
 	 */
 	public function __construct($name = null, Type $type = null, $value = null, $preprop = null)
 	{
-		if (isset($name))    $this->name = $name;
-		if (isset($type))    $this->type = $type;
-		if (isset($value))   $this->value = $value;
+		if (isset($name))    $this->name    = $name;
+		if (isset($type))    $this->type    = $type;
+		if (isset($value))   $this->value   = $value;
 		if (isset($preprop)) $this->preprop = $preprop;
 	}
 
@@ -125,10 +125,10 @@ class Html_Builder_Type
 	{
 		if ($this->conditions) {
 			$html_conditions = [];
-			$old_name = $this->name;
+			$old_name        = $this->name;
 			foreach ($this->conditions as $condition_name => $condition_value) {
 				$this->name = $condition_name;
-				$name = $this->getFieldName('', false);
+				$name       = $this->getFieldName('', false);
 				$html_conditions[] = $name . '=' . $condition_value;
 			}
 			$this->name = $old_name;
@@ -268,7 +268,7 @@ class Html_Builder_Type
 	protected function buildFileAnchor(File $file)
 	{
 		/** @var $session_files Files */
-		$session_files = Session::current()->get(Files::class, true);
+		$session_files          = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
 			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name], ['size' => 22]))
@@ -351,7 +351,7 @@ class Html_Builder_Type
 		$class_name = $this->type->asString();
 		// visible input ?
 		$input_id = $as_string ? $this->getFieldName() : null;
-		$input = new Input($input_id, strval($this->value));
+		$input    = new Input($input_id, strval($this->value));
 		$input->setAttribute('autocomplete', 'off');
 		$input->setData('edit-class', Builder::current()->sourceClassName($class_name));
 		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')->value));
@@ -371,10 +371,10 @@ class Html_Builder_Type
 		else {
 			if ($filters) {
 				$html_filters = [];
-				$old_name = $this->name;
+				$old_name     = $this->name;
 				foreach ($filters as $filter_name => $filter_value) {
-					$this->name = $filter_value;
-					$name = $this->getFieldName('', false);
+					$this->name     = $filter_value;
+					$name           = $this->getFieldName('', false);
 					$html_filters[] = $filter_name . '=' . $name;
 				}
 				$this->name = $old_name;
@@ -455,8 +455,8 @@ class Html_Builder_Type
 			$field_name = $prefix . $this->name;
 		}
 		elseif (substr($this->preprop, -2) == '[]') {
-			$field_name = substr($this->preprop, 0, -2) . '[' . $prefix . $this->name . ']';
-			$count = $this->template->nextCounter($field_name, $counter_increment);
+			$field_name  = substr($this->preprop, 0, -2) . '[' . $prefix . $this->name . ']';
+			$count       = $this->template->nextCounter($field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
 		elseif (strlen($prefix . $this->name)) {
@@ -465,7 +465,7 @@ class Html_Builder_Type
 				: $this->preprop . '[' . $prefix . $this->name . ']';
 		}
 		else {
-			$count = $this->template->nextCounter($this->preprop, $counter_increment);
+			$count      = $this->template->nextCounter($this->preprop, $counter_increment);
 			$field_name = $this->preprop . '[' . $count . ']';
 		}
 		return $field_name;
@@ -479,13 +479,13 @@ class Html_Builder_Type
 	 */
 	private function getRepetitiveFieldName($prefix, $counter_increment)
 	{
-		$i = strpos($this->preprop, '[]');
-		$counter_name = substr($this->preprop, 0, $i);
-		$field_name_i = $i + 3;
-		$field_name_j = strpos($this->preprop, ']', $field_name_i);
+		$i                = strpos($this->preprop, '[]');
+		$counter_name     = substr($this->preprop, 0, $i);
+		$field_name_i     = $i + 3;
+		$field_name_j     = strpos($this->preprop, ']', $field_name_i);
 		$super_field_name = substr($this->preprop, $field_name_i, $field_name_j - $field_name_i);
-		$counter_name .= '[' . $super_field_name . ']' . '[' . $prefix . $this->name . ']';
-		$count = $this->template->nextCounter($counter_name, $counter_increment);
+		$counter_name    .= '[' . $super_field_name . ']' . '[' . $prefix . $this->name . ']';
+		$count            = $this->template->nextCounter($counter_name, $counter_increment);
 		return substr($this->preprop, 0, $i)
 			. '[' . $super_field_name . ']'
 			. '[' . $count . ']'

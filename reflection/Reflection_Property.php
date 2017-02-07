@@ -525,11 +525,21 @@ class Reflection_Property extends ReflectionProperty
 	 * Returns path formatted as field : uses [] instead of .
 	 *
 	 * @example if $this->path is 'a.field.path', will return 'a[field][path]'
+	 * @param $class_with_id boolean if true, will append [id] or prepend id_ for class fields
 	 * @return string
 	 */
-	public function pathAsField()
+	public function pathAsField($class_with_id = false)
 	{
-		return Names::propertyPathToField($this->path ? $this->path : $this->name);
+		$path = Names::propertyPathToField($this->path ? $this->path : $this->name);
+		if ($class_with_id && $this->getType()->isClass()) {
+			if (strpos($path, DOT)) {
+				$path .= '[id]';
+			}
+			else {
+				$path = 'id_' . $path;
+			}
+		}
+		return $path;
 	}
 
 	//-------------------------------------------------------------------------------------- setValue
