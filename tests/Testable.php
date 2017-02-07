@@ -4,7 +4,8 @@ namespace ITRocks\Framework\Tests;
 /**
  * Base methods to use in a unit test class
  */
-abstract class Testable {
+abstract class Testable
+{
 
 	//------------------------------------------------------------------------------------------- ALL
 	const ALL = 'all';
@@ -20,12 +21,6 @@ abstract class Testable {
 	 * @var integer
 	 */
 	public $errors_count = 0;
-
-	//---------------------------------------------------------------------------------- $tests_count
-	/**
-	 * @var integer
-	 */
-	public $tests_count = 0;
 
 	//--------------------------------------------------------------------------------------- $header
 	/**
@@ -43,6 +38,12 @@ abstract class Testable {
 	 */
 	public $show = self::ERRORS;
 
+	//---------------------------------------------------------------------------------- $tests_count
+	/**
+	 * @var integer
+	 */
+	public $tests_count = 0;
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin of a unit test class
@@ -59,6 +60,13 @@ abstract class Testable {
 	public function end()
 	{
 		$this->show('</ul>' . LF);
+	}
+
+	//----------------------------------------------------------------------------------------- flush
+	public function flush()
+	{
+		echo $this->header;
+		$this->header = '';
 	}
 
 	//---------------------------------------------------------------------------------------- method
@@ -84,13 +92,6 @@ abstract class Testable {
 		elseif ($this->show === self::ERRORS) {
 			$this->header .= $show;
 		}
-	}
-
-	//----------------------------------------------------------------------------------------- flush
-	public function flush()
-	{
-		echo $this->header;
-		$this->header = '';
 	}
 
 }
