@@ -222,10 +222,9 @@ class Output_Settings extends Custom_Settings
 	private function initTab()
 	{
 		if (!isset($this->tab)) {
-			$this->tab = new Tab('main');
-			$this->tab->includes = (new Tabs_Builder_Class)->build(
-				$this->getClass(), array_keys($this->properties)
-			);
+			$this->tab           = new Tab('main');
+			$tabs_builder        = new Tabs_Builder_Class();
+			$this->tab->includes = $tabs_builder->build($this->getClass(), array_keys($this->properties));
 		}
 	}
 
