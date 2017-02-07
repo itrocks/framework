@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Address;
 /**
  * Physical person trait : use it for classes that represent a physical person.
  *
- * @before_write generateName
  * @business
  * @representative first_name, last_name
  * @sort first_name, last_name
@@ -43,14 +42,6 @@ trait Person
 			$result = parent::__toString();
 		}
 		return $result;
-	}
-
-	//---------------------------------------------------------------------------------- generateName
-	public function generateName()
-	{
-		if (empty($this->name)) {
-			$this->name = $this->__toString();
-		}
 	}
 
 }
