@@ -147,15 +147,15 @@ abstract class Integrated_Properties
 			}
 		}
 
-		// filtered and sorted properties
-		$expended_array_sort_and_filter = array();
-		if (!empty($integrated->display_properties)) {
+		// filter properties from @integrated simple property1, property2, etc.
+		if ($integrated->display_properties) {
+			$expanded_displayed_properties = [];
 			foreach ($integrated->display_properties as $display_property) {
-				if (array_key_exists($display_property,$expanded)) {
-					$expended_array_sort_and_filter[$display_property] = $expanded[$display_property];
+				if (isset($expanded[$display_property])) {
+					$expanded_displayed_properties[$display_property] = $expanded[$display_property];
 				}
 			}
-			return $expended_array_sort_and_filter;
+			$expanded = $expanded_displayed_properties;
 		}
 
 		return $expanded;
