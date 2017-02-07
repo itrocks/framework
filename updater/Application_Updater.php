@@ -72,7 +72,7 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @var Updatable[]|string[]
 	 */
-	private static $updatables;
+	private static $updatables = [];
 
 	//---------------------------------------------------------------------------------- $update_time
 	/**
@@ -96,9 +96,6 @@ class Application_Updater implements Configurable, Serializable
 			self::$delay_between_two_lock_tries = $configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES];
 		}
 
-		if (!isset(self::$updatables)) {
-			self::$updatables = [];
-		}
 		if (isset($_GET['Z'])) {
 			if (!isset($_POST['Z'])) {
 				Main::$current->running = false;
@@ -119,7 +116,6 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * This can be called before the application updater plugin is registered, all updatable objects
 	 * will be kept
-	 *
 	 *
 	 * @param $object Updatable|string object or class name
 	 */
