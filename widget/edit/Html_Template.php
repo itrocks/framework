@@ -189,12 +189,7 @@ class Html_Template extends Template
 						$parent_object = $property->getObject();
 
 						// TODO HIGHEST Check in what case it is useful : check for problems it may cause
-						if ($parent_object && is_object($parent_object->$prefix)) {
-							$id = $parent_object ? Dao::getObjectIdentifier($parent_object->$prefix) : null;
-						}
-						else {
-							$id = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
-						}
+						$id = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
 
 						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
 						$id_value          = $html_builder_type->setTemplate($this)->build();
