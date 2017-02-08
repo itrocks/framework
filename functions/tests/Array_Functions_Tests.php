@@ -80,7 +80,15 @@ class Array_Functions_Tests extends Test
 		$ok = $this->assume(
 			__FUNCTION__ . DOT . 'more',
 			arrayCut($string, [4, 6, 10, 15, 8, 3, 4]),
-			['Word', '123456', 'Last words', 'Trailing things']
+			['Word', '123456', 'Last words', 'Trailing things', false, false, false]
+		);
+		$result &= $ok;
+
+		// the same with the last zone too big will give us the same result
+		$ok = $this->assume(
+			__FUNCTION__ . DOT . 'many-more',
+			arrayCut($string, [4, 6, 10, 20, 8, 3, 4]),
+			['Word', '123456', 'Last words', 'Trailing things', false, false, false]
 		);
 		$result &= $ok;
 

@@ -27,9 +27,6 @@ function arrayCut(
 	foreach ($lengths as $length) {
 		$result[] = substr($string, $position, $length);
 		$position += $length;
-		if ($position >= $string_length) {
-			break;
-		}
 	}
 	if ($get_trailing_characters_element && ($position < $string_length)) {
 		$result[] = substr($string, $position);
