@@ -57,16 +57,31 @@ class Add_Controller extends Edit_Controller
 		$objects = $parameters->getObjects();
 		if (count($objects) > 1) {
 			foreach (array_slice($objects, 1) as $property_name => $value) {
-				if (strpos($property_name, BS)) {
+				// the previous object was the name of a property : the value is the matching object
+				if (is_numeric($property_name) && isset($last_property_name)) {
+					$property_name = $last_property_name;
+				}
+				// the property name matches an existing property name : set the value
+				if (isset($properties[$property_name])) {
+					$object->$property_name = $value;
+				}
+				// the value is an object : initialize the first matching property (beware : this is art)
+				elseif (strpos($property_name, BS) && (is_object($value) || !$value)) {
+					if (!$value) {
+						$value = null;
+					}
 					foreach ($properties as $property) {
 						$type = $property->getType();
 						if ($type->isClass() && is_a($property_name, $type->asString(), true)) {
 							$property_name = $property->name;
+							$object->$property_name = $value;
 							break;
 						}
 					}
 				}
-				$object->$property_name = $value;
+				elseif (is_string($value)) {
+					$last_property_name = $value;
+				}
 			}
 		}
 		return parent::getViewParameters($parameters, $form, $class_name);
