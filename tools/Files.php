@@ -116,7 +116,17 @@ abstract class Files
 	 */
 	public static function mkdir($directory, $mode = 0777)
 	{
-		return is_dir($directory) ? true : mkdir($directory, $mode, true);
+		if (is_dir($directory)) {
+			$result = true;
+		}
+		else {
+			$result = mkdir($directory, $mode, true);
+			// this patch is for php versions where mkdir does not change the mode
+			if ($result && ($mode !== 0777)) {
+				chmod($directory, $mode);
+			}
+		}
+		return $result;
 	}
 
 	//----------------------------------------------------------------------------------------- rmdir
