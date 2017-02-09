@@ -184,7 +184,7 @@ class Write extends Data_Link\Write
 				foreach ($write_properties as $write) {
 					/** @var $dao Data_Link */
 					list($property, $value, $dao) = $write;
-					$dao->writeProperty($property, $value);
+					$dao->writeProperty($this->object, $property, $value);
 				}
 				// if link class : write linked object too
 				$this->id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
