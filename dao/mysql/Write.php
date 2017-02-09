@@ -135,6 +135,7 @@ class Write extends Data_Link\Write
 	public function run()
 	{
 		if ($this->beforeWrite($this->object, $this->options)) {
+			$this->link->begin();
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->link->disconnect($this->object);
 			}
@@ -198,6 +199,7 @@ class Write extends Data_Link\Write
 					);
 				})
 			);
+			$this->link->commit();
 			$this->afterWrite($this->object, $this->options);
 			return $this->object;
 		}
