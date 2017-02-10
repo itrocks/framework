@@ -104,6 +104,7 @@ abstract class Files
 		header('Content-Transfer-Encoding: binary');
 	}
 
+	//-------------------------------------------------------------------------------------- isInPath
 	/**
 	 * Returns true is file is contained in path
 	 *

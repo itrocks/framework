@@ -10,7 +10,7 @@ use ITRocks\Framework\Tests\Test;
 class Paths_Tests extends Test
 {
 
-	//-------------------------------------------------------------------------- testSourceFileToPath
+	//------------------------------------------------------------------------ testClassToPathToClass
 	/**
 	 * Test that given a class_name, by transforming to compiled file name then reverse,
 	 * we get back same class name !
@@ -20,15 +20,15 @@ class Paths_Tests extends Test
 		$i = 0;
 
 		$assume = Compiler::class;
-		$check = Compiler::pathToClass(Compiler::classToPath($assume));
+		$check  = Compiler::pathToClass(Compiler::classToPath($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 
 		$assume = Logger::class;
-		$check = Compiler::pathToClass(Compiler::classToPath($assume));
+		$check  = Compiler::pathToClass(Compiler::classToPath($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 	}
 
-	//-------------------------------------------------------------------------- testSourceFileToPath
+	//-------------------------------------------------------------- testSourceFileToPathToSourceFile
 	/**
 	 * Test that given a source file, by transforming to compiled file name then reverse,
 	 * we get back same source file name !
@@ -38,11 +38,11 @@ class Paths_Tests extends Test
 		$i = 0;
 
 		$assume = 'itrocks/framework/php/Compiler.php';
-		$check = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
+		$check  = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 
 		$assume = 'itrocks/framework/php/compiler/Logger.php';
-		$check = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
+		$check  = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 	}
 

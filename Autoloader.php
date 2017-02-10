@@ -27,6 +27,7 @@ class Autoloader
 		}
 	}
 
+	//----------------------------------------------------------------------------------- getFileName
 	/**
 	 * Returns the existing source file name for a class
 	 * @param $class_name  string

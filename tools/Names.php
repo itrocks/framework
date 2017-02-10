@@ -45,6 +45,7 @@ abstract class Names
 		return strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
 
+	//----------------------------------------------------------------------------------- classToFile
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'a/namespace/Class_Name.php' or
 	 * 'a/namespace/class_name/Class_Name.php'
