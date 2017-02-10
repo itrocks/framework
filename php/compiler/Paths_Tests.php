@@ -40,11 +40,11 @@ class Paths_Tests extends Test
 		$i = 0;
 
 		$assume = 'itrocks/framework/php/Compiler.php';
-		$check  = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
+		$check  = Compiler::cacheFileNameToSourceFile(Compiler::sourceFileToCacheFileName($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 
 		$assume = 'itrocks/framework/php/compiler/Logger.php';
-		$check  = Compiler::pathToSourceFile(Compiler::sourceFileToPath($assume));
+		$check  = Compiler::cacheFileNameToSourceFile(Compiler::sourceFileToCacheFileName($assume));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 	}
 

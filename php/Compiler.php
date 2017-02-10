@@ -194,6 +194,33 @@ class Compiler extends Cache implements
 		$this->more_sources[$source->getFirstClassName() ?: $source->file_name] = $source;
 	}
 
+	//-------------------------------------------------------------------------- cacheFileNameToClass
+	/**
+	 * Returns the class name given a compiled file name (excluding the cache dir part)
+	 *
+	 * @param $path string
+	 * @return string
+	 * @see Compiler::classToPath()
+	 */
+	public static function cacheFileNameToClass($path)
+	{
+		return Names::pathToClass(str_replace('-', SL, $path));
+	}
+
+	//--------------------------------------------------------------------- cacheFileNameToSourceFile
+	/**
+	 * Returns the source file given a compiled file path (excluding the cache dir part)
+	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
+	 *
+	 * @param $path string
+	 * @return string|boolean false if source file not found
+	 * @see Compiler::sourceFileToPath()
+	 */
+	public static function cacheFileNameToSourceFile($path)
+	{
+		return Names::classToFilePath(self::cacheFileNameToClass($path));
+	}
+
 	//-------------------------------------------------------------------------- classToCacheFilePath
 	/**
 	 * Returns the filename where to store cache-compiled file for given class name
@@ -260,7 +287,7 @@ class Compiler extends Cache implements
 		}
 		$file_name = Files::isInPath($source->file_name, $cache_dir)
 			? $source->file_name
-			: ($cache_dir . SL . self::sourceFileToPath($source->file_name));
+			: ($cache_dir . SL . self::sourceFileToCacheFileName($source->file_name));
 		if ($source->hasChanged()) {
 			$this->replaceDependencies($source);
 			script_put_contents($file_name, $source->getSource());
@@ -339,33 +366,6 @@ class Compiler extends Cache implements
 			}
 		}
 		return $files;
-	}
-
-	//-------------------------------------------------------------------------- cacheFileNameToClass
-	/**
-	 * Returns the class name given a compiled file name (excluding the cache dir part)
-	 *
-	 * @param $path string
-	 * @return string
-	 * @see Compiler::classToPath()
-	 */
-	public static function cacheFileNameToClass($path)
-	{
-		return Names::pathToClass(str_replace('-', SL, $path));
-	}
-
-	//------------------------------------------------------------------------------ pathToSourceFile
-	/**
-	 * Returns the source file given a compiled file path (excluding the cache dir part)
-	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
-	 *
-	 * @param $path string
-	 * @return string|boolean false if source file not found
-	 * @see Compiler::sourceFileToPath()
-	 */
-	public static function pathToSourceFile($path)
-	{
-		return Names::classToFilePath(self::cacheFileNameToClass($path));
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -544,7 +544,7 @@ class Compiler extends Cache implements
 		}
 	}
 
-	//------------------------------------------------------------------------------ sourceFileToPath
+	//--------------------------------------------------------------------- sourceFileToCacheFileName
 	/**
 	 * Returns the filename where to store compiled file for given source file name
 	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
@@ -552,9 +552,9 @@ class Compiler extends Cache implements
 	 *
 	 * @param $file_name string
 	 * @return string
-	 * @see pathToSourceFile()
+	 * @see cacheFileNameToSourceFile()
 	 */
-	public static function sourceFileToPath($file_name)
+	public static function sourceFileToCacheFileName($file_name)
 	{
 		return Include_Filter::cacheFile($file_name);
 	}
