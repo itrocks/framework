@@ -138,6 +138,17 @@ class Class_Builder
 		return $get_source ?: $built_class;
 	}
 
+	//------------------------------------------------------------------------------ buildClassSource
+	/**
+	 * @param $class_name string
+	 * @param $source     string
+	 */
+	private static function buildClassSource(
+		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
+	) {
+		eval($source);
+	}
+
 	//-------------------------------------------------------------------------------- builtClassName
 	/**
 	 * Gets built class name for a source class name
@@ -158,17 +169,6 @@ class Class_Builder
 			return $namespace . rParse($class_name, BS, 1, true);
 		}
 		return false;
-	}
-
-	//------------------------------------------------------------------------------ buildClassSource
-	/**
-	 * @param $class_name string
-	 * @param $source     string
-	 */
-	private static function buildClassSource(
-		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
-	) {
-		eval($source);
 	}
 
 	//----------------------------------------------------------------------------- getBuiltNameSpace
