@@ -16,23 +16,28 @@ use Serializable;
  * Because of session (and so plugins) that can be reset and recreated in some process, we use only
  * static properties to be sure they are shared across instances.
  * This makes others plugin classes able to know state of update processing.
+ *
+ * TODO LOW see why this object is created several times during updates : should be only one of it
  */
 class Application_Updater implements Configurable, Serializable
 {
 
+	//------------------------------------------------------------------ DELAY_BETWEEN_TWO_LOCK_TRIES
+	const DELAY_BETWEEN_TWO_LOCK_TRIES = 'delay_between_two_lock_tries';
+
 	//------------------------------------------------------------------------------ LAST_UPDATE_FILE
 	const LAST_UPDATE_FILE = 'last_update';
 
-	//----------------------------------------------------------------------------- NB_MAX_LOCK_TRIES
-	const NB_MAX_LOCK_TRIES = 'nb_max_lock_tries';
+	//--------------------------------------------------------------------------- NB_MAX_LOCK_RETRIES
+	const NB_MAX_LOCK_RETRIES = 'nb_max_lock_retries';
 
-	//------------------------------------------------------------------ DELAY_BETWEEN_TWO_LOCK_TRIES
-	const DELAY_BETWEEN_TWO_LOCK_TRIES = 'delay_between_two_lock_tries';
+	//------------------------------------------------------------------------------------ UPDATABLES
+	const UPDATABLES = 'updatables';
 
 	//----------------------------------------------------------------------------------- UPDATE_FILE
 	const UPDATE_FILE = 'update';
 
-	//------------------------------------------------------------------- $delay_between_two_lock_try
+	//----------------------------------------------------------------- $delay_between_two_lock_tries
 	/**
 	 * Delay between two lock tries in microseconds
 	 *
@@ -49,14 +54,14 @@ class Application_Updater implements Configurable, Serializable
 	 */
 	private static $lock_file;
 
-	//------------------------------------------------------------------------------ $nb_max_lock_try
+	//-------------------------------------------------------------------------- $nb_max_lock_retries
 	/**
 	 * Maximum number of tries to lock file for update
 	 *
 	 * @example 240 (* 1000000μs = 4 minutes)
 	 * @var integer
 	 */
-	private static $nb_max_lock_try = 240;
+	private static $nb_max_lock_retries = 300;
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -87,14 +92,9 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = null)
+	public function __construct($configuration = [])
 	{
-		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
-			self::$nb_max_lock_try = $configuration[self::NB_MAX_LOCK_TRIES];
-		}
-		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
-			self::$delay_between_two_lock_tries = $configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES];
-		}
+		$this->setConfiguration($configuration);
 
 		if (isset($_GET['Z'])) {
 			if (!isset($_POST['Z'])) {
@@ -122,9 +122,10 @@ class Application_Updater implements Configurable, Serializable
 	public function addUpdatable($object)
 	{
 		/**
-		 * BE WARN: This is called each time plugin are registered (means on session creation/reset) and
-		 * it can happen that some Updatable plugins do some session reset, so register again during an
-		 * update. Since we do not want to add again updatables, we add only if update is not running!
+		 * This is called each time the plugin is registered (means on session creation/reset) and it
+		 * can happen that some Updatable plugins do some session reset, so register several times
+		 * during an update. Since we do not want to add updatables again, we add only if update is not
+		 * already running
 		 */
 		if (!self::isRunning()) {
 			self::$updatables[] = $object;
@@ -150,13 +151,14 @@ class Application_Updater implements Configurable, Serializable
 					$this->release();
 					$this->done();
 					return true;
-				} else {
-					throw new Exception("unable to acquire lock");
+				}
+				else {
+					throw new Exception('Unable to acquire lock');
 				}
 			}
 			catch (Exception $e) {
 				$this->release();
-				trigger_error("Unable to update : " . $e->getMessage(), E_USER_ERROR);
+				trigger_error('Unable to update : ' . $e->getMessage(), E_USER_ERROR);
 			}
 		}
 		return false;
@@ -234,7 +236,8 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @return boolean
 	 */
-	public function isRunning() {
+	public function isRunning()
+	{
 		return self::$running;
 	}
 
@@ -247,12 +250,12 @@ class Application_Updater implements Configurable, Serializable
 	private function lock()
 	{
 		self::$lock_file = fopen(self::UPDATE_FILE, 'r');
-		// wait for update lock file to be released by another update in progress
-		// then : locks the update file to avoid any other update
-		$nb_try = 0;
+		// wait for update lock file to be released by another update in progress then :
+		// locks the update file to avoid any other update
+		$nb_try      = 0;
 		$would_block = 1;
 		while (
-			$nb_try++ < self::$nb_max_lock_try
+			($nb_try++ < self::$nb_max_lock_retries)
 			&& file_exists(self::UPDATE_FILE)
 			// add LOCK_NB to make a not blocking call, and check $would_block for lock acquired
 			&& !flock(self::$lock_file, LOCK_EX | LOCK_NB, $would_block)
@@ -301,15 +304,27 @@ class Application_Updater implements Configurable, Serializable
 	 */
 	public function serialize()
 	{
-		$configuration = [];
-		$configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES] = self::$delay_between_two_lock_tries;
-		$configuration[self::NB_MAX_LOCK_TRIES] = self::$nb_max_lock_try;
 		$updatables = [];
 		foreach (self::$updatables as $updatable) {
 			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
 		}
-		$configuration['updatables'] = $updatables;
+		$configuration = [
+			self::DELAY_BETWEEN_TWO_LOCK_TRIES => self::$delay_between_two_lock_tries,
+			self::NB_MAX_LOCK_RETRIES          => self::$nb_max_lock_retries,
+			self::UPDATABLES                   => $updatables
+		];
 		return serialize($configuration);
+	}
+
+	//------------------------------------------------------------------------------ setConfiguration
+	/**
+	 * @param $configuration array
+	 */
+	protected function setConfiguration(array $configuration = [])
+	{
+		foreach ($configuration as $key => $value) {
+			self::$$key = $value;
+		}
 	}
 
 	//----------------------------------------------------------------------------- setLastUpdateTime
@@ -358,14 +373,7 @@ class Application_Updater implements Configurable, Serializable
 	 */
 	public function unserialize($serialized)
 	{
-		$configuration = unserialize($serialized);
-		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
-			self::$nb_max_lock_try = $configuration[self::NB_MAX_LOCK_TRIES];
-		}
-		if (isset($configuration[self::NB_MAX_LOCK_TRIES])) {
-			self::$delay_between_two_lock_tries = $configuration[self::DELAY_BETWEEN_TWO_LOCK_TRIES];
-		}
-		self::$updatables = $configuration['updatables'];
+		$this->setConfiguration(unserialize($serialized));
 	}
 
 }
