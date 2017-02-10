@@ -253,21 +253,17 @@ class Application_Updater implements Configurable, Serializable
 		// wait for update lock file to be released by another update in progress then :
 		// locks the update file to avoid any other update
 		$nb_try      = 0;
-		$would_block = 1;
+		$would_block = true;
 		while (
 			($nb_try++ < self::$nb_max_lock_retries)
 			&& file_exists(self::UPDATE_FILE)
-			// add LOCK_NB to make a not blocking call, and check $would_block for lock acquired
 			&& !flock(self::$lock_file, LOCK_EX | LOCK_NB, $would_block)
 			&& $would_block
 		) {
 			usleep(self::$delay_between_two_lock_tries);
 			clearstatcache(true, self::UPDATE_FILE);
 		}
-		if (!$would_block && file_exists(self::UPDATE_FILE)) {
-			return true;
-		}
-		return false;
+		return $nb_try < self::$nb_max_lock_retries;
 	}
 
 	//------------------------------------------------------------------------------------ mustUpdate
