@@ -133,10 +133,10 @@ class Compiler extends Cache implements
 
 	//-------------------------------------------------------------------------------- addMoreSources
 	/**
-	 * @param $compilers ICompiler[string $class_name]
+	 * @param $compilers ICompiler[] ICompiler[string $class_name]
 	 * @return Reflection_Source[]
 	 */
-	private function addMoreSources($compilers)
+	private function addMoreSources(array $compilers)
 	{
 		$added = [];
 
@@ -222,15 +222,15 @@ class Compiler extends Cache implements
 		$this->manageDependencies();
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
-		$first_group = true;
+		$first_group   = true;
 
 		foreach ($this->compilers as $compilers) {
+			// save sources in oder to give them to next compilers too
 			/** @var $compilers ICompiler[] */
-			//save sources in oder to give them to next compilers too
 			$this->saved_sources = $this->sources;
 			$this->compileLoop($compilers, $first_group, $cache_dir);
 			$this->sources = $this->saved_sources;
-			$first_group = false;
+			$first_group   = false;
 		}
 		$this->sources = null;
 
@@ -240,11 +240,11 @@ class Compiler extends Cache implements
 	/**
 	 * Loop on compilers until it remains no source to compile
 	 *
-	 * @param $compilers   ICompiler[string $class_name]
+	 * @param $compilers   ICompiler[] ICompiler[string $class_name]
 	 * @param $first_group boolean
 	 * @param $cache_dir   string
 	 */
-	private function compileLoop($compilers, $first_group, $cache_dir)
+	private function compileLoop(array $compilers, $first_group, $cache_dir)
 	{
 		while ($this->sources) {
 
@@ -298,18 +298,18 @@ class Compiler extends Cache implements
 
 	//-------------------------------------------------------------------------------- compileSources
 	/**
-	 * @param $compilers   ICompiler[string $class_name]
+	 * @param $compilers   ICompiler[] ICompiler[string $class_name]
 	 * @param $first_group boolean
 	 * @param $cache_dir   string
 	 */
-	private function compileSources($compilers, $first_group, $cache_dir)
+	private function compileSources(array $compilers, $first_group, $cache_dir)
 	{
 		$this->sortSourcesByParentsCount();
 		foreach ($this->sources as $source) {
 			$this->compileSource($source, $compilers, $cache_dir, $first_group);
 		}
 
-		$this->sources = $this->more_sources;
+		$this->sources      = $this->more_sources;
 		$this->more_sources = [];
 		foreach ($this->sources as $source_class_name => $source) {
 			if (!isset($this->saved_sources[$source_class_name])) {
@@ -564,11 +564,11 @@ class Compiler extends Cache implements
 	 *
 	 * @param $file_name string
 	 * @return string
-	 * @see Compiler::PathToSourceFile()
+	 * @see pathToSourceFile()
 	 */
 	public static function sourceFileToPath($file_name)
 	{
-		return Include_Filter::cache_file($file_name);
+		return Include_Filter::cacheFile($file_name);
 	}
 
 	//---------------------------------------------------------------------------------------- update

@@ -98,20 +98,23 @@ class Class_Builder
 	{
 		if (!$traits) $traits = [0 => []];
 		end($traits);
-		$end_level = key($traits);
-		$short_class = Namespaces::shortClassName($class_name);
+		$end_level        = key($traits);
+		$short_class      = Namespaces::shortClassName($class_name);
 		$namespace_prefix = Namespaces::of(self::builtClassName($class_name));
-		$namespace = $built_class = null;
+		$namespace        = $built_class = null;
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $namespace (extends last class)
-			$extends = BS . (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
-			$end = ($level == $end_level);
-			$count = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
+			$extends   = BS . (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
+
+			$end       = ($level == $end_level);
+			$count     = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
+
 			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
-			$traits_names = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
-			$namespace = $namespace_prefix . $count . $sub_count;
-			$built_class = $namespace . BS . $short_class;
+			$traits_names     = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
+			$namespace        = $namespace_prefix . $count . $sub_count;
+			$built_class      = $namespace . BS . $short_class;
+
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
 				. '/** Built ' . $short_class . ' class */' . LF
 				. 'class ' . $short_class . ' extends ' . $extends
@@ -120,6 +123,7 @@ class Class_Builder
 				. ($traits_names ? (TAB . 'use ' . BS . $traits_names . ';' . LF) : '')
 				. LF . '}' . LF
 				. ($get_source ? '' : (LF . '}' . LF));
+
 			if ($get_source === true) {
 				$get_source = [$built_class => $source];
 			}
@@ -158,7 +162,7 @@ class Class_Builder
 			return $class_name;
 		}
 		if ($namespace = self::getBuiltNameSpace()) {
-			//todo wait for process of database migration to rollback above. see #88021
+			// TODO wait for process of database migration to rollback above. see #88021
 			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
 			//return $namespace . $class_name;
 			return $namespace . rParse($class_name, BS, 1, true);
@@ -175,7 +179,7 @@ class Class_Builder
 	public static function getBuiltNameSpace()
 	{
 		static $namespace;
-		if (!isset($namespace) && $application = Application::current()) {
+		if (!isset($namespace) && ($application = Application::current())) {
 			$namespace = $application->getNamespace() . BS . 'Built' . BS;
 		}
 		return $namespace;
@@ -214,7 +218,7 @@ class Class_Builder
 		if ($namespace = self::getBuiltNameSpace()) {
 			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
 			//return str_replace($namespace, '', $class_name);
-			//todo wait for process of database migration to rollback above. see #88021
+			// TODO wait for process of database migration to rollback above. see #88021
 			/** @var $builder Builder */
 			$builder = Session::current()->plugins->get(Builder::class);
 			// SM: Note this is buggy during Application update()

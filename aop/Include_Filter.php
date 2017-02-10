@@ -28,7 +28,7 @@ class Include_Filter extends php_user_filter
 	 */
 	private static $file_name;
 
-	//------------------------------------------------------------------------------------ cache_file
+	//------------------------------------------------------------------------------------- cacheFile
 	/**
 	 * Returns the filename of a cache file for given source file name
 	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
@@ -37,20 +37,17 @@ class Include_Filter extends php_user_filter
 	 * @param $file_name string
 	 * @return string
 	 */
-	public static function cache_file($file_name)
+	public static function cacheFile($file_name)
 	{
-		$dot_pos = strrpos($file_name, '.');
+		$dot_pos          = strrpos($file_name, '.');
 		$file_name_no_ext = $dot_pos ? substr($file_name, 0, $dot_pos) : $file_name;
-		$basename = basename($file_name_no_ext);
-		$parent_dir = dirname($file_name_no_ext);
-		//case a/class/name/like/this/This.php => a-class-name-like-This
-		if (strtolower($basename) == basename($parent_dir)) {
-			return str_replace('/', '-', dirname($parent_dir) . '/' . $basename);
-		}
-		//case a/class/name/like/This.php => a-class-name-like-This
-		else {
-			return str_replace('/', '-', $file_name_no_ext);
-		}
+		$basename         = basename($file_name_no_ext);
+		$parent_dir       = dirname($file_name_no_ext);
+		return (strtolower($basename) == basename($parent_dir))
+			// case a/class/name/like/this/This.php => a-class-name-like-This
+			? str_replace('/', '-', dirname($parent_dir) . '/' . $basename)
+			// case a/class/name/like/This.php => a-class-name-like-This
+			: str_replace('/', '-', $file_name_no_ext);
 	}
 
 	//------------------------------------------------------------------------------------------ file
@@ -61,8 +58,8 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function file($file_name, $path_prefix = '')
 	{
-		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
-		$cache_file_name = self::CACHE_DIR . '/' . self::cache_file($file_name);
+		$path_prefix    .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
+		$cache_file_name = self::CACHE_DIR . '/' . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;

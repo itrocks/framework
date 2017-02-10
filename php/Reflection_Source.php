@@ -826,12 +826,9 @@ class Reflection_Source
 			$result = self::$cache[$class_name];
 		}
 		else {
-			if (Class_Builder::isBuilt($class_name)) {
-				$file_name = Compiler::getCacheDir() . SL . Compiler::classToPath($class_name);
-			}
-			else {
-				$file_name = Names::classToFile($class_name);
-			}
+			$file_name = Class_Builder::isBuilt($class_name)
+				? (Compiler::getCacheDir() . SL . Compiler::classToPath($class_name))
+				: Names::classToFile($class_name);
 			if (!file_exists($file_name)) {
 				$file_name = null;
 			}

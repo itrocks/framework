@@ -385,9 +385,7 @@ class Builder implements Activable, Serializable
 					$this->compositions[$class_name] = $result;
 					$built_class_name = Class_Builder::builtClassName($class_name);
 					$file_name = Compiler::getCacheDir() . SL . Compiler::classToPath($built_class_name);
-					if (
-						file_exists($file_name)
-					) {
+					if (file_exists($file_name)) {
 						$result = $built_class_name;
 					}
 					else {

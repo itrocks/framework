@@ -55,8 +55,7 @@ abstract class Names
 	 */
 	public static function classToFile($class_name)
 	{
-		$file_name = Autoloader::getFileName($class_name);
-		return $file_name;
+		return Autoloader::getFileName($class_name);
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
