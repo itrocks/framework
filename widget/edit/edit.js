@@ -427,19 +427,22 @@ $('document').ready(function()
 		//--------------------------------------------------------------- input[data-on-change] .change
 		this.inside('input[data-on-change], select[data-on-change]')
 
+			/**
+			 * TODO for now the previous value is not used anywhere. Purpose is to restore value on ESC pressed
+			 * Currently, ESC is used to reset to empty value. Clean the input by typing is impossible
+			 */
 			.each(function()
 			{
 				var $this = $(this);
-				var $form = $this.closest('form');
 				// store previous values
-				var old_value = $this.val();
+				var previous_value = $this.val();
 				if ($this.hasClass('id')) {
 					var $next;
 					if (($next = $this.next('input')).length) {
-						old_value = [old_value, $next.val()];
+						previous_value = [previous_value, $next.val()];
 					}
 				}
-				$form.data('previous-' + $this.attr('name'), old_value)
+				$this.data('previous-value', previous_value)
 			})
 
 			.change(function()
