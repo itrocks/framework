@@ -293,6 +293,8 @@ class Builder implements Activable, Serializable
 	/**
 	 * Returns true if any property of $object is set and different than its default value
 	 *
+	 * TODO LOW see if it is not a duplicate of Null_Object::isNull or something like that
+	 *
 	 * @param $object object
 	 * @return boolean
 	 */
@@ -384,7 +386,7 @@ class Builder implements Activable, Serializable
 				if ($this->build) {
 					$this->compositions[$class_name] = $result;
 					$built_class_name = Class_Builder::builtClassName($class_name);
-					$file_name = Compiler::getCacheDir() . SL . Compiler::classToPath($built_class_name);
+					$file_name        = Compiler::classToCacheFilePath($built_class_name);
 					if (file_exists($file_name)) {
 						$result = $built_class_name;
 					}

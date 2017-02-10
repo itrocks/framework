@@ -45,7 +45,7 @@ abstract class Names
 		return strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
 
-	//----------------------------------------------------------------------------------- classToFile
+	//------------------------------------------------------------------------------- classToFilePath
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'a/namespace/Class_Name.php' or
 	 * 'a/namespace/class_name/Class_Name.php'
@@ -53,9 +53,9 @@ abstract class Names
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function classToFile($class_name)
+	public static function classToFilePath($class_name)
 	{
-		return Autoloader::getFileName($class_name);
+		return Autoloader::getFilePath($class_name);
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
@@ -76,6 +76,9 @@ abstract class Names
 	/**
 	 * Changes 'A\Class\Name\Like\This' into 'a/class/name/like/This'
 	 *
+	 * TODO check usages and see if replacement by classToFilePath will work
+	 *
+	 * @deprecated : now will use classToFilePath()
 	 * @param $class_name string
 	 * @return string
 	 */

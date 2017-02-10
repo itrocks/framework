@@ -114,8 +114,7 @@ abstract class Files
 	 */
 	public static function isInPath($file_name, $path)
 	{
-		$path_len = strlen($path);
-		return ($file_name === $path) || (substr($file_name, 0, $path_len + 1) === $path . SL);
+		return ($file_name === $path) || (substr($file_name, 0, strlen($path) + 1) === ($path . SL));
 	}
 
 	//----------------------------------------------------------------------------------------- mkdir

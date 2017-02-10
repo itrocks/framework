@@ -31,6 +31,7 @@ class Include_Filter extends php_user_filter
 	//------------------------------------------------------------------------------------- cacheFile
 	/**
 	 * Returns the filename of a cache file for given source file name
+	 *
 	 * 'a/class/name/like/this/This.php' or 'a/class/name/like/This.php' into
 	 * 'a-class-name-like-This'
 	 *
@@ -44,9 +45,9 @@ class Include_Filter extends php_user_filter
 		$basename         = basename($file_name_no_ext);
 		$parent_dir       = dirname($file_name_no_ext);
 		return (strtolower($basename) == basename($parent_dir))
-			// case a/class/name/like/this/This.php => a-class-name-like-This
+			// case 1 : a/class/name/like/this/This.php => a-class-name-like-This
 			? str_replace('/', '-', dirname($parent_dir) . '/' . $basename)
-			// case a/class/name/like/This.php => a-class-name-like-This
+			// case 2 : a/class/name/like/This.php => a-class-name-like-This
 			: str_replace('/', '-', $file_name_no_ext);
 	}
 
@@ -58,7 +59,7 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function file($file_name, $path_prefix = '')
 	{
-		$path_prefix    .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
+		$path_prefix    .= (strlen($path_prefix) && (substr($path_prefix, -1)) != '/') ? '/' : '';
 		$cache_file_name = self::CACHE_DIR . '/' . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {

@@ -6,34 +6,36 @@ use ITRocks\Framework\Tests\Test;
 
 /**
  * Compiler path, file names  and class names tests
+ *
+ * TODO HIGH rename willTest* to test* when code is ready
  */
 class Paths_Tests extends Test
 {
 
-	//------------------------------------------------------------------------ testClassToPathToClass
+	//-------------------------------------------------------------------- willTestClassToPathToClass
 	/**
 	 * Test that given a class_name, by transforming to compiled file name then reverse,
 	 * we get back same class name !
 	 */
-	public function testClassToPathToClass()
+	public function willTestClassToPathToClass()
 	{
 		$i = 0;
 
 		$assume = Compiler::class;
-		$check  = Compiler::pathToClass(Compiler::classToPath($assume));
+		$check  = Compiler::cacheFileNameToClass(basename(Compiler::classToCacheFilePath($assume)));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 
 		$assume = Logger::class;
-		$check  = Compiler::pathToClass(Compiler::classToPath($assume));
+		$check  = Compiler::cacheFileNameToClass(basename(Compiler::classToCacheFilePath($assume)));
 		$this->assume(__METHOD__ . '_' . ++$i, $check, $assume);
 	}
 
-	//-------------------------------------------------------------- testSourceFileToPathToSourceFile
+	//---------------------------------------------------------- willTestSourceFileToPathToSourceFile
 	/**
 	 * Test that given a source file, by transforming to compiled file name then reverse,
 	 * we get back same source file name !
 	 */
-	public function testSourceFileToPathToSourceFile()
+	public function willTestSourceFileToPathToSourceFile()
 	{
 		$i = 0;
 

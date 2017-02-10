@@ -10,9 +10,10 @@ use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
 /**
- * The class builder builds dynamically a virtual class composed of an existing class and additional traits
+ * The class builder builds dynamically a virtual class composed of an existing class and additional
+ * traits
  *
- * @todo remove dependencies
+ * TODO remove dependencies
  */
 class Class_Builder
 {
@@ -137,17 +138,6 @@ class Class_Builder
 		return $get_source ?: $built_class;
 	}
 
-	//------------------------------------------------------------------------------ buildClassSource
-	/**
-	 * @param $class_name string
-	 * @param $source     string
-	 */
-	private static function buildClassSource(
-		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
-	) {
-		eval($source);
-	}
-
 	//-------------------------------------------------------------------------------- builtClassName
 	/**
 	 * Gets built class name for a source class name
@@ -170,15 +160,26 @@ class Class_Builder
 		return false;
 	}
 
+	//------------------------------------------------------------------------------ buildClassSource
+	/**
+	 * @param $class_name string
+	 * @param $source     string
+	 */
+	private static function buildClassSource(
+		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
+	) {
+		eval($source);
+	}
+
 	//----------------------------------------------------------------------------- getBuiltNameSpace
 	/**
 	 * Returns the prefix namespace for built classes
 	 *
-	 * @return null|string
+	 * @return string|null
 	 */
 	public static function getBuiltNameSpace()
 	{
-		static $namespace;
+		static $namespace = null;
 		if (!isset($namespace) && ($application = Application::current())) {
 			$namespace = $application->getNamespace() . BS . 'Built' . BS;
 		}
@@ -196,10 +197,9 @@ class Class_Builder
 	 */
 	public static function isBuilt($class_name)
 	{
-		if ($namespace = self::getBuiltNameSpace()) {
-			return substr($class_name, 0, strlen($namespace)) == $namespace;
-		}
-		return false;
+		return ($namespace = self::getBuiltNameSpace())
+			? (substr($class_name, 0, strlen($namespace)) === $namespace)
+			: false;
 	}
 
 	//------------------------------------------------------------------------------- sourceClassName

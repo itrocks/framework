@@ -134,36 +134,36 @@ class Compiler extends Cache implements
 	//-------------------------------------------------------------------------------- addMoreSources
 	/**
 	 * @param $compilers ICompiler[] ICompiler[string $class_name]
-	 * @return Reflection_Source[]
 	 */
 	private function addMoreSources(array $compilers)
 	{
-		$added = [];
-
-		// ask each compiler for adding of compiled files, until they have nothing to add
-		foreach ($compilers as $compiler) {
-			/** @var $compiler ICompiler */
-			if ($compiler instanceof Needs_Main) {
-				$compiler->setMainController($this->main_controller);
-			}
-			$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
-		}
-
-		foreach ($added as $added_key => $source) {
-			$source_file_name = $source->getFirstClassName() ?: $source->file_name;
-			if (isset($this->sources[$source_file_name])) {
-				unset($added[$added_key]);
-			}
-			else {
-				$this->replaceDependencies($source);
-				$this->sources[$source_file_name] = $source;
-			}
-		}
-
-		if (count($compilers) == 1) {
+		do {
 			$added = [];
-		}
-		return $added;
+
+			// ask each compiler for adding of compiled files, until they have nothing to add
+			foreach ($compilers as $compiler) {
+				if ($compiler instanceof Needs_Main) {
+					$compiler->setMainController($this->main_controller);
+				}
+				$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
+			}
+
+			foreach ($added as $added_key => $source) {
+				$source_file_name = $source->getFirstClassName() ?: $source->file_name;
+				if (isset($this->sources[$source_file_name])) {
+					unset($added[$added_key]);
+				}
+				else {
+					$this->replaceDependencies($source);
+					$this->sources[$source_file_name] = $source;
+				}
+			}
+
+			if (count($compilers) == 1) {
+				$added = [];
+			}
+
+		} while ($added);
 	}
 
 	//------------------------------------------------------------------------------------- addSource
@@ -180,8 +180,8 @@ class Compiler extends Cache implements
 		if (!isset($source->file_name)) {
 			$classes = $source->getClasses();
 			if ($classes) {
-				$class = reset($classes);
-				$source->file_name = self::getCacheDir() . SL . self::classToPath($class->name);
+				$class             = reset($classes);
+				$source->file_name = self::classToCacheFilePath($class->name);
 			}
 			else {
 				trigger_error(
@@ -194,18 +194,18 @@ class Compiler extends Cache implements
 		$this->more_sources[$source->getFirstClassName() ?: $source->file_name] = $source;
 	}
 
-	//----------------------------------------------------------------------------------- classToPath
+	//-------------------------------------------------------------------------- classToCacheFilePath
 	/**
-	 * Returns the filename where to store compiled file for given class name
+	 * Returns the filename where to store cache-compiled file for given class name
 	 * This does not include cache dir
 	 *
 	 * @param $class_name string
 	 * @return string
 	 * @see Compiler::pathToClass()
 	 */
-	public static function classToPath($class_name)
+	public static function classToCacheFilePath($class_name)
 	{
-		return str_replace(SL, '-', Names::classToPath($class_name));
+		return self::getCacheDir() . SL . str_replace('/', '-', Names::classToPath($class_name));
 	}
 
 	//--------------------------------------------------------------------------------------- compile
@@ -218,8 +218,7 @@ class Compiler extends Cache implements
 		clearstatcache();
 		$cache_dir = self::getCacheDir();
 
-		// create data set for dependencies, check dependencies for deleted files
-		$this->manageDependencies();
+		$this->removeOldDependencies();
 
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		$first_group   = true;
@@ -228,41 +227,16 @@ class Compiler extends Cache implements
 			// save sources in oder to give them to next compilers too
 			/** @var $compilers ICompiler[] */
 			$this->saved_sources = $this->sources;
-			$this->compileLoop($compilers, $first_group, $cache_dir);
+			while ($this->sources) {
+				$this->replaceDependenciesForSources($this->sources);
+				$this->addMoreSources($compilers);
+				$this->saved_sources = array_merge($this->saved_sources, $this->sources);
+				$this->compileSources($compilers, $first_group, $cache_dir);
+			}
 			$this->sources = $this->saved_sources;
 			$first_group   = false;
 		}
 		$this->sources = null;
-
-	}
-
-	//----------------------------------------------------------------------------------- compileLoop
-	/**
-	 * Loop on compilers until it remains no source to compile
-	 *
-	 * @param $compilers   ICompiler[] ICompiler[string $class_name]
-	 * @param $first_group boolean
-	 * @param $cache_dir   string
-	 */
-	private function compileLoop(array $compilers, $first_group, $cache_dir)
-	{
-		while ($this->sources) {
-
-			// get source and update dependencies
-			foreach ($this->sources as $source) {
-				$this->replaceDependencies($source);
-			}
-
-			do {
-				// ask each compiler for adding of compiled files, until they have nothing to add
-				$added = $this->addMoreSources($compilers);
-			} while ($added);
-
-			$this->saved_sources = array_merge($this->saved_sources, $this->sources);
-
-			// compile sources
-			$this->compileSources($compilers, $first_group, $cache_dir);
-		}
 	}
 
 	//--------------------------------------------------------------------------------- compileSource
@@ -335,7 +309,7 @@ class Compiler extends Cache implements
 			/** @var $router Router */
 			$router = Session::current()->plugins->get(Router::class);
 			if (Class_Builder::isBuilt($class_name)) {
-				$file_name = self::getCacheDir() . SL . self::classToPath($class_name);
+				$file_name = self::classToCacheFilePath($class_name);
 			}
 			else {
 				$file_name = $router->getClassFileName($class_name);
@@ -367,11 +341,50 @@ class Compiler extends Cache implements
 		return $files;
 	}
 
-	//---------------------------------------------------------------------------- manageDependencies
+	//-------------------------------------------------------------------------- cacheFileNameToClass
 	/**
-	 * Create data set for dependencies, check dependencies for deleted files
+	 * Returns the class name given a compiled file name (excluding the cache dir part)
+	 *
+	 * @param $path string
+	 * @return string
+	 * @see Compiler::classToPath()
 	 */
-	private function manageDependencies()
+	public static function cacheFileNameToClass($path)
+	{
+		return Names::pathToClass(str_replace('-', SL, $path));
+	}
+
+	//------------------------------------------------------------------------------ pathToSourceFile
+	/**
+	 * Returns the source file given a compiled file path (excluding the cache dir part)
+	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
+	 *
+	 * @param $path string
+	 * @return string|boolean false if source file not found
+	 * @see Compiler::sourceFileToPath()
+	 */
+	public static function pathToSourceFile($path)
+	{
+		return Names::classToFilePath(self::cacheFileNameToClass($path));
+	}
+
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $register Register
+	 */
+	public function register(Register $register)
+	{
+		/** @var $application_updater Application_Updater */
+		$application_updater = Session::current()->plugins->get(Application_Updater::class);
+		$application_updater->addUpdatable($this);
+	}
+
+	//------------------------------------------------------------------------- removeOldDependencies
+	/**
+	 * Remove dependencies for files that where deleted.
+	 * If ?Z, reset the whole dependencies storage
+	 */
+	private function removeOldDependencies()
 	{
 		Dao::createStorage(Dependency::class);
 		Dao::begin();
@@ -402,44 +415,6 @@ class Compiler extends Cache implements
 		Dao::commit();
 	}
 
-	//----------------------------------------------------------------------------------- pathToClass
-	/**
-	 * Returns the class name given a compiled file path (excluding the cache dir part)
-	 *
-	 * @param $path string
-	 * @return string
-	 * @see Compiler::classToPath()
-	 */
-	public static function pathToClass($path)
-	{
-		return Names::pathToClass(str_replace('-', SL, $path));
-	}
-
-	//------------------------------------------------------------------------------ pathToSourceFile
-	/**
-	 * Returns the source file given a compiled file path (excluding the cache dir part)
-	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
-	 *
-	 * @param $path string
-	 * @return string|boolean false if source file not found
-	 * @see Compiler::sourceFileToPath()
-	 */
-	public static function pathToSourceFile($path)
-	{
-		return Names::classToFile(self::pathToClass($path));
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * @param $register Register
-	 */
-	public function register(Register $register)
-	{
-		/** @var $application_updater Application_Updater */
-		$application_updater = Session::current()->plugins->get(Application_Updater::class);
-		$application_updater->addUpdatable($this);
-	}
-
 	//--------------------------------------------------------------------------- replaceDependencies
 	/**
 	 * @param $source Reflection_Source
@@ -458,20 +433,33 @@ class Compiler extends Cache implements
 				&& !$class->isAbstract()
 				&& $class->getAnnotation('business')->value
 			) {
-				$dependency = new Dependency();
-				$dependency->class_name = $class->name;
+				$dependency                  = new Dependency();
+				$dependency->class_name      = $class->name;
 				$dependency->dependency_name = strtolower(
 					Namespaces::shortClassName($class->getAnnotation('set')->value)
 				);
 				$dependency->file_name = $source->file_name;
-				$dependency->type = Dependency::T_STORE;
-				$dependencies[] = $dependency;
+				$dependency->type      = Dependency::T_STORE;
+				$dependencies[]        = $dependency;
 			}
 		}
 		/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
 		(new Set)->replace(
 			$dependencies, Dependency::class, ['file_name' => Func::equal($source->file_name)]
 		);
+	}
+
+	//----------------------------------------------------------------- replaceDependenciesForSources
+	/**
+	 * Update dependencies for these source files
+	 *
+	 * @param $sources Reflection_Source[]
+	 */
+	private function replaceDependenciesForSources(array $sources)
+	{
+		foreach ($sources as $source) {
+			$this->replaceDependencies($source);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- serialize
@@ -511,8 +499,8 @@ class Compiler extends Cache implements
 		foreach ($this->sources as $source_class_name => $source) {
 			// -1 : no class in source, 0 : no parent, 1 : one parent, etc.
 			$parents_count = -1;
-			$parent_class = $source->getClasses();
-			$parent_class = reset($parent_class);
+			$parent_class  = $source->getClasses();
+			$parent_class  = reset($parent_class);
 			while (
 				$parent_class
 				&& ($parent_class instanceof Reflection_Class)

@@ -27,14 +27,15 @@ class Autoloader
 		}
 	}
 
-	//----------------------------------------------------------------------------------- getFileName
+	//----------------------------------------------------------------------------------- getFilePath
 	/**
 	 * Returns the existing source file name for a class
+	 *
 	 * @param $class_name  string
 	 * @param $path_prefix string
 	 * @return string|boolean the matching file name or false if not found
 	 */
-	public static function getFileName($class_name, $path_prefix = '')
+	public static function getFilePath($class_name, $path_prefix = '')
 	{
 		// Note: we do not use BS and SL constants since they may not be defined here
 		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
@@ -65,12 +66,12 @@ class Autoloader
 	 */
 	public function tryToLoad($class_name)
 	{
-		$file_name = self::getFileName($class_name);
+		$file_name = self::getFilePath($class_name);
 		if ($file_name !== false) {
 			$result = include_once(Include_Filter::file($file_name));
 		}
 		if ((!isset($result) || !$result) && Class_Builder::isBuilt($class_name)) {
-			$built_file_name = PHP\Compiler::getCacheDir() . SL . PHP\Compiler::classToPath($class_name);
+			$built_file_name = PHP\Compiler::classToCacheFilePath($class_name);
 			if (file_exists($built_file_name)) {
 				$result = include_once($built_file_name);
 			}
