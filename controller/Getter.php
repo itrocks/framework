@@ -88,7 +88,6 @@ if (isset($GLOBALS['D']) && $suffix) echo '- try A6 ' . $path . SL . $suffix . $
 				}
 			}
 
-
 			// next application is the parent one
 			$application_class = next($application_classes);
 		} while ($application_class);
