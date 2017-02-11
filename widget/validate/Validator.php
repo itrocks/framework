@@ -372,11 +372,9 @@ class Validator implements Registerable
 	 * @param $object             object
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
-	 * @param $root               boolean
 	 * @return string|null|true @values Result::const
 	 */
-	public function validate($object, array $only_properties = [], array $exclude_properties = [],
-		$root = true)
+	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
 		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
@@ -385,10 +383,6 @@ class Validator implements Registerable
 				: $class->accessProperties()
 		);
 
-		/*if ($root) {
-			$this->report = [];
-			$this->valid = Result::VALID;
-		}*/
 		$this->valid = Result::andResult(
 			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),
 			$this->validateObject($object, $class)
@@ -458,59 +452,53 @@ class Validator implements Registerable
 		Reflection\Reflection_Property $property
 	) {
 		$result = true;
-		$type = $property->getType();
+		$type   = $property->getType();
 		if ($type->isClass()) {
 			// save current report
-			$current_report = $this->report;
-			$this->report   = [];
-
-			$sub_objects    = [];
+			$report       = $this->report;
+			$this->report = [];
+			$sub_objects  = [];
 
 			// @link Collection (or Map ?)
 			if ($type->isMultiple()) {
 				// if there are existing sub objects, validate them
-				if (count($object->{$property->name})) {
-					array_walk($object->{$property->name}, function($sub_object) {
-						$sub_objects[] = $sub_object;
-					});
+				foreach ($object->{$property->name} as $sub_object) {
+					$sub_objects[] = $sub_object;
 				}
-				else {
-					// if no existing sub object, create one if needed
+				if (!$sub_objects) {
 					$sub_object = $this->createSubObject($object, $property, $type);
 				}
 			}
+
 			// @link Object
 			else {
 				// get existing sub object, or create one if needed
 				$sub_object = $property->getValue($object)
 					?: $this->createSubObject($object, $property, $type);
 			}
+
 			if (isset($sub_object)) {
 				$sub_objects[] = $sub_object;
 			}
 
 			// validate sub_objects
-			foreach($sub_objects as $sub_object) {
-				$result = Result::andResult($result, $this->validate($sub_object, $only_properties,
-					$exclude_properties, false
-				));
+			foreach ($sub_objects as $sub_object) {
+				$result = Result::andResult(
+					$result, $this->validate($sub_object, $only_properties, $exclude_properties)
+				);
 			}
 
 			// update properties path of report annotations to be relative to parent property
-			/** @noinspection PhpUnusedParameterInspection */
-			array_walk($this->report,
-				function ($annotation, $key, Reflection\Reflection_Property $property) {
-					if (isA($annotation, Property\Annotation::class) && $annotation->property) {
-						$parent_class_name    = $property->final_class;
-						$path                 = $property->path . DOT . $annotation->property->path;
-						$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
-					}
-				},
-				$property
-			);
+			foreach ($this->report as $annotation) {
+				if (isA($annotation, Property\Annotation::class) && $annotation->property) {
+					$parent_class_name    = $property->final_class;
+					$path                 = $property->path . DOT . $annotation->property->path;
+					$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
+				}
+			}
 
-			// restore saved report and merge with this
-			$this->report = array_merge($current_report, $this->report);
+			// merge saved report with this
+			$this->report = array_merge($report, $this->report);
 		}
 		return $result;
 	}
@@ -546,13 +534,11 @@ class Validator implements Registerable
 				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
 				&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
-				// exclude composite to avoid infinite recursion
 				&& !$property->getAnnotation('composite')->value
 			) {
 				$result = Result::andResult(
 					$result, $this->validateAnnotations($object, $property->getAnnotations())
 				);
-				// fire validation on mandatory component properties
 				if ($property->getAnnotation('component')->value) {
 					$result = Result::andResult(
 						$result,
