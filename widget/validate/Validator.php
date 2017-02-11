@@ -443,6 +443,7 @@ class Validator implements Registerable
 		return $result;
 	}
 
+	//----------------------------------------------------------------------------- validateComponent
 	/**
 	 * @param $object             object
 	 * @param $only_properties    string[]

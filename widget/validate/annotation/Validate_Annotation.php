@@ -25,4 +25,5 @@ abstract class Validate_Annotation extends Method_Annotation
 	{
 		return null;
 	}
+
 }
