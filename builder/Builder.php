@@ -280,6 +280,8 @@ class Builder implements Activable, Serializable
 	 *
 	 * A built class has a namespace beginning with 'Vendor\Application\Built\'
 	 *
+	 * TODO HIGHEST remove it soon : it is not used anywhere anymore
+	 *
 	 * @deprecated use directly Class_Builder::isBuilt()
 	 * @param $class_name string
 	 * @return boolean

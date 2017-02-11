@@ -61,7 +61,7 @@ class Autoloader
 
 	//------------------------------------------------------------------------------------- tryToLoad
 	/**
-	 * @param $class_name  string class name (with or without namespace)
+	 * @param $class_name string class name (with or without namespace)
 	 * @return integer|boolean
 	 */
 	public function tryToLoad($class_name)
