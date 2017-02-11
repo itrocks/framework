@@ -336,10 +336,24 @@ $('document').ready(function()
 		.keyup(function(event)
 		{
 			if (event.keyCode == 27) {
-				$(this).removeData('value');
-				$(this).prev().val('');
-				$(this).val('');
-				$(this).prev().change();
+				var $this = $(this);
+				var previous_value = $this.prev().data('previous-value');
+				if (previous_value) {
+					$this.data('value', previous_value[1]);
+					$this.prev().val(previous_value[0]);
+					$this.val(previous_value[1]);
+				}
+				else {
+					$this.prev().val('');
+					$this.val('');
+					$this.removeData('value');
+				}
+				// if there is an on_change event into the input control
+				$this.change();
+				// keyup is for compatibility with autoWith
+				$this.keyup();
+				// change enable on_change to work on the hidden input
+				$this.prev().change();
 			}
 		});
 
@@ -424,63 +438,53 @@ $('document').ready(function()
 			$condition.change();
 		});
 
+		//------------------------------------------------------- input[class~=id][name] previous_value
+		this.inside('input[class~=id][name]').each(function()
+		{
+			var $this = $(this);
+			var $next = $this.next('input');
+			if ($next.length && $this.val()) {
+				$this.data('previous-value', [$this.val(), $next.val()]);
+			}
+		});
+
 		//--------------------------------------------------------------- input[data-on-change] .change
-		this.inside('input[data-on-change], select[data-on-change]')
+		this.inside('input[data-on-change], select[data-on-change]').change(function()
+		{
+			var $this = $(this);
+			var $form = $this.closest('form');
+			var uri   = $this.data('on-change');
+			$.each(uri.split(','), function(key, uri) {
+				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
 
-			/**
-			 * TODO for now the previous value is not used anywhere. Purpose is to restore value on ESC pressed
-			 * Currently, ESC is used to reset to empty value. Clean the input by typing is impossible
-			 */
-			.each(function()
-			{
-				var $this = $(this);
-				// store previous values
-				var previous_value = $this.val();
-				if ($this.hasClass('id')) {
-					var $next;
-					if (($next = $this.next('input')).length) {
-						previous_value = [previous_value, $next.val()];
-					}
-				}
-				$this.data('previous-value', previous_value)
-			})
-
-			.change(function()
-			{
-				var $this = $(this);
-				var $form = $this.closest('form');
-				var uri   = $this.data('on-change');
-				$.each(uri.split(','), function(key, uri) {
-					uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
-
-					$.post(uri, $form.formSerialize(), function(data)
-					{
-						if (data) {
-							if (data.substr(0, 1) == '{') {
-								$.each(JSON.parse(data), function(name, value) {
-									// TODO should be able to set value for any form field tag (like select)
-									var $input = $form.find('input[name=' + DQ + name + DQ + ']');
-									if (((typeof value) == 'string') && (value.substr(0, 1) == ':')) {
-										if ($input.val() == false) {
-											// false ie '0', ' or 0
-											$input.val(value.substr(1));
-											$input.change();
-										}
-									}
-									else {
-										$input.val(value);
+				$.post(uri, $form.formSerialize(), function(data)
+				{
+					if (data) {
+						if (data.substr(0, 1) == '{') {
+							$.each(JSON.parse(data), function(name, value) {
+								// TODO should be able to set value for any form field tag (like select)
+								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
+								if (((typeof value) == 'string') && (value.substr(0, 1) == ':')) {
+									if ($input.val() == false) {
+										// false ie '0', ' or 0
+										$input.val(value.substr(1));
 										$input.change();
 									}
-								});
-							}
-							else {
-								$('#messages').html(data).build();
-							}
+								}
+								else {
+									$input.val(value);
+									$input.change();
+								}
+							});
 						}
-					});
-
+						else {
+							$('#messages').html(data).build();
+						}
+					}
 				});
+
 			});
+		});
 
 		//------------------------------------------------------------------------- .vertical.scrollbar
 		this.inside('.vertical.scrollbar').verticalscrollbar();
