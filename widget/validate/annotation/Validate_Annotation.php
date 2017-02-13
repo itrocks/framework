@@ -5,6 +5,8 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 
 /**
  * Common code for all @validate annotations
+ *
+ * @override value @user_getter getValue
  */
 abstract class Validate_Annotation extends Method_Annotation
 {
@@ -15,9 +17,8 @@ abstract class Validate_Annotation extends Method_Annotation
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
-	 * Gets the value of the property from the last validated object
-	 * In case of a validate annotation, we do not want to output in the template the value that
-	 * represents a method name. So we disable output
+	 * Used from template. We do not want to output in the template the $value that
+	 * represents a method name. So we disable standard output of {value} or <!--value-->
 	 *
 	 * @return null
 	 */
