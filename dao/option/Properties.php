@@ -102,6 +102,24 @@ abstract class Properties implements Option
 		return $default;
 	}
 
+	//------------------------------------------------------------------------------------ properties
+	/**
+	 * Gets all properties from a list of Option that can contain one or more Only
+	 *
+	 * @param $options Option[]
+	 * @return string[]
+	 */
+	public static function properties(array $options)
+	{
+		$properties = [];
+		foreach ($options as $option) {
+			if ($option instanceof static) {
+				$properties = array_merge($properties, $option->properties);
+			}
+		}
+		return $properties;
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Remove a property
