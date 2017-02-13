@@ -356,6 +356,7 @@ class Validator implements Registerable
 			'min_length' => Property\Min_Length_Annotation::class,
 			'min_value'  => Property\Min_Value_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
+			'regex'      => Property\Regex_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
 			//'var'        => Property\Var_Annotation::class,

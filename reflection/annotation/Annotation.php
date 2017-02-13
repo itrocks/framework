@@ -17,6 +17,14 @@ class Annotation
 	//----------------------------------------------------------------------------------------- BLOCK
 	const BLOCK = 'block';
 
+	//--------------------------------------------------------------------- $display_expected_message
+	/**
+	 * Display expected value for user
+	 *
+	 * @var bool
+	 */
+	public $display_expected_message = true;
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * Annotation value
