@@ -9,6 +9,8 @@ use ITRocks\Framework\Widget\Validate\Result;
 
 /**
  * The regex annotation validator
+ *
+ * @override value @user_getter getValue
  */
 class Regex_Annotation extends Reflection\Annotation implements Property_Context_Annotation
 {
@@ -20,14 +22,6 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	//------------------------------------------------------------------------------- REGEX_DELIMITER
 	const REGEX_DELIMITER = SL;
 
-	//--------------------------------------------------------------------- $display_expected_message
-	/**
-	 * don't display expected pattern for user
-	 *
-	 * @var bool
-	 */
-	public $display_expected_message = false;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
@@ -37,6 +31,16 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	{
 		parent::__construct($value);
 		$this->property = $property;
+	}
+
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Used from template. We don't want to display pattern format for users
+	 *
+	 * @return null
+	 */
+	public function getValue(){
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
