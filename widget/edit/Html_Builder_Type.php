@@ -88,6 +88,12 @@ class Html_Builder_Type
 	 */
 	public $template;
 
+	//-------------------------------------------------------------------------------------- $tooltip
+	/**
+	 * @var string
+	 */
+	public $tooltip;
+
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @var Type
@@ -170,6 +176,9 @@ class Html_Builder_Type
 			// TODO SM Create a Editable_Element class to be able to add some behavior like on_change because Element may be span or other html
 			if (isset($result) && ($result instanceof Element)) {
 				$this->setOnChangeAttribute($result);
+				if ($this->tooltip) {
+					$result->setAttribute('title', $this->tooltip);
+				}
 			}
 		}
 		return isset($result) ? $result : $this->value;
@@ -356,6 +365,9 @@ class Html_Builder_Type
 		$input->setData('edit-class', Builder::current()->sourceClassName($class_name));
 		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')->value));
 		$input->addClass('auto_width');
+		if ($this->tooltip) {
+			$input->setAttribute('title', $this->tooltip);
+		}
 		// id input. Should always be output, except if as_string, cause can be used by other properties
 		if (!$as_string) {
 			$id_input = new Input(

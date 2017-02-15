@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Edit;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View\Html\Builder\Map;
@@ -76,6 +77,9 @@ class Html_Builder_Map extends Map
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);
+		}
+		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
+			$body->setAttribute('title',$tooltip);
 		}
 		return $body;
 	}

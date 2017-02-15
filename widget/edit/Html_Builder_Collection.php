@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget\Edit;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -81,6 +82,9 @@ class Html_Builder_Collection extends Collection
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);
+		}
+		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
+			$body->setAttribute('title',$tooltip);
 		}
 		return $body;
 	}

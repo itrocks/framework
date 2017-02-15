@@ -6,6 +6,7 @@ use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -224,6 +225,9 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 		if ($placeholder = Placeholder_Annotation::of($this->property)->value) {
 			$this->placeholder = $placeholder;
+		}
+		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
+			$this->tooltip = $tooltip;
 		}
 		return parent::build();
 	}
