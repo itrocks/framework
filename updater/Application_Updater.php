@@ -319,7 +319,15 @@ class Application_Updater implements Configurable, Serializable
 	protected function setConfiguration(array $configuration = [])
 	{
 		foreach ($configuration as $key => $value) {
-			if (property_exists($this, $key)) {
+			if (is_numeric($key)) {
+				if (!in_array($value, self::$updatables)) {
+					self::$updatables[] = $value;
+				}
+				trigger_error(
+					'Root Application_Updater configuration' . print_r($configuration, true), E_USER_WARNING
+				);
+			}
+			elseif (property_exists($this, $key)) {
 				self::$$key = $value;
 			}
 			else {
