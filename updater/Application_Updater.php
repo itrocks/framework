@@ -319,7 +319,14 @@ class Application_Updater implements Configurable, Serializable
 	protected function setConfiguration(array $configuration = [])
 	{
 		foreach ($configuration as $key => $value) {
-			self::$$key = $value;
+			if (property_exists($this, $key)) {
+				self::$$key = $value;
+			}
+			else {
+				trigger_error(
+					'Bad Application_Updater configuration ' . print_r($configuration, true), E_USER_WARNING
+				);
+			}
 		}
 	}
 
@@ -331,6 +338,15 @@ class Application_Updater implements Configurable, Serializable
 	{
 		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);
+	}
+
+	//----------------------------------------------------------------------------------- unserialize
+	/**
+	 * @param $serialized string the string representation of the object
+	 */
+	public function unserialize($serialized)
+	{
+		$this->setConfiguration(unserialize($serialized));
 	}
 
 	//---------------------------------------------------------------------------------------- update
@@ -361,15 +377,6 @@ class Application_Updater implements Configurable, Serializable
 		}
 
 		self::$running = false;
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string the string representation of the object
-	 */
-	public function unserialize($serialized)
-	{
-		$this->setConfiguration(unserialize($serialized));
 	}
 
 }
