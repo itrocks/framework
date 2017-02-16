@@ -334,22 +334,27 @@ class Joins
 		Join $join, $master_path, $master_property_name, $foreign_path
 	) {
 		list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
-		$foreign_class_name = Builder::className($foreign_class_name);
+		$master_class_name  = $this->classes[$master_path];
 		$foreign_class_name = Namespaces::defaultFullClassName(
-			$foreign_class_name,
-			$this->classes[$master_path]
+			Builder::className($foreign_class_name), $master_class_name
 		);
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
-			$join->master_column = 'id_' . $master_property_name;
+			$master_property     = new Reflection_Property($master_class_name, $master_property_name);
+			$join->master_column = $master_property->getType()->isClass()
+				? ('id_' . $master_property_name)
+				: $master_property_name;
 		}
 		else {
 			$join->master_column = 'id';
 		}
-		$join->foreign_column = 'id_' . $foreign_property_name;
+		$foreign_property      = new Reflection_Property($foreign_class_name, $foreign_property_name);
+		$foreign_property_type = $foreign_property->getType();
+		$join->foreign_column  = $foreign_property_type->isClass()
+			? ('id_' . $foreign_property_name)
+			: $foreign_property_name;
 		$join->mode = Join::LEFT;
-		$foreign_property = new Reflection_Property($foreign_class_name, $foreign_property_name);
-		if ($foreign_property->getType()->isMultiple()) {
+		if ($foreign_property_type->isMultiple()) {
 			$this->addLinkedJoin(
 				$join, $master_path, $foreign_path, $foreign_class_name, $foreign_property, true
 			);
