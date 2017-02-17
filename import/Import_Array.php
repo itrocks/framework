@@ -33,7 +33,7 @@ class Import_Array
 	/**
 	 * @var array $property_column_number integer[string $property_path][string $property_name]
 	 */
-	private $properties_column;
+	protected $properties_column;
 
 	//------------------------------------------------------------------------------ $properties_link
 	/**
@@ -41,7 +41,7 @@ class Import_Array
 	 *
 	 * @var string[] string[string $property_path]
 	 */
-	private $properties_link;
+	protected $properties_link;
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
@@ -78,7 +78,7 @@ class Import_Array
 	 * @param $this_constants $value = string[$property_path]
 	 * @param $array          $value = string[integer $row_number][integer $column_number]
 	 */
-	private static function addConstantsToArray($this_constants, array &$array)
+	protected static function addConstantsToArray($this_constants, array &$array)
 	{
 		if ($this_constants) {
 			$constants = [];
@@ -113,7 +113,7 @@ class Import_Array
 	 * @param $search     array
 	 * @return array
 	 */
-	private function createArrayReference($class_name, array $search = null)
+	protected function createArrayReference($class_name, array $search = null)
 	{
 		$array      = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
 		$class      = new Link_Class($class_name);
@@ -242,7 +242,7 @@ class Import_Array
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
 	 * @return array [$property_link = string[string $property_path], $property_column = string[string $property_path]]
 	 */
-	private static function getPropertiesLinkAndColumn($class_name, array $properties_path)
+	protected static function getPropertiesLinkAndColumn($class_name, array $properties_path)
 	{
 		$properties_link   = ['' => Link_Annotation::OBJECT];
 		$properties_column = [];
@@ -283,7 +283,7 @@ class Import_Array
 	 * @param $class_properties_column integer[] $column_number = integer[string $property_name]
 	 * @return array search array for Dao::search() using $this->class_name
 	 */
-	private function getSearchObject(
+	protected function getSearchObject(
 		array $row, array $identify_properties, array $class_properties_column
 	) {
 		$empty_object = true;
@@ -342,7 +342,7 @@ class Import_Array
 	 * @param $class Import_Class
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
 	 */
-	private function importArrayClass(Import_Class $class, array &$array)
+	protected function importArrayClass(Import_Class $class, array &$array)
 	{
 		$property_path = join(DOT, $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
@@ -350,10 +350,10 @@ class Import_Array
 		$simulation = $this->simulation;
 		while (($row = next($array)) && (!$this->simulation || $simulation)) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
-			$object = (in_array(
+			$object = in_array(
 				$this->properties_link[$property_path],
 				[Link_Annotation::COLLECTION, Link_Annotation::MAP]
-			))
+			)
 				? $this->createArrayReference($class->class_name, $search)
 				: $this->importSearchObject($search, $row, $class, $class_properties_column);
 			$array[key($array)][$property_path] = $object;
@@ -492,7 +492,7 @@ class Import_Array
 	 *
 	 * @return Import_Class[]
 	 */
-	private function sortedClasses()
+	protected function sortedClasses()
 	{
 		uksort($this->settings->classes, function($class_path_1, $class_path_2)
 		{
@@ -510,14 +510,18 @@ class Import_Array
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
 	 */
-	private function updateExistingObject(
+	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
 		$do_write = false;
 		foreach (array_keys($class->write_properties) as $property_name) {
-			if ($object->$property_name !== $row[$class_properties_column[$property_name]]) {
-				$object->$property_name = $row[$class_properties_column[$property_name]];
-				$do_write = true;
+			$value = $row[$class_properties_column[$property_name]];
+			if (isset($class->properties[$property_name])) {
+				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+			}
+			if (strval($object->$property_name) !== strval($value)) {
+				$object->$property_name = $value;
+				$do_write               = true;
 			}
 		}
 		if ($do_write) {
@@ -536,14 +540,22 @@ class Import_Array
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
 	 */
-	private function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
+	protected function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
 	{
 		$object = Builder::create($class->class_name);
 		foreach (array_keys($class->identify_properties) as $property_name) {
-			$object->$property_name = $row[$class_properties_column[$property_name]];
+			$value = $row[$class_properties_column[$property_name]];
+			if (isset($class->properties[$property_name])) {
+				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+			}
+			$object->$property_name = $value;
 		}
 		foreach (array_keys($class->write_properties) as $property_name) {
-			$object->$property_name = $row[$class_properties_column[$property_name]];
+			$value = $row[$class_properties_column[$property_name]];
+			if (isset($class->properties[$property_name])) {
+				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+			}
+			$object->$property_name = $value;
 		}
 		if ($this->simulation) {
 			$this->simulateNew($class, $object);

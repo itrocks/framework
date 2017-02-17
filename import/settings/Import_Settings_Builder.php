@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\Import\Settings;
 
-use ReflectionException;
 use ITRocks\Framework\Import\Import_Array;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ReflectionException;
 
 /**
  * Import settings builder
@@ -15,7 +16,7 @@ abstract class Import_Settings_Builder
 
 	//---------------------------------------------------------------------------------- autoIdentify
 	/**
-	 * If no property contains the charater '*' in import file, automatically detects which property
+	 * If no property contains the character '*' in import file, automatically detects which property
 	 * names are used to identify records using the @representative classes annotation
 	 *
 	 * @param $class_name      string
@@ -31,8 +32,8 @@ abstract class Import_Settings_Builder
 		}
 		$auto_identify = [];
 		foreach ($properties_path as $property_path) {
-			$class = new Reflection_Class($class_name);
-			$representative = $class->getListAnnotation('representative')->values();
+			$class          = new Reflection_Class($class_name);
+			$representative = Representative_Annotation::of($class)->values();
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				if (in_array($property_name, $representative)) {
 					$auto_identify[$property_path][$pos] = true;
@@ -41,8 +42,8 @@ abstract class Import_Settings_Builder
 				if (isset($property)) {
 					$type = $property->getType();
 					if ($type->isClass()) {
-						$class = new Reflection_Class($type->getElementTypeAsString());
-						$representative = $class->getListAnnotation('representative')->values();
+						$class          = new Reflection_Class($type->getElementTypeAsString());
+						$representative = Representative_Annotation::of($class)->values();
 					}
 				}
 			}
@@ -65,15 +66,15 @@ abstract class Import_Settings_Builder
 	public static function buildArray(array &$array, $class_name = null)
 	{
 		$class_name = Import_Array::getClassNameFromArray($array) ?: $class_name;
-		$settings = new Import_Settings($class_name);
+		$settings   = new Import_Settings($class_name);
 		/** @var $classes Import_Class[] */
-		$classes = [];
+		$classes         = [];
 		$properties_path = Import_Array::getPropertiesFromArray($array, $class_name);
-		$auto_identify = self::autoIdentify($class_name, $properties_path);
+		$auto_identify   = self::autoIdentify($class_name, $properties_path);
 		foreach ($properties_path as $property_path) {
-			$sub_class = $class_name;
-			$last_identify = false;
-			$class_path = '';
+			$sub_class               = $class_name;
+			$last_identify           = false;
+			$class_path              = '';
 			$property_path_for_class = [];
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
 				$identify = (substr($property_name, -1) !== '*');
@@ -88,7 +89,7 @@ abstract class Import_Settings_Builder
 						$last_identify ? 'tell_it_and_stop_import' : 'create_new_value'
 					);
 				}
-				$class = $classes[$class_key];
+				$class           = $classes[$class_key];
 				$import_property = new Import_Property($sub_class, $property_name);
 				try {
 					$property = new Reflection_Property($sub_class, $property_name);
@@ -101,16 +102,17 @@ abstract class Import_Settings_Builder
 						$class->identify_properties[$property_name] = $import_property;
 					}
 					else {
+						$class->properties[$property_name]       = $property;
 						$class->write_properties[$property_name] = $import_property;
 					}
-					$sub_class = $property->getType()->getElementTypeAsString();
+					$sub_class   = $property->getType()->getElementTypeAsString();
 					$class_path .= $sub_class . DOT;
 				}
 				catch (ReflectionException $exception) {
-					$class->ignore_properties[$property_name] = $import_property;
+					$class->ignore_properties[$property_name]  = $import_property;
 					$class->unknown_properties[$property_name] = $import_property;
 				}
-				$last_identify = $identify;
+				$last_identify             = $identify;
 				$property_path_for_class[] = $property_name;
 			}
 		}
@@ -144,8 +146,8 @@ abstract class Import_Settings_Builder
 				else {
 					// property paths for next elements
 					$property_path = str_replace('>', DOT, $property_path);
-					$property = new Reflection_Property($main_class_name, $property_path);
-					$class_name = $property->getType()->getElementTypeAsString();
+					$property      = new Reflection_Property($main_class_name, $property_path);
+					$class_name    = $property->getType()->getElementTypeAsString();
 				}
 				$settings->classes[$property_path] = self::buildFormClass(
 					$class_name, $property_path, $class
@@ -165,7 +167,7 @@ abstract class Import_Settings_Builder
 	private static function buildFormClass($class_name, $property_path, array $class)
 	{
 		$property_path = $property_path ? explode(DOT, $property_path) : [];
-		$import_class = new Import_Class(
+		$import_class  = new Import_Class(
 			$class_name, $property_path, $class['object_not_found_behaviour']
 		);
 		if (isset($class['constants']) && is_array($class['constants'])) {
@@ -187,7 +189,8 @@ abstract class Import_Settings_Builder
 				$import_property = new Import_Property($class_name, $property_name);
 				$import_class->write_properties[$property_name] = $import_property;
 				try {
-					new Reflection_Property($class_name, $property_name);
+					$import_class->properties[$property_name]
+						= new Reflection_Property($class_name, $property_name);
 				}
 				catch (ReflectionException $exception) {
 					$import_class->unknown_properties[$property_name] = $import_property;

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Import\Settings;
 
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
@@ -25,6 +26,16 @@ class Import_Class implements Serializable
 	 * @var Reflection_Property_Value[] key is the name of the property
 	 */
 	public $constants = [];
+
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * Reflection_Property cache : the properties object matching write_properties
+	 *
+	 * @see $class_name
+	 * @see $write_properties
+	 * @var Reflection_Property[] key is the property path, starting from $this->class_name
+	 */
+	public $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
