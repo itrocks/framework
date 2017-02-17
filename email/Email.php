@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Email\Account;
 use ITRocks\Framework\Email\Attachment;
+use ITRocks\Framework\Email\Email_Interface;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
@@ -17,7 +18,7 @@ use ITRocks\Framework\Tools\Date_Time;
  * @business
  * @representative date, from, to, subject
  */
-class Email
+class Email implements Email_Interface
 {
 
 	//-------------------------------------------------------------------------------------- $account

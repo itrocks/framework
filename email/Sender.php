@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use Exception;
 use Mail;
 use Mail_smtp;
 use PEAR_Error;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
-use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -14,7 +14,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * This offers a ITRocks interface to the PHP PEAR Mail package
  */
-class Sender implements Configurable
+class Sender implements Sender_Interface
 {
 
 	//------------------------------------------------------------------------------------------- BCC
@@ -85,12 +85,21 @@ class Sender implements Configurable
 	 * Send an email using its account connection information
 	 * or the default SMTP account configuration.
 	 *
-	 * @param $email  Email
-	 * @return boolean|string true if sent, error message if string
+	 * @param $email  Email_Interface
+	 * @return bool|string true if sent, error message if string
+	 * @throws Exception
 	 */
-	public function send(Email $email)
+	public function send(Email_Interface $email)
 	{
-		// email send configuration
+		// email send configurationn here, $email must be a Email object
+		if (!$email instanceof Email) {
+			throw new Exception(
+				'In Framework\Email\Sender::send the parameter'
+			. SP .'$email must be an Framework\Email instance class'
+			);
+		}
+
+		/** @var Email $email */
 		$params = $this->sendConfiguration($email);
 
 		// mime encode of email (for html, images and attachments)
