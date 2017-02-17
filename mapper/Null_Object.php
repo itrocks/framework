@@ -28,9 +28,8 @@ abstract class Null_Object
 		if (!isset($class_name)) {
 			$class_name = get_class($object);
 		}
-		$is_empty = true;
-		$getter_ignore = Getter::$ignore;
-		Getter::$ignore = true;
+		$getter_ignore  = Getter::ignore(true);
+		$is_empty       = true;
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
 				$value = $property->getValue($object);
@@ -41,9 +40,17 @@ abstract class Null_Object
 					$is_empty = false;
 					break;
 				}
+				$property_type = $property->getType();
+				if ($property_type->isClass() && !$property_type->isMultiple()) {
+					$id_property = 'id_' . $property->name;
+					if (isset($object->$id_property) && $object->$id_property) {
+						$is_empty = false;
+						break;
+					}
+				}
 			}
 		}
-		Getter::$ignore = $getter_ignore;
+		Getter::ignore($getter_ignore);
 		return $is_empty;
 	}
 
@@ -77,6 +84,14 @@ abstract class Null_Object
 				) {
 					$is_null = false;
 					break;
+				}
+				$property_type = $property->getType();
+				if ($property_type->isClass() && !$property_type->isMultiple()) {
+					$id_property = 'id_' . $property->name;
+					if (isset($object->$id_property) && !is_null($object->$id_property)) {
+						$is_null = false;
+						break;
+					}
 				}
 			}
 		}
