@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use Exception;
+use ITRocks\Framework\Plugin\Configurable;
 use Mail;
 use Mail_smtp;
 use PEAR_Error;
@@ -14,7 +14,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * This offers a ITRocks interface to the PHP PEAR Mail package
  */
-class Sender implements Sender_Interface
+class Sender implements Configurable, Sender_Interface
 {
 
 	//------------------------------------------------------------------------------------------- BCC
@@ -70,10 +70,10 @@ class Sender implements Sender_Interface
 	{
 		if ($configuration) {
 			$this->default_smtp_account = new Smtp_Account(
-				isset($configuration[self::HOST]) ?     $configuration[self::HOST]     : '',
-				isset($configuration[self::LOGIN]) ?    $configuration[self::LOGIN]    : '',
+				isset($configuration[self::HOST])     ? $configuration[self::HOST]     : '',
+				isset($configuration[self::LOGIN])    ? $configuration[self::LOGIN]    : '',
 				isset($configuration[self::PASSWORD]) ? $configuration[self::PASSWORD] : '',
-				isset($configuration[self::PORT]) ?     $configuration[self::PORT]     : null
+				isset($configuration[self::PORT])     ? $configuration[self::PORT]     : null
 			);
 			if (isset($configuration[self::BCC])) $this->bcc = $configuration[self::BCC];
 			if (isset($configuration[self::TO]))  $this->to  = $configuration[self::TO];
@@ -85,21 +85,12 @@ class Sender implements Sender_Interface
 	 * Send an email using its account connection information
 	 * or the default SMTP account configuration.
 	 *
-	 * @param $email  Email_Interface
-	 * @return bool|string true if sent, error message if string
-	 * @throws Exception
+	 * @param $email Email
+	 * @return boolean|string true if sent, error message if string
 	 */
-	public function send(Email_Interface $email)
+	public function send(Email $email)
 	{
-		// email send configurationn here, $email must be a Email object
-		if (!$email instanceof Email) {
-			throw new Exception(
-				'In Framework\Email\Sender::send the parameter'
-			. SP .'$email must be an Framework\Email instance class'
-			);
-		}
-
-		/** @var Email $email */
+		// email send configuration
 		$params = $this->sendConfiguration($email);
 
 		// mime encode of email (for html, images and attachments)
@@ -109,9 +100,9 @@ class Sender implements Sender_Interface
 
 		// send email using PEAR Mail and Net_SMTP features
 		/** @var $mail Mail_smtp */
-		$mail = (new Mail())->factory('smtp', $params);
+		$mail            = (new Mail())->factory('smtp', $params);
 		$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-		$send_result = $mail->send(
+		$send_result     = $mail->send(
 			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
 		);
 		$mail->disconnect();
@@ -149,7 +140,7 @@ class Sender implements Sender_Interface
 			$params['password'] = $account->password;
 		}
 
-		// dev / preprod parameters to override 'To' and/or 'Bcc' mime headers
+		// dev / pre-production parameters to override 'To' and/or 'Bcc' mime headers
 		if (isset($this->to)) {
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];

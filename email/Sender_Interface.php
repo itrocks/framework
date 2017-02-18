@@ -1,21 +1,21 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Email;
 
 /**
- * Interface Sender_Interface
- *
- * Sends emails
- *
+ * An interface common to all Email senders
  */
-interface Sender_Interface extends Configurable
+interface Sender_Interface
 {
 
+	//------------------------------------------------------------------------------------------ send
 	/**
-	 * @param Email_Interface $email
-	 * @return mixed
+	 * Sends an email
+	 *
+	 * @param $email Email
+	 * @return boolean|string true if sent, error message if string, false if not send without error
 	 */
-	public function send(Email_Interface $email);
+	public function send(Email $email);
 
 }
