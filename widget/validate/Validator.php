@@ -21,7 +21,6 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
-use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
@@ -167,23 +166,20 @@ class Validator implements Registerable
 
 	//------------------------------------------------------------------------------- createSubObject
 	/**
+	 * Create a new empty component sub-object
+	 *
 	 * @param $object   object
 	 * @param $property Reflection_Property
-	 * @param $type     Type
 	 * @return object|null
 	 */
-	private function createSubObject($object, $property, $type)
+	private function createSubObject($object, Reflection_Property $property)
 	{
-		// no need to create a sub object if property is not mandatory
-		if ($property->getAnnotation(Mandatory_Annotation::ANNOTATION)->value) {
-			$link_class = new Link_Class($type->getElementTypeAsString());
-			$sub_object = $link_class->newInstance();
-			// we attach composite object, but we do not set the sub_object in its parent property
-			// we simply want to validate the new object, not save it!
-			$sub_object->setComposite($object);
-			return $sub_object;
-		}
-		return null;
+		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
+		$sub_object = $link_class->newInstance();
+		// we attach composite object, but we do not set the sub_object in its parent property
+		// we simply want to validate the new object, not to save it !
+		$sub_object->setComposite($object);
+		return $sub_object;
 	}
 
 	//--------------------------------------------------------------------------------------- disable
@@ -454,51 +450,40 @@ class Validator implements Registerable
 		$result = true;
 		$type   = $property->getType();
 		if ($type->isClass()) {
-			// save current report
-			$report       = $this->report;
-			$this->report = [];
-			$sub_objects  = [];
-
-			// @link Collection (or Map ?)
-			if ($type->isMultiple()) {
-				// if there are existing sub objects, validate them
-				foreach ($object->{$property->name} as $sub_object) {
-					$sub_objects[] = $sub_object;
+			/** @var $sub_objects object|object[] */
+			$sub_objects = $object->{$property->name};
+			if (!$sub_objects && Mandatory_Annotation::of($property)->value) {
+				$sub_objects = $this->createSubObject($object, $property);
+			}
+			if ($sub_objects && !is_array($sub_objects)) {
+				$sub_objects = [$sub_objects];
+			}
+			if ($sub_objects) {
+				// save current report
+				$report       = $this->report;
+				$this->report = [];
+				// validate sub_objects
+				$exclude_properties = (new Option\Only($exclude_properties))
+					->subObjectOption($property->name, true)->properties;
+				$only_properties = (new Option\Only($only_properties))
+					->subObjectOption($property->name, true)->properties;
+				foreach ($sub_objects as $sub_object) {
+					$result = Result::andResult(
+						$result, $this->validate($sub_object, $only_properties, $exclude_properties)
+					);
 				}
-				if (!$sub_objects) {
-					$sub_object = $this->createSubObject($object, $property, $type);
+				// update properties path of report annotations to be relative to parent property
+				$class_name = get_class($object);
+				foreach ($this->report as $annotation) {
+					if (isA($annotation, Property\Annotation::class) && $annotation->property) {
+						$annotation->property = new Reflection\Reflection_Property(
+							$class_name, $property->path . DOT . $annotation->property->path
+						);
+					}
 				}
+				// merge saved report with this
+				$this->report = array_merge($report, $this->report);
 			}
-
-			// @link Object
-			else {
-				// get existing sub object, or create one if needed
-				$sub_object = $property->getValue($object)
-					?: $this->createSubObject($object, $property, $type);
-			}
-
-			if (isset($sub_object)) {
-				$sub_objects[] = $sub_object;
-			}
-
-			// validate sub_objects
-			foreach ($sub_objects as $sub_object) {
-				$result = Result::andResult(
-					$result, $this->validate($sub_object, $only_properties, $exclude_properties)
-				);
-			}
-
-			// update properties path of report annotations to be relative to parent property
-			foreach ($this->report as $annotation) {
-				if (isA($annotation, Property\Annotation::class) && $annotation->property) {
-					$parent_class_name    = $property->final_class;
-					$path                 = $property->path . DOT . $annotation->property->path;
-					$annotation->property = new Reflection\Reflection_Property($parent_class_name, $path);
-				}
-			}
-
-			// merge saved report with this
-			$this->report = array_merge($report, $this->report);
 		}
 		return $result;
 	}
