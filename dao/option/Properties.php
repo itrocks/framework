@@ -31,7 +31,7 @@ abstract class Properties implements Option
 	 *
 	 * @param $properties string[]|string ...
 	 */
-	public function __construct($properties)
+	public function __construct($properties = [])
 	{
 		$this->properties = [];
 		$this->add(func_get_args());
@@ -158,10 +158,11 @@ abstract class Properties implements Option
 
 	//------------------------------------------------------------------------------- subObjectOption
 	/**
-	 * @param $property_path string
+	 * @param $property_path        string
+	 * @param $always_return_option boolean If true : return an empty option instead of null
 	 * @return static|null null if there is no path for $property_path into
 	 */
-	public function subObjectOption($property_path)
+	public function subObjectOption($property_path, $always_return_option = false)
 	{
 		$property_path .= DOT;
 		$length         = strlen($property_path);
@@ -174,6 +175,10 @@ abstract class Properties implements Option
 			$option             = clone $this;
 			$option->properties = $properties;
 			return $option;
+		}
+		if ($always_return_option) {
+			$class = static::class;
+			return new $class;
 		}
 		return null;
 	}
