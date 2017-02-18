@@ -78,7 +78,7 @@ class Html_Builder_Map extends Map
 			$row->addClass('new');
 			$body->addRow($row);
 		}
-		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
+		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
 			$body->setAttribute('title', $tooltip);
 		}
 		return $body;

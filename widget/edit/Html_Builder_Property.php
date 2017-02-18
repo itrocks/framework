@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit;
 
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
@@ -223,12 +222,8 @@ class Html_Builder_Property extends Html_Builder_Type
 				$this->on_change[] = str_replace([BS, '::'], SL, $user_change->value);
 			}
 		}
-		if ($placeholder = Placeholder_Annotation::of($this->property)->value) {
-			$this->placeholder = $placeholder;
-		}
-		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
-			$this->tooltip = $tooltip;
-		}
+		$this->placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property);
+		$this->tooltip     = Tooltip_Annotation    ::of($this->property)->callProperty($this->property);
 		return parent::build();
 	}
 
@@ -271,16 +266,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$element->setAttribute('type', 'password');
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}
-		$placeholder_annotation = Placeholder_Annotation::of($this->property);
-		if ($placeholder_annotation->value) {
-			if ($placeholder_annotation->isMethod()) {
-				$object = ($this->property instanceof Reflection_Property_Value)
-					? $this->property->getObject() : null;
-				$placeholder = $placeholder_annotation->call($object);
-			}
-			else {
-				$placeholder = Loc::tr($placeholder_annotation->value);
-			}
+		if ($placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property)) {
 			$element->setAttribute('placeholder', $placeholder);
 		}
 		return $element;

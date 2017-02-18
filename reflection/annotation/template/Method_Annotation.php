@@ -8,6 +8,7 @@ use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -172,6 +173,16 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 		$php_class = Reflection_Class::of($class->getName());
 		$type_annotation->value = substr($value, 0, $pos);
 		$type_annotation->applyNamespace($class->getNamespaceName(), $php_class->getNamespaceUse());
+	}
+
+	//------------------------------------------------------------------------------------- setMethod
+	/**
+	 * @param $callable callable
+	 */
+	public function setMethod(callable $callable)
+	{
+		$this->static = (new Reflection_Method($callable[0], $callable[1]))->isStatic();
+		$this->value  = $callable;
 	}
 
 }

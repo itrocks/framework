@@ -83,7 +83,7 @@ class Html_Builder_Collection extends Collection
 			$row->addClass('new');
 			$body->addRow($row);
 		}
-		if ($tooltip = Tooltip_Annotation::of($this->property)->value) {
+		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
 			$body->setAttribute('title', $tooltip);
 		}
 		return $body;
