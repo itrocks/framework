@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Email;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Tools\Date_Time;
 use Mail;
 use Mail_smtp;
 use PEAR_Error;
-use ITRocks\Framework\Builder;
-use ITRocks\Framework\Email;
-use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Sends emails
