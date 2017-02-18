@@ -38,6 +38,9 @@ $('document').ready(function()
 		// minimize menu
 		this.inside('.menu.output').minimize();
 
+		// change all titles attributes to tooltips
+		this.tooltip();
+
 	}).autofocus();
 
 });
