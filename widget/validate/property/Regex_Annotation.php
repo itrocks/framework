@@ -39,7 +39,8 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 *
 	 * @return null
 	 */
-	public function getValue(){
+	public function getValue()
+	{
 		return null;
 	}
 
@@ -53,7 +54,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
-				case Result::ERROR:   return 'has invalid format';
+				case Result::ERROR: return 'has invalid format';
 			}
 		}
 		return '';
@@ -68,19 +69,17 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 */
 	public function validate($object)
 	{
-
 		$pattern = $this->value;
-
-		//fix pattern with a delimiter, if pattern not set
-		if ($pattern[0] != $pattern[strlen($pattern)-1] && $pattern[0] != $pattern[strlen($pattern)-2]){
+		// @regex may have no delimiter : add it if not present
+		if (
+			($pattern[0] !== $pattern[strlen($pattern) - 1])
+			&& ($pattern[0] !== $pattern[strlen($pattern) - 2])
+		) {
 			$pattern = self::REGEX_DELIMITER . $pattern . self::REGEX_DELIMITER;
 		}
 		return ($this->property instanceof Reflection_Property)
-			? (
-			(preg_match($pattern, $this->property->getValue($object)) == 1) ? true : false
-			)
+			? ((preg_match($pattern, $this->property->getValue($object)) === 1) ? true : false)
 			: null;
-
 	}
 
 }
