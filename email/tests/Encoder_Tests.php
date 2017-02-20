@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Tests;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Attachment;
 use ITRocks\Framework\Email\Encoder;
@@ -15,7 +16,8 @@ class Encoder_Tests extends Test
 	//------------------------------------------------------------------------------- testParseImages
 	public function testParseImages()
 	{
-		$email = new Email();
+		/** @var $email Email */
+		$email = Builder::create(Email::class);
 		$email->attachments = [
 			'file1.txt' => new Attachment('file1.txt', 'first file'),
 			'file2.txt' => new Attachment('file2.txt', 'second file')
