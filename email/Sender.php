@@ -114,7 +114,9 @@ class Sender implements Configurable, Sender_Interface
 		}
 		$email->send_date = new Date_Time();
 		/** @noinspection PhpUndefinedFieldInspection */
-		$email->uidl = $mail->queued_as;
+		if (isset($mail->queued_as)) {
+			$email->uidl = $mail->queued_as;
+		}
 		return true;
 	}
 
