@@ -26,6 +26,14 @@ class Date_Time_Tests extends Test
 		$this->assume('3 years before', $today->add(-3, Date_Time::YEAR),   $three_years_before);
 	}
 
+	//--------------------------------------------------------------------------------- testConstruct
+	public function testConstruct()
+	{
+		$date = new Date_Time('2016-11-05T19:46:32.56');
+		$this->method(__METHOD__);
+		$this->assume(__METHOD__, $date->format('Y-m-d H:i:s'), '2016-11-05 19:46:32');
+	}
+
 	//-------------------------------------------------------------------------------------- testDiff
 	public function testDiff()
 	{
