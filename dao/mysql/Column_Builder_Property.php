@@ -107,8 +107,9 @@ trait Column_Builder_Property
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
 		$property_type = $property->getType();
+		$store_annotation_value = Store_Annotation::of($property)->value;
 		if (
-			$property_type->isBasic() || $property->getAnnotation(Store_Annotation::ANNOTATION)->value
+			$property_type->isBasic() || $store_annotation_value
 		) {
 			if ($property_type->isMultipleString()) {
 				$values = self::propertyValues($property);
@@ -159,7 +160,7 @@ trait Column_Builder_Property
 				}
 				else {
 					$values = self::propertyValues($property);
-					if ($values && !$property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+					if ($values && !$store_annotation_value) {
 						if (!isset($values[''])) {
 							$values[''] = '';
 						}
@@ -167,7 +168,7 @@ trait Column_Builder_Property
 							. SP . Database::characterSetCollateSql();
 					}
 					if (
-						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
+						$store_annotation_value === Store_Annotation::GZ
 					) {
 						return ($max_length <= 255) ? 'tinyblob' : (
 							($max_length <= 65535)    ? 'blob' : (
@@ -202,7 +203,7 @@ trait Column_Builder_Property
 				case DateTime::class: case Date_Time::class:
 					return 'datetime';
 				default:
-					return 'char(255)';
+					return 'char(255)' . SP . Database::characterSetCollateSql();
 			}
 		}
 		else {
