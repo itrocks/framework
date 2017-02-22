@@ -406,13 +406,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		];
 	}
 
-	//------------------------------------------------------------------------ replaceWithGetterValue
+	//------------------------------------------------------------------------- replaceValuesByGetter
 	/**
 	 * In Dao::select() result : replace values with their matching result of @user_getter / @getter
 	 *
 	 * @param List_Data $data
 	 */
-	protected function replaceWithGetterValue(List_Data $data)
+	protected function replaceValuesByGetter(List_Data $data)
 	{
 		$class_name = $data->getClass()->getName();
 
@@ -422,7 +422,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				if (property_exists($class_name, $property_name)) {
 					//get value by @getter value if exist (aop)
 					$reflection_property = new Reflection_Property($class_name, $property_name);
-					$value = $reflection_property->getValue($object);
+					$value               = $reflection_property->getValue($object);
 
 					//get @user_getter value
 					$user_getter = $reflection_property->getAnnotation('user_getter');
@@ -642,7 +642,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 
-		$this->replaceWithGetterValue($data);
+		$this->replaceValuesByGetter($data);
 		$this->objectsToString($data);
 		// TODO LOW the following patch lines are to avoid others calculation to use invisible props
 		foreach ($list_settings->properties as $property_path => $property) {
