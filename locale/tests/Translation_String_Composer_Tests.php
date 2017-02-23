@@ -57,6 +57,14 @@ class Translation_String_Composer_Tests extends Test
 			$translator->translate('Hello <span class="world">world</span>'),
 			'Bienvenue <span class="world">monde</span>'
 		);
+
+		$translator->setTranslation('hello', 'bienvenue');
+		$translator->setTranslation('world', 'monde');
+		$this->assume(
+			__METHOD__ . '.sentence',
+			$translator->translate('Hello. World.'),
+			'Bienvenue. Monde.'
+		);
 	}
 
 	//----------------------------------------------------------------------------------- testSpecial

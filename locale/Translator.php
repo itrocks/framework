@@ -158,7 +158,7 @@ class Translator
 	/**
 	 * Force a translation into the cache
 	 *
-	 * Future calls to translate() will use this instead of reading translation from the
+	 * Future calls to translate() will. Use this instead of reading translation from the
 	 * main data link.
 	 *
 	 * @param $text        string
@@ -198,8 +198,12 @@ class Translator
 			$translation = $text;
 		}
 		else {
+			// different sentence separated by dots : translate each sentence
+			if (strpos($text, DOT . SP) !== false) {
+				$translation = $this->separatedTranslations($text, DOT . SP, $context);
+			}
 			// different texts separated by dots : translate each part between dots
-			if (strpos($text, DOT) !== false) {
+			elseif (strpos($text, DOT) !== false) {
 				$translation = $this->separatedTranslations($text, DOT, $context);
 			}
 			else {
