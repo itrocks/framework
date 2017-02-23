@@ -53,6 +53,19 @@ class File_Logger implements Configurable
 		}
 	}
 
+	//----------------------------------------------------------------------------------------- close
+	/**
+	 * Close the file and clean
+	 */
+	protected function close()
+	{
+		if (!empty($this->file)) {
+			fclose($this->file);
+			$this->file      = null;
+			$this->file_name = null;
+		}
+	}
+
 	//------------------------------------------------------------------------------------------ file
 	/**
 	 * @return resource

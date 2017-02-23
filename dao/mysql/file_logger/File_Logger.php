@@ -39,6 +39,31 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 */
 	private $time;
 
+	//------------------------------------------------------------------------------------ __destruct
+	/**
+	 * When the script ends : gzip the log file
+	 * This will be called after the output is flushed to the user, so it does not slow him
+	 *
+	 * Because of potential usage of register_shutdown_function, we close files here,
+	 * not in serialize while session is closed
+	 *
+	 */
+	public function __destruct()
+	{
+		if ($f = $this->file()) {
+			$this->close();
+			$filename = $this->fileName();
+			$d = gzopen($filename . '.gz', 'w9');
+			$s = fopen($filename, 'rb');
+			while (!feof($s)) {
+				gzwrite($d, fgets($s));
+			}
+			fclose($s);
+			fclose($d);
+			unlink($filename);
+		}
+	}
+
 	//------------------------------------------------------------------------------------ afterQuery
 	/**
 	 * Called each time after a mysql_query() call is done : log the query and its result
@@ -107,25 +132,10 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 
 	//------------------------------------------------------------------------------------- serialize
 	/**
-	 * When the script ends : gzip the log file
-	 * This will be called after the output is flushed to the user, so it does not slow him
-	 *
 	 * @return string
 	 */
 	public function serialize()
 	{
-		if ($f = $this->file()) {
-			fclose($f);
-			$filename = $this->fileName();
-			$d = gzopen($filename . '.gz', 'w9');
-			$s = fopen($filename, 'rb');
-			while (!feof($s)) {
-				gzwrite($d, fgets($s));
-			}
-			fclose($s);
-			fclose($d);
-			unlink($filename);
-		}
 		return $this->path;
 	}
 

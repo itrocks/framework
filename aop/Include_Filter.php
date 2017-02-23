@@ -28,6 +28,15 @@ class Include_Filter extends php_user_filter
 	 */
 	private static $file_name;
 
+	//------------------------------------------------------------------------------------ $root_path
+	/**
+	 * because of potential usage of register_shutdown_function, we want to deal with absolute paths
+	 *
+	 * @see http://php.net/manual/fr/function.register-shutdown-function.php
+	 * @var string
+	 */
+	private static $root_path;
+
 	//------------------------------------------------------------------------------------- cacheFile
 	/**
 	 * Returns the filename of a cache file for given source file name
@@ -59,16 +68,22 @@ class Include_Filter extends php_user_filter
 	 */
 	public static function file($file_name, $path_prefix = '')
 	{
+		// if absolute path given, no deal with cache, directly return it
+		if (substr($file_name, 0, 1) === '/') {
+			return $file_name;
+		}
+		// relative path given
 		$path_prefix    .= (strlen($path_prefix) && (substr($path_prefix, -1)) != '/') ? '/' : '';
-		$cache_file_name = self::CACHE_DIR . '/' . self::cacheFile($file_name);
+		$source_file_name = self::$root_path . '/' . $path_prefix . $file_name;
+		$cache_file_name = self::$root_path . '/' . self::CACHE_DIR . '/' . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
 			}
 			self::$file_name = $cache_file_name;
-			return 'php://filter/read=' . self::ID . '/resource=' . $path_prefix . $file_name;
+			return 'php://filter/read=' . self::ID . '/resource=' . $source_file_name;
 		}
-		return $path_prefix . $file_name;
+		return $source_file_name;
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
@@ -96,7 +111,7 @@ class Include_Filter extends php_user_filter
 			$consumed = $bucket->datalen;
 			if (isset(self::$file_name)) {
 				if (!empty($GLOBALS['D'])) {
-					echo '- load cached ' . self::$file_name . '<br>\n';
+					echo '- load cached ' . substr(self::$file_name, strlen(self::$root_path) + 1) . '<br>\n';
 				}
 				$bucket->data = file_get_contents(self::$file_name);
 				$bucket->datalen = strlen($bucket->data);
@@ -110,10 +125,12 @@ class Include_Filter extends php_user_filter
 
 	//-------------------------------------------------------------------------------------- register
 	/**
+	 * @param $root_path string
 	 * @return boolean true if well registered
 	 */
-	public static function register()
+	public static function register($root_path)
 	{
+		self::$root_path = $root_path;
 		return stream_filter_register(self::ID, __CLASS__) or die('Failed to register filter');
 	}
 

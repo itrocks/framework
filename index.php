@@ -35,11 +35,11 @@ while (is_file('lock')) {
 
 // enable cache files for compiled scripts : includes must all use this filter
 include_once __DIR__ . '/aop/Include_Filter.php';
-Include_Filter::register();
+Include_Filter::register(getcwd());
 // enable autoloader
 /** @noinspection PhpIncludeInspection */
 include_once Include_Filter::file(__DIR__ . '/Autoloader.php');
-(new Autoloader)->register();
+(new Autoloader)->register(getcwd());
 
 // run main controller
 echo (new Main)
