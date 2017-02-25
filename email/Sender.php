@@ -110,7 +110,7 @@ class Sender implements Configurable, Sender_Interface
 
 		// user error when errors
 		if ($send_result instanceof PEAR_Error) {
-			return $email->send_message = strval($send_result);
+			return $email->send_message = strval($send_result) ?: 'Send error : unknown';
 		}
 		$email->send_date = new Date_Time();
 		/** @noinspection PhpUndefinedFieldInspection */
