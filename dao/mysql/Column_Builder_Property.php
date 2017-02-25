@@ -106,11 +106,9 @@ trait Column_Builder_Property
 	 */
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{
-		$property_type = $property->getType();
+		$property_type          = $property->getType();
 		$store_annotation_value = Store_Annotation::of($property)->value;
-		if (
-			$property_type->isBasic() || $store_annotation_value
-		) {
+		if ($property_type->isBasic() || $store_annotation_value) {
 			if ($property_type->isMultipleString()) {
 				$values = self::propertyValues($property);
 				return ($values ? 'set(' . Q . join(Q . ',' . Q, $values) . Q . ')' : 'text')
@@ -167,9 +165,7 @@ trait Column_Builder_Property
 						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')'
 							. SP . Database::characterSetCollateSql();
 					}
-					if (
-						$store_annotation_value === Store_Annotation::GZ
-					) {
+					if ($store_annotation_value === Store_Annotation::GZ) {
 						return ($max_length <= 255) ? 'tinyblob' : (
 							($max_length <= 65535)    ? 'blob' : (
 							($max_length <= 16777215) ? 'mediumblob' :
@@ -184,9 +180,7 @@ trait Column_Builder_Property
 					))) . SP . Database::characterSetCollateSql();
 				}
 			}
-			elseif (
-				$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::JSON
-			) {
+			elseif ($store_annotation_value === Store_Annotation::JSON) {
 				return 'text';
 			}
 			switch ($property_type->asString()) {
