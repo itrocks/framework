@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use Iterator;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * List data is an interface for all list data storage classes
@@ -47,7 +48,7 @@ interface List_Data extends Iterator
 	/**
 	 * Returns the properties path list
 	 *
-	 * @return string[]
+	 * @return Reflection_Property[]
 	 */
 	public function getProperties();
 

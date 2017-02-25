@@ -363,7 +363,8 @@ abstract class Link extends Identifier_Map implements Transactional
 	{
 		$properties = [];
 		foreach ($columns as $key => $column) {
-			$properties[] = is_object($column) ? $key : $column;
+			$property_path              = is_object($column) ? $key : $column;
+			$properties[$property_path] = new Reflection_Property($object_class, $property_path);
 		}
 		return new Default_List_Data($object_class, $properties);
 	}

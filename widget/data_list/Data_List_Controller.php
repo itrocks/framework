@@ -66,6 +66,28 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	private $errors = [];
 
+	//-------------------------------------------------------------------------- applyGettersToValues
+	/**
+	 * In Dao::select() result : replace values with their matching result of @user_getter / @getter
+	 *
+	 * @param $data List_Data
+	 */
+	protected function applyGettersToValues(List_Data $data)
+	{
+		$properties = $data->getProperties();
+		foreach ($data->getRows() as $row) {
+			$object = $row->getObject();
+			foreach ($row->getValues() as $property_path => $value) {
+				$property    = $properties[$property_path];
+				$user_getter = $property->getAnnotation('user_getter');
+				$value = $user_getter->value
+					? (new Contextual_Callable($user_getter->value, $object))->call()
+					: $property->getValue($object);
+				$row->setValue($property_path, $value);
+			}
+		}
+	}
+
 	//----------------------------------------------------------------- applyParametersToListSettings
 	/**
 	 * Apply parameters to list settings
@@ -406,37 +428,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		];
 	}
 
-	//------------------------------------------------------------------------- replaceValuesByGetter
-	/**
-	 * In Dao::select() result : replace values with their matching result of @user_getter / @getter
-	 *
-	 * @param List_Data $data
-	 */
-	protected function replaceValuesByGetter(List_Data $data)
-	{
-		$class_name = $data->getClass()->getName();
-
-		foreach ($data->getRows() as $row) {
-			$object = $row->getObject();
-			foreach ($row->getValues() as $property_name => $value) {
-				if (property_exists($class_name, $property_name)) {
-					//get value by @getter value if exist (aop)
-					$reflection_property = new Reflection_Property($class_name, $property_name);
-					$value               = $reflection_property->getValue($object);
-
-					//get @user_getter value
-					$user_getter = $reflection_property->getAnnotation('user_getter');
-					if ($user_getter->value) {
-						$callable = new Contextual_Callable($user_getter->value, $object);
-						$value    = $callable->call();
-					}
-
-					$row->setValue($property_name, $value);
-				}
-			}
-		}
-	}
-
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters Parameters
@@ -574,17 +565,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	private function objectsToString(List_Data $data)
 	{
 		$class_properties = [];
-		$class_name = $data->getClass()->getName();
-		foreach ($data->getProperties() as $property_name) {
-			$property = new Reflection_Property($class_name, $property_name);
+		foreach ($data->getProperties() as $property) {
 			if ($property->getType()->isClass()) {
-				$class_properties[$property_name] = $property_name;
+				$class_properties[$property->path] = $property->path;
 			}
 		}
 		if ($class_properties) {
 			foreach ($data->getRows() as $row) {
-				foreach ($class_properties as $property_name) {
-					$row->setValue($property_name, strval($row->getValue($property_name)));
+				foreach ($class_properties as $property_path) {
+					$row->setValue($property_path, strval($row->getValue($property_path)));
 				}
 			}
 		}
@@ -642,7 +631,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 
-		$this->replaceValuesByGetter($data);
+		$this->applyGettersToValues($data);
 		$this->objectsToString($data);
 		// TODO LOW the following patch lines are to avoid others calculation to use invisible props
 		foreach ($list_settings->properties as $property_path => $property) {
