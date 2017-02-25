@@ -4,6 +4,7 @@ namespace ITRocks\Framework;
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Plugin\Manager;
+use ITRocks\Framework\Tools\Paths;
 
 // php settings
 chdir(__DIR__ . '/../..');
@@ -22,9 +23,12 @@ ini_set( 'xdebug.var_display_max_depth',    3       );
 putenv('LANG=fr_FR.UTF-8');
 set_time_limit(30);
 
+// constants immediately available
+include_once __DIR__ . '/functions/constants.php';
+
 // enable running from command line
 if (!isset($_SERVER['PATH_INFO'])) {
-	$_SERVER['PATH_INFO'] = '/';
+	$_SERVER['PATH_INFO'] = SL;
 }
 
 // wait for unlock
@@ -33,13 +37,16 @@ while (is_file('lock')) {
 	clearstatcache(true, 'lock');
 }
 
+// activate paths
+include_once __DIR__ . '/tools/Paths.php';
+Paths::register();
 // enable cache files for compiled scripts : includes must all use this filter
 include_once __DIR__ . '/aop/Include_Filter.php';
-Include_Filter::register(getcwd());
+Include_Filter::register();
 // enable autoloader
 /** @noinspection PhpIncludeInspection */
 include_once Include_Filter::file(__DIR__ . '/Autoloader.php');
-(new Autoloader)->register(getcwd());
+(new Autoloader)->register();
 
 // run main controller
 echo (new Main)

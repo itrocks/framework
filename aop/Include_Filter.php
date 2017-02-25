@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\AOP;
 
+use ITRocks\Framework\Tools\Paths;
 use php_user_filter;
 
 /**
@@ -27,15 +28,6 @@ class Include_Filter extends php_user_filter
 	 * @var string
 	 */
 	private static $file_name;
-
-	//------------------------------------------------------------------------------------ $root_path
-	/**
-	 * because of potential usage of register_shutdown_function, we want to deal with absolute paths
-	 *
-	 * @see http://php.net/manual/fr/function.register-shutdown-function.php
-	 * @var string
-	 */
-	private static $root_path;
 
 	//------------------------------------------------------------------------------------- cacheFile
 	/**
@@ -73,9 +65,10 @@ class Include_Filter extends php_user_filter
 			return $file_name;
 		}
 		// relative path given
-		$path_prefix    .= (strlen($path_prefix) && (substr($path_prefix, -1)) != '/') ? '/' : '';
-		$source_file_name = self::$root_path . '/' . $path_prefix . $file_name;
-		$cache_file_name = self::$root_path . '/' . self::CACHE_DIR . '/' . self::cacheFile($file_name);
+		$path_prefix     .= (strlen($path_prefix) && (substr($path_prefix, -1)) != '/') ? '/' : '';
+		$source_file_name = Paths::$project_root . '/' . $path_prefix . $file_name;
+		$cache_file_name
+			= Paths::$project_root . '/' . self::CACHE_DIR . '/' . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
@@ -111,7 +104,7 @@ class Include_Filter extends php_user_filter
 			$consumed = $bucket->datalen;
 			if (isset(self::$file_name)) {
 				if (!empty($GLOBALS['D'])) {
-					echo '- load cached ' . substr(self::$file_name, strlen(self::$root_path) + 1) . '<br>\n';
+					echo '- load cached ' . substr(self::$file_name, strlen(Paths::$project_root) + 1) . '<br>\n';
 				}
 				$bucket->data = file_get_contents(self::$file_name);
 				$bucket->datalen = strlen($bucket->data);
@@ -125,12 +118,10 @@ class Include_Filter extends php_user_filter
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param $root_path string
 	 * @return boolean true if well registered
 	 */
-	public static function register($root_path)
+	public static function register()
 	{
-		self::$root_path = $root_path;
 		return stream_filter_register(self::ID, __CLASS__) or die('Failed to register filter');
 	}
 

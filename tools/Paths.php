@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 /**
- * Application paths functions help you to find out usefull paths of your application
+ * Application paths functions help you to find out useful paths of your application
  */
 abstract class Paths
 {
@@ -16,6 +16,15 @@ abstract class Paths
 	 * @var string
 	 */
 	public static $file_root;
+
+	//--------------------------------------------------------------------------------- $project_root
+	/**
+	 * The root path for the current project files into the file system
+	 *
+	 * @example /home/vendor/project/environment
+	 * @var string
+	 */
+	public static $project_root;
 
 	//---------------------------------------------------------------------------------- $project_uri
 	/**
@@ -96,7 +105,7 @@ abstract class Paths
 	{
 		// replace /dir/../ with /
 		while (($j = strpos($file_name, '/../')) !== false) {
-			$i = strrpos(substr($file_name, 0, $j), SL);
+			$i         = strrpos(substr($file_name, 0, $j), SL);
 			$file_name = substr($file_name, 0, $i) . substr($file_name, $j + 3);
 		}
 		// remove /project/root/directory/same/as/current/working/directory/ from beginning of file name
@@ -111,17 +120,15 @@ abstract class Paths
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		$slash  = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
-		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php');
-		self::$file_root = substr(
-			$_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1
-		);
+		$slash             = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
+		$dot_php           = strrpos($_SERVER['SCRIPT_NAME'], '.php');
+		self::$file_root
+			= substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1);
+		self::$project_root = getcwd();
 		self::$script_name = substr($_SERVER['SCRIPT_NAME'], $slash, $dot_php - $slash);
-		self::$uri_root = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
-		self::$uri_base = self::$uri_root . self::$script_name;
-		self::$project_uri = substr(getcwd(), strlen(self::$file_root) - 1);
+		self::$uri_root    = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
+		self::$uri_base    = self::$uri_root . self::$script_name;
+		self::$project_uri = substr(self::$project_root, strlen(self::$file_root) - 1);
 	}
 
 }
-
-Paths::register();

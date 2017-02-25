@@ -3,21 +3,13 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\Tools\Paths;
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
  */
 class Autoloader
 {
-
-	//------------------------------------------------------------------------------------ $root_path
-	/**
-	 * because of potential usage of register_shutdown_function, we want to deal with absolute paths
-	 *
-	 * @see http://php.net/manual/fr/function.register-shutdown-function.php
-	 * @var string
-	 */
-	private static $root_path;
 
 	//-------------------------------------------------------------------------------------- autoload
 	/**
@@ -53,19 +45,21 @@ class Autoloader
 			$short_class_name = substr($class_name, $i + 1);
 			// 'A\Class' stored into 'a/class/Class.php'
 			$file1 = strtolower($namespace . '/' . $short_class_name) . '/' . $short_class_name . '.php';
-			if (file_exists(self::$root_path . '/' . $file1)) {
+			if (file_exists(Paths::$project_root . '/' . $file1)) {
 				return $file1;
 			}
 			// 'A\Class' stored into 'a/Class.php'
 			else {
 				$file2 = strtolower($namespace) . '/' . $short_class_name . '.php';
-				if (file_exists(self::$root_path . '/' . $file2)) {
+				if (file_exists(Paths::$project_root . '/' . $file2)) {
 					return $file2;
 				}
 			}
 		}
 		// 'A_Class' stored into 'A_Class.php'
-		elseif (file_exists(self::$root_path . '/' . $path_prefix . ($file4 = $class_name . '.php'))) {
+		elseif (
+			file_exists(Paths::$project_root . '/' . $path_prefix . ($file4 = $class_name . '.php'))
+		) {
 			return $file4;
 		}
 		return false;
@@ -84,8 +78,8 @@ class Autoloader
 		}
 		if ((!isset($result) || !$result) && Class_Builder::isBuilt($class_name)) {
 			$built_file_name = PHP\Compiler::classToCacheFilePath($class_name);
-			if (file_exists(self::$root_path . '/' . $built_file_name)) {
-				$result = include_once(self::$root_path . '/' . $built_file_name);
+			if (file_exists(Paths::$project_root . '/' . $built_file_name)) {
+				$result = include_once(Paths::$project_root . '/' . $built_file_name);
 			}
 		}
 		// class not found
@@ -98,12 +92,9 @@ class Autoloader
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Register autoloader
-	 *
-	 * @param $root_path string
 	 */
-	public function register($root_path)
+	public function register()
 	{
-		self::$root_path = $root_path;
 		include_once __DIR__ . '/../../vendor/autoload.php';
 		spl_autoload_register([$this, 'autoload'], true, true);
 	}
