@@ -14,7 +14,7 @@
 		"csl/reset5":                            "1.*",
 		"easybook/geshi":                        "1.*",
 		"html2text/html2text":                   "4.*",
-		"malsup/form":                           "3.*",
+		"jquery-form/form":                      "3.*",
 		"netcarver/textile":                     "3.*",
 		"oomphinc/composer-installers-extender": "~1.1",
 		"pear/mail":                             "1.*",

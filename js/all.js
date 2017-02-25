@@ -6,7 +6,7 @@ $.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
 $.getScript(path + 'itrocks/framework/js/jquery.xtarget.js');
 
 $.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
-$.getScript(path + 'vendor/malsup/form/jquery.form.js');
+$.getScript(path + 'vendor/jquery-form/form/jquery.form.js');
 
 $.getScript(path + 'itrocks/framework/js/jquery.aform.js');
 $.getScript(path + 'itrocks/framework/js/jquery.autofocus.js');
