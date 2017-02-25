@@ -59,11 +59,16 @@ class Translation_String_Composer_Tests extends Test
 		);
 
 		$translator->setTranslation('hello', 'bienvenue');
-		$translator->setTranslation('world', 'monde');
 		$this->assume(
-			__METHOD__ . '.sentence',
+			__METHOD__ . '.multiple-sentences',
 			$translator->translate('Hello. World.'),
 			'Bienvenue. Monde.'
+		);
+
+		$this->assume(
+			__METHOD__ . '.sentences-with-various-spaces',
+			$translator->translate("Hello \t. \n  World\t\n."),
+			"Bienvenue \t. \n  Monde\t\n."
 		);
 	}
 

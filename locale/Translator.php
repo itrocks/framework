@@ -147,18 +147,29 @@ class Translator
 	 */
 	private function separatedTranslations($text, $separator, $context)
 	{
-		$translation = [];
-		foreach (explode($separator, $text) as $sentence) {
-			$translation[] = $this->translate($sentence, $context);
+		preg_match_all('/(?<before>\s*)' . preg_quote($separator). '(?<after>\s*)/', $text, $spaces);
+		$sentences            = explode($separator, $text);
+		$sentence_number      = 0;
+		$last_sentence_number = count($sentences) - 1;
+		$translation          = '';
+		foreach ($sentences as $sentence) {
+			if ($sentence_number) {
+				$translation .= $spaces['after'][$sentence_number - 1];
+			}
+			$translation .= $this->translate(trim($sentence), $context);
+			if ($sentence_number < $last_sentence_number) {
+				$translation .= $spaces['before'][$sentence_number] . $separator;
+			}
+			$sentence_number ++;
 		}
-		return join($separator, $translation);
+		return $translation;
 	}
 
 	//-------------------------------------------------------------------------------- setTranslation
 	/**
 	 * Force a translation into the cache
 	 *
-	 * Future calls to translate() will. Use this instead of reading translation from the
+	 * Future calls to translate() will use this instead of reading translation from the
 	 * main data link.
 	 *
 	 * @param $text        string
@@ -198,12 +209,8 @@ class Translator
 			$translation = $text;
 		}
 		else {
-			// different sentence separated by dots : translate each sentence
-			if (strpos($text, DOT . SP) !== false) {
-				$translation = $this->separatedTranslations($text, DOT . SP, $context);
-			}
 			// different texts separated by dots : translate each part between dots
-			elseif (strpos($text, DOT) !== false) {
+			if (strpos($text, DOT) !== false) {
 				$translation = $this->separatedTranslations($text, DOT, $context);
 			}
 			else {
