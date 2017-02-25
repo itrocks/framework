@@ -52,14 +52,14 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	{
 		if ($f = $this->file()) {
 			$this->close();
-			$filename = $this->fileName();
-			$d = gzopen($filename . '.gz', 'w9');
-			$s = fopen($filename, 'rb');
-			while (!feof($s)) {
-				gzwrite($d, fgets($s));
+			$filename    = $this->fileName();
+			$destination = gzopen($filename . '.gz', 'w9');
+			$source      = fopen($filename, 'rb');
+			while (!feof($source)) {
+				gzwrite($destination, fgets($source));
 			}
-			fclose($s);
-			fclose($d);
+			fclose($source);
+			fclose($destination);
 			unlink($filename);
 		}
 	}

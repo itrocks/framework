@@ -39,28 +39,29 @@ class Autoloader
 	public static function getFilePath($class_name, $path_prefix = '')
 	{
 		// Note: we do not use BS and SL constants since they may not be defined here
-		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != '/') ? '/' : '';
-		if ($i = strrpos($class_name, '\\')) {
-			$namespace = $path_prefix . strtolower(str_replace('\\', '/', substr($class_name, 0, $i)));
+		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != SL) ? SL : '';
+		if ($i = strrpos($class_name, BS)) {
+			$namespace = $path_prefix . strtolower(str_replace(BS, SL, substr($class_name, 0, $i)));
 			$short_class_name = substr($class_name, $i + 1);
 			// 'A\Class' stored into 'a/class/Class.php'
-			$file1 = strtolower($namespace . '/' . $short_class_name) . '/' . $short_class_name . '.php';
-			if (file_exists(Paths::$project_root . '/' . $file1)) {
-				return $file1;
+			$file = strtolower($namespace . SL . $short_class_name) . SL . $short_class_name . '.php';
+			if (file_exists(Paths::$project_root . SL . $file)) {
+				return $file;
 			}
 			// 'A\Class' stored into 'a/Class.php'
 			else {
-				$file2 = strtolower($namespace) . '/' . $short_class_name . '.php';
-				if (file_exists(Paths::$project_root . '/' . $file2)) {
-					return $file2;
+				$file = strtolower($namespace) . SL . $short_class_name . '.php';
+				if (file_exists(Paths::$project_root . SL . $file)) {
+					return $file;
 				}
 			}
 		}
 		// 'A_Class' stored into 'A_Class.php'
-		elseif (
-			file_exists(Paths::$project_root . '/' . $path_prefix . ($file4 = $class_name . '.php'))
-		) {
-			return $file4;
+		else {
+			$file = $path_prefix . $class_name . '.php';
+			if (file_exists(Paths::$project_root . SL . $file)) {
+				return $file;
+			}
 		}
 		return false;
 	}
@@ -78,8 +79,8 @@ class Autoloader
 		}
 		if ((!isset($result) || !$result) && Class_Builder::isBuilt($class_name)) {
 			$built_file_name = PHP\Compiler::classToCacheFilePath($class_name);
-			if (file_exists(Paths::$project_root . '/' . $built_file_name)) {
-				$result = include_once(Paths::$project_root . '/' . $built_file_name);
+			if (file_exists(Paths::$project_root . SL . $built_file_name)) {
+				$result = include_once(Paths::$project_root . SL . $built_file_name);
 			}
 		}
 		// class not found

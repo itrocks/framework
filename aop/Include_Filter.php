@@ -47,9 +47,9 @@ class Include_Filter extends php_user_filter
 		$parent_dir       = dirname($file_name_no_ext);
 		return (strtolower($basename) == basename($parent_dir))
 			// case 1 : a/class/name/like/this/This.php => a-class-name-like-This
-			? str_replace('/', '-', dirname($parent_dir) . '/' . $basename)
+			? str_replace(SL, '-', dirname($parent_dir) . SL . $basename)
 			// case 2 : a/class/name/like/This.php => a-class-name-like-This
-			: str_replace('/', '-', $file_name_no_ext);
+			: str_replace(SL, '-', $file_name_no_ext);
 	}
 
 	//------------------------------------------------------------------------------------------ file
@@ -61,14 +61,14 @@ class Include_Filter extends php_user_filter
 	public static function file($file_name, $path_prefix = '')
 	{
 		// if absolute path given, no deal with cache, directly return it
-		if (substr($file_name, 0, 1) === '/') {
+		if (substr($file_name, 0, 1) === SL) {
 			return $file_name;
 		}
 		// relative path given
-		$path_prefix     .= (strlen($path_prefix) && (substr($path_prefix, -1)) != '/') ? '/' : '';
-		$source_file_name = Paths::$project_root . '/' . $path_prefix . $file_name;
+		$path_prefix     .= (strlen($path_prefix) && (substr($path_prefix, -1)) != SL) ? SL : '';
+		$source_file_name = Paths::$project_root . SL . $path_prefix . $file_name;
 		$cache_file_name
-			= Paths::$project_root . '/' . self::CACHE_DIR . '/' . self::cacheFile($file_name);
+			= Paths::$project_root . SL . self::CACHE_DIR . SL . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
