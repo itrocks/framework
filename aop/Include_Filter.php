@@ -104,9 +104,9 @@ class Include_Filter extends php_user_filter
 			$consumed = $bucket->datalen;
 			if (isset(self::$file_name)) {
 				if (!empty($GLOBALS['D'])) {
-					echo '- load cached ' . substr(self::$file_name, strlen(Paths::$project_root) + 1) . '<br>\n';
+					echo '- load cached ' . substr(self::$file_name, strlen(Paths::$project_root) + 1) . BRLF;
 				}
-				$bucket->data = file_get_contents(self::$file_name);
+				$bucket->data    = file_get_contents(self::$file_name);
 				$bucket->datalen = strlen($bucket->data);
 				/** @noinspection PhpParamsInspection inspector bug */
 				stream_bucket_append($out, $bucket);

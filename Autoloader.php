@@ -34,7 +34,7 @@ class Autoloader
 	 *
 	 * @param $class_name  string
 	 * @param $path_prefix string
-	 * @return string|boolean the matching file name or false if not found
+	 * @return string|boolean the matching file path, relative to the project root, false if not found
 	 */
 	public static function getFilePath($class_name, $path_prefix = '')
 	{
