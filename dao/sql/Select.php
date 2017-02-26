@@ -285,7 +285,7 @@ class Select
 			$this->callback = null;
 		}
 		$this->result_set = $result_set;
-		$this->columns = $this->prepareColumns($this->columns);
+		$this->columns    = $this->prepareColumns($this->columns);
 		$this->prepareFetch($data_store);
 		return $this->doFetch($data_store);
 	}
