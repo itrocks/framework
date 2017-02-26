@@ -279,7 +279,7 @@ class Select
 	{
 		if (is_callable($data_store)) {
 			$this->callback = $data_store;
-			$data_store = null;
+			$data_store     = null;
 		}
 		else {
 			$this->callback = null;
@@ -345,11 +345,11 @@ class Select
 	 */
 	private function prepareFetch($data_store)
 	{
-		$this->classes = [];
+		$this->classes      = [];
 		$this->column_count = $this->link->getColumnsCount($this->result_set);
 		$this->column_names = [];
-		$this->i_to_j = [];
-		$classes_index = [];
+		$this->i_to_j       = [];
+		$classes_index      = [];
 		$j = 0;
 		for ($i = 0; $i < $this->column_count; $i++) {
 			$this->column_names[$i] = $column_name = $this->link->getColumnName($this->result_set, $i);
@@ -362,13 +362,13 @@ class Select
 					$this->preparePathClass($split[0]);
 				}
 				$this->column_names[$i] = $column_name = $split[1];
-				$main_property = $split[0];
+				$main_property                         = $split[0];
 				$his_j = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
 				if (!isset($his_j)) {
-					$his_j = $j;
-					$this->classes[$his_j] = $this->path_classes[$main_property];
+					$his_j                         = $j;
+					$this->classes[$his_j]         = $this->path_classes[$main_property];
 					$classes_index[$main_property] = $j;
-					$this->i_to_j[$i] = $j++;
+					$this->i_to_j[$i]              = $j++;
 				}
 				else {
 					$this->i_to_j[$i] = $his_j;
@@ -392,7 +392,7 @@ class Select
 	 */
 	private function preparePathClass($property_name)
 	{
-		$property = new Reflection_Property($this->class_name, $property_name);
+		$property   = new Reflection_Property($this->class_name, $property_name);
 		$class_name = $property->getType()->getElementTypeAsString();
 		$this->path_classes[$property_name] = $class_name;
 	}
@@ -407,11 +407,11 @@ class Select
 	 */
 	public function prepareQuery($filter_object = null, $options = [])
 	{
-		$filter_object = $this->objectToProperties($filter_object);
+		$filter_object      = $this->objectToProperties($filter_object);
 		$sql_select_builder = new Sql\Builder\Select(
 			$this->class_name, $this->columns, $filter_object, $this->link, $options
 		);
-		$query = $sql_select_builder->buildQuery();
+		$query              = $sql_select_builder->buildQuery();
 		$this->path_classes = $sql_select_builder->getJoins()->getClasses();
 		$this->link->setContext(array_merge(
 			$sql_select_builder->getJoins()->getClassNames(),
@@ -487,21 +487,21 @@ class Select
 						$data_store[$index] = $this->object_builder->build($row, $data_store[$index]);
 					}
 					else {
-						$result = $this->doCallback($data_store);
+						$result             = $this->doCallback($data_store);
 						$data_store[$index] = $this->object_builder->build($row);
 					}
 				}
 				else {
-					$result = $this->doCallback($data_store);
+					$result       = $this->doCallback($data_store);
 					$data_store[] = $this->object_builder->build($row);
 				}
 			}
 			elseif ($index !== '') {
-				$result = $this->doCallback($data_store);
+				$result             = $this->doCallback($data_store);
 				$data_store[$index] = $row;
 			}
 			else {
-				$result = $this->doCallback($data_store);
+				$result       = $this->doCallback($data_store);
 				$data_store[] = $row;
 			}
 		}

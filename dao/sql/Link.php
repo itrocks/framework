@@ -217,7 +217,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		}
 		if ($double_pass) {
 			$new_filter_object = $this->selectFirstPass($object_class, $properties, $filter_object, $options);
-			$filter_object = $filter_object
+			$filter_object     = $filter_object
 				? ($new_filter_object ? Func::andOp([$filter_object, Func::orOp($new_filter_object)]) : $filter_object)
 				: $new_filter_object;
 		}
@@ -309,7 +309,7 @@ abstract class Link extends Identifier_Map implements Transactional
 				$keep_path = $path = '';
 				foreach (explode(DOT, $property_path) as $property_name) {
 					$path .= ($path ? DOT : '') . $property_name;
-					$link = Link_Annotation::of(new Reflection_Property($object_class, $path));
+					$link  = Link_Annotation::of(new Reflection_Property($object_class, $path));
 					if ($link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
 						$keep_path = $path;
 					}
