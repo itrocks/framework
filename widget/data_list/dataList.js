@@ -6,6 +6,41 @@ $('document').ready(function()
 	{
 		if (!this.length) return;
 
+		var addProperty = function($object, property_name, before_after, before_after_property_name)
+		{
+			var $window    = $object.closest('.list.window');
+			var app        = window.app;
+			var class_name = $window.data('class').repl(BS, SL);
+			var uri        = app.uri_base + SL + class_name + SL + 'dataListSetting'
+				+ '?add_property=' + property_name
+				+ '&' + before_after
+				+ '=' + ((before_after_property_name != undefined) ? before_after_property_name : '')
+				+ '&as_widget'
+				+ app.andSID();
+			$.ajax({ url: uri, success: function()
+			{
+				var class_name   = $window.data('class').repl(BS, SL);
+				var feature_name = $window.data('feature');
+				var url          = app.uri_base + SL + class_name + SL + feature_name
+					+ '?as_widget' + window.app.andSID();
+				$.ajax({ url: url, success: function(data)
+				{
+					var $container = $window.parent();
+					$container.html(data);
+					$container.children().build();
+				}});
+			}});
+		};
+
+		//---------------------------------------------------------- .column_select li.basic.property
+		if (this.closest('.list.window .column_select').length) {
+			this.find('li.basic.property').click(function()
+			{
+				var $this = $(this);
+				addProperty($this, $this.data('property'), 'before');
+			});
+		}
+
 		this.inside('.list.window').each(function()
 		{
 			var $this = $(this);
@@ -15,7 +50,7 @@ $('document').ready(function()
 			$this.find('.column_select>a.popup').click(function(event)
 			{
 				var $this = $(this);
-				var $div = $this.closest('.column_select').find('#column_select');
+				var $div  = $this.closest('.column_select').find('#column_select');
 				if ($div.length) {
 					if ($div.is(':visible')) {
 						$div.hide();
@@ -56,10 +91,10 @@ $('document').ready(function()
 					count ++;
 					var $this = $(this);
 					var $prev = $this.prev('th');
-					var left = $prev.offset().left + $prev.width();
+					var left  = $prev.offset().left + $prev.width();
 					var right = $this.offset().left + $this.width();
 					if ((draggable_left > left) && (draggable_left <= right)) {
-						found = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
+						found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
 						var old = $droppable.data('insert-after');
 						if (found != old) {
 							if (old != undefined) {
@@ -92,36 +127,14 @@ $('document').ready(function()
 
 				drop: function(event, ui)
 				{
-					var $this = $(this);
+					var $this        = $(this);
 					var insert_after = $this.data('insert-after');
 					if (insert_after != undefined) {
-						var app = window.app;
-						var $window = $this.closest('.list.window');
 						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_after + ')');
-						var $draggable = ui.draggable;
-						var property_name = $draggable.data('property');
+						var $draggable          = ui.draggable;
 						var after_property_name = $th.data('property');
-						var class_name = $window.data('class').repl(BS, SL);
-						var uri = app.uri_base + SL + class_name + SL + 'dataListSetting'
-							+ '?add_property=' + property_name
-							+ '&after=' + ((after_property_name != undefined) ? after_property_name : '')
-							+ '&as_widget'
-							+ app.andSID();
-
-						$.ajax({ url: uri, success: function()
-						{
-							var class_name = $window.data('class').repl(BS, SL);
-							var feature_name = $window.data('feature');
-							var url = app.uri_base + SL + class_name + SL + feature_name
-								+ '?as_widget' + window.app.andSID();
-							$.ajax({ url: url, success: function(data)
-							{
-								var $container = $window.parent();
-								$container.html(data);
-								$container.children().build();
-							}});
-						}});
-
+						var property_name       = $draggable.data('property');
+						addProperty($this, property_name, 'after', after_property_name);
 					}
 					out($this, event, ui);
 				},
@@ -160,9 +173,9 @@ $('document').ready(function()
 
 			// list title (class name) double-click
 			$this.find('h2>span').modifiable({
-				ajax:      callback_uri + '&title={value}',
-				aliases:   { 'className': className },
-				target:    '#messages',
+				ajax:    callback_uri + '&title={value}',
+				aliases: { 'className': className },
+				target:  '#messages',
 				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
 				},
