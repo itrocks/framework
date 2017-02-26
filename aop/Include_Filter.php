@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\AOP;
 
+use Exception;
 use ITRocks\Framework\Tools\Paths;
 use php_user_filter;
 
@@ -54,19 +55,34 @@ class Include_Filter extends php_user_filter
 
 	//------------------------------------------------------------------------------------------ file
 	/**
+	 * Get the real file or filter to include given a file relative to the project root or relative
+	 * to the path prefix if given
+	 *
 	 * @param $file_name   string relative path to the file to be included
 	 * @param $path_prefix string
 	 * @return string
+	 * @throws Exception
 	 */
 	public static function file($file_name, $path_prefix = '')
 	{
-		// if absolute path given, no deal with cache, directly return it
+		$path_prefix .= (strlen($path_prefix) && (substr($path_prefix, -1)) != SL) ? SL : '';
+		// if absolute path given
 		if (substr($file_name, 0, 1) === SL) {
-			return $file_name;
+			// if project root file, remove this part
+			if (strpos($file_name, Paths::$project_root) === 0) {
+				$file_name = substr($file_name, strlen(Paths::$project_root) + 1);
+				// if path_prefix file, remove this part
+				if ($path_prefix && strpos($file_name, $path_prefix) === 0) {
+					$file_name = substr($file_name, strlen($path_prefix));
+				}
+			}
+			// not a project file
+			else {
+				throw new Exception("file outside project is forbidden");
+			}
 		}
-		// relative path given
-		$path_prefix     .= (strlen($path_prefix) && (substr($path_prefix, -1)) != SL) ? SL : '';
-		$source_file_name = Paths::$project_root . SL . $path_prefix . $file_name;
+		// now we have relative file, check cache version, using canonical name to avoid /../
+		$source_file_name = realpath(Paths::$project_root . SL . $path_prefix . $file_name);
 		$cache_file_name
 			= Paths::$project_root . SL . self::CACHE_DIR . SL . self::cacheFile($file_name);
 		if (file_exists($cache_file_name)) {
