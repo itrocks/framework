@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>|History|</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<ul>
+		<!--historyTreeByUserDate-->
+		<li>
+			<h3>{user.first_name} {user.last_name}</h3>
+			<ul>
+				<!--history-->
+				<li>
+					<h4>{@key.@date.@loc}</h4>
+					<ul>
+						<!--.-->
+						<li class="{property_name}">
+							<span class="property name">|{property_name}|</span>
+							<span class="value">
+								<!--!isOldValueVoid?--><span class="old">{old_value}</span><!--end-->
+								<!--!isNewValueVoid?--><span class="new">{new_value}</span><!--end-->
+							</span>
+						</li>
+						<!--end-->
+					</ul>
+				</li>
+				<!--end-->
+			</ul>
+		</li>
+		<!--end-->
+	</ul>
+
+<!--END-->
+</body>
+</html>
