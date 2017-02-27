@@ -385,9 +385,14 @@ class Html_Builder_Type
 				$html_filters = [];
 				$old_name     = $this->name;
 				foreach ($filters as $filter_name => $filter_value) {
-					$this->name     = $filter_value;
-					$name           = $this->getFieldName('', false);
-					$html_filters[] = $filter_name . '=' . $name;
+					if (substr($filter_value, 0, 1) === '#') {
+						$html_filters[] = $filter_name . '=' . substr($filter_value, 1);
+					}
+					else {
+						$this->name     = $filter_value;
+						$name           = $this->getFieldName('', false);
+						$html_filters[] = $filter_name . '=' . $name;
+					}
 				}
 				$this->name = $old_name;
 				$input->setAttribute('data-combo-filters', join(',', $html_filters));

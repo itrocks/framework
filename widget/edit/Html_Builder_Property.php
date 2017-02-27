@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Editor;
@@ -194,8 +195,13 @@ class Html_Builder_Property extends Html_Builder_Type
 					if ((new Reflection_Property($foreign_class_name, $filter))->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
-					$property         = (new Reflection_Property($class_name, $filter_value_name));
-					$filters[$filter] = $property->pathAsField(true);
+					if ((new Reflection_Class($class_name))->hasProperty($filter_value_name)) {
+						$property         = (new Reflection_Property($class_name, $filter_value_name));
+						$filters[$filter] = $property->pathAsField(true);
+					}
+					else {
+						$filters[$filter] = '#' . $filter_value_name;
+					}
 				}
 			}
 		}
