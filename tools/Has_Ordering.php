@@ -17,8 +17,26 @@ trait Has_Ordering
 	 */
 	public $ordering;
 
+	//--------------------------------------------------------------------------------------- reorder
+	/**
+	 * Reset the value of $ordering into the objects. Follows the natural sort order of the array
+	 *
+	 * @param $objects_having_ordering object[]|self[]
+	 * @return object[]|self[]
+	 */
+	public static function reorder(array $objects_having_ordering)
+	{
+		$ordering = 0;
+		foreach ($objects_having_ordering as $object) {
+			$object->ordering = ++$ordering;
+		}
+		return $objects_having_ordering;
+	}
+
 	//------------------------------------------------------------------------------------------ sort
 	/**
+	 * Sort objects by their value of $ordering
+	 *
 	 * @param $objects_having_ordering object[]|self[]
 	 * @return object[]|self[]
 	 */
