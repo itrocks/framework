@@ -78,7 +78,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($data->getRows() as $row) {
 			$object = $row->getObject();
 			foreach ($row->getValues() as $property_path => $value) {
-				$property        = $properties[$property_path];
+				$property = $properties[$property_path];
 				$property->setAccessible(true);
 
 				$link_annotation = Link_Annotation::of($property);
