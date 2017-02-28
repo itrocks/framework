@@ -81,7 +81,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 				$property = $properties[$property_path];
 
-				//ignore @link collection and @link map
+				// ignore @link collection and @link map to let the data list functionality
+				// (one line per item in collection is display)
 				$link_annotation = Link_Annotation::of($property);
 				if (
 					$link_annotation->value    == Link_Annotation::COLLECTION
