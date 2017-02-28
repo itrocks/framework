@@ -23,6 +23,14 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public $display = null;
 
+	//-------------------------------------------------------------------------------------- $tooltip
+	/**
+	 *  What will be displayed by the tooltip() function
+	 *
+	 * @var string|null
+	 */
+	public $tooltip = null;
+
 	//---------------------------------------------------------------------------------- $final_value
 	/**
 	 * If set to true, $object contains the final value instead of the object containing
@@ -120,6 +128,17 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 		return $this->display
 			? $this->display
 			: Loc::tr(Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias));
+	}
+
+	//--------------------------------------------------------------------------------------- tooltip
+	/**
+	 * Returns the reflection property tooltip
+	 *
+	 * @return string
+	 */
+	public function tooltip()
+	{
+		return $this->tooltip;
 	}
 
 	//---------------------------------------------------------------------------------------- format

@@ -78,6 +78,14 @@ class Html_Builder_Property extends Html_Builder_Type
 				$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
 			}
 
+			if (
+				!$this->tooltip
+				&& (isset($property->tooltip))
+				&& ($property->tooltip != false)
+			) {
+				$this->tooltip = $property->tooltip;
+			}
+
 			// if name contains [...], recalculate name and prefix. TODO explain those rules
 			$name = $property->pathAsField();
 			if (strpos($name, '[')) {
@@ -239,7 +247,9 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 		}
 		$this->placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property);
-		$this->tooltip     = Tooltip_Annotation    ::of($this->property)->callProperty($this->property);
+		if (!isset($this->tooltip)) {
+			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
+		}
 		return parent::build();
 	}
 

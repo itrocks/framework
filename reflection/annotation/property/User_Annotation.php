@@ -44,6 +44,9 @@ class User_Annotation extends List_Annotation
 	 */
 	const STRICT_READ_ONLY = 'strict_read_only';
 
+	//--------------------------------------------------------------------------------------- TOOLTIP
+	const TOOLTIP = 'tooltip';
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * Annotation value

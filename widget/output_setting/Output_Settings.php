@@ -290,6 +290,21 @@ class Output_Settings extends Custom_Settings
 		}
 	}
 
+	//------------------------------------------------------------------------------- propertyTooltip
+	/**
+	 * Sets the title of the input property
+	 *
+	 * @param $property_path string
+	 * @param $tooltip       boolean
+	 */
+	public function propertyTooltip($property_path, $tooltip = null)
+	{
+		$this->initProperties();
+		if (isset($this->properties[$property_path])) {
+			$this->properties[$property_path]->tooltip = $tooltip;
+		}
+	}
+
 	//---------------------------------------------------------------------------------- removeAction
 	/**
 	 * Removes an action using this caption (as this is the only sure unique data)

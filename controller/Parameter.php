@@ -37,4 +37,7 @@ class Parameter
 	 */
 	const PROPERTIES_TITLE = 'properties_title';
 
+	//---------------------------------------------------------------------------- PROPERTIES_TOOLTIP
+	const PROPERTIES_TOOLTIP = 'properties_tooltip';
+
 }

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Output_Setting;
 
+use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Can_Be_Empty;
@@ -54,6 +55,14 @@ class Property implements Can_Be_Empty
 	 */
 	public $tab_name;
 
+	//-------------------------------------------------------------------------------------- $tooltip
+	/**
+	 * change the value of title for the property in edit mode
+	 *
+	 * @var string
+	 */
+	public $tooltip;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    string
@@ -68,6 +77,7 @@ class Property implements Can_Be_Empty
 			$user_annotation  = $property->getListAnnotation(User_Annotation::ANNOTATION);
 			$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
 			$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
+			$this->tooltip    = $user_annotation->has(Tooltip_Annotation::ANNOTATION);
 		}
 	}
 
@@ -96,6 +106,15 @@ class Property implements Can_Be_Empty
 	public function htmlReadOnly()
 	{
 		return $this->read_only ? 'checked' : '';
+	}
+
+	//----------------------------------------------------------------------------------- htmlTooltip
+	/**
+	 * @return string
+	 */
+	public function htmlTooltip()
+	{
+		return $this->tooltip;
 	}
 
 	//--------------------------------------------------------------------------------------- isEmpty

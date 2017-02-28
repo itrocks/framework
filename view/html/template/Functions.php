@@ -671,11 +671,12 @@ class Functions
 	 */
 	public function getProperties(Template $template)
 	{
-		$object            = reset($template->objects);
-		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
-		$properties_title  = $template->getParameter(Parameter::PROPERTIES_TITLE);
-		$class             = new Reflection_Class(get_class($object));
-		$result_properties = [];
+		$object             = reset($template->objects);
+		$properties_filter  = $template->getParameter(Parameter::PROPERTIES_FILTER);
+		$properties_title   = $template->getParameter(Parameter::PROPERTIES_TITLE);
+		$properties_tooltip = $template->getParameter(Parameter::PROPERTIES_TOOLTIP);
+		$class              = new Reflection_Class(get_class($object));
+		$result_properties  = [];
 
 		if ($properties_filter) {
 			$properties = [];
@@ -695,6 +696,9 @@ class Functions
 				if ($this->isPropertyVisible($property)) {
 					if (isset($properties_title) && isset($properties_title[$property_path])) {
 						$property->display = $properties_title[$property_path];
+					}
+					if (isset($properties_tooltip) && isset($properties_tooltip[$property_path])) {
+						$property->tooltip = $properties_tooltip[$property_path];
 					}
 					$result_properties[$property_path] = $property;
 					if (strpos($property_path, DOT)) {

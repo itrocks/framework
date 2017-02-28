@@ -172,6 +172,7 @@ class Html_Builder_Collection extends Collection
 			foreach ($properties as $property) {
 				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 				$user_annotation->add(User_Annotation::READONLY);
+				$user_annotation->add(User_Annotation::TOOLTIP);
 			}
 		}
 		return $properties;

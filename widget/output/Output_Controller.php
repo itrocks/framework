@@ -57,6 +57,9 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				$property->read_only
 					? $user_annotation->add(User_Annotation::READONLY)
 					: $user_annotation->remove(User_Annotation::READONLY);
+				$property->tooltip
+					? $user_annotation->add(User_Annotation::TOOLTIP)
+					: $user_annotation->remove(User_Annotation::TOOLTIP);
 				if (!is_null($property->tab_name)) {
 					$group_annotation = $reflection_property->getAnnotation(Group_Annotation::ANNOTATION);
 					$group_annotation->value = $property->tab_name;
@@ -126,6 +129,11 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			if (isset($parameters['property_title'])) {
 				$output_settings->propertyTitle(
 					$parameters['property_path'], $parameters['property_title']
+				);
+			}
+			if (isset($parameters['property_tooltip'])) {
+				$output_settings->propertyTooltip(
+					$parameters['property_path'], $parameters['property_tooltip']
 				);
 			}
 			$did_change = true;
@@ -311,13 +319,14 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 
 		$this->applyOutputSettings($output_settings);
 		$output_settings->initProperties($this->getPropertiesList($class_name));
-		$parameters['customized_lists']           = $customized_list;
-		$parameters['default_title']              = ucfirst(Names::classToDisplay($class_name));
-		$parameters[Parameter::PROPERTIES_FILTER] = array_keys($output_settings->properties);
-		$parameters[Parameter::PROPERTIES_TITLE]  = $output_settings->propertiesParameter('display');
-		$parameters['settings']                   = $output_settings;
-		$parameters['tabs']                       = $this->getTab($object, $output_settings);
-		$parameters['title']                      = $output_settings->title();
+		$parameters['customized_lists']            = $customized_list;
+		$parameters['default_title']               = ucfirst(Names::classToDisplay($class_name));
+		$parameters[Parameter::PROPERTIES_FILTER]  = array_keys($output_settings->properties);
+		$parameters[Parameter::PROPERTIES_TITLE]   = $output_settings->propertiesParameter('display');
+		$parameters[Parameter::PROPERTIES_TOOLTIP] = $output_settings->propertiesParameter('tooltip');
+		$parameters['settings']                    = $output_settings;
+		$parameters['tabs']                        = $this->getTab($object, $output_settings);
+		$parameters['title']                       = $output_settings->title();
 		// buttons
 		$parameters['custom_buttons'] = (new Buttons())->getButtons(
 			'custom ' . $feature, $object, $feature /* , Target::MESSAGES TODO back but do not display output */
