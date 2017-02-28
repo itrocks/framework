@@ -78,13 +78,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($data->getRows() as $row) {
 			$object = $row->getObject();
 			foreach ($row->getValues() as $property_path => $value) {
-
-				$property = $properties[$property_path];
-
+				$property        = $properties[$property_path];
+				$link_annotation = Link_Annotation::of($property);
 				if (
 					!strpos($property_path, DOT)
-					&& !Link_Annotation::of($property)->isCollection()
-					&& !Link_Annotation::of($property)->isMap()
+					&& !$link_annotation->isCollection()
+					&& !$link_annotation->isMap()
 				) {
 					$user_getter = $property->getAnnotation('user_getter');
 					$value       = $user_getter->value
