@@ -84,11 +84,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				//ignore @link collection and @link map
 				$link_annotation = Link_Annotation::of($property);
 				if (
-					$link_annotation->value &&
-					(
-						$link_annotation->value == Link_Annotation::COLLECTION ||
-						$link_annotation->value == Link_Annotation::MAP
-					)
+					$link_annotation->value    == Link_Annotation::COLLECTION
+					|| $link_annotation->value == Link_Annotation::MAP
 				) {
 					continue;
 				}
