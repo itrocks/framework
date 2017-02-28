@@ -78,8 +78,22 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($data->getRows() as $row) {
 			$object = $row->getObject();
 			foreach ($row->getValues() as $property_path => $value) {
+
+				$property = $properties[$property_path];
+
+				//ignore @link collection and @link map
+				$link_annotation = Link_Annotation::of($property);
+				if (
+					$link_annotation->value &&
+					(
+						$link_annotation->value == Link_Annotation::COLLECTION ||
+						$link_annotation->value == Link_Annotation::MAP
+					)
+				) {
+					continue;
+				}
+
 				if (!strpos($property_path, DOT)) {
-					$property    = $properties[$property_path];
 					$user_getter = $property->getAnnotation('user_getter');
 					$value       = $user_getter->value
 						? (new Contextual_Callable($user_getter->value, $object))->call()
@@ -126,9 +140,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		elseif (isset($parameters['more'])) {
-			$list_settings->maximum_displayed_lines_count = round(min(
-				1000, $list_settings->maximum_displayed_lines_count + $parameters['more']
-			) / 100) * 100;
+			$list_settings->maximum_displayed_lines_count = round(
+					min(
+						1000, $list_settings->maximum_displayed_lines_count + $parameters['more']
+					) / 100
+				) * 100;
 		}
 		elseif (isset($parameters['move'])) {
 			if ($parameters['move'] == 'down') {
@@ -171,7 +187,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		if ($list_settings->start_display_line_number < 1) {
 			$list_settings->start_display_line_number = 1;
-			$did_change = true;
+			$did_change                               = true;
 		}
 		if (Custom_Settings_Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
 			$did_change = true;
@@ -203,7 +219,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
-		$search = $search_parameters_parser->parse();
+		$search                   = $search_parameters_parser->parse();
 		// check if we have errors in search expressions
 		$this->errors = [];
 		foreach ($search as $property_path => &$search_value) {
@@ -228,7 +244,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		$result = [];
 		foreach ($form as $property_name => $value) {
-			$property_name = self::descapePropertyName($property_name);
+			$property_name          = self::descapePropertyName($property_name);
 			$result[$property_name] = $value;
 		}
 		return $result;
@@ -278,7 +294,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (isset($this->errors) && is_array($this->errors)) {
 			$first = true;
 			foreach ($this->errors as $property_path => $error) {
-				if ($first) $first = false; else $summary .= ',';
+				if ($first) $first = false;
+				else $summary .= ',';
 				// TODO I should not see any HTML code inside the PHP code
 				$summary .= SP . ' <span class="error">' . $error->getMessage();
 				if ($error instanceof Data_List_Exception) {
@@ -329,7 +346,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		// properties / search
 		foreach ($list_settings->properties as $property) {
 			/** @var $property Property */
-			$property = Builder::createClone($property, Property::class);
+			$property         = Builder::createClone($property, Property::class);
 			$property->search = new Reflection_Property($class_name, $property->path);
 			if (!$property->search->getType()->isString()) {
 				Var_Annotation::local($property->search)->value  = Type::STRING;
@@ -379,10 +396,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			else {
 				$t = $i = '';
 			}
-			$class_display = Names::classToDisplay(
+			$class_display   = Names::classToDisplay(
 				$list_settings->getClass()->getAnnotation('set')->value
 			);
-			$summary = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
+			$summary         = $t . $i . ucfirst($class_display) . $i . ' filtered by' . $t;
 			$summary_builder = new Summary_Builder($class_name, $search);
 			$summary .= SP . (string)$summary_builder;
 			return $summary;
@@ -439,12 +456,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
-		$parameters = $parameters->getObjects();
+		$parameters    = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->cleanup();
-		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$did_change               = $this->applyParametersToListSettings(
+			$list_settings, $parameters, $form
+		);
 		$customized_list_settings = $list_settings->getCustomSettings();
-		$count = new Count();
+		$count                    = new Count();
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
@@ -460,9 +479,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		catch (Exception $exception) {
 			//set empty list result
-			$data  = new Default_List_Data($class_name, []);
+			$data = new Default_List_Data($class_name, []);
 			//set an error to display
-			$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
+			$error          = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
 			$this->errors[] = $error;
 			// log the error in order software maintainer to be informed
 			$handled = new Handled_Error(
@@ -475,33 +494,35 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$handler->logError($handled);
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
-		$less_twenty = $displayed_lines_count > 20;
-		$more_hundred = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
-		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
-		$parameters = array_merge(
+		$less_twenty           = $displayed_lines_count > 20;
+		$more_hundred          = ($displayed_lines_count < 1000)
+			&& ($displayed_lines_count < $count->count);
+		$more_thousand         = ($displayed_lines_count < 1000)
+			&& ($displayed_lines_count < $count->count);
+		$parameters            = array_merge(
 			[$class_name => $data],
 			$parameters,
 			[
-				'customized_lists'      => $customized_list_settings,
-				'default_title'         => ucfirst(Names::classToDisplay($this->class_names)),
-				'display_start'         => $list_settings->start_display_line_number,
+				'customized_lists' => $customized_list_settings,
+				'default_title' => ucfirst(Names::classToDisplay($this->class_names)),
+				'display_start' => $list_settings->start_display_line_number,
 				'displayed_lines_count' => $displayed_lines_count,
-				'errors_summary'        => $this->getErrorsSummary(),
-				'less_twenty'           => $less_twenty,
-				'more_hundred'          => $more_hundred,
-				'more_thousand'         => $more_thousand,
-				'properties'            => $this->getProperties($list_settings_before_read),
-				'rows_count'            => (int)$count->count,
-				'search_summary'        => $this->getSearchSummary(
+				'errors_summary' => $this->getErrorsSummary(),
+				'less_twenty' => $less_twenty,
+				'more_hundred' => $more_hundred,
+				'more_thousand' => $more_thousand,
+				'properties' => $this->getProperties($list_settings_before_read),
+				'rows_count' => (int)$count->count,
+				'search_summary' => $this->getSearchSummary(
 					$class_name, $list_settings_before_read, $search
 				),
-				'settings'              => $list_settings,
-				'title'                 => $list_settings->title()
+				'settings' => $list_settings,
+				'title' => $list_settings->title()
 			]
 		);
 		// buttons
 		/** @var $buttons Buttons */
-		$buttons = Builder::create(Buttons::class);
+		$buttons                      = Builder::create(Buttons::class);
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
@@ -511,7 +532,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				unset($parameters['custom_buttons'][Feature::F_WRITE]);
 			}
 		}
-		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
+		$parameters[self::GENERAL_BUTTONS]   = $this->getGeneralButtons(
 			$class_name, $parameters, $list_settings
 		);
 		$parameters[self::SELECTION_BUTTONS] = $this->getSelectionButtons(
@@ -545,15 +566,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	//----------------------------------------------------------------------------------- groupConcat
 	/**
 	 * @param $properties_path string[]
-	 * @param Group_By         $group_by
+	 * @param Group_By $group_by
 	 */
 	private function groupConcat(array &$properties_path, Group_By $group_by)
 	{
 		foreach ($properties_path as $key => $property_path) {
 			if (!in_array($property_path, $group_by->properties)) {
-				$group_concat = new Group_Concat();
+				$group_concat            = new Group_Concat();
 				$group_concat->separator = ', ';
-				$properties_path[$key] = $group_concat;
+				$properties_path[$key]   = $group_concat;
 			}
 		}
 	}
@@ -608,7 +629,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$options[] = $count;
 		}
 		if ($list_settings->maximum_displayed_lines_count) {
-			$limit = new Limit(
+			$limit     = new Limit(
 				$list_settings->start_display_line_number,
 				$list_settings->maximum_displayed_lines_count
 			);
@@ -626,7 +647,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 		if (isset($limit) && isset($count)) {
 			if (($data->length() < $limit->count) && ($limit->from > 1)) {
-				$limit->from = max(1, $count->count - $limit->count + 1);
+				$limit->from                              = max(1, $count->count - $limit->count + 1);
 				$list_settings->start_display_line_number = $limit->from;
 				$list_settings->save();
 				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
@@ -680,7 +701,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
-			$property = new Reflection_Property($class_name, $property_path);
+			$property   = new Reflection_Property($class_name, $property_path);
 			$annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 			if ($annotation->has(User_Annotation::INVISIBLE)) {
 				unset($properties_path[$key]);
@@ -739,10 +760,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$this->class_names = $class_name;
-		$class_name = $parameters->getMainObject()->element_class_name;
+		$class_name        = $parameters->getMainObject()->element_class_name;
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
+		$view       = View::run(
+			$parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST
+		);
 		Loc::exitContext();
 		return $view;
 	}
