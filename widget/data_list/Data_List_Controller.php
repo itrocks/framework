@@ -79,8 +79,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$object = $row->getObject();
 			foreach ($row->getValues() as $property_path => $value) {
 				$property = $properties[$property_path];
-				$property->setAccessible(true);
-
 				$link_annotation = Link_Annotation::of($property);
 				if (
 					!strpos($property_path, DOT)
@@ -688,8 +686,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
 			$property = new Reflection_Property($class_name, $property_path);
-			$annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-			if ($annotation->has(User_Annotation::INVISIBLE)) {
+			if (!$property->isPublic() || !$property->isVisible()) {
 				unset($properties_path[$key]);
 			}
 			$history_class_name = $property->getFinalClassName();

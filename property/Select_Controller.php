@@ -7,7 +7,6 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -53,11 +52,8 @@ class Select_Controller implements Feature_Controller
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
-					&& !$property->isStatic()
 					&& $property->isPublic()
-					&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-						User_Annotation::INVISIBLE
-					)
+					&& $property->isVisible()
 				) {
 					$properties[$property_name] = $property;
 				}
@@ -71,11 +67,8 @@ class Select_Controller implements Feature_Controller
 			foreach ($source_properties as $property_name => $property) {
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
-					&& !$property->isStatic()
 					&& $property->isPublic()
-					&& !$property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-						User_Annotation::INVISIBLE
-					)
+					&& $property->isVisible()
 				) {
 					$properties[$property_name] = $property;
 				}

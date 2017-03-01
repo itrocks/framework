@@ -128,7 +128,7 @@ class Data_List_Settings extends Custom_Settings
 
 	//--------------------------------------------------------------------------------------- cleanup
 	/**
-	 * Cleanup outdated properties from the list setting
+	 * Cleanup outdated properties and invisible properties from the list setting
 	 *
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
@@ -139,7 +139,12 @@ class Data_List_Settings extends Custom_Settings
 		$changes_count = 0;
 		// properties
 		foreach (array_keys($this->properties) as $property_path) {
-			if (!Reflection_Property::exists($class_name, $property_path)) {
+			$reflection_property = new Reflection_Property($class_name, $property_path);
+			if (
+				!Reflection_Property::exists($class_name, $property_path)
+				|| !$reflection_property->isPublic()
+				|| !$reflection_property->isVisible()
+			) {
 				unset($this->properties[$property_path]);
 				$changes_count ++;
 			}

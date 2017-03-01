@@ -54,7 +54,7 @@ class Entry
 	 * @see Error_Code
 	 * @var integer
 	 */
-	private $error_code;
+	public $error_code;
 
 	//---------------------------------------------------------------------------------------- $files
 	/**
