@@ -101,6 +101,27 @@ class Contextual_Mysqli extends mysqli
 		$this->socket   = $socket;
 	}
 
+	//------------------------------------------------------------------------------------------ drop
+	/**
+	 * Drop a table or column
+	 *
+	 * @param $table_name  string
+	 * @param $column_name string|null If set, drop this column instead of the table
+	 * @return boolean true if dropped, false if was not already existing
+	 */
+	public function drop($table_name, $column_name = null)
+	{
+		if ($this->exists($table_name, $column_name)) {
+			$this->query(
+				isset($column_name)
+				? "ALTER TABLE `$table_name` DROP `$column_name`"
+				: "DROP TABLE `$table_name`"
+			);
+			return true;
+		}
+		return false;
+	}
+
 	//---------------------------------------------------------------------------------------- exists
 	/**
 	 * Checks if a table or column exists
@@ -284,6 +305,16 @@ class Contextual_Mysqli extends mysqli
 			$this->host, $this->user, $this->password, $this->database, $this->port, $this->socket
 		);
 		return !$this->connect_errno && !$this->connect_error;
+	}
+
+	//----------------------------------------------------------------------------------- renameTable
+	/**
+	 * @param $old_name string
+	 * @param $new_name string
+	 */
+	public function renameTable($old_name, $new_name)
+	{
+		$this->query("RENAME TABLE `$old_name` TO `$new_name`");
 	}
 
 	//------------------------------------------------------------------------------ selectedDatabase
