@@ -95,6 +95,23 @@ class Json_Controller implements Default_Feature_Controller
 			$source_object      = Dao::read($parameters['id'], $element_class_name);
 			return $this->buildJson($source_object);
 		}
+		//search and return json collection
+		elseif ($parameters['search']) {
+			$search               = [];
+			$search_options       = [];
+			$search_array_builder = new Search_Array_Builder();
+			foreach ($parameters['search'] as $property => $value) {
+				$search = array_merge(
+					$search_array_builder->build($property, $value),
+					$search
+				);
+			}
+			if (isset($parameters['limit'])) {
+				$search_options[] = Dao::limit($parameters['limit']);
+			}
+			$objects = $this->search($search, $class_name, $search_options);
+			return json_encode($objects);
+		}
 		return '';
 	}
 
