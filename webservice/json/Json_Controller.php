@@ -10,6 +10,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
 
@@ -72,6 +73,7 @@ class Json_Controller implements Default_Feature_Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
+	 * @throws \Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
@@ -97,10 +99,18 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		//search and return json collection
 		elseif ($parameters['search']) {
+			$element_class_name   = Names::setToClass($class_name);
 			$search               = [];
 			$search_options       = [];
 			$search_array_builder = new Search_Array_Builder();
+
 			foreach ($parameters['search'] as $property => $value) {
+				if (empty($property) || empty($value)) {
+					throw new \Exception("Invalid search parameter (value or property is empty)");
+				}
+				if (!(new Reflection_Property($element_class_name, $property))) {
+					throw new \Exception("Search property $property does not exist");
+				}
 				$search = array_merge(
 					$search_array_builder->build($property, $value),
 					$search
@@ -109,7 +119,7 @@ class Json_Controller implements Default_Feature_Controller
 			if (isset($parameters['limit'])) {
 				$search_options[] = Dao::limit($parameters['limit']);
 			}
-			$objects = $this->search($search, $class_name, $search_options);
+			$objects = $this->search($search, $element_class_name, $search_options);
 			return json_encode($objects);
 		}
 		return '';
