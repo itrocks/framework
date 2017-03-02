@@ -151,8 +151,9 @@ abstract class Integrated_Properties
 		if ($integrated->display_properties) {
 			$expanded_displayed_properties = [];
 			foreach ($integrated->display_properties as $display_property) {
-				if (isset($expanded[$display_property])) {
-					$expanded_displayed_properties[$display_property] = $expanded[$display_property];
+				$property_path = $property_name . DOT . $display_property;
+				if (isset($expanded[$property_path])) {
+					$expanded_displayed_properties[$property_path] = $expanded[$property_path];
 				}
 			}
 			$expanded = $expanded_displayed_properties;
