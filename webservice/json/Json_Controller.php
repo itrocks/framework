@@ -99,27 +99,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		//search and return json collection
 		elseif ($parameters['search']) {
-			$element_class_name   = Names::setToClass($class_name);
-			$search               = [];
-			$search_options       = [];
-			$search_array_builder = new Search_Array_Builder();
-
-			foreach ($parameters['search'] as $property => $value) {
-				if (empty($property) || empty($value)) {
-					throw new \Exception("Invalid search parameter (value or property is empty)");
-				}
-				if (!(new Reflection_Property($element_class_name, $property))) {
-					throw new \Exception("Search property $property does not exist");
-				}
-				$search = array_merge(
-					$search_array_builder->build($property, $value),
-					$search
-				);
-			}
-			if (isset($parameters['limit'])) {
-				$search_options[] = Dao::limit($parameters['limit']);
-			}
-			$objects = $this->search($search, $element_class_name, $search_options);
+			$objects = $this->searchObjects($class_name, $parameters);
 			return json_encode($objects);
 		}
 		return '';
@@ -156,6 +136,68 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		else {
 			$objects = Dao::search($what, $class_name, $options);
+		}
+		return $objects;
+	}
+
+	//--------------------------------------------------------------------------------- searchObjects
+	/**
+	 * method to search objects by parameters
+	 * $parameters['search']  = search criteria
+	 *        ex : search[prop1]=foo,foo2&search[prop.prop2]=bar
+	 *
+	 * $parameters['limit']   = limit number of results,
+	 *        if set $parameters['limit']=1 return object else return an object collection
+	 *
+	 * $parameters['get_properties'] = return only specified properties
+	 *
+	 * @param $class_name string
+	 * @param $parameters array
+	 * @return array|mixed|\object[]
+	 * @throws \Exception
+	 */
+	protected function searchObjects($class_name, $parameters)
+	{
+		$element_class_name   = Names::setToClass($class_name);
+		$search               = [];
+		$search_options       = [];
+		$search_array_builder = new Search_Array_Builder();
+
+		foreach ($parameters['search'] as $property => $value) {
+			if (empty($property) || empty($value)) {
+				throw new \Exception("Invalid search parameter (value or property is empty)");
+			}
+			if (!(new Reflection_Property($element_class_name, $property))) {
+				throw new \Exception("Search property $property does not exist");
+			}
+			$search = array_merge(
+				$search_array_builder->build($property, $value),
+				$search
+			);
+		}
+		if (isset($parameters['limit'])) {
+			$search_options[] = Dao::limit($parameters['limit']);
+		}
+		if (isset($parameters['get_properties']) && $parameters['get_properties']) {
+			$data    = Dao::select(
+				$element_class_name, $parameters['get_properties'], $search, $search_options
+			);
+			$objects = [];
+			$nb_rows = count($data->getRows());
+			foreach ($data->getRows() as $row) {
+				if (isset($parameters['limit']) && $parameters['limit'] == 1 && $nb_rows == 1) {
+					$objects = $row->getValues();
+				}
+				else {
+					$objects[] = $row->getValues();
+				}
+			}
+		}
+		else {
+			$objects = $this->search($search, $element_class_name, $search_options);
+			if (isset($parameters['limit']) && $parameters['limit'] == 1 && $objects) {
+				$objects = reset($objects);
+			}
 		}
 		return $objects;
 	}
