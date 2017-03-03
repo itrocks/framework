@@ -147,7 +147,9 @@ echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH 
 				if (!$object) {
 					break;
 				}
-				$object = $object->$property_name;
+				if (!empty($property_name)){
+					$object = $object->$property_name;
+				}
 			}
 		}
 		return $object;
