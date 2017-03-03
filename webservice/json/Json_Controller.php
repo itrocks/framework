@@ -153,7 +153,7 @@ class Json_Controller implements Default_Feature_Controller
 	 *
 	 * @param $class_name string
 	 * @param $parameters array
-	 * @return array|mixed|\object[]
+	 * @return array|object|object[]
 	 * @throws \Exception
 	 */
 	protected function searchObjects($class_name, $parameters)
