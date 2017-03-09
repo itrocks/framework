@@ -279,6 +279,33 @@ class Manager implements IManager, Serializable
 		return serialize($data);
 	}
 
+	//------------------------------------------------------------------------------------------- set
+	/**
+	 * Sets a plugin instance
+	 *
+	 * You can use it to replace a plugin instance with another one
+	 * If you replace an existing plugin by a plugin that has a child class, you must tell the base
+	 * name of the class with $plugin_class
+	 *
+	 * @param $plugin     object the instance of the plugin to set (or to remove if null)
+	 * @param $class_name string default is the class of $plugin
+	 * @return object the replaced plugin if there was one for the given class name
+	 */
+	public function set($plugin, $class_name = null)
+	{
+		if (!$class_name) {
+			$class_name = get_class($plugin);
+		}
+		$old_plugin = $this->get($class_name);
+		if ($plugin) {
+			$this->plugins[$class_name] = $plugin;
+		}
+		else {
+			unset($this->plugins[$class_name]);
+		}
+		return $old_plugin;
+	}
+
 	//----------------------------------------------------------------------------------- unserialize
 	/**
 	 * @param $serialized string

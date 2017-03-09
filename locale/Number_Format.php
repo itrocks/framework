@@ -7,9 +7,15 @@ namespace ITRocks\Framework\Locale;
 class Number_Format
 {
 
+	//------------------------------------------------------------------------- DECIMAL_MAXIMAL_COUNT
 	const DECIMAL_MAXIMAL_COUNT = 'decimal_maximal_count';
+
+	//------------------------------------------------------------------------- DECIMAL_MINIMAL_COUNT
 	const DECIMAL_MINIMAL_COUNT = 'decimal_minimal_count';
+
+	//----------------------------------------------------------------------------- DECIMAL_SEPARATOR
 	const DECIMAL_SEPARATOR     = 'decimal_separator';
+
 	//---------------------------------------------------------------------------- THOUSAND_SEPARATOR
 	const THOUSAND_SEPARATOR    = 'thousand_separator';
 
@@ -39,7 +45,7 @@ class Number_Format
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $parameters array
+	 * @param $parameters integer[]|string[]
 	 */
 	public function __construct($parameters = [])
 	{
