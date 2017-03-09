@@ -187,6 +187,7 @@ function arrayNamedValues(array $array)
 	return $result;
 }
 
+//---------------------------------------------------------------------------------- arrayPushAfter
 /**
  * Push array after key
  * if key not exist : insert array to the end
@@ -207,6 +208,7 @@ function arrayPushAfter(array &$array, array $array_push, $key)
 	$array = array_merge($array, $array_push, $second_array);
 }
 
+//---------------------------------------------------------------------------------------- arraySet
 /**
  * Create missing elements into the different dimensions of the array if they do not exist
  * If they exist : do nothing
