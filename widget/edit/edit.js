@@ -179,7 +179,7 @@ $('document').ready(function()
 				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter      = filters[key].split('=');
-					var is_constant = filter[1].match(/$[0-9]*^/)
+					var is_constant = filter[1].match(/$[0-9]+^/)
 						|| (
 							((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
 							&& (filter[1].substr(0, 1) === filter[1].substr(-1))
