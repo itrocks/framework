@@ -195,12 +195,18 @@ class Html_Builder_Property extends Html_Builder_Type
 					if ((new Reflection_Property($foreign_class_name, $filter))->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
-					if ((new Reflection_Class($class_name))->hasProperty($filter_value_name)) {
-						$property         = (new Reflection_Property($class_name, $filter_value_name));
-						$filters[$filter] = $property->pathAsField(true);
+					if (
+						is_numeric($filter_value_name)
+						|| (
+							in_array(substr($filter_value_name, 0, 1), [DQ, Q])
+							&& (substr($filter_value_name, 0, 1) === substr($filter_value_name, -1))
+						)
+					) {
+						$filters[$filter] = $filter_value_name;
 					}
 					else {
-						$filters[$filter] = '#' . $filter_value_name;
+						$property         = new Reflection_Property($class_name, $filter_value_name);
+						$filters[$filter] = $property->pathAsField(true);
 					}
 				}
 			}

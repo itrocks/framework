@@ -385,8 +385,14 @@ class Html_Builder_Type
 				$html_filters = [];
 				$old_name     = $this->name;
 				foreach ($filters as $filter_name => $filter_value) {
-					if (substr($filter_value, 0, 1) === '#') {
-						$html_filters[] = $filter_name . '=' . substr($filter_value, 1);
+					if (
+						is_numeric($filter_value)
+						|| (
+							in_array(substr($filter_value, 0, 1), [DQ, Q])
+							&& (substr($filter_value, 0, 1) === substr($filter_value, -1))
+						)
+					) {
+						$html_filters[] = $filter_name . '=' . $filter_value;
 					}
 					else {
 						$this->name     = $filter_value;

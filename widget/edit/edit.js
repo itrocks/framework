@@ -178,13 +178,21 @@ $('document').ready(function()
 			if (filters != undefined) {
 				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
-					var filter = filters[key].split('=');
-					var $filter_element = $($element.get(0).form).find('[name=' + DQ + filter[1] + DQ + ']');
+					var filter      = filters[key].split('=');
+					var is_constant = filter[1].match(/$[0-9]*^/)
+						|| (
+							((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
+							&& (filter[1].substr(0, 1) === filter[1].substr(-1))
+						);
+					var $filter_element = is_constant
+						? { length: 0 }
+						: $($element.get(0).form).find('[name=' + DQ + filter[1] + DQ + ']');
 					if ($filter_element.length) {
 						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
 					else {
-						request['filters[' + filter[0] + ']'] = filter[1];
+						request['filters[' + filter[0] + ']']
+							= is_constant ? filter[1].substr(1, filter[1].length - 2) : filter[1];
 					}
 				}
 			}
