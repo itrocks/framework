@@ -67,6 +67,12 @@ class Link extends Dao\Sql\Link
 	 */
 	private $connection;
 
+	//---------------------------------------------------------------------------------------- $locks
+	/**
+	 * @var Lock[]
+	 */
+	private $locks = [];
+
 	//------------------------------------------------------------------------------- $prepared_fetch
 	/**
 	 * @example ['content' => [self::GZINFLATE]]
@@ -648,26 +654,41 @@ class Link extends Dao\Sql\Link
 	public function lockRecord(
 		$table_name, $record_identifier, array $options = [Lock::WAIT, Lock::WRITE]
 	) {
-		$this->begin();
-		$this->query('LOCK TABLES `locks` WRITE');
-		$duration = 1;
-		while (
-			($lock = Lock::get($table_name, $record_identifier, $this)) && in_array(Lock::WAIT, $options)
-		) {
-			$this->query('UNLOCK TABLES');
-			$this->commit();
-			usleep($duration * 10000);
+		$lock_key = $table_name . DOT . $record_identifier;
+		if (isset($this->locks[$lock_key])) {
+			$lock = $this->locks[$lock_key];
+			$lock->count ++;
+		}
+		else {
 			$this->begin();
 			$this->query('LOCK TABLES `locks` WRITE');
-			$duration = min(99 + rand(0, 2), $duration + rand(1, 10));
+			$duration = 1;
+			while (
+				($lock = Lock::get($table_name, $record_identifier, $this))
+				&& in_array(Lock::WAIT, $options)
+			) {
+				$this->query('UNLOCK TABLES');
+				$this->commit();
+				usleep($duration * 10000);
+				$this->begin();
+				$this->query('LOCK TABLES `locks` WRITE');
+				$duration = min(99 + rand(0, 2), $duration + rand(1, 10));
+			}
+			if ($lock) {
+				$lock = null;
+			}
+			else {
+				$lock   = new Lock($table_name, $record_identifier, $options);
+				$write  = Sql\Builder::getObjectVars($lock);
+				unset($write['count']);
+				$insert          = Sql\Builder::buildInsert(Lock::class, $write);
+				$lock_identifier = $this->query($insert);
+				$this->setObjectIdentifier($lock, $lock_identifier);
+				$this->locks[$lock_key] = $lock;
+			}
+			$this->query('UNLOCK TABLES');
+			$this->commit();
 		}
-		if (!$lock) {
-			$lock   = new Lock($table_name, $record_identifier, $options);
-			$insert = Sql\Builder::buildInsert(Lock::class, Sql\Builder::getObjectVars($lock));
-			$this->query($insert);
-		}
-		$this->query('UNLOCK TABLES');
-		$this->commit();
 		return $lock;
 	}
 
@@ -983,7 +1004,15 @@ class Link extends Dao\Sql\Link
 	 */
 	public function unlock(Lock $lock)
 	{
-		$this->delete($lock);
+		$lock_key = $lock->table_name . DOT . $lock->identifier;
+		if (isset($this->locks[$lock_key])) {
+			$lock = $this->locks[$lock_key];
+			$lock->count --;
+			if (!$lock->count) {
+				unset($this->locks[$lock_key]);
+				$this->delete($lock);
+			}
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- write
