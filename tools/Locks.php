@@ -2,8 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 /**
- * Locks manager, to enable locking of features and disable multiple execution of the same thing the
- * same time
+ * Locks manager, to enable locking of features and disable multiple execution of the same thing the same time
  */
 abstract class Locks
 {
@@ -11,7 +10,7 @@ abstract class Locks
 	//---------------------------------------------------------------------------------------- $locks
 	private static $locks = [];
 
-	//--------------------------------------------------------------------------------- decrementLock
+	//---------------------------------------------------------------------------------------- delock
 	/**
 	 * Decrement the given lock name, and unlock if done
 	 *
@@ -21,7 +20,7 @@ abstract class Locks
 	 * @param $lock_name string
 	 * @return boolean
 	 */
-	public static function decrementLock($lock_name)
+	public static function delock($lock_name)
 	{
 		Locks::$locks[$lock_name]--;
 		if (!Locks::$locks[$lock_name]) {

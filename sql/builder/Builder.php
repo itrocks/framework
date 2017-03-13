@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ReflectionClass;
 
 /**
  * The SQL queries builder
@@ -181,27 +180,6 @@ abstract class Builder
 	public static function buildValues(array $values)
 	{
 		return join(', ', array_map([Value::class, 'escape'], $values));
-	}
-
-	//--------------------------------------------------------------------------------- getObjectVars
-	/**
-	 * Same as get_object_vars, but for objects that may have AOP / identifiers : keep only read
-	 * properties values
-	 *
-	 * @param $object object
-	 * @return array
-	 */
-	public static function getObjectVars($object)
-	{
-		$vars = [];
-		foreach ((new ReflectionClass(get_class($object)))->getProperties() as $property) {
-			$value = $property->getValue($object);
-			if (is_array($value)) {
-				$value = DQ . join(',', $value) . DQ;
-			}
-			$vars[$property->name] = $value;
-		}
-		return $vars;
 	}
 
 	//----------------------------------------------------------------------------- splitPropertyPath
