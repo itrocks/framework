@@ -13,6 +13,38 @@ use ITRocks\Framework\Tools\Names;
 trait Scanners
 {
 
+	//------------------------------------------------------------------------------- scanForDefaults
+	/**
+	 * @param $properties array
+	 * @param $class      Reflection_Class
+	 */
+	private function scanForDefaults(array &$properties, Reflection_Class $class)
+	{
+		foreach ($class->getProperties() as $property) {
+			$expr = '%'
+				. '\n\s+\*\s+'               // each line beginning by '* '
+				. '@default'                  // setter annotation
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
+				. '(\w+)?)?'           // 2 : method , function name or value
+				. '%';
+			preg_match($expr, $property->getDocComment(), $match);
+			if ($match) {
+				$advice = [
+					empty($match[1]) ? '$this' : $class->source->fullClassName($match[1]),
+					$match[2]
+				];
+				$properties[$property->name] = ['default', $advice];
+			}
+		}
+		foreach ($this->scanForOverrides($class->getDocComment(), ['default']) as $match) {
+			$advice = [
+				empty($match['class_name']) ? '$this' : $match['class_name'],
+				$match['method_name']
+			];
+			$properties[$match['property_name']] = ['default', $advice];
+		}
+	}
+
 	//-------------------------------------------------------------------------------- scanForGetters
 	/**
 	 * @param $properties array

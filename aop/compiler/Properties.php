@@ -228,18 +228,34 @@ class Properties
 	 */
 	private function compileConstruct(array $advices)
 	{
+		$code = '';
+		$construct_init = false;
 		// only if at least one property is declared here
-		foreach ($advices as $property_advices) {
-			if (isset($property_advices['implements']) || isset($property_advices['replaced'])) {
-				$over = $this->overrideMethod('__construct', false);
-				return
-	$over['prototype'] . '
-		if (!isset($this->_)) $this->__aop();' . ($over['call'] ? (LF . TAB . TAB . $over['call']) : '') . '
-	}
-';
+		$over = $this->overrideMethod('__construct', false);
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices[0]) && $property_advices[0] == 'default' && $property_advices[1]){
+				if ($property_advices[1][0] == '$this') {
+					$code .= LF.TAB.TAB .
+							$property_advices[1][0].'->'.$property_advices[1][1].'();';
+				}
+				else {
+					$code .= LF.TAB.TAB .
+							$property_advices[1][0].'::'.$property_advices[1][1].'();';
+				}
+			}
+			if (
+				(isset($property_advices['implements']) || isset($property_advices['replaced']))
+				&& !$construct_init
+			) {
+				$construct_init = true;
+				$code .= 'if (!isset($this->_)) $this->__aop();' .
+						($over['call'] ? (LF . TAB . TAB . $over['call']) : '');
 			}
 		}
-		return '';
+		if ($code != ''){
+			$code = $over['prototype']. LF. TAB . TAB . $code . LF. TAB . '}';
+		}
+		return $code;
 	}
 
 	//------------------------------------------------------------------------------------ compileGet
