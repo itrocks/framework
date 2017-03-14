@@ -26,7 +26,7 @@ class Tabs_Builder_Object extends Tabs_Builder_Class
 	 */
 	public function buildObject($object, array $filter_properties)
 	{
-		$class = new Reflection_Class(get_class($object));
+		$class             = new Reflection_Class(get_class($object));
 		$group_annotations = Group_Annotation::allOf($class);
 		$this->mergeGroups($group_annotations);
 		$properties = $this->groupsToProperties($object, $group_annotations, $filter_properties);

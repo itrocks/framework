@@ -10,11 +10,11 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection;
 interface Multiple_Annotation
 {
 
-	//-------------------------------------------------------------------------------------------- of
+	//----------------------------------------------------------------------------------------- allOf
 	/**
-	 * @param Reflection $reflection_object
+	 * @param $reflection_object Reflection
 	 * @return static[]
 	 */
-	public static function of(Reflection $reflection_object);
+	public static function allOf(Reflection $reflection_object);
 
 }

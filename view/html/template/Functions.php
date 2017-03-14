@@ -685,6 +685,9 @@ class Functions
 						$property->display = $properties_title[$property_path];
 					}
 					$result_properties[$property_path] = $property;
+					if (strpos($property_path, DOT)) {
+						Group_Annotation::local($property)->replaceByClass($class, $property_path);
+					}
 				}
 			}
 		}
@@ -705,7 +708,7 @@ class Functions
 	{
 		$properties = [];
 		foreach ($this->getProperties($template) as $property_name => $property) {
-			if (!$property->getAnnotation(Group_Annotation::ANNOTATION)->value) {
+			if (!Group_Annotation::of($property)->value) {
 				$properties[$property_name] = $property;
 			}
 		}

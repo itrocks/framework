@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -30,13 +31,27 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 		parent::__construct($value);
 		if (is_null($this->value)) {
 			$group = Class_\Group_Annotation::searchProperty(
-				$property->getFinalClass()->getAnnotations(Class_\Group_Annotation::ANNOTATION),
-				$property->getName()
+				Class_\Group_Annotation::allOf($property->getFinalClass()), $property->getName()
 			);
 			if ($group) {
 				$this->value = $group->name;
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------- replaceByClass
+	/**
+	 * Replace the @group annotation value by the one set into $class's @class with this property path
+	 *
+	 * @param $class         Reflection_Class
+	 * @param $property_path string
+	 */
+	public function replaceByClass(Reflection_Class $class, $property_path)
+	{
+		$class_group_annotation = Class_\Group_Annotation::searchProperty(
+			Class_\Group_Annotation::allOf($class), $property_path
+		);
+		$this->value = $class_group_annotation ? $class_group_annotation->name : false;
 	}
 
 }

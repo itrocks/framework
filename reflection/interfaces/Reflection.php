@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Interfaces;
 
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 
 /**
  * Common interface for reflection objects
@@ -26,7 +27,7 @@ interface Reflection
 	 * If no annotation name is given, all annotations will be read for the reflected property
 	 *
 	 * @param $annotation_name string
-	 * @return Annotation[]|array
+	 * @return Annotation[]|Multiple_Annotation[]
 	 */
 	public function getAnnotations($annotation_name = null);
 
