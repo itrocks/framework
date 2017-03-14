@@ -18,6 +18,8 @@ const BQ = '`';
 
 const BR = '<br>';
 
+const BRLF = "<br>\n";
+
 const BS = '\\';
 
 const CR = "\r";
