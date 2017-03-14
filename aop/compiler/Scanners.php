@@ -22,10 +22,10 @@ trait Scanners
 	{
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'
-				. '\n\s+\*\s+'               // each line beginning by '* '
+				. '\n\s+\*\s+'                // each line beginning by '* '
 				. '@default'                  // setter annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-				. '(\w+)?)?'           // 2 : method , function name or value
+				. '(?:\s+(?:([\\\\\w]+)::)?'  // 1 : class name
+				. '(\w+)?)?'                  // 2 : method or function name
 				. '%';
 			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {

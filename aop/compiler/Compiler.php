@@ -163,7 +163,7 @@ class Compiler implements ICompiler, Needs_Main
 			$this->scanForAbstract($methods,    $class);
 			$this->scanForDefaults($properties, $class);
 			// TODO should be done for all classes before compiling : it creates links in other classes
-//			$this->scanForMethods($methods, $class);
+			//$this->scanForMethods($methods, $class);
 		}
 
 		$methods_code = [];
