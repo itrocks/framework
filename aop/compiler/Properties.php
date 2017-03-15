@@ -229,9 +229,6 @@ class Properties
 	private function compileConstruct(array $advices)
 	{
 		$code = '';
-		$construct_init = false;
-		// only if at least one property is declared here
-		$over = $this->overrideMethod('__construct', false);
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices[0]) && $property_advices[0] == 'default' && $property_advices[1]){
 				if ($property_advices[1][0] == '$this') {
@@ -245,14 +242,18 @@ class Properties
 			}
 			if (
 				(isset($property_advices['implements']) || isset($property_advices['replaced']))
-				&& !$construct_init
+				&& !isset($over)
 			) {
-				$construct_init = true;
-				$code .= 'if (!isset($this->_)) $this->__aop();' .
-						($over['call'] ? (LF . TAB . TAB . $over['call']) : '');
+				$over = $this->overrideMethod('__construct', false);
+				$code = 'if (!isset($this->_)) $this->__aop();' .
+						($over['call'] ? (LF . TAB . TAB . $over['call']) : '') .
+						$code;
 			}
 		}
 		if ($code != ''){
+			if (!isset($over)){
+				$over = $this->overrideMethod('__construct', false);
+			}
 			$code = $over['prototype']. LF. TAB . TAB . $code . LF. TAB . '}';
 		}
 		return $code;

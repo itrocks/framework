@@ -33,7 +33,7 @@ trait Scanners
 					empty($match[1]) ? '$this' : $class->source->fullClassName($match[1]),
 					$match[2]
 				];
-				$properties[$property->name] = ['default', $advice];
+				$properties[$property->name]['default'] = $advice;
 			}
 		}
 		foreach ($this->scanForOverrides($class->getDocComment(), ['default']) as $match) {
@@ -41,7 +41,7 @@ trait Scanners
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				$match['method_name']
 			];
-			$properties[$match['property_name']] = ['default', $advice];
+			$properties[$match['property_name']]['default'] = $advice;
 		}
 	}
 

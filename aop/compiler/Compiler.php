@@ -156,12 +156,12 @@ class Compiler implements ICompiler, Needs_Main
 				$this->scanForImplements($properties, $class);
 			}
 			// read/write : __aop, __construct, __get, __isset, __set, __unset
+			$this->scanForDefaults($properties, $class);
 			$this->scanForGetters ($properties, $class);
 			$this->scanForLinks   ($properties, $class);
 			$this->scanForSetters ($properties, $class);
 			$this->scanForReplaces($properties, $class);
 			$this->scanForAbstract($methods,    $class);
-			$this->scanForDefaults($properties, $class);
 			// TODO should be done for all classes before compiling : it creates links in other classes
 			//$this->scanForMethods($methods, $class);
 		}
