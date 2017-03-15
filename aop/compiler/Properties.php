@@ -232,12 +232,12 @@ class Properties
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['default'])){
 				if ($property_advices['default'][0] == '$this') {
-					$code .= LF.TAB.TAB .
-						$property_advices['default'][0].'->'.$property_advices['default'][1].'();';
+					$code .= LF . TAB . TAB .
+						$property_advices['default'][0] . '->' . $property_advices['default'][1] . '();';
 				}
 				else {
-					$code .= LF.TAB.TAB .
-						$property_advices['default'][0].'::'.$property_advices['default'][1].'();';
+					$code .= LF . TAB . TAB .
+						$property_advices['default'][0] . '::' . $property_advices['default'][1] . '();';
 				}
 			}
 			if (

@@ -30,7 +30,7 @@ trait Scanners
 			preg_match($expr, $property->getDocComment(), $match);
 			if ($match) {
 				$advice = [
-					empty($match[1]) ? '$this' : $class->source->fullClassName($match[1]),
+					empty($match[1]) ? '$this' : $match[1],
 					$match[2]
 				];
 				$properties[$property->name]['default'] = $advice;
