@@ -258,11 +258,6 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getDefaultValue()
 	{
-		/*$default_method = $this->getAnnotation('default')->value;
-		if ($default_method) {
-			$default_callable = explode('::', $default_method);
-			return call_user_func($default_callable, $this);
-		}*/
 		return $this->getDeclaringClass()->getDefaultProperties()[$this->name];
 	}
 
