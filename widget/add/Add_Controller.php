@@ -60,9 +60,7 @@ class Add_Controller extends Edit_Controller
 	{
 		$object     = $parameters->getMainObject($class_name);
 		$properties = (new Reflection_Class($class_name))->accessProperties();
-		foreach ($properties as $property) {
-			$property->setValue($object, $property->getDefaultValue());
-		}
+
 		$objects = $parameters->getObjects();
 		if (count($objects) > 1) {
 			$this->initializeValues($object, $objects, $properties);
