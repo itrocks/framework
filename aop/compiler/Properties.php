@@ -230,14 +230,14 @@ class Properties
 	{
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
-			if (isset($property_advices[0]) && $property_advices[0] == 'default' && $property_advices[1]){
-				if ($property_advices[1][0] == '$this') {
+			if (isset($property_advices['default'])){
+				if ($property_advices['default'][0] == '$this') {
 					$code .= LF.TAB.TAB .
-							$property_advices[1][0].'->'.$property_advices[1][1].'();';
+						$property_advices['default'][0].'->'.$property_advices['default'][1].'();';
 				}
 				else {
 					$code .= LF.TAB.TAB .
-							$property_advices[1][0].'::'.$property_advices[1][1].'();';
+						$property_advices['default'][0].'::'.$property_advices['default'][1].'();';
 				}
 			}
 			if (
