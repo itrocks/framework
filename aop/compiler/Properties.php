@@ -51,14 +51,13 @@ class Properties
 		if ($this->class->type !== T_TRAIT) {
 			$methods['__construct'] = $this->compileConstruct($advices);
 			if ($methods['__construct']) {
-				$methods['__initializeValues']
-					                   = $this->compileInitializeValues($advices);
-				$methods['__aop']    = $this->compileAop($advices);
-				$methods['__get']    = $this->compileGet($advices);
-				$methods['__isset']  = $this->compileIsset($advices);
-				$methods['__set']    = $this->compileSet($advices);
-				$methods['__unset']  = $this->compileUnset($advices);
-				$methods['__wakeup'] = $this->compileWakeup();
+				$methods['__initializeValues'] = $this->compileInitializeValues($advices);
+				$methods['__aop']              = $this->compileAop($advices);
+				$methods['__get']              = $this->compileGet($advices);
+				$methods['__isset']            = $this->compileIsset($advices);
+				$methods['__set']              = $this->compileSet($advices);
+				$methods['__unset']            = $this->compileUnset($advices);
+				$methods['__wakeup']           = $this->compileWakeup();
 			}
 			else {
 				unset($methods['__construct']);
@@ -228,7 +227,8 @@ class Properties
 		$code = $over['call']
 			? $over['call']
 			:
-			($this->class->getParentClass()) ? 'if (method_exists(get_parent_class(__CLASS__), \'__initializeValues\')){
+			($this->class->getParentClass()) ?
+				'if (method_exists(get_parent_class(__CLASS__), \'__initializeValues\')){
 					parent::__initializeValues();
 				}' : '';
 		foreach ($advices as $property_name => $property_advices) {

@@ -23,7 +23,7 @@ trait Scanners
 		foreach ($class->getProperties() as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'                // each line beginning by '* '
-				. '@default'                  // setter annotation
+				. '@default'                  // default annotation
 				. '(?:\s+(?:([\\\\\w]+)::)?'  // 1 : class name
 				. '(\w+)?)?'                  // 2 : method or function name
 				. '%';
