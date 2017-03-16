@@ -474,9 +474,15 @@ class Validator implements Registerable
 					);
 				}
 				// update properties path of report annotations to be relative to parent property
+				$property_class_name = $type->getElementTypeAsString();
 				$class_name = get_class($object);
 				foreach ($this->report as $annotation) {
-					if (isA($annotation, Property\Annotation::class) && $annotation->property) {
+					if (
+						isA($annotation, Property\Annotation::class)
+						&& $annotation->property
+						&& isA($annotation->property, Reflection\Reflection_Property::class)
+						&& $annotation->property->root_class == $property_class_name
+					) {
 						$annotation->property = new Reflection\Reflection_Property(
 							$class_name, $property->path . DOT . $annotation->property->path
 						);
