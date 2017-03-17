@@ -3,7 +3,6 @@ namespace ITRocks\Framework\User\Group;
 
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\Session;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
 
@@ -22,7 +21,7 @@ class Admin_Plugin implements Registerable, Updatable
 	public function register(Register $register)
 	{
 		/** @var $application_updater Application_Updater */
-		$application_updater = Session::current()->plugins->get(Application_Updater::class);
+		$application_updater = Application_Updater::get();
 		$application_updater->addUpdatable($this);
 	}
 

@@ -5,7 +5,6 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Autoloader;
 use ITRocks\Framework\Plugin\Activable;
 use ITRocks\Framework\Plugin\Register;
-use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
 /**
@@ -40,7 +39,7 @@ class Autoload_Cache implements Activable, Updatable
 	public function activate()
 	{
 		/** @var $application_updater Application_Updater */
-		$application_updater = Session::current()->plugins->get(Application_Updater::class);
+		$application_updater = Application_Updater::get();
 		$application_updater->addUpdatable($this);
 		$this->cache_path = Application::current()->include_path->getSourceDirectory() . '/cache';
 		/** @noinspection PhpIncludeInspection */
