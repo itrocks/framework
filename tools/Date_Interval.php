@@ -64,9 +64,48 @@ class Date_Interval extends DateInterval
 		return new Date_Interval($interval_spec, $invert);
 	}
 
+	//------------------------------------------------------------------------------------------ days
+	/**
+	 * Returns the date interval in number of days
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function days($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 86400, $round_mode);
+	}
+
+	//----------------------------------------------------------------------------------------- hours
+	/**
+	 * Returns the date interval in number of hours
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function hours($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 3600, $round_mode);
+	}
+
+	//--------------------------------------------------------------------------------------- minutes
+	/**
+	 * Returns the date interval in number of minutes
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function minutes($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 60, $round_mode);
+	}
+
 	//---------------------------------------------------------------------------------------- months
 	/**
-	 * Returns the date interval in number of years
+	 * Returns the date interval in number of months
 	 *
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
@@ -88,8 +127,22 @@ class Date_Interval extends DateInterval
 		switch ($round_mode) {
 			case PHP_CEIL:  return ceil($duration);
 			case PHP_FLOOR: return floor($duration);
-			default: return round($duration, 0, $round_mode);
 		}
+		return round($duration, 0, $round_mode);
+	}
+
+	//--------------------------------------------------------------------------------------- seconds
+	/**
+	 * Returns the date interval in number of seconds.
+	 * This is an alias for timestamp
+	 *
+	 * @param $absolute boolean
+	 * @return integer
+	 * @see timestamp
+	 */
+	public function seconds($absolute = false)
+	{
+		return $this->timestamp($absolute);
 	}
 
 	//------------------------------------------------------------------------------------- timestamp
@@ -103,11 +156,11 @@ class Date_Interval extends DateInterval
 	{
 		return (($this->invert && !$absolute) ? -1 : 1) * (
 			$this->s
-			+ $this->i * 60
-			+ $this->h * 3600
-			+ $this->d * 86400
-			+ $this->m * 2592000
-			+ $this->y * 31104000
+			+ ($this->i * 60)
+			+ ($this->h * 3600)
+			+ ($this->d * 86400)
+			+ ($this->m * 2592000)
+			+ ($this->y * 31104000)
 		);
 	}
 
@@ -123,6 +176,19 @@ class Date_Interval extends DateInterval
 	public function toTime($absolute = false)
 	{
 		return $this->timestamp($absolute);
+	}
+
+	//----------------------------------------------------------------------------------------- weeks
+	/**
+	 * Returns the date interval in number of weeks
+	 *
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public function weeks($round_mode = PHP_CEIL, $absolute = false)
+	{
+		return $this->round($this->timestamp($absolute) / 604800, $round_mode);
 	}
 
 	//----------------------------------------------------------------------------------------- years
