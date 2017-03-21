@@ -57,6 +57,7 @@ class Configurations
 			);
 			if ($match) {
 				$file_name = $match['vendor'] . SL . $match['project'] . SL . 'config.php';
+				$file_name = str_replace('-', '_', $file_name);
 				if (!is_file($file_name)) {
 					$file_name = 'config.php';
 					if (!is_file($file_name)) {
