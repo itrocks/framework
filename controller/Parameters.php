@@ -146,9 +146,9 @@ class Parameters
 			}
 			if (isset($class_name) && class_exists($class_name)) {
 				// object parameter
-				$object = $this->getRawParameter($parameter_name) + 0;
+				$object = floatval($this->getRawParameter($parameter_name));
 				Mapper\Getter::getObject($object, $class_name);
-				if (empty($object) && ($this->getRawParameter($parameter_name) + 0)) {
+				if (empty($object) && floatval($this->getRawParameter($parameter_name))) {
 					throw new Object_Not_Found_Exception(Loc::tr('The object does not exist anymore'));
 				}
 				$this->objects[$parameter_name] = $object;

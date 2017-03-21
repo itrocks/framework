@@ -180,7 +180,7 @@ class Maintainer implements Registerable
 				break;
 			}
 			$alias_pos += strlen($table_name) + 4;
-			$alias = 't' . ((substr($query, $alias_pos)) + 0);
+			$alias = 't' . intval(substr($query, $alias_pos));
 			$i = 0;
 			while (($i = strpos($query, $alias . DOT, $i)) !== false) {
 				$i += strlen($alias) + 1;

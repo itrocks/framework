@@ -150,7 +150,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 		$duration = strpos($duration, 'E-')
 			? 0
 			: ((substr($duration, 0, 2) == '0.') ? substr($duration, 1, 4) : substr($duration, 0, 5));
-		if (!($duration + 0)) {
+		if (!floatval($duration)) {
 			$duration = '';
 		}
 		return [$now, $duration];

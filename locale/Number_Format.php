@@ -126,7 +126,7 @@ class Number_Format
 	public function integerToLocale($integer)
 	{
 		return ($integer == (string)(integer)$integer)
-			? number_format($integer + 0, 0, $this->decimal_separator, $this->thousand_separator)
+			? number_format(intval($integer), 0, $this->decimal_separator, $this->thousand_separator)
 			: $integer;
 	}
 

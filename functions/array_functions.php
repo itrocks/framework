@@ -233,7 +233,7 @@ function arraySumRecursive($array)
 		}
 		return $sum;
 	}
-	return $array + 0;
+	return floatval($array);
 }
 
 //------------------------------------------------------------------------------------- arrayToTree

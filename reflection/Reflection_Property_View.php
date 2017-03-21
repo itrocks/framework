@@ -87,7 +87,7 @@ class Reflection_Property_View
 	protected function formatFloat($value)
 	{
 		$null = $this->property->getAnnotation(Null_Annotation::NULL);
-		return (is_null($value) && $null->value) ? null : ($value + 0);
+		return (is_null($value) && $null->value) ? null : floatval($value);
 	}
 
 	//--------------------------------------------------------------------------------- formatInteger
@@ -99,7 +99,9 @@ class Reflection_Property_View
 	 */
 	protected function formatInteger($value)
 	{
-		return (is_null($value) && $this->property->getAnnotation('null')->value) ? null : ($value + 0);
+		return (is_null($value) && $this->property->getAnnotation('null')->value)
+			? null
+			: intval($value);
 	}
 
 	//---------------------------------------------------------------------------------- formatString

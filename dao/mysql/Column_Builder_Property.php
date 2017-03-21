@@ -31,7 +31,7 @@ trait Column_Builder_Property
 		if (isset($default)) {
 			$property_type = $column->getType();
 			if ($property_type->isNumeric()) {
-				$default = $default + 0;
+				$default = floatval($default);
 			}
 			elseif (is_array($default)) {
 				$default = '';
