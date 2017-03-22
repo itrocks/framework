@@ -198,7 +198,17 @@ class Maintainer implements Registerable
 				);
 			}
 			elseif ($mysqli->isInsert($query)) {
-				$column_names = explode(',', str_replace([BQ, SP], '', mParse($query, '(', ')')));
+				if (strpos($query, BQ . ' SET ')) {
+					$column_names = explode(',', str_replace([BQ, SP], '', rParse($query, BQ . ' SET ')));
+					foreach ($column_names as &$column_name) {
+						$column_name = trim(lParse($column_name, '='));
+					}
+				}
+				else {
+					$column_names = explode(
+						',', str_replace([BQ, SP], '', lLastParse(rParse($query, '('), ')', 2))
+					);
+				}
 			}
 			elseif ($mysqli->isSelect($query) || $mysqli->isExplainSelect($query)) {
 				// @todo create table without context SELECT columns detection (needs complete sql analyst)
