@@ -159,7 +159,11 @@ class Html_Template extends Template
 	protected function parseSingleValue($property_name, $format_value = true)
 	{
 		$property = $source_object = reset($this->objects);
-		if (($property instanceof Reflection_Property_Value) && ($property_name == 'value')) {
+		if (
+			($property instanceof Reflection_Property_Value)
+			&& ($property_name == 'value')
+			&& !User_Annotation::of($property)->has(User_Annotation::READONLY)
+		) {
 			if (
 				($builder = $property->getAnnotation('widget')->value)
 				&& is_a($builder, Property::class, true)
