@@ -31,7 +31,18 @@ class User_Annotation extends List_Annotation
 	const NO_DELETE = 'no_delete';
 
 	//-------------------------------------------------------------------------------------- READONLY
+	/**
+	 * read-only : displayed into an <input readonly> : you will be able to use it with js but
+	 * beware of performances if you have got a lot of data
+	 */
 	const READONLY = 'readonly';
+
+	//------------------------------------------------------------------------------ STRICT_READ_ONLY
+	/**
+	 * Strict read-only : displayed without <input name=...> : you will not be able to use it with js
+	 * but you will get better performance if you have got a lot of data
+	 */
+	const STRICT_READ_ONLY = 'strict_read_only';
 
 	//---------------------------------------------------------------------------------------- $value
 	/**

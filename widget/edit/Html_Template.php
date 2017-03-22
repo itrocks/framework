@@ -162,7 +162,7 @@ class Html_Template extends Template
 		if (
 			($property instanceof Reflection_Property_Value)
 			&& ($property_name == 'value')
-			&& !User_Annotation::of($property)->has(User_Annotation::READONLY)
+			&& !User_Annotation::of($property)->has(User_Annotation::STRICT_READ_ONLY)
 		) {
 			if (
 				($builder = $property->getAnnotation('widget')->value)
