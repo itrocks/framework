@@ -20,7 +20,9 @@ use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\History;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -74,23 +76,44 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	protected function applyGettersToValues(List_Data $data)
 	{
-		$properties = $data->getProperties();
-		foreach ($data->getRows() as $row) {
-			$object = $row->getObject();
-			foreach ($row->getValues() as $property_path => $value) {
-				$property = $properties[$property_path];
-				$link_annotation = Link_Annotation::of($property);
-				if (
-					!strpos($property_path, DOT)
-					&& !$link_annotation->isCollection()
-					&& !$link_annotation->isMap()
-				) {
-					$user_getter = $property->getAnnotation('user_getter');
-					$value       = $user_getter->value
+		$properties             = $data->getProperties();
+		$properties_with_getter = [];
+		foreach ($properties as $property) {
+			$link_annotation = Link_Annotation::of($property);
+			if (
+				!strpos($property->path, DOT)
+				&& !$link_annotation->isCollection()
+				&& !$link_annotation->isMap()
+				&& (
+					Getter_Annotation::of($property)->value
+					||
+					$property->getAnnotation(
+						'user_getter'
+					)->value
+				)
+			) {
+				$properties_with_getter[] = $property;
+			}
+		}
+		if ($properties_with_getter) {
+			foreach ($data->getRows() as $row) {
+				$object = $row->id();
+				//optimize memory usage, detach object of the List_Row
+				if (!is_object($object)){
+					$object = Getter::getObject($object, $row->getClassName());
+				}
+				foreach ($properties_with_getter as $property) {
+					$property_path = $property->path;
+					$user_getter   = $property->getAnnotation('user_getter');
+					$value         = $user_getter->value
 						? (new Contextual_Callable($user_getter->value, $object))->call()
 						: $property->getValue($object);
+					if (is_object($value)){
+						$value = strval($value);
+					}
 					$row->setValue($property_path, $value);
 				}
+				unset($object);
 			}
 		}
 	}
@@ -592,10 +615,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $list_settings Data_List_Settings
 	 * @param $search        array search-compatible search array
 	 * @param $count         Count
+	 * @param $options       array
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name, Data_List_Settings $list_settings, array $search, Count $count = null
+		$class_name, Data_List_Settings $list_settings, array $search, Count $count = null,
+		array $options = []
 	) {
 		// SM : Moved outside the method in order result to be used for search summary
 		//$search = $this->applySearchParameters($list_settings);
@@ -607,8 +632,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				break;
 			}
 		}
-
-		$options = [$list_settings->sort, Dao::doublePass()];
+		if (!$options) {
+			$options = [$list_settings->sort, Dao::doublePass()];
+		}
 		if ($count) {
 			$options[] = $count;
 		}
@@ -637,8 +663,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 			}
 		}
-
-		$this->applyGettersToValues($data);
+		if (isset($limit) || count($data->getRows())<5000) {
+			//only for limited results, this method create objects for each row to apply getter
+			$this->applyGettersToValues($data);
+		}
 		$this->objectsToString($data);
 		// TODO LOW the following patch lines are to avoid others calculation to use invisible props
 		foreach ($list_settings->properties as $property_path => $property) {

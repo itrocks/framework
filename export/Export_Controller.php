@@ -51,7 +51,9 @@ class Export_Controller implements Default_Feature_Controller
 		$list_settings->maximum_displayed_lines_count = null;
 		// SM : Now called here instead of inside readData to use $search below
 		$search = $data_list_controller->applySearchParameters($list_settings);
-		$data = $data_list_controller->readData($class_name, $list_settings, $search);
+		$data = $data_list_controller->readData(
+			$class_name, $list_settings, $search, null, [$list_settings->sort]
+		);
 		// create temporary file
 		/** @var $application Application */
 		$application = Session::current()->get(Application::class);
