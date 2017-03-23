@@ -525,17 +525,28 @@ class Validator implements Registerable
 				!$property->isStatic()
 				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
-				&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
+				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 				&& !$property->getAnnotation('composite')->value
 			) {
-				$result = Result::andResult(
-					$result, $this->validateAnnotations($object, $property->getAnnotations())
-				);
-				if ($property->getAnnotation('component')->value) {
+				// if value is not set and is a link (component or not), then we validate only mandatory
+				if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
 					$result = Result::andResult(
-						$result,
-						$this->validateComponent($object, $only_properties, $exclude_properties, $property)
+						$result, $this->validateAnnotations(
+							$object, $property->getAnnotations(Mandatory_Annotation::ANNOTATION)
+						)
 					);
+				}
+				// otherwise we validate all annotations, and recurse if is component
+				else {
+					$result = Result::andResult(
+						$result, $this->validateAnnotations($object, $property->getAnnotations())
+					);
+					if ($property->getAnnotation('component')->value) {
+						$result = Result::andResult(
+							$result,
+							$this->validateComponent($object, $only_properties, $exclude_properties, $property)
+						);
+					}
 				}
 			}
 		}
