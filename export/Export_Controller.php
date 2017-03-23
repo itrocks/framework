@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
@@ -51,6 +52,21 @@ class Export_Controller implements Default_Feature_Controller
 		$list_settings->maximum_displayed_lines_count = null;
 		// SM : Now called here instead of inside readData to use $search below
 		$search = $data_list_controller->applySearchParameters($list_settings);
+
+		if (isset($form['select_all']) && $form['select_all']) {
+			if (isset($form['excluded_selection']) && $form['excluded_selection']) {
+				$excluded = explode(',', $form['excluded_selection']);
+				$search[]['id'] = Func::notIn($excluded);
+			}
+		}
+		else if (isset($form['selection']) && $form['selection']) {
+			$selected = explode(',', $form['selection']);
+			$search[]['id'] = Func::in($selected);
+		}
+		else {
+			$search = ['id' => -1];
+		}
+
 		$data = $data_list_controller->readData(
 			$class_name, $list_settings, $search, [$list_settings->sort]
 		);

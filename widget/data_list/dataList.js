@@ -299,6 +299,31 @@ $('document').ready(function()
 			$this.find('.select_count>ul>li>.select_all').click(
 				function () { return check_select_buttons('all'); }
 			);
+			$this.find('.selection.actions a.submit:not([target^="#"])').click(
+				function(event) {
+					var data = {
+						selection : $this.find('input[name=selection]').val(),
+						select_all : $this.find('input[name=select_all]').val(),
+						excluded_selection : $this.find('input[name=excluded_selection]').val()
+					};
+					var form = document.createElement("form");
+					form.action = event.target; // Remember to change me
+					form.method = "post";
+					for (var key in data) {
+						var input = document.createElement('input');
+						input.type = 'hidden';
+						input.name = key;
+						input.value = data[key];
+						form.appendChild(input);
+					}
+					// must add to body to submit with refresh page
+					document.body.appendChild(form);
+					form.submit();
+					// Clean html dom
+					document.body.removeChild(form);
+					return false;
+				}
+			);
 		});
 
 	});
