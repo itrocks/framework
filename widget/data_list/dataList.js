@@ -1,6 +1,9 @@
 $('document').ready(function()
 {
 	var selection = [];
+	var select_all = [];
+	// Only if we have select_all, we can exclude a part of elements
+	var excluded_selection = [];
 
 	$('.list.window').build(function()
 	{
@@ -44,6 +47,29 @@ $('document').ready(function()
 		this.inside('.list.window').each(function()
 		{
 			var $this = $(this);
+			$this.id = $this.attr('id');
+
+			var updateCount = function () {
+				var txt, selection_content, select_all_content, selection_exclude_content, count_elements;
+				if (select_all[$this.id]) {
+					count_elements = ($this.find('.select_count>ul>li>.select_all').data('count'));
+					count_elements -= excluded_selection[$this.id].length;
+					txt = 'x' + count_elements;
+					selection_content = '';
+					select_all_content = 1;
+					selection_exclude_content = excluded_selection[$this.id].join();
+				}
+				else {
+					txt = 'x' + selection[$this.id].length;
+					selection_content = selection[$this.id].join();
+					select_all_content = 0;
+					selection_exclude_content = '';
+				}
+				$this.find('.select_count>.objects').html(txt);
+				$this.find('input[name=selection]').val(selection_content);
+				$this.find('input[name=select_all]').val(select_all_content);
+				$this.find('input[name=excluded_selection]').val(selection_exclude_content);
+			};
 
 			//-------------------------------------------------------------- .column_select>a.popup click
 			// column select popup
@@ -194,28 +220,85 @@ $('document').ready(function()
 			});
 
 			//--------------------------------------------------------------- input[type=checkbox] change
-			var checkboxes = $this.find('table>tbody>tr>td>input[type=checkbox]');
+			var checkboxes_select = 'table>tbody>tr>td>input[type=checkbox]';
+			var checkboxes = $this.find(checkboxes_select);
 			if ($this.id in selection) {
-				$this.find('input[name=selection]').val(selection[$this.id].join());
-				var sel = selection[$this.id];
 				checkboxes.each(function() {
-					if ((sel == 'all') || (this.value in sel)) {
-						this.checked = true;
+					if (
+						select_all[$this.id] && $.inArray(this.value, excluded_selection[$this.id]) == -1
+						|| $.inArray(this.value, selection[$this.id]) != -1
+					) {
+						$(this).prop('checked', true);
 					}
 				});
 			}
 			else {
 				selection[$this.id] = [];
+				excluded_selection[$this.id] = [];
+				select_all[$this.id] = false;
 			}
 			checkboxes.change(function() {
-				if (this.checked && (selection[$this.id].indexOf(this.value) == -1)) {
-					selection[$this.id].push(this.value);
+				if (select_all[$this.id]) {
+					if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) == -1)) {
+						excluded_selection[$this.id].push(this.value);
+					}
+					if (this.checked && (excluded_selection[$this.id].indexOf(this.value) > -1)) {
+						excluded_selection[$this.id].splice(excluded_selection[$this.id].indexOf(this.value), 1);
+					}
+					$this.find(checkboxes_select + '[value=' + this.value + ']').attr('checked', this.checked);
 				}
-				if (!this.checked && (selection[$this.id].indexOf(this.value) > -1)) {
-					selection[$this.id].splice(selection[$this.id].indexOf(this.value), 1);
+				else {
+					if (this.checked && (selection[$this.id].indexOf(this.value) == -1)) {
+						selection[$this.id].push(this.value);
+					}
+					if (!this.checked && (selection[$this.id].indexOf(this.value) > -1)) {
+						selection[$this.id].splice(selection[$this.id].indexOf(this.value), 1);
+					}
+					// Repercussion if with have multiple lines
+					$this.find(checkboxes_select + '[value=' + this.value + ']').attr('checked', this.checked);
 				}
-				$this.find('input[name=selection]').val(selection[$this.id].join());
+				updateCount();
 			});
+
+			updateCount();
+
+			// Selection buttons
+			var check_select_buttons = function (check) {
+				// Reinit selection
+				selection[$this.id] = [];
+				excluded_selection[$this.id] = [];
+				if (check == 'all') {
+					select_all[$this.id] = true;
+					check = true;
+				}
+				else {
+					select_all[$this.id] = false;
+				}
+				$this.find('table>tbody>tr>td>input[type=checkbox]').each(
+					function () {
+						var checkbox = $(this);
+						checkbox.prop('checked', check);
+						if (!select_all[$this.id] && check) {
+							selection[$this.id].push(checkbox.val());
+						}
+					}
+				);
+				updateCount();
+				return false;
+			};
+
+			$this.find('.select_count>.objects').click(
+				function () { return false; }
+			);
+			$this.find('.select_count>ul>li>.select_visible').click(
+				function () {	return check_select_buttons(true); }
+			);
+			$this.find('.select_count>ul>li>.deselect_all').click(
+				function () { return check_select_buttons(false); }
+			);
+			$this.find('.select_count>ul>li>.select_all').click(
+				function () { return check_select_buttons('all'); }
+			);
 		});
 
 	});

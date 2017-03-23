@@ -521,7 +521,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					$class_name, $list_settings_before_read, $search
 				),
 				'settings'              => $list_settings,
-				'title'                 => $list_settings->title()
+				'title'                 => $list_settings->title(),
+				'selected'              => 'selected'
 			]
 		);
 		// buttons
@@ -679,6 +680,33 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		return $data;
+	}
+
+	//-------------------------------------------------------------------------------------- readData
+	/**
+	 * Return only all search objects
+	 *
+	 * @param $class_name    string
+	 * @param $list_settings Data_List_Settings
+	 * @param $search        array search-compatible search array
+	 * @param $count         Count
+	 * @return object[]
+	 */
+	public function readObjects(
+		$class_name, Data_List_Settings $list_settings, array $search, Count $count = null
+	) {
+		$class = $list_settings->getClass();
+		foreach ($class->getAnnotations('on_data_list') as $execute) {
+			/** @var $execute Method_Annotation */
+			if ($execute->call($class->name, [&$search]) === false) {
+				break;
+			}
+		}
+		$options = [$list_settings->sort, Dao::doublePass()];
+		if ($count) {
+			$options[] = $count;
+		}
+		return Dao::search($search, $class_name, $options);
 	}
 
 	//-------------------------------------------------------------------------------- readDataSelect
