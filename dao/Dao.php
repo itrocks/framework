@@ -315,6 +315,18 @@ class Dao implements Configurable
 		return new Option\Limit($from, $count);
 	}
 
+	//------------------------------------------------------------------------------ maxExecutionTime
+	/**
+	 * an option to set a max execution time in seconds, used in Dao::select
+	 * MySQL 5.7.4 introduces the ability to set server side execution time limits.
+	 *
+	 * @param int $time in second
+	 * @return Option\Max_Execution_Time
+	 */
+	public static function maxExecutionTime($time = 0){
+		return new Option\Max_Execution_Time($time);
+	}
+
 	//------------------------------------------------------------------------------------------ only
 	/**
 	 * This option enables to write only some properties values to the DAO

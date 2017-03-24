@@ -112,6 +112,9 @@ class Select
 			elseif ($option instanceof Option\Distinct) {
 				$this->additional_select_clause .= SP . 'DISTINCT';
 			}
+			elseif ($option instanceof Option\Max_Execution_Time){
+				$this->additional_select_clause .= SP . $option->getSql();
+			}
 			elseif ($option instanceof Option\Group_By) {
 				$columns = new Columns($this->class_name, $option->properties, $this->joins);
 				$columns->expand_objects  = false;
@@ -180,6 +183,7 @@ class Select
 		if (is_array($where)) {
 			$sql            = '';
 			$options_inside = [];
+			$sql_max_execution_time = '';
 			foreach ($options as $option) {
 				if (
 					(substr($option, 0, 10) !== (LF . 'ORDER BY '))
@@ -188,20 +192,27 @@ class Select
 					$options_inside[] = $option;
 				}
 			}
+			foreach ($this->options as $option){
+				if ($option instanceof Option\Max_Execution_Time){
+					$sql_max_execution_time = SP . $option->getSql();
+					break;
+				}
+			}
 			foreach ($where as $sub_where) {
 				if (!empty($sql)) {
 					$sql .= LF . 'UNION' . LF;
 				}
 				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
 			}
-			return Builder::SELECT . SP . '*' . LF . 'FROM (' . LF . $sql . LF . ') t0'
+			return Builder::SELECT . $sql_max_execution_time . SP . '*' . LF
+				. 'FROM (' . LF . $sql . LF . ') t0'
 				. LF . 'GROUP BY t0.id' . join('', $options);
 		}
 		return Builder::SELECT . $this->additional_select_clause . SP . $columns
-			. LF . 'FROM' . SP . $tables
-			. $where
-			. join('', $options);
-	}
+				. LF . 'FROM' . SP . $tables
+				. $where
+				. join('', $options);
+		}
 
 	//---------------------------------------------------------------------------------- getClassName
 	/**

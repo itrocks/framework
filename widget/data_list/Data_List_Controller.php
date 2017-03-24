@@ -486,18 +486,28 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		catch (Exception $exception) {
 			//set empty list result
 			$data  = new Default_List_Data($class_name, []);
-			//set an error to display
-			$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
-			$this->errors[] = $error;
-			// log the error in order software maintainer to be informed
-			$handled = new Handled_Error(
-				$exception->getCode(),
-				$exception->getMessage(),
-				$exception->getFile(),
-				$exception->getLine()
-			);
-			$handler = new Report_Call_Stack_Error_Handler();
-			$handler->logError($handled);
+			if ($exception->getCode() == Option\Max_Execution_Time::getErrorCode()){
+				$error = new Exception(
+					Loc::tr(
+						"Maximum statement execution time exceeded, 
+						please try to optimise your criteria for your search."
+					)
+				);
+				$this->errors[] = $error;
+			}else{
+				//set an error to display
+				$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
+				$this->errors[] = $error;
+				// log the error in order software maintainer to be informed
+				$handled = new Handled_Error(
+					$exception->getCode(),
+					$exception->getMessage(),
+					$exception->getFile(),
+					$exception->getLine()
+				);
+				$handler = new Report_Call_Stack_Error_Handler();
+				$handler->logError($handled);
+			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty = $displayed_lines_count > 20;
