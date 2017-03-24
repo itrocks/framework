@@ -459,6 +459,16 @@ class Write extends Data_Link\Write
 		// create / update
 		else {
 			$component_object->setComposite($this->object);
+			// if only option is given, we should always write foreign property
+			foreach ($this->spread_options as $option) {
+				if ($option instanceof Option\Only) {
+					$only = $option;
+					break;
+				}
+			}
+			if (isset($only) && isset($foreign_property_name)) {
+				$only->add($foreign_property_name);
+			}
 			$this->link->write($component_object, $this->spread_options);
 		}
 	}
