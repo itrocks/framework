@@ -97,7 +97,7 @@ abstract class Write
 					return false;
 				}
 				elseif (is_array($response) && isset($only)) {
-					$only->properties = array_merge($response, $only->properties);
+					$only->add($response);
 				}
 			}
 		}
