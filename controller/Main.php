@@ -139,7 +139,7 @@ class Main
 	 */
 	private function executeController($controller, $method_name, $uri, array $post, array $files)
 	{
-		$controller = isA($controller, Controller::class)
+		$controller = is_a($controller, Controller::class, true)
 			? Builder::create($controller)
 			: $uri->parameters->getMainObject($uri->controller_name);
 		if (class_exists($uri->controller_name)) {
