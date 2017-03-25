@@ -84,6 +84,23 @@ class String_Class
 		return new String_Class($this->value);
 	}
 
+	//----------------------------------------------------------------------------------------- geshi
+	/**
+	 * Parse with geshi
+	 *
+	 * @param $programming_language string
+	 * @return String_Class
+	 */
+	public function geshi($programming_language = 'php')
+	{
+		$wiki = new Wiki();
+		if ($programming_language === 'php' && (strpos($this->value, '<?php') === false)) {
+			$programming_language = 'html';
+		}
+		$text = $wiki->geshi('@' . $programming_language . LF . $this->value . LF . '@');
+		return new String_Class($text);
+	}
+
 	//---------------------------------------------------------------------------------- htmlEntities
 	/**
 	 * @return String_Class

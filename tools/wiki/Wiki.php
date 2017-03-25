@@ -50,9 +50,9 @@ class Wiki implements Registerable
 	 */
 	public function geshi($string, $solve = true)
 	{
-		$lf = LF;
+		$lf    = LF;
 		$count = count($this->geshi_replace);
-		$i = 0;
+		$i     = 0;
 		while (($i < strlen($string)) && (($i = strpos($string, AT, $i)) !== false)) {
 			$i ++;
 			$j = strpos($string, $lf, $i);
@@ -60,7 +60,7 @@ class Wiki implements Registerable
 				$language = substr($string, $i, $j - $i);
 				if (trim($language) && !strpos($language, AT)) {
 					$cr = strpos($language, CR) ? CR : '';
-					$k = strpos($string . $cr . $lf, $lf . AT . $cr . $lf, $j);
+					$k  = strpos($string . $cr . $lf, $lf . AT . $cr . $lf, $j);
 					if ($k !== false) {
 						$k++;
 						$content = substr($string, $j + 1, $k - $j - 2 - strlen($cr));
@@ -69,12 +69,12 @@ class Wiki implements Registerable
 							['<',    '>',    '{',      '}',    ],
 							$content
 						);
-						$geshi = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
+						$geshi       = GeSHi::parse($content, $cr ? substr($language, 0, -1) : $language);
 						$replacement = BQ . '#' . (++$count) . BQ;
 						$this->geshi_replace[$replacement] = $geshi;
-						$k += strlen($cr) + 2;
+						$k     += strlen($cr) + 2;
 						$string = substr($string, 0, $i - 1) . $replacement . $cr . $lf . substr($string, $k);
-						$i += strlen($replacement . $cr) - 1;
+						$i     += strlen($replacement . $cr) - 1;
 					}
 				}
 			}
@@ -145,8 +145,16 @@ class Wiki implements Registerable
 	{
 		if (!$this->dont_parse_wiki) {
 			$property = $object->property;
+			if (isset($property->getAnnotation('geshi')->value)) {
+				$programming_language = $property->getAnnotation('geshi')->value ?: 'php';
+				if ($programming_language === 'auto') {
+					$programming_language = (strpos($result, '<?php') === false) ? 'html' : 'php';
+				}
+				$wiki   = new Wiki();
+				$result = $wiki->geshi('@' . $programming_language . LF . $result . LF . '@');
+			}
 			if ($property->getAnnotation('textile')->value) {
-				$wiki = new Wiki();
+				$wiki   = new Wiki();
 				$result = $wiki->geshi($result, false);
 				$result = $wiki->textile($result);
 				$result = $wiki->geshiSolve($result);
