@@ -45,12 +45,17 @@ class Html_Builder_Property extends Html_Builder_Type
 			/** @var $user_default_annotation Method_Annotation */
 			$user_default_annotation = $property->getAnnotation('user_default');
 
-			// get default value
-			if (($property instanceof Reflection_Property_Value)
-				&& ((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
-				&& $user_default_annotation->value
-			) {
-				$value = $user_default_annotation->call($property->getObject());
+			if ($property instanceof Reflection_Property_Value) {
+				if (!isset($value)) {
+					$value = $property->value();
+				}
+				// if value is empty, then get default value (by SM)
+				if (
+					((is_object($value) && Empty_Object::isEmpty($value)) || is_null($value))
+					&& $user_default_annotation->value
+				) {
+					$value = $user_default_annotation->call($property->getObject());
+				}
 			}
 
 			// 1st, get read_only from @user readonly

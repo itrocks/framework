@@ -330,7 +330,7 @@ class Functions
 	protected function getEditReflectionPropertyValue(
 		Reflection_Property_Value $object, $name, $ignore_user, $can_always_be_null
 	) {
-		$property_edit             = new Html_Builder_Property($object, $object->value());
+		$property_edit             = new Html_Builder_Property($object);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $object->path;
 		$property_edit->preprop    = null;
