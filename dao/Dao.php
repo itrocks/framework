@@ -481,12 +481,13 @@ class Dao implements Configurable
 	 * @param $what       object|array source object for filter, only set properties will be used for
 	 *                    search
 	 * @param $class_name string must be set if is not a filter array
+	 * @param $options    Option|Option[] some options for advanced search
 	 * @return object | null the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
 	 */
-	public static function searchOne($what, $class_name = null)
+	public static function searchOne($what, $class_name = null, $options = [])
 	{
-		return self::current()->searchOne($what, $class_name);
+		return self::current()->searchOne($what, $class_name, $options);
 	}
 
 	//---------------------------------------------------------------------------------------- select

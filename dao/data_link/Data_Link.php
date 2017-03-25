@@ -291,11 +291,13 @@ abstract class Data_Link
 	 * @param $what       object|array source object for filter, only set properties will be used for
 	 *        search
 	 * @param $class_name string must be set if is not a filter array
+	 * @param $options    Option|Option[] some options for advanced search
 	 * @return object|null the found object, or null if no object was found
 	 */
-	public function searchOne($what, $class_name = null)
+	public function searchOne($what, $class_name = null, $options = [])
 	{
-		$result = $this->search($what, $class_name, Dao::limit(1));
+		$options[] = Dao::limit(1);
+		$result    = $this->search($what, $class_name, $options);
 		return $result ? reset($result) : null;
 	}
 
