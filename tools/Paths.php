@@ -112,11 +112,11 @@ abstract class Paths
 	public static function register()
 	{
 		$slash  = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
-		$dotphp = strrpos($_SERVER['SCRIPT_NAME'], '.php');
+		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php');
 		self::$file_root = substr(
 			$_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1
 		);
-		self::$script_name = substr($_SERVER['SCRIPT_NAME'], $slash, $dotphp - $slash);
+		self::$script_name = substr($_SERVER['SCRIPT_NAME'], $slash, $dot_php - $slash);
 		self::$uri_root = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
 		self::$uri_base = self::$uri_root . self::$script_name;
 		self::$project_uri = substr(getcwd(), strlen(self::$file_root) - 1);
