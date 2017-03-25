@@ -26,6 +26,10 @@ input.datetime {
 	display: none;
 }
 
+.ui-state-active {
+	background: $selected !important;
+}
+
 .ui-autocomplete {
 	max-height: 230px;
 	overflow-y: scroll;

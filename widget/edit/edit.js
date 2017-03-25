@@ -158,6 +158,26 @@ $('document').ready(function()
 			}
 		});
 
+		//---------------------------------------------------------------------- input.combo comboValue
+		/**
+		 * Sets the value of the element
+		 *
+		 * @param $element jQuery
+		 * @param id       integer
+		 * @param value    string
+		 */
+		var comboValue = function($element, id, value)
+		{
+			if (id) {
+				$element.data('value', id);
+			}
+			else {
+				$element.removeData('value');
+			}
+			$element.prev().val(id);
+			$element.val(value);
+		};
+
 		//------------------------------------------------------------------------ input.combo comboUri
 		var comboUri = function($element)
 		{
@@ -227,26 +247,12 @@ $('document').ready(function()
 					comboUri($element),
 					$.param(comboRequest($element, { term: $element.val(), first: true })),
 					function(data) {
-						if (data.id) {
-							//console.log('> found ' + data.id + ': ' + data.value);
-							$element.data('value', data.value);
-							$element.prev().val(data.id);
-							$element.val(data.value);
-						}
-						else {
-							//console.log('> not found');
-							$element.prev().val('');
-							$element.val('');
-							$element.removeData('value');
-						}
+						comboValue($element, data.id, data.value);
 					}
 				);
 			}
 			else {
-				//console.log('> empty value');
-				$element.prev().val('');
-				$element.val('');
-				$element.removeData('value');
+				comboValue($element, null, '');
 			}
 		};
 
@@ -255,12 +261,7 @@ $('document').ready(function()
 		{
 			autoFocus: true,
 			delay: 100,
-			minLength: 0,
-
-			close: function(event)
-			{
-				$(event.target).keyup();
-			},
+			minLength: 1,
 
 			source: function(request, response)
 			{
@@ -274,30 +275,23 @@ $('document').ready(function()
 
 			select: function(event, ui)
 			{
-				// caption of the combo
 				var $caption = $(this);
-				// does value is an id managed with a previous input, or same string as caption?
-				var has_id = true;
-				var $value = $caption.prev();
+				var $value   = $caption.prev().filter('input[type=hidden]');
+				var has_id   = true;
 				if (!$value.length) {
-					// no id ! the value is the caption !
-					$value = $caption;
 					has_id = false;
+					$value = $caption;
 				}
 				var previous_value = $value.val();
-
-				//console.log('selected ' + ui.item.id + ': ' + ui.item.value);
 				if (has_id) {
 					$value.val(ui.item.id);
 				}
+				// mouse click : copy the full value to the input
 				if (!event.keyCode) {
- 					// when mouse is clicked, then the value changes, sure !
 					$caption.val(ui.item.value);
 				}
 				$caption.data('value', ui.item.value);
-
 				if (!comboMatches($caption)) {
-					//console.log('> ' + $caption.val() + ' does not match ' + $caption.data('value'));
 					comboForce($caption);
 				}
 				if (previous_value != $value.val()) {
@@ -317,13 +311,16 @@ $('document').ready(function()
 		.blur(function()
 		{
 			var $this = $(this);
-			if (comboMatches($this)) {
-				//console.log($this.val() + ' matches ' + $this.data('value'));
-				$this.val($this.data('value'));
+			if (!$this.val().length) {
+				comboValue($this, null, '');
 			}
 			else {
-				//console.log('blur : ' + $this.val() + ' does not match ' + $this.data('value'));
-				comboForce($this);
+				if (comboMatches($this)) {
+					$this.val($this.data('value'));
+				}
+				else {
+					comboForce($this);
+				}
 			}
 			$this.removeData('value');
 		})
@@ -340,28 +337,26 @@ $('document').ready(function()
 			}
 		})
 
-		//----------------------------------------------------------------------------- input.combo ESC
+		//------------------------------------------------------------------------- input.combo keydown
+		.keydown(function(event)
+		{
+			var $this = $(this);
+			// down : open even if value is empty
+			if (event.keyCode == 40) {
+				if ($this.autocomplete('option', 'minLength')) {
+					$this.autocomplete('option', 'minLength', 0).autocomplete('search', '');
+				}
+			}
+		})
+
+		//--------------------------------------------------------------------------- input.combo keyup
 		.keyup(function(event)
 		{
-			if (event.keyCode == 27) {
-				var $this = $(this);
-				var previous_value = $this.prev().data('previous-value');
-				if (previous_value) {
-					$this.data('value', previous_value[1]);
-					$this.prev().val(previous_value[0]);
-					$this.val(previous_value[1]);
-				}
-				else {
-					$this.prev().val('');
-					$this.val('');
-					$this.removeData('value');
-				}
-				// if there is an on_change event into the input control
-				$this.change();
-				// keyup is for compatibility with autoWith
-				$this.keyup();
-				// change enable on_change to work on the hidden input
-				$this.prev().change();
+			var $this = $(this);
+			// backspace | delete : close if value is empty
+			if (((event.keyCode == 8) || (event.keyCode == 46)) && !$this.val().length) {
+				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
+				comboValue($this, null, '');
 			}
 		});
 

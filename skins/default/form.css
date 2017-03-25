@@ -23,6 +23,9 @@ input.datetime {
 .ui-datepicker-trigger {
   display: none; }
 
+.ui-state-active {
+  background: #cef37f !important; }
+
 .ui-autocomplete {
   max-height: 230px;
   overflow-y: scroll; }
