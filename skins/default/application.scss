@@ -232,6 +232,10 @@ thead>tr>th {
 	font-size: 1.5em;
 	margin: -3px;
 	padding: 3px;
+
+	.technical {
+		display: none;
+	}
 }
 
 .visible {

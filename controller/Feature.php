@@ -8,7 +8,6 @@ abstract class Feature
 {
 
 	//---------------------------------------------------------------- the feature key value constant
-	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = 'feature';
 
 	//---------------------------------------------------------------------------- features constants
@@ -37,7 +36,6 @@ abstract class Feature
 	const F_SUPER         = 'superAdministrator';
 	const F_TRANSFORM     = 'transform';
 	const F_VALIDATE      = 'validate';
-	//--------------------------------------------------------------------------------------- F_WRITE
 	const F_WRITE         = 'write';
 
 }

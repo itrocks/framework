@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Access;
 
-use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\User\Access_Control;
 use ITRocks\Framework\View;
 
 /**
@@ -101,7 +101,7 @@ class IP implements Configurable, Registerable
 		foreach ($this->uris as $group_name => $uris) {
 			if (pregMatchArray($uris, $uri, true)) {
 				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
-					$uri = View::link(Application::class, Controller\Feature::F_BLANK);
+					$uri = View::link(Access_Control::class, Controller\Feature::F_DENIED);
 				}
 			}
 		}
