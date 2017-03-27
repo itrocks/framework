@@ -364,11 +364,11 @@ $('document').ready(function()
 		this.inside('input.combo~.more').click(function(event)
 		{
 			event.preventDefault();
-			var $combo = $($(this).siblings('input.combo'));
-			if (!$combo.autocomplete('widget').is(':visible')) {
-				$combo.focus();
-				$combo.autocomplete('search', '');
+			var $this = $($(this).siblings('input.combo'));
+			if ($this.autocomplete('option', 'minLength')) {
+				$this.autocomplete('option', 'minLength', 0);
 			}
+			$this.autocomplete('search', '').focus();
 		});
 
 		//---------------------------------------------------------------------- input[data-conditions]
