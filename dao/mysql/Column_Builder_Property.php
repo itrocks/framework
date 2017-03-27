@@ -30,7 +30,10 @@ trait Column_Builder_Property
 		$default = $property->getDeclaringClass()->getDefaultProperties()[$property->name];
 		if (isset($default)) {
 			$property_type = $column->getType();
-			if ($property_type->isNumeric()) {
+			if ($property_type->isInteger()) {
+				$default = intval($default);
+			}
+			elseif ($property_type->isFloat()) {
 				$default = floatval($default);
 			}
 			elseif (is_array($default)) {
