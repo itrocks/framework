@@ -294,7 +294,9 @@ $('document').ready(function()
 					has_id = false;
 					$value = $caption;
 				}
-				var previous_value = $value.val();
+
+				var previous_caption = $caption.val();
+				var previous_value   = $value.val();
 				if (has_id) {
 					$value.val(ui.item.id);
 				}
@@ -305,6 +307,9 @@ $('document').ready(function()
 				$caption.data('value', ui.item.value);
 				if (!comboMatches($caption)) {
 					comboForce($caption);
+				}
+				if (previous_caption != $caption.val()) {
+					$caption.change();
 				}
 				if (previous_value != $value.val()) {
 					$value.change();

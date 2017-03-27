@@ -46,37 +46,43 @@
 		 */
 		var calculateEvent = function()
 		{
-			var $element       = $(this);
-			var previous_width = parseInt($element.data('text-width'));
-			var new_width      = getTextWidth($element, false);
-			if (new_width !== previous_width) {
-				$element.data('text-width', new_width);
-				var tag_name = $element.parent().prop('tagName').toLowerCase();
-				var $table   = (tag_name === 'td') ? $element.closest('table') : undefined;
-				if ($table === undefined) {
-					// single element
-					$element.width(Math.min(Math.max(settings.minimum, new_width), settings.maximum));
+			var $element = $(this);
+			// patched with setTimeout to allow moved controls on right of the input to be clicked
+			// eg combo's down arrow won't work sometimes if I do not do that.
+			setTimeout(function() {
+				var previous_width = parseInt($element.data('text-width'));
+				var new_width = getTextWidth($element, false);
+				if (new_width !== previous_width) {
+					$element.data('text-width', new_width);
+					var tag_name = $element.parent().prop('tagName').toLowerCase();
+					var $table = (
+					tag_name === 'td'
+					) ? $element.closest('table') : undefined;
+					if ($table === undefined) {
+						// single element
+						$element.width(Math.min(Math.max(settings.minimum, new_width), settings.maximum));
+					}
+					else {
+						// element into a collection / map
+						// is element not named and next to a named element ? next_input = true
+						var name = $element.attr('name');
+						if (name === undefined) {
+							name = $element.prev('input, textarea').attr('name');
+						}
+						// calculate th's previous max width
+						var position = $element.parent().prevAll('td').length;
+						var $td = $(cells(firstColGroup($table))[position]);
+						var previous_max_width = $td.data('max-width');
+						if (new_width > previous_max_width) {
+							// the element became wider than the widest element
+							tableColumnWidth($td, new_width);
+						}
+						else if (previous_width === previous_max_width) {
+							tableColumn($table, $td, position + 1, $element.prevAll().length + 1);
+						}
+					}
 				}
-				else {
-					// element into a collection / map
-					// is element not named and next to a named element ? next_input = true
-					var name = $element.attr('name');
-					if (name === undefined) {
-						name = $element.prev('input, textarea').attr('name');
-					}
-					// calculate th's previous max width
-					var position           = $element.parent().prevAll('td').length;
-					var $td                = $(cells(firstColGroup($table))[position]);
-					var previous_max_width = $td.data('max-width');
-					if (new_width > previous_max_width) {
-						// the element became wider than the widest element
-						tableColumnWidth($td, new_width);
-					}
-					else if (previous_width === previous_max_width) {
-						tableColumn($table, $td, position + 1, $element.prevAll().length + 1);
-					}
-				}
-			}
+			}, 10);
 		};
 
 		//----------------------------------------------------------------------------- calculateMargin
@@ -251,6 +257,7 @@
 
 		//----------------------------------------------------------------------------- autoWidth keyup
 		this.blur(calculateEvent);
+		this.change(calculateEvent);
 		this.focus(calculateEvent);
 		this.keyup(calculateEvent);
 
