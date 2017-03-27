@@ -263,6 +263,18 @@ $('document').ready(function()
 			delay: 100,
 			minLength: 1,
 
+			close: function()
+			{
+				var $this = $(this);
+				setTimeout(function() { $this.removeData('visible'); }, 100);
+			},
+
+			open: function()
+			{
+				var $this = $(this);
+				$this.data('visible', true);
+			},
+
 			source: function(request, response)
 			{
 				var $element = this.element;
@@ -365,10 +377,12 @@ $('document').ready(function()
 		{
 			event.preventDefault();
 			var $this = $($(this).siblings('input.combo'));
-			if ($this.autocomplete('option', 'minLength')) {
-				$this.autocomplete('option', 'minLength', 0);
+			if (!$this.data('visible')) {
+				if ($this.autocomplete('option', 'minLength')) {
+					$this.autocomplete('option', 'minLength', 0);
+				}
+				$this.autocomplete('search', '').focus();
 			}
-			$this.autocomplete('search', '').focus();
 		});
 
 		//---------------------------------------------------------------------- input[data-conditions]
