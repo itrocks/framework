@@ -143,7 +143,7 @@ class Data_List_Settings extends Custom_Settings
 			if (
 				!Reflection_Property::exists($class_name, $property_path)
 				|| !$reflection_property->isPublic()
-				|| !$reflection_property->isVisible()
+				|| !$reflection_property->isVisible(false)
 			) {
 				unset($this->properties[$property_path]);
 				$changes_count ++;

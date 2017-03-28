@@ -53,7 +53,7 @@ class Select_Controller implements Feature_Controller
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
 					&& $property->isPublic()
-					&& $property->isVisible()
+					&& $property->isVisible(false)
 				) {
 					$properties[$property_name] = $property;
 				}
@@ -68,7 +68,7 @@ class Select_Controller implements Feature_Controller
 				if (
 					(empty($composite_property) || ($property->name !== $composite_property->name))
 					&& $property->isPublic()
-					&& $property->isVisible()
+					&& $property->isVisible(false)
 				) {
 					$properties[$property_name] = $property;
 				}

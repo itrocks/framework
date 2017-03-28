@@ -714,7 +714,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
 			$property = new Reflection_Property($class_name, $property_path);
-			if (!$property->isPublic() || !$property->isVisible()) {
+			if (!$property->isPublic() || !$property->isVisible(false)) {
 				unset($properties_path[$key]);
 			}
 			$history_class_name = $property->getFinalClassName();
