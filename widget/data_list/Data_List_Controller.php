@@ -639,6 +639,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 
+		if (!$options) {
+			$options = [$list_settings->sort, Dao::doublePass(), Dao::maxExecutionTime(180)];
+		}
 		$count = null;
 		foreach ($options as $option) {
 			if ($option instanceof Count) {
