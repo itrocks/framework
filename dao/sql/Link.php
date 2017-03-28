@@ -364,7 +364,11 @@ abstract class Link extends Identifier_Map implements Transactional
 		$properties = [];
 		foreach ($columns as $key => $column) {
 			$property_path              = is_object($column) ? $key : $column;
-			$properties[$property_path] = new Reflection_Property($object_class, $property_path);
+			if ($column instanceof Func\Dao_Function) {
+				$properties[$property_path] = $column;
+			}else {
+				$properties[$property_path] = new Reflection_Property($object_class, $property_path);
+			}
 		}
 		return new Default_List_Data($object_class, $properties);
 	}
