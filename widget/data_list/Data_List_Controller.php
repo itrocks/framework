@@ -110,7 +110,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					}
 					$row->setValue($property->path, $value);
 				}
-				unset($object);
 			}
 		}
 	}
@@ -660,7 +659,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 			}
 		}
-		if (isset($limit) || (count($data->getRows()) < 5000)) {
+		if (isset($limit)) {
 			// only for limited results : this method create objects for each row to apply getter
 			$this->applyGettersToValues($data);
 		}
