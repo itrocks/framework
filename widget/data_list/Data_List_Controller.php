@@ -80,38 +80,35 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$properties_with_getter = [];
 		foreach ($properties as $property) {
 			$link_annotation = Link_Annotation::of($property);
+			$user_getter     = null;
 			if (
 				!strpos($property->path, DOT)
 				&& !$link_annotation->isCollection()
 				&& !$link_annotation->isMap()
 				&& (
 					Getter_Annotation::of($property)->value
-					||
-					$property->getAnnotation(
-						'user_getter'
-					)->value
+					|| ($user_getter = $property->getAnnotation('user_getter')->value)
 				)
 			) {
-				$properties_with_getter[] = $property;
+				$properties_with_getter[] = [$property, $user_getter];
 			}
 		}
 		if ($properties_with_getter) {
 			foreach ($data->getRows() as $row) {
 				$object = $row->id();
-				//optimize memory usage, detach object of the List_Row
+				// Optimize memory usage : detach object from the List_Row
 				if (!is_object($object)){
 					$object = Getter::getObject($object, $row->getClassName());
 				}
-				foreach ($properties_with_getter as $property) {
-					$property_path = $property->path;
-					$user_getter   = $property->getAnnotation('user_getter');
-					$value         = $user_getter->value
-						? (new Contextual_Callable($user_getter->value, $object))->call()
+				foreach ($properties_with_getter as list($property, $user_getter)) {
+					/** @var $property Reflection_Property */
+					$value = $user_getter
+						? (new Contextual_Callable($user_getter, $object))->call()
 						: $property->getValue($object);
 					if (is_object($value)){
 						$value = strval($value);
 					}
-					$row->setValue($property_path, $value);
+					$row->setValue($property->path, $value);
 				}
 				unset($object);
 			}
@@ -663,8 +660,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
 			}
 		}
-		if (isset($limit) || count($data->getRows())<5000) {
-			//only for limited results, this method create objects for each row to apply getter
+		if (isset($limit) || (count($data->getRows()) < 5000)) {
+			// only for limited results : this method create objects for each row to apply getter
 			$this->applyGettersToValues($data);
 		}
 		$this->objectsToString($data);
