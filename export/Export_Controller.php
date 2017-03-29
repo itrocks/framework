@@ -52,7 +52,7 @@ class Export_Controller implements Default_Feature_Controller
 		// SM : Now called here instead of inside readData to use $search below
 		$search = $data_list_controller->applySearchParameters($list_settings);
 		$data = $data_list_controller->readData(
-			$class_name, $list_settings, $search, null, [$list_settings->sort]
+			$class_name, $list_settings, $search, [$list_settings->sort]
 		);
 		// create temporary file
 		/** @var $application Application */

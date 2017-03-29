@@ -468,14 +468,15 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$list_settings->cleanup();
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
-		$count = new Count();
+		$count                    = new Count();
+		$options                  = [$count, Dao::doublePass(), $list_settings->sort];
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
 		// SM : Moved from readData()
 		$search = $this->applySearchParameters($list_settings);
 		try {
-			$data = $this->readData($class_name, $list_settings, $search, $count);
+			$data = $this->readData($class_name, $list_settings, $search, $options);
 			// SM : Moved from applyParametersToListSettings()
 			// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
 			if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
@@ -610,13 +611,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $class_name    string
 	 * @param $list_settings Data_List_Settings
 	 * @param $search        array search-compatible search array
-	 * @param $count         Count
 	 * @param $options       array
 	 * @return List_Data
 	 */
 	public function readData(
-		$class_name, Data_List_Settings $list_settings, array $search, Count $count = null,
-		array $options = []
+		$class_name, Data_List_Settings $list_settings, array $search, array $options = []
 	) {
 		// SM : Moved outside the method in order result to be used for search summary
 		//$search = $this->applySearchParameters($list_settings);
@@ -628,12 +627,19 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				break;
 			}
 		}
+
+		$count = null;
 		if (!$options) {
 			$options = [$list_settings->sort, Dao::doublePass()];
 		}
-		if ($count) {
-			$options[] = $count;
+		else {
+			foreach ($options as $option) {
+				if ($option instanceof Count) {
+					$count = $option;
+				}
+			}
 		}
+
 		if ($list_settings->maximum_displayed_lines_count) {
 			$limit = new Limit(
 				$list_settings->start_display_line_number,
