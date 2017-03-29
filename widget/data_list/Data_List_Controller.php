@@ -629,11 +629,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		$count = null;
-		if ($options) {
-			foreach ($options as $option) {
-				if ($option instanceof Count) {
-					$count = $option;
-				}
+		foreach ($options as $option) {
+			if ($option instanceof Count) {
+				$count = $option;
 			}
 		}
 
