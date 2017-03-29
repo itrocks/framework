@@ -629,10 +629,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		$count = null;
-		if (!$options) {
-			$options = [$list_settings->sort, Dao::doublePass()];
-		}
-		else {
+		if ($options) {
 			foreach ($options as $option) {
 				if ($option instanceof Count) {
 					$count = $option;
