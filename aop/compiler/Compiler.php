@@ -441,7 +441,6 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $class   Reflection_Class
 	 */
 	/*
-	//-------------------------------------------------------------------------------- scanForMethods
 	private function scanForMethods(array &$methods, Reflection_Class $class)
 	{
 		foreach ($class->getMethods() as $method) {

@@ -898,7 +898,6 @@ class Functions
 		return [];
 	}
 
-
 	//--------------------------------------------------------------------------------------- getTime
 	/**
 	 * @param $template Template The first object must be a Date_Time or an ISO date-time
