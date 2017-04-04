@@ -38,6 +38,12 @@ class Select
 	 */
 	private $options;
 
+	//--------------------------------------------------------------------- $additional_select_clause
+	/**
+	 * @var string[]
+	 */
+	private $select;
+
 	//------------------------------------------------------------------------------- $tables_builder
 	/**
 	 * @var Tables
@@ -49,12 +55,6 @@ class Select
 	 * @var Where
 	 */
 	private $where_builder;
-
-	//--------------------------------------------------------------------- $additional_select_clause
-	/**
-	 * @var string
-	 */
-	private $additional_select_clause;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -104,13 +104,14 @@ class Select
 	 */
 	private function buildOptions()
 	{
-		$options = [];
+		$options      = [];
+		$this->select = [];
 		foreach ($this->options as $option) {
 			if ($option instanceof Option\Count) {
-				$this->additional_select_clause .= SP . 'SQL_CALC_FOUND_ROWS';
+				$this->select[20] = SP . 'SQL_CALC_FOUND_ROWS';
 			}
 			elseif ($option instanceof Option\Distinct) {
-				$this->additional_select_clause .= SP . 'DISTINCT';
+				$this->select[30] = SP . 'DISTINCT';
 			}
 			elseif ($option instanceof Option\Group_By) {
 				$columns = new Columns($this->class_name, $option->properties, $this->joins);
@@ -141,9 +142,11 @@ class Select
 				}
 			}
 			elseif ($option instanceof Option\Time_Limit){
-				$this->additional_select_clause .= SP . $option->getSql();
+				$this->select[10] = SP . $option->getSql();
 			}
 		}
+
+		ksort($this->select);
 		ksort($options);
 		return $options;
 	}
@@ -159,7 +162,6 @@ class Select
 		// Call of buildOptions() and buildWhere() before buildColumns(), as all joins must be done to
 		// correctly deal with all properties.
 		// Call of buildColumns() and buildWhere() before buildTables(), to get joins ready.
-		$this->additional_select_clause = '';
 		// Notice : true was commented as it very often crashes mysql maintainer
 		$where   = $this->where_builder->build(/*true*/);
 		$options = $this->buildOptions();
@@ -208,7 +210,7 @@ class Select
 				. 'FROM (' . LF . $sql . LF . ') t0'
 				. LF . 'GROUP BY t0.id' . join('', $options);
 		}
-		return Builder::SELECT . $this->additional_select_clause . SP . $columns
+		return Builder::SELECT . join('', $this->select) . SP . $columns
 			. LF . 'FROM' . SP . $tables
 			. $where
 			. join('', $options);

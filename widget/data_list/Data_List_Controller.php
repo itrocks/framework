@@ -469,7 +469,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count                    = new Count();
-		$options                  = [$count, Dao::doublePass(), $list_settings->sort];
+		$options                  = [
+			$count, Dao::doublePass(), $list_settings->sort, Dao::timeLimit(30)
+		];
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
@@ -639,7 +641,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		if (!$options) {
-			$options = [$list_settings->sort, Dao::doublePass(), Dao::timeLimit(180)];
+			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit(30)];
 		}
 		$count = null;
 		foreach ($options as $option) {
