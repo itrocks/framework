@@ -55,12 +55,12 @@ class Export_Controller implements Default_Feature_Controller
 
 		if (isset($form['select_all']) && $form['select_all']) {
 			if (isset($form['excluded_selection']) && $form['excluded_selection']) {
-				$excluded = explode(',', $form['excluded_selection']);
+				$excluded       = explode(',', $form['excluded_selection']);
 				$search[]['id'] = Func::notIn($excluded);
 			}
 		}
 		else if (isset($form['selection']) && $form['selection']) {
-			$selected = explode(',', $form['selection']);
+			$selected       = explode(',', $form['selection']);
 			$search[]['id'] = Func::in($selected);
 		}
 		else {

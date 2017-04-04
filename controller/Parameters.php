@@ -221,19 +221,20 @@ class Parameters
 
 	//---------------------------------------------------------------------------- getSelectedObjects
 	/**
-	 * Get read objects, no matter method.
-	 * If it's selection from the list, return list of selected elements,
-	 * if it's from unique main object, return main object.
+	 * Read selected objects, no matter method.
+	 *
+	 * If it is a checkboxes selection from the list, returns a list of selected elements.
+	 * If it is from an unique main object, return this main object.
 	 *
 	 * If use getSelected in controller,
-	 * this controller can be compatible with selection in a form and output/edit form button
+	 * this controller can be compatible with selection in a form and output/edit form buttons.
 	 *
 	 * @param $form array
 	 * @return object[]
 	 */
 	public function getSelectedObjects(array $form)
 	{
-		$objects = [];
+		$objects     = [];
 		$main_object = $this->getMainObject();
 		if ($main_object instanceof Set) {
 			$class_name = $main_object->element_class_name;
@@ -249,17 +250,16 @@ class Parameters
 			$data_list_class_name = Main::$current->getController($class_name, 'dataList')[0];
 			$data_list_controller = Builder::create($data_list_class_name);
 			$list_settings->maximum_displayed_lines_count = null;
-			// SM : Now called here instead of inside readData to use $search below
 			$search = $data_list_controller->applySearchParameters($list_settings);
 			if (isset($form['excluded_selection']) && $form['excluded_selection']) {
-				$excluded = explode(',', $form['excluded_selection']);
+				$excluded       = explode(',', $form['excluded_selection']);
 				$search[]['id'] = Dao\Func::notIn($excluded);
 			}
 			$objects = $data_list_controller->readObjects($class_name, $list_settings, $search);
 		}
 		else if (isset($form['selection']) && $form['selection']) {
 			$selected = explode(',', $form['selection']);
-			$objects = Dao::search(['id' => Dao\Func::in($selected)], $class_name);
+			$objects  = Dao::search(['id' => Dao\Func::in($selected)], $class_name);
 		}
 		else {
 			// Test if it's object read or just instantiation of a new object

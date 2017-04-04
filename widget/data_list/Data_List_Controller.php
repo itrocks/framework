@@ -521,8 +521,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					$class_name, $list_settings_before_read, $search
 				),
 				'settings'              => $list_settings,
-				'title'                 => $list_settings->title(),
-				'selected'              => 'selected'
+				'selected'              => 'selected',
+				'title'                 => $list_settings->title()
 			]
 		);
 		// buttons
@@ -682,7 +682,25 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		return $data;
 	}
 
-	//-------------------------------------------------------------------------------------- readData
+	//-------------------------------------------------------------------------------- readDataSelect
+	/**
+	 * @param $class_name      string Class name for the read object
+	 * @param $properties_path string[] the list of the columns names : only those properties
+	 *                         will be read. There are 'column.sub_column' to get values from linked
+	 *                         objects from the same data source
+	 * @param $search          array Search array for filter, associating properties names to
+	 *                         matching search value too.
+	 * @param $options         Option[] some options for advanced search
+	 * @return List_Data A list of read records. Each record values (may be objects) are
+	 *         stored in the same order than columns.
+	 */
+	protected function readDataSelect(
+		$class_name, array $properties_path, array $search, array $options
+	) {
+		return Dao::select($class_name, $properties_path, $search, $options);
+	}
+
+	//----------------------------------------------------------------------------------- readObjects
 	/**
 	 * Return only all search objects
 	 *
@@ -707,24 +725,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$options[] = $count;
 		}
 		return Dao::search($search, $class_name, $options);
-	}
-
-	//-------------------------------------------------------------------------------- readDataSelect
-	/**
-	 * @param $class_name      string Class name for the read object
-	 * @param $properties_path string[] the list of the columns names : only those properties
-	 *                         will be read. There are 'column.sub_column' to get values from linked
-	 *                         objects from the same data source
-	 * @param $search          array Search array for filter, associating properties names to
-	 *                         matching search value too.
-	 * @param $options         Option[] some options for advanced search
-	 * @return List_Data A list of read records. Each record values (may be objects) are
-	 *         stored in the same order than columns.
-	 */
-	protected function readDataSelect(
-		$class_name, array $properties_path, array $search, array $options
-	) {
-		return Dao::select($class_name, $properties_path, $search, $options);
 	}
 
 	//--------------------------------------------------------------------- removeInvisibleProperties

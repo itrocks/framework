@@ -129,7 +129,7 @@ class Default_List_Row implements List_Row
 
 	//-------------------------------------------------------------------------------------------- id
 	/**
-	 * @return object
+	 * @return mixed
 	 */
 	public function id()
 	{
