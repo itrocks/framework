@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Webservice\Json;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
@@ -10,7 +11,6 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
 
@@ -73,7 +73,7 @@ class Json_Controller implements Default_Feature_Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
@@ -97,7 +97,7 @@ class Json_Controller implements Default_Feature_Controller
 			$source_object      = Dao::read($parameters['id'], $element_class_name);
 			return $this->buildJson($source_object);
 		}
-		//search and return json collection
+		// advanced search returns a json collection
 		elseif ($parameters['search']) {
 			$objects = $this->searchObjects($class_name, $parameters);
 			return json_encode($objects);
@@ -142,50 +142,46 @@ class Json_Controller implements Default_Feature_Controller
 
 	//--------------------------------------------------------------------------------- searchObjects
 	/**
-	 * method to search objects by parameters
-	 * $parameters['search']  = search criteria
-	 *        ex : search[prop1]=foo,foo2&search[prop.prop2]=bar
+	 * Method to search objects by parameters
 	 *
-	 * $parameters['limit']   = limit number of results,
-	 *        if set $parameters['limit']=1 return object else return an object collection
-	 *
-	 * $parameters['get_properties'] = return only specified properties
+	 * $parameters :
+	 * - search : search criteria @example search[prop1]=foo,foo2&search[prop.prop2]=bar
+	 * - limit : limit number of results
+	 *   if set $parameters['limit'] = 1, then returns an object, else returns an objects collection
+	 * - get_properties : return only specified property names values
 	 *
 	 * @param $class_name string
 	 * @param $parameters array
 	 * @return array|object|object[]
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	protected function searchObjects($class_name, $parameters)
 	{
 		$element_class_name   = Names::setToClass($class_name);
 		$search               = [];
-		$search_options       = [];
 		$search_array_builder = new Search_Array_Builder();
+		$search_options       = [];
 
-		foreach ($parameters['search'] as $property => $value) {
-			if (empty($property) || empty($value)) {
-				throw new \Exception("Invalid search parameter (value or property is empty)");
+		foreach ($parameters['search'] as $property_name => $value) {
+			if (!($property_name && $value)) {
+				throw new Exception('Invalid search parameter (value or property is empty)');
 			}
-			if (!(new Reflection_Property($element_class_name, $property))) {
-				throw new \Exception("Search property $property does not exist");
+			if (!property_exists($element_class_name, $property_name)) {
+				throw new Exception("Search property $property_name does not exist");
 			}
-			$search = array_merge(
-				$search_array_builder->build($property, $value),
-				$search
-			);
+			$search = array_merge($search_array_builder->build($property_name, $value), $search);
 		}
 		if (isset($parameters['limit'])) {
 			$search_options[] = Dao::limit($parameters['limit']);
 		}
 		if (isset($parameters['get_properties']) && $parameters['get_properties']) {
-			$data    = Dao::select(
+			$data = Dao::select(
 				$element_class_name, $parameters['get_properties'], $search, $search_options
 			);
-			$objects = [];
-			$nb_rows = count($data->getRows());
+			$objects    = [];
+			$rows_count = count($data->getRows());
 			foreach ($data->getRows() as $row) {
-				if (isset($parameters['limit']) && $parameters['limit'] == 1 && $nb_rows == 1) {
+				if (isset($parameters['limit']) && ($parameters['limit'] == 1) && ($rows_count == 1)) {
 					$objects = $row->getValues();
 				}
 				else {
@@ -195,7 +191,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		else {
 			$objects = $this->search($search, $element_class_name, $search_options);
-			if (isset($parameters['limit']) && $parameters['limit'] == 1 && $objects) {
+			if (isset($parameters['limit']) && ($parameters['limit'] == 1) && $objects) {
 				$objects = reset($objects);
 			}
 		}
