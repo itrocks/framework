@@ -6,7 +6,7 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Plugin\Configurable;
-use ITRocks\Framework\Plugin\Is_Plugin_Singleton;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Session;
 use Serializable;
 
@@ -22,7 +22,7 @@ use Serializable;
  */
 class Application_Updater implements Configurable, Serializable
 {
-	use Is_Plugin_Singleton;
+	use Has_Get;
 
 	//------------------------------------------------------------------ DELAY_BETWEEN_TWO_LOCK_TRIES
 	const DELAY_BETWEEN_TWO_LOCK_TRIES = 'delay_between_two_lock_tries';
