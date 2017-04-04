@@ -112,9 +112,6 @@ class Select
 			elseif ($option instanceof Option\Distinct) {
 				$this->additional_select_clause .= SP . 'DISTINCT';
 			}
-			elseif ($option instanceof Option\Max_Execution_Time){
-				$this->additional_select_clause .= SP . $option->getSql();
-			}
 			elseif ($option instanceof Option\Group_By) {
 				$columns = new Columns($this->class_name, $option->properties, $this->joins);
 				$columns->expand_objects  = false;
@@ -142,6 +139,9 @@ class Select
 				if ($order_by) {
 					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
+			}
+			elseif ($option instanceof Option\Time_Limit){
+				$this->additional_select_clause .= SP . $option->getSql();
 			}
 		}
 		ksort($options);
@@ -183,7 +183,7 @@ class Select
 		if (is_array($where)) {
 			$sql            = '';
 			$options_inside = [];
-			$sql_max_execution_time = '';
+			$time_limit_sql = '';
 			foreach ($options as $option) {
 				if (
 					(substr($option, 0, 10) !== (LF . 'ORDER BY '))
@@ -193,8 +193,8 @@ class Select
 				}
 			}
 			foreach ($this->options as $option){
-				if ($option instanceof Option\Max_Execution_Time){
-					$sql_max_execution_time = SP . $option->getSql();
+				if ($option instanceof Option\Time_Limit){
+					$time_limit_sql = SP . $option->getSql();
 					break;
 				}
 			}
@@ -204,15 +204,15 @@ class Select
 				}
 				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
 			}
-			return Builder::SELECT . $sql_max_execution_time . SP . '*' . LF
+			return Builder::SELECT . $time_limit_sql . SP . '*' . LF
 				. 'FROM (' . LF . $sql . LF . ') t0'
 				. LF . 'GROUP BY t0.id' . join('', $options);
 		}
 		return Builder::SELECT . $this->additional_select_clause . SP . $columns
-				. LF . 'FROM' . SP . $tables
-				. $where
-				. join('', $options);
-		}
+			. LF . 'FROM' . SP . $tables
+			. $where
+			. join('', $options);
+	}
 
 	//---------------------------------------------------------------------------------- getClassName
 	/**

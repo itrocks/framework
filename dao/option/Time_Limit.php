@@ -7,33 +7,33 @@ use ITRocks\Framework\Dao\Option;
 /**
  * A DAO Max_Execution_Time option
  */
-class Max_Execution_Time implements Option
+class Time_Limit implements Option
 {
 
 	//------------------------------------------------------------------------------ ERROR_CODE_MYSQL
 	const ERROR_CODE_MYSQL = 256;
 
 	//----------------------------------------------------------------------------------------- $time
-	private $time;
+	private $time_limit;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Max_Execution_Time constructor.
-	 * @param int $time in seconds
+	 * @param $time_limit integer Data link query execution time limit in seconds
 	 */
-	public function __construct($time = 0)
+	public function __construct($time_limit = 0)
 	{
-		$this->time = $time * 1000;//convert second in milliseconds
+		// convert second in milliseconds
+		$this->time_limit = $time_limit * 1000;
 	}
 
 	//---------------------------------------------------------------------------------- getErrorCode
 	/**
-	 * @return int|null
+	 * @return integer|null
 	 */
 	public static function getErrorCode()
 	{
 		$current = Dao::current();
-		if (is_a($current, Dao\Mysql\Link::class)) {
+		if ($current instanceof Dao\Mysql\Link) {
 			return self::ERROR_CODE_MYSQL;
 		}
 		return null;
@@ -48,12 +48,14 @@ class Max_Execution_Time implements Option
 	{
 		$current = Dao::current();
 
-		//MySQL 5.7.4 introduces the ability to set server side execution time limits.
-		if ($current instanceof Dao\Mysql\Link
-			&& mysqli_get_server_version($current->getConnection()) >= 50704
+		// MySQL 5.7.4 introduces the ability to set server side execution time limits
+		if (
+			($current instanceof Dao\Mysql\Link)
+			&& ($current->getConnection()->server_version >= 50704)
 		) {
-			return '/*+ MAX_EXECUTION_TIME(' . $this->time . ') */';
+			return '/*+ MAX_EXECUTION_TIME(' . $this->time_limit . ') */';
 		}
+
 		return '';
 	}
 

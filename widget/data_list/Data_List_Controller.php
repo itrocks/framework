@@ -486,15 +486,14 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		catch (Exception $exception) {
 			//set empty list result
 			$data  = new Default_List_Data($class_name, []);
-			if ($exception->getCode() == Option\Max_Execution_Time::getErrorCode()){
+			if ($exception->getCode() == Option\Time_Limit::getErrorCode()){
 				$error = new Exception(
-					Loc::tr(
-						"Maximum statement execution time exceeded, 
-						please try to optimise your criteria for your search."
-					)
+					Loc::tr('Maximum statement execution time exceeded') . ', '
+					. Loc::tr('please enter more acute search criteria') . DOT
 				);
 				$this->errors[] = $error;
-			}else{
+			}
+			else {
 				//set an error to display
 				$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
 				$this->errors[] = $error;
@@ -622,7 +621,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $class_name    string
 	 * @param $list_settings Data_List_Settings
 	 * @param $search        array search-compatible search array
-	 * @param $options       array
+	 * @param $options       Option[]
 	 * @return List_Data
 	 */
 	public function readData(
@@ -640,7 +639,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		if (!$options) {
-			$options = [$list_settings->sort, Dao::doublePass(), Dao::maxExecutionTime(180)];
+			$options = [$list_settings->sort, Dao::doublePass(), Dao::timeLimit(180)];
 		}
 		$count = null;
 		foreach ($options as $option) {
