@@ -21,7 +21,7 @@ class Default_List_Row implements List_Row
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object
+	 * @var object|mixed Object or object identifier
 	 */
 	private $object;
 
@@ -34,7 +34,7 @@ class Default_List_Row implements List_Row
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
-	 * @param $object     object
+	 * @param $object     object|mixed
 	 * @param $values     string[]
 	 */
 	public function __construct($class_name, $object, array $values)
@@ -133,7 +133,7 @@ class Default_List_Row implements List_Row
 	 */
 	public function id()
 	{
-		return Dao::getObjectIdentifier($this->object);
+		return is_object($this->object) ? Dao::getObjectIdentifier($this->object) : $this->object;
 	}
 
 	//-------------------------------------------------------------------------------------- setValue
