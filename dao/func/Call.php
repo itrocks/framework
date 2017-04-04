@@ -9,8 +9,8 @@ use ITRocks\Framework\Sql\Builder\Columns;
 class Call extends Column
 {
 
+	//------------------------------------------------------------------ Some SQL functions constants
 	const DISTINCT = 'DISTINCT';
-	//------------------------------------------------------------------------------------------ TRIM
 	const TRIM     = 'TRIM';
 
 	//------------------------------------------------------------------------------------- $function

@@ -9,11 +9,11 @@ use ITRocks\Framework\Sql\Builder\Columns;
 class Group_By extends Column
 {
 
+	//-------------------------------------------------------------------------- values for $function
 	const AVERAGE = 'AVG';
 	const COUNT   = 'COUNT';
 	const MAX     = 'MAX';
 	const MIN     = 'MIN';
-	//------------------------------------------------------------------------------------------- SUM
 	const SUM     = 'SUM';
 
 	//------------------------------------------------------------------------------------- $function

@@ -12,20 +12,12 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 class Logical implements Negate, Where
 {
 
-	//---------------------------------------------------------------------------------- AND_OPERATOR
-	const AND_OPERATOR = ' AND ';
-
-	//---------------------------------------------------------------------------------- NOT_OPERATOR
-	const NOT_OPERATOR = 'NOT ';
-
-	//----------------------------------------------------------------------------------- OR_OPERATOR
-	const OR_OPERATOR = ' OR ';
-
-	//--------------------------------------------------------------------------------- TRUE_OPERATOR
+	//-------------------------------------------------------------------------- values for $operator
+	const AND_OPERATOR  = ' AND ';
+	const NOT_OPERATOR  = 'NOT ';
+	const OR_OPERATOR   = ' OR ';
 	const TRUE_OPERATOR = '';
-
-	//---------------------------------------------------------------------------------- XOR_OPERATOR
-	const XOR_OPERATOR = ' XOR ';
+	const XOR_OPERATOR  = ' XOR ';
 
 	//----------------------------------------------------------------------------------------- HUMAN
 	const HUMAN = [
