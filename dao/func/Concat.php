@@ -54,9 +54,7 @@ class Concat extends Column
 			$separator = $this->separator ? (', ' . Value::escape($this->separator) . ', ') : ', ';
 			$sql       = 'CONCAT(' . join($separator, $columns) . ')';
 			if (!empty($property_path)) {
-				$sql .= $this->aliasSql(
-					$builder, $property_path
-				);
+				$sql .= $this->aliasSql($builder, $property_path);
 			}
 		}
 		return $sql;
