@@ -78,11 +78,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
 			}
 
-			if (
-				!$this->tooltip
-				&& (isset($property->tooltip))
-				&& ($property->tooltip != false)
-			) {
+			if ($property->tooltip && !$this->tooltip) {
 				$this->tooltip = $property->tooltip;
 			}
 
