@@ -2,16 +2,45 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use Exception;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Default_List_Data;
 
 /**
  * Dao functions unit tests
  */
 class Tests extends Test
 {
+
+	//--------------------------------------------------------------------------- testConcatDaoSelect
+	public function testConcatDaoSelect()
+	{
+		$class_name = Order::class;
+		$properties = ['string_concat' => new Concat(['number', 'date'])];
+		$this->assume(
+			__METHOD__,
+			Dao::select($class_name, $properties),
+			new Default_List_Data($class_name, $properties)
+		);
+	}
+
+	//------------------------------------------------------------------------------ testConcatSelect
+	public function testConcatSelect()
+	{
+		$builder = new Select(
+			Order::class,
+			['string_concat' => new Concat(['number', 'date'])]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT CONCAT(t0.`number`, " ", t0.`date`) AS `string_concat`' . LF
+			. 'FROM `orders` t0'
+		);
+	}
 
 	//---------------------------------------------------------------------------------- testInSelect
 	public function testInSelect()
