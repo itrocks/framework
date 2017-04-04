@@ -237,7 +237,9 @@ $('document').ready(function()
 				select_all[$this.id]         = false;
 				selection[$this.id]          = [];
 			}
-			checkboxes.change(function() {
+
+			checkboxes.change(function()
+			{
 				if (select_all[$this.id]) {
 					if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) == -1)) {
 						excluded_selection[$this.id].push(this.value);
@@ -269,9 +271,9 @@ $('document').ready(function()
 			var check_select_buttons = function(check, type)
 			{
 				if (type == 'all') {
-					select_all[$this.id] = check;
 					// Re-initialize selection
 					excluded_selection[$this.id] = [];
+					select_all[$this.id]         = check;
 					selection[$this.id]          = [];
 					$this.find('table>tbody>tr>td>input[type=checkbox]').prop('checked', check);
 				}
@@ -297,6 +299,11 @@ $('document').ready(function()
 				return check_select_buttons(false, 'all');
 			});
 
+			$this.find('.select_count>ul>li>.deselect_visible').click(function ()
+			{
+				return check_select_buttons(false);
+			});
+
 			$this.find('.select_count>ul>li>.select_all').click(function ()
 			{
 				return check_select_buttons(true, 'all');
@@ -305,11 +312,6 @@ $('document').ready(function()
 			$this.find('.select_count>ul>li>.select_visible').click(function ()
 			{
 				return check_select_buttons(true);
-			});
-
-			$this.find('.select_count>ul>li>.deselect_visible').click(function ()
-			{
-				return check_select_buttons(false);
 			});
 
 			$this.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
