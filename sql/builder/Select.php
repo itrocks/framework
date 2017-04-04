@@ -38,7 +38,7 @@ class Select
 	 */
 	private $options;
 
-	//--------------------------------------------------------------------- $additional_select_clause
+	//--------------------------------------------------------------------------------------- $select
 	/**
 	 * @var string[]
 	 */
@@ -141,7 +141,7 @@ class Select
 					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
 			}
-			elseif ($option instanceof Option\Time_Limit){
+			elseif (($option instanceof Option\Time_Limit) && $option->time_limit) {
 				$this->select[10] = SP . $option->getSql();
 			}
 		}

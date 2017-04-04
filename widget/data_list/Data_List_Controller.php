@@ -68,6 +68,16 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	private $errors = [];
 
+	//----------------------------------------------------------------------------------- $time_limit
+	/**
+	 * The execution time limit for data list read data query.
+	 * You can change this value to change this limit.
+	 * A value of 0 or null will mean 'no limit'.
+	 *
+	 * @var integer
+	 */
+	public $time_limit = 30;
+
 	//-------------------------------------------------------------------------- applyGettersToValues
 	/**
 	 * In Dao::select() result : replace values with their matching result of @user_getter / @getter
@@ -470,7 +480,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count                    = new Count();
 		$options                  = [
-			$count, Dao::doublePass(), $list_settings->sort, Dao::timeLimit(30)
+			$count, Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)
 		];
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
@@ -641,7 +651,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 
 		if (!$options) {
-			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit(30)];
+			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)];
 		}
 		$count = null;
 		foreach ($options as $option) {

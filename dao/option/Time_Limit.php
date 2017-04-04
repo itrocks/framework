@@ -13,17 +13,20 @@ class Time_Limit implements Option
 	//------------------------------------------------------------------------------ ERROR_CODE_MYSQL
 	const ERROR_CODE_MYSQL = 256;
 
-	//----------------------------------------------------------------------------------------- $time
-	private $time_limit;
+	//----------------------------------------------------------------------------------- $time_limit
+	/**
+	 * @var integer Effective Query execution time limit in milliseconds
+	 */
+	public $time_limit;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $time_limit integer Data link query execution time limit in seconds
+	 * @param $time_limit integer Data link query execution time limit in seconds. 0 = no limit
 	 */
 	public function __construct($time_limit = 0)
 	{
 		// convert second in milliseconds
-		$this->time_limit = $time_limit * 1000;
+		$this->time_limit = round($time_limit * 1000);
 	}
 
 	//---------------------------------------------------------------------------------- getErrorCode
@@ -52,6 +55,7 @@ class Time_Limit implements Option
 		if (
 			($current instanceof Dao\Mysql\Link)
 			&& ($current->getConnection()->server_version >= 50704)
+			&& $this->time_limit
 		) {
 			return '/*+ MAX_EXECUTION_TIME(' . $this->time_limit . ') */';
 		}
