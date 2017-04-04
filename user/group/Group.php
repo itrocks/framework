@@ -34,9 +34,20 @@ class Group
 	 */
 	public function getLowLevelFeatures()
 	{
+		/** @var $features Low_Level_Feature[] */
 		$features = [];
 		foreach ($this->features as $feature) {
-			$features = array_merge($features, $feature->getAllFeatures());
+			foreach ($feature->getAllFeatures() as $path => $new_feature) {
+				if (isset($features[$path])) {
+					$old_feature = $features[$path];
+					foreach ($new_feature->options as $key => $option) {
+						$old_feature->options[$key] = $option;
+					}
+				}
+				else {
+					$features[$path] = $new_feature;
+				}
+			}
 		}
 		return $features;
 	}
