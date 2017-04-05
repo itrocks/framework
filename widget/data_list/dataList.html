@@ -40,11 +40,11 @@
 						<a class="popup" href="/ITRocks/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
 					</th>
 					<!--properties-->
-					<th data-property="{path}" class="sort{sort} {?htmlReverse} property">
+					<th data-property="{path}" class="{path.@cssClass} sort{sort} {?htmlReverse} property">
 						<a href="/{--@class.path}/{@feature}?{htmlSortLink}={path}" target="#main" title="{title}">{shortTitle}</a>
 					</th>
 					<!--sample-->
-					<th data-property="column2" class="sort property">
+					<th data-property="column2" class="column2 sort property">
 						<a href="/Class/feature?sort=column2" target="#main">column2</a>
 					</th>
 					<!--properties-->
@@ -52,9 +52,9 @@
 				<tr class="search">
 					<td colspan="2"></td>
 					<!--properties-->
-					<td>{search.@edit('search[{path.@escapeName}]','true','true')}</td>
+					<td class="{path.@cssClass}">{search.@edit('search[{path.@escapeName}]','true','true')}</td>
 					<!--sample-->
-					<td><input name="search[column2]"></td>
+					<td class="column2"><input name="search[column2]"></td>
 					<!--properties-->
 				</tr>
 			</thead>
@@ -70,35 +70,35 @@
 					</td>
 					<!--@isFirst?-->
 					<td><input type="checkbox" value="{id}"></td>
-					<!--formatValues:1-->
-					<td>
+					<!--formatValuesEx:1-->
+					<td class="{path.@cssClass} value">
 						<!----class_name?-->
 						<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="{--getOutputLink}" target="#main">{value.nbsp}</a>
 						<!----class_name?-->
 					</td>
-					<!--formatValues-->
-					<!--formatValues:2----count-->
-					<td>{value}</td>
-					<!--formatValues-->
+					<!--formatValuesEx-->
+					<!--formatValuesEx:2----count-->
+					<td class="{path.@cssClass} value">{value}</td>
+					<!--formatValuesEx-->
 				</tr>
 				<!--sample-->
 				<tr>
 					<td></td>
 					<td><input type="checkbox"></td>
-					<td><a href="/Class/2">code2</a></td>
-					<td>3,18</td>
+					<td class="column1"><a href="/Class/2">code2</a></td>
+					<td class="column2">3,18</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td><input type="checkbox"></td>
-					<td><a href="/Class/3">code3</a></td>
-					<td>2,29</td>
+					<td class="column1"><a href="/Class/3">code3</a></td>
+					<td class="column2">2,29</td>
 				</tr>
 				<tr>
 					<td></td>
 					<td><input type="checkbox"></td>
-					<td><a href="/Class/4">code4</a></td>
-					<td>12,39</td>
+					<td class="column1"><a href="/Class/4">code4</a></td>
+					<td class="column2">12,39</td>
 				</tr>
 				<!--elements-->
 			</tbody>

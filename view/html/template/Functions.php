@@ -92,6 +92,18 @@ class Functions
 		return $this->displayableClassNameOf(reset($template->objects));
 	}
 
+	//----------------------------------------------------------------------------------- getCssClass
+	/**
+	 * Escape strings that will be used as css class names. in HTML DOT will be replaced by '-'
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getCssClass(Template $template)
+	{
+		return str_replace(DOT, '-', reset($template->objects));
+	}
+
 	//-------------------------------------------------------------------------------------- getCount
 	/**
 	 * Returns array count

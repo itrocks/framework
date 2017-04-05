@@ -58,6 +58,7 @@ class Default_List_Row implements List_Row
 	 * Return values ready for display
 	 *
 	 * @return string[]
+	 * @see formatValuesEx
 	 */
 	public function formatValues()
 	{
@@ -72,6 +73,25 @@ class Default_List_Row implements List_Row
 					)
 				);
 			$values[$property_path] = $property_view->formatValue($value);
+		}
+		return $values;
+	}
+
+	//-------------------------------------------------------------------------------- formatValuesEx
+	/**
+	 * Return values ready for display as an array with property_path and value for each row
+	 * This is more suitable than formatValues() if you want your template to deal with property_path
+	 *
+	 * @return string[]
+	 */
+	public function formatValuesEx()
+	{
+		$values = $this->formatValues();
+		foreach ($values as $property_path => $value) {
+			$values[$property_path] = [
+				'path' => $property_path,
+				'value' => $value,
+			];
 		}
 		return $values;
 	}

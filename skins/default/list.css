@@ -79,7 +79,7 @@
       .list.window > table > tbody > tr:nth-child(odd) {
         background-color: white; }
       .list.window > table > tbody > tr:hover {
-        background-color: #aedc5f; }
+        background-color: #aedc5f !important; }
       .list.window > table > tbody > tr > td {
         border-right: 1px dotted lightgray;
         padding: 5px 3px 0;
