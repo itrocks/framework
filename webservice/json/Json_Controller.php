@@ -11,6 +11,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
 
@@ -147,12 +148,11 @@ class Json_Controller implements Default_Feature_Controller
 	 * $parameters :
 	 * - search : search criteria @example search[prop1]=foo,foo2&search[prop.prop2]=bar
 	 * - limit : limit number of results
-	 *   if set $parameters['limit'] = 1, then returns an object, else returns an objects collection
 	 * - get_properties : return only specified property names values
 	 *
 	 * @param $class_name string
 	 * @param $parameters array
-	 * @return array|object|object[]
+	 * @return array|object[]
 	 * @throws Exception
 	 */
 	protected function searchObjects($class_name, $parameters)
@@ -162,14 +162,14 @@ class Json_Controller implements Default_Feature_Controller
 		$search_array_builder = new Search_Array_Builder();
 		$search_options       = [];
 
-		foreach ($parameters['search'] as $property_name => $value) {
-			if (!($property_name && $value)) {
+		foreach ($parameters['search'] as $property_path => $value) {
+			if (!($property_path && $value)) {
 				throw new Exception('Invalid search parameter (value or property is empty)');
 			}
-			if (!property_exists($element_class_name, $property_name)) {
-				throw new Exception("Search property $property_name does not exist");
+			if (!Reflection_Property::exists($element_class_name, $property_path)) {
+				throw new Exception("Search property $property_path does not exist");
 			}
-			$search = array_merge($search_array_builder->build($property_name, $value), $search);
+			$search = array_merge($search_array_builder->build($property_path, $value), $search);
 		}
 		if (isset($parameters['limit'])) {
 			$search_options[] = Dao::limit($parameters['limit']);
@@ -178,22 +178,13 @@ class Json_Controller implements Default_Feature_Controller
 			$data = Dao::select(
 				$element_class_name, $parameters['get_properties'], $search, $search_options
 			);
-			$objects    = [];
-			$rows_count = count($data->getRows());
+			$objects = [];
 			foreach ($data->getRows() as $row) {
-				if (isset($parameters['limit']) && ($parameters['limit'] == 1) && ($rows_count == 1)) {
-					$objects = $row->getValues();
-				}
-				else {
-					$objects[] = $row->getValues();
-				}
+				$objects[$row->id()] = $row->getValues();
 			}
 		}
 		else {
 			$objects = $this->search($search, $element_class_name, $search_options);
-			if (isset($parameters['limit']) && ($parameters['limit'] == 1) && $objects) {
-				$objects = reset($objects);
-			}
 		}
 		return $objects;
 	}
