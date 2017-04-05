@@ -82,6 +82,11 @@ fieldset {
 
 		>label, >div {
 			display: table-cell;
+			white-space: pre-line;
+
+			>* {
+				white-space: initial;
+			}
 		}
 
 		/* standard field */

@@ -64,7 +64,10 @@ fieldset {
     /* columns */
     /* multiple field */ }
     fieldset > div:not(.hidden):not(.tabber) > label, fieldset > div:not(.hidden):not(.tabber) > div {
-      display: table-cell; }
+      display: table-cell;
+      white-space: pre-line; }
+      fieldset > div:not(.hidden):not(.tabber) > label > *, fieldset > div:not(.hidden):not(.tabber) > div > * {
+        white-space: initial; }
     fieldset > div:not(.hidden):not(.tabber):not(.multiple):hover {
       background-color: #defdaf; }
     fieldset > div:not(.hidden):not(.tabber):not(.multiple) > label {
