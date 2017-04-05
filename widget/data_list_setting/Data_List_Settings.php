@@ -142,7 +142,7 @@ class Data_List_Settings extends Custom_Settings
 			$reflection_property = (Reflection_Property::exists($class_name, $property_path))
 				? new Reflection_Property($class_name, $property_path) : null;
 			if (
-				$reflection_property == null
+				!$reflection_property
 				|| !$reflection_property->isPublic()
 				|| !$reflection_property->isVisible(false)
 			) {
