@@ -127,6 +127,27 @@ function arrayFormRevert($array, $case_3 = true)
 	}
 }
 
+//-------------------------------------------------------------------------------- arrayInsertAfter
+/**
+ * Insert array after key
+ * if key not exist : insert array to the end
+ *
+ * @param $array array
+ * @param $array_insert array
+ * @param $key string|boolean
+ */
+function arrayInsertAfter(array &$array, array $array_insert, $key = false)
+{
+	$second_array = [];
+	if ($key !== false) {
+		$key_position = array_search($key, array_keys($array));
+		if ($key_position !== false) {
+			$second_array = array_splice($array, $key_position + 1);
+		}
+	}
+	$array = array_merge($array, $array_insert, $second_array);
+}
+
 //----------------------------------------------------------------------------- arrayMergeRecursive
 /**
  * Merges two arrays, with recursion
@@ -185,27 +206,6 @@ function arrayNamedValues(array $array)
 		}
 	}
 	return $result;
-}
-
-//---------------------------------------------------------------------------------- arrayPushAfter
-/**
- * Push array after key
- * if key not exist : insert array to the end
- *
- * @param $array array
- * @param $array_push array
- * @param $key string
- */
-function arrayPushAfter(array &$array, array $array_push, $key)
-{
-	$second_array = [];
-	$key_position = array_search($key, array_keys($array));
-
-	if ($key_position !== false) {
-		$second_array = array_splice($array, $key_position+1);
-	}
-
-	$array = array_merge($array, $array_push, $second_array);
 }
 
 //---------------------------------------------------------------------------------------- arraySet
