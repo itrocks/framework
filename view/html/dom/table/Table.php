@@ -40,7 +40,7 @@ class Table extends Element
 		if (isset($this->head)) $content .= LF . $this->head;
 		if (isset($this->body)) $content .= LF . $this->body;
 		$this->setContent($content . LF);
-		return LF . parent::__toString() . LF;
+		return parent::__toString();
 	}
 
 }
