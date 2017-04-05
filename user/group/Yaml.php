@@ -62,6 +62,15 @@ class Yaml
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return yaml_emit($this->data);
+	}
+
 	//------------------------------------------------------------------------------------ addFeature
 	/**
 	 * Adds a low-level feature
