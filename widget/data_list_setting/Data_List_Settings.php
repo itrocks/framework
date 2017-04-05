@@ -135,13 +135,14 @@ class Data_List_Settings extends Custom_Settings
 	public function cleanup()
 	{
 		$this->initProperties();
-		$class_name = $this->getClassName();
+		$class_name    = $this->getClassName();
 		$changes_count = 0;
 		// properties
 		foreach (array_keys($this->properties) as $property_path) {
-			$reflection_property = new Reflection_Property($class_name, $property_path);
+			$reflection_property = (Reflection_Property::exists($class_name, $property_path))
+				? new Reflection_Property($class_name, $property_path) : null;
 			if (
-				!Reflection_Property::exists($class_name, $property_path)
+				$reflection_property == null
 				|| !$reflection_property->isPublic()
 				|| !$reflection_property->isVisible(false)
 			) {
