@@ -36,9 +36,9 @@ trait Has_Groups
 	 */
 	public function getAccessOptions($uri)
 	{
-		$cache = Low_Level_Features_Cache::current();
+		$cache    = Low_Level_Features_Cache::current();
 		$features = $cache->features;
-		$uri = new Uri($uri);
+		$uri      = new Uri($uri);
 		$class_name = Builder::current()->sourceClassName(
 			Names::setToClass($uri->controller_name, false)
 		);
@@ -96,16 +96,16 @@ trait Has_Groups
 		if ($group instanceof Group) {
 			$identifier = Dao::getObjectIdentifier($group);
 		}
-		// string give, this is the group name
-		else if (is_string($group)) {
+		// string given : this is the name of the group
+		elseif (is_string($group)) {
 			$group = Dao::searchOne(['name' => $group], Group::class);
 			if (is_object($group)) {
 				$identifier = Dao::getObjectIdentifier($group);
 			}
 		}
 		// integer given this is identifier
-		else if (isStrictNumeric($group)) {
-			$identifier = (int)$group;
+		elseif (isStrictNumeric($group)) {
+			$identifier = (integer)$group;
 		}
 
 		if (!empty($identifier)) {

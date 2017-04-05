@@ -26,6 +26,40 @@ class Group
 	 */
 	public $features;
 
+	//--------------------------------------------------------------------------------------- $groups
+	/**
+	 * A group can include several others groups
+	 *
+	 * @foreignlink super_group
+	 * @link Map
+	 * @var Group[]
+	 */
+	public $groups;
+
+	//--------------------------------------------------------------------------- addLowLevelFeatures
+	/**
+	 * Add new features to an existing list of features
+	 *
+	 * If a feature already exists : accumulate options
+	 *
+	 * @param $features     Low_Level_Feature[] existing features (list to grow)
+	 * @param $new_features Low_Level_Feature[] added features
+	 */
+	private function addLowLevelFeatures(array &$features, array $new_features)
+	{
+		foreach ($new_features as $path => $new_feature) {
+			if (isset($features[$path])) {
+				$old_feature = $features[$path];
+				foreach ($new_feature->options as $key => $option) {
+					$old_feature->options[$key] = $option;
+				}
+			}
+			else {
+				$features[$path] = $new_feature;
+			}
+		}
+	}
+
 	//--------------------------------------------------------------------------- getLowLevelFeatures
 	/**
 	 * Gets all features from $this->includes + $this->features
@@ -36,18 +70,13 @@ class Group
 	{
 		/** @var $features Low_Level_Feature[] */
 		$features = [];
+		// included groups first
+		foreach ($this->groups as $group) {
+			$this->addLowLevelFeatures($features, $group->getLowLevelFeatures());
+		}
+		// then features
 		foreach ($this->features as $feature) {
-			foreach ($feature->getAllFeatures() as $path => $new_feature) {
-				if (isset($features[$path])) {
-					$old_feature = $features[$path];
-					foreach ($new_feature->options as $key => $option) {
-						$old_feature->options[$key] = $option;
-					}
-				}
-				else {
-					$features[$path] = $new_feature;
-				}
-			}
+			$this->addLowLevelFeatures($features, $feature->getAllFeatures());
 		}
 		return $features;
 	}
