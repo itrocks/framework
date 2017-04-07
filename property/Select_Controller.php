@@ -58,30 +58,20 @@ class Select_Controller implements Feature_Controller
 			$this->composite_link_property = $link_class->getCompositeProperty();
 			/** @var $source_properties Reflection_Property[] */
 			$source_properties = $link_class->getProperties([T_EXTENDS, T_USE]);
-			$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
-			foreach ($source_properties as $property_name => $property) {
-				if (
-					(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
-					&& (!$this->composite_link_property || ($property->name !== $this->composite_link_property->name))
-					&& $property->isPublic()
-					&& $property->isVisible(false)
-				) {
-					$properties[$property_name] = $property;
-				}
-			}
 		}
 		else {
 			/** @var $source_properties Reflection_Property[] */
 			$source_properties = $class->getProperties([T_EXTENDS, T_USE]);
-			$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
-			foreach ($source_properties as $property_name => $property) {
-				if (
-					(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
-					&& $property->isPublic()
-					&& $property->isVisible(false)
-				) {
-					$properties[$property_name] = $property;
-				}
+		}
+		$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
+		foreach ($source_properties as $property_name => $property) {
+			if (
+				(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
+				&& (!$this->composite_link_property || ($property->name !== $this->composite_link_property->name))
+				&& $property->isPublic()
+				&& $property->isVisible(false)
+			) {
+				$properties[$property_name] = $property;
 			}
 		}
 		return $properties;
