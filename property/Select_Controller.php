@@ -22,6 +22,18 @@ use ITRocks\Framework\View;
 class Select_Controller implements Feature_Controller
 {
 
+	//--------------------------------------------------------------------------- $composite_property
+	/**
+	 * @var Reflection_Property
+	 */
+	private $composite_property = null;
+
+	//---------------------------------------------------------------------- $composite_link_property
+	/**
+	 * @var Reflection_Property
+	 */
+	private $composite_link_property = null;
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @param $class                   Reflection_Class
@@ -32,26 +44,26 @@ class Select_Controller implements Feature_Controller
 	{
 		$properties = [];
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {
-			$composite_property = call_user_func(
+			$this->composite_property = call_user_func(
 				[$class->name, 'getCompositeProperties'],
 				$composite_class_name
 			);
-			$composite_property = reset($composite_property);
+			$this->composite_property = reset($this->composite_property);
 		}
 		else {
-			$composite_property = null;
+			$this->composite_property = null;
 		}
 		if (Link_Annotation::of($class)->value) {
 			$link_class              = new Link_Class($class->name);
-			$composite_link_property = $link_class->getCompositeProperty();
+			$this->composite_link_property = $link_class->getCompositeProperty();
 			/** @var $source_properties Reflection_Property[] */
 			$source_properties = Replaces_Annotations::removeReplacedProperties(
 				$link_class->getProperties([T_EXTENDS, T_USE])
 			);
 			foreach ($source_properties as $property_name => $property) {
 				if (
-					(empty($composite_property) || ($property->name !== $composite_property->name))
-					&& (!$composite_link_property || ($property->name !== $composite_link_property->name))
+					(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
+					&& (!$this->composite_link_property || ($property->name !== $this->composite_link_property->name))
 					&& $property->isPublic()
 					&& $property->isVisible(false)
 				) {
@@ -66,7 +78,7 @@ class Select_Controller implements Feature_Controller
 			);
 			foreach ($source_properties as $property_name => $property) {
 				if (
-					(empty($composite_property) || ($property->name !== $composite_property->name))
+					(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
 					&& $property->isPublic()
 					&& $property->isVisible(false)
 				) {
