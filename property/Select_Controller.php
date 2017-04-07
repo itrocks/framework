@@ -36,6 +36,8 @@ class Select_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------ filterProperties
 	/**
+	 * Filter a list of properties by removing properties that should not be visible
+	 *
 	 * @param $source_properties Reflection_Property_Value[]
 	 * @return Reflection_Property_Value[]
 	 */
@@ -62,6 +64,8 @@ class Select_Controller implements Feature_Controller
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
+	 * Get list of properties to display for a class
+	 *
 	 * @param $class                Reflection_Class
 	 * @param $composite_class_name string
 	 * @return Reflection_Property_Value[]
