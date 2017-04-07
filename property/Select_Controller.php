@@ -34,6 +34,29 @@ class Select_Controller implements Feature_Controller
 	 */
 	private $composite_link_property = null;
 
+	//------------------------------------------------------------------------------ filterProperties
+	/**
+	 * @param $source_properties Reflection_Property_Value[]
+	 * @return Reflection_Property_Value[]
+	 */
+	private function filterProperties($source_properties)
+	{
+		$properties = [];
+		/** @var $source_properties Reflection_Property[] */
+		$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
+		foreach ($source_properties as $property_name => $property) {
+			if (
+				(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
+				&& (!$this->composite_link_property || ($property->name !== $this->composite_link_property->name))
+				&& $property->isPublic()
+				&& $property->isVisible(false)
+			) {
+				$properties[$property_name] = $property;
+			}
+		}
+		return $properties;
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @param $class                   Reflection_Class
@@ -42,7 +65,6 @@ class Select_Controller implements Feature_Controller
 	 */
 	protected function getProperties(Reflection_Class $class, $composite_class_name = null)
 	{
-		$properties = [];
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {
 			$this->composite_property = call_user_func(
 				[$class->name, 'getCompositeProperties'],
@@ -56,23 +78,10 @@ class Select_Controller implements Feature_Controller
 		if (Link_Annotation::of($class)->value) {
 			$link_class              = new Link_Class($class->name);
 			$this->composite_link_property = $link_class->getCompositeProperty();
-			/** @var $source_properties Reflection_Property[] */
-			$source_properties = $link_class->getProperties([T_EXTENDS, T_USE]);
+			$properties = $this->filterProperties($link_class->getProperties([T_EXTENDS, T_USE]));
 		}
 		else {
-			/** @var $source_properties Reflection_Property[] */
-			$source_properties = $class->getProperties([T_EXTENDS, T_USE]);
-		}
-		$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
-		foreach ($source_properties as $property_name => $property) {
-			if (
-				(empty($this->composite_property) || ($property->name !== $this->composite_property->name))
-				&& (!$this->composite_link_property || ($property->name !== $this->composite_link_property->name))
-				&& $property->isPublic()
-				&& $property->isVisible(false)
-			) {
-				$properties[$property_name] = $property;
-			}
+			$properties = $this->filterProperties($class->getProperties([T_EXTENDS, T_USE]));
 		}
 		return $properties;
 	}
