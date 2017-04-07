@@ -107,7 +107,7 @@ class List_Annotation extends Annotation
 	 */
 	public function remove($value)
 	{
-		$key = in_array($value, $this->value);
+		$key = array_search($value, $this->value);
 		if ($key !== false) {
 			unset($this->value[$key]);
 			return true;
