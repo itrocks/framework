@@ -13,8 +13,7 @@
     .list.window .search_summary .error {
       font-size: 100%;
       padding: 1px 3px; }
-
-.list.window > table {
+  .list.window > table {
     clear: both;
     font-family: arial, helvetica, sans-serif;
     font-size: 12px;
