@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Default_List_Data;
 
@@ -14,6 +15,30 @@ use ITRocks\Framework\Tools\Default_List_Data;
  */
 class Tests extends Test
 {
+
+	//---------------------------------------------------------------------------- testCaseExpression
+	public function testCaseExpression()
+	{
+		$search  = (new Tools\Search_Array_Builder())->build('client.number', 'XXXX');
+		$builder = new Select(
+			Order::class,
+			[
+				'case_result' => new Case_Expression($search, 'client.name', 'client_unknown'),
+				'case_result_func' => new Case_Expression($search, new Concat(['number', 'client.number'])),
+			]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT '
+			. 'CASE WHEN t1.`number` = "XXXX" THEN "client.name" ELSE "client_unknown" END '
+			. 'AS `case_result`, '
+			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
+			. 'AS `case_result_func`' . LF
+			. 'FROM `orders` t0' . LF
+			. 'INNER JOIN `clients` t1 ON t1.id = t0.id_client'
+		);
+	}
 
 	//--------------------------------------------------------------------------- testConcatDaoSelect
 	public function testConcatDaoSelect()
