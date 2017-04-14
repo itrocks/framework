@@ -55,6 +55,7 @@ class Group_Concat extends Column
 	public function toSql(Builder\Columns $builder, $property_path)
 	{
 		$group_concat_property = $property_path;
+
 		if ($this->column) {
 			if ($this->column instanceof Column) {
 				$group_concat_property = $this->column->toSql($builder, null);
@@ -71,7 +72,13 @@ class Group_Concat extends Column
 			: $group_concat_property;
 
 		if (!isset($this->order_by)) {
-			$this->order_by = [$group_concat_property];
+			$order_by = [$group_concat_property];
+		}
+		else {
+			$order_by = [];
+			foreach ($this->order_by as $by_path) {
+				$order_by[] = $builder->buildColumn($by_path, false, true);
+			}
 		}
 
 		if ($this->separator && ($this->separator !== ',')) {
@@ -81,7 +88,7 @@ class Group_Concat extends Column
 		$sql = 'GROUP_CONCAT('
 			. ($this->distinct ? 'DISTINCT ' : '')
 			. $group_concat_property
-			. (isset($order_by) ? (' ORDER BY ' . join(SP, $order_by)) : '')
+			. (($order_by) ? ' ORDER BY ' . join(SP, $order_by) : '')
 			. (isset($separator) ? $separator : '')
 			. ')'
 			. $this->aliasSql($builder, $property_path);

@@ -15,7 +15,7 @@ use ITRocks\Framework\Sql\Value;
  * [ELSE else_result]
  * END
  */
-class Case_Expression extends Column
+class Condition extends Column
 {
 
 	//------------------------------------------------------------------------------------ $condition
@@ -42,7 +42,8 @@ class Case_Expression extends Column
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Case_Expression constructor.
+	 * Condition constructor.
+	 *
 	 * @param $condition    array source object for filter
 	 * @param $then_result  mixed
 	 * @param $else_result  mixed

@@ -5,6 +5,7 @@ use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Tests\Objects\Client;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\Tests\Test;
@@ -15,30 +16,6 @@ use ITRocks\Framework\Tools\Default_List_Data;
  */
 class Tests extends Test
 {
-
-	//---------------------------------------------------------------------------- testCaseExpression
-	public function testCaseExpression()
-	{
-		$search  = (new Tools\Search_Array_Builder())->build('client.number', 'XXXX');
-		$builder = new Select(
-			Order::class,
-			[
-				'case_result' => new Case_Expression($search, 'client.name', 'client_unknown'),
-				'case_result_func' => new Case_Expression($search, new Concat(['number', 'client.number'])),
-			]
-		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT '
-			. 'CASE WHEN t1.`number` = "XXXX" THEN "client.name" ELSE "client_unknown" END '
-			. 'AS `case_result`, '
-			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
-			. 'AS `case_result_func`' . LF
-			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `clients` t1 ON t1.id = t0.id_client'
-		);
-	}
 
 	//--------------------------------------------------------------------------- testConcatDaoSelect
 	public function testConcatDaoSelect()
@@ -64,6 +41,55 @@ class Tests extends Test
 			$builder->buildQuery(),
 			'SELECT CONCAT(t0.`number`, " ", t0.`date`) AS `string_concat`' . LF
 			. 'FROM `orders` t0'
+		);
+	}
+
+	//--------------------------------------------------------------------------------- testCondition
+	public function testCondition()
+	{
+		$search  = (new Tools\Search_Array_Builder())->build('client.number', 'XXXX');
+		$builder = new Select(
+			Order::class,
+			[
+				'case_result' => new Condition($search, 'client.name', 'string_client_unknown'),
+				'case_result_func' => new Condition($search, new Concat(['number', 'client.number'])),
+			]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT '
+			. 'CASE WHEN t1.`number` = "XXXX" THEN t1.`name` ELSE "string_client_unknown" END '
+			. 'AS `case_result`, '
+			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
+			. 'AS `case_result_func`' . LF
+			. 'FROM `orders` t0' . LF
+			. 'INNER JOIN `clients` t1 ON t1.id = t0.id_client'
+		);
+	}
+
+	//------------------------------------------------------------------------------- testGroupConcat
+	public function testGroupConcat()
+	{
+		$builder = new Select(
+			Client::class,
+			[
+				'number' => new Group_Concat(),
+				'group_concat' => new Group_Concat('number'),
+				'group_concat_with_sep' => new Group_Concat('number', ';'),
+				'group_concat_with_func' => new Group_Concat(new Concat(['number', 'name'])),
+			]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `number`, '
+			. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `group_concat`, '
+			. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number` SEPARATOR ";") '
+			. 'AS `group_concat_with_sep`, '
+			. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`) '
+			. 'ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`'. LF
+			. 'FROM `clients` t0'
 		);
 	}
 
