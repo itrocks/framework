@@ -511,17 +511,30 @@ $('document').ready(function()
 		//------------------------------------------------------------------------- .vertical.scrollbar
 		this.inside('.vertical.scrollbar').verticalscrollbar();
 
+		//----------------------------------------------------------------------------- getEditorConfig
+		/**
+		 * @param type string
+		 * @returns {{customConfig: string}}
+		 */
+		var getEditorConfig = function (type)
+		{
+			var file_name = 'ckeditor-config_'+ type +'.js';
+			var config    = {
+				customConfig: window.app.project_uri + SL + 'itrocks/framework/js' + SL + file_name
+			}
+			if (window.app.editorConfig) {
+				config = $.extend({}, config, window.app.editorConfig);
+			}
+			return config;
+		};
+
 		//----------------------------------------------------------------------------- .ckeditor-full
 		var $ckeditor_full = this.inside('.ckeditor-full');
-		if ($ckeditor_full.length) $ckeditor_full.ckeditor({
-			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_full.js'
-		});
+		if ($ckeditor_full.length) $ckeditor_full.ckeditor(getEditorConfig('full'));
 
 		//------------------------------------------------------------------------ .ckeditor-standard
 		var $ckeditor_standard = this.inside('.ckeditor-standard');
-		if ($ckeditor_standard.length) $ckeditor_standard.ckeditor({
-			customConfig: window.app.project_uri + SL + 'itrocks/framework/js/ckeditor-config_standard.js'
-		});
+		if ($ckeditor_standard.length) $ckeditor_standard.ckeditor(getEditorConfig('standard'));
 
 	});
 });
