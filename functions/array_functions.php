@@ -132,9 +132,9 @@ function arrayFormRevert($array, $case_3 = true)
  * Insert array after key
  * if key not exist : insert array to the end
  *
- * @param $array array
+ * @param $array        array
  * @param $array_insert array
- * @param $key string|boolean
+ * @param $key          string|boolean
  */
 function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 {
