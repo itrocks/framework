@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder;
@@ -28,7 +27,7 @@ class Condition extends Column
 	/**
 	 * property_path or string or Func\Column
 	 *
-	 * @var mixed
+	 * @var Column|string
 	 */
 	public $else_result;
 
@@ -36,7 +35,7 @@ class Condition extends Column
 	/**
 	 * property_path or string or Func\Column
 	 *
-	 * @var mixed
+	 * @var Column|string
 	 */
 	public $then_result;
 
@@ -44,9 +43,9 @@ class Condition extends Column
 	/**
 	 * Condition constructor.
 	 *
-	 * @param $condition    array source object for filter
-	 * @param $then_result  mixed
-	 * @param $else_result  mixed
+	 * @param $condition   array source object for filter
+	 * @param $then_result Column|string
+	 * @param $else_result Column|string
 	 */
 	public function __construct($condition, $then_result, $else_result = null)
 	{
@@ -66,7 +65,6 @@ class Condition extends Column
 	{
 		if ($result) {
 			if ($result instanceof Column) {
-				/** @var $result Func */
 				return $result->toSql($builder, '');
 			}
 			else {
