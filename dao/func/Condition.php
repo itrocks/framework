@@ -95,8 +95,9 @@ class Condition extends Column
 			$starting_class->getName(), $this->condition, null, $builder->getJoins()
 		))->build();
 
-		$condition   = (strpos($condition_builder, 'WHERE') == 1) ?
-			trim(substr($condition_builder, 6)) : trim($condition_builder);
+		$condition = (strpos($condition_builder, 'WHERE') == 1)
+			? trim(substr($condition_builder, 6))
+			: trim($condition_builder);
 		$then_result = $this->buildConditionResult($starting_class, $this->then_result, $builder);
 		$else_result = $this->buildConditionResult($starting_class, $this->else_result, $builder);
 

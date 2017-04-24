@@ -10,8 +10,11 @@ use ITRocks\Framework\Sql\Value;
  */
 class Group_Concat extends Column
 {
+
+	//--------------------------------------------------------------------------------------- $column
 	/**
-	 * Default will be property path
+	 * The property path or Func\Column to which the concatenation applies
+	 * Default (if not set) will be the property path associated with the call of this function
 	 *
 	 * @var Column|string
 	 */
@@ -33,11 +36,18 @@ class Group_Concat extends Column
 
 	//------------------------------------------------------------------------------------ $separator
 	/**
+	 * Separator for the concatenation, if not a comma (which is the default).
+	 *
 	 * @var string
 	 */
 	public $separator;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $column    Column|string Property path or Func\Column.
+	 *                   Default will be the associated property path.
+	 * @param $separator string Separator for the concat @default ,
+	 */
 	public function __construct($column = null, $separator = null)
 	{
 		$this->column    = $column;
@@ -57,28 +67,25 @@ class Group_Concat extends Column
 		$group_concat_property = $property_path;
 
 		if ($this->column) {
-			if ($this->column instanceof Column) {
-				$group_concat_property = $this->column->toSql($builder, null);
-			}
-			else {
-				$group_concat_property = $this->column;
-			}
+			$group_concat_property = ($this->column instanceof Column)
+				? $this->column->toSql($builder, null)
+				: $this->column;
 		}
 
-		$group_concat_property = (Reflection_Property::exists(
+		$group_concat_property = Reflection_Property::exists(
 			$builder->getJoins()->getStartingClassName(), $group_concat_property
-		))
+		)
 			? $builder->buildColumn($group_concat_property, false, true)
 			: $group_concat_property;
 
-		if (!isset($this->order_by)) {
-			$order_by = [$group_concat_property];
-		}
-		else {
+		if (isset($this->order_by)) {
 			$order_by = [];
 			foreach ($this->order_by as $by_path) {
 				$order_by[] = $builder->buildColumn($by_path, false, true);
 			}
+		}
+		else {
+			$order_by = [$group_concat_property];
 		}
 
 		if ($this->separator && ($this->separator !== ',')) {
@@ -88,7 +95,7 @@ class Group_Concat extends Column
 		$sql = 'GROUP_CONCAT('
 			. ($this->distinct ? 'DISTINCT ' : '')
 			. $group_concat_property
-			. (($order_by) ? ' ORDER BY ' . join(SP, $order_by) : '')
+			. ($order_by ? ' ORDER BY ' . join(', ', $order_by) : '')
 			. (isset($separator) ? $separator : '')
 			. ')'
 			. $this->aliasSql($builder, $property_path);
