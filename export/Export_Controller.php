@@ -8,6 +8,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
@@ -84,11 +85,13 @@ class Export_Controller implements Default_Feature_Controller
 		fputcsv($f, $row);
 		// format dates
 		foreach ($data->getProperties() as $property) {
-			if ($property->getType()->isDateTime()) {
-				$date_times[$property->path] = true;
-			}
-			if ($property->getListAnnotation('values')->values()) {
-				$translate[$property->path] = true;
+			if ($property instanceof Reflection_Property) {
+				if ($property->getType()->isDateTime()) {
+					$date_times[$property->path] = true;
+				}
+				if ($property->getListAnnotation('values')->values()) {
+					$translate[$property->path] = true;
+				}
 			}
 		}
 		// write data
