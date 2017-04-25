@@ -520,7 +520,9 @@ class Maintainer implements Registerable
 					}
 					elseif (!$column->equiv($mysql_columns[$column_name])) {
 						trigger_error(
-							'Maintainer alters column ' . print_r($column, true)
+							'Maintainer alters column ' . $mysql_table->getName() . '.' . $column->getName()
+								. BRLF . PRE
+								. print_r($column, true) . BRLF
 								. print_r($mysql_columns[$column_name], true),
 							E_USER_NOTICE
 						);
