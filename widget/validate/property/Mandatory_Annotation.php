@@ -24,6 +24,9 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Contex
 	 */
 	public function __construct($value, Interfaces\Reflection_Property $property)
 	{
+		if (!isset($value)) {
+			$value = $property->getAnnotation('composite')->value;
+		}
 		parent::__construct($value);
 		$this->property = $property;
 	}
