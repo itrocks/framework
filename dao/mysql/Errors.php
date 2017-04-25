@@ -7,6 +7,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 class Errors
 {
 
+	//------------------------------------------------------------------------------ CR_UNKNOWN_ERROR
 	const CR_UNKNOWN_ERROR = 2000;
 	const CR_SOCKET_CREATE_ERROR = 2001;
 	const CR_CONNECTION_ERROR = 2002;
@@ -70,9 +71,9 @@ class Errors
 	const CR_AUTH_PLUGIN_CANNOT_LOAD = 2059;
 	const CR_DUPLICATE_CONNECTION_ATTR = 2060;
 	const CR_AUTH_PLUGIN_ERR = 2061;
-	//--------------------------------------------------------------------------- CR_INSECURE_API_ERR
 	const CR_INSECURE_API_ERR = 2062;
 
+	//------------------------------------------------------------------------------------ ER_HASHCHK
 	const ER_HASHCHK = 1000;
 	const ER_NISAMCHK = 1001;
 	const ER_NO = 1002;
@@ -800,7 +801,6 @@ class Errors
 	const ER_BINLOG_UNSAFE_INSERT_TWO_KEYS = 1724;
 	const ER_TABLE_IN_FK_CHECK = 1725;
 	const ER_UNSUPPORTED_ENGINE = 1726;
-	//------------------------------------------------------------ ER_BINLOG_UNSAFE_AUTOINC_NOT_FIRST
 	const ER_BINLOG_UNSAFE_AUTOINC_NOT_FIRST = 1727;
 
 }
