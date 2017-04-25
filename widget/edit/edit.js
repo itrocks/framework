@@ -373,7 +373,12 @@ $('document').ready(function()
 			// backspace | delete : close if value is empty
 			if (((event.keyCode == 8) || (event.keyCode == 46)) && !$this.val().length) {
 				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
+				var $value = $this.prev().filter('input[type=hidden]');
+				var previous_value = $value.val();
 				comboValue($this, null, '');
+				if (previous_value != undefined && previous_value.length) {
+					$value.change();
+				}
 			}
 		});
 
