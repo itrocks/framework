@@ -241,7 +241,7 @@ class Columns
 				$concat_properties[] = $path . DOT . $property_name;
 			}
 			$concat = new Concat($concat_properties);
-			$sql = $concat->toSql($this, ($as && $this->resolve_aliases) ? $path : null);
+			$sql    = $concat->toSql($this, ($as && $this->resolve_aliases) ? $path : null);
 		}
 		else {
 			$force_column = null;
