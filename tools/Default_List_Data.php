@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -12,14 +13,15 @@ class Default_List_Data extends Set implements List_Data
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var Reflection_Property[] The key is the the path of the property
+	 * @var Column[]|Reflection_Property[] The key is the the path of the property
 	 */
 	private $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $element_class_name string the reference class name
-	 * @param $properties         Reflection_Property[] the key must be the path of the property
+	 * @param $properties         Column[]|Reflection_Property[] the key must be the path of the
+	 *                            property
 	 */
 	public function __construct($element_class_name, array $properties)
 	{
@@ -69,7 +71,7 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * Gets properties names list
 	 *
-	 * @return Reflection_Property[]
+	 * @return Column[]|Reflection_Property[]
 	 */
 	public function getProperties()
 	{

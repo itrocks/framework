@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use Iterator;
+use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -48,7 +49,7 @@ interface List_Data extends Iterator
 	/**
 	 * Returns the properties path list
 	 *
-	 * @return Reflection_Property[]
+	 * @return Column[]|Reflection_Property[]
 	 */
 	public function getProperties();
 
