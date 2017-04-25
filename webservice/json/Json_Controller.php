@@ -88,12 +88,8 @@ class Json_Controller implements Default_Feature_Controller
 		if (is_object($first_parameter)) {
 			return json_encode($first_parameter);
 		}
-		// search objects for autocomplete combo pull-down list
-		if (isset($parameters['term'])) {
-			return $this->searchObjectsForAutoCompleteCombo($class_name, $parameters);
-		}
 		// single object for autocomplete pull-down list value
-		elseif (isset($parameters['id'])) {
+		if (isset($parameters['id'])) {
 			$element_class_name = Names::setToClass($class_name);
 			$source_object      = Dao::read($parameters['id'], $element_class_name);
 			return $this->buildJson($source_object);
@@ -102,6 +98,10 @@ class Json_Controller implements Default_Feature_Controller
 		elseif ($parameters['search']) {
 			$objects = $this->searchObjects($class_name, $parameters);
 			return json_encode($objects);
+		}
+		// search objects for autocomplete combo pull-down list
+		elseif (isset($parameters['term'])) {
+			return $this->searchObjectsForAutoCompleteCombo($class_name, $parameters);
 		}
 		return '';
 	}
