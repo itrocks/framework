@@ -89,13 +89,13 @@ class Json_Controller implements Default_Feature_Controller
 			return json_encode($first_parameter);
 		}
 		// single object for autocomplete pull-down list value
-		if (isset($parameters['id'])) {
+		if (isset($parameters['id']) && $parameters['id']) {
 			$element_class_name = Names::setToClass($class_name);
 			$source_object      = Dao::read($parameters['id'], $element_class_name);
 			return $this->buildJson($source_object);
 		}
 		// advanced search returns a json collection
-		elseif ($parameters['search']) {
+		elseif (isset($parameters['search']) && $parameters['search']) {
 			$objects = $this->searchObjects($class_name, $parameters);
 			return json_encode($objects);
 		}
