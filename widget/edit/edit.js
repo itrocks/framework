@@ -373,10 +373,10 @@ $('document').ready(function()
 			// backspace | delete : close if value is empty
 			if (((event.keyCode == 8) || (event.keyCode == 46)) && !$this.val().length) {
 				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
-				var $value = $this.prev().filter('input[type=hidden]');
+				var $value         = $this.prev().filter('input[type=hidden]');
 				var previous_value = $value.val();
 				comboValue($this, null, '');
-				if (previous_value != undefined && previous_value.length) {
+				if ((previous_value !== undefined) && previous_value.length) {
 					$value.change();
 				}
 			}
@@ -521,25 +521,29 @@ $('document').ready(function()
 		 * @param type string
 		 * @returns {{customConfig: string}}
 		 */
-		var getEditorConfig = function (type)
+		var getEditorConfig = function(type)
 		{
 			var file_name = 'ckeditor-config_'+ type +'.js';
 			var config    = {
 				customConfig: window.app.project_uri + SL + 'itrocks/framework/js' + SL + file_name
-			}
+			};
 			if (window.app.editorConfig) {
 				config = $.extend({}, config, window.app.editorConfig);
 			}
 			return config;
 		};
 
-		//----------------------------------------------------------------------------- .ckeditor-full
-		var $ckeditor_full = this.inside('.ckeditor-full');
-		if ($ckeditor_full.length) $ckeditor_full.ckeditor(getEditorConfig('full'));
+		//----------------------------------------------------------------------------- setEditorConfig
+		var setEditorConfig = function(context, type)
+		{
+			var $ckeditor = context.inside('.ckeditor-' + type);
+			if ($ckeditor.length) {
+				$ckeditor.ckeditor(getEditorConfig(type));
+			}
+		};
 
-		//------------------------------------------------------------------------ .ckeditor-standard
-		var $ckeditor_standard = this.inside('.ckeditor-standard');
-		if ($ckeditor_standard.length) $ckeditor_standard.ckeditor(getEditorConfig('standard'));
+		setEditorConfig(this, 'full');
+		setEditorConfig(this, 'standard');
 
 	});
 });
