@@ -62,16 +62,16 @@ class Test extends Testable
 		}
 		else {
 			$result = '<span style="color:red;font-weight:bold">BAD</span>'
-			. '<pre style="color:red;font-weight:bold;">result ' . print_r($check, true) . '</pre>'
-			. '<pre style="color:blue;font-weight:bold;">assume ' . print_r($assume, true) . '</pre>'
+			. '<pre style="color:red;font-weight:bold;">result : ' . print_r($check, true) . '</pre>'
+			. '<pre style="color:blue;font-weight:bold;">assume : ' . print_r($assume, true) . '</pre>'
 			. (
 				($diff_output && $diff1)
-				? ('<pre style="color:orange;font-weight:bold;">result has ' . print_r($diff1, true) . ']</pre>')
+				? ('<pre style="color:orange;font-weight:bold;">result has : ' . print_r($diff1, true) . '</pre>')
 				: ''
 			)
 			. (
 				($diff_output && $diff2)
-				? ('<pre style="color:orange;font-weight:bold;">assume has ' . print_r($diff2, true) . ']</pre>')
+				? ('<pre style="color:orange;font-weight:bold;">assume has : ' . print_r($diff2, true) . '</pre>')
 				: ''
 			);
 			$result_code = Response::ERROR;
