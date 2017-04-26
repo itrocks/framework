@@ -104,8 +104,8 @@ class Reflection_Property extends ReflectionProperty
 	{
 		$this->path       = $property_name;
 		$this->root_class = $class_name;
-		$i = 0;
-		$aliases = [];
+		$i                = 0;
+		$aliases          = [];
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property   = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			$class_name = $property->getType()->getElementTypeAsString();
@@ -144,7 +144,7 @@ class Reflection_Property extends ReflectionProperty
 				if (!property_exists($class_name, $property_name)) {
 					return false;
 				}
-				$property = new Reflection_Property($class_name, $property_name);
+				$property   = new Reflection_Property($class_name, $property_name);
 				$class_name = $property->getType()->getElementTypeAsString();
 			}
 			$property_name = end($properties_name);
@@ -273,7 +273,7 @@ class Reflection_Property extends ReflectionProperty
 		if (!isset($this->doc_comment)) {
 			$overridden_property  = $this->getOverriddenProperty();
 			$declaring_trait_name = $this->getDeclaringTrait()->name;
-			$this->doc_comment =
+			$this->doc_comment    =
 				$this->getOverrideDocComment()
 				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. parent::getDocComment()
@@ -328,7 +328,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getFinalProperty()
 	{
 		if (strpos($this->path, DOT)) {
-			$path = explode(DOT, $this->path);
+			$path     = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->class, array_shift($path));
 			foreach ($path as $property_name) {
 				$property = new Reflection_Property(
@@ -374,7 +374,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getOverriddenProperty()
 	{
 		if (!isset($this->overridden_property)) {
-			$parent = $this->getDeclaringClass()->getParentClass();
+			$parent                    = $this->getDeclaringClass()->getParentClass();
 			$this->overridden_property = $parent ? ($parent->getProperty($this->name) ?: false) : false;
 		}
 		return $this->overridden_property ?: null;
@@ -423,7 +423,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getValue($object = null)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
-			$path = explode(DOT, $this->path);
+			$path     = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
 				$object = $property->getValue($object);
@@ -549,10 +549,10 @@ class Reflection_Property extends ReflectionProperty
 		$object, $value = self::EMPTY_VALUE
 	) {
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
-			$path = explode(DOT, $this->path);
+			$path     = explode(DOT, $this->path);
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
-				$object = $property->getValue($object);
+				$object   = $property->getValue($object);
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
