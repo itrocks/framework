@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Property\Tests\Default_Simple;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
@@ -136,6 +137,16 @@ class Tests extends Test
 			$property->getDefaultValue(),
 			'default value for property'
 		);
+	}
+
+	//----------------------------------------------------------------------------- testDefaultSimple
+	/**
+	 * Test @default annotation into the simpliest context : no AOP
+	 */
+	public function testDefaultSimple()
+	{
+		$robert = new Default_Simple();
+		$this->assume('@default.simple', $robert->name, 'Robert');
 	}
 
 	//--------------------------------------------------------------------- testGetterAnnotationCases
