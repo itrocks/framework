@@ -253,32 +253,29 @@ class Properties
 	private function compileDefault(array $advices)
 	{
 		$over = $this->overrideMethod('__default', false);
-		$code = $over['call']
-			? $over['call']
-			:
-			($this->class->getParentClass() ?
-				'if (method_exists(get_parent_class(__CLASS__), \'__default\')){
-					parent::__default();
-				}' : ''
-			);
+		$code = $over['call'] ?: (
+			$this->class->getParentClass()
+				?
+			'if (method_exists(get_parent_class(__CLASS__), \'__default\')) {
+				parent::__default();
+			}'
+				: ''
+		);
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['default'])) {
 				if ($property_advices['default'][0] == '$this') {
-					$code .= LF . TAB . TAB . 'if (!$this->__isset("'.$property_name.'"))' .
-						LF . TAB . TAB . '$this->__set("' . $property_name . '" , ' .
-						$property_advices['default'][0] . '->' . $property_advices['default'][1] . '());';
+					$code .= LF . TAB . TAB . 'if (!$this->__isset(' . Q . $property_name . Q . '))'
+						. LF . TAB . TAB . '$this->__set(' . Q . $property_name . Q . ', '
+						. $property_advices['default'][0] . '->' . $property_advices['default'][1] . '());';
 				}
 				else {
-					$code .= LF . TAB . TAB . 'if (!$this->__isset("'.$property_name.'"))' .
-						LF . TAB . TAB . '$this->__set("' . $property_name . '" , ' .
-						$property_advices['default'][0] . '::' . $property_advices['default'][1] . '());';
+					$code .= LF . TAB . TAB . 'if (!$this->__isset("'.$property_name.'"))'
+						. LF . TAB . TAB . '$this->__set(' . Q . $property_name . Q . ', '
+						. $property_advices['default'][0] . '::' . $property_advices['default'][1] . '());';
 				}
 			}
 		}
-		return LF . TAB . '/** AOP implements @default : called by __construct */' .
-			LF . TAB . 'protected function __default(){' .
-			LF . TAB . TAB . $code .
-			LF . TAB . '}';
+		return $over['prototype'] . LF . TAB . TAB . $code . LF . TAB . '}' . LF;
 	}
 
 	//------------------------------------------------------------------------------------ compileGet
@@ -763,7 +760,7 @@ class Properties
 				}
 			}
 			$over['prototype'] = '
-	/** AOP override of $method_name */
+	/** AOP override of ' . $method_name . ' */
 	public function ' . $method_name . '(' . $parameters . ')
 	{';
 		}
