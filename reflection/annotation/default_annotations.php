@@ -15,6 +15,16 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 Parser::$default_annotations = [
 
 	/**
+	 * @after_commit afterCommit
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the written object are committed (transaction end)
+	 * using any (even non-transactional) data link
+	 * - These methods may accept a Data_Link as first argument, if needed
+	 * - These methods may accept a Dao\Option[] as second argument, if needed
+	 */
+	Parser::T_CLASS . '@after_commit' => Method_Annotation::class,
+
+	/**
 	 * @after_read afterRead
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is read using a data link

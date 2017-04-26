@@ -106,6 +106,7 @@ class Link extends Dao\Sql\Link
 	public function begin()
 	{
 		if (!$this->commit_stack) {
+			parent::begin();
 			$this->query('START TRANSACTION');
 		}
 		$this->commit_stack ++;
@@ -147,6 +148,10 @@ class Link extends Dao\Sql\Link
 			if (!$this->commit_stack) {
 				$this->query('COMMIT');
 			}
+		}
+		if (!$this->commit_stack) {
+			// call parent commit for events resolution, but do not take care of its constant return value
+			parent::commit($flush);
 		}
 		return true;
 	}

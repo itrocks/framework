@@ -9,6 +9,8 @@ use ITRocks\Framework\Tests\Test;
 /**
  * Class annotations unit tests
  *
+ * @after_commit localAfterCommit1
+ * @after_commit localAfterCommit2
  * @after_write localAfterWrite
  * @after_write Tests::distantAfterWrite
  * @before_write localBeforeWrite
@@ -66,6 +68,28 @@ class Tests extends Test
 		$this->data .= ')';
 	}
 
+	//----------------------------------------------------------------------------- localAfterCommit1
+	/**
+	 * @param $link    Data_Link
+	 * @param $options Option[]
+	 */
+	public function localAfterCommit1(
+		/* @noinspection PhpUnusedParameterInspection */ Data_Link $link, array $options
+	) {
+		$this->dynamic('loc-after-commit1', $options);
+	}
+
+	//----------------------------------------------------------------------------- localAfterCommit2
+	/**
+	 * @param $link    Data_Link
+	 * @param $options Option[]
+	 */
+	public function localAfterCommit2(
+		/* @noinspection PhpUnusedParameterInspection */ Data_Link $link, array $options
+	) {
+		$this->dynamic('loc-after-commit2', $options);
+	}
+
 	//------------------------------------------------------------------------------- localAfterWrite
 	/**
 	 * @param $link    Data_Link
@@ -91,14 +115,33 @@ class Tests extends Test
 	//-------------------------------------------------------------------------- testWriteAnnotations
 	public function testWriteAnnotations()
 	{
-		$tests = new Tests();
+		$tests       = new Tests();
 		$tests->data = 'test';
+		Dao::begin();
 		Dao::write($tests, Dao::only('data'));
 		Dao::delete($tests);
+		Dao::commit();
 		$this->assume(
-			__METHOD__,
+			__METHOD__ . ' with commit',
 			$tests->data,
-			'test+loc-before(data)+dis-before(data)+loc-after(data)+dis-after(data)'
+			'test'
+			. '+loc-before(data)+dis-before(data)'
+			. '+loc-after(data)+dis-after(data)'
+			. '+loc-after-commit1(data)+loc-after-commit2(data)'
+		);
+
+		$tests       = new Tests();
+		$tests->data = 'test';
+		Dao::begin();
+		Dao::write($tests, Dao::only('data'));
+		Dao::delete($tests);
+		Dao::rollback();
+		$this->assume(
+			__METHOD__ . ' with rollback',
+			$tests->data,
+			'test'
+			. '+loc-before(data)+dis-before(data)'
+			. '+loc-after(data)+dis-after(data)'
 		);
 	}
 

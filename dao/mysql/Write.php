@@ -201,6 +201,10 @@ class Write extends Data_Link\Write
 			);
 			$this->link->commit();
 			$this->afterWrite($this->object, $this->options);
+			// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
+			if (method_exists($this, 'prepareAfterCommit')) {
+				$this->prepareAfterCommit($this->object, $this->options);
+			}
 			return $this->object;
 		}
 		return null;

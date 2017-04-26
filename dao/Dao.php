@@ -62,6 +62,7 @@ class Dao implements Configurable
 			return $current->begin();
 		}
 		else {
+			$current->after_commit = [];
 			return null;
 		}
 	}
@@ -94,6 +95,7 @@ class Dao implements Configurable
 			return $current->commit();
 		}
 		else {
+			$current->afterCommit();
 			return null;
 		}
 	}

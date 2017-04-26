@@ -104,4 +104,18 @@ abstract class Write
 		return true;
 	}
 
+	//---------------------------------------------------------------------------- prepareAfterCommit
+	/**
+	 * @param $object  object
+	 * @param $options Option[]
+	 */
+	protected function prepareAfterCommit($object, array $options)
+	{
+		/** @var $after_commits Method_Annotation[] */
+		$after_commits = (new Reflection_Class(get_class($object)))->getAnnotations('after_commit');
+		foreach ($after_commits as $after_commit) {
+			$this->link->after_commit[] = new After_Action($after_commit, $object, $options);
+		}
+	}
+
 }

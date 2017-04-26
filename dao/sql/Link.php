@@ -67,6 +67,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function begin()
 	{
+		$this->after_commit = [];
 	}
 
 	//---------------------------------------------------------------------------------------- commit
@@ -78,6 +79,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function commit($flush = false)
 	{
+		$this->afterCommit();
 		return false;
 	}
 

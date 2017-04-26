@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link\After_Action;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
@@ -19,6 +20,31 @@ use ITRocks\Framework\Tools\Namespaces;
  */
 abstract class Data_Link
 {
+
+	//--------------------------------------------------------------------------------- $after_commit
+	/**
+	 * @var After_Action[]
+	 */
+	public $after_commit;
+
+	//----------------------------------------------------------------------------------- afterCommit
+	/**
+	 * This is called after a commit, for objects that have some @after_commit :
+	 * - in case of non-transactional data-link : after each call to write
+	 * - in case of transactional data-link but outside a transaction : after each call to write
+	 * - in case of transactional data-link, inside a transaction : after call of commit()
+	 */
+	public function afterCommit()
+	{
+		if ($this->after_commit) {
+			foreach ($this->after_commit as $after_commit) {
+				if ($after_commit->call($this) === false) {
+					break;
+				}
+			}
+			$this->after_commit = [];
+		}
+	}
 
 	//------------------------------------------------------------------------------------- afterRead
 	/**
