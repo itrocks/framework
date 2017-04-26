@@ -3,7 +3,6 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\AOP;
 use ITRocks\Framework\AOP\Weaver;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Debug\Xdebug;
