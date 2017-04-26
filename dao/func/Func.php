@@ -2,8 +2,10 @@
 namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\Dao\Func\Call;
+use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Group_By;
+use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\In;
 use ITRocks\Framework\Dao\Func\InSelect;
 use ITRocks\Framework\Dao\Func\Is_Greatest;
@@ -98,6 +100,18 @@ abstract class Func
 	public static function greaterOrEqual($value)
 	{
 		return new Comparison(Comparison::GREATER_OR_EQUAL, $value);
+	}
+
+	//----------------------------------------------------------------------------------- groupConcat
+	/**
+	 * @param $column    Column|string Property path or Func\Column.
+	 *                   Default will be the associated property path.
+	 * @param $separator string Separator for the concat @default ,
+	 * @return Group_Concat
+	 */
+	public function groupConcat($column = null, $separator = null)
+	{
+		return new Group_Concat($column, $separator);
 	}
 
 	//-------------------------------------------------------------------------------------------- in
