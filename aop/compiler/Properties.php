@@ -257,22 +257,20 @@ class Properties
 			$this->class->getParentClass()
 				?
 			'if (method_exists(get_parent_class(__CLASS__), \'__default\')) {
-				parent::__default();
-			}'
+			parent::__default();
+		}'
 				: ''
 		);
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['default'])) {
-				if ($property_advices['default'][0] == '$this') {
-					$code .= LF . TAB . TAB . 'if (!$this->__isset(' . Q . $property_name . Q . '))'
-						. LF . TAB . TAB . '$this->__set(' . Q . $property_name . Q . ', '
-						. $property_advices['default'][0] . '->' . $property_advices['default'][1] . '());';
-				}
-				else {
-					$code .= LF . TAB . TAB . 'if (!$this->__isset("'.$property_name.'"))'
-						. LF . TAB . TAB . '$this->__set(' . Q . $property_name . Q . ', '
-						. $property_advices['default'][0] . '::' . $property_advices['default'][1] . '());';
-				}
+				list($object, $method) = $property_advices['default'];
+				$operator              = ($object === '$this') ? '->' : '::';
+				$code .= "
+		if (!isset(\$this->$property_name)) {
+			\$this->$property_name = $object$operator$method(
+				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
+			);
+		}";
 			}
 		}
 		return $over['prototype'] . LF . TAB . TAB . $code . LF . TAB . '}' . LF;
@@ -760,7 +758,7 @@ class Properties
 				}
 			}
 			$over['prototype'] = '
-	/** AOP override of ' . $method_name . ' */
+	/** AOP */
 	public function ' . $method_name . '(' . $parameters . ')
 	{';
 		}
