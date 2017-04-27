@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection;
 
 use Exception;
+use ITRocks\Framework\Builder;
 use ReflectionProperty;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
@@ -258,6 +259,10 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getDefaultValue()
 	{
+		if ($this->getAnnotation('default')->value) {
+			$property_name = $this->getName();
+			return Builder::create($this->getDeclaringClassName())->$property_name;
+		}
 		return $this->getDeclaringClass()->getDefaultProperties()[$this->name];
 	}
 

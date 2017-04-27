@@ -231,7 +231,11 @@ class Properties
 	{
 		// only if at least one property is declared here
 		foreach ($advices as $property_advices) {
-			if (isset($property_advices['implements']) || isset($property_advices['replaced'])) {
+			if (
+				isset($property_advices['default'])
+				|| isset($property_advices['implements'])
+				|| isset($property_advices['replaced'])
+			) {
 				$over = $this->overrideMethod('__construct', false);
 				return
 					$over['prototype'] . '
