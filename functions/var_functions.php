@@ -1,5 +1,6 @@
 <?php
 
+//----------------------------------------------------------------------------------------- backSet
 /**
  * Sets a new temporary value into a variable, and returns the old value
  *
@@ -17,4 +18,18 @@ function backSet(&$variable, $value)
 	$old_value = $variable;
 	$variable  = $value;
 	return $old_value;
+}
+
+//-------------------------------------------------------------------------------------------- swap
+/**
+ * Swaps the values of two variables
+ *
+ * @param $variable1 mixed
+ * @param $variable2 mixed
+ */
+function swap(&$variable1, &$variable2)
+{
+	$temporary = $variable1;
+	$variable1 = $variable2;
+	$variable2 = $temporary;
 }
