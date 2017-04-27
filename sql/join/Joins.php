@@ -126,7 +126,7 @@ class Joins
 		}
 		if (isset($this->link_joins[$path])) {
 			$property_type = $this->getProperties($master_path)[$master_property_name]->getType();
-			if ($property_type->isClass()) {
+			if ($property_type->isClass() && !$property_type->isBasic()) {
 				$linked_master_alias = $this->link_joins[$path]->foreign_alias;
 			}
 			else {
