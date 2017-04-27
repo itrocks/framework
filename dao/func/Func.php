@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Call;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Comparison;
+use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\In;
@@ -52,6 +53,16 @@ abstract class Func
 	public static function between($from, $to)
 	{
 		return new Range($from, $to);
+	}
+
+	//---------------------------------------------------------------------------------------- concat
+	/**
+	 * @param $properties string[]
+	 * @return Concat
+	 */
+	public static function concat(array $properties)
+	{
+		return new Concat($properties);
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -109,7 +120,7 @@ abstract class Func
 	 * @param $separator string Separator for the concat @default ,
 	 * @return Group_Concat
 	 */
-	public function groupConcat($column = null, $separator = null)
+	public static function groupConcat($column = null, $separator = null)
 	{
 		return new Group_Concat($column, $separator);
 	}
