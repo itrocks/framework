@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * SQL columns list expression builder
@@ -234,8 +235,13 @@ class Columns
 		if (!isset($join)) {
 			$join = $this->joins->getJoin($master_path);
 		}
-		if ($resolve_objects && ($class_name = $this->joins->getClass($path))) {
-			$class             = new Reflection_Class($class_name);
+		if (
+			$resolve_objects
+			&& ($class_name = $this->joins->getClass($path))
+			&& ($class      = new Reflection_Class($class_name))
+			&& (!$class->isInstance(new Date_Time))
+		) {
+			;
 			$concat_properties = [];
 			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
 				$concat_properties[] = $path . DOT . $property_name;
