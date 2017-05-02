@@ -40,6 +40,7 @@ use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Button\Has_Selection_Buttons;
@@ -283,6 +284,22 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$property_name = substr($property_name, 3);
 		}
 		return $property_name;
+	}
+
+	//---------------------------------------------------------------------------- forceSetMainObject
+	/**
+	 * Force $parameters' main object to a set of $this->class_names
+	 * Replace the already existing Main_Object ($this->mainObject() must be called before this)
+	 *
+	 * @param $parameters Parameters
+	 * @return string
+	 */
+	protected function forceSetMainObject(Parameters $parameters)
+	{
+		$set = Set::instantiate($this->class_names);
+		$parameters->shift();
+		$parameters->unshift($set);
+		return $set->element_class_name;
 	}
 
 	//--------------------------------------------------------------------------------- getClassNames
@@ -824,6 +841,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		$this->class_names = $class_name;
 		$class_name        = $parameters->getMainObject()->element_class_name;
+		if (!$class_name) {
+			$class_name = $this->forceSetMainObject($parameters);
+		}
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
