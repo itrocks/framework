@@ -208,7 +208,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		if ($list_settings->start_display_line_number < 1) {
 			$list_settings->start_display_line_number = 1;
-			$did_change = true;
+			$did_change                               = true;
 		}
 		if (Custom_Settings_Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
 			$did_change = true;
@@ -317,9 +317,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			foreach ($this->errors as $property_path => $error) {
 				if ($first) $first = false; else $summary .= ',';
 				// TODO I should not see any HTML code inside the PHP code
-				$summary .= SP . ' <span class="error">' . $error->getMessage();
+				$summary .= SP . '<span class="error">' . $error->getMessage();
 				if ($error instanceof Data_List_Exception) {
-					$summary .= ' (' . $error->getExpression() . ')';
+					$summary .= SP . '(' . $error->getExpression() . ')';
 				}
 				$summary .= '</span>';
 			}
@@ -366,7 +366,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		// properties / search
 		foreach ($list_settings->properties as $property) {
 			/** @var $property Property */
-			$property = Builder::createClone($property, Property::class);
+			$property         = Builder::createClone($property, Property::class);
 			$property->search = new Reflection_Property($class_name, $property->path);
 			if (!$property->search->getType()->isString()) {
 				Var_Annotation::local($property->search)->value  = Type::STRING;
@@ -419,9 +419,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$class_display = Names::classToDisplay(
 				$list_settings->getClass()->getAnnotation('set')->value
 			);
-			$summary = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
+			$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 			$summary_builder = new Summary_Builder($class_name, $search);
-			$summary .= SP . (string)$summary_builder;
+			$summary        .= SP . (string)$summary_builder;
 			return $summary;
 		}
 		return null;
@@ -476,7 +476,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
-		$parameters = $parameters->getObjects();
+		$parameters    = $parameters->getObjects();
 		$list_settings = Data_List_Settings::current($class_name);
 		$list_settings->cleanup();
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
@@ -524,10 +524,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
-		$less_twenty = $displayed_lines_count > 20;
-		$more_hundred = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
+		$less_twenty   = $displayed_lines_count > 20;
+		$more_hundred  = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
-		$parameters = array_merge(
+		$parameters    = array_merge(
 			[$class_name => $data],
 			$parameters,
 			[
@@ -551,7 +551,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		);
 		// buttons
 		/** @var $buttons Buttons */
-		$buttons = Builder::create(Buttons::class);
+		$buttons                      = Builder::create(Buttons::class);
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
@@ -601,9 +601,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		foreach ($properties_path as $key => $property_path) {
 			if (!in_array($property_path, $group_by->properties)) {
-				$group_concat = new Group_Concat();
+				$group_concat            = new Group_Concat();
 				$group_concat->separator = ', ';
-				$properties_path[$key] = $group_concat;
+				$properties_path[$key]   = $group_concat;
 			}
 		}
 	}
@@ -823,7 +823,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$this->class_names = $class_name;
-		$class_name = $parameters->getMainObject()->element_class_name;
+		$class_name        = $parameters->getMainObject()->element_class_name;
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
