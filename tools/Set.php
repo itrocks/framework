@@ -149,7 +149,7 @@ class Set implements Iterator
 	 */
 	public static function instantiate($class_name, array $elements = [])
 	{
-		if (class_exists($class_name)) {
+		if (class_exists($class_name) && ($class_name instanceof Set)) {
 			return new $class_name($elements);
 		}
 		elseif (
