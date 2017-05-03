@@ -5,6 +5,7 @@ use DateTime;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Tools\Stringable;
 
 /**
  * PHP types manager
@@ -455,6 +456,19 @@ class Type
 	public function isString()
 	{
 		return $this->type === self::STRING;
+	}
+
+	//---------------------------------------------------------------------------------- isStringable
+	/**
+	 * @return boolean
+	 */
+	public function isStringable()
+	{
+		return (
+			$this->isClass()
+			&& !$this->isMultiple()
+			&& is_subclass_of($this->getElementTypeAsString(), Stringable::class)
+		);
 	}
 
 	//---------------------------------------------------------------------------------- isSubClassOf
