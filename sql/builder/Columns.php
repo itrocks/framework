@@ -238,10 +238,9 @@ class Columns
 		if (
 			$resolve_objects
 			&& ($class_name = $this->joins->getClass($path))
-			&& ($class      = new Reflection_Class($class_name))
-			&& (!$class->isInstance(new Date_Time))
+			&& !is_a($class_name, Date_Time::class, true)
 		) {
-			;
+			$class             = new Reflection_Class($class_name);
 			$concat_properties = [];
 			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
 				$concat_properties[] = $path . DOT . $property_name;
