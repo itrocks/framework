@@ -340,7 +340,7 @@ $('document').ready(function()
 		//---------------------------------------------------------------------- input.combo ctrl+click
 		.click(function(event)
 		{
-			if (event.ctrlKey) {
+			if (event.ctrlKey || event.metaKey) {
 				var $this = $(this);
 				var id   = $this.prev().val();
 				var path = $this.data('edit-class').repl('\\', '/');
