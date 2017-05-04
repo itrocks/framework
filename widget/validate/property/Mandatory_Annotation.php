@@ -33,7 +33,7 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Contex
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
-	 * Returns true if the object property is empty
+	 * Returns true if the object property value is empty
 	 *
 	 * @param $object object
 	 * @return boolean
