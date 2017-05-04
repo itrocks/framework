@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use mysqli;
 use mysqli_result;
 use ITRocks\Framework\Dao\Mysql\Table;
@@ -281,12 +282,12 @@ class Contextual_Mysqli extends mysqli
 	/**
 	 * @param $query string
 	 * @return mysqli_result|boolean false, but other errors managers may change this
+	 * @throws Mysql_Error_Exception
 	 */
 	protected function queryError($query)
 	{
 		if (error_reporting()) {
-			$error = $this->last_errno . ': ' . $this->last_error . '[' . $query . ']';
-			trigger_error('Mysql logger error : ' . $error . ' on query ' . $query, E_USER_ERROR);
+			throw new Mysql_Error_Exception($this->last_errno, $this->last_error, $query);
 		}
 		return false;
 	}

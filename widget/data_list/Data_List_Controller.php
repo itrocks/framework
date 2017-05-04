@@ -7,14 +7,16 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Group_Concat;
+use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Count;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\Dao\Option\Limit;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Reverse;
+use ITRocks\Framework\Dao\Option\Time_Limit;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\History;
@@ -518,7 +520,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		catch (Exception $exception) {
 			//set empty list result
 			$data  = new Default_List_Data($class_name, []);
-			if ($exception->getCode() == Option\Time_Limit::getErrorCode()){
+			if (
+				($exception instanceof Mysql_Error_Exception)
+				&& ($exception->getCode() === Time_Limit::getErrorCode())
+			) {
 				$error = new Exception(
 					Loc::tr('Maximum statement execution time exceeded') . ', '
 					. Loc::tr('please enter more acute search criteria') . DOT

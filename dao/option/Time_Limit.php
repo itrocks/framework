@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Dao\Option;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Option;
 
 /**
@@ -9,9 +11,6 @@ use ITRocks\Framework\Dao\Option;
  */
 class Time_Limit implements Option
 {
-
-	//------------------------------------------------------------------------------ ERROR_CODE_MYSQL
-	const ERROR_CODE_MYSQL = 256;
 
 	//----------------------------------------------------------------------------------- $time_limit
 	/**
@@ -31,13 +30,16 @@ class Time_Limit implements Option
 
 	//---------------------------------------------------------------------------------- getErrorCode
 	/**
+	 * @param $data_link Data_Link
 	 * @return integer|null
 	 */
-	public static function getErrorCode()
+	public static function getErrorCode(Data_Link $data_link = null)
 	{
-		$current = Dao::current();
-		if ($current instanceof Dao\Mysql\Link) {
-			return self::ERROR_CODE_MYSQL;
+		if (!$data_link) {
+			$data_link = Dao::current();
+		}
+		if ($data_link instanceof Dao\Mysql\Link) {
+			return Mysql\Errors::MAX_EXECUTION_TIME_OUT;
 		}
 		return null;
 	}
