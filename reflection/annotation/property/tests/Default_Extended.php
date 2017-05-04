@@ -13,4 +13,10 @@ class Default_Extended
 	 */
 	public $age = 18;
 
+	//------------------------------------------------------------------------------------- $null_age
+	/**
+	 * @var integer
+	 */
+	public $null_age = null;
+
 }

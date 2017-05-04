@@ -148,11 +148,15 @@ class Tests extends Test
 	{
 		$robert = new Default_Simple();
 		// TODO LOW default for age should be 43, but this case does not work. Warning in documentation
-		$this->assume('@default.override',    $robert->age,     18);
-		$this->assume('@default.simple',      $robert->name,    'Robert');
-		$this->assume('@default.very_simple', $robert->surname, 'Mitchum');
+		$this->assume('@default.override',      $robert->age,      18);
+		$this->assume('@default.override_null', $robert->null_age, 43);
+		$this->assume('@default.simple',        $robert->name,     'Robert');
+		$this->assume('@default.very_simple',   $robert->surname,  'Mitchum');
 		$this->assume('@default.reflection.override',
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(), 18
+		);
+		$this->assume('@default.reflection.override_null',
+			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(), 43
 		);
 		$this->assume('@default.reflection.simple',
 			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(), 'Robert'
@@ -162,7 +166,7 @@ class Tests extends Test
 		);
 		$this->assume('@default.reflection.all',
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
-			['age' => 18, 'name' => 'Robert', 'surname' => 'Mitchum']
+			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum']
 		);
 	}
 
