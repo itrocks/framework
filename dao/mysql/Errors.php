@@ -3,12 +3,12 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 /**
  * Official mysql error codes, stored into constants
+ *
+ * TODO LOW complete this
+ * @link https://dev.mysql.com/doc/refman/5.7/en/error-messages-server.html
  */
 class Errors
 {
-
-	//------------------------------------------------------------------------ MAX_EXECUTION_TIME_OUT
-	const MAX_EXECUTION_TIME_OUT = 256;
 
 	//------------------------------------------------------------------------------------ ER_HASHCHK
 	const ER_HASHCHK = 1000;
@@ -805,5 +805,8 @@ class Errors
 	const CR_DUPLICATE_CONNECTION_ATTR = 2060;
 	const CR_AUTH_PLUGIN_ERR = 2061;
 	const CR_INSECURE_API_ERR = 2062;
+
+	//------------------------------------------------------------------------------ ER_QUERY_TIMEOUT
+	const ER_QUERY_TIMEOUT = 3024;
 
 }

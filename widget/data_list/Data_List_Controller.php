@@ -522,7 +522,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$data  = new Default_List_Data($class_name, []);
 			if (
 				($exception instanceof Mysql_Error_Exception)
-				&& ($exception->getCode() === Time_Limit::getErrorCode())
+				&& Time_Limit::isErrorCodeTimeout($exception->getCode())
 			) {
 				$error = new Exception(
 					Loc::tr('Maximum statement execution time exceeded') . ', '

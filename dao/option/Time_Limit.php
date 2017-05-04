@@ -28,22 +28,6 @@ class Time_Limit implements Option
 		$this->time_limit = round($time_limit * 1000);
 	}
 
-	//---------------------------------------------------------------------------------- getErrorCode
-	/**
-	 * @param $data_link Data_Link
-	 * @return integer|null
-	 */
-	public static function getErrorCode(Data_Link $data_link = null)
-	{
-		if (!$data_link) {
-			$data_link = Dao::current();
-		}
-		if ($data_link instanceof Dao\Mysql\Link) {
-			return Mysql\Errors::MAX_EXECUTION_TIME_OUT;
-		}
-		return null;
-	}
-
 	//---------------------------------------------------------------------------------------- getSql
 	/**
 	 * Directive corresponding of your database
@@ -63,6 +47,25 @@ class Time_Limit implements Option
 		}
 
 		return '';
+	}
+
+	//---------------------------------------------------------------------------- isErrorCodeTimeout
+	/**
+	 * @param $error_code integer
+	 * @param $data_link  Data_Link
+	 * @return boolean
+	 */
+	public static function isErrorCodeTimeout($error_code, Data_Link $data_link = null)
+	{
+		if (!$data_link) {
+			$data_link = Dao::current();
+		}
+		if ($data_link instanceof Dao\Mysql\Link) {
+			return in_array(
+				$error_code, [Mysql\Errors::ER_FILSORT_ABORT, Mysql\Errors::ER_QUERY_TIMEOUT]
+			);
+		}
+		return null;
 	}
 
 }
