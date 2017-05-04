@@ -28,13 +28,13 @@ class File_Logger implements Configurable
 	/**
 	 * @var resource
 	 */
-	private $file = null;
+	protected $file = null;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * @var string
 	 */
-	private $file_name = null;
+	protected $file_name = null;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -99,7 +99,7 @@ class File_Logger implements Configurable
 		if (empty($this->file_name) || !empty($identifier)) {
 			if (empty($identifier)) {
 				/** @var $logger Logger */
-				$logger = Session::current()->plugins->get(Logger::class);
+				$logger     = Session::current()->plugins->get(Logger::class);
 				$identifier = $logger->getIdentifier();
 			}
 			if ($identifier) {
