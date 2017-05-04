@@ -5,6 +5,7 @@ use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Property\Tests\Default_Simple;
 use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
 
@@ -28,6 +29,17 @@ class Tests extends Test
 	 */
 	private $getter_static;
 
+	//------------------------------------------------------------------------------------- $property
+	/**
+	 * A fictive local property, for unit tests use only
+	 * Annotations set here are used only for the test that uses @link
+	 *
+	 * @default getDefaultPropertyValue
+	 * @link Collection
+	 * @var Tests[]
+	 */
+	private $property;
+
 	//-------------------------------------------------------------------------------- $setter_simple
 	/**
 	 * @setter setSimple
@@ -50,17 +62,6 @@ class Tests extends Test
 	 * @var string
 	 */
 	private $with_values;
-
-	//------------------------------------------------------------------------------------- $property
-	/**
-	 * A fictive local property, for unit tests use only
-	 * Annotations set here are used only for the test that uses @link
-	 *
-	 * @default getDefaultPropertyValue
-	 * @link Collection
-	 * @var Tests[]
-	 */
-	private $property;
 
 	//----------------------------------------------------------------------- getDefaultPropertyValue
 	/** @noinspection PhpMissingDocCommentInspection */
@@ -146,7 +147,23 @@ class Tests extends Test
 	public function testDefaultSimple()
 	{
 		$robert = new Default_Simple();
-		$this->assume('@default.simple', $robert->name, 'Robert');
+		// TODO LOW default for age should be 43, but this case does not work. Warning in documentation
+		$this->assume('@default.override',    $robert->age,     18);
+		$this->assume('@default.simple',      $robert->name,    'Robert');
+		$this->assume('@default.very_simple', $robert->surname, 'Mitchum');
+		$this->assume('@default.reflection.override',
+			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(), 18
+		);
+		$this->assume('@default.reflection.simple',
+			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(), 'Robert'
+		);
+		$this->assume('@default.reflection.very_simple',
+			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(), 'Mitchum'
+		);
+		$this->assume('@default.reflection.all',
+			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
+			['age' => 18, 'name' => 'Robert', 'surname' => 'Mitchum']
+		);
 	}
 
 	//--------------------------------------------------------------------- testGetterAnnotationCases

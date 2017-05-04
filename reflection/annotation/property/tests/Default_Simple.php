@@ -3,8 +3,10 @@ namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 /**
  * A very simple class, without AOP, to test @default simple and alone
+ *
+ * @override age @default Default_Simple::defaultAge
  */
-class Default_Simple
+class Default_Simple extends Default_Extended
 {
 
 	//----------------------------------------------------------------------------------------- $name
@@ -13,6 +15,18 @@ class Default_Simple
 	 * @var string
 	 */
 	public $name;
+
+	//-------------------------------------------------------------------------------------- $surname
+	public $surname = 'Mitchum';
+
+	//------------------------------------------------------------------------------------ defaultAge
+	/**
+	 * @return integer
+	 */
+	protected function defaultAge()
+	{
+		return 43;
+	}
 
 	//----------------------------------------------------------------------------------- defaultName
 	/**

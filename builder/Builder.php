@@ -10,8 +10,6 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Current_With_Default;
-use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Set;
 use Serializable;
 
 /**
@@ -302,9 +300,9 @@ class Builder implements Activable, Serializable
 	 */
 	public static function isObjectSet($object)
 	{
-		$result = false;
-		$class = new Reflection_Class(get_class($object));
-		$defaults = $class->getDefaultProperties();
+		$result   = false;
+		$class    = new Reflection_Class(get_class($object));
+		$defaults = $class->getDefaultProperties([T_EXTENDS]);
 		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
 			$value = $property->getValue($object);
 			if (isset($value)) {

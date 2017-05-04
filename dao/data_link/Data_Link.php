@@ -381,8 +381,8 @@ abstract class Data_Link
 		}
 		$element_value = $element->$property_name;
 		if (is_object($element_value)) {
-			$class = new Reflection_Class(get_class($element_value));
-			$defaults = $class->getDefaultProperties();
+			$class    = new Reflection_Class(get_class($element_value));
+			$defaults = $class->getDefaultProperties([T_EXTENDS]);
 			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
 				if (
 					isset($defaults[$property_name])

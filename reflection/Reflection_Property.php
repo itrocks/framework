@@ -255,15 +255,26 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
+	 * @param $default_object object INTERNAL, DO NOT USE ! An empty object for optimization purpose
 	 * @return mixed
 	 */
-	public function getDefaultValue()
+	public function getDefaultValue(&$default_object = null)
 	{
 		if ($this->getAnnotation('default')->value) {
-			$property_name = $this->getName();
-			return Builder::create($this->getDeclaringClassName())->$property_name;
+			$was_accessible = $this->isPublic();
+			if (!$was_accessible) {
+				$this->setAccessible(true);
+			}
+			if (!isset($default_object)) {
+				$default_object = Builder::create($this->getFinalClassName());
+			}
+			$value = $this->getValue($default_object);
+			if (!$was_accessible) {
+				$this->setAccessible(false);
+			}
+			return $value;
 		}
-		return $this->getDeclaringClass()->getDefaultProperties()[$this->name];
+		return $this->getFinalClass()->getDefaultProperties([T_EXTENDS], $this->name)[$this->name];
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment

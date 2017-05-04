@@ -49,14 +49,6 @@ class Object_Builder_Array
 	 */
 	public $composite = null;
 
-	//------------------------------------------------------------------------------------- $defaults
-	/**
-	 * Default values for each class property
-	 *
-	 * @var array
-	 */
-	private $defaults;
-
 	//------------------------------------------------------------------------------------ $from_form
 	/**
 	 * True (default) if apply build specifics for arrays that come from an input form :
@@ -728,8 +720,7 @@ class Object_Builder_Array
 		if ($this->started) {
 			$this->stop();
 		}
-		$this->class    = new Reflection_Class(Builder::className($class_name));
-		$this->defaults = $this->class->getDefaultProperties();
+		$this->class = new Reflection_Class(Builder::className($class_name));
 	}
 
 	//----------------------------------------------------------------------------------------- start

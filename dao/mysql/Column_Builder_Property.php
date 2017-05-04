@@ -27,7 +27,7 @@ trait Column_Builder_Property
 	private static function propertyDefaultToMysql(
 		Reflection_Property $property, Column $column
 	) {
-		$default = $property->getDeclaringClass()->getDefaultProperties()[$property->name];
+		$default = $property->getDefaultValue();
 		if (isset($default)) {
 			$property_type = $column->getType();
 			if ($property_type->isInteger()) {
