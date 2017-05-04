@@ -184,10 +184,14 @@ class Properties
 		if ($init) $this->_ = [];';
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
-			if (!isset($advices[$property_name]['override'])) {
+			if (
+				!isset($property_advices['override'])
+				// no AOP if the only 'advice' is 'default' (not a real advice, in fact)
+				&& ((count($property_advices) > 1) || !isset($property_advices['default']))
+			) {
 				$code .= '
 		';
-				if (!isset($advices[$property_name]['replaced'])) {
+				if (!isset($property_advices['replaced'])) {
 					$code .= '
 		$this->' . $property_name . '_ = isset($this->' . $property_name . ')'
 						. ' ? $this->' . $property_name . ' : null;';
@@ -778,7 +782,7 @@ class Properties
 	 * @param $method_name string
 	 * @param $parameters  string
 	 * @param $advices     array
-	 * @return string
+	 * @return string[]
 	 *
 	 * @todo this check only getters, links and setters. This should check AOP links too.
 	 * (the parent class has not this method but it has AOP properties)
