@@ -18,6 +18,9 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	//-------------------------------------------------------------------------------- FILE_EXTENSION
 	const FILE_EXTENSION = 'sql';
 
+	//-------------------------------------------------------------------------------------------- GZ
+	const GZ = true;
+
 	//------------------------------------------------------------------------------------------ PATH
 	const PATH = 'path';
 
@@ -38,33 +41,6 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 * @var float
 	 */
 	private $time;
-
-	//------------------------------------------------------------------------------------ __destruct
-	/**
-	 * When the script ends : gzip the log file
-	 * This will be called after the output is flushed to the user, so it does not slow him
-	 *
-	 * Because of potential usage of register_shutdown_function, we close files here,
-	 * not in serialize while session is closed
-	 *
-	 */
-	public function __destruct()
-	{
-		clearstatcache(true);
-		if ($this->file() && file_exists($filename = $this->fileName())) {
-			$this->close();
-			$destination = gzopen($filename . '.gz', 'a9');
-			$source      = fopen($filename, 'rb');
-			if ($source && $destination) {
-				while (!feof($source)) {
-					gzwrite($destination, fgets($source));
-				}
-			}
-			fclose($source);
-			fclose($destination);
-			unlink($filename);
-		}
-	}
 
 	//------------------------------------------------------------------------------------ afterQuery
 	/**
@@ -188,11 +164,11 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	{
 		if ($f = $this->file()) {
 			if ($this->buffer) {
-				fputs($f, '#' . lParse(rLastParse($this->fileName(), SL), DOT) . LF);
-				fputs($f, $this->buffer);
+				gzputs($f, '#' . lParse(rLastParse($this->fileName(), SL), DOT) . LF);
+				gzputs($f, $this->buffer);
 				$this->buffer = '';
 			}
-			fputs($f, $log);
+			gzputs($f, $log);
 			return true;
 		}
 		// if file name is not known, log into buffer
