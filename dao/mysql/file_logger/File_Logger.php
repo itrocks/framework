@@ -50,29 +50,19 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 */
 	public function __destruct()
 	{
-		if ($f = $this->file()) {
-			$old_file_name = $this->file_name;
+		clearstatcache(true);
+		if ($this->file() && file_exists($filename = $this->fileName())) {
 			$this->close();
-			$filename = $this->fileName();
-			if (is_file($filename)) {
-				$destination = gzopen($filename . '.gz', 'w9');
-				$source      = fopen($filename, 'rb');
-				if ($source && $destination) {
-					while (!feof($source)) {
-						gzwrite($destination, fgets($source));
-					}
+			$destination = gzopen($filename . '.gz', 'a9');
+			$source      = fopen($filename, 'rb');
+			if ($source && $destination) {
+				while (!feof($source)) {
+					gzwrite($destination, fgets($source));
 				}
-				fclose($source);
-				fclose($destination);
-				unlink($filename);
 			}
-			else {
-				user_error(
-					'File not found ' . $filename . ' into Mysql\File_Logger::__destruct().'
-					. ' Name was ' . $old_file_name,
-					E_USER_WARNING
-				);
-			}
+			fclose($source);
+			fclose($destination);
+			unlink($filename);
 		}
 	}
 
