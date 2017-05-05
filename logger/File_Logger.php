@@ -42,6 +42,12 @@ class File_Logger implements Configurable
 	 */
 	protected $path;
 
+	//--------------------------------------------------------------------------------------- $prefix
+	/**
+	 * @var string
+	 */
+	protected $prefix = '# ';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array [path]
@@ -51,6 +57,15 @@ class File_Logger implements Configurable
 		if (isset($configuration[self::PATH])) {
 			$this->path = $configuration[self::PATH];
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __destruct
+	public function __destruct()
+	{
+		if ($this->file) {
+			$this->write('END');
+		}
+		$this->close();
 	}
 
 	//----------------------------------------------------------------------------------------- close
@@ -138,6 +153,24 @@ class File_Logger implements Configurable
 			)
 			: ('no file ' . $filename)
 		;
+	}
+
+	//----------------------------------------------------------------------------------------- write
+	/**
+	 * Write some text into the log file
+	 *
+	 * @param $text      string  The text to write into the log file
+	 * @param $date_time boolean If true (default), an ISO date-time is added
+	 */
+	public function write($text, $date_time = true)
+	{
+		if ($date_time) {
+			$text = date('Y-m-d H:i:s') . SP . $text;
+		}
+		if (strlen($this->prefix)) {
+			$text = $this->prefix . $text;
+		}
+		static::GZ ? gzputs($this->file, $text . LF) : fputs($this->file, $text . LF);
 	}
 
 }

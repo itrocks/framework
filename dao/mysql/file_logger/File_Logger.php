@@ -36,11 +36,26 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 */
 	private $database = '';
 
+	//--------------------------------------------------------------------------------------- $prefix
+	/**
+	 * @var string
+	 */
+	protected $prefix = '# ';
+
 	//----------------------------------------------------------------------------------------- $time
 	/**
 	 * @var float
 	 */
 	private $time;
+
+	//------------------------------------------------------------------------------------ __destruct
+	public function __destruct()
+	{
+		if ($this->buffer) {
+			$this->writeBuffer('Flush buffer' . LF);
+		}
+		parent::__destruct();
+	}
 
 	//------------------------------------------------------------------------------------ afterQuery
 	/**
