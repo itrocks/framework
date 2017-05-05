@@ -255,12 +255,13 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
+	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
 	 * @param $default_object object INTERNAL, DO NOT USE ! An empty object for optimization purpose
 	 * @return mixed
 	 */
-	public function getDefaultValue(&$default_object = null)
+	public function getDefaultValue($use_annotation = true, &$default_object = null)
 	{
-		if ($this->getAnnotation('default')->value) {
+		if ($use_annotation && $this->getAnnotation('default')->value) {
 			$was_accessible = $this->isPublic();
 			if (!$was_accessible) {
 				$this->setAccessible(true);
@@ -274,7 +275,8 @@ class Reflection_Property extends ReflectionProperty
 			}
 			return $value;
 		}
-		return $this->getFinalClass()->getDefaultProperties([T_EXTENDS], $this->name)[$this->name];
+		return $this->getFinalClass()
+			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name];
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment

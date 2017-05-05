@@ -203,31 +203,41 @@ class Reflection_Class extends ReflectionClass
 	 * Public and protected properties defaults are taken even without T_EXTENDS.
 	 * Private properties defaults are taken only if you set T_EXTENDS to true.
 	 *
-	 * @param $flags         integer[] T_EXTENDS. T_USE is implicit
-	 * @param $property_name string for optimization purpose : only get defaults for this property
+	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
+	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
+	 * @param $property_name  string for optimization purpose : only get defaults for this property
 	 * @return array
 	 */
-	public function getDefaultProperties(array $flags = [], $property_name = null)
-	{
+	public function getDefaultProperties(
+		array $flags = [], $use_annotation = true, $property_name = null
+	) {
 		// list default values
 		$defaults = parent::getDefaultProperties();
 		if ($flags) {
 			if (in_array(T_EXTENDS, $flags)) {
 				$parent = $this->getParentClass();
 				while ($parent && (!$property_name || !key_exists($property_name, $defaults))) {
-					$defaults = array_merge($parent->getDefaultProperties([], $property_name), $defaults);
+					$defaults = array_merge(
+						$parent->getDefaultProperties([], $use_annotation, $property_name),
+						$defaults
+					);
 					$parent   = $parent->getParentClass();
 				}
 			}
 		}
-		// scan for @default and use them
+		// if only one property asked
 		if ($property_name) {
 			$defaults = [$property_name => $defaults[$property_name]];
 		}
-		foreach ($defaults as $default_property_name => $value) {
-			$property = $this->getProperty($default_property_name);
-			if ($property->getAnnotation('default')->value) {
-				$defaults[$default_property_name] = $property->getDefaultValue($default_object);
+		// scan for @default and use them
+		if ($use_annotation) {
+			foreach ($defaults as $default_property_name => $value) {
+				$property = $this->getProperty($default_property_name);
+				if ($property->getAnnotation('default')->value) {
+					$defaults[$default_property_name] = $property->getDefaultValue(
+						$use_annotation, $default_object
+					);
+				}
 			}
 		}
 		return $defaults;
