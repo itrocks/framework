@@ -331,6 +331,17 @@ class Type
 		return !$this->getElementType()->isStrictlyBasic();
 	}
 
+	//----------------------------------------------------------------------------------- isClassHtml
+	/**
+	 * Returns 'class' if type is a class or multiple classes
+	 *
+	 * @return string
+	 */
+	public function isClassHtml()
+	{
+		return $this->isClass() ? 'class' : '';
+	}
+
 	//------------------------------------------------------------------------------------ isDateTime
 	/**
 	 * @return boolean

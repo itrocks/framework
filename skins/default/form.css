@@ -7,6 +7,7 @@ textarea {
   background-color: white;
   border: 1px solid #a3a3a3;
   border-radius: 2px;
+  height: 18px;
   padding: 1px 2px; }
   input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized)[readonly],
   select[readonly],
@@ -17,12 +18,21 @@ textarea {
     resize: none; }
 
 /* datetime input */
-input.datetime {
-  background: white url("img/input_datetime.png") right top no-repeat; }
+div.date_time {
+  position: relative; }
+  div.date_time .ui-datepicker-trigger {
+    background: url("img/input_datetime.png") center no-repeat;
+    border: none;
+    color: transparent;
+    cursor: pointer;
+    font-size: 1px;
+    height: 21px;
+    margin-left: -22px !important;
+    position: absolute;
+    top: 2px;
+    width: 22px; }
 
-.ui-datepicker-trigger {
-  display: none; }
-
+/* combo list TODO confirm */
 .ui-state-active {
   background: #cef37f !important; }
 
@@ -31,27 +41,32 @@ input.datetime {
   overflow-y: scroll; }
 
 /* float / integer input / display */
-.float,
-.integer {
+.float > input, .integer > input {
   text-align: right; }
 
 /* combo input */
-input.combo ~ .ui-helper-hidden-accessible {
-  display: none; }
-input.combo ~ button, input.combo ~ a {
-  color: transparent;
-  height: 16px;
-  font-size: 1px;
-  margin: 2px 0;
-  padding: 0 2px;
-  vertical-align: top;
-  width: 16px; }
-  input.combo ~ button.more, input.combo ~ a.more {
-    background: url("img/input_combo.png") no-repeat center 1px;
-    border: 0;
-    cursor: pointer;
-    display: inline-block;
-    margin-left: -16px !important; }
+div.class, td.class {
+  position: relative; }
+  div.class > input.combo ~ .ui-helper-hidden-accessible, td.class > input.combo ~ .ui-helper-hidden-accessible {
+    display: none; }
+  div.class > input.combo ~ button, div.class > input.combo ~ a, td.class > input.combo ~ button, td.class > input.combo ~ a {
+    color: transparent;
+    height: 24px;
+    font-size: 1px;
+    width: 22px; }
+    div.class > input.combo ~ button.more, div.class > input.combo ~ a.more, td.class > input.combo ~ button.more, td.class > input.combo ~ a.more {
+      background: url("img/input_combo.png") center no-repeat;
+      border: none;
+      cursor: pointer;
+      height: 22px;
+      margin-left: -14px !important;
+      position: absolute;
+      top: 2px;
+      width: 14px; }
+
+td.class > input.combo ~ a.more, td.class > input.combo ~ button.more {
+  height: 20px;
+  top: 0; }
 
 /* fieldset */
 fieldset {
@@ -123,7 +138,7 @@ fieldset {
           width: 100%; }
         fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > select {
           height: 22px;
-          margin-right: -6px; }
+          margin: -2px -6px -2px 0; }
         fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.minus {
           background: url("img/remove_row.png") right 3px no-repeat;
           color: transparent;

@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Dom\Table\Body;
@@ -128,7 +129,13 @@ class Html_Builder_Collection extends Collection
 			$id_input->setAttribute('type', 'hidden');
 			$input = $id_input . $input;
 		}
-		return new Standard_Cell($input);
+		$cell = new Standard_Cell($input);
+		$type = $property->getType();
+		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
+		if ($class = $type->isClassHtml()) {
+			$cell->addClass($class);
+		}
+		return $cell;
 	}
 
 	//------------------------------------------------------------------------------------- buildHead

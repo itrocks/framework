@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Map;
 use ITRocks\Framework\View\Html\Dom\Table\Body;
 use ITRocks\Framework\View\Html\Dom\Table\Row;
@@ -97,7 +98,13 @@ class Html_Builder_Map extends Map
 		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $preprop);
 		$builder->readonly = $this->readOnly();
 		$input = $builder->setTemplate($this->template)->build();
-		return new Standard_Cell($input);
+		$cell = new Standard_Cell($input);
+		$type = $property->getType();
+		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
+		if ($class = $type->isClassHtml()) {
+			$cell->addClass($class);
+		}
+		return $cell;
 	}
 
 	//------------------------------------------------------------------------------------- buildHead
