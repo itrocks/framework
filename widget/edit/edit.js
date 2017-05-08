@@ -146,14 +146,9 @@ $('document').ready(function()
 			selectOtherMonths: true
 		});
 
-		this.inside('input.datetime').blur(function()
-		{
-			$(this).datepicker('hide');
-		});
-
 		this.inside('input.datetime').keyup(function(event)
 		{
-			if ((event.keyCode != 13) && (event.keyCode != 27)) {
+			if ((event.keyCode !== 13) && (event.keyCode !== 27)) {
 				$(this).datepicker('show');
 			}
 		});
