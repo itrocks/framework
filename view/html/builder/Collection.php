@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
@@ -99,7 +100,9 @@ class Collection
 	protected function buildCell($object, Reflection_Property $property)
 	{
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
-		$cell = new Standard_Cell($value);
+		$cell = ($value instanceof Dao\File)
+			? new Standard_Cell((new File($value))->build())
+			: new Standard_Cell($value);
 		$type = $property->getType();
 		if ($type->isMultiple()) {
 			$cell->addClass('multiple');

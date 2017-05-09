@@ -3,27 +3,19 @@ namespace ITRocks\Framework\Widget\Edit;
 
 use DateTime;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
-use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao\File;
-use ITRocks\Framework\Dao\File\Session_File;
-use ITRocks\Framework\Dao\File\Session_File\Files;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Type;
-use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\View;
-use ITRocks\Framework\View\Html\Dom\Anchor;
+use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\Element;
-use ITRocks\Framework\View\Html\Dom\Image;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Dom\Label;
 use ITRocks\Framework\View\Html\Dom\Select;
 use ITRocks\Framework\View\Html\Dom\Set;
-use ITRocks\Framework\View\Html\Dom\Span;
 use ITRocks\Framework\View\Html\Dom\Textarea;
 
 /**
@@ -259,38 +251,11 @@ class Html_Builder_Type
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($file);
 		}
-		if ($this->value instanceof File) {
-			$span = $this->buildFileAnchor($this->value);
-		}
-		else {
-			$span = '';
-		}
+		$span = ($this->value instanceof File)
+			? (new Html\Builder\File($this->value))->build()
+			: '';
 		$this->addConditionsToElement($file);
 		return $file . $span;
-	}
-
-	//------------------------------------------------------------------------------- buildFileAnchor
-	/**
-	 * @param $file File
-	 * @return Anchor
-	 */
-	protected function buildFileAnchor(File $file)
-	{
-		/** @var $session_files Files */
-		$session_files          = Session::current()->get(Files::class, true);
-		$session_files->files[] = $file;
-		$image = ($file->getType()->is('image'))
-			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name], ['size' => 22]))
-			: '';
-		$anchor = new Anchor(
-			View::link(Session_File::class, 'image', [$file->name]),
-			$image . new Span($file->name)
-		);
-		if ($file->getType()->is('image')) {
-			$anchor->setAttribute('target', Target::BLANK);
-			//$anchor->addClass('popup');
-		}
-		return $anchor;
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat

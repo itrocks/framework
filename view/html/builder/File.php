@@ -1,8 +1,17 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\File\Session_File;
+use ITRocks\Framework\Dao\File\Session_File\Files;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Session;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Dom\Anchor;
+use ITRocks\Framework\View\Html\Dom\Image;
+use ITRocks\Framework\View\Html\Dom\Span;
 
 /**
  * Takes a value that stores a file content and builds HTML code using their data
@@ -18,18 +27,18 @@ class File
 
 	//------------------------------------------------------------------------------------- $property
 	/**
-	 * @var Reflection_Property
+	 * @var Reflection_Property|null
 	 */
 	protected $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
-	 * @param $file     Dao\File
+	 * @param Dao\File            $file
+	 * @param Reflection_Property $property
 	 */
-	public function __construct($property, Dao\File $file)
+	public function __construct(Dao\File $file, Reflection_Property $property = null)
 	{
-		$this->file = $file;
+		$this->file     = $file;
 		$this->property = $property;
 	}
 
@@ -39,7 +48,30 @@ class File
 	 */
 	public function build()
 	{
-		return $this->file->name;
+		return $this->buildFileAnchor($this->file);
+	}
+
+	//------------------------------------------------------------------------------- buildFileAnchor
+	/**
+	 * @param $file Dao\File
+	 * @return Anchor
+	 */
+	protected function buildFileAnchor(Dao\File $file)
+	{
+		/** @var $session_files Files */
+		$session_files          = Session::current()->get(Files::class, true);
+		$session_files->files[] = $file;
+		$image = ($file->getType()->is('image'))
+			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name], ['size' => 22]))
+			: '';
+		$anchor = new Anchor(
+			View::link(Session_File::class, 'image', [$file->name]),
+			$image . new Span($file->name)
+		);
+		if ($file->getType()->is('image')) {
+			$anchor->setAttribute('target', Target::BLANK);
+		}
+		return $anchor;
 	}
 
 }

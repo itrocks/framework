@@ -755,9 +755,9 @@ class Template
 	 * @param $file     File
 	 * @return string
 	 */
-	protected function parseFileToString($property, File $file)
+	protected function parseFileToString(File $file, Reflection_Property $property = null)
 	{
-		return (new Html\Builder\File($property, $file))->build();
+		return (new Html\Builder\File($file, $property))->build();
 	}
 
 	//--------------------------------------------------------------------------------- parseFullPage
@@ -1617,7 +1617,7 @@ class Template
 		// parse object to string
 		if ($as_string && is_object($object)) {
 			if ($object instanceof File) {
-				$object = $this->parseFileToString(null, $object);
+				$object = $this->parseFileToString($object);
 			}
 			else {
 				$object = $this->parseObjectToString($object, $property_name);
