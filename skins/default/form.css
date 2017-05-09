@@ -85,7 +85,7 @@ fieldset {
     fieldset > div:not(.hidden):not(.tabber) > label, fieldset > div:not(.hidden):not(.tabber) > div {
       display: table-cell;
       white-space: pre-line; }
-      fieldset > div:not(.hidden):not(.tabber) > label > *, fieldset > div:not(.hidden):not(.tabber) > div > * {
+      fieldset > div:not(.hidden):not(.tabber) > label > :not(textarea), fieldset > div:not(.hidden):not(.tabber) > div > :not(textarea) {
         white-space: initial; }
     fieldset > div:not(.hidden):not(.tabber):not(.multiple):hover {
       background-color: #defdaf; }
