@@ -12,7 +12,6 @@ abstract class Target
 	const MAIN     = '#main';
 	const MESSAGES = '#messages';
 	const NONE     = '#';
-	//------------------------------------------------------------------------------------------- TOP
 	const TOP      = '';
 
 }
