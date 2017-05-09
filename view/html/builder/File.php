@@ -62,7 +62,7 @@ class File
 		$session_files          = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
-			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name], ['size' => 22]))
+			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name, 22]))
 			: '';
 		$anchor = new Anchor(
 			View::link(Session_File::class, 'image', [$file->name]),
