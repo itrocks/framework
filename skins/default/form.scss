@@ -19,7 +19,7 @@ textarea {
 
 /* datetime input */
 
-div.date_time {
+div.date_time, td.date_time {
 	position: relative;
 
 	.ui-datepicker-trigger {
@@ -35,6 +35,11 @@ div.date_time {
 		width: 22px;
 	}
 
+}
+
+td.date_time .ui-datepicker-trigger {
+	height: 20px;
+	top: 0;
 }
 
 /* combo list TODO confirm */

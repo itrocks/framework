@@ -18,9 +18,9 @@ textarea {
     resize: none; }
 
 /* datetime input */
-div.date_time {
+div.date_time, td.date_time {
   position: relative; }
-  div.date_time .ui-datepicker-trigger {
+  div.date_time .ui-datepicker-trigger, td.date_time .ui-datepicker-trigger {
     background: url("img/input_datetime.png") center no-repeat;
     border: none;
     color: transparent;
@@ -31,6 +31,10 @@ div.date_time {
     position: absolute;
     top: 2px;
     width: 22px; }
+
+td.date_time .ui-datepicker-trigger {
+  height: 20px;
+  top: 0; }
 
 /* combo list TODO confirm */
 .ui-state-active {
