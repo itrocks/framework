@@ -17,18 +17,14 @@
 		<ul class="property_tree">
 		<!--BEGIN:inside_tree-->
 		<!--properties-->
-			<li class="<!--getType.isBasic?-->basic<!--getType.isBasic?--> <!--getType.isStringable?-->stringable<!--getType.isStringable?--> property" data-property="{path}" title="|{path}|">
-				<!--!getType.isBasic?-->
-				<!--!getType.isStringable?-->
+			<li class="property {?getType.isBasicHtml} {?getType.isStringableHtml}" data-property="{path}" title="|{path}|">
+				<!--!getType.isBasic?--><!--!getType.isStringable?-->
 				<a href="/ITRocks/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
-				<!--!getType.isStringable?-->
-				<!--!getType.isBasic?-->
-				|{@display(display_full_path)}|
-				<!--!getType.isBasic?-->
-				<!--!getType.isStringable?-->
+				<!--!getType.isStringable?--><!--!getType.isBasic?-->
+					|{@display(display_full_path)}|
+				<!--!getType.isBasic?--><!--!getType.isStringable?-->
 				</a>
-				<!--!getType.isStringable?-->
-				<!--!getType.isBasic?-->
+				<!--!getType.isStringable?--><!--!getType.isBasic?-->
 			</li>
 		<!--sample-->
 			<li class="basic property" data-property="property_1" title="property 1">property 1</li>
