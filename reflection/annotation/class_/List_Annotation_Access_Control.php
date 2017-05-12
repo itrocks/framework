@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
@@ -30,17 +31,18 @@ class List_Annotation_Access_Control implements Registerable
 	public function checkListAnnotationLockColumnsAccess(
 		Reflection_Class $class, List_Annotation $object
 	) {
+		$class_name = Builder::className($class->getName());
 		if ($access_control = Access_Control::get()) {
 			if (
 				$object->has(List_Annotation::LOCK)
-				&& $access_control->hasAccessTo([$class->getName(), 'neverLockColumns'])
+				&& $access_control->hasAccessTo([$class_name, 'neverLockColumns'])
 			) {
 				$object->remove(List_Annotation::LOCK);
 			}
 			elseif (
 				!$object->has(List_Annotation::LOCK)
-				&& $access_control->hasAccessTo([$class->getName(), 'alwaysLockColumns'])
-				&& !$access_control->hasAccessTo([$class->getName(), 'neverLockColumns'])
+				&& $access_control->hasAccessTo([$class_name, 'alwaysLockColumns'])
+				&& !$access_control->hasAccessTo([$class_name, 'neverLockColumns'])
 			) {
 				$object->add(List_Annotation::LOCK);
 			}
