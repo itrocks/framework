@@ -59,6 +59,9 @@ class Yaml
 		if (isset($filename)) {
 			$this->data     = yaml_parse_file($filename);
 			$this->filename = $filename;
+			if (!$this->data) {
+				trigger_error(PRE . file_get_contents($filename) . _PRE, E_USER_WARNING);
+			}
 		}
 	}
 
