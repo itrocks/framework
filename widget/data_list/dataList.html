@@ -36,8 +36,10 @@
 			<thead>
 				<tr>
 					<th></th>
-					<th class="column_select">
+					<th class="{?column_select}">
+						<!--!lock_columns?-->
 						<a class="popup" href="/ITRocks/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
+						<!--!lock_columns?-->
 					</th>
 					<!--properties-->
 					<th data-property="{path}" class="{path.@cssClass} sort{sort} {?htmlReverse} property">

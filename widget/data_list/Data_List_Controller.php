@@ -24,6 +24,7 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -547,18 +548,21 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty   = $displayed_lines_count > 20;
+		$lock_columns  = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
 		$more_hundred  = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$parameters    = array_merge(
 			[$class_name => $data],
 			$parameters,
 			[
+				'column_select'         => $lock_columns ? '' : 'column_select',
 				'customized_lists'      => $customized_list_settings,
 				'default_title'         => ucfirst(Names::classToDisplay($this->class_names)),
 				'display_start'         => $list_settings->start_display_line_number,
 				'displayed_lines_count' => $displayed_lines_count,
 				'errors_summary'        => $this->getErrorsSummary(),
 				'less_twenty'           => $less_twenty,
+				'lock_columns'          => $lock_columns,
 				'more_hundred'          => $more_hundred,
 				'more_thousand'         => $more_thousand,
 				'properties'            => $this->getProperties($list_settings_before_read),
