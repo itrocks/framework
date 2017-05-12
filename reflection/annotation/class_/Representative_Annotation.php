@@ -41,7 +41,7 @@ class Representative_Annotation extends Representative implements Class_Context_
 			}
 		}
 		$this->properties = Replaces_Annotations::replaceProperties($this->getProperties());
-		$this->value = array_keys($this->properties);
+		$this->value      = array_keys($this->properties);
 	}
 
 }

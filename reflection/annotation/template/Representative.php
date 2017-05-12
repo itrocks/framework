@@ -43,9 +43,9 @@ class Representative extends List_Annotation
 	{
 		if (!isset($this->properties)) {
 			$this->properties = [];
-			$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
+			$properties       = $this->class->getProperties([T_EXTENDS, T_USE]);
 			foreach ($this->values() as $property_path) {
-				$each = explode(DOT, $property_path);
+				$each     = explode(DOT, $property_path);
 				$property = $properties[array_shift($each)];
 				foreach ($each as $property_name) {
 					/** @noinspection PhpUndefinedMethodInspection Inspector bug */
@@ -56,6 +56,15 @@ class Representative extends List_Annotation
 			}
 		}
 		return $this->properties;
+	}
+
+	//------------------------------------------------------------------------------ getPropertyNames
+	/**
+	 * @return string[]
+	 */
+	public function getPropertyNames()
+	{
+		return $this->value;
 	}
 
 }
