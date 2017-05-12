@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Data_List_Setting;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Setting\Custom_Settings;
 use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -210,8 +211,7 @@ class Data_List_Settings extends Custom_Settings
 			}
 			else {
 				foreach (
-					(new Reflection_Class($class_name))->getListAnnotation('representative')->values()
-					as $property_name
+					List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
 				) {
 					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->isPublic() && !$property->isStatic()) {
