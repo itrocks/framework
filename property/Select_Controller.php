@@ -4,9 +4,11 @@ namespace ITRocks\Framework\Property;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -41,7 +43,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $source_properties Reflection_Property_Value[]
 	 * @return Reflection_Property_Value[]
 	 */
-	private function filterProperties($source_properties)
+	private function filterProperties(array $source_properties)
 	{
 		$properties = [];
 		/** @var $source_properties Reflection_Property[] */
@@ -107,11 +109,15 @@ class Select_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
+		$class      = new Reflection_Class($class_name);
+		if (List_Annotation::of($class)->has(List_Annotation::LOCK)) {
+			return Loc::tr('You are not allowed to customize this list');
+		}
 		$property_path = $parameters->shiftUnnamed();
 		if (empty($property_path)) {
 			$top_property        = new Property();
 			$top_property->class = $class_name;
-			$properties          = $this->getProperties(new Reflection_Class($class_name));
+			$properties          = $this->getProperties($class);
 			foreach ($properties as $property) {
 				$property->path = $property->name;
 			}
