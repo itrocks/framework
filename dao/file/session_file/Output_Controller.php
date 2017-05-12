@@ -8,6 +8,8 @@ use ITRocks\Framework\Session;
 
 /**
  * Session file output controller
+ *
+ * Outputs an image file with resizing
  */
 class Output_Controller implements Feature_Controller
 {
@@ -48,15 +50,23 @@ class Output_Controller implements Feature_Controller
 		// output
 		if (isset($file)) {
 			header('Content-Type: ' . $file->getType());
-			$size = isset($raw_parameters['size'])
-				? $raw_parameters['size']
-				: array_shift($raw_parameters);
-			if ($size) {
+			$height = isset($raw_parameters['height']) ? $raw_parameters['height'] : null;
+			$width  = isset($raw_parameters['width'])  ? $raw_parameters['width']  : null;
+			if ($height || $width) {
 				$image = Image::createFromString($file->content);
-				$image->resize($size, $size)->display();
+				$image->resize($width, $height)->display();
 			}
 			else {
-				echo $file->content;
+				$size = isset($raw_parameters['size'])
+					? $raw_parameters['size']
+					: array_shift($raw_parameters);
+				if ($size) {
+					$image = Image::createFromString($file->content);
+					$image->resize($size, $size)->display();
+				}
+				else {
+					echo $file->content;
+				}
 			}
 		}
 		return;
