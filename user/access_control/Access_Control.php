@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -31,6 +32,7 @@ use ITRocks\Framework\Widget\Menu\Item;
  */
 class Access_Control implements Configurable, Registerable
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------------- ALL_USERS
 	const ALL_USERS = 'all_users';
@@ -127,7 +129,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $post  array
 	 * @param $files array[]
 	 */
-	public function checkAccess(&$uri, array &$get, array &$post, array &$files)
+	public function checkAccess(&$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
 		$origin_uri = $uri;
 		$this->checkUser($uri, $get, $post, $files);
@@ -146,9 +148,8 @@ class Access_Control implements Configurable, Registerable
 		if (!self::$protect) {
 			$user = User::current();
 			if ($user && isA($user, Has_Groups::class)) {
-				$nop = [];
 				list($uri, $arguments) = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
-				if ($this->checkFeatures($uri, $nop, $nop, $nop)) {
+				if ($this->checkFeatures($uri)) {
 					$result = $uri;
 					if (!is_null($arguments)) {
 						$result .= '?' . $arguments;
@@ -170,8 +171,7 @@ class Access_Control implements Configurable, Registerable
 		if (isset($result)) {
 			$user = User::current();
 			if ($user && isA($user, Has_Groups::class)) {
-				$nop = [];
-				if (!$this->checkFeatures($result->link, $nop, $nop, $nop)) {
+				if (!$this->checkFeatures($result->link)) {
 					$result = null;
 				}
 			}
@@ -186,7 +186,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files array[]
 	 * @return boolean
 	 */
-	private function checkFeatures(&$uri, array &$get, array &$post, array &$files)
+	private function checkFeatures(&$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
 		$last_protect  = self::$protect;
 		self::$protect = true;
@@ -253,6 +253,25 @@ class Access_Control implements Configurable, Registerable
 	{
 		$uri = new Uri($uri);
 		return View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name);
+	}
+
+	//----------------------------------------------------------------------------------- hasAccessTo
+	/**
+	 * Call this to know if an object|class has access to a feature
+	 *
+	 * @param $callable array|callable
+	 * @return boolean
+	 */
+	public function hasAccessTo(array $callable)
+	{
+		if (!($user = User::current())) {
+			return false;
+		}
+		if (isA($user, Has_Groups::class)) {
+			$uri = View::link($callable[0], $callable[1]);
+			return $this->checkFeatures($uri);
+		}
+		return true;
 	}
 
 	//--------------------------------------------------------------------------------------- isBlank
@@ -326,10 +345,11 @@ class Access_Control implements Configurable, Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
+
 		$aop->beforeMethod([Main::class, 'runController'], [$this, 'checkAccess']);
 
 		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
-		$aop->afterMethod([Menu::class, 'constructItem'], [$this, 'checkAccessToMenuItem']);
+		$aop->afterMethod ([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
 
 		$aop->afterMethod(
 			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
