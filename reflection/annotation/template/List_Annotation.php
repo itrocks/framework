@@ -69,6 +69,7 @@ class List_Annotation extends Annotation
 		if (($i == $length) && ($values || ($i > $start))) {
 			$values[] = substr($value, $start, $i - $start);
 		}
+		/** @noinspection PhpParamsInspection $values is now a string[] */
 		parent::__construct($values);
 	}
 

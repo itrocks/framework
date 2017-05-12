@@ -82,7 +82,7 @@ abstract class Integrated_Properties
 	) {
 		$expanded = [];
 		/** @var $integrated Integrated_Annotation */
-		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
+		$integrated = Integrated_Annotation::of($property);
 		if ($integrated->value && !$property->isStatic()) {
 			if ($integrated->has(Integrated_Annotation::BLOCK)) {
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
@@ -148,9 +148,9 @@ abstract class Integrated_Properties
 		}
 
 		// filter properties from @integrated simple property1, property2, etc.
-		if ($integrated->display_properties) {
+		if ($integrated->properties) {
 			$expanded_displayed_properties = [];
-			foreach ($integrated->display_properties as $display_property) {
+			foreach ($integrated->properties as $display_property) {
 				$property_path = $property_name . DOT . $display_property;
 				if (isset($expanded[$property_path])) {
 					$expanded_displayed_properties[$property_path] = $expanded[$property_path];

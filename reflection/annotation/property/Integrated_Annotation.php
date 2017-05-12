@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Options_Properties_Annotation;
 
 /**
  * An integrated property enables sub-form into main form integration
@@ -34,39 +34,29 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
  * The object will be integrated as a sub-form, with 'sub_field' display and without field-set,
  * only the specified property paths will be displayed
  */
-class Integrated_Annotation extends List_Annotation
+class Integrated_Annotation extends Options_Properties_Annotation
 {
-
-	//----------------------------------------------------------------------------------------- ALIAS
-	const ALIAS = 'alias';
 
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'integrated';
 
-	//----------------------------------------------------------------------------------------- BLOCK
+	//------------------------------------------------------------------------------------ my options
+	const ALIAS = 'alias';
 	const BLOCK = 'block';
-
-	//------------------------------------------------------------------------------------------ FULL
 	const FULL = 'full';
+	const SIMPLE = 'simple';
+
+	//------------------------------------------------------------------------------- DEFAULT_OPTIONS
+	const DEFAULT_OPTIONS = [self::FULL];
+
+	//------------------------------------------------------------------------------ EXCLUDED_OPTIONS
+	const EXCLUDED_OPTIONS = [[self::FULL, self::SIMPLE]];
 
 	//-------------------------------------------------------------------------------- RESERVED_WORDS
 	const RESERVED_WORDS = [self::ALIAS, self::BLOCK, self::FULL, self::SIMPLE];
 
-	//---------------------------------------------------------------------------------------- SIMPLE
-	const SIMPLE = 'simple';
-
-	//--------------------------------------------------------------------------- $display_properties
-	/**
-	 * Uses to sort and display specified properties
-	 *
-	 * @var string[]
-	 */
-	public $display_properties = [];
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Default value is 'full' when no value is given
-	 *
 	 * Can be empty (eq full) contain 'full', 'simple', 'block' (implicitly 'simple')
 	 *
 	 * @param $value string
@@ -74,34 +64,6 @@ class Integrated_Annotation extends List_Annotation
 	 */
 	public function __construct($value)
 	{
-		if (isset($value)) {
-			if ($value) {
-				$excluded = [];
-				$values   = [];
-				foreach (explode(SP, $value) AS $element) {
-					if (
-						strpos($element, ',')
-						|| in_array($element, $excluded)
-						|| in_array($element, $values)
-						|| !in_array($element, self::RESERVED_WORDS)
-					) {
-						$this->display_properties[] = trim(lParse($element, ','));
-					}
-					else {
-						$element  = trim($element);
-						$values[] = $element;
-						if (in_array($element, [self::FULL, self::SIMPLE])) {
-							$excluded = [self::FULL, self::SIMPLE];
-						}
-					}
-				}
-				$value = join(',', $values);
-			}
-			else {
-				$value = self::FULL;
-			}
-		}
-
 		parent::__construct($value);
 
 		if (
@@ -111,7 +73,6 @@ class Integrated_Annotation extends List_Annotation
 		) {
 			$this->value[] = self::SIMPLE;
 		}
-
 	}
 
 }
