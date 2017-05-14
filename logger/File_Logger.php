@@ -89,8 +89,12 @@ class File_Logger implements Configurable
 	{
 		if (empty($this->file) && ($filename = $this->fileName())) {
 			if (!file_exists($path = lLastParse($filename, SL))) {
-				// TODO #80851 create a try-catch-like structure to capture E_WARNING 'mkdir(): File exists'
-				mkdir($path, 0777, true);
+				/** @noinspection PhpUsageOfSilenceOperatorInspection concurrent calls may cause warning */
+				@mkdir($path, 0777, true);
+				clearstatcache();
+				if (!file_exists($path)) {
+					trigger_error('mkdir() : could not create directory ' . $path, E_USER_ERROR);
+				}
 				// patch : mkdir's set mode does not work (debian 8)
 				chmod($path, 0777);
 			}
