@@ -455,6 +455,66 @@ class Import_Array
 		return $property_path;
 	}
 
+	//------------------------------------------------------------------------------------- sameArray
+	/**
+	 * Returns true if $array1 and $array2 contain the same data
+	 *
+	 * @param $array1 array
+	 * @param $array2 array
+	 * @return boolean
+	 */
+	protected function sameArray(array $array1, array $array2)
+	{
+		if (count($array1) === count($array2)) {
+			foreach ($array1 as $value1) {
+				$found = false;
+				foreach ($array2 as $key2 => $value2) {
+					if ($this->sameElement($value1, $value2)) {
+						$found = true;
+						unset($array2[$key2]);
+						break;
+					}
+				}
+				if (!$found) {
+					return false;
+				}
+			}
+		}
+		else {
+			return false;
+		}
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------- sameElement
+	/**
+	 * Returns true if $value1 and $value2 are the same element (value, object, array)
+	 *
+	 * @param $value1 mixed
+	 * @param $value2 mixed
+	 * @return boolean
+	 */
+	protected function sameElement($value1, $value2)
+	{
+		return
+			((is_array($value1) || is_array($value2)) && $this->sameArray($value1, $value2))
+			|| ((is_object($value1) || is_object($value2)) && $this->sameObject($value1, $value2))
+			|| (!is_array($value1) && !is_object($value1) && (strval($value1) === strval($value2)));
+	}
+
+	//------------------------------------------------------------------------------------ sameObject
+	/**
+	 * Returns true if $object1 and $object2 are the same into data store
+	 *
+	 * @param $object1 object
+	 * @param $object2 object
+	 * @return boolean
+	 */
+	protected function sameObject($object1, $object2)
+	{
+		return Dao::is($object1, $object2);
+	}
+
 	//----------------------------------------------------------------------------------- simulateNew
 	/**
 	 * @param $class  Import_Class
@@ -519,7 +579,7 @@ class Import_Array
 			if (isset($class->properties[$property_name])) {
 				$value = Loc::propertyToIso($class->properties[$property_name], $value);
 			}
-			if (strval($object->$property_name) !== strval($value)) {
+			if (!$this->sameElement($object->$property_name, $value)) {
 				$object->$property_name = $value;
 				$do_write               = true;
 			}
