@@ -33,8 +33,14 @@ class Output_Controller implements Feature_Controller
 	{
 		/** @var $session_files Files */
 		$raw_parameters = $parameters->getRawParameters();
-		$file_key       = array_shift($raw_parameters);
-		$session_files  = Session::current()->get(Files::class);
+		if (is_numeric(reset($raw_parameters)) && ctype_upper(substr(key($raw_parameters), 0, 1))) {
+			$raw_parameters = array_merge(
+				[key($raw_parameters), current($raw_parameters)],
+				array_slice($raw_parameters, 1)
+			);
+		}
+		$file_key      = array_shift($raw_parameters);
+		$session_files = Session::current()->get(Files::class);
 		// numeric (session files index) file key
 		if (isset($session_files->files[$file_key])) {
 			$file = $session_files->files[$file_key];
