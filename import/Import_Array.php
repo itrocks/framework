@@ -573,7 +573,7 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
-		$do_write = false;
+		$do_write = [];
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
@@ -581,14 +581,14 @@ class Import_Array
 			}
 			if (!$this->sameElement($object->$property_name, $value)) {
 				$object->$property_name = $value;
-				$do_write               = true;
+				$do_write[]             = $property_name;
 			}
 		}
 		if ($do_write) {
 			if ($this->simulation) {
 				$this->simulateUpdate($class, $object);
 			}
-			Dao::write($object);
+			Dao::write($object, Dao::only($do_write));
 		}
 		return $object;
 	}
