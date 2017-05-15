@@ -573,7 +573,7 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
-		$do_write = [];
+		$only_properties = [];
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
@@ -581,14 +581,14 @@ class Import_Array
 			}
 			if (!$this->sameElement($object->$property_name, $value)) {
 				$object->$property_name = $value;
-				$do_write[]             = $property_name;
+				$only_properties[]      = $property_name;
 			}
 		}
-		if ($do_write) {
+		if ($only_properties) {
 			if ($this->simulation) {
 				$this->simulateUpdate($class, $object);
 			}
-			Dao::write($object, Dao::only($do_write));
+			Dao::write($object, Dao::only($only_properties));
 		}
 		return $object;
 	}
@@ -602,13 +602,15 @@ class Import_Array
 	 */
 	protected function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
 	{
-		$object = Builder::create($class->class_name);
+		$object          = Builder::create($class->class_name);
+		$only_properties = [];
 		foreach (array_keys($class->identify_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
 				$value = Loc::propertyToIso($class->properties[$property_name], $value);
 			}
 			$object->$property_name = $value;
+			$only_properties[]      = $property_name;
 		}
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
@@ -616,11 +618,14 @@ class Import_Array
 				$value = Loc::propertyToIso($class->properties[$property_name], $value);
 			}
 			$object->$property_name = $value;
+			$only_properties[]      = $property_name;
 		}
 		if ($this->simulation) {
 			$this->simulateNew($class, $object);
 		}
-		Dao::write($object);
+		// class with @link annotation will crash without restricting the properties here :
+		$is_link_class = Link_Annotation::of(new Link_Class($class->class_name))->value;
+		Dao::write($object, $is_link_class ? Dao::only($only_properties) : []);
 		return $object;
 	}
 

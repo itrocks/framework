@@ -259,6 +259,18 @@ class Write extends Data_Link\Write
 				elseif (isset($write[$property_name])) {
 					$search[$property_name] = $write[$column_name];
 				}
+				elseif (
+					(
+						in_array($property_name, $this->exclude)
+						|| (!$this->only || !in_array($property_name, $this->only))
+					)
+					&& $this->object->$property_name
+				) {
+					$object_value           = $this->object->$property_name;
+					$search[$property_name] = is_object($object_value)
+						? $this->link->getObjectIdentifier($object_value)
+						: $object_value;
+				}
 				else {
 					trigger_error("Can't search $property_name", E_USER_ERROR);
 				}
@@ -266,7 +278,9 @@ class Write extends Data_Link\Write
 			if ($this->link->search($search, $class->name)) {
 				$id = [];
 				foreach ($search as $property_name => $value) {
-					$column_name = Storage_Annotation::of($properties[$property_name])->value;
+					$property     = $properties[$property_name];
+					$column_name  = Dao::storedAsForeign($property) ? 'id_' : '';
+					$column_name .= Storage_Annotation::of($property)->value;
 					if (isset($write['id_' . $column_name])) {
 						$column_name = 'id_' . $column_name;
 					}
