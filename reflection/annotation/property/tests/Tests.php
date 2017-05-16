@@ -237,7 +237,7 @@ class Tests extends Test
 	public function testIntegratedAnnotationInit()
 	{
 		$this->method(__METHOD__);
-		$assume = ['__CLASS__' => Integrated_Annotation::class, 'display_properties' => []];
+		$assume = ['__CLASS__' => Integrated_Annotation::class, 'properties' => []];
 
 		// simple declarations
 
@@ -292,57 +292,57 @@ class Tests extends Test
 		// simple with properties
 
 		$integrated = new Integrated_Annotation('simple property');
-		$assume['display_properties'] = ['property'];
-		$assume['value']              = ['simple'];
+		$assume['properties'] = ['property'];
+		$assume['value']      = ['simple'];
 		$this->assume('simple property', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple property1, property2');
-		$assume['display_properties'] = ['property1', 'property2'];
+		$assume['properties'] = ['property1', 'property2'];
 		$this->assume('simple properties', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple block,');
-		$assume['display_properties'] = ['block'];
+		$assume['properties'] = ['block'];
 		$this->assume('simple reserved property', $integrated, $assume);
 
 		// options and properties
 
 		$integrated = new Integrated_Annotation('simple alias block property');
-		$assume['display_properties'] = ['property'];
+		$assume['properties'] = ['property'];
 		$assume['value']              = ['simple', 'alias', 'block'];
 		$this->assume('options property', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple alias block property1, property2');
-		$assume['display_properties'] = ['property1', 'property2'];
+		$assume['properties'] = ['property1', 'property2'];
 		$this->assume('options properties', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple alias block block,');
-		$assume['display_properties'] = ['block'];
+		$assume['properties'] = ['block'];
 		$this->assume('options reserved property', $integrated, $assume);
 
 		// repeated and alone are properties
 
 		$integrated = new Integrated_Annotation('simple alias block alias');
-		$assume['display_properties'] = ['alias'];
+		$assume['properties'] = ['alias'];
 		$this->assume('repeat alias', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple alias block block');
-		$assume['display_properties'] = ['block'];
+		$assume['properties'] = ['block'];
 		$this->assume('repeat block', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple alias block simple');
-		$assume['display_properties'] = ['simple'];
+		$assume['properties'] = ['simple'];
 		$this->assume('repeat simple', $integrated, $assume);
 
 		// excluded reserved words are properties
 
 		$integrated = new Integrated_Annotation('full simple');
-		$assume['display_properties'] = ['simple'];
-		$assume['value']              = ['full'];
+		$assume['properties'] = ['simple'];
+		$assume['value']      = ['full'];
 		$this->assume('full simple', $integrated, $assume);
 
 		$integrated = new Integrated_Annotation('simple full');
-		$assume['display_properties'] = ['full'];
-		$assume['value']              = ['simple'];
+		$assume['properties'] = ['full'];
+		$assume['value']      = ['simple'];
 		$this->assume('simple full', $integrated, $assume);
 
 	}
