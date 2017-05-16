@@ -187,8 +187,8 @@ class Link extends Dao\Sql\Link
 			$what       = null;
 		}
 		$class_name = Builder::className($class_name);
-		$builder = new Count($class_name, $what, $this);
-		$query = $builder->buildQuery();
+		$builder    = new Count($class_name, $what, $this);
+		$query      = $builder->buildQuery();
 		$this->setContext($builder->getJoins()->getClassNames());
 		$result_set = $this->connection->query($query);
 		if ($result_set) {
@@ -272,11 +272,11 @@ class Link extends Dao\Sql\Link
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
 						$property_name = $link_property->getName();
 						if (Dao::storedAsForeign($link_property)) {
-							$column_name = 'id_' . Storage_Annotation::of($link_property)->value;
+							$column_name      = 'id_' . Storage_Annotation::of($link_property)->value;
 							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 						}
 						else {
-							$column_name = Storage_Annotation::of($link_property)->value;
+							$column_name      = Storage_Annotation::of($link_property)->value;
 							$id[$column_name] = $link_property->getValue($object);
 						}
 					}
@@ -301,9 +301,9 @@ class Link extends Dao\Sql\Link
 	 */
 	private function deleteCollection($parent, $property, $value)
 	{
-		$property_name = $property->name;
+		$property_name          = $property->name;
 		$parent->$property_name = null;
-		$old_collection = $parent->$property_name;
+		$old_collection         = $parent->$property_name;
 		$parent->$property_name = $value;
 		if (isset($old_collection)) {
 			foreach ($old_collection as $old_element) {
@@ -322,7 +322,7 @@ class Link extends Dao\Sql\Link
 	public function escapeString($value)
 	{
 		if (is_object($value)) {
-			$id = $this->getObjectIdentifier($value, 'id');
+			$id         = $this->getObjectIdentifier($value, 'id');
 			$properties = (new Reflection_Class(get_class($value)))->getAnnotedProperties(
 				Store_Annotation::ANNOTATION, Store_Annotation::FALSE
 			);
@@ -383,7 +383,7 @@ class Link extends Dao\Sql\Link
 	protected function fetchAll($class_name, array $options, mysqli_result $result_set)
 	{
 		$search_result = [];
-		$keys = $this->getKeyPropertyName($options);
+		$keys          = $this->getKeyPropertyName($options);
 		if (($keys !== 'id') && isset($keys)) {
 			if (is_array($keys)) {
 				$object_key = [];
@@ -412,7 +412,7 @@ class Link extends Dao\Sql\Link
 				// result key must be a set of several id keys (used for linked classes collections)
 				// (Dao::key(['property_1', 'property_2']))
 				if (is_array($object_key)) {
-					$k_key = '';
+					$k_key    = '';
 					$multiple = count($keys) > 1;
 					foreach ($keys as $key => $k_keys) {
 						$k_object_key = $object_key[$key];
@@ -421,7 +421,7 @@ class Link extends Dao\Sql\Link
 							$key_object = $key_object->$key;
 						}
 						$k_id_object_key = 'id_' . $k_object_key;
-						$k_key .= ($k_key ? Link_Class::ID_SEPARATOR : '')
+						$k_key          .= ($k_key ? Link_Class::ID_SEPARATOR : '')
 							. ($multiple ? ($k_object_key . '=') : '')
 							. (
 									isset($key_object->$k_id_object_key)
@@ -434,7 +434,9 @@ class Link extends Dao\Sql\Link
 				// result key must be a single id key (Dao::key('property_name'))
 				else {
 					$key_object = $object;
-					foreach ($keys as $key) $key_object = $key_object->$key;
+					foreach ($keys as $key) {
+						$key_object = $key_object->$key;
+					}
 					$search_result[$key_object->$object_key] = $object;
 				}
 			}
@@ -527,7 +529,7 @@ class Link extends Dao\Sql\Link
 			$link = Class_\Link_Annotation::of(new Reflection_Class(get_class($object)));
 		}
 		if ($link->value) {
-			$ids = [];
+			$ids        = [];
 			$link_class = $link->getLinkClass();
 			foreach ($link_class->getUniqueProperties() as $link_property) {
 				$property_name = $link_property->getName();
@@ -798,7 +800,7 @@ class Link extends Dao\Sql\Link
 	 */
 	private function queryFetchAsObjects(mysqli_result $result, $class_name)
 	{
-		$objects = [];
+		$objects    = [];
 		$class_name = Builder::className($class_name);
 		while ($object = $result->fetch_object($class_name)) {
 			if (isset($object->id)) {
@@ -867,8 +869,11 @@ class Link extends Dao\Sql\Link
 		if (Class_\Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$what = [];
 			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {
+				if (!strpos($identify, '=')) {
+					trigger_error('Bad link object identifier ' . $identifier, E_USER_ERROR);
+				}
 				list($column, $value) = explode('=', $identify);
-				$what[$column] = $value;
+				$what[$column]        = $value;
 			}
 			$object = $this->searchOne($what, $class_name);
 		}
@@ -904,7 +909,7 @@ class Link extends Dao\Sql\Link
 		}
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
-		$query = (new Select($class_name, null, null, null, $options))->buildQuery();
+		$query      = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->connection->query($query);
 		if ($options) {
 			$this->getRowsCount('SELECT', $options, $result_set);
@@ -925,8 +930,8 @@ class Link extends Dao\Sql\Link
 	 */
 	public function replaceReferences($replaced, $replacement)
 	{
-		$table_name = $this->storeNameOf(get_class($replaced));
-		$replaced_id = $this->getObjectIdentifier($replaced);
+		$table_name     = $this->storeNameOf(get_class($replaced));
+		$replaced_id    = $this->getObjectIdentifier($replaced);
 		$replacement_id = $this->getObjectIdentifier($replacement);
 		if ($replaced_id && $replacement_id && $table_name) {
 			foreach (Foreign_Key::buildReferences($this->connection, $table_name) as $foreign_key) {
