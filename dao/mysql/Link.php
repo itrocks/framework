@@ -870,7 +870,10 @@ class Link extends Dao\Sql\Link
 			$what = [];
 			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {
 				if (!strpos($identify, '=')) {
-					trigger_error('Bad link object identifier ' . $identifier, E_USER_ERROR);
+					trigger_error(
+						'Bad link object identifier ' . $identifier . ' for link class ' . $class_name,
+						E_USER_ERROR
+					);
 				}
 				list($column, $value) = explode('=', $identify);
 				$what[$column]        = $value;
