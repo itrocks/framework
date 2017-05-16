@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
 /**
@@ -13,7 +13,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  * This is used by Dao to get default sort orders when calling Dao::readAll() and Dao::search().
  * This work like Class_Representative_Annotation : default values are the complete properties list
  */
-class Sort_Annotation extends List_Annotation implements Class_Context_Annotation
+class Sort_Annotation extends Template\List_Annotation implements Class_Context_Annotation
 {
 
 	//------------------------------------------------------------------------------------ ANNOTATION

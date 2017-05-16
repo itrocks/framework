@@ -1,14 +1,14 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
+use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Annotation_In;
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 
 /**
  * Class override annotation
  */
-class Override_Annotation extends List_Annotation implements Multiple_Annotation
+class Override_Annotation extends Template\List_Annotation implements Multiple_Annotation
 {
 	use Annotation_In;
 

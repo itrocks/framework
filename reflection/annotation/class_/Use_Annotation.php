@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 
 /**
@@ -9,7 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
  *
  * TODO NORMAL is it used at any time ?
  */
-class Use_Annotation extends List_Annotation
+class Use_Annotation extends Template\List_Annotation
 {
 	use Types_Annotation;
 

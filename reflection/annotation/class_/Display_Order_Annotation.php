@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template;
 
 /**
  * A @display_order annotation contains several values
@@ -9,7 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
  *
  * @example @display_order property_1, property_2, property_3
  */
-class Display_Order_Annotation extends List_Annotation
+class Display_Order_Annotation extends Template\List_Annotation
 {
 
 	//------------------------------------------------------------------------------------ ANNOTATION

@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
-use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
@@ -14,7 +14,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * will create two annotations : one with the name 'first group' and each property name as values,
  * the second with the name 'second group' and each of its property name as string values.
  */
-class Group_Annotation extends List_Annotation implements Multiple_Annotation
+class Group_Annotation extends Template\List_Annotation implements Multiple_Annotation
 {
 
 	//------------------------------------------------------------------------------------ ANNOTATION
