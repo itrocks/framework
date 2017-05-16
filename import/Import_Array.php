@@ -1,6 +1,12 @@
 <?php
 namespace ITRocks\Framework\Import;
 
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Import;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\View_Exception;
 use ReflectionException;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
@@ -14,7 +20,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
@@ -187,6 +192,26 @@ class Import_Array
 			$row = next($array);
 		}
 		return $constants;
+	}
+
+	//---------------------------------------------------------------------------------- getException
+	/**
+	 * Returns an import exception object containing the $feature_name view result
+	 *
+	 * @param $feature_name string
+	 * @param $parameters   array
+	 * @return View_Exception
+	 */
+	public static function getException($feature_name, $parameters)
+	{
+		$parameters[Parameter::AS_WIDGET] = true;
+		if (isset($parameters['class'])) {
+			$parameters['display'] = Names::classToDisplay($parameters['class']->class_name);
+		}
+		$parameters[Template::TEMPLATE] = 'import' . ucfirst($feature_name) . 'Error';
+		return new View_Exception(
+			View::run($parameters, [], [], Import::class, Feature::F_IMPORT)
+		);
 	}
 
 	//---------------------------------------------------------------------------- getPropertiesAlias
@@ -368,6 +393,7 @@ class Import_Array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]
 	 * @return object
+	 * @throws View_Exception
 	 */
 	public function importSearchObject(
 		$search, array $row, Import_Class $class, array $class_properties_column
@@ -387,23 +413,18 @@ class Import_Array
 				$object = $this->writeNewObject($row, $class, $class_properties_column);
 			}
 			elseif ($class->object_not_found_behaviour === 'tell_it_and_stop_import') {
-				trigger_error(
-					'Not found ' . $class->class_name . SP . print_r($search, true), E_USER_ERROR
-				);
 				$object = null;
+				throw $this->getException('notFound', ['class' => $class, 'search' => $search]);
 			}
 			else {
 				$object = null;
 			}
 		}
 		else {
-			trigger_error(
-				'Multiple ' . Namespaces::shortClassName($class->class_name) . ' found'
-				. PRE . 'SEARCH = ' . print_r($search, true)
-				. PRE . 'FOUND = ' . print_r($found, true)
-				, E_USER_ERROR
-			);
 			$object = null;
+			throw $this->getException(
+				'multipleResults', ['class' => $class, 'found' => $found, 'search' => $search]
+			);
 		}
 		return $object;
 	}

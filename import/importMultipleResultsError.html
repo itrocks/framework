@@ -1,0 +1,36 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|Import ¦{class_name.display}¦|</title>
+	<script type="text/javascript"> path = "../../"; </script>
+	<script type="text/javascript" src="../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript" src="../main/js/all.js"></script>
+	<style type="text/css">
+		@import "../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+	<div class="import error">
+		<div class="top message">
+			|Could not import| :
+			|I do not know which ¦{display}¦ to import|,
+			|several of them match this search criteria| :
+		</div>
+
+		<ul class="search">
+		<!--search-->
+			<li><span class="property">|{@key}|</span> <span class="value">{.}</span></li>
+		<!--search-->
+		</ul>
+
+		<div class="bottom message">
+			|Please make sure that these criteria are unique before trying again|.
+		</div>
+	</div>
+
+<!--END-->
+</body>
+</html>

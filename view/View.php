@@ -17,7 +17,6 @@ class View implements Configurable
 	use Current { current as private pCurrent; }
 
 	//----------------------------------------------------------------- Constants common to all views
-	//---------------------------------------------------------------------------------------- TARGET
 	const TARGET = 'target';
 
 	//----------------------------------------------------------------------------------- __construct
