@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection;
 
+use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
 /**
@@ -232,6 +233,31 @@ class Link_Class extends Reflection_Class
 			$class_name = get_class($class_name);
 		}
 		return (new Link_Class($class_name))->getLinkedClassName() ?: $class_name;
+	}
+
+	//---------------------------------------------------------------------------------- searchObject
+	/**
+	 * Gets a search object matching the link object's identifier
+	 *
+	 * - Only unique properties are kept into the search object
+	 * - If $strict is true, null will be returned if any of the composite properties has no value
+	 *
+	 * @param $object object
+	 * @param $strict boolean
+	 * @return object|null The search object matching $object, with only identifiers set
+	 */
+	public static function searchObject($object, $strict = true)
+	{
+		$search = Search_Object::create(get_class($object));
+		$link   = new Link_Class(get_class($object));
+		foreach ($link->getUniqueProperties() as $property) {
+			$value = $property->getValue($object);
+			if ($strict && empty($value) && $property->getAnnotation('composite')->value) {
+				return null;
+			}
+			$property->setValue($search, $value);
+		}
+		return $search;
 	}
 
 }
