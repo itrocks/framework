@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
+use ITRocks\Framework\AOP;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -20,10 +21,11 @@ abstract class Search_Object extends Null_Object
 	 * This creates an object with unset properties, as only set properties are used for searches.
 	 * Private or protected properties can't be unset : they are kept with a null value.
 	 *
-	 * @param $class_name string
+	 * @param $class_name     string
+	 * @param $deactivate_aop boolean true to disable AOP on properties for the search object
 	 * @return object
 	 */
-	public static function create($class_name)
+	public static function create($class_name, $deactivate_aop = false)
 	{
 		$object = Builder::create($class_name);
 		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
@@ -44,6 +46,9 @@ abstract class Search_Object extends Null_Object
 					$property->setValue($object, null);
 				}
 			}
+		}
+		if ($deactivate_aop) {
+			AOP::propertiesOff($object);
 		}
 		return $object;
 	}
