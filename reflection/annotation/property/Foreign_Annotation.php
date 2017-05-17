@@ -68,7 +68,6 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 */
 	private function defaultCollection(Reflection_Property $property)
 	{
-		$composites       = [];
 		$possibles        = [];
 		$foreign_class    = $this->getForeignClass($property);
 		$final_class_name = $property->getFinalClassName();
@@ -81,14 +80,11 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				&& Link_Annotation::of($foreign_property)->isObject()
 			) {
 				$possibles[$foreign_property->getName()] = $foreign_property;
-				if ($foreign_property->getAnnotation('composite')->value) {
-					$composites[$foreign_property->getName()] = $foreign_property;
-				}
 			}
 		}
-		return array_keys(Replaces_Annotations::removeReplacedProperties(
-				(count($composites) == 1) ? $composites : $possibles
-		));
+		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
+		$possibles = $this->reduceToComposites($possibles);
+		return array_keys($possibles);
 	}
 
 	//------------------------------------------------------------------------------------ defaultMap
@@ -118,6 +114,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 			}
 		}
 		$possibles = Replaces_Annotations::removeReplacedProperties($possibles);
+		$possibles = $this->reduceToComposites($possibles);
 		if (count($possibles) != 1) {
 			$this->value = Names::classToProperty($property->getDeclaringClassName());
 		}
@@ -146,7 +143,9 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				$possibles[$foreign_property->getName()] = $foreign_property;
 			}
 		}
-		return array_keys(Replaces_Annotations::removeReplacedProperties($possibles));
+		$properties = Replaces_Annotations::removeReplacedProperties($possibles);
+		$properties = $this->reduceToComposites($properties);
+		return array_keys($properties);
 	}
 
 	//------------------------------------------------------------------------------- getForeignClass
@@ -168,6 +167,30 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 			$foreign_class = $reflection_class->newInstance($foreign_class_name);
 		}
 		return $foreign_class;
+	}
+
+	//---------------------------------------------------------------------------- reduceToComposites
+	/**
+	 * If multiple properties (more than 1) and one (or more) of them are @composite, reduce the list
+	 * to the @composite properties. Else returns $properties without any change.
+	 *
+	 * @param $properties Reflection_Property[]
+	 * @return Reflection_Property[]
+	 */
+	private function reduceToComposites(array $properties)
+	{
+		if (count($properties) > 1) {
+			$composite_properties = [];
+			foreach ($properties as $property) {
+				if ($property->getAnnotation('composite')->value) {
+					$composite_properties[$property->getName()] = $property;
+				}
+			}
+			if ($composite_properties) {
+				$properties = $composite_properties;
+			}
+		}
+		return $properties;
 	}
 
 }
