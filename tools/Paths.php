@@ -110,25 +110,45 @@ abstract class Paths
 		}
 		// remove /project/root/directory/same/as/current/working/directory/ from beginning of file name
 		$current_working_directory = getcwd() . SL;
-		$length = strlen($current_working_directory);
+		$length                    = strlen($current_working_directory);
 		if (substr($file_name, 0, $length) === $current_working_directory) {
 			$file_name = substr($file_name, $length);
 		}
 		return $file_name;
 	}
 
+	//------------------------------------------------------------------------------------- patchFCGI
+	/**
+	 * Enable to work with PHP-FPM (FastCGI mode).
+	 * This simply change used $_SERVER vars to be libapache2-mod-php compliant
+	 *
+	 * You must configure fastcgi into apache with this kind of line into your server configuration :
+	 * ProxyPassMatch ^\/appname([^\.]*(\.php)?)$ unix:/run/php/php7.1-fpm.sock|fcgi://localhost/path/to/itrocks/framework/index.php
+	 */
+	protected static function patchFCGI()
+	{
+		$script                     = explode(SL, $_SERVER['PATH_INFO'])[1];
+		$_SERVER['PATH_INFO']       = substr($_SERVER['PATH_INFO'], strlen($script) + 1);
+		$_SERVER['SCRIPT_NAME']     = SL . $script . '.php';
+		$_SERVER['SCRIPT_FILENAME'] = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'];
+		$_SERVER['PHP_SELF']        = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		$slash             = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
-		$dot_php           = strrpos($_SERVER['SCRIPT_NAME'], '.php');
-		self::$file_root
-			= substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1);
+		if (isset($_SERVER['FCGI_ROLE'])) {
+			static::patchFCGI();
+		}
+		$slash   = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
+		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php');
+		$root    = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1);
+		self::$file_root    = $root;
 		self::$project_root = getcwd();
-		self::$script_name = substr($_SERVER['SCRIPT_NAME'], $slash, $dot_php - $slash);
-		self::$uri_root    = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
-		self::$uri_base    = self::$uri_root . self::$script_name;
-		self::$project_uri = substr(self::$project_root, strlen(self::$file_root) - 1);
+		self::$project_uri  = substr(self::$project_root, strlen($root) - 1);
+		self::$script_name  = substr($_SERVER['SCRIPT_NAME'], $slash, $dot_php - $slash);
+		self::$uri_root     = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
+		self::$uri_base     = self::$uri_root . self::$script_name;
 	}
 
 }

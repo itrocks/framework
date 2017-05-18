@@ -26,7 +26,7 @@ set_time_limit(30);
 // constants immediately available
 include_once __DIR__ . '/functions/constants.php';
 
-// enable running from command line
+// enable running without PATH_INFO
 if (!isset($_SERVER['PATH_INFO'])) {
 	$_SERVER['PATH_INFO'] = SL;
 }
