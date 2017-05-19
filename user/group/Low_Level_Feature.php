@@ -34,7 +34,7 @@ class Low_Level_Feature
 		if (isset($feature)) {
 			$this->feature = $feature;
 		}
-		if (isset($options)) {
+		if ($options) {
 			$this->options = $options;
 		}
 	}
