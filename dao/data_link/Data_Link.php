@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
@@ -185,11 +186,17 @@ abstract class Data_Link
 	 * Gets the key property name taken from any set Sql\Key_Option
 	 * Default will be 'id'
 	 *
-	 * @param $options Option[]
+	 * @param $class_name string
+	 * @param $options    Option[]
 	 * @return string|string[]
 	 */
-	protected function getKeyPropertyName(array $options)
+	protected function getKeyPropertyName($class_name, array $options = null)
 	{
+// these unindented lines are here temporarily, to insure update without crash
+if (is_array($class_name) && !$options) {
+$options = $class_name;
+$class_name = null;
+}
 		$key = 'id';
 		if (isset($options)) {
 			if (!is_array($options)) {
@@ -201,6 +208,15 @@ abstract class Data_Link
 				}
 			}
 		}
+if ($class_name) {
+		$class = new Link_Class($class_name);
+		if (($key === 'id') && $class->getLinkedClassName()) {
+			$key = [];
+			foreach ($class->getUniqueProperties() as $property) {
+				$key[] = $property->name;
+			}
+		}
+}
 		return $key;
 	}
 

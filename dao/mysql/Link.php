@@ -383,7 +383,7 @@ class Link extends Dao\Sql\Link
 	protected function fetchAll($class_name, array $options, mysqli_result $result_set)
 	{
 		$search_result = [];
-		$keys          = $this->getKeyPropertyName($options);
+		$keys          = $this->getKeyPropertyName($class_name, $options);
 		if (($keys !== 'id') && isset($keys)) {
 			if (is_array($keys)) {
 				$object_key = [];
