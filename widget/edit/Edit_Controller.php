@@ -72,7 +72,7 @@ class Edit_Controller extends Output_Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
-		$parameters->set('editing',        true);
+		$parameters->set('editing', true);
 		$parameters->set(Feature::FEATURE, Feature::F_EDIT);
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['template_namespace'] = __NAMESPACE__;
