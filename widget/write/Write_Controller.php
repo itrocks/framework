@@ -103,18 +103,16 @@ class Write_Controller implements Default_Class_Controller
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * @param $write_objects Built_Object[]
-	 * @return boolean
+	 * @return boolean true when write error, false if writes were made without error
 	 */
 	protected function write(array $write_objects)
 	{
-		$write_error = false;
 		foreach ($write_objects as $write_object) {
 			if (!Dao::write($write_object->object, $write_object->write_options)) {
-				$write_error = true;
-				break;
+				return true;
 			}
 		}
-		return $write_error;
+		return false;
 	}
 
 }
