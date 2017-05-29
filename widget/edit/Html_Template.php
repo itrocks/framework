@@ -5,8 +5,10 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Html\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\View\Html\Builder\Value_Widget;
@@ -98,28 +100,17 @@ class Html_Template extends Template
 		return uniqid();
 	}
 
-	//-------------------------------------------------------------------------------- parseContainer
+	//----------------------------------------------------------------------------------------- parse
 	/**
-	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
+	 * After the whole page has been parsed, replace all <section class="edit window"> by <form>
 	 *
-	 * @param $content string
 	 * @return string updated content
 	 */
-	protected function parseContainer($content)
+	public function parse()
 	{
-		$i = strpos($content, '<!--BEGIN-->');
-		if ($i !== false) {
-			$i += 12;
-			$j = strrpos($content, '<!--END-->', $i);
-			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
-			$short_form_id = strtolower($short_class) . '_edit';
-			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
-			$action = SL . $short_class . '/write';
-			$content = substr($content, 0, $i)
-				. $this->replaceSectionByForm(substr($content, $i, $j - $i), $action)
-				. substr($content, $j);
-		}
-		return parent::parseContainer($content);
+		$content = parent::parse();
+		$content = $this->replaceEditWindowsByForm($content);
+		return $content;
 	}
 
 	//------------------------------------------------------------------------------ parseLoopElement
@@ -222,25 +213,46 @@ class Html_Template extends Template
 		return $value;
 	}
 
-	//-------------------------------------------------------------------------- replaceSectionByForm
+	//---------------------------------------------------------------------- replaceEditWindowsByForm
 	/**
+	 * Replace all <section class="edit window"> into the content by <form>
+	 *
 	 * @param $content string
-	 * @param $action string
 	 * @return string
 	 */
-	protected function replaceSectionByForm($content, $action)
+	protected function replaceEditWindowsByForm($content)
 	{
-		if (($i = strpos($content, '<section')) !== false) {
-			$j          = strpos($content, '>', $i) + 1;
-			$attributes = ' action=' . DQ . $action . DQ
-				. substr($content, $i + 8, $j - $i - 9)
-				. ' enctype="multipart/form-data"'
-				. ' method="post"'
-				. ' name=' . DQ . $this->form_id . DQ
-				. ' target="#messages"';
-			$i       = $j;
-			$j       = strrpos($content, '</section>', $i);
-			$content = '<form' . $attributes . '>' . substr($content, $i, $j - $i) . '</form>';
+		$parser   = new Parser($content);
+		$position = 0;
+		while (($outside_i = $parser->tagPos('section', $position)) !== false) {
+			$inside_i = strpos($content, '>', $outside_i) + 1;
+			$inside   = substr($content, $outside_i, $inside_i - $outside_i);
+			$position = $outside_i + 1;
+			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
+				$classes = array_flip(explode(SP, mParse($inside, 'class=' . DQ, DQ)));
+				if (isset($classes['edit']) && isset($classes['window'])) {
+					$inside_j      = $parser->closingTag('section', $inside_i, 'start');
+					$outside_j     = $inside_j + 10;
+					$class_name    = get_class(reset($this->objects));
+					$short_class   = Namespaces::shortClassName($class_name);
+					$short_form_id = strtolower($short_class) . '_edit';
+					$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+					$action        = $this->replaceLink(SL . Names::classToUri($class_name) . '/write');
+					$attributes    = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
+					$attributes    = ' action=' . DQ . $action . DQ
+						. $attributes
+						. ' enctype="multipart/form-data"'
+						. ' method="post"'
+						. ' name=' . DQ . $this->form_id . DQ
+						. ' target="#messages"';
+					$form = '<form' . $attributes . '>'
+						. substr($content, $inside_i, $inside_j - $inside_i)
+						. '</form>';
+					$content        = substr($content, 0, $outside_i) . $form . substr($content, $outside_j);
+					$position       = $outside_i + strlen($form);
+					$parser->buffer = $content;
+				}
+			}
 		}
 		return $content;
 	}

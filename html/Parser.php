@@ -631,7 +631,7 @@ class Parser
 	 * @param $i   integer starting position for search
 	 * @return integer|boolean false if not found
 	 */
-	private function tagPos($tag, $i = 0)
+	public function tagPos($tag, $i = 0)
 	{
 		$i1 = strpos($this->buffer, '<' . $tag . '>', $i);
 		$i2 = strpos($this->buffer, '<' . $tag . SP, $i);
