@@ -107,23 +107,19 @@ class Html_Template extends Template
 	 */
 	protected function parseContainer($content)
 	{
-		$content = parent::parseContainer($content);
-		$content = $this->replaceSectionByForm($content);
-		return $content;
-	}
-
-	//---------------------------------------------------------------------------------- parseInclude
-	/**
-	 * Parses included view controller call result (must be an html view) or includes html template
-	 *
-	 * @param $include_uri string
-	 * @return string|null included template, parsed, or null if included file was not found
-	 */
-	protected function parseInclude($include_uri)
-	{
-		$content = parent::parseInclude($include_uri);
-		$content = $this->replaceSectionByForm($content);
-		return $content;
+		$i = strpos($content, '<!--BEGIN-->');
+		if ($i !== false) {
+			$i += 12;
+			$j = strrpos($content, '<!--END-->', $i);
+			$short_class = Namespaces::shortClassName(get_class(reset($this->objects)));
+			$short_form_id = strtolower($short_class) . '_edit';
+			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+			$action = SL . $short_class . '/write';
+			$content = substr($content, 0, $i)
+				. $this->replaceSectionByForm(substr($content, $i, $j - $i), $action)
+				. substr($content, $j);
+		}
+		return parent::parseContainer($content);
 	}
 
 	//------------------------------------------------------------------------------ parseLoopElement
@@ -229,26 +225,22 @@ class Html_Template extends Template
 	//-------------------------------------------------------------------------- replaceSectionByForm
 	/**
 	 * @param $content string
+	 * @param $action string
 	 * @return string
 	 */
-	protected function replaceSectionByForm($content)
+	protected function replaceSectionByForm($content, $action)
 	{
-		if (($outside_i = strpos($content, '<section')) !== false) {
-			$inside_j = strrpos($content, '</section>', $outside_i);
-			if (strpos(substr($content, $outside_i, $inside_j - $outside_i), '<input') !== false) {
-				$short_class   = Namespaces::shortClassName(get_class(reset($this->objects)));
-				$short_form_id = strtolower($short_class) . '_edit';
-				$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
-				$action        = SL . $short_class . '/write';
-				$inside_i      = strpos($content, '>', $outside_i) + 1;
-				$attributes    = ' action=' . DQ . $action . DQ
-					. substr($content, $outside_i + 8, $inside_i - $outside_i - 9)
-					. ' enctype="multipart/form-data"'
-					. ' method="post"'
-					. ' name=' . DQ . $this->form_id . DQ
-					. ' target="#messages"';
-				$content = '<form' . $attributes . '>' . substr($content, $inside_i, $inside_j - $inside_i) . '</form>';
-			}
+		if (($i = strpos($content, '<section')) !== false) {
+			$j          = strpos($content, '>', $i) + 1;
+			$attributes = ' action=' . DQ . $action . DQ
+				. substr($content, $i + 8, $j - $i - 9)
+				. ' enctype="multipart/form-data"'
+				. ' method="post"'
+				. ' name=' . DQ . $this->form_id . DQ
+				. ' target="#messages"';
+			$i       = $j;
+			$j       = strrpos($content, '</section>', $i);
+			$content = '<form' . $attributes . '>' . substr($content, $i, $j - $i) . '</form>';
 		}
 		return $content;
 	}
