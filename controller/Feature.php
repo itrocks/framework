@@ -15,6 +15,7 @@ abstract class Feature
 	const F_ADMIN         = 'admin';
 	const F_API           = 'api';
 	const F_BLANK         = 'blank';
+	const F_CANCEL        = 'cancel';
 	const F_CLOSE         = 'close';
 	const F_CUSTOM_DELETE = 'custom_delete';
 	const F_CUSTOM_SAVE   = 'custom_save';
