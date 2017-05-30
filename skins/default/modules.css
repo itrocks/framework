@@ -18,6 +18,9 @@
 .actions > .export > a, .actions > .print > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
+.actions > .output > a {
+  padding-left: 12px;
+  background: url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
 .actions > .transform > a {
   padding-left: 12px;
   background: url("img/buttons/17/left_magenta.gif") -1px no-repeat, url("img/buttons/17/background.gif"); }
