@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Cache\Cached;
 use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -14,6 +15,7 @@ use ITRocks\Framework\Plugin\Registerable;
  */
 class Cache implements Registerable
 {
+	use Has_Get;
 
 	//--------------------------------------------------------------------------------------- MAXIMUM
 	/**
