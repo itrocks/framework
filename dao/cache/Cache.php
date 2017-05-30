@@ -17,14 +17,19 @@ class Cache implements Registerable
 {
 	use Has_Get;
 
-	//--------------------------------------------------------------------------------------- MAXIMUM
+	//-------------------------------------------------------------------------------------- $maximum
 	/**
 	 * When there are more than MAXIMUM objects into the cache, let's purge PURGE of them
+	 *
+	 * @var integer
 	 */
-	const MAXIMUM = 9999;
+	private $maximum;
 
-	//----------------------------------------------------------------------------------------- PURGE
-	const PURGE = 2000;
+	//---------------------------------------------------------------------------------------- $purge
+	/**
+	 * @var integer
+	 */
+	private $purge;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -37,6 +42,19 @@ class Cache implements Registerable
 	 * @var integer
 	 */
 	private $count = 0;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * Cache constructor.
+	 *
+	 * @param integer $maximum
+	 * @param integer $purge
+	 */
+	public function __construct($maximum = 9999, $purge = 2000)
+	{
+		$this->maximum = $maximum;
+		$this->purge   = $purge;
+	}
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -55,7 +73,7 @@ class Cache implements Registerable
 			$class_name                            = Builder::className(get_class($object));
 			$this->cache[$class_name][$identifier] = new Cached($object);
 			$this->count++;
-			if ($this->count > self::MAXIMUM) {
+			if ($this->count > $this->maximum) {
 				$this->purge();
 			}
 		}
@@ -108,6 +126,7 @@ class Cache implements Registerable
 	 *
 	 * @param $class_name string
 	 * @param $identifier integer
+	 *
 	 * @return object the cached object, null if none
 	 */
 	public function get($class_name, $identifier)
@@ -125,23 +144,23 @@ class Cache implements Registerable
 	private function purge()
 	{
 		$counter = 0;
-		$format  = '%0' . strlen(self::MAXIMUM) . 's';
+		$format  = '%0' . strlen($this->maximum) . 's';
 		$list    = [];
 		foreach ($this->cache as $class_name => $cache) {
 			foreach ($cache as $identifier => $cached) {
 				/** @var $cached Cached */
-				$counter ++;
+				$counter++;
 				$list_id        = $cached->date->toISO() . '-' . sprintf($format, $counter);
 				$list[$list_id] = [$class_name, $identifier];
 			}
 		}
 		krsort($list);
-		$threshold = self::MAXIMUM - self::PURGE;
+		$threshold = $this->maximum - $this->purge;
 		for (reset($list); $counter > $threshold; next($list)) {
 			list($class_name, $identifier) = current($list);
 			unset($this->cache[$class_name][$identifier]);
-			$this->count --;
-			$counter --;
+			$this->count--;
+			$counter--;
 		}
 	}
 
@@ -157,7 +176,7 @@ class Cache implements Registerable
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
 			unset($this->cache[$class_name][$identifier]);
-			$this->count --;
+			$this->count--;
 		}
 	}
 
@@ -191,10 +210,10 @@ class Cache implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod ([Link::class, 'read'  ], [$this, 'cacheReadObject' ]);
-		$aop->afterMethod ([Link::class, 'write' ], [$this, 'cacheWriteObject']);
-		$aop->beforeMethod([Link::class, 'read'  ], [$this, 'get'             ]);
-		$aop->afterMethod ([Link::class, 'delete'], [$this, 'removeObject'    ]);
+		$aop->afterMethod([Link::class, 'read'], [$this, 'cacheReadObject']);
+		$aop->afterMethod([Link::class, 'write'], [$this, 'cacheWriteObject']);
+		$aop->beforeMethod([Link::class, 'read'], [$this, 'get']);
+		$aop->afterMethod([Link::class, 'delete'], [$this, 'removeObject']);
 	}
 
 }
