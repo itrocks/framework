@@ -154,6 +154,9 @@ class Parser
 			}
 			elseif ($skip) {
 				$skip --;
+				if ($skip && ($at === 'before') && ($j !== false)) {
+					$j = strpos($this->buffer, '>', $j);
+				}
 			}
 		} while ($skip && ($j !== false));
 		if ($j === false) {
