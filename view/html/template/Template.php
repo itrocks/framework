@@ -878,7 +878,9 @@ class Template
 		if (strpos($include_uri, SL)) {
 			$include_uri = strtolower(lLastParse($include_uri, SL)) . SL . rLastParse($include_uri, SL);
 		}
-		return stream_resolve_include_path($include_uri);
+		$resolve = stream_resolve_include_path($include_uri);
+if (isset($GLOBALS['D'])) echo '- found ' . $resolve . BR;
+		return $resolve;
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
