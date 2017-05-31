@@ -16,7 +16,7 @@ use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\Html\Template\Loop;
 
 /**
- * Html template that changes all properties values to form inputs
+ * HTML template that changes all properties values to form inputs
  */
 class Html_Template extends Template
 {
