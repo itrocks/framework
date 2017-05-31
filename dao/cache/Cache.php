@@ -23,20 +23,6 @@ class Cache implements Registerable, Configurable
 	//------------------------------------------------------------------------------- ENABLED_FOR_ALL
 	const ENABLED_FOR_ALL = '*';
 
-	//-------------------------------------------------------------------------------------- $maximum
-	/**
-	 * When there are more than MAXIMUM objects into the cache, let's purge PURGE of them
-	 *
-	 * @var integer
-	 */
-	private $maximum;
-
-	//---------------------------------------------------------------------------------------- $purge
-	/**
-	 * @var integer
-	 */
-	private $purge;
-
 	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * @var array keys are [$class_name string][$identifier integer], value is a Cached
@@ -65,6 +51,20 @@ class Cache implements Registerable, Configurable
 	 * @var array|\string[]
 	 */
 	private $features;
+
+	//-------------------------------------------------------------------------------------- $maximum
+	/**
+	 * When there are more than MAXIMUM objects into the cache, let's purge PURGE of them
+	 *
+	 * @var integer
+	 */
+	private $maximum;
+
+	//---------------------------------------------------------------------------------------- $purge
+	/**
+	 * @var integer
+	 */
+	private $purge;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
