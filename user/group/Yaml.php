@@ -215,24 +215,20 @@ class Yaml
 		if (isset($this->data[self::FEATURES])) {
 			foreach ($this->data[self::FEATURES] as $feature => $feature_detail) {
 				if (is_string($feature_detail) && !is_string($feature)) {
-					if (!strpos($feature_detail, SL)) {
-						$feature_detail = $default_path . SL . $feature_detail;
-					}
-					$features[$feature_detail] = new Low_Level_Feature($feature_detail);
+					$feature        = $feature_detail;
+					$feature_detail = [];
 				}
-				elseif (is_string($feature) && is_array($feature_detail)) {
-					if (!strpos($feature, SL)) {
-						$feature = $default_path . SL . $feature;
-					}
-					$features[$feature] = new Low_Level_Feature($feature, $feature_detail);
-				}
-				else {
+				elseif (!(is_string($feature) && is_array($feature_detail))) {
 					user_error(
 						'Parse of ' . $this->filename . ' features : feature is not allowed ['
 						. print_r($feature, true) . ': ' . print_r($feature_detail, true) . ']',
 						E_USER_ERROR
 					);
 				}
+				if (!strpos($feature, SL)) {
+					$feature = $default_path . SL . $feature;
+				}
+				$features[$feature] = new Low_Level_Feature($feature, $feature_detail);
 			}
 		}
 		return $features;
