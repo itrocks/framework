@@ -872,14 +872,16 @@ class Template
 	 */
 	protected function parseIncludeResolve($include_uri)
 	{
+if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
 		if (beginsWith($include_uri, SL)) {
 			$include_uri = substr($include_uri, 1);
 		}
 		if (strpos($include_uri, SL)) {
 			$include_uri = strtolower(lLastParse($include_uri, SL)) . SL . rLastParse($include_uri, SL);
 		}
+if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . BR;
 		$resolve = stream_resolve_include_path($include_uri);
-if (isset($GLOBALS['D'])) echo '- found ' . $resolve . BR;
+if (isset($GLOBALS['D'])) echo '- FOUND ' . Paths::getRelativeFileName($resolve) . BR;
 		return $resolve;
 	}
 
