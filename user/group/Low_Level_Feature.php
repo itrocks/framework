@@ -20,7 +20,7 @@ class Low_Level_Feature
 	/**
 	 * @var array
 	 */
-	public $options;
+	public $options = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -29,12 +29,12 @@ class Low_Level_Feature
 	 * @param $feature string
 	 * @param $options array
 	 */
-	public function __construct($feature = null, array $options = [])
+	public function __construct($feature = null, array $options = null)
 	{
 		if (isset($feature)) {
 			$this->feature = $feature;
 		}
-		if ($options) {
+		if (isset($options)) {
 			$this->options = $options;
 		}
 	}
