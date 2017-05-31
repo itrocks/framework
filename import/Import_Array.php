@@ -4,6 +4,8 @@ namespace ITRocks\Framework\Import;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Import;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
@@ -534,7 +536,9 @@ class Import_Array
 	 */
 	protected function sameObject($object1, $object2)
 	{
-		return Dao::is($object1, $object2);
+		return ($object1 instanceof Date_Time)
+				? $this->sameArray(get_object_vars($object1), get_object_vars($object2))
+				: Dao::is($object1, $object2);
 	}
 
 	//----------------------------------------------------------------------------------- simulateNew
@@ -595,6 +599,7 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
+		$before = Reflection_Class::getObjectVars($object);
 		$only_properties = [];
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
@@ -604,9 +609,15 @@ class Import_Array
 			if (!$this->sameElement($object->$property_name, $value)) {
 				$object->$property_name = $value;
 				$only_properties[]      = $property_name;
+				unset($before[$property_name]);
 			}
 		}
 		if ($only_properties) {
+			foreach ($before as $property_name => $old_value) {
+				if (!$this->sameElement($object->$property_name, $old_value)) {
+					$only_properties[] = $property_name;
+				}
+			}
 			if ($this->simulation) {
 				$this->simulateUpdate($class, $object);
 			}

@@ -363,6 +363,27 @@ class Reflection_Class extends ReflectionClass
 		return $methods;
 	}
 
+	//--------------------------------------------------------------------------------- getObjectVars
+	/**
+	 * Same as get_object_vars, but solves AOP properties
+	 *
+	 * @param $object object
+	 * @param $aop    boolean if false, AOP is not applied and the actual values are get
+	 * @return array
+	 */
+	public static function getObjectVars($object, $aop = true)
+	{
+		$vars = get_object_vars($object);
+		if (isset($vars['_'])) {
+			foreach (array_keys($vars['_']) as $property_name) {
+				$vars[$property_name] = $aop ? $object->$property_name : $vars[$property_name . '_'];
+				unset($vars[$property_name . '_']);
+			}
+			unset($vars['_']);
+		}
+		return $vars;
+	}
+
 	//-------------------------------------------------------------------------------- getParentClass
 	/**
 	 * Gets parent class
