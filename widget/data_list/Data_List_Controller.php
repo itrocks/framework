@@ -45,6 +45,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Button\Has_Selection_Buttons;
 use ITRocks\Framework\Widget\Data_List_Setting;
@@ -593,6 +594,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$parameters[self::SELECTION_BUTTONS] = $this->getSelectionButtons(
 			$class_name, $parameters, $list_settings
 		);
+		$parameters[Template::TEMPLATE_FUNCTIONS] = Html_Template_Functions::class;
 		if (!isset($customized_list_settings[$list_settings->name])) {
 			unset($parameters[self::GENERAL_BUTTONS][Feature::F_DELETE]);
 		}

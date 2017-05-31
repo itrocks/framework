@@ -311,16 +311,16 @@ class Functions
 	/**
 	 * Returns an HTML edit widget for current Reflection_Property object
 	 *
-	 * @param $object      Reflection_Property
+	 * @param $property    Reflection_Property
 	 * @param $name        string
 	 * @param $ignore_user boolean ignore @user annotation, to disable invisible and read-only
 	 * @return string
 	 */
-	protected function getEditReflectionProperty(Reflection_Property $object, $name, $ignore_user)
+	protected function getEditReflectionProperty(Reflection_Property $property, $name, $ignore_user)
 	{
-		$property_edit             = new Html_Builder_Property($object);
+		$property_edit             = new Html_Builder_Property($property);
 		$property_edit->conditions = [];
-		$property_edit->name       = $name ?: $object->path;
+		$property_edit->name       = $name ?: $property->path;
 		$property_edit->preprop    = null;
 		if ($ignore_user) {
 			$property_edit->readonly = false;

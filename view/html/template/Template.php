@@ -36,6 +36,9 @@ class Template
 	//-------------------------------------------------------------------------------- TEMPLATE_CLASS
 	const TEMPLATE_CLASS = 'template_class';
 
+	//---------------------------------------------------------------------------- TEMPLATE_FUNCTIONS
+	const TEMPLATE_FUNCTIONS = 'template_functions';
+
 	//---------------------------------------------------------------------------- TEMPLATE_NAMESPACE
 	const TEMPLATE_NAMESPACE = 'template_namespace';
 
@@ -187,7 +190,6 @@ class Template
 	 */
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
-		$this->functions = $this->newFunctions();
 		if (isset($feature_name)) {
 			$this->feature = $feature_name;
 			if (!isset($template_file)) {
@@ -564,7 +566,11 @@ class Template
 	protected function newFunctions()
 	{
 		/** @var $functions Functions */
-		$functions = Builder::create(Functions::class);
+		$functions = Builder::create(
+			isset($this->parameters[self::TEMPLATE_FUNCTIONS])
+				? $this->parameters[self::TEMPLATE_FUNCTIONS]
+				: Functions::class
+		);
 		return $functions;
 	}
 
@@ -2081,6 +2087,8 @@ class Template
 			$parameters[Parameter::AS_WIDGET] = true;
 		}
 		$this->parameters = $parameters;
+		// functions may depend on parameters, so it could not be initialised before here
+		$this->functions = $this->newFunctions();
 	}
 
 	//----------------------------------------------------------------------------------------- shift
