@@ -391,25 +391,27 @@ class Link extends Dao\Sql\Link
 	 */
 	public function fetch($result_set, $class_name = null)
 	{
-		$object = $result_set->fetch_object(Builder::className($class_name));
-		if ($object instanceof Abstract_Class) {
-			$this->prepareFetch($object->class);
-			$object = $this->read($this->getObjectIdentifier($object), $object->class);
-		}
-		// execute actions stored into $prepared_fetch
-		foreach ($this->prepared_fetch as $property_name => $actions) {
-			foreach ($actions as $action) {
-				if ($action === self::GZINFLATE) {
-					/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
-					$value = @gzinflate($object->$property_name);
-					if ($value !== false) {
-						$object->$property_name = $value;
+		if ($object = $result_set->fetch_object(Builder::className($class_name)))
+		{
+			if ($object instanceof Abstract_Class) {
+				$this->prepareFetch($object->class);
+				$object = $this->read($this->getObjectIdentifier($object), $object->class);
+			}
+			// execute actions stored into $prepared_fetch
+			foreach ($this->prepared_fetch as $property_name => $actions) {
+				foreach ($actions as $action) {
+					if ($action === self::GZINFLATE) {
+						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
+						$value = @gzinflate($object->$property_name);
+						if ($value !== false) {
+							$object->$property_name = $value;
+						}
 					}
-				}
-				elseif ($action instanceof Data_Link) {
-					$value = $action->readProperty($object, $property_name);
-					if (isset($value)) {
-						$object->$property_name = $value;
+					elseif ($action instanceof Data_Link) {
+						$value = $action->readProperty($object, $property_name);
+						if (isset($value)) {
+							$object->$property_name = $value;
+						}
 					}
 				}
 			}
