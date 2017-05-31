@@ -22,11 +22,10 @@ trait Entry
 	public $sql;
 
 	//---------------------------------------------------------------------------------------- getSql
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string
 	 */
-	private function getSql()
+	protected function getSql()
 	{
 		/** @var $logger File_Logger */
 		$logger = Session::current()->plugins->get(File_Logger::class);

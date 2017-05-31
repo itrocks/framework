@@ -22,11 +22,10 @@ class Replacement_Getter
 	public $replacement;
 
 	//-------------------------------------------------------------------------------- getReplacement
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string
 	 */
-	private function getReplacement()
+	protected function getReplacement()
 	{
 		return $this->replacement . '(get)';
 	}

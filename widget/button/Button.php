@@ -18,7 +18,6 @@ class Button
 	//------------------------------------------------------------------- Button option key constants
 	const COLOR       = 'color';
 	const HINT        = 'hint';
-	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
 
 	//-------------------------------------------------------------------------------------- $caption
@@ -191,11 +190,10 @@ class Button
 	}
 
 	//--------------------------------------------------------------------------------------- getLink
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string
 	 */
-	private function getLink()
+	protected function getLink()
 	{
 		if (!isset($this->link)) {
 			$parameters = [];

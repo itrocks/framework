@@ -57,11 +57,10 @@ class Import_Worksheet
 	}
 
 	//------------------------------------------------------------------------------------ getPreview
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return Import_Preview
 	 */
-	private function getPreview()
+	protected function getPreview()
 	{
 		if (!isset($this->preview)) {
 			$this->preview = new Import_Preview($this->file->getCsvContent());

@@ -52,11 +52,10 @@ class Page
 	public $fields;
 
 	//------------------------------------------------------------------------------------- getNumber
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return string @values first, middle, last
 	 */
-	private function getNumber()
+	protected function getNumber()
 	{
 		$ordering = $this->ordering;
 		switch ($ordering) {
@@ -68,11 +67,10 @@ class Page
 	}
 
 	//------------------------------------------------------------------------------------- setNumber
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param $ordering integer|string @values 1, 2, 3, first, middle, last
 	 */
-	private function setNumber($ordering)
+	protected function setNumber($ordering)
 	{
 		switch ($ordering) {
 			case self::FIRST:  $ordering = 1; break;

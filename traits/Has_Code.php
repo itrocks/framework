@@ -15,12 +15,11 @@ trait Has_Code
 	public $code;
 
 	//--------------------------------------------------------------------------------------- setCode
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * Set identifier unique
 	 * @param $code string
 	 */
-	private function setCode($code = null)
+	protected function setCode($code = null)
 	{
 		$this->code = preg_replace('/(\s+)/', '-', trim(preg_replace('/[^-a-zA-Z0-9_\s]/', '',
 			trim(strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $code)))))

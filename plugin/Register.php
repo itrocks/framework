@@ -48,11 +48,10 @@ class Register
 	}
 
 	//------------------------------------------------------------------------------ getConfiguration
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * @return array|string
 	 */
-	private function getConfiguration()
+	protected function getConfiguration()
 	{
 		if (!$this->get) {
 			if (!is_array($this->configuration)) {
@@ -96,11 +95,10 @@ class Register
 	}
 
 	//------------------------------------------------------------------------------ setConfiguration
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param $configuration array|string
 	 */
-	private function setConfiguration($configuration)
+	protected function setConfiguration($configuration)
 	{
 		$this->configuration = $configuration;
 		$this->get           = false;

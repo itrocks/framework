@@ -229,14 +229,13 @@ class Feature
 	}
 
 	//----------------------------------------------------------------------------------- getFeatures
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Low-level features are always stored into yaml files or implicit, not in databases or others
 	 * data links
 	 *
 	 * @return Low_Level_Feature[]
 	 */
-	private function getFeatures()
+	protected function getFeatures()
 	{
 		if (!isset($this->features)) {
 			$class_name = $this->getClassName();
@@ -305,13 +304,12 @@ class Feature
 	}
 
 	//----------------------------------------------------------------------------------- getIncludes
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Get included end-user features
 	 *
 	 * @return Feature[]
 	 */
-	private function getIncludes()
+	protected function getIncludes()
 	{
 		if (!isset($this->includes)) {
 			$this->includes = $this->yaml ? $this->yaml->getIncludes($this->path) : [];
@@ -320,13 +318,12 @@ class Feature
 	}
 
 	//--------------------------------------------------------------------------------------- getName
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Initialises the name from the yaml file or generate its default value from $path
 	 *
 	 * @return string
 	 */
-	private function getName()
+	protected function getName()
 	{
 		if (!isset($this->name)) {
 			$name = $this->yaml ? $this->yaml->getName() : null;
@@ -377,14 +374,13 @@ class Feature
 	}
 
 	//--------------------------------------------------------------------------------------- getYaml
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets the yaml object of the feature : matches the file that contains the end-user feature data,
 	 * or false if there is no file and the feature is not implicit (bad feature).
 	 *
 	 * @return Yaml|boolean
 	 */
-	private function getYaml()
+	protected function getYaml()
 	{
 		if (!isset($this->yaml)) {
 			// find existing yaml file

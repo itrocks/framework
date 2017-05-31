@@ -105,13 +105,12 @@ class File
 	}
 
 	//--------------------------------------------------------------------------------------- getHash
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets $hash, or calculate it from content if not set
 	 *
 	 * @return string
 	 */
-	private function getHash()
+	protected function getHash()
 	{
 		if (!isset($this->hash)) {
 			$this->calcHash();
@@ -166,11 +165,10 @@ class File
 	}
 
 	//------------------------------------------------------------------------------------ setContent
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * @param $content string
 	 */
-	private function setContent($content)
+	protected function setContent($content)
 	{
 		$this->content = $content;
 		$this->calcHash();
