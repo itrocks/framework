@@ -391,8 +391,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function fetch($result_set, $class_name = null)
 	{
-		if ($object = $result_set->fetch_object(Builder::className($class_name)))
-		{
+		if ($object = $result_set->fetch_object(Builder::className($class_name))) {
 			if ($object instanceof Abstract_Class) {
 				$this->prepareFetch($object->class);
 				$object = $this->read($this->getObjectIdentifier($object), $object->class);
