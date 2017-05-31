@@ -3,9 +3,12 @@ namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Cache\Cached;
 use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -13,9 +16,12 @@ use ITRocks\Framework\Plugin\Registerable;
 /**
  * DAO cache object
  */
-class Cache implements Registerable
+class Cache implements Registerable, Configurable
 {
 	use Has_Get;
+
+	//------------------------------------------------------------------------------- ENABLED_FOR_ALL
+	const ENABLED_FOR_ALL = '*';
 
 	//-------------------------------------------------------------------------------------- $maximum
 	/**
@@ -43,32 +49,59 @@ class Cache implements Registerable
 	 */
 	private $count = 0;
 
+	//-------------------------------------------------------------------------------------- $enabled
+	/**
+	 * If TRUE, cache is enabled.
+	 *
+	 * @var bool
+	 */
+	private $enabled;
+
+	//------------------------------------------------------------------------------------- $features
+	/**
+	 * List of features to activate cache on.
+	 * To activate cache on all features, use self::ENABLED_FOR_ALL.
+	 *
+	 * @var array|\string[]
+	 */
+	private $features;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Cache constructor.
 	 *
-	 * @param integer $maximum
-	 * @param integer $purge
+	 * @param array $config
 	 */
-	public function __construct($maximum = 9999, $purge = 2000)
+	public function __construct($config = [])
 	{
-		$this->maximum = $maximum;
-		$this->purge   = $purge;
+		$this->enabled  = true;
+		$this->maximum  = $this->getValueOrDefault($config, 'maximum', 9999);
+		$this->purge    = $this->getValueOrDefault($config, 'purge', 2000);
+		$this->features = $this->getValueOrDefault(
+			$config, 'features',
+			[Feature::F_LIST, Feature::F_EDIT, Feature::F_EXPORT, Feature::F_OUTPUT]
+		);
 	}
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Adds/replaces an object to the cache
-	 * If more than MAXIMUM objects are stored, purge PURGE objects
+	 * If more than ::$maximum objects are stored, purge ::$purge objects
 	 *
 	 * @param $object object
 	 * @param $link   Link
 	 */
 	public function add($object, Link $link = null)
 	{
+		// Do nothing if cache is disabled.
+		if (!$this->enabled) {
+			return;
+		}
+
 		if (!$link) {
 			$link = Dao::current();
 		}
+
 		if (is_object($object) && ($identifier = $link->getObjectIdentifier($object))) {
 			$class_name                            = Builder::className(get_class($object));
 			$this->cache[$class_name][$identifier] = new Cached($object);
@@ -88,6 +121,11 @@ class Cache implements Registerable
 	 */
 	public function cacheReadObject($result, Method_Joinpoint $joinpoint = null)
 	{
+		// Do nothing if cache is disabled.
+		if (!$this->enabled) {
+			return;
+		}
+
 		/** @var $link Link */
 		$link = $joinpoint ? $joinpoint->object : Dao::current();
 		$this->add($result, $link);
@@ -104,7 +142,7 @@ class Cache implements Registerable
 	 */
 	public function cacheWriteObject($object, $options = [], Method_Joinpoint $joinpoint = null)
 	{
-		if (!$options) {
+		if ($this->enabled && !$options) {
 			/** @var $link Link */
 			$link = $joinpoint ? $joinpoint->object : Dao::current();
 			$this->add($object, $link);
@@ -137,9 +175,28 @@ class Cache implements Registerable
 			: null;
 	}
 
+	//----------------------------------------------------------------------------- getValueOrDefault
+	/**
+	 * Tries to access value of $config[$key]. Returns it if exists, $default_value otherwise.
+	 *
+	 * @param array  $config        : The config array.
+	 * @param string $key           : The key to access in config array.
+	 * @param mixed  $default_value : Default value to return.
+	 *
+	 * @return mixed
+	 */
+	private function getValueOrDefault($config, $key, $default_value = null)
+	{
+		if (is_string($key) && is_array($config) && isset($config[$key])) {
+			return $config[$key];
+		}
+
+		return $default_value;
+	}
+
 	//----------------------------------------------------------------------------------------- purge
 	/**
-	 * Purge removes self::PURGE old objects from the cache
+	 * Purge removes ::$purge old objects from the cache
 	 */
 	private function purge()
 	{
@@ -205,7 +262,7 @@ class Cache implements Registerable
 	/**
 	 * Registration code for the plugin
 	 *
-	 * @param $register Register
+	 * @param Register $register
 	 */
 	public function register(Register $register)
 	{
@@ -214,6 +271,30 @@ class Cache implements Registerable
 		$aop->afterMethod([Link::class, 'write'], [$this, 'cacheWriteObject']);
 		$aop->beforeMethod([Link::class, 'read'], [$this, 'get']);
 		$aop->afterMethod([Link::class, 'delete'], [$this, 'removeObject']);
+		$aop->beforeMethod([Main::class, 'executeController'], [$this, 'toggleCacheActivation']);
+	}
+
+	//------------------------------------------------------------------------- toggleCacheActivation
+	/**
+	 * Toggles flag activation depending on controller's feature & configuration.
+	 *
+	 * @param Method_Joinpoint $joinpoint : The joinpoint object.
+	 */
+	public function toggleCacheActivation(Method_Joinpoint $joinpoint)
+	{
+		// Get feature's name.
+		$feature = $joinpoint->parameters['uri']->feature_name;
+
+		if (in_array($feature, $this->features) || $this->features === [self::ENABLED_FOR_ALL]) {
+			$this->enabled = true;
+		}
+		else {
+			// Disable cache.
+			$this->enabled = false;
+
+			// And flush it.
+			$this->flush();
+		}
 	}
 
 }
