@@ -17,14 +17,14 @@
 		<ul class="property_tree">
 		<!--BEGIN:inside_tree-->
 		<!--properties-->
-			<li class="property {?getType.isBasicHtml} {?getType.isStringableHtml}" data-property="{path}" title="|{path}|">
-				<!--!getType.isBasic?--><!--!getType.isStringable?-->
+			<li class="property {?isBasicHtml} {?isStringableHtml}" data-property="{path}" title="|{path}|">
+				<!--isExpandable?-->
 				<a href="/ITRocks/Framework/Property/select/{--class_name.path}/{path}" target="#tree-{path}">
-				<!--!getType.isStringable?--><!--!getType.isBasic?-->
+				<!--isExpandable?-->
 					|{@display(display_full_path)}|
-				<!--!getType.isBasic?--><!--!getType.isStringable?-->
+				<!--isExpandable?-->
 				</a>
-				<!--!getType.isStringable?--><!--!getType.isBasic?-->
+				<!--isExpandable?-->
 			</li>
 		<!--sample-->
 			<li class="basic property" data-property="property_1" title="property 1">property 1</li>

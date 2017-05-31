@@ -310,23 +310,6 @@ class Type
 			|| ($include_multiple_string && $this->isMultipleString());
 	}
 
-	//----------------------------------------------------------------------------------- isBasicHtml
-	/**
-	 * Tells if a type is a basic type or not
-	 *
-	 * Basic types : boolean, integer, float, string, string[], array, resource, callable, null, NULL
-	 * DateTime and Date_Time are considered as basic too ! Use isStrictlyBasic
-	 * if you don't want them
-	 * Not basic types are *, [] objects, class names
-	 *
-	 * @param $include_multiple_string boolean if false, string[] is not considered as a basic type
-	 * @return string|null 'basic'
-	 */
-	public function isBasicHtml($include_multiple_string = true)
-	{
-		return $this->isBasic($include_multiple_string) ? 'basic' : null;
-	}
-
 	//------------------------------------------------------------------------------------- isBoolean
 	/**
 	 * Returns true if type is a boolean
@@ -486,15 +469,6 @@ class Type
 			&& !$this->isMultiple()
 			&& is_a($this->getElementTypeAsString(), Stringable::class, true)
 		);
-	}
-
-	//------------------------------------------------------------------------------ isStringableHtml
-	/**
-	 * @return string|null 'stringable' if stringable
-	 */
-	public function isStringableHtml()
-	{
-		return $this->isStringable() ? 'stringable' : null;
 	}
 
 	//---------------------------------------------------------------------------------- isSubClassOf
