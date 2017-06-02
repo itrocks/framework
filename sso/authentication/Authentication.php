@@ -14,15 +14,13 @@ use ITRocks\Framework\User;
 class Authentication
 {
 
-	//--------------------------------------------------------------------------- ACTION_AUTHENTICATE
-	const ACTION_AUTHENTICATE = 'authenticate';
-
-	//----------------------------------------------------------------------------- ACTION_DISCONNECT
-	const ACTION_DISCONNECT = 'disconnect';
+	//----------------------------------------------------------------------------- Actions constants
+	const AUTHENTICATE = 'authenticate';
+	const DISCONNECT   = 'disconnect';
 
 	//--------------------------------------------------------------------------------------- $action
 	/**
-	 * @values authenticate, disconnect
+	 * @values self::const
 	 * @var string
 	 */
 	public $action;
@@ -107,20 +105,20 @@ class Authentication
 	{
 		if (isset($login)) {
 			$this->login = $login;
-			$this->user = Dao::searchOne(['login' => $login], User::class);
+			$this->user  = Dao::searchOne(['login' => $login], User::class);
 			if (isset($action)) {
 				$this->action = $action;
 			}
 			if (isset($token)) {
 				$this->token = $token;
 			}
-			$this->https = !empty($_SERVER['HTTPS']);
-			$this->referer = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-			$this->remote_address = isset($_SERVER['REMOTE_ADDR']) ? $_SERVER['REMOTE_ADDR'] : '';
-			$this->remote_host = isset($_SERVER['REMOTE_HOST']) ? $_SERVER['REMOTE_HOST'] : '';
-			$this->remote_port = isset($_SERVER['REMOTE_PORT']) ? $_SERVER['REMOTE_PORT'] : '';
+			$this->https              = !empty($_SERVER['HTTPS']);
+			$this->referer            = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+			$this->remote_address     = isset($_SERVER['REMOTE_ADDR'])  ? $_SERVER['REMOTE_ADDR']  : '';
+			$this->remote_host        = isset($_SERVER['REMOTE_HOST'])  ? $_SERVER['REMOTE_HOST']  : '';
+			$this->remote_port        = isset($_SERVER['REMOTE_PORT'])  ? $_SERVER['REMOTE_PORT']  : '';
 			$this->request_time_float = $_SERVER['REQUEST_TIME_FLOAT'];
-			$this->session_id = session_id();
+			$this->session_id         = session_id();
 			$this->user_agent = isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '';
 		}
 	}
@@ -140,7 +138,7 @@ class Authentication
 	 */
 	public function validateAuthentication()
 	{
-		return (!empty($this->login) && !empty($this->action));
+		return $this->action && $this->login;
 	}
 
 }
