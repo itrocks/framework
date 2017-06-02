@@ -19,7 +19,6 @@
 		"oomphinc/composer-installers-extender": "~1.1",
 		"pear/mail":                             "1.*",
 		"pear/mail_mime":                        "1.*",
-		"pear/mail_mime-decode":                 "1.*",
 		"pear/net_pop3":                         "1.*",
 		"pear/net_smtp":                         "1.*",
 		"phpoffice/phpexcel":                    "1.*",
