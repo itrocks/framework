@@ -52,8 +52,8 @@ class Check_Controller implements Feature_Controller
 		$object = new stdClass();
 		if ($authenticated) {
 			$object->response     = 'OK';
-			$object->session_name = session_name();
 			$object->session_id   = session_id();
+			$object->session_name = session_name();
 			return json_encode($object);
 		}
 		else {
