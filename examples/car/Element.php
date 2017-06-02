@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Examples\Car;
 
-use Bappli\Sfkgroup\Webshop\Has_Code;
+use ITRocks\Framework\Traits\Has_Code;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
