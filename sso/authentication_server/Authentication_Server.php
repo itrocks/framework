@@ -3,6 +3,7 @@ namespace ITRocks\Framework\SSO;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -15,11 +16,9 @@ use ITRocks\Framework\User;
 class Authentication_Server implements Configurable, Registerable
 {
 
-	//---------------------------------------------------------------------------------- APPLICATIONS
+	//---------------------------------------------------------------- Plugin configuration constants
 	const APPLICATIONS = 'applications';
-
-	//------------------------------------------------------------------------------------------ SALT
-	const SALT = 'salt';
+	const SALT         = 'salt';
 
 	//--------------------------------------------------------------------------------- $applications
 	/**
@@ -62,11 +61,12 @@ class Authentication_Server implements Configurable, Registerable
 	 *
 	 * @param $user User
 	 */
-	public function afterAuthenticate(User $user) {
+	public function afterAuthenticate(User $user)
+	{
 		// create authentication log
 		$authentication = Builder::create(Authentication::class, [
 			$user->login,
-			Authentication::ACTION_AUTHENTICATE,
+			Authentication::AUTHENTICATE,
 			Authentication_Server::buildToken($user)
 		]);
 		Dao::write($authentication);
@@ -75,14 +75,14 @@ class Authentication_Server implements Configurable, Registerable
 	//------------------------------------------------------------------------------ beforeDisconnect
 	/**
 	 * SSO cleaning before to disconnect a user
-	 *
 	 */
-	public function beforeDisconnect() {
+	public function beforeDisconnect()
+	{
 		// create disconnect log
-		$user = User::current();
+		$user           = User::current();
 		$authentication = Builder::create(Authentication::class, [
 			$user->login,
-			Authentication::ACTION_DISCONNECT
+			Authentication::DISCONNECT
 		]);
 		Dao::write($authentication);
 	}
@@ -109,12 +109,10 @@ class Authentication_Server implements Configurable, Registerable
 	public function getApplicationBySentence($sentence)
 	{
 		if ($sentence) {
-			$application = reset(self::$applications);
-			while ($application) {
+			foreach (self::$applications as $application) {
 				if ($application->hasSentence($sentence)) {
 					return $application;
 				}
-				$application = next(self::$applications);
 			}
 		}
 		return null;
@@ -140,13 +138,11 @@ class Authentication_Server implements Configurable, Registerable
 	 */
 	public function hasApplication($name)
 	{
-		$application = reset(self::$applications);
-		while ($application) {
+		foreach (self::$applications as $application) {
 			if ($application->name == $name) {
-				//TODO Evolution: Check sso application is accessible for user (use features and features_groups?)
+				// TODO LOWEST Evolution : Check sso application is accessible for user (use features and features_groups ?)
 				return $application;
 			}
-			$application = next(self::$applications);
 		}
 		return null;
 	}
@@ -183,26 +179,26 @@ class Authentication_Server implements Configurable, Registerable
 	{
 		// search for an authentication with token
 		$search = [
-			'login' => $login,
-			'token' => $token,
-			'action' => Authentication::ACTION_AUTHENTICATE,
+			'action' => Authentication::AUTHENTICATE,
+			'login'  => $login,
+			'token'  => $token
 		];
 		// with connection more recent than max_session_time of application
 		if ($application->max_session_time) {
-			$search['request_time_float'] = Dao\Func::greater(time() - $application->max_session_time);
+			$search['request_time_float'] = Func::greater(time() - $application->max_session_time);
 		}
-		$sort = Dao::sort('request_time_float');
-		$sort->reverse = [true];
+		$sort            = Dao::sort('request_time_float');
+		$sort->reverse   = [true];
 		$authentications = Dao::search($search, Authentication::class, [Dao::limit(1), $sort]);
-		if ($authentications && count($authentications)) {
+		if ($authentications) {
 			/** @var $authentication Authentication|null */
 			$authentication = reset($authentications);
 			// search for a disconnection after given
 			/** @var $disconnect Authentication */
 			$disconnect = Dao::searchOne([
-				'login' => $login,
-				'action' => Authentication::ACTION_DISCONNECT,
-				'request_time_float' => Dao\Func::greater($authentication->request_time_float)
+				'action'             => Authentication::DISCONNECT,
+				'login'              => $login,
+				'request_time_float' => Func::greater($authentication->request_time_float)
 			], Authentication::class);
 			if (!$disconnect) {
 				return true;

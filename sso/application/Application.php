@@ -8,20 +8,12 @@ namespace ITRocks\Framework\SSO;
 class Application
 {
 
-	//------------------------------------------------------------------------------ MAX_SESSION_TIME
+	//------------------------------------------ Authentication_Server plugin configuration constants
 	const MAX_SESSION_TIME = 'max_session_time';
-
-	//------------------------------------------------------------------------------------------ NAME
-	const NAME = 'name';
-
-	//-------------------------------------------------------------------------------------- REDIRECT
-	const REDIRECT = 'redirect';
-
-	//-------------------------------------------------------------------------------------- SENTENCE
-	const SENTENCE = 'sentence';
-
-	//------------------------------------------------------------------------------------------- URI
-	const URI = 'uri';
+	const NAME             = 'name';
+	const REDIRECT         = 'redirect';
+	const SENTENCE         = 'sentence';
+	const URI              = 'uri';
 
 	//----------------------------------------------------------------------------- $max_session_time
 	/**
@@ -71,25 +63,14 @@ class Application
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * Configuration keys can be max_session_time, name, redirect, sentence, uri
 	 *
 	 * @param $configuration array
 	 */
 	public function __construct($configuration = [])
 	{
-		if (isset($configuration[self::MAX_SESSION_TIME])) {
-			$this->max_session_time = $configuration[self::MAX_SESSION_TIME];
-		}
-		if (isset($configuration[self::NAME])) {
-			$this->name = $configuration[self::NAME];
-		}
-		if (isset($configuration[self::REDIRECT])) {
-			$this->redirect= $configuration[self::REDIRECT];
-		}
-		if (isset($configuration[self::SENTENCE])) {
-			$this->sentence = $configuration[self::SENTENCE];
-		}
-		if (isset($configuration[self::URI])) {
-			$this->uri = $configuration[self::URI];
+		foreach ($configuration as $property_name => $value) {
+			$this->$property_name = $value;
 		}
 	}
 
@@ -102,7 +83,7 @@ class Application
 	 */
 	public function hasSentence($sentence)
 	{
-		return (!empty($sentence) && ($this->sentence === $sentence));
+		return $sentence && ($this->sentence === $sentence);
 	}
 
 	//--------------------------------------------------------------------------------------- isValid
@@ -113,7 +94,7 @@ class Application
 	 */
 	public function isValid()
 	{
-		return !empty($this->name) && !empty($this->uri) && !empty($this->sentence);
+		return $this->name && $this->sentence && $this->uri;
 	}
 
 }
