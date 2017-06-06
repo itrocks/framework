@@ -137,7 +137,7 @@ class Manager implements IManager, Serializable
 				}
 				else {
 					$configuration = strpos($serialized, ':') ? unserialize($serialized) : $serialized;
-					$plugin = Builder::create($class_name, [$configuration]);
+					$plugin        = Builder::create($class_name, [$configuration]);
 					/** @noinspection PhpUndefinedFieldInspection */
 					$plugin->plugin_configuration = $configuration;
 				}
