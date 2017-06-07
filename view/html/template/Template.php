@@ -881,7 +881,7 @@ if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
 		}
 if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . BR;
 		$resolve = stream_resolve_include_path($include_uri);
-if (isset($GLOBALS['D'])) echo '- FOUND ' . Paths::getRelativeFileName($resolve) . BR;
+if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($resolve) . BR;
 		return $resolve;
 	}
 
