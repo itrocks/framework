@@ -215,10 +215,10 @@ class Link extends Dao\Sql\Link
 	 * @param $what       object|array source object for filter, or filter array (need class_name)
 	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
-	 * @param $options    Option|Option[] some options for advanced search
+	 * @param $options    Option[] some options, one can be Create_If_No_Result
 	 * @return object|null
 	 */
-	protected function createObjectIfOption($what, $class_name, $options)
+	protected function createObjectIfOption($what, $class_name, array $options)
 	{
 		foreach ($options as $option) {
 			if ($option instanceof Create_If_No_Result) {
