@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Option\Create_If_No_Result;
 use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use mysqli_result;
 use ITRocks\Framework\Builder;
@@ -199,6 +201,48 @@ class Link extends Dao\Sql\Link
 			$row = [0];
 		}
 		return $row[0];
+	}
+
+	//-------------------------------------------------------------------------- createObjectIfOption
+	/**
+	 * Instantiates a $class_name / get_class($what) object if a Create_If_No_Result option is set
+	 *
+	 * - $what values will be used to initialize the new object properties
+	 * - $what Func values are ignored
+	 * - $what array values for non-multiple properties are ignored
+	 * - if $what contain 'or' searches (numeric keys), they are ignored
+	 *
+	 * @param $what       object|array source object for filter, or filter array (need class_name)
+	 *                    only set properties will be used for search
+	 * @param $class_name string must be set if $what is a filter array and not an object
+	 * @param $options    Option|Option[] some options for advanced search
+	 * @return object|null
+	 */
+	protected function createObjectIfOption($what, $class_name, $options)
+	{
+		foreach ($options as $option) {
+			if ($option instanceof Create_If_No_Result) {
+				if (!$class_name) {
+					$class_name = get_class($what);
+				}
+				$object = Builder::create($class_name);
+				$values = is_array($what) ? $what : get_object_vars($what);
+				foreach ($values as $property_name => $value) {
+					if (!(
+						is_numeric($property_name)
+						|| ($value instanceof Func)
+						|| (
+							is_array($value)
+							&& !(new Reflection_Property($class_name, $property_name))->getType()->isMultiple()
+						)
+					)) {
+						$object->$property_name = $value;
+					}
+				}
+				return $object;
+			}
+		}
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- createStorage
@@ -957,7 +1001,8 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Rollback a transaction (non-transactional MySQL engines as MyISAM will do nothing and return null)
 	 *
-	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional SQL engine
+	 * @return boolean|null true if commit succeeds, false if error, null if not a transactional
+	 *                      SQL engine
 	 */
 	public function rollback()
 	{
@@ -970,11 +1015,16 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Search objects from data source
 	 *
-	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
-	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
+	 * order to initialize all properties as unset and build a correct search object.
+	 * If some properties are an not-loaded objects, the search will be done on the object identifier,
+	 * without joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will be
+	 * done on the object identifier, without join. If object is not linked to data-link, the search
+	 * is done with the linked object as others search criterion.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $what       object|array source object for filter, or filter array (need class_name)
+	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
 	 * @param $options    Option|Option[] some options for advanced search
 	 * @return object[] a collection of read objects
@@ -997,6 +1047,9 @@ class Link extends Dao\Sql\Link
 		}
 		$objects = $this->fetchAll($class_name, $options, $result_set);
 		$this->afterReadMultiple($objects, $options);
+		if (!$objects && ($created = $this->createObjectIfOption($what, $class_name, $options))) {
+			$objects = [$created];
+		}
 		return $objects;
 	}
 

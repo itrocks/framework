@@ -113,6 +113,15 @@ class Dao implements Configurable
 		return self::current()->count($what, $class_name);
 	}
 
+	//------------------------------------------------------------------------------ createIfNoResult
+	/**
+	 * @return Option\Create_If_No_Result
+	 */
+	public static function createIfNoResult()
+	{
+		return new Option\Create_If_No_Result();
+	}
+
 	//--------------------------------------------------------------------------------- createStorage
 	/**
 	 * Create a storage space for $class_name objects
