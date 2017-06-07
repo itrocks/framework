@@ -7,6 +7,10 @@ namespace ITRocks\Framework\Html;
 class Parser
 {
 
+	//-------------------------------------------------------------------- Tag positionning constants
+	const AFTER  = 'after';
+	const BEFORE = 'before';
+
 	//--------------------------------------------------------------------------------------- $buffer
 	/**
 	 * The page html source
@@ -130,22 +134,22 @@ class Parser
 	 *
 	 * @param $tag string the name of the opened tag
 	 * @param $i   integer the position of the opened '<tag>' into buffer
-	 * @param $at  string 'after' for the position after, 'start' for start position of the closing
+	 * @param $at  string 'after' for the position after, 'before' for start position of the closing
 	 *             tag
 	 * @return integer the position of the closed '</tag>' into buffer
 	 */
-	public function closingTag($tag, $i, $at = 'after')
+	public function closingTag($tag, $i, $at = self::AFTER)
 	{
 		$j = strpos($this->buffer, '>', $i) + 1;
 		if (in_array($tag, ['img', 'input', 'meta'])) {
-			return ($at == 'after') ? $j : $i;
+			return ($at === self::AFTER) ? $j : $i;
 		}
 		// skip identical tags, recursively, until they are all closed
 		$skip = 1;
 		do {
 			$j2 = $this->tagPos($tag, $j);
 			$j = strpos($this->buffer, '</' . $tag . '>', $j);
-			if (($at === 'after') && ($j !== false)) {
+			if (($at === self::AFTER) && ($j !== false)) {
 				$j += strlen($tag) + 3;
 			}
 			if (($j2 !== false) && ($j2 < $j)) {
@@ -154,7 +158,7 @@ class Parser
 			}
 			elseif ($skip) {
 				$skip --;
-				if ($skip && ($at === 'before') && ($j !== false)) {
+				if ($skip && ($at === self::BEFORE) && ($j !== false)) {
 					$j = strpos($this->buffer, '>', $j);
 				}
 			}
@@ -228,7 +232,7 @@ class Parser
 		if ($content_only) {
 			$i = strpos($this->buffer, '>', $i) + 1;
 		}
-		$j = $this->closingTag($tag, $i, $content_only ? 'start' : 'after');
+		$j = $this->closingTag($tag, $i, $content_only ? self::BEFORE : self::AFTER);
 		$this->buffer = substr($this->buffer, $i, $j - $i);
 	}
 
@@ -284,7 +288,7 @@ class Parser
 			return null;
 		}
 		$parts = $this->selectorParts($selector);
-		$end = $this->closingTag($this->partsTag($parts), $pos, 'start');
+		$end = $this->closingTag($this->partsTag($parts), $pos, self::BEFORE);
 		if (isset($parts[':']['content'])) {
 			$pos = strpos($this->buffer, '>', $pos) + 1;
 		}
@@ -387,7 +391,7 @@ class Parser
 		// append merged html at the end of buffer selected elements contents
 		$i = 0;
 		while (($i = $this->selectorPos($selector, $i)) !== false) {
-			$i = $this->closingTag($tag, $i, 'before');
+			$i = $this->closingTag($tag, $i, self::BEFORE);
 			$this->buffer = substr($this->buffer, 0, $i) . $merged_html . substr($this->buffer, $i);
 		}
 	}
@@ -592,7 +596,7 @@ class Parser
 					if (isset($attr)) $name = $attr;
 					if ($name == 'content') {
 						$ci = $j + 1;
-						$cj = $this->closingTag($tag, $i, 'start');
+						$cj = $this->closingTag($tag, $i, self::BEFORE);
 						$content = substr($this->buffer, $ci, $cj - $ci);
 						if ($content !== $part) {
 							$found = false;

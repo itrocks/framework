@@ -231,7 +231,7 @@ class Html_Template extends Template
 			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
 				$classes = array_flip(explode(SP, mParse($inside, 'class=' . DQ, DQ)));
 				if (isset($classes['edit']) && isset($classes['window'])) {
-					$inside_j      = $parser->closingTag('section', $inside_i, 'start');
+					$inside_j      = $parser->closingTag('section', $inside_i, Parser::BEFORE);
 					$outside_j     = $inside_j + 10;
 					$class_name    = get_class(reset($this->objects));
 					$short_class   = Namespaces::shortClassName($class_name);
