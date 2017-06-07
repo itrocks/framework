@@ -338,6 +338,9 @@ if ($class_name) {
 	 */
 	public function searchOne($what, $class_name = null, $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		$options[] = Dao::limit(1);
 		$result    = $this->search($what, $class_name, $options);
 		return $result ? reset($result) : null;
