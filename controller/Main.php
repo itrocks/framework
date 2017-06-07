@@ -137,7 +137,7 @@ class Main
 	 * @param $files       array[]
 	 * @return string
 	 */
-	private function executeController($controller, $method_name, $uri, array $post, array $files)
+	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
 		$controller = is_a($controller, Controller::class, true)
 			? Builder::create($controller)
