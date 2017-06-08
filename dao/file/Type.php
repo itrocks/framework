@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\File;
 
+use finfo;
+
 /**
  * File type
  */
@@ -16,6 +18,12 @@ class Type
 	 * @var string[] key is the file extension, value is the full text file type
 	 */
 	private static $extensions_types;
+
+	//----------------------------------------------------------------------------- $types_extensions
+	/**
+	 * @var string[] key is the full text file type, value is the file extension
+	 */
+	private static $types_extensions;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -54,6 +62,19 @@ class Type
 		return $this->type . SL . $this->subtype;
 	}
 
+	//--------------------------------------------------------------------------- contentToTypeString
+	/**
+	 * Try to compute and return the mime-type of the content
+	 *
+	 * @param $content string
+	 * @return string
+	 * @todo NORMAL check that finfo mime-type list is compatible with self::$extensions_types
+	 */
+	public static function contentToTypeString($content)
+	{
+		return ((new finfo(FILEINFO_MIME_TYPE))->buffer($content)) ?: null;
+	}
+
 	//---------------------------------------------------------------------------------------- equals
 	/**
 	 * Returns true if the two files types are equivalent (same type and subtype)
@@ -88,25 +109,35 @@ class Type
 	{
 		if (!isset(self::$extensions_types)) {
 			// source : http://www.iana.org/assignments/media-types/media-types.xhtml
+			/**
+			 * BEWARE : for same values, the last key will give the extension got from type
+			 */
 			self::$extensions_types = [
 				'bmp'  => 'image/bmp',
 				'bz2'  => 'application/x-bz2',
 				'csv'  => 'text/csv',
+				'css'  => 'text/css',
 				'doc'  => 'application/msword',
 				'gif'  => 'image/gif',
-				'gz'   => 'multipart/x-gzip',
 				'gzip' => 'multipart/x-gzip',
+				'gz'   => 'multipart/x-gzip', // default extension. So last ordered for same value
+				'html' => 'text/html',
 				'jpe'  => 'image/jpeg',
 				'jpeg' => 'image/jpeg',
-				'jpg'  => 'image/jpeg',
+				'jpg'  => 'image/jpeg',       // default extension. So last ordered for same value
+				'js'   => 'text/javascript',
 				'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
+				'pdf'  => 'application/pdf',
 				'png'  => 'image/png',
 				'tif'  => 'image/tiff',
-				'tiff' => 'image/tiff',
+				'tiff' => 'image/tiff',       // default extension. So last ordered for same value
+				'txt'  => 'text/plain',
 				'xls'  => 'application/vnd.ms-excel',
 				'xlsx' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
 				'zip'  => 'multipart/x-zip'
 			];
+
+			self::$types_extensions = array_flip(self::$extensions_types);
 		}
 	}
 
@@ -138,6 +169,20 @@ class Type
 					|| (($type === 'vnd') && (strpos($this->subtype, 'vnd.') === 0));
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------- typeStringToFileExtension
+	/**
+	 * @param $type string
+	 * @return string
+	 */
+	public static function typeStringToFileExtension($type)
+	{
+		$type = strtolower($type);
+		self::initExtensionsTypes();
+		return isset(self::$types_extensions[$type])
+			? self::$types_extensions[$type]
+			: null;
 	}
 
 }
