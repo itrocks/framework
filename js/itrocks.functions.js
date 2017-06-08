@@ -67,7 +67,7 @@ getTextHeight = function(context, extraHeight)
 	$height.width($width);
 	var height = $height.height() + extraHeight;
 	$height.remove();
-	 return height;
+	return height;
 };
 
 //------------------------------------------------------------------------------------ getTextWidth
@@ -75,7 +75,7 @@ get_text_width_cache = [];
 getTextWidth = function(context, extraWidth)
 {
 	var width = get_text_width_cache[context.val()];
-	if (width != undefined) {
+	if (width !== undefined) {
 		return width;
 	}
 	else {

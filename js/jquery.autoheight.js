@@ -17,7 +17,7 @@
 			var previous_height = parseInt($this.attr('ui-text-height'));
 			var new_height = Math.min(getInputTextHeight($this), settings.maximum);
 			$this.attr('ui-text-height', new_height);
-			if (new_height != previous_height) {
+			if (new_height !== previous_height) {
 				var $table = $this.closest('table.collection, table.map');
 				if (!$table.length) {
 					// single element
@@ -29,7 +29,7 @@
 					// is element not named and next to a named element ? next_input = true
 					var name = $this.attr('name');
 					var next_input = false;
-					if (name == undefined) {
+					if (name === undefined) {
 						name = $this.prev('input').attr('name');
 						next_input = true;
 					}
@@ -43,7 +43,7 @@
 						$td.css('max-height', new_height + 'px');
 						$td.css('min-height', new_height + 'px');
 					}
-					else if (previous_height == previous_max_height) {
+					else if (previous_height === previous_max_height) {
 						// the element was the widest element : grow or shorten
 						new_height = 0;
 						$table.find('[name="' + name + '"]').each(function()
@@ -53,7 +53,7 @@
 								$this = $this.next('input');
 							}
 							var ui_text_height = parseInt($this.attr('ui-text-height'));
-							if (ui_text_height == 0) {
+							if (ui_text_height === 0) {
 								$this.attr(
 									'ui-text-height', ui_text_height = getTextHeight($this.val())
 								);
