@@ -50,56 +50,63 @@ getInputTextWidth = function(context)
 	return Math.max(40, getTextWidth(context, 16));
 };
 
-//----------------------------------------------------------------------------------- getTextHeight
-getTextHeight = function(context, extraHeight)
+getTextContentAsArray = function($context)
 {
-	var $content = context.val().split("\n");
+	return $context.val()
+		.replace(/<script>/gi, '&lt;script&gt;').replace(/<\/script>/gi, '&lt/script&gt;').split("\n");
+};
+
+//----------------------------------------------------------------------------------- getTextHeight
+getTextHeight = function($context, extra_height)
+{
+	var content = getTextContentAsArray($context);
 	// If the last element is empty, need put a character to prevent the browser ignores the character
-	var $last_index = $content.length -1;
-	if (!$content[$last_index]) {
-		$content[$last_index] = '_';
+	var $last_index = content.length -1;
+	if (!content[$last_index]) {
+		content[$last_index] = '_';
 	}
 	var $height = $('<div>');
-	$height.append($content.join('<br>')).appendTo(context.parent());
-	copyCssPropertyTo(context, $height);
+	$height.append(content.join('<br>')).appendTo($context.parent());
+	copyCssPropertyTo($context, $height);
 	$height.css('position', 'absolute');
-	var $width = getInputTextWidth(context);
+	var $width = getInputTextWidth($context);
 	$height.width($width);
-	var height = $height.height() + extraHeight;
+	var height = $height.height() + extra_height;
 	$height.remove();
 	return height;
 };
 
 //------------------------------------------------------------------------------------ getTextWidth
 get_text_width_cache = [];
-getTextWidth = function(context, extraWidth)
+getTextWidth = function($context, extra_width)
 {
-	var width = get_text_width_cache[context.val()];
+	var width = get_text_width_cache[$context.val()];
 	if (width !== undefined) {
 		return width;
 	}
 	else {
-		var $content = context.val().replace(' ', '_').split("\n");
-		var $width = $('<span>');
-		$width.append($content.join('<br>')).appendTo('body');
-		copyCssPropertyTo(context, $width);
+		var content = getTextContentAsArray($context);
+		var $width  = $('<span>');
+		$width.append(content.join('<br>')).appendTo('body');
+		copyCssPropertyTo($context, $width);
 		$width.css('position', 'absolute');
-		var $pos = context.position();
+		var $pos = $context.position();
 		$width.css('top', $pos.top);
 		$width.css('left', $pos.left);
-		width = $width.width() + extraWidth;
-		var $parent = context.parent();
+		width = $width.width() + extra_width;
+		var $parent  = $context.parent();
 		var $margins = parseInt($parent.css('margin-right'))
 			+ parseInt($parent.css('padding-right'))
-			+ parseInt(context.css('margin-right'));
+			+ parseInt($context.css('margin-right'));
 		var ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()));
 		ending_right_parent += $margins;
-		var ending_right = ($(window).width() - ($width.offset().left + $width.outerWidth()) - extraWidth);
+		var ending_right = $(window).width() - ($width.offset().left + $width.outerWidth())
+			- extra_width;
 		if (ending_right < ending_right_parent) {
 			width = width - (ending_right_parent - ending_right);
 		}
 		$width.remove();
-		get_text_width_cache[context.val()] = width;
+		get_text_width_cache[$context.val()] = width;
 		return width;
 	}
 };
