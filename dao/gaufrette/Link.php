@@ -239,6 +239,12 @@ class Link extends Identifier_Map
 		$prefix = $this->needPrefix($object, $property_name)
 			? $this->getPrefix($object, $property_name) . SL
 			: '';
+		if (isA($object, Has_File::class)) {
+			/** @var $object Has_File */
+			if ($storage_name = $object->storage_name) {
+				return $prefix . $storage_name;
+			}
+		}
 		return $prefix . $this->getObjectIdentifier($object) . '-' . $property_name;
 	}
 
