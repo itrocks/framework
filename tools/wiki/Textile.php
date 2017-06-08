@@ -12,6 +12,14 @@ use Netcarver\Textile\Parser;
 class Textile extends Parser
 {
 
+	//-------------------------------------------------------------------------------------- $in_code
+	/**
+	 * true when parsing inside <code>...</code>
+	 *
+	 * @var boolean
+	 */
+	protected $in_code = false;
+
 	//----------------------------------------------------------------------------------- $span_depth
 	/**
 	 * This overrides the Textile::$span_depth property, which declaration has been forgotten
@@ -43,6 +51,34 @@ class Textile extends Parser
 			'~'  => 'sub',
 			'^'  => 'sup',
 		];
+	}
+
+	//------------------------------------------------------------------------------------------ code
+	/**
+	 * Declare we are parsing into code
+	 *
+	 * @param $text string The input
+	 * @return string Processed text
+	 */
+	protected function code($text)
+	{
+		$this->in_code = true;
+		$result = parent::code($text);
+		$this->in_code = false;
+		return $result;
+	}
+
+	//------------------------------------------------------------------------------------ encodeHTML
+	/**
+	 * When parsing into code, do not encode HTML
+	 *
+	 * @param $string string The string to encode
+	 * @param $quotes boolean Encode quotes
+	 * @return string Encoded string
+	 */
+	protected function encodeHTML($string, $quotes = true)
+	{
+		return $this->in_code ? $string : parent::encodeHTML($string, $quotes);
 	}
 
 	//----------------------------------------------------------------------------------------- parse
