@@ -95,6 +95,7 @@ class Output_Settings extends Custom_Settings
 	 * @param $tab_name            string
 	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
+	 * @return Property
 	 */
 	public function addProperty(
 	 	$add_property_path, $tab_name, $where = 'after', $where_property_path = null
@@ -124,6 +125,7 @@ class Output_Settings extends Custom_Settings
 		}
 
 		$this->properties = $properties;
+		return $add_property;
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup
