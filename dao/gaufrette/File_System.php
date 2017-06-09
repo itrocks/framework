@@ -45,8 +45,10 @@ class File_System
 						$adapter_arguments[$key] = $reflection_parameter->getDefaultValue();
 					}
 					else {
-						throw new Exception('Configuration error for gaufrette adapter : ' . $adapter_class
-							. $key . ' is a mandatory argument. You should define a value for it.');
+						throw new Exception(
+							'Configuration error for gaufrette adapter : ' . $adapter_class
+							. DOT . $key . ' is a mandatory argument. You should define a value for it.'
+						);
 					}
 				}
 			}

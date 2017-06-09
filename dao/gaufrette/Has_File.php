@@ -53,8 +53,9 @@ trait Has_File
 	 */
 	private function setStorageName()
 	{
-		throw new \Exception('File_Link::$storage_name should only be computed with @getter'
-			. ' and return unique value');
+		throw new Exception(
+			'File_Link::$storage_name should only be computed with @getter and return unique value'
+		);
 	}
 
 }

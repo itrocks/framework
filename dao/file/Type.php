@@ -19,11 +19,11 @@ class Type
 	 */
 	private static $extensions_types;
 
-	//----------------------------------------------------------------------------- $types_extensions
+	//-------------------------------------------------------------------------------------- $subtype
 	/**
-	 * @var string[] key is the full text file type, value is the file extension
+	 * @var string
 	 */
-	private static $types_extensions;
+	private $subtype;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
@@ -31,11 +31,11 @@ class Type
 	 */
 	private $type;
 
-	//-------------------------------------------------------------------------------------- $subtype
+	//----------------------------------------------------------------------------- $types_extensions
 	/**
-	 * @var string
+	 * @var string[] key is the full text file type, value is the file extension
 	 */
-	private $subtype;
+	private static $types_extensions;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -72,7 +72,7 @@ class Type
 	 */
 	public static function contentToTypeString($content)
 	{
-		return ((new finfo(FILEINFO_MIME_TYPE))->buffer($content)) ?: null;
+		return (new finfo(FILEINFO_MIME_TYPE))->buffer($content) ?: null;
 	}
 
 	//---------------------------------------------------------------------------------------- equals
@@ -109,9 +109,7 @@ class Type
 	{
 		if (!isset(self::$extensions_types)) {
 			// source : http://www.iana.org/assignments/media-types/media-types.xhtml
-			/**
-			 * BEWARE : for same values, the last key will give the extension got from type
-			 */
+			// BEWARE : for same values, the last key will give the extension got from type
 			self::$extensions_types = [
 				'bmp'  => 'image/bmp',
 				'bz2'  => 'application/x-bz2',

@@ -330,8 +330,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns true if date time is strictly after another date time
 	 *
 	 * If the given date time is null, then it is considered :
-	 * - as the littlest possible date if $null_is_late is false : method will return true
-	 * - as the highest possible date if $null_is_late is true : method will return false
+	 * - as the littlest possible date if $null_is_late is false : will return true
+	 * - as the highest possible date if $null_is_late is true : will return false
 	 *
 	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean
@@ -347,8 +347,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns true if date time is after or equal another date time
 	 *
 	 * If the given date time is null, then it is considered :
-	 * - as the littlest possible date if $null_is_late is false : method will return true
-	 * - as the highest possible date if $null_is_late is true : method will return false
+	 * - as the littlest possible date if $null_is_late is false : will return true
+	 * - as the highest possible date if $null_is_late is true : will return false
 	 *
 	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean
@@ -364,8 +364,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns true if date time is strictly before another date time
 	 *
 	 * If the given date time is null, then it is considered :
-	 * - as the littlest possible date if $null_is_late is false : method will return false
-	 * - as the highest possible date if $null_is_late is true : method will return true
+	 * - as the littlest possible date if $null_is_late is false : will return false
+	 * - as the highest possible date if $null_is_late is true : will return true
 	 *
 	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean
@@ -381,8 +381,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns true if date time is before or equal another date time
 	 *
 	 * If the given date time is null, then it is considered :
-	 * - as the littlest possible date if $null_is_late is false : method will return false
-	 * - as the highest possible date if $null_is_late is true : method will return true
+	 * - as the littlest possible date if $null_is_late is false : will return false
+	 * - as the highest possible date if $null_is_late is true : will return true
 	 *
 	 * @param $date_time    Date_Time|string|null
 	 * @param $null_is_late boolean

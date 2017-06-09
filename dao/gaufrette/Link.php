@@ -54,14 +54,6 @@ class Link extends Identifier_Map
 	 */
 	const DEFAULT_ADAPTER = 'default';
 
-	//--------------------------------------------------------------------------------- $file_systems
-	/**
-	 * Instances of File_System used by the link
-	 *
-	 * @var File_System[] key is class name or self::DEFAULT_ADAPTER
-	 */
-	private $file_systems = [];
-
 	//-------------------------------------------------------------------------------- $configuration
 	/**
 	 * Configuration of the link
@@ -69,6 +61,14 @@ class Link extends Identifier_Map
 	 * @var array
 	 */
 	private $configuration = [];
+
+	//--------------------------------------------------------------------------------- $file_systems
+	/**
+	 * Instances of File_System used by the link
+	 *
+	 * @var File_System[] key is class name or self::DEFAULT_ADAPTER
+	 */
+	private $file_systems = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -89,25 +89,6 @@ class Link extends Identifier_Map
 		}
 	}
 
-	//----------------------------------------------------------------------------------- adapterName
-	/**
-	 * Get the configured adapter name to use for object
-	 *
-	 * @param $object object
-	 * @return string
-	 */
-	private function adapterName($object)
-	{
-		$class_name = get_class($object);
-		$source_class_name = Builder\Class_Builder::isBuilt($class_name)
-			? Builder\Class_Builder::sourceClassName($class_name) : $class_name;
-
-		if (isset($this->configuration[self::ADAPTERS][$source_class_name])) {
-			return $source_class_name;
-		}
-		return self::DEFAULT_ADAPTER;
-	}
-
 	//-------------------------------------------------------------------------- adapterConfiguration
 	/**
 	 * Get the configuration for given adapter name
@@ -121,6 +102,26 @@ class Link extends Identifier_Map
 			return $this->configuration[self::ADAPTERS][$adapter_name];
 		}
 		return $this->configuration[self::DEFAULT_ADAPTER];
+	}
+
+	//----------------------------------------------------------------------------------- adapterName
+	/**
+	 * Get the configured adapter name to use for object
+	 *
+	 * @param $object object
+	 * @return string
+	 */
+	private function adapterName($object)
+	{
+		$class_name = get_class($object);
+		$source_class_name = Builder\Class_Builder::isBuilt($class_name)
+			? Builder\Class_Builder::sourceClassName($class_name)
+			: $class_name;
+
+		if (isset($this->configuration[self::ADAPTERS][$source_class_name])) {
+			return $source_class_name;
+		}
+		return self::DEFAULT_ADAPTER;
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -150,22 +151,6 @@ class Link extends Identifier_Map
 		return false;
 	}
 
-	//------------------------------------------------------------------------------------- getPrefix
-	/**
-	 * Get the prefix for object and property to avoid duplicate names between classes
-	 *
-	 * @param $object        object object from which to get the value of the property
-	 * @param $property_name string the name of the property
-	 * @return string
-	 */
-	private function getPrefix(
-		$object,
-		/** @noinspection PhpUnusedParameterInspection */$property_name
-	)
-	{
-		return $this->storeNameOf(get_class($object));
-	}
-
 	//---------------------------------------------------------------------------------------- delete
 	/**
 	 * Delete an object from data source
@@ -189,12 +174,26 @@ class Link extends Identifier_Map
 	 */
 	private function getFileSystemFor($object)
 	{
-		$adapter_name   = $this->adapterName($object);
+		$adapter_name = $this->adapterName($object);
 		if (!isset($this->file_systems[$adapter_name])) {
-			$adapter_config = $this->adapterConfiguration($adapter_name);
+			$adapter_config                    = $this->adapterConfiguration($adapter_name);
 			$this->file_systems[$adapter_name] = new File_System($adapter_name, $adapter_config);
 		}
 		return $this->file_systems[$adapter_name];
+	}
+
+	//------------------------------------------------------------------------------------- getPrefix
+	/**
+	 * Get the prefix for object and property to avoid duplicate names between classes
+	 *
+	 * @param $object        object object from which to get the value of the property
+	 * @param $property_name string the name of the property
+	 * @return string
+	 */
+	private function getPrefix(
+		$object, /** @noinspection PhpUnusedParameterInspection */ $property_name
+	) {
+		return $this->storeNameOf(get_class($object));
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
@@ -221,10 +220,8 @@ class Link extends Identifier_Map
 	 * @return boolean
 	 */
 	private function needPrefix(
-		$object,
-		/** @noinspection PhpUnusedParameterInspection */$property_name
-	)
-	{
+		$object, /** @noinspection PhpUnusedParameterInspection */ $property_name
+	) {
 		return ($this->adapterName($object) == self::DEFAULT_ADAPTER);
 	}
 
