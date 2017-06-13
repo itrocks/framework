@@ -39,8 +39,10 @@ class Around_Method extends Method_Joinpoint
 	 */
 	public function process($args = null)
 	{
+		$class_name = is_string($this->pointcut[0]) ? $this->pointcut[0] : get_class($this->pointcut[0]);
+
 		if (
-			($this->class_name        == get_class($this->pointcut[0]))
+			($this->class_name        == $class_name)
 			&& ($this->process_method == $this->pointcut[1])
 		) {
 			$method = (new ReflectionMethod(get_parent_class($this->class_name), $this->process_method));
