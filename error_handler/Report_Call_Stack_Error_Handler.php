@@ -105,6 +105,42 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		return $result . LF;
 	}
 
+	//---------------------------------------------------------------------------- stackLineArguments
+	/**
+	 * @param $line Line
+	 * @return string
+	 */
+	private function stackLineArguments(Line $line)
+	{
+		$arguments = [];
+		foreach ($line->arguments as $argument) {
+			if (is_object($argument)) {
+				$identifier = Dao::getObjectIdentifier($argument);
+				if (method_exists($argument, '__toString')) {
+					$identifier = (isset($identifier) ? ($identifier . '=') : '') . strval($argument);
+				}
+				$argument = get_class($argument) . (isset($identifier) ? ('::' . $identifier) : '');
+			}
+			elseif (is_null($argument)) {
+				$argument = 'null';
+			}
+			elseif ($argument === false) {
+				$argument = 'false';
+			}
+			elseif ($argument === true) {
+				$argument = 'true';
+			}
+			elseif (is_array($argument)) {
+				$argument = 'array:' . (count($argument) ?: '-');
+			}
+			else {
+				$argument = strval($argument);
+			}
+			$arguments[] = $argument;
+		}
+		return join(', ', $arguments);
+	}
+
 	//--------------------------------------------------------------------------- stackLinesTableRows
 	/**
 	 * @param $lines Line[]|string
@@ -124,16 +160,22 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		}
 		else {
 			$result = [
-				'<tr><th>#</th><th>class</th><th>method</th><th>file</th><th>line</th>'
+				'<tr><th>#</th><th>class</th><th>method</th><th>arguments</th></tg><th>file</th><th>line</th>'
 			];
 			foreach ($lines as $line) {
-				$result[] = '<tr>'
-					. '<td>' . ++$lines_count . '</td>'
-					. '<td>' . htmlentities($line->class, ENT_QUOTES|ENT_HTML5)    . '</td>'
-					. '<td>' . htmlentities($line->function, ENT_QUOTES|ENT_HTML5) . '</td>'
-					. '<td>' . htmlentities($line->file, ENT_QUOTES|ENT_HTML5)     . '</td>'
-					. '<td>' . htmlentities($line->line, ENT_QUOTES|ENT_HTML5)     . '</td>'
-					. '</tr>';
+				$result_line ='<tr><td>' . ++$lines_count . '</td>';
+				$line_data = [
+					$line->class,
+					$line->function,
+					$this->stackLineArguments($line),
+					$line->file,
+					$line->line
+				];
+				foreach ($line_data as $data) {
+					$result_line .= '<td>' . htmlentities($data, ENT_QUOTES|ENT_HTML5) . '</td>';
+				}
+				$result_line .= '</tr>';
+				$result[] = $result_line;
 			}
 		}
 		return join(LF, $result);
