@@ -175,7 +175,15 @@ class Application_Updater implements Configurable, Serializable
 	private function confirmFullUpdateView()
 	{
 		// Does not use View, as it is not ready and this may crash if called at this step
-		return file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html');
+		$html = file_get_contents(__DIR__ . SL . 'Application_Updater_confirmFullUpdate.html');
+		$html = strReplace(
+			[
+				'{memory_limit}' => ini_get('memory_limit'),
+				'{time_limit}'   => ini_get('max_execution_time')
+			],
+			$html
+		);
+		return $html;
 	}
 
 	//------------------------------------------------------------------------------------------ done
