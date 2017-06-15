@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Address;
 /**
  * A Has_Name Person which $name is always replaced by "$first_name $last_name"
  *
- * @override civility   @setter setName
- * @override first_name @setter setName
- * @override last_name  @setter setName
+ * @override civility   @impacts name @setter setName
+ * @override first_name @impacts name @setter setName
+ * @override last_name  @impacts name @setter setName
  */
 trait Person_Replaces_Name
 {

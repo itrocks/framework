@@ -24,6 +24,7 @@ class File
 	/**
 	 * @binary
 	 * @getter getContent
+	 * @impacts hash, updated_on
 	 * @max_length 4000000000
 	 * @setter setContent
 	 * @var string

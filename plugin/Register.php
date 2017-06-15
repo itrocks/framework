@@ -18,7 +18,8 @@ class Register
 	//-------------------------------------------------------------------------------- $configuration
 	/**
 	 * @getter getConfiguration
-	 * @setter setConfiguration
+	 * @impacts get
+	 * @setter
 	 * @var array|string
 	 */
 	public $configuration;

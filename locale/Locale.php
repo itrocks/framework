@@ -41,6 +41,7 @@ class Locale implements Configurable
 
 	//------------------------------------------------------------------------------------- $language
 	/**
+	 * @impacts translations
 	 * @setter setLanguage
 	 * @var string
 	 */
