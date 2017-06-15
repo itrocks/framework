@@ -77,6 +77,31 @@ class Write extends Data_Link\Write
 	 */
 	protected $spread_options;
 
+	//------------------------------------------------------------------------- addImpactedProperties
+	/**
+	 * For each property in only : if there are impacted properties using @impact : add them
+	 */
+	protected function addImpactedProperties()
+	{
+		$class_name = get_class($this->object);
+		do {
+			$impacted = false;
+			foreach ($this->only as $property_name) {
+				$property           = new Reflection_Property($class_name, $property_name);
+				$impact_annotations = $property->getListAnnotations('impacts');
+				foreach ($impact_annotations as $impact_annotation) {
+					foreach ($impact_annotation->values() as $impacted_property_name) {
+						if (!in_array($impacted_property_name, $this->only)) {
+							$this->only[] = $impacted_property_name;
+							$impacted     = true;
+						}
+					}
+				}
+			}
+		}
+		while ($impacted);
+	}
+
 	//------------------------------------------------------------------------------------- callEvent
 	/**
 	 * Call event
@@ -119,6 +144,7 @@ class Write extends Data_Link\Write
 				$this->only = isset($this->only)
 					? array_merge($this->only, $option->properties)
 					: $option->properties;
+				$this->addImpactedProperties();
 			}
 			if ($option instanceof Option\Spreadable) {
 				$this->spread_options[] = $option;
