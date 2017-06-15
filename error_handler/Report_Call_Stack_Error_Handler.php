@@ -194,7 +194,8 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$result .= '#' . ++$lines_count
 				. SP . ($line->file ? ($line->file . SP) : '')
 				. ($line->line ? ('(' . $line->line . '):') : '')
-				. SP . ($line->class ? ($line->class . '->') : '') . $line->function . '()'
+				. SP . ($line->class ? ($line->class . '->') : '') . $line->function
+				. '(' . $this->stackLineArguments($line) . ')'
 				. LF;
 		}
 		return $result;
