@@ -83,8 +83,7 @@ class Write extends Data_Link\Write
 	 */
 	protected function addImpactedProperties()
 	{
-		$class_name              = get_class($this->object);
-		$impacted_property_names = [];
+		$class_name = get_class($this->object);
 		do {
 			$impacted = false;
 			foreach ($this->only as $property_name) {
@@ -93,23 +92,14 @@ class Write extends Data_Link\Write
 				foreach ($impact_annotations as $impact_annotation) {
 					foreach ($impact_annotation->values() as $impacted_property_name) {
 						if (!in_array($impacted_property_name, $this->only)) {
-							$impacted                  = true;
-							$impacted_property_names[] = $impacted_property_name;
-							$this->only[]              = $impacted_property_name;
+							$impacted     = true;
+							$this->only[] = $impacted_property_name;
 						}
 					}
 				}
 			}
 		}
 		while ($impacted);
-		// impacted properties propagate, but does not stay into only if static or @store false
-		foreach ($impacted_property_names as $impacted_property_name) {
-			$impacted_property = new Reflection_Property($class_name, $impacted_property_name);
-			$store_annotation  = Store_Annotation::of($impacted_property);
-			if ($impacted_property->isStatic() || $store_annotation->isFalse()) {
-				unset($this->only[array_search($impacted_property_name, $this->only)]);
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------- callEvent
