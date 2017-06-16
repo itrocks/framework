@@ -9,6 +9,14 @@ use ITRocks\Framework\Dao;
 class Line
 {
 
+	//-------------------------------------------------------------------------- $max_argument_length
+	/**
+	 * Max length for an argument. set this to 0 for 'infinite'
+	 *
+	 * @var integer
+	 */
+	static public $max_argument_length = 100;
+
 	//----------------------------------------------------------------------------------------- $args
 	/**
 	 * @var array
@@ -65,7 +73,9 @@ class Line
 	{
 		$arguments = [];
 		foreach ($this->arguments as $argument) {
-			$arguments[] = $this->dumpArgument($argument, 100, 100);
+			$arguments[] = $this->dumpArgument(
+				$argument, static::$max_argument_length, static::$max_argument_length
+			);
 		}
 		return join(',', $arguments);
 	}
@@ -101,12 +111,12 @@ class Line
 		else {
 			$dump = strval($argument);
 		}
-		if (strlen($dump) > $max_length) {
+		if ($max_length && (strlen($dump) > $max_length)) {
 			$dump = is_array($argument)
 				? (substr($dump, 0, $max_length - 3) . '..]')
 				: (substr($dump, 0, $max_length - 2) . '..');
 		}
-		return $dump;
+		return str_replace([CR, LF, TAB], ['\\r', '\\n', '\\t'], $dump);
 	}
 
 	//------------------------------------------------------------------------------------- dumpArray
@@ -147,10 +157,12 @@ class Line
 			elseif ($counter >= 0) {
 				$counter++;
 			}
-			$append       = $this->dumpArgument($element, $max_length, $max_array_length - $dump_length);
+			$append = $this->dumpArgument(
+				$element, $max_length, $max_array_length ? ($max_array_length - $dump_length) : 0
+			);
 			$dump_length += strlen($append);
 			$dump        .= $append;
-			if ($dump_length > $max_array_length) {
+			if ($max_array_length && ($dump_length > $max_array_length)) {
 				break;
 			}
 		}
