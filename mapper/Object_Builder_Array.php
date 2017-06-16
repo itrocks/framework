@@ -661,23 +661,19 @@ class Object_Builder_Array
 	{
 		if (!isset($object)) {
 			if (isset($array['id']) && $array['id']) {
-				if (!$object = Dao::read($array['id'], $this->class->name)) {
-					trigger_error(
-						'Object not found ' . $this->class->name . '::' . $array['id'], E_USER_WARNING
-					);
+				$object = Dao::read($array['id'], $this->class->name);
+				// if the object has been removed from the database : we will create a new one
+				if (!$object) {
+					unset($array['id']);
 				}
 			}
-			else {
+			if (!(isset($array['id']) && $array['id'])) {
 				foreach ($this->class->getAnnotations('before_build_array') as $before) {
 					call_user_func_array([$this->class->name, $before->value], [&$array]);
 				}
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
-					if (!$object = $this->class->newInstance()) {
-						trigger_error(
-							'New object could not be instantiated ' . $this->class->name, E_USER_WARNING
-						);
-					}
+					$object = $this->class->newInstance();
 				}
 			}
 			if (isset($array['id'])) {
