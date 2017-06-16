@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools\Call_Stack;
 
+use ITRocks\Framework\Dao;
+
 /**
  * Call stack line
  */
@@ -54,6 +56,107 @@ class Line
 	 * @var string
 	 */
 	public $type;
+
+	//------------------------------------------------------------------------------- argumentsAsText
+	/**
+	 * @return string
+	 */
+	public function argumentsAsText()
+	{
+		$arguments = [];
+		foreach ($this->arguments as $argument) {
+			$arguments[] = $this->dumpArgument($argument, 100, 100);
+		}
+		return join(',', $arguments);
+	}
+
+	//---------------------------------------------------------------------------------- dumpArgument
+	/**
+	 * @param $argument         mixed
+	 * @param $max_length       integer
+	 * @param $max_array_length integer
+	 * @return string
+	 */
+	protected function dumpArgument($argument, $max_length, $max_array_length)
+	{
+		if (is_object($argument)) {
+			$identifier = Dao::getObjectIdentifier($argument);
+			if (method_exists($argument, '__toString')) {
+				$identifier = (isset($identifier) ? ($identifier . '=') : '') . strval($argument);
+			}
+			$dump = get_class($argument) . (isset($identifier) ? ('::' . $identifier) : '');
+		}
+		elseif (is_null($argument)) {
+			$dump = 'null';
+		}
+		elseif ($argument === false) {
+			$dump = 'false';
+		}
+		elseif ($argument === true) {
+			$dump = 'true';
+		}
+		elseif (is_array($argument)) {
+			$dump = $this->dumpArray($argument, $max_length, $max_array_length);
+		}
+		else {
+			$dump = strval($argument);
+		}
+		if (strlen($dump) > $max_length) {
+			$dump = is_array($argument)
+				? (substr($dump, 0, $max_length - 3) . '..]')
+				: (substr($dump, 0, $max_length - 2) . '..');
+		}
+		return $dump;
+	}
+
+	//------------------------------------------------------------------------------------- dumpArray
+	/**
+	 * @param $array            array
+	 * @param $max_length       integer
+	 * @param $max_array_length integer
+	 * @return string
+	 */
+	public function dumpArray(array $array, $max_length, $max_array_length)
+	{
+		$array_count = count($array);
+		if (!$array_count) {
+			return '[]';
+		}
+		$counter = 0;
+		if ($array_count == 1) {
+			$dump        = '[';
+			$dump_length = 2;
+		}
+		else {
+			$dump        = '[' . $array_count . ':';
+			$dump_length = 3 + strlen($array_count);
+		}
+		foreach ($array as $key => $element) {
+			if ($counter) {
+				$dump        .= ',';
+				$dump_length ++;
+			}
+			if ($key != $counter) {
+				$counter = -1;
+				$dump   .= $key . '=>';
+				if ($key === $element) {
+					$dump   .= '=';
+					$element = '';
+				}
+			}
+			elseif ($counter >= 0) {
+				$counter++;
+			}
+			$append       = $this->dumpArgument($element, $max_length, $max_array_length - $dump_length);
+			$dump_length += strlen($append);
+			$dump        .= $append;
+			if ($dump_length > $max_array_length) {
+				break;
+			}
+		}
+		$dump .= ']';
+		return $dump;
+	}
 
 	//----------------------------------------------------------------------- fromDebugBackTraceArray
 	/**

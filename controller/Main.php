@@ -19,6 +19,7 @@ use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Activable;
 use ITRocks\Framework\Plugin\Manager;
 use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
@@ -358,8 +359,7 @@ class Main
 				$exception->getCode(), $exception->getMessage(),
 				$exception->getFile(), $exception->getLine()
 				);
-			$handler = new Report_Call_Stack_Error_Handler();
-			$handler->trace = 'Exception stack trace:' . LF . $exception->getTraceAsString() . LF;
+			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
 			$handler->handle($handled_error);
 		}
 		$this->running = false;
