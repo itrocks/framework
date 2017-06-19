@@ -235,7 +235,7 @@ class Html_Template extends Template
 					$short_form_id = strtolower($short_class) . '_edit';
 					$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
 					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
-						. (isset($data_id) ? SL . $data_id : '') . '/write');
+						. (isset($data_id) ? SL . $data_id : '') . SL . Feature::F_WRITE);
 					$attributes    = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
 					$attributes    = ' action=' . DQ . $action . DQ
 						. $attributes
