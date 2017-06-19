@@ -37,9 +37,17 @@ class Import_Execute_Controller implements Default_Feature_Controller
 		foreach ($import->worksheets as $worksheet) {
 			$array = $worksheet->file->getCsvContent();
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);
-			$import_array->importArray($array);
+			try {
+				$import_array->importArray($array);
+			}
+			catch (Import_Exception $exception) {
+				$parameters['detail'] = $exception->getMessage();
+				$parameters[Template::TEMPLATE] = 'importError';
+			}
 		}
-		$parameters[Template::TEMPLATE] = 'importDone';
+		if (!isset($parameters[Template::TEMPLATE])) {
+			$parameters[Template::TEMPLATE] = 'importDone';
+		}
 		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
 	}
 
