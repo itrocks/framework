@@ -225,9 +225,7 @@ class Html_Template extends Template
 			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
 				$classes = array_flip(explode(SP, mParse($inside, 'class=' . DQ, DQ)));
 				if (isset($classes['edit']) && isset($classes['window'])) {
-					if (strpos($inside, 'data-id=')) {
-						$data_id = mParse($inside, 'data-id=' . DQ, DQ);
-					}
+					$identifier    = Dao::getObjectIdentifier(reset($this->objects));
 					$inside_j      = $parser->closingTag('section', $inside_i, Parser::BEFORE);
 					$outside_j     = $inside_j + 10;
 					$class_name    = get_class(reset($this->objects));
@@ -235,7 +233,7 @@ class Html_Template extends Template
 					$short_form_id = strtolower($short_class) . '_edit';
 					$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
 					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
-						. (isset($data_id) ? SL . $data_id : '') . SL . Feature::F_WRITE);
+						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
 					$attributes    = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
 					$attributes    = ' action=' . DQ . $action . DQ
 						. $attributes
