@@ -50,7 +50,7 @@ class Replace extends Option
 			if (is_object($value)) {
 				$value = ($value instanceof Date_Time) ? Loc::dateToLocale($value) : strval($value);
 			}
-			$translation = str_replace('$' . $key, $value, $translation);
+			$translation = str_replace([':' . $key, '$' . $key], $value, $translation);
 		}
 		return parent::afterTranslation($translation);
 	}
