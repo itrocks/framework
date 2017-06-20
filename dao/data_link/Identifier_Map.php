@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -28,6 +30,27 @@ abstract class Identifier_Map extends Data_Link
 	{
 		if (isset($object->id)) {
 			unset($object->id);
+		}
+		// disconnect component objects, including collection elements
+		foreach ((new Reflection_Class($object))->getProperties([T_EXTENDS, T_USE]) as $property) {
+			$property_name = $property->name;
+			if (
+				(
+					Link_Annotation::of($property)->isCollection()
+					|| $property->getAnnotation('component')->value
+				)
+				&& !empty($object->$property_name)
+			) {
+				$value = $object->$property_name;
+				if (is_array($value)) {
+					foreach ($value as $element) {
+						$this->disconnect($element);
+					}
+				}
+				else {
+					$this->disconnect($value);
+				}
+			}
 		}
 	}
 
