@@ -27,7 +27,9 @@ class Import_Execute_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		upgradeMemoryLimit('6G');
 		upgradeTimeLimit(900);
+
 		$import = Import_Builder_Form::build(
 			$form, Session::current()->get(Files::class)->files
 		);
