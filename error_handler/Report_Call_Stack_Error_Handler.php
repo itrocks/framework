@@ -96,14 +96,15 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
-			$f     = fopen($log_file, 'ab');
-			$date  = '[' . date('Y-m-d H:i:s') . ']' . SP;
+			$call_stack = $this->call_stack ?: new Call_Stack();
+			$f          = fopen($log_file, 'ab');
+			$date       = '[' . date('Y-m-d H:i:s') . ']' . SP;
 			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
 			fputs($f, (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI') . LF);
 			fputs($f, (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] . LF : ''));
 			fputs($f, $this->processIdentification());
 			fputs($f, $this->formData());
-			fputs($f, $this->call_stack->asText());
+			fputs($f, $call_stack->asText());
 			fputs($f, LF);
 			fclose($f);
 		}

@@ -37,6 +37,7 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Setting\Buttons;
 use ITRocks\Framework\Setting\Custom_Settings;
 use ITRocks\Framework\Setting\Custom_Settings_Controller;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Default_List_Data;
@@ -543,7 +544,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					$exception->getFile(),
 					$exception->getLine()
 				);
-				$handler = new Report_Call_Stack_Error_Handler();
+				$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
 				$handler->logError($handled);
 			}
 		}
