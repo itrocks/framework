@@ -9,7 +9,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
 /**
- * Log class stores logs infos
+ * Log class stores logs information
  *
  * @business
  * @representative start, uri
@@ -77,6 +77,15 @@ class Entry
 	 * @var string
 	 */
 	public $form;
+
+	//--------------------------------------------------------------------------------- $memory_usage
+	/**
+	 * Memory peak usage in MB
+	 *
+	 * @max_length 7
+	 * @var integer
+	 */
+	public $memory_usage;
 
 	//------------------------------------------------------------------------------ $mysql_thread_id
 	/**
@@ -177,7 +186,7 @@ class Entry
 					SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
 				)[0];
 				$this->user = Dao::read(
-					(strcasecmp($process, '/usr/sbin/CRON') ? self::CONSOLE_USER : self::CRON_USER),
+					strcasecmp($process, '/usr/sbin/CRON') ? self::CONSOLE_USER : self::CRON_USER,
 					User::class
 				);
 			}
@@ -207,8 +216,8 @@ class Entry
 	 */
 	private function serialize($array)
 	{
-		$str = json_encode($array);
-		return ($str === '[]') ? '' : $str;
+		$json = json_encode($array);
+		return ($json === '[]') ? '' : $json;
 	}
 
 	//------------------------------------------------------------------------------------------ stop
@@ -216,6 +225,7 @@ class Entry
 	{
 		$this->error_code = Error_Code::OK;
 		$this->duration   = microtime(true) - $this->duration_start;
+		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
 		$this->stop       = new Date_Time();
 	}
 

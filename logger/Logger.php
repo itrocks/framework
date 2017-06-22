@@ -87,7 +87,7 @@ class Logger implements Registerable
 		$this->anti_loop--;
 		if (!$this->anti_loop) {
 			$this->log_entry->stop();
-			Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'stop'));
+			Dao::write($this->log_entry, Dao::only('duration', 'error_code', 'memory_usage', 'stop'));
 		}
 	}
 
