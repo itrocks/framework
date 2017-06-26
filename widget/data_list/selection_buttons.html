@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>{title}</title>
+	<script type="text/javascript" src="../../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script type="text/javascript"> path = "../../"; </script>
+	<script type="text/javascript" src="../../js/all.js"></script>
+	<style type="text/css">
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+<!--use ITRocks\Framework\Html\Engine-->
+	<input type="hidden" name="excluded_selection">
+	<input type="hidden" name="select_all" value="0">
+	<input type="hidden" name="selection">
+
+	<ul class="selection actions">
+		<!--less_twenty?--><li class="less twenty growth"><a class="" href="/{@class.path}/{@feature}?less=20" target="#main" title="|Display the standard lines count|">|Less lines|</a></li><!--less_twenty?-->
+		<!--more_hundred?--><li class="more hundred growth"><a href="/{@class.path}/{@feature}?more=100" target="#main" title="|Display more lines|">|More lines|</a></li><!--more_hundred?-->
+		<!--more_thousand?--><li class="more thousand growth"><a href="/{@class.path}/{@feature}?more=1000" target="#main" title="|Display the maximal lines count|">|Max lines|</a></li><!--more_thousand?-->
+		<li class="{selected} select_count">
+			<a class="objects" href="/{@class.path}/{@feature}?view=selection">x{selected_lines_count}</a>
+			<ul>
+				<li><a class="select_visible" href="/{@class.path}/{@feature}?select=visible">|add the| {displayed_lines_count} |visible lines|</a></li>
+				<li><a class="deselect_visible" href="/{@class.path}/{@feature}?select=deselect_visible">|remove the| {displayed_lines_count} |visible lines|</a></li>
+				<li><a class="select_all" data-count='{rows_count}' href="/{@class.path}/{@feature}?select=all">|select all| {rows_count} |matching lines|</a></li>
+				<li><a class="deselect_all" href="/{@class.path}/{@feature}?select=none">|deselect all lines|</a></li>
+			</ul>
+		</li>
+		<!--selection_buttons-->
+		<li class="{feature.lower}"><a class="submit {class?}" href="{link}" target="{?target}">|{caption}|</a>
+			<!--sub_buttons?-->
+			<ul>
+				<!--sub_buttons-->
+				<li class="{feature.lower}"><a class="submit {class?}" href="{link}" target="{?target}">|{caption}|</a></li>
+				<!--sub_buttons-->
+			</ul>
+			<!--sub_buttons?-->
+		</li>
+		<!--sample-->
+		<li class="new"><a class="other classes" href="/Class/new" target="#main">New</a></li>
+		<!--selection_buttons-->
+		<li class="rows_count">|!{rows_count}! ¦lines¦ match your search|<!--displayed_lines_count--><br>|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|<!--displayed_lines_count--></li>
+	</ul>
+
+<!--END-->
+</body>
+</html>
