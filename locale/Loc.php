@@ -1,7 +1,8 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
-use Reflector;
+use ITRocks\Framework\Locale\Option\Context;
+use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Import\Import_Array;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
@@ -15,6 +16,7 @@ use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use Reflector;
 
 /**
  * Locale plugin concentrates locale translation / formatting features into simple static calls
@@ -109,6 +111,18 @@ class Loc implements Registerable
 			}
 			$value = join(BS, $value);
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- context
+	/**
+	 * Gets a context option for the translation
+	 *
+	 * @param $context string
+	 * @return Context
+	 */
+	public static function context($context)
+	{
+		return new Context($context);
 	}
 
 	//------------------------------------------------------------------------------------------ date
@@ -355,6 +369,16 @@ class Loc implements Registerable
 			[Import_Array::class, 'getClassNameFromValue'],
 			[$this, 'classNameDisplayReverse']
 		);
+	}
+
+
+	/**
+	 * @param $replace string[] key is the key for the replacement, value is the replacement value
+	 * @return Replace
+	 */
+	public static function replace(array $replace)
+	{
+		return new Replace($replace);
 	}
 
 	//------------------------------------------------------------------------------------------- rtr
