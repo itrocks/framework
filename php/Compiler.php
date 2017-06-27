@@ -119,7 +119,7 @@ class Compiler extends Cache implements
 	public function __construct($configuration = [])
 	{
 		$this->full        = isset($_GET['Z']);
-		$this->text_output = new Text_Output(isset($_GET['verbose']) ? !$_GET['verbose'] : true);
+		$this->text_output = new Text_Output(!isset($_POST['verbose']));
 
 		foreach ($configuration as $wave_number => $compilers) {
 			foreach ($compilers as $class_name) {
@@ -606,7 +606,7 @@ class Compiler extends Cache implements
 					: Builder::create($class_name);
 			}
 		}
-		$this->text_output = new Text_Output(isset($_GET['verbose']) ? !$_GET['verbose'] : true);
+		$this->text_output = new Text_Output(!isset($_POST['verbose']));
 	}
 
 }
