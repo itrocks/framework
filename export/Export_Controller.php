@@ -75,7 +75,8 @@ class Export_Controller implements Default_Feature_Controller
 		/** @var $application Application */
 		$application = Session::current()->get(Application::class);
 		$tmp = $application->getTemporaryFilesPath();
-		$csv_file_name = $tmp . SL . Names::classToProperty($class_names) . '.csv';
+		$short_class = Names::classToProperty($class_names);
+		$csv_file_name = tempnam($tmp, $short_class . '_') . '.csv';
 		$f = fopen($csv_file_name, 'w');
 		// write first line (properties path)
 		$row = [];
@@ -122,7 +123,7 @@ class Export_Controller implements Default_Feature_Controller
 		$output = file_get_contents($xlsx_file_name);
 		unlink($xlsx_file_name);
 		unlink($csv_file_name);
-		Files::downloadOutput(rLastParse($xlsx_file_name, SL), 'xlsx', strlen($output));
+		Files::downloadOutput(($short_class . '.xlsx'), 'xlsx', strlen($output));
 		return $output;
 	}
 
