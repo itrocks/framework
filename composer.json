@@ -1,9 +1,9 @@
 {
-	"authors":      [{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }],
-	"description":  "ITRocks",
-	"license":      "MIT",
-	"name":         "itrocks/framework",
-	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
+	"authors":           [{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }],
+	"description":       "ITRocks",
+	"license":           "MIT",
+	"name":              "itrocks/framework",
+	"repositories":      [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"alvaro-prieto/colResizable":            "1.6",
 		"bappli/document-designer":              "dev-master",
@@ -22,6 +22,7 @@
 		"pear/mail_mime":                        "1.*",
 		"pear/net_pop3":                         "1.*",
 		"pear/net_smtp":                         "1.*",
+		"phpunit/phpunit": 											 "5.*",
 		"phpoffice/phpexcel":                    "1.*",
 		"setasign/fpdi-tcpdf":                   "1.*",
 		"tecnickcom/tcpdf":                      "6.*"

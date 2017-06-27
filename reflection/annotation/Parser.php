@@ -40,20 +40,23 @@ class Parser
 	 *
 	 * @param $reflection_object Has_Doc_Comment
 	 * @param $annotation_name   string
-	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a Multiple_Annotation
+	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a
+	 *                           Multiple_Annotation
 	 * @return Annotation|Annotation[]
 	 */
 	public static function byName(
 		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
 	) {
-		$annotation_class = static::getAnnotationClassName(get_class($reflection_object), $annotation_name);
+		$annotation_class = static::getAnnotationClassName(
+			get_class($reflection_object), $annotation_name
+		);
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
 		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
-		$annotation = null;
-		$i = 0;
+		$annotation  = null;
+		$i           = 0;
 		while (($i = strpos($doc_comment, '* @' . $annotation_name, $i)) !== false) {
 			$i += 2;
 			$annotation = self::parseAnnotationValue(
@@ -77,6 +80,7 @@ class Parser
 	//-------------------------------------------------------------------------------- allAnnotations
 	/**
 	 * Parses all annotations of a reflection object
+	 * Warning : only returns annotation in doc comments (not default annotations)
 	 *
 	 * @param $reflection_object Has_Doc_Comment|Annoted
 	 * @return Annotation[]|array
@@ -88,11 +92,13 @@ class Parser
 		$i           = 0;
 		while (($i = strpos($doc_comment, '* @', $i)) !== false) {
 			$i += 2;
-			$j = strlen($doc_comment);
+			$j  = strlen($doc_comment);
 			if (($k = strpos($doc_comment, LF, $i)) < $j) $j = $k;
 			if (($k = strpos($doc_comment, SP, $i)) < $j) $j = $k;
-			$annotation_name = substr($doc_comment, $i + 1, $j - $i - 1);
-			$annotation_class = static::getAnnotationClassName(get_class($reflection_object), $annotation_name);
+			$annotation_name  = substr($doc_comment, $i + 1, $j - $i - 1);
+			$annotation_class = static::getAnnotationClassName(
+				get_class($reflection_object), $annotation_name
+			);
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 			if ($multiple || !isset($annotations[$annotation_name])) {
 				if ($reflection_object->isAnnotationCached($annotation_name, $multiple)) {
@@ -116,8 +122,10 @@ class Parser
 			}
 		}
 		foreach ($reflection_object->getCachedAnnotations() as $annotation_name => $cached_annotation) {
-			$annotation                    = $cached_annotation[0];
-			$annotations[$annotation_name] = $annotation;
+			$annotation = $cached_annotation[0];
+			if (isset($annotations[$annotation_name])) {
+				$annotations[$annotation_name] = $annotation;
+			}
 		}
 		return $annotations;
 	}
@@ -169,9 +177,8 @@ class Parser
 	private static function initDefaultAnnotations()
 	{
 		if (!self::$default_annotations) {
-			if ($application = Application::current()) {
-				$default_annotations_file
-					= Application::current()->getCacheDir() . SL . 'default_annotations.php';
+			if (is_dir(Application::getCacheDir())) {
+				$default_annotations_file = Application::getCacheDir() . SL . 'default_annotations.php';
 				clearstatcache(true, $default_annotations_file);
 				$file_time = file_exists($default_annotations_file)
 					? filemtime($default_annotations_file)
@@ -224,7 +231,7 @@ class Parser
 	private static function parseAnnotationValue(
 		$doc_comment, $annotation_name, &$i, $annotation_class, Reflection $reflection_object
 	) {
-		$i += strlen($annotation_name) + 1;
+		$i        += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
 			case SP: case TAB:
@@ -261,8 +268,8 @@ class Parser
 					: $reflection_object->getName();
 			}
 			else {
-				$j += strlen(self::DOC_COMMENT_IN) + 1;
-				$k = strpos($doc_comment, LF, $j);
+				$j                     += strlen(self::DOC_COMMENT_IN) + 1;
+				$k                      = strpos($doc_comment, LF, $j);
 				$annotation->class_name = substr($doc_comment, $j, $k - $j);
 			}
 		}
@@ -288,14 +295,14 @@ class Parser
 						? $reflection_object->getDeclaringClassName()
 						: $reflection_object->getName();
 					$namespace = Namespaces::of($class_name);
-					$use = PHP\Reflection_Class::of($class_name)->getNamespaceUse();
+					$use       = PHP\Reflection_Class::of($class_name)->getNamespaceUse();
 				}
 				else {
-					$j += strlen(self::DOC_COMMENT_IN) + 1;
-					$k = strpos($doc_comment, LF, $j);
-					$in_class = substr($doc_comment, $j, $k - $j);
+					$j        += strlen(self::DOC_COMMENT_IN) + 1;
+					$k         = strpos($doc_comment, LF, $j);
+					$in_class  = substr($doc_comment, $j, $k - $j);
 					$namespace = Namespaces::of($in_class);
-					$use = PHP\Reflection_Class::of($in_class)->getNamespaceUse();
+					$use       = PHP\Reflection_Class::of($in_class)->getNamespaceUse();
 				}
 				$annotation->applyNamespace($namespace, $use);
 			}

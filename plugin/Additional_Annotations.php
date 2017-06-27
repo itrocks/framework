@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Plugin;
 
 use ITRocks\Framework\Application;
-use ITRocks\Framework\Tools\Names;
 
 /**
  * Class Additional_Annotation support additional annotations added by plugins
@@ -32,8 +31,7 @@ abstract class Additional_Annotations
 	 */
 	public static function enableAdditionalAnnotations()
 	{
-		$cached_annotations_file
-			= Application::current()->getCacheDir() . SL . 'default_annotations.php';
+		$cached_annotations_file = Application::getCacheDir() . SL . 'default_annotations.php';
 		if (self::$additional_annotations) {
 			$default_annotations_file = __DIR__ . '/../reflection/annotation'
 				. SL . 'default_annotations.php';

@@ -277,7 +277,8 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 	 */
 	static private function classNameWithoutVendorProject($class_name)
 	{
-		return explode(BS, $class_name, 3)[2];
+		$split_class_name = explode(BS, $class_name, 3);
+		return end($split_class_name);
 	}
 
 }

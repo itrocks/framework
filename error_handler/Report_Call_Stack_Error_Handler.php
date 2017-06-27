@@ -67,20 +67,33 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		}
 		$code = new Error_Code($error->getErrorNumber());
 		if (ini_get('display_errors')) {
-			$message = '<div class="' . $code->caption() . ' handler">' . LF
-				. '<span class="number">' . $code->caption() . '</span>' . LF
-				. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
-				. '<table class="call-stack">' . LF
-				. $this->call_stack->asHtml()
-				. '</table>' . LF
-				. '</div>' . LF;
-			echo $message . LF;
+			if ($_SERVER['REMOTE_ADDR'] === 'console') {
+				$message = $code->caption() . LF
+				. $code->caption() . LF
+				. $error->getErrorMessage() . LF
+				. $this->call_stack->asText();
+			}
+			else {
+				$message = '<div class="' . $code->caption() . ' handler">' . LF
+					. '<span class="number">' . $code->caption() . '</span>' . LF
+					. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
+					. '<table class="call-stack">' . LF
+					. $this->call_stack->asHtml()
+					. '</table>' . LF
+					. '</div>' . LF;
+				echo $message . LF;
+			}
 		}
 
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
-			echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
+			if ($_SERVER['REMOTE_ADDR'] === 'console') {
+				echo $this->getUserInformationMessage();
+			}
+			else {
+				echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
+			}
 		}
 
 		if ($reset_call_stack) {

@@ -291,7 +291,7 @@ class Main
 			}
 		}
 		if (isset($weaver)) {
-			$weaver->saveJoinpoints(Application::current()->getCacheDir() . SL . 'weaver.php');
+			$weaver->saveJoinpoints(Application::getCacheDir() . SL . 'weaver.php');
 		}
 	}
 
@@ -310,6 +310,7 @@ class Main
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 		if (!$configuration) {
+			http_response_code(400);
 			die('Bad Request');
 		}
 
@@ -345,8 +346,10 @@ class Main
 	{
 		$result = null;
 		try {
+			Loc::$disabled = true;
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
+			Loc::$disabled = false;
 			$result = $this->runController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;

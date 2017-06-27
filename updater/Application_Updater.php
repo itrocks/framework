@@ -227,7 +227,7 @@ class Application_Updater implements Configurable, Serializable
 	 */
 	private function getLastUpdateFileName()
 	{
-		return Application::current()->getCacheDir() . SL . self::LAST_UPDATE_FILE;
+		return Application::getCacheDir() . SL . self::LAST_UPDATE_FILE;
 	}
 
 	//----------------------------------------------------------------------------- getLastUpdateTime

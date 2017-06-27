@@ -10,6 +10,7 @@ use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Set;
+use ITRocks\Framework\Logger\Text_Output;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -102,6 +103,12 @@ class Compiler extends Cache implements
 	 */
 	private $sources;
 
+	//---------------------------------------------------------------------------------- $text_output
+	/**
+	 * @var Text_Output
+	 */
+	private $text_output;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * This constructor zaps the cache directory if 'Z' argument is sent
@@ -111,6 +118,9 @@ class Compiler extends Cache implements
 	 */
 	public function __construct($configuration = [])
 	{
+		$this->full        = isset($_GET['Z']);
+		$this->text_output = new Text_Output(isset($_GET['verbose']) ? !$_GET['verbose'] : true);
+
 		foreach ($configuration as $wave_number => $compilers) {
 			foreach ($compilers as $class_name) {
 				$this->compilers[$wave_number][$class_name]
@@ -241,6 +251,7 @@ class Compiler extends Cache implements
 	 */
 	public function compile($last_time = 0)
 	{
+		$this->text_output->log('<h1>Starting ' . ($this->full ? 'full' : '') . ' compile</h1>');
 		upgradeTimeLimit(900);
 		clearstatcache();
 		$cache_dir = self::getCacheDir();
@@ -262,8 +273,11 @@ class Compiler extends Cache implements
 			}
 			$this->sources = $this->saved_sources;
 			$first_group   = false;
+			$this->text_output->log('Wave done');
 		}
 		$this->sources = null;
+		$this->text_output->log('Compilation done');
+		$this->text_output->end();
 	}
 
 	//--------------------------------------------------------------------------------- compileSource
@@ -305,6 +319,7 @@ class Compiler extends Cache implements
 	 */
 	private function compileSources(array $compilers, $first_group, $cache_dir)
 	{
+		$this->text_output->log('Compiling sources...', false);
 		$this->sortSourcesByParentsCount();
 		foreach ($this->sources as $source) {
 			$this->compileSource($source, $compilers, $cache_dir, $first_group);
@@ -317,6 +332,7 @@ class Compiler extends Cache implements
 				$this->saved_sources[$source_class_name] = $source;
 			}
 		}
+		$this->text_output->log('Done');
 	}
 
 	//------------------------------------------------------------------------------ getClassFileName
@@ -386,9 +402,11 @@ class Compiler extends Cache implements
 	 */
 	private function removeOldDependencies()
 	{
+		$this->text_output->log('removeOldDependencies... ',false);
 		Dao::createStorage(Dependency::class);
 		Dao::begin();
-		if (isset($_GET['Z'])) {
+		if ($this->full) {
+			$this->text_output->log('truncate...', false);
 			Dao::truncate(Dependency::class);
 		}
 		else {
@@ -412,6 +430,7 @@ class Compiler extends Cache implements
 				}
 			}
 		}
+		$this->text_output->log('Done');
 		Dao::commit();
 	}
 
@@ -457,9 +476,14 @@ class Compiler extends Cache implements
 	 */
 	private function replaceDependenciesForSources(array $sources)
 	{
+		$i = 0;
 		foreach ($sources as $source) {
+			$this->text_output->log(
+				!(++$i % 100) ? (round($i * 100 / count($sources)) . '%') : '.', !($i % 100)
+			);
 			$this->replaceDependencies($source);
 		}
+		$this->text_output->log('Replace dependencies done');
 	}
 
 	//------------------------------------------------------------------------------------- serialize

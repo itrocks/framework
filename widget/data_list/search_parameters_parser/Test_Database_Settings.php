@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Setting\User_Setting;
-use ITRocks\Framework\Tests\Runnable;
 use ITRocks\Framework\Tests\Testable;
 use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
@@ -13,7 +12,7 @@ use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
  * Class Test_Data_List_Setting
  * @package ITRocks\Framework\Widget\Data_List
  */
-class Test_Database_Settings extends Testable implements Runnable
+class Test_Database_Settings extends Testable
 {
 
 	//------------------------------------------------------------------------- $data_list_controller
@@ -31,11 +30,11 @@ class Test_Database_Settings extends Testable implements Runnable
 		$this->data_list_controller = new Data_List_Controller();
 	}
 
-	//------------------------------------------------------------------------------------------- run
+	//------------------------------------------------------------------------------------ runTheTest
 	/**
 	 * Read all Data_List_Settings of Settings and User_Settings, and test search expressions
 	 */
-	public function run()
+	public function runTheTest()
 	{
 		$this->runClass(Setting::class);
 		$this->runClass(User_Setting::class);

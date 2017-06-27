@@ -84,17 +84,24 @@ class Console
 	/**
 	 * @param $arguments string[] command line arguments
 	 */
-	public function __construct(array $arguments)
+	public function __construct(array $arguments = [])
 	{
-		$this->script = $arguments[0];
-		if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
-			$this->uri = '/';
-			$this->arguments = array_slice($arguments, 1);
-		}
-		else {
-			$this->uri = $arguments[1];
-			$this->arguments = array_slice($arguments, 2);
-		}
+	    if ($arguments) {
+		    $this->script = $arguments[0];
+
+		    if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
+		    	$this->uri       = '/';
+		    	$this->arguments = array_slice($arguments, 1);
+		    }
+		    else {
+		    	$this->uri       = $arguments[1];
+		    	$this->arguments = array_slice($arguments, 2);
+		    }
+        }
+        else {
+            $this->uri       = '/';
+            $this->arguments = [];
+        }
 	}
 
 	//------------------------------------------------------------------------- alreadyRunningMessage
@@ -258,7 +265,7 @@ class Console
 
 }
 
-Console::$current = new Console(isset($argv) ? $argv : null);
+Console::$current = new Console(isset($argv) ? $argv : ['/', '-g', 'X']);
 if (Console::$current->prepare()) {
 	include_once __DIR__ . '/index.php';
 	Console::$current->end();

@@ -1,0 +1,66 @@
+image: registry.bappli.com/itrocks/debian-ci:latest
+
+services:
+  - mysql:5.7
+
+variables:
+  # Configure mysql service (https://hub.docker.com/_/mysql/)
+  MYSQL_DATABASE: itrocks_framework_ci
+  MYSQL_ROOT_PASSWORD: itrocks_framework_ci
+
+cache:
+  untracked: true
+  key: "$CI_COMMIT_REF_NAME"
+  paths:
+    - .frameworkci_vendor_cache
+
+before_script:
+  # Install ssh-agent if not already installed, it is required by Docker.
+  # (change apt-get to yum if you use a CentOS-based image)
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+
+  # Run ssh-agent (inside the build environment)
+  - eval $(ssh-agent -s)
+
+  # Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+
+  # For Docker builds disable host key checking. Be aware that by adding that
+  # you are suspectible to man-in-the-middle attacks.
+  # WARNING: Use this only with the Docker executor, if you use it with shell
+  # you will overwrite your user's SSH config.
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+
+  # Clone CI project
+  - git clone git@gitlab.bappli.com:itrocks/frameworkci.git /frameworkci
+
+  # Use branch/tag
+  - sed -i -e "s/dev-master/dev-${CI_COMMIT_REF_NAME}#${CI_COMMIT_REF_SLUG}/g" /frameworkci/composer.json
+
+  # Php info
+  - php -v
+
+  # Copy cache if exist
+  - if [ -d "$CI_PROJECT_DIR/.frameworkci_vendor_cache/" ]; then
+    echo "Copy cached vendor rsync -qaP $CI_PROJECT_DIR/.frameworkci_vendor_cache/ /frameworkci/vendor/" &&
+    rsync -qaP $CI_PROJECT_DIR/.frameworkci_vendor_cache/ /frameworkci/vendor/
+    ;fi
+
+  # Install
+  - cd /frameworkci
+  - php composer.phar update
+
+  # Copy cache if exist
+  - rsync -qaP /frameworkci/vendor/ $CI_PROJECT_DIR/.frameworkci_vendor_cache/
+
+  # Copy configuration files and secrets
+  - cp /frameworkci/environment/*.php /frameworkci
+
+  # Disable mysql strict mode
+  - mysql -uroot -p${MYSQL_ROOT_PASSWORD} -h${MYSQL_PORT_3306_TCP_ADDR} ${MYSQL_DATABASE} -Bse "SET GLOBAL sql_mode = '';"
+
+test:
+  script:
+    - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -g verbose=true
+    - php /frameworkci/itrocks/framework/console.php /ITRocks/Framework/Tests/run

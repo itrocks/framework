@@ -1,10 +1,9 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use mysqli;
-use mysqli_result;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Sql\Builder\Alter_Table;
@@ -12,6 +11,8 @@ use ITRocks\Framework\Sql\Builder\Create_Table;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use mysqli;
+use mysqli_result;
 
 /**
  * This is an intelligent database maintainer that automatically updates a table structure if there
@@ -19,6 +20,7 @@ use ITRocks\Framework\Tools\Namespaces;
  */
 class Maintainer implements Registerable
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------------ $MAX_RETRY
 	/**
@@ -43,42 +45,41 @@ class Maintainer implements Registerable
 	 *
 	 * Some errors codes allow multiple retries, setup into MAX_RETRY
 	 *
-	 * @var integer[] key is the query, value is the solved counter (/retry)
+	 * @var array integer[string $query][integer $last_error] value is the solved / retries counter
 	 */
 	private $already = [];
 
-	//----------------------------------------------------------------------------------- createTable
+	//--------------------------------------------------------------------------------------- $notice
 	/**
-	 * Create a table in database, using a data class structure
+	 * If true notice column differences using error notice
 	 *
-	 * @param $class_name string
-	 * @param $mysqli     Contextual_Mysqli
+	 * @var boolean
 	 */
-	private function createTable($class_name, Contextual_Mysqli $mysqli = null)
-	{
-		if (!$mysqli) {
-			$data_link = Dao::current();
-			if ($data_link instanceof Link) {
-				$mysqli = $data_link->getConnection();
-			}
-			else {
-				user_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
-			}
-		}
-		$builder = new Table_Builder_Class();
-		$build = $builder->build($class_name);
-		foreach ($build as $table) {
-			if (!$mysqli->exists($table->getName())) {
-				$last_context    = $mysqli->context;
-				$mysqli->context = $builder->dependencies_context;
-				$queries         = (new Create_Table($table))->build();
-				foreach ($queries as $query) {
-					$mysqli->query($query);
-				}
-				$mysqli->context = $last_context;
-			}
-		}
-	}
+	public $notice = true;
+
+	//------------------------------------------------------------------------------------- $requests
+	/**
+	 * SQL Requests log during simulation mode
+	 *
+	 * @var string[]
+	 */
+	public $requests = [];
+
+	//----------------------------------------------------------------------------------- $simulation
+	/**
+	 * If true Maintainer is in simulation mode
+	 *
+	 * @var boolean
+	 */
+	private $simulation = false;
+
+	//---------------------------------------------------------------------------- $skip_foreign_keys
+	/**
+	 * If true, skip foreign keys updates when create / update tables
+	 *
+	 * @var boolean
+	 */
+	public $skip_foreign_keys;
 
 	//--------------------------------------------------------------------------- createImplicitTable
 	/**
@@ -101,8 +102,8 @@ class Maintainer implements Registerable
 		foreach ($column_names as $column_name) {
 			$table->addColumn(
 				($column_name === 'id')
-				? Column::buildId()
-				: Column::buildLink($column_name)
+					? Column::buildId()
+					: Column::buildLink($column_name)
 			);
 			if (substr($column_name, 0, 3) === 'id_') {
 				if (($mysqli instanceof Contextual_Mysqli) && is_array($mysqli->context)) {
@@ -110,11 +111,11 @@ class Maintainer implements Registerable
 					$index = Index::buildLink($column_name);
 					foreach ($mysqli->context as $context_class) {
 						$id_context_property = 'id_' . Names::classToProperty(
-							Names::setToSingle(Dao::storeNameOf($context_class))
-						);
+								Names::setToSingle(Dao::storeNameOf($context_class))
+							);
 						$id_context_property_2 = 'id_' . Names::classToProperty(
-							Names::setToSingle(Namespaces::shortClassName($context_class))
-						);
+								Names::setToSingle(Namespaces::shortClassName($context_class))
+							);
 						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
 							$table->addForeignKey(
 								Foreign_Key::buildLink($table_name, $column_name, $context_class)
@@ -137,10 +138,43 @@ class Maintainer implements Registerable
 				$table->addIndex($index);
 			}
 		}
-		foreach ((new Create_Table($table))->build() as $query) {
-			$mysqli->query($query);
+		foreach ((new Create_Table($table))->build($this->skip_foreign_keys) as $query) {
+			$this->query($mysqli, $query);
 		}
 		return true;
+	}
+
+	//----------------------------------------------------------------------------------- createTable
+	/**
+	 * Create a table in database, using a data class structure
+	 *
+	 * @param $class_name string
+	 * @param $mysqli     Contextual_Mysqli
+	 */
+	private function createTable($class_name, Contextual_Mysqli $mysqli = null)
+	{
+		if (!$mysqli) {
+			$data_link = Dao::current();
+			if ($data_link instanceof Link) {
+				$mysqli = $data_link->getConnection();
+			}
+			else {
+				user_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
+			}
+		}
+		$builder = new Table_Builder_Class();
+		$build   = $builder->build($class_name);
+		foreach ($build as $table) {
+			if (!$mysqli->exists($table->getName())) {
+				$last_context    = $mysqli->context;
+				$mysqli->context = $builder->dependencies_context;
+				$queries         = (new Create_Table($table))->build($this->skip_foreign_keys);
+				foreach ($queries as $query) {
+					$this->query($mysqli, $query);
+				}
+				$mysqli->context = $last_context;
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------- createTableWithoutContext
@@ -173,17 +207,17 @@ class Maintainer implements Registerable
 		}
 		// if no class name, create it from columns names in the query
 		$column_names = [];
-		$alias_pos = 0;
+		$alias_pos    = 0;
 		while (true) {
 			$alias_pos = strpos($query, BQ . $table_name . BQ . SP . 't', $alias_pos);
 			if (!$alias_pos) {
 				break;
 			}
 			$alias_pos += strlen($table_name) + 4;
-			$alias = 't' . intval(substr($query, $alias_pos));
-			$i = 0;
+			$alias      = 't' . intval(substr($query, $alias_pos));
+			$i          = 0;
 			while (($i = strpos($query, $alias . DOT, $i)) !== false) {
-				$i += strlen($alias) + 1;
+				$i                        += strlen($alias) + 1;
 				$j                         = strpos($query, SP, $i) ?: strlen($query);
 				$field_name                = trim(substr($query, $i, $j - $i), BQ);
 				$column_names[$field_name] = $field_name;
@@ -191,7 +225,7 @@ class Maintainer implements Registerable
 		}
 		if (!$column_names) {
 			if ($mysqli->isDelete($query)) {
-				// @todo create table without context DELETE columns detection
+				// TODO create table without context DELETE columns detection
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a DELETE query without context",
 					E_USER_ERROR
@@ -211,7 +245,7 @@ class Maintainer implements Registerable
 				}
 			}
 			elseif ($mysqli->isSelect($query) || $mysqli->isExplainSelect($query)) {
-				// @todo create table without context SELECT columns detection (needs complete sql analyst)
+				// TODO create table without context SELECT columns detection (needs complete sql analyst)
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a SELECT query without context",
 					E_USER_ERROR
@@ -225,7 +259,7 @@ class Maintainer implements Registerable
 				return false;
 			}
 			elseif ($mysqli->isUpdate($query)) {
-				// @todo create table without context UPDATE columns detection
+				// TODO create table without context UPDATE columns detection
 				trigger_error(
 					"TODO Mysql maintainer create table $table_name from a UPDATE query without context",
 					E_USER_ERROR
@@ -313,11 +347,11 @@ class Maintainer implements Registerable
 		$last_errno = $mysqli->last_errno;
 		$last_error = $mysqli->last_error;
 		$max_retry  = isset(static::$MAX_RETRY[$last_errno]) ? static::$MAX_RETRY[$last_errno] : 1;
-		if (!isset($this->already[$query])) {
-			$this->already[$query] = 0;
+		if (!isset($this->already[$query][$last_error])) {
+			$this->already[$query][$last_error] = 0;
 		}
-		if ($last_errno && ($this->already[$query] < $max_retry)) {
-			$this->already[$query] ++;
+		if ($last_errno && ($this->already[$query][$last_error] < $max_retry)) {
+			$this->already[$query][$last_error] ++;
 			if (!isset($mysqli->context)) {
 				$mysqli->context = $this->guessContext($query, $mysqli);
 			}
@@ -328,7 +362,7 @@ class Maintainer implements Registerable
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
 				if (
-					in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
+				in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
 				) {
 					$retry = $this->updateContextTables($mysqli, $context);
 				}
@@ -340,6 +374,9 @@ class Maintainer implements Registerable
 				elseif ($last_errno == Errors::ER_NO_SUCH_TABLE) {
 					$retry = $this->onNoSuchTableError($mysqli, $query, $context);
 				}
+
+				// Retrieves context as it may have been overridden
+				$mysqli->context = $context;
 			}
 			// errors solving that do not need a context
 			// ER_DUP_ENTRY : this is to patch a bug into MySQL 5.7
@@ -358,9 +395,12 @@ class Maintainer implements Registerable
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
 			}
-			$this->already[$query] --;
+			$this->already[$query][$last_error] --;
 		}
-		if (!$this->already[$query]) {
+		if (!$this->already[$query][$last_error]) {
+			unset($this->already[$query][$last_error]);
+		}
+		if (!$this->already[$query]){
 			unset($this->already[$query]);
 		}
 	}
@@ -414,8 +454,8 @@ class Maintainer implements Registerable
 	 */
 	private function parseNameFromError($error)
 	{
-		$i = strpos($error, Q) + 1;
-		$j = strpos($error, Q, $i);
+		$i    = strpos($error, Q) + 1;
+		$j    = strpos($error, Q, $i);
 		$name = substr($error, $i, $j - $i);
 		if (strpos($name, DOT)) {
 			$name = substr($name, strrpos($name, DOT) + 1);
@@ -436,15 +476,29 @@ class Maintainer implements Registerable
 	private function parseNamesFromQuery($query)
 	{
 		$tables = [];
-		$i = 0;
+		$i      = 0;
 		while (($i = strpos($query, 'REFERENCES ', $i)) !== false) {
-			$i = strpos($query, BQ, $i) + 1;
-			$j = strpos($query, BQ, $i);
+			$i          = strpos($query, BQ, $i) + 1;
+			$j          = strpos($query, BQ, $i);
 			$table_name = substr($query, $i, $j - $i);
+
 			$tables[substr($query, $i, $j - $i)] = $table_name;
+
 			$i = $j + 1;
 		}
 		return $tables;
+	}
+
+	//----------------------------------------------------------------------------------------- query
+	/**
+	 * @param $mysqli Mysqli
+	 * @param $query  string
+	 * @return boolean|mysqli_result
+	 */
+	public function query($mysqli, $query)
+	{
+		$this->requests[] = $query;
+		return $this->simulation ? true : $mysqli->query($query);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -457,6 +511,28 @@ class Maintainer implements Registerable
 	{
 		$aop = $register->aop;
 		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onMysqliQueryError']);
+	}
+
+	//------------------------------------------------------------------------------- simulationStart
+	/**
+	 * Starts maintainer simulation
+	 */
+	public function simulationStart()
+	{
+		$this->simulation = true;
+		$this->requests   = [];
+	}
+
+	//-------------------------------------------------------------------------------- simulationStop
+	/**
+	 * Stops maintainer simulation
+	 *
+	 * @return string[]
+	 */
+	public function simulationStop()
+	{
+		$this->simulation = false;
+		return $this->requests;
 	}
 
 	//--------------------------------------------------------------------------- updateContextTables
@@ -501,8 +577,8 @@ class Maintainer implements Registerable
 
 			// create table
 			if (!$mysql_table) {
-				foreach ((new Create_Table($class_table))->build() as $query) {
-					$mysqli->query($query);
+				foreach ((new Create_Table($class_table))->build($this->skip_foreign_keys) as $query) {
+					$this->query($mysqli, $query);
 				}
 				$result = true;
 			}
@@ -519,13 +595,16 @@ class Maintainer implements Registerable
 						$builder->addColumn($column);
 					}
 					elseif (!$column->equiv($mysql_columns[$column_name])) {
-						trigger_error(
-							'Maintainer alters column ' . $mysql_table->getName() . '.' . $column->getName()
+						if ($this->notice) {
+							trigger_error(
+								'Maintainer alters column ' . $mysql_table->getName() . '.' . $column->getName()
 								. BRLF . PRE
 								. print_r($column, true) . BRLF
-								. print_r($mysql_columns[$column_name], true),
-							E_USER_NOTICE
-						);
+								. print_r($mysql_columns[$column_name], true)
+								. _PRE,
+								E_USER_NOTICE
+							);
+						}
 						if (!isset($foreign_keys)) {
 							$foreign_keys = Foreign_Key::buildTable($mysqli, $table_name);
 						}
@@ -536,12 +615,11 @@ class Maintainer implements Registerable
 				}
 				if ($builder->isReady()) {
 					foreach ($builder->build(true) as $query) {
-						$mysqli->query($query);
+						$this->query($mysqli, $query);
 					}
 					$result = true;
 				}
 			}
-
 		}
 		return $result;
 	}

@@ -1,12 +1,10 @@
 <?php
 namespace ITRocks\Framework\Tests;
 
-use ITRocks\Framework\Controller\Response;
-
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
  */
-class Test extends Testable
+abstract class Test extends Testable
 {
 
 	//-------------------------------------------------------------------------------------- $capture
@@ -17,14 +15,6 @@ class Test extends Testable
 	 */
 	private $capture;
 
-	//----------------------------------------------------------------------------------- $start_time
-	/**
-	 * The start time of each test
-	 *
-	 * @var float
-	 */
-	public $start_time;
-
 	//---------------------------------------------------------------------------------------- assume
 	/**
 	 * Assumes a checked value is the same than an assumed value
@@ -32,66 +22,12 @@ class Test extends Testable
 	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
 	 * @param $check       mixed the checked value
 	 * @param $assume      mixed the assumed value
-	 * @param $diff_output boolean set to false in order not to output the diff of check and assume
-	 * @return boolean true if the checked value corresponds to the assumed value
 	 */
-	protected function assume($test, $check, $assume, $diff_output = true)
+	protected function assume($test, $check, $assume)
 	{
-		$duration = round((microtime(true) - $this->start_time) * 1000000);
-		$check    = $this->toArray($check);
-		$assume   = $this->toArray($assume);
-		if (is_array($check) && is_array($assume)) {
-			$diff1 = arrayDiffRecursive($check, $assume, false, true);
-			$diff2 = arrayDiffRecursive($assume, $check, false, true);
-			$ok    = !$diff1 && !$diff2;
-		}
-		else {
-			$diff1 = $check;
-			$diff2 = $assume;
-			$ok    = ($check === $assume);
-		}
-		if ($ok) {
-			if ($duration > 9999) {
-				$duration = round($duration / 1000) . 'ms';
-			}
-			else {
-				$duration .= 'μs';
-			}
-			$result = '<span style="color:green;font-weight:bold">OK</span> (<i>' . $duration . '</i>)';
-			$result_code = Response::OK;
-		}
-		else {
-			$result = '<span style="color:red;font-weight:bold">BAD</span>'
-			. '<pre style="color:red;font-weight:bold;">result : ' . print_r($check, true) . '</pre>'
-			. '<pre style="color:blue;font-weight:bold;">assume : ' . print_r($assume, true) . '</pre>'
-			. (
-				($diff_output && $diff1)
-				? ('<pre style="color:orange;font-weight:bold;">result has : ' . print_r($diff1, true) . '</pre>')
-				: ''
-			)
-			. (
-				($diff_output && $diff2)
-				? ('<pre style="color:orange;font-weight:bold;">assume has : ' . print_r($diff2, true) . '</pre>')
-				: ''
-			);
-			$result_code = Response::ERROR;
-		}
-		$is_error = ($result_code !== Response::OK);
-		if ($this->header && $is_error) {
-			echo $this->header;
-			$this->header = '';
-		}
-		if (($this->show === self::ALL) || ($is_error && $this->show === self::ERRORS)) {
-			echo '<li>'
-				. str_replace(get_class($this) . '::', '', $test) . ' : ' . $result
-				. '</li>' . LF;
-		}
-		if ($is_error) {
-			$this->errors_count ++;
-		}
-		$this->tests_count ++;
-		$this->start_time = microtime(true);
-		return ($result_code === Response::OK);
+		$check  = $this->toArray($check);
+		$assume = $this->toArray($assume);
+		$this->assertEquals($assume, $check, $test);
 	}
 
 	//--------------------------------------------------------------------------------- assumeCapture

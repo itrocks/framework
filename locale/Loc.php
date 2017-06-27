@@ -49,6 +49,14 @@ class Loc implements Registerable
 	 */
 	public static $contexts_stack = [];
 
+	//------------------------------------------------------------------------------------- $disabled
+	/**
+	 * If true, translation features are disabled
+	 *
+	 * @var boolean
+	 */
+	public static $disabled = false;
+
 	//------------------------------------------------- afterHtmlTemplateFunctionsToEditPropertyExtra
 	/**
 	 * @param $result array[]
@@ -392,6 +400,9 @@ class Loc implements Registerable
 	 */
 	public static function rtr($translation, $context = '', $context_property_path = '')
 	{
+		if (static::$disabled) {
+			return $translation;
+		}
 		if (!$context) {
 			$context = self::getContext();
 		}
@@ -412,6 +423,9 @@ class Loc implements Registerable
 	 */
 	public static function tr($text, $options = [])
 	{
+		if (static::$disabled) {
+			return $text;
+		}
 		if (!is_array($options)) {
 			$options = [$options];
 		}

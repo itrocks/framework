@@ -81,7 +81,7 @@ class Application
 	/**
 	 * @return string
 	 */
-	public function getCacheDir()
+	public static function getCacheDir()
 	{
 		return __DIR__ . '/../../cache';
 	}

@@ -20,11 +20,18 @@ abstract class Cache
 	 */
 	const CACHE_DIR_NAME = '';
 
+	//----------------------------------------------------------------------------------------- $full
+	/**
+	 * @var boolean if true, it's a full compile
+	 */
+	public $full = false;
+
 	//----------------------------------------------------------------------------------- getCacheDir
 	/**
 	 * Returns the relative or absolute generator cache dir path (default relative)
 	 *
 	 * @param $absolute boolean true if want to get absolute path
+	 *
 	 * @return string
 	 */
 	public static function getCacheDir($absolute = false)
@@ -34,7 +41,7 @@ abstract class Cache
 		}
 		static $absolute_cache_dir, $relative_cache_dir;
 		if (!isset($absolute_cache_dir)) {
-			$absolute_cache_dir = Application::current()->getCacheDir() . SL . static::CACHE_DIR_NAME;
+			$absolute_cache_dir = Application::getCacheDir() . SL . static::CACHE_DIR_NAME;
 			Files::mkdir($absolute_cache_dir);
 			$relative_cache_dir = Paths::getRelativeFileName($absolute_cache_dir);
 		}
@@ -47,7 +54,7 @@ abstract class Cache
 	 */
 	public function manageCacheDirReset()
 	{
-		if (isset($_GET['Z'])) {
+		if ($this->full) {
 			$absolute_cache_dir = static::getCacheDir(true);
 			if ($absolute_cache_dir && is_dir($absolute_cache_dir)) {
 				system('rm -rf ' . $absolute_cache_dir . '/*');

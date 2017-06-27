@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use DateInterval;
+use DateTime;
 
 /**
  * Rich Date interval class
@@ -52,16 +53,13 @@ class Date_Interval extends DateInterval
 		$invert = false;
 		if ($duration < 0) {
 			$duration = -$duration;
-			$invert = true;
+			$invert   = true;
 		}
-		$sprintf_arguments = explode('-', date('Y-m-d-H-i-s', $duration));
-		$sprintf_arguments[0] -= 1970;
-		$sprintf_arguments[1] -= 1;
-		$sprintf_arguments[2] -= 1;
-		$sprintf_arguments[3] -= 1;
-		array_unshift($sprintf_arguments, 'P%sY%sM%sDT%sH%sM%sS');
-		$interval_spec = call_user_func_array('sprintf', $sprintf_arguments);
-		return new Date_Interval($interval_spec, $invert);
+		$d1 = new DateTime();
+		$d2 = clone $d1;
+		$d2->add(new DateInterval('PT' . $duration . 'S'));
+		$parent = $d2->diff($d1);
+		return new self($parent->format('P%yY%mM%dDT%hH%iM%sS'), $invert);
 	}
 
 	//------------------------------------------------------------------------------------------ days

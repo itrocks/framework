@@ -481,7 +481,7 @@ class Compiler implements ICompiler, Needs_Main
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
 		// weaver's advices tree
 		if (!$this->weaver->hasJoinpoints()) {
-			$this->weaver->loadJoinpoints(Application::current()->getCacheDir() . SL . 'weaver.php');
+			$this->weaver->loadJoinpoints(Application::getCacheDir() . SL . 'weaver.php');
 		}
 	}
 

@@ -30,9 +30,11 @@ class Create_Table
 	 * To create a table with foreign keys, we need multiple queries.
 	 * This method Returns all necessary queries : CREATE TABLE, then ALTER TABLE ... ADD CONSTRAINT.
 	 *
+	 * @param $skip_constraint boolean If true skip constraint creation
+	 *
 	 * @return string[]
 	 */
-	public function build()
+	public function build($skip_constraint = false)
 	{
 		$columns = [];
 		foreach ($this->table->getColumns() as $column) {
@@ -43,11 +45,13 @@ class Create_Table
 			$indexes[$index->getName()] = $index->toSql();
 		}
 		$foreign_keys = [];
-		foreach ($this->table->getForeignKeys() as $foreign_key) {
-			$foreign_key_constraint = join(DOT, $foreign_key->getFields());
-			$foreign_keys[$foreign_key_constraint] = $foreign_key->toSql();
-			if (!isset($indexes[$foreign_key_constraint])) {
-				$indexes[$foreign_key_constraint] = Index::buildLink($foreign_key_constraint)->toSql();
+		if (!$skip_constraint) {
+			foreach ($this->table->getForeignKeys() as $foreign_key) {
+				$foreign_key_constraint                = join(DOT, $foreign_key->getFields());
+				$foreign_keys[$foreign_key_constraint] = $foreign_key->toSql();
+				if (!isset($indexes[$foreign_key_constraint])) {
+					$indexes[$foreign_key_constraint] = Index::buildLink($foreign_key_constraint)->toSql();
+				}
 			}
 		}
 		$queries[] = 'CREATE TABLE' . ' IF NOT EXISTS ' . BQ . $this->table->getName() . BQ . ' ('

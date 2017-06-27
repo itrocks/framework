@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework;
 
-use ITRocks\Framework\AOP;
 use ITRocks\Framework\AOP\Weaver;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Mysql\Link;
@@ -13,6 +12,8 @@ use ITRocks\Framework\Locale\Number_Format;
 use ITRocks\Framework\Locale\Translation_String_Composer;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Priority;
+use ITRocks\Framework\Tests\Tests_Configurator;
+use ITRocks\Framework\Tests\Tests_Html_ResultPrinter;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View\Html\Cleaner;
 
@@ -98,11 +99,18 @@ $config['ITRocks/Framework'] = [
 			]
 		],
 		Mysql\Maintainer::class,
+		Tests_Configurator::class => [
+			Tests_Configurator::PHPUNIT_OPTIONS => [
+				__DIR__ . '/../../vendor/bin/phpunit',
+				'configuration' => __DIR__ . '/../../phpunit.xml.dist',
+				'printer'       => Tests_Html_ResultPrinter::class,
+			]
+		],
 		Translation_String_Composer::class,
 		View::class => [
 			Configuration::CLASS_NAME => View\Html\Engine::class,
-			View\Html\Engine::CSS => View\Html\Engine::CSS_DEFAULT
-		]
+			View\Html\Engine::CSS     => View\Html\Engine::CSS_DEFAULT
+		],
 	],
 
 	//------------------------------------------------------------------------------- Priority::HIGH+
