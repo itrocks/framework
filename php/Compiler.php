@@ -606,6 +606,7 @@ class Compiler extends Cache implements
 					: Builder::create($class_name);
 			}
 		}
+		$this->text_output = new Text_Output(isset($_GET['verbose']) ? !$_GET['verbose'] : true);
 	}
 
 }
