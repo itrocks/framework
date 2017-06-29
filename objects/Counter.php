@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Objects;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\View\Html\Template;
 
@@ -65,18 +66,23 @@ class Counter
 	 */
 	public static function increment($object, $identifier = null)
 	{
-		Dao::begin();
+		/** @var $dao Link */
+		$dao = Dao::current();
+		$dao->begin();
 		if (empty($identifier)) {
 			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
+		$table_name = $dao->storeNameOf(__CLASS__);
+		$lock       = $dao->lockRecord($table_name, $identifier);
 		$counter = Dao::searchOne(['identifier' => $identifier], get_called_class())
 			?: new Counter($identifier);
 		$next_value = $counter->next($object);
-		Dao::write(
+		$dao->write(
 			$counter,
 			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
 		);
-		Dao::commit();
+		$dao->unlock($lock);
+		$dao->commit();
 		return $next_value;
 	}
 
