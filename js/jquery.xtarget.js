@@ -51,7 +51,7 @@
 			//-------------------------------------------------------------------------------- ajax.error
 			error: function(xhr, status, error)
 			{
-				if (settings.error != undefined) {
+				if (settings.error !== undefined) {
 					settings.error(xhr, status, error);
 				}
 			},
@@ -63,18 +63,18 @@
 			 */
 			pushHistory: function(xhr, $target)
 			{
-				if ((settings.history.popup != undefined) || !$target.hasClass('popup')) {
+				if ((settings.history.popup !== undefined) || !$target.hasClass('popup')) {
 					if (
-						(settings.history.condition != undefined)
+						(settings.history.condition !== undefined)
 						&& $target.find(settings.history.condition).length
 						&& (
-							(settings.history.post != undefined)
-							|| (xhr.ajax.type == undefined) || (xhr.ajax.type.toLowerCase() != 'post')
-							|| (xhr.ajax.data == undefined) || !xhr.ajax.data.length
+							(settings.history.post !== undefined)
+							|| (xhr.ajax.type === undefined) || (xhr.ajax.type.toLowerCase() !== 'post')
+							|| (xhr.ajax.data === undefined) || !xhr.ajax.data.length
 						)
 					) {
 						var title;
-						if ((settings.history.title != undefined) && settings.history.title) {
+						if ((settings.history.title !== undefined) && settings.history.title) {
 							title = $target.find(settings.history.title).first().text();
 							if (!title.length) {
 								title = xhr.from.href;
@@ -100,10 +100,10 @@
 				var $from = $where;
 				var left  = $where.offset().left + 3;
 				var top   = $where.offset().top + $where.height() + 2;
-				if (id.substr(0, 1) == '_') {
+				if (id.substr(0, 1) === '_') {
 					$where = $($('body').children(':last-child'));
 				}
-				if (id == '_blank') {
+				if (id === '_blank') {
 					id = 'window' + ++window.zindex_counter;
 				}
 				var $target = $('<' + settings.popup_element + '>')
@@ -114,13 +114,13 @@
 				}
 				$target.data(settings.xtarget_from, $from);
 				$target.insertAfter($where);
-				if ($where != $from) {
+				if ($where !== $from) {
 					$target.addClass('popup');
 					$target.css('position', 'absolute');
 					$target.css('left', left);
 					$target.css('top',  top);
 					$target.css('z-index', window.zindex_counter);
-					if (settings.draggable_blank != undefined) {
+					if (settings.draggable_blank !== undefined) {
 						if (settings.draggable_blank === true) {
 							$target.draggable();
 						}
@@ -170,24 +170,69 @@
 					}
 				}
 				// change browser's URL and title, push URL into history
-				if (settings.history != undefined) {
+				if (settings.history !== undefined) {
 					this.pushHistory(xhr, $target);
 				}
 				// If build plugin is active : build loaded DOM
-				if ($target.build != undefined) {
+				if ($target.build !== undefined) {
 					if (build_target) $target.build();
 					else              $target.children().build();
 				}
 				// on success callbacks
 				var target = $target.get()[0];
-				if (settings.success != undefined) {
+				if (settings.success !== undefined) {
 					settings.success.call(target, data, status, xhr);
 				}
 				var on_success = $from.data('on-success');
-				if (on_success != undefined) {
+				if (on_success !== undefined) {
 					on_success.call(target, data, status, xhr);
 				}
 			}
+		};
+
+		//----------------------------------------------------------------------- hasFormReportValidity
+		/**
+		 * Returns true if browser manage checkValidity
+		 *
+		 * @return boolean
+		 */
+		var hasFormCheckValidity = function ()
+		{
+			return (typeof document.createElement('form').checkValidity) === 'function';
+		};
+
+		//----------------------------------------------------------------------- hasFormReportValidity
+		/**
+		 * Returns true if browser manage reportValidity
+		 *
+		 * @return boolean
+		 */
+		var hasFormReportValidity = function ()
+		{
+			return (typeof document.createElement('form').reportValidity) === 'function';
+		};
+
+		//------------------------------------------------------------------------------ reportValidity
+		/**
+		 * Reports the validity of a form
+		 *
+		 * @param form HTMLFormElement
+		 * @return boolean
+		 */
+		var reportValidity = function (form)
+		{
+			if (hasFormReportValidity()) {
+				return form.reportValidity();
+			}
+			else if (hasFormCheckValidity()) {
+				if (form.checkValidity()) {
+					return true;
+				}
+				alert('Invalid data input');
+				return false;
+			}
+			// No check method, fallback to default behaviour
+			return true;
 		};
 
 		//----------------------------------------------------------------------------------- urlAppend
@@ -217,9 +262,9 @@
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
-			if (event.which != 2) {
+			if (event.which !== 2) {
 				event.preventDefault();
-				if (this.href.substr(0, 11) == 'javascript:') {
+				if (this.href.substr(0, 11) === 'javascript:') {
 					eval(this.href.substr(11));
 					return false;
 				}
@@ -230,7 +275,10 @@
 					if ($this.hasClass(settings.submit)) {
 						var $parent_form = $this.closest('form');
 						if ($parent_form.length) {
-							if ($parent_form.ajaxSubmit != undefined) {
+							if (!reportValidity($parent_form[0])) {
+								return;
+							}
+							if ($parent_form.ajaxSubmit !== undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 									url:  urlAppend(this.href, this.search),
 									type: $parent_form.attr('type')
@@ -253,8 +301,8 @@
 					}
 					xhr.ajax     = jax;
 					xhr.from     = this;
-					xhr.mouse_x  = (document.mouse == undefined) ? event.pageX : document.mouse.x;
-					xhr.mouse_y  = (document.mouse == undefined) ? event.pageY : document.mouse.y;
+					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x;
+					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y;
 					xhr.time_out = setTimeout(function(){ $('body').css({cursor: 'wait'}); }, 500);
 				}
 			}
@@ -270,7 +318,7 @@
 			var $this = $(this);
 			var xhr;
 			event.preventDefault();
-			if ($this.ajaxSubmit != undefined) {
+			if ($this.ajaxSubmit !== undefined) {
 				$this.ajaxSubmit(jax = $.extend(ajax, {
 					url:  urlAppend(this.action, this.action.indexOf('?') > -1),
 					type: $this.attr('type')
@@ -289,11 +337,11 @@
 		});
 
 		//--------------------------------------------------------------------------- window onpopstate
-		if ((settings.history != undefined) && (settings.history.condition != undefined)) {
+		if ((settings.history !== undefined) && (settings.history.condition !== undefined)) {
 			$(window).bind('popstate', function(event)
 			{
 				if (
-					(event.originalEvent.state != undefined)
+					(event.originalEvent.state !== undefined)
 					&& (event.originalEvent.state.reload !== undefined)
 					&& event.originalEvent.state.reload
 				) {

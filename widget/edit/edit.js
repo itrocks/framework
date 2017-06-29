@@ -22,7 +22,7 @@ $('document').ready(function()
 			});
 		}
 
-		//-------------------------------------------------------------------------------------- .minus
+		//-------------------------------------------------------------------------------- .minus click
 		this.inside('.minus').click(function()
 		{
 			var $this = $(this);
@@ -38,7 +38,7 @@ $('document').ready(function()
 			}
 		});
 
-		//------------------------------------------------------------------------ input[type=checkbox]
+		//----------------------------------------------------------------- input[type=checkbox] change
 		this.inside('input[type=checkbox]').change(function()
 		{
 			var $checkbox = $(this);
@@ -48,7 +48,7 @@ $('document').ready(function()
 				var check = $checkbox.is(':checked') ? '1' : '0';
 				var nullable = String($checkbox.data('nullable'));
 				if (nullable.length) {
-					if (old_check == nullable) {
+					if (old_check === nullable) {
 						check = '';
 						$checkbox.attr('checked', false);
 					}
@@ -58,7 +58,7 @@ $('document').ready(function()
 			}
 		});
 
-		//-------------------------------------------------------------- input[type=checkbox][readonly]
+		//-------------------------------------------------------- input[type=checkbox][readonly] click
 		this.inside('input[type=checkbox][readonly]').click(function(event)
 		{
 			event.preventDefault();
@@ -81,7 +81,7 @@ $('document').ready(function()
 			}
 		});
 
-		//------------------------------------------------------- table.collection input,textarea focus
+		//--------------------------------------------------------------------------------- autoAddLine
 		var autoAddLine = function()
 		{
 			var $this = $(this);
@@ -120,7 +120,7 @@ $('document').ready(function()
 							if ((i > (open.length - 1)) && (i < j) && !in_depth) {
 								var k = text.indexOf(close, i);
 								var html_index = text.substring(i, k);
-								if (html_index == old_index) {
+								if (html_index === old_index) {
 									text = text.substr(0, i) + index + text.substr(k);
 								}
 							}
@@ -136,6 +136,8 @@ $('document').ready(function()
 				}
 			}
 		};
+
+		//------------------------------------------------- table.collection input,textarea focus,keyup
 		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
 		//------------------------------------------------------------------- input.datetime datePicker
@@ -146,11 +148,48 @@ $('document').ready(function()
 			selectOtherMonths: true
 		});
 
+		//------------------------------------------------------------------------ input.datetime keyup
 		this.inside('input.datetime').keyup(function(event)
 		{
 			if ((event.keyCode !== 13) && (event.keyCode !== 27)) {
 				$(this).datepicker('show');
 			}
+		});
+
+		//-------------------------------------------------------------------------- checkCompletedDate
+		var checkCompletedDate = function($datetime)
+		{
+			var formattedNow = $.datepicker.formatDate(
+				$datetime.datepicker('option', 'dateFormat'),
+				new Date()
+			);
+
+			// No completion needed
+			if ($datetime.val().length >= formattedNow.length) {
+				return checkDate($datetime);
+			}
+			else {
+				var bufferVal = $datetime.val();
+				$datetime.val(bufferVal + formattedNow.substr($datetime.val().length));
+				//if  Completed date is not valid, fallback to input value
+				return checkDate($datetime) || ($datetime.val(bufferVal) && false)
+			}
+		};
+		//----------------------------------------------------------------------------------- checkDate
+		var checkDate = function ($datetime)
+		{
+			var format_date = $.datepicker.formatDate(
+				$datetime.datepicker('option', 'dateFormat'),
+				$datetime.datepicker('getDate')
+			);
+			return $datetime.val() === format_date;
+		};
+
+		//------------------------------------------------------------------------- input.datetime blur
+		this.inside('input.datetime').blur(function()
+		{
+			var $datetime = $(this);
+			$datetime.get(0).setCustomValidity(checkCompletedDate($datetime) ? '' : 'Invalid date');
 		});
 
 		//---------------------------------------------------------------------- input.combo comboValue
@@ -182,7 +221,7 @@ $('document').ready(function()
 		//-------------------------------------------------------------------- input.combo comboRequest
 		var comboRequest = function($element, request)
 		{
-			if (request == undefined) {
+			if (request === undefined) {
 				request = [];
 			}
 			if (!request['first']) {
@@ -190,7 +229,7 @@ $('document').ready(function()
 			}
 			if (!window.app.use_cookies) request['PHPSESSID'] = window.app.PHPSESSID;
 			var filters = $element.data('combo-filters');
-			if (filters != undefined) {
+			if (filters !== undefined) {
 				filters = filters.split(',');
 				for (var key in filters) if (filters.hasOwnProperty(key)) {
 					var filter      = filters[key].split('=');
@@ -227,7 +266,7 @@ $('document').ready(function()
 			if ($element.data('value')) {
 				var val = $element.val().toLowerCase();
 				var dat = $element.data('value').toLowerCase();
-				return (!val.length) || (dat.indexOf(val) != -1);
+				return (!val.length) || (dat.indexOf(val) !== -1);
 			}
 			else {
 				return false;
@@ -303,10 +342,10 @@ $('document').ready(function()
 				if (!comboMatches($caption)) {
 					comboForce($caption);
 				}
-				if (previous_caption != $caption.val()) {
+				if (previous_caption !== $caption.val()) {
 					$caption.change();
 				}
-				if (previous_value != $value.val()) {
+				if (previous_value !== $value.val()) {
 					$value.change();
 				}
 			}
@@ -354,7 +393,7 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			// down : open even if value is empty
-			if (event.keyCode == 40) {
+			if (event.keyCode === 40) {
 				if ($this.autocomplete('option', 'minLength')) {
 					$this.autocomplete('option', 'minLength', 0).autocomplete('search', '');
 				}
@@ -366,7 +405,7 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			// backspace | delete : close if value is empty
-			if (((event.keyCode == 8) || (event.keyCode == 46)) && !$this.val().length) {
+			if (((event.keyCode === 8) || (event.keyCode === 46)) && !$this.val().length) {
 				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
 				var $value         = $this.prev().filter('input[type=hidden]');
 				var previous_value = $value.val();
@@ -408,7 +447,7 @@ $('document').ready(function()
 				}
 				var condition_name = $condition.attr('name');
 				if (!condition_name) condition_name = $condition.prev().attr('name');
-				if (typeof $this.data('conditions') == 'string') $this.data('conditions', {});
+				if ((typeof $this.data('conditions')) === 'string') $this.data('conditions', {});
 				if (!$this.data('conditions').hasOwnProperty(condition_name)) {
 					$this.data('conditions')[condition_name] = { element: $condition, values: {}};
 				}
@@ -442,7 +481,7 @@ $('document').ready(function()
 							$.each(condition.values, function(value) {
 								var element_value = (condition.element.attr('type') === 'checkbox')
 									? (condition.element.is(':checked') ? 1 : 0) : condition.element.val();
-								return !(found = (element_value == value));
+								return !(found = (element_value === value));
 							});
 							return (show = found);
 						});
@@ -482,12 +521,12 @@ $('document').ready(function()
 				$.post(uri, $form.formSerialize(), function(data)
 				{
 					if (data) {
-						if (data.substr(0, 1) == '{') {
+						if (data.substr(0, 1) === '{') {
 							$.each(JSON.parse(data), function(name, value) {
 								// TODO should be able to set value for any form field tag (like select)
 								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
-								if (((typeof value) == 'string') && (value.substr(0, 1) == ':')) {
-									if ($input.val() == false) {
+								if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
+									if ($input.val() === false) {
 										// false ie '0', ' or 0
 										$input.val(value.substr(1));
 										$input.change();
