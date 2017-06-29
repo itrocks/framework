@@ -252,33 +252,33 @@ class Contextual_Mysqli extends mysqli
 		return (strtoupper(substr(trim($query), 0, 6)) === 'UPDATE');
 	}
 
+	//------------------------------------------------------------------------------------ lastUpdate
 	/**
-	 * Get the date of last update of the table of the given class.
+	 * Gets the date of the last update of the table of the given class.
 	 *
-	 * Returns the date of last update of the table formatted as Y-m-d H:i:s, FALSE if information
-	 * cannot be retrieved.
+	 * Returns the date of the last update of the table formatted using 'Y-m-d H:i:s'.
+	 * Returns null if the information cannot be retrieved.
 	 *
-	 * @param $class_name string : The name of the class.
+	 * @param $class_name string The name of the class.
 	 *
-	 * @return bool|string
+	 * @return string|null ISO date
 	 */
 	public function lastUpdate($class_name)
 	{
 		$table_name = Dao::current()->storeNameOf($class_name);
-		$query      = "SELECT UPDATE_TIME
-				       FROM
-				       	information_schema.TABLES
-				       WHERE TABLE_SCHEMA = '{$this->database}'
-				         AND UPDATE_TIME IS NOT NULL
-				         AND TABLE_NAME = '$table_name'";
+		$query      = "
+SELECT `UPDATE_TIME`
+FROM `information_schema`.`TABLES`
+WHERE `TABLE_NAME` = '$table_name'
+AND `TABLE_SCHEMA` = '{$this->database}'
+AND `UPDATE_TIME` IS NOT NULL
+		";
 
-		$info = $this->query($query)->fetch_assoc();
+		$information = $this->query($query)->fetch_assoc();
 
-		if (isset($info['UPDATE_TIME'])) {
-			return $info['UPDATE_TIME'];
-		}
-
-		return false;
+		return isset($information['UPDATE_TIME'])
+			? $information['UPDATE_TIME']
+			: null;
 	}
 
 	//----------------------------------------------------------------------------------------- query
