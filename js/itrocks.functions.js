@@ -147,3 +147,40 @@ redirect = function(uri, target)
 		});
 	}
 };
+
+//----------------------------------------------------------------------------------- redirectLight
+/**
+ * Load an URI into target
+ * Light version, without history and can add condition.
+ * Load only if target exist and condition is respected.
+ * No history and no change title (used for refresh functions)
+ *
+ * @param uri       string        uri to load
+ * @param target    string|object jquery set object or selector (string)
+ * @param condition callable      callable function to check (not mandatory)
+ */
+redirectLight = function(uri, target, condition)
+{
+	//noinspection JSUnresolvedVariable
+	var app = window.app;
+	var more = (
+		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
+	) ? '?as_widget' : '';
+	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
+		uri = app.uri_base + uri;
+	}
+	if (!more) {
+		// Not allowed
+	}
+	else {
+		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		$.ajax({
+			url:     app.addSID(uri + more),
+			success: function(data) {
+				if (!condition || condition()) {
+					$target.html(data).build();
+				}
+			}
+		});
+	}
+};
