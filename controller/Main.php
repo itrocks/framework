@@ -150,8 +150,8 @@ class Main
 		$result = call_user_func_array(
 			[$controller, $method_name],
 			($controller instanceof Class_Controller)
-			? [$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
-			: [$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name]
+				? [$uri->parameters, $post, $files, $uri->feature_name, $uri->controller_name]
+				: [$uri->parameters, $post, $files, $uri->controller_name, $uri->feature_name]
 		);
 		if (isset($exit_context)) {
 			Loc::exitContext();
@@ -234,7 +234,7 @@ class Main
 	private function loadConfiguration()
 	{
 		$configurations = new Configurations();
-		$config = $configurations->getConfigurationFileNameFromComposer();
+		$config         = $configurations->getConfigurationFileNameFromComposer();
 		if (!isset($config)) {
 			$config = isset($_SERVER['CONFIG'])
 				? ($_SERVER['CONFIG'] . '/config.php')
@@ -279,9 +279,9 @@ class Main
 				// weaver is not set : keep plugin definition for further registering and activation
 				if (!isset($weaver)) {
 					$must_register[] = [
-						'plugin'               => $plugin,
 						'class_name'           => $class_name,
 						'level'                => $level,
+						'plugin'               => $plugin,
 						'plugin_configuration' => $plugin_configuration
 					];
 				}
@@ -350,7 +350,7 @@ class Main
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
 			Loc::$disabled = false;
-			$result = $this->runController($uri, $get, $post, $files);
+			$result        = $this->runController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
@@ -383,9 +383,9 @@ class Main
 	public function runController(
 	 	$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
 	) {
-		$uri = new Uri($uri, $get);
+		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
-		$parameters = clone $uri->parameters;
+		$parameters           = clone $uri->parameters;
 		// TODO: try to read main object once only from database
 		// Note: here by cloning parameters we read twice the main object in database.
 		// once here calling getMainObject(), the other in the specific controller of the URI
@@ -461,7 +461,7 @@ class Main
 			set_include_path($session['include_path']);
 		}
 		else {
-			$include_path = (new Include_Path($application_class))->getIncludePath();
+			$include_path            = (new Include_Path($application_class))->getIncludePath();
 			$session['include_path'] = $include_path;
 			set_include_path($include_path);
 		}
