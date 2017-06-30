@@ -120,7 +120,7 @@ $('document').ready(function()
 							if ((i > (open.length - 1)) && (i < j) && !in_depth) {
 								var k = text.indexOf(close, i);
 								var html_index = text.substring(i, k);
-								if (html_index === old_index) {
+								if (Number(html_index) === old_index) {
 									text = text.substr(0, i) + index + text.substr(k);
 								}
 							}
