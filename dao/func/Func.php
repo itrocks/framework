@@ -155,6 +155,15 @@ abstract class Func
 		return new Is_Greatest($properties);
 	}
 
+	//------------------------------------------------------------------------------------- isNotNull
+	/**
+	 * @return Comparison
+	 */
+	public static function isNotNull()
+	{
+		return new Comparison(Comparison::NOT_EQUAL, null);
+	}
+
 	//---------------------------------------------------------------------------------------- isNull
 	/**
 	 * @return Comparison
