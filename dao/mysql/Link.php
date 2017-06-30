@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Option\Cache_Result;
 use ITRocks\Framework\Dao\Option\Create_If_No_Result;
 use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use mysqli_result;
@@ -1032,6 +1033,7 @@ class Link extends Dao\Sql\Link
 	 */
 	public function search($what, $class_name = null, $options = [])
 	{
+		// prepare arguments
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
 		}
@@ -1039,14 +1041,27 @@ class Link extends Dao\Sql\Link
 			$class_name = get_class($what);
 		}
 		$class_name = Builder::className($class_name);
-		$builder    = new Select($class_name, null, $what, $this, $options);
-		$query      = $builder->buildQuery();
-		$this->setContext($builder->getJoins()->getClassNames());
-		$result_set = $this->connection->query($query);
-		if ($options) {
-			$this->getRowsCount('SELECT', $options, $result_set);
+
+		// read result from cache
+		$cache_result = Cache_Result::get($options);
+		$objects = $cache_result ? $cache_result->cachedResult($what, $class_name, $options) : null;
+		if (!isset($objects)) {
+			// was not in cache or no cache : prepare and execute query
+			$builder = new Select($class_name, null, $what, $this, $options);
+			$query   = $builder->buildQuery();
+			$this->setContext($builder->getJoins()->getClassNames());
+			$result_set = $this->connection->query($query);
+			if ($options) {
+				$this->getRowsCount('SELECT', $options, $result_set);
+			}
+			$objects = $this->fetchAll($class_name, $options, $result_set);
+			// store result in cache
+			if ($cache_result) {
+				$cache_result->cacheResult($what, $class_name, $options, $objects);
+			}
 		}
-		$objects = $this->fetchAll($class_name, $options, $result_set);
+
+		// after read
 		$this->afterReadMultiple($objects, $options);
 		if (!$objects && ($created = $this->createObjectIfOption($what, $class_name, $options))) {
 			$objects = [$created];

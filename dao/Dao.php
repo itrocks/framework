@@ -67,6 +67,18 @@ class Dao implements Configurable
 		}
 	}
 
+	//----------------------------------------------------------------------------------- cacheResult
+	/**
+	 * Cache where options and query result
+	 * And use cached result if exists
+	 *
+	 * @return Option\Cache_Result
+	 */
+	public static function cacheResult()
+	{
+		return new Option\Cache_Result();
+	}
+
 	//---------------------------------------------------------------------------------- classNamesOf
 	/**
 	 * Gets the class name associated to a store set name
