@@ -209,7 +209,7 @@ class Functions
 			);
 		}
 		if ($object instanceof Reflection_Property_Value) {
-			return $this->getEditReflectionPropertyValue(
+			return $this->getEditReflectionProperty(
 				$object, $name, $ignore_user, $can_always_be_null
 			);
 		}
@@ -309,42 +309,20 @@ class Functions
 
 	//--------------------------------------------------------------------- getEditReflectionProperty
 	/**
-	 * Returns an HTML edit widget for current Reflection_Property object
+	 * Returns an HTML edit widget for current Reflection_Property|Reflection_Property_Value object
 	 *
-	 * @param $property    Reflection_Property
-	 * @param $name        string
-	 * @param $ignore_user boolean ignore @user annotation, to disable invisible and read-only
-	 * @return string
-	 */
-	protected function getEditReflectionProperty(Reflection_Property $property, $name, $ignore_user)
-	{
-		$property_edit             = new Html_Builder_Property($property);
-		$property_edit->conditions = [];
-		$property_edit->name       = $name ?: $property->path;
-		$property_edit->preprop    = null;
-		if ($ignore_user) {
-			$property_edit->readonly = false;
-		}
-		// TODO LOW validate that we do not need $can_always_be_null here
-		return $property_edit->build();
-	}
-
-	//---------------------------------------------------------------- getEditReflectionPropertyValue
-	/**
-	 * Returns an HTML edit widget for current Reflection_Property_Value object
-	 *
-	 * @param $object             Reflection_Property_Value
+	 * @param $property           Reflection_Property
 	 * @param $name               string
 	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
 	 * @param $can_always_be_null boolean ignore @null annotation and consider this can always be null
 	 * @return string
 	 */
-	protected function getEditReflectionPropertyValue(
-		Reflection_Property_Value $object, $name, $ignore_user, $can_always_be_null
+	protected function getEditReflectionProperty(
+		Reflection_Property $property, $name, $ignore_user, $can_always_be_null = false
 	) {
-		$property_edit             = new Html_Builder_Property($object);
+		$property_edit             = new Html_Builder_Property($property);
 		$property_edit->conditions = [];
-		$property_edit->name       = $name ?: $object->path;
+		$property_edit->name       = $name ?: $property->path;
 		$property_edit->preprop    = null;
 		if ($ignore_user) {
 			$property_edit->readonly = false;

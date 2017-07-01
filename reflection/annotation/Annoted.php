@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation;
 
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
@@ -19,6 +20,11 @@ trait Annoted
 	//---------------------------------------------------------------------------------- $annotations
 	/**
 	 * Local annotations cache
+	 *
+	 * Key is the name of the annotation.
+	 * Value is :
+	 * - an Annotation, if the annotation is single
+	 * - an array of annotations Annotation[], if the annotation is multiple
 	 *
 	 * @var array
 	 */
@@ -246,7 +252,7 @@ trait Annoted
 	//---------------------------------------------------------------------------- setAnnotationLocal
 	/**
 	 * Sets an annotation to local and return the local annotation object.
-	 * This enable to get a copy of the notation visible into this reflection object only,
+	 * This enable to get a copy of the annotation visible into this reflection object only,
 	 * that you can change without affecting others equivalent reflection objects.
 	 *
 	 * If the annotation was already set to local, this local annotation is returned without reset.
@@ -276,6 +282,36 @@ trait Annoted
 	{
 		$path = $this->getAnnotationCachePath();
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = $annotations;
+	}
+
+	//--------------------------------------------------------------------------- setAnnotationsLocal
+	/**
+	 * Sets a multiple annotations to local and return the local annotations objects.
+	 * This enable to get a copy of the annotations visible into this reflection object only,
+	 * that you can change without affecting others equivalent reflection objects.
+	 *
+	 * If the annotations were already set to local, these local annotations are returned without
+	 * reset.
+	 *
+	 * @param $annotation_name string
+	 * @param $annotations     Multiple_Annotation[] Optional : force the new annotations
+	 * @return Annotation[]
+	 */
+	public function & setAnnotationsLocal($annotation_name, array $annotations = null)
+	{
+		if (isset($annotations)) {
+			$this->annotations[$annotation_name] = $annotations;
+			return $annotations;
+		}
+		if (isset($this->annotations[$annotation_name])) {
+			return $this->annotations[$annotation_name];
+		}
+		$annotations = $this->getAnnotations($annotation_name);
+		foreach ($annotations as $key => $annotation) {
+			$annotations[$key] = clone $annotation;
+		}
+		$this->annotations[$annotation_name] =& $annotations;
+		return $annotations;
 	}
 
 }
