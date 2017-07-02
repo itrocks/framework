@@ -41,6 +41,6 @@ abstract class Error_Code
 	 * the problem, and change the error code to 2. The stop date and duration are already set by
 	 * the last resume() and do not need to be changed.
 	 */
-	const RUNNING = 3;
+	const RUNNING = -1;
 
 }

@@ -60,6 +60,7 @@ class Entry
 	 * Error code enable to know how the script stopped
 	 *
 	 * @see Error_Code
+	 * @signed
 	 * @var integer
 	 */
 	public $error_code;
@@ -223,10 +224,9 @@ class Entry
 	//------------------------------------------------------------------------------------------ stop
 	public function stop()
 	{
-		$this->error_code = Error_Code::OK;
-		$this->duration   = microtime(true) - $this->duration_start;
+		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-		$this->stop       = new Date_Time();
+		$this->stop         = new Date_Time();
 	}
 
 }
