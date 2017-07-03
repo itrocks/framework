@@ -81,7 +81,10 @@ class Reflection_Property_Value extends Reflection_Property
 			$this->object = $object;
 		}
 		else {
-			echo 'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name . BR;
+			trigger_error(
+				'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name,
+				E_USER_WARNING
+			);
 		}
 		$this->user = $user;
 	}
@@ -98,7 +101,10 @@ class Reflection_Property_Value extends Reflection_Property
 	{
 		$property = new Reflection_Property($this->class, $this->name);
 		$value = isset($property->$key) ? $property->$key : null;
-echo 'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !<br>';
+		trigger_error(
+			'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !',
+			E_USER_WARNING
+		);
 		return $value;
 	}
 
@@ -112,7 +118,10 @@ echo 'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH 
 	 */
 	public function __set($key, $value)
 	{
-echo 'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !<br>';
+		trigger_error(
+			'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !',
+			E_USER_WARNING
+		);
 		$property = (new Reflection_Property($this->class, $this->name));
 		$property->$key = $value;
 	}
