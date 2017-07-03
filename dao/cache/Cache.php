@@ -28,13 +28,13 @@ class Cache implements Configurable, Registerable
 	/**
 	 * @var array keys are [$class_name string][$identifier integer], value is a Cached
 	 */
-	private $cache = [];
+	protected $cache = [];
 
 	//---------------------------------------------------------------------------------------- $count
 	/**
 	 * @var integer
 	 */
-	private $count = 0;
+	protected $count = 0;
 
 	//-------------------------------------------------------------------------------------- $enabled
 	/**
@@ -42,7 +42,7 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	private $enabled;
+	protected $enabled;
 
 	//------------------------------------------------------------------------------------- $features
 	/**
@@ -53,7 +53,7 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	private $features = Feature::READ_ONLY;
+	protected $features = Feature::READ_ONLY;
 
 	//-------------------------------------------------------------------------------------- $maximum
 	/**
@@ -61,13 +61,13 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @var integer
 	 */
-	private $maximum = 9999;
+	protected $maximum = 9999;
 
 	//---------------------------------------------------------------------------------------- $purge
 	/**
 	 * @var integer
 	 */
-	private $purge = 2000;
+	protected $purge = 2000;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -154,6 +154,20 @@ if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
 		}
 	}
 
+	//---------------------------------------------------------------------------------------- enable
+	/**
+	 * Enable / disable the cache
+	 *
+	 * @param $enable boolean Cache will be enabled if true, or disabled if false
+	 * @return boolean true if was enabled before call, else false
+	 */
+	public function enable($enable = true)
+	{
+		$enabled = $this->enabled;
+		$this->enabled = $enable;
+		return $enabled;
+	}
+
 	//----------------------------------------------------------------------------------------- flush
 	/**
 	 * Flush cache
@@ -164,7 +178,7 @@ if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
 		$this->cache = [];
 	}
 
-	//------------------------------------------------------------------------------------------- get
+	//------------------------------------------------------------------------------- getCachedObject
 	/**
 	 * Get cached object
 	 *
@@ -172,7 +186,7 @@ if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
 	 * @param $identifier integer
 	 * @return object the cached object, null if none
 	 */
-	public function get($class_name, $identifier)
+	public function getCachedObject($class_name, $identifier)
 	{
 		if (!$this->enabled) {
 			return null;
@@ -224,7 +238,7 @@ if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
 		$aop = $register->aop;
 		$aop->afterMethod ([Link::class, 'read'],              [$this, 'cacheReadObject']);
 		$aop->afterMethod ([Link::class, 'write'],             [$this, 'cacheWriteObject']);
-		$aop->beforeMethod([Link::class, 'read'],              [$this, 'get']);
+		$aop->beforeMethod([Link::class, 'read'],              [$this, 'getCachedObject']);
 		$aop->afterMethod ([Link::class, 'delete'],            [$this, 'removeObject']);
 		$aop->beforeMethod([Main::class, 'executeController'], [$this, 'toggleCacheActivation']);
 	}
