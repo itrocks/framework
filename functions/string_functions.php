@@ -314,6 +314,34 @@ function strReplaceArray($search, $replace, array $subjects)
 	return $subjects;
 }
 
+//-------------------------------------------------------------------------------------- strReplace
+/**
+ * Search and replace values until all instances were replaced. Loop if there are still values to
+ * be replaced after each search-and-replace
+ *
+ * @example strReplaceLoop(['--' => '-'], 'a---text--with-dashes) => 'a-text-with-dashes'
+ * @param $search_replace string[] key is the searched value, value is the replacement value
+ * @param $subject        string   the text where to make the replacement into
+ * @return string the subject with applied replacements
+ */
+function strReplaceLoop(array $search_replace, $subject)
+{
+	do {
+		$found = false;
+		foreach ($search_replace as $search => $replace) {
+			if (!$found && (strpos($subject, $search) !== false)) {
+				$found = true;
+				break;
+			}
+			if ($found) {
+				$subject = str_replace($search, $replace, $subject);
+			}
+		}
+	}
+	while ($found);
+	return $subject;
+}
+
 //------------------------------------------------------------------------------------- strSimplify
 /**
  * Returns a very simplified version of string :
