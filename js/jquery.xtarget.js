@@ -342,6 +342,7 @@
 			{
 				if (
 					(event.originalEvent.state !== undefined)
+					&& event.originalEvent.state
 					&& (event.originalEvent.state.reload !== undefined)
 					&& event.originalEvent.state.reload
 				) {
