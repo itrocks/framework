@@ -73,6 +73,15 @@ class List_Annotation extends Annotation
 		parent::__construct($values);
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return '[' . strval(join(',', $this->value)) . ']';
+	}
+
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Adds a value to the annotation list of values
