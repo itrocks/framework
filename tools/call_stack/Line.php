@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Call_Stack;
 
+use Closure;
 use ITRocks\Framework\Dao;
 
 /**
@@ -90,7 +91,7 @@ class Line
 	protected function dumpArgument($argument, $max_length, $max_array_length)
 	{
 		if (is_object($argument)) {
-			$identifier = Dao::getObjectIdentifier($argument);
+			$identifier = ($argument instanceof Closure) ? null : Dao::getObjectIdentifier($argument);
 			if (method_exists($argument, '__toString')) {
 				$identifier = (isset($identifier) ? ($identifier . '=') : '') . strval($argument);
 			}
