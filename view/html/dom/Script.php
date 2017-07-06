@@ -16,7 +16,7 @@ class Script extends Element
 	public function __construct($script = '')
 	{
 		parent::__construct('script');
-		$this->setContent($script);
+		$this->setContent(LF . $script . LF);
 	}
 
 }

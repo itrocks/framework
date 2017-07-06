@@ -121,7 +121,10 @@ class Uri
 		$key = 0;
 		$controller_element = '';
 		foreach ($uri as $key => $controller_element) {
-			if (ctype_lower($controller_element[0]) || is_numeric($controller_element)) {
+			if (
+				is_numeric($controller_element)
+				|| (strlen($controller_element) && ctype_lower($controller_element[0]))
+			) {
 				break;
 			}
 		}

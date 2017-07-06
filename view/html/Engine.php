@@ -17,9 +17,8 @@ use ITRocks\Framework\View\Html\Dom\Script;
 class Engine implements Configurable, Framework\View\Engine
 {
 
-	//------------------------------------------- Html view engine configuration array keys constants
-	const CSS = 'css';
-	//----------------------------------------------------------------------------------- CSS_DEFAULT
+	//------------------------------------------- HTML view engine configuration array keys constants
+	const CSS         = 'css';
 	const CSS_DEFAULT = 'default';
 
 	//------------------------------------------------------------------------------------------ $css
@@ -161,7 +160,10 @@ class Engine implements Configurable, Framework\View\Engine
 	 */
 	public function redirect($link, $options)
 	{
-		$link = Paths::$uri_base . $link . (strpos('?', $link) ? '&' : '?') . 'as_widget';
+		$link = Paths::$uri_base . str_replace('&amp;', '&', $link);
+		if (isset($_GET['as_widget']) && (strpos($link, 'as_widget') === false)) {
+			$link .= ((strpos($link, '?') === false) ? '?' : '&') . 'as_widget';
+		}
 		if (!is_array($options)) {
 			$options = [$options];
 		}

@@ -354,6 +354,10 @@ class Main
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
+				if (($query_position = strpos($uri, '?')) !== false) {
+					list($uri, $query) = explode('?', $uri, 2);
+					parse_str(str_replace('&amp;', '&', $query), $get);
+				}
 				$result = $this->run($uri, $get, $post, $files);
 			}
 		}
@@ -361,7 +365,7 @@ class Main
 			$handled_error = new Handled_Error(
 				$exception->getCode(), $exception->getMessage(),
 				$exception->getFile(), $exception->getLine()
-				);
+			);
 			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
 			$handler->handle($handled_error);
 		}
