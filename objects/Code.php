@@ -29,6 +29,22 @@ abstract class Code
 		return trim($this->code . SP . $this->name);
 	}
 
+	//---------------------------------------------------------------------------------------- equals
+	/**
+	 * Returns true if the two codes are equal :
+	 * - if at least one of them has a code and the codes are equal : it is the same
+	 * - else if they have no code and the names are equal : it is the same
+	 *
+	 * @param $code Code
+	 * @return boolean
+	 */
+	public function equals(Code $code)
+	{
+		return ($this->code || $code->code)
+			? ($this->code === $code->code)
+			: ($this->name === $code->name);
+	}
+
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * Returns the Codes that match a string
