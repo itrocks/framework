@@ -62,5 +62,5 @@ before_script:
 
 test:
   script:
-    - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -g verbose=true
+    - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -p verbose=true
     - php /frameworkci/itrocks/framework/console.php /ITRocks/Framework/Tests/run
