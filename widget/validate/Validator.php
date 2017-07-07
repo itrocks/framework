@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Mapper\Null_Object;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection;
@@ -34,6 +35,7 @@ use ITRocks\Framework\Widget\Write\Write_Controller;
  */
 class Validator implements Registerable
 {
+	use Has_Get;
 
 	//--------------------------------------------------------------------------------------- $report
 	/**
