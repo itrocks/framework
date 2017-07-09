@@ -248,7 +248,7 @@ class Image
 			}
 		}
 		$destination = $this->newImageKeepsAlpha($width, $height);
-		$this->fillImage();
+		$destination->fillImage();
 		imagecopyresampled(
 			$destination->resource, $this->resource, $dx, $dy, 0, 0, $dw, $dh, $this->width, $this->height
 		);
