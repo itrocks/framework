@@ -93,12 +93,14 @@ class Image
 
 	//-------------------------------------------------------------------------------- createFromFile
 	/**
-	 * @param $filename string
+	 * @param $file File|string
 	 * @return Image
 	 */
-	public static function createFromFile($filename)
+	public static function createFromFile($file)
 	{
-		return self::createFromString(file_get_contents($filename));
+		return self::createFromString(file_get_contents(
+			($file instanceof File) ? $file->temporary_file_name : $file
+		));
 	}
 
 	//------------------------------------------------------------------------------ createFromString
@@ -159,14 +161,14 @@ class Image
 	 * @param $height integer
 	 * @return Image
 	 */
-	protected function newImageKeepsAlpha($width = null, $height = null)
+	public function newImageKeepsAlpha($width = null, $height = null)
 	{
 		if (!$height) $height = $this->height;
-		if (!$width)  $width = $this->width;
+		if (!$width)  $width  = $this->width;
 
 		$image = new Image($width, $height, null, $this->type);
 
-		if ($this->type == IMAGETYPE_PNG) {
+		if ($this->type === IMAGETYPE_PNG) {
 			imagecolortransparent(
 				$image->resource, imagecolorallocatealpha($image->resource, 0, 0, 0, 127)
 			);
@@ -176,6 +178,36 @@ class Image
 			imagesavealpha($image->resource, true);
 		}
 		return $image;
+	}
+
+	//----------------------------------------------------------------------------------------- paste
+	/**
+	 * Paste an image into another, at a given position
+	 *
+	 * You can optionally crop a part of the source image
+	 *
+	 * @param $source_image  Image
+	 * @param $left          integer
+	 * @param $top           integer
+	 * @param $source_left   integer
+	 * @param $source_top    integer
+	 * @param $source_width  integer
+	 * @param $source_height integer
+	 */
+	public function paste(
+		Image $source_image, $left = 0, $top = 0, $source_left = 0, $source_top = 0,
+		$source_width = 0, $source_height = 0
+	) {
+		if (!$source_width) {
+			$source_width = $source_image->width - $source_left;
+		}
+		if (!$source_height) {
+			$source_height = $source_image->height - $source_top;
+		}
+		imagecopy(
+			$this->resource, $source_image->resource, $left, $top, $source_left, $source_top,
+			$source_width, $source_height
+		);
 	}
 
 	//---------------------------------------------------------------------------------------- resize
