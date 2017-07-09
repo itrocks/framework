@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Dao\File\Session_File;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Dao\File\Session_File;
 use Serializable;
 
 /**
@@ -20,6 +22,19 @@ class Files implements Serializable
 	 * @var File[]
 	 */
 	public $files;
+
+	//--------------------------------------------------------------------------------- addAndGetLink
+	/**
+	 * Adds a file and gets a link to this file
+	 *
+	 * @param $file File
+	 * @return string
+	 */
+	public function addAndGetLink(File $file)
+	{
+		$this->files[$file->name] = $file;
+		return str_replace(BS, SL, Session_File::class) . SL . Feature::F_OUTPUT . SL . $file->name;
+	}
 
 	//------------------------------------------------------------------------------------- serialize
 	/**
@@ -45,7 +60,7 @@ class Files implements Serializable
 		foreach (unserialize($serialized) as $file_name => $temporary_file_name) {
 			/** @var $file File */
 			$file                      = Builder::create(File::class);
-			$this->files[]             = $file;
+			$this->files[$file_name]   = $file;
 			$file->name                = $file_name;
 			$file->temporary_file_name = $temporary_file_name;
 		}
