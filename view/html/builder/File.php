@@ -58,16 +58,23 @@ class File
 	 */
 	protected function buildFileAnchor(Dao\File $file)
 	{
+		$feature                = Feature::F_OUTPUT;
 		/** @var $session_files Files */
 		$session_files          = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
 		$image = ($file->getType()->is('image'))
 			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name, 22]))
 			: '';
+
+		if ($image) {
+			$feature = 'image';
+		}
+
 		$anchor = new Anchor(
-			View::link(Session_File::class, 'image', [$file->name]),
+			View::link(Session_File::class, $feature, [$file->name]),
 			$image . new Span($file->name)
 		);
+
 		if ($file->getType()->is('image')) {
 			$anchor->setAttribute('target', Target::BLANK);
 		}
