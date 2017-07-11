@@ -71,6 +71,7 @@ class Select_Test extends Test
 	{
 		/** @var $dao Link */
 		$dao        = Dao::current();
+		$errors     = [];
 		$properties = $this->propertyNames($class, $depth - 1);
 		$builder    = new Select($class->name, $properties);
 		$query      = 'EXPLAIN ' . $builder->buildQuery();
@@ -84,23 +85,26 @@ class Select_Test extends Test
 				throw $exception;
 			}
 			catch (Exception $exception) {
-				if (beginsWith($dao->getConnection()->last_error, ('Too many tables'))) {
-					$this->perProperty($class, $depth);
+				if ($dao->getConnection()->last_errno == Dao\Mysql\Errors::ER_TOO_MANY_TABLES) {
+					$errors = array_merge($errors,$this->perProperty($class, $depth));
 				}
 				else {
-					$this->fail($class->name . '|' . $dao->getConnection()->last_error . PRE . $query . _PRE);
+					$errors[] = $query;
 				}
 				flush();
 				ob_flush();
 			}
 		}
-		$this->assertTrue(true, $class->name);
+		$this->assertEquals([], $errors, $class->name);
 	}
 
 	//----------------------------------------------------------------------------------- perProperty
 	/**
 	 * @param $class Reflection_Class
 	 * @param $depth integer
+	 *
+	 * @return array
+	 * @throws Exception
 	 */
 	private function perProperty(Reflection_Class $class, $depth)
 	{
@@ -116,21 +120,16 @@ class Select_Test extends Test
 					$dao->setContext();
 					$dao->query($query);
 				}
+				catch (PHPUnit_Exception $exception) {
+					throw $exception;
+				}
 				catch (Exception $exception) {
 					$errors[] = $query;
 				}
 			}
 		}
-		if ($errors) {
-			$this->assertEquals(
-				'works',
-				$dao->getConnection()->last_error . PRE . print_r($errors, true) . _PRE,
-				$class->name
-			);
-		}
-		else {
-			$this->assume($class->name, 'works', 'works');
-		}
+
+		return $errors;
 	}
 
 	//--------------------------------------------------------------------------------- propertyNames
