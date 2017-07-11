@@ -275,9 +275,12 @@
 					if ($this.hasClass(settings.submit)) {
 						var $parent_form = $this.closest('form');
 						if ($parent_form.length) {
+							/*
+							TODO: 97556 Rework required properies first
 							if (!reportValidity($parent_form[0])) {
 								return;
 							}
+							*/
 							if ($parent_form.ajaxSubmit !== undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 									url:  urlAppend(this.href, this.search),
