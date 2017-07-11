@@ -57,8 +57,6 @@ echo (new Main)
 	])
 	->run($_SERVER['PATH_INFO'], $_GET, $_POST, $_FILES);
 
-include __DIR__ . '/../../97396.php';
-
 // Display result on client browser now, as session serialization could take a moment
 flush();
 
