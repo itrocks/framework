@@ -5,6 +5,7 @@ use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -28,12 +29,13 @@ class Entry
 	use Framework\Dao\Mysql\File_Logger\Entry;
 	use Framework\View\Logger\Entry;
 
-	//------------------------------------------------------------------------------------ $arguments
+	//----------------------------------------------------------------------------------------- $data
 	/**
-	 * @max_length 65000
-	 * @var string
+	 * @component
+	 * @link Object
+	 * @var Data
 	 */
-	public $arguments;
+	public $data;
 
 	//------------------------------------------------------------------------------------- $duration
 	/**
@@ -53,31 +55,7 @@ class Entry
 	 * @store false
 	 * @var float
 	 */
-	private $duration_start;
-
-	//----------------------------------------------------------------------------------- $error_code
-	/**
-	 * Error code enable to know how the script stopped
-	 *
-	 * @see Error_Code
-	 * @signed
-	 * @var integer
-	 */
-	public $error_code;
-
-	//---------------------------------------------------------------------------------------- $files
-	/**
-	 * @max_length 65000
-	 * @var string
-	 */
-	public $files;
-
-	//----------------------------------------------------------------------------------------- $form
-	/**
-	 * @max_length 65000
-	 * @var string
-	 */
-	public $form;
+	protected $duration_start;
 
 	//--------------------------------------------------------------------------------- $memory_usage
 	/**
@@ -164,20 +142,11 @@ class Entry
 			if (!isset($this->session_id)) {
 				$this->session_id = session_id();
 			}
-			if (isset($arguments) && !isset($this->arguments)) {
-				$this->arguments = $this->serialize($arguments);
-			}
 			if (isset($uri) && !isset($this->uri)) {
 				$this->uri = $uri;
 			}
-			if (isset($files) && !isset($this->files)) {
-				$this->files = $this->serialize($files);
-			}
-			if (isset($form) && !isset($this->form)) {
-				if (isset($form['password'])) {
-					$form['password'] = '***';
-				}
-				$this->form = $this->serialize($form);
+			if (($arguments || $form || $files) && !$this->data) {
+				$this->data = new Data($arguments, $form, $files);
 			}
 
 			$this->user = User::current();
@@ -206,8 +175,8 @@ class Entry
 	//---------------------------------------------------------------------------------------- resume
 	public function resume()
 	{
-		$this->stop();
-		$this->error_code = Error_Code::RUNNING;
+		$this->duration     = microtime(true) - $this->duration_start;
+		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
 	}
 
 	//------------------------------------------------------------------------------------- serialize

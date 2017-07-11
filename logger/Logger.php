@@ -3,6 +3,7 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Logger\Entry;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -11,6 +12,7 @@ use ITRocks\Framework\Plugin\Registerable;
  */
 class Logger implements Registerable
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------------ $anti_loop
 	/**
