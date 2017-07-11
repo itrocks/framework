@@ -159,7 +159,7 @@ $('document').ready(function()
 		//-------------------------------------------------------------------------- checkCompletedDate
 		var checkCompletedDate = function($datetime)
 		{
-			if ($datetime.val() === ''){
+			if ($datetime.val() === '') {
 				return true;
 			}
 			var formattedNow = $.datepicker.formatDate(
