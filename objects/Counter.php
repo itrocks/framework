@@ -68,24 +68,42 @@ class Counter
 	{
 		/** @var $dao Link */
 		$dao = Dao::current();
+		echo date('I:s.u') . " begin...\n";
 		$dao->begin();
+		echo date('I:s.u') . " begun\n";
 		if (empty($identifier)) {
 			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
 		$table_name = $dao->storeNameOf(__CLASS__);
+		echo date('I:s.u') . " lock record...\n";
 		$lock       = $dao->lockRecord(
 			$table_name,
 			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 1
 		);
+		echo date('I:s.u') . " record locked > sleep 1\n";
+		sleep(1);
+		echo date('I:s.u') . " search counter...\n";
 		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
 			?: new Counter($identifier);
+		echo date('I:s.u') . " counter found " . $counter->last_value . " > sleep 1\n";
+		sleep(1);
+		echo date('I:s.u') . " calculate next value...\n";
 		$next_value = $counter->next($object);
+		echo date('I:s.u') . " new value = $next_value > sleep 1\n";
+		sleep(1);
+		echo date('I:s.u') . " write counter...\n";
 		$dao->write(
 			$counter,
 			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
 		);
+		echo date('I:s.u') . " counter written > sleep 1\n";
+		sleep(1);
+		echo date('I:s.u') . " unlock...\n";
 		$dao->unlock($lock);
+		echo date('I:s.u') . " unlocked\n";
+		echo date('I:s.u') . " commit...\n";
 		$dao->commit();
+		echo date('I:s.u') . " committed\n";
 		return $next_value;
 	}
 
