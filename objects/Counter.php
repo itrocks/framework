@@ -73,8 +73,11 @@ class Counter
 			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
 		$table_name = $dao->storeNameOf(__CLASS__);
-		$lock       = $dao->lockRecord($table_name, $identifier);
-		$counter = Dao::searchOne(['identifier' => $identifier], get_called_class())
+		$lock       = $dao->lockRecord(
+			$table_name,
+			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 1
+		);
+		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
 			?: new Counter($identifier);
 		$next_value = $counter->next($object);
 		$dao->write(
