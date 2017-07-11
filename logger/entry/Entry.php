@@ -13,6 +13,7 @@ use ITRocks\Framework\User;
  * Log class stores logs information
  *
  * @business
+ * @list start, stop, duration, uri, data.arguments
  * @representative start, uri
  * @store_name logs
  */
