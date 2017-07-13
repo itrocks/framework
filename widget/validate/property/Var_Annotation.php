@@ -15,6 +15,12 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 {
 	use Annotation;
 
+	//------------------------------------------------------------------------------- $report_message
+	/**
+	 * @var string
+	 */
+	protected $report_message;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 *
@@ -31,11 +37,15 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * Gets the last validate() call resulting report message
 	 *
+	 * @param $report_message string
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage($report_message = null)
 	{
-		return '';
+		if (isset($report_message)) {
+			$this->report_message = $report_message;
+		}
+		return strval($this->report_message);
 	}
 
 	//-------------------------------------------------------------------------------------- validate
