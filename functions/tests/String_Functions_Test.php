@@ -97,7 +97,7 @@ class String_Functions_Test extends Test
 	 */
 	public function testReplaceAccents($string, $expected)
 	{
-		$actual = replaceAccents($string);
+		$actual = removeAccents($string);
 
 		$this->assertEquals($expected, $actual);
 	}

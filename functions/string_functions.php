@@ -172,7 +172,7 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
 	return lParse(rParse($string, $begin_separator, $count), $end_separator);
 }
 
-//---------------------------------------------------------------------------------- replaceAccents
+//----------------------------------------------------------------------------------- removeAccents
 /**
  * Replace accents by the closest char in the given string.
  *
@@ -180,7 +180,7 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
  *
  * @return string
  */
-function replaceAccents($string)
+function removeAccents($string)
 {
 	$str_simplify = [
 		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
@@ -401,7 +401,7 @@ function strSimplify($string, $extended = false, $joker = null)
 		}
 	}
 
-	$string = replaceAccents($string);
+	$string = removeAccents($string);
 
 	for ($i = 0; $i < strlen($string); $i ++) {
 		$c = $string{$i};
