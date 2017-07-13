@@ -100,7 +100,9 @@ class File
 	public function getContent()
 	{
 		if (isset($this->temporary_file_name) && !isset($this->content)) {
-			$this->content = file_get_contents($this->temporary_file_name);
+			$this->content = file_exists($this->temporary_file_name)
+				? file_get_contents($this->temporary_file_name)
+				: null;
 		}
 		return $this->content;
 	}
