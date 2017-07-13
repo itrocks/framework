@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -538,7 +539,7 @@ class Validator implements Registerable
 				}
 				catch (Exception $exception) {
 					$var_annotation = new Var_Annotation($property->getType()->asString(), $property);
-					$var_annotation->reportMessage('bad format');
+					$var_annotation->reportMessage(Loc::tr('bad format'));
 					$var_annotation->valid  = Result::ERROR;
 					$this->report[]         = $var_annotation;
 					$var_is_valid           = false;
