@@ -68,7 +68,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 			$errors = [];
 			$form   = (new Post_Files())->appendToForm($form, $files);
 			/** @var $import Import */
-			$import = $parameters->getMainObject(Import::class);
+			$import             = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
 			foreach ($form as $file) {
 				if ($file instanceof File) {
@@ -101,12 +101,12 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		// convert from form and session files to worksheets
 		else {
 			/** @var $files File[] */
-			$files = Session::current()->get(Files::class)->files;
+			$files                       = Session::current()->get(Files::class)->files;
 			$parameters->unshift($import = Import_Builder_Form::build($form, $files));
-			$import->class_name = $class_name;
+			$import->class_name          = $class_name;
 		}
 		// prepare parameters
-		$parameters = $parameters->getObjects();
+		$parameters      = $parameters->getObjects();
 		$general_buttons = $this->getGeneralButtons($class_name, $parameters);
 		if (
 			isset($parameters['constant_remove'])
@@ -140,7 +140,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		$files = Session::current()->get(Files::class)->files;
 		foreach ($import->worksheets as $worksheet_number => $worksheet) {
 			if (empty($worksheet->settings->classes)) {
-				$file = $files[$worksheet_number];
+				$file  = $files[$worksheet_number];
 				$array = $file->getCsvContent();
 				$import->worksheets[$worksheet_number] = new Import_Worksheet(
 					$worksheet_number, Import_Settings_Builder::buildArray($array, $class_name), $file
@@ -150,14 +150,15 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		// get general buttons and customized import settings
 		foreach ($import->worksheets as $worksheet_number => $worksheet) {
 			$customized_import_settings = $worksheet->settings->getCustomSettings();
-			$worksheet_general_buttons = $general_buttons;
+			$worksheet_general_buttons  = $general_buttons;
 			if (!isset($customized_import_settings[$worksheet->settings->name])) {
 				unset($worksheet_general_buttons['delete']);
 			}
-			$parameters['custom'][$worksheet_number] = new stdClass();
+			$parameters['custom'][$worksheet_number]                   = new stdClass();
 			$parameters['custom'][$worksheet_number]->customized_lists = $customized_import_settings;
-			$parameters['custom'][$worksheet_number]->general_buttons = $worksheet_general_buttons;
-			$parameters['custom'][$worksheet_number]->settings = $worksheet->settings;
+			$parameters['custom'][$worksheet_number]->file             = $worksheet->file->name;
+			$parameters['custom'][$worksheet_number]->general_buttons  = $worksheet_general_buttons;
+			$parameters['custom'][$worksheet_number]->settings         = $worksheet->settings;
 			$parameters['custom'][$worksheet_number]->aliases_property = Import_Array::getPropertiesAlias(
 				$worksheet->settings->getClassName()
 			);

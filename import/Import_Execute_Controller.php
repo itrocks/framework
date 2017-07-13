@@ -37,13 +37,13 @@ class Import_Execute_Controller implements Default_Feature_Controller
 		$parameters->getMainObject($import);
 		$parameters = $parameters->getObjects();
 		foreach ($import->worksheets as $worksheet) {
-			$array = $worksheet->file->getCsvContent();
+			$array        = $worksheet->file->getCsvContent();
 			$import_array = new Import_Array($worksheet->settings, $import->class_name);
 			try {
 				$import_array->importArray($array);
 			}
 			catch (Import_Exception $exception) {
-				$parameters['detail'] = $exception->getMessage();
+				$parameters['detail']           = $exception->getMessage();
 				$parameters[Template::TEMPLATE] = 'importError';
 			}
 		}

@@ -22,10 +22,10 @@ abstract class Import_Builder_Form
 		$import = new Import();
 		if (isset($form['worksheets'])) {
 			foreach ($form['worksheets'] as $worksheet_name => $worksheet) {
-				if (isset($files[$worksheet_name])) {
+				if (isset($files[$worksheet['file']])) {
 					$settings = Import_Settings_Builder::buildForm($worksheet);
 					$import->worksheets[$worksheet_name] = new Import_Worksheet(
-						$worksheet_name, $settings, $files[$worksheet_name]
+						$worksheet_name, $settings, $files[$worksheet['file']]
 					);
 				}
 			}
