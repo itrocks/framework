@@ -176,8 +176,7 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
 /**
  * Replace accents by the closest char in the given string.
  *
- * @param $string string The string to replace accents in
- *
+ * @param $string string The string to remove accents in
  * @return string
  */
 function removeAccents($string)
