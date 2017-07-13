@@ -542,6 +542,7 @@ class Validator implements Registerable
 					$var_annotation->valid  = Result::ERROR;
 					$this->report[]         = $var_annotation;
 					$var_is_valid           = false;
+					$result                 = Result::andResult($result, Result::ERROR);
 				}
 				if ($var_is_valid) {
 					// if value is not set and is a link (component or not), then we validate only mandatory
