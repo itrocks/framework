@@ -11,7 +11,7 @@ class String_Functions_Test extends Test
 
 	//------------------------------------------------------------------------------- accentsProvider
 	/**
-	 * Provides test data for testReplaceAccents().
+	 * Provides test data for testRemoveAccents().
 	 *
 	 * @return array
 	 */
@@ -87,15 +87,15 @@ class String_Functions_Test extends Test
 		);
 	}
 
-	//---------------------------------------------------------------------------- testReplaceAccents
+	//----------------------------------------------------------------------------- testRemoveAccents
 	/**
-	 * Test function replaceAccents() with several case.
+	 * Test function removeAccents() with several case.
 	 *
 	 * @dataProvider accentsProvider
 	 * @param $string   string The string to replace accents in
 	 * @param $expected string The expected result for the given string
 	 */
-	public function testReplaceAccents($string, $expected)
+	public function testRemoveAccents($string, $expected)
 	{
 		$actual = removeAccents($string);
 
