@@ -172,6 +172,37 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
 	return lParse(rParse($string, $begin_separator, $count), $end_separator);
 }
 
+//---------------------------------------------------------------------------------- replaceAccents
+/**
+ * Replace accents by the closest char in the given string.
+ *
+ * @param $string string The string to replace accents in
+ *
+ * @return string
+ */
+function replaceAccents($string)
+{
+	$str_simplify = [
+		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
+		'Ç' => 'C',
+		'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
+		'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
+		'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
+		'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
+		'Ý' => 'Y', 'Ÿ' => 'Y',
+		'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
+		'ç' => 'c',
+		'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
+		'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
+		'ð' => 'o', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
+		'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
+		'ý' => 'y', 'ÿ' => 'y',
+		'&' => 'and'
+	];
+
+	return strtr($string, $str_simplify);
+}
+
 //-------------------------------------------------------------------------------------- rLastParse
 /**
  * Returns the part of the string right to the last occurrence of the separator
@@ -360,23 +391,6 @@ function strReplaceLoop(array $search_replace, $subject)
  */
 function strSimplify($string, $extended = false, $joker = null)
 {
-	$str_simplify = [
-		'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A', 'Å' => 'A',
-		'Ç' => 'C',
-		'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E',
-		'Ì' => 'I', 'Í' => 'I', 'Î' => 'I', 'Ï' => 'I',
-		'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O',
-		'Ù' => 'U', 'Ú' => 'U', 'Û' => 'U', 'Ü' => 'U',
-		'Ý' => 'Y', 'Ÿ' => 'Y',
-		'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a', 'å' => 'a',
-		'ç' => 'c',
-		'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e',
-		'ì' => 'i', 'í' => 'i', 'î' => 'i', 'ï' => 'i',
-		'ð' => 'o', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o',
-		'ù' => 'u', 'ú' => 'u', 'û' => 'u', 'ü' => 'u',
-		'ý' => 'y', 'ÿ' => 'y',
-		'&' => 'and'
-	];
 	$result = '';
 	if ($extended && !is_string($extended)) {
 		if (is_array($extended)) {
@@ -386,7 +400,9 @@ function strSimplify($string, $extended = false, $joker = null)
 			$extended = '.,/- ';
 		}
 	}
-	$string = strtr($string, $str_simplify);
+
+	$string = replaceAccents($string);
+
 	for ($i = 0; $i < strlen($string); $i ++) {
 		$c = $string{$i};
 		if (
