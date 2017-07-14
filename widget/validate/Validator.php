@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
-use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
@@ -12,7 +11,6 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -30,7 +28,6 @@ use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
-use ITRocks\Framework\Widget\Validate\Property\Var_Annotation;
 use ITRocks\Framework\Widget\Write\Write_Controller;
 
 /**
@@ -402,7 +399,7 @@ class Validator implements Registerable
 	protected function validateAnnotation($object, $annotation)
 	{
 		$annotation->object = $object;
-		$annotation->valid  = $annotation->validate($object);
+		$annotation->valid = $annotation->validate($object);
 		if ($annotation->valid === true) {
 			$annotation->valid = Result::INFORMATION;
 		}
@@ -533,35 +530,23 @@ class Validator implements Registerable
 				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 				&& !$property->getAnnotation('composite')->value
 			) {
-				try {
-					$property->getValue($object);
-					$var_is_valid = true;
-				}
-				catch (Exception $exception) {
-					$var_annotation = new Var_Annotation($property->getType()->asString(), $property);
-					$var_annotation->reportMessage(Loc::tr('bad format'));
-					$var_annotation->valid  = Result::ERROR;
-					$this->report[]         = $var_annotation;
-					$var_is_valid           = false;
-					$result                 = Result::andResult($result, Result::ERROR);
-				}
-				if ($var_is_valid) {
-					// if value is not set and is a link (component or not), then we validate only mandatory
-					if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
-						$result = Result::andResult($result, $this->validateAnnotations(
+				// if value is not set and is a link (component or not), then we validate only mandatory
+				if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
+					$result = Result::andResult(
+						$result, $this->validateAnnotations(
 							$object, $property->getAnnotations(Mandatory_Annotation::ANNOTATION)
+						)
+					);
+				}
+				// otherwise we validate all annotations, and recurse if is component
+				else {
+					$result = Result::andResult(
+						$result, $this->validateAnnotations($object, $property->getAnnotations())
+					);
+					if ($property->getAnnotation('component')->value) {
+						$result = Result::andResult($result, $this->validateComponent(
+							$object, $only_properties, $exclude_properties, $property
 						));
-					}
-					// otherwise we validate all annotations, and recurse if is component
-					else {
-						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, $property->getAnnotations()
-						));
-						if ($property->getAnnotation('component')->value) {
-							$result = Result::andResult($result, $this->validateComponent(
-								$object, $only_properties, $exclude_properties, $property
-							));
-						}
 					}
 				}
 			}
