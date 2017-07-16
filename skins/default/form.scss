@@ -258,7 +258,7 @@ fieldset {
 
 /* main tabber */
 
-form>fieldset>.tabber {
+form>fieldset:not(:last-child)>.tabber {
 	border-bottom: 1px solid #575757;
 	padding-bottom: 2px;
 }
