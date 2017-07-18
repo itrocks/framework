@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate\Property;
 
+use ITRocks\Framework\Locale;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -31,6 +32,17 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	{
 		parent::__construct($value, $property);
 		$this->property = $property;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return ($this->property->getType()->isDateTime() && Locale::current())
+			? Locale::current()->date_format->format
+			: parent::__toString();
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
