@@ -21,6 +21,11 @@
 	}
 }
 
+.deactivated-action {
+	color: lightgrey;
+	cursor: default;
+}
+
 input.action {
 	height: 17px;
 }
@@ -48,6 +53,10 @@ ul.actions {
 
 		>a, >button, >input {
 			@extend .action;
+		}
+
+		>a.deactivated, >button.deactivated, >input.deactivated, >a.deactivated:hover {
+			@extend .deactivated-action;
 		}
 
 		>input {

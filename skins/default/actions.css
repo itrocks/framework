@@ -19,6 +19,10 @@
   .action:hover, ul.actions > li > a:hover, ul.actions > li > button:hover, ul.actions > li > input:hover {
     color: #2d8f8d; }
 
+.deactivated-action, ul.actions > li > a.deactivated, ul.actions > li > button.deactivated, ul.actions > li > input.deactivated, ul.actions > li > a.deactivated:hover {
+  color: lightgrey;
+  cursor: default; }
+
 input.action, ul.actions > li > input {
   height: 17px; }
 
