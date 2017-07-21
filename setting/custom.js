@@ -45,7 +45,7 @@ $('document').ready(function()
 		$input.keydown(function(event)
 		{
 			var $this = $(this);
-			if (event.keyCode == $.ui.keyCode.ENTER) {
+			if (event.keyCode === $.ui.keyCode.ENTER) {
 				var $a = $this.closest('h2').find('a.custom_save, .custom_save>a');
 				if (!$this.closest('form').length) {
 					var app = window.app;
@@ -55,7 +55,7 @@ $('document').ready(function()
 				$a.click();
 				event.preventDefault();
 			}
-			if (event.keyCode == $.ui.keyCode.ESCAPE) {
+			if (event.keyCode === $.ui.keyCode.ESCAPE) {
 				this.close();
 			}
 		});

@@ -52,12 +52,12 @@
 		 */
 		var calculateEvent = function()
 		{
-			var $element       = $(this);
+			var $element = $(this);
 			// patched with setTimeout to allow moved controls on right of the input to be clicked
 			// eg combo's down arrow won't work sometimes if I do not do that.
 			setTimeout(function() {
 				var previous_width = parseInt($element.data('text-width'));
-				var new_width = getTextWidth($element, false);
+				var new_width      = getTextWidth($element, false);
 				if (new_width !== previous_width) {
 					$element.data('text-width', new_width);
 					var tag_name = $element.parent().prop('tagName').toLowerCase();
@@ -255,7 +255,7 @@
 		{
 			$td.data('max-width', width);
 			var calc = width + parseInt($td.css('padding-left')) + parseInt($td.css('padding-right'));
-			width = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);
+			width    = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);
 			$td.width(width).css({ 'max-width': width + 'px', 'min-width': width + 'px' });
 		};
 

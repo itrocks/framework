@@ -1,4 +1,5 @@
 
+//-------------------------------------------------------------------------------------- beginsWith
 if (!String.prototype.beginsWith) {
 	String.prototype.beginsWith = function(string)
 	{
@@ -27,7 +28,7 @@ if (!String.prototype.endsWith) {
 		) {
 			position = subject.length;
 		}
-		position -= search.length;
+		position      -= search.length;
 		var last_index = subject.indexOf(search, position);
 		return (last_index !== -1) && (last_index === position);
 	};
@@ -37,13 +38,13 @@ if (!String.prototype.endsWith) {
 String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 {
 	var str = this;
-	if (cnt == undefined) cnt = 1;
-	if (complete_if_not == undefined) complete_if_not = true;
+	if (cnt             === undefined) cnt             = 1;
+	if (complete_if_not === undefined) complete_if_not = true;
 	if (cnt > 1) {
 		str = this.lLastParse(sep, cnt - 1);
 	}
 	var i = str.lastIndexOf(sep);
-	if (i == -1) {
+	if (i === -1) {
 		return complete_if_not ? str : '';
 	}
 	else {
@@ -54,13 +55,13 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 //------------------------------------------------------------------------------------------ lParse
 String.prototype.lParse = function (sep, cnt, complete_if_not)
 {
-	if (cnt == undefined) cnt = 1;
-	if (complete_if_not == undefined) complete_if_not = true;
+	if (cnt             === undefined) cnt             = 1;
+	if (complete_if_not === undefined) complete_if_not = true;
 	var i = -1;
 	while (cnt --) {
 		i = this.indexOf(sep, i + 1);
 	}
-	if (i == -1) {
+	if (i === -1) {
 		return complete_if_not ? this : '';
 	}
 	else {
@@ -72,16 +73,16 @@ String.prototype.lParse = function (sep, cnt, complete_if_not)
 String.prototype.repl = function(from, to)
 {
 	var replaced = '';
-	var start = 0;
-	var length = from.length;
-	var i = this.indexOf(from, start);
+	var start    = 0;
+	var length   = from.length;
+	var i        = this.indexOf(from, start);
 	while (i > -1) {
 		if (i > start) {
 			replaced += this.substring(start, i);
 		}
 		replaced += to;
-		start = i + length;
-		i = this.indexOf(from, start);
+		start     = i + length;
+		i         = this.indexOf(from, start);
 	}
 	replaced += this.substring(start);
 	return replaced;
@@ -91,13 +92,13 @@ String.prototype.repl = function(from, to)
 String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 {
 	var str = this;
-	if (cnt == undefined) cnt = 1;
-	if (complete_if_not == undefined) complete_if_not = false;
+	if (cnt             === undefined) cnt             = 1;
+	if (complete_if_not === undefined) complete_if_not = false;
 	if (cnt > 1) {
 		str = this.rLastParse(sep, cnt - 1);
 	}
 	var i = str.lastIndexOf(sep);
-	if (i == -1) {
+	if (i === -1) {
 		return complete_if_not ? str : '';
 	}
 	else {
@@ -108,13 +109,13 @@ String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 //------------------------------------------------------------------------------------------ rParse
 String.prototype.rParse = function (sep, cnt, complete_if_not)
 {
-	if (cnt == undefined) cnt = 1;
-	if (complete_if_not == undefined) complete_if_not = false;
+	if (cnt             === undefined) cnt             = 1;
+	if (complete_if_not === undefined) complete_if_not = false;
 	var i = -1;
 	while (cnt --) {
 		i = this.indexOf(sep, i + 1);
 	}
-	if (i == -1) {
+	if (i === -1) {
 		return complete_if_not ? this : '';
 	}
 	else {

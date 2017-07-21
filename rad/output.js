@@ -64,7 +64,7 @@ function radOutput()
 							div_property = $draggable.data('property');
 						}
 						var insert_property = $insert.attr('id');
-						if (div_property != insert_property) {
+						if (div_property !== insert_property) {
 							var $fieldset  = $insert.closest('fieldset[class]');
 							var $window    = $this.closest('.window');
 							var app        = window.app;
@@ -81,7 +81,7 @@ function radOutput()
 								+ app.andSID();
 
 							$div.detach();
-							if (side == 'before') {
+							if (side === 'before') {
 								$div.insertBefore($insert_top);
 							}
 							else {

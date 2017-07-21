@@ -135,8 +135,8 @@
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
-				var $from = $(xhr.from);
-				var $target = $(xhr.from.target);
+				var $from        = $(xhr.from);
+				var $target      = $(xhr.from.target);
 				var build_target = false;
 				// popup a new element
 				if ($target.is('.' + settings.closeable_popup)) {
@@ -144,7 +144,7 @@
 					$target = $(xhr.from.target);
 				}
 				if (!$target.length) {
-					$target = this.popup($from, xhr.from.target.substr(1));
+					$target      = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
 				}
 				// write result into destination element, and build jquery active contents
@@ -270,7 +270,7 @@
 				}
 				else {
 					var $this = $(this);
-					var xhr = undefined;
+					var xhr   = undefined;
 					var jax;
 					if ($this.hasClass(settings.submit)) {
 						var $parent_form = $this.closest('form');
@@ -317,8 +317,8 @@
 		 */
 		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
-			var jax;
 			var $this = $(this);
+			var jax;
 			var xhr;
 			event.preventDefault();
 			if ($this.ajaxSubmit !== undefined) {
