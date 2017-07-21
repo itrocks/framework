@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Email;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Tools\Date_Time;
 use Mail;
 use Mail_smtp;
@@ -16,6 +17,7 @@ use PEAR_Error;
  */
 class Sender implements Configurable, Sender_Interface
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------------------- BCC
 	const BCC      = 'bcc';
