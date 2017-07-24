@@ -124,7 +124,7 @@ class Entry
 		if (isset($uri)) {
 			if (!isset($this->start)) {
 				$this->duration_start = microtime(true);
-				$this->start = new Date_Time();
+				$this->start          = new Date_Time();
 			}
 			if (!isset($this->process_id)) {
 				$this->process_id = getmypid();
@@ -174,12 +174,12 @@ class Entry
 
 	//------------------------------------------------------------------------------------- serialize
 	/**
-	 * @param $str string
+	 * @param $array string[]
 	 * @return string
 	 */
-	private function serialize($str)
+	private function serialize($array)
 	{
-		$str = json_encode($str);
+		$str = json_encode($array);
 		return ($str === '[]') ? '' : $str;
 	}
 
@@ -187,8 +187,8 @@ class Entry
 	public function stop()
 	{
 		$this->error_code = Error_Code::OK;
-		$this->duration = microtime(true) - $this->duration_start;
-		$this->stop = new Date_Time();
+		$this->duration   = microtime(true) - $this->duration_start;
+		$this->stop       = new Date_Time();
 	}
 
 }
