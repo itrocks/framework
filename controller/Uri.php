@@ -161,7 +161,7 @@ class Uri
 		// get main parameters
 		$controller_elements = [];
 		foreach ($uri as $uri_element) {
-			if (ctype_upper($uri_element[0])) {
+			if ($uri_element && ctype_upper($uri_element[0])) {
 				$controller_elements[] = $uri_element;
 			}
 			else {
