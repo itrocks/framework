@@ -80,6 +80,9 @@ class Session implements Serializable
 		$old_id = session_id();
 		session_regenerate_id();
 		$new_id = session_id();
+		if ($new_id === $old_id) {
+			trigger_error('Could not clone session id ' . $old_id, E_USER_ERROR);
+		}
 		file_put_contents(session_save_path() . SL . 'sess_' . $new_id, session_encode());
 		session_id($old_id);
 		return $new_id;
