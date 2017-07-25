@@ -308,8 +308,11 @@ class Proxy
 		if (isset($data))   $this->data   = $data;
 		// connection
 		$url = parse_url($this->url);
+		if (!isset($url['path'])) {
+			$url['path'] = SL;
+		}
 		$host = $url['host'];
-		$f = @fsockopen(
+		$f    = @fsockopen(
 			(($url['scheme'] == 'https') ? 'ssl://' : '') . $host,
 			$url['port'] ? $url['port'] : (($url['scheme'] == 'https') ? 443 : 80),
 			$errno, $error, 30
@@ -359,15 +362,15 @@ class Proxy
 			else {
 				$headers = $response = '';
 			}
-			$this->response_headers   = explode(CR . LF, $headers);
-			$this->response = $response;
+			$this->response_headers = explode(CR . LF, $headers);
+			$this->response         = $response;
 			return true;
 		}
 		else {
-			$this->errno = $errno;
-			$this->error = $error;
+			$this->errno            = $errno;
+			$this->error            = $error;
 			$this->response_headers = [];
-			$this->response = '';
+			$this->response         = '';
 			return false;
 		}
 	}
