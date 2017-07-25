@@ -22,6 +22,7 @@ use ITRocks\Framework\Tools\Displayable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Builder\File;
 use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
@@ -419,6 +420,18 @@ class Functions
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
+	//--------------------------------------------------------------------------------------- getFile
+	/**
+	 * Returns a Builder\File object for the current File value
+	 *
+	 * @param $template Template
+	 * @return File
+	 */
+	public function getFile(Template $template)
+	{
+		return new File(reset($template->objects));
+	}
+
 	//-------------------------------------------------------------------------------------- getFirst
 	/**
 	 * Returns the first current array element
@@ -448,6 +461,20 @@ class Functions
 	{
 		$object = reset($template->objects);
 		return !empty($object);
+	}
+
+	//-------------------------------------------------------------------------------------- getImage
+	/**
+	 * Returns a <img src=""> with a link to the image of the current File property
+	 *
+	 * @param $template Template
+	 * @param $width    integer
+	 * @param $height   integer
+	 * @return string
+	 */
+	public function getImage(Template $template, $width = null, $height = null)
+	{
+		return $this->getFile($template)->buildImage($width, $height);
 	}
 
 	//------------------------------------------------------------------------------------ getIsFirst

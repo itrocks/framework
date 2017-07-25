@@ -78,4 +78,28 @@ class File
 		return $anchor;
 	}
 
+	//------------------------------------------------------------------------------------ buildImage
+	/**
+	 * Build a file image HTML element
+	 *
+	 * @param $width  integer
+	 * @param $height integer
+	 * @return Image
+	 */
+	public function buildImage($width = null, $height = null)
+	{
+		/** @var $session_files Files */
+		$session_files          = Session::current()->get(Files::class, true);
+		$session_files->files[] = $this->file;
+		$image_parameters       = [$this->file->name];
+		if ($width) {
+			$image_parameters['width'] = $width;
+		}
+		if ($height) {
+			$image_parameters['height'] = $height;
+		}
+		$image = new Image(View::link(Session_File::class, Feature::F_OUTPUT, null, $image_parameters));
+		return $image;
+	}
+
 }
