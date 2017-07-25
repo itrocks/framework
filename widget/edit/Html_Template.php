@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Html\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -150,7 +151,7 @@ class Html_Template extends Template
 			&& !User_Annotation::of($property)->has(User_Annotation::STRICT_READ_ONLY)
 		) {
 			if (
-				($builder = $property->getAnnotation('widget')->value)
+				($builder = Widget_Annotation::of($property)->value)
 				&& is_a($builder, Property::class, true)
 			) {
 				$builder = Builder::create($builder, [$property, $property->value(), $this]);

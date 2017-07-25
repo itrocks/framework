@@ -8,6 +8,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Contextual_Callable;
@@ -1444,7 +1445,7 @@ if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($
 			if (
 				($property_name == 'value')
 				&& ($object instanceof Reflection_Property)
-				&& ($builder = $object->getAnnotation('widget')->value)
+				&& ($builder = Widget_Annotation::of($object)->value)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
 				$builder = Builder::create(

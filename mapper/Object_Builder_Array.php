@@ -7,6 +7,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -359,7 +360,7 @@ class Object_Builder_Array
 		// use widget
 		if (
 			$this->from_form
-			&& ($builder = $property->getAnnotation('widget')->value)
+			&& ($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
 			$builder = Builder::create($builder, [$property, $value]);
