@@ -111,9 +111,11 @@ class Process
 	/**
 	 * Runs the command
 	 */
-	function run()
+	public function run()
 	{
-		$this->process = proc_open($this->command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes);
+		$this->process = proc_open(
+			$this->command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes
+		);
 		$this->output  = $pipes[1];
 		$this->errors  = $pipes[2];
 	}
