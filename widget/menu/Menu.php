@@ -128,6 +128,9 @@ class Menu implements Configurable
 	 */
 	private function constructItem($item_key, $item)
 	{
+		if ($item === static::CLEAR) {
+			return null;
+		}
 		$menu_item = new Item();
 		$menu_item->link = $item_key;
 		if (is_array($item)) {
