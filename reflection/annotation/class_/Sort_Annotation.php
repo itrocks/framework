@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * The sort annotation for classes stores a list of column names for object collections sort
@@ -35,20 +36,19 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 		if (!$this->value) {
 			/** @var $representative string[] @representative property names */
 			$representative = $class->getAnnotation('representative')->value;
-			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
-				if (in_array($property->getName(), $representative)) {
-					if (
-						!$property->isStatic()
-						&& (
-							!Property\Link_Annotation::of($property)->value
-							|| (
-								($store = Store_Annotation::of($property)->value)
-								&& ($store !== Store_Annotation::FALSE)
-							)
+			foreach ($representative as $property_path) {
+				$property = new Reflection_Property($class->getName(), $property_path);
+				if (
+					!$property->isStatic()
+					&& (
+						!Property\Link_Annotation::of($property)->value
+						|| (
+							($store = Store_Annotation::of($property)->value)
+							&& ($store !== Store_Annotation::FALSE)
 						)
-					) {
-						$this->value[] = $property->getName();
-					}
+					)
+				) {
+					$this->value[] = $property_path;
 				}
 			}
 		}
