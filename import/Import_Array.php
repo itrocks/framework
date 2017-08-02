@@ -88,7 +88,7 @@ class Import_Array
 	protected static function addConstantsToArray($this_constants, array &$array)
 	{
 		if ($this_constants) {
-			$constants = [];
+			$constants    = [];
 			$column_first = $column_number = count(current($array));
 			// $this_constants['property*.path'] = 'value'
 			// $constants[$column_number] = 'value'
@@ -96,7 +96,7 @@ class Import_Array
 				$constants[$column_number++] = $value;
 			}
 			$properties_key = key($array);
-			$column_number = $column_first;
+			$column_number  = $column_first;
 			foreach (array_keys($this_constants) as $property_path) {
 				$array[$properties_key][$column_number++] = $property_path;
 			}
@@ -153,7 +153,7 @@ class Import_Array
 	 */
 	public static function getClassNameFromArray(array &$array)
 	{
-		$row = reset($array);
+		$row              = reset($array);
 		$array_class_name = reset($row);
 		return self::getClassNameFromValue(
 			(
@@ -191,7 +191,7 @@ class Import_Array
 		$row       = self::getClassNameFromArray($array) ? next($array) : current($array);
 		while ($row && (count($row) > 1) && ($row[1] == '=')) {
 			$constants[$row[0]] = isset($row[2]) ? $row[2] : '';
-			$row = next($array);
+			$row                = next($array);
 		}
 		return $constants;
 	}
@@ -226,7 +226,7 @@ class Import_Array
 	 */
 	public static function getPropertiesAlias($class_name)
 	{
-		$list_settings = Data_List_Settings::current($class_name);
+		$list_settings    = Data_List_Settings::current($class_name);
 		$properties_alias = [];
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;
@@ -250,7 +250,7 @@ class Import_Array
 	public static function getPropertiesFromArray(array &$array, $class_name = null)
 	{
 		$use_reverse_translation = Locale::current() ? true : false;
-		$properties_alias = isset($class_name) ? self::getPropertiesAlias($class_name) : null;
+		$properties_alias        = isset($class_name) ? self::getPropertiesAlias($class_name) : null;
 		self::addConstantsToArray(self::getConstantsFromArray($array), $array);
 		$properties = [];
 		foreach (current($array) as $column_number => $property_path) {
@@ -314,11 +314,12 @@ class Import_Array
 		array $row, array $identify_properties, array $class_properties_column
 	) {
 		$empty_object = true;
-		$search = [];
-		foreach (array_keys($identify_properties) as $property_name) {
-			$value = $row[$class_properties_column[$property_name]];
-			$search[$property_name] = $value;
-			$empty_object = $empty_object && empty($value);
+		$search       = [];
+		foreach ($identify_properties as $identify_property) {
+			$property                         = $identify_property->toProperty();
+			$value                            = $row[$class_properties_column[$identify_property->name]];
+			$search[$identify_property->name] = Loc::propertyToIso($property, $value);
+			$empty_object                     = $empty_object && empty($value);
 		}
 		return $empty_object ? null : $search;
 	}
@@ -374,7 +375,7 @@ class Import_Array
 		$property_path = join(DOT, $class->property_path);
 		/** @var $class_properties_column integer[] key is the property name of the current class */
 		$class_properties_column = $this->properties_column[$property_path];
-		$simulation = $this->simulation;
+		$simulation              = $this->simulation;
 		while (($row = next($array)) && (!$this->simulation || $simulation)) {
 			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
 			$object = in_array(
@@ -447,12 +448,12 @@ class Import_Array
 		}
 		elseif ($use_reverse_translation) {
 			$property_class_name = $class_name;
-			$property_names = [];
+			$property_names      = [];
 			foreach (explode(DOT, $property_path) as $property_name) {
-				if ($asterisk = (substr($property_name, -1) == '*')) {
+				if ($asterisk    = (substr($property_name, -1) == '*')) {
 					$property_name = substr($property_name, 0, -1);
 				}
-				$property = null;
+				$property      = null;
 				$property_name = Names::displayToProperty($property_name);
 				try {
 					$property = new Reflection_Property($property_class_name, $property_name);
@@ -599,7 +600,7 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
-		$before = Reflection_Class::getObjectVars($object);
+		$before          = Reflection_Class::getObjectVars($object);
 		$only_properties = [];
 		foreach (array_keys($class->write_properties) as $property_name) {
 			$value = $row[$class_properties_column[$property_name]];
@@ -641,6 +642,10 @@ class Import_Array
 			$value = $row[$class_properties_column[$property_name]];
 			if (isset($class->properties[$property_name])) {
 				$value = Loc::propertyToIso($class->properties[$property_name], $value);
+			}
+			elseif (isset($class->identify_properties[$property_name])) {
+				$identify_property = $class->identify_properties[$property_name];
+				$value             = Loc::propertyToIso($identify_property->toProperty(), $value);
 			}
 			$object->$property_name = $value;
 			$only_properties[]      = $property_name;

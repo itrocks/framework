@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Import\Settings;
 
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -25,6 +26,15 @@ class Import_Property
 	{
 		if (isset($class)) $this->class = $class;
 		if (isset($name))  $this->name  = $name;
+	}
+
+	//------------------------------------------------------------------------------------ toProperty
+	/**
+	 * @return Reflection_Property
+	 */
+	public function toProperty()
+	{
+		return new Reflection_Property($this->class, $this->name);
 	}
 
 }
