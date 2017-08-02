@@ -30,7 +30,6 @@ $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
 
 $.getScript(path + 'itrocks/framework/debug/debug.js');
 $.getScript(path + 'itrocks/framework/import_export/import.js');
-$.getScript(path + 'itrocks/framework/printer/model/model.js');
 $.getScript(path + 'itrocks/framework/property/select.js');
 $.getScript(path + 'itrocks/framework/rad/output.js');
 $.getScript(path + 'itrocks/framework/rad/rad.js');

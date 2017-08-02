@@ -9,8 +9,6 @@
 @import "../../../../vendor/components/jqueryui/themes/smoothness/jquery-ui.css";
 @import "../../../../vendor/components/jqueryui/themes/smoothness/theme.css";
 
-@import "../../printer/model/pdf_template.css";
-
 @import "application.css";
 
 @import "actions.css";
