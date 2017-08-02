@@ -826,10 +826,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 			if (isset($history_search)) {
 				if ($search) {
-					$search = Func::andOp(array_merge([$search], $history_search));
-				}
-				elseif (count($history_search) > 1) {
-					$search = Func::andOp($history_search);
+					$search = [Func::andOp(array_merge([$search], $history_search))];
 				}
 				else {
 					$search = $history_search;
