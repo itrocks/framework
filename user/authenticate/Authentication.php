@@ -140,20 +140,18 @@ abstract class Authentication
 	 */
 	public static function login($login, $password)
 	{
-		$search = Search_Object::create(User::class);
-		$search->login = $login;
-		$password = (new Password(
+		$search           = Search_Object::create(User::class);
+		$search->login    = $login;
+		$search->password = (new Password(
 			$password,
 			(new Reflection_Property(get_class($search), 'password'))
 				->getAnnotation('password')->value
 		))->encrypted();
-		foreach (Dao::search($search) as $user) {
-			/** @var $user User */
-			if ($user->password === $password) {
-				return $user;
-			}
-		}
-		return null;
+
+		/** @var User $user */
+		$user = Dao::searchOne($search);
+
+		return $user;
 	}
 
 	//-------------------------------------------------------------------------------------- register
