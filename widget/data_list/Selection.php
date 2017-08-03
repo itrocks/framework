@@ -305,7 +305,7 @@ class Selection
 		}
 		$this->class_name = ($object instanceof Set)
 			? $object->element_class_name
-			: get_class($object);
+			: (is_object($object) ? get_class($object) : $object);
 
 		if (is_object($object) && ($identifier = Dao::getObjectIdentifier($object))) {
 			$this->excluded_selection = [];
