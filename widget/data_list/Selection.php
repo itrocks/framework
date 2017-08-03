@@ -222,6 +222,11 @@ class Selection
 
 	//-------------------------------------------------------------------------------- readDataSelect
 	/**
+	 * Reads data the same way it is done by the data list controller, without limiting the number
+	 * of read lines.
+	 * Restrictions others thant the number of read lines limit applied to the data list controller
+	 * will be applied here too.
+	 *
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
@@ -260,7 +265,7 @@ class Selection
 
 	//----------------------------------------------------------------------------------- readObjects
 	/**
-	 * Read all objects matching the filters
+	 * Reads all objects matching the filters
 	 * Beware : this may consume a lot of time and memory if many objects are selected
 	 * Do use only with limited sets
 	 *
