@@ -37,8 +37,9 @@ class Export_Controller implements Default_Feature_Controller
 		upgradeMemoryLimit('6G');
 		upgradeTimeLimit(3600);
 
-		$selection = new Selection($parameters, $form);
-		$data      = $selection->readDataSelect();
+		$selection  = new Selection($parameters, $form);
+		$data       = $selection->readDataSelect();
+		$properties = $data->getProperties();
 
 		// create temporary file
 		/** @var $application Application */
@@ -51,12 +52,14 @@ class Export_Controller implements Default_Feature_Controller
 		// write first line (properties path)
 		$row = [];
 		foreach ($selection->getDataListSettings()->properties as $property) {
-			$row[] = $property->shortTitle();
+			if (isset($properties[$property->path])) {
+				$row[] = $property->shortTitle();
+			}
 		}
 		fputcsv($file, $row);
 
 		// format dates
-		foreach ($data->getProperties() as $property) {
+		foreach ($properties as $property) {
 			if ($property instanceof Reflection_Property) {
 				if ($property->getType()->isDateTime()) {
 					$date_times[$property->path] = true;
