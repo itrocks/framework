@@ -2,18 +2,14 @@
 namespace ITRocks\Framework\Export;
 
 use ITRocks\Framework\Application;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
-use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Widget\Data_List\Selection;
 
 /**
  * Default export controller
@@ -37,53 +33,28 @@ class Export_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		/** @todo cf task #81421  */
+		// TODO #81421 (SM)
 		upgradeMemoryLimit('6G');
 		upgradeTimeLimit(3600);
 
-		// get list settings
-		$class_names = $class_name;
-		$class_name = $parameters->getMainObject()->element_class_name;
-		$list_settings = Data_List_Settings::current($class_name);
-		$list_settings->cleanup();
-		// read data
-		/** @var $data_list_controller Data_List_Controller */
-		$data_list_class_name = Main::$current->getController($class_name, 'dataList')[0];
-		$data_list_controller = Builder::create($data_list_class_name);
-		$list_settings->maximum_displayed_lines_count = null;
-		// SM : Now called here instead of inside readData to use $search below
-		$search = $data_list_controller->applySearchParameters($list_settings);
+		$selection = new Selection($parameters, $form);
+		$data      = $selection->readDataSelect();
 
-		if (isset($form['select_all']) && $form['select_all']) {
-			if (isset($form['excluded_selection']) && $form['excluded_selection']) {
-				$excluded       = explode(',', $form['excluded_selection']);
-				$search[]['id'] = Func::notIn($excluded);
-			}
-		}
-		else if (isset($form['selection']) && $form['selection']) {
-			$selected       = explode(',', $form['selection']);
-			$search[]['id'] = Func::in($selected);
-		}
-		else {
-			$search = ['id' => -1];
-		}
-
-		$data = $data_list_controller->readData(
-			$class_name, $list_settings, $search, [$list_settings->sort]
-		);
 		// create temporary file
 		/** @var $application Application */
-		$application = Session::current()->get(Application::class);
-		$tmp = $application->getTemporaryFilesPath();
-		$short_class = Names::classToProperty($class_names);
+		$application   = Session::current()->get(Application::class);
+		$tmp           = $application->getTemporaryFilesPath();
+		$short_class   = Names::classToProperty($class_name);
 		$csv_file_name = tempnam($tmp, $short_class . '_') . '.csv';
-		$f = fopen($csv_file_name, 'w');
+		$file          = fopen($csv_file_name, 'w');
+
 		// write first line (properties path)
 		$row = [];
-		foreach ($list_settings->properties as $property) {
+		foreach ($selection->getDataListSettings()->properties as $property) {
 			$row[] = $property->shortTitle();
 		}
-		fputcsv($f, $row);
+		fputcsv($file, $row);
+
 		// format dates
 		foreach ($data->getProperties() as $property) {
 			if ($property instanceof Reflection_Property) {
@@ -95,6 +66,7 @@ class Export_Controller implements Default_Feature_Controller
 				}
 			}
 		}
+
 		// write data
 		foreach ($data->getRows() as $row) {
 			$write = [];
@@ -112,18 +84,27 @@ class Export_Controller implements Default_Feature_Controller
 				}
 				$write[] = $value;
 			}
-			fputcsv($f, $write);
+			fputcsv($file, $write);
 		}
+
 		// done
-		fclose($f);
+		fclose($file);
+
 		// simple convert to XLSX using gnumeric
 		$xlsx_file_name = str_replace('.csv', '.xlsx', $csv_file_name);
-		exec('ssconvert --import-encoding=UTF8 ' . DQ . $csv_file_name . DQ . SP . DQ . $xlsx_file_name . DQ . ' 2>&1 &');
+		exec(
+			'ssconvert --import-encoding=UTF8'
+			. SP . DQ . $csv_file_name . DQ
+			. SP . DQ . $xlsx_file_name . DQ
+			. SP . '2>&1 &'
+		);
+
 		// download
 		$output = file_get_contents($xlsx_file_name);
 		unlink($xlsx_file_name);
 		unlink($csv_file_name);
 		Files::downloadOutput(($short_class . '.xlsx'), 'xlsx', strlen($output));
+
 		return $output;
 	}
 

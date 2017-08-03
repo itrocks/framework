@@ -521,7 +521,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		catch (Exception $exception) {
-			//set empty list result
+			// set empty list result
 			$data  = new Default_List_Data($class_name, []);
 			if (
 				($exception instanceof Mysql_Error_Exception)
@@ -534,7 +534,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$this->errors[] = $error;
 			}
 			else {
-				//set an error to display
+				// set an error to display
 				$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
 				$this->errors[] = $error;
 				// log the error in order software maintainer to be informed
@@ -607,7 +607,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $properties Data_List_Setting\Property[]
 	 * @return Group_By|null
 	 */
-	private function groupBy(array $properties)
+	public function groupBy(array $properties)
 	{
 		$group_by = null;
 		foreach ($properties as $property) {
@@ -626,7 +626,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @param $properties_path string[]
 	 * @param Group_By         $group_by
 	 */
-	private function groupConcat(array &$properties_path, Group_By $group_by)
+	public function groupConcat(array &$properties_path, Group_By $group_by)
 	{
 		foreach ($properties_path as $key => $property_path) {
 			if (!in_array($property_path, $group_by->properties)) {
@@ -685,12 +685,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if (!$options) {
 			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)];
 		}
-		$count = null;
-		foreach ($options as $option) {
-			if ($option instanceof Count) {
-				$count = $option;
-			}
-		}
+		$count = Count::in($options);
 
 		if ($list_settings->maximum_displayed_lines_count) {
 			$limit = new Limit(
@@ -750,7 +745,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
-	protected function readDataSelect(
+	public function readDataSelect(
 		$class_name, array $properties_path, array $search, array $options
 	) {
 		return Dao::select($class_name, $properties_path, $search, $options);

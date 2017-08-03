@@ -219,9 +219,15 @@ abstract class Link extends Identifier_Map implements Transactional
 			$list = $this->selectList($object_class, $properties);
 		}
 		if ($double_pass) {
-			$new_filter_object = $this->selectFirstPass($object_class, $properties, $filter_object, $options);
-			$filter_object     = $filter_object
-				? ($new_filter_object ? Func::andOp([$filter_object, Func::orOp($new_filter_object)]) : $filter_object)
+			$new_filter_object = $this->selectFirstPass(
+				$object_class, $properties, $filter_object, $options
+			);
+			$filter_object = $filter_object
+				? (
+					$new_filter_object
+					? Func::andOp([$filter_object, Func::orOp($new_filter_object)])
+					: $filter_object
+				)
 				: $new_filter_object;
 		}
 		if (!$double_pass || ($double_pass && $filter_object)) {

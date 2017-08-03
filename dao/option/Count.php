@@ -9,8 +9,12 @@ use ITRocks\Framework\Dao\Option;
  */
 class Count implements Option
 {
+	use Has_In;
 
 	//---------------------------------------------------------------------------------------- $count
+	/**
+	 * @var integer
+	 */
 	public $count;
 
 }

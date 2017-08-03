@@ -9,8 +9,7 @@ use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Mapper\Object_Not_Found_Exception;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Set;
-use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Widget\Data_List\Selection;
 
 /**
  * Controller parameters contains what objects are passed into the controller's URI
@@ -223,6 +222,8 @@ class Parameters
 	/**
 	 * Read selected objects, no matter method.
 	 *
+	 * This is a shortcut to Selection::readObjects()
+	 *
 	 * If it is a checkboxes selection from the list, returns a list of selected elements.
 	 * If it is from an unique main object, return this main object.
 	 *
@@ -231,43 +232,12 @@ class Parameters
 	 *
 	 * @param $form array
 	 * @return object[]
+	 * @see Selection::readObjects
 	 */
 	public function getSelectedObjects(array $form)
 	{
-		$objects     = [];
-		$main_object = $this->getMainObject();
-		if ($main_object instanceof Set) {
-			$class_name = $main_object->element_class_name;
-		}
-		else {
-			$class_name = get_class($main_object);
-		}
-		if (isset($form['select_all']) && $form['select_all']) {
-			$list_settings = Data_List_Settings::current($class_name);
-			$list_settings->cleanup();
-			// read data
-			/** @var $data_list_controller Data_List_Controller */
-			$data_list_class_name = Main::$current->getController($class_name, 'dataList')[0];
-			$data_list_controller = Builder::create($data_list_class_name);
-			$list_settings->maximum_displayed_lines_count = null;
-			$search = $data_list_controller->applySearchParameters($list_settings);
-			if (isset($form['excluded_selection']) && $form['excluded_selection']) {
-				$excluded       = explode(',', $form['excluded_selection']);
-				$search[]['id'] = Dao\Func::notIn($excluded);
-			}
-			$objects = $data_list_controller->readObjects($class_name, $list_settings, $search);
-		}
-		else if (isset($form['selection']) && $form['selection']) {
-			$selected = explode(',', $form['selection']);
-			$objects  = Dao::search(['id' => Dao\Func::in($selected)], $class_name);
-		}
-		else {
-			// Test if it's object read or just instantiation of a new object
-			if ($main_object && Dao::getObjectIdentifier($main_object)) {
-				$objects[] = $main_object;
-			}
-		}
-		return $objects;
+		$selection = new Selection($this, $form);
+		return $selection->readObjects();
 	}
 
 	//-------------------------------------------------------------------------- getUnnamedParameters
