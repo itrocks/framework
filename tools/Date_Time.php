@@ -60,7 +60,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @var string
 	 */
-	private static $max_date = '2999-12-31 00:00:00';
+	protected static $max_date = '2999-12-31 00:00:00';
 
 	//------------------------------------------------------------------------------------- $min_date
 	/**
@@ -68,7 +68,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @var string
 	 */
-	private static $min_date = '0000-00-00 00:00:00';
+	protected static $min_date = '0000-00-00 00:00:00';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
