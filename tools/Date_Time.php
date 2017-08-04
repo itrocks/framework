@@ -166,8 +166,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			? parent::createFromFormat($format, $time, $timezone)
 			: parent::createFromFormat($format, $time);
 		return $timezone
-			? new Date_Time($dateTime->format('Y-m-d H:i:s'), $timezone)
-			: new Date_Time($dateTime->format('Y-m-d H:i:s'));
+			? new static($dateTime->format('Y-m-d H:i:s'), $timezone)
+			: new static($dateTime->format('Y-m-d H:i:s'));
 	}
 
 	//------------------------------------------------------------------------------------------- day
@@ -179,7 +179,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function day($end_of_day = false)
 	{
-		return new Date_Time($this->format('Y-m-d') . ($end_of_day ? ' 23:59:59' : ''));
+		return new static($this->format('Y-m-d') . ($end_of_day ? ' 23:59:59' : ''));
 	}
 
 	//------------------------------------------------------------------------------------ dayOfMonth
@@ -297,12 +297,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public static function fromISO($date, $max = false)
 	{
 		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
-			? new Date_Time(
+			? new static(
 				(strlen($date) >= 19)
 					? $date
 					: ($date . substr(($max ? self::$max_date : '2000-01-01 00:00:00'), strlen($date)))
 			)
-			: new Date_Time($max ? self::$max_date : self::$min_date);
+			: new static($max ? self::$max_date : self::$min_date);
 	}
 
 	//------------------------------------------------------------------------------------ fromString
@@ -438,7 +438,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		if ($this->isMin()) {
 			return static::min();
 		}
-		return new Date_Time($this->format('Y-m-t 23:59:59'));
+		return new static($this->format('Y-m-t 23:59:59'));
 	}
 
 	//---------------------------------------------------------------------------------------- latest
@@ -468,7 +468,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public static function max()
 	{
-		return new Date_Time(self::$max_date);
+		return new static(self::$max_date);
 	}
 
 	//------------------------------------------------------------------------------------------- min
@@ -479,7 +479,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public static function min()
 	{
-		return new Date_Time(self::$min_date);
+		return new static(self::$min_date);
 	}
 
 	//----------------------------------------------------------------------------------------- month
@@ -492,9 +492,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function month()
 	{
 		if ($this->isMin()) {
-			return new Date_Time($this);
+			return new static($this);
 		}
-		return new Date_Time($this->format('Y-m'));
+		return new static($this->format('Y-m'));
 	}
 
 	//------------------------------------------------------------------------------------------- now
@@ -505,7 +505,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public static function now()
 	{
-		return new Date_Time();
+		return new static();
 	}
 
 	//------------------------------------------------------------------------------------------- sub
@@ -549,9 +549,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function toMonth()
 	{
 		if ($this->isMin()) {
-			return new Date_Time($this);
+			return new static($this);
 		}
-		return new Date_Time($this->format('Y-m'));
+		return new static($this->format('Y-m'));
 	}
 
 	//----------------------------------------------------------------------------------------- today
@@ -562,7 +562,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public static function today()
 	{
-		return new Date_Time(date('Y-m-d 00:00:00'));
+		return new static(date('Y-m-d 00:00:00'));
 	}
 
 }
