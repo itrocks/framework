@@ -7,7 +7,9 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Set;
@@ -181,17 +183,23 @@ class Selection
 	/**
 	 * Gets search option
 	 *
+	 * @param $options Option|Option[] options to merge with the calculated filter options
 	 * @return Option[]
 	 */
-	public function getSearchOptions()
+	public function getSearchOptions(array $options = [])
 	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
 		if (!isset($this->options)) {
 			$this->options = [$this->getDataListSettings()->sort];
-			if ($this->select_all) {
+			if ($this->select_all && Limit::in($options)) {
 				$this->options[] = Dao::doublePass();
 			}
 		}
-		return $this->options;
+		$options = array_merge($this->options, is_array($options) ? $options : [$options]);
+		$this->removeSearchOptions($options);
+		return $options;
 	}
 
 	//------------------------------------------------------------------------------- getSearchFilter
@@ -200,24 +208,24 @@ class Selection
 	 * - the search criterion in the current data list for the object
 	 * - the excluded_selection, select_all and selection selected elements from the form
 	 *
-	 * @return array
+	 * @param $search object|array Search array for filter, additional to filters get from data list
+	 * @return array|Logical
 	 */
-	public function getSearchFilter()
+	public function getSearchFilter($search = null)
 	{
 		if (!isset($this->search)) {
-			$search = $this->select_all
+			$this->search = $this->select_all
 				? $this->allButExcludedFilter()
 				: $this->selectedFilter();
 			$class = $this->getDataListSettings()->getClass();
 			foreach ($class->getAnnotations('on_data_list') as $execute) {
 				/** @var $execute Method_Annotation */
-				if ($execute->call($class->name, [&$search]) === false) {
+				if ($execute->call($class->name, [&$this->search]) === false) {
 					break;
 				}
 			}
-			$this->search = $search;
 		}
-		return $this->search;
+		return empty($search) ? $this->search : [Func::andOp([$search, $this->search])];
 	}
 
 	//-------------------------------------------------------------------------------- readDataSelect
@@ -232,18 +240,15 @@ class Selection
 	 *                         objects from the same data source
 	 * @param $search          object|array Search array for filter, associating properties names to
 	 *                         matching search value too
-	 * @param $options         Option|Option[] some options for advanced search
+	 * @param $options         Option|Option[]|string|string[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 * @return List_Data[]
 	 */
 	public function readDataSelect(array $properties_path = null, $search = null, $options = [])
 	{
-		$search = empty($search)
-			? $this->getSearchFilter()
-			: Func::andOp([$search, $this->getSearchFilter()]);
-
-		$options = array_merge($this->getSearchOptions(), is_array($options) ? $options : [$options]);
+		$search  = $this->getSearchFilter($search);
+		$options = $this->getSearchOptions($options);
 
 		$group_by = $this->getDataListController()->groupBy($this->getDataListSettings()->properties);
 		if ($group_by) {
@@ -275,11 +280,28 @@ class Selection
 	 */
 	public function readObjects($search = null, $options = [])
 	{
-		$search = empty($search)
-			? $this->getSearchFilter()
-			: Func::andOp([$search, $this->getSearchFilter()]);
-		$options = array_merge($this->getSearchOptions(), is_array($options) ? $options : [$options]);
+		$search  = $this->getSearchFilter($search);
+		$options = $this->getSearchOptions($options);
 		return Dao::search($search, $this->class_name, $options);
+	}
+
+	//--------------------------------------------------------------------------- removeSearchOptions
+	/**
+	 * @param $options Option[]|string[] remove OptionClass options when there is an '!Option_Class'
+	 */
+	protected function removeSearchOptions(array &$options)
+	{
+		foreach ($options as $key1 => $option) {
+			if (is_string($option) && (substr($option, 0, 1) === '!')) {
+				unset($options[$key1]);
+				$remove_option_class = substr($option, 1);
+				foreach ($options as $key2 => $remove_option) {
+					if (is_a($remove_option, $remove_option_class)) {
+						unset($options[$key2]);
+					}
+				}
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------- selectedFilter

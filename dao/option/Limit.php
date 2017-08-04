@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Option;
  */
 class Limit implements Option
 {
+	use Has_In;
 
 	//---------------------------------------------------------------------------------------- $count
 	/**
