@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
-use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
@@ -24,6 +23,7 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
@@ -536,18 +536,16 @@ class Validator implements Registerable
 				// we could do this control for all, but this may run getters and useless data reads
 				// this control was added for date-time format control, and nothing else
 				$var_is_valid = true;
-				if ($property->getType()->isDateTime()) {
-					try {
-						$property->getValue($object);
-					}
-					catch (Exception $exception) {
-						$var_annotation = new Var_Annotation($property->getType()->asString(), $property);
-						$var_annotation->reportMessage(Loc::tr('bad format'));
-						$var_annotation->valid = Result::ERROR;
-						$this->report[]        = $var_annotation;
-						$var_is_valid          = false;
-						$result                = Result::andResult($result, Result::ERROR);
-					}
+				if (
+					$property->getType()->isDateTime()
+					&& ($property->getValue($object) instanceof Date_Time_Error)
+				) {
+					$var_annotation = new Var_Annotation($property->getType()->asString(), $property);
+					$var_annotation->reportMessage(Loc::tr('bad format'));
+					$var_annotation->valid = Result::ERROR;
+					$this->report[]        = $var_annotation;
+					$var_is_valid          = false;
+					$result                = Result::andResult($result, Result::ERROR);
 				}
 				if ($var_is_valid) {
 					// if value is not set and is a link (component or not), then we validate only mandatory
