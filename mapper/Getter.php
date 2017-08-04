@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
@@ -10,6 +11,7 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time_Error;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -181,7 +183,12 @@ abstract class Getter
 	public static function getDateTime(&$stored)
 	{
 		if (is_string($stored)) {
-			$stored = Date_Time::fromISO($stored);
+			try {
+				$stored = Date_Time::fromISO($stored);
+			}
+			catch (Exception $exception) {
+				$stored = Date_Time_Error::fromError($stored);
+			}
 		}
 		return $stored;
 	}
