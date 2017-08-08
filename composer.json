@@ -12,6 +12,7 @@
 		"composer/installers":                   "~1.0",
 		"ckeditor/ckeditor":                     "4.*",
 		"csl/reset5":                            "1.*",
+		"doctrine/instantiator":                 "1.0.*",
 		"easybook/geshi":                        "1.*",
 		"html2text/html2text":                   "4.*",
 		"jquery-form/form":                      "3.*",
