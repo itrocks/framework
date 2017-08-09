@@ -250,17 +250,17 @@ class Selection
 		$search  = $this->getSearchFilter($search);
 		$options = $this->getSearchOptions($options);
 
-		$group_by = $this->getDataListController()->groupBy($this->getDataListSettings()->properties);
-		if ($group_by) {
-			$options[] = $group_by;
-			$this->getDataListController()->groupConcat($properties_path, $group_by);
-		}
-
 		if (empty($properties_path)) {
 			$properties = array_keys($this->getDataListSettings()->properties);
 			list($properties_path, $search) = $this->getDataListController()->removeInvisibleProperties(
 				$this->class_name, $properties, $search
 			);
+		}
+
+		$group_by = $this->getDataListController()->groupBy($this->getDataListSettings()->properties);
+		if ($group_by) {
+			$options[] = $group_by;
+			$this->getDataListController()->groupConcat($properties_path, $group_by);
 		}
 
 		return $this->getDataListController()->readDataSelect(
