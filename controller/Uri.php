@@ -81,12 +81,24 @@ class Uri
 		return SL . join(SL, $array);
 	}
 
+	//----------------------------------------------------------------------------------- isClassName
+	/**
+	 * Returns true if the parameter is the name of a class
+	 *
+	 * @param $parameter string
+	 * @return boolean
+	 */
+	public function isClassName($parameter)
+	{
+		return $parameter && ctype_upper($parameter[0]) && (strpos($parameter, DOT) === false);
+	}
+
 	//----------------------------------------------------------------------------------- setDefaults
 	private function setDefaults()
 	{
 		if (!$this->controller_name && !$this->feature_name) {
 			$this->controller_name = get_class(Application::current());
-			$this->feature_name = 'home';
+			$this->feature_name    = 'home';
 		}
 	}
 
@@ -118,31 +130,28 @@ class Uri
 	private function parseUri(array $uri)
 	{
 		// get main object = controller name
-		$key = 0;
+		$key                = 0;
 		$controller_element = '';
 		foreach ($uri as $key => $controller_element) {
-			if (
-				is_numeric($controller_element)
-				|| (strlen($controller_element) && ctype_lower($controller_element[0]))
-			) {
+			if (!$this->isClassName($controller_element)) {
 				break;
 			}
 		}
-		if ($controller_element && ctype_upper($controller_element[0])) {
+		if ($this->isClassName($controller_element)) {
 			$key++;
 		}
 		$this->controller_name = join(BS, array_slice($uri, 0, $key));
-		$uri = array_splice($uri, $key);
+		$uri                   = array_splice($uri, $key);
 
 		// get main object (as first parameter) and feature name
 		$this->feature_name = array_shift($uri);
-		$this->parameters = new Parameters($this);
+		$this->parameters   = new Parameters($this);
 		if (is_numeric($this->feature_name)) {
 			$this->parameters->set($this->controller_name, intval($this->feature_name));
 			$this->feature_name = array_shift($uri);
 			if (!$this->feature_name) {
-				$reflection_class = new Reflection_Class($this->controller_name);
-				$default_feature = $reflection_class->getAnnotation('default_feature')->value;
+				$reflection_class   = new Reflection_Class($this->controller_name);
+				$default_feature    = $reflection_class->getAnnotation('default_feature')->value;
 				$this->feature_name = $default_feature ?: Feature::F_OUTPUT;
 			}
 		}
@@ -161,7 +170,7 @@ class Uri
 		// get main parameters
 		$controller_elements = [];
 		foreach ($uri as $uri_element) {
-			if ($uri_element && ctype_upper($uri_element[0])) {
+			if ($this->isClassName($uri_element)) {
 				$controller_elements[] = $uri_element;
 			}
 			else {
@@ -195,7 +204,9 @@ class Uri
 	{
 		$uri = explode(SL, str_replace(',', SL, $uri));
 		array_shift($uri);
-		if (end($uri) === '') array_pop($uri);
+		if (end($uri) === '') {
+			array_pop($uri);
+		}
 		return $uri;
 	}
 

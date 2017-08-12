@@ -142,7 +142,7 @@ class Parameters
 			$object = $this->objects[$parameter_name];
 		}
 		elseif (is_numeric($this->getRawParameter($parameter_name))) {
-			if (isset($parameter_name[0]) && ctype_upper($parameter_name[0])) {
+			if ($this->uri->isClassName($parameter_name)) {
 				$class_name = $parameter_name;
 			}
 			if (isset($class_name) && class_exists($class_name)) {
