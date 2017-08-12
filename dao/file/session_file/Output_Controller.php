@@ -57,10 +57,17 @@ class Output_Controller implements Feature_Controller
 		if (isset($file)) {
 			header('Content-Type: ' . $file->getType());
 			$height = isset($raw_parameters['height']) ? $raw_parameters['height'] : null;
+			$rotate = isset($raw_parameters['rotate']) ? $raw_parameters['rotate'] : null;
 			$width  = isset($raw_parameters['width'])  ? $raw_parameters['width']  : null;
-			if ($height || $width) {
+			if ($height || $width || $rotate) {
 				$image = Image::createFromString($file->content);
-				$image->resize($width, $height)->display();
+				if ($height || $width) {
+					$image = $image->resize($width, $height);
+				}
+				if ($rotate) {
+					$image = $image->rotate($rotate);
+				}
+				$image->display();
 			}
 			else {
 				$size = isset($raw_parameters['size'])

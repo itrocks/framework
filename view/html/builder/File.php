@@ -91,14 +91,20 @@ class File
 		/** @var $session_files Files */
 		$session_files          = Session::current()->get(Files::class, true);
 		$session_files->files[] = $this->file;
+		$image_arguments        = [];
 		$image_parameters       = [$this->file->name];
-		if ($width) {
-			$image_parameters['width'] = $width;
+		if ($width && ($height === $width)) {
+			$image_parameters[] = $width;
 		}
-		if ($height) {
-			$image_parameters['height'] = $height;
+		else {
+			if ($width) {
+				$image_arguments['width'] = $width;
+			}
+			if ($height) {
+				$image_arguments['height'] = $height;
+			}
 		}
-		$image = new Image(View::link(Session_File::class, Feature::F_OUTPUT, null, $image_parameters));
+		$image = new Image(View::link(Session_File::class, Feature::F_OUTPUT, $image_parameters, $image_arguments));
 		return $image;
 	}
 
