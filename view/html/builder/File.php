@@ -88,11 +88,13 @@ class File
 	 */
 	public function buildImage($width = null, $height = null)
 	{
+		$file = clone $this->file;
+		$file->name = uniqid() . '.' . rLastParse($this->file->name, DOT);
 		/** @var $session_files Files */
 		$session_files          = Session::current()->get(Files::class, true);
-		$session_files->files[] = $this->file;
+		$session_files->files[] = $file;
 		$image_arguments        = [];
-		$image_parameters       = [$this->file->name];
+		$image_parameters       = [$file->name];
 		if ($width && ($height === $width)) {
 			$image_parameters[] = $width;
 		}
