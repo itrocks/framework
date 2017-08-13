@@ -27,7 +27,7 @@ abstract class Getter
 	 */
 	static protected function debug($step, $path, $method, $extension, $what = 'try')
 	{
-		echo "- $what $step : $path" . (($extension === 'html') ? '.html' : "::$method") . BR;
+		echo "- $what $step : $path" . (($extension === 'html') ? '' : "::$method") . BR;
 	}
 
 	//------------------------------------------------------------------------------------------- get
