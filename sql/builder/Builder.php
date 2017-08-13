@@ -164,11 +164,11 @@ abstract class Builder
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_update .= $first ? ($first = false) : ' AND';
-				$sql_update .= ' ' . $key . ' = ' . $value;
+				$sql_update .= SP . ((substr($key, 0, 3) === 'id_') ? $key : (BQ . $key . BQ)) . ' = ' . $value;
 			}
 		}
 		else {
-			trigger_error("id must be an integer of an array of integer values", E_USER_ERROR);
+			trigger_error('id must be an integer of an array of integer values', E_USER_ERROR);
 		}
 		return $sql_update;
 	}
