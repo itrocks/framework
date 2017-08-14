@@ -84,11 +84,11 @@ class Image
 	 *
 	 * @return integer
 	 */
-	protected function createBackgroundColor()
+	public function createBackgroundColor()
 	{
-		return in_array($this->type, [ IMAGETYPE_GIF, IMAGETYPE_PNG ])
-			? imagecolorallocatealpha($this->resource, 0, 0, 0, 127)
-			: imagecolorallocate($this->resource, 255, 255, 255);
+		return imageistruecolor($this->resource)
+			? imagecolorallocate($this->resource, 255, 255, 255)
+			: imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
 	}
 
 	//-------------------------------------------------------------------------------- createFromFile
@@ -168,12 +168,10 @@ class Image
 
 		$image = new Image($width, $height, null, $this->type);
 
-		if ($this->type === IMAGETYPE_PNG) {
+		if (!imageistruecolor($this->resource)) {
 			imagecolortransparent(
 				$image->resource, imagecolorallocatealpha($image->resource, 0, 0, 0, 127)
 			);
-		}
-		if (in_array($this->type, [ IMAGETYPE_GIF, IMAGETYPE_PNG ])) {
 			imagealphablending($image->resource, false);
 			imagesavealpha($image->resource, true);
 		}
@@ -208,6 +206,20 @@ class Image
 			$this->resource, $source_image->resource, $left, $top, $source_left, $source_top,
 			$source_width, $source_height
 		);
+		// copy transparency
+		if (
+			!imageistruecolor($this->resource)
+			&& !imageistruecolor($source_image->resource)
+			&& ($transparency = imagecolortransparent($source_image->resource))
+		) {
+			for ($y = 0; $y < $source_height; $y++) {
+				for ($x = 0; $x < $source_width; $x++) {
+					if (imagecolorat($source_image->resource, $x, $y) === $transparency) {
+						imagesetpixel($this->resource, $left + $x, $top + $y, 127 << 24);
+					}
+				}
+			}
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- resize
