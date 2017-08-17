@@ -18,6 +18,7 @@ class User_Setting extends Setting
 	/**
 	 * @composite
 	 * @link Object
+	 * @mandatory false
 	 * @var User
 	 */
 	public $user;
