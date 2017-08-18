@@ -14,6 +14,8 @@
 	 * @example
 	 * <div id="position"></div>
 	 * <form action="linked_page" target="#position">(...)</form>
+	 *
+	 * TODO HIGHEST Not SOLID anymore, because of form validity checks : remove them from here ! do compatibility like with build() !
 	 */
 	$.fn.xtarget = function(options)
 	{
@@ -116,10 +118,10 @@
 				$target.insertAfter($where);
 				if ($where !== $from) {
 					$target.addClass('popup');
+					$target.css('left',     left);
 					$target.css('position', 'absolute');
-					$target.css('left', left);
-					$target.css('top',  top);
-					$target.css('z-index', window.zindex_counter);
+					$target.css('top',      top);
+					$target.css('z-index',  window.zindex_counter);
 					if (settings.draggable_blank !== undefined) {
 						if (settings.draggable_blank === true) {
 							$target.draggable();
@@ -175,8 +177,12 @@
 				}
 				// If build plugin is active : build loaded DOM
 				if ($target.build !== undefined) {
-					if (build_target) $target.build();
-					else              $target.children().build();
+					if (build_target) {
+						$target.build();
+					}
+					else {
+						$target.children().build();
+					}
 				}
 				// on success callbacks
 				var target = $target.get()[0];
@@ -276,23 +282,23 @@
 						var $parent_form = $this.closest('form');
 						if ($parent_form.length) {
 							/*
-							TODO: 97556 Rework required properies first
+							TODO: 97556 Rework required properties first
 							if (!reportValidity($parent_form[0])) {
 								return;
 							}
 							*/
 							if ($parent_form.ajaxSubmit !== undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
-									url:  urlAppend(this.href, this.search),
-									type: $parent_form.attr('type')
+									type: $parent_form.attr('type'),
+									url:  urlAppend(this.href, this.search)
 								}));
 								xhr = $parent_form.data('jqxhr');
 							}
 							else {
 								xhr = $.ajax(jax = $.extend(ajax, {
-									url:  urlAppend(this.href, this.search),
 									data: $parent_form.serialize(),
-									type: $parent_form.attr('method')
+									type: $parent_form.attr('method'),
+									url:  urlAppend(this.href, this.search)
 								}));
 							}
 						}
@@ -323,16 +329,16 @@
 			event.preventDefault();
 			if ($this.ajaxSubmit !== undefined) {
 				$this.ajaxSubmit(jax = $.extend(ajax, {
-					url:  urlAppend(this.action, this.action.indexOf('?') > -1),
-					type: $this.attr('type')
+					type: $this.attr('type'),
+					url:  urlAppend(this.action, this.action.indexOf('?') > -1)
 				}));
 				xhr = $this.data('jqxhr');
 			}
 			else {
 				xhr = $.ajax(jax = $.extend(ajax, {
-					url:  urlAppend(this.action, this.action.indexOf('?') > -1),
 					data: $this.serialize(),
-					type: $this.attr('method')
+					type: $this.attr('method'),
+					url:  urlAppend(this.action, this.action.indexOf('?') > -1)
 				}));
 			}
 			xhr.ajax = jax;
