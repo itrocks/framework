@@ -13,6 +13,7 @@ abstract class Target
 	const MESSAGES   = '#messages';
 	const NEW_WINDOW = '_blank';
 	const NONE       = '#';
+	const POPUP      = '#popup';
 	const TOP        = '';
 
 }
