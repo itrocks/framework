@@ -391,12 +391,14 @@ $('document').ready(function()
 				else if ($this.data('shift-href') && event.shiftKey) {
 					uri = $this.data('shift-href');
 				}
-				else {
+				else if ($this.data('edit-class')) {
 					var id   = $this.prev().val();
 					var path = $this.data('edit-class').repl('\\', '/');
 					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
 				}
-				redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this);
+				if (uri !== undefined) {
+					redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this);
+				}
 			}
 		})
 

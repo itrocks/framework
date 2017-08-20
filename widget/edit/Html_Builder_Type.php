@@ -337,7 +337,6 @@ class Html_Builder_Type
 		$input->setAttribute('autocomplete', 'off');
 		$input->setData('combo-class', Names::classToSet($source_class_name));
 		$input->setData('ctrl-href',   $edit_href);
-		$input->setData('edit-class',  $source_class_name);
 		if ($this->value) {
 			$input->setData('shift-href', View::link($this->value, Feature::F_OUTPUT));
 		}
