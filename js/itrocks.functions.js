@@ -116,9 +116,10 @@ getTextWidth = function($context, extra_width)
  * Load an URI into target
  *
  * @param uri    string
- * @param target string|object jquery set object or selector (string)
+ * @param target string|object jquery set object (object) or selector (string)
+ * @param after  string|object jquery set object (object) or selector (string)
  */
-redirect = function(uri, target)
+redirect = function(uri, target, after)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
@@ -132,17 +133,49 @@ redirect = function(uri, target)
 		window.location = app.addSID(uri);
 	}
 	else {
+		var close_function;
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		if (!$target.length) {
+			window.zindex_counter ++;
+			var $after = (after && (typeof after === 'object')) ? after : $(after);
+			$target    = $('<div>')
+				.addClass('closeable-popup')
+				.attr('id', 'window' + window.zindex_counter)
+				.css('left',     $after.length ? ($after.offset().left + 3) : 10)
+				.css('position', 'absolute')
+				.css('top',      $after.length ? ($after.offset().top + $after.height() + 2) : 10)
+				.css('z-index',  window.zindex_counter)
+				.appendTo('body');
+			close_function = function(event)
+			{
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				$(this).closest('.closeable-popup').remove();
+			}
+		}
 		$.ajax({
 			url:     app.addSID(uri + more),
 			success: function(data) {
-				$target.html(data).build();
-				var title = $target.find('h2').first().text();
-				if (!title.length) {
-					title = uri;
+				$target.html(data);
+				if (close_function) {
+					// do it before build, in order to disable xtarget on .close button
+					$target.find('.actions .close a').click(close_function);
+					$target.find('a').each(function() {
+						var $this = $(this);
+						$this.attr(
+							'href', app.askAnd($this.attr('href'), 'close=window' + window.zindex_counter)
+						);
+					});
 				}
-				document.title = title;
-				window.history.pushState({ reload: true }, title, uri);
+				$target.build();
+				if (!close_function) {
+					var title = $target.find('h2').first().text();
+					if (!title.length) {
+						title = uri;
+					}
+					document.title = title;
+					window.history.pushState({reload: true}, title, uri);
+				}
 			}
 		});
 	}
