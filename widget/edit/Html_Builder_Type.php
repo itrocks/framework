@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Widget\Edit;
 
 use DateTime;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
@@ -17,6 +19,7 @@ use ITRocks\Framework\View\Html\Dom\Label;
 use ITRocks\Framework\View\Html\Dom\Select;
 use ITRocks\Framework\View\Html\Dom\Set;
 use ITRocks\Framework\View\Html\Dom\Textarea;
+use ITRocks\Framework\View;
 
 /**
  * Builds a standard form input matching a given data type and value
@@ -322,14 +325,23 @@ class Html_Builder_Type
 	 */
 	public function buildObject(array $filters = null, $as_string = false)
 	{
-		$class_name = $this->type->asString();
+		$class_name        = $this->type->asString();
+		$source_class_name = Builder::current()->sourceClassName($class_name);
+		$edit_href         = View::link(
+			$this->value ?: $source_class_name, $this->value ? Feature::F_EDIT : Feature::F_ADD
+		);
 		// visible input ?
 		$input_id = $as_string ? $this->getFieldName() : null;
 		$input    = new Input($input_id, strval($this->value));
-		$input->setAttribute('autocomplete', 'off');
-		$input->setData('edit-class', Builder::current()->sourceClassName($class_name));
-		$input->setData('combo-class', Names::classToSet($input->getData('edit-class')->value));
 		$input->addClass('auto_width');
+		$input->setAttribute('autocomplete', 'off');
+		$input->setData('combo-class', Names::classToSet($source_class_name));
+		$input->setData('ctrl-href',   $edit_href);
+		$input->setData('edit-class',  $source_class_name);
+		if ($this->value) {
+			$input->setData('shift-href', View::link($this->value, Feature::F_OUTPUT));
+		}
+		$input->setData('target',      Target::POPUP);
 		if ($this->tooltip) {
 			$input->setAttribute('title', $this->tooltip);
 		}
@@ -338,12 +350,15 @@ class Html_Builder_Type
 			$id_input = new Input(
 				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
 			);
-			$id_input->setAttribute('type', 'hidden');
 			$id_input->addClass('id');
+			$id_input->setAttribute('type', 'hidden');
 		}
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
-			if (isset($id_input)) $id_input->setAttribute('disabled');
+			if (isset($id_input)) {
+				$id_input->setAttribute('disabled');
+			}
+			$more = '';
 		}
 		else {
 			if ($filters) {
@@ -374,13 +389,14 @@ class Html_Builder_Type
 			$more = new Button('more');
 			$more->addClass('more');
 			$more->setAttribute('tabindex', -1);
-			if (isset($id_input))
+			if (isset($id_input)) {
 				$this->setOnChangeAttribute($id_input);
-			else
+			}
+			else {
 				$this->setOnChangeAttribute($input);
-			return (isset($id_input) ? $id_input : '') . $input . $more;
+			}
 		}
-		return (isset($id_input) ? $id_input : '') . $input;
+		return (isset($id_input) ? $id_input : '') . $input . $more;
 	}
 
 	//----------------------------------------------------------------------------------- buildString

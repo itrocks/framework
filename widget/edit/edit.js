@@ -382,12 +382,21 @@ $('document').ready(function()
 		//---------------------------------------------------------------------- input.combo ctrl+click
 		.click(function(event)
 		{
-			if (event.ctrlKey || event.metaKey) {
+			if (event.ctrlKey || event.metaKey || event.shiftKey) {
 				var $this = $(this);
-				var id   = $this.prev().val();
-				var path = $this.data('edit-class').repl('\\', '/');
-				var uri  = SL + path + SL + id + SL + 'edit';
-				redirect(uri, '#main');
+				var uri;
+				if ($this.data('ctrl-href') && (event.ctrlKey || event.metaKey)) {
+					uri = $this.data('ctrl-href');
+				}
+				else if ($this.data('shift-href') && event.shiftKey) {
+					uri = $this.data('shift-href');
+				}
+				else {
+					var id   = $this.prev().val();
+					var path = $this.data('edit-class').repl('\\', '/');
+					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
+				}
+				redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this);
 			}
 		})
 
