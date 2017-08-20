@@ -162,9 +162,10 @@ redirect = function(uri, target, after)
 					$target.find('.actions .close a').click(close_function);
 					$target.find('a').each(function() {
 						var $this = $(this);
-						$this.attr(
-							'href', app.askAnd($this.attr('href'), 'close=window' + window.zindex_counter)
-						);
+						var href = $this.attr('href');
+						if (!href.beginsWith('#')) {
+							$this.attr('href', app.askAnd(href, 'close=window' + window.zindex_counter));
+						}
 					});
 				}
 				$target.build();
