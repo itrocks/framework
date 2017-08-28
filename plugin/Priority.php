@@ -7,6 +7,7 @@ namespace ITRocks\Framework\Plugin;
 abstract class Priority
 {
 
+	//---------------------------------------------------------------------------- Priority constants
 	const TOP_CORE = 'top_core';
 	const CORE     = 'core';
 	const LOWEST   = 'lowest';
@@ -16,7 +17,6 @@ abstract class Priority
 	const HIGH     = 'high';
 	const HIGHER   = 'higher';
 	const HIGHEST  = 'highest';
-	//---------------------------------------------------------------------------------------- REMOVE
 	const REMOVE   = 'remove';
 
 }
