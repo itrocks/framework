@@ -60,11 +60,11 @@ class Compiler implements ICompiler, Needs_Main
 		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
 				if (empty($handler_filter) || in_array($pointcut[0], $handler_filter)) {
-					if ($pointcut[0] == Handler::READ) {
+					if ($pointcut[0] === Handler::READ) {
 						$properties[$method_or_property]['implements'][Handler::READ] = true;
 						$properties[$method_or_property][] = $pointcut;
 					}
-					elseif ($pointcut[0] == Handler::WRITE) {
+					elseif ($pointcut[0] === Handler::WRITE) {
 						$properties[$method_or_property]['implements'][Handler::WRITE] = true;
 						$properties[$method_or_property][] = $pointcut;
 					}
@@ -313,14 +313,14 @@ class Compiler implements ICompiler, Needs_Main
 									$added[$class_name]          = $source;
 									$already[$class_name]        = true;
 								}
+								/*
 								else {
-									/*
 									trigger_error(
 										'No class ' . $class_name . ' into file ' . $source->file_name,
 										E_USER_ERROR
 									);
-									*/
 								}
+								*/
 							}
 						}
 					}
@@ -396,7 +396,7 @@ class Compiler implements ICompiler, Needs_Main
 				. '%';
 			preg_match_all($expr, $property->getDocComment(), $match);
 			foreach ($match[1] as $type) {
-				$type = ($type == 'setter') ? 'write' : 'read';
+				$type = ($type === 'setter') ? Handler::WRITE : Handler::READ;
 				$properties[$property->name]['implements'][$type] = true;
 			}
 			if ($property->getParent()) {

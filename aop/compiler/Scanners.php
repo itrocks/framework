@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\AOP\Compiler;
 
+use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
@@ -65,7 +66,7 @@ trait Scanners
 					empty($match[1]) ? '$this' : $class->fullClassName($match[1]),
 					empty($match[2]) ? Names::propertyToMethod($property->name, 'get') : $match[2]
 				];
-				$properties[$property->name][] = ['read', $advice];
+				$properties[$property->name][] = [Handler::READ, $advice];
 			}
 		}
 		$overrides = $this->scanForOverrides($class->getDocComment([T_EXTENDS, T_USE]), ['getter']);
@@ -75,7 +76,7 @@ trait Scanners
 				empty($match['method_name'])
 					? Names::propertyToMethod($match['property_name'], 'get') : $match['method_name']
 			];
-			$properties[$match['property_name']][] = ['read', $advice];
+			$properties[$match['property_name']][] = [Handler::READ, $advice];
 		}
 	}
 
@@ -89,7 +90,7 @@ trait Scanners
 		$disable = [];
 		foreach ($properties as $property_name => $advices) {
 			foreach ($advices as $key => $advice) if (is_numeric($key)) {
-				if (is_array($advice) && (reset($advice) == 'read')) {
+				if (is_array($advice) && (reset($advice) === Handler::READ)) {
 					$disable[$property_name] = true;
 					break;
 				}
@@ -114,13 +115,13 @@ trait Scanners
 					);
 					$advice = null;
 				}
-				$properties[$property->name][] = ['read', $advice];
+				$properties[$property->name][] = [Handler::READ, $advice];
 			}
 		}
 		$annotations = [Link_Annotation::ANNOTATION];
 		foreach ($this->scanForOverrides($class->getDocComment(), $annotations, $disable) as $match) {
 			$advice = [Getter::class, 'get' . $match['method_name']];
-			$properties[$match['property_name']][] = ['read', $advice];
+			$properties[$match['property_name']][] = [Handler::READ, $advice];
 		}
 	}
 
@@ -161,7 +162,7 @@ trait Scanners
 							if ($annotation === Getter_Annotation::ANNOTATION) {
 								$disable[$match] = true;
 							}
-							$type = ($annotation === 'setter') ? 'write' : 'read';
+							$type = ($annotation === 'setter') ? Handler::WRITE : Handler::READ;
 							$overrides[] = [
 								'type'          => $type,
 								'property_name' => $matches[1][$i],
@@ -237,7 +238,7 @@ trait Scanners
 					empty($match[1]) ? '$this' : $class->source->fullClassName($match[1]),
 					empty($match[2]) ? Names::propertyToMethod($property->name, 'set') : $match[2]
 				];
-				$properties[$property->name][] = ['write', $advice];
+				$properties[$property->name][] = [Handler::WRITE, $advice];
 			}
 		}
 		foreach ($this->scanForOverrides($class->getDocComment(), ['setter']) as $match) {
@@ -246,7 +247,7 @@ trait Scanners
 				empty($match['method_name'])
 					? Names::propertyToMethod($match['property_name'], 'set') : $match['method_name']
 			];
-			$properties[$match['property_name']][] = ['write', $advice];
+			$properties[$match['property_name']][] = [Handler::WRITE, $advice];
 		}
 	}
 

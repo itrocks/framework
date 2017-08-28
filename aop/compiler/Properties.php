@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\AOP\Compiler;
 
+use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 
@@ -323,7 +324,7 @@ class Properties
 					}
 				}
 			}
-			elseif (isset($property_advices['implements']['read'])) {
+			elseif (isset($property_advices['implements'][Handler::READ])) {
 				if (!isset($switch)) {
 					$switch = true;
 					$code .= '
@@ -398,14 +399,14 @@ class Properties
 		$init = [];
 		$last = '';
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
-			if ($aspect[0] === 'write') {
+			if ($aspect[0] === Handler::WRITE) {
 				$last = '$last = ';
 				break;
 			}
 		}
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			list($type, $advice) = $aspect;
-			if ($type == 'read') {
+			if ($type === Handler::READ) {
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP */
@@ -415,7 +416,7 @@ class Properties
 		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
 ';
 				}
-				$code .= $this->compileAdvice($property_name, 'read', $advice, $init);
+				$code .= $this->compileAdvice($property_name, Handler::READ, $advice, $init);
 				if ($last) {
 					$code .= '
 		if ($this->' . $property_name . ' !== $last) {
@@ -494,7 +495,7 @@ class Properties
 					}
 				}
 			}
-			elseif (isset($property_advices['implements']['write'])) {
+			elseif (isset($property_advices['implements'][Handler::WRITE])) {
 				if (!isset($switch)) {
 					$switch = true;
 					$code .= '
@@ -590,7 +591,7 @@ class Properties
 		$init = [];
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
 			list($type, $advice) = $aspect;
-			if ($type == 'write') {
+			if ($type === Handler::WRITE) {
 				if (!isset($prototype)) {
 					$prototype = '
 	/** AOP ' . $property_name . ' writer : implementation for @setter called by __set */
@@ -603,7 +604,7 @@ class Properties
 		}
 ';
 				}
-				$advice_code = $this->compileAdvice($property_name, 'write', $advice, $init);
+				$advice_code = $this->compileAdvice($property_name, Handler::WRITE, $advice, $init);
 				if (strpos($advice_code, ' = ') !== false) {
 					$advice_code .= LF . TAB . TAB . '$this->' . $property_name . ' = $value;';
 				}
@@ -684,7 +685,7 @@ class Properties
 	 */
 	private function overrideMethod($method_name, $needs_return = true, array $advices = [])
 	{
-		$over = ['cases' => []];
+		$over       = ['cases' => []];
 		$parameters = '';
 		// the method exists into the class
 		$methods = $this->class->getMethods();
@@ -796,8 +797,8 @@ class Properties
 			&& ($parent = $this->class->getParentClass())
 		) {
 			$annotation = ($method_name == '__get') ? '(getter|link)' : 'setter';
-			$type = ($method_name == '__get') ? 'read' : 'write';
-			$overrides = [];
+			$type       = ($method_name == '__get') ? Handler::READ : Handler::WRITE;
+			$overrides  = [];
 			foreach ($this->scanForOverrides(
 				$parent->getDocComment([T_EXTENDS, T_USE]), [substr($method_name, 2) . 'ter']
 			) as $override) {
