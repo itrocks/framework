@@ -79,7 +79,8 @@ abstract class Builder
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_delete .= $first ? ($first = false) : ' AND';
-				$sql_delete .= SP . (substr($key, 0, 3) === 'id_' ? $key : (BQ . $key . BQ)) . ' = ' . Value::escape($value);
+				$sql_delete .= SP . ((substr($key, 0, 3) === 'id_') ? $key : (BQ . $key . BQ))
+					. ' = ' . Value::escape($value);
 			}
 		}
 		else {
