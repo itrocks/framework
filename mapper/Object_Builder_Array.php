@@ -268,9 +268,14 @@ class Object_Builder_Array
 		)) {
 			$object->$real_property_name = null;
 		}
-		// forces the call to the setter, if there is one for the property
+		// forces the call to the AOP / setter, if there is one for the property
 		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
 			$property = new Reflection_Property(get_class($object), $real_property_name);
+			/*
+			// Evolution proposal, but not freshly tested (and not enough time to do this)
+			$GLOBALS['D'] = true;
+			if (isset($object->_[$real_property_name])) {
+			*/
 			if ($property->getAnnotation('setter')->value) {
 				$dao                         = Dao::get($property->getAnnotation('dao')->value);
 				$object->$real_property_name = $dao->read($value, $property->getType()->asString());
