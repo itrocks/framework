@@ -207,16 +207,33 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Reset some data that will be re-calculated freeing them
 	 *
-	 * This can be called to be sure that if parent data changed, current data will change too
+	 * This can be called to be sure that if parent data changed, current data will change too.
+	 * Set $all to true if you change anything into the source, to ensure that every source cache
+	 * has been reset.
+	 *
+	 * @param $all boolean if true, reset the reflection class as if it is just loaded
 	 */
-	public function free()
+	public function free($all = false)
 	{
-		// parent may have been changed into a built class, more traits may have been added to them
-		$this->parent_methods    = null;
-		$this->parent_properties = null;
-		// more traits may have been added
-		$this->traits_methods    = null;
-		$this->traits_properties = null;
+		if ($all) {
+			$property_defaults = get_class_vars(get_class($this));
+			unset($property_defaults['annotations_cache']);
+			unset($property_defaults['name']);
+			unset($property_defaults['source']);
+			foreach ($property_defaults as $property_name => $default_value) {
+				if (!isset(static::$$property_name)) {
+					$this->$property_name = $default_value;
+				}
+			}
+		}
+		else {
+			// parent may have been changed into a built class, more traits may have been added to them
+			$this->parent_methods    = null;
+			$this->parent_properties = null;
+			// more traits may have been added
+			$this->traits_methods    = null;
+			$this->traits_properties = null;
+		}
 	}
 
 	//----------------------------------------------------------------------------------- getConstant
@@ -980,7 +997,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	//---------------------------------------------------------------------------- scanUntilClassEnds
 	/**
 	 * Scan tokens until the class ends
-	 *
 	 */
 	private function scanUntilClassEnds()
 	{
@@ -1067,6 +1083,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						if ($depth === 1) {
 							$line = $token[2];
 							$token_key = $this->token_key;
+							/** @noinspection PhpStatementHasEmptyBodyInspection ++ inside */
 							while ($this->tokens[++$this->token_key][0] !== T_STRING);
 							$token = $this->tokens[$this->token_key];
 							$this->methods[$token[1]] = new Reflection_Method(
@@ -1087,6 +1104,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 					case '}':
 						$depth --;
 						if (!$depth) {
+							/** @noinspection PhpStatementHasEmptyBodyInspection -- inside */
 							while (!is_array($token = $this->tokens[--$this->token_key]));
 							$this->stop = $token[2];
 							if ($token[0] === T_WHITESPACE) {

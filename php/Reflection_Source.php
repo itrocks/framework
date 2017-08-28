@@ -200,7 +200,7 @@ class Reflection_Source
 	{
 		if (isset($this->classes)) {
 			foreach ($this->classes as $class) {
-				$class->free();
+				$class->free(true);
 			}
 		}
 
@@ -379,10 +379,12 @@ class Reflection_Source
 					}
 				}
 
+				/*
 				// function use
 				elseif ($use_what == T_FUNCTION) {
 					// ...
 				}
+				*/
 
 			}
 
