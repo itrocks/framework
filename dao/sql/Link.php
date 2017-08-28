@@ -426,14 +426,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function storeNameOf($class_name)
 	{
-		if (isset($this->tables[$class_name])) {
-			$store_name = $this->tables[$class_name];
+		if (!isset($this->tables[$class_name])) {
+			$this->tables[$class_name] = parent::storeNameOf($class_name);
 		}
-		else {
-			$store_name                = parent::storeNameOf($class_name);
-			$this->tables[$class_name] = $store_name;
-		}
-		return $store_name;
+		return $this->tables[$class_name];
 	}
 
 	//-------------------------------------------------------------------------------------- truncate
