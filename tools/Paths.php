@@ -47,16 +47,6 @@ abstract class Paths
 	 */
 	public static $script_name;
 
-	//------------------------------------------------------------------------------------- $uri_root
-	/**
-	 * The root path for uri, without the itrocks launch script name
-	 *
-	 * @example /root/path/
-	 * @example /
-	 * @var string
-	 */
-	public static $uri_root;
-
 	//------------------------------------------------------------------------------------- $uri_base
 	/**
 	 * The base uri for creating links between transactions
@@ -68,26 +58,15 @@ abstract class Paths
 	 */
 	public static $uri_base;
 
-	//---------------------------------------------------------------------------------------- getUrl
+	//------------------------------------------------------------------------------------- $uri_root
 	/**
-	 * Get the root URL for the application
+	 * The root path for uri, without the itrocks launch script name
 	 *
-	 * This includes : currently used protocol, server name and uri base
-	 * If object or class name is set, path to this object or class name is added to the URL
-	 *
-	 * @example without class name : 'https://itrocks.org/itrocks'
-	 * @example with the class name of User : 'https://itrocks.org/itrocks/ITRocks/Framework/User'
-	 * @example with a User object of id = 1 : 'https://itrocks.org/itrocks/ITRocks/Framework/User/1'
-	 * @param $object object|string object or class name
-	 * @return string
+	 * @example /root/path/
+	 * @example /
+	 * @var string
 	 */
-	public static function getUrl($object = null)
-	{
-		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
-			. $_SERVER['SERVER_NAME']
-			. Paths::$uri_base
-			. (isset($object) ? (SL . Names::classToUri($object)) : '');
-	}
+	public static $uri_root;
 
 	//--------------------------------------------------------------------------- getRelativeFileName
 	/**
@@ -115,6 +94,28 @@ abstract class Paths
 			$file_name = substr($file_name, $length);
 		}
 		return $file_name;
+	}
+
+	//---------------------------------------------------------------------------------------- getUrl
+	/**
+	 * Get the root URL for the application
+	 *
+	 * This includes : currently used protocol, server name and uri base
+	 * If object or class name is set, path to this object or class name is added to the URL
+	 *
+	 * @example without class name : 'https://itrocks.org/itrocks'
+	 * @example with the class name of User : 'https://itrocks.org/itrocks/ITRocks/Framework/User'
+	 * @example with a User object of id = 1 : 'https://itrocks.org/itrocks/ITRocks/Framework/User/1'
+	 * @param $object      object|string Object or class name.
+	 * @param $environment string|null   Environment to use.
+	 * @return string
+	 */
+	public static function getUrl($object = null, $environment = null)
+	{
+		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
+			. ($environment ? : $_SERVER['SERVER_NAME'])
+			. Paths::$uri_base
+			. (isset($object) ? (SL . Names::classToUri($object)) : '');
 	}
 
 	//------------------------------------------------------------------------------------- patchFCGI
