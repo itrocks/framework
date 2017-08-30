@@ -98,8 +98,8 @@ abstract class Paths
 
 	//---------------------------------------------------------------------------------------- getUrl
 	/**
-	 * Get the root URL for the application
-	 *
+	 * Get the root URL for the application.
+     *
 	 * This includes : currently used protocol, server name and uri base
 	 * If object or class name is set, path to this object or class name is added to the URL
 	 *
@@ -107,13 +107,13 @@ abstract class Paths
 	 * @example with the class name of User : 'https://itrocks.org/itrocks/ITRocks/Framework/User'
 	 * @example with a User object of id = 1 : 'https://itrocks.org/itrocks/ITRocks/Framework/User/1'
 	 * @param $object      object|string Object or class name.
-	 * @param $environment string|null   Environment to use.
+	 * @param $server_name string|null   Environment to use.
 	 * @return string
 	 */
-	public static function getUrl($object = null, $environment = null)
+	public static function getUrl($object = null, $server_name = null)
 	{
 		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
-			. ($environment ? : $_SERVER['SERVER_NAME'])
+            . ($server_name ? : $_SERVER['SERVER_NAME'])
 			. Paths::$uri_base
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
 	}
