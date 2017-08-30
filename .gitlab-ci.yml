@@ -58,7 +58,7 @@ before_script:
   - cp /frameworkci/environment/*.php /frameworkci
 
   # Disable mysql strict mode
-  - mysql -uroot -p${MYSQL_ROOT_PASSWORD} -h${MYSQL_PORT_3306_TCP_ADDR} ${MYSQL_DATABASE} -Bse "SET GLOBAL sql_mode = '';"
+  - mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -h"${MYSQL_PORT_3306_TCP_ADDR}" -P"${MYSQL_PORT_3306_TCP_PORT}" "${MYSQL_DATABASE}" -Bse "SET GLOBAL sql_mode = '';"
 
 test:
   script:
