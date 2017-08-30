@@ -99,7 +99,7 @@ abstract class Paths
 	//---------------------------------------------------------------------------------------- getUrl
 	/**
 	 * Get the root URL for the application.
-     *
+	 *
 	 * This includes : currently used protocol, server name and uri base
 	 * If object or class name is set, path to this object or class name is added to the URL
 	 *
@@ -113,7 +113,7 @@ abstract class Paths
 	public static function getUrl($object = null, $server_name = null)
 	{
 		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
-            . ($server_name ? : $_SERVER['SERVER_NAME'])
+			. ($server_name ?: $_SERVER['SERVER_NAME'])
 			. Paths::$uri_base
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
 	}
