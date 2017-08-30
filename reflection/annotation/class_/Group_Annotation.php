@@ -42,7 +42,7 @@ class Group_Annotation extends Template\List_Annotation implements Multiple_Anno
 		if ($i === false) {
 			$i = strlen($value);
 		}
-		$this->name = substr($value, 0, $i);
+		$this->name = trim(substr($value, 0, $i));
 		parent::__construct(substr($value, $i + 1));
 	}
 
