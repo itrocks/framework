@@ -13,6 +13,12 @@ use ITRocks\Framework\Widget\Tab;
 class Tabs_Builder_Class
 {
 
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var $class Reflection_Class
+	 */
+	protected $class;
+
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * Build tabs containing class properties
@@ -23,8 +29,11 @@ class Tabs_Builder_Class
 	 */
 	public function build(Reflection_Class $class, array $filter_properties = null)
 	{
+		$this->class       = $class;
 		$group_annotations = Group_Annotation::allOf($class);
+		$this->removeDuplicateProperties($group_annotations);
 		$this->mergeGroups($group_annotations);
+		$this->sortGroups($group_annotations);
 		$properties = $this->groupsToProperties($class->name, $group_annotations, $filter_properties);
 		if ($filter_properties) {
 			$properties_set = new Set(Reflection_Property::class, $properties);
@@ -191,6 +200,54 @@ class Tabs_Builder_Class
 				unset($groups[$middle_key]);
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------- removeDuplicateProperties
+	/**
+	 * Remove duplicate property paths : a property cannot be into two groups at the same time
+	 * Properties remain into the first group, which are those declared at the highest level
+	 *
+	 * @param $groups Group_Annotation[]
+	 */
+	protected function removeDuplicateProperties(array &$groups)
+	{
+		$already = [];
+		foreach ($groups as $key => $group) {
+			foreach ($group->values() as $property_path) {
+				if (isset($already[$property_path])) {
+					$group->remove($property_path);
+				}
+				else {
+					$already[$property_path] = true;
+				}
+			}
+			if (!$group->values()) {
+				unset($groups[$key]);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------ sortGroups
+	/**
+	 * Sort groups alphabetically
+	 *
+	 * If some group names are into @groups_order, they will be ordered first, in the same order,
+	 * and the trailing groups will come after, sorted alphabetically.
+	 *
+	 * @param array $groups Group_Annotation[] Key is the name of the group
+	 */
+	protected function sortGroups(array &$groups)
+	{
+		$sorted_groups = [];
+		$groups_order  = $this->class->getListAnnotation('groups_order')->values();
+		foreach ($groups_order as $group_name) {
+			if (isset($groups[$group_name])) {
+				$sorted_groups[$group_name] = $groups[$group_name];
+				unset($groups[$group_name]);
+			}
+		}
+		asort($groups);
+		$groups = array_merge($sorted_groups, $groups);
 	}
 
 }
