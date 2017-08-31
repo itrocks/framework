@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Error_Handler;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
-use ITRocks\Framework\Debug\Xdebug;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Call_Stack;
 
@@ -12,6 +11,10 @@ use ITRocks\Framework\Tools\Call_Stack;
  */
 class Report_Call_Stack_Error_Handler implements Error_Handler
 {
+
+	//---------------------------------------------------------------------------- "log as" constants
+	const HTML = 'html';
+	const TEXT = 'text';
 
 	//----------------------------------------------------------------------------------- $call_stack
 	/**
@@ -66,31 +69,21 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$reset_call_stack = true;
 		}
 		$code = new Error_Code($error->getErrorNumber());
+
 		if (ini_get('display_errors')) {
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
-				$message = $code->caption() . LF
-				. $code->caption() . LF
-				. $error->getErrorMessage() . LF
-				. $this->call_stack->asText();
+				$this->logError($error, 'php://stdout');
 			}
 			else {
-				$message = '<div class="' . $code->caption() . ' handler">' . LF
-					. '<span class="number">' . $code->caption() . '</span>' . LF
-					. '<span class="message">' . $error->getErrorMessage() . '</span>' . LF
-					. '<table class="call-stack">' . LF
-					. $this->call_stack->asHtml()
-					. '</table>' . LF
-					. '</div>' . LF;
+				echo LF . '<div class="' . $code->caption() . ' handler">' . LF;
+				$this->logError($error, 'php://stdout', self::HTML);
+				echo LF . '</div>' . LF;
 			}
-			echo $message . LF;
 		}
 
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
-			if (Xdebug::isEnabled()) {
-				$this->logError($error, 'php://stdout');
-			}
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
 				echo $this->getUserInformationMessage();
 			}
@@ -108,24 +101,26 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	/**
 	 * @param $error    Handled_Error
 	 * @param $log_file string
+	 * @param $as       string @values html, text
 	 */
-	public function logError(Handled_Error $error, $log_file = null)
+	public function logError(Handled_Error $error, $log_file = null, $as = self::TEXT)
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		if (!$log_file) {
 			$log_file = ini_get('log_errors') ? ini_get('error_log') : null;
 		}
 		if ($log_file) {
+			$lf         = ($as === self::HTML) ? BRLF : LF;
 			$call_stack = $this->call_stack ?: new Call_Stack();
 			$f          = fopen($log_file, 'ab');
 			$date       = '[' . date('Y-m-d H:i:s') . ']' . SP;
-			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . LF);
-			fputs($f, (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI') . LF);
-			fputs($f, (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] . LF : ''));
+			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . $lf);
+			fputs($f, (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI') . $lf);
+			fputs($f, (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] . $lf : ''));
 			fputs($f, $this->processIdentification());
 			fputs($f, $this->formData());
-			fputs($f, $call_stack->asText());
-			fputs($f, LF);
+			fputs($f, (($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText()));
+			fputs($f, $lf);
 			fclose($f);
 		}
 	}
