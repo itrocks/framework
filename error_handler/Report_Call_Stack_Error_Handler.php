@@ -3,9 +3,9 @@ namespace ITRocks\Framework\Error_Handler;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Debug\Xdebug;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Call_Stack;
-use ITRocks\Framework\Tools\Call_Stack\Line;
 
 /**
  * An error handler that reports the full call stack and not only the error message alone
@@ -81,13 +81,16 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 					. $this->call_stack->asHtml()
 					. '</table>' . LF
 					. '</div>' . LF;
-				echo $message . LF;
 			}
+			echo $message . LF;
 		}
 
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
+			if (Xdebug::isEnabled()) {
+				$this->logError($error, 'php://stdout');
+			}
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
 				echo $this->getUserInformationMessage();
 			}
@@ -103,12 +106,16 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//-------------------------------------------------------------------------------------- logError
 	/**
-	 * @param $error Handled_Error
+	 * @param $error    Handled_Error
+	 * @param $log_file string
 	 */
-	public function logError(Handled_Error $error)
+	public function logError(Handled_Error $error, $log_file = null)
 	{
 		$code = new Error_Code($error->getErrorNumber());
-		if (ini_get('log_errors') && ($log_file = ini_get('error_log'))) {
+		if (!$log_file) {
+			$log_file = ini_get('log_errors') ? ini_get('error_log') : null;
+		}
+		if ($log_file) {
 			$call_stack = $this->call_stack ?: new Call_Stack();
 			$f          = fopen($log_file, 'ab');
 			$date       = '[' . date('Y-m-d H:i:s') . ']' . SP;

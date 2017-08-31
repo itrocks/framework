@@ -91,6 +91,17 @@ class Xdebug implements Registerable
 		}
 	}
 
+	//------------------------------------------------------------------------------------- isEnabled
+	/**
+	 * Returns true if the current script is running on a debugging mode
+	 *
+	 * @return boolean
+	 */
+	public static function isEnabled()
+	{
+		return function_exists('xdebug_is_enabled') && xdebug_is_enabled();
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * @param Register $register
