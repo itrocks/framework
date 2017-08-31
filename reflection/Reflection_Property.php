@@ -435,8 +435,9 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets value
 	 *
-	 * @param object $object
+	 * @param $object object
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function getValue($object = null)
 	{
@@ -457,12 +458,28 @@ class Reflection_Property extends ReflectionProperty
 			}
 			return $object ? $property->getValue($object) : null;
 		}
-		else {
-			while (is_array($object)) {
-				$object = reset($object);
-			}
-			return $object ? parent::getValue($object) : null;
+		// TODO HIGHER $object may never be an array here ?!? This while() is probably dead-code, remove
+		while (is_array($object)) {
+			$object = reset($object);
 		}
+		// TODO Remove this patch, done because PHP 7.1 sometimes crash with no valid reason for this
+		//return $object ? parent::getValue($object) : null;
+		if ($object) {
+			try {
+				return parent::getValue($object);
+			}
+			catch (Exception $exception) {
+				if (
+					$exception->getMessage()
+					=== 'Given object is not an instance of the class this property was declared in'
+				) {
+					$property_name = $this->name;
+					return $object->$property_name;
+				}
+				throw $exception;
+			}
+		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------- isEquivalentObject
