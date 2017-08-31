@@ -5,7 +5,7 @@ namespace ITRocks\Framework\Tests\Objects;
  * An item class
  *
  * @before_write beforeWrite
- * @property $call_before_write integer
+ * @property integer call_before_write
  */
 class Item
 {
