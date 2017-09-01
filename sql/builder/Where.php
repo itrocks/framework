@@ -211,7 +211,7 @@ class Where
 				$tx = 't0';
 			}
 			$column = ((!$master_path) || ($master_path === 'id'))
-				? ($tx . DOT . BQ . $foreign_column . BQ)
+				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
 				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
 		}
 		return $column;
