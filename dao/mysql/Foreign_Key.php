@@ -109,16 +109,16 @@ class Foreign_Key implements Sql\Foreign_Key
 	 */
 	public static function buildReferences(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
-		$foreign_keys = [];
-		$result = $mysqli->query(
-			'SELECT constraint_name `Constraint`,'
-			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
-			. ' update_rule `On_update`, delete_rule `On_delete`,'
-			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
-			. LF . 'FROM information_schema.referential_constraints'
-			. LF . 'WHERE constraint_schema = ' . $database_name
-			. ' AND referenced_table_name = ' . DQ . $table_name . DQ
+		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+		$foreign_keys  = [];
+		$result        = $mysqli->query(
+			'SELECT `constraint_name` AS `Constraint`,'
+			. " RIGHT(`constraint_name`, LENGTH(`constraint_name`) - LOCATE('.', `constraint_name`)) AS `Fields`,"
+			. ' `update_rule` AS `On_update`, `delete_rule` AS `On_delete`,'
+			. " `referenced_table_name` AS `Reference_table`, 'id' AS `Reference_fields`" . LF
+			. 'FROM `information_schema`.`referential_constraints`' . LF
+			. 'WHERE `constraint_schema` = ' . $database_name
+			. ' AND `referenced_table_name` = ' . Q . $table_name . Q
 		);
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
 			$foreign_keys[] = $foreign_key;
@@ -138,16 +138,16 @@ class Foreign_Key implements Sql\Foreign_Key
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
-		$foreign_keys = [];
-		$result = $mysqli->query(
-			'SELECT constraint_name `Constraint`,'
-			. ' RIGHT(constraint_name, LENGTH(constraint_name) - LOCATE(".", constraint_name)) `Fields`,'
-			. ' update_rule `On_update`, delete_rule `On_delete`,'
-			. ' referenced_table_name `Reference_table`, "id" `Reference_fields`'
-			. LF . 'FROM information_schema.referential_constraints'
-			. LF . 'WHERE constraint_schema = ' . $database_name
-			. ' AND table_name = ' . DQ . $table_name . DQ
+		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+		$foreign_keys  = [];
+		$result        = $mysqli->query(
+			'SELECT `constraint_name` AS `Constraint`,'
+			. " RIGHT(`constraint_name`, LENGTH(`constraint_name`) - LOCATE('.', `constraint_name`)) AS `Fields`,"
+			. ' `update_rule` AS `On_update`, `delete_rule` AS `On_delete`,'
+			. " `referenced_table_name` AS `Reference_table`, 'id' AS `Reference_fields`" . LF
+			. 'FROM `information_schema`.`referential_constraints`' . LF
+			. 'WHERE `constraint_schema` = ' . $database_name
+			. ' AND `table_name` = ' . Q . $table_name . Q
 		);
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
 			/** @var $foreign_key Foreign_Key */

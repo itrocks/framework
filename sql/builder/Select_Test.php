@@ -49,7 +49,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2'
 		);
 	}
@@ -67,8 +67,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `items` t2 ON t2.id = t1.id_item' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `items` t2 ON t2.`id` = t1.`id_item`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1'
 		);
 	}
@@ -88,8 +88,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `items` t2 ON t2.id = t1.id_item' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `items` t2 ON t2.`id` = t1.`id_item`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1'
 		);
 	}
@@ -107,8 +107,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `items` t2 ON t2.id = t1.id_item' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `items` t2 ON t2.`id` = t1.`id_item`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1'
 		);
 	}
@@ -126,10 +126,10 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `items` t2 ON t2.id = t1.id_item' . LF
-			. 'LEFT JOIN `items_items` t3 ON t3.id_item = t2.id' . LF
-			. 'LEFT JOIN `items` t4 ON t4.id = t3.id_cross_selling' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'LEFT JOIN `items_items` t3 ON t3.`id_item` = t2.`id`' . LF
+			. 'LEFT JOIN `items` t4 ON t4.`id` = t3.`id_cross_selling`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1 AND t4.`code` = 3'
 		);
 	}
@@ -147,10 +147,10 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `items` t2 ON t2.id = t1.id_item' . LF
-			. 'LEFT JOIN `items_items` t3 ON t3.id_item = t2.id' . LF
-			. 'LEFT JOIN `items` t4 ON t4.id = t3.id_cross_selling' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'LEFT JOIN `items_items` t3 ON t3.`id_item` = t2.`id`' . LF
+			. 'LEFT JOIN `items` t4 ON t4.`id` = t3.`id_cross_selling`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2 AND t2.`code` = 1 AND t4.`code` = 3'
 		);
 	}
@@ -168,7 +168,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`number`, t0.`quantity`' . LF
 			. 'FROM `orders_lines` t0' . LF
-			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
+			. 'LEFT JOIN `clients` t1 ON t1.`id` = t0.`id_client`' . LF
 			. 'WHERE t1.`id` IS NULL'
 		);
 	}
@@ -184,7 +184,7 @@ class Select_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `lines.number`, t1.`quantity` AS `lines.quantity`' . LF
-			. 'FROM `orders` t0' . LF . 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id'
+			. 'FROM `orders` t0' . LF . 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`'
 		);
 	}
 
@@ -200,8 +200,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`number`, t1.`number` AS `client.number`, t2.`number` AS `client.client.number`, t1.`name` AS `client.name`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `clients` t1 ON t1.id = t0.id_client' . LF
-			. 'LEFT JOIN `clients` t2 ON t2.id = t1.id_client'
+			. 'INNER JOIN `clients` t1 ON t1.`id` = t0.`id_client`' . LF
+			. 'LEFT JOIN `clients` t2 ON t2.`id` = t1.`id_client`'
 		);
 	}
 
@@ -221,10 +221,10 @@ class Select_Test extends Test
 			. ' t2.`number` AS `Order_Line->client.order:number`,'
 			. ' t2.`id_client` AS `Order_Line->client.order:client`,'
 			. ' t2.`id_delivery_client` AS `Order_Line->client.order:delivery_client`,'
-			. ' t2.id AS `Order_Line->client.order:id`' . LF
+			. ' t2.`id` AS `Order_Line->client.order:id`' . LF
 			. 'FROM `clients` t0' . LF
-			. 'LEFT JOIN `orders_lines` t1 ON t1.id_client = t0.id' . LF
-			. 'LEFT JOIN `orders` t2 ON t2.id = t1.id_order'
+			. 'LEFT JOIN `orders_lines` t1 ON t1.`id_client` = t0.`id`' . LF
+			. 'LEFT JOIN `orders` t2 ON t2.`id` = t1.`id_order`'
 		);
 	}
 
@@ -240,7 +240,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`date` AS `order.date`, t1.`number` AS `order.number`, t0.`number`, t0.`quantity`' . LF
 			. 'FROM `orders_lines` t0' . LF
-			. 'INNER JOIN `orders` t1 ON t1.id = t0.id_order'
+			. 'INNER JOIN `orders` t1 ON t1.`id` = t0.`id_order`'
 		);
 	}
 
@@ -257,7 +257,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
 			. 'WHERE t1.`name` = "Robert" AND t0.`percentage` = 100'
 		);
 	}
@@ -279,8 +279,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
-			. 'WHERE t0.id_quote = 101 AND t0.id_salesman = 102'
+			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
+			. 'WHERE t0.`id_quote` = 101 AND t0.`id_salesman` = 102'
 		);
 		$search->quote        = Search_Object::create(Quote::class);
 		$search->quote->id    = 101;
@@ -291,9 +291,9 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `quotes_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
-			. 'LEFT JOIN `quotes` t2 ON t2.id = t0.id_quote' . LF
-			. 'LEFT JOIN `test_salesmen` t3 ON t3.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
+			. 'LEFT JOIN `quotes` t2 ON t2.`id` = t0.`id_quote`' . LF
+			. 'LEFT JOIN `test_salesmen` t3 ON t3.`id` = t0.`id_salesman`' . LF
 			. 'WHERE t2.`id` = 101 AND t3.`id` = 102'
 		);
 	}
@@ -311,8 +311,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t2.`name`, t1.`percentage`, t0.`additional_text`' . LF
 			. 'FROM `quotes_salesmen_additional` t0' . LF
-			. 'INNER JOIN `quotes_salesmen` t1 ON t1.id = t0.id_salesman' . LF
-			. 'INNER JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman' . LF
+			. 'INNER JOIN `quotes_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
+			. 'INNER JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`' . LF
 			. 'WHERE t2.`name` = "Robert" AND t1.`percentage` = 100'
 		);
 	}
@@ -329,8 +329,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`number`, t2.`name` AS `salesmen.name`, t1.`percentage` AS `salesmen.percentage`' . LF
 			. 'FROM `quotes` t0' . LF
-			. 'LEFT JOIN `quotes_salesmen` t1 ON t1.id_quote = t0.id' . LF
-			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman'
+			. 'LEFT JOIN `quotes_salesmen` t1 ON t1.`id_quote` = t0.`id`' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`'
 		);
 	}
 
@@ -346,8 +346,8 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`, t2.`name` AS `salesmen.name`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'LEFT JOIN `orders_test_salesmen` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman'
+			. 'LEFT JOIN `orders_test_salesmen` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`'
 		);
 	}
 
@@ -367,9 +367,9 @@ class Select_Test extends Test
 			. ' t1.`number` AS `order:number`,'
 			. ' t1.`id_client` AS `order:client`,'
 			. ' t1.`id_delivery_client` AS `order:delivery_client`,'
-			. ' t1.id AS `order:id`' . LF
+			. ' t1.`id` AS `order:id`' . LF
 			. 'FROM `orders_lines` t0' . LF
-			. 'INNER JOIN `orders` t1 ON t1.id = t0.id_order'
+			. 'INNER JOIN `orders` t1 ON t1.`id` = t0.`id_order`'
 		);
 	}
 
@@ -389,7 +389,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`number`, t0.`quantity`' . LF
 			. 'FROM `orders_lines` t0' . LF
-			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
+			. 'LEFT JOIN `clients` t1 ON t1.`id` = t0.`id_client`' . LF
 			. 'WHERE t1.`id` IS NULL AND t0.`quantity` > 1'
 		);
 	}
@@ -406,7 +406,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id'
+			. 'LEFT JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`'
 		);
 	}
 
@@ -438,10 +438,10 @@ class Select_Test extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`' . LF
+			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `clients` t2 ON t2.id = t1.id_client' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `clients` t2 ON t2.`id` = t1.`id_client`' . LF
 			. 'WHERE (t2.`number` = 1 OR t0.`number` = 2)'
 		);
 	}
@@ -459,7 +459,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
 			. 'WHERE t0.`number` = 1 AND t1.`number` = 2'
 		);
 	}
@@ -479,10 +479,10 @@ class Select_Test extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`' . LF
+			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `clients` t2 ON t2.id = t1.id_client' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `clients` t2 ON t2.`id` = t1.`id_client`' . LF
 			. 'WHERE t2.`id` = 12 AND t0.`number` = 2'
 		);
 	}
@@ -499,9 +499,9 @@ class Select_Test extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.id AS `client:id`' . LF
+			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.`id` AS `client:id`' . LF
 			. 'FROM `clients` t0' . LF
-			. 'LEFT JOIN `clients` t1 ON t1.id = t0.id_client' . LF
+			. 'LEFT JOIN `clients` t1 ON t1.`id` = t0.`id_client`' . LF
 			. 'WHERE t0.`name` LIKE "Roger%" AND t0.`number` = 1'
 		);
 	}
@@ -519,10 +519,10 @@ class Select_Test extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`' . LF
+			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
-			. 'LEFT JOIN `clients` t2 ON t2.id = t1.id_client' . LF
+			. 'INNER JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `clients` t2 ON t2.`id` = t1.`id_client`' . LF
 			. 'WHERE t2.`number` = 1 AND t0.`number` = 2'
 		);
 	}
@@ -557,7 +557,7 @@ class Select_Test extends Test
 			$builder->buildQuery(),
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'LEFT JOIN `orders_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `orders_lines` t1 ON t1.`id_order` = t0.`id`' . LF
 			. 'WHERE t1.`number` = 2'
 		);
 	}

@@ -75,7 +75,7 @@ class Select_Test extends Test
 		$properties = $this->propertyNames($class, $depth - 1);
 		$builder    = new Select($class->name, $properties);
 		$query      = 'EXPLAIN ' . $builder->buildQuery();
-		if (!strpos($query, '.id_ ')) {
+		if (!strpos($query, '.`id_ ')) {
 			try {
 				Maintainer::get()->notice = false;
 				$dao->setContext($builder->getJoins()->getClassNames());

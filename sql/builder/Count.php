@@ -77,7 +77,7 @@ class Count
 				}
 				$sql .= $this->finalize($sub_where, $tables);
 			}
-			return 'SELECT COUNT(*)' . LF . 'FROM (' . LF . $sql . LF . ') t0' . LF . 'GROUP BY t0.id';
+			return 'SELECT COUNT(*)' . LF . 'FROM (' . LF . $sql . LF . ') t0' . LF . 'GROUP BY t0.`id`';
 		}
 		return 'SELECT COUNT(*)' . LF . 'FROM ' . $tables . $where;
 	}

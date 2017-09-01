@@ -170,14 +170,14 @@ class Column implements Sql\Column
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? (DQ . $database_name . DQ) : 'DATABASE()';
-		$columns = [];
-		$result = $mysqli->query(
-			'SELECT column_name `Field`,'
-			. ' IFNULL(CONCAT(column_type, " CHARACTER SET ", character_set_name, " COLLATE ", collation_name), column_type) `Type`,'
-			. ' is_nullable `Null`, column_key `Key`, column_default `Default`, extra `Extra`'
-			. LF . 'FROM information_schema.columns'
-			. LF . 'WHERE table_schema = ' . $database_name . ' AND table_name = ' . DQ . $table_name . DQ
+		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+		$columns       = [];
+		$result        = $mysqli->query(
+			'SELECT `column_name` AS `Field`,'
+			. ' IFNULL(CONCAT(`column_type`, " CHARACTER SET ", `character_set_name`, " COLLATE ", `collation_name`), `column_type`) AS `Type`,'
+			. ' `is_nullable` AS `Null`, `column_key` AS `Key`, `column_default` AS `Default`, `extra` AS `Extra`' . LF
+			. 'FROM `information_schema`.`columns`' . LF
+			. 'WHERE `table_schema` = ' . $database_name . ' AND `table_name` = ' . Q . $table_name . Q
 		);
 		/** @var $column Column */
 		while ($column = $result->fetch_object(Column::class)) {

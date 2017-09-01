@@ -38,14 +38,14 @@ class Map_Insert
 		);
 		if ($this->property->getType()->getElementTypeAsString() == 'object') {
 			$class_field = substr($field2, 3) . '_class';
-			return 'INSERT INTO' . SP . BQ . $table . BQ
-			. LF . 'SET ' . $field1 . ' = ' . $id1 . ', ' . $field2 . ' = ' . $id2
-			. ', ' . $class_field . ' = ' . Value::escape(get_class($foreign_object));
+			return 'INSERT INTO' . SP . BQ . $table . BQ . LF
+				. 'SET ' . BQ . $field1 . BQ . ' = ' . $id1 . ', '
+				. BQ . $field2 . BQ . ' = ' . $id2 . ', '
+				. BQ . $class_field . BQ . ' = ' . Value::escape(get_class($foreign_object));
 		}
-		else {
-			return 'INSERT INTO' . SP . BQ . $table . BQ
-				. LF . 'SET ' . $field1 . ' = ' . $id1 . ', ' . $field2 . ' = ' . $id2;
-		}
+		return 'INSERT INTO' . SP . BQ . $table . BQ . LF
+			. 'SET ' . BQ . $field1 . BQ . ' = ' . $id1 . ', '
+			. BQ . $field2 . BQ . ' = ' . $id2;
 	}
 
 }

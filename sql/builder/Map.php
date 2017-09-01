@@ -21,15 +21,16 @@ abstract class Map
 	 * @param $object         object the source object
 	 * @param $property       Reflection_Property the property of the source object used for the mapping
 	 * @param $foreign_object object the mapped object
-	 * @return array
+	 * @return array [string $table, string $master_column, string $foreign_column,
+	 *               integer $id_object, integer $id_foreign_object]
 	 */
 	public static function sqlElementsOf($object, $property, $foreign_object)
 	{
 		// build table and fields
 		$sql_link = new Link_Table($property);
-		$table = $sql_link->table();
-		$field1 = $sql_link->masterColumn();
-		$field2 = $sql_link->foreignColumn();
+		$table    = $sql_link->table();
+		$field1   = $sql_link->masterColumn();
+		$field2   = $sql_link->foreignColumn();
 		// build values
 		$id1 = Dao::getObjectIdentifier($object, 'id');
 		$id2 = Dao::getObjectIdentifier($foreign_object, 'id');

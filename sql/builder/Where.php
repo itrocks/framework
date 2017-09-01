@@ -174,16 +174,16 @@ class Where
 
 	//----------------------------------------------------------------------------------- buildColumn
 	/**
-	 * @param $path   string
-	 * @param $prefix string
-	 * @return string
+	 * @param $path   string The property path
+	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
+	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
 	 */
 	public function buildColumn($path, $prefix = '')
 	{
 		$join      = $this->joins->add($path);
 		$link_join = $this->joins->getIdLinkJoin($path);
 		if (isset($link_join)) {
-			$column = $link_join->foreign_alias . DOT . 'id';
+			$column = $link_join->foreign_alias . '.`id`';
 		}
 		elseif (isset($join)) {
 			if ($join->type === Join::LINK) {
@@ -199,7 +199,7 @@ class Where
 		}
 		else {
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
-			if (!$master_path && $foreign_column == 'id') {
+			if (!$master_path && ($foreign_column === 'id')) {
 				$class = $this->joins->getStartingClassName();
 				$i     = 0;
 				while ($class = (new Link_Class($class))->getLinkedClassName()) {
@@ -211,8 +211,8 @@ class Where
 				$tx = 't0';
 			}
 			$column = ((!$master_path) || ($master_path === 'id'))
-				? ($tx . DOT . $this->withBQ($prefix . $foreign_column))
-				: ($this->joins->getAlias($master_path) . DOT . $this->withBQ($prefix . $foreign_column));
+				? ($tx . DOT . BQ . $foreign_column . BQ)
+				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
 		}
 		return $column;
 	}
@@ -277,7 +277,7 @@ class Where
 		if ($value instanceof Func\Where) {
 			$this->joins->add($path);
 			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
-			if ($foreign_column == 'id') {
+			if ($foreign_column === 'id') {
 				$prefix = '';
 			}
 			else {
@@ -308,7 +308,7 @@ class Where
 	 *
 	 * @param $path   string search property path
 	 * @param $value  mixed search property value
-	 * @param $prefix string Prefix for column name
+	 * @param $prefix string Prefix for column name @values '', 'id_'
 	 * @return string
 	 */
 	private function buildValue($path, $value, $prefix = '')
@@ -360,18 +360,6 @@ class Where
 	public function getWhereArray()
 	{
 		return $this->where_array;
-	}
-
-	//---------------------------------------------------------------------------------------- withBQ
-	/**
-	 * @param $column_name string
-	 * @return string
-	 */
-	private function withBQ($column_name)
-	{
-		return (substr($column_name, 0, 3) === 'id_')
-			? $column_name
-			: BQ . $column_name . BQ;
 	}
 
 }

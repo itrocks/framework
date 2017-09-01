@@ -202,8 +202,8 @@ class Join
 	public function toSql()
 	{
 		return LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
-		. ' ON ' . $this->foreign_alias . DOT . $this->foreign_column
-		. ' = ' . $this->master_alias . DOT . $this->master_column;
+		. ' ON ' . $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ
+		. ' = ' . $this->master_alias . DOT . BQ . $this->master_column . BQ;
 	}
 
 }

@@ -171,7 +171,7 @@ class Columns
 							&& !isset($already[$property->name])
 						) {
 							if (!$sql_columns) {
-								$sql_columns .= $join->foreign_alias . '.id, ';
+								$sql_columns .= $join->foreign_alias . '.`id`, ';
 							}
 							$column_name              = $column_names[$property->name];
 							$id                       = $property->getType()->isClass() ? 'id_' : '';
@@ -191,7 +191,7 @@ class Columns
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
 			if (isset($has_storage)) {
 				if (!Link_Annotation::of(new Link_Class($this->joins->getStartingClassName()))->value) {
-					$sql_columns .= 't0.id, ';
+					$sql_columns .= 't0.`id`, ';
 				}
 
 				foreach ($column_names as $property_name => $column_name) {
@@ -379,14 +379,14 @@ class Columns
 			}
 			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns  .= $foreign_alias . '.id'
+			$sql_columns  .= $foreign_alias . '.`id`'
 				. (($this->append || !$this->resolve_aliases) ? '' : (' AS ' . BQ . $path . ':id' . BQ));
 		}
 
 		else {
 			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns  .= $foreign_alias . '.id'
+			$sql_columns  .= $foreign_alias . '.`id`'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}
 

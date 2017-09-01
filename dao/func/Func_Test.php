@@ -64,7 +64,7 @@ class Func_Test extends Test
 			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
 			. 'AS `case_result_func`' . LF
 			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `clients` t1 ON t1.id = t0.id_client'
+			. 'INNER JOIN `clients` t1 ON t1.`id` = t0.`id_client`'
 		);
 	}
 

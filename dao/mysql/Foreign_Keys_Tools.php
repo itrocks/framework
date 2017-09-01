@@ -39,10 +39,10 @@ class Foreign_Keys_Tools
 	{
 		$database = $this->mysqli->selectedDatabase();
 		$result = $this->mysqli->query("
-			SELECT * FROM INFORMATION_SCHEMA.KEY_COLUMN_USAGE
-			WHERE REFERENCED_TABLE_SCHEMA = '$database'
-			AND REFERENCED_TABLE_NAME = '$table'
-			AND REFERENCED_COLUMN_NAME '$column'
+			SELECT * FROM `information_schema`.`key_column_usage`
+			WHERE `referenced_table_schema` = '$database'
+			AND `referenced_table_name` = '$table'
+			AND `referenced_column_name` = '$column'
 		");
 		while ($row = $result->fetch_assoc()) {
 

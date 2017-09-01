@@ -208,7 +208,7 @@ class Select
 			}
 			return Builder::SELECT . $time_limit_sql . SP . '*' . LF
 				. 'FROM (' . LF . $sql . LF . ') t0'
-				. LF . 'GROUP BY t0.id' . join('', $options);
+				. LF . 'GROUP BY t0.`id`' . join('', $options);
 		}
 		return Builder::SELECT . join('', $this->select) . SP . $columns
 			. LF . 'FROM' . SP . $tables

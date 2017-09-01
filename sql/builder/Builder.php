@@ -70,17 +70,16 @@ abstract class Builder
 		if ($class instanceof Reflection_Class) {
 			$class = $class->name;
 		}
-		$sql_delete = self::DELETE . ' FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ
-			. LF . 'WHERE';
+		$sql_delete = self::DELETE . ' FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF
+			. 'WHERE';
 		if (is_numeric($id)) {
-			$sql_delete .= ' id = ' . $id;
+			$sql_delete .= ' `id` = ' . $id;
 		}
 		elseif (is_array($id)) {
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_delete .= $first ? ($first = false) : ' AND';
-				$sql_delete .= SP . ((substr($key, 0, 3) === 'id_') ? $key : (BQ . $key . BQ))
-					. ' = ' . Value::escape($value);
+				$sql_delete .= SP . BQ . $key . BQ . ' = ' . Value::escape($value);
 			}
 		}
 		else {
@@ -127,10 +126,7 @@ abstract class Builder
 			if ($i++) {
 				$sql_insert .= ', ';
 			}
-			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
-				$key = BQ . $key . BQ;
-			}
-			$sql_insert .= $key . ' = ' . Value::escape($value);
+			$sql_insert .= BQ . $key . BQ . ' = ' . Value::escape($value);
 		}
 		return $sql_insert;
 	}
@@ -152,20 +148,17 @@ abstract class Builder
 			if ($i++) {
 				$sql_update .= ', ';
 			}
-			if (($key != 'id') && (substr($key, 0, 3) != 'id_')) {
-				$key   = BQ . $key . BQ;
-			}
-			$sql_update .= $key . ' = ' . Value::escape($value);
+			$sql_update .= BQ . $key . BQ . ' = ' . Value::escape($value);
 		}
 		$sql_update .= LF . 'WHERE';
 		if (is_numeric($id)) {
-			$sql_update .= ' id = ' . $id;
+			$sql_update .= ' `id` = ' . $id;
 		}
 		elseif (is_array($id)) {
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_update .= $first ? ($first = false) : ' AND';
-				$sql_update .= SP . ((substr($key, 0, 3) === 'id_') ? $key : (BQ . $key . BQ)) . ' = ' . $value;
+				$sql_update .= SP . BQ . $key . BQ . ' = ' . $value;
 			}
 		}
 		else {

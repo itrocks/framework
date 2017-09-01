@@ -69,8 +69,9 @@ class Reconnect implements Registerable
 		for ($i = 1; $i <= 15; $i ++) {
 			/** @var $dao Link */
 			$dao = Dao::current();
-			$users = $dao->query('SELECT * FROM users', User::class);
-			$user = reset($users);
+			/** @var $users User[] */
+			$users = Dao::readAll(User::class);
+			$user  = reset($users);
 			if (
 				!is_a($user, User::class)
 				|| $dao->getConnection()->last_errno
