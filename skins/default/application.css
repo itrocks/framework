@@ -42,17 +42,15 @@ body {
       body > header > ul.links > li > a {
         display: inline-block; }
       body > header > ul.links > li.provider.bappli {
-        background: url("img/bappli_studio_36.png") 20px 5px no-repeat white;
-        border-color: #9ab3b7;
-        border-style: solid;
+        background: url("img/itrocks-36.png") 20px 5px no-repeat white;
+        border: #9ab3b7 solid;
+        border-radius: 0 0 10px 10px;
         border-width: 0 1px 1px;
-        border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
         box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2); }
         body > header > ul.links > li.provider.bappli > a {
           color: transparent;
           height: 46px;
-          width: 200px; }
+          width: 130px; }
       body > header > ul.links > li.provider.itrocks {
         background: url("img/fingers_40.png");
         margin: 12px 16px 0 6px; }

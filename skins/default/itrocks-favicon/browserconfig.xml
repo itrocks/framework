@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Please move this file and favicon.ico to your final project root directory -->
+<browserconfig>
+    <msapplication>
+        <tile>
+            <square150x150logo src="itrocks/framework/skins/default/itrocks-favicon/mstile-150x150.png"/>
+            <TileColor>#da532c</TileColor>
+        </tile>
+    </msapplication>
+</browserconfig>

@@ -1,0 +1,18 @@
+{
+  "background_color": "#ffffff",
+  "display":          "standalone",
+  "icons": [
+    {
+      "sizes": "192x192",
+      "src":   "android-chrome-192x192.png",
+      "type":  "image/png"
+    },
+    {
+      "sizes": "384x384",
+      "src":   "android-chrome-384x384.png",
+      "type":  "image/png"
+    }
+  ],
+  "name":        "",
+  "theme_color": "#ffffff"
+}
