@@ -59,8 +59,8 @@ body {
 				display: inline-block;
 			}
 
-			>li.provider.bappli {
-				background: url("img/itrocks-36.png") 20px 5px no-repeat white;
+			>li.provider {
+				background: 20px 5px no-repeat white;
 				border: #9ab3b7 solid;
 				border-radius: 0 0 10px 10px;
 				border-width: 0 1px 1px;
@@ -69,18 +69,22 @@ body {
 				>a {
 					color: transparent;
 					height: 46px;
-					width: 130px;
 				}
-			}
 
-			>li.provider.itrocks {
-				background: url("img/fingers_40.png");
-				margin: 12px 16px 0 6px;
+				&.bappli {
+					background-image: url("img/bappli-studio-36.png");
 
-				>a {
-					color: transparent;
-					height: 40px;
-					width: 44px;
+					>a {
+						width: 182px;
+					}
+				}
+
+				&.itrocks {
+					background-image: url("img/itrocks-36.png");
+
+					>a {
+						width: 130px;
+					}
 				}
 			}
 
