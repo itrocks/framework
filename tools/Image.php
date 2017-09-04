@@ -86,9 +86,9 @@ class Image
 	 */
 	public function createBackgroundColor()
 	{
-		return imageistruecolor($this->resource)
-			? imagecolorallocate($this->resource, 255, 255, 255)
-			: imagecolorallocatealpha($this->resource, 0, 0, 0, 127);
+		return $this->hasTransparency()
+			? imagecolorallocatealpha($this->resource, 0, 0, 0, 127)
+			: imagecolorallocate($this->resource, 255, 255, 255);
 	}
 
 	//-------------------------------------------------------------------------------- createFromFile
@@ -155,6 +155,19 @@ class Image
 		imagefilledrectangle($this->resource, 0, 0, $this->width - 1, $this->height - 1, $color);
 	}
 
+	//------------------------------------------------------------------------------- hasTransparency
+	/**
+	 * Returns true if image may contain transparency
+	 * Based on image type : it is not guaranteed that transparent color is used into the image,
+	 * it just can.
+	 *
+	 * @return boolean
+	 */
+	public function hasTransparency()
+	{
+		return in_array($this->type, [IMAGETYPE_GIF, IMAGETYPE_ICO, IMAGETYPE_PNG, IMAGETYPE_PSD]);
+	}
+
 	//---------------------------------------------------------------------------- newImageKeepsAlpha
 	/**
 	 * @param $width  integer
@@ -168,7 +181,7 @@ class Image
 
 		$image = new Image($width, $height, null, $this->type);
 
-		if (!imageistruecolor($this->resource)) {
+		if ($this->hasTransparency()) {
 			imagecolortransparent(
 				$image->resource, imagecolorallocatealpha($image->resource, 0, 0, 0, 127)
 			);
@@ -208,8 +221,8 @@ class Image
 		);
 		// copy transparency
 		if (
-			!imageistruecolor($this->resource)
-			&& !imageistruecolor($source_image->resource)
+			$this->hasTransparency()
+			&& $source_image->hasTransparency()
 			&& ($transparency = imagecolortransparent($source_image->resource))
 		) {
 			for ($y = 0; $y < $source_height; $y++) {
