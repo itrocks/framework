@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Comparison;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Range;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Scalar;
@@ -41,6 +42,9 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Words;
  * - Especially for Date_Time, Float, Integer, String fields :
  * complexvalue = range | singlevalue
  * range        = minrgnvalue "-" maxrngvalue
+ *
+ * < > <= >= Especially for Date_Time, Float, Integer, String fields
+ * Compare value
  *
  * - Especially for Float, Integer, String fields :
  * minrngvalue  = scalar
@@ -135,7 +139,10 @@ class Search_Parameters_Parser
 	 */
 	protected function applyComplexValue($search_value, Reflection_Property $property)
 	{
-		if (Range::isRange($search_value, $property) && Range::supportsRange($property)) {
+		if (Comparison::isComparison($search_value, $property) && Range::supportsRange($property)) {
+			$search = Comparison::applyComparison($search_value, $property);
+		}
+		elseif (Range::isRange($search_value, $property) && Range::supportsRange($property)) {
 			$search = Range::applyRange($search_value, $property);
 		}
 		else {

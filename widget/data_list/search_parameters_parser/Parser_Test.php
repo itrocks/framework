@@ -196,6 +196,25 @@ class Parser_Test extends Test
 		$this->assertEquals($assume, $check);
 	}
 
+	//-------------------------------------------------------------- testParseDateCompareWithFormulas
+	/**
+	 * Test date parser for a date comparison with many formulas
+	 */
+	public function testParseDateCompareWithFormulas()
+	{
+		$this->parser->search = [
+			'date' => '<d-1/m-1/y-1, >d+1/m+1/y+1'
+		];
+		$check  = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				new Func\Comparison('<', '2015-05-14 00:00:00'),
+				new Func\Comparison('>', '2017-07-16 23:59:59'),
+			])
+		];
+		$this->assertEquals($assume, $check);
+	}
+
 	//-------------------------------------------------------------------------- testParseDateAndTime
 	/**
 	 * Test date parser for a full date DD/MM/YYYY with FUll time HH:II:SS
