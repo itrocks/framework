@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
@@ -17,7 +16,7 @@ trait Type_Boolean
 	//----------------------------------------------------------------------------- applyBooleanValue
 	/**
 	 * @param $search_value string The source search value, as a string typed by the user
-	 * @return Comparison|Logical|string|boolean The resulting dao-ready search expression, or false
+	 * @return Func\Comparison|Logical|string|boolean The resulting dao-ready search expression, or false
 	 * @throws Data_List_Exception
 	 */
 	public static function applyBooleanValue($search_value)
@@ -54,7 +53,7 @@ trait Type_Boolean
 	 * If expression is a boolean word, convert to corresponding boolean value
 	 *
 	 * @param $expression string The source expression
-	 * @return Comparison|boolean The resulting dao-ready search expression or false if none
+	 * @return Func\Comparison|boolean The resulting dao-ready search expression or false if none
 	 */
 	public static function applyBooleanWord($expression)
 	{
