@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Tools;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use Exception;
 
 /**
  * This class extends php's DateTime class : you should use this to be ITRocks compatible
@@ -226,31 +225,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function daysInMonth()
 	{
 		return $this->format(self::DAYS_IN_MONTH);
-	}
-
-	//------------------------------------------------------------------------------------------ diff
-	/**
-	 * @param $datetime2 Date_Time
-	 * @param $absolute  boolean
-	 * @return Date_Interval|false
-	 */
-	public function diff($datetime2, $absolute = false)
-	{
-		$parent_diff = parent::diff($datetime2, $absolute);
-		try {
-			$interval = new Date_Interval($parent_diff->format('P%yY%mM%dDT%hH%iM%sS'));
-		}
-		// DateInterval does not support kind of P0Y0M7DT-1H44M37S it generated itself with format() !
-		// So we do it manually if there is a problem
-		catch (Exception $exception) {
-			$interval = Date_Interval::createFromDuration(
-				$absolute
-					? abs($datetime2->getTimestamp() - $this->getTimestamp())
-					: ($datetime2->getTimestamp() - $this->getTimestamp())
-			);
-		}
-		$interval->invert = $parent_diff->invert;
-		return $interval;
 	}
 
 	//-------------------------------------------------------------------------------------- earliest

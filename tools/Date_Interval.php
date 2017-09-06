@@ -3,115 +3,84 @@ namespace ITRocks\Framework\Tools;
 
 use DateInterval;
 use DateTime;
+use DateTimeZone;
 
 /**
  * Rich Date interval class
+ *
+ * Date_Interval could not extend DateInterval because of the internal 'days' property,
+ * which could not be set.
  */
-class Date_Interval extends DateInterval
+abstract class Date_Interval
 {
 
-	//----------------------------------------------------------------------------------- __construct
+	//------------------------------------------------------------------------------- DAY_TIME_FORMAT
+	const DAY_TIME_FORMAT = 'P%aDT%hH%iM%sS';
+
+	//------------------------------------------------------------------------------------ EMPTY_SPEC
+	const EMPTY_SPEC = 'PT0S';
+
+	//----------------------------------------------------------------------------------- FULL_FORMAT
+	const FULL_FORMAT = 'P%yY%mM%dDT%hH%iM%sS';
+
+	//---------------------------------------------------------------------------------------- adjust
 	/**
-	 * Date_Interval constructor
+	 * Adjusts a DateInterval to have all fields sort out.
 	 *
-	 * @link http://php.net/manual/en/dateinterval.construct.php
-	 * @param $interval_spec string
-	 * @param $invert        boolean
+	 * @example
+	 * P25H will be P1D1H.
+	 * @notice
+	 * It's not possible to adjust year/month as it would be dependant from start date)
+	 *
+	 * @param $interval DateInterval
+	 * @return DateInterval
 	 */
-	public function __construct($interval_spec, $invert = null)
+	public static function adjust(DateInterval $interval)
 	{
-		parent::__construct($interval_spec);
-		if (isset($invert)) {
-			$this->invert = $invert;
-		}
+		$begin_date = new DateTime('2000-01-01', new DateTimeZone('UTC'));
+		$end_date   = clone $begin_date;
+		$end_date->add($interval);
+		$interval = $begin_date->diff($end_date);
+		// Using %a to have the real number of days
+		$adjusted_interval         = new DateInterval($interval->format(static::DAY_TIME_FORMAT));
+		$adjusted_interval->invert = $interval->invert;
+		return $adjusted_interval;
 	}
 
-	//--------------------------------------------------------------------------------------- compare
-	/**
-	 * Returns true if interval is positive, false if negative, or 0 if equal
-	 */
-	public function compare()
-	{
-		return ($this->s || $this->i || $this->h || $this->d || $this->m || $this->y)
-			? ($this->invert ? 1 : -1)
-			: 0;
-	}
-
-	//---------------------------------------------------------------------------- createFromDuration
+	//---------------------------------------------------------------------------------- fromDuration
 	/**
 	 * Creates an interval knowing the duration in seconds
 	 *
+	 * @notice
+	 * The result can only be time + number of days,
+	 * year/month will be null as they are start date dependant
 	 * @example
 	 * You can easily get a Date_Interval between two timestamps with this call :
 	 * Date_Interval::createFromDuration($timestamp2 - $timestamp1)
 	 *
 	 * @param $duration integer The duration in seconds, may be negative
-	 * @return self
+	 * @return DateInterval
 	 */
-	public static function createFromDuration($duration)
+	public static function fromDuration($duration)
 	{
-		$invert = false;
-		if ($duration < 0) {
-			$duration = -$duration;
-			$invert   = true;
+		// Initialize a DateInterval in seconds
+		$interval    = new DateInterval(static::EMPTY_SPEC);
+		$interval->s = $duration;
+		return static::adjust($interval);
+	}
+
+	//--------------------------------------------------------------------------------------- getDays
+	/**
+	 * @param $interval DateInterval
+	 * @return integer
+	 * @throws Date_Interval_Exception
+	 */
+	private static function getDays(DateInterval $interval)
+	{
+		if (!$interval->days && ($interval->m || $interval->y)) {
+			throw new Date_Interval_Exception();
 		}
-		$d1 = new DateTime();
-		$d2 = clone $d1;
-		$d2->add(new DateInterval('PT' . $duration . 'S'));
-		$parent = $d2->diff($d1);
-		return new self($parent->format('P%yY%mM%dDT%hH%iM%sS'), $invert);
-	}
-
-	//------------------------------------------------------------------------------------------ days
-	/**
-	 * Returns the date interval in number of days
-	 *
-	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
-	 * @param $absolute   boolean
-	 * @return integer
-	 */
-	public function days($round_mode = PHP_CEIL, $absolute = false)
-	{
-		return $this->round($this->timestamp($absolute) / 86400, $round_mode);
-	}
-
-	//----------------------------------------------------------------------------------------- hours
-	/**
-	 * Returns the date interval in number of hours
-	 *
-	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
-	 * @param $absolute   boolean
-	 * @return integer
-	 */
-	public function hours($round_mode = PHP_CEIL, $absolute = false)
-	{
-		return $this->round($this->timestamp($absolute) / 3600, $round_mode);
-	}
-
-	//--------------------------------------------------------------------------------------- minutes
-	/**
-	 * Returns the date interval in number of minutes
-	 *
-	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
-	 * @param $absolute   boolean
-	 * @return integer
-	 */
-	public function minutes($round_mode = PHP_CEIL, $absolute = false)
-	{
-		return $this->round($this->timestamp($absolute) / 60, $round_mode);
-	}
-
-	//---------------------------------------------------------------------------------------- months
-	/**
-	 * Returns the date interval in number of months
-	 *
-	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
-	 * @param $absolute   boolean
-	 * @return integer
-	 */
-	public function months($round_mode = PHP_CEIL, $absolute = false)
-	{
-		return $this->round($this->timestamp($absolute) / 2592000, $round_mode);
+		return $interval->days ?: $interval->d;
 	}
 
 	//----------------------------------------------------------------------------------------- round
@@ -120,86 +89,92 @@ class Date_Interval extends DateInterval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @return integer
 	 */
-	private function round($duration, $round_mode)
+	private static function round($duration, $round_mode)
 	{
 		switch ($round_mode) {
-			case PHP_CEIL:  return ceil($duration);
-			case PHP_FLOOR: return floor($duration);
+			case PHP_CEIL:
+				return ceil($duration);
+			case PHP_FLOOR:
+				return floor($duration);
 		}
 		return round($duration, 0, $round_mode);
 	}
 
-	//--------------------------------------------------------------------------------------- seconds
+	//---------------------------------------------------------------------------------------- toDays
 	/**
-	 * Returns the date interval in number of seconds.
-	 * This is an alias for timestamp
+	 * Returns the date interval in number of days
 	 *
-	 * @param $absolute boolean
-	 * @return integer
-	 * @see timestamp
-	 */
-	public function seconds($absolute = false)
-	{
-		return $this->timestamp($absolute);
-	}
-
-	//------------------------------------------------------------------------------------- timestamp
-	/**
-	 * Returns the date interval in time format (number of seconds)
-	 *
-	 * @param $absolute boolean
+	 * @param $interval   DateInterval
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
 	 * @return integer
 	 */
-	public function timestamp($absolute = false)
-	{
-		return (($this->invert && !$absolute) ? -1 : 1) * (
-			$this->s
-			+ ($this->i * 60)
-			+ ($this->h * 3600)
-			+ ($this->d * 86400)
-			+ ($this->m * 2592000)
-			+ ($this->y * 31104000)
-		);
+	public static function toDays(
+		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
+	) {
+		return static::round(static::toSeconds($interval, $absolute) / 86400, $round_mode);
 	}
 
-	//---------------------------------------------------------------------------------------- toTime
+	//--------------------------------------------------------------------------------------- toHours
 	/**
-	 * Returns the date interval in time format (number of seconds)
+	 * Returns the date interval in number of hours
 	 *
-	 * @deprecated
+	 * @param $interval   DateInterval
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 * @return integer
+	 */
+	public static function toHours(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
+	{
+		return static::round(static::toSeconds($interval, $absolute) / 3600, $round_mode);
+	}
+
+	//------------------------------------------------------------------------------------- toMinutes
+	/**
+	 * Returns the date interval in number of minutes
+	 *
+	 * @param $interval   DateInterval
+	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
+	 * @param $absolute   boolean
+	 *
+	 * @return integer
+	 */
+	public static function toMinutes(
+		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
+	) {
+		return static::round(static::toSeconds($interval, $absolute) / 60, $round_mode);
+	}
+
+	//------------------------------------------------------------------------------------- toSeconds
+	/**
+	 * Returns the date interval in number of seconds
+	 *
+	 * @param $interval DateInterval
 	 * @param $absolute boolean
 	 * @return integer
-	 * @see timestamp()
 	 */
-	public function toTime($absolute = false)
+	public static function toSeconds(DateInterval $interval, $absolute = false)
 	{
-		return $this->timestamp($absolute);
+		$duration  = static::getDays($interval) * 86400;
+		$duration += $interval->h * 3600;
+		$duration += $interval->i * 60;
+		$duration += $interval->s;
+		return ($absolute || !$interval->invert) ? abs($duration) : -abs($duration);
 	}
 
-	//----------------------------------------------------------------------------------------- weeks
+	//--------------------------------------------------------------------------------------- toWeeks
 	/**
 	 * Returns the date interval in number of weeks
 	 *
+	 * @param $interval   DateInterval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
-	 * @return integer
-	 */
-	public function weeks($round_mode = PHP_CEIL, $absolute = false)
-	{
-		return $this->round($this->timestamp($absolute) / 604800, $round_mode);
-	}
-
-	//----------------------------------------------------------------------------------------- years
-	/**
-	 * Returns the date interval in number of years
 	 *
-	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
-	 * @param $absolute   boolean
 	 * @return integer
 	 */
-	public function years($round_mode = PHP_CEIL, $absolute = false)
+	public static function toWeeks(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
 	{
-		return $this->round($this->timestamp($absolute) / 31104000, $round_mode);
+		return static::round(static::toSeconds($interval, $absolute) / 604800, $round_mode);
 	}
 
 }

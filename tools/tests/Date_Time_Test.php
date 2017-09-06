@@ -35,16 +35,33 @@ class Date_Time_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------------- testDiff
+	/**
+	 * @see Date_Time::diff()
+	 */
 	public function testDiff()
 	{
 		$yesterday = new Date_Time('2016-11-01 16:11:00');
 		$tomorrow  = new Date_Time('2016-11-03 15:10:49');
-		$check     = 'P1DT22H59M49S';
-		$this->method(__METHOD__);
-		$this->assume('normal',           $yesterday->diff($tomorrow), new Date_Interval($check));
-		$this->assume('reverse',          $tomorrow->diff($yesterday), new Date_Interval($check, true));
-		$this->assume('absolute',         $yesterday->diff($tomorrow), new Date_Interval($check));
-		$this->assume('absolute+reverse', $tomorrow->diff($yesterday), new Date_Interval($check, true));
+
+		// Chronological
+		$actual = $yesterday->diff($tomorrow);
+		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		$this->assertEquals(0, $actual->invert);
+
+		// Chronological absolute
+		$actual = $yesterday->diff($tomorrow, true);
+		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		$this->assertEquals(0, $actual->invert);
+
+		// Reverse
+		$actual = $tomorrow->diff($yesterday);
+		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		$this->assertEquals(1, $actual->invert);
+
+		// Reverse absolute
+		$actual = $tomorrow->diff($yesterday, true);
+		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		$this->assertEquals(0, $actual->invert);
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest
@@ -69,10 +86,10 @@ class Date_Time_Test extends Test
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		$empty_date = new Date_Time($empty_string);
-		$today_date = new Date_Time($today_string);
-		$min_date   = Date_Time::min();
-		$max_date   = Date_Time::max();
+		$empty_date      = new Date_Time($empty_string);
+		$today_date      = new Date_Time($today_string);
+		$min_date        = Date_Time::min();
+		$max_date        = Date_Time::max();
 		$this->method(__METHOD__);
 		$this->assume('emptyIsEmptyString',    $empty_date->is($empty_string),    true);
 		$this->assume('emptyIsTodayString',    $empty_date->is($today_string),    false);
@@ -110,10 +127,10 @@ class Date_Time_Test extends Test
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		$empty_date = new Date_Time($empty_string);
-		$today_date = new Date_Time($today_string);
-		$min_date   = Date_Time::min();
-		$max_date   = Date_Time::max();
+		$empty_date      = new Date_Time($empty_string);
+		$today_date      = new Date_Time($today_string);
+		$min_date        = Date_Time::min();
+		$max_date        = Date_Time::max();
 		$this->method(__METHOD__);
 		$this->assume('emptyAfterEmptyString',    $empty_date->isAfter($empty_string),    false);
 		$this->assume('emptyAfterTodayString',    $empty_date->isAfter($today_string),    false);
@@ -151,10 +168,10 @@ class Date_Time_Test extends Test
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		$empty_date = new Date_Time($empty_string);
-		$today_date = new Date_Time($today_string);
-		$min_date   = Date_Time::min();
-		$max_date   = Date_Time::max();
+		$empty_date      = new Date_Time($empty_string);
+		$today_date      = new Date_Time($today_string);
+		$min_date        = Date_Time::min();
+		$max_date        = Date_Time::max();
 		$this->method(__METHOD__);
 		$this->assume('emptyAfterEmptyString',    $empty_date->isAfterOrEqual($empty_string),    true);
 		$this->assume('emptyAfterTodayString',    $empty_date->isAfterOrEqual($today_string),    false);
@@ -192,10 +209,10 @@ class Date_Time_Test extends Test
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		$empty_date = new Date_Time($empty_string);
-		$today_date = new Date_Time($today_string);
-		$min_date   = Date_Time::min();
-		$max_date   = Date_Time::max();
+		$empty_date      = new Date_Time($empty_string);
+		$today_date      = new Date_Time($today_string);
+		$min_date        = Date_Time::min();
+		$max_date        = Date_Time::max();
 		$this->method(__METHOD__);
 		$this->assume('emptyBeforeEmptyString',    $empty_date->isBefore($empty_string),    false);
 		$this->assume('emptyBeforeTodayString',    $empty_date->isBefore($today_string),    true);
@@ -234,10 +251,10 @@ class Date_Time_Test extends Test
 		$empty_string    = '0000-00-00 00:00:00';
 		$today_string    = '2016-07-13 09:47:05';
 		$tomorrow_string = '2016-07-14 00:00:00';
-		$empty_date = new Date_Time($empty_string);
-		$today_date = new Date_Time($today_string);
-		$min_date   = Date_Time::min();
-		$max_date   = Date_Time::max();
+		$empty_date      = new Date_Time($empty_string);
+		$today_date      = new Date_Time($today_string);
+		$min_date        = Date_Time::min();
+		$max_date        = Date_Time::max();
 		$this->method(__METHOD__);
 		$this->assume('emptyBeforeEmptyString',    $empty_date->isBeforeOrEqual($empty_string),    true);
 		$this->assume('emptyBeforeTodayString',    $empty_date->isBeforeOrEqual($today_string),    true);

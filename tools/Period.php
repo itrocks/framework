@@ -78,23 +78,31 @@ class Period
 	/**
 	 * Return difference between begin and end date
 	 *
+	 * @param $format string force format, if not set only outputs relevant value
+	 *
+	 * @see DateInterval::format()
 	 * @return string
-	 * @todo LOW optional parameter for custom format similar to Date_Time::format()
 	 */
-	public function format()
+	public function format($format = null)
 	{
-		$diff   = $this->begin->diff($this->end, true);
-		$format = [];
-		if ($diff->h) {
-			$format[] = $diff->h . SP . Loc::tr(($diff->h > 1) ? 'hours' : 'hour');
+		$diff = $this->begin->diff($this->end, true);
+		if (!$format) {
+			$format = [];
+			if ($diff->days) {
+				$format[] = '%a' . SP . Loc::tr(($diff->days > 1) ? 'days' : 'day');
+			}
+			if ($diff->h) {
+				$format[] = '%h' . SP . Loc::tr(($diff->h > 1) ? 'hours' : 'hour');
+			}
+			if ($diff->i) {
+				$format[] = '%i' . SP . Loc::tr(($diff->i > 1) ? 'minutes' : 'minute');
+			}
+			if ($diff->s) {
+				$format[] = '%s' . SP . Loc::tr(($diff->s > 1) ? 'seconds' : 'second');
+			}
+			$format = join(SP, $format);
 		}
-		if ($diff->i) {
-			$format[] = $diff->i . SP . Loc::tr(($diff->i > 1) ? 'minutes' : 'minute');
-		}
-		if ($diff->s) {
-			$format[] = $diff->s . SP . Loc::tr(($diff->s > 1) ? 'seconds' : 'second');
-		}
-		return join(SP, $format);
+		return $diff->format($format);
 	}
 
 	//-------------------------------------------------------------------------------------------- in

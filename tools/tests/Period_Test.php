@@ -55,6 +55,43 @@ class Period_Test extends Test
 		$this->method('-');
 	}
 
+	//------------------------------------------------------------------------------------ testFormat
+	/**
+	 * @dataProvider testFormatProvider
+	 * @param $period          Period
+	 * @param $format          string
+	 * @param $expected_result string
+	 */
+	public function testFormat($period, $format, $expected_result)
+	{
+		$this->assertEquals($expected_result, $period->format($format));
+	}
+
+	//---------------------------------------------------------------------------- testFormatProvider
+	/**
+	 * @return array [[Period, string|null $format, string $expected_result]]
+	 */
+	public function testFormatProvider()
+	{
+		return [
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				null,
+				'398 days 1 hour 2 minutes 3 seconds'
+			],
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				'',
+				'398 days 1 hour 2 minutes 3 seconds'
+			],
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				'%ad %H:%I:%S',
+				'398d 01:02:03'
+			]
+		];
+	}
+
 	//---------------------------------------------------------------------------------------- testIn
 	public function testIn()
 	{
@@ -137,8 +174,8 @@ class Period_Test extends Test
 	//---------------------------------------------------------------------------------- testToMonths
 	public function testToMonths()
 	{
-		$date1 = new Date_Time('2016-05-03 12:05:15');
-		$date2 = new Date_Time('2015-06-08 13:02:00');
+		$date1  = new Date_Time('2016-05-03 12:05:15');
+		$date2  = new Date_Time('2015-06-08 13:02:00');
 		$months = [
 			new Date_Time('2015-06-01'),
 			new Date_Time('2015-07-01'),
@@ -151,7 +188,7 @@ class Period_Test extends Test
 			new Date_Time('2016-02-01'),
 			new Date_Time('2016-03-01'),
 			new Date_Time('2016-04-01'),
-			new Date_Time('2016-05-01'),
+			new Date_Time('2016-05-01')
 		];
 		$this->method(__METHOD__);
 		$this->assume('several', (new Period($date1, $date2))->toMonths(), $months);
