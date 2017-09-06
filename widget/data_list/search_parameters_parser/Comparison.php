@@ -33,13 +33,9 @@ abstract class Comparison
 	 */
 	public static function applyComparison($expression, Reflection_Property $property)
 	{
-		$comparison = self::getComparisonParts($expression, $property);
+
+		$comparison    = self::getComparisonParts($expression, $property);
 		$comparison[1] = self::applyComparisonValue($comparison[0], $comparison[1], $property);
-		if ($comparison[0] === false || $comparison[1] === false) {
-			throw new Data_List_Exception(
-				$expression, Loc::tr('Error in comparison expression')
-			);
-		}
 		return self::buildComparison($comparison[0], $comparison[1]);
 	}
 
@@ -48,7 +44,7 @@ abstract class Comparison
 	 * @param $sign string
 	 * @param $expression string|Option
 	 * @param $property     Reflection_Property
-	 * @return mixed
+	 * @return string
 	 */
 	protected static function applyComparisonValue($sign, $expression, Reflection_Property $property)
 	{
@@ -56,21 +52,18 @@ abstract class Comparison
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				if ($sign == '<' || $sign == '>=') {
+				if (($sign == '<') || ($sign == '>=')) {
 					$search = Date::applyDateRangeValue($expression, self::MIN);
 				}
 				else {
 					$search = Date::applyDateRangeValue($expression, self::MAX);
 				}
 				break;
-			// Float | Integer | String types
-			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default:
 				$search = Scalar::applyScalar($expression, $property, true);
 				break;
 		}
 		return $search;
-
 	}
 
 	//------------------------------------------------------------------------------- buildComparison
@@ -101,25 +94,25 @@ abstract class Comparison
 			case Date_Time::class:
 				if (!Date::isASingleDateExpression($expression)) {
 					$pattern = Date::getDatePattern(false);
-					if (strstr($expression,'<')) {
-						if (strstr($expression,'<=')) {
+					if (strstr($expression, '<')) {
+						if (strstr($expression, '<=')) {
 							$pattern_right = "/[<=](\\s* $pattern \\s* )$/x";
-							$sign = '<=';
+							$sign          = '<=';
 						}
 						else {
 							$pattern_right = "/[<](\\s* $pattern \\s* )$/x";
-							$sign = '<';
+							$sign          = '<';
 						}
 						$found = preg_match($pattern_right, $expression, $matches);
 					}
 					else {
-						if (strstr($expression,'>=')) {
+						if (strstr($expression, '>=')) {
 							$pattern_right = "/[>=](\\s* $pattern \\s* )$/x";
-							$sign = '>=';
+							$sign          = '>=';
 						}
 						else {
 							$pattern_right = "/[>](\\s* $pattern \\s* )$/x";
-							$sign = '>';
+							$sign          = '>';
 						}
 						$found = preg_match($pattern_right, $expression, $matches);
 					}
@@ -139,26 +132,24 @@ abstract class Comparison
 						);
 					}
 				break;
-			// Float | Integer | String types
-			// case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default:
-				if (strstr($expression,'<')) {
-					if (strstr($expression,'<=')) {
-						$comparison = explode('<=', $expression);
+				if (strstr($expression, '<')) {
+					if (strstr($expression, '<=')) {
+						$comparison    = explode('<=', $expression, 2);
 						$comparison[0] = '<=';
 					}
 					else {
-						$comparison = explode('<', $expression);
+						$comparison    = explode('<', $expression, 2);
 						$comparison[0] = '<';
 					}
 				}
 				else {
-					if (strstr($expression,'>=')) {
-						$comparison = explode('>=', $expression);
+					if (strstr($expression, '>=')) {
+						$comparison    = explode('>=', $expression, 2);
 						$comparison[0] = '>=';
 					}
 					else {
-						$comparison = explode('>', $expression);
+						$comparison    = explode('>', $expression, 2);
 						$comparison[0] = '>';
 					}
 				}
@@ -185,7 +176,7 @@ abstract class Comparison
 				if (
 					is_string($expression)
 					&& !$is_date_expression
-					&& ((strpos($expression, '<') == false) or (strpos($expression, '>') !== false))
+					&& ((strstr($expression, '<')) || (strstr($expression, '>')))
 				) {
 					return true;
 				}
@@ -193,7 +184,7 @@ abstract class Comparison
 			}
 			default: {
 				if (is_string($expression)
-					&& ((strpos($expression, '<') !== false) or (strpos($expression, '>') !== false))
+					&& ((strstr($expression, '<')) || (strstr($expression, '>')))
 				) {
 					return true;
 				}
