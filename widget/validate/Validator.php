@@ -551,7 +551,7 @@ class Validator implements Registerable
 					// if value is not set and is a link (component or not), then we validate only mandatory
 					if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
 						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, $property->getAnnotations(Mandatory_Annotation::ANNOTATION)
+							$object, [$property->getAnnotation(Mandatory_Annotation::ANNOTATION)]
 						));
 					}
 					// otherwise we validate all annotations, and recurse if is component
