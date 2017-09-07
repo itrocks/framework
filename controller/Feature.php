@@ -14,6 +14,7 @@ abstract class Feature
 	const F_BLANK         = 'blank';
 	const F_CANCEL        = 'cancel';
 	const F_CLOSE         = 'close';
+	const F_CONFIRM       = 'confirm';
 	const F_CUSTOM_DELETE = 'custom_delete';
 	const F_CUSTOM_SAVE   = 'custom_save';
 	const F_DEFAULT       = 'default';
