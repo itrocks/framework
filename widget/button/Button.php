@@ -6,8 +6,10 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Tools\Color;
+use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button\Code;
+use ITRocks\Framework\Widget\Confirm\Confirm_Controller;
 
 /**
  * An HMI button
@@ -15,9 +17,13 @@ use ITRocks\Framework\Widget\Button\Code;
 class Button
 {
 
-	//------------------------------------------------------------------- Button option key constants
+	//----------------------------------------------------------------------------------------- COLOR
 	const COLOR       = 'color';
+
+	//------------------------------------------------------------------------------------------ HINT
 	const HINT        = 'hint';
+
+	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
 
 	//-------------------------------------------------------------------------------------- $caption
@@ -161,6 +167,12 @@ class Button
 			}
 			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
 				$this->target = ($option === Target::NONE) ? null : $option;
+
+				if ($option == Target::CONFIRM) {
+					$this->target = Target::MESSAGES;
+					$this->link   = Paths::getUrl(Confirm_Controller::class) . '/run?' .
+						Confirm_Controller::TARGET . '=' . urlencode($this->link);
+				}
 			}
 		}
 		if (!isset($this->color)) {
