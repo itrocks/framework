@@ -225,9 +225,9 @@ class Selection
 				}
 			}
 		}
-		return empty($search)
-			? $this->search
-			: (empty($this->search) ? $search : [Func::andOp([$search, $this->search])]);
+		return $search
+			? ($this->search ? [Func::andOp([$search, $this->search])] : $search)
+			: $this->search;
 	}
 
 	//-------------------------------------------------------------------------------- readDataSelect
