@@ -28,6 +28,7 @@ class Confirm_Controller_Test extends Test
 			'foobar' => [
 				'foo' => 'bar',
 			],
+			'dummy' => ['a', 'set', 'of', 'values'],
 		];
 
 		$controller = new Confirm_Controller();
@@ -36,6 +37,10 @@ class Confirm_Controller_Test extends Test
 			'foo[bar][foo][bar]' => 'value',
 			'bar'                => 'value',
 			'foobar[foo]'        => 'bar',
+			'dummy[0]'           => 'a',
+			'dummy[1]'           => 'set',
+			'dummy[2]'           => 'of',
+			'dummy[3]'           => 'values',
 		];
 
 		$this->assertEquals($expected, $actual);
