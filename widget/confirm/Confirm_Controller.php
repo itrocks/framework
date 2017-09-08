@@ -21,9 +21,14 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 	//------------------------------------------------------------------------------- extractPostData
 	/**
 	 * Format a multidimensional array into a simple array of strings formatted as following:
-	 * array("foo[bar][foo]" => "bar")
+	 * array(
+	 *      "foo[bar][foo]" => "bar",
+	 *      "bar[foo]"      => "dummy",
+	 *      "foo"           => "bar",
+	 * )
 	 *
 	 * @param $data array The data to format.
+	 *
 	 * @return array
 	 */
 	public function extractPostData(array $data)
