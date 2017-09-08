@@ -16,7 +16,38 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 {
 
 	//---------------------------------------------------------------------------------------- TARGET
+	/**
+	 * Name of the $_GET parameter storing the target URL.
+	 */
 	const TARGET = '_target';
+
+	//-------------------------------------------------------------------------- createGeneralButtons
+	/**
+	 * Build confirm & cancel buttons.
+	 *
+	 * @param $parameters Parameters
+	 * @return Button[]
+	 */
+	private function createGeneralButtons(Parameters $parameters)
+	{
+		$confirm_button = new Button(
+			Loc::tr('Confirm'),
+			$parameters->getRawParameter(self::TARGET),
+			'bulkSetStatus',
+			[Target::MESSAGES]
+		);
+		$confirm_button->class = 'submit';
+
+		// Simply close confirm dialog on click.
+		$cancel_button = new Button(
+			Loc::tr('Cancel'),
+			'javascript:ConfirmDialog._closeDialog()',
+			Feature::F_DELETE,
+			[Target::MESSAGES]
+		);
+
+		return [$confirm_button, $cancel_button];
+	}
 
 	//------------------------------------------------------------------------------- extractPostData
 	/**
@@ -54,26 +85,12 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		$confirm_button = new Button(
-			Loc::tr('Confirm'),
-			$parameters->getRawParameter(self::TARGET),
-			'bulkSetStatus',
-			[Target::MESSAGES]
-		);
-		$confirm_button->class = 'submit';
-		$cancel_button  = new Button(
-			Loc::tr('Cancel'),
-			'javascript:ConfirmDialog._closeDialog()',
-			Feature::F_DELETE,
-			[Target::MESSAGES]
-		);
+		$params                        = $parameters->toGet();
+		$params['title']               = Loc::tr('Do you confirm this action ?');
+		$params['form_data']           = $this->extractPostData($_POST);
+		$params[self::GENERAL_BUTTONS] = $this->createGeneralButtons($parameters);
 
-		$parameters                        = $parameters->toGet();
-		$parameters['title']               = Loc::tr('Do you confirm this action ?');
-		$parameters['form_data']           = $this->extractPostData($_POST);
-		$parameters[self::GENERAL_BUTTONS] = [$confirm_button, $cancel_button];
-
-		return View::run($parameters, $form, $files, $class_name, Feature::F_CONFIRM);
+		return View::run($params, $form, $files, $class_name, Feature::F_CONFIRM);
 	}
 
 }
