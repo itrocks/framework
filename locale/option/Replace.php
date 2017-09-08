@@ -47,6 +47,7 @@ class Replace extends Option
 	public function afterTranslation($translation)
 	{
 		foreach ($this->replace as $key => $value) {
+			$key = str_replace('_', SP, $key);
 			if (is_object($value)) {
 				$value = ($value instanceof Date_Time) ? Loc::dateToLocale($value) : strval($value);
 			}

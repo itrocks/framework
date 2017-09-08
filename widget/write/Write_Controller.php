@@ -7,10 +7,12 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\View_Exception;
 
 /**
  * The default write controller will be called if no other write controller is defined
@@ -70,6 +72,19 @@ class Write_Controller implements Default_Class_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		if (!$form && !$files) {
+			$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
+			throw new View_Exception(
+				'<div class="error">'
+				. Loc::tr('Unable to write your data : you probably sent too much big files') . BR
+				. Loc::tr(
+					'The maximum allowed size for files / sent data is :max_size',
+					Loc::replace(['max_size' => $max_size])
+				)
+				. '</div>'
+			);
+		}
+
 		$object     = $parameters->getMainObject($class_name);
 		$new_object = !Dao::getObjectIdentifier($object);
 
