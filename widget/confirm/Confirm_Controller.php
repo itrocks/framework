@@ -15,6 +15,12 @@ use ITRocks\Framework\Widget\Output\Output_Controller;
 class Confirm_Controller extends Output_Controller implements Button\Has_General_Buttons
 {
 
+	//------------------------------------------------------------------------------- CONFIRM_MESSAGE
+	/**
+	 * Name of the $_GET parameter storing the confirmation message to display to the user.
+	 */
+	const CONFIRM_MESSAGE = '_message';
+
 	//---------------------------------------------------------------------------------------- TARGET
 	/**
 	 * Name of the $_GET parameter storing the target URL.
@@ -85,8 +91,11 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		$confirm_message = $parameters->getRawParameter(self::CONFIRM_MESSAGE) ?:
+			Loc::tr('Do you confirm this action ?');
+
 		$params                        = $parameters->toGet();
-		$params['title']               = Loc::tr('Do you confirm this action ?');
+		$params['title']               = $confirm_message;
 		$params['form_data']           = $this->extractPostData($_POST);
 		$params[self::GENERAL_BUTTONS] = $this->createGeneralButtons($parameters);
 
