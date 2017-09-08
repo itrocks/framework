@@ -20,24 +20,23 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 
 	//------------------------------------------------------------------------------- extractPostData
 	/**
-	 * @param array       $data
-	 * @param null|string $base_key
+	 * Format a multidimensional array into a simple array of strings formatted as following:
+	 * array("foo[bar][foo]" => "bar")
+	 *
+	 * @param $data array The data to format.
 	 * @return array
 	 */
-	private function extractPostData(array $data, $base_key = null)
+	public function extractPostData(array $data)
 	{
-		$result = [];
+		$data_string = http_build_query($data, null, '||');
+		$result      = explode('||', urldecode($data_string));
 
-		foreach ($data as $key => $value) {
-			if (is_array($value)) {
-				$result = array_merge($result, $this->extractPostData($value, $key));
-			}
-			else {
-				if (is_string($base_key)) {
-					$key = $base_key."[$key]";
-				}
+		foreach ($result as $key => $value) {
+			$item = explode('=', $value);
 
-				$result[$key] = $value;
+			if (count($item) === 2) {
+				$result[$item[0]] = $item[1];
+				unset($result[$key]);
 			}
 		}
 
