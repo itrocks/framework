@@ -34,9 +34,9 @@ abstract class Comparison
 	public static function applyComparison($expression, Reflection_Property $property)
 	{
 
-		$comparison    = self::getComparisonParts($expression, $property);
-		$comparison[1] = self::applyComparisonValue($comparison[0], $comparison[1], $property);
-		return self::buildComparison($comparison[0], $comparison[1]);
+		$comparison               = self::getComparisonParts($expression, $property);
+		$comparison['than_value'] = self::applyComparisonValue($comparison['sign'], $comparison['than_value'], $property);
+		return self::buildComparison($comparison['sign'], $comparison['than_value']);
 	}
 
 	//-------------------------------------------------------------------------- applyComparisonValue
@@ -118,7 +118,7 @@ abstract class Comparison
 					}
 					if ($found) {
 							$comparison = trim($matches[1]);
-							$comparison = [$sign, $comparison];
+							$comparison = ['sign' => $sign, 'than_value' => $comparison];
 					}
 					else {
 						throw new Data_List_Exception(
@@ -135,22 +135,22 @@ abstract class Comparison
 			default:
 				if (strstr($expression, '<')) {
 					if (strstr($expression, '<=')) {
-						$comparison    = explode('<=', $expression, 2);
-						$comparison[0] = '<=';
+						$comparison['than_value'] = explode('<=', $expression, 2)[1];
+						$comparison['sign']       = '<=';
 					}
 					else {
-						$comparison    = explode('<', $expression, 2);
-						$comparison[0] = '<';
+						$comparison['than_value'] = explode('<', $expression, 2)[1];
+						$comparison['sign']       = '<';
 					}
 				}
 				else {
 					if (strstr($expression, '>=')) {
-						$comparison    = explode('>=', $expression, 2);
-						$comparison[0] = '>=';
+						$comparison['than_value'] = explode('>=', $expression, 2)[1];
+						$comparison['sign']       = '>=';
 					}
 					else {
-						$comparison    = explode('>', $expression, 2);
-						$comparison[0] = '>';
+						$comparison['than_value'] = explode('>', $expression, 2)[1];
+						$comparison['sign']       = '>';
 					}
 				}
 				break;
