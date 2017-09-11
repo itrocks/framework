@@ -13,6 +13,7 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
  */
 trait Type_Boolean
 {
+
 	//----------------------------------------------------------------------------- applyBooleanValue
 	/**
 	 * @param $search_value string The source search value, as a string typed by the user
@@ -131,7 +132,7 @@ trait Type_Boolean
 			}
 			// We can not translate directly 'y' that is confusing
 			$words_references[] = 'y';
-			$words_localized[] = self::getBooleanLetters(true);
+			$words_localized[]  = self::getBooleanLetters(true);
 			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
 		return $words;

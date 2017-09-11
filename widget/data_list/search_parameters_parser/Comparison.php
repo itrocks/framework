@@ -35,7 +35,9 @@ abstract class Comparison
 	{
 
 		$comparison               = self::getComparisonParts($expression, $property);
-		$comparison['than_value'] = self::applyComparisonValue($comparison['sign'], $comparison['than_value'], $property);
+		$comparison['than_value'] = self::applyComparisonValue(
+			$comparison['sign'], $comparison['than_value'], $property
+		);
 		return self::buildComparison($comparison['sign'], $comparison['than_value']);
 	}
 
@@ -52,12 +54,9 @@ abstract class Comparison
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				if (($sign == '<') || ($sign == '>=')) {
-					$search = Date::applyDateRangeValue($expression, self::MIN);
-				}
-				else {
-					$search = Date::applyDateRangeValue($expression, self::MAX);
-				}
+				$search = Date::applyDateRangeValue(
+					$expression, in_array($sign, ['<', '>=']) ? self::MIN : self::MAX
+				);
 				break;
 			default:
 				$search = Scalar::applyScalar($expression, $property, true);
@@ -176,16 +175,14 @@ abstract class Comparison
 				if (
 					is_string($expression)
 					&& !$is_date_expression
-					&& ((strstr($expression, '<')) || (strstr($expression, '>')))
+					&& (strstr($expression, '<') || strstr($expression, '>'))
 				) {
 					return true;
 				}
 				break;
 			}
 			default: {
-				if (is_string($expression)
-					&& ((strstr($expression, '<')) || (strstr($expression, '>')))
-				) {
+				if (is_string($expression) && (strstr($expression, '<') || strstr($expression, '>'))) {
 					return true;
 				}
 				break;
