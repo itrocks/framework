@@ -91,8 +91,8 @@ class Confirm_Controller extends Output_Controller implements Button\Has_General
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		$confirm_message = $parameters->getRawParameter(self::CONFIRM_MESSAGE) ?:
-			Loc::tr('Do you confirm this action ?');
+		$confirm_message = $parameters->getRawParameter(self::CONFIRM_MESSAGE)
+			?: Loc::tr('Do you confirm this action ?');
 
 		$params                        = $parameters->toGet();
 		$params['title']               = $confirm_message;
