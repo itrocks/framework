@@ -76,7 +76,7 @@
 			var html    = '<p>' + message + '</p>';
 			var wrapper = $('<div>').append(html, $('<ul>', {
 				class: 'general actions'
-			}).append(ok_button, ko_button));
+			}).append(ko_button, ok_button));
 
 			display(wrapper);
 		};
