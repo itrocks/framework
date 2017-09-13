@@ -6,6 +6,8 @@ $('document').ready(function()
 	{
 		if (!this.length) return;
 
+		this.confirm();
+
 		this.xtarget({
 			auto_empty:      {'#main': '#messages'},
 			draggable_blank: '.window>h2',

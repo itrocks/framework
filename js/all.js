@@ -3,8 +3,8 @@
 
 $.getScript(path + 'itrocks/framework/js/itrocks.constants.js');
 $.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
+$.getScript(path + 'itrocks/framework/js/jquery.confirm.js');
 $.getScript(path + 'itrocks/framework/js/jquery.xtarget.js');
-$.getScript(path + 'itrocks/framework/js/confirm_dialog.js');
 
 $.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
 $.getScript(path + 'vendor/jquery-form/form/jquery.form.js');
