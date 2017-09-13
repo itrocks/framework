@@ -9,6 +9,7 @@ use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button\Code;
+use ITRocks\Framework\Widget\Confirm\Confirm;
 use ITRocks\Framework\Widget\Confirm\Confirm_Controller;
 
 /**
@@ -25,6 +26,14 @@ class Button
 
 	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
+
+	//--------------------------------------------------------------------------------- $cancel_label
+	/**
+	 * Label of the cancel button in the confirm dialog.
+	 *
+	 * @var string
+	 */
+	public $cancel_label;
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
@@ -73,6 +82,22 @@ class Button
 	 * @var string
 	 */
 	public $conditions;
+
+	//-------------------------------------------------------------------------------- $confirm_label
+	/**
+	 * Label of the confirm button in the confirm dialog.
+	 *
+	 * @var string
+	 */
+	public $confirm_label;
+
+	//------------------------------------------------------------------------------ $confirm_message
+	/**
+	 * Message to display to user in the confirm dialog.
+	 *
+	 * @var string
+	 */
+	public $confirm_message;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -167,12 +192,15 @@ class Button
 			}
 			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
 				$this->target = ($option === Target::NONE) ? null : $option;
-
-				if ($option == Target::CONFIRM) {
-					$this->target = Target::MESSAGES;
-					$this->link   = Paths::getUrl(Confirm_Controller::class) . '/run?' .
-						Confirm_Controller::TARGET . '=' . urlencode($this->link);
-				}
+			}
+			elseif ($key == Confirm::CONFIRM_LABEL) {
+				$this->confirm_label = $option;
+			}
+			elseif ($key == Confirm::CANCEL_LABEL) {
+				$this->cancel_label = $option;
+			}
+			elseif ($key == Confirm::MESSAGE) {
+				$this->confirm_message = $option;
 			}
 		}
 		if (!isset($this->color)) {
