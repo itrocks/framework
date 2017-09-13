@@ -15,11 +15,11 @@
 
 	<ul class="custom selection">
 		<li value="">
-			<a href="/{@class.path}/{?id}/{@feature}?load_name=" target="#main">|{default_title}|</a>
+			<a data-confirm="{?confirm_label}" data-cancel="{?cancel_label}" data-message="{?confirm_message}" href="/{@class.path}/{?id}/{@feature}?load_name=" target="#main">|{default_title}|</a>
 		</li>
 		<!--customized_lists-->
 		<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
-			<a href="/{--@class.path}/{?--id}/{@feature}?load_name={#}" target="#main">{#}</a>
+			<a data-confirm="{?confirm_label}" data-cancel="{?cancel_label}" data-message="{?confirm_message}" href="/{--@class.path}/{?--id}/{@feature}?load_name={#}" target="#main">{#}</a>
 		</li>
 		<!--customized_lists-->
 	</ul>
@@ -28,7 +28,7 @@
 	<ul class="custom actions">
 		<!--custom_buttons-->
 		<li class="{feature.lower}">
-			<a class="{?class}" href="{link}" target="{?target}" title="|{?hint}|">|{caption}|</a>
+			<a class="{?class}" data-confirm="{?confirm_label}" data-cancel="{?cancel_label}" data-message="{?confirm_message}" href="{link}" target="{?target}" title="|{?hint}|">|{caption}|</a>
 		</li>
 		<!--custom_buttons-->
 	</ul>
