@@ -38,7 +38,6 @@ class Autoload_Cache implements Activable, Updatable
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
-		/** @var $application_updater Application_Updater */
 		$application_updater = Application_Updater::get();
 		$application_updater->addUpdatable($this);
 		$this->cache_path = Application::current()->include_path->getSourceDirectory() . '/cache';

@@ -390,7 +390,6 @@ class Compiler extends Cache implements
 	 */
 	public function register(Register $register)
 	{
-		/** @var $application_updater Application_Updater */
 		$application_updater = Application_Updater::get();
 		$application_updater->addUpdatable($this);
 	}
