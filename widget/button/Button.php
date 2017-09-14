@@ -10,7 +10,6 @@ use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button\Code;
 use ITRocks\Framework\Widget\Confirm\Confirm;
-use ITRocks\Framework\Widget\Confirm\Confirm_Controller;
 
 /**
  * An HMI button
