@@ -9,11 +9,11 @@ use ITRocks\Framework\Objects\Code;
 class Language extends Code
 {
 
+	//-------------------------------------------------------------------------------- Language codes
 	const BE = 'be';
 	const EN = 'en';
 	const ES = 'es';
 	const FR = 'fr';
-	//-------------------------------------------------------------------------------------------- NL
 	const NL = 'nl';
 
 }
