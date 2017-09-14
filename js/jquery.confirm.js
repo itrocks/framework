@@ -10,12 +10,13 @@
 	 */
 	$.fn.confirm = function () {
 
-		this.find('a[data-confirm]').bind("click", function(event) {
+		this.find('a[data-message]').bind("click", function(event) {
 			var $link = $(this);
 
 			if (!$link.attr('confirmed')) {
 				event.stopImmediatePropagation();
 
+				// Message is the only mandatory field.
 				var message  = $link.attr('data-message');
 				var ok_label = $link.attr('data-confirm');
 				var ko_label = $link.attr('data-cancel');
