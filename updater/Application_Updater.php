@@ -143,6 +143,7 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @param $controller Main
 	 * @return boolean true if updates were made
+	 * @throws Exception
 	 */
 	public function autoUpdate(Main $controller)
 	{
@@ -158,9 +159,9 @@ class Application_Updater implements Configurable, Serializable
 					throw new Exception('Unable to acquire lock');
 				}
 			}
-			catch (Exception $e) {
+			catch (Exception $exception) {
 				$this->release();
-				trigger_error('Unable to update : ' . $e->getMessage(), E_USER_ERROR);
+				throw $exception;
 			}
 		}
 		return false;
