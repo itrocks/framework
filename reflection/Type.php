@@ -153,12 +153,12 @@ class Type
 	public function applyNamespace($namespace, array $use = [])
 	{
 		if (!$this->absolute && $this->isClass()) {
-			$class_name = $this->getElementTypeAsString();
-			$search = BS . lParse($class_name, BS);
-			$length = strlen($search);
+			$class_name = $this->getElementTypeAsString(false);
+			$search     = BS . lParse($class_name, BS);
+			$length     = strlen($search);
 			foreach ($use as $u) {
 				if (substr(BS . $u, -$length) === $search) {
-					$found = true;
+					$found      = true;
 					$class_name = $u . (strpos($class_name, BS) ? (BS . substr($class_name, $length)) : '');
 					break;
 				}
@@ -166,7 +166,7 @@ class Type
 			if (!isset($found)) {
 				$class_name = ($namespace ? ($namespace . BS) : '') . $class_name;
 			}
-			$this->type = $class_name . ($this->isMultiple() ? '[]' : '');
+			$this->type     = $class_name . ($this->isMultiple() ? '[]' : '');
 			$this->absolute = true;
 			return $class_name;
 		}
@@ -262,13 +262,15 @@ class Type
 	/**
 	 * Gets a multiple type single element class name
 	 *
+	 * @param $build boolean false if you need to keep the original name of the class, without Build
 	 * @return string
 	 */
-	public function getElementTypeAsString()
+	public function getElementTypeAsString($build = true)
 	{
 		$i = strpos($this->type, '[');
 		// TODO NORMAL Builder : look where it is really useful, and remove it from all other places
-		return Builder::className(($i !== false) ? substr($this->type, 0, $i) : $this->type);
+		$string = ($i !== false) ? substr($this->type, 0, $i) : $this->type;
+		return $build ? Builder::className($string) : $string;
 	}
 
 	//--------------------------------------------------------------------------------------- hasSize
