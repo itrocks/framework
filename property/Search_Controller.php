@@ -43,12 +43,12 @@ class Search_Controller extends Select_Controller
 		$class_name = Names::setToClass($parameters->shift());
 		$properties = $this->searchProperties($class_name, $search);
 
-		$top_property = new Property();
+		$top_property        = new Property();
 		$top_property->class = $class_name;
-		$objects = $parameters->getObjects();
+		$objects             = $parameters->getObjects();
 		array_unshift($objects, $top_property);
-		$objects['class_name'] = $class_name;
-		$objects['properties'] = $properties;
+		$objects['class_name']        = $class_name;
+		$objects['properties']        = $properties;
 		$objects['display_full_path'] = true;
 
 		return View::run($objects, $form, $files, Property::class, 'select');
@@ -66,8 +66,8 @@ class Search_Controller extends Select_Controller
 	protected function searchProperties(
 		$class_name, $search, array $exclude_properties = [], $prefix = '', $depth = 0
 	) {
-		$class = new Reflection_Class($class_name);
-		$all_properties = $this->getProperties($class);
+		$class            = new Reflection_Class($class_name);
+		$all_properties   = $this->getProperties($class);
 		$first_properties = [];
 		$properties       = [];
 		$more_properties  = [];
@@ -77,7 +77,7 @@ class Search_Controller extends Select_Controller
 				$property_path = $prefix . $property->name;
 				if (($property->name == $search) || ($property_path == $search)) {
 					$first_properties[$property_path] = $property;
-					$matches = true;
+					$matches                          = true;
 				}
 				else {
 					preg_match(
@@ -109,13 +109,13 @@ class Search_Controller extends Select_Controller
 				if (($depth < $this->max_depth) && !$matches) {
 					$type = $property->getType();
 					if ($type->isClass()) {
-						$property_class = $type->getElementTypeAsString();
-						$is_component = isA($property_class, Component::class);
+						$property_class         = $type->getElementTypeAsString();
+						$is_component           = isA($property_class, Component::class);
 						$exclude_sub_properties = $is_component
 							? call_user_func([$property_class, 'getCompositeProperties'], $class_name)
 							: [];
 						$parent_classes[] = $class_name;
-						$sub_properties = $this->searchProperties(
+						$sub_properties   = $this->searchProperties(
 							$type->getElementTypeAsString(), $search,
 							$exclude_sub_properties, $property->name . DOT, $depth + 1
 						);
