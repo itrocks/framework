@@ -64,7 +64,6 @@ class Select_Test extends Test
 	/**
 	 * @param $class Reflection_Class
 	 * @param $depth integer
-	 *
 	 * @throws Exception
 	 */
 	private function perClass(Reflection_Class $class, $depth)
@@ -102,7 +101,6 @@ class Select_Test extends Test
 	/**
 	 * @param $class Reflection_Class
 	 * @param $depth integer
-	 *
 	 * @return array
 	 * @throws Exception
 	 */
