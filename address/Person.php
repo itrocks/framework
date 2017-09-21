@@ -36,10 +36,12 @@ trait Person
 	 */
 	public function __toString()
 	{
-		$result = trim($this->first_name . SP . $this->last_name);
 		if (empty($result) && method_exists(get_parent_class($this), '__toString')) {
-			/** @noinspection PhpUndefinedMethodInspection method exists */
+			/** @noinspection PhpUndefinedClassInspection method_exists */
 			$result = parent::__toString();
+		}
+		else {
+			$result = trim($this->first_name . SP . $this->last_name);
 		}
 		return $result;
 	}
