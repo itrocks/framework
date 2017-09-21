@@ -1,9 +1,11 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use ITRocks\Framework\Reflection\Annotation\Property\Tests\Default_Simple;
+use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;

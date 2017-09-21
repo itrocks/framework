@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Interfaces;

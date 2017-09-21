@@ -18,6 +18,9 @@ class Default_Simple extends Default_Extended
 	public $name;
 
 	//-------------------------------------------------------------------------------------- $surname
+	/**
+	 * @var string
+	 */
 	public $surname = 'Mitchum';
 
 	//------------------------------------------------------------------------------------ defaultAge

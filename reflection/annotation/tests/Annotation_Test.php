@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation;
+namespace ITRocks\Framework\Reflection\Annotation\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreignlink_Annotation;
