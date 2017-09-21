@@ -121,8 +121,9 @@ class Search_Controller extends Select_Controller
 						);
 						foreach ($sub_properties as $sub_property) {
 							if (!isset($exclude_properties[$sub_property->name])) {
-								$more_properties[] = new Reflection_Property(
-									$class_name, $property->name . DOT . $sub_property->path
+								$property_path = $property->name . DOT . $sub_property->path;
+								$more_properties[$property_path] = new Reflection_Property(
+									$class_name, $property_path
 								);
 							}
 						}
