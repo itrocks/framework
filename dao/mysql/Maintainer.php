@@ -319,7 +319,7 @@ class Maintainer implements Registerable
 	 */
 	private function onCantCreateTableError(Contextual_Mysqli $mysqli, $query)
 	{
-		$retry = false;
+		$retry             = false;
 		$error_table_names = $this->parseNamesFromQuery($query);
 		foreach ($error_table_names as $error_table_name) {
 			if (!$mysqli->exists($error_table_name)) {
@@ -361,9 +361,7 @@ class Maintainer implements Registerable
 				$context            = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
-				if (
-				in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])
-				) {
+				if (in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])) {
 					$retry = $this->updateContextTables($mysqli, $context);
 				}
 				elseif (
@@ -414,7 +412,7 @@ class Maintainer implements Registerable
 	 */
 	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, array $context)
 	{
-		$retry = false;
+		$retry             = false;
 		$error_table_names = [$this->parseNameFromError($mysqli->last_error)];
 		if (!reset($error_table_names)) {
 			$error_table_names = $this->parseNamesFromQuery($query);
@@ -433,10 +431,7 @@ class Maintainer implements Registerable
 		}
 		if (!$retry) {
 			foreach ($error_table_names as $error_table_name) {
-				$retry = $retry
-					|| $this->createTableWithoutContext(
-						$mysqli, $error_table_name, $query
-					);
+				$retry = $retry || $this->createTableWithoutContext($mysqli, $error_table_name, $query);
 			}
 			return $retry;
 		}
@@ -572,7 +567,7 @@ class Maintainer implements Registerable
 		}
 		$result = false;
 		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
-			$table_name = $class_table->getName();
+			$table_name  = $class_table->getName();
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
 
 			// create table
