@@ -29,6 +29,7 @@ class Override_Annotation extends Template\List_Annotation implements Multiple_A
 	public function __construct($value)
 	{
 		foreach (explode(SP . AT, $value) as $override_annotation) {
+			$override_annotation = trim($override_annotation);
 			if (!isset($this->property_name)) {
 				$this->property_name = $override_annotation;
 			}
