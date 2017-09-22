@@ -163,7 +163,7 @@ class Parameters
 		else {
 			// text parameter
 			$object = $this->getRawParameter($parameter_name);
-			if (is_string($object) && $object && ($object[0] === SL)) {
+			if ((strlen($object) >= 2) && ($object[0] === SL) && ctype_upper($object[1])) {
 				$object = new Uri($object);
 			}
 			$this->objects[$parameter_name] = $object;
