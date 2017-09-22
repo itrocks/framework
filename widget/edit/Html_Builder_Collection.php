@@ -10,12 +10,12 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
+use ITRocks\Framework\View\Html\Dom\Table;
 use ITRocks\Framework\View\Html\Dom\Table\Body;
 use ITRocks\Framework\View\Html\Dom\Table\Head;
 use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
 use ITRocks\Framework\View\Html\Dom\Table\Row;
 use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
-use ITRocks\Framework\View\Html\Dom\Table;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data
