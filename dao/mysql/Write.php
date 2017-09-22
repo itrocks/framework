@@ -357,9 +357,7 @@ class Write extends Data_Link\Write
 		$class_name = get_class($this->object);
 		$old_object = Search_Object::create($class_name);
 		$this->link->setObjectIdentifier($old_object, $this->link->getObjectIdentifier($this->object));
-		$aop_getter_ignore = Getter::ignore(false);
-		$old_collection    = $property->getValue($old_object);
-		Getter::ignore($aop_getter_ignore);
+		$old_collection = $property->getValue($old_object);
 
 		$element_class = $property->getType()->asReflectionClass();
 		$element_link  = Class_\Link_Annotation::of($element_class);
@@ -436,10 +434,7 @@ class Write extends Data_Link\Write
 		$this->link->setObjectIdentifier(
 			$old_object, $this->link->getObjectIdentifier($this->object, $composite_property_name)
 		);
-		$aop_getter_ignore = Getter::$ignore;
-		Getter::$ignore = false;
 		$old_map = $property->getValue($old_object);
-		Getter::$ignore = $aop_getter_ignore;
 		// map properties : write each of them
 		$insert_builder = new Map_Insert($property);
 		$id_set = [];

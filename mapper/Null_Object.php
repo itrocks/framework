@@ -28,8 +28,8 @@ abstract class Null_Object
 		if (!isset($class_name)) {
 			$class_name = get_class($object);
 		}
-		$getter_ignore  = Getter::ignore(true);
-		$is_empty       = true;
+		$getter_ignore = Getter::ignore(true);
+		$is_empty      = true;
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
 				$value = $property->getValue($object);

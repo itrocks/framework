@@ -152,13 +152,13 @@ class Object_To_Write_Array
 		$this->maps          = [];
 		$this->objects       = [];
 		$this->properties    = [];
-		$aop_getter_ignore   = Getter::ignore(true);
 		$exclude_properties  = $link->value
 			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 			: [];
 		/** @var $properties Reflection_Property[] */
-		$properties = $this->class->accessProperties();
-		$properties = Replaces_Annotations::removeReplacedProperties($properties);
+		$properties        = $this->class->accessProperties();
+		$properties        = Replaces_Annotations::removeReplacedProperties($properties);
+		$aop_getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {
 			if (
 				(!isset($this->only) || in_array($property->name, $this->only))
@@ -167,17 +167,18 @@ class Object_To_Write_Array
 				&& !in_array($property->name, $exclude_properties)
 				&& !Store_Annotation::of($property)->isFalse()
 			) {
-				$property_name = $property->name;
-				$value         = isset($this->object->$property_name)
-					? $property->getValue($this->object)
-					: null;
+				$property_name   = $property->name;
+				Getter::$ignore  = true;
+				$is_property_set = isset($this->object->$property_name);
+				Getter::$ignore  = $aop_getter_ignore;
+				$value           = $is_property_set ? $property->getValue($this->object) : null;
 				if (is_null($value) && !Null_Annotation::of($property)->value) {
 					$value = '';
 				}
 				// write a property that matches a stored property (a table column name)
 				if (in_array($property_name, $table_columns_names)) {
 					list($column_name, $value, $write_property) = $this->propertyTableColumnName(
-						$property, $value, $aop_getter_ignore
+						$property, $value
 					);
 					if ($value !== self::DO_NOT_WRITE) {
 						$this->array[$column_name] = $value;
@@ -203,7 +204,6 @@ class Object_To_Write_Array
 				}
 			}
 		}
-		Getter::$ignore = $aop_getter_ignore;
 		return $this;
 	}
 
@@ -298,11 +298,10 @@ class Object_To_Write_Array
 	/**
 	 * Build data to be written for a property value that has is an object
 	 *
-	 * @param $property          Reflection_Property
-	 * @param $value             object
-	 * @param $aop_getter_ignore boolean
+	 * @param $property Reflection_Property
+	 * @param $value    object
 	 */
-	protected function propertyObject(Reflection_Property $property, $value, $aop_getter_ignore)
+	protected function propertyObject(Reflection_Property $property, $value)
 	{
 		$class_name     = get_class($value);
 		$element_type   = $property->getType()->getElementType();
@@ -315,7 +314,6 @@ class Object_To_Write_Array
 			: 'id';
 		$this->object->$id_column_name = $this->link->getObjectIdentifier($value, $id_value);
 		if (empty($this->object->$id_column_name)) {
-			$aop_getter_ignore_back = Getter::ignore($aop_getter_ignore);
 			if (!isset($value) || isA($element_type->asString(), $class_name)) {
 				$this->object->$id_column_name = $this->link->getObjectIdentifier(
 					$this->link->write($value, $this->options), $id_value
@@ -328,7 +326,6 @@ class Object_To_Write_Array
 				);
 				$this->link->replace($value, $clone, false);
 			}
-			Getter::ignore($aop_getter_ignore_back);
 		}
 	}
 
@@ -366,14 +363,12 @@ class Object_To_Write_Array
 	 * Build the value to be written for a property linked to a table column
 	 * (it must not have @store false, nor be a collection, map or component object)
 	 *
-	 * @param $property          Reflection_Property The property
-	 * @param $value             mixed The value of the property to be written
-	 * @param $aop_getter_ignore boolean The Getter::$ignore state before starting writing
+	 * @param $property Reflection_Property The property
+	 * @param $value    mixed The value of the property to be written
 	 * @return array [string $storage_name, mixed $write_value, $write_property]
 	 */
-	protected function propertyTableColumnName(
-		Reflection_Property $property, $value, $aop_getter_ignore
-	) {
+	protected function propertyTableColumnName(Reflection_Property $property, $value)
+	{
 		$element_type   = $property->getType()->getElementType();
 		$storage_name   = Storage_Annotation::of($property)->value;
 		$write_property = null;
@@ -391,7 +386,7 @@ class Object_To_Write_Array
 		// write object id if set or object if no id is set (new object)
 		else {
 			if (is_object($value)) {
-				$this->propertyObject($property, $value, $aop_getter_ignore);
+				$this->propertyObject($property, $value);
 			}
 			$id_column_name = 'id_' . $property->name;
 			$storage_name   = 'id_' . $storage_name;
