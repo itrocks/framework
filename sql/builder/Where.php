@@ -1,20 +1,21 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder;
-use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
@@ -284,7 +285,13 @@ class Where
 				$properties = $this->joins->getProperties($master_path);
 				$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
-				$prefix     = $property ? (Link_Annotation::of($property)->is($id_links) ? 'id_' : '') : '';
+				$prefix     = '';
+
+				if ($property && (Link_Annotation::of($property)->is($id_links))
+					&& !(Store_Annotation::of($property)->is(Store_Annotation::STRING))
+				) {
+					$prefix = 'id_';
+				}
 			}
 			return $value->toSql($this, $path, $prefix);
 		}
