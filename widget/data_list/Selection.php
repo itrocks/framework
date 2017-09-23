@@ -174,6 +174,7 @@ class Selection
 	{
 		if (!isset($this->data_list_settings)) {
 			$this->data_list_settings = Data_List_Settings::current($this->class_name);
+			$this->data_list_settings->cleanup();
 			$this->data_list_settings->maximum_displayed_lines_count = null;
 		}
 		return $this->data_list_settings;
