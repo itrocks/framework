@@ -1053,7 +1053,6 @@ if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($
 	 *   <!--variable_name-->(...)<!--variable_name-->
 	 *   <!--methodName()-->(...)<!--methodName()-->
 	 *   <!--@function-->(...)<!--@function-->
-	 *
 	 * @param $content string
 	 * @return string updated content
 	 */
@@ -1730,7 +1729,6 @@ if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($
 	 *     <!--variable_name-->(...)<!--variable_name-->
 	 *     <!--methodName()-->(...)<!--methodName()-->
 	 *     <!--@function-->(...)<!--@function-->
-	 *
 	 * @param $content string
 	 * @return string updated content
 	 */
