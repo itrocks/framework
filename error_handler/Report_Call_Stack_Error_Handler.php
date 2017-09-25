@@ -16,6 +16,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	const HTML = 'html';
 	const TEXT = 'text';
 
+	//---------------------------------------------------------------------------------------- STDOUT
+	const STDOUT = 'php://stdout';
+
 	//----------------------------------------------------------------------------------- $call_stack
 	/**
 	 * @var Call_Stack
@@ -31,6 +34,17 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		if (isset($call_stack)) {
 			$this->call_stack = $call_stack;
 		}
+	}
+
+	//---------------------------------------------------------------------------------------- format
+	/**
+	 * @param $text string
+	 * @param $as   string @values html, text
+	 * @return string
+	 */
+	private function format($text, $as)
+	{
+		return ($as === self::HTML) ? htmlentities($text) : $text;
 	}
 
 	//-------------------------------------------------------------------------------------- formData
@@ -72,11 +86,11 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 		if (ini_get('display_errors')) {
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
-				$this->logError($error, 'php://stdout');
+				$this->logError($error, self::STDOUT);
 			}
 			else {
 				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
-				$this->logError($error, 'php://stdout', self::HTML);
+				$this->logError($error, self::STDOUT, self::HTML);
 				echo LF . '</div>' . LF;
 			}
 		}
@@ -110,19 +124,39 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$log_file = ini_get('log_errors') ? ini_get('error_log') : null;
 		}
 		if ($log_file) {
-			$call_stack   = $this->call_stack ?: new Call_Stack();
-			$code_caption = ($as === self::HTML) ? htmlentities($code->caption()) : $code->caption();
-			$date         = '[' . date('Y-m-d H:i:s') . ']';
-			$f            = fopen($log_file, 'ab');
-			$lf           = ($as === self::HTML) ? BRLF : LF;
-			fputs($f, $date . SP . ucfirst($code_caption) . ':' . SP . $error->getErrorMessage() . $lf);
-			fputs($f, (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI') . $lf);
-			fputs($f, (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] . $lf : ''));
-			fputs($f, $this->processIdentification());
-			fputs($f, $this->formData());
-			fputs($f, (($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText()));
-			fputs($f, $lf);
-			fclose($f);
+			$call_stack    = $this->call_stack ?: new Call_Stack();
+			$code_caption  = ucfirst($this->format($code->caption(), $as));
+			$date          = '[' . date('Y-m-d H:i:s') . ']';
+			$error_message = $this->format($error->getErrorMessage(), $as);
+			$f = ($log_file === self::STDOUT) ? null : fopen($log_file, 'ab');
+			$lf            = ($as === self::HTML) ? BRLF : LF;
+			$referer       = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
+			$request_uri   = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI';
+			$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
+			$this->out($f, $this->format($request_uri, $as) . $lf);
+			$this->out($f, $referer ? ($this->format($referer, $as) . $lf) : '');
+			$this->out($f, $this->processIdentification());
+			$this->out($f, $this->format($this->formData(), $as));
+			$this->out($f, ($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText());
+			if ($f) {
+				fputs($f, $lf);
+				fclose($f);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------- out
+	/**
+	 * @param $f    resource If null : output
+	 * @param $text string
+	 */
+	private function out($f, $text)
+	{
+		if ($f) {
+			fputs($f, $text);
+		}
+		else {
+			echo $text;
 		}
 	}
 
