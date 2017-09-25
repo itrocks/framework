@@ -29,7 +29,6 @@ class Run_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 *
 	 * @return null
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
