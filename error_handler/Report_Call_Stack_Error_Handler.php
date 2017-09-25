@@ -75,7 +75,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				$this->logError($error, 'php://stdout');
 			}
 			else {
-				echo LF . '<div class="' . $code->caption() . ' handler">' . LF;
+				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
 				$this->logError($error, 'php://stdout', self::HTML);
 				echo LF . '</div>' . LF;
 			}
@@ -110,11 +110,12 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$log_file = ini_get('log_errors') ? ini_get('error_log') : null;
 		}
 		if ($log_file) {
-			$lf         = ($as === self::HTML) ? BRLF : LF;
-			$call_stack = $this->call_stack ?: new Call_Stack();
-			$f          = fopen($log_file, 'ab');
-			$date       = '[' . date('Y-m-d H:i:s') . ']' . SP;
-			fputs($f, $date . ucfirst($code->caption()) . ':' . SP . $error->getErrorMessage() . $lf);
+			$call_stack   = $this->call_stack ?: new Call_Stack();
+			$code_caption = ($as === self::HTML) ? htmlentities($code->caption()) : $code->caption();
+			$date         = '[' . date('Y-m-d H:i:s') . ']';
+			$f            = fopen($log_file, 'ab');
+			$lf           = ($as === self::HTML) ? BRLF : LF;
+			fputs($f, $date . SP . ucfirst($code_caption) . ':' . SP . $error->getErrorMessage() . $lf);
 			fputs($f, (isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI') . $lf);
 			fputs($f, (isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] . $lf : ''));
 			fputs($f, $this->processIdentification());
