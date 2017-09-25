@@ -30,6 +30,14 @@ class Console
 	 */
 	const TEMPORARY_DIRECTORY = '/home/tmp';
 
+	//------------------------------------------------------------------------------ $already_running
+	/**
+	 * Already running grep result lines
+	 *
+	 * @var string[]
+	 */
+	private $already_running;
+
 	//------------------------------------------------------------------------------------ $arguments
 	/**
 	 * The arguments passed to the URI (get / post vars)
@@ -39,14 +47,6 @@ class Console
 	 * @var string[]
 	 */
 	public $arguments;
-
-	//------------------------------------------------------------------------------ $already_running
-	/**
-	 * Already running grep result lines
-	 *
-	 * @var string[]
-	 */
-	private $already_running;
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
@@ -86,22 +86,22 @@ class Console
 	 */
 	public function __construct(array $arguments = [])
 	{
-	    if ($arguments) {
-		    $this->script = $arguments[0];
+		if ($arguments) {
+			$this->script = $arguments[0];
 
-		    if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
-		    	$this->uri       = '/';
-		    	$this->arguments = array_slice($arguments, 1);
-		    }
-		    else {
-		    	$this->uri       = $arguments[1];
-		    	$this->arguments = array_slice($arguments, 2);
-		    }
-        }
-        else {
-            $this->uri       = '/';
-            $this->arguments = [];
-        }
+			if (empty($arguments[1]) || (substr($arguments[1], 0, 1) !== '/')) {
+				$this->uri       = '/';
+				$this->arguments = array_slice($arguments, 1);
+			}
+			else {
+				$this->uri       = $arguments[1];
+				$this->arguments = array_slice($arguments, 2);
+			}
+		}
+		else {
+			$this->uri       = '/';
+			$this->arguments = [];
+		}
 	}
 
 	//------------------------------------------------------------------------- alreadyRunningMessage
@@ -213,6 +213,7 @@ class Console
 		$_SERVER['HTTPS']       = true;
 		$_SERVER['PATH_INFO']   = $this->uri;
 		$_SERVER['REMOTE_ADDR'] = 'console';
+		$_SERVER['REQUEST_URI'] = $this->uri;
 		$_SERVER['SCRIPT_NAME'] = '/console.php';
 	}
 
