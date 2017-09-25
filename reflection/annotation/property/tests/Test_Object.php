@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use /** @noinspection PhpUnusedAliasInspection used in tests */
+	ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
@@ -11,8 +13,9 @@ class Test_Object
 {
 
 	//--------------------------------------------------------------------------------- KEEP_THIS_USE
-	/*
+	/**
 	 * Keep use ITRocks\Framework\Reflection\Annotation\Annoted;
+	 *
 	 * @see Tests.php#testGetterAnnotationSet
 	 */
 	const KEEP_THIS_USE = Annoted::class;
