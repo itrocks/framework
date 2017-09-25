@@ -110,30 +110,31 @@ class Tabs_Builder_Class
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
-	 * @param $class_name    string
+	 * @param $object        object|string object or class name
 	 * @param $property_path string
 	 * @return Reflection_Property
 	 */
-	protected function getProperty($class_name, $property_path)
+	protected function getProperty($object, $property_path)
 	{
+		$class_name = is_string($object) ? get_class($object) : $object;
 		return new Reflection_Property($class_name, $property_path);
 	}
 
 	//---------------------------------------------------------------------------- groupsToProperties
 	/**
-	 * @param $class_name        string
+	 * @param $object            object|string object or class name
 	 * @param $group_annotations Group_Annotation[]
 	 * @param $filter_properties string[] if empty, then get all properties
 	 * @return Reflection_Property[]
 	 */
 	protected function groupsToProperties(
-		$class_name, array $group_annotations, array $filter_properties
+		$object, array $group_annotations, array $filter_properties
 	) {
 		$properties = [];
 		foreach ($group_annotations as $group) {
 			foreach ($group->values() as $property_path) {
 				if (in_array($property_path, $filter_properties) || !$filter_properties) {
-					$property                   = $this->getProperty($class_name, $property_path);
+					$property                   = $this->getProperty($object, $property_path);
 					$properties[$property_path] = $property;
 				}
 			}

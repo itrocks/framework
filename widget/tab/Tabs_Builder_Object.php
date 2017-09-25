@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Tab;
 
+use Exception;
 use ITRocks\Framework\Reflection\Annotation\Class_\Group_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -44,9 +45,13 @@ class Tabs_Builder_Object extends Tabs_Builder_Class
 	 * @param $object        object
 	 * @param $property_path string
 	 * @return Reflection_Property_Value
+	 * @throws Exception
 	 */
 	protected function getProperty($object, $property_path)
 	{
+		if (!is_object($object)) {
+			throw new Exception('$object parameter must be an object');
+		}
 		return new Reflection_Property_Value(get_class($object), $property_path, $object, false, true);
 	}
 
