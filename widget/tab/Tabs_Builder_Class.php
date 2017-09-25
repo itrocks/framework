@@ -23,18 +23,21 @@ class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
-	 * @param $class             Reflection_Class
+	 *
+	 * @param $object            object|string|Reflection_Class object or class name/reflection
 	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
-	public function build(Reflection_Class $class, array $filter_properties = null)
+	public function build($object, array $filter_properties = null)
 	{
-		$this->class       = $class;
-		$group_annotations = Group_Annotation::allOf($class);
+		$this->class = ($object instanceof Reflection_Class)
+			? $object
+			: new Reflection_Class(is_string($object) ? $object : get_class($object));
+		$group_annotations = Group_Annotation::allOf($this->class);
 		$this->removeDuplicateProperties($group_annotations);
 		$this->mergeGroups($group_annotations);
 		$this->sortGroups($group_annotations);
-		$properties = $this->groupsToProperties($class->name, $group_annotations, $filter_properties);
+		$properties = $this->groupsToProperties($object, $group_annotations, $filter_properties);
 		if ($filter_properties) {
 			$properties_set = new Set(Reflection_Property::class, $properties);
 			$properties     = $properties_set->filterAndSort($filter_properties);
