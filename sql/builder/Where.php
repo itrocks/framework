@@ -287,7 +287,9 @@ class Where
 				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
 				$prefix     = '';
 
-				if ($property && (Link_Annotation::of($property)->is($id_links))
+				if (
+					$property
+					&& (Link_Annotation::of($property)->is($id_links))
 					&& !(Store_Annotation::of($property)->is(Store_Annotation::STRING))
 				) {
 					$prefix = 'id_';
