@@ -539,4 +539,17 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return new static(date('Y-m-d 00:00:00'));
 	}
 
+	//------------------------------------------------------------------------------------- yesterday
+	/**
+	 * Returns yesterday date, with an empty time (00:00:00).
+	 *
+	 * @return Date_Time
+	 */
+	public static function yesterday()
+	{
+		$yesterday = static::today();
+
+		return $yesterday->sub(1);
+	}
+
 }
