@@ -352,4 +352,19 @@ class Date_Time_Test extends Test
 		$this->assume(__METHOD__, $month, '2016-06-01 00:00:00');
 	}
 
+	//--------------------------------------------------------------------------------- testYesterday
+	/**
+	 * Test method Date_Time::yesterday().
+	 */
+	public function testYesterday()
+	{
+		$today     = Date_Time::today();
+		$yesterday = Date_Time::yesterday();
+		$actual    = $today->diff($yesterday);
+
+		$expected = '-1 day 0 hour 0 minute 0 second';
+
+		$this->assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
+	}
+
 }
