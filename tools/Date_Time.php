@@ -547,9 +547,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public static function yesterday()
 	{
-		$yesterday = static::today();
-
-		return $yesterday->sub(1);
+		return static::today()->sub(1);
 	}
 
 }
