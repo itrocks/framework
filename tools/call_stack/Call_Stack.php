@@ -52,6 +52,7 @@ class Call_Stack
 	{
 		$lines_count = 0;
 		$result      = [
+			'<table>',
 			'<tr><th>#</th><th>class</th><th>method</th><th>arguments</th></tg><th>file</th><th>line</th>'
 		];
 		foreach ($this->lines() as $line) {
@@ -69,6 +70,7 @@ class Call_Stack
 			$result_line .= '</tr>';
 			$result[] = $result_line;
 		}
+		$result[] = '</table>';
 		return join(LF, $result) . LF;
 	}
 
