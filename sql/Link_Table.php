@@ -57,7 +57,7 @@ class Link_Table
 	private function applyTableNameDefinitions($table)
 	{
 		if (strpos($table, '{') !== false) {
-			$master_table  = Dao::storeNameOf($this->property->class);
+			$master_table  = Dao::storeNameOf($this->property->final_class);
 			$foreign_table = Dao::storeNameOf($this->property->getType()->getElementTypeAsString());
 			$definitions   = [
 				'{master}'  => $master_table,
@@ -131,6 +131,7 @@ class Link_Table
 	 */
 	function table()
 	{
+
 		if (!isset($this->table)) {
 			$table = $this->property->getAnnotation('set_store_name')->value;
 			if ($table && is_string($table)) {
