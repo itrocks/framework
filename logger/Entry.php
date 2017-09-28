@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\User;
 
 /**
  * Log class stores logs infos
@@ -16,6 +17,13 @@ use ITRocks\Framework\Tools\Date_Time;
  */
 class Entry
 {
+
+	//---------------------------------------------------------------------------------- CONSOLE_USER
+	const CONSOLE_USER = 2;
+
+	//------------------------------------------------------------------------------------- CRON_USER
+	const CRON_USER    = 3;
+
 	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
 	use Framework\Dao\Mysql\File_Logger\Entry;
 	use Framework\View\Logger\Entry;
@@ -109,6 +117,14 @@ class Entry
 	 */
 	public $uri;
 
+	//----------------------------------------------------------------------------------------- $user
+	/**
+	 * @link Object
+	 * @null
+	 * @var User
+	 */
+	public $user;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor initialises logged information for a call on script beginning.
@@ -152,6 +168,20 @@ class Entry
 					$form['password'] = '***';
 				}
 				$this->form = $this->serialize($form);
+			}
+			$this->user = User::current();
+			// running a console script? is it from CRON or a manual launch?
+			if (!$this->user && $_SERVER['REMOTE_ADDR'] === 'console') {
+				// check grand-parent process is CRON (parent is a shell process)
+				$process = explode(
+					SP, exec('ps -p $(ps -o ppid= -p '.posix_getppid().') -o command | tail -1')
+				)[0];
+				if (strcasecmp($process, '/usr/sbin/CRON') === 0) {
+					$this->user = Dao::read(self::CRON_USER, User::class);
+				}
+				else {
+					$this->user = Dao::read(self::CONSOLE_USER, User::class);
+				}
 			}
 		}
 	}
