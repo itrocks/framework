@@ -357,6 +357,8 @@ class Application_Updater implements Configurable, Serializable
 	{
 		$updated = $this->getLastUpdateFileName();
 		touch($updated, $update_time);
+		/** @noinspection PhpUsageOfSilenceOperatorInspection may have been created by another one */
+		@file_put_contents(Application::getCacheDir() . SL . '.htaccess', 'Deny From All');
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
