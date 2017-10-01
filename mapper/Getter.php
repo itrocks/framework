@@ -83,22 +83,15 @@ abstract class Getter
 		if (
 			!self::$ignore
 			&& ($property instanceof Reflection_Property)
-			&& in_array(
-				$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-				[Store_Annotation::JSON]
-			)
+			&& Store_Annotation::of($property)->isJson()
 		) {
 			if (isset($stored) && is_string($stored)) {
-				switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
-					case Store_Annotation::JSON:
-						$objects_arrays = json_decode($stored, true);
-						$stored         = [];
-						if ($objects_arrays) {
-							foreach ($objects_arrays as $key => $object_array) {
-								$stored[$key] = static::schemaDecode($object_array, $property);
-							}
-						}
-						break;
+				$objects_arrays = json_decode($stored, true);
+				$stored         = [];
+				if ($objects_arrays) {
+					foreach ($objects_arrays as $key => $object_array) {
+						$stored[$key] = static::schemaDecode($object_array, $property);
+					}
 				}
 			}
 		}
@@ -291,17 +284,19 @@ abstract class Getter
 				}
 			}
 			if (isset($stored) && !is_object($stored)) {
-				if (isset($property) && $property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
-					if (
-						$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::GZ
-					) {
+				if (
+					isset($property)
+					&& Store_Annotation::of($property)->value
+					&& !Store_Annotation::of($property)->isFalse()
+				) {
+					if (Store_Annotation::of($property)->isGz()) {
 						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
 						$inflated = @gzinflate($stored);
 						if ($inflated !== false) {
 							$stored = $inflated;
 						}
 					}
-					switch ($property->getAnnotation(Store_Annotation::ANNOTATION)->value) {
+					switch (Store_Annotation::of($property)->value) {
 						case Store_Annotation::JSON:
 							$stored = json_decode($stored, true);
 							$stored = static::schemaDecode($stored, $property);
