@@ -42,6 +42,30 @@ class View implements Configurable
 		return $view_engine;
 	}
 
+	//----------------------------------------------------------------------------------- executeView
+	/**
+	 * @param $view             string
+	 * @param $view_method_name string
+	 * @param $parameters       array
+	 * @param $form             array
+	 * @param $files            array[]
+	 * @param $class_name       string
+	 * @param $feature_name     string
+	 * @return mixed
+	 */
+	private static function executeView(
+		$view, $view_method_name, array $parameters, array $form, array $files, $class_name,
+		$feature_name
+	) {
+		$object = reset($parameters);
+		$view_object = (is_object($object) && isA($object, $view))
+			? reset($parameters)
+			: Builder::create($view);
+		return $view_object->$view_method_name(
+			$parameters, $form, $files, $class_name, $feature_name
+		);
+	}
+
 	//--------------------------------------------------------------------------------------- getView
 	/**
 	 * @param $view_name     string   the view name is the associated data class name
@@ -81,30 +105,6 @@ class View implements Configurable
 
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
 		return [$class, $method];
-	}
-
-	//----------------------------------------------------------------------------------- executeView
-	/**
-	 * @param $view             string
-	 * @param $view_method_name string
-	 * @param $parameters       array
-	 * @param $form             array
-	 * @param $files            array[]
-	 * @param $class_name       string
-	 * @param $feature_name     string
-	 * @return mixed
-	 */
-	private static function executeView(
-		$view, $view_method_name, array $parameters, array $form, array $files, $class_name,
-		$feature_name
-	) {
-		$object = reset($parameters);
-		$view_object = (is_object($object) && isA($object, $view))
-			? reset($parameters)
-			: Builder::create($view);
-		return $view_object->$view_method_name(
-			$parameters, $form, $files, $class_name, $feature_name
-		);
 	}
 
 	//------------------------------------------------------------------------------------------ link

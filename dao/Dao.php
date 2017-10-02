@@ -292,19 +292,6 @@ class Dao implements Configurable
 		return new Option\Group_By($properties);
 	}
 
-	//------------------------------------------------------------------------------------------- key
-	/**
-	 * An option to choose what property value will be used as keys for Dao::readAll()
-	 * or Dao::search() results
-	 *
-	 * @param $property_name string|string[]
-	 * @return Option\Key;
-	 */
-	public static function key($property_name)
-	{
-		return new Option\Key($property_name);
-	}
-
 	//-------------------------------------------------------------------------------------------- is
 	/**
 	 * Returns true if object1 and object2 match the same stored object
@@ -318,6 +305,19 @@ class Dao implements Configurable
 		return self::current()->is($object1, $object2);
 	}
 
+	//------------------------------------------------------------------------------------------- key
+	/**
+	 * An option to choose what property value will be used as keys for Dao::readAll()
+	 * or Dao::search() results
+	 *
+	 * @param $property_name string|string[]
+	 * @return Option\Key;
+	 */
+	public static function key($property_name)
+	{
+		return new Option\Key($property_name);
+	}
+
 	//----------------------------------------------------------------------------------------- limit
 	/**
 	 * Gets a DAO limit option, used to limit the number of read objects with Dao::readAll()
@@ -327,7 +327,6 @@ class Dao implements Configurable
 	 * Will return 10 read users objects, starting with the second read user
 	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(10));
 	 * Will return the 10 first read users objects
-	 *
 	 * @param $from  integer The offset of the first object to return
 	 * (or the maximum number of objects to return if $count is null)
 	 * @param $count integer The maximum number of objects to return
@@ -440,7 +439,6 @@ class Dao implements Configurable
 	 *   ITRocks\Framework\User::class,
 	 *   Dao::sort([Dao::reverse('birth_date'), 'first_name', 'last_name'])
 	 * );
-	 *
 	 * @param $column_name string A single column name which we will reverse order.
 	 * @return Option\Reverse
 	 */
@@ -553,7 +551,6 @@ class Dao implements Configurable
 	 *   ITRocks\Framework\User::class,
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
-	 *
 	 * @param $columns string|string[] A single or several column names.
 	 * If null, the value of annotations 'sort' or 'representative' will be taken as defaults.
 	 * @return Option\Sort
@@ -561,6 +558,18 @@ class Dao implements Configurable
 	public static function sort($columns = null)
 	{
 		return new Option\Sort($columns);
+	}
+
+	//----------------------------------------------------------------------------------- storeNameOf
+	/**
+	 * Gets the store name for records typed as $class_name
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function storeNameOf($class_name)
+	{
+		return self::current()->storeNameOf($class_name);
 	}
 
 	//------------------------------------------------------------------------------- storedAsForeign
@@ -577,18 +586,6 @@ class Dao implements Configurable
 		return $type->isClass()
 		&& !$type->isDateTime()
 		&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
-	}
-
-	//----------------------------------------------------------------------------------- storeNameOf
-	/**
-	 * Gets the store name for records typed as $class_name
-	 *
-	 * @param $class_name string
-	 * @return string
-	 */
-	public static function storeNameOf($class_name)
-	{
-		return self::current()->storeNameOf($class_name);
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit
