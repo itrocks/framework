@@ -324,7 +324,8 @@ class Where
 	{
 		$column  = $this->buildColumn($path, $prefix);
 		$is_like = Value::isLike($value);
-		return $column . SP . ($is_like ? 'LIKE' : '=') . SP . Value::escape($value, $is_like);
+		return $column . SP . ($is_like ? 'LIKE' : '=') . SP
+			. Value::escape($value, $is_like, $this->getProperty($path));
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
 
@@ -18,16 +19,19 @@ abstract class Value
 	 *
 	 * @param $value            mixed
 	 * @param $double_backquote boolean
+	 * @param $property         Reflection_Property
 	 * @return string
 	 */
-	public static function escape($value, $double_backquote = false)
-	{
+	public static function escape(
+		$value, $double_backquote = false, Reflection_Property $property = null
+	) {
+		$type = $property ? $property->getType() : null;
 		// no is_numeric(), as sql numeric search make numeric conversion of string fields
 		// ie WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct
-		if (isStrictNumeric($value) && strval($value)[0]) {
+		if (isStrictNumeric($value) && strval($value)[0] && (!$type || $type->isNumeric())) {
 			$string_value = strval($value);
 		}
-		elseif (is_bool($value)) {
+		elseif (is_bool($value) && (!$type || $type->isBoolean())) {
 			$string_value = ($value ? '1' : '0');
 		}
 		elseif ($value === null) {
