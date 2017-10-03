@@ -90,9 +90,19 @@ abstract class Integrated_Properties
 			$integrated_simple = $integrated->has(Integrated_Annotation::SIMPLE);
 			/** @var $sub_properties_class Reflection_Class */
 			$sub_properties_class = $property->getType()->asReflectionClass();
-			$expand_properties = $sub_properties_class->getProperties(
-				[T_EXTENDS, T_USE, Reflection_Class::T_SORT]
-			);
+			if ($integrated->properties) {
+				$expand_properties = [];
+				foreach ($integrated->properties as $integrated_property_path) {
+					$expand_properties[$integrated_property_path] = new Reflection_Property(
+						$sub_properties_class->name, $integrated_property_path
+					);
+				}
+			}
+			else {
+				$expand_properties = $sub_properties_class->getProperties(
+					[T_EXTENDS, T_USE, Reflection_Class::T_SORT]
+				);
+			}
 			if (!($value = $property->getValue($object))) {
 				$value = Builder::create($property->getType()->asString());
 				if ($property->getAnnotation('component')->value && isA($value, Component::class)) {
@@ -113,7 +123,7 @@ abstract class Integrated_Properties
 				) {
 					$display = ($display_prefix . ($display_prefix ? DOT : '')
 						. $property->name . DOT . $sub_property_name);
-					$sub_prefix = $integrated_simple ? $display_prefix : $display;
+					$sub_prefix        = $integrated_simple ? $display_prefix : $display;
 					if ($more_expanded = self::expandUsingPropertyInternal(
 						$properties_list, $sub_property, $value, $property_name . DOT . $sub_property_name,
 						$sub_prefix, $blocks
@@ -125,7 +135,7 @@ abstract class Integrated_Properties
 							$sub_property->class, $sub_property->name, $value, false, true
 						);
 						$sub_property->final_class = $sub_properties_class->name;
-						$sub_property->display = Loc::tr(
+						$sub_property->display     = Loc::tr(
 							$integrated_simple ? (
 								$integrated->has(Integrated_Annotation::ALIAS)
 								? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
@@ -138,25 +148,13 @@ abstract class Integrated_Properties
 						foreach ($blocks as $block) {
 							$block_annotation->add($block);
 						}
-						$sub_property->path = $property_name . DOT . $sub_property_name;
+						$sub_property->path       = $property_name . DOT . $sub_property_name;
 						$sub_property->root_class = null;
 						$properties_list[$property_name . DOT . $sub_property_name] = $sub_property;
-						$expanded[$property_name . DOT . $sub_property_name] = $sub_property;
+						$expanded[$property_name . DOT . $sub_property_name]        = $sub_property;
 					}
 				}
 			}
-		}
-
-		// filter properties from @integrated simple property1, property2, etc.
-		if ($integrated->properties) {
-			$expanded_displayed_properties = [];
-			foreach ($integrated->properties as $display_property) {
-				$property_path = $property_name . DOT . $display_property;
-				if (isset($expanded[$property_path])) {
-					$expanded_displayed_properties[$property_path] = $expanded[$property_path];
-				}
-			}
-			$expanded = $expanded_displayed_properties;
 		}
 
 		return $expanded;
