@@ -56,7 +56,11 @@ class Options_Properties_Annotation extends List_Annotation
 						|| in_array($element, $values)
 						|| !in_array($element, static::RESERVED_WORDS)
 					) {
-						$this->properties[] = trim(lParse($element, ','));
+						foreach (explode(',', $element) as $sub_element) {
+							if (trim($sub_element)) {
+								$this->properties[] = trim($sub_element);
+							}
+						}
 					}
 					else {
 						$element  = trim($element);
