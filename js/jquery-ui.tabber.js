@@ -13,7 +13,7 @@
 
 		var $tabber = this;
 
-		if ((action == 'add') && ($add_tab != undefined) && ($add_page != undefined)) {
+		if ((action === 'add') && ($add_tab !== undefined) && ($add_page !== undefined)) {
 
 			$tabber = $add_tab.closest('.ui-tabber');
 			$add_tab.children('a').click($tabber.data('click_handler'));
@@ -21,18 +21,18 @@
 			$tabber.data('pages', $tabber.children(':not(ul:first)'));
 
 		}
-		else if ((action == 'click') && ($add_tab != undefined)) {
+		else if ((action === 'click') && ($add_tab !== undefined)) {
 
 			$tabber.children('.ui-tabber-tabs').find('a[href="' + $add_tab + '"]').click();
 
 		}
-		else if (action == 'refresh') {
+		else if (action === 'refresh') {
 
 			$tabber.data('tabs',  $tabber.children('ul:first').children('li'));
 			$tabber.data('pages', $tabber.children(':not(ul:first)'));
 
 		}
-		else if (action == undefined) {
+		else if (action === undefined) {
 
 			this.each(function() {
 				var $tabber = $(this);
@@ -58,6 +58,9 @@
 					$pages.removeClass('active');
 					$this.closest('.ui-tabber-tab').addClass('active');
 					$pages.filter($this.attr('href')).addClass('active');
+					if ($pages.filter($this.attr('href')).autofocus !== undefined) {
+						$pages.filter($this.attr('href')).autofocus();
+					}
 					var find_edit = window.location.pathname + '/edit';
 					$this.closest('.window').find('a[href="' + find_edit + '"]').each(function() {
 						$(this).attr('href', find_edit + '#' + $this.prop('href').rParse('#'));
