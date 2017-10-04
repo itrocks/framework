@@ -139,7 +139,7 @@ abstract class Integrated_Properties
 							$integrated_simple ? (
 								$integrated->has(Integrated_Annotation::ALIAS)
 								? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
-								: $sub_property_name
+								: rLastParse($sub_property_name, DOT, 1, true)
 							)
 							: $display
 						);
