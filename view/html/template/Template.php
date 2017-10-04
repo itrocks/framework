@@ -1422,7 +1422,7 @@ if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($
 		}
 		elseif ($i = strpos($property_name, '(')) {
 			if (
-				(is_object($object) || ctype_upper($object[0]))
+				(is_object($object) || (!empty($object) && ctype_upper($object[0])))
 				&& method_exists($object, substr($property_name, 0, $i))
 			) {
 				$object = $this->parseMethod($object, $property_name);
