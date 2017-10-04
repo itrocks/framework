@@ -14,6 +14,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\View\Html\Template;
 
 $STATIC_METHOD_TYPES = [
 	Builder::create('') => [
@@ -36,6 +37,9 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	Search_Object::create('') => [
+		'' == '@'
+	],
+	Template::getParentObject('') => [
 		'' == '@'
 	],
 	\PHPUnit_Framework_TestCase::createMock('') => [
