@@ -80,7 +80,7 @@ class In implements Negate, Where
 			$first = true;
 			foreach ($this->values as $value) {
 				if ($first) $first = false; else $sql .= ', ';
-				$sql .= Value::escape($value);
+				$sql .= Value::escape($value, false, $builder->getProperty($property_path));
 			}
 			$sql .= ')';
 		}
