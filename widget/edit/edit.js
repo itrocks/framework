@@ -526,10 +526,15 @@ $('document').ready(function()
 		//--------------------------------------------------------------- input[data-on-change] .change
 		this.inside('input[data-on-change], select[data-on-change]').change(function()
 		{
-			var $this = $(this);
-			var $form = $this.closest('form');
-			var uri   = $this.data('on-change');
+			var $this  = $(this);
+			var $form  = $this.closest('form');
+			var target = '#messages';
+			var uri    = $this.data('on-change');
 			$.each(uri.split(','), function(key, uri) {
+				if (uri.indexOf(SP) > -1) {
+					target = uri.rParse(SP);
+					uri    = uri.lParse(SP);
+				}
 				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
 
 				$.post(uri, $form.formSerialize(), function(data)
@@ -553,7 +558,7 @@ $('document').ready(function()
 							});
 						}
 						else {
-							$('#messages').html(data).build();
+							$(target).html(data).build();
 						}
 					}
 				});

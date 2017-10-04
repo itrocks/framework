@@ -386,13 +386,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
 
 	/**
-	 * @user_change [[\Vendor\Module\]Class_Name::]featureName]
-	 * associates a feature controller to call each time a property value is changed by the final user
-	 * to an input form
-	 */
-	Parser::T_PROPERTY . '@user_change' => Method_Annotation::class,
-
-	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName
 	 * Identifies a method that gets the default value for the property into forms only
 	 * The Property will be sent as an argument to this callable
