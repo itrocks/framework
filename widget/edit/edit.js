@@ -384,15 +384,21 @@ $('document').ready(function()
 		{
 			if (event.ctrlKey || event.metaKey || event.shiftKey) {
 				var $this = $(this);
+				var id    = $this.prev().val();
 				var uri;
-				if ($this.data('ctrl-href') && (event.ctrlKey || event.metaKey)) {
-					uri = $this.data('ctrl-href');
+				if ($this.data('combo-href') && (event.ctrlKey || event.metaKey)) {
+					uri = $this.data('combo-href');
+					if (id) {
+						uri += SL + id + '/edit';
+					}
 				}
-				else if ($this.data('shift-href') && event.shiftKey) {
-					uri = $this.data('shift-href');
+				else if ($this.data('combo-href') && event.shiftKey) {
+					uri = $this.data('combo-href');
+					if (id) {
+						uri += SL + id;
+					}
 				}
 				else if ($this.data('edit-class')) {
-					var id   = $this.prev().val();
 					var path = $this.data('edit-class').repl('\\', '/');
 					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
 				}

@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Widget\Edit;
 
 use DateTime;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao\File;
@@ -327,19 +326,13 @@ class Html_Builder_Type
 	{
 		$class_name        = $this->type->asString();
 		$source_class_name = Builder::current()->sourceClassName($class_name);
-		$edit_href         = View::link(
-			$this->value ?: $source_class_name, $this->value ? Feature::F_EDIT : Feature::F_ADD
-		);
 		// visible input ?
 		$input_id = $as_string ? $this->getFieldName() : null;
 		$input    = new Input($input_id, strval($this->value));
 		$input->addClass('auto_width');
 		$input->setAttribute('autocomplete', 'off');
 		$input->setData('combo-class', Names::classToSet($source_class_name));
-		$input->setData('ctrl-href',   $edit_href);
-		if ($this->value) {
-			$input->setData('shift-href', View::link($this->value, Feature::F_OUTPUT));
-		}
+		$input->setData('combo-href',  View::link($source_class_name));
 		$input->setData('target',      Target::POPUP);
 		if ($this->tooltip) {
 			$input->setAttribute('title', $this->tooltip);
