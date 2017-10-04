@@ -115,11 +115,12 @@ getTextWidth = function($context, extra_width)
 /**
  * Load an URI into target
  *
- * @param uri    string
- * @param target string|object jquery set object (object) or selector (string)
- * @param after  string|object jquery set object (object) or selector (string)
+ * @param uri        string
+ * @param target     string|object jquery set object (object) or selector (string)
+ * @param after      string|object jquery set object (object) or selector (string)
+ * @param auto_focus boolean if true and autoFocus plugin is set, call autoFocus() on loaded data
  */
-redirect = function(uri, target, after)
+redirect = function(uri, target, after, auto_focus)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
@@ -167,6 +168,9 @@ redirect = function(uri, target, after)
 							$this.attr('href', app.askAnd(href, 'close=window' + window.zindex_counter));
 						}
 					});
+				}
+				if ((auto_focus !== undefined) && auto_focus && ($target.autofocus !== undefined)) {
+					$target.autofocus();
 				}
 				$target.build();
 				if (!close_function) {

@@ -403,7 +403,7 @@ $('document').ready(function()
 					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
 				}
 				if (uri !== undefined) {
-					redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this);
+					redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this, true);
 				}
 			}
 		})
