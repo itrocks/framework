@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Options_Properties_Annotati
  * Multiple keywords can be used to tell how this sub-form will be integrated into the main form :
  * - alias : the @alias value of each property will be displayed instead for their standard display,
  * - block : the sub-form will be delimited into a <fieldset> block,
+ * - final : will not be @integrated if already into an @integrated property
  * - full : the full property.path display will be shown,
  * - simple : the name for each property will be the final property name (or alias) alone, no path.
  *
@@ -41,9 +42,10 @@ class Integrated_Annotation extends Options_Properties_Annotation
 	const ANNOTATION = 'integrated';
 
 	//------------------------------------------------------------------------------------ my options
-	const ALIAS = 'alias';
-	const BLOCK = 'block';
-	const FULL = 'full';
+	const ALIAS  = 'alias';
+	const BLOCK  = 'block';
+	const FINAL_ = 'final';
+	const FULL   = 'full';
 	const SIMPLE = 'simple';
 
 	//------------------------------------------------------------------------------- DEFAULT_OPTIONS
@@ -53,7 +55,7 @@ class Integrated_Annotation extends Options_Properties_Annotation
 	const EXCLUDED_OPTIONS = [[self::FULL, self::SIMPLE]];
 
 	//-------------------------------------------------------------------------------- RESERVED_WORDS
-	const RESERVED_WORDS = [self::ALIAS, self::BLOCK, self::FULL, self::SIMPLE];
+	const RESERVED_WORDS = [self::ALIAS, self::BLOCK, self::FINAL_, self::FULL, self::SIMPLE];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

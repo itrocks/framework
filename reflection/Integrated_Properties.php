@@ -83,7 +83,11 @@ abstract class Integrated_Properties
 		$expanded = [];
 		/** @var $integrated Integrated_Annotation */
 		$integrated = Integrated_Annotation::of($property);
-		if ($integrated->value && !$property->isStatic()) {
+		if (
+			$integrated->value
+			&& !$property->isStatic()
+			&& (!$integrated->has(Integrated_Annotation::FINAL_) || !strpos($property->path, DOT))
+		) {
 			if ($integrated->has(Integrated_Annotation::BLOCK)) {
 				$blocks[$property->path ?: $property->name] = $property->path ?: $property->name;
 			}
@@ -132,10 +136,9 @@ abstract class Integrated_Properties
 					}
 					else {
 						$sub_property = new Reflection_Property_Value(
-							$sub_property->class, $sub_property->name, $value, false, true
+							$sub_property->root_class, $sub_property->path, $value, false, true
 						);
-						$sub_property->final_class = $sub_properties_class->name;
-						$sub_property->display     = Loc::tr(
+						$sub_property->display = Loc::tr(
 							$integrated_simple ? (
 								$integrated->has(Integrated_Annotation::ALIAS)
 								? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
