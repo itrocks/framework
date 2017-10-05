@@ -93,18 +93,6 @@ class Functions
 		return $this->displayableClassNameOf(reset($template->objects));
 	}
 
-	//----------------------------------------------------------------------------------- getCssClass
-	/**
-	 * Escape strings that will be used as css class names. in HTML DOT will be replaced by '-'
-	 *
-	 * @param $template Template
-	 * @return string
-	 */
-	public function getCssClass(Template $template)
-	{
-		return str_replace(DOT, '-', reset($template->objects));
-	}
-
 	//-------------------------------------------------------------------------------------- getCount
 	/**
 	 * Returns array count
@@ -133,6 +121,18 @@ class Functions
 		$context_identifier = $context_object ? Dao::getObjectIdentifier($context_object) : null;
 		arraySet($template->counters, [$context_class_name, $context_identifier, $class_name], 0);
 		return ++$template->counters[$context_class_name][$context_identifier][$class_name];
+	}
+
+	//----------------------------------------------------------------------------------- getCssClass
+	/**
+	 * Escape strings that will be used as css class names. in HTML DOT will be replaced by '-'
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getCssClass(Template $template)
+	{
+		return str_replace(DOT, '-', reset($template->objects));
 	}
 
 	//--------------------------------------------------------------------------------------- getDate
@@ -736,6 +736,22 @@ class Functions
 		return $properties;
 	}
 
+	//----------------------------------------------------------------------------------- getProperty
+	/**
+	 * @param $template Template
+	 * @param $name     string
+	 * @return string
+	 */
+	public function getProperty(Template $template, $name = null)
+	{
+		foreach ($template->objects as $object) {
+			if (is_object($object)) {
+				return new Reflection_Property_Value(get_class($object), $name, $object, false, true);
+			}
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------- getPropertyBlocks
 	/**
 	 * @param $property Reflection_Property
@@ -752,22 +768,6 @@ class Functions
 			$blocks[$block] = $block;
 		}
 		return $blocks;
-	}
-
-	//----------------------------------------------------------------------------------- getProperty
-	/**
-	 * @param $template Template
-	 * @param $name     string
-	 * @return string
-	 */
-	public function getProperty(Template $template, $name = null)
-	{
-		foreach ($template->objects as $object) {
-			if (is_object($object)) {
-				return new Reflection_Property_Value(get_class($object), $name, $object, false, true);
-			}
-		}
-		return null;
 	}
 
 	//----------------------------------------------------------------------------- getPropertySelect
@@ -946,6 +946,23 @@ class Functions
 		return $template->getObject();
 	}
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Returns the current value of the current element of the currently read array
+	 *
+	 * @param Template $template
+	 * @return string|integer
+	 */
+	public function getValue(Template $template)
+	{
+		foreach ($template->objects as $key => $array) {
+			if (is_array($array) && $key) {
+				return $template->objects[$key - 1];
+			}
+		}
+		return null;
+	}
+
 	//--------------------------------------------------------------------------------------- getVoid
 	/**
 	 * Returns true if the object is void ie if its string value has no length
@@ -962,23 +979,6 @@ class Functions
 	public function getVoid(Template $template)
 	{
 		return !strlen(reset($template->objects));
-	}
-
-	//-------------------------------------------------------------------------------------- getValue
-	/**
-	 * Returns the current value of the current element of the currently read array
-	 *
-	 * @param Template $template
-	 * @return string|integer
-	 */
-	public function getValue(Template $template)
-	{
-		foreach ($template->objects as $key => $array) {
-			if (is_array($array) && $key) {
-				return $template->objects[$key - 1];
-			}
-		}
-		return null;
 	}
 
 	//--------------------------------------------------------------------------------------- getZero
