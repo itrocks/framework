@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Edit;
 
 use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -306,27 +307,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	private function loadConditions()
 	{
 		if (!isset($this->conditions)) {
-			$conditions_values = $this->property->getListAnnotation('conditions')->values();
-			$this->conditions  = [];
-			if ($conditions_values) {
-				foreach ($conditions_values as $condition) {
-					if (strpos($condition, '=')) {
-						list($property_name, $condition) = explode('=', $condition);
-					}
-					else {
-						$property_name = $condition;
-					}
-					if (
-						in_array($condition, [_FALSE, _TRUE])
-						&& $this->property->getFinalClass()->getProperty($property_name)->getType()->isBoolean()
-					) {
-						$condition = ($condition === _TRUE) ? 1 : 0;
-					}
-					$this->conditions[$property_name] = isset($this->conditions[$property_name])
-						? ($this->conditions[$property_name] . ',' . $condition)
-						: $condition;
-				}
-			}
+			$this->conditions = Conditions_Annotation::of($this->property)->values();
 		}
 	}
 

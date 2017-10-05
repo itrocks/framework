@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -38,7 +39,7 @@ class Functions
 	/**
 	 * Used by startingBlocks and stoppingBlocks calls
 	 *
-	 * @var string[] key equals value
+	 * @var Block[] key is the property path
 	 */
 	private $inside_blocks = [];
 
@@ -767,17 +768,21 @@ class Functions
 	//----------------------------------------------------------------------------- getPropertyBlocks
 	/**
 	 * @param $property Reflection_Property
-	 * @return array[]
+	 * @return Block[]
 	 */
 	protected function getPropertyBlocks(Reflection_Property $property)
 	{
-		$blocks = [];
+		$blocks     = [];
 		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
 		if ($integrated->has(Integrated_Annotation::BLOCK)) {
-			$blocks[$property->path] = $property->path;
+			$conditions = Conditions_Annotation::of($property);
+			$data = $conditions->values()
+				? ['conditions' => $conditions->asHtmlAttributeValue(), 'name' => $property->name]
+				: [];
+			$blocks[$property->path] = new Block($property->path, $data);
 		}
 		foreach ($property->getListAnnotation(Annotation::BLOCK)->values() as $block) {
-			$blocks[$block] = $block;
+			$blocks[$block] = new Block($block);
 		}
 		return $blocks;
 	}
@@ -854,7 +859,7 @@ class Functions
 	 * If not, returns an empty string array
 	 *
 	 * @param $template Template
-	 * @return string[]
+	 * @return Block[]
 	 */
 	public function getStartingBlocks(Template $template)
 	{
@@ -863,15 +868,15 @@ class Functions
 			$blocks = array_merge($blocks, $this->getPropertyBlocks($property));
 		}
 		$starting_blocks = [];
-		foreach ($blocks as $block) {
-			if (!isset($this->inside_blocks[$block])) {
-				$starting_blocks[$block] = $block;
-				$this->inside_blocks[$block] = $block;
+		foreach ($blocks as $block_name => $block) {
+			if (!isset($this->inside_blocks[$block_name])) {
+				$starting_blocks[$block_name]     = $block;
+				$this->inside_blocks[$block_name] = $block;
 			}
 		}
-		foreach ($this->inside_blocks as $block) {
-			if (!isset($blocks[$block])) {
-				unset($this->inside_blocks[$block]);
+		foreach ($this->inside_blocks as $block_name => $block) {
+			if (!isset($blocks[$block_name])) {
+				unset($this->inside_blocks[$block_name]);
 			}
 		}
 		return $starting_blocks;
@@ -883,7 +888,7 @@ class Functions
 	 * If not, returns an empty string array
 	 *
 	 * @param $template Template
-	 * @return string[]
+	 * @return Block[]
 	 */
 	public function getStoppingBlocks(Template $template)
 	{
@@ -921,9 +926,9 @@ class Functions
 				unset($starting_objects[$object_key]);
 			}
 			$stopping_blocks = [];
-			foreach ($this->inside_blocks as $block) {
-				if (!isset($blocks[$block])) {
-					$stopping_blocks[$block] = $block;
+			foreach ($this->inside_blocks as $block_name => $block) {
+				if (!isset($blocks[$block_name])) {
+					$stopping_blocks[$block_name] = $block;
 				}
 			}
 			return $stopping_blocks;

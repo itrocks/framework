@@ -466,8 +466,12 @@ $('document').ready(function()
 					will_change[condition[0]] = $condition;
 				}
 				var condition_name = $condition.attr('name');
-				if (!condition_name) condition_name = $condition.prev().attr('name');
-				if ((typeof $this.data('conditions')) === 'string') $this.data('conditions', {});
+				if (!condition_name) {
+					condition_name = $condition.prev().attr('name');
+				}
+				if ((typeof $this.data('conditions')) === 'string') {
+					$this.data('conditions', {});
+				}
 				if (!$this.data('conditions').hasOwnProperty(condition_name)) {
 					$this.data('conditions')[condition_name] = { element: $condition, values: {}};
 				}
@@ -475,7 +479,9 @@ $('document').ready(function()
 					$this.data('conditions')[condition_name].values[value] = value;
 				});
 				var this_name = $this.attr('name');
-				if (!this_name) this_name = $this.prev().attr('name');
+				if (!this_name) {
+					this_name = $this.prev().attr('name');
+				}
 				if ($condition.data('condition-of')) {
 					$condition.data('condition-of')[this_name] = $this;
 				}
@@ -506,9 +512,16 @@ $('document').ready(function()
 							return (show = found);
 						});
 						var name = $element.attr('name');
-						if (!name)                  name = $element.prev().attr('name');
-						if (name.beginsWith('id_')) name = name.substr(3);
-						var $field = $element.closest('#' + name);
+						if (!name) {
+							name = $element.data('name');
+						}
+						if (!name) {
+							name = $element.prev().attr('name');
+						}
+						if (name.beginsWith('id_')) {
+							name = name.substr(3);
+						}
+						var $field = $element.closest('#' + name + ', [data-name=' + name + ']');
 						if (!$field.length) {
 							$field = $element.parent().children();
 						}

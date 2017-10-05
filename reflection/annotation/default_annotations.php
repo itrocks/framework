@@ -220,13 +220,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@composite' => Boolean_Annotation::class,
 
 	/**
-	 * @conditions property_name, another_property
-	 * Conditions annotation declares other property names that are used to know if the property can
-	 * have a value
-	 */
-	Parser::T_PROPERTY . '@conditions' => List_Annotation::class,
-
-	/**
 	 * @dao ITRocks\Framework\Dao\Mysql\Link
 	 * This annotation stores the name of the Dao that should always used for a linked object,
 	 * map or collection property. Use it in conjunction with @link and @var annotations.
