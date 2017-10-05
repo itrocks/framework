@@ -521,7 +521,7 @@ $('document').ready(function()
 						if (name.beginsWith('id_')) {
 							name = name.substr(3);
 						}
-						var $field = $element.closest('#' + name + ', [data-name=' + name + ']');
+						var $field = $element.closest('#' + name + ', [data-name="' + name + '"]');
 						if (!$field.length) {
 							$field = $element.parent().children();
 						}
