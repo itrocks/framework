@@ -420,6 +420,18 @@ class Functions
 		return new Displayable($template->getFeature(), Displayable::TYPE_METHOD);
 	}
 
+	//-------------------------------------------------------------------------------------- getField
+	/**
+	 * Return the current data as a field
+	 *
+	 * @param $template Template
+	 * @return mixed
+	 */
+	public function getField(Template $template)
+	{
+		return reset($template->objects);
+	}
+
 	//--------------------------------------------------------------------------------------- getFile
 	/**
 	 * Returns a Builder\File object for the current File value

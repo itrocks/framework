@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Edit;
 
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\Html\Template\Functions;
 
 /**
@@ -9,6 +10,18 @@ use ITRocks\Framework\View\Html\Template\Functions;
  */
 class Html_Template_Functions extends Functions
 {
+
+	//-------------------------------------------------------------------------------------- getField
+	/**
+	 * Return the current data as a field : editable in this case
+	 *
+	 * @param $template Template
+	 * @return mixed
+	 */
+	public function getField(Template $template)
+	{
+		return $this->getEdit($template);
+	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
 	/**
