@@ -5,11 +5,12 @@ use DateTime;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
-use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\Element;
@@ -18,7 +19,7 @@ use ITRocks\Framework\View\Html\Dom\Label;
 use ITRocks\Framework\View\Html\Dom\Select;
 use ITRocks\Framework\View\Html\Dom\Set;
 use ITRocks\Framework\View\Html\Dom\Textarea;
-use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Builds a standard form input matching a given data type and value
@@ -556,14 +557,18 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- setTemplate
 	/**
-	 * @param $template Html_Template
+	 * Set template : will be set only if $template is an Html_Template
+	 *
+	 * @param $template Template
 	 * @return Html_Builder_Type
 	 */
-	public function setTemplate(Html_Template $template)
+	public function setTemplate(Template $template)
 	{
-		$this->template = $template;
-		if (!$this->preprop) {
-			$this->preprop = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
+		if ($template instanceof Html_Template) {
+			$this->template = $template;
+			if (!$this->preprop) {
+				$this->preprop = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
+			}
 		}
 		return $this;
 	}
