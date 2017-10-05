@@ -15,7 +15,7 @@
 			},
 			multiple: {
 				maximum: 300,
-				simple:  40
+				minimum: 40
 			},
 			simple: {
 				maximum: 1000,
@@ -70,16 +70,11 @@
 					}
 					// element into a collection / map
 					else {
-						// is element not named and next to a named element ? next_input = true
-						var name = $element.attr('name');
-						if (name === undefined) {
-							name = $element.prev('input, textarea').attr('name');
-						}
 						// calculate th's previous max width
 						var position           = $element.parent().prevAll('td').length;
 						var $td                = $(cells(firstColGroup($table))[position]);
 						var previous_max_width = $td.data('max-width');
-						if (new_width > previous_max_width) {
+						if ((new_width > previous_max_width) || (previous_max_width === undefined)) {
 							// the element became wider than the widest element
 							tableColumnWidth($td, new_width);
 						}
