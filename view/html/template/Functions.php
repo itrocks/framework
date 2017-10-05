@@ -392,7 +392,7 @@ class Functions
 	{
 		$property = reset($template->objects);
 		$expanded = [];
-		$expanded = Integrated_Properties::expandUsingProperty(
+		$expanded = (new Integrated_Properties())->expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);
 		$result = $expanded ? $expanded : [$property];
