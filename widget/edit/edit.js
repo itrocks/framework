@@ -403,7 +403,13 @@ $('document').ready(function()
 					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
 				}
 				if (uri !== undefined) {
-					redirect(uri, $this.data('target') ? $this.data('target') : '#popup', $this, true);
+					redirect(
+						uri, $this.data('target') ? $this.data('target') : '#popup', $this, function($target) {
+							console.log($target);
+							$target.autofocus();
+							$target.draggable({ handle: 'h2' });
+						}
+					);
 				}
 			}
 		})

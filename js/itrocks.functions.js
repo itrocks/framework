@@ -115,12 +115,12 @@ getTextWidth = function($context, extra_width)
 /**
  * Load an URI into target
  *
- * @param uri        string
- * @param target     string|object jquery set object (object) or selector (string)
- * @param after      string|object jquery set object (object) or selector (string)
- * @param auto_focus boolean if true and autoFocus plugin is set, call autoFocus() on loaded data
+ * @param uri      string
+ * @param target   string|object jquery set object (object) or selector (string)
+ * @param after    string|object jquery set object (object) or selector (string)
+ * @param callback call this function when target was loaded (parameter is $target)
  */
-redirect = function(uri, target, after, auto_focus)
+redirect = function(uri, target, after, callback)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
@@ -169,9 +169,6 @@ redirect = function(uri, target, after, auto_focus)
 						}
 					});
 				}
-				if ((auto_focus !== undefined) && auto_focus && ($target.autofocus !== undefined)) {
-					$target.autofocus();
-				}
 				$target.build();
 				if (!close_function) {
 					var title = $target.find('h2').first().text();
@@ -180,6 +177,9 @@ redirect = function(uri, target, after, auto_focus)
 					}
 					document.title = title;
 					window.history.pushState({reload: true}, title, uri);
+				}
+				if ((callback !== undefined) && callback) {
+					callback.call($target, $target);
 				}
 			}
 		});
