@@ -505,8 +505,13 @@ $('document').ready(function()
 						$.each($element.data('conditions'), function(condition_name, condition) {
 							var found = false;
 							$.each(condition.values, function(value) {
-								var element_value = (condition.element.attr('type') === 'checkbox')
-									? (condition.element.is(':checked') ? 1 : 0) : condition.element.val();
+								var element_type = condition.element.attr('type');
+								var element      = (element_type === 'radio')
+									? condition.element.filter(':checked')
+									: condition.element;
+								var element_value = (element_type === 'checkbox')
+									? (element.is(':checked') ? 1 : 0)
+									: element.val();
 								return !(found = (element_value === value));
 							});
 							return (show = found);
