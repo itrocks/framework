@@ -152,6 +152,10 @@ redirect = function(uri, target, after, callback)
 				event.preventDefault();
 				event.stopImmediatePropagation();
 				$(this).closest('.closeable-popup').remove();
+				if (uri.indexOf('fill_combo=') > -1) {
+					var fill_combo = uri.rParse('fill_combo=').lParse('&');
+					$('[name=' + DQ + fill_combo + DQ + ']').next().focus();
+				}
 			}
 		}
 		$.ajax({
@@ -165,7 +169,8 @@ redirect = function(uri, target, after, callback)
 						var $this = $(this);
 						var href = $this.attr('href');
 						if (!href.beginsWith('#')) {
-							$this.attr('href', app.askAnd(href, 'close=window' + window.zindex_counter));
+							var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
+							$this.attr('href', close_link);
 						}
 					});
 				}
