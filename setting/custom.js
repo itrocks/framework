@@ -10,11 +10,12 @@ $('document').ready(function()
 		//------------------------------------------------------------------------------- h2 span click
 		this.inside('h2>span').click(function()
 		{
-			if ($(this).data('stop-click')) {
-				$(this).data('stop-click', '');
+			var $this = $(this);
+			if ($this.data('stop-click')) {
+				$this.data('stop-click', '');
 				return;
 			}
-			var $ul_custom_selection = $('ul.custom.selection');
+			var $ul_custom_selection = $this.parent().find('ul.custom.selection');
 			if ($ul_custom_selection.is(':visible')) {
 				$('body').click();
 			}
@@ -22,7 +23,7 @@ $('document').ready(function()
 				$ul_custom_selection.fadeIn(200, function () {
 					var click_event = function () {
 						$('body').off('click', click_event);
-						$('ul.custom.selection').fadeOut(200);
+						$ul_custom_selection.fadeOut(200);
 					};
 					$('body').on('click', click_event);
 				});
