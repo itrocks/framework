@@ -410,7 +410,7 @@ $('document').ready(function()
 						function($target) {
 							$target.autofocus();
 							$target.draggable({
-								handle: $target.find('h2>span').length ? 'h2>span' : 'h2',
+								handle: 'h2',
 								stop: function() {
 									$(this).find('h2>span').data('stop-click', true);
 								}
