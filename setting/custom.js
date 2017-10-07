@@ -10,6 +10,10 @@ $('document').ready(function()
 		//------------------------------------------------------------------------------- h2 span click
 		this.inside('h2>span').click(function()
 		{
+			if ($(this).data('stop-click')) {
+				$(this).data('stop-click', '');
+				return;
+			}
 			var $ul_custom_selection = $('ul.custom.selection');
 			if ($ul_custom_selection.is(':visible')) {
 				$('body').click();

@@ -409,7 +409,12 @@ $('document').ready(function()
 						$this,
 						function($target) {
 							$target.autofocus();
-							$target.draggable({ handle: 'h2' });
+							$target.draggable({
+								handle: $target.find('h2>span').length ? 'h2>span' : 'h2',
+								stop: function() {
+									$(this).find('h2>span').data('stop-click', true);
+								}
+							});
 						}
 					);
 				}
