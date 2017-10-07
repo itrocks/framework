@@ -126,7 +126,7 @@ redirect = function(uri, target, after, callback)
 	var app = window.app;
 	var more = (
 		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
-	) ? '?as_widget' : '';
+	) ? 'as_widget' : '';
 	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
 		uri = app.uri_base + uri;
 	}
@@ -155,7 +155,7 @@ redirect = function(uri, target, after, callback)
 			}
 		}
 		$.ajax({
-			url:     app.addSID(uri + more),
+			url:     app.addSID(app.askAnd(uri, more)),
 			success: function(data) {
 				$target.html(data);
 				if (close_function) {

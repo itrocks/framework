@@ -14,15 +14,25 @@
 
 	<!--fill_combo?-->
 	<script>
-	if (document.{fill_combo} != undefined) {
-		document.{fill_combo}.value = '{id}';
-		$(document.{fill_combo}.nextSibling).val('{.}').keyup().select();
+	if ($('[name="{fill_combo}"]').length) {
+		$('[name="{fill_combo}"]').val('{id}');
+		$('[name="{fill_combo}"]').next().val('{.}').focus().keyup();
 	}
 	</script>
 	<!--fill_combo?-->
 
-	<!--close?--><script> $('#{close}').remove(); </script><!--close?-->
-	<!--then?--><script> redirect('{then}', '#main'); </script><!--then?-->
+	<!--close?-->
+	<script>
+		$('#{close}').remove();
+	</script>
+	<!--close?-->
+
+	<!--then?-->
+	<script>
+		redirect('{then}', '#main');
+	</script>
+	<!--then?-->
+
 	<!--!close?--><!--!then?-->
 	<script>
 		(function() {

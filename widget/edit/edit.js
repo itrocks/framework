@@ -404,7 +404,10 @@ $('document').ready(function()
 				}
 				if (uri !== undefined) {
 					redirect(
-						uri, $this.data('target') ? $this.data('target') : '#popup', $this, function($target) {
+						uri + '?fill_combo=' + $this.prev().attr('name'),
+						$this.data('target') ? $this.data('target') : '#popup',
+						$this,
+						function($target) {
 							console.log($target);
 							$target.autofocus();
 							$target.draggable({ handle: 'h2' });
