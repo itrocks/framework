@@ -408,7 +408,6 @@ $('document').ready(function()
 						$this.data('target') ? $this.data('target') : '#popup',
 						$this,
 						function($target) {
-							console.log($target);
 							$target.autofocus();
 							$target.draggable({ handle: 'h2' });
 						}
