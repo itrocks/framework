@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Widget\Data_List_Setting;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
-use ITRocks\Framework\Setting\Custom_Settings;
 use ITRocks\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
+use ITRocks\Framework\Setting\Custom_Settings;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -16,13 +16,13 @@ use ITRocks\Framework\Tools\Names;
 class Data_List_Settings extends Custom_Settings
 {
 
-	//---------------------------------------------------------------------------------------- $title
+	//---------------------------------------------------------------- $maximum_displayed_lines_count
 	/**
-	 * The title that will be displayed on the top of the list
+	 * Maximum displayed lines count
 	 *
-	 * @var string
+	 * @var integer
 	 */
-	public $title;
+	public $maximum_displayed_lines_count = 20;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -66,19 +66,19 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	public $sort;
 
-	//---------------------------------------------------------------- $maximum_displayed_lines_count
-	/**
-	 * Maximum displayed lines count
-	 *
-	 * @var integer
-	 */
-	public $maximum_displayed_lines_count = 20;
-
 	//-------------------------------------------------------------------- $start_display_line_number
 	/**
 	 * @var integer
 	 */
 	public $start_display_line_number = 1;
+
+	//---------------------------------------------------------------------------------------- $title
+	/**
+	 * The title that will be displayed on the top of the list
+	 *
+	 * @var string
+	 */
+	public $title;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -194,7 +194,7 @@ class Data_List_Settings extends Custom_Settings
 				if (isset($this->properties_title[$property_path])) {
 					$property->display = $this->properties_title[$property_path];
 				}
-				$property->path = $property_path;
+				$property->path                   = $property_path;
 				$this->properties[$property_path] = $property;
 			}
 			unset($this->properties_path);
@@ -296,18 +296,6 @@ class Data_List_Settings extends Custom_Settings
 		}
 	}
 
-	//------------------------------------------------------------------------------------------ sort
-	/**
-	 * @param $property_path string
-	 */
-	public function sort($property_path)
-	{
-		$this->sort->addSortColumn($property_path);
-		if (in_array($property_path, $this->sort->reverse)) {
-			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse)]);
-		}
-	}
-
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Adds search values
@@ -328,6 +316,18 @@ class Data_List_Settings extends Custom_Settings
 			else {
 				$this->search[$property_path] = $value;
 			}
+		}
+	}
+
+	//------------------------------------------------------------------------------------------ sort
+	/**
+	 * @param $property_path string
+	 */
+	public function sort($property_path)
+	{
+		$this->sort->addSortColumn($property_path);
+		if (in_array($property_path, $this->sort->reverse)) {
+			unset($this->sort->reverse[array_search($property_path, $this->sort->reverse)]);
 		}
 	}
 

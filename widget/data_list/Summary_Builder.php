@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Widget\Data_List;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Loc;
@@ -54,8 +54,9 @@ class Summary_Builder
 	 * Construct the Human readable summary section of a query
 	 *
 	 * Supported columns naming forms are :
-	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
+	 * - column_name : column_name must correspond to a property of class,
+	 * - column.foreign_column : column must be a property of class, foreign_column must be a property
+	 *   of column's var class.
 	 *
 	 * @param $class_name  string base object class name
 	 * @param $where_array array|Func\Where where array expression, keys are columns names
@@ -119,8 +120,12 @@ class Summary_Builder
 		$first      = true;
 		foreach ($array as $key => $value) {
 			if (!is_string($value) || strlen($value)) {
-				if ($first) $first = false;
-				else $sql .= SP . Loc::tr(strtolower($clause)) . SP;
+				if ($first) {
+					$first = false;
+				}
+				else {
+					$sql .= SP . Loc::tr(strtolower($clause)) . SP;
+				}
 				$key_clause = strtoupper($key);
 				if (is_numeric($key) && ($value instanceof Logical)) {
 					// if logical, simply build path as if key clause was 'AND' (the simplest)
@@ -220,7 +225,7 @@ class Summary_Builder
 			as $property_name => $property
 		) {
 			if (isset($object->$property_name)) {
-				$sub_path = $property_name;
+				$sub_path         = $property_name;
 				$array[$sub_path] = $object->$property_name;
 			}
 		}
@@ -267,13 +272,16 @@ class Summary_Builder
 		}
 	}
 
+	//----------------------------------------------------------------------------------- buildScalar
 	/**
 	 * Build a scalar value to be human readable
+	 *
 	 * @param $value         string
 	 * @param $property_path string
 	 * @return string
 	 */
-	public function buildScalar($value, $property_path) {
+	public function buildScalar($value, $property_path)
+	{
 		static $pattern
 			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
 		$property = $this->getProperty($property_path);
@@ -291,10 +299,10 @@ class Summary_Builder
 		}
 		elseif (preg_match($pattern, $value)) {
 			// in case of a date, we convert to locale with time
-			$date_format = Loc::date();
-			$show_time = $date_format->show_time;
+			$date_format            = Loc::date();
+			$show_time              = $date_format->show_time;
 			$date_format->show_time = Date_Format::TIME_ALWAYS;
-			$date = Loc::dateToLocale($value);
+			$date                   = Loc::dateToLocale($value);
 			$date_format->show_time = $show_time;
 			return $date;
 		}
@@ -321,7 +329,7 @@ class Summary_Builder
 	 */
 	private function buildValue($path, $value, $prefix = '')
 	{
-		$column = $this->buildColumn($path, $prefix);
+		$column  = $this->buildColumn($path, $prefix);
 		$is_like = Value::isLike($value);
 		return $column . SP . ($is_like ? Loc::tr('is like') : '=') . SP . $value;
 	}
@@ -335,12 +343,12 @@ class Summary_Builder
 	 */
 	public function getProperty($path)
 	{
-		/* old way to do. keep for backward compatibility */
-		/* todo: check if we should keep or if it's buggy and so we could keep only new way to do */
+		// old way to do. keep for backward compatibility
+		// TODO check if we should keep or if it's buggy and so we could keep only new way to do
 		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
-		$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
-		/* if null, new way to do */
+		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		// if null, new way to do
 		if (is_null($property)) {
 			$property = new Reflection_Property($this->joins->getClass(''), $path);
 		}

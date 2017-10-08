@@ -17,7 +17,7 @@ $('document').ready(function()
 			var uri        = app.uri_base + SL + class_name + SL + 'dataListSetting'
 				+ '?add_property=' + property_name
 				+ '&' + before_after
-				+ '=' + ((before_after_property_name != undefined) ? before_after_property_name : '')
+				+ '=' + ((before_after_property_name !== undefined) ? before_after_property_name : '')
 				+ '&as_widget'
 				+ app.andSID();
 			$.ajax({ url: uri, success: function()
@@ -94,7 +94,7 @@ $('document').ready(function()
 			// reload list when #13 pressed into a search input
 			$this.find('.search').find('input, textarea').keydown(function(event)
 			{
-				if (event.keyCode == 13) {
+				if (event.keyCode === 13) {
 					$(this).closest('form').submit();
 				}
 			});
@@ -122,8 +122,8 @@ $('document').ready(function()
 					if ((draggable_left > left) && (draggable_left <= right)) {
 						found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
 						var old = $droppable.data('insert-after');
-						if (found != old) {
-							if (old != undefined) {
+						if (found !== old) {
+							if (old !== undefined) {
 								$droppable.find('colgroup>col:nth-child(' + old + ')').removeClass('insert-right');
 							}
 							if (found > 1) {
@@ -155,7 +155,7 @@ $('document').ready(function()
 				{
 					var $this        = $(this);
 					var insert_after = $this.data('insert-after');
-					if (insert_after != undefined) {
+					if (insert_after !== undefined) {
 						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_after + ')');
 						var $draggable          = ui.draggable;
 						var after_property_name = $th.data('property');
@@ -225,8 +225,8 @@ $('document').ready(function()
 			if ($this.id in selection) {
 				checkboxes.each(function() {
 					if (
-						(select_all[$this.id] && ($.inArray(this.value, excluded_selection[$this.id]) == -1))
-						|| $.inArray(this.value, selection[$this.id]) != -1
+						(select_all[$this.id] && ($.inArray(this.value, excluded_selection[$this.id]) === -1))
+						|| $.inArray(this.value, selection[$this.id]) !== -1
 					) {
 						$(this).prop('checked', true);
 					}
@@ -241,7 +241,7 @@ $('document').ready(function()
 			checkboxes.change(function()
 			{
 				if (select_all[$this.id]) {
-					if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) == -1)) {
+					if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) === -1)) {
 						excluded_selection[$this.id].push(this.value);
 					}
 					if (this.checked && (excluded_selection[$this.id].indexOf(this.value) > -1)) {
@@ -252,7 +252,7 @@ $('document').ready(function()
 						.attr('checked', this.checked);
 				}
 				else {
-					if (this.checked && (selection[$this.id].indexOf(this.value) == -1)) {
+					if (this.checked && (selection[$this.id].indexOf(this.value) === -1)) {
 						selection[$this.id].push(this.value);
 					}
 					if (!this.checked && (selection[$this.id].indexOf(this.value) > -1)) {
@@ -270,7 +270,7 @@ $('document').ready(function()
 			// Selection buttons
 			var check_select_buttons = function(check, type)
 			{
-				if (type == 'all') {
+				if (type === 'all') {
 					// Re-initialize selection
 					excluded_selection[$this.id] = [];
 					select_all[$this.id]         = check;

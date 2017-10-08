@@ -31,5 +31,4 @@ abstract class Scalar
 		return Wildcard::applyWildcards($search_value, $is_range_value);
 	}
 
-
 }

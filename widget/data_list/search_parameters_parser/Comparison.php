@@ -91,7 +91,7 @@ abstract class Comparison
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				if (!Date::isASingleDateExpression($expression)) {
+				if (!Date::isSingleDateExpression($expression)) {
 					$pattern = Date::getDatePattern(false);
 					if (strstr($expression, '<')) {
 						if (strstr($expression, '<=')) {
@@ -171,7 +171,7 @@ abstract class Comparison
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class: {
-				$is_date_expression = Date::isASingleDateExpression($expression);
+				$is_date_expression = Date::isSingleDateExpression($expression);
 				if (
 					is_string($expression)
 					&& !$is_date_expression

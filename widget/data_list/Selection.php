@@ -180,29 +180,6 @@ class Selection
 		return $this->data_list_settings;
 	}
 
-	//------------------------------------------------------------------------------ getSearchOptions
-	/**
-	 * Gets search option
-	 *
-	 * @param $options Option|Option[] options to merge with the calculated filter options
-	 * @return Option[]
-	 */
-	public function getSearchOptions(array $options = [])
-	{
-		if (!is_array($options)) {
-			$options = $options ? [$options] : [];
-		}
-		if (!isset($this->options)) {
-			$this->options = [$this->getDataListSettings()->sort];
-			if ($this->select_all && Limit::in($options)) {
-				$this->options[] = Dao::doublePass();
-			}
-		}
-		$options = array_merge($this->options, is_array($options) ? $options : [$options]);
-		$this->removeSearchOptions($options);
-		return $options;
-	}
-
 	//------------------------------------------------------------------------------- getSearchFilter
 	/**
 	 * Gets a search filter build from :
@@ -231,6 +208,29 @@ class Selection
 			: $this->search;
 	}
 
+	//------------------------------------------------------------------------------ getSearchOptions
+	/**
+	 * Gets search option
+	 *
+	 * @param $options Option|Option[] options to merge with the calculated filter options
+	 * @return Option[]
+	 */
+	public function getSearchOptions(array $options = [])
+	{
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
+		if (!isset($this->options)) {
+			$this->options = [$this->getDataListSettings()->sort];
+			if ($this->select_all && Limit::in($options)) {
+				$this->options[] = Dao::doublePass();
+			}
+		}
+		$options = array_merge($this->options, is_array($options) ? $options : [$options]);
+		$this->removeSearchOptions($options);
+		return $options;
+	}
+
 	//-------------------------------------------------------------------------------- readDataSelect
 	/**
 	 * Reads data the same way it is done by the data list controller, without limiting the number
@@ -254,7 +254,7 @@ class Selection
 		$options = $this->getSearchOptions($options);
 
 		if (empty($properties_path)) {
-			$properties = array_keys($this->getDataListSettings()->properties);
+			$properties                     = array_keys($this->getDataListSettings()->properties);
 			list($properties_path, $search) = $this->getDataListController()->removeInvisibleProperties(
 				$this->class_name, $properties, $search
 			);
@@ -321,6 +321,29 @@ class Selection
 		return ['id' => $this->selection ? Func::in($this->selection) : 0];
 	}
 
+	//----------------------------------------------------------------------------------- setFormData
+	/**
+	 * Initialize properties using the following form data :
+	 * - excluded_selection eg '1,2,3,4'
+	 * - select_all         ie '1' | ''
+	 * - selection          eg '1,2,3,4'
+	 *
+	 * @param $form string[]
+	 */
+	public function setFormData(array $form)
+	{
+		$this->excluded_selection = empty($form['excluded_selection'])
+			? []
+			: explode(',', $form['excluded_selection']);
+		$this->select_all = empty($form['select_all'])
+			? false
+			: true;
+		$this->selection = empty($form['selection'])
+			? []
+			: explode(',', $form['selection']);
+		$this->flush();
+	}
+
 	//------------------------------------------------------------------------------------- setObject
 	/**
 	 * If $object is a Parameters, will get the parameters main object
@@ -343,29 +366,6 @@ class Selection
 			$this->selection[]        = $identifier;
 		}
 
-		$this->flush();
-	}
-
-	//----------------------------------------------------------------------------------- setFormData
-	/**
-	 * Initialize properties using the following form data :
-	 * - excluded_selection eg '1,2,3,4'
-	 * - select_all         ie '1' | ''
-	 * - selection          eg '1,2,3,4'
-	 *
-	 * @param $form string[]
-	 */
-	public function setFormData(array $form)
-	{
-		$this->excluded_selection = empty($form['excluded_selection'])
-			? []
-			: explode(',', $form['excluded_selection']);
-		$this->select_all = empty($form['select_all'])
-			? false
-			: true;
-		$this->selection = empty($form['selection'])
-			? []
-			: explode(',', $form['selection']);
 		$this->flush();
 	}
 

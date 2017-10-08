@@ -9,8 +9,7 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
- * Class Test_Data_List_Setting
- * @package ITRocks\Framework\Widget\Data_List
+ * Data list search parameters parser : database settings test
  */
 class Test_Database_Settings extends Testable
 {
@@ -27,17 +26,8 @@ class Test_Database_Settings extends Testable
 	 */
 	public function __construct()
 	{
+		parent::__construct();
 		$this->data_list_controller = new Data_List_Controller();
-	}
-
-	//------------------------------------------------------------------------------------ runTheTest
-	/**
-	 * Read all Data_List_Settings of Settings and User_Settings, and test search expressions
-	 */
-	public function runTheTest()
-	{
-		$this->runClass(Setting::class);
-		$this->runClass(User_Setting::class);
 	}
 
 	//-------------------------------------------------------------------------------------- runClass
@@ -48,9 +38,11 @@ class Test_Database_Settings extends Testable
 	{
 		$errors_count = 0;
 		//get all settings related to data_list
-		$settings = Dao::search(['code' => Dao\Func::like('%.data_list%')], $class_name, [new Dao\Option\Sort('id')]);
+		$settings = Dao::search(
+			['code' => Dao\Func::like('%.data_list%')], $class_name, [new Dao\Option\Sort('id')]
+		);
 		foreach ($settings as $setting) {
-			$id = Dao::getObjectIdentifier($setting);
+			$id                = Dao::getObjectIdentifier($setting);
 			$data_list_setting = $setting->value;
 			if ($data_list_setting instanceof Data_List_Settings && count($data_list_setting->search)) {
 				$search = $data_list_setting->search;
@@ -68,7 +60,7 @@ class Test_Database_Settings extends Testable
 						$errors_count++;
 						$error = $errors[$property_path];
 						if ($this->show === self::ERRORS) {
-							$this->header .= '<li>' . htmlentities($property_path . ' : ' . $expression) . '<br>'
+							$this->header .= '<li>' . htmlentities($property_path . ' : ' . $expression) . BR
 								. '<span style="color:red;">BAD : '
 								. ($error instanceof \Exception ? $error->getMessage() : $error)
 								. '</span></li>';
@@ -79,6 +71,16 @@ class Test_Database_Settings extends Testable
 			}
 		}
 		$this->errors_count = $errors_count;
+	}
+
+	//------------------------------------------------------------------------------------ runTheTest
+	/**
+	 * Read all Data_List_Settings of Settings and User_Settings, and test search expressions
+	 */
+	public function runTheTest()
+	{
+		$this->runClass(Setting::class);
+		$this->runClass(User_Setting::class);
 	}
 
 }

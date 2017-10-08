@@ -99,7 +99,7 @@ abstract class Range
 			// Date_Time type
 			case Date_Time::class:
 				$range = [];
-				if (!Date::isASingleDateExpression($expression)) {
+				if (!Date::isSingleDateExpression($expression)) {
 					// Take care of char of formulas on expr like 'm-3-m', '01/m-2/2015-01/m-2/2016'...
 					// pattern of a date that may contain formula
 					$pattern = Date::getDatePattern(false);
@@ -112,7 +112,7 @@ abstract class Range
 						$max = trim($matches[1]);
 						$min = trim(substr($expression, 0, -(strlen($matches[0]))));
 						// We check that left part is a date expression
-						if (Date::isASingleDateExpression($min)) {
+						if (Date::isSingleDateExpression($min)) {
 							$range = [$min, $max];
 						}
 						else {
@@ -141,20 +141,6 @@ abstract class Range
 		return $range;
 	}
 
-	//--------------------------------------------------------------------------------- supportsRange
-	/**
-	 * Checks if a property has right to have range in search string
-	 *
-	 * @param $property Reflection_Property
-	 * @return boolean true if range supported and authorized
-	 */
-	public static function supportsRange(Reflection_Property $property)
-	{
-		$type_string = $property->getType()->asString();
-		return ($property->getAnnotation('search_range')->value !== false)
-		&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING]);
-	}
-
 	//--------------------------------------------------------------------------------------- isRange
 	/**
 	 * Check if expression is a range expression
@@ -169,7 +155,7 @@ abstract class Range
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class: {
-				$is_date_expression = Date::isASingleDateExpression($expression);
+				$is_date_expression = Date::isSingleDateExpression($expression);
 				if (
 					is_string($expression)
 					// take care of formula that may contains char '-'
@@ -188,6 +174,20 @@ abstract class Range
 			}
 		}
 		return false;
+	}
+
+	//--------------------------------------------------------------------------------- supportsRange
+	/**
+	 * Checks if a property has right to have range in search string
+	 *
+	 * @param $property Reflection_Property
+	 * @return boolean true if range supported and authorized
+	 */
+	public static function supportsRange(Reflection_Property $property)
+	{
+		$type_string = $property->getType()->asString();
+		return ($property->getAnnotation('search_range')->value !== false)
+		&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING]);
 	}
 
 }

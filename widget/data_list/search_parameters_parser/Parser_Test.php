@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
-use ITRocks\Framework\Locale;
-use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
-use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Tests\Objects\Document;
+use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 /**
  * Search parameters parser unit tests
@@ -196,6 +196,27 @@ class Parser_Test extends Test
 		$this->assertEquals($assume, $check);
 	}
 
+	//-------------------------------------------------------------------------- testParseDateAndTime
+	/**
+	 * Test date parser for a full date DD/MM/YYYY with FUll time HH:II:SS
+	 */
+	public function testParseDateAndTime()
+	{
+		$this->parser->search = [
+			'date' => '05/03/2015 20:45:57,5/3/2015 8:5:6,05/3/2015 0:0:0,5/03/2015 23:59:59'
+		];
+		$check  = $this->parser->parse();
+		$assume = [
+			'date' => Func::orOp([
+				'2015-03-05 20:45:57',
+				'2015-03-05 08:05:06',
+				'2015-03-05 00:00:00',
+				'2015-03-05 23:59:59'
+			])
+		];
+		$this->assertEquals($assume, $check);
+	}
+
 	//-------------------------------------------------------------- testParseDateCompareWithFormulas
 	/**
 	 * Test date parser for a date comparison with many formulas
@@ -210,27 +231,6 @@ class Parser_Test extends Test
 			'date' => Func::orOp([
 				new Func\Comparison('<', '2015-05-14 00:00:00'),
 				new Func\Comparison('>', '2017-07-16 23:59:59'),
-			])
-		];
-		$this->assertEquals($assume, $check);
-	}
-
-	//-------------------------------------------------------------------------- testParseDateAndTime
-	/**
-	 * Test date parser for a full date DD/MM/YYYY with FUll time HH:II:SS
-	 */
-	public function testParseDateAndTime()
-	{
-		$this->parser->search = [
-			'date'	=> '05/03/2015 20:45:57,5/3/2015 8:5:6,05/3/2015 0:0:0,5/03/2015 23:59:59'
-		];
-		$check  = $this->parser->parse();
-		$assume = [
-			'date' => Func::orOp([
-				'2015-03-05 20:45:57',
-				'2015-03-05 08:05:06',
-				'2015-03-05 00:00:00',
-				'2015-03-05 23:59:59'
 			])
 		];
 		$this->assertEquals($assume, $check);
@@ -380,11 +380,11 @@ class Parser_Test extends Test
 		$check                = $this->parser->parse();
 		$assume               = [
 			'date' => Func::orOp([
-				/*Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__'),
-				Func::like('____-__-__ __:__:__')*/
+				//Func::like('____-__-__ __:__:__'),
+				//Func::like('____-__-__ __:__:__'),
+				//Func::like('____-__-__ __:__:__'),
+				//Func::like('____-__-__ __:__:__'),
+				//Func::like('____-__-__ __:__:__'),
 				Func::notNull(),
 				Func::notNull(),
 				Func::notNull(),
@@ -648,7 +648,7 @@ class Parser_Test extends Test
 	{
 		$this->parser->search = ['number' => 'www&xxx,yyy&zzz,aaa'];
 		$check                = $this->parser->parse();
-		$assume              = [
+		$assume               = [
 			'number' => Func::orOp([
 				Func::andOp(['www', 'xxx']),
 				Func::andOp(['yyy', 'zzz']),

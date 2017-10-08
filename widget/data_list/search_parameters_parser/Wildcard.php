@@ -20,13 +20,11 @@ abstract class Wildcard
 	public static function applyWildcards($search_value, $is_range_value = false)
 	{
 		if (is_string($search_value)) {
-			//$search = str_replace(['*', '?'], ['%', '_'], $search_value);
+			// $search = str_replace(['*', '?'], ['%', '_'], $search_value);
 			$search = preg_replace(['/[*%]/', '/[?_]/'], ['%', '_'], $search_value, -1, $count);
 			if ($count && !$is_range_value) {
 				$search = Func::like($search);
-			} /*else {
-				$search = Func::equal($search);
-			}*/
+			}
 			return $search;
 		}
 		return $search_value;

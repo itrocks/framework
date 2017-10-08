@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
@@ -58,67 +59,31 @@ use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
  * 05/3/201*
  * 05/3/20*
  * 05/3/*
- *
  */
 abstract class Date
 {
 
 	//------------------------------------------------------------------------------------------ DATE
-	const DATE                 = 'date';
+	const DATE = 'date';
 
 	//------------------------------------------------------------------------------ DATE_HOUR_MINUTE
-	const DATE_HOUR_MINUTE     = 'date_hour_minute';
+	const DATE_HOUR_MINUTE = 'date_hour_minute';
 
 	//-------------------------------------------------------------------------- DATE_HOUR_MINUTE_ISO
 	const DATE_HOUR_MINUTE_ISO = 'date_hour_minute_iso';
 
 	//-------------------------------------------------------------------------------- DATE_HOUR_ONLY
-	const DATE_HOUR_ONLY       = 'date_hour_only';
-
-	//-------------------------------------------------------------------------------------- DATE_ISO
-	const DATE_ISO             = 'date_iso';
-
-	//------------------------------------------------------------------------------------- DATE_TIME
-	const DATE_TIME            = 'date_time';
-
-	//--------------------------------------------------------------------------------- DATE_TIME_ISO
-	const DATE_TIME_ISO        = 'date_time_iso';
-
-	//------------------------------------------------------------------------------------- DAY_MONTH
-	const DAY_MONTH            = 'day_month';
-
-	//-------------------------------------------------------------------------------------- DAY_ONLY
-	const DAY_ONLY             = 'day_only';
-
-	//------------------------------------------------------------------------------------- HOUR_ONLY
-	const HOUR_ONLY            = 'hour_only';
+	const DATE_HOUR_ONLY = 'date_hour_only';
 
 	//---------------------------------------------------------------------------- DATE_HOUR_ONLY_ISO
-	const DATE_HOUR_ONLY_ISO   = 'date_hour_only_iso';
+	const DATE_HOUR_ONLY_ISO = 'date_hour_only_iso';
 
-	//----------------------------------------------------------------------------------- HOUR_MINUTE
-	const HOUR_MINUTE          = 'hour_minute';
-
-	//---------------------------------------------------------------------------- HOUR_MINUTE_SECOND
-	const HOUR_MINUTE_SECOND   = 'hour_minute_second';
-
-	//------------------------------------------------------------------------------------ MONTH_ONLY
-	const MONTH_ONLY           = 'month_only';
-
-	//------------------------------------------------------------------------------------ MONTH_YEAR
-	const MONTH_YEAR           = 'month_year';
-
-	//------------------------------------------------------------------------------------ YEAR_MONTH
-	const YEAR_MONTH           = 'year_month';
-
-	//-------------------------------------------------------------------------------- YEAR_MONTH_ISO
-	const YEAR_MONTH_ISO       = 'year_month_iso';
-
-	//------------------------------------------------------------------------------------- YEAR_ONLY
-	const YEAR_ONLY            = 'year_only';
+	//-------------------------------------------------------------------------------------- DATE_ISO
+	const DATE_ISO = 'date_iso';
 
 	//------------------------------------------------------------------------------------ DATE_PARTS
 	const DATE_PARTS = [
+		// The order of these values make sense
 		Date_Time::DAY,
 		Date_Time::MONTH,
 		Date_Time::YEAR,
@@ -127,11 +92,33 @@ abstract class Date
 		Date_Time::SECOND
 	];
 
+	//------------------------------------------------------------------------------------- DATE_TIME
+	const DATE_TIME = 'date_time';
+
+	//--------------------------------------------------------------------------------- DATE_TIME_ISO
+	const DATE_TIME_ISO = 'date_time_iso';
+
+	//------------------------------------------------------------------------------------- DAY_MONTH
+	const DAY_MONTH = 'day_month';
+
+	//-------------------------------------------------------------------------------------- DAY_ONLY
+	const DAY_ONLY = 'day_only';
+
+	//----------------------------------------------------------------------------------- HOUR_MINUTE
+	const HOUR_MINUTE = 'hour_minute';
+
+	//---------------------------------------------------------------------------- HOUR_MINUTE_SECOND
+	const HOUR_MINUTE_SECOND = 'hour_minute_second';
+
+	//------------------------------------------------------------------------------------- HOUR_ONLY
+	const HOUR_ONLY = 'hour_only';
+
+	//--------------------------------------------------------------------------------- KIND_OF_DATES
 	/**
 	 * All kind of date expression we can have.
-	 * BE CAREFUL: ORDER OF LINES BELOW IS IMPORTANT. DO NOT CHANGE!
 	 */
 	const KIND_OF_DATES = [
+		// The order of these values make sense : please do not alter it
 		self::DATE_TIME,
 		self::DATE_HOUR_MINUTE,
 		self::DATE_HOUR_ONLY,
@@ -142,7 +129,7 @@ abstract class Date
 		self::YEAR_ONLY,
 		self::DAY_ONLY,
 		self::MONTH_ONLY, // can only be a formula like "m-1"
-		self::HOUR_ONLY, // can only be a formula like "h-1", implicit current day
+		self::HOUR_ONLY,  // can only be a formula like "h-1", implicit current day
 		self::HOUR_MINUTE,
 		self::HOUR_MINUTE_SECOND,
 		self::DATE_TIME_ISO,
@@ -152,55 +139,70 @@ abstract class Date
 		self::YEAR_MONTH_ISO,
 	];
 
-	//------------------------------------------------------------------------------ $currentDateTime
+	//------------------------------------------------------------------------------------ MONTH_ONLY
+	const MONTH_ONLY = 'month_only';
+
+	//------------------------------------------------------------------------------------ MONTH_YEAR
+	const MONTH_YEAR = 'month_year';
+
+	//------------------------------------------------------------------------------------ YEAR_MONTH
+	const YEAR_MONTH = 'year_month';
+
+	//-------------------------------------------------------------------------------- YEAR_MONTH_ISO
+	const YEAR_MONTH_ISO = 'year_month_iso';
+
+	//------------------------------------------------------------------------------------- YEAR_ONLY
+	const YEAR_ONLY = 'year_only';
+
+	//---------------------------------------------------------------------------- $current_date_time
 	/**
 	 * @var Date_Time
 	 */
-	protected static $currentDateTime;
+	protected static $current_date_time;
 
-	//----------------------------------------------------------------------------------- $currentDay
+	//---------------------------------------------------------------------------------- $current_day
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentDay;
+	protected static $current_day;
 
-	//---------------------------------------------------------------------------------- $currentHour
+	//--------------------------------------------------------------------------------- $current_hour
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentHour;
+	protected static $current_hour;
 
-	//------------------------------------------------------------------------------- $currentMinutes
+	//------------------------------------------------------------------------------- $current_minute
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentMinutes;
+	protected static $current_minute;
 
-	//--------------------------------------------------------------------------------- $currentMonth
+	//-------------------------------------------------------------------------------- $current_month
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentMonth;
+	protected static $current_month;
 
-	//------------------------------------------------------------------------------- $currentSeconds
+	//------------------------------------------------------------------------------- $current_second
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentSeconds;
+	protected static $current_second;
 
-	//---------------------------------------------------------------------------------- $currentYear
+	//--------------------------------------------------------------------------------- $current_year
 	/**
 	 * @var string|integer
 	 */
-	protected static $currentYear;
+	protected static $current_year;
 
 	//---------------------------------------------------------------------------- applyDateFormatted
 	/**
-	 * transform expression of a date to suitable Func
+	 * Transform expression of a date to suitable Func
 	 *
 	 * @param $expression string
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
+	 * @return Dao_Function|string
 	 * @throws Data_List_Exception
 	 */
 	protected static function applyDateFormatted($expression, $range_side)
@@ -218,7 +220,7 @@ abstract class Date
 
 		$date_parts = self::getParts($expression, $kind_of_date);
 		/**
-		 * created by extract() as references on $date_parts values
+		 * created by extract() as references on $date_parts values :
 		 * @var $day    string
 		 * @var $month  string
 		 * @var $year   string
@@ -286,7 +288,7 @@ abstract class Date
 					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, (int)$month + 1, 1, $year));
 					break;
 				case self::DAY_MONTH:
-					$year = self::$currentYear;
+					$year = self::$current_year;
 					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , $month, $day, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, $month, $day, $year));
 					break;
@@ -295,39 +297,40 @@ abstract class Date
 					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, $year));
 					break;
 				case self::DAY_ONLY:
-					$year  = self::$currentYear;
-					$month = self::$currentMonth;
+					$year  = self::$current_year;
+					$month = self::$current_month;
 					$date_begin = date('Y-m-d H:i:s', mktime(0 , 0 , 0 , $month, $day, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime(23, 59, 59, $month, $day, $year));
 					break;
 				case self::MONTH_ONLY: // can only be a formula like "m-1"
-					$year = self::$currentYear;
+					$year = self::$current_year;
 					$date_begin = date('Y-m-d H:i:s', mktime(0, 0, 0 , $month, 1, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime(0, 0, -1, (int)$month + 1, 1, $year));
 					break;
 				case self::HOUR_ONLY: // can only be a formula like "h-1", implicit current day
-					$year  = self::$currentYear;
-					$month = self::$currentMonth;
-					$day   = self::$currentDay;
+					$year  = self::$current_year;
+					$month = self::$current_month;
+					$day   = self::$current_day;
 					$date_begin = date('Y-m-d H:i:s', mktime($hour, 0 , 0 , $month, $day, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime($hour, 59, 59, $month, $day, $year));
 					break;
 				case self::HOUR_MINUTE:
-					$year  = self::$currentYear;
-					$month = self::$currentMonth;
-					$day   = self::$currentDay;
+					$year  = self::$current_year;
+					$month = self::$current_month;
+					$day   = self::$current_day;
 					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, 0 , $month, $day, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, 59, $month, $day, $year));
 					break;
 				case self::HOUR_MINUTE_SECOND:
-					$year  = self::$currentYear;
-					$month = self::$currentMonth;
-					$day   = self::$currentDay;
+					$year  = self::$current_year;
+					$month = self::$current_month;
+					$day   = self::$current_day;
 					$date_begin = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
 					$date_end   = date('Y-m-d H:i:s', mktime($hour, $minute, $second, $month, $day, $year));
 					break;
+				default:
+					$date_begin = $date_end = null;
 			}
-			/** @noinspection PhpUndefinedVariableInspection */
 			$date = self::buildDateOrPeriod($date_begin, $date_end, $range_side);
 		}
 		return $date;
@@ -335,8 +338,8 @@ abstract class Date
 
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
-	 * @param $expression string|Option
-	 * @param $range_side      integer @values Range::MAX, Range::MIN, Range::NONE
+	 * @param $expression Option|string
+	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
 	 * @throws Data_List_Exception
 	 */
@@ -360,8 +363,6 @@ abstract class Date
 	private static function applyDateSingleWildcard($expression)
 	{
 		if (is_string($expression) && preg_match('/^ \\s* [*%?_]+ \\s* $/x', $expression)) {
-			//return Func::like("____-__-__ __:__:__");
-			// Optimization by replacing LIKE by IS NOT NULL
 			return Func::notNull();
 		}
 		return false;
@@ -384,9 +385,10 @@ abstract class Date
 	//--------------------------------------------------------------------------------- applyDateWord
 	/**
 	 * If expression is a date word, convert to corresponding date
+	 *
 	 * @param $expression string
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
+	 * @return Func\Range|string|boolean false
 	 */
 	private static function applyDateWord($expression, $range_side)
 	{
@@ -395,39 +397,41 @@ abstract class Date
 		if (in_array($word, self::getDateWordsToCompare(Date_Time::YEAR))) {
 			// we convert a current year word in numeric current year period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, self::$currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, 1, 1, self::$current_year)
 			);
 			$date_end = date(
-				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, self::$currentYear)
+				'Y-m-d H:i:s', mktime(23, 59, 59, 12, 31, self::$current_year)
 			);
 		}
 		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::MONTH))) {
 			//we convert a current year word in numeric current month / current year period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, 1, self::$currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, 0, self::$current_month, 1, self::$current_year)
 			);
 			$date_end = date(
-				'Y-m-d H:i:s', mktime(0, 0, -1, self::$currentMonth + 1, 1, self::$currentYear)
+				'Y-m-d H:i:s', mktime(0, 0, -1, self::$current_month + 1, 1, self::$current_year)
 			);
 		}
 		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::DAY))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, self::$currentDay, self::$currentYear)
+				'Y-m-d H:i:s',
+				mktime(0, 0, 0, self::$current_month, self::$current_day, self::$current_year)
 			);
 			$date_end = date(
 				'Y-m-d H:i:s',
-				mktime(23, 59, 59, self::$currentMonth, self::$currentDay, self::$currentYear)
+				mktime(23, 59, 59, self::$current_month, self::$current_day, self::$current_year)
 			);
 		}
 		elseif (in_array($word, self::getDateWordsToCompare('yesterday'))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
-				'Y-m-d H:i:s', mktime(0, 0, 0, self::$currentMonth, (int)self::$currentDay-1, self::$currentYear)
+				'Y-m-d H:i:s',
+				mktime(0, 0, 0, self::$current_month, (int)self::$current_day-1, self::$current_year)
 			);
 			$date_end = date(
 				'Y-m-d H:i:s',
-				mktime(23, 59, 59, self::$currentMonth, (int)self::$currentDay-1, self::$currentYear)
+				mktime(23, 59, 59, self::$current_month, (int)self::$current_day-1, self::$current_year)
 			);
 		}
 		if (isset($date_begin) && isset($date_end)) {
@@ -463,15 +467,16 @@ abstract class Date
 	//------------------------------------------------------------------------- checkDateWildcardExpr
 	/**
 	 * Check an expression (part of a datetime) contains wildcards and correct it, if necessary
+	 *
 	 * @param &$expression string
-	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                            Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
 	 */
 	public static function checkDateWildcardExpr(&$expression, $date_part)
 	{
 		$expression = str_replace(['*', '?'], ['%', '_'], $expression);
-		$nchar = ($date_part == Date_Time::YEAR ? 4 : 2);
+		$nchar      = ($date_part == Date_Time::YEAR ? 4 : 2);
 		if ($c = preg_match_all("/^[0-9_%]{1,$nchar}$/", $expression)) {
 			self::correctDateWildcardExpr($expression, $date_part);
 			return true;
@@ -488,16 +493,59 @@ abstract class Date
 	 */
 	private static function checkNumericExpr(&$expression)
 	{
-		return is_numeric($expression) && (string)((int)$expression) == $expression;
+		return is_numeric($expression) && ((string)((int)$expression) == $expression);
+	}
+
+	//-------------------------------------------------------------------------------- computeFormula
+	/**
+	 * Compile a formula and compute value for a part of date
+	 *
+	 * @param &$expression string formula
+	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @return boolean true if formula found
+	 */
+	private static function computeFormula(&$expression, $date_part)
+	{
+		$pp = '[' . self::getDateLetters($date_part) . ']';
+		if (preg_match(
+			"/^ \\s* $pp \\s* (?:(?<sign>[-+]) \\s* (?<operand>\\d+))? \\s* $/x", $expression, $matches
+		)) {
+			/**
+			 * Notice : We take care to keep computed values as computed even if above limits
+			 * (eg for a month > 12 or < 1) because we'll give result to mktime in order
+			 * it may change year and/or day accordingly
+			 * eg current month is 12 and formula is m+1 => mktime(0,0,0,20,13,2016) for 20/01/2017
+			 */
+			$f = [
+				Date_Time::YEAR   => 'Y',
+				Date_Time::MONTH  => 'm',
+				Date_Time::DAY    => 'd',
+				Date_Time::HOUR   => 'h',
+				Date_Time::MINUTE => 'i',
+				Date_Time::SECOND => 's'
+			];
+			$value = (int)(self::$current_date_time->format($f[$date_part]));
+			if (isset($matches['sign']) && isset($matches['operand'])) {
+				$sign       = $matches['sign'];
+				$operand    = (int)($matches['operand']);
+				$expression = (string)($sign == '+' ? $value + $operand : $value - $operand);
+			}
+			else {
+				$expression = $value;
+			}
+			return true;
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------- computePart
 	/**
 	 * Compute a date part expression to get a string suitable to build a Date
 	 *
-	 * @param &$expression string numeric or with widlcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
-	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                            Date_Time::MINUTE, Date_Time::SECOND
+	 * @param &$expression string numeric or with wildcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
+	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
 	 */
 	protected static function computePart(&$expression, $date_part)
@@ -522,56 +570,13 @@ abstract class Date
 		return false;
 	}
 
-	//-------------------------------------------------------------------------------- computeFormula
-	/**
-	 * Compile a formula and compute value for a part of date
-	 *
-	 * @param &$expression string formula
-	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                            Date_Time::MINUTE, Date_Time::SECOND
-	 * @return boolean true if formula found
-	 */
-	private static function computeFormula(&$expression, $date_part)
-	{
-		$pp = '[' . self::getDateLetters($date_part) . ']';
-		if (preg_match(
-			"/^ \\s* $pp \\s* (?:(?<sign>[-+]) \\s* (?<operand>\\d+))? \\s* $/x", $expression, $matches
-		)) {
-			/**
-			 * Notice : We take care to keep computed values as computed even if above limits
-			 * (eg for a month > 12 or < 1) because we'll give result to mktime in order
-			 * it may change year and/or day accordingly
-			 * eg current month is 12 and formula is m+1 => mktime(0,0,0,20,13,2016) for 20/01/2017
-			 */
-			$f = [
-				Date_Time::YEAR   => 'Y',
-				Date_Time::MONTH  => 'm',
-				Date_Time::DAY    => 'd',
-				Date_Time::HOUR   => 'h',
-				Date_Time::MINUTE => 'i',
-				Date_Time::SECOND => 's'
-			];
-			$value = (int)(self::$currentDateTime->format($f[$date_part]));
-			if (isset($matches['sign']) && isset($matches['operand'])) {
-				$sign = $matches['sign'];
-				$operand = (int)($matches['operand']);
-				$expression = (string)($sign == '+' ? $value + $operand : $value - $operand);
-			}
-			else {
-				$expression = $value;
-			}
-			return true;
-		}
-		return false;
-	}
-
 	//----------------------------------------------------------------------- correctDateWildcardExpr
 	/**
 	 * Correct a date expression containing SQL wildcard in order to build a Date string
 	 *
 	 * @param &$expression string
-	 * @param $date_part   string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR,
-	 *                            Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 */
 	private static function correctDateWildcardExpr(&$expression, $date_part)
 	{
@@ -671,14 +676,14 @@ abstract class Date
 		static $letters;
 		if (!isset($letters)) {
 			$letters = explode('|', Loc::tr('d|m|y') . '|' . Loc::tr('h|m|s'));
-			$ipUp = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
+			$ip_up = function($letter) { return isset($letter) ? ($letter . strtoupper($letter)) : ''; };
 			$letters = [
-				Date_Time::DAY     => 'dD' . $ipUp($letters[0] != 'd' ? $letters[0] : null),
-				Date_Time::MONTH   => 'mM' . $ipUp($letters[1] != 'm' ? $letters[1] : null),
-				Date_Time::YEAR    => 'yY' . $ipUp($letters[2] != 'y' ? $letters[2] : null),
-				Date_Time::HOUR    => 'hH' . $ipUp($letters[3] != 'h' ? $letters[3] : null),
-				Date_Time::MINUTE  => 'mM' . $ipUp($letters[4] != 'm' ? $letters[4] : null),
-				Date_Time::SECOND  => 'sS' . $ipUp($letters[5] != 's' ? $letters[5] : null)
+				Date_Time::DAY     => 'dD' . $ip_up(($letters[0] != 'd') ? $letters[0] : null),
+				Date_Time::MONTH   => 'mM' . $ip_up(($letters[1] != 'm') ? $letters[1] : null),
+				Date_Time::YEAR    => 'yY' . $ip_up(($letters[2] != 'y') ? $letters[2] : null),
+				Date_Time::HOUR    => 'hH' . $ip_up(($letters[3] != 'h') ? $letters[3] : null),
+				Date_Time::MINUTE  => 'mM' . $ip_up(($letters[4] != 'm') ? $letters[4] : null),
+				Date_Time::SECOND  => 'sS' . $ip_up(($letters[5] != 's') ? $letters[5] : null)
 			];
 		}
 		if (!isset($date_part)) {
@@ -717,38 +722,41 @@ abstract class Date
 			$day        = '(?:[' . $d_letters . '](?:[-+]\d+)?) | (?:[0-3*?%_]?[0-9*?%_])';
 			$month      = '(?:[' . $m_letters . '](?:[-+]\d+)?) | (?:[0-1*?%_]?[0-9*?%_])';
 			$month_only = '(?:[' . $m_letters . '](?:[-+]\d+)?)';
-			//            formula | 4 digits | 3 to 4 digit with wildcard if preceded by '/'
-			$year       = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=\\/)[0-9*?%_]{3,4} '
+
+			// formula | 4 digits | 3 to 4 digit with wildcard if preceded by '/'
+			$year = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=\\/)[0-9*?%_]{3,4} '
 				// | 3 to 4 digit with wildcard if followed by '/'
 				. '| [0-9*?%_]{3,4}(?=\\/) '
 				// | 1 to 4 wildcards | 1 to 4 '0' only if preceded by '/'
 				. '| [*?%_]{1,4} | (?<=\\/)0{1,4}';
-			//            formula | 4 digits | 3 to 4 digit with wildcard if preceded by '-'
+
+			// formula | 4 digits | 3 to 4 digit with wildcard if preceded by '-'
 			$year_iso   = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=-)[0-9*?%_]{3,4} '
 				// | 3 to 4 digit with wildcard if followed by '-'
 				. '| [0-9*?%_]{3,4}(?=-) '
 				// | 1 to 4 wildcards | 1 to 4 '0' only if followed by '-'
 				. '| [*?%_]{1,4} | (?=-)0{1,4}';
-			//            formula | 3 to 4 digit with wildcard
-			$year_only  = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9*?%_]{3,4}';
-			$hour       = '(?:[' . $h_letters . '](?:[-+]\d+)?) | (?:[0-2*?%_]?[0-9*?%_])';
-			$hour_only  = '(?:[' . $h_letters . '](?:[-+]\d+)?)';
-			$minute     = '(?:[' . $i_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
-			$second     = '(?:[' . $s_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
+
+			// formula | 3 to 4 digit with wildcard
+			$year_only = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9*?%_]{3,4}';
+			$hour      = '(?:[' . $h_letters . '](?:[-+]\d+)?) | (?:[0-2*?%_]?[0-9*?%_])';
+			$hour_only = '(?:[' . $h_letters . '](?:[-+]\d+)?)';
+			$minute    = '(?:[' . $i_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
+			$second    = '(?:[' . $s_letters . '](?:[-+]\d+)?) | (?:[0-5*?%_]?[0-9*?%_])';
 
 			//build the named patterns that helps to split an expression in many parts
 			$named = [];
-			$named['day']          = "(?P<" . Date_Time::DAY    . "> $day )";
-			$named['month']        = "(?P<" . Date_Time::MONTH  . "> $month )";
-			$named['month_only']   = "(?P<" . Date_Time::MONTH  . "> $month_only )";
-			$named['year']         = "(?P<" . Date_Time::YEAR   . "> $year )";
-			$named['year_iso']     = "(?P<" . Date_Time::YEAR   . "> $year_iso )";
-			$named['year_only']    = "(?P<" . Date_Time::YEAR   . "> $year_only )";
-			$named['hour']         = "(?P<" . Date_Time::HOUR   . "> $hour )";
-			$named['hour_only']    = "(?P<" . Date_Time::HOUR   . "> $hour_only )";
-			$named['minute']       = "(?P<" . Date_Time::MINUTE . "> $minute )";
-			$named['second']       = "(?P<" . Date_Time::SECOND . "> $second )";
-			$named_patterns = self::getDatePatternsArray($named);
+			$named['day']        = "(?P<" . Date_Time::DAY    . "> $day )";
+			$named['month']      = "(?P<" . Date_Time::MONTH  . "> $month )";
+			$named['month_only'] = "(?P<" . Date_Time::MONTH  . "> $month_only )";
+			$named['year']       = "(?P<" . Date_Time::YEAR   . "> $year )";
+			$named['year_iso']   = "(?P<" . Date_Time::YEAR   . "> $year_iso )";
+			$named['year_only']  = "(?P<" . Date_Time::YEAR   . "> $year_only )";
+			$named['hour']       = "(?P<" . Date_Time::HOUR   . "> $hour )";
+			$named['hour_only']  = "(?P<" . Date_Time::HOUR   . "> $hour_only )";
+			$named['minute']     = "(?P<" . Date_Time::MINUTE . "> $minute )";
+			$named['second']     = "(?P<" . Date_Time::SECOND . "> $second )";
+			$named_patterns      = self::getDatePatternsArray($named);
 
 			// build unnamed patterns for a big pattern (we can not have same name twice in a pattern)
 			$unnamed = [];
@@ -762,7 +770,7 @@ abstract class Date
 			$unnamed['hour_only']  = "(?: $hour_only )";
 			$unnamed['minute']     = "(?: $minute )";
 			$unnamed['second']     = "(?: $second )";
-			$unnamed_patterns = self::getDatePatternsArray($unnamed);
+			$unnamed_patterns      = self::getDatePatternsArray($unnamed);
 
 			//build the big pattern that check if expression is a date and can get kind of date
 			$big_named_pattern_parts   = [];
@@ -771,12 +779,11 @@ abstract class Date
 				$big_named_pattern_parts[$kind]   = "(?P<" . $kind . ">" . $unnamed_patterns[$kind] . ")";
 				$big_unnamed_pattern_parts[$kind] = "(?:" . $unnamed_patterns[$kind] . ")";
 			}
-			/** You wanna debug? copy this regexp : /^ \s* $big_named_pattern \s* $/gmx
-			 * into https://regex101.com/ and try your dates
-			 */
-			$big_named_pattern    = "(?: " . LF . TAB . SP . SP
+			// You wanna debug? copy this regexp : /^ \s* $big_named_pattern \s* $/gmx
+			// into https://regex101.com/ and try your dates
+			$big_named_pattern = "(?: " . LF . TAB . SP . SP
 				. implode(LF . TAB . '| ', $big_named_pattern_parts) . LF . " )";
-			$big_unnamed_pattern  = "(?: " . LF . TAB . SP . SP
+			$big_unnamed_pattern = "(?: " . LF . TAB . SP . SP
 				. implode(LF . TAB . '| ', $big_unnamed_pattern_parts) . LF . " )";
 		}
 
@@ -813,33 +820,37 @@ abstract class Date
 		 */
 		extract($sub_patterns);
 		$patterns = [];
+
 		$patterns[self::DATE_TIME_ISO]      = "(?:$year_iso-$month-$day \\s $hour\\:$minute\\:$second)";
 		$patterns[self::DATE_HOUR_MINUTE_ISO] = "(?:$year_iso-$month-$day \\s $hour\\:$minute)";
 		$patterns[self::DATE_HOUR_ONLY_ISO]   = "(?:$year_iso-$month-$day \\s $hour)";
 		$patterns[self::DATE_ISO]             = "(?:$year_iso-$month-$day)";
 		$patterns[self::YEAR_MONTH_ISO]       = "(?:$year-$month)";
+		// d/m/Y
 		if (Loc::date()->format == 'd/m/Y') {
 			$patterns[self::DATE_TIME]        = "(?:$day\\/$month\\/$year \\s $hour\\:$minute\\:$second)";
-			$patterns[self::DATE_HOUR_MINUTE]   = "(?:$day\\/$month\\/$year \\s $hour\\:$minute)";
-			$patterns[self::DATE_HOUR_ONLY]     = "(?:$day\\/$month\\/$year \\s $hour)";
-			$patterns[self::DATE]               = "(?:$day\\/$month\\/$year)";
-			$patterns[self::DAY_MONTH]          = "(?:$day\\/$month)";
+			$patterns[self::DATE_HOUR_MINUTE] = "(?:$day\\/$month\\/$year \\s $hour\\:$minute)";
+			$patterns[self::DATE_HOUR_ONLY]   = "(?:$day\\/$month\\/$year \\s $hour)";
+			$patterns[self::DATE]             = "(?:$day\\/$month\\/$year)";
+			$patterns[self::DAY_MONTH]        = "(?:$day\\/$month)";
 		}
-		else { // m/d/Y
+		// m/d/Y
+		else {
 			$patterns[self::DATE_TIME]        = "(?:$month\\/$day\\/$year \\s $hour\\:$minute\\:$second)";
-			$patterns[self::DATE_HOUR_MINUTE]   = "(?:$month\\/$day\\/$year \\s $hour\\:$minute)";
-			$patterns[self::DATE_HOUR_ONLY]     = "(?:$month\\/$day\\/$year \\s $hour)";
-			$patterns[self::DATE]               = "(?:$month\\/$day\\/$year)";
-			$patterns[self::DAY_MONTH]          = "(?:$month\\/$day)";
+			$patterns[self::DATE_HOUR_MINUTE] = "(?:$month\\/$day\\/$year \\s $hour\\:$minute)";
+			$patterns[self::DATE_HOUR_ONLY]   = "(?:$month\\/$day\\/$year \\s $hour)";
+			$patterns[self::DATE]             = "(?:$month\\/$day\\/$year)";
+			$patterns[self::DAY_MONTH]        = "(?:$month\\/$day)";
 		}
-		$patterns[self::MONTH_YEAR]           = "(?:$month\\/$year)";
-		$patterns[self::YEAR_MONTH]           = "(?:$year\\/$month)";
-		$patterns[self::YEAR_ONLY]            = "$year_only";
-		$patterns[self::DAY_ONLY]             = "$day";
-		$patterns[self::MONTH_ONLY]           = "$month_only";
-		$patterns[self::HOUR_ONLY]            = "$hour_only";
-		$patterns[self::HOUR_MINUTE]          = "(?:$hour\\:$minute)";
-		$patterns[self::HOUR_MINUTE_SECOND]   = "(?:$hour\\:$minute\\:$second)";
+		$patterns[self::MONTH_YEAR]         = "(?:$month\\/$year)";
+		$patterns[self::YEAR_MONTH]         = "(?:$year\\/$month)";
+		$patterns[self::YEAR_ONLY]          = "$year_only";
+		$patterns[self::DAY_ONLY]           = "$day";
+		$patterns[self::MONTH_ONLY]         = "$month_only";
+		$patterns[self::HOUR_ONLY]          = "$hour_only";
+		$patterns[self::HOUR_MINUTE]        = "(?:$hour\\:$minute)";
+		$patterns[self::HOUR_MINUTE_SECOND] = "(?:$hour\\:$minute\\:$second)";
+
 		return $patterns;
 	}
 
@@ -848,7 +859,7 @@ abstract class Date
 	 * get the words to compare with a date word in search expression
 	 *
 	 * @param $date_part string Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR, Date_Time::HOUR
-	 * @return array
+	 * @return string[]
 	 */
 	private static function getDateWordsToCompare($date_part)
 	{
@@ -878,7 +889,7 @@ abstract class Date
 	 * Return matches of regexp cutting date expression in multiple parts
 	 *
 	 * @param $expression string
-	 * @return null|string value of self::KIND_OF_DATE
+	 * @return string|null value of self::KIND_OF_DATE
 	 */
 	private static function getKindOfDate($expression)
 	{
@@ -897,7 +908,7 @@ abstract class Date
 	/**
 	 * @param $expression   string
 	 * @param $kind_of_date string value of self::KIND_OF_DATE
-	 * @return array
+	 * @return string[]|null
 	 */
 	private static function getParts($expression, $kind_of_date)
 	{
@@ -923,30 +934,13 @@ abstract class Date
 		if (!isset($date)) {
 			$date = Date_Time::now();
 		}
-		self::$currentDateTime = $date;
-		self::$currentYear     = self::$currentDateTime->format('Y');
-		self::$currentMonth    = self::$currentDateTime->format('m');
-		self::$currentDay      = self::$currentDateTime->format('d');
-		self::$currentHour     = self::$currentDateTime->format('H');
-		self::$currentMinutes  = self::$currentDateTime->format('i');
-		self::$currentSeconds  = self::$currentDateTime->format('s');
-	}
-
-	//----------------------------------------------------------------------- isASingleDateExpression
-	/**
-	 * Check if expression if a single date containing a formula
-	 *
-	 * @param $expression string
-	 * @return boolean
-	 */
-	public static function isASingleDateExpression($expression)
-	{
-		// we check if $expr is a single date containing formula
-		// but it may be a range with 2 dates containing formula, what should return false
-		// so the use of /^ ... $/
-		$kind_of_date = self::getKindOfDate($expression);
-		$is = isset($kind_of_date) ? true	: false;
-		return $is;
+		self::$current_date_time = $date;
+		self::$current_year      = self::$current_date_time->format('Y');
+		self::$current_month     = self::$current_date_time->format('m');
+		self::$current_day       = self::$current_date_time->format('d');
+		self::$current_hour      = self::$current_date_time->format('H');
+		self::$current_minute    = self::$current_date_time->format('i');
+		self::$current_second    = self::$current_date_time->format('s');
 	}
 
 	//---------------------------------------------------------------------------------- isEmptyParts
@@ -962,6 +956,23 @@ abstract class Date
 			}
 		}
 		return true;
+	}
+
+	//------------------------------------------------------------------------ isSingleDateExpression
+	/**
+	 * Check if expression if a single date containing a formula
+	 *
+	 * @param $expression string
+	 * @return boolean
+	 */
+	public static function isSingleDateExpression($expression)
+	{
+		// we check if $expr is a single date containing formula
+		// but it may be a range with 2 dates containing formula, what should return false
+		// so the use of /^ ... $/
+		$kind_of_date = self::getKindOfDate($expression);
+		$is           = isset($kind_of_date) ? true	: false;
+		return $is;
 	}
 
 	//----------------------------------------------------------------------------- onePartHasFormula

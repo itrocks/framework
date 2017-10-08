@@ -161,7 +161,7 @@ class Search_Parameters_Parser
 	{
 		if (is_string($search_value) && (substr(trim($search_value), 0, 1) === '!')) {
 			$search_value = substr(trim($search_value), 1);
-			$search = $this->applyComplexValue($search_value, $property);
+			$search       = $this->applyComplexValue($search_value, $property);
 			if ($search instanceof Func\Negate) {
 				$search->negate();
 			} else {
@@ -268,8 +268,8 @@ class Search_Parameters_Parser
 		try {
 			$search_value = $this->applyOr($search_value, $property);
 		}
-		catch (Exception $e) {
-			$search_value = $e;
+		catch (Exception $exception) {
+			$search_value = $exception;
 		}
 	}
 
