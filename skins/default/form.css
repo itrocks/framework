@@ -77,80 +77,80 @@ fieldset {
   /* block fieldset */ }
   fieldset > div.hidden {
     display: none; }
-  fieldset > div:not(.hidden):not(.tabber) {
+  fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) {
     display: table-row;
     /* standard field */
     /* columns */
     /* multiple field */ }
-    fieldset > div:not(.hidden):not(.tabber) > label, fieldset > div:not(.hidden):not(.tabber) > div {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div {
       display: table-cell;
       white-space: pre-line; }
-      fieldset > div:not(.hidden):not(.tabber) > label > :not(textarea), fieldset > div:not(.hidden):not(.tabber) > div > :not(textarea) {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(textarea), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(textarea) {
         white-space: initial; }
-    fieldset > div:not(.hidden):not(.tabber):not(.multiple):hover {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple):hover {
       background-color: #defdaf; }
-    fieldset > div:not(.hidden):not(.tabber):not(.multiple) > label {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > label {
       font-weight: bold;
       height: 24px;
       vertical-align: middle;
       white-space: nowrap; }
-      fieldset > div:not(.hidden):not(.tabber):not(.multiple) > label:after {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > label:after {
         content: " :";
         margin-right: .5em; }
-    fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div {
       height: 24px;
       vertical-align: middle; }
-      fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > input, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > select, fieldset > div:not(.hidden):not(.tabber):not(.multiple) > div > textarea {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > input, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > select, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > textarea {
         margin: 2px 0; }
-    fieldset > div:not(.hidden):not(.tabber).columns {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns {
       display: block;
       width: 100%; }
-      fieldset > div:not(.hidden):not(.tabber).columns > .column {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns > .column {
         vertical-align: top; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:first-child) {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns > .column:not(:first-child) {
           margin-left: 4px; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:not(:last-child) {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns > .column:not(:last-child) {
           float: left; }
-        fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns > .column:last-child {
           float: right; }
-          fieldset > div:not(.hidden):not(.tabber).columns > .column:last-child fieldset {
+          fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns > .column:last-child fieldset {
             display: inline-block; }
-    fieldset > div:not(.hidden):not(.tabber).multiple {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple {
       border: lightgrey 1px solid;
       caption-side: bottom;
       display: block; }
-      fieldset > div:not(.hidden):not(.tabber).multiple > * {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple > * {
         display: block;
         padding: 3px; }
-      fieldset > div:not(.hidden):not(.tabber).multiple > label {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple > label {
         background-color: #e9ede7;
         height: 14px;
         font-weight: bold;
         white-space: nowrap; }
-      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > thead > tr > th, fieldset > div:not(.hidden):not(.tabber).multiple table.map > thead > tr > th {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > thead > tr > th, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > thead > tr > th {
         padding: 1px 2px;
         white-space: nowrap; }
-      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr:hover, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr:hover {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr:hover, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr:hover {
         background-color: #defdaf; }
-      fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
-        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > textarea {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
           height: 18px;
           margin-top: -2px;
           vertical-align: top;
           width: 100%; }
-        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td > select {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > select {
           height: 22px;
           margin: -2px -6px -2px 0; }
-        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.minus {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td.minus {
           background: url("img/remove_row.png") right 3px no-repeat;
           color: transparent;
           cursor: pointer;
           max-width: 16px;
           min-width: 16px;
           width: 16px; }
-        fieldset > div:not(.hidden):not(.tabber).multiple table.collection > tbody > tr > td.multiple > ul, fieldset > div:not(.hidden):not(.tabber).multiple table.map > tbody > tr > td.multiple > ul {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td.multiple > ul, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td.multiple > ul {
           margin-left: .5em;
           padding-left: 1em; }
   fieldset.block {

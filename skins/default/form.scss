@@ -107,7 +107,7 @@ fieldset {
 		display: none;
 	}
 
-	>div:not(.hidden):not(.tabber) {
+	>div:not(.hidden):not(.tabber):not([class*=before-]) {
 		display: table-row;
 
 		>label, >div {
