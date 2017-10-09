@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Reflection;
 
 use Exception;
 use ITRocks\Framework\Builder;
-use ReflectionProperty;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
@@ -15,6 +14,7 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
+use ReflectionProperty;
 
 /**
  * A rich extension of the PHP ReflectionProperty class
@@ -358,6 +358,21 @@ class Reflection_Property extends ReflectionProperty
 		return $this;
 	}
 
+	//------------------------------------------------------------------------- getOverriddenProperty
+	/**
+	 * Gets the parent property overridden by the current one from the parent class
+	 *
+	 * @return Reflection_Property
+	 */
+	public function getOverriddenProperty()
+	{
+		if (!isset($this->overridden_property)) {
+			$parent                    = $this->getDeclaringClass()->getParentClass();
+			$this->overridden_property = $parent ? ($parent->getProperty($this->name) ?: false) : false;
+		}
+		return $this->overridden_property ?: null;
+	}
+
 	//------------------------------------------------------------------------- getOverrideDocComment
 	/**
 	 * Gets the class @override property doc comment that overrides the original property doc comment
@@ -381,21 +396,6 @@ class Reflection_Property extends ReflectionProperty
 			}
 		}
 		return $comment;
-	}
-
-	//------------------------------------------------------------------------- getOverriddenProperty
-	/**
-	 * Gets the parent property overridden by the current one from the parent class
-	 *
-	 * @return Reflection_Property
-	 */
-	public function getOverriddenProperty()
-	{
-		if (!isset($this->overridden_property)) {
-			$parent                    = $this->getDeclaringClass()->getParentClass();
-			$this->overridden_property = $parent ? ($parent->getProperty($this->name) ?: false) : false;
-		}
-		return $this->overridden_property ?: null;
 	}
 
 	//----------------------------------------------------------------------------- getParentProperty

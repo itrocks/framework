@@ -23,14 +23,6 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public $display = null;
 
-	//-------------------------------------------------------------------------------------- $tooltip
-	/**
-	 *  What will be displayed by the tooltip() function
-	 *
-	 * @var string|null
-	 */
-	public $tooltip = null;
-
 	//---------------------------------------------------------------------------------- $final_value
 	/**
 	 * If set to true, $object contains the final value instead of the object containing
@@ -48,6 +40,14 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	private $object;
 
+	//-------------------------------------------------------------------------------------- $tooltip
+	/**
+	 *  What will be displayed by the tooltip() function
+	 *
+	 * @var string|null
+	 */
+	public $tooltip = null;
+
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * Set this to true if the property is for an user use (ie for display into a template)
@@ -62,7 +62,6 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @example
 	 * $pv = new Reflection_Property_Value('Class_Name', 'property_name', $object);
-	 *
 	 * @param $class_name    string
 	 * @param $property_name string
 	 * @param $object        object|mixed the object containing the value, or the value itself
@@ -137,17 +136,6 @@ class Reflection_Property_Value extends Reflection_Property
 		return $this->display
 			? $this->display
 			: Loc::tr(Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias));
-	}
-
-	//--------------------------------------------------------------------------------------- tooltip
-	/**
-	 * Returns the reflection property tooltip
-	 *
-	 * @return string
-	 */
-	public function tooltip()
-	{
-		return $this->tooltip;
 	}
 
 	//---------------------------------------------------------------------------------------- format
@@ -230,6 +218,17 @@ class Reflection_Property_Value extends Reflection_Property
 					|| !$this->isValueEmpty()
 				))
 			);
+	}
+
+	//--------------------------------------------------------------------------------------- tooltip
+	/**
+	 * Returns the reflection property tooltip
+	 *
+	 * @return string
+	 */
+	public function tooltip()
+	{
+		return $this->tooltip;
 	}
 
 	//----------------------------------------------------------------------------------------- value

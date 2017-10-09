@@ -54,23 +54,11 @@ class Type
 	 */
 	private $absolute;
 
-	//------------------------------------------------------------------------- $strictly_basic_types
-	/**
-	 * These are the basic non-object php types
-	 *
-	 * @var string[]
-	 */
-	private static $strictly_basic_types = [
-		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
-		self::NULL, self::null, self::RESOURCE, self::STRING
-	];
-
 	//---------------------------------------------------------------------------------- $can_be_null
 	/**
 	 * true if the type accepts null values
 	 *
 	 * @example for @var object|null type definition
-	 *
 	 * @var boolean
 	 */
 	private $can_be_null = false;
@@ -90,6 +78,17 @@ class Type
 	 * @var string[]
 	 */
 	private static $sized_types = [self::FLOAT, self::INTEGER, self::STRING];
+
+	//------------------------------------------------------------------------- $strictly_basic_types
+	/**
+	 * These are the basic non-object php types
+	 *
+	 * @var string[]
+	 */
+	private static $strictly_basic_types = [
+		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
+		self::NULL, self::null, self::RESOURCE, self::STRING
+	];
 
 	//----------------------------------------------------------------------------------------- $type
 	/**

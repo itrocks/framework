@@ -32,20 +32,6 @@ class Reflection_Property_View
 		}
 	}
 
-	//-------------------------------------------------------------------------------- formatDateTime
-	/**
-	 * Returns the value with datetime format
-	 *
-	 * Default format is ISO '0000-00-00 00:00:00'
-	 *
-	 * @param $value string|DateTime|Date_Time
-	 * @return mixed
-	 */
-	protected function formatDateTime($value)
-	{
-		return strval($value);
-	}
-
 	//--------------------------------------------------------------------------------- formatBoolean
 	/**
 	 * Return 'yes' or 'no' depending on the value of the boolean
@@ -63,6 +49,20 @@ class Reflection_Property_View
 		return (is_null($value) && $this->property->getAnnotation('null')->value)
 			? null
 			: ($value ? YES : NO);
+	}
+
+	//-------------------------------------------------------------------------------- formatDateTime
+	/**
+	 * Returns the value with datetime format
+	 *
+	 * Default format is ISO '0000-00-00 00:00:00'
+	 *
+	 * @param $value string|DateTime|Date_Time
+	 * @return mixed
+	 */
+	protected function formatDateTime($value)
+	{
+		return strval($value);
 	}
 
 	//--------------------------------------------------------------------------------- formatDefault
@@ -143,19 +143,6 @@ class Reflection_Property_View
 		return $value;
 	}
 
-	//----------------------------------------------------------------------------- getFormattedValue
-	/**
-	 * Format the property value, taken from the input object, depending on it's type
-	 *
-	 * @param $object      object|mixed
-	 * @param $final_value boolean
-	 * @return string
-	 */
-	public function getFormattedValue($object, $final_value = false)
-	{
-		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
-	}
-
 	//----------------------------------------------------------------------------------- formatValue
 	/**
 	 * @param $value mixed
@@ -177,6 +164,19 @@ class Reflection_Property_View
 			}
 			return $this->formatDefault($value);
 		}
+	}
+
+	//----------------------------------------------------------------------------- getFormattedValue
+	/**
+	 * Format the property value, taken from the input object, depending on it's type
+	 *
+	 * @param $object      object|mixed
+	 * @param $final_value boolean
+	 * @return string
+	 */
+	public function getFormattedValue($object, $final_value = false)
+	{
+		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
 	}
 
 }
