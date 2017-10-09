@@ -75,6 +75,7 @@ class Select_Test extends Test
 			$builder->buildQuery()
 		);
 	}
+
 	//----------------------------------------------------------------- testArrayWhereDeepQuery2Short
 	public function testArrayWhereDeepQuery2Short()
 	{
