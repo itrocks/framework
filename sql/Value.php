@@ -27,8 +27,12 @@ abstract class Value
 	) {
 		$type = $property ? $property->getType() : null;
 		// no is_numeric(), as sql numeric search make numeric conversion of string fields
-		// ie WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct
-		if (isStrictNumeric($value) && strval($value)[0] && (!$type || $type->isNumeric())) {
+		// eg WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct
+		if (
+			isStrictNumeric($value)
+			&& strval($value)[0]
+			&& (!$type || $type->isNumeric() || $type->isClass())
+		) {
 			$string_value = strval($value);
 		}
 		elseif (is_bool($value) && (!$type || $type->isBoolean())) {
