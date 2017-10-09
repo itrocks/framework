@@ -66,7 +66,7 @@ class Default_View
 			$closure = function($template_file)
 				use ($parameters, $form, $files, $class_name, $feature_name)
 			{
-					include_once($template_file);
+					include($template_file);
 			};
 			$closure($template_file);
 		}
