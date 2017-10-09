@@ -13,6 +13,7 @@ use ITRocks\Framework\View\Json\Default_View;
  * @var $this            Default_View
  */
 
-$result = Json::toJson(Json::toStdObject($parameters[$class_name]));
+$json = new Json();
+$result = $json->toJson($json->toStdObject($parameters[$class_name]));
 
 $this->json = $result;

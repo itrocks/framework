@@ -43,13 +43,13 @@ class Json
 
 	//---------------------------------------------------------------------- objectToStdClassInternal
 	/**
-	 * @param $std_object      stdClass object resulting
+	 * @param $standard_object stdClass object resulting
 	 * @param $business_object object business object to transform
 	 * @throws Exception
 	 */
-	protected static function objectToStdClassInternal(stdClass &$std_object, $business_object)
+	protected function objectToStdClassInternal(stdClass $standard_object, $business_object)
 	{
-		$class = new Reflection_Class($business_object);
+		$class      = new Reflection_Class($business_object);
 		$properties = $class->getProperties([T_USE, T_EXTENDS, Reflection_Class::T_SORT]);
 		foreach ($properties as $property) if (
 			$property->isVisible()
@@ -71,13 +71,13 @@ class Json
 				}
 				if (isset($values)) {
 					foreach($values as $value) {
-						$array[] = static::propertyToStdInternal($property, $value, $type);
+						$array[] = $this->propertyToStdInternal($property, $value, $type);
 					}
 				}
-				$std_object->$name = $array;
+				$standard_object->$name = $array;
 			}
 			else {
-				$std_object->$name = static::propertyToStdInternal($property, $property_value, $type);
+				$standard_object->$name = $this->propertyToStdInternal($property, $property_value, $type);
 			}
 		}
 	}
@@ -86,13 +86,13 @@ class Json
 	/**
 	 * Returns value transformed in a suitable format for json
 	 *
-	 * @param $property   Reflection_Property
-	 * @param $value      mixed
-	 * @param $type       Type
+	 * @param $property Reflection_Property
+	 * @param $value    mixed
+	 * @param $type     Type
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected static function propertyToStdInternal($property, $value, $type = null)
+	protected function propertyToStdInternal($property, $value, $type = null)
 	{
 		if (!isset($type)) {
 			$type = $property->getType();
@@ -123,19 +123,19 @@ class Json
 					return null;
 				}
 				else {
-					$sub_object      = new stdClass();
+					$sub_object = new stdClass();
 
 					// case we should expand
 					if (
 						$property->getAnnotation('component')->value
-						|| Link_Annotation::of($property)->value == Link_Annotation::COLLECTION
+						|| Link_Annotation::of($property)->isCollection()
 					) {
-						static::objectToStdClassInternal($sub_object, $value);
+						$this->objectToStdClassInternal($sub_object, $value);
 					}
 					// case we do not expand
 					else {
-						$sub_object->id  = Dao::getObjectIdentifier($value);
-						$sub_object->str = (string)$value;
+						$sub_object->id    = Dao::getObjectIdentifier($value);
+						$sub_object->string_value = (string)$value;
 					}
 
 					return $sub_object;
@@ -149,13 +149,13 @@ class Json
 
 	//---------------------------------------------------------------------------------------- toJson
 	/**
-	 * @param $std_object stdClass|array
+	 * @param $standard_object stdClass|array
 	 * @param $options    integer options for json_encode
 	 * @return string json encoded representation of object
 	 */
-	public static function toJson($std_object, $options = 0)
+	public function toJson($standard_object, $options = 0)
 	{
-		return json_encode($std_object, $options);
+		return json_encode($standard_object, $options);
 	}
 
 	//----------------------------------------------------------------------------------- toStdObject
@@ -163,11 +163,11 @@ class Json
 	 * @param $business_object object of a business class
 	 * @return string json encoded representation of object with visible properties
 	 */
-	public static function toStdObject($business_object)
+	public function toStdObject($business_object)
 	{
-		$std_object = new stdClass();
-		static::objectToStdClassInternal($std_object, $business_object);
-		return $std_object;
+		$standard_object = new stdClass();
+		$this->objectToStdClassInternal($standard_object, $business_object);
+		return $standard_object;
 	}
 
 }

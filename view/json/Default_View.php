@@ -54,8 +54,7 @@ class Default_View
 		);
 		if (!$template_file) {
 			header('HTTP/1.0 404 Not Found', true, 404);
-			echo 'null';
-			exit;
+			return 'null';
 		}
 
 		$this->json = false;;
@@ -64,10 +63,10 @@ class Default_View
 			// it simply includes (php meaning) the template where context is this object and it has only
 			// access to the run method arguments.
 			// The template file should call
-			$closure = function($template_file) use (
-				$parameters, $form, $files, $class_name, $feature_name
-			) {
-				include_once($template_file);
+			$closure = function($template_file)
+				use ($parameters, $form, $files, $class_name, $feature_name)
+			{
+					include_once($template_file);
 			};
 			$closure($template_file);
 		}
@@ -77,8 +76,7 @@ class Default_View
 
 		if (($this->json === '') || ($this->json === false)) {
 			header('HTTP/1.0 520 Unknown Error', true, 520);
-			echo 'null';
-			exit;
+			return 'null';
 		}
 
 		header('Content-Type: application/json; charset=utf-8');
