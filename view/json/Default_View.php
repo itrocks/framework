@@ -13,6 +13,7 @@ use ITRocks\Framework\View\Html\Template;
  */
 class Default_View
 {
+
 	//------------------------------------------------------------------ JSON_TEMPLATE_FILE_EXTENSION
 	/** extension without the dot
 	 * Eg: 'json.inc' for a file myTemplate.json.inc
