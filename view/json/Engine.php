@@ -13,11 +13,25 @@ class Engine implements Registerable, View\Engine
 {
 	use Current;
 
-	//-------------------------------------------------------------------------------- $backuped_view
+	//--------------------------------------------------------------------------------- JSON_TEMPLATE
+	/**
+	 * Suffix of json template file name (before file extension)
+	 *
+	 * @example Json_Template => Output_Json_Template | Data_List_Json_Template...
+	 */
+	const JSON_TEMPLATE = 'Json_Template';
+
+	//------------------------------------------------------------------ JSON_TEMPLATE_FILE_EXTENSION
+	/** extension without the dot
+	 * Eg: 'json.inc' for a file myTemplate.json.inc
+	 */
+	const JSON_TEMPLATE_FILE_EXTENSION = 'php';
+
+	//---------------------------------------------------------------------------------- $view_backup
 	/**
 	 * @var View\Engine
 	 */
-	private static $backuped_view;
+	private static $view_backup;
 
 	//------------------------------------------------------------------------------------ acceptJson
 	/**
@@ -40,9 +54,9 @@ class Engine implements Registerable, View\Engine
 	 */
 	public static function afterRun()
 	{
-		if (static::acceptJson() && isset(self::$backuped_view)) {
-			View::current(self::$backuped_view);
-			self::$backuped_view = null;
+		if (static::acceptJson() && isset(self::$view_backup)) {
+			View::current(self::$view_backup);
+			self::$view_backup = null;
 		}
 	}
 
@@ -52,7 +66,7 @@ class Engine implements Registerable, View\Engine
 	public function beforeRun()
 	{
 		if (static::acceptJson()) {
-			self::$backuped_view = View::current();
+			self::$view_backup = View::current();
 			View::current(static::current());
 		}
 	}
@@ -68,10 +82,13 @@ class Engine implements Registerable, View\Engine
 	 * @todo HIGH View\Html\Engine::getTemplateFile() should be factorized in a View\Engine class
 	 */
 	public static function getTemplateFile(
-		$class_name, array $feature_names, $template = null, $template_file_type = 'json.inc'
+		$class_name,
+		array $feature_names,
+		$template = '',
+		$template_file_type = self::JSON_TEMPLATE_FILE_EXTENSION
 	) {
 		return View\Html\Engine::getTemplateFile(
-			$class_name, $feature_names, $template, $template_file_type
+			$class_name, $feature_names, ($template ?: self::JSON_TEMPLATE), $template_file_type
 		);
 	}
 

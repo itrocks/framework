@@ -3,6 +3,7 @@ namespace ITrocks\Framework\View\Json;
 
 use Exception;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -13,12 +14,6 @@ use ITRocks\Framework\View\Html\Template;
  */
 class Default_View
 {
-
-	//------------------------------------------------------------------ JSON_TEMPLATE_FILE_EXTENSION
-	/** extension without the dot
-	 * Eg: 'json.inc' for a file myTemplate.json.inc
-	 */
-	const JSON_TEMPLATE_FILE_EXTENSION = 'json.inc';
 
 	//----------------------------------------------------------------------------------------- $json
 	/**
@@ -51,7 +46,7 @@ class Default_View
 			$class_name,
 			$feature_names,
 			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null,
-			static::JSON_TEMPLATE_FILE_EXTENSION
+			Engine::JSON_TEMPLATE_FILE_EXTENSION
 		);
 		if (!$template_file) {
 			header('HTTP/1.0 404 Not Found', true, 404);
@@ -60,16 +55,15 @@ class Default_View
 
 		$this->json = false;;
 		try {
-			// create a closure bound to this object
-			// it simply includes (php meaning) the template where context is this object and it has only
-			// access to the run method arguments.
-			// The template file should call
-			$render_json = function($template_file)
-				use ($parameters, $form, $files, $class_name, $feature_name)
-			{
-					include($template_file);
-			};
-			$render_json($template_file);
+			$renderer_class_name = Names::fileToClass($template_file);
+			if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {
+				/** @var $renderer Json_Template */
+				if ($renderer = new $renderer_class_name(
+					$parameters, $form, $files, $class_name, $feature_name
+				)) {
+					$this->json = $renderer->render();
+				}
+			}
 		}
 		catch (Exception $exception) {
 			$this->json = false;
