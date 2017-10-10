@@ -27,13 +27,13 @@ class Database implements Sql\Database
 	 */
 	private $Database;
 
-	//--------------------------------------------------------------------------------------- getName
+	//------------------------------------------------------------------------ characterSetCollateSql
 	/**
-	 * @return string
+	 * @return string @example CHARACTER SET utf8 COLLATE utf8_general_ci
 	 */
-	public function getName()
+	public static function characterSetCollateSql()
 	{
-		return $this->Database;
+		return static::characterSetSql() . SP . static::collateSql();
 	}
 
 	//------------------------------------------------------------------------------- characterSetSql
@@ -45,15 +45,6 @@ class Database implements Sql\Database
 		return 'CHARACTER SET ' . static::CHARACTER_SET;
 	}
 
-	//------------------------------------------------------------------------ characterSetCollateSql
-	/**
-	 * @return string @example CHARACTER SET utf8 COLLATE utf8_general_ci
-	 */
-	public static function characterSetCollateSql()
-	{
-		return static::characterSetSql() . SP . static::collateSql();
-	}
-
 	//------------------------------------------------------------------------------------ collateSql
 	/**
 	 * @return string @example COLLATE utf8_general_ci
@@ -61,6 +52,15 @@ class Database implements Sql\Database
 	public static function collateSql()
 	{
 		return 'COLLATE ' . static::COLLATE;
+	}
+
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
+	public function getName()
+	{
+		return $this->Database;
 	}
 
 }

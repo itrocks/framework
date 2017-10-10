@@ -12,6 +12,15 @@ use ITRocks\Framework\Objects\Code;
 class Civility extends Code
 {
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->code);
+	}
+
 	//---------------------------------------------------------------------------------------- getAll
 	/**
 	 * @return static[]
@@ -21,15 +30,6 @@ class Civility extends Code
 		/** @var $civilities static[] */
 		$civilities = Dao::readAll(get_called_class());
 		return $civilities;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->code);
 	}
 
 }

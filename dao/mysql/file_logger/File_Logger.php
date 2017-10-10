@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use mysqli_result;
 use ITRocks\Framework;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
+use mysqli_result;
 use Serializable;
 
 /**

@@ -15,6 +15,19 @@ use ITRocks\Framework\Tools\Namespaces;
 abstract class Getter
 {
 
+	//----------------------------------------------------------------- classNameWithoutVendorProject
+	/**
+	 * Returns the name of the class, without the beginning 'Vendor\Project\'
+	 *
+	 * @param $class_name string 'Vendor\Project\Namespace\Class_Name'
+	 * @return string 'Namespace\Class_Name'
+	 */
+	static private function classNameWithoutVendorProject($class_name)
+	{
+		$split_class_name = explode(BS, $class_name, 3);
+		return end($split_class_name);
+	}
+
 	//----------------------------------------------------------------------------------------- debug
 	/**
 	 * Displays debug information
@@ -266,19 +279,6 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 			$traits               = array_merge($traits, self::getTraitsRecursive($trait));
 		}
 		return $traits;
-	}
-
-	//----------------------------------------------------------------- classNameWithoutVendorProject
-	/**
-	 * Returns the name of the class, without the beginning 'Vendor\Project\'
-	 *
-	 * @param $class_name string 'Vendor\Project\Namespace\Class_Name'
-	 * @return string 'Namespace\Class_Name'
-	 */
-	static private function classNameWithoutVendorProject($class_name)
-	{
-		$split_class_name = explode(BS, $class_name, 3);
-		return end($split_class_name);
 	}
 
 }

@@ -3,11 +3,11 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Dao\Sql;
 
-use mysqli;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
+use mysqli;
 
 /**
  * Mysql column
@@ -28,6 +28,25 @@ class Column implements Sql\Column
 	//------------------------------------------------------------------------------------------- YES
 	const YES = 'YES';
 
+	//-------------------------------------------------------------------------------------- $Default
+	/**
+	 * Default value for the column
+	 * May be empty, null, or a value of the same type as the column.
+	 *
+	 * @var mixed
+	 */
+	private $Default;
+
+	//---------------------------------------------------------------------------------------- $Extra
+	/**
+	 * Extra options to the column
+	 * A list of options, the most common is 'auto_increment' for primary auto-increment indexes.
+	 *
+	 * @values auto_increment
+	 * @var string
+	 */
+	private $Extra;
+
 	//---------------------------------------------------------------------------------------- $Field
 	/**
 	 * Mysql column name
@@ -35,6 +54,25 @@ class Column implements Sql\Column
 	 * @var string
 	 */
 	private $Field;
+
+	//------------------------------------------------------------------------------------------ $Key
+	/**
+	 * Is the data part of an index key ?
+	 *
+	 * @values PRI, MUL, UNI,
+	 * @var string
+	 */
+	private $Key;
+
+	//----------------------------------------------------------------------------------------- $Null
+	/**
+	 * Can the data be null ?
+	 *
+	 * @values YES, NO
+	 * @var string
+	 */
+	private $Null;
+
 
 	//----------------------------------------------------------------------------------------- $Type
 	/**
@@ -54,42 +92,6 @@ class Column implements Sql\Column
 	 */
 	private $Type;
 
-	//----------------------------------------------------------------------------------------- $Null
-	/**
-	 * Can the data be null ?
-	 *
-	 * @var string
-	 * @values YES, NO
-	 */
-	private $Null;
-
-	//------------------------------------------------------------------------------------------ $Key
-	/**
-	 * Is the data part of an index key ?
-	 *
-	 * @var string
-	 * @values PRI, MUL, UNI,
-	 */
-	private $Key;
-
-	//-------------------------------------------------------------------------------------- $Default
-	/**
-	 * Default value for the column
-	 * May be empty, null, or a value of the same type as the column.
-	 *
-	 * @var mixed
-	 */
-	private $Default;
-
-	//---------------------------------------------------------------------------------------- $Extra
-	/**
-	 * Extra options to the column
-	 * A list of options, the most common is 'auto_increment' for primary auto-increment indexes.
-	 *
-	 * @var string
-	 * @values auto_increment
-	 */
-	private $Extra;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -108,25 +110,6 @@ class Column implements Sql\Column
 			}
 		}
 		$this->cleanupDefault();
-	}
-
-	//--------------------------------------------------------------------------------- buildProperty
-	/**
-	 * Builds a Column object using a class property
-	 *
-	 * @param $property Reflection_Property
-	 * @return Column
-	 */
-	public static function buildProperty(Reflection_Property $property)
-	{
-		$column = new Column();
-		$column->Field   = self::propertyNameToMysql($property);
-		$column->Type    = self::propertyTypeToMysql($property);
-		$column->Null    = self::propertyNullToMysql($property);
-		$column->Key     = self::propertyKeyToMysql($property);
-		$column->Default = self::propertyDefaultToMysql($property, $column);
-		$column->Extra   = '';
-		return $column;
 	}
 
 	//--------------------------------------------------------------------------------------- buildId
@@ -156,6 +139,25 @@ class Column implements Sql\Column
 		$column = new Column($column_name, 'bigint(18) unsigned');
 		$column->Null    = self::NO;
 		$column->Default = 0;
+		return $column;
+	}
+
+	//--------------------------------------------------------------------------------- buildProperty
+	/**
+	 * Builds a Column object using a class property
+	 *
+	 * @param $property Reflection_Property
+	 * @return Column
+	 */
+	public static function buildProperty(Reflection_Property $property)
+	{
+		$column = new Column();
+		$column->Field   = self::propertyNameToMysql($property);
+		$column->Type    = self::propertyTypeToMysql($property);
+		$column->Null    = self::propertyNullToMysql($property);
+		$column->Key     = self::propertyKeyToMysql($property);
+		$column->Default = self::propertyDefaultToMysql($property, $column);
+		$column->Extra   = '';
 		return $column;
 	}
 

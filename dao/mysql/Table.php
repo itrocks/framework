@@ -29,8 +29,8 @@ class Table implements Sql\Table
 
 	//--------------------------------------------------------------------------------------- $Engine
 	/**
-	 * @var string
 	 * @values 'ARCHIVE', 'BDB', 'CSV', 'FEDERATED', 'InnoDB', 'MyISAM', 'MEMORY', 'MERGE', 'NDBCluster'
+	 * @var string
 	 */
 	private $Engine;
 

@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Subquery;

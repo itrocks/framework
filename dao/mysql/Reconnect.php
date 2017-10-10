@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use mysqli_result;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\User;
+use mysqli_result;
 
 /**
  * Mysql\Reconnect plugin allow auto-reconnect when a server disconnected error is thrown

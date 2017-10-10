@@ -3,8 +3,8 @@ namespace ITRocks\Framework\Dao\File\Session_File;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Tools\Image;
 use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Image;
 
 /**
  * Session file output controller

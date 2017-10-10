@@ -1,11 +1,11 @@
 <?php
 namespace ITRocks\Framework\Dao\File;
 
-use PHPExcel_IOFactory;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use PHPExcel_IOFactory;
 
 /**
  * Excel file

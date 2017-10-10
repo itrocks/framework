@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
-use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 
@@ -65,6 +65,19 @@ class Comparison implements Negate, Where
 				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
 				? self::LIKE
 				: self::EQUAL;
+		}
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the comparison
+	 *
+	 * @example GREATER will become LESS_OR_EQUAL
+	 */
+	public function negate()
+	{
+		if (in_array($this->sign, self::REVERSE)) {
+			$this->sign = self::REVERSE[$this->sign];
 		}
 	}
 
@@ -166,19 +179,6 @@ class Comparison implements Negate, Where
 		}
 		return $column . SP . $this->sign
 		. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the comparison
-	 *
-	 * @example GREATER will become LESS_OR_EQUAL
-	 */
-	public function negate()
-	{
-		if (in_array($this->sign, self::REVERSE)) {
-			$this->sign = self::REVERSE[$this->sign];
-		}
 	}
 
 	//-------------------------------------------------------------------------------------- whereSQL

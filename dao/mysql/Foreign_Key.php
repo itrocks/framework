@@ -1,11 +1,10 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use ITRocks\Framework\Dao\Sql;
-
-use mysqli;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Sql;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use mysqli;
 
 /**
  * Mysql foreign key
@@ -28,15 +27,15 @@ class Foreign_Key implements Sql\Foreign_Key
 
 	//------------------------------------------------------------------------------------ $On_delete
 	/**
-	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
+	 * @var string
 	 */
 	private $On_delete = 'RESTRICT';
 
 	//------------------------------------------------------------------------------------ $On_update
 	/**
-	 * @var string
 	 * @values CASCADE, NO ACTION, RESTRICT, SET NULL
+	 * @var string
 	 */
 	private $On_update = 'RESTRICT';
 

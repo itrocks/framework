@@ -93,15 +93,6 @@ class Uri
 		return $parameter && ctype_upper($parameter[0]) && (strpos($parameter, DOT) === false);
 	}
 
-	//----------------------------------------------------------------------------------- setDefaults
-	private function setDefaults()
-	{
-		if (!$this->controller_name && !$this->feature_name) {
-			$this->controller_name = get_class(Application::current());
-			$this->feature_name    = 'home';
-		}
-	}
-
 	//-------------------------------------------------------------------------------------- parseGet
 	/**
 	 * Parse get parameters array
@@ -190,6 +181,15 @@ class Uri
 			$this->parameters->addValue(join(BS, $controller_elements));
 		}
 
+	}
+
+	//----------------------------------------------------------------------------------- setDefaults
+	private function setDefaults()
+	{
+		if (!$this->controller_name && !$this->feature_name) {
+			$this->controller_name = get_class(Application::current());
+			$this->feature_name    = 'home';
+		}
 	}
 
 	//------------------------------------------------------------------------------------ uriToArray

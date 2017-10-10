@@ -37,8 +37,8 @@ class Key implements Sql\Key
 
 	//----------------------------------------------------------------------------------- $Index_type
 	/**
-	 * @var string
 	 * @values BTREE, FULLTEXT, SPATIAL, UNIQUE,
+	 * @var string
 	 */
 	private $Index_type;
 

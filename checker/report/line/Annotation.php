@@ -13,17 +13,17 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 class Annotation implements Line
 {
 
-	//------------------------------------------------------------------------------------- $property
-	/**
-	 * @var Reflection_Property
-	 */
-	public $property;
-
 	//----------------------------------------------------------------------------------- $annotation
 	/**
 	 * @var Reflection\Annotation
 	 */
 	public $annotation;
+
+	//------------------------------------------------------------------------------------- $property
+	/**
+	 * @var Reflection_Property
+	 */
+	public $property;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**

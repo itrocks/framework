@@ -78,16 +78,6 @@ class Select
 	 */
 	private $classes;
 
-	//-------------------------------------------------------------------------------------- $columns
-	/**
-	 * Set by __construct()
-	 * Changed when fetchResult() is called (text keys become values)
-	 * So : do never call prepareQuery() after fetchResultRows() !
-	 *
-	 * @var string[]
-	 */
-	private $columns = [];
-
 	//--------------------------------------------------------------------------------- $column_count
 	/**
 	 * Set by prepareFetch()
@@ -103,6 +93,16 @@ class Select
 	 * @var string[]
 	 */
 	private $column_names;
+
+	//-------------------------------------------------------------------------------------- $columns
+	/**
+	 * Set by __construct()
+	 * Changed when fetchResult() is called (text keys become values)
+	 * So : do never call prepareQuery() after fetchResultRows() !
+	 *
+	 * @var string[]
+	 */
+	private $columns = [];
 
 	//--------------------------------------------------------------------------------------- $i_to_j
 	/**

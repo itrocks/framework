@@ -12,15 +12,15 @@ use php_user_filter;
 class Include_Filter extends php_user_filter
 {
 
-	//-------------------------------------------------------------------------------------------- ID
-	const ID = 'aop.include';
-
 	//------------------------------------------------------------------------------------- CACHE_DIR
 	/**
 	 * @see \ITRocks\Framework\PHP\Compiler::getCacheDir()
 	 */
 	const CACHE_DIR = 'cache/compiled';
 
+	//-------------------------------------------------------------------------------------------- ID
+
+	const ID = 'aop.include';
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * The name of the file currently being included
@@ -95,17 +95,6 @@ class Include_Filter extends php_user_filter
 		return $source_file_name;
 	}
 
-	//----------------------------------------------------------------------------------- getCacheDir
-	/**
-	 * Returns the cache directory
-	 *
-	 * @return string
-	 */
-	public static function getCacheDir()
-	{
-		return self::CACHE_DIR;
-	}
-
 	//---------------------------------------------------------------------------------------- filter
 	/**
 	 * @param $in       resource
@@ -130,6 +119,17 @@ class Include_Filter extends php_user_filter
 			}
 		}
 		return PSFS_PASS_ON;
+	}
+
+	//----------------------------------------------------------------------------------- getCacheDir
+	/**
+	 * Returns the cache directory
+	 *
+	 * @return string
+	 */
+	public static function getCacheDir()
+	{
+		return self::CACHE_DIR;
 	}
 
 	//-------------------------------------------------------------------------------------- register

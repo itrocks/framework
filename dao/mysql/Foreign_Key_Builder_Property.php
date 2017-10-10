@@ -41,25 +41,6 @@ trait Foreign_Key_Builder_Property
 		return 'id_' . Storage_Annotation::of($property)->value;
 	}
 
-	//----------------------------------------------------------------- propertyReferenceTableToMysql
-	/**
-	 * @param $property Reflection_Property
-	 * @return string
-	 */
-	private static function propertyReferenceTableToMysql(Reflection_Property $property)
-	{
-		return Dao::storeNameOf($property->getType()->asString());
-	}
-
-	//---------------------------------------------------------------- propertyReferenceFieldsToMysql
-	/**
-	 * @return string
-	 */
-	private static function propertyReferenceFieldsToMysql()
-	{
-		return 'id';
-	}
-
 	//----------------------------------------------------------------------- propertyOnDeleteToMysql
 	/**
 	 * @param $property Reflection_Property
@@ -77,6 +58,25 @@ trait Foreign_Key_Builder_Property
 	private static function propertyOnUpdateToMysql()
 	{
 		return 'RESTRICT';
+	}
+
+	//---------------------------------------------------------------- propertyReferenceFieldsToMysql
+	/**
+	 * @return string
+	 */
+	private static function propertyReferenceFieldsToMysql()
+	{
+		return 'id';
+	}
+
+	//----------------------------------------------------------------- propertyReferenceTableToMysql
+	/**
+	 * @param $property Reflection_Property
+	 * @return string
+	 */
+	private static function propertyReferenceTableToMysql(Reflection_Property $property)
+	{
+		return Dao::storeNameOf($property->getType()->asString());
 	}
 
 }

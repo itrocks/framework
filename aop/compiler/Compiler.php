@@ -209,6 +209,16 @@ class Compiler implements ICompiler, Needs_Main
 		return boolval($methods_code);
 	}
 
+	//----------------------------------------------------------------------------------- compileFile
+	/**
+	 * @param $file_name string
+	 * @return boolean
+	 */
+	public function compileFile($file_name)
+	{
+		return $this->compileClass(Reflection_Source::ofFile($file_name)->getFirstClass());
+	}
+
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * @param $sources Reflection_Source[]
@@ -329,16 +339,6 @@ class Compiler implements ICompiler, Needs_Main
 		}
 
 		return $added;
-	}
-
-	//----------------------------------------------------------------------------------- compileFile
-	/**
-	 * @param $file_name string
-	 * @return boolean
-	 */
-	public function compileFile($file_name)
-	{
-		return $this->compileClass(Reflection_Source::ofFile($file_name)->getFirstClass());
 	}
 
 	//------------------------------------------------------------------------------- scanForAbstract

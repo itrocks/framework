@@ -37,6 +37,15 @@ class In implements Negate, Where
 		if (isset($not_in)) $this->not_in = $not_in;
 	}
 
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		$this->not_in = !$this->not_in;
+	}
+
 	//--------------------------------------------------------------------------------------- toHuman
 	/**
 	 * Returns the Dao function as Human readable string
@@ -85,15 +94,6 @@ class In implements Negate, Where
 			$sql .= ')';
 		}
 		return $sql;
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 */
-	public function negate()
-	{
-		$this->not_in = !$this->not_in;
 	}
 
 }

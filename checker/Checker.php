@@ -3,8 +3,8 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\Checker\Report;
 use ITRocks\Framework\Checker\Report\Line;
-use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -81,6 +81,23 @@ abstract class Checker
 		return $report_lines;
 	}
 
+	//------------------------------------------------------------------------------------ checkValue
+	/**
+	 * @param $report_lines Line[]
+	 * @param $test         boolean
+	 * @param $property     Reflection_Property
+	 * @param $annotation   Annotation
+	 * @param $value        mixed
+	 */
+	private static function checkValue(
+		array &$report_lines, $test, Reflection_Property $property, Annotation $annotation, $value
+	) {
+		if (!$test) {
+			$report_line = new Line\Annotation($property, $annotation, $value);
+			$report_lines[] = $report_line;
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- checkVar
 	/**
 	 * @param $report_lines Line[]
@@ -114,23 +131,6 @@ abstract class Checker
 						$report_lines, is_a($value, $type->asString(), true), $property, $annotation, $value
 					);
 				}
-		}
-	}
-
-	//------------------------------------------------------------------------------------ checkValue
-	/**
-	 * @param $report_lines Line[]
-	 * @param $test         boolean
-	 * @param $property     Reflection_Property
-	 * @param $annotation   Annotation
-	 * @param $value        mixed
-	 */
-	private static function checkValue(
-		array &$report_lines, $test, Reflection_Property $property, Annotation $annotation, $value
-	) {
-		if (!$test) {
-			$report_line = new Line\Annotation($property, $annotation, $value);
-			$report_lines[] = $report_line;
 		}
 	}
 

@@ -12,6 +12,12 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 class Range implements Negate, Where
 {
 
+	//----------------------------------------------------------------------------------------- $from
+	/**
+	 * @var mixed
+	 */
+	public $from;
+
 	//---------------------------------------------------------------------------------- $not_between
 	/**
 	 * If true, then this is a 'NOT BETWEEN' instead of a 'BETWEEN'
@@ -19,12 +25,6 @@ class Range implements Negate, Where
 	 * @var boolean
 	 */
 	public $not_between;
-
-	//----------------------------------------------------------------------------------------- $from
-	/**
-	 * @var mixed
-	 */
-	public $from;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -43,6 +43,15 @@ class Range implements Negate, Where
 		$this->from = $from;
 		$this->to   = $to;
 		if (isset($not_between)) $this->not_between = $not_between;
+	}
+
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		$this->not_between = !$this->not_between;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman
@@ -122,15 +131,6 @@ class Range implements Negate, Where
 		. ' AND '
 		. 'GREATEST(' . Value::escape($this->from) . ', ' . Value::escape($this->to) . ') '
 		. ')';
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 */
-	public function negate()
-	{
-		$this->not_between = !$this->not_between;
 	}
 
 }

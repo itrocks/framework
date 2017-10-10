@@ -38,6 +38,15 @@ class Left_Match implements Negate, Where
 		if (isset($not_match)) $this->not_match = $not_match;
 	}
 
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		$this->not_match = !$this->not_match;
+	}
+
 	//--------------------------------------------------------------------------------------- toHuman
 	/**
 	 * Returns the Dao function as Human readable string
@@ -73,15 +82,6 @@ class Left_Match implements Negate, Where
 		return $column
 			. ($this->not_match ? ' <> ' : ' = ')
 			. 'LEFT(' . $value . ', LENGTH(' . $column . '))';
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 */
-	public function negate()
-	{
-		$this->not_match = !$this->not_match;
 	}
 
 }

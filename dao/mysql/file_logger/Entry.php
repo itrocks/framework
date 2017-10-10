@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Dao\Mysql\File_Logger;
 
 use ITRocks\Framework;
-use ITRocks\Framework\Session;
 use ITRocks\Framework\Dao\Mysql\File_Logger;
+use ITRocks\Framework\Session;
 
 /**
  * Logger entry trait to view output into ITRocks\Framework\Logger\Entry

@@ -1,18 +1,17 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Option\Cache_Result;
-use ITRocks\Framework\Dao\Option\Create_If_No_Result;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
-use mysqli_result;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Cache_Result;
+use ITRocks\Framework\Dao\Option\Create_If_No_Result;
 use ITRocks\Framework\Mapper\Abstract_Class;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -22,6 +21,7 @@ use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Count;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
+use mysqli_result;
 
 /**
  * The mysql link for Dao
@@ -115,26 +115,6 @@ class Link extends Dao\Sql\Link
 		$this->commit_stack ++;
 	}
 
-	//------------------------------------------------------------------------------------- construct
-	/**
-	 * Alternative constructor that enables configuration insurance
-	 *
-	 * @param $host     string
-	 * @param $login    string
-	 * @param $password string
-	 * @param $database string
-	 * @return Link
-	 */
-	public static function construct($host, $login, $password, $database)
-	{
-		return new Link([
-			self::DATABASE => $database,
-			self::HOST     => $host,
-			self::LOGIN    => $login,
-			self::PASSWORD => $password
-		]);
-	}
-
 	//---------------------------------------------------------------------------------------- commit
 	/**
 	 * @param $flush boolean if true, then all the pending transactions will be unstacked
@@ -173,6 +153,26 @@ class Link extends Dao\Sql\Link
 			$parameters[self::PASSWORD], $parameters[self::DATABASE]
 		);
 		$this->query('SET NAMES ' . $this->collation);
+	}
+
+	//------------------------------------------------------------------------------------- construct
+	/**
+	 * Alternative constructor that enables configuration insurance
+	 *
+	 * @param $host     string
+	 * @param $login    string
+	 * @param $password string
+	 * @param $database string
+	 * @return Link
+	 */
+	public static function construct($host, $login, $password, $database)
+	{
+		return new Link([
+			self::DATABASE => $database,
+			self::HOST     => $host,
+			self::LOGIN    => $login,
+			self::PASSWORD => $password
+		]);
 	}
 
 	//----------------------------------------------------------------------------------------- count

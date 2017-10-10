@@ -16,7 +16,6 @@ class Maintain_Controller implements Feature_Controller
 	//----------------------------------------------------------------------------------- getChildren
 	/**
 	 * @param $class_names string[]
-	 *
 	 * @return string[]
 	 */
 	public function getChildren(array $class_names)
@@ -52,7 +51,6 @@ class Maintain_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 *
 	 * @return mixed
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
