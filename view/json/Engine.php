@@ -29,6 +29,9 @@ class Engine implements Registerable, View\Engine
 
 	//---------------------------------------------------------------------------------- $view_backup
 	/**
+	 * Keep a backup of configured current view before we replace by json view for,
+	 * in order to restore it after processing
+	 *
 	 * @var View\Engine
 	 */
 	private static $view_backup;
