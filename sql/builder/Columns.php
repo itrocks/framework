@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -13,8 +14,8 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
-use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Join;
+use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -242,7 +243,7 @@ class Columns
 		) {
 			$class             = new Reflection_Class($class_name);
 			$concat_properties = [];
-			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
+			foreach (Representative_Annotation::of($class)->values() as $property_name) {
 				$concat_properties[] = $path . DOT . $property_name;
 			}
 			$concat = new Concat($concat_properties);
@@ -270,6 +271,25 @@ class Columns
 		return $sql;
 	}
 
+	//------------------------------------------------------------------------ buildDaoSelectFunction
+	/**
+	 * @param $path           string
+	 * @param $function       Func\Column
+	 * @param $first_property boolean
+	 * @return string
+	 */
+	private function buildDaoSelectFunction($path, Func\Column $function, &$first_property)
+	{
+		$sql_columns = '';
+		if ($first_property) {
+			$first_property = false;
+		}
+		else {
+			$sql_columns = ', ';
+		}
+		return $sql_columns . $function->toSql($this, $path);
+	}
+
 	//------------------------------------------------------------------------------- buildNextColumn
 	/**
 	 * Build SQL query section for a single column
@@ -289,25 +309,6 @@ class Columns
 			$sql_columns = ', ';
 		}
 		return $sql_columns . $this->buildColumn($path, !$this->append, false, $join);
-	}
-
-	//------------------------------------------------------------------------ buildDaoSelectFunction
-	/**
-	 * @param $path           string
-	 * @param $function       Func\Column
-	 * @param $first_property boolean
-	 * @return string
-	 */
-	private function buildDaoSelectFunction($path, Func\Column $function, &$first_property)
-	{
-		$sql_columns = '';
-		if ($first_property) {
-			$first_property = false;
-		}
-		else {
-			$sql_columns = ', ';
-		}
-		return $sql_columns . $function->toSql($this, $path);
 	}
 
 	//----------------------------------------------------------------------------- buildObjectColumn

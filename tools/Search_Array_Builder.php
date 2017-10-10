@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -13,9 +14,19 @@ class Search_Array_Builder
 {
 
 	//------------------------------------------------------------------------------------------ $and
+	/**
+	 * And separator
+	 *
+	 * @var string
+	 */
 	public $and = SP;
 
 	//------------------------------------------------------------------------------------------- $or
+	/**
+	 * Or separator
+	 *
+	 * @var string
+	 */
 	public $or = ',';
 
 	//----------------------------------------------------------------------------------------- build
@@ -114,7 +125,7 @@ class Search_Array_Builder
 	 */
 	private function classRepresentativeProperties($class, array $already = [])
 	{
-		$property_names = $class->getListAnnotation('representative')->values();
+		$property_names = Representative_Annotation::of($class)->values();
 		foreach ($property_names as $key => $property_name) {
 			$property = strpos($property_name, DOT)
 				? new Reflection_Property($class->name, $property_name)

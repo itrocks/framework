@@ -35,7 +35,7 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 		// default sort : all representative values but links
 		if (!$this->value) {
 			/** @var $representative string[] @representative property names */
-			$representative = $class->getAnnotation('representative')->value;
+			$representative = Representative_Annotation::of($class)->value;
 			foreach ($representative as $property_path) {
 				$property = new Reflection_Property($class->getName(), $property_path);
 				if (

@@ -163,7 +163,7 @@ class Collection
 	protected function getProperties()
 	{
 		/** @var $representative Representative_Annotation */
-		$representative = $this->property->getListAnnotation('representative');
+		$representative = Representative_Annotation::of($this->property);
 		$properties     = $representative->getProperties();
 		if (!$properties) {
 			// gets all properties from collection element class

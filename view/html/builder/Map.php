@@ -56,8 +56,7 @@ class Map
 		$this->map        = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		$class            = new Reflection_Class($this->class_name);
-		/** @var $representative Representative_Annotation */
-		$representative   = $class->getListAnnotation('representative');
+		$representative   = Representative_Annotation::of($class);
 		$this->properties = $representative->getProperties();
 	}
 

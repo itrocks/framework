@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao\Data_Link\After_Action;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -402,7 +403,7 @@ if ($class_name) {
 		if (is_object($element_value)) {
 			$class    = new Reflection_Class(get_class($element_value));
 			$defaults = $class->getDefaultProperties([T_EXTENDS]);
-			foreach ($class->getListAnnotation('representative')->values() as $property_name) {
+			foreach (Representative_Annotation::of($class)->values() as $property_name) {
 				if (
 					isset($defaults[$property_name])
 					&& $this->valueChanged($element_value, $property_name, $defaults[$property_name])
