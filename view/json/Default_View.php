@@ -64,12 +64,12 @@ class Default_View
 			// it simply includes (php meaning) the template where context is this object and it has only
 			// access to the run method arguments.
 			// The template file should call
-			$closure = function($template_file)
+			$render_json = function($template_file)
 				use ($parameters, $form, $files, $class_name, $feature_name)
 			{
 					include($template_file);
 			};
-			$closure($template_file);
+			$render_json($template_file);
 		}
 		catch (Exception $exception) {
 			$this->json = false;
