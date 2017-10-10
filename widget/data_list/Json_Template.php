@@ -32,7 +32,7 @@ class Json_Template extends View\Json\Json_Template
 			}
 			// case want only columns of list settings (default)
 			else {
-				$std_object = new stdClass();
+				$std_object     = new stdClass();
 				$std_object->id = $element->id();
 				foreach ($element->getValues() as $path => $value) {
 					$std_object->{$path} = is_object($value) ? (string)$value : $value;

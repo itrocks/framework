@@ -41,11 +41,11 @@ abstract class Json_Template
 	/**
 	 * Json_Template constructor.
 	 *
-	 * @param $class_name      string
-	 * @param $feature_name    string
-	 * @param $files           array[]
-	 * @param $form            array
-	 * @param $parameters      array
+	 * @param $class_name   string
+	 * @param $feature_name string
+	 * @param $files        array[]
+	 * @param $form         array
+	 * @param $parameters   array
 	 */
 	public function __construct(
 		array $parameters, array $form, array $files, $class_name, $feature_name

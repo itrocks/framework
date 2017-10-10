@@ -51,33 +51,35 @@ class Json
 	{
 		$class      = new Reflection_Class($business_object);
 		$properties = $class->getProperties([T_USE, T_EXTENDS, Reflection_Class::T_SORT]);
-		foreach ($properties as $property) if (
-			$property->isVisible()
-			&& $property->isPublic()
-			&& !$property->isStatic()
-			&& !$property->getAnnotation('composite')->value
-		) {
-			$name           = $property->name;
-			$property_value = $property->getValue($business_object);
-			$type           = $property->getType();
-			if ($type->isMultiple()) {
-				$array = [];
-				if ($type->isMultipleString()) {
-					//TODO: check with many values, if $property_value is still a string with comma or directly an array?
-					$values = ($property_value !== '') ? explode(',', $property_value): null;
-				}
-				elseif ($property_value) {
-					$values = $property_value;
-				}
-				if (isset($values)) {
-					foreach($values as $value) {
-						$array[] = $this->propertyToStdInternal($property, $value, $type);
+		foreach ($properties as $property) {
+			if (
+				$property->isVisible()
+				&& $property->isPublic()
+				&& !$property->isStatic()
+				&& !$property->getAnnotation('composite')->value
+			) {
+				$name           = $property->name;
+				$property_value = $property->getValue($business_object);
+				$type           = $property->getType();
+				if ($type->isMultiple()) {
+					$array = [];
+					if ($type->isMultipleString()) {
+						//TODO: check with many values, if $property_value is still a string with comma or directly an array?
+						$values = ($property_value !== '') ? explode(',', $property_value): null;
 					}
+					elseif ($property_value) {
+						$values = $property_value;
+					}
+					if (isset($values)) {
+						foreach($values as $value) {
+							$array[] = $this->propertyToStdInternal($property, $value, $type);
+						}
+					}
+					$standard_object->$name = $array;
 				}
-				$standard_object->$name = $array;
-			}
-			else {
-				$standard_object->$name = $this->propertyToStdInternal($property, $property_value, $type);
+				else {
+					$standard_object->$name = $this->propertyToStdInternal($property, $property_value, $type);
+				}
 			}
 		}
 	}
@@ -92,7 +94,7 @@ class Json
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected function propertyToStdInternal($property, $value, $type = null)
+	protected function propertyToStdInternal(Reflection_Property $property, $value, Type $type = null)
 	{
 		if (!isset($type)) {
 			$type = $property->getType();
@@ -113,7 +115,7 @@ class Json
 		}
 		elseif ($type->isClass()) {
 			if ($type->isStringable()) {
-				return (string)$value;
+				return strval($value);
 			}
 			else {
 				if (!$value) {
@@ -131,8 +133,8 @@ class Json
 					}
 					// case we do not expand
 					else {
-						$sub_object->id    = Dao::getObjectIdentifier($value);
-						$sub_object->as_string = (string)$value;
+						$sub_object->id        = Dao::getObjectIdentifier($value);
+						$sub_object->as_string = strval($value);
 					}
 
 					return $sub_object;

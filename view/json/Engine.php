@@ -24,7 +24,7 @@ class Engine implements Registerable, View\Engine
 	//------------------------------------------------------------------ JSON_TEMPLATE_FILE_EXTENSION
 	/**
 	 * Extension without the dot
-	 * Eg: 'json.inc' for a file myTemplate.json.inc
+	 * Eg 'json.inc' for a file myTemplate.json.inc
 	 */
 	const JSON_TEMPLATE_FILE_EXTENSION = 'php';
 
@@ -77,18 +77,16 @@ class Engine implements Registerable, View\Engine
 
 	//------------------------------------------------------------------------------- getTemplateFile
 	/**
-	 * @param $class_name    string   the associated data class name
-	 * @param $feature_names string[] feature and inherited feature which view will be searched
-	 * @param $template      string   if a specific template is set, the view named with it will be
-	 *                       searched into the view / feature namespace first
-	 * @param $template_file_type string can search template files with another extension than 'html'
+	 * @param $class_name         string   the associated data class name
+	 * @param $feature_names      string[] feature and inherited feature which view will be searched
+	 * @param $template           string   if a specific template is set, the view named with it will
+	 *                                     be searched into the view / feature namespace first
+	 * @param $template_file_type string   can search template files with another extension than .html
 	 * @return string the resulting path of the found template file
 	 * @todo HIGH View\Html\Engine::getTemplateFile() should be factorized in a View\Engine class
 	 */
 	public static function getTemplateFile(
-		$class_name,
-		array $feature_names,
-		$template = '',
+		$class_name, array $feature_names, $template = '',
 		$template_file_type = self::JSON_TEMPLATE_FILE_EXTENSION
 	) {
 		return View\Html\Engine::getTemplateFile(

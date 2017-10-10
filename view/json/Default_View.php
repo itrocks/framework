@@ -7,7 +7,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
 
 /**
- * handles HTTP request with Accept: application/json to return json instead of html
+ * Handles HTTP request with Accept: application/json to return json instead of html
  *
  * It runs like Html\Default_View in the way it uses template files to process json string
  * The template is a php file with .json.inc extension.
@@ -53,7 +53,7 @@ class Default_View
 			return 'null';
 		}
 
-		$this->json = false;;
+		$this->json = false;
 		try {
 			$renderer_class_name = Names::fileToClass($template_file);
 			if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {

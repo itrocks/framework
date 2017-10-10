@@ -18,7 +18,7 @@ class Json_Template extends View\Json\Json_Template
 	 */
 	public function render()
 	{
-		$json = new Json();
+		$json   = new Json();
 		$result = $json->toJson($json->toStdObject($this->parameters[$this->class_name]));
 
 		return $result;
