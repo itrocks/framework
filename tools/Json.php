@@ -158,7 +158,7 @@ class Json
 	//----------------------------------------------------------------------------------- toStdObject
 	/**
 	 * @param $business_object object of a business class
-	 * @return string json encoded representation of object with visible properties
+	 * @return stdClass representation of object with visible properties
 	 */
 	public function toStdObject($business_object)
 	{

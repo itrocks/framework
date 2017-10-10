@@ -46,7 +46,6 @@ abstract class Json_Template
 	 * @param $files           array[]
 	 * @param $form            array
 	 * @param $parameters      array
-	 * @param $view            Default_View
 	 */
 	public function __construct(
 		array $parameters, array $form, array $files, $class_name, $feature_name
