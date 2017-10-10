@@ -132,7 +132,7 @@ class Json
 					// case we do not expand
 					else {
 						$sub_object->id    = Dao::getObjectIdentifier($value);
-						$sub_object->string_value = (string)$value;
+						$sub_object->as_string = (string)$value;
 					}
 
 					return $sub_object;
