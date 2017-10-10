@@ -163,8 +163,7 @@ class Reflection_Property_Value extends Reflection_Property
 				if (!$object) {
 					break;
 				}
-				if (!empty($property_name)) {
-					$object = is_array($object) ? reset($object) : $object;
+				if (!empty($property_name) && is_object($object)){
 					$object = $object->$property_name;
 				}
 			}
