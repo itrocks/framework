@@ -52,7 +52,7 @@ class Engine implements Registerable, View\Engine
 	//-------------------------------------------------------------------------------------- afterRun
 	/**
 	 */
-	public static function afterRun()
+	public function afterRun()
 	{
 		if (static::acceptJson() && isset(self::$view_backup)) {
 			View::current(self::$view_backup);
