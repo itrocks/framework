@@ -22,7 +22,8 @@ class Engine implements Registerable, View\Engine
 	const JSON_TEMPLATE = 'Json_Template';
 
 	//------------------------------------------------------------------ JSON_TEMPLATE_FILE_EXTENSION
-	/** extension without the dot
+	/**
+	 * Extension without the dot
 	 * Eg: 'json.inc' for a file myTemplate.json.inc
 	 */
 	const JSON_TEMPLATE_FILE_EXTENSION = 'php';
