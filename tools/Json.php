@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Tools;
 use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use stdClass;
 
