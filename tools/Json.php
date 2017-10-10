@@ -104,14 +104,11 @@ class Json
 			return $value;
 		}
 		elseif ($type->isDateTime()) {
-			if ($value instanceof Date_Time_Error) {
-				return null;
-			}
-			elseif ($value instanceof Date_Time) {
+			if (($value instanceof Date_Time) && !($value instanceof Date_Time_Error)) {
 				return $value->toISO();
 			}
 			else {
-				return '';
+				return null;
 			}
 		}
 		elseif ($type->isClass()) {
