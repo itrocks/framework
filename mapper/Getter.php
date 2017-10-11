@@ -25,22 +25,6 @@ abstract class Getter
 	 */
 	public static $ignore = false;
 
-	//---------------------------------------------------------------------------------------- getAll
-	/**
-	 * Generic getter for getting all objects of a given class
-	 *
-	 * @param $stored            object[]
-	 * @param $element_type_name string
-	 * @return object[]
-	 */
-	public static function & getAll(array &$stored = null, $element_type_name)
-	{
-		if (!(self::$ignore || isset($stored))) {
-			$stored = Dao::readAll($element_type_name, Dao::sort());
-		}
-		return $stored;
-	}
-
 	//------------------------------------------------------------------------- getAbstractCollection
 	/**
 	 * Gets a collection of objects which class is abstract.
@@ -63,6 +47,22 @@ abstract class Getter
 			$objects = array_merge($objects, $stored);
 		}
 		return $objects;
+	}
+
+	//---------------------------------------------------------------------------------------- getAll
+	/**
+	 * Generic getter for getting all objects of a given class
+	 *
+	 * @param $stored            object[]
+	 * @param $element_type_name string
+	 * @return object[]
+	 */
+	public static function & getAll(array &$stored = null, $element_type_name)
+	{
+		if (!(self::$ignore || isset($stored))) {
+			$stored = Dao::readAll($element_type_name, Dao::sort());
+		}
+		return $stored;
 	}
 
 	//--------------------------------------------------------------------------------- getCollection
@@ -325,7 +325,6 @@ abstract class Getter
 	 * $getter_ignore = Getter::ignore(true);
 	 * // .. do some stuff
 	 * Getter::ignore($getter_ignore);
-	 *
 	 * @param $ignore boolean new state for self::$ignore
 	 * @return boolean old state of self::$ignore
 	 */
