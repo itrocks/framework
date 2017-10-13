@@ -30,7 +30,7 @@ $('document').ready(function()
 				$this.closest('tr').remove();
 			}
 			else {
-				var $table = $this.closest('table');
+				var $table   = $this.closest('table');
 				var $new_row = $table.data('saf_add').clone();
 				$this.closest('tr').replaceWith($new_row);
 				$new_row.build();
@@ -42,11 +42,11 @@ $('document').ready(function()
 		this.inside('input[type=checkbox]').change(function()
 		{
 			var $checkbox = $(this);
-			var $input = $checkbox.prev().filter('input[type=hidden]');
+			var $input    = $checkbox.prev().filter('input[type=hidden]');
 			if ($input.length) {
 				var old_check = $input.val();
-				var check = $checkbox.is(':checked') ? '1' : '0';
-				var nullable = String($checkbox.data('nullable'));
+				var check     = $checkbox.is(':checked') ? $checkbox.val() : '0';
+				var nullable  = String($checkbox.data('nullable'));
 				if (nullable.length) {
 					if (old_check === nullable) {
 						check = '';
@@ -54,7 +54,6 @@ $('document').ready(function()
 					}
 				}
 				$input.val(check).change();
-				$checkbox.val(check);
 			}
 		});
 

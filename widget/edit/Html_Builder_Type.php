@@ -185,11 +185,9 @@ class Html_Builder_Type
 	 */
 	protected function buildBoolean()
 	{
-		$value = strlen($this->value) ? ($this->value ? 1 : 0) : ($this->null ? null : 0);
+		$value = strlen($this->value) ? $this->value : ($this->null ? null : 0);
 		if ($this->null) {
-			$input = new Select(
-				$this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value
-			);
+			$input = new Select($this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value);
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);
 			}
@@ -201,10 +199,7 @@ class Html_Builder_Type
 			$input->setAttribute('value', $value);
 			$checkbox = new Input();
 			$checkbox->setAttribute('type', 'checkbox');
-			$checkbox->setAttribute('value', $value);
-			if ($this->null) {
-				$checkbox->setData('nullable', strlen($this->value) ? ($this->value ? 0 : 1) : 0);
-			}
+			$checkbox->setAttribute('value', 1);
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);
 				$this->setInputAsReadOnly($checkbox);
