@@ -46,7 +46,8 @@ class Engine implements Registerable, View\Engine
 		static $accept_json = null;
 		if (!isset($accept_json)) {
 			$accept_json = (
-				(count($accepts = explode(',', $_SERVER['HTTP_ACCEPT'])) === 1)
+				isset($_SERVER['HTTP_ACCEPT'])
+				&& (count($accepts = explode(',', $_SERVER['HTTP_ACCEPT'])) === 1)
 				&& (reset($accepts) === 'application/json')
 			);
 		}
