@@ -55,7 +55,6 @@ class Translator
 	 * $context = ITRocks\Framework\User::class            => returns 'user translation'
 	 * $context = ITRocks\Framework\Email\Recipient::class => returns 'has email translation'
 	 * $context = ITRocks\Framework\Anything_Else::class   => returns 'default user translation'
-	 *
 	 * @param $translations string[] All translations of the same word : [$context => $translation]
 	 * @param $context      string The context we want to translate from
 	 * @return string The chosen translation
@@ -189,7 +188,10 @@ class Translator
 	private function storeDefaultTranslation($text)
 	{
 		/** @var $translation Translation */
-		$translation = Builder::create(Translation::class, [rtrim($text, AT), $this->language]);
+		$translation = Builder::create(
+			Translation::class,
+			[strtolower(str_replace('_', SP, rtrim($text, AT))), $this->language]
+		);
 		Dao::write($translation);
 		return $this->defaultTranslation($text);
 	}
