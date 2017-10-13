@@ -44,15 +44,8 @@ class Write_Controller implements Default_Class_Controller
 	protected function getViewParameters(Parameters $parameters, $class_name, $write_error)
 	{
 		$parameters->getMainObject($class_name);
-		$parameters = $parameters->getObjects();
-
-		if (isset($parameters[self::FILL_COMBO]) && strpos($parameters[self::FILL_COMBO], '[')) {
-			$elements = explode(DOT, $parameters[self::FILL_COMBO]);
-			$parameters[self::FILL_COMBO] = $elements[0] . '.elements[' . DQ . $elements[1] . DQ . ']';
-		}
-
+		$parameters                     = $parameters->getObjects();
 		$parameters[Template::TEMPLATE] = $write_error ? self::ERROR : self::WRITTEN;
-
 		return $parameters;
 	}
 
