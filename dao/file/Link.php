@@ -113,11 +113,11 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @return string
 	 */
-	private function propertyFileName($object, $property_name)
+	public function propertyFileName($object, $property_name)
 	{
 		return $this->path
-		. $this->storeNameOf(get_class($object)) . SL
-		. $this->getObjectIdentifier($object) . '-' . $property_name;
+			. $this->storeNameOf(get_class($object)) . SL
+			. $this->getObjectIdentifier($object) . '-' . $property_name;
 	}
 
 	//------------------------------------------------------------------------------------------ read

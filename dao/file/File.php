@@ -81,16 +81,6 @@ class File
 		$this->hash = md5($this->content);
 	}
 
-	//--------------------------------------------------------------------------------- getCsvContent
-	/**
-	 * @param $errors string[]
-	 * @return array Two dimensional array (keys are row, column)
-	 */
-	public function getCsvContent(array &$errors = [])
-	{
-		return (new Spreadsheet_File)->readCsvFile($this->temporary_file_name, $errors);
-	}
-
 	//------------------------------------------------------------------------------------ getContent
 	/**
 	 * Gets $this->content, or load it from temporary file name if not set
@@ -105,6 +95,16 @@ class File
 				: null;
 		}
 		return $this->content;
+	}
+
+	//--------------------------------------------------------------------------------- getCsvContent
+	/**
+	 * @param $errors string[]
+	 * @return array Two dimensional array (keys are row, column)
+	 */
+	public function getCsvContent(array &$errors = [])
+	{
+		return (new Spreadsheet_File)->readCsvFile($this->temporary_file_name, $errors);
 	}
 
 	//--------------------------------------------------------------------------------------- getHash
