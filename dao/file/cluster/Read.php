@@ -66,7 +66,10 @@ class Read implements Configurable, Registerable
 			$link         = $joinpoint->object;
 			$file_path    = $link->propertyFileName($object, $property_name);
 			$cluster_read = new Files_Cluster\Read($this->configuration);
-			$result       = $cluster_read->getContent($file_path);
+			if (!file_exists(lLastParse($file_path, SL))) {
+				mkdir(lLastParse($file_path, SL), 0777, true);
+			}
+			$result = $cluster_read->getContent($file_path, false);
 			return $result;
 		}
 		return $joinpoint->result;
