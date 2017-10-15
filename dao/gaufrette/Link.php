@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Gaufrette;
 
 use Exception;
+use Gaufrette\Adapter\Local;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Option;
@@ -9,6 +10,7 @@ use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionProperty;
 
 /**
  * This data link stores objects into files using knplabs/gaufrette library
@@ -47,7 +49,7 @@ class Link extends Identifier_Map
 	//-------------------------------------------------------------------------------------- ADAPTERS
 	const ADAPTERS = 'adapters';
 
-	//--------------------*----------------------------------------------------------- DEFAULT_ADAPTER
+	//------------------------------------------------------------------------------- DEFAULT_ADAPTER
 	/**
 	 * use to define a default adapter for all business class (if not set).
 	 * see property doc of adapters.
@@ -229,9 +231,10 @@ class Link extends Identifier_Map
 	/**
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
+	 * @param $full_path     boolean if false, returns only the path relative to File_System
 	 * @return string
 	 */
-	private function propertyFileName($object, $property_name)
+	public function propertyFileName($object, $property_name, $full_path = true)
 	{
 		$prefix = $this->needPrefix($object, $property_name)
 			? $this->getPrefix($object, $property_name) . SL
@@ -239,10 +242,27 @@ class Link extends Identifier_Map
 		if (isA($object, Has_File::class)) {
 			/** @var $object Has_File */
 			if ($storage_name = $object->storage_name) {
+				if ($full_path) {
+					$adapter = $this->getFileSystemFor($object)->filesystem->getAdapter();
+					if ($adapter instanceof Local) {
+						$property = new ReflectionProperty(Local::class, 'directory');
+						if (!$property->isPublic()) {
+							$property->setAccessible(true);
+						}
+						$directory = $property->getValue($adapter);
+						if (!$property->isPublic()) {
+							$property->setAccessible(false);
+						}
+						if ($directory) {
+							return $directory . SL . $prefix . $storage_name;
+						}
+					}
+				}
 				return $prefix . $storage_name;
 			}
 		}
-		return $prefix . $this->getObjectIdentifier($object) . '-' . $property_name;
+		$file_name = $prefix . $this->getObjectIdentifier($object) . '-' . $property_name;
+		return $file_name;
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -285,7 +305,7 @@ class Link extends Identifier_Map
 	public function readProperty($object, $property_name)
 	{
 		if ($file_system = $this->getFileSystemFor($object)) {
-			$file_name = $this->propertyFileName($object, $property_name);
+			$file_name = $this->propertyFileName($object, $property_name, false);
 			if ($file_system->filesystem->has($file_name)) {
 				return $file_system->filesystem->read($file_name);
 			}
@@ -386,8 +406,8 @@ class Link extends Identifier_Map
 	public function writeProperty($object, $property_name, $value = null)
 	{
 		if ($file_system = $this->getFileSystemFor($object)) {
-			$file_name = $this->propertyFileName($object, $property_name);
-			$value = isset($value) ? $value : $object->$property_name;
+			$file_name     = $this->propertyFileName($object, $property_name, false);
+			$value         = isset($value) ? $value : $object->$property_name;
 			if (isset($value)) {
 				$file_system->filesystem->write($file_name, $value, true);
 			}
