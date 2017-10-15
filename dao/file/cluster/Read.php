@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Dao\File\Cluster;
 use Files_Cluster;
 use Files_Cluster\Configuration;
 use ITRocks\Framework\AOP\Joinpoint\After_Method;
-use ITRocks\Framework\Dao\File\Link;
-use ITRocks\Framework\Email;
+use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Dao\Gaufrette;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -55,17 +55,16 @@ class Read implements Configurable, Registerable
 	//------------------------------------------------------------------------- afterLinkReadProperty
 	/**
 	 * @param $joinpoint     After_Method
-	 * @param $object        Email
+	 * @param $object        object
 	 * @param $property_name string
 	 * @return string The content read after the files cluster plugin did its work
 	 * @see Link::readProperty
 	 */
-	public function afterLinkReadProperty(After_Method $joinpoint, Email $object, $property_name)
+	public function afterLinkReadProperty(After_Method $joinpoint, $object, $property_name)
 	{
 		if (is_null($joinpoint->result)) {
-			$email        = $object;
 			$link         = $joinpoint->object;
-			$file_path    = $link->propertyFileName($email, $property_name);
+			$file_path    = $link->propertyFileName($object, $property_name);
 			$cluster_read = new Files_Cluster\Read($this->configuration);
 			$result       = $cluster_read->getContent($file_path);
 			return $result;
@@ -82,7 +81,8 @@ class Read implements Configurable, Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod([Link::class, 'readProperty'], [$this, 'afterLinkReadProperty']);
+		$aop->afterMethod([File\Link::class,      'readProperty'], [$this, 'afterLinkReadProperty']);
+		$aop->afterMethod([Gaufrette\Link::class, 'readProperty'], [$this, 'afterLinkReadProperty']);
 	}
 
 }
