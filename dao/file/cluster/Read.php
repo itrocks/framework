@@ -7,6 +7,7 @@ use ITRocks\Framework\AOP\Joinpoint\After_Method;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Dao\Gaufrette;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -17,6 +18,7 @@ use ITRocks\Framework\Plugin\Registerable;
  */
 class Read implements Configurable, Registerable
 {
+	use Has_Get;
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
@@ -73,6 +75,22 @@ class Read implements Configurable, Registerable
 			return $result;
 		}
 		return $joinpoint->result;
+	}
+
+	//--------------------------------------------------------------------------------------- getFile
+	/**
+	 * Gets the file from clusters
+	 *
+	 * @param $file_path string
+	 * @return boolean
+	 */
+	public function getFile($file_path)
+	{
+		$cluster_read = new Files_Cluster\Read($this->configuration);
+		if (!file_exists(lLastParse($file_path, SL))) {
+			mkdir(lLastParse($file_path, SL), 0777, true);
+		}
+		return $cluster_read->get($file_path, false);
 	}
 
 	//-------------------------------------------------------------------------------------- register
