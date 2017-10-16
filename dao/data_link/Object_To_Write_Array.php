@@ -91,7 +91,7 @@ class Object_To_Write_Array
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
-	 *The resulting component objects (matches @component @link Object properties of $object)
+	 * The resulting component objects (matches @component @link Object properties of $object)
 	 *
 	 * @var array
 	 */
@@ -320,7 +320,14 @@ class Object_To_Write_Array
 				);
 			}
 			else {
-				$clone = Builder::createClone($value, $property->getType()->asString());
+				$class_name  = $property->getType()->asString();
+				$clone       = Builder::createClone($value, $class_name);
+				$value_class = new Link_Class($class_name);
+				$id_value    = (
+					$value_class->getLinkedClassName()
+					&& !Class_\Link_Annotation::of($element_type->asReflectionClass())->value
+				) ? ('id_' . $value_class->getCompositeProperty()->name)
+					: 'id';
 				$this->object->$id_column_name = $this->link->getObjectIdentifier(
 					$this->link->write($clone, $this->options), $id_value
 				);
