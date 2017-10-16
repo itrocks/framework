@@ -12,6 +12,24 @@ use ITRocks\Framework\Tools\Date_Time;
 abstract class Null_Object
 {
 
+	//---------------------------------------------------------------------------------------- create
+	/**
+	 * Returns a new instance of an object, but sets all its properties values to null
+	 *
+	 * @param $class_name string
+	 * @return object
+	 */
+	public static function create($class_name)
+	{
+		$object = Builder::create($class_name);
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+			if (!$property->isStatic()) {
+				$property->setValue($object, null);
+			}
+		}
+		return $object;
+	}
+
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
 	 * Returns true if the object has only empty or default properties
@@ -28,11 +46,13 @@ abstract class Null_Object
 		if (!isset($class_name)) {
 			$class_name = get_class($object);
 		}
-		$getter_ignore = Getter::ignore(true);
+		$getter_ignore = Getter::$ignore;
 		$is_empty      = true;
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
-				$value = $property->getValue($object);
+				Getter::$ignore = true;
+				$value          = $property->getValue($object);
+				Getter::$ignore = $getter_ignore;
 				if (
 					(is_object($value) && !self::isEmpty($value))
 					|| (!is_object($value) && !$property->isValueEmptyOrDefault($value))
@@ -50,7 +70,6 @@ abstract class Null_Object
 				}
 			}
 		}
-		Getter::ignore($getter_ignore);
 		return $is_empty;
 	}
 
@@ -67,16 +86,18 @@ abstract class Null_Object
 		if (!isset($object)) {
 			return true;
 		}
-		$getter_ignore = Getter::ignore(true);
 		$is_null       = true;
 		/** @var $properties Reflection_Property[] */
 		$properties = (new Reflection_Class(get_class($object)))->accessProperties();
 		if ($properties_filter) {
 			$properties = call_user_func($properties_filter, $properties);
 		}
+		$getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {
 			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
-				$value = $property->getValue($object);
+				Getter::$ignore = true;
+				$value          = $property->getValue($object);
+				Getter::$ignore = $getter_ignore;
 				if (
 					(($value instanceof Date_Time) && !$value->isEmpty())
 					|| (is_object($value) && !self::isNull($value))
@@ -95,26 +116,7 @@ abstract class Null_Object
 				}
 			}
 		}
-		Getter::ignore($getter_ignore);
 		return $is_null;
-	}
-
-	//---------------------------------------------------------------------------------------- create
-	/**
-	 * Returns a new instance of an object, but sets all its properties values to null
-	 *
-	 * @param $class_name string
-	 * @return object
-	 */
-	public static function create($class_name)
-	{
-		$object = Builder::create($class_name);
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
-			if (!$property->isStatic()) {
-				$property->setValue($object, null);
-			}
-		}
-		return $object;
 	}
 
 }
