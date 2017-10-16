@@ -15,15 +15,6 @@ use ITRocks\Framework\Plugin\Registerable;
 class Archive implements Registerable
 {
 
-	//------------------------------------------------------------------------------------------ save
-	/**
-	 * @param $email Email
-	 */
-	public function save(Email $email)
-	{
-		Dao::write($email);
-	}
-
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registration code for the plugin
@@ -34,6 +25,15 @@ class Archive implements Registerable
 	{
 		$aop = $register->aop;
 		$aop->afterMethod([Sender::class, 'send'], [$this, 'save']);
+	}
+
+	//------------------------------------------------------------------------------------------ save
+	/**
+	 * @param $email Email
+	 */
+	public function save(Email $email)
+	{
+		Dao::write($email);
 	}
 
 }
