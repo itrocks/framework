@@ -110,8 +110,8 @@ $('document').ready(function()
 							j = text.indexOf(DQ, i + 1);
 							while (
 								(i = text.indexOf(open, i) + open.length) && (i > (open.length - 1)) && (i < j)
-									&& ((in_depth > 0) || (text[i] < '0') || (text[i] > '9'))
-								) {
+								&& ((in_depth > 0) || (text[i] < '0') || (text[i] > '9'))
+							) {
 								if ((text[i] >= '0') && (text[i] <= '9')) {
 									in_depth --;
 								}
