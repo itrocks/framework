@@ -169,6 +169,33 @@ class Link extends Identifier_Map
 		return false;
 	}
 
+	//----------------------------------------------------------------------------------- getFilePath
+	/**
+	 * @param $object       object
+	 * @param $prefix       string
+	 * @param $storage_name string
+	 * @return string|null
+	 */
+	private function getFilePath($object, $prefix, $storage_name)
+	{
+		$file_system = $this->getFileSystemFor($object);
+		$adapter     = $file_system->filesystem->getAdapter();
+		if ($adapter instanceof Local) {
+			$property = new ReflectionProperty(Local::class, 'directory');
+			if (!$property->isPublic()) {
+				$property->setAccessible(true);
+			}
+			$directory = $property->getValue($adapter);
+			if (!$property->isPublic()) {
+				$property->setAccessible(false);
+			}
+			if ($directory) {
+				return $directory . SL . $prefix . $storage_name;
+			}
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------ getFileSystemFor
 	/**
 	 * @param $object object
@@ -243,22 +270,20 @@ class Link extends Identifier_Map
 			/** @var $object Has_File */
 			if ($storage_name = $object->storage_name) {
 				if ($full_path) {
-					$adapter = $this->getFileSystemFor($object)->filesystem->getAdapter();
-					if ($adapter instanceof Local) {
-						$property = new ReflectionProperty(Local::class, 'directory');
-						if (!$property->isPublic()) {
-							$property->setAccessible(true);
-						}
-						$directory = $property->getValue($adapter);
-						if (!$property->isPublic()) {
-							$property->setAccessible(false);
-						}
-						if ($directory) {
-							return $directory . SL . $prefix . $storage_name;
-						}
+					if ($file_path = $this->getFilePath($object, $prefix, $storage_name)) {
+						return $file_path;
 					}
 				}
 				return $prefix . $storage_name;
+			}
+		}
+		if ($full_path) {
+			if (
+				$file_path = $this->getFilePath(
+					$object, $prefix, $this->getObjectIdentifier($object) . '-' . $property_name
+				)
+			) {
+				return $file_path;
 			}
 		}
 		$file_name = $prefix . $this->getObjectIdentifier($object) . '-' . $property_name;
