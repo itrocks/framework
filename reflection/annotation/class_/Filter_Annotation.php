@@ -16,8 +16,9 @@ class Filter_Annotation extends Method_Annotation
 	const ANNOTATION = 'filter';
 
 	//--------------------------------------------------------------------------------- For constants
-	const FOR_USE  = 'for_use';
-	const FOR_VIEW = 'for_view';
+	const FOR_USE      = 'for_use';
+	const FOR_VIEW     = 'for_view';
+	const NONE_FOR_ALL = 'none_for_all';
 
 	//-------------------------------------------------------------------------------------- $for_use
 	/**
@@ -34,6 +35,15 @@ class Filter_Annotation extends Method_Annotation
 	 * @var boolean
 	 */
 	public $for_view;
+
+	//--------------------------------------------------------------------------------- $none_for_all
+	/**
+	 * If true, an object with no restriction link will not be filtered
+	 * ('no restriction value means no restriction')
+	 *
+	 * @var boolean
+	 */
+	public $none_for_all;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -56,14 +66,19 @@ class Filter_Annotation extends Method_Annotation
 		// set options
 		$default_options = true;
 		if (isset($options)) {
-			foreach (explode(',', $options) as $option) {
-				$option = trim($option);
-				if (property_exists($this, $option)) {
-					$this->$option   = true;
-					$default_options = false;
-				}
-				else {
-					$this->properties[] = $option;
+			foreach (explode(',', $options) as $options2) {
+				$options2 = trim($options2);
+				foreach (explode(SP, $options2) as $option) {
+					$option = trim($option);
+					if (property_exists($this, $option)) {
+						$this->$option = true;
+						if (in_array($option, [self::FOR_USE, self::FOR_VIEW])) {
+							$default_options = false;
+						}
+					}
+					else {
+						$this->properties[] = $option;
+					}
 				}
 			}
 		}
@@ -97,6 +112,15 @@ class Filter_Annotation extends Method_Annotation
 							$elements = [];
 							foreach ($filter->properties as $property_path) {
 								$elements[$property_path] = $element;
+							}
+							if ($filter->none_for_all) {
+								$null_elements = [];
+								foreach ($filter->properties as $property_path) {
+									$null_elements[$property_path] = Func::isNull();
+								}
+								$elements[] = (count($null_elements) > 1)
+									? Func::andOp($null_elements)
+									: $null_elements;
 							}
 							$element = (count($elements) > 1)
 								? Func::orOp($elements)
