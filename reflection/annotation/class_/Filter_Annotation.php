@@ -47,7 +47,7 @@ class Filter_Annotation extends Method_Annotation
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var string
+	 * @var string[]
 	 */
 	public $properties = [];
 
@@ -77,13 +77,13 @@ class Filter_Annotation extends Method_Annotation
 						}
 					}
 					else {
-						$this->properties[] = $option;
+						$this->properties[$option] = $option;
 					}
 				}
 			}
 		}
 		if ($default_options) {
-			$this->for_use  = $this->properties ? false : true;
+			$this->for_use  = true;
 			$this->for_view = true;
 		}
 	}
