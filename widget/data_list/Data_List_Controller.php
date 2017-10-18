@@ -24,6 +24,7 @@ use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Printer\Model;
+use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -545,6 +546,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					$exception->getLine()
 				);
 				$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+				$handler->displayError($handled);
 				$handler->logError($handled);
 			}
 		}
@@ -748,6 +750,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function readDataSelect(
 		$class_name, array $properties_path, array $search, array $options
 	) {
+		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_VIEW)) {
+			$search = $search ? Func::andOp([$filters, $search]) : $filters;
+		}
 		return Dao::select($class_name, $properties_path, $search, $options);
 	}
 

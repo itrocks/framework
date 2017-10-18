@@ -43,7 +43,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				? $class_property->getFinalClass()
 				: $class_property;
 			if ($pos = strpos($value, '::')) {
-				$type_annotation = new Type_Annotation(substr($value, 0, $pos), $class);
+				$type_annotation = new Type_Annotation(substr($value, 0, $pos));
 				if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
 					$type_annotation->value = BS . $class->getName();
 				}

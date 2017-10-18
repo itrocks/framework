@@ -10,6 +10,7 @@ use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Mapper\Map;
+use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
@@ -207,6 +208,10 @@ class Json_Controller implements Default_Feature_Controller
 		if (isset($parameters['filters']) && $parameters['filters']) {
 			$this->applyFiltersToSearch($search, $parameters['filters']);
 		}
+		if ($filters = Filter_Annotation::apply($element_class_name, Filter_Annotation::FOR_USE)) {
+			$search = $search ? Dao\Func::andOp([$filters, $search]) : $filters;
+		}
+
 		// first object only
 		if (isset($parameters['first']) && $parameters['first']) {
 			$objects       = $this->search($search, $element_class_name, [Dao::limit(1)]);
