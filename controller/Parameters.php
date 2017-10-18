@@ -68,7 +68,7 @@ class Parameters
 	 */
 	public function contains($value)
 	{
-		return (array_search($value, $this->parameters) === false) ? false : true;
+		return array_search($value, $this->parameters, true) !== false;
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -372,7 +372,8 @@ class Parameters
 
 	//---------------------------------------------------------------------------------- shiftUnnamed
 	/**
-	 * Returns and remove the first unnamed parameter (which key is an integer and value is not an object)
+	 * Returns and remove the first unnamed parameter
+	 * (which key is an integer and value is not an object)
 	 *
 	 * @return mixed|null
 	 */
@@ -385,17 +386,6 @@ class Parameters
 			}
 		}
 		return null;
-	}
-
-	//-------------------------------------------------------------------------------- unshiftUnnamed
-	/**
-	 * Adds an unnamed parameter as first parameter
-	 *
-	 * @param $parameter_value mixed
-	 */
-	public function unshiftUnnamed($parameter_value)
-	{
-		array_unshift($this->parameters, $parameter_value);
 	}
 
 	//----------------------------------------------------------------------------------------- toGet
@@ -422,7 +412,7 @@ class Parameters
 
 	//--------------------------------------------------------------------------------------- unshift
 	/**
-	 * Unshifts a parameter at beginning of the parameters array
+	 * Unshift a parameter at beginning of the parameters array
 	 *
 	 * @param $parameter_value mixed
 	 */
@@ -438,6 +428,17 @@ class Parameters
 		else {
 			$this->unshiftUnnamed($parameter_value);
 		}
+	}
+
+	//-------------------------------------------------------------------------------- unshiftUnnamed
+	/**
+	 * Adds an unnamed parameter as first parameter
+	 *
+	 * @param $parameter_value mixed
+	 */
+	public function unshiftUnnamed($parameter_value)
+	{
+		array_unshift($this->parameters, $parameter_value);
 	}
 
 }
