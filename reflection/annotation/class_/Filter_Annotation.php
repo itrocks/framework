@@ -100,7 +100,7 @@ class Filter_Annotation extends Method_Annotation
 							}
 							$element = (count($elements) > 1)
 								? Func::orOp($elements)
-								: ($elements ? reset($elements) : null);
+								: $elements;
 						}
 						$search[] = $element;
 					}
