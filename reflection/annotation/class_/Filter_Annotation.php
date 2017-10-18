@@ -111,7 +111,12 @@ class Filter_Annotation extends Method_Annotation
 						if ($filter->properties) {
 							$elements = [];
 							foreach ($filter->properties as $property_path) {
-								$elements[$property_path] = $element;
+								if (($property_path === DOT) || !$property_path) {
+									$elements[] = $element;
+								}
+								else {
+									$elements[$property_path] = $element;
+								}
 							}
 							if ($filter->none_for_all) {
 								$null_elements = [];
