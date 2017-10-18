@@ -34,49 +34,6 @@ class Parser
 	 */
 	public static $default_annotations;
 
-	//---------------------------------------------------------------------------------------- byName
-	/**
-	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
-	 *
-	 * @param $reflection_object Has_Doc_Comment
-	 * @param $annotation_name   string
-	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a
-	 *                           Multiple_Annotation
-	 * @return Annotation|Annotation[]
-	 */
-	public static function byName(
-		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
-	) {
-		$annotation_class = static::getAnnotationClassName(
-			get_class($reflection_object), $annotation_name
-		);
-		if (!isset($multiple)) {
-			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
-		}
-		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
-		$annotations = [];
-		$annotation  = null;
-		$i           = 0;
-		while (($i = strpos($doc_comment, '* @' . $annotation_name, $i)) !== false) {
-			$i += 2;
-			$annotation = self::parseAnnotationValue(
-				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
-			);
-			if (isset($annotation)) {
-				if ($multiple) {
-					$annotations[] = $annotation;
-				}
-				else {
-					break;
-				}
-			}
-		}
-		$annotation = $multiple ? self::multipleRemove($annotations) : (
-			$annotation ? $annotation : new $annotation_class(null, $reflection_object, $annotation_name)
-		);
-		return $annotation;
-	}
-
 	//-------------------------------------------------------------------------------- allAnnotations
 	/**
 	 * Parses all annotations of a reflection object
@@ -128,6 +85,49 @@ class Parser
 			}
 		}
 		return $annotations;
+	}
+
+	//---------------------------------------------------------------------------------------- byName
+	/**
+	 * Parse a given annotation from a reflection class / method / property / etc. doc comment
+	 *
+	 * @param $reflection_object Has_Doc_Comment
+	 * @param $annotation_name   string
+	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a
+	 *                           Multiple_Annotation
+	 * @return Annotation|Annotation[]
+	 */
+	public static function byName(
+		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
+	) {
+		$annotation_class = static::getAnnotationClassName(
+			get_class($reflection_object), $annotation_name
+		);
+		if (!isset($multiple)) {
+			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
+		}
+		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
+		$annotations = [];
+		$annotation  = null;
+		$i           = 0;
+		while (($i = strpos($doc_comment, '* @' . $annotation_name, $i)) !== false) {
+			$i += 2;
+			$annotation = self::parseAnnotationValue(
+				$doc_comment, $annotation_name, $i, $annotation_class, $reflection_object
+			);
+			if (isset($annotation)) {
+				if ($multiple) {
+					$annotations[] = $annotation;
+				}
+				else {
+					break;
+				}
+			}
+		}
+		$annotation = $multiple ? self::multipleRemove($annotations) : (
+			$annotation ? $annotation : new $annotation_class(null, $reflection_object, $annotation_name)
+		);
+		return $annotation;
 	}
 
 	//------------------------------------------------------------------------ getAnnotationClassName
