@@ -285,6 +285,9 @@ class Email
 			if ($date = $parameters->getRawParameter(0)) {
 				$search['date'] = Func::like(Loc::dateToIso($date) . '%');
 			}
+			elseif ($date = $parameters->getRawParameter('since')) {
+				$search['date'] = Func::greaterOrEqual(Loc::dateToIso($date));
+			}
 			else {
 				$search['date'] = Func::greaterOrEqual(Date_Time::today());
 			}
