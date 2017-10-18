@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -80,7 +79,7 @@ class Filter_Annotation extends Method_Annotation
 	 *
 	 * @param $class string|Reflection_Class
 	 * @param $for   string null means 'for any' @values for_use, for_view
-	 * @return Where
+	 * @return object
 	 */
 	public static function apply($class, $for = null)
 	{
@@ -99,9 +98,9 @@ class Filter_Annotation extends Method_Annotation
 							foreach ($filter->properties as $property_path) {
 								$elements[$property_path] = $element;
 							}
-							$element = (count($filter->properties) > 1)
+							$element = (count($elements) > 1)
 								? Func::orOp($elements)
-								: reset($elements);
+								: ($elements ? reset($elements) : null);
 						}
 						$search[] = $element;
 					}
@@ -109,7 +108,7 @@ class Filter_Annotation extends Method_Annotation
 			}
 			$search = (count($search) > 1)
 				? Func::andOp($search)
-				: reset($search);
+				: ($search ? reset($search) : null);
 			return $search;
 		}
 		return null;
