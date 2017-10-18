@@ -246,7 +246,7 @@ class Parser
 				if ($j === false) {
 					trigger_error('Missing doc_comment end', E_USER_ERROR);
 				}
-				$value = trim(preg_replace('%\s*\n\s+\*\s*%', '', substr($doc_comment, $i, $j - $i)));
+				$value = trim(preg_replace('%\s*\n\s+\*\s*%', SP, substr($doc_comment, $i, $j - $i)));
 				break;
 			case CR: case LF:
 				$value = true;
