@@ -36,6 +36,27 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		}
 	}
 
+	//---------------------------------------------------------------------------------- displayError
+	/**
+	 * Displays error, only if ini_get('display_errors') is set, into HTML or console output
+	 *
+	 * @param $error Handled_Error
+	 */
+	public function displayError(Handled_Error $error)
+	{
+		$code = new Error_Code($error->getErrorNumber());
+		if (ini_get('display_errors')) {
+			if ($_SERVER['REMOTE_ADDR'] === 'console') {
+				$this->logError($error, self::STDOUT);
+			}
+			else {
+				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
+				$this->logError($error, self::STDOUT, self::HTML);
+				echo LF . '</div>' . LF;
+			}
+		}
+	}
+
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * @param $text string
@@ -84,17 +105,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		}
 		$code = new Error_Code($error->getErrorNumber());
 
-		if (ini_get('display_errors')) {
-			if ($_SERVER['REMOTE_ADDR'] === 'console') {
-				$this->logError($error, self::STDOUT);
-			}
-			else {
-				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
-				$this->logError($error, self::STDOUT, self::HTML);
-				echo LF . '</div>' . LF;
-			}
-		}
-
+		$this->displayError($error);
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {

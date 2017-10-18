@@ -8,6 +8,7 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Configuration;
 use ITRocks\Framework\Configuration\Configurations;
+use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
@@ -385,7 +386,7 @@ class Main
 	 * @return mixed View data returned by the view the controller called
 	 */
 	public function runController(
-	 	$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
 	) {
 		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
@@ -446,6 +447,7 @@ class Main
 		else {
 			$this->createSession();
 		}
+		ini_set('display_errors', Session::current()->environment === Environment::DEVELOPMENT);
 		if (!Application::current()) {
 			$_SESSION = [];
 			$this->createSession();
