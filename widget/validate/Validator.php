@@ -473,16 +473,10 @@ class Validator implements Registerable
 					->subObjectOption($property->name, true)->properties;
 				$only_properties = (new Option\Only($only_properties))
 					->subObjectOption($property->name, true)->properties;
-				if ($sub_objects) {
-					$composite_property = call_user_func(
-						[get_class(reset($sub_objects)), 'getCompositeProperty']
+				foreach ($sub_objects as $sub_object) {
+					$result = Result::andResult(
+						$result, $this->validate($sub_object, $only_properties, $exclude_properties)
 					);
-					$exclude_properties[] = $composite_property->name;
-					foreach ($sub_objects as $sub_object) {
-						$result = Result::andResult(
-							$result, $this->validate($sub_object, $only_properties, $exclude_properties)
-						);
-					}
 				}
 				// update properties path of report annotations to be relative to parent property
 				$property_class_name = $type->getElementTypeAsString();
@@ -536,6 +530,8 @@ class Validator implements Registerable
 				!$property->isStatic()
 				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
+				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
+				&& !$property->getAnnotation('composite')->value
 			) {
 				// we could do this control for all, but this may run getters and useless data reads
 				// this control was added for date-time format control, and nothing else
