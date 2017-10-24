@@ -468,7 +468,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				[View::TARGET => Target::TOP]
 			),
 			Feature::F_PRINT => new Button(
-				'Print', View::link($class_name, Feature::F_PRINT), Feature::F_PRINT
+				'Print', View::link($class_name, Feature::F_PRINT), Feature::F_PRINT, Target::NEW_WINDOW
 			)
 		];
 	}

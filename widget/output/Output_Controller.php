@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -185,7 +186,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			);
 		}
 		$buttons[Feature::F_PRINT] = new Button(
-			'Print', View::link($object, Feature::F_PRINT), Feature::F_PRINT
+			'Print', View::link($object, Feature::F_PRINT), Feature::F_PRINT, Target::NEW_WINDOW
 		);
 
 		if ($settings && $settings->actions) {
