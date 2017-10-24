@@ -342,7 +342,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		else {
 			$close_link = $default_close_link
 				?: View::link(Names::classToSet(is_object($object) ? get_class($object) : $object));
-			$follows    = [];
+			$follows = [];
 		}
 		return [$close_link, $follows];
 	}
