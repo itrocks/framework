@@ -45,7 +45,11 @@ class Default_View
 		$template_file = Engine::getTemplateFile(
 			$class_name,
 			$feature_names,
-			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null,
+			(
+				isset($parameters[Template::TEMPLATE])
+				? Names::methodToClass($parameters[Template::TEMPLATE])
+				: null
+			),
 			Engine::JSON_TEMPLATE_FILE_EXTENSION
 		);
 		if (!$template_file) {
