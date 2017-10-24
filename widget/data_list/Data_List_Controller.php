@@ -23,7 +23,6 @@ use ITRocks\Framework\History;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
-use ITRocks\Framework\Printer\Model;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
@@ -44,7 +43,6 @@ use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -470,22 +468,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				[View::TARGET => Target::TOP]
 			),
 			Feature::F_PRINT => new Button(
-				'Print',
-				View::link($class_name, Feature::F_PRINT),
-				Feature::F_PRINT, [
-					Button::SUB_BUTTONS => [
-						new Button(
-							'Models',
-							View::link(
-								Names::classToSet(Model::class),
-								Feature::F_LIST,
-								Namespaces::shortClassName($class_name)
-							),
-							Feature::F_LIST,
-							Target::MAIN
-						)
-					]
-				]
+				'Print', View::link($class_name, Feature::F_PRINT), Feature::F_PRINT
 			)
 		];
 	}
