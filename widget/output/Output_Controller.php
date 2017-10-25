@@ -186,7 +186,10 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			);
 		}
 		$buttons[Feature::F_PRINT] = new Button(
-			'Print', View::link($object, Feature::F_PRINT), Feature::F_PRINT, Target::NEW_WINDOW
+			'Print',
+			View::link($object, Feature::F_PRINT),
+			Feature::F_PRINT,
+			[View::TARGET => Target::NEW_WINDOW]
 		);
 
 		if ($settings && $settings->actions) {

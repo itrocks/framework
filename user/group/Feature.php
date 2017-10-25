@@ -43,6 +43,11 @@ class Feature
 		Controller\Feature::F_EXPORT
 	];
 
+	//--------------------------------------------------------------------------------------- F_PRINT
+	const F_PRINT = [
+		Controller\Feature::F_PRINT
+	];
+
 	//---------------------------------------------------------------------------------------- IMPORT
 	const IMPORT = [
 		Controller\Feature::F_IMPORT
@@ -148,6 +153,7 @@ class Feature
 				Feature::API,
 				Feature::EDIT,
 				Feature::EXPORT,
+				Feature::F_PRINT,
 				Feature::IMPORT,
 				Feature::OUTPUT
 			);
@@ -299,6 +305,7 @@ class Feature
 			Controller\Feature::F_EDIT,
 			Controller\Feature::F_EXPORT,
 			Controller\Feature::F_IMPORT,
+			Controller\Feature::F_PRINT,
 			Controller\Feature::F_OUTPUT
 		];
 	}

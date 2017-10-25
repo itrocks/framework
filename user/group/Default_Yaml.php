@@ -156,6 +156,10 @@ class Default_Yaml
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_OUTPUT));
 			$yaml->extendYaml();
 		}
+		elseif (in_array($feature, Feature::F_PRINT)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_PRINT));
+			$yaml->extendYaml();
+		}
 		else {
 			$yaml = false;
 		}
