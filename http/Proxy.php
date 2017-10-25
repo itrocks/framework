@@ -5,7 +5,7 @@ namespace ITRocks\Framework\Http;
  * Http Proxy
  *
  * TODO SSL
- * TODO cookies translations when containing path= and domain= restrictions (ie on www.automotoboutic.com)
+ * TODO cookies translations when containing path= and domain= restrictions (eg automotoboutic.com)
  */
 class Proxy
 {
@@ -16,6 +16,15 @@ class Proxy
 	 * @var null
 	 */
 	const STANDARD = null;
+
+	//------------------------------------------------------------------------------- $accept_charset
+	/**
+	 * Accept charset header
+	 * Unset this to avoid send it
+	 *
+	 * @var string
+	 */
+	public $accept_charset = 'ISO-8859-1,utf-8;q=0.7,*;q=0.7';
 
 	//------------------------------------------------------------------------------------ $automatic
 	/**
@@ -142,6 +151,41 @@ class Proxy
 		return substr($url, 1);
 	}
 
+	//--------------------------------------------------------------------------------- debugFullInfo
+	/**
+	 * Display debugging information
+	 */
+	public function debugFullInfo()
+	{
+		echo '<pre>REQUEST_HEADERS = '  . print_r($this->request_headers, true)  . '</pre>';
+		echo '<pre>RESPONSE_HEADERS = ' . print_r($this->response_headers, true) . '</pre>';
+		if (isset($_POST))   echo '<pre>_POST = '   . print_r($_POST, true)   . '</pre>';
+		if (isset($_SERVER)) echo '<pre>_SERVER = ' . print_r($_SERVER, true) . '</pre>';
+	}
+
+	//--------------------------------------------------------------------------------- debugRedirect
+	/**
+	 * Call this instead of sendResponse() to send headers and response with redirections replaced
+	 * by displayed links
+	 *
+	 * @param $buffer string
+	 */
+	public function debugRedirect(&$buffer)
+	{
+		if ($location = $this->getResponseHeader('Location')) {
+			$this->setResponse(
+				'<a href=' . DQ . $location . DQ . '>#REDIRECT ' . $location . '</a>' . $buffer
+			);
+			$this->removeResponseHeader('Location');
+		}
+		$this->sendResponseHeaders();
+		if ($location) {
+			echo '<pre>' . print_r($this->request_headers, true)  . '</pre>';
+			echo '<pre>' . print_r($this->response_headers, true) . '</pre>';
+		}
+		$this->sendResponse(false);
+	}
+
 	//----------------------------------------------------------------------------- getRequestCookies
 	/**
 	 * Get HTTP response cookies
@@ -240,44 +284,9 @@ class Proxy
 		return null;
 	}
 
-	//--------------------------------------------------------------------------------- debugFullInfo
-	/**
-	 * Display debugging information
-	 */
-	public function debugFullInfo()
-	{
-		echo '<pre>REQUEST_HEADERS = '  . print_r($this->request_headers, true)  . '</pre>';
-		echo '<pre>RESPONSE_HEADERS = ' . print_r($this->response_headers, true) . '</pre>';
-		if (isset($_POST))   echo '<pre>_POST = '   . print_r($_POST, true)   . '</pre>';
-		if (isset($_SERVER)) echo '<pre>_SERVER = ' . print_r($_SERVER, true) . '</pre>';
-	}
-
-	//--------------------------------------------------------------------------------- debugRedirect
-	/**
-	 * Call this instead of sendResponse() to send headers and response with redirections replaced
-	 * by displayed links
-	 *
-	 * @param $buffer string
-	 */
-	public function debugRedirect(&$buffer)
-	{
-		if ($location = $this->getResponseHeader('Location')) {
-			$this->setResponse(
-				'<a href=' . DQ . $location . DQ . '>#REDIRECT ' . $location . '</a>' . $buffer
-			);
-			$this->removeResponseHeader('Location');
-		}
-		$this->sendResponseHeaders();
-		if ($location) {
-			echo '<pre>' . print_r($this->request_headers, true)  . '</pre>';
-			echo '<pre>' . print_r($this->response_headers, true) . '</pre>';
-		}
-		$this->sendResponse(false);
-	}
-
 	//-------------------------------------------------------------------------- removeResponseHeader
 	/**
-	 * Remove reponse header having name $header
+	 * Remove response header having name $header
 	 *
 	 * @param $header string
 	 */
@@ -312,7 +321,8 @@ class Proxy
 			$url['path'] = SL;
 		}
 		$host = $url['host'];
-		$f    = @fsockopen(
+		/** @noinspection PhpUsageOfSilenceOperatorInspection managed */
+		$f = @fsockopen(
 			(($url['scheme'] == 'https') ? 'ssl://' : '') . $host,
 			$url['port'] ? $url['port'] : (($url['scheme'] == 'https') ? 443 : 80),
 			$errno, $error, 30
@@ -335,7 +345,9 @@ class Proxy
 			}
 			fputs($f, 'Host: ' . $host . CR . LF);
 			//fputs($f, 'X-Forwarded-For: ' . $_SERVER['REMOTE_ADDR'] . CR . LF);
-			fputs($f, 'Accept-Charset: ISO-8859-1,utf-8;q=0.7,*;q=0.7' . CR . LF);
+			if ($this->accept_charset) {
+				fputs($f, 'Accept-Charset: ' . $this->accept_charset . CR . LF);
+			}
 			foreach ($this->request_headers as $header => $value) {
 				if ($header == 'Content-Length') {
 					if ($this->method === Http::POST) {
