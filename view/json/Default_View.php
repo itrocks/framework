@@ -47,7 +47,7 @@ class Default_View
 			$feature_names,
 			(
 				isset($parameters[Template::TEMPLATE])
-				? Names::methodToClass($parameters[Template::TEMPLATE])
+				? Names::propertyToClass($parameters[Template::TEMPLATE])
 				: null
 			),
 			Engine::JSON_TEMPLATE_FILE_EXTENSION
