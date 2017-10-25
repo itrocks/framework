@@ -12,25 +12,12 @@ class Session implements Serializable
 
 	//--------------------------------------------------------------------------------------- CURRENT
 	/**
-	 * A 'current' constant used for array storages / current method dynamic calls
+	 * A 'current' constant used for array storage / current method dynamic calls
 	 */
 	const CURRENT = 'current';
 
 	//--------------------------------------------------------------------------------------- PLUGINS
 	const PLUGINS = 'plugins';
-
-	//-------------------------------------------------------------------------------------- $stopped
-	/**
-	 * When true, the session will be closed at the end of the script execution.
-	 * This is the case when an action disconnects the action : all session data will be reset,
-	 * including the session id.
-	 *
-	 * Do not set this directly to true : call stop()
-	 *
-	 * @see stop()
-	 * @var boolean
-	 */
-	public $stopped = false;
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
@@ -50,6 +37,19 @@ class Session implements Serializable
 	 * @var Manager
 	 */
 	public $plugins;
+
+	//-------------------------------------------------------------------------------------- $stopped
+	/**
+	 * When true, the session will be closed at the end of the script execution.
+	 * This is the case when an action disconnects the action : all session data will be reset,
+	 * including the session id.
+	 *
+	 * Do not set this directly to true : call stop()
+	 *
+	 * @see stop()
+	 * @var boolean
+	 */
+	public $stopped = false;
 
 	//-------------------------------------------------------------------------- $temporary_directory
 	/**
