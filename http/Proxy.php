@@ -404,11 +404,16 @@ class Proxy
 	//--------------------------------------------------------------------------- sendResponseHeaders
 	/**
 	 * Send response headers from $this->response_headers to PHP header() calls
+	 *
+	 * @param $only_headers string[]
 	 */
-	public function sendResponseHeaders()
+	public function sendResponseHeaders(array $only_headers = [])
 	{
+		$only_headers = array_flip($only_headers);
 		foreach ($this->response_headers as $header) {
-			header($header);
+			if (isset($only_headers[lParse($header, ':')]) || !$only_headers) {
+				header($header);
+			}
 		}
 	}
 
