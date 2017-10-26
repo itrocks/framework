@@ -20,9 +20,9 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -213,6 +213,28 @@ class Validator implements Registerable
 		return $validator_on;
 	}
 
+	//----------------------------------------------------------------------------- getAllAnnotations
+	/**
+	 * Get all annotations of a Reflection object including those already in cache
+	 * Note: Parser::allAnnotations() used by Annoted::getAnnotations() does not get cached
+	 *       annotations that have been dynamically added. It gets only those from source code
+	 *
+	 * @param $reflection Reflection_Property|Reflection_Class
+	 * @return Reflection\Annotation[]
+	 */
+	private function getAllAnnotations($reflection)
+	{
+		$cached_annotations = $reflection->getCachedAnnotations();
+		$annotations = $reflection->getAnnotations();
+		foreach($cached_annotations as $annotation_name => $cached_annotation) {
+			$annotation = $cached_annotation[0];
+			if (!isset($annotations[$annotation_name])) {
+				$annotations[$annotation_name] = $annotation;
+			}
+		}
+		return $annotations;
+	}
+
 	//-------------------------------------------------------------------------------- getConfirmLink
 	/**
 	 * @return string
@@ -380,9 +402,7 @@ class Validator implements Registerable
 	{
 		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
-			$class->getAnnotation(Link_Annotation::ANNOTATION)->value
-				? $class->getLinkProperties()
-				: $class->accessProperties()
+			Link_Annotation::of($class)->value ? $class->getLinkProperties() : $class->accessProperties()
 		);
 
 		$this->valid = Result::andResult(
@@ -508,7 +528,7 @@ class Validator implements Registerable
 	 */
 	protected function validateObject($object, Reflection_Class $class)
 	{
-		return $this->validateAnnotations($object, $class->getAnnotations());
+		return $this->validateAnnotations($object, $this->getAllAnnotations($class));
 	}
 
 	//---------------------------------------------------------------------------- validateProperties
@@ -533,14 +553,15 @@ class Validator implements Registerable
 				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 				&& !$property->getAnnotation('composite')->value
 			) {
+				$type = $property->getType();
 				// we could do this control for all, but this may run getters and useless data reads
 				// this control was added for date-time format control, and nothing else
 				$var_is_valid = true;
 				if (
-					$property->getType()->isDateTime()
+					$type->isDateTime()
 					&& ($property->getValue($object) instanceof Date_Time_Error)
 				) {
-					$var_annotation = new Var_Annotation($property->getType()->asString(), $property);
+					$var_annotation = new Var_Annotation($type->asString(), $property);
 					$var_annotation->reportMessage(Loc::tr('bad format'));
 					$var_annotation->valid = Result::ERROR;
 					$this->report[]        = $var_annotation;
@@ -550,14 +571,14 @@ class Validator implements Registerable
 				if ($var_is_valid) {
 					// if value is not set and is a link (component or not), then we validate only mandatory
 					if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
-						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, [$property->getAnnotation(Mandatory_Annotation::ANNOTATION)]
-						));
+							$result = Result::andResult($result, $this->validateAnnotations(
+								$object, [Mandatory_Annotation::of($property)]
+							));
 					}
 					// otherwise we validate all annotations, and recurse if is component
 					else {
 						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, $property->getAnnotations()
+							$object, $this->getAllAnnotations($property)
 						));
 						if ($property->getAnnotation('component')->value) {
 							$result = Result::andResult($result, $this->validateComponent(
