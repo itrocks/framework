@@ -11,11 +11,11 @@ namespace ITRocks\Framework\Widget\Validate;
 class Test_Object
 {
 
-	//----------------------------------------------------------------------------- NOT_VALID_MESSAGE
-	const NOT_VALID_MESSAGE = 'This is not value';
-
 	//----------------------------------------------------------------------------- NOT_VALID_DYNAMIC
 	const NOT_VALID_DYNAMIC = 'This is dynamic';
+
+	//----------------------------------------------------------------------------- NOT_VALID_MESSAGE
+	const NOT_VALID_MESSAGE = 'This is not a value';
 
 	//------------------------------------------------------------------------------------- $property
 	/**
