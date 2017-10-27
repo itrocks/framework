@@ -11,8 +11,11 @@ namespace ITRocks\Framework\Widget\Validate;
 class Test_Object
 {
 
-	//--------------------------------------------------------------------------------------- MESSAGE
-	const MESSAGE = 'This is not value';
+	//----------------------------------------------------------------------------- NOT_VALID_MESSAGE
+	const NOT_VALID_MESSAGE = 'This is not value';
+
+	//----------------------------------------------------------------------------- NOT_VALID_DYNAMIC
+	const NOT_VALID_DYNAMIC = 'This is dynamic';
 
 	//------------------------------------------------------------------------------------- $property
 	/**
@@ -22,6 +25,17 @@ class Test_Object
 	 * @var string
 	 */
 	protected $property = 'its-value';
+
+	//------------------------------------------------------------------------------- notValidDynamic
+	/**
+	 * A validation function that returns true
+	 *
+	 * @return boolean
+	 */
+	public static function notValidDynamic()
+	{
+		return self::NOT_VALID_DYNAMIC;
+	}
 
 	//--------------------------------------------------------------------------------- notValidFalse
 	/**
@@ -42,7 +56,7 @@ class Test_Object
 	 */
 	public function notValidMessage()
 	{
-		return self::MESSAGE;
+		return self::NOT_VALID_MESSAGE;
 	}
 
 	//------------------------------------------------------------------------------------- validTrue
