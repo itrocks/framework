@@ -90,8 +90,15 @@ trait Annoted
 			return $this->getCachedAnnotation($annotation_name, true);
 		}
 		else {
-			/** @var $this Annoted|Has_Doc_Comment */
-			return Parser::allAnnotations($this);
+			$cached_annotations = $this->getCachedAnnotations();
+			$annotations        = Parser::allAnnotations($this);
+			foreach($cached_annotations as $annotation_name => $cached_annotation) {
+				$annotation = $cached_annotation[0];
+				if (!isset($annotations[$annotation_name])) {
+					$annotations[$annotation_name] = $annotation;
+				}
+			}
+			return $annotations;
 		}
 	}
 
