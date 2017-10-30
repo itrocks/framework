@@ -267,13 +267,13 @@ thead>tr>th {
 	z-index: 1000000000 !important;
 
 	&:after {
-		content: 'x';
+		content: 'X';
 		cursor: pointer;
 		position: absolute;
-		right: 3px;
+		right: -1px;
 		text-align: center;
-		top: 0;
-		width: 1em;
+		top: -3px;
+		width: 1.5em;
 	}
 
 	&:before {
