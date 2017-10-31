@@ -95,7 +95,7 @@ trait Annoted
 			// parse phpdoc annotations
 			$annotations        = Parser::allAnnotations($this);
 			// merge cached annotations in parsed annotations
-			foreach($cached_annotations as $annotation_name => $cached_annotation) {
+			foreach ($cached_annotations as $annotation_name => $cached_annotation) {
 				$annotation = $cached_annotation[0];
 				if (!isset($annotations[$annotation_name])) {
 					$annotations[$annotation_name] = $annotation;
