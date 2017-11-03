@@ -15,14 +15,6 @@ abstract class Element
 	//-------------------------------------------------------------------------------- BUILD_MODE_RAW
 	const BUILD_MODE_RAW = 'raw';
 
-	//----------------------------------------------------------------------------------- $build_mode
-	/**
-	 * In AUTO mode, check content to format as list or table, in RAW strictly build content
-	 *
-	 * @var boolean
-	 */
-	private $build_mode = self::BUILD_MODE_AUTO;
-
 	//----------------------------------------------------------------------------------- $attributes
 	/**
 	 * Available attributes
@@ -30,6 +22,14 @@ abstract class Element
 	 * @var Attribute[] key is the attribute name
 	 */
 	private $attributes = [];
+
+	//----------------------------------------------------------------------------------- $build_mode
+	/**
+	 * In AUTO mode, check content to format as list or table, in RAW strictly build content
+	 *
+	 * @var boolean
+	 */
+	private $build_mode = self::BUILD_MODE_AUTO;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -256,13 +256,21 @@ abstract class Element
 
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
+	 * Sets a value for an HTML attribute.
+	 *
+	 * Beware boolean attributes :
+	 * - if value is false or equivalent (eg null), the attribute will not appear in HTML !
+	 * - call this with true to get boolean attributes visible
+	 *
+	 * This is why true is the default for $value
+	 *
 	 * @param $name  string
-	 * @param $value string
+	 * @param $value boolean|integer|string
 	 * @return Attribute
 	 */
-	public function setAttribute($name, $value = null)
+	public function setAttribute($name, $value = true)
 	{
-		if ($name == 'name') {
+		if ($name === 'name') {
 			// this is because PHP does not like '.' into names of GET/POST vars
 			$value = str_replace(DOT, '>', $value);
 		}
@@ -279,6 +287,15 @@ abstract class Element
 		return $this->attributes[$attr->name] = $attr;
 	}
 
+	//---------------------------------------------------------------------------------- setBuildMode
+	/**
+	 * @param $build_mode string
+	 */
+	public function setBuildMode($build_mode)
+	{
+		$this->build_mode = $build_mode;
+	}
+
 	//------------------------------------------------------------------------------------ setContent
 	/**
 	 * @param $content string|string[]|mixed[] mixed[] means string[][] for build_mode AUTO
@@ -291,21 +308,12 @@ abstract class Element
 	//--------------------------------------------------------------------------------------- setData
 	/**
 	 * @param $name  string
-	 * @param $value string
+	 * @param $value boolean|integer|string
 	 * @return Attribute
 	 */
-	public function setData($name, $value = null)
+	public function setData($name, $value = true)
 	{
 		return $this->setAttributeNode(new Attribute('data-' . $name, $value));
-	}
-
-	//---------------------------------------------------------------------------------- setBuildMode
-	/**
-	 * @param $build_mode string
-	 */
-	public function setBuildMode($build_mode)
-	{
-		$this->build_mode = $build_mode;
 	}
 
 	//-------------------------------------------------------------------------------------- setStyle

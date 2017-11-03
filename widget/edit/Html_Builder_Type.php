@@ -199,7 +199,7 @@ class Html_Builder_Type
 			$input->setAttribute('value', (string)$value);
 			$checkbox = new Input();
 			$checkbox->setAttribute('type', 'checkbox');
-			$checkbox->setAttribute('value', 1);
+			$checkbox->setAttribute('value', true);
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);
 				$this->setInputAsReadOnly($checkbox);

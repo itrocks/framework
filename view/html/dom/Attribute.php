@@ -19,6 +19,26 @@ class Attribute
 	 */
 	public $value;
 
+	//---------------------------------------------------------------------------- BOOLEAN_ATTRIBUTES
+	/**
+	 * These attributes name accept only boolean values, but they must parse in HTML like this :
+	 * true => 'attributeName' ; false => '' (not parsed
+	 *
+	 * Others attributes will be parsed the standard way :
+	 * true => 'attributeName="1"' ; false => 'attributeName=""'
+	 *
+	 * @example
+	 * - value can accept boolean and must be value="1" for true, or value="" for false
+	 * - readonly will be true or false, and will be displayed as 'readonly' for true or '' for false
+	 * @see https://html.spec.whatwg.org/#attributes-3
+	 */
+	const BOOLEAN_ATTRIBUTES = [
+		'allowfullscreen', 'allowpaymentrequest', 'allowusermedia', 'async', 'autofocus', 'autoplay',
+		'checked', 'controls', 'default', 'defer', 'disabled', 'formnovalidate', 'hidden', 'ismap',
+		'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline',
+		'readonly', 'required', 'reversed', 'selected', 'truespeed', 'typemustmatch'
+	];
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name string
@@ -28,6 +48,21 @@ class Attribute
 	{
 		if (isset($name))  $this->name  = $name;
 		if (isset($value)) $this->value = $value;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		// boolean attributes are returned as 'here' / 'not here'
+		if (is_bool($this->value) && in_array(strtolower($this->name), static::BOOLEAN_ATTRIBUTES)) {
+			return $this->value ? $this->name : '';
+		}
+		// non-boolean attributes are returned with their value, don't care what it is
+		// (true => "1", false => "")
+		return $this->name . (isset($this->value) ? ('=' . self::escapeValue($this->value)) : '');
 	}
 
 	//----------------------------------------------------------------------------------- escapeValue
@@ -43,26 +78,7 @@ class Attribute
 		elseif (strpos($value, Q) === false) {
 			return Q . $value . Q;
 		}
-		else {
-			return DQ . htmlspecialchars($value) . DQ;
-		}
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		if ($this->value === true) {
-			return $this->name;
-		}
-		elseif ($this->value === false) {
-			return '';
-		}
-		else {
-			return $this->name . (isset($this->value) ? ('=' . self::escapeValue($this->value)) : '');
-		}
+		return DQ . htmlspecialchars($value) . DQ;
 	}
 
 }
