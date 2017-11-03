@@ -196,7 +196,7 @@ class Html_Builder_Type
 		else {
 			$input = new Input($this->getFieldName());
 			$input->setAttribute('type', 'hidden');
-			$input->setAttribute('value', value);
+			$input->setAttribute('value', $value);
 			$checkbox = new Input();
 			$checkbox->setAttribute('type', 'checkbox');
 			$checkbox->setAttribute('value', true);
