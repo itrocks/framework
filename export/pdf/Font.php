@@ -12,14 +12,12 @@ abstract class Font
 	const DINGBATS  = 'zapfdingbats';
 	const HELVETICA = 'helvetica';
 	const SYMBOL    = 'symbol';
-	//----------------------------------------------------------------------------------------- TIMES
 	const TIMES     = 'times';
 
 	//------------------------------------------------------------------------- font styles constants
-	const NORMAL = '';
 	const BOLD   = 'B';
-	//---------------------------------------------------------------------------------------- ITALIC
 	const ITALIC = 'I';
+	const NORMAL = '';
 
 	//------------------------------------------------------------------------------------------- get
 	/**

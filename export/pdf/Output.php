@@ -7,10 +7,10 @@ namespace ITRocks\Framework\Export\PDF;
 abstract class Output
 {
 
+	//------------------------------------------------------------------------ Output modes constants
 	const DOWNLOAD = 'D';
 	const INLINE   = 'I';
 	const FILE     = 'F';
-	//---------------------------------------------------------------------------------------- STRING
 	const STRING   = 'S';
 
 }

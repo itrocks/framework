@@ -11,7 +11,6 @@ class Html_Session implements Activable, Configurable
 {
 
 	//----------------------------------------------- Html session configuration array keys constants
-	//------------------------------------------------------------------------------------ USE_COOKIE
 	const USE_COOKIE = 'use_cookie';
 
 	//----------------------------------------------------------------------------------- $use_cookie

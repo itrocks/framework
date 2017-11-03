@@ -7,6 +7,7 @@ namespace ITRocks\Framework\SSO;
  */
 class Application
 {
+
 	//------------------------------------------------------------------------------ MAX_SESSION_TIME
 	const MAX_SESSION_TIME = 'max_session_time';
 

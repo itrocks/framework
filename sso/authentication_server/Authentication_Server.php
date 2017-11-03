@@ -14,6 +14,7 @@ use ITRocks\Framework\User;
  */
 class Authentication_Server implements Configurable, Registerable
 {
+
 	//---------------------------------------------------------------------------------- APPLICATIONS
 	const APPLICATIONS = 'applications';
 

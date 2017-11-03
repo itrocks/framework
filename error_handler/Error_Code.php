@@ -7,8 +7,8 @@ namespace ITRocks\Framework\Error_Handler;
 class Error_Code
 {
 
-	/** Unknown error code message */
 	//--------------------------------------------------------------------------------------- UNKNOWN
+	/** Unknown error code message */
 	const UNKNOWN = 'unknown';
 
 	//------------------------------------------------------------------------------------- $CAPTIONS

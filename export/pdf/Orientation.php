@@ -7,8 +7,8 @@ namespace ITRocks\Framework\Export\PDF;
 abstract class Orientation
 {
 
+	//------------------------------------------------------------------------- Orientation constants
 	const LANDSCAPE = 'L';
-	//-------------------------------------------------------------------------------------- PORTRAIT
 	const PORTRAIT  = 'P';
 
 }
