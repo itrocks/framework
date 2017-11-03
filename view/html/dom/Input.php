@@ -24,7 +24,7 @@ class Input extends Element
 	//---------------------------------------------------------------------------------- setAttribute
 	/**
 	 * @param $name  string
-	 * @param $value string
+	 * @param $value boolean|integer|string
 	 * @return Attribute
 	 */
 	public function setAttribute($name, $value = null)

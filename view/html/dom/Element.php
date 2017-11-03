@@ -279,12 +279,12 @@ abstract class Element
 
 	//------------------------------------------------------------------------------ setAttributeNode
 	/**
-	 * @param $attr Attribute
+	 * @param $attribute Attribute
 	 * @return Attribute
 	 */
-	public function setAttributeNode(Attribute $attr)
+	public function setAttributeNode(Attribute $attribute)
 	{
-		return $this->attributes[$attr->name] = $attr;
+		return $this->attributes[$attribute->name] = $attribute;
 	}
 
 	//---------------------------------------------------------------------------------- setBuildMode
