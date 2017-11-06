@@ -90,7 +90,7 @@ class Read implements Configurable, Registerable
 		if (!file_exists(lLastParse($file_path, SL))) {
 			mkdir(lLastParse($file_path, SL), 0777, true);
 		}
-		return $cluster_read->get($file_path, false);
+		return $cluster_read->get($file_path);
 	}
 
 	//-------------------------------------------------------------------------------------- register
