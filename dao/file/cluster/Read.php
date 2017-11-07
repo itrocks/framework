@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Dao\File\Cluster;
 
 use Files_Cluster;
 use Files_Cluster\Configuration;
+use Files_Cluster\Configuration\Clusters;
+use Files_Cluster\Configuration\Directories;
 use ITRocks\Framework\AOP\Joinpoint\After_Method;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Dao\Gaufrette;
@@ -48,9 +50,11 @@ class Read implements Configurable, Registerable
 		elseif (is_string($configuration)) {
 			$this->configuration_file = $configuration;
 		}
-		if (!$this->configuration && file_exists($this->configuration_file)) {
-			/** @noinspection PhpIncludeInspection dynamic include */
-			$this->configuration = include($this->configuration_file);
+		if (!$this->configuration) {
+			$this->configuration = file_exists($this->configuration_file)
+				/** @noinspection PhpIncludeInspection dynamic include */
+				? include($this->configuration_file)
+				: new Configuration(new Clusters([]), new Directories([]));
 		}
 	}
 
