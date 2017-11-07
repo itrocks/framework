@@ -9,8 +9,8 @@ abstract class Output
 
 	//------------------------------------------------------------------------ Output modes constants
 	const DOWNLOAD = 'D';
-	const INLINE   = 'I';
 	const FILE     = 'F';
+	const INLINE   = 'I';
 	const STRING   = 'S';
 
 }

@@ -73,7 +73,6 @@ class Column implements Sql\Column
 	 */
 	private $Null;
 
-
 	//----------------------------------------------------------------------------------------- $Type
 	/**
 	 * Mysql data type
@@ -91,7 +90,6 @@ class Column implements Sql\Column
 	 * @var string
 	 */
 	private $Type;
-
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

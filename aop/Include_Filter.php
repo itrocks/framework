@@ -19,8 +19,8 @@ class Include_Filter extends php_user_filter
 	const CACHE_DIR = 'cache/compiled';
 
 	//-------------------------------------------------------------------------------------------- ID
-
 	const ID = 'aop.include';
+
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * The name of the file currently being included
