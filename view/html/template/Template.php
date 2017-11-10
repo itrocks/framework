@@ -848,6 +848,9 @@ class Template
 						$this->included[$include_uri] = $included;
 					}
 				}
+				else {
+					trigger_error('Could not resolve' . SP . $include_uri, E_USER_ERROR);
+				}
 			}
 			if (isset($this->included[$include_uri])) {
 				return $this->parseVars($this->included[$include_uri]);
@@ -877,11 +880,17 @@ if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
 		if (beginsWith($include_uri, SL)) {
 			$include_uri = substr($include_uri, 1);
 		}
-		if (strpos($include_uri, SL)) {
-			$include_uri = strtolower(lLastParse($include_uri, SL)) . SL . rLastParse($include_uri, SL);
-		}
 if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . BR;
-		$resolve = stream_resolve_include_path($include_uri);
+		if (ctype_lower($include_uri[0]) && strpos($include_uri, SL)) {
+			$resolve = stream_resolve_include_path($include_uri);
+		}
+		else {
+			$class_name = strpos($include_uri, SL)
+				? Names::pathToClass(lLastParse($include_uri, SL))
+				: get_class(reset($this->objects));
+			$feature_name = lParse(rLastParse($include_uri, SL, 1, true), '.html');
+			$resolve      = Engine::getTemplateFile($class_name, [$feature_name]);
+		}
 if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($resolve) . BR;
 		return $resolve;
 	}
