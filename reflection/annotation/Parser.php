@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Annotation_In;
+use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -231,7 +232,13 @@ class Parser
 	private static function parseAnnotationValue(
 		$doc_comment, $annotation_name, &$i, $annotation_class, Reflection $reflection_object
 	) {
-		$i        += strlen($annotation_name) + 1;
+		$i += strlen($annotation_name) + 1;
+		if (
+			is_a($annotation_class, Do_Not_Inherit::class, true)
+			&& ($i >= strpos($doc_comment, LF . self::DOC_COMMENT_IN))
+		) {
+			return null;
+		}
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
 			case SP: case TAB:
