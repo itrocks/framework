@@ -117,16 +117,14 @@ if (isset($GLOBALS['D']) && $suffix) static::debug('A6', $path . SL . $suffix . 
 				}
 			}
 
-			// next application is the parent one
-			$application_class = next($application_classes);
-		} while ($application_class);
+		} while ($application_class = next($application_classes));
 
 		// Looking for default controller for each application
 		if (empty($class)) {
-			reset($application_classes);
+			$application_class = reset($application_classes);
 			do {
-				// looking for default controller
-				$path = strtolower(str_replace(BS, SL, $namespace));
+				$namespace = Namespaces::of($application_class);
+				$path      = strtolower(str_replace(BS, SL, $namespace));
 if (isset($GLOBALS['D']) && $suffix) static::debug('B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
 				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
 					$class = $namespace . BS . $feature_class . BS . $suffix;
@@ -173,7 +171,7 @@ if (isset($GLOBALS['D'])) static::debug('B6', $path . SL . 'webservice' . SL . s
 				}
 
 				// next application is the parent one
-			} while(next($application_classes));
+			} while ($application_class = next($application_classes));
 
 			// Looking for direct feature call, without using any controller
 			static $last_controller_class  = '';
@@ -202,7 +200,6 @@ if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $exten
 
 			// Looking for default controller for each application
 			if (empty($class) && $suffix) {
-				reset($application_classes);
 				// $suffix == 'Html_View' => $sub = 'View/Html', $suffix = 'View'
 				if (strpos($suffix, '_')) {
 					$elements = explode('_', $suffix);
@@ -213,13 +210,16 @@ if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $exten
 				else {
 					$sub = $suffix;
 				}
+				$application_class = reset($application_classes);
 				do {
+					$namespace = Namespaces::of($application_class);
+					$path      = strtolower(str_replace(BS, SL, $namespace));
 if (isset($GLOBALS['D'])) static::debug('C2', $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext, 'run', $extension);
 					if (file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
 					}
-				} while (next($application_classes));
+				} while ($application_class = next($application_classes));
 			}
 
 		}
