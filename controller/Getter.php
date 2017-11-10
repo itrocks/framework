@@ -57,7 +57,7 @@ abstract class Getter
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';
-		$application_classes = Application::current()->getClassesTree();
+		$application_classes = Application::current()->getClassesTree(true);
 		$class_name          = $base_class;
 		$ext                 = DOT . $extension;
 		$feature_class       = Names::methodToClass($feature_name);

@@ -1,12 +1,13 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * The class for the global application object
  *
- * The application class must be overriden by each application.
+ * The application class must be overridden by each application.
  */
 class Application
 {
@@ -91,11 +92,78 @@ class Application
 	 * Get application class name, and all its parent applications class names
 	 * Include extended parents using T_EXTENDS clause or @extends annotation
 	 *
-	 * @return string[]
+	 * If $flat is not set :
+	 * The result key is the name of the class, the value is the list of its parents, with the same
+	 * structure, recursively
+	 *
+	 * If $flat is set :
+	 * The result key is the name of the class, values is an array of up to 2 elements :
+	 * - key 'children' : the value is an array of [$child_class_name => true]
+	 * - key 'parents' : the value is an array of [$parent_class_name => true]
+	 *
+	 * @example
+	 * not $flat : ['Application\Class' => ['ITRocks\Framework' => true]]
+	 * @example
+	 * $flat : [
+	 *   'Application\Class' => ['children' => ['ITRocks\Framework' => true]],
+	 *   'ITRocks\Framework' => ['parents' => ['Application\Class]]
+	 * ]
+	 * @param $flat boolean if false, returned as tree. If true, returns a flat string[]
+	 * @return array The classes tree
 	 */
-	public function getClassesTree()
+	public function getClassesTree($flat = false)
 	{
-		return array_merge([get_class($this)], static::getParentClasses(true));
+		// tree
+		static $tree = null;
+		if (!isset($tree)) {
+			$tree = [get_class($this) => static::getParentClasses(true)];
+		}
+		if (!$flat) {
+			return $tree;
+		}
+		// flat
+		static $flat = [];
+		if ($flat) {
+			return $flat;
+		}
+		$classes = $this->getClassTreeToArray($tree);
+		do {
+			$trailing_classes = [];
+			foreach ($classes as $class_name => $relations) {
+				$children          = isset($relations['children']) ? $relations['children'] : [];
+				$all_children_done = true;
+				foreach ($children as $child) {
+					if (!isset($flat[$child])) {
+						$all_children_done = false;
+						break;
+					}
+				}
+				if ($all_children_done) {
+					$flat[$class_name] = $class_name;
+				}
+				else {
+					$trailing_classes[$class_name] = $relations;
+				}
+			}
+		} while ($classes = $trailing_classes);
+		return $flat = array_values($flat);
+	}
+
+	//--------------------------------------------------------------------------- getClassTreeToArray
+	/**
+	 * @param $class_tree array
+	 * @return array integer $dependencies_count[string $class_name][string $parent_class_name]
+	 */
+	public function getClassTreeToArray(array $class_tree, array &$result = [])
+	{
+		foreach ($class_tree as $class_name => $parents) {
+			foreach (array_keys($parents) as $parent_class_name) {
+				$result[$class_name]['parents'][$parent_class_name]  = $parent_class_name;
+				$result[$parent_class_name]['children'][$class_name] = $class_name;
+			}
+			$this->getClassTreeToArray($parents, $result);
+		}
+		return $result;
 	}
 
 	//---------------------------------------------------------------------------------- getNamespace
@@ -137,27 +205,33 @@ class Application
 	 * Include extended parents using T_EXTENDS clause or @extends annotation
 	 *
 	 * @param $recursive boolean get all parents if true
-	 * @return string[] applications class names
+	 * @return array[] applications class names : key = class name, value = children class names
 	 */
 	public static function getParentClasses($recursive = false)
 	{
-		$class_name = get_called_class();
-		$class = new Reflection_Class($class_name);
+		$class_name          = get_called_class();
+		$class               = new Reflection_Class($class_name);
 		$parent_class_name   = get_parent_class($class_name);
-		$extends_annotations = $class->getListAnnotations('extends');
-		$extends_class_names = [];
-		foreach ($extends_annotations as $extends_annotation) {
-			$extends_class_names = array_merge($extends_class_names, $extends_annotation->values());
+		$extends_annotations = Extends_Annotation::allOf($class);
+		$parents             = [];
+		// 1st : php extends
+		if ($parent_class_name) {
+			$parents[$parent_class_name] = [];
 		}
-		$parents = $parent_class_name
-			? array_merge([$parent_class_name], $extends_class_names)
-			: $extends_class_names;
-		if ($recursive) {
-			foreach ($parents as $parent_class) if ($parent_class) {
-				$parents = array_merge($parents, call_user_func([$parent_class, 'getParentClasses'], true));
+		// 2nd : @extends annotations
+		foreach ($extends_annotations as $extends_annotation) {
+			foreach ($extends_annotation->values() as $extends) {
+				$parents[$extends] = [];
 			}
 		}
-		return array_unique($parents);
+		// next : up to extended classes
+		if ($recursive) {
+			foreach (array_keys($parents) as $extends) {
+				/** @noinspection PhpUndefinedMethodInspection sure it extends static */
+				$parents[$extends] = $extends::getParentClasses(true);
+			}
+		}
+		return $parents;
 	}
 
 	//------------------------------------------------------------------------- getTemporaryFilesPath
