@@ -10,7 +10,7 @@ use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -159,7 +159,7 @@ class Summary_Builder
 								$property = $properties[$property_name];
 								if (Link_Annotation::of($property)->value) {
 									$prefix = ($master_path ? ($master_path . DOT) : '')
-										. Storage_Annotation::of($property)->value . DOT;
+										. Store_Name_Annotation::of($property)->value . DOT;
 								}
 							}
 							$build = $this->buildPath($prefix . $key, $value, $sub_clause);

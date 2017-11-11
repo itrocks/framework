@@ -11,13 +11,12 @@ use ITRocks\Framework\Dao\Event\Property_Remove;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
-use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -280,7 +279,7 @@ class Write extends Data_Link\Write
 				/** @var $property Reflection_Property $link annotates a Reflection_Property */
 				$property_name = $property->getName();
 				$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
-				$column_name  .= Storage_Annotation::of($properties[$property_name])->value;
+				$column_name  .= Store_Name_Annotation::of($properties[$property_name])->value;
 				if (isset($write[$column_name])) {
 					$search[$property_name] = $write[$column_name];
 				}
@@ -308,7 +307,7 @@ class Write extends Data_Link\Write
 				foreach ($search as $property_name => $value) {
 					$property     = $properties[$property_name];
 					$column_name  = Dao::storedAsForeign($property) ? 'id_' : '';
-					$column_name .= Storage_Annotation::of($property)->value;
+					$column_name .= Store_Name_Annotation::of($property)->value;
 					if (isset($write['id_' . $column_name])) {
 						$column_name = 'id_' . $column_name;
 					}

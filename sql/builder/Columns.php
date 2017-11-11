@@ -6,8 +6,8 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -149,7 +149,7 @@ class Columns
 			foreach (
 				(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 			) {
-				$storage = Storage_Annotation::of($property)->value;
+				$storage = Store_Name_Annotation::of($property)->value;
 				$type    = $property->getType();
 				if (!$property->isStatic() && !($type->isClass() && $type->isMultiple())) {
 					$column_names[$property->name] = $storage;

@@ -6,8 +6,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -39,14 +39,6 @@ class Joins
 	 */
 	private $classes = [];
 
-	//---------------------------------------------------------------------------------------- $joins
-	/**
-	 * link property path to sql join
-	 *
-	 * @var Join[] key is property full path
-	 */
-	private $joins = [];
-
 	//-------------------------------------------------------------------------------- $id_link_joins
 	/**
 	 * link joins that work with id of the join master table
@@ -54,6 +46,14 @@ class Joins
 	 * @var Join[] key is property full path
 	 */
 	private $id_link_joins = [];
+
+	//---------------------------------------------------------------------------------------- $joins
+	/**
+	 * link property path to sql join
+	 *
+	 * @var Join[] key is property full path
+	 */
+	private $joins = [];
 
 	//----------------------------------------------------------------------------------- $link_joins
 	/**
@@ -209,7 +209,7 @@ class Joins
 		$join->foreign_class   = Builder::className($linked_class_name);
 		$join->foreign_table   = Dao::storeNameOf($join->foreign_class);
 		$join->master_alias    = 't' . ($this->alias_counter - 1);
-		$join->master_column   = 'id_' . Storage_Annotation::of($master_property)->value;
+		$join->master_column   = 'id_' . Store_Name_Annotation::of($master_property)->value;
 		$join->master_property = $master_property;
 		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
 		$join->type            = Join::LINK;
@@ -328,7 +328,7 @@ class Joins
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
-	 * @todo use @storage to get correct master and foreign columns name
+	 * @todo use @store_name to get correct master and foreign columns name
 	 */
 	private function addReverseJoin(
 		Join $join, $master_path, $master_property_name, $foreign_path
@@ -415,7 +415,7 @@ class Joins
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name
 						);
-						$join->foreign_column   = 'id_' . Storage_Annotation::of($foreign_property)->value;
+						$join->foreign_column   = 'id_' . Store_Name_Annotation::of($foreign_property)->value;
 						$join->foreign_property = $foreign_property;
 						$join->master_column    = 'id';
 					}
@@ -428,7 +428,7 @@ class Joins
 				else {
 					$foreign_class_name    = Builder::className($foreign_type->asString());
 					$join->foreign_column  = 'id';
-					$join->master_column   = 'id_' . Storage_Annotation::of($master_property)->value;
+					$join->master_column   = 'id_' . Store_Name_Annotation::of($master_property)->value;
 					$join->master_property = $master_property;
 				}
 			}

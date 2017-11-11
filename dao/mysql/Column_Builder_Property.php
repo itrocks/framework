@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use DateTime;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -84,8 +84,8 @@ trait Column_Builder_Property
 	{
 		$type = $property->getType();
 		return ($type->isBasic() || Store_Annotation::of($property)->value)
-			? Storage_Annotation::of($property)->value
-			: ('id_' . Storage_Annotation::of($property)->value);
+			? Store_Name_Annotation::of($property)->value
+			: ('id_' . Store_Name_Annotation::of($property)->value);
 	}
 
 	//--------------------------------------------------------------------------- propertyNullToMysql

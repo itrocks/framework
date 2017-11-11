@@ -11,8 +11,8 @@ use ITRocks\Framework\Dao\Option\Create_If_No_Result;
 use ITRocks\Framework\Mapper\Abstract_Class;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -317,11 +317,11 @@ class Link extends Dao\Sql\Link
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
 						$property_name = $link_property->getName();
 						if (Dao::storedAsForeign($link_property)) {
-							$column_name      = 'id_' . Storage_Annotation::of($link_property)->value;
+							$column_name      = 'id_' . Store_Name_Annotation::of($link_property)->value;
 							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 						}
 						else {
-							$column_name      = Storage_Annotation::of($link_property)->value;
+							$column_name      = Store_Name_Annotation::of($link_property)->value;
 							$id[$column_name] = $link_property->getValue($object);
 						}
 					}
@@ -684,7 +684,7 @@ class Link extends Dao\Sql\Link
 				}
 				elseif ($type->isClass()) {
 					$properties[$property->name] = new Column(
-						'id_' . Storage_Annotation::of($property)->value
+						'id_' . Store_Name_Annotation::of($property)->value
 					);
 				}
 			}

@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -104,7 +104,7 @@ class Table_Builder_Class
 							$class_name = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;
 							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
-							$table->addIndex(Index::buildLink(Storage_Annotation::of($property)->value));
+							$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
 						}
 					}
 				}

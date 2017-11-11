@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionClass;
@@ -43,7 +43,7 @@ abstract class Builder
 	{
 		$type = $property->getType();
 		return $type->isBasic()
-			? Storage_Annotation::of($property)->value
+			? Store_Name_Annotation::of($property)->value
 			: (
 				(
 					$type->isMultiple()
@@ -53,8 +53,29 @@ abstract class Builder
 					)
 				)
 				? null
-				: ('id_' . Storage_Annotation::of($property)->value)
+				: ('id_' . Store_Name_Annotation::of($property)->value)
 			);
+	}
+
+	//---------------------------------------------------------------------------------- buildColumns
+	/**
+	 * Build a SQL columns list
+	 *
+	 * @example used for INSERT INTO (columns), SELECT columns
+	 * @param $column_names string[]
+	 * @return string
+	 */
+	public static function buildColumns(array $column_names)
+	{
+		$sql_columns = '';
+		$i = 0;
+		foreach ($column_names as $column_name) {
+			if ($i++) {
+				$sql_columns .= ', ';
+			}
+			$sql_columns .= BQ . str_replace(DOT, BQ . DOT . BQ, $column_name) . BQ;
+		}
+		return $sql_columns;
 	}
 
 	//----------------------------------------------------------------------------------- buildDelete
@@ -86,27 +107,6 @@ abstract class Builder
 			trigger_error("id must be an integer of an array of integer values", E_USER_ERROR);
 		}
 		return $sql_delete;
-	}
-
-	//---------------------------------------------------------------------------------- buildColumns
-	/**
-	 * Build a SQL columns list
-	 *
-	 * @example used for INSERT INTO (columns), SELECT columns
-	 * @param $column_names string[]
-	 * @return string
-	 */
-	public static function buildColumns(array $column_names)
-	{
-		$sql_columns = '';
-		$i = 0;
-		foreach ($column_names as $column_name) {
-			if ($i++) {
-				$sql_columns .= ', ';
-			}
-			$sql_columns .= BQ . str_replace(DOT, BQ . DOT . BQ, $column_name) . BQ;
-		}
-		return $sql_columns;
 	}
 
 	//----------------------------------------------------------------------------------- buildInsert

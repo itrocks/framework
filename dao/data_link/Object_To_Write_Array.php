@@ -9,8 +9,8 @@ use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Storage_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -377,7 +377,7 @@ class Object_To_Write_Array
 	protected function propertyTableColumnName(Reflection_Property $property, $value)
 	{
 		$element_type   = $property->getType()->getElementType();
-		$storage_name   = Storage_Annotation::of($property)->value;
+		$storage_name   = Store_Name_Annotation::of($property)->value;
 		$write_property = null;
 		// write basic
 		if ($element_type->isBasic(false)) {
