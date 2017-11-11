@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * Use the @store_name annotation to define the name of the storage of objects into the data link
@@ -28,7 +28,7 @@ class Store_Name_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$this->value = Names::classToDisplay(Set_Annotation::of($class)->value);
+			$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
 		}
 	}
 
