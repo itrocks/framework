@@ -2,25 +2,22 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\Tools\Names;
 
 /**
- * Use the @set annotation to define the name of the set class (virtual or real) associated to the
- * business object class
+ * Use the @store_name annotation to define the name of the storage of objects into the data link
  *
- * If the annotation is not specified by the programmer, a default value is calculated, adding an
- * 's' to the name of the class
+ * If the annotation is not specified by the programmer, a default value is calculated :
+ * the lowercase value of the short class name of @set.
  *
- * @example @set Class_Sets_Annotations
+ * @example @store_name storage_class_elements
  */
-class Set_Annotation extends Annotation
+class Store_Name_Annotation extends Annotation
 {
-	use Types_Annotation;
 
 	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'set';
+	const ANNOTATION = 'store_name';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -31,8 +28,7 @@ class Set_Annotation extends Annotation
 	{
 		parent::__construct($value);
 		if (!$this->value) {
-			$class_name  = $class->getName();
-			$this->value = Set::defaultSetClassNameOf($class_name);
+			$this->value = Names::classToDisplay(Set_Annotation::of($class)->value);
 		}
 	}
 

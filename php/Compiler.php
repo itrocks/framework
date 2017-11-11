@@ -14,12 +14,12 @@ use ITRocks\Framework\Logger\Text_Output;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Router;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\List_Row;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
 use Serializable;
@@ -290,7 +290,7 @@ class Compiler extends Cache implements
 	 * @param $first_group boolean
 	 */
 	private function compileSource(
-	 	Reflection_Source $source, array $compilers, $cache_dir, $first_group
+		Reflection_Source $source, array $compilers, $cache_dir, $first_group
 	) {
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {
@@ -453,12 +453,10 @@ class Compiler extends Cache implements
 			) {
 				$dependency                  = new Dependency();
 				$dependency->class_name      = $class->name;
-				$dependency->dependency_name = strtolower(
-					Namespaces::shortClassName($class->getAnnotation('set')->value)
-				);
-				$dependency->file_name = $source->file_name;
-				$dependency->type      = Dependency::T_STORE;
-				$dependencies[]        = $dependency;
+				$dependency->dependency_name = Store_Name_Annotation::of($class)->value;
+				$dependency->file_name       = $source->file_name;
+				$dependency->type            = Dependency::T_STORE;
+				$dependencies[]              = $dependency;
 			}
 		}
 		/** @noinspection PhpParamsInspection inspector bug (a Dependency is an object) */
@@ -582,15 +580,6 @@ class Compiler extends Cache implements
 		return Include_Filter::cacheFile($file_name);
 	}
 
-	//---------------------------------------------------------------------------------------- update
-	/**
-	 * @param $last_time integer
-	 */
-	public function update($last_time = 0)
-	{
-		$this->compile($last_time);
-	}
-
 	//----------------------------------------------------------------------------------- unserialize
 	/**
 	 * @param $serialized string
@@ -606,6 +595,15 @@ class Compiler extends Cache implements
 			}
 		}
 		$this->text_output = new Text_Output(!isset($_POST['verbose']));
+	}
+
+	//---------------------------------------------------------------------------------------- update
+	/**
+	 * @param $last_time integer
+	 */
+	public function update($last_time = 0)
+	{
+		$this->compile($last_time);
 	}
 
 }

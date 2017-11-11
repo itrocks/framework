@@ -25,6 +25,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -437,9 +438,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			else {
 				$t = $i = '';
 			}
-			$class_display = Names::classToDisplay(
-				$list_settings->getClass()->getAnnotation('set')->value
-			);
+			$class_display = Names::classToDisplay(Set_Annotation::of($list_settings->getClass())->value);
 			$summary         = $t . $i. ucfirst($class_display) . $i . ' filtered by' . $t;
 			$summary_builder = new Summary_Builder($class_name, $search);
 			$summary        .= SP . (string)$summary_builder;

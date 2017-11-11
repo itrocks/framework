@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -109,7 +110,7 @@ abstract class Names
 	 */
 	public static function classToSet($class_name)
 	{
-		return (new Reflection_Class($class_name))->getAnnotation('set')->value;
+		return Set_Annotation::of(new Reflection_Class($class_name))->value;
 	}
 
 	//------------------------------------------------------------------------------------ classToUri
@@ -364,7 +365,7 @@ abstract class Names
 			if ($i === false) {
 				if (
 					(class_exists($set_class_name) || trait_exists($set_class_name))
-					&& ((new Reflection_Class($set_class_name))->getAnnotation('set')->value == $set_class_name)
+					&& (Set_Annotation::of(new Reflection_Class($set_class_name))->value === $set_class_name)
 				) {
 					self::$sets[$set_class_name] = $set_class_name;
 					return $set_class_name;

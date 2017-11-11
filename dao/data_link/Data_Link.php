@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -371,7 +372,7 @@ if ($class_name) {
 	 */
 	public function storeNameOf($class_name)
 	{
-		return strtolower(Namespaces::shortClassName(Names::classToSet($class_name)));
+		return Store_Name_Annotation::of(new Reflection_Class($class_name))->value;
 	}
 
 	//-------------------------------------------------------------------------------------- truncate
