@@ -30,6 +30,9 @@ class Store_Name_Annotation extends Annotation
 		if (!$this->value) {
 			$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
 		}
+		if (!ctype_lower(str_replace('_', '', $this->value))) {
+			trigger_error('@store_name must be lowercase', E_USER_ERROR);
+		}
 	}
 
 }

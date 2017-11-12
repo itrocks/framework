@@ -25,6 +25,9 @@ class Store_Name_Annotation extends Annotation implements Property_Context_Annot
 			$value = $reflection_property->getName();
 		}
 		parent::__construct($value);
+		if (!ctype_lower(str_replace('_', '', $this->value))) {
+			trigger_error('@store_name must be lowercase', E_USER_ERROR);
+		}
 	}
 
 }
