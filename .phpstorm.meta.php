@@ -33,6 +33,9 @@ $STATIC_METHOD_TYPES = [
 	Dao::search('') => [
 		'' == '@'
 	],
+	Dao::write('') => [
+		'' == '@'
+	],
 	Null_Object::create('') => [
 		'' == '@'
 	],
