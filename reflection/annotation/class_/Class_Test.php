@@ -2,6 +2,10 @@
 namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Objects\Document;
+use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Objects\Quote;
 use ITRocks\Framework\Tests\Test;
 
 /**
@@ -23,6 +27,34 @@ class Class_Test extends Test
 	protected function setUp()
 	{
 		$this->subject = new Test_Object();
+	}
+
+	//----------------------------------------------------------------------- testExtendsDoNotInherit
+	/**
+	 * Test read of @extends (annotation that does not inherit)
+	 */
+	public function testExtendsDoNotInherit()
+	{
+		$extends = Extends_Annotation::allOf(new Reflection_Class(Order::class));
+		$values  = [];
+		foreach ($extends as $extend) {
+			$values[] = $extend->values();
+		}
+		$this->assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
+	}
+
+	//------------------------------------------------------------------ testExtendsDoNotInheritEmpty
+	/**
+	 * Test read of @extends (annotation that does not inherit)
+	 */
+	public function testExtendsDoNotInheritEmpty()
+	{
+		$extends = Extends_Annotation::allOf(new Reflection_Class(Quote::class));
+		$values  = [];
+		foreach ($extends as $extend) {
+			$values[] = $extend->values();
+		}
+		$this->assertEquals(print_r($values, true), print_r([], true), __METHOD__);
 	}
 
 	//-------------------------------------------------------------------- testWriteAnnotationsCommit

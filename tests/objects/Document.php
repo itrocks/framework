@@ -5,6 +5,8 @@ use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A document class
+ *
+ * @extends Object
  */
 abstract class Document
 {

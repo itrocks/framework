@@ -233,12 +233,6 @@ class Parser
 		$doc_comment, $annotation_name, &$i, $annotation_class, Reflection $reflection_object
 	) {
 		$i += strlen($annotation_name) + 1;
-		if (
-			is_a($annotation_class, Do_Not_Inherit::class, true)
-			&& ($i >= strpos($doc_comment, LF . self::DOC_COMMENT_IN))
-		) {
-			return null;
-		}
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
 			case SP: case TAB:
@@ -324,6 +318,13 @@ class Parser
 				}
 				$annotation->value = Builder::className($annotation->value);
 			}
+		}
+
+		if (
+			is_a($annotation_class, Do_Not_Inherit::class, true)
+			&& ($i > strpos($doc_comment, self::DOC_COMMENT_IN))
+		) {
+			return null;
 		}
 
 		return $annotation;

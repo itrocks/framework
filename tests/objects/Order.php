@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * An order class
+ *
+ * @extends Document
  */
 class Order extends Document
 {
