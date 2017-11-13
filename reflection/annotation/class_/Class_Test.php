@@ -3,10 +3,12 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Objects\Counter;
 use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Quote;
 use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * Class annotations unit tests
@@ -41,6 +43,20 @@ class Class_Test extends Test
 			$values[] = $extend->values();
 		}
 		$this->assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
+	}
+
+	//------------------------------------------------------------------ testExtendsDoNotInheritAlone
+	/**
+	 * Test read of @extends (annotation that does not inherit)
+	 */
+	public function testExtendsDoNotInheritAlone()
+	{
+		$extends = Extends_Annotation::allOf(new Reflection_Class(Counter::class));
+		$values  = [];
+		foreach ($extends as $extend) {
+			$values[] = $extend->values();
+		}
+		$this->assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
 	}
 
 	//------------------------------------------------------------------ testExtendsDoNotInheritEmpty

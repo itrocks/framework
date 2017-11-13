@@ -1,8 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
+use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\Traits\Has_Name;
+
 /**
  * A simple generic counter manager
+ *
+ * @extends Has_Name
  */
 class Counter
 {

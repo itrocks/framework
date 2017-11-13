@@ -322,6 +322,7 @@ class Parser
 
 		if (
 			is_a($annotation_class, Do_Not_Inherit::class, true)
+			&& (strpos($doc_comment, self::DOC_COMMENT_IN) !== false)
 			&& ($i > strpos($doc_comment, self::DOC_COMMENT_IN))
 		) {
 			return null;
