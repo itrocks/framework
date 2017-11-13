@@ -68,6 +68,20 @@ abstract class Getter
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
 		$classes = self::getClasses($class_name);
 
+		// list applications that embed a project class
+		// (business class with the same name and path as the project namespace)
+		$project_classes = [];
+		foreach ($application_classes as $application_class) {
+			if (substr_count($application_class, BS) === 2) {
+				$project_class      = mParse($application_class, BS, BS);
+				$project_class_file = strtolower(str_replace(BS, SL, lLastParse($application_class, BS)))
+					. SL . $project_class . '.php';
+				if (file_exists($project_class_file)) {
+					$project_classes[$application_class] = true;
+				}
+			}
+		}
+
 		// Looking for specific controller for each application
 		$application_class = reset($application_classes);
 		do {
@@ -126,14 +140,21 @@ if (isset($GLOBALS['D']) && $suffix) static::debug('A6', $path . SL . $suffix . 
 				$namespace = Namespaces::of($application_class);
 				$path      = strtolower(str_replace(BS, SL, $namespace));
 if (isset($GLOBALS['D']) && $suffix) static::debug('B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
-				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
+				if (
+					!isset($project_classes[$application_class])
+					&& $suffix
+					&& file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)
+				) {
 					$class = $namespace . BS . $feature_class . BS . $suffix;
 					break;
 				}
 if (isset($GLOBALS['D'])) static::debug('B2', $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
-				if (file_exists(
-					$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
-				)) {
+				if (
+					!isset($project_classes[$application_class])
+					&& file_exists(
+						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
+					)
+				) {
 					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
 					break;
 				}
