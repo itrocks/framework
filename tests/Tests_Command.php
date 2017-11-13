@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Logger\Text_Output;
 use PHPUnit_TextUI_Command;
+use ReflectionClass;
 
 /**
  * The tests class enables running of unit test
@@ -28,10 +29,9 @@ class Tests_Command extends PHPUnit_TextUI_Command
 	//--------------------------------------------------------------------------- parsePHPUnitOptions
 	/**
 	 * @param string[] $options array of options key=>value
-	 *
 	 * @return string[] of options as un command line
 	 */
-	function parsePHPUnitOptions($options)
+	public function parsePHPUnitOptions($options)
 	{
 		$parsed_options = [];
 
@@ -64,17 +64,31 @@ class Tests_Command extends PHPUnit_TextUI_Command
 
 		$output = new Text_Output();
 		$output->log('Running tests with options : ');
-		$line = '';
+		$line        = '';
+		$run_options = [];
 		foreach ($options as $option) {
+			$run_options[] = $option;
 			if (substr($option, 0, 2) === '--') {
 				$output->log(TAB . $line);
 				$line = '';
 			}
 			$line .= SP . $option;
+			if (
+				strlen($option)
+				&& ctype_upper($option[0])
+				&& ($option !== Tests_Html_ResultPrinter::class)
+				&& class_exists($option)
+			) {
+				$file_path = (new ReflectionClass($option))->getFileName();
+				if ($file_path) {
+					$run_options[] = $file_path;
+					$line         .= SP . $file_path;
+				}
+			}
 		}
 		$output->log(TAB . $line);
 
-		$this->run($options);
+		$this->run($run_options);
 
 		$output->end();
 	}
