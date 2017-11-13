@@ -31,11 +31,27 @@ class Class_Test extends Test
 		$this->subject = new Test_Object();
 	}
 
-	//----------------------------------------------------------------------- testExtendsDoNotInherit
+	//----------------------------------------------------------------- testExtendsEmptyParentExtends
 	/**
 	 * Test read of @extends (annotation that does not inherit)
+	 * class has no @extends, parent has a @extends : must result in empty
 	 */
-	public function testExtendsDoNotInherit()
+	public function testExtendsEmptyParentExtends()
+	{
+		$extends = Extends_Annotation::allOf(new Reflection_Class(Quote::class));
+		$values  = [];
+		foreach ($extends as $extend) {
+			$values[] = $extend->values();
+		}
+		$this->assertEquals(print_r($values, true), print_r([], true), __METHOD__);
+	}
+
+	//--------------------------------------------------------------- testExtendsExtendsParentExtends
+	/**
+	 * Test read of @extends (annotation that does not inherit)
+	 * class has @extends, parent has an @extends : must return the class @extends alone
+	 */
+	public function testExtendsExtendsParentExtends()
 	{
 		$extends = Extends_Annotation::allOf(new Reflection_Class(Order::class));
 		$values  = [];
@@ -45,11 +61,12 @@ class Class_Test extends Test
 		$this->assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
 	}
 
-	//------------------------------------------------------------------ testExtendsDoNotInheritAlone
+	//--------------------------------------------------------------- testExtendsExtendsWithoutParent
 	/**
 	 * Test read of @extends (annotation that does not inherit)
+	 * class has @extends, no parent : must return the @extends
 	 */
-	public function testExtendsDoNotInheritAlone()
+	public function testExtendsExtendsWithoutParent()
 	{
 		$extends = Extends_Annotation::allOf(new Reflection_Class(Counter::class));
 		$values  = [];
@@ -57,20 +74,6 @@ class Class_Test extends Test
 			$values[] = $extend->values();
 		}
 		$this->assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
-	}
-
-	//------------------------------------------------------------------ testExtendsDoNotInheritEmpty
-	/**
-	 * Test read of @extends (annotation that does not inherit)
-	 */
-	public function testExtendsDoNotInheritEmpty()
-	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(Quote::class));
-		$values  = [];
-		foreach ($extends as $extend) {
-			$values[] = $extend->values();
-		}
-		$this->assertEquals(print_r($values, true), print_r([], true), __METHOD__);
 	}
 
 	//-------------------------------------------------------------------- testWriteAnnotationsCommit
