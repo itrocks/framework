@@ -5,6 +5,7 @@ namespace ITRocks\Framework\Tests\Objects;
  * An order class
  *
  * @extends Document
+ * @store_name test_orders
  */
 class Order extends Document
 {
@@ -42,10 +43,10 @@ class Order extends Document
 	/**
 	 * Links to salesmen
 	 *
+	 * @(foreign) order Optional, default would have been automatically calculated to 'test_order'
+	 * @(foreignlink) salesman Optional, default would have been automatically calculated to 'test_salesman'
 	 * @link Map
 	 * @var Salesman[]
-	 * @(forgn) order Optional, default would have been automatically calculated to 'test_order'
-	 * @(forgnlink) salesman Optional, default would have been automatically calculated to 'test_salesman'
 	 */
 	private $salesmen;
 

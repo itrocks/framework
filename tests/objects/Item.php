@@ -6,6 +6,7 @@ namespace ITRocks\Framework\Tests\Objects;
  *
  * @before_write beforeWrite
  * @property integer call_before_write
+ * @store_name test_items
  */
 class Item
 {

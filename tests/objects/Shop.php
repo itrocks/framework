@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * A shop class
+ *
+ * @store_name test_shops
  */
 class Shop
 {

@@ -7,6 +7,7 @@ use ITRocks\Framework\Tools\Date_Time;
  * A document class
  *
  * @extends Object
+ * @store_name test_documents
  */
 abstract class Document
 {

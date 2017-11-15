@@ -5,6 +5,7 @@ namespace ITRocks\Framework\Tests\Objects;
  * A client class
  *
  * @representative number, name
+ * @store_name test_clients
  */
 class Client
 {

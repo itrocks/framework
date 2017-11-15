@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Tests\Objects;
 
 /**
  * A category class
+ *
+ * @store_name test_categories
  */
 class Category
 {

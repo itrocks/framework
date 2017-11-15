@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper;
 /**
  * A vehicle door
  *
+ * @store_name test_vehicle_doors
  * @validate codeValid
  */
 class Vehicle_Door

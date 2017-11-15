@@ -7,6 +7,7 @@ use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\Tra
  * A simple generic counter manager
  *
  * @extends Has_Name
+ * @store_name test_counters
  */
 class Counter
 {

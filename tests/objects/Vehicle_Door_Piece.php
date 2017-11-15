@@ -6,6 +6,8 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A piece of vehicle door
+ *
+ * @store_name test_vehicle_door_pieces
  */
 class Vehicle_Door_Piece
 {

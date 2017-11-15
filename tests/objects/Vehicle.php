@@ -5,6 +5,8 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A vehicle
+ *
+ * @store_name test_vehicles
  */
 class Vehicle
 {

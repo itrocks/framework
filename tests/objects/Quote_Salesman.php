@@ -9,7 +9,7 @@ use ITRocks\Framework\Mapper;
  * The 'link' annotation allow to consider this class as a link class
  *
  * @link Salesman
- * @store_name test_quotes_salesmen
+ * @store_name test_quote_salesmen
  */
 class Quote_Salesman extends Salesman
 {
