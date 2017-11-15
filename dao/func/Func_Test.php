@@ -40,7 +40,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT CONCAT(t0.`number`, " ", t0.`date`) AS `string_concat`' . LF
-			. 'FROM `orders` t0'
+			. 'FROM `test_orders` t0'
 		);
 	}
 
@@ -63,8 +63,8 @@ class Func_Test extends Test
 			. 'AS `case_result`, '
 			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
 			. 'AS `case_result_func`' . LF
-			. 'FROM `orders` t0' . LF
-			. 'INNER JOIN `clients` t1 ON t1.`id` = t0.`id_client`'
+			. 'FROM `test_orders` t0' . LF
+			. 'INNER JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`'
 		);
 	}
 
@@ -89,7 +89,7 @@ class Func_Test extends Test
 			. 'AS `group_concat_with_sep`, '
 			. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`) '
 			. 'ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`'. LF
-			. 'FROM `clients` t0'
+			. 'FROM `test_clients` t0'
 		);
 	}
 
@@ -109,10 +109,10 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE t0.`date` IN ('
 			. 'SELECT t0.`date`' . LF
-			. 'FROM `orders` t0)'
+			. 'FROM `test_orders` t0)'
 		);
 	}
 
@@ -128,9 +128,9 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF . 'INNER JOIN ('
+			. 'FROM `test_orders` t0' . LF . 'INNER JOIN ('
 			. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'GROUP BY t0.`number`'
 			. ') t1'
 			. ' ON t1.`number` = t0.`number` AND t1.`date` = t0.`date`'
@@ -147,7 +147,7 @@ class Func_Test extends Test
 		$this->assume(
 			__METHOD__,
 			$builder->buildQuery(),
-			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `orders` t0'
+			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `test_orders` t0'
 		);
 	}
 
@@ -163,7 +163,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))'
 		);
 	}
@@ -180,7 +180,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (t0.`number` = "true" AND t0.`number` = "false")'
 		);
 	}
@@ -199,7 +199,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))'
 		);
 	}
@@ -232,7 +232,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE NOT (t0.`number` = "true")'
 		);
 	}
@@ -249,7 +249,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))'
 		);
 	}
@@ -268,7 +268,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (t0.`number` = "true")'
 		);
 	}
@@ -285,7 +285,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE NOT (NOT (t0.`number` = "true"))'
 		);
 	}
@@ -302,7 +302,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (t0.`number` = "true" OR t0.`number` = "false")'
 		);
 	}
@@ -322,7 +322,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE ((t0.`number` = "true" OR t0.`number` = "false")'
 			. ' OR (t0.`number` = "true" OR t0.`number` = "false"))'
 		);
@@ -340,7 +340,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (t0.`number` = "true")'
 		);
 	}
@@ -357,7 +357,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")'
 		);
 	}
@@ -376,7 +376,7 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.*' . LF
-			. 'FROM `orders` t0' . LF
+			. 'FROM `test_orders` t0' . LF
 			. 'WHERE NOT ((t0.`number` = "true" XOR t0.`number` = "false"))'
 		);
 	}

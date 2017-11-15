@@ -19,7 +19,8 @@ class Join_Test extends Test
 	public function testCollection()
 	{
 		$assume = Join::newInstance(
-			Join::INNER, 't0', 'id', 't1', 'orders_lines', 'id_order', Join::SIMPLE, Order_Line::class
+			Join::INNER, 't0', 'id', 't1', 'test_order_lines', 'id_order',
+			Join::SIMPLE, Order_Line::class
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
@@ -38,11 +39,11 @@ class Join_Test extends Test
 		);
 
 		$assume1 = Join::newInstance(
-			Join::INNER, 't0', 'id_client', 't1', 'clients', 'id', Join::SIMPLE, Client::class
+			Join::INNER, 't0', 'id_client', 't1', 'test_clients', 'id', Join::SIMPLE, Client::class
 		);
 		$assume1->master_property = new Reflection_Property(Order::class, 'client');
 		$assume2 = Join::newInstance(
-			Join::LEFT,  't1', 'id_client', 't2', 'clients', 'id', Join::SIMPLE, Client::class
+			Join::LEFT,  't1', 'id_client', 't2', 'test_clients', 'id', Join::SIMPLE, Client::class
 		);
 		$assume2->master_property = new Reflection_Property(Client::class, 'client');
 
@@ -66,7 +67,7 @@ class Join_Test extends Test
 	public function testJoin()
 	{
 		$assume = Join::newInstance(
-			Join::INNER, 't0', 'id_order', 't1', 'orders', 'id', Join::SIMPLE, Order::class
+			Join::INNER, 't0', 'id_order', 't1', 'test_orders', 'id', Join::SIMPLE, Order::class
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
 
@@ -92,7 +93,7 @@ class Join_Test extends Test
 			Join::LEFT, 't1', 'id_salesman', 't2', 'test_salesmen', 'id', Join::SIMPLE, Salesman::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_order', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_order', Join::SIMPLE
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
@@ -102,12 +103,12 @@ class Join_Test extends Test
 				->addMultiple(['date', 'number', 'salesmen.name'])
 				->getJoins(),
 			[
-				'date' => null,
-				'number' => null,
+				'date'          => null,
+				'number'        => null,
 				'salesmen-link' => Join::newInstance(
-					Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_order'
+					Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_order'
 				),
-				'salesmen' => $assume,
+				'salesmen'      => $assume,
 				'salesmen.name' => null
 			]
 		);
@@ -117,7 +118,7 @@ class Join_Test extends Test
 	public function testObject()
 	{
 		$assume = Join::newInstance(
-			Join::INNER, 't0', 'id_order', 't1', 'orders', 'id',
+			Join::INNER, 't0', 'id_order', 't1', 'test_orders', 'id',
 			Join::OBJECT, Order::class
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
@@ -139,7 +140,7 @@ class Join_Test extends Test
 	public function testReverse()
 	{
 		$assume = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_lines', 'id_order', Join::SIMPLE, Order_Line::class
+			Join::LEFT, 't0', 'id', 't1', 'test_order_lines', 'id_order', Join::SIMPLE, Order_Line::class
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
@@ -158,11 +159,11 @@ class Join_Test extends Test
 		);
 
 		$assume_client = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_lines', 'id_client', Join::SIMPLE, Order_Line::class
+			Join::LEFT, 't0', 'id', 't1', 'test_order_lines', 'id_client', Join::SIMPLE, Order_Line::class
 		);
 		$assume_client->foreign_property = new Reflection_Property(Order_Line::class, 'client');
 		$assume_order = Join::newInstance(
-			Join::LEFT, 't1', 'id_order', 't2', 'orders', 'id',
+			Join::LEFT, 't1', 'id_order', 't2', 'test_orders', 'id',
 			Join::OBJECT, Order::class
 		);
 		$assume_order->master_property = new Reflection_Property(Order_Line::class, 'order');
@@ -181,10 +182,10 @@ class Join_Test extends Test
 		);
 
 		$assume = Join::newInstance(
-			Join::LEFT, 't1', 'id_order', 't2', 'orders', 'id', Join::SIMPLE, Order::class
+			Join::LEFT, 't1', 'id_order', 't2', 'test_orders', 'id', Join::SIMPLE, Order::class
 		);
 		$assume->linked_join = Join::newInstance(
-			Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_salesman', Join::SIMPLE
+			Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman', Join::SIMPLE
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
@@ -195,11 +196,11 @@ class Join_Test extends Test
 				->getJoins(),
 			[
 				'Order->salesmen-link' => Join::newInstance(
-					Join::LEFT, 't0', 'id', 't1', 'orders_test_salesmen', 'id_salesman'
+					Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman'
 				),
-				'Order->salesmen' => $assume,
+				'Order->salesmen'        => $assume,
 				'Order->salesmen.number' => null,
-				'name' => null
+				'name'                   => null
 			]
 		);
 	}
