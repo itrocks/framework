@@ -8,10 +8,12 @@
  * @param language    string
  * @param date_format string
  * @param use_cookies boolean
+ * @param user_id     integer|null
  * @constructor
  */
-App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies)
-{
+App = function(
+	PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies, user_id
+) {
 
 	//----------------------------------------------------------------------------------- date_format
 	/**
@@ -64,6 +66,13 @@ App = function(PHPSESSID, uri_root, script_name, project_uri, language, date_for
 	 * @var string
 	 */
 	this.uri_root = uri_root;
+
+	//--------------------------------------------------------------------------------------- user_id
+	/**
+	 *  @example 1
+	 *  @var integer|null
+	 */
+	this.user_id = (user_id === undefined) ? null : user_id;
 
 };
 
