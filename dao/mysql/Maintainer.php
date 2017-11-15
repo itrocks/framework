@@ -493,6 +493,7 @@ class Maintainer implements Registerable
 	public function query($mysqli, $query)
 	{
 		$this->requests[] = $query;
+		trigger_error('MySQL Maintainer query : ' . $query, E_USER_NOTICE);
 		return $this->simulation ? true : $mysqli->query($query);
 	}
 
