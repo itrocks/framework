@@ -139,7 +139,7 @@ class Object_Builder_Array
 		);
 		$this->buildProperties($build);
 		$this->buildSubObjects($build);
-		if ($build->is_null) {
+		if ($build->is_null && count($array)) {
 			return null;
 		}
 		else {
