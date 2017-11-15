@@ -127,6 +127,9 @@ class Html_Builder_Collection extends Collection
 				isset($object->id) ? $object->id : null
 			);
 			$id_input->setAttribute('type', 'hidden');
+			if ($this->readOnly()) {
+				$property_builder->setInputAsReadOnly($id_input);
+			}
 			$input = $id_input . $input;
 		}
 		$cell = new Standard_Cell($input);

@@ -529,7 +529,7 @@ class Html_Builder_Type
 	/**
 	 * @param $input Element
 	 */
-	private function setInputAsReadOnly($input)
+	public function setInputAsReadOnly($input)
 	{
 		if ($input->getAttribute('name')) {
 			$input->setData('name', $input->getAttribute('name')->value);
