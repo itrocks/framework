@@ -7,9 +7,6 @@ namespace ITRocks\Framework\Controller;
 abstract class Feature
 {
 
-	//---------------------------------------------------------------- the feature key value constant
-	const FEATURE = 'feature';
-
 	//---------------------------------------------------------------------------- features constants
 	const F_ADD           = 'add';
 	const F_ADMIN         = 'admin';
@@ -38,6 +35,9 @@ abstract class Feature
 	const F_TRANSFORM     = 'transform';
 	const F_VALIDATE      = 'validate';
 	const F_WRITE         = 'write';
+
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = 'feature';
 
 	//------------------------------------------------------------------------------------- READ_ONLY
 	const READ_ONLY = [
