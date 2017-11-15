@@ -7,7 +7,7 @@ use ITRocks\Framework\Traits\Has_Name;
 /**
  * A component
  *
- * @set Test_Components
+ * @store_name test_components
  */
 class Component
 {

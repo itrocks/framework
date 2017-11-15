@@ -8,7 +8,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * An email account : configuration of multi-protocols access to a given email box
  *
  * @business
- * @set Email_Accounts
+ * @store_name email_accounts
  */
 class Account
 {

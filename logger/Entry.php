@@ -12,7 +12,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * @business
  * @representative start, uri
- * @set Logs
+ * @store_name logs
  */
 class Entry
 {

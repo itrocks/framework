@@ -9,7 +9,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * to be printed (eg. link to a property, constant text, a drawing)
  *
  * @business
- * @set Printer_Model_Fields
+ * @store_name printer_model_fields
  */
 class Field
 {

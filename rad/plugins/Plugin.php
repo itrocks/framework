@@ -15,7 +15,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * plugins.
  *
  * @representative name
- * @set RAD_Plugins
+ * @store_name rad_plugins
  */
 class Plugin
 {

@@ -14,7 +14,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * @group Description description, elements
  * @group Media image, video
  * @group Info creation
- * @set Example_Cars
+ * @store_name example_cars
  */
 class Car
 {

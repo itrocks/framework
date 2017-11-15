@@ -7,7 +7,8 @@ use ITRocks\Framework\Mapper\Component;
  * A settings template element
  *
  * @business
- * @set Settings_Templates_Elements
+ * @store_name settings_templates_elements
+ * @todo store_name setting_template_elements (default)
  */
 class Settings_Template_Element
 {

@@ -4,7 +4,7 @@ namespace ITRocks\Framework\RAD;
 /**
  * RAD Ignored feature class
  *
- * @set RAD_Ignored_Features
+ * @store_name rad_ignored_features
  */
 class Ignored_Feature
 {

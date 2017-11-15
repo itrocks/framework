@@ -6,7 +6,7 @@ use ITRocks\Framework\Mapper;
 /**
  * An order line class
  *
- * @set Orders_Lines
+ * @store_name test_order_lines
  */
 class Order_Line
 {

@@ -6,7 +6,7 @@ use ITRocks\Framework\Traits\Has_Name;
 /**
  * A sample composite class
  *
- * @set Test_Composites
+ * @store_name test_composites
  */
 class Composite
 {

@@ -7,7 +7,7 @@ use ITRocks\Framework\Traits\Has_Name;
 /**
  * A car element
  *
- * @set Example_Car_Elements
+ * @store_name example_car_elements
  */
 class Element
 {

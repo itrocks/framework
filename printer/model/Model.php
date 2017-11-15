@@ -10,7 +10,7 @@ use ITRocks\Framework\Traits\Has_Name;
  *
  * @business
  * @representative class, name
- * @set Printer_Models
+ * @store_name printer_models
  */
 class Model
 {

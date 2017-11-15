@@ -6,7 +6,7 @@ use ITRocks\Framework\Traits\Has_Name;
 /**
  * A 'test object' class to test links between objects with real data stored into database
  *
- * @set Test_Objects
+ * @store_name test_objects
  */
 class Object
 {

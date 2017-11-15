@@ -9,7 +9,7 @@ use /** @noinspection PhpUnusedAliasInspection @widget */
  * RAD Feature class
  *
  * @representative title, type
- * @set RAD_Features
+ * @store_name rad_features
  */
 class Feature
 {

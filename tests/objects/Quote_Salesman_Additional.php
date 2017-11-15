@@ -7,7 +7,7 @@ namespace ITRocks\Framework\Tests\Objects;
  * The 'link' annotation allows to consider this class as a link class
  *
  * @link Quote_Salesman
- * @set Quotes_Salesmen_Additional
+ * @store_name test_quotes_salesmen_additional
  */
 class Quote_Salesman_Additional extends Quote_Salesman
 {

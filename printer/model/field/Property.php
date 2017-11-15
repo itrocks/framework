@@ -7,7 +7,7 @@ use ITRocks\Framework\Printer\Model\Field;
  * Printer model property field
  *
  * @business
- * @set Printer_Model_Properties
+ * @store_name printer_model_properties
  */
 class Property extends Field
 {

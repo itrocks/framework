@@ -8,7 +8,8 @@ use ITRocks\Framework\User;
 /**
  * User setting
  *
- * @set Users_Settings
+ * @store_name users_settings
+ * @todo store_name user_settings (default)
  */
 class User_Setting extends Setting
 {

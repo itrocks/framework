@@ -10,7 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Tests\Conditions\Conditions_Trait;
  * To test it :
  * http://localhost/itrocks/ITRocks/Framework/Reflection/Annotation/Tests/Conditions/add
  *
- * @set Tests_Conditions
+ * @store_name tests_conditions
  */
 class Conditions
 {

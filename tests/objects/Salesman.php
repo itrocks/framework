@@ -6,7 +6,7 @@ use ITRocks\Framework\Traits\Has_Name;
 /**
  * A salesman class
  *
- * @set Test_Salesmen
+ * @store_name test_salesmen
  */
 class Salesman
 {

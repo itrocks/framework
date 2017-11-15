@@ -13,7 +13,7 @@ use ITRocks\Framework\Tools\Has_Ordering;
  *
  * @override ordering @getter getNumber @setter setNumber @signed
  * @representative model, ordering
- * @set Printer_Model_Pages
+ * @store_name printer_model_pages
  */
 class Page
 {

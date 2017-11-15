@@ -13,7 +13,7 @@ use ITRocks\Framework\Dao\Option;
  * @after_write  Test_Object::distantAfterWrite
  * @before_write localBeforeWrite
  * @before_write Test_Object::distantBeforeWrite
- * @set          Unit_Tests
+ * @store_name   unit_tests
  */
 class Test_Object
 {

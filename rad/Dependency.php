@@ -4,7 +4,7 @@ namespace ITRocks\Framework\RAD;
 /**
  * RAD Dependency class
  *
- * @set RAD_Dependencies
+ * @store_name rad_dependencies
  */
 class Dependency
 {
