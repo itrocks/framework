@@ -1,7 +1,9 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Class_;
+namespace ITRocks\Framework\Reflection\Annotation\Class_\Tests;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Objects\Counter;
 use ITRocks\Framework\Tests\Objects\Document;
@@ -74,6 +76,18 @@ class Class_Test extends Test
 			$values[] = $extend->values();
 		}
 		$this->assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
+	}
+
+	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
+	/**
+	 * Gets the @store_name from a parent and a trait : the trait must override the parent
+	 */
+	public function testStoreNameWithParentAndTrait()
+	{
+		$store_name = Store_Name_Annotation::of(new Reflection_Class(
+			Class_With_Trait_And_Parent::class
+		));
+		$this->assertEquals($store_name->value, 'test_trait_for_class_store_name', __METHOD__);
 	}
 
 	//-------------------------------------------------------------------- testWriteAnnotationsCommit
