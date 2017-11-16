@@ -144,7 +144,8 @@ $('document').ready(function()
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            'button',
 			showOtherMonths:   true,
-			selectOtherMonths: true
+			selectOtherMonths: true,
+			showWeek:          true
 		});
 
 		//------------------------------------------------------------------------ input.datetime keyup
