@@ -230,6 +230,10 @@ thead > tr > th {
 	}
 }
 
+.hidden {
+	visibility: hidden;
+}
+
 .logger {
 
 	&.query {

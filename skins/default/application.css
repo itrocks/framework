@@ -168,6 +168,9 @@ thead > tr > th {
   .error .technical {
     display: none; }
 
+.hidden {
+  visibility: hidden; }
+
 .logger.query {
   background-color: lightcyan;
   border: 1px solid lightblue;
