@@ -7,18 +7,18 @@ body {
 	font-family: arial, helvetica, sans-serif;
 	font-size: 12px;
 
-	>header {
+	> header {
 		background-color: lightgrey;
 		border-bottom: solid darkgrey 1px;
 		height: 52px;
 
-		>.connect {
+		> .connect {
 			background: url('img/disconnect-left.png') no-repeat left -2px;
 			display: inline-block;
 			float: left;
 			padding: 2px 0;
 
-			>a {
+			> a {
 				color: transparent;
 				display: inline-block;
 				font-size: 1px;
@@ -26,7 +26,7 @@ body {
 				padding-left: 28px;
 				width: 24px;
 
-				>.login {
+				> .login {
 					color: #404040;
 					font-size: 14px;
 					font-style: italic;
@@ -37,36 +37,36 @@ body {
 			&:hover {
 				background-image: url('img/disconnect-left-animate.gif');
 
-				>a>.login {
+				> a > .login {
 					color: #800000;
 					text-decoration: underline;
 				}
 			}
 		}
 
-		>ul.links {
+		> ul.links {
 			margin: 0 4px;
 			position: fixed;
 			right: 0;
 			top: 0;
 			z-index: 1000000000;
 
-			>li {
+			> li {
 				list-style: none;
 			}
 
-			>li>a {
+			> li > a {
 				display: inline-block;
 			}
 
-			>li.provider {
+			> li.provider {
 				background: 20px 5px no-repeat white;
 				border: #9ab3b7 solid;
 				border-radius: 0 0 10px 10px;
 				border-width: 0 1px 1px;
 				box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .2);
 
-				>a {
+				> a {
 					color: transparent;
 					height: 46px;
 				}
@@ -74,7 +74,7 @@ body {
 				&.bappli {
 					background-image: url("img/bappli-studio-36.png");
 
-					>a {
+					> a {
 						width: 182px;
 					}
 				}
@@ -82,13 +82,13 @@ body {
 				&.itrocks {
 					background-image: url("img/itrocks-36.png");
 
-					>a {
+					> a {
 						width: 130px;
 					}
 				}
 			}
 
-			>li:not(.provider) {
+			> li:not(.provider) {
 				background: url("img/tab_background.png");
 				border-color: #d6dadc #9ab3b7 #9ab3b7;
 				border-radius: 0 0 10px 10px;
@@ -100,7 +100,7 @@ body {
 				position: relative;
 				z-index: 999999999;
 
-				>a {
+				> a {
 					color: #222;
 					font-size: 16px;
 					font-weight: bold;
@@ -115,7 +115,7 @@ body {
 				}
 			}
 
-			&:hover>li:not(.provider) {
+			&:hover > li:not(.provider) {
 				display: inline-block;
 			}
 		}
@@ -179,23 +179,17 @@ table, tbody, thead, tr, td, th {
 	padding: 0 2px;
 }
 
-tbody>tr>th {
+tbody > tr > th {
 	text-align: left;
 }
 
-thead>tr>th {
+thead > tr > th {
 	text-align: center;
 }
 
-#main {
-	height: 100%;
-	white-space: nowrap;
-	>* {
-		white-space: normal;
-	}
+.candrop {
+	box-shadow: 0 0 3px 3px red;
 }
-
-/* TODO tidy */
 
 .delete.message,
 .remove.message {
@@ -208,10 +202,6 @@ thead>tr>th {
 		display: block;
 		padding: 0 3px 1px 3px;
 	}
-}
-
-.candrop {
-	box-shadow: 0 0 3px 3px red;
 }
 
 .dragging {
@@ -238,62 +228,6 @@ thead>tr>th {
 	.technical {
 		display: none;
 	}
-}
-
-.visible {
-	display: inline-block;
-}
-
-.warning {
-	background-color: orange;
-	border-radius: 3px;
-	color: white;
-	font-size: 1.3em;
-	margin: -3px;
-	padding: 3px;
-}
-
-#messages {
-	background-color: white;
-	border: 1px solid lightgray;
-	border-radius: 3px;
-	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-	display: inline-block;
-	left: 4px;
-	max-width: 80%;
-	padding: 16px 3px 3px 3px;
-	position: fixed !important;
-	top: 4px;
-	z-index: 1000000000 !important;
-
-	&:after {
-		content: 'X';
-		cursor: pointer;
-		position: absolute;
-		right: -1px;
-		text-align: center;
-		top: -3px;
-		width: 1.5em;
-	}
-
-	&:before {
-		background-color: lightblue;
-		content: ' ';
-		cursor: move;
-		height: 13px;
-		left: 0;
-		position: absolute;
-		top: 0;
-		width: 100%;
-	}
-
-	&:empty {
-		display: none;
-	}
-}
-
-.ui-draggable>h2 {
-	cursor: move;
 }
 
 .logger {
@@ -339,11 +273,77 @@ thead>tr>th {
 .minimized {
 	float: none;
 	position: absolute;
+
 	> .minimize {
 		background: url("img/arrow_black_down.gif") center no-repeat;
 	}
 }
 
-table.worksheet>tbody>tr>td>input {
+.ui-draggable > h2 {
+	cursor: move;
+}
+
+.visible {
+	display: inline-block;
+}
+
+.warning {
+	background-color: orange;
+	border-radius: 3px;
+	color: white;
+	font-size: 1.3em;
+	margin: -3px;
+	padding: 3px;
+}
+
+#main {
+	height: 100%;
+	white-space: nowrap;
+	> * {
+		white-space: normal;
+	}
+}
+
+#messages {
+	background-color: white;
+	border: 1px solid lightgray;
+	border-radius: 3px;
+	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
+	display: inline-block;
+	left: 4px;
+	max-width: 80%;
+	padding: 16px 3px 3px 3px;
+	position: fixed !important;
+	top: 4px;
+	z-index: 1000000000 !important;
+
+	&:after {
+		content: 'X';
+		cursor: pointer;
+		position: absolute;
+		right: -1px;
+		text-align: center;
+		top: -3px;
+		width: 1.5em;
+	}
+
+	&:before {
+		background-color: lightblue;
+		content: ' ';
+		cursor: move;
+		height: 13px;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 100%;
+	}
+
+	&:empty {
+		display: none;
+	}
+}
+
+table.worksheet > tbody > tr > td > input {
 	margin: 0 -3px -1px -2px;
 }
+

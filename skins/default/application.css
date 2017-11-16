@@ -132,13 +132,9 @@ tbody > tr > th {
 thead > tr > th {
   text-align: center; }
 
-#main {
-  height: 100%;
-  white-space: nowrap; }
-  #main > * {
-    white-space: normal; }
+.candrop {
+  box-shadow: 0 0 3px 3px red; }
 
-/* TODO tidy */
 .delete.message,
 .remove.message {
   background: url("img/talk_down.png") bottom right no-repeat;
@@ -150,9 +146,6 @@ thead > tr > th {
     border-right: 1px solid black;
     display: block;
     padding: 0 3px 1px 3px; }
-
-.candrop {
-  box-shadow: 0 0 3px 3px red; }
 
 .dragging {
   border: 1px solid lightgray;
@@ -174,52 +167,6 @@ thead > tr > th {
   padding: 3px; }
   .error .technical {
     display: none; }
-
-.visible {
-  display: inline-block; }
-
-.warning {
-  background-color: orange;
-  border-radius: 3px;
-  color: white;
-  font-size: 1.3em;
-  margin: -3px;
-  padding: 3px; }
-
-#messages {
-  background-color: white;
-  border: 1px solid lightgray;
-  border-radius: 3px;
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  left: 4px;
-  max-width: 80%;
-  padding: 16px 3px 3px 3px;
-  position: fixed !important;
-  top: 4px;
-  z-index: 1000000000 !important; }
-  #messages:after {
-    content: 'X';
-    cursor: pointer;
-    position: absolute;
-    right: -1px;
-    text-align: center;
-    top: -3px;
-    width: 1.5em; }
-  #messages:before {
-    background-color: lightblue;
-    content: ' ';
-    cursor: move;
-    height: 13px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%; }
-  #messages:empty {
-    display: none; }
-
-.ui-draggable > h2 {
-  cursor: move; }
 
 .logger.query {
   background-color: lightcyan;
@@ -256,6 +203,58 @@ thead > tr > th {
   position: absolute; }
   .minimized > .minimize {
     background: url("img/arrow_black_down.gif") center no-repeat; }
+
+.ui-draggable > h2 {
+  cursor: move; }
+
+.visible {
+  display: inline-block; }
+
+.warning {
+  background-color: orange;
+  border-radius: 3px;
+  color: white;
+  font-size: 1.3em;
+  margin: -3px;
+  padding: 3px; }
+
+#main {
+  height: 100%;
+  white-space: nowrap; }
+  #main > * {
+    white-space: normal; }
+
+#messages {
+  background-color: white;
+  border: 1px solid lightgray;
+  border-radius: 3px;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  left: 4px;
+  max-width: 80%;
+  padding: 16px 3px 3px 3px;
+  position: fixed !important;
+  top: 4px;
+  z-index: 1000000000 !important; }
+  #messages:after {
+    content: 'X';
+    cursor: pointer;
+    position: absolute;
+    right: -1px;
+    text-align: center;
+    top: -3px;
+    width: 1.5em; }
+  #messages:before {
+    background-color: lightblue;
+    content: ' ';
+    cursor: move;
+    height: 13px;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%; }
+  #messages:empty {
+    display: none; }
 
 table.worksheet > tbody > tr > td > input {
   margin: 0 -3px -1px -2px; }
