@@ -33,7 +33,7 @@ class Json_Controller implements Default_Feature_Controller
 			$search = Dao\Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
-			$search->arguments[$filter_name] = ($filter_value[0] == '!')
+			$search->arguments[$filter_name] = (strlen($filter_value) && ($filter_value[0] == '!'))
 				? Dao\Func::notEqual(substr($filter_value, 1))
 				: $filter_value;
 		}
