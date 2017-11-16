@@ -580,19 +580,7 @@ $('document').ready(function()
 					if (data) {
 						if (data.substr(0, 1) === '{') {
 							$.each(JSON.parse(data), function(name, value) {
-								// TODO should be able to set value for any form field tag (like select)
-								var $input = $form.find('input[name=' + DQ + name + DQ + ']');
-								if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
-									if ($input.val() === false) {
-										// false ie '0', ' or 0
-										$input.val(value.substr(1));
-										$input.change();
-									}
-								}
-								else {
-									$input.val(value);
-									$input.change();
-								}
+								ITRocks_Edit.setFieldValue(name, value);
 							});
 						}
 						else {
@@ -636,5 +624,62 @@ $('document').ready(function()
 		setEditorConfig(this, 'full');
 		setEditorConfig(this, 'standard');
 
+		//################################################################################ ITRocks_Edit
+		/**
+		 * Library of method to manage form fields
+		 *
+		 */
+		var ITRocks_Edit =
+		{
+
+			//------------------------------------------------------------------------------------- $form
+			/**
+			 * The form that contains fields to manage
+			 *
+			 * @type jQuery collection of form elements
+			 */
+			"$form" : this,
+
+			//----------------------------------------------------------------------------- setFieldValue
+			/**
+			 * Use always this method to set a new value to a field
+			 * For a simple field, value is a string (or similar)
+			 * For a combo field, value is [id, string representation of value]
+			 *
+			 * @param field_name string
+			 * @param value Array|string
+			 * @todo should be able to set value for any form field tag (like select)
+			 */
+			"setFieldValue" : function(field_name, value)
+			{
+				var do_change = true;
+				var $input    = this.$form.find('input[name=' + DQ + field_name + DQ + ']');
+				var str_value = null;
+
+				// case we receive an array with the value (and id) and its string representation
+				if (Array.isArray(value)) {
+					str_value = ((value.length > 1) ? value[1] : '');
+					value     = (value.length ? value[0] : '');
+				}
+
+				// todo comment what is this case about (value starting with ':')?
+				if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
+					if ($input.val() === false) {
+						value = value.substr(1);
+					}
+					else {
+						do_change = false;
+					}
+				}
+
+				if (do_change) {
+					$input.val(value);
+					if (!(str_value === null)) $input.next().val(str_value);
+					$input.change();
+				}
+			}
+
+		}
 	});
+
 });
