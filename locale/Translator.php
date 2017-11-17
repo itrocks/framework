@@ -37,6 +37,41 @@ class Translator
 		}
 	}
 
+	//----------------------------------------------------------------------------------- applyPlural
+	/**
+	 * @param $translations string[]
+	 * @param $translation  string
+	 * @param $context      string
+	 * @return boolean true if plural has been applied
+	 */
+	protected function applyPlural(array &$translations, &$translation, &$context)
+	{
+		$plural = (strpos($context, '*') !== false);
+		if ($plural) {
+			if (isset($translations['*'])) {
+				$translation = $translations['*'];
+			}
+			$filter_translations = false;
+			foreach (array_keys($translations) as $translation_context) {
+				if (strpos($translation_context, '*') !== false) {
+					$filter_translations = true;
+					break;
+				}
+			}
+			if ($filter_translations) {
+				foreach ($translations as $translation_context => $translation_text) {
+					unset($translations[$translation_context]);
+					if (strpos($translation_context, '*') !== false) {
+						unset($translations[$translation_context]);
+						$translations[str_replace('*', '', $translation_context)] = $translation_text;
+					}
+				}
+			}
+			$context = str_replace('*', '', $context);
+		}
+		return $plural;
+	}
+
 	//----------------------------------------------------------------------------- chooseTranslation
 	/**
 	 * Chooses the translation which context matches the most acutely the given context
@@ -67,6 +102,7 @@ class Translator
 			unset($translations['']);
 		}
 		if ($context) {
+			$this->applyPlural($translations, $translation, $context);
 			foreach ($translations as $translation_context => $contextual_translation) {
 				if ($contextual_translation && isA($context, $translation_context)) {
 					$context     = $translation_context;
