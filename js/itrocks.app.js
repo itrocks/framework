@@ -8,11 +8,13 @@
  * @param language    string
  * @param date_format string
  * @param use_cookies boolean
- * @param user_id     integer|null
+ * @param user_id     integer
+ * @param user_login  string
  * @constructor
  */
 App = function(
-	PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies, user_id
+	PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies, user_id,
+	user_login
 ) {
 
 	//----------------------------------------------------------------------------------- date_format
@@ -54,12 +56,6 @@ App = function(
 	 */
 	this.uri_base = uri_root + script_name;
 
-	//----------------------------------------------------------------------------------- use_cookies
-	/**
-	 * @type boolean
-	 */
-	this.use_cookies = use_cookies;
-
 	//-------------------------------------------------------------------------------------- uri_root
 	/**
 	 * @example '/a/folder/'
@@ -67,12 +63,25 @@ App = function(
 	 */
 	this.uri_root = uri_root;
 
+	//----------------------------------------------------------------------------------- use_cookies
+	/**
+	 * @type boolean
+	 */
+	this.use_cookies = use_cookies;
+
 	//--------------------------------------------------------------------------------------- user_id
 	/**
 	 *  @example 1
 	 *  @var integer|null
 	 */
 	this.user_id = (user_id === undefined) ? null : user_id;
+
+	//------------------------------------------------------------------------------------ user_login
+	/**
+	 *  @example baptiste.pillot
+	 *  @var string|null
+	 */
+	this.user_login = (user_login === undefined) ? null : user_login;
 
 };
 
