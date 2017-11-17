@@ -36,8 +36,8 @@ class Html_Translator implements Registerable
 	/**
 	 * Translate a content in a context
 	 *
-	 * @param $content  string
-	 * @param $context  string
+	 * @param $content string
+	 * @param $context string
 	 * @return string
 	 */
 	public function translateContent(&$content, $context)

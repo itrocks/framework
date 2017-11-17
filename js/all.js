@@ -27,6 +27,7 @@ $.getScript(path + 'itrocks/framework/js/itrocks.app.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.fullheight.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.functions.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
+$.getScript(path + 'itrocks/framework/js/tr.js');
 
 $.getScript(path + 'itrocks/framework/debug/debug.js');
 $.getScript(path + 'itrocks/framework/import_export/import.js');
