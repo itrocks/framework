@@ -654,11 +654,11 @@ $('document').ready(function()
 			{
 				var do_change = true;
 				var $input    = this.$form.find('input[name=' + DQ + field_name + DQ + ']');
-				var str_value = null;
+				var string_value = null;
 
 				// case we receive an array with the value (and id) and its string representation
 				if (Array.isArray(value)) {
-					str_value = ((value.length > 1) ? value[1] : '');
+					string_value = ((value.length > 1) ? value[1] : '');
 					value     = (value.length ? value[0] : '');
 				}
 
@@ -674,7 +674,7 @@ $('document').ready(function()
 
 				if (do_change) {
 					$input.val(value);
-					if (!(str_value === null)) $input.next().val(str_value);
+					if (!(string_value === null)) $input.next().val(string_value);
 					$input.change();
 				}
 			}
