@@ -3,6 +3,8 @@ namespace ITrocks\Framework\View\Json;
 
 use Exception;
 use ITRocks\Framework\Controller\Feature;
+use itrocks\framework\exception\Http_404_Exception;
+use itrocks\framework\exception\Http_406_Exception;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
 
@@ -32,33 +34,34 @@ class Default_View
 	 */
 	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
 	{
-		if (!Engine::acceptJson()) {
-			return null;
-		}
-
-		$feature_names
-			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
-			? [$parameters[Feature::FEATURE], $feature_name]
-			: [$feature_name];
-
-		//get the json file template
-		$template_file = Engine::getTemplateFile(
-			$class_name,
-			$feature_names,
-			(
-				isset($parameters[Template::TEMPLATE])
-				? Names::propertyToClass($parameters[Template::TEMPLATE])
-				: null
-			),
-			Engine::JSON_TEMPLATE_FILE_EXTENSION
-		);
-		if (!$template_file) {
-			header('HTTP/1.0 404 Not Found', true, 404);
-			return 'null';
-		}
-
-		$this->json = false;
 		try {
+
+			if (!Engine::acceptJson()) {
+				throw new Http_406_Exception('No header Accept: application/json');
+			}
+
+			$feature_names
+				= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
+				? [$parameters[Feature::FEATURE], $feature_name]
+				: [$feature_name];
+
+			//get the json file template
+			$template_file = Engine::getTemplateFile(
+				$class_name,
+				$feature_names,
+				(
+					isset($parameters[Template::TEMPLATE])
+					? Names::propertyToClass($parameters[Template::TEMPLATE])
+					: null
+				),
+				Engine::JSON_TEMPLATE_FILE_EXTENSION
+			);
+			if (!$template_file) {
+				throw new Http_404_Exception('No Json template found for the uri');
+			}
+
+			$this->json = false;
+
 			$renderer_class_name = Names::fileToClass($template_file);
 			if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {
 				/** @var $renderer Json_Template */
@@ -69,17 +72,20 @@ class Default_View
 				}
 			}
 		}
+		catch (Http_404_Exception $exception) {
+			$this->json = \GuzzleHttp\json_encode($exception->getMessage());
+		}
+		catch (Http_406_Exception $exception) {
+			$this->json = \GuzzleHttp\json_encode($exception->getMessage());
+		}
 		catch (Exception $exception) {
-			$this->json = false;
-		}
-
-		if (($this->json === '') || ($this->json === false)) {
 			header('HTTP/1.0 520 Unknown Error', true, 520);
-			return 'null';
+			$this->json = \GuzzleHttp\json_encode($exception->getMessage());
 		}
-
-		header('Content-Type: application/json; charset=utf-8');
-		return $this->json;
+		finally {
+			header('Content-Type: application/json; charset=utf-8');
+			return $this->json;
+		}
 	}
 
 }
