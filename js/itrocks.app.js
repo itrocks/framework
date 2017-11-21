@@ -9,12 +9,10 @@
  * @param date_format string
  * @param use_cookies boolean
  * @param user_id     integer
- * @param user_login  string
  * @constructor
  */
 App = function(
-	PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies, user_id,
-	user_login
+	PHPSESSID, uri_root, script_name, project_uri, language, date_format, use_cookies, user_id
 ) {
 
 	//----------------------------------------------------------------------------------- date_format
@@ -75,13 +73,6 @@ App = function(
 	 *  @var integer|null
 	 */
 	this.user_id = (user_id === undefined) ? null : user_id;
-
-	//------------------------------------------------------------------------------------ user_login
-	/**
-	 *  @example baptiste.pillot
-	 *  @var string|null
-	 */
-	this.user_login = (user_login === undefined) ? null : user_login;
 
 };
 

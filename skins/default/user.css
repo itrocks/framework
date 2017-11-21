@@ -1,2 +1,5 @@
+body > header > .connect > .user {
+  display: none; }
+
 .user.login.window .actions {
   text-align: center; }
