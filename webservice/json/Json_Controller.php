@@ -25,7 +25,7 @@ class Json_Controller implements Default_Feature_Controller
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
 	 * @param $search  array|object
-	 * @param $filters string[] list of filters to apply
+	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
 	 */
 	protected function applyFiltersToSearch(&$search, array $filters)
 	{
@@ -33,7 +33,9 @@ class Json_Controller implements Default_Feature_Controller
 			$search = Dao\Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
-			$search->arguments[$filter_name] = (strlen($filter_value) && ($filter_value[0] == '!'))
+			$search->arguments[$filter_name] = (
+				is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')
+			)
 				? Dao\Func::notEqual(substr($filter_value, 1))
 				: $filter_value;
 		}
