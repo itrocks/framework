@@ -11,6 +11,7 @@ namespace PHPSTORM_META;
  */
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
@@ -37,6 +38,9 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	Null_Object::create('') => [
+		'' == '@'
+	],
+	Parameters::getObject('') => [
 		'' == '@'
 	],
 	Search_Object::create('') => [
