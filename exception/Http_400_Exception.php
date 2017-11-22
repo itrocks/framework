@@ -24,7 +24,7 @@ class Http_400_Exception extends Exception
 			: $message);
 		$this->code    = $code;
     parent::__construct($this->message, $code, $previous);
-		header('HTTP/1.0 400 Bad Request', true, 400);
+		header('HTTP/1.1 400 Bad Request', true, 400);
 	}
 
 }

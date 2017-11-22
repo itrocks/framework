@@ -97,7 +97,7 @@ class Default_View
 				throw new Http_Json_Exception($exception->getMessage(), 406);
 			}
 			catch (Exception $exception) {
-				header('HTTP/1.0 500 Internal Server Error', true, 500);
+				header('HTTP/1.1 500 Internal Server Error', true, 500);
 				throw new Http_Json_Exception($exception->getMessage(), 500);
 			}
 		}

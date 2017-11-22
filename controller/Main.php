@@ -436,7 +436,7 @@ class Main
 		}
 		catch (Object_Not_Found_Exception $exception) {
 			if (Engine::acceptJson()) {
-				header('HTTP/1.0 404 Not Found', true, 404);
+				header('HTTP/1.1 404 Not Found', true, 404);
 				header('Content-Type: application/json; charset=utf-8');
 				$error_message = [
 					'success'=> false,
@@ -464,7 +464,19 @@ class Main
 		);
 
 		try {
-			return $this->executeController($class_name, $method_name, $uri, $post, $files);
+			$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+			if (Engine::acceptJson()) {
+				switch($uri->feature_name) {
+					case 'add' :
+						header('HTTP/1.1 201 Created', true, 201);
+						break;
+					default :
+						header('HTTP/1.1 200 Ok', true, 200);
+						break;
+				}
+				header('Content-Type: application/json; charset=utf-8');
+			}
+			return $result;
 		}
 		catch (View_Exception $exception) {
 			return $exception->view_result;

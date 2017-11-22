@@ -22,7 +22,7 @@ class Http_406_Exception extends Exception
 		$this->message = $message;
 		$this->code    = $code;
 		parent::__construct($message, $code, $previous);
-		header('HTTP/1.0 406 Not Acceptable', true, 406);
+		header('HTTP/1.1 406 Not Acceptable', true, 406);
 	}
 
 }
