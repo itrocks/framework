@@ -1,17 +1,11 @@
 <?php
 namespace ITRocks\Framework\Import;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
-use ITRocks\Framework\Import;
-use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\View;
-use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\View\View_Exception;
-use ReflectionException;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Import;
 use ITRocks\Framework\Import\Settings\Import_Class;
 use ITRocks\Framework\Import\Settings\Import_Property;
 use ITRocks\Framework\Import\Settings\Import_Settings;
@@ -20,9 +14,15 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ReflectionException;
 
 /**
  * Import data into the application from array
@@ -220,7 +220,7 @@ class Import_Array
 	/**
 	 * Gets properties alias from current list settings
 	 *
-	 * @todo user must place himself into the list settings matching the import, should search it
+	 * TODO user must place himself into the list settings matching the import, should search it
 	 * @param $class_name string
 	 * @return string[] $property_alias = string[string $property_name]
 	 */
@@ -522,7 +522,9 @@ class Import_Array
 	protected function sameElement($value1, $value2)
 	{
 		return
-			((is_array($value1) || is_array($value2)) && $this->sameArray($value1, $value2))
+			// Both values $value1 and $value2 must be array to call sameArray
+			(is_array($value1) && is_array($value2) && $this->sameArray($value1, $value2))
+			// TODO Should probably test with && too. If one is not an object they can't be the same
 			|| ((is_object($value1) || is_object($value2)) && $this->sameObject($value1, $value2))
 			|| (!is_array($value1) && !is_object($value1) && (strval($value1) === strval($value2)));
 	}
