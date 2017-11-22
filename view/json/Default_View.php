@@ -3,6 +3,7 @@ namespace ITrocks\Framework\View\Json;
 
 use Exception;
 use ITRocks\Framework\Controller\Feature;
+use itrocks\framework\exception\Http_403_Exception;
 use itrocks\framework\exception\Http_404_Exception;
 use itrocks\framework\exception\Http_406_Exception;
 use ITRocks\Framework\Exception\Http_Json_Exception;
@@ -39,6 +40,10 @@ class Default_View
 			try {
 				if (!Engine::acceptJson()) {
 					throw new Http_406_Exception('No header Accept: application/json');
+				}
+
+				if ($feature_name == 'denied') {
+					throw new Http_403_Exception();
 				}
 
 				$feature_names
@@ -82,6 +87,9 @@ class Default_View
 				header('Content-Type: application/json; charset=utf-8');
 				return $this->json;
 			}
+			catch (Http_403_Exception $exception) {
+				throw new Http_Json_Exception($exception->getMessage(), 403);
+			}
 			catch (Http_404_Exception $exception) {
 				throw new Http_Json_Exception($exception->getMessage(), 404);
 			}
@@ -100,7 +108,7 @@ class Default_View
 					'messages'=> [
 						'type' => 'error',
 						'contentText' => $exception->getMessage(),
-						'uri' => '$uri',
+						'uri' => $_SERVER['PATH_INFO'],
 						'data' => null
 					],
 					'data' => null,
