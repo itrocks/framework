@@ -24,7 +24,7 @@ class Http_403_Exception extends Exception
 			: $message);
 		$this->code    = $code;
     parent::__construct($this->message, $code, $previous);
-		header('HTTP/1.0 403 Forbidden', true, 403);
+		header('HTTP/1.1 403 Forbidden', true, 403);
 	}
 
 }

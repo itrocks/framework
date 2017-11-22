@@ -22,7 +22,7 @@ class Http_404_Exception extends Exception
 		$this->message = $message;
 		$this->code    = $code;
     parent::__construct($message, $code, $previous);
-		header('HTTP/1.0 404 Not Found', true, 404);
+		header('HTTP/1.1 404 Not Found', true, 404);
 	}
 
 }
