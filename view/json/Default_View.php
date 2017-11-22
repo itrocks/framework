@@ -3,9 +3,9 @@ namespace ITrocks\Framework\View\Json;
 
 use Exception;
 use ITRocks\Framework\Controller\Feature;
-use itrocks\framework\exception\Http_403_Exception;
-use itrocks\framework\exception\Http_404_Exception;
-use itrocks\framework\exception\Http_406_Exception;
+use ITRocks\Framework\Exception\Http_403_Exception;
+use ITRocks\Framework\Exception\Http_404_Exception;
+use ITRocks\Framework\Exception\Http_406_Exception;
 use ITRocks\Framework\Exception\Http_Json_Exception;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
@@ -102,19 +102,19 @@ class Default_View
 			}
 		}
 		catch (Http_Json_Exception $exception) {
-				header('Content-Type: application/json; charset=utf-8');
-				$error_message = [
-					'success'=> false,
-					'messages'=> [
-						'type' => 'error',
-						'contentText' => $exception->getMessage(),
-						'uri' => $_SERVER['PATH_INFO'],
-						'data' => null
-					],
-					'data' => null,
-					'exceptionMessage' => $exception->getMessage()
-				];
-				die(\GuzzleHttp\json_encode($error_message));
+			header('Content-Type: application/json; charset=utf-8');
+			$error_message = [
+				'success'=> false,
+				'messages'=> [
+					'type' => 'error',
+					'contentText' => $exception->getMessage(),
+					'uri' => $_SERVER['PATH_INFO'],
+					'data' => null
+				],
+				'data' => null,
+				'exceptionMessage' => $exception->getMessage()
+			];
+			die(\GuzzleHttp\json_encode($error_message));
 		}
 	}
 
