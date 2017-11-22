@@ -25,6 +25,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\View\Json\Engine;
 use ITRocks\Framework\View\View_Exception;
 
 /**
@@ -400,7 +401,25 @@ class Main
 			$main_object = $parameters->getMainObject();
 		}
 		catch (Object_Not_Found_Exception $exception) {
-			return '<div class="error">' . $exception->getMessage() . '</div>';
+			if (Engine::acceptJson()) {
+				header('HTTP/1.0 404 Not Found', true, 404);
+				header('Content-Type: application/json; charset=utf-8');
+				$error_message = [
+					'success'=> false,
+					'messages'=> [
+						'type' => 'error',
+						'contentText' => $exception->getMessage(),
+						'uri' => $_SERVER['PATH_INFO'],
+						'data' => null
+					],
+					'data' => null,
+					'exceptionMessage' => $exception->getMessage()
+				];
+				return \GuzzleHttp\json_encode($error_message);
+			}
+			else {
+				return '<div class="error">' . $exception->getMessage() . '</div>';
+			}
 		}
 		$controller_name = ($main_object instanceof Set)
 			? $main_object->element_class_name
