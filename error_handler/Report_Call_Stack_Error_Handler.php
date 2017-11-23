@@ -5,6 +5,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Call_Stack;
+use ITRocks\Framework\View\Json\Engine;
+use ITrocks\Framework\View\Json\Json_Error_Response;
 
 /**
  * An error handler that reports the full call stack and not only the error message alone
@@ -48,6 +50,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		if (ini_get('display_errors')) {
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
 				$this->logError($error, self::STDOUT);
+			}
+			elseif (Engine::acceptJson()) {
+				$this->logError($error, null, self::TEXT);
 			}
 			else {
 				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
@@ -112,6 +117,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			if ($_SERVER['REMOTE_ADDR'] === 'console') {
 				echo $this->getUserInformationMessage();
 			}
+			elseif (Engine::acceptJson()) {
+				echo (new Json_Error_Response(500, $this->getUserInformationMessage()))->getResponse();
+			}
 			else {
 				echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
 			}
@@ -143,16 +151,23 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$lf            = ($as === self::HTML) ? BRLF : LF;
 			$referer       = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 			$request_uri   = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI';
-			$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
-			$this->out($f, $this->format($request_uri, $as) . $lf);
-			$this->out($f, $referer ? ($this->format($referer, $as) . $lf) : '');
-			$this->out($f, $this->processIdentification());
-			$this->out($f, $this->format($this->formData(), $as));
-			$this->out($f, ($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText());
+
+			if ((Engine::acceptJson() && $f) || (!Engine::acceptJson())) {
+				$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
+				$this->out($f, $this->format($request_uri, $as) . $lf);
+				$this->out($f, $referer ? ($this->format($referer, $as) . $lf) : '');
+				$this->out($f, $this->processIdentification());
+				$this->out($f, $this->format($this->formData(), $as));
+				$this->out($f, ($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText());
+			}
 			if ($f) {
 				fputs($f, $lf);
 				fclose($f);
 			}
+		}
+		if (Engine::acceptJson()) {
+			$response = new Json_Error_Response($this->format($error->getErrorMessage(), $as), 500);
+			echo $response->getResponse();
 		}
 	}
 
