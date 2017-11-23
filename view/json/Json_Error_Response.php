@@ -33,11 +33,12 @@ class Json_Error_Response
 	 * Json_Error_Response constructor.
 	 * @param $code integer
 	 * @param $description string
+	 * @param $error null
 	 */
-	public function __construct($code, $description='')
+	public function __construct($code, $description='', $error=null)
 	{
 		$this->code = $code;
-		$this->error = $this->getError();
+		$this->error = !$error ? $this->getError() : $error;
 		$this->setDescription($description);
 	}
 
@@ -46,30 +47,31 @@ class Json_Error_Response
 	 * get the default error message
 	 */
 	private function getError() {
+		$error = '';
 		switch ($this->code) {
 			case Response::BAD_REQUEST:
-				$this->error = 'invalid_request';
+				$error = 'invalid_request';
 				break;
 			case Response::FORBIDDEN:
-				$this->error = 'not_allowed';
+				$error = 'not_allowed';
 				break;
 			case Response::INTERNAL_SERVER_ERROR:
-				$this->error = 'error_description';
+				$error = 'error_description';
 				break;
 			case Response::METHOD_NOT_ALLOWED:
-				$this->error = 'method_does_not_make_sense';
+				$error = 'method_does_not_make_sense';
 				break;
 			case Response::NOT_ACCEPTABLE:
-				$this->error = 'not_acceptable';
+				$error = 'not_acceptable';
 				break;
 			case Response::NOT_FOUND:
-				$this->error = 'not_found';
+				$error = 'not_found';
 				break;
 			case Response::UNAUTHORIZED:
-				$this->error = 'no_credentials';
+				$error = 'no_credentials';
 				break;
 		}
-		return $this->error;
+		return $error;
 	}
 
 	//--------------------------------------------------------------------------------- getHeaderCode
