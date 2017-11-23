@@ -1,10 +1,8 @@
 <?php
 namespace ITrocks\Framework\View\Json;
 
-use Exception;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Exception\Http_403_Exception;
-use ITRocks\Framework\Exception\Http_404_Exception;
 use ITRocks\Framework\Exception\Http_406_Exception;
 use ITRocks\Framework\Exception\Http_Json_Exception;
 use ITRocks\Framework\Tools\Names;
