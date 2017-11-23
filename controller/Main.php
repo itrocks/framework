@@ -306,10 +306,12 @@ class Main
 	}
 
 	//---------------------------------------------------------------------------------- resetSession
+
 	/**
 	 * Initialise a new session, or refresh existing session for update
 	 *
 	 * @param Session $session default is current session
+	 * @throws Http_400_Exception
 	 */
 	public function resetSession(Session $session = null)
 	{
@@ -320,8 +322,13 @@ class Main
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 		if (!$configuration) {
-			http_response_code(400);
-			die('Bad Request');
+			if (Engine::acceptJson()) {
+				throw new Http_400_Exception();
+			}
+			else {
+				http_response_code(400);
+				die('Bad Request');
+			}
 		}
 
 		unset($_SESSION['include_path']);
@@ -355,12 +362,13 @@ class Main
 	public function run($uri, array $get, array $post, array $files)
 	{
 		$result = null;
+
 		try {
 			Loc::$disabled = true;
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
 			Loc::$disabled = false;
-			$result        = $this->runController($uri, $get, $post, $files);
+			$result = $this->runController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
@@ -369,98 +377,6 @@ class Main
 					parse_str(str_replace('&amp;', '&', $query), $get);
 				}
 				$result = $this->run($uri, $get, $post, $files);
-			}
-		}
-		catch (Exception $exception) {
-			$handled_error = new Handled_Error(
-				$exception->getCode(), $exception->getMessage(),
-				$exception->getFile(), $exception->getLine()
-			);
-			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
-			$handler->handle($handled_error);
-		}
-		$this->running = false;
-		return $result;
-	}
-
-	//--------------------------------------------------------------------------------- runController
-
-	/**
-	 * Parse URI and run matching controller
-	 *
-	 * @param $uri         string The URI which describes the called controller and its parameters
-	 * @param $get         array Arguments sent by the caller
-	 * @param $post        array Posted forms sent by the caller
-	 * @param $files       array[] Files sent by the caller
-	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
-	 * @return mixed View data returned by the view the controller called
-	 * @throws Exception
-	 */
-	public function runController(
-		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	) {
-		$uri                  = new Uri($uri, $get);
-		$uri->controller_name = Builder::className($uri->controller_name);
-		$parameters           = clone $uri->parameters;
-		// TODO: try to read main object once only from database
-		// Note: here by cloning parameters we read twice the main object in database.
-		// once here calling getMainObject(), the other in the specific controller of the URI
-		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
-		// we either loose menu and/or loose Json_Controller behaviors
-		try {
-			try {
-				try {
-					$main_object = $parameters->getMainObject();
-				}
-				catch (Object_Not_Found_Exception $exception) {
-					if (Engine::acceptJson()) {
-						throw new Http_404_Exception($exception->getMessage());
-					}
-					else {
-						return '<div class="error">' . $exception->getMessage() . '</div>';
-					}
-				}
-				$controller_name = ($main_object instanceof Set)
-					? $main_object->element_class_name
-					: $uri->controller_name;
-				list($class_name, $method_name) = $this->getController(
-					$controller_name, $uri->feature_name, $sub_feature
-				);
-				try {
-					$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
-					if (Engine::acceptJson()) {
-						switch ($uri->feature_name) {
-							case 'add' :
-								header('HTTP/1.1 201 Created', true, 201);
-								break;
-							default :
-								header('HTTP/1.1 200 Ok', true, 200);
-								break;
-						}
-						header('Content-Type: application/json; charset=utf-8');
-					}
-					return $result;
-				}
-				catch (View_Exception $exception) {
-					if (Engine::acceptJson()) {
-						throw new Http_Json_Exception($exception->getMessage(), 500);
-					}
-					else {
-						return $exception->view_result;
-					}
-				}
-			}
-			catch (Exception $exception) {
-				if (Engine::acceptJson()) {
-					throw new Http_Json_Exception($exception->getMessage(), $exception->getCode());
-				}
-				else {
-					throw new Exception(
-						$exception->getMessage(),
-						$exception->getCode(),
-						$exception->getPrevious()
-					);
-				}
 			}
 		}
 		catch (Http_400_Exception $exception) {
@@ -520,6 +436,86 @@ class Main
 		catch (Http_Json_Exception $exception) {
 			$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
 			return $response->getResponse();
+		}
+		catch (Exception $exception) {
+			$handled_error = new Handled_Error(
+				$exception->getCode(), $exception->getMessage(),
+				$exception->getFile(), $exception->getLine()
+			);
+			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+			$handler->handle($handled_error);
+		}
+
+		$this->running = false;
+		return $result;
+
+	}
+
+	//--------------------------------------------------------------------------------- runController
+	/**
+	 * Parse URI and run matching controller
+	 *
+	 * @param $uri         string The URI which describes the called controller and its parameters
+	 * @param $get         array Arguments sent by the caller
+	 * @param $post        array Posted forms sent by the caller
+	 * @param $files       array[] Files sent by the caller
+	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
+	 * @return mixed View data returned by the view the controller called
+	 * @throws Exception
+	 */
+	public function runController(
+		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+	) {
+		$uri                  = new Uri($uri, $get);
+		$uri->controller_name = Builder::className($uri->controller_name);
+		$parameters           = clone $uri->parameters;
+		// TODO: try to read main object once only from database
+		// Note: here by cloning parameters we read twice the main object in database.
+		// once here calling getMainObject(), the other in the specific controller of the URI
+		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
+		// we either loose menu and/or loose Json_Controller behaviors
+
+		try {
+			$main_object = $parameters->getMainObject();
+		}
+		catch (Object_Not_Found_Exception $exception) {
+			if (Engine::acceptJson()) {
+				throw new Http_404_Exception($exception->getMessage());
+			}
+			else {
+				return '<div class="error">' . $exception->getMessage() . '</div>';
+			}
+		}
+
+		$controller_name = ($main_object instanceof Set)
+			? $main_object->element_class_name
+			: $uri->controller_name;
+		list($class_name, $method_name) = $this->getController(
+			$controller_name, $uri->feature_name, $sub_feature
+		);
+
+		try {
+			$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+			if (Engine::acceptJson()) {
+				switch ($uri->feature_name) {
+					case 'add' :
+						header('HTTP/1.1 201 Created', true, 201);
+						break;
+					default :
+						header('HTTP/1.1 200 Ok', true, 200);
+						break;
+				}
+				header('Content-Type: application/json; charset=utf-8');
+			}
+			return $result;
+		}
+		catch (View_Exception $exception) {
+			if (Engine::acceptJson()) {
+				throw new Http_Json_Exception($exception->getMessage(), 500);
+			}
+			else {
+				return $exception->view_result;
+			}
 		}
 	}
 
