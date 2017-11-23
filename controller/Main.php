@@ -306,7 +306,6 @@ class Main
 	}
 
 	//---------------------------------------------------------------------------------- resetSession
-
 	/**
 	 * Initialise a new session, or refresh existing session for update
 	 *
