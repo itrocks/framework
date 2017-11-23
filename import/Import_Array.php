@@ -522,10 +522,8 @@ class Import_Array
 	protected function sameElement($value1, $value2)
 	{
 		return
-			// Both values $value1 and $value2 must be array to call sameArray
 			(is_array($value1) && is_array($value2) && $this->sameArray($value1, $value2))
-			// TODO Should probably test with && too. If one is not an object they can't be the same
-			|| ((is_object($value1) || is_object($value2)) && $this->sameObject($value1, $value2))
+			|| (is_object($value1) && is_object($value2) && $this->sameObject($value1, $value2))
 			|| (!is_array($value1) && !is_object($value1) && (strval($value1) === strval($value2)));
 	}
 
