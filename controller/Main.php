@@ -12,6 +12,13 @@ use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
+use itrocks\framework\exception\Http_400_Exception;
+use itrocks\framework\exception\Http_401_Exception;
+use itrocks\framework\exception\Http_403_Exception;
+use itrocks\framework\exception\Http_404_Exception;
+use itrocks\framework\exception\Http_406_Exception;
+use itrocks\framework\exception\Http_500_Exception;
+use ITRocks\Framework\Exception\Http_Json_Exception;
 use ITRocks\Framework\IAutoloader;
 use ITRocks\Framework\Include_Path;
 use ITRocks\Framework\Locale\Loc;
@@ -26,6 +33,7 @@ use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View\Json\Engine;
+use ITrocks\Framework\View\Json\Json_Error_Response;
 use ITRocks\Framework\View\View_Exception;
 
 /**
@@ -103,8 +111,6 @@ class Main
 	//----------------------------------------------------------------------------- applicationUpdate
 	/**
 	 * Update application
-	 *
-	 * @throws Exception
 	 */
 	private function applicationUpdate()
 	{
@@ -142,7 +148,7 @@ class Main
 	 * @param $files       array[]
 	 * @return string
 	 */
-	public function executeController($controller, $method_name, Uri $uri, array $post, array $files)
+	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
 		$controller = is_a($controller, Controller::class, true)
 			? Builder::create($controller)
@@ -203,9 +209,6 @@ class Main
 	}
 
 	//-------------------------------------------------------------------------------------- includes
-	/**
-	 * @throws Exception
-	 */
 	private function includes()
 	{
 		foreach (glob(__DIR__ . '/../functions/*.php') as $file_name) {
@@ -220,7 +223,6 @@ class Main
 	 *
 	 * @param $includes string[]
 	 * @return Main $this
-	 * @throws Exception
 	 */
 	public function init(array $includes = [])
 	{
@@ -249,23 +251,6 @@ class Main
 				: substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1);
 		}
 		return $configurations->load($config);
-	}
-
-	//------------------------------------------------------------------------------- doRunController
-	/**
-	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
-	 * Parse URI and run matching controller
-	 *
-	 * @param $uri         string  The URI which describes the called controller and its parameters
-	 * @param $get         array   Arguments sent by the caller
-	 * @param $post        array   Posted forms sent by the caller
-	 * @param $files       array[] Files sent by the caller
-	 * @return mixed View data returned by the view the controller called
-	 * @throws Exception
-	 */
-	public function doRunController($uri, array $get = [], array $post = [], array $files = [])
-	{
-		 return $this->runController($uri, $get, $post, $files);
 	}
 
 	//-------------------------------------------------------------------------------------- redirect
@@ -301,7 +286,6 @@ class Main
 					}
 					unset($must_register);
 				}
-
 				// weaver is not set : keep plugin definition for further registering and activation
 				if (!isset($weaver)) {
 					$must_register[] = [
@@ -336,7 +320,8 @@ class Main
 		$session->plugins->addPlugins('top_core', $this->top_core_plugins);
 		$configuration = $this->loadConfiguration();
 		if (!$configuration) {
-			$this->resetSessionWithoutConfiguration();
+			http_response_code(400);
+			die('Bad Request');
 		}
 
 		unset($_SESSION['include_path']);
@@ -344,13 +329,6 @@ class Main
 		$session->temporary_directory = $configuration->temporary_directory;
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
 		$this->registerPlugins($session->plugins, $configuration);
-	}
-
-	//-------------------------------------------------------------- resetSessionWithoutConfiguration
-	protected function resetSessionWithoutConfiguration()
-	{
-			http_response_code(400);
-			die('Bad Request');
 	}
 
 	//--------------------------------------------------------------------------------- resumeSession
@@ -373,7 +351,6 @@ class Main
 	 * @param $post  array
 	 * @param $files array[]
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public function run($uri, array $get, array $post, array $files)
 	{
@@ -383,8 +360,7 @@ class Main
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
 			Loc::$disabled = false;
-			// TODO replace by runController call where aop priority resolved
-			$result = $this->doRunController($uri, $get, $post, $files);
+			$result        = $this->runController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
@@ -392,6 +368,7 @@ class Main
 					list($uri, $query) = explode('?', $uri, 2);
 					parse_str(str_replace('&amp;', '&', $query), $get);
 				}
+				$result = $this->run($uri, $get, $post, $files);
 			}
 		}
 		catch (Exception $exception) {
@@ -402,12 +379,12 @@ class Main
 			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
 			$handler->handle($handled_error);
 		}
-
 		$this->running = false;
 		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- runController
+
 	/**
 	 * Parse URI and run matching controller
 	 *
@@ -425,61 +402,124 @@ class Main
 		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters           = clone $uri->parameters;
-
 		// TODO: try to read main object once only from database
 		// Note: here by cloning parameters we read twice the main object in database.
 		// once here calling getMainObject(), the other in the specific controller of the URI
 		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
 		// we either loose menu and/or loose Json_Controller behaviors
 		try {
-			$main_object = $parameters->getMainObject();
+			try {
+				try {
+					$main_object = $parameters->getMainObject();
+				}
+				catch (Object_Not_Found_Exception $exception) {
+					if (Engine::acceptJson()) {
+						throw new Http_404_Exception($exception->getMessage());
+					}
+					else {
+						return '<div class="error">' . $exception->getMessage() . '</div>';
+					}
+				}
+				$controller_name = ($main_object instanceof Set)
+					? $main_object->element_class_name
+					: $uri->controller_name;
+				list($class_name, $method_name) = $this->getController(
+					$controller_name, $uri->feature_name, $sub_feature
+				);
+				try {
+					$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+					if (Engine::acceptJson()) {
+						switch ($uri->feature_name) {
+							case 'add' :
+								header('HTTP/1.1 201 Created', true, 201);
+								break;
+							default :
+								header('HTTP/1.1 200 Ok', true, 200);
+								break;
+						}
+						header('Content-Type: application/json; charset=utf-8');
+					}
+					return $result;
+				}
+				catch (View_Exception $exception) {
+					if (Engine::acceptJson()) {
+						throw new Http_Json_Exception($exception->getMessage(), 500);
+					}
+					else {
+						return $exception->view_result;
+					}
+				}
+			}
+			catch (Exception $exception) {
+				if (Engine::acceptJson()) {
+					throw new Http_Json_Exception($exception->getMessage(), $exception->getCode());
+				}
+				else {
+					throw new Exception(
+						$exception->getMessage(),
+						$exception->getCode(),
+						$exception->getPrevious()
+					);
+				}
+			}
 		}
-		catch (Object_Not_Found_Exception $exception) {
-			if (Engine::acceptJson()) {
-				header('HTTP/1.1 404 Not Found', true, 404);
-				header('Content-Type: application/json; charset=utf-8');
-				$error_message = [
-					'success'=> false,
-					'messages'=> [
-						'type' => 'error',
-						'contentText' => $exception->getMessage(),
-						'uri' => $_SERVER['PATH_INFO'],
-						'data' => null
-					],
-					'data' => null,
-					'exceptionMessage' => $exception->getMessage()
-				];
-				return \GuzzleHttp\json_encode($error_message);
+		catch (Http_400_Exception $exception) {
+			if (Engine::acceptJson()){
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
 			}
 			else {
-				return '<div class="error">' . $exception->getMessage() . '</div>';
+				return $exception->getMessage();
 			}
 		}
-
-		$controller_name = ($main_object instanceof Set)
-			? $main_object->element_class_name
-			: $uri->controller_name;
-		list($class_name, $method_name) = $this->getController(
-			$controller_name, $uri->feature_name, $sub_feature
-		);
-
-		try {
-			$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+		catch (Http_401_Exception $exception) {
 			if (Engine::acceptJson()) {
-				switch($uri->feature_name) {
-					case 'add' :
-						header('HTTP/1.1 201 Created', true, 201);
-						break;
-					default :
-						header('HTTP/1.1 200 Ok', true, 200);
-						break;
-				}
-				header('Content-Type: application/json; charset=utf-8');
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
 			}
-			return $result;
+			else {
+				return $exception->getMessage();
+			}
 		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
+		catch (Http_403_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_404_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_406_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_500_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_Json_Exception $exception) {
+			$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+			return $response->getResponse();
 		}
 	}
 

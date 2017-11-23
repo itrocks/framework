@@ -5,9 +5,8 @@ use ITRocks\Framework\Http\Response;
 
 /**
  * Format a json error response based on OAuth2 specification
- *
- * @see http://tools.ietf.org/html/rfc6749#page-45
- */
+ * http://tools.ietf.org/html/rfc6749#page-45
+  */
 class Json_Error_Response
 {
 
@@ -31,64 +30,58 @@ class Json_Error_Response
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Json_Error_Response constructor
-	 *
-	 * @param $code        integer
+	 * Json_Error_Response constructor.
+	 * @param $code integer
 	 * @param $description string
-	 * @param $error       string
 	 */
-	public function __construct($code, $description = '', $error = null)
+	public function __construct($code, $description='')
 	{
-		$this->code  = $code;
-		$this->error = $error ? $error : $this->getError();
+		$this->code = $code;
+		$this->error = $this->getError();
 		$this->setDescription($description);
 	}
 
 	//-------------------------------------------------------------------------------------- getError
 	/**
-	 * Get the default error message
-	 *
-	 * @return string
+	 * get the default error message
 	 */
-	private function getError()
-	{
-		$error = '';
+	private function getError() {
 		switch ($this->code) {
 			case Response::BAD_REQUEST:
-				$error = 'invalid_request';
+				$this->error = 'invalid_request';
 				break;
 			case Response::FORBIDDEN:
-				$error = 'not_allowed';
+				$this->error = 'not_allowed';
 				break;
 			case Response::INTERNAL_SERVER_ERROR:
-				$error = 'error_description';
+				$this->error = 'error_description';
 				break;
 			case Response::METHOD_NOT_ALLOWED:
-				$error = 'method_does_not_make_sense';
+				$this->error = 'method_does_not_make_sense';
 				break;
 			case Response::NOT_ACCEPTABLE:
-				$error = 'not_acceptable';
+				$this->error = 'not_acceptable';
 				break;
 			case Response::NOT_FOUND:
-				$error = 'not_found';
+				$this->error = 'not_found';
 				break;
 			case Response::UNAUTHORIZED:
-				$error = 'no_credentials';
+				$this->error = 'no_credentials';
 				break;
 		}
-		return $error;
+		return $this->error;
 	}
 
 	//--------------------------------------------------------------------------------- getHeaderCode
 	/**
-	 * Return formatted header http
+	 * return formatted header http
 	 *
 	 * @return string
 	 */
 	private function getHeaderCode()
 	{
 		$header_code = null;
-		switch ($this->code) {
+		switch($this->code) {
 			case Response::FORBIDDEN:
 				$header_code = 'Forbidden';
 				break;
@@ -109,7 +102,7 @@ class Json_Error_Response
 				break;
 		}
 
-		return 'HTTP/1.1 ' . strval($this->code) . SP . $header_code;
+		return 'HTTP/1.1 '. (string)$this->code . SP . $header_code;
 	}
 
 	//----------------------------------------------------------------------------------- getResponse
@@ -118,15 +111,13 @@ class Json_Error_Response
 	 *
 	 * @return string
 	 */
-	public function getResponse()
-	{
+	public function getResponse() {
 		header($this->getHeaderCode(), true, $this->code);
-		if (Engine::acceptJson()) {
-			header('Content-Type: application/json; charset=utf-8');
-		}
-		return json_encode([
+		header('Content-Type: application/json; charset=utf-8');
+		return \GuzzleHttp\json_encode([
 			'error'             => $this->error,
 			'error_description' => $this->description,
+			'success'           => false,
 			'status_code'       => $this->code
 		]);
 	}
@@ -137,19 +128,19 @@ class Json_Error_Response
 	 *
 	 * @param $description string
 	 */
-	private function setDescription($description)
-	{
-		if (!$description) {
+	private function setDescription($description) {
+
+		if (empty($description)) {
 			switch ($this->code) {
+				case Response::UNAUTHORIZED:
+					$this->description = "This resource is under permission, you must be authenticated with"
+						. " the right rights to have access to it";
+					break;
 				case Response::FORBIDDEN:
 					$this->description = "You're not allowed to perform this request";
 					break;
 				case Response::INTERNAL_SERVER_ERROR:
 					$this->description = 'Oops! Something went wrong...';
-					break;
-				case Response::UNAUTHORIZED:
-					$this->description = 'This resource is under permission, you must be authenticated with'
-						. SP . 'the right rights to have access to it';
 					break;
 			}
 		}
