@@ -12,6 +12,13 @@ use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
+use itrocks\framework\exception\Http_400_Exception;
+use itrocks\framework\exception\Http_401_Exception;
+use itrocks\framework\exception\Http_403_Exception;
+use itrocks\framework\exception\Http_404_Exception;
+use itrocks\framework\exception\Http_406_Exception;
+use itrocks\framework\exception\Http_500_Exception;
+use ITRocks\Framework\Exception\Http_Json_Exception;
 use ITRocks\Framework\IAutoloader;
 use ITRocks\Framework\Include_Path;
 use ITRocks\Framework\Locale\Loc;
@@ -26,6 +33,7 @@ use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View\Json\Engine;
+use ITrocks\Framework\View\Json\Json_Error_Response;
 use ITRocks\Framework\View\View_Exception;
 
 /**
@@ -376,6 +384,7 @@ class Main
 	}
 
 	//--------------------------------------------------------------------------------- runController
+
 	/**
 	 * Parse URI and run matching controller
 	 *
@@ -385,6 +394,7 @@ class Main
 	 * @param $files       array[] Files sent by the caller
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed View data returned by the view the controller called
+	 * @throws Exception
 	 */
 	public function runController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
@@ -398,52 +408,118 @@ class Main
 		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
 		// we either loose menu and/or loose Json_Controller behaviors
 		try {
-			$main_object = $parameters->getMainObject();
+			try {
+				try {
+					$main_object = $parameters->getMainObject();
+				}
+				catch (Object_Not_Found_Exception $exception) {
+					if (Engine::acceptJson()) {
+						throw new Http_404_Exception($exception->getMessage());
+					}
+					else {
+						return '<div class="error">' . $exception->getMessage() . '</div>';
+					}
+				}
+				$controller_name = ($main_object instanceof Set)
+					? $main_object->element_class_name
+					: $uri->controller_name;
+				list($class_name, $method_name) = $this->getController(
+					$controller_name, $uri->feature_name, $sub_feature
+				);
+				try {
+					$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+					if (Engine::acceptJson()) {
+						switch ($uri->feature_name) {
+							case 'add' :
+								header('HTTP/1.1 201 Created', true, 201);
+								break;
+							default :
+								header('HTTP/1.1 200 Ok', true, 200);
+								break;
+						}
+						header('Content-Type: application/json; charset=utf-8');
+					}
+					return $result;
+				}
+				catch (View_Exception $exception) {
+					if (Engine::acceptJson()) {
+						throw new Http_Json_Exception($exception->getMessage(), 500);
+					}
+					else {
+						return $exception->view_result;
+					}
+				}
+			}
+			catch (Exception $exception) {
+				if (Engine::acceptJson()) {
+					throw new Http_Json_Exception($exception->getMessage(), $exception->getCode());
+				}
+				else {
+					throw new Exception(
+						$exception->getMessage(),
+						$exception->getCode(),
+						$exception->getPrevious()
+					);
+				}
+			}
 		}
-		catch (Object_Not_Found_Exception $exception) {
-			if (Engine::acceptJson()) {
-				header('HTTP/1.1 404 Not Found', true, 404);
-				header('Content-Type: application/json; charset=utf-8');
-				$error_message = [
-					'success'=> false,
-					'messages'=> [
-						'type' => 'error',
-						'contentText' => $exception->getMessage(),
-						'uri' => $_SERVER['PATH_INFO'],
-						'data' => null
-					],
-					'data' => null,
-					'exceptionMessage' => $exception->getMessage()
-				];
-				return \GuzzleHttp\json_encode($error_message);
+		catch (Http_400_Exception $exception) {
+			if (Engine::acceptJson()){
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
 			}
 			else {
-				return '<div class="error">' . $exception->getMessage() . '</div>';
+				return $exception->getMessage();
 			}
 		}
-		$controller_name = ($main_object instanceof Set)
-			? $main_object->element_class_name
-			: $uri->controller_name;
-		list($class_name, $method_name) = $this->getController(
-			$controller_name, $uri->feature_name, $sub_feature
-		);
-		try {
-			$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
+		catch (Http_401_Exception $exception) {
 			if (Engine::acceptJson()) {
-				switch($uri->feature_name) {
-					case 'add' :
-						header('HTTP/1.1 201 Created', true, 201);
-						break;
-					default :
-						header('HTTP/1.1 200 Ok', true, 200);
-						break;
-				}
-				header('Content-Type: application/json; charset=utf-8');
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
 			}
-			return $result;
+			else {
+				return $exception->getMessage();
+			}
 		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
+		catch (Http_403_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_404_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_406_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_500_Exception $exception) {
+			if (Engine::acceptJson()) {
+				$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+				return $response->getResponse();
+			}
+			else {
+				return $exception->getMessage();
+			}
+		}
+		catch (Http_Json_Exception $exception) {
+			$response = new Json_Error_Response($exception->getCode(), $exception->getMessage());
+			return $response->getResponse();
 		}
 	}
 

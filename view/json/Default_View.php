@@ -33,89 +33,60 @@ class Default_View
 	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return string
+	 * @throws Http_403_Exception
+	 * @throws Http_406_Exception
+	 * @throws Http_Json_Exception
 	 */
 	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
 	{
-		try {
-			try {
-				if (!Engine::acceptJson()) {
-					throw new Http_406_Exception('No header Accept: application/json');
-				}
+		if (!Engine::acceptJson()) {
+			throw new Http_406_Exception('No header Accept: application/json');
+		}
 
-				if ($feature_name == 'denied') {
-					throw new Http_403_Exception();
-				}
+		if ($feature_name == 'denied') {
+			throw new Http_403_Exception();
+		}
 
-				$feature_names
-					= (isset($parameters[Feature::FEATURE])
-					&& ($parameters[Feature::FEATURE] !== $feature_name))
-					? [$parameters[Feature::FEATURE], $feature_name]
-					: [$feature_name];
+		$feature_names
+			= (isset($parameters[Feature::FEATURE])
+			&& ($parameters[Feature::FEATURE] !== $feature_name))
+			? [$parameters[Feature::FEATURE], $feature_name]
+			: [$feature_name];
 
-				//get the json file template
-				$template_file = Engine::getTemplateFile(
-					$class_name,
-					$feature_names,
-					(
-					isset($parameters[Template::TEMPLATE])
-						? Names::propertyToClass($parameters[Template::TEMPLATE])
-						: null
-					),
-					Engine::JSON_TEMPLATE_FILE_EXTENSION
-				);
-				if (!$template_file) {
-					throw new Http_406_Exception('No Json template found for the uri');
-				}
+		//get the json file template
+		$template_file = Engine::getTemplateFile(
+			$class_name,
+			$feature_names,
+			(
+			isset($parameters[Template::TEMPLATE])
+				? Names::propertyToClass($parameters[Template::TEMPLATE])
+				: null
+			),
+			Engine::JSON_TEMPLATE_FILE_EXTENSION
+		);
+		if (!$template_file) {
+			throw new Http_406_Exception('No Json template found for the uri');
+		}
 
-				$this->json = false;
+		$this->json = false;
 
-				$renderer_class_name = Names::fileToClass($template_file);
-				if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {
-					/** @var $renderer Json_Template */
-					if ($renderer = new $renderer_class_name(
-						$parameters, $form, $files, $class_name, $feature_name
-					)
-					) {
-						$this->json = $renderer->render();
-					}
-				}
-
-				if (!$this->json) {
-					throw new Exception('Renderer class not found');
-				}
-
-				header('Content-Type: application/json; charset=utf-8');
-				return $this->json;
-			}
-			catch (Http_403_Exception $exception) {
-				throw new Http_Json_Exception($exception->getMessage(), 403);
-			}
-			catch (Http_404_Exception $exception) {
-				throw new Http_Json_Exception($exception->getMessage(), 404);
-			}
-			catch (Http_406_Exception $exception) {
-				throw new Http_Json_Exception($exception->getMessage(), 406);
-			}
-			catch (Exception $exception) {
-				header('HTTP/1.1 500 Internal Server Error', true, 500);
-				throw new Http_Json_Exception($exception->getMessage(), 500);
+		$renderer_class_name = Names::fileToClass($template_file);
+		if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {
+			/** @var $renderer Json_Template */
+			if ($renderer = new $renderer_class_name(
+				$parameters, $form, $files, $class_name, $feature_name
+			)
+			) {
+				$this->json = $renderer->render();
 			}
 		}
-		catch (Http_Json_Exception $exception) {
-			header('Content-Type: application/json; charset=utf-8');
-			$error_message = [
-				'success'=> false,
-				'messages'=> [
-					'type' => 'error',
-					'contentText' => $exception->getMessage(),
-					'uri' => $_SERVER['PATH_INFO'],
-					'data' => null
-				],
-				'data' => null,
-				'exceptionMessage' => $exception->getMessage()
-			];
-			die(\GuzzleHttp\json_encode($error_message));
+
+		if (!$this->json) {
+			throw new Http_Json_Exception('Renderer class not found', 500);
 		}
+
+		header('Content-Type: application/json; charset=utf-8');
+		return $this->json;
 	}
 
 }
