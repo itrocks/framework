@@ -84,25 +84,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		return $result;
 	}
 
-	//--------------------------------------------------------------------------- getDisplayedMessage
-	/**
-	 *  Return displayed error message
-	 *
-	 * @param $error Handled_Error
-	 * @return string
-	 */
-	public function getDisplayedMessage(Handled_Error $error)
-	{
-		if ($_SERVER['REMOTE_ADDR'] === 'console') {
-			$result = $this->getUserInformationMessage();
-		}
-		else {
-			$result = '<div class="error">' . $this->getUserInformationMessage() . '</div>';
-		}
-
-		return $result;
-	}
-
 	//--------------------------------------------------------------------- getUserInformationMessage
 	/**
 	 * @return string
@@ -133,7 +114,15 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
-			echo $this->getDisplayedMessage($error);
+			if ($_SERVER['REMOTE_ADDR'] === 'console') {
+				echo $this->getUserInformationMessage();
+			}
+			elseif (Engine::acceptJson()) {
+				echo (new Json_Error_Response(500, $this->getUserInformationMessage()))->getResponse();
+			}
+			else {
+				echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
+			}
 		}
 
 		if ($reset_call_stack) {
@@ -163,7 +152,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$referer       = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 			$request_uri   = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI';
 
-			if ((Engine::acceptJson() && $f) || !Engine::acceptJson()) {
+			if ((Engine::acceptJson() && $f) || (!Engine::acceptJson())) {
 				$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
 				$this->out($f, $this->format($request_uri, $as) . $lf);
 				$this->out($f, $referer ? ($this->format($referer, $as) . $lf) : '');
@@ -175,6 +164,10 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				fputs($f, $lf);
 				fclose($f);
 			}
+		}
+		if (Engine::acceptJson()) {
+			$response = new Json_Error_Response($this->format($error->getErrorMessage(), $as), 500);
+			echo $response->getResponse();
 		}
 	}
 
