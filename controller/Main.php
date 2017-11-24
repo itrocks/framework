@@ -394,6 +394,7 @@ class Main
 				return $response->getResponse();
 			}
 			else {
+				http_response_code(400);
 				return $exception->getMessage();
 			}
 		}
