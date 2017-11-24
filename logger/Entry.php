@@ -171,7 +171,7 @@ class Entry
 			}
 			$this->user = User::current();
 			// running a console script? is it from CRON or a manual launch?
-			if (!$this->user && $_SERVER['REMOTE_ADDR'] === 'console') {
+			if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
 				// check grand-parent process is CRON (parent is a shell process)
 				$process = explode(
 					SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
