@@ -174,14 +174,12 @@ class Entry
 			if (!$this->user && $_SERVER['REMOTE_ADDR'] === 'console') {
 				// check grand-parent process is CRON (parent is a shell process)
 				$process = explode(
-					SP, exec('ps -p $(ps -o ppid= -p '.posix_getppid().') -o command | tail -1')
+					SP, exec('ps -p $(ps -o ppid= -p ' . posix_getppid() . ') -o command | tail -1')
 				)[0];
-				if (strcasecmp($process, '/usr/sbin/CRON') === 0) {
-					$this->user = Dao::read(self::CRON_USER, User::class);
-				}
-				else {
-					$this->user = Dao::read(self::CONSOLE_USER, User::class);
-				}
+				$this->user = Dao::read(
+					(strcasecmp($process, '/usr/sbin/CRON') ? self::CONSOLE_USER : self::CRON_USER),
+					User::class
+				);
 			}
 		}
 	}
