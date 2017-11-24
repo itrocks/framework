@@ -511,7 +511,9 @@ class Main
 		}
 		catch (View_Exception $exception) {
 			if (Engine::acceptJson()) {
-				throw new Http_Json_Exception($exception->getMessage(), 500);
+				$array_message = (array)\GuzzleHttp\json_decode($exception->view_result);
+				$message = $array_message['message'] . ': ' . implode(', ', $array_message['report_messages']);
+				throw new Http_Json_Exception($message, 400);
 			}
 			else {
 				return $exception->view_result;
