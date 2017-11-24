@@ -115,11 +115,13 @@ class Json_Error_Response
 	 */
 	public function getResponse() {
 		header($this->getHeaderCode(), true, $this->code);
-		header('Content-Type: application/json; charset=utf-8');
+		if (Engine::acceptJson()) {
+			header('Content-Type: application/json; charset=utf-8');
+		}
 		return \GuzzleHttp\json_encode([
 			'error'             => $this->error,
 			'error_description' => $this->description,
-			'success'           => false,
+			//'success'           => false,
 			'status_code'       => $this->code
 		]);
 	}
