@@ -310,7 +310,7 @@ class Dao implements Configurable
 	 * An option to choose what property value will be used as keys for Dao::readAll()
 	 * or Dao::search() results
 	 *
-	 * @param $property_name string|string[]
+	 * @param $property_name callable|string|string[]
 	 * @return Option\Key;
 	 */
 	public static function key($property_name)
@@ -560,18 +560,6 @@ class Dao implements Configurable
 		return new Option\Sort($columns);
 	}
 
-	//----------------------------------------------------------------------------------- storeNameOf
-	/**
-	 * Gets the store name for records typed as $class_name
-	 *
-	 * @param $class_name string
-	 * @return string
-	 */
-	public static function storeNameOf($class_name)
-	{
-		return self::current()->storeNameOf($class_name);
-	}
-
 	//------------------------------------------------------------------------------- storedAsForeign
 	/**
 	 * Returns true if a property will be stored into a foreign table record,
@@ -584,8 +572,20 @@ class Dao implements Configurable
 	{
 		$type = $property->getType();
 		return $type->isClass()
-		&& !$type->isDateTime()
-		&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+			&& !$type->isDateTime()
+			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
+	}
+
+	//----------------------------------------------------------------------------------- storeNameOf
+	/**
+	 * Gets the store name for records typed as $class_name
+	 *
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function storeNameOf($class_name)
+	{
+		return self::current()->storeNameOf($class_name);
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit

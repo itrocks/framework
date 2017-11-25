@@ -148,6 +148,26 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 	$array = array_merge($array, $array_insert, $second_array);
 }
 
+//--------------------------------------------------------------------------------- arrayIsCallable
+/**
+ * Returns true if $array represents a callable :
+ * - two elements
+ * - first comes a valid name of a class (will be auto-loaded)
+ * - next comes an existing method name
+ *
+ * @param $array array
+ * @return boolean
+ */
+function arrayIsCallable(array $array)
+{
+	if (count($array) !== 2) {
+		return false;
+	}
+	$first = reset($array);
+	$last  = end($array);
+	return (is_object($first) || class_exists($first)) && method_exists($first, $last);
+}
+
 //----------------------------------------------------------------------------- arrayMergeRecursive
 /**
  * Merges two arrays, with recursion

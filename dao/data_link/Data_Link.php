@@ -190,15 +190,10 @@ abstract class Data_Link
 	 *
 	 * @param $class_name string
 	 * @param $options    Option[]
-	 * @return string|string[]
+	 * @return callable|string|string[]
 	 */
 	protected function getKeyPropertyName($class_name, array $options = null)
 	{
-// these unindented lines are here temporarily, to insure update without crash
-if (is_array($class_name) && !$options) {
-$options = $class_name;
-$class_name = null;
-}
 		$key = 'id';
 		if (isset($options)) {
 			if (!is_array($options)) {
@@ -210,7 +205,6 @@ $class_name = null;
 				}
 			}
 		}
-if ($class_name) {
 		$class = new Link_Class($class_name);
 		if (($key === 'id') && $class->getLinkedClassName()) {
 			$key = [];
@@ -218,7 +212,6 @@ if ($class_name) {
 				$key[] = $property->name;
 			}
 		}
-}
 		return $key;
 	}
 

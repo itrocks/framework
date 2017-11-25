@@ -428,10 +428,11 @@ class Link extends Dao\Sql\Link
 	 */
 	protected function fetchAll($class_name, array $options, mysqli_result $result_set)
 	{
-		$search_result = [];
-		$keys          = $this->getKeyPropertyName($class_name, $options);
-		if (($keys !== 'id') && isset($keys)) {
-			if (is_array($keys)) {
+		$search_result    = [];
+		$keys             = $this->getKeyPropertyName($class_name, $options);
+		$keys_is_callable = false;
+		if (($keys !== 'id') && isset($keys) && !is_callable($keys)) {
+			if (is_array($keys) && !($keys_is_callable = arrayIsCallable($keys))) {
 				$object_key = [];
 				foreach ($keys as $key => $value) {
 					$keys[$key]       = explode(DOT, $value);
@@ -453,6 +454,10 @@ class Link extends Dao\Sql\Link
 			if ($keys === 'id') {
 				$search_result[$object->id] = $object;
 			}
+			// result key can be calculated from a callable (call-back function)
+			elseif ($keys_is_callable || is_callable($keys)) {
+				$search_result[call_user_func($keys, $object)] = $object;
+			}
 			// complex keys
 			elseif (isset($keys) && isset($object_key)) {
 				// result key must be a set of several id keys (used for linked classes collections)
@@ -470,10 +475,10 @@ class Link extends Dao\Sql\Link
 						$k_key          .= ($k_key ? Link_Class::ID_SEPARATOR : '')
 							. ($multiple ? ($k_object_key . '=') : '')
 							. (
-									isset($key_object->$k_id_object_key)
-									? $key_object->$k_id_object_key
-									: $key_object->$k_object_key
-								);
+								isset($key_object->$k_id_object_key)
+								? $key_object->$k_id_object_key
+								: $key_object->$k_object_key
+							);
 					}
 					$search_result[$k_key] = $object;
 				}
