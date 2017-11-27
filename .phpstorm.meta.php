@@ -16,6 +16,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\View\Html\Template;
+use PHPUnit_Framework_TestCase;
 
 $STATIC_METHOD_TYPES = [
 	Builder::create('') => [
@@ -28,11 +29,14 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	*/
+	Dao::readAll('') => [
+		'' == '@[]'
+	],
 	Dao::searchOne('') => [
 		'' == '@'
 	],
 	Dao::search('') => [
-		'' == '@'
+		'' == '@[]'
 	],
 	Dao::write('') => [
 		'' == '@'
@@ -43,16 +47,16 @@ $STATIC_METHOD_TYPES = [
 	Parameters::getObject('') => [
 		'' == '@'
 	],
+	PHPUnit_Framework_TestCase::createMock('') => [
+		'' == '@|PHPUnit_Framework_MockObject_MockObject',
+	],
+	PHPUnit_Framework_TestCase::getMock('') => [
+		'' == '@|PHPUnit_Framework_MockObject_MockObject',
+	],
 	Search_Object::create('') => [
 		'' == '@'
 	],
 	Template::getParentObject('') => [
 		'' == '@'
-	],
-	\PHPUnit_Framework_TestCase::createMock('') => [
-		'' == '@|PHPUnit_Framework_MockObject_MockObject',
-	],
-	\PHPUnit_Framework_TestCase::getMock('') => [
-		'' == '@|PHPUnit_Framework_MockObject_MockObject',
 	],
 ];
