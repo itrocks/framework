@@ -186,11 +186,14 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns the number of the day in the month
 	 *
 	 * @param $leading_zero boolean return leading zero (eg '01') if true, else not (eg 1)
-	 * @return string
+	 * @return integer|string integer if $leading_zero is false, string if $leading_zero is true
 	 */
-	public function dayOfMonth($leading_zero = true)
+	public function dayOfMonth($leading_zero = false)
 	{
-		return $this->format($leading_zero ? self::DAY_OF_MONTH : self::DAY_OF_MONTH_WITHOUT_ZERO);
+		$day_of_month = $this->format(
+			$leading_zero ? self::DAY_OF_MONTH : self::DAY_OF_MONTH_WITHOUT_ZERO
+		);
+		return $leading_zero ? $day_of_month : intval($day_of_month);
 	}
 
 	//------------------------------------------------------------------------------------- dayOfWeek
