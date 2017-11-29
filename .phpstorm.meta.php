@@ -44,6 +44,9 @@ $STATIC_METHOD_TYPES = [
 	Null_Object::create('') => [
 		'' == '@'
 	],
+	Parameters::getMainObject('') => [
+		'' == '@'
+	],
 	Parameters::getObject('') => [
 		'' == '@'
 	],
