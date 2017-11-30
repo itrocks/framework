@@ -22,7 +22,7 @@ class Entry
 	const CONSOLE_USER = 2;
 
 	//------------------------------------------------------------------------------------- CRON_USER
-	const CRON_USER    = 3;
+	const CRON_USER = 3;
 
 	// TODO HIGH #71516 Fix Builder\Compiler as this should be replaced by dynamic call in config.php
 	use Framework\Dao\Mysql\File_Logger\Entry;
@@ -169,8 +169,8 @@ class Entry
 				}
 				$this->form = $this->serialize($form);
 			}
+
 			$this->user = User::current();
-			// running a console script? is it from CRON or a manual launch?
 			if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
 				// check grand-parent process is CRON (parent is a shell process)
 				$process = explode(
