@@ -106,7 +106,7 @@ class IP implements Configurable, Registerable
 			if (pregMatchArray($uris, $uri, true)) {
 				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
 					if (Engine::acceptJson()) {
-						throw new Http_401_Exception('IP not allowed');
+						throw new Http_401_Exception('IP not allowed (' . $_SERVER['REMOTE_ADDR']  . ')');
 					}
 					$uri = View::link(Access_Control::class, Controller\Feature::F_DENIED);
 				}
