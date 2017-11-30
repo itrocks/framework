@@ -3,11 +3,13 @@ namespace ITRocks\Framework\Access;
 
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
+use itrocks\framework\exception\Http_401_Exception;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\User\Access_Control;
 use ITRocks\Framework\View;
+use ITRocks\Framework\View\Json\Engine;
 
 /**
  * An access control plugin for features available only from a set of IP
@@ -92,25 +94,21 @@ class IP implements Configurable, Registerable
 		}
 	}
 
-	//------------------------------------------------------------------------------------ badCheckIp
-	/**
-	 * @return string
-	 */
-	public function badCheckIp()
-	{
-		return View::link(Access_Control::class, Controller\Feature::F_DENIED);
-	}
-
 	//----------------------------------------------------------------------------------- checkAccess
+
 	/**
 	 * @param $uri string
+	 * @throws Http_401_Exception
 	 */
 	public function checkAccess(&$uri)
 	{
 		foreach ($this->uris as $group_name => $uris) {
 			if (pregMatchArray($uris, $uri, true)) {
 				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
-					$uri = $this->badCheckIp();
+					if (Engine::acceptJson()) {
+						throw new Http_401_Exception('IP not allowed');
+					}
+					$uri = View::link(Access_Control::class, Controller\Feature::F_DENIED);
 				}
 			}
 		}
