@@ -118,7 +118,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				echo $this->getUserInformationMessage();
 			}
 			elseif (Engine::acceptJson()) {
-				echo (new Json_Error_Response(500, $this->getUserInformationMessage()))->getResponse();
+				echo (new Json_Error_Response(500, $error->getErrorMessage()))->getResponse();
 			}
 			else {
 				echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
@@ -165,10 +165,12 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				fclose($f);
 			}
 		}
+		/*
 		if (Engine::acceptJson()) {
-			$response = new Json_Error_Response($this->format($error->getErrorMessage(), $as), 500);
+			$response = new Json_Error_Response(500, $this->format($error->getErrorMessage(), $as));
 			echo $response->getResponse();
 		}
+		*/
 	}
 
 	//------------------------------------------------------------------------------------------- out
