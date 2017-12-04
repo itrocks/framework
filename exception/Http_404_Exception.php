@@ -1,5 +1,5 @@
 <?php
-namespace itrocks\framework\exception;
+namespace Itrocks\Framework\Exception;
 
 use Exception;
 use Throwable;
