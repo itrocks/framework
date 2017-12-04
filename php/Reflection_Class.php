@@ -132,13 +132,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private $trait_constants;
 
-	//----------------------------------------------------------------------------------------- $type
-	/**
-	 * @values T_CLASS, T_INTERFACE, T_TRAIT
-	 * @var integer
-	 */
-	public $type;
-
 	//--------------------------------------------------------------------------------------- $traits
 	/**
 	 * @var Reflection_Class[]|string[]
@@ -156,6 +149,13 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @var Reflection_Property[]
 	 */
 	private $traits_properties;
+
+	//----------------------------------------------------------------------------------------- $type
+	/**
+	 * @values T_CLASS, T_INTERFACE, T_TRAIT
+	 * @var integer
+	 */
+	public $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
