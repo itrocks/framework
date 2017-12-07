@@ -56,6 +56,9 @@ class Configurations
 				'~\n\s*\"name\":\s*\"(?P<vendor>[\w-]*)/(?P<project>[\w-]*)\"\s*,~', $composer, $match
 			);
 			if ($match) {
+				if (endsWith($match['project'], '-final')) {
+					$match['project'] = lLastParse($match['project'], '-final');
+				}
 				$file_name = $match['vendor'] . SL . $match['project'] . SL . 'config.php';
 				$file_name = str_replace('-', '_', $file_name);
 				if (!is_file($file_name)) {
