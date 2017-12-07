@@ -140,12 +140,12 @@ $('document').ready(function()
 		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
 		//------------------------------------------------------------------- input.datetime datePicker
-		this.inside('input.datetime').datepicker({
+		this.inside('input.datetime').datetimepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            'button',
 			showOtherMonths:   true,
 			selectOtherMonths: true,
-			showWeek:          true
+			showWeek:          true,
 		});
 
 		//------------------------------------------------------------------------ input.datetime keyup
