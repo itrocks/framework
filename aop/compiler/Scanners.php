@@ -190,9 +190,11 @@ trait Scanners
 				. '@replaces\s+' // alias annotation
 				. '(\w+)'        // 1 : property name
 				. '%';
-			preg_match($expr, $property->getDocComment(), $match);
-			if ($match) {
-				$properties[$match[1]]['replaced'] = $property->name;
+			preg_match_all($expr, $property->getDocComment(), $matches, PREG_SET_ORDER);
+			if ($matches) {
+				foreach ($matches as $match) {
+					$properties[$match[1]]['replaced'] = $property->name;
+				}
 			}
 		}
 		foreach ($this->scanForOverrides($class->getDocComment(), ['replaces']) as $match) {
