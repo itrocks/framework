@@ -1,5 +1,7 @@
 <?php
 
+const _AND = 'AND';
+
 const _FALSE = 'false';
 
 const _PRE = '</pre>';
@@ -35,6 +37,8 @@ const DQ = '"';
 const LF = "\n";
 
 const NO = 'no';
+
+const _OR = 'OR';
 
 const Q = "'";
 
