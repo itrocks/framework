@@ -119,6 +119,23 @@ class Reflection_Method extends ReflectionMethod
 			. '(' . join(', ', $parameters) . ')' . LF . '{';
 	}
 
+	//---------------------------------------------------------------------------------- hasParameter
+	/**
+	 * Returns true if the method has a parameter named $parameter_name
+	 *
+	 * @param $parameter_name string
+	 * @return boolean
+	 */
+	public function hasParameter($parameter_name)
+	{
+		foreach (parent::getParameters() as $parameter) {
+			if ($parameter->name === $parameter_name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	//--------------------------------------------------------------------------------------- returns
 	/**
 	 * @return string

@@ -24,6 +24,7 @@ abstract class Feature
 	const F_EDIT          = 'edit';
 	const F_EXPORT        = 'export';
 	const F_IMPORT        = 'import';
+	const F_INSTALL       = 'install';
 	const F_JSON          = 'json';
 	const F_LIST          = 'dataList';
 	const F_LOGIN         = 'login';
@@ -34,11 +35,15 @@ abstract class Feature
 	const F_SELECT        = 'select';
 	const F_SUPER         = 'superAdministrator';
 	const F_TRANSFORM     = 'transform';
+	const F_UNINSTALL     = 'uninstall';
 	const F_VALIDATE      = 'validate';
 	const F_WRITE         = 'write';
 
 	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = 'feature';
+
+	//---------------------------------------------------------------------------------------- ON_SET
+	const ON_SET = [self::F_LIST];
 
 	//------------------------------------------------------------------------------------- READ_ONLY
 	const READ_ONLY = [
