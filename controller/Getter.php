@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Controller;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -236,7 +237,10 @@ if (isset($GLOBALS['D'])) static::debug('B6', $path . SL . 'webservice' . SL . s
 					$last_controller_method = $feature_name;
 				}
 if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
-				if (method_exists($base_class, $feature_name)) {
+				if (
+					method_exists($base_class, $feature_name)
+					&& (new Reflection_Method($base_class, $feature_name))->hasParameter($feature_name)
+				) {
 					$class  = $base_class;
 					$method = $feature_name;
 				}
@@ -311,7 +315,7 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 
 	//------------------------------------------------------------------------ getInterfacesRecursive
 	/**
-	 * Get interfaces we can get from, starting from the actual class / interface / trait
+	 * Get interfaces we can get from, starting from the actual class
 	 *
 	 * @param $class Reflection_Class
 	 * @return string[] key is the full name of each interface, value is it without 'Vendor/Project/'
@@ -321,6 +325,8 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 		$interfaces = [];
 		foreach ($class->getInterfaces() as $interface) {
 			$interfaces[$interface->name] = self::classNameWithoutVendorProject($interface->name);
+			// don't need to recurse : getInterfaces get them all
+			// TODO should restrict to the direct parent interfaces to optimize calls
 		}
 		return $interfaces;
 	}

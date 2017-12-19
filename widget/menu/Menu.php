@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework\Widget;
 
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Menu\Block;
 use ITRocks\Framework\Widget\Menu\Item;
 
@@ -80,6 +82,43 @@ class Menu implements Configurable
 				}
 			}
 		}
+	}
+
+	//------------------------------------------------------------------------------- configurationOf
+	/**
+	 * Build a menu configuration for a given feature (dataList is the default), given a list of
+	 * class names.
+	 *
+	 * - The feature is Feature::F_LIST at start if no other feature begins the list
+	 * - Each time a string without BS is read : it is the name of feature for the next classes
+	 *
+	 * @param $class_names string|string[] class name(s), can be multiple in one or several arguments
+	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
+	 */
+	public static function configurationOf($class_names)
+	{
+		$configuration_items = [];
+		$feature             = Feature::F_LIST;
+		foreach (func_get_args() as $class_names) {
+			if (!is_array($class_names)) {
+				$class_names = [$class_names];
+			}
+			foreach ($class_names as $class_name) {
+				// class name : change it to a menu item
+				if (strpos($class_name, BS))  {
+					if (in_array($feature, Feature::ON_SET)) {
+						$class_name = Names::classToSet($class_name);
+					}
+					$configuration_items[View::link($class_name, $feature)]
+						= ucfirst(Names::classToDisplay($class_name));
+				}
+				// feature for the next classes
+				else {
+					$feature = $class_name;
+				}
+			}
+		}
+		return $configuration_items;
 	}
 
 	//-------------------------------------------------------------------------------- constructBlock
