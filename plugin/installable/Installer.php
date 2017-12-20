@@ -15,30 +15,53 @@ class Installer
 	 *
 	 * @param $blocks array
 	 */
-	public function addMenu($blocks)
+	public function addMenu(array $blocks)
 	{
 		echo PRE . 'Add menu ' . print_r($blocks, true) . _PRE;
 	}
 
-	//------------------------------------------------------------------------------------ buildClass
+	//------------------------------------------------------------------------------------- addPlugin
+	/**
+	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
+	 *
+	 * @param $plugin Plugin
+	 */
+	public function addPlugin(Plugin $plugin)
+	{
+		echo PRE . 'Add plugin ' . get_class($plugin) . ' to config.php' . _PRE;
+	}
+
+	//------------------------------------------------------------------------------- addToBuiltClass
 	/**
 	 * Add interfaces and traits to the base class, into the builder.php configuration file
 	 *
 	 * @param $base_class_name         string
 	 * @param $added_interfaces_traits string[]
 	 */
-	public function buildClass($base_class_name, array $added_interfaces_traits)
+	public function addToBuiltClass($base_class_name, array $added_interfaces_traits)
 	{
 		echo PRE . 'Build class ' . $base_class_name . ' => ' . print_r($added_interfaces_traits, true) . _PRE;
 	}
 
-	//--------------------------------------------------------------------------------- installPlugin
+	//------------------------------------------------------------------------------------- dependsOn
 	/**
-	 * Add the plugin into the config.php configuration file
+	 * The plugin depends on all these plugins : install them before me
 	 *
-	 * @param $plugin Plugin
+	 * @param $plugin_class_names string[] A list of needed plugin classes
 	 */
-	public function installPlugin(Plugin $plugin)
+	public function dependsOn(array $plugin_class_names)
+	{
+		echo PRE . 'Depends on ' . print_r($plugin_class_names, true) . ' plugins' . _PRE;
+	}
+
+	//-------------------------------------------------------------------------- removeFromBuiltClass
+	/**
+	 * Remove interfaces and traits from the base class, into the builder.php configuration file
+	 *
+	 * @param $base_class_name           string
+	 * @param $removed_interfaces_traits string[]
+	 */
+	public function removeFromBuiltClass($base_class_name, array $removed_interfaces_traits)
 	{
 
 	}
@@ -49,30 +72,21 @@ class Installer
 	 *
 	 * @param $blocks array
 	 */
-	public function removeMenu($blocks)
+	public function removeMenu(array $blocks)
 	{
 
 	}
 
-	//---------------------------------------------------------------------------------- unBuildClass
+	//---------------------------------------------------------------------------------- removePlugin
 	/**
-	 * Remove interfaces and traits from the base class, into the builder.php configuration file
+	 * Remove the installed plugin from the config.php configuration file
 	 *
-	 * @param $base_class_name           string
-	 * @param $removed_interfaces_traits string[]
-	 */
-	public function unBuildClass($base_class_name, array $removed_interfaces_traits)
-	{
-
-	}
-
-	//------------------------------------------------------------------------------- uninstallPlugin
-	/**
-	 * Remove the plugin from the config.php configuration file
+	 * - If the plugin is Installable and is not $this : launch the uninstall procedure for it
+	 * - If the plugin is not Installable or is $this : only remove it from the config.php
 	 *
 	 * @param $plugin Plugin
 	 */
-	public function uninstallPlugin(Plugin $plugin)
+	public function removePlugin(Plugin $plugin)
 	{
 
 	}
