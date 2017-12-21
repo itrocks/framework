@@ -121,7 +121,6 @@ class Json_Error_Response
 		return \GuzzleHttp\json_encode([
 			'error'             => $this->error,
 			'error_description' => $this->description,
-			//'success'           => false,
 			'status_code'       => $this->code
 		]);
 	}
@@ -134,7 +133,7 @@ class Json_Error_Response
 	 */
 	private function setDescription($description) {
 
-		if (empty($description)) {
+		if (!$description) {
 			switch ($this->code) {
 				case Response::UNAUTHORIZED:
 					$this->description = "This resource is under permission, you must be authenticated with"
