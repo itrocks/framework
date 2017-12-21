@@ -46,8 +46,7 @@ class Default_View
 		}
 
 		$feature_names
-			= (isset($parameters[Feature::FEATURE])
-			&& ($parameters[Feature::FEATURE] !== $feature_name))
+			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
 			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
 
