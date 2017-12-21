@@ -84,6 +84,25 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		return $result;
 	}
 
+	//--------------------------------------------------------------------------- getDisplayedMessage
+	/**
+	 *  Return displayed error message
+	 *
+	 * @param $error Handled_Error
+	 * @return string
+	 */
+	private function getDisplayedMessage(Handled_Error $error)
+	{
+		if ($_SERVER['REMOTE_ADDR'] === 'console') {
+			$result = $this->getUserInformationMessage();
+		}
+		else {
+			$result = '<div class="error">' . $this->getUserInformationMessage() . '</div>';
+		}
+
+		return $result;
+	}
+
 	//--------------------------------------------------------------------- getUserInformationMessage
 	/**
 	 * @return string
@@ -114,15 +133,8 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
-			if ($_SERVER['REMOTE_ADDR'] === 'console') {
-				echo $this->getUserInformationMessage();
-			}
-			elseif (Engine::acceptJson()) {
-				echo (new Json_Error_Response(500, $error->getErrorMessage()))->getResponse();
-			}
-			else {
-				echo '<div class="error">' . $this->getUserInformationMessage()	. '</div>';
-			}
+			$result =  $this->getDisplayedMessage($error);
+			echo $result;
 		}
 
 		if ($reset_call_stack) {
