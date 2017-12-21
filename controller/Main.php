@@ -500,7 +500,7 @@ class Main
 		}
 		catch (View_Exception $exception) {
 			if (Engine::acceptJson()) {
-				$array_message = (array)\GuzzleHttp\json_decode($exception->view_result);
+				$array_message = (array)json_decode($exception->view_result);
 				$message = $array_message['message'] . ': ' . implode(', ', $array_message['report_messages']);
 				throw new Http_Json_Exception($message, 400);
 			}
