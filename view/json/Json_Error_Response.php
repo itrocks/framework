@@ -142,8 +142,8 @@ class Json_Error_Response
 					$this->description = 'Oops! Something went wrong...';
 					break;
 				case Response::UNAUTHORIZED:
-					$this->description = "This resource is under permission, you must be authenticated with"
-						. " the right rights to have access to it";
+					$this->description = 'This resource is under permission, you must be authenticated with'
+						. SP . 'the right rights to have access to it';
 					break;
 			}
 		}
