@@ -6,7 +6,7 @@ use ITRocks\Framework\Http\Response;
 /**
  * Format a json error response based on OAuth2 specification
  * http://tools.ietf.org/html/rfc6749#page-45
-  */
+ */
 class Json_Error_Response
 {
 
