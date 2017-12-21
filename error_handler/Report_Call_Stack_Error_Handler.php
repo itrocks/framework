@@ -165,12 +165,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				fclose($f);
 			}
 		}
-		/*
-		if (Engine::acceptJson()) {
-			$response = new Json_Error_Response(500, $this->format($error->getErrorMessage(), $as));
-			echo $response->getResponse();
-		}
-		*/
 	}
 
 	//------------------------------------------------------------------------------------------- out
