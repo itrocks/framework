@@ -135,15 +135,15 @@ class Json_Error_Response
 
 		if (!$description) {
 			switch ($this->code) {
-				case Response::UNAUTHORIZED:
-					$this->description = "This resource is under permission, you must be authenticated with"
-						. " the right rights to have access to it";
-					break;
 				case Response::FORBIDDEN:
 					$this->description = "You're not allowed to perform this request";
 					break;
 				case Response::INTERNAL_SERVER_ERROR:
 					$this->description = 'Oops! Something went wrong...';
+					break;
+				case Response::UNAUTHORIZED:
+					$this->description = "This resource is under permission, you must be authenticated with"
+						. " the right rights to have access to it";
 					break;
 			}
 		}
