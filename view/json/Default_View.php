@@ -56,7 +56,7 @@ class Default_View
 			$class_name,
 			$feature_names,
 			(
-			isset($parameters[Template::TEMPLATE])
+				isset($parameters[Template::TEMPLATE])
 				? Names::propertyToClass($parameters[Template::TEMPLATE])
 				: null
 			),
@@ -71,9 +71,8 @@ class Default_View
 		$renderer_class_name = Names::fileToClass($template_file);
 		if ($renderer_class_name && isA($renderer_class_name, Json_Template::class)) {
 			/** @var $renderer Json_Template */
-			if ($renderer = new $renderer_class_name(
-				$parameters, $form, $files, $class_name, $feature_name
-			)
+			if (
+				$renderer = new $renderer_class_name($parameters, $form, $files, $class_name, $feature_name)
 			) {
 				$this->json = $renderer->render();
 			}
