@@ -37,8 +37,8 @@ class Json_Error_Response
 	 */
 	public function __construct($code, $description='', $error=null)
 	{
-		$this->code = $code;
-		$this->error = !$error ? $this->getError() : $error;
+		$this->code  = $code;
+		$this->error = $error ? $error : $this->getError();
 		$this->setDescription($description);
 	}
 
