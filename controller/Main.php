@@ -496,19 +496,7 @@ class Main
 		);
 
 		try {
-			$result = $this->executeController($class_name, $method_name, $uri, $post, $files);
-			if (Engine::acceptJson()) {
-				switch ($uri->feature_name) {
-					case 'add' :
-						header('HTTP/1.1 201 Created', true, 201);
-						break;
-					default :
-						header('HTTP/1.1 200 Ok', true, 200);
-						break;
-				}
-				header('Content-Type: application/json; charset=utf-8');
-			}
-			return $result;
+			return $this->executeController($class_name, $method_name, $uri, $post, $files);
 		}
 		catch (View_Exception $exception) {
 			if (Engine::acceptJson()) {
