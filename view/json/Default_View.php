@@ -42,7 +42,7 @@ class Default_View
 		}
 
 		if ($feature_name == 'denied') {
-			throw new Http_403_Exception('You don\'t have permission for this feature');
+			throw new Http_403_Exception("You don\'t have permission for this feature");
 		}
 
 		$feature_names
