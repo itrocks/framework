@@ -1,11 +1,17 @@
 html, body {
   height: 100%; }
 
+* {
+  box-sizing: border-box; }
+
 body {
   background-color: white;
   font-family: arial, helvetica, sans-serif;
-  font-size: 12px; }
+  font-size: 12px;
+  display: grid;
+  grid-template-columns: auto 1fr; }
   body > header {
+    grid-column: 1 / span 2;
     background-color: lightgrey;
     border-bottom: solid darkgrey 1px;
     height: 52px; }
