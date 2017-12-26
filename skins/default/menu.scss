@@ -4,8 +4,6 @@
 	border: 1px solid darkgray;
 	border-radius: 3px;
 	box-shadow: 0 0 2px 2px rgba(0, 0, 0, .1);
-	display: inline-block;
-	float: left;
 	margin: -30px 4px 4px;
 	padding-bottom: 10px;
 	position: relative;
@@ -66,5 +64,9 @@
 				}
 			}
 		}
+	}
+
+	&.minimized {
+		grid-column: 1 / span 2;
 	}
 }
