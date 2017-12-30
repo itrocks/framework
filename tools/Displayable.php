@@ -35,8 +35,8 @@ class Displayable extends String_Class
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @var string
 	 * @values class, method, property, string
+	 * @var string
 	 */
 	private $type;
 

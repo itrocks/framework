@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use DateTime;
 use ITRocks\Framework\Builder;
 
 /**
@@ -37,11 +38,11 @@ class String_Class
 	/**
 	 * Clean the word, this delete all character who don't have a place in a current word.
 	 *
-	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
-	 * @return String_Class the clean word.
 	 * @example
 	 * cleanWord('Albert, ') => return 'Albert'
 	 * cleanWord(' list : ') => return 'list'
+	 * @return String_Class the clean word.
+	 * @todo see if there is any conceptual difference with strSimplify. If not, replace it !
 	 */
 	function cleanWord()
 	{
@@ -236,6 +237,27 @@ class String_Class
 		$text = $wiki->textile($text);
 		$text = $wiki->geshiSolve($text);
 		return new String_Class($text);
+	}
+
+	//------------------------------------------------------------------------------------- toInteger
+	/**
+	 * @return integer
+	 */
+	public function toInteger()
+	{
+		return intval($this->value);
+	}
+
+	//--------------------------------------------------------------------------------------- toWeeks
+	/**
+	 * @return integer
+	 */
+	public function toWeeks()
+	{
+		if ($this->value instanceof DateTime) {
+			return $this->value->format('W');
+		}
+		return round($this->value / 60 / 60 / 24 / 7);
 	}
 
 	//--------------------------------------------------------------------------------------- twoLast
