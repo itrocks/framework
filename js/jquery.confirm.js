@@ -22,10 +22,12 @@
 			if (!$link.attr('confirmed')) {
 				event.stopImmediatePropagation();
 
-				// Message is the only mandatory field.
 				var message  = $link.attr('data-confirm-message');
 				var ok_label = $link.attr('data-confirm-ok');
 				var ko_label = $link.attr('data-confirm-cancel');
+
+				message = message ? message : 'Confirmez-vous cette action: ' + $link.html();
+
 				/**
 				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
 				 */
@@ -50,8 +52,8 @@
 		 * @param message     {string}   The message to display.
 		 * @param ok_callback {function} The callback called on confirmation.
 		 * @param ko_callback {function} The callback called on cancellation (optional).
-		 * @param ok_label    {string}   Label of the confirm button (optional).
-		 * @param ko_label    {string}   Label of the cancel button (optional).
+		 * @param ok_label    {string}   Label of the confirm button.
+		 * @param ko_label    {string}   Label of the cancel button.
 		 */
 		var openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label) {
 			// Set default value of cancellation callback if not set.
@@ -59,16 +61,6 @@
 				ko_callback = function () {
 					closeDialog();
 				};
-			}
-
-			// Set default label for confirmation button if not set.
-			if (typeof ok_label === 'undefined' || ok_label === null) {
-				ok_label = 'Confirmer';
-			}
-
-			// Set default label for cancelation button if not set.
-			if (typeof ko_label === 'undefined' || ko_label === null) {
-				ko_label = 'Annuler';
 			}
 
 			// Close dialog when running confirmation callback.
