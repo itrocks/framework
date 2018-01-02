@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
@@ -203,7 +204,10 @@ class Button
 			}
 		}
 
-		if ($this->confirm_label || $this->cancel_label || $this->confirm_message) {
+		if ($this->feature == Feature::F_CONFIRM) {
+			$this->confirm_label = $this->confirm_label ?: Loc::tr('Confirm');
+			$this->cancel_label  = $this->cancel_label  ?: Loc::tr('Cancel');
+
 			$this->class .= (isset($this->class) ? SP : '') . 'confirm';
 		}
 
