@@ -202,6 +202,11 @@ class Button
 				$this->confirm_message = $option;
 			}
 		}
+
+		if ($this->confirm_label || $this->cancel_label || $this->confirm_message) {
+			$this->class .= (isset($this->class) ? SP : '') . 'confirm';
+		}
+
 		if (!isset($this->color)) {
 			$this->color = new Color(Color::BLUE);
 		}
