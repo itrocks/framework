@@ -77,8 +77,8 @@
 			var html    = '<p>' + message + '</p>';
 			var wrapper = $('<div>').append(html, $('<ul>', {
 				class: 'general actions'
-			}).append(ko_button, ok_button))
-				.css('text-align', 'right');
+			}).css('text-align', 'right')
+		    .append(ko_button, ok_button));
 
 			display(wrapper);
 		};
