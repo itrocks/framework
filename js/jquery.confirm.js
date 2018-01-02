@@ -10,7 +10,13 @@
 	 */
 	$.fn.confirm = function () {
 
-		this.find('a.confirm').bind("click", function(event) {
+		/**
+		 * Listener on click event.
+		 *
+		 * If link has flag "confirmed", just free the event & remove flag. Otherwise prevent event and
+		 * display a confirm box built with data attributes of the link.
+		 */
+		this.find('a.confirm').bind('click', function(event) {
 			var $link = $(this);
 
 			if (!$link.attr('confirmed')) {
@@ -78,7 +84,7 @@
 			var wrapper = $('<div>').append(html, $('<ul>', {
 				class: 'general actions'
 			}).css('text-align', 'right')
-		    .append(ko_button, ok_button));
+				.append(ko_button, ok_button));
 
 			display(wrapper);
 		};
