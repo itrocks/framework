@@ -108,9 +108,9 @@
 		var buildButton = function(label, callback, css_class) {
 			return $('<li>', {
 				class: css_class
-			}).append($('<a>', {
-				html: label
-			}).click(callback));
+			}).append(
+				$('<a>', {html: label}).on('click', callback)
+			);
 		};
 
 		/**
