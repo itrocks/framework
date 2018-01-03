@@ -10,14 +10,21 @@ use Serializable;
 class Session implements Serializable
 {
 
+	//----------------------------------------------------- PLUGINS Serialize / unserialize constants
+	const CONFIGURATION_FILE_NAME = 'configuration_file_name';
+	const PLUGINS                 = 'plugins';
+
 	//--------------------------------------------------------------------------------------- CURRENT
 	/**
 	 * A 'current' constant used for array storage / current method dynamic calls
 	 */
 	const CURRENT = 'current';
 
-	//--------------------------------------------------------------------------------------- PLUGINS
-	const PLUGINS = 'plugins';
+	//---------------------------------------------------------------------- $configuration_file_name
+	/**
+	 * @var string
+	 */
+	public $configuration_file_name;
 
 	//-------------------------------------------------------------------------------------- $current
 	/**
@@ -215,9 +222,10 @@ class Session implements Serializable
 	public function serialize()
 	{
 		$data = [
+			self::CONFIGURATION_FILE_NAME      => $this->configuration_file_name,
 			self::CURRENT                      => [],
-			Configuration::ENVIRONMENT         => $this->environment,
 			self::PLUGINS                      => $this->plugins,
+			Configuration::ENVIRONMENT         => $this->environment,
 			Configuration::TEMPORARY_DIRECTORY => $this->temporary_directory
 		];
 		if (isset($this->current)) {
@@ -285,10 +293,11 @@ class Session implements Serializable
 	public function unserialize($serialized)
 	{
 		$data = unserialize($serialized);
-		$this->current             = $data[self::CURRENT];
-		$this->environment         = $data[Configuration::ENVIRONMENT];
-		$this->plugins             = $data[self::PLUGINS];
-		$this->temporary_directory = $data[Configuration::TEMPORARY_DIRECTORY];
+		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
+		$this->current                 = $data[self::CURRENT];
+		$this->plugins                 = $data[self::PLUGINS];
+		$this->environment             = $data[Configuration::ENVIRONMENT];
+		$this->temporary_directory     = $data[Configuration::TEMPORARY_DIRECTORY];
 	}
 
 }

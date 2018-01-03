@@ -127,6 +127,7 @@ class Configurations
 				}
 			}
 			$this->configurations[$config_name] = new Configuration($config_name, $config_options);
+			$this->configurations[$config_name]->file_name = $file_name;
 		}
 		return end($this->configurations);
 	}

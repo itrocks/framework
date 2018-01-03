@@ -48,6 +48,14 @@ class Configuration
 	 */
 	public $environment;
 
+	//------------------------------------------------------------------------------------ $file_name
+	/**
+	 * Configuration file name, when configuration was loaded from a file
+	 *
+	 * @var string|null
+	 */
+	public $file_name = null;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * Configuration name

@@ -425,8 +425,9 @@ class Main
 		}
 
 		unset($_SESSION['include_path']);
-		$session->environment         = $configuration->environment;
-		$session->temporary_directory = $configuration->temporary_directory;
+		$session->configuration_file_name = $configuration->file_name;
+		$session->environment             = $configuration->environment;
+		$session->temporary_directory     = $configuration->temporary_directory;
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());
 		$this->registerPlugins($session->plugins, $configuration);
 	}
