@@ -40,7 +40,7 @@ class Installer
 	public function addMenu(array $blocks)
 	{
 		echo PRE . 'Add menu ' . print_r($blocks, true) . _PRE;
-		$this->file->add(['Priority::NORMAL', 'Menu::class'], $blocks);
+		$this->file->add(['Priority::NORMAL', 'Framework\Widget\Menu::class'], $blocks);
 	}
 
 	//------------------------------------------------------------------------------------- addPlugin
@@ -67,7 +67,7 @@ class Installer
 	{
 		echo PRE . 'Base class ' . $base_class_name . ' => ' . print_r($added_interfaces_traits, true) . _PRE;
 		$this->file->add(
-			['Priority::CORE', 'Builder::class', $base_class_name],
+			['Priority::CORE', 'Framework\Builder::class', $base_class_name],
 			$added_interfaces_traits
 		);
 	}
