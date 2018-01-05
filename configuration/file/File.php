@@ -12,13 +12,13 @@ class File
 {
 	use Has_File_Name;
 
-	//--------------------------------------------------------------------------------------- $config
+	//-------------------------------------------------------------------------------- $configuration
 	/**
 	 * Configuration file content
 	 *
 	 * @var string[]
 	 */
-	protected $config;
+	protected $configuration;
 
 	//------------------------------------------------------------------------------- $included_files
 	/**
@@ -37,7 +37,39 @@ class File
 	 */
 	public function add(array $path, array $add)
 	{
-
+		array_unshift($path, '] = [');
+		echo '+ add into ' . print_r($path, true) . BRLF;
+		$configuration = reset($this->configuration);
+		$positions     = [];
+		foreach ($path as $path_element) {
+			$depth = 0;
+			while (
+				($configuration !== false)
+				&& (
+					!$depth
+					|| !strpos($configuration, $path_element)
+					|| !preg_match("/^\s*" . preg_quote($path_element) . "\s*=>/", $configuration)
+				)
+			) {
+				if (substr($configuration, -1) === '[') {
+					$depth ++;
+				}
+				elseif ((substr($configuration, -1) === ']') || (substr($configuration, -2) === '],')) {
+					$depth --;
+				}
+				$configuration = next($this->configuration);
+			}
+			if ($configuration === false) {
+				trigger_error('not found ' . $path_element . ' into ' . $this->file_name, E_USER_ERROR);
+			}
+			else {
+				echo '- found ' . $path_element . ' at position ' . key($this->configuration) . BRLF;
+				$positions[] = key($this->configuration);
+			}
+		}
+		if ($configuration !== false) {
+			echo '- insert ' . print_r($add, true) . ' at position ' . key($this->configuration) . BRLF;
+		}
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -46,7 +78,7 @@ class File
 	 */
 	public function read()
 	{
-		$this->config = (new Read($this->file_name))->read();
+		$this->configuration = (new Read($this->file_name))->read();
 		return $this;
 	}
 
