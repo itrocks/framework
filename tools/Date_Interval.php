@@ -31,7 +31,6 @@ abstract class Date_Interval
 	 * P25H will be P1D1H.
 	 * @notice
 	 * It's not possible to adjust year/month as it would be dependant from start date)
-	 *
 	 * @param $interval DateInterval
 	 * @return DateInterval
 	 */
@@ -51,13 +50,12 @@ abstract class Date_Interval
 	/**
 	 * Creates an interval knowing the duration in seconds
 	 *
-	 * @notice
-	 * The result can only be time + number of days,
-	 * year/month will be null as they are start date dependant
 	 * @example
 	 * You can easily get a Date_Interval between two timestamps with this call :
 	 * Date_Interval::createFromDuration($timestamp2 - $timestamp1)
-	 *
+	 * @notice
+	 * The result can only be time + number of days,
+	 * year/month will be null as they are start date dependant
 	 * @param $duration integer The duration in seconds, may be negative
 	 * @return DateInterval
 	 */
@@ -136,7 +134,6 @@ abstract class Date_Interval
 	 * @param $interval   DateInterval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
-	 *
 	 * @return integer
 	 */
 	public static function toMinutes(
@@ -152,6 +149,7 @@ abstract class Date_Interval
 	 * @param $interval DateInterval
 	 * @param $absolute boolean
 	 * @return integer
+	 * @throws Date_Interval_Exception
 	 */
 	public static function toSeconds(DateInterval $interval, $absolute = false)
 	{
@@ -169,7 +167,6 @@ abstract class Date_Interval
 	 * @param $interval   DateInterval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
-	 *
 	 * @return integer
 	 */
 	public static function toWeeks(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
