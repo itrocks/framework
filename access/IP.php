@@ -96,7 +96,8 @@ class IP implements Configurable, Registerable
 	/**
 	 * @return string
 	 */
-	protected function badCheckIp() {
+	protected function badCheckIp()
+	{
 		return View::link(Access_Control::class, Controller\Feature::F_DENIED);
 	}
 
