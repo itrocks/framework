@@ -26,7 +26,7 @@ class Html_Builder_Collection extends Collection
 
 	//---------------------------------------------------------------------------------- $create_only
 	/**
-	 * Property create only.
+	 * Property create only
 	 *
 	 * @var boolean
 	 */
@@ -34,7 +34,7 @@ class Html_Builder_Collection extends Collection
 
 	//--------------------------------------------------------------------------------------- $no_add
 	/**
-	 * Property read only cache. Do not use this property : use noAdd() instead.
+	 * Property no add cache. Do not use this property : use noAdd() instead
 	 *
 	 * @var boolean
 	 */
@@ -42,7 +42,7 @@ class Html_Builder_Collection extends Collection
 
 	//------------------------------------------------------------------------------------ $no_delete
 	/**
-	 * Property read only cache. Do not use this property : use noDelete() instead.
+	 * Property no delete cache. Do not use this property : use noDelete() instead
 	 *
 	 * @var boolean
 	 */
@@ -56,7 +56,7 @@ class Html_Builder_Collection extends Collection
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
-	 * Property read only cache. Do not use this property : use readOnly() instead.
+	 * Property read only cache. Do not use this property : use readOnly() instead
 	 *
 	 * @var boolean
 	 */

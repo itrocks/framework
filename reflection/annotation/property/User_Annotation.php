@@ -14,7 +14,7 @@ class User_Annotation extends List_Annotation
 
 	//----------------------------------------------------------------------------------- CREATE_ONLY
 	/**
-	 * create_only : field is enable on create only
+	 * create_only : field is enable on creation only
 	 */
 	const CREATE_ONLY = 'create_only';
 
