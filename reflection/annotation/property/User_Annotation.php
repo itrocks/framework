@@ -12,6 +12,12 @@ class User_Annotation extends List_Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'user';
 
+	//----------------------------------------------------------------------------------- CREATE_ONLY
+	/**
+	 * create_only : field is enable on create only
+	 */
+	const CREATE_ONLY = 'create_only';
+
 	//--------------------------------------------------------------------- HIDD Constants for $value
 	const HIDDEN     = 'hidden';
 	const HIDE_EMPTY = 'hide_empty';

@@ -43,6 +43,7 @@ class Html_Builder_Property extends Html_Builder_Type
 
 			/** @var $user_annotation User_Annotation */
 			$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+
 			/** @var $user_default_annotation Method_Annotation */
 			$user_default_annotation = $property->getAnnotation('user_default');
 
@@ -60,7 +61,17 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 
 			// 1st, get read_only from @user readonly
-			$this->readonly = $user_annotation->has(User_Annotation::READONLY);
+			$this->readonly = ($user_annotation->has(User_Annotation::READONLY)
+				// Create_only annotation and object already exists ? ==> readonly = true
+				|| (
+					$user_annotation->has(User_Annotation::CREATE_ONLY)
+					// TODO Are they the best conditions to test ?
+					&& ($property instanceof Reflection_Property_Value)
+					&& is_object($property->getObject())
+					&& !Empty_Object::isEmpty($property->getObject())
+				)
+			);
+
 			if (
 				!$this->readonly
 				&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))

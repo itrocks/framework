@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Namespaces;
@@ -22,6 +23,14 @@ use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
  */
 class Html_Builder_Collection extends Collection
 {
+
+	//---------------------------------------------------------------------------------- $create_only
+	/**
+	 * Property create only.
+	 *
+	 * @var boolean
+	 */
+	private $create_only;
 
 	//--------------------------------------------------------------------------------------- $no_add
 	/**
@@ -58,6 +67,14 @@ class Html_Builder_Collection extends Collection
 	 * @var Html_Template
 	 */
 	private $template = null;
+
+	//----------------------------------------------------------------------------- $user_annotations
+	/**
+	 * Contains all read annotations
+	 *
+	 * @var List_Annotation
+	 */
+	private $user_annotations;
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -171,6 +188,32 @@ class Html_Builder_Collection extends Collection
 		return $row;
 	}
 
+	//------------------------------------------------------------------------------------ createOnly
+	/**
+	 * @return boolean
+	 */
+	protected function createOnly()
+	{
+		if (!isset($this->create_only)) {
+			$this->create_only = $this->getAnnotations()->has(User_Annotation::CREATE_ONLY);
+		}
+		return $this->create_only;
+	}
+
+	//-------------------------------------------------------------------------------- getAnnotations
+	/**
+	 * Read all annotations of this->property
+	 *
+	 * @return List_Annotation
+	 */
+	private function getAnnotations()
+	{
+		if (!$this->user_annotations) {
+			$this->user_annotations = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
+		}
+		return $this->user_annotations;
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @return Reflection_Property[]
@@ -178,11 +221,17 @@ class Html_Builder_Collection extends Collection
 	public function getProperties()
 	{
 		$properties = parent::getProperties();
-		if ($this->readOnly()) {
+		if ($this->readOnly() || $this->createOnly()) {
 			foreach ($properties as $property) {
 				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-				$user_annotation->add(User_Annotation::READONLY);
-				$user_annotation->add(User_Annotation::TOOLTIP);
+				if ($this->read_only
+					// If collection is set then ==> read only
+					// TODO Is it the best condition to test ?
+					|| ($this->create_only && $this->collection)
+				) {
+					$user_annotation->add(User_Annotation::READONLY);
+					$user_annotation->add(User_Annotation::TOOLTIP);
+				}
 			}
 		}
 		return $properties;
@@ -195,8 +244,7 @@ class Html_Builder_Collection extends Collection
 	protected function noAdd()
 	{
 		if (!isset($this->no_add)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_add    = $user_annotation->has(User_Annotation::NO_ADD);
+			$this->no_add    = $this->getAnnotations()->has(User_Annotation::NO_ADD);
 		}
 		return $this->no_add;
 	}
@@ -208,8 +256,7 @@ class Html_Builder_Collection extends Collection
 	protected function noDelete()
 	{
 		if (!isset($this->no_delete)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_delete = $user_annotation->has(User_Annotation::NO_DELETE);
+			$this->no_delete = $this->getAnnotations()->has(User_Annotation::NO_DELETE);
 		}
 		return $this->no_delete;
 	}
@@ -221,8 +268,7 @@ class Html_Builder_Collection extends Collection
 	protected function readOnly()
 	{
 		if (!isset($this->read_only)) {
-			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->read_only = $user_annotation->has(User_Annotation::READONLY);
+			$this->read_only = $this->getAnnotations()->has(User_Annotation::READONLY);
 		}
 		return $this->read_only;
 	}
