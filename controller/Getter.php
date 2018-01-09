@@ -19,13 +19,34 @@ abstract class Getter
 	/**
 	 * Returns the name of the class, without the beginning 'Vendor\Project\'
 	 *
-	 * @param $class_name string 'Vendor\Project\Namespace\Class_Name'
-	 * @return string 'Namespace\Class_Name'
+	 * Applies with :
+	 * - Vendor\Project\ itrocks sub projects
+	 * - Vendor\ itrocks core projects
+	 *
+	 * @example
+	 * When the Vendor\Project\Application exists :
+	 * 'Vendor\Project\Namespace\Class_Name' => 'Namespace\Class_Name'
+	 * @example
+	 * When no Vendor\Project\Application class is found :
+	 * 'Vendor\Namespace\Class_Name' => 'Namespace\Class_Name'
+	 * @example
+	 * When the name of the class is at project-level :
+	 * 'Vendor\Class_Name' => 'Class_Name'
+	 * @param $class_name string
+	 * @return string
 	 */
 	static private function classNameWithoutVendorProject($class_name)
 	{
-		$split_class_name = explode(BS, $class_name, 3);
-		return end($split_class_name);
+		if (substr_count($class_name, BS) == 1) {
+			$without = substr($class_name, strpos($class_name, BS) + 1);
+		}
+		else {
+			list($vendor, $project, $class_sub_path) = explode(BS, $class_name, 3);
+			$without = class_exists($vendor . BS . $project . BS . 'Application')
+				? $class_sub_path
+				: ($project . ($class_sub_path ? (BS . $class_sub_path) : ''));
+		}
+		return $without;
 	}
 
 	//----------------------------------------------------------------------------------------- debug
