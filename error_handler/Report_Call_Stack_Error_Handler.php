@@ -91,7 +91,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $error Handled_Error
 	 * @return string
 	 */
-	private function getDisplayedMessage(Handled_Error $error)
+	public function getDisplayedMessage(Handled_Error $error)
 	{
 		if ($_SERVER['REMOTE_ADDR'] === 'console') {
 			$result = $this->getUserInformationMessage();
