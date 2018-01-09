@@ -213,9 +213,9 @@ class Reflection_Property_Value extends Reflection_Property
 					|| !$this->isValueEmpty()
 				))
 				|| (!$hide_empty_test && (
-					!$user_annotation->has(User_Annotation::READONLY)
-					|| !$user_annotation->has(User_Annotation::CREATE_ONLY)
+					!$user_annotation->has(User_Annotation::CREATE_ONLY)
 					|| !$user_annotation->has(User_Annotation::HIDE_EMPTY)
+					|| !$user_annotation->has(User_Annotation::READONLY)
 					|| !$this->isValueEmpty()
 				))
 			);
