@@ -47,8 +47,11 @@ class Json_Error_Response
 	//-------------------------------------------------------------------------------------- getError
 	/**
 	 * Get the default error message
+	 *
+	 * @return string
 	 */
-	private function getError() {
+	private function getError()
+	{
 		$error = '';
 		switch ($this->code) {
 			case Response::BAD_REQUEST:
