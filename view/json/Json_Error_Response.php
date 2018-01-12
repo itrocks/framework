@@ -6,7 +6,7 @@ use ITRocks\Framework\Http\Response;
 /**
  * Format a json error response based on OAuth2 specification
  *
- * http://tools.ietf.org/html/rfc6749#page-45
+ * @see http://tools.ietf.org/html/rfc6749#page-45
  */
 class Json_Error_Response
 {
@@ -33,11 +33,11 @@ class Json_Error_Response
 	/**
 	 * Json_Error_Response constructor
 	 *
-	 * @param $code integer
+	 * @param $code        integer
 	 * @param $description string
-	 * @param $error null
+	 * @param $error       string
 	 */
-	public function __construct($code, $description='', $error=null)
+	public function __construct($code, $description = '', $error = null)
 	{
 		$this->code  = $code;
 		$this->error = $error ? $error : $this->getError();
@@ -88,7 +88,7 @@ class Json_Error_Response
 	private function getHeaderCode()
 	{
 		$header_code = null;
-		switch($this->code) {
+		switch ($this->code) {
 			case Response::FORBIDDEN:
 				$header_code = 'Forbidden';
 				break;
@@ -109,7 +109,7 @@ class Json_Error_Response
 				break;
 		}
 
-		return 'HTTP/1.1 '. (string)$this->code . SP . $header_code;
+		return 'HTTP/1.1 ' . strval($this->code) . SP . $header_code;
 	}
 
 	//----------------------------------------------------------------------------------- getResponse
