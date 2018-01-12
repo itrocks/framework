@@ -118,7 +118,8 @@ class Json_Error_Response
 	 *
 	 * @return string
 	 */
-	public function getResponse() {
+	public function getResponse()
+	{
 		header($this->getHeaderCode(), true, $this->code);
 		if (Engine::acceptJson()) {
 			header('Content-Type: application/json; charset=utf-8');
@@ -136,8 +137,8 @@ class Json_Error_Response
 	 *
 	 * @param $description string
 	 */
-	private function setDescription($description) {
-
+	private function setDescription($description)
+	{
 		if (!$description) {
 			switch ($this->code) {
 				case Response::FORBIDDEN:
