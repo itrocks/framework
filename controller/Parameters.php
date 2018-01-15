@@ -17,6 +17,9 @@ use ITRocks\Framework\Widget\Data_List\Selection;
 class Parameters
 {
 
+	//-------------------------------------------------------------------------------------- REDIRECT
+	const REDIRECT = 'redirect';
+
 	//-------------------------------------------------------------------------------------- $objects
 	/**
 	 * @var object[] keys are parameters names (ie object class short name)
