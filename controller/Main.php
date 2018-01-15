@@ -102,6 +102,8 @@ class Main
 	//----------------------------------------------------------------------------- applicationUpdate
 	/**
 	 * Update application
+	 *
+	 * @throws Exception
 	 */
 	private function applicationUpdate()
 	{
@@ -200,6 +202,9 @@ class Main
 	}
 
 	//-------------------------------------------------------------------------------------- includes
+	/**
+	 * @throws Exception
+	 */
 	private function includes()
 	{
 		foreach (glob(__DIR__ . '/../functions/*.php') as $file_name) {
@@ -214,6 +219,7 @@ class Main
 	 *
 	 * @param $includes string[]
 	 * @return Main $this
+	 * @throws Exception
 	 */
 	public function init(array $includes = [])
 	{
@@ -260,34 +266,6 @@ class Main
 		$uri, array $get = [], array $post = [], array $files = []
 	) {
 		 return $this->runController($uri, $get, $post, $files);
-	}
-
-	//------------------------------------------------------------------------------------ processRun
-	/**
-   * @param $uri   string
-   * @param $get   array
-   * @param $post  array
-   * @param $files array[]
-   * @return mixed
-   * @throws Exception
-   */
-	public function processRun($uri, array $get, array $post, array $files)
-	{
-		Loc::$disabled = true;
-		$this->sessionStart($get, $post);
-		$this->applicationUpdate();
-		Loc::$disabled = false;
-		// Todo : replace by runController call where aop priority resolved
-		$result = $this->preRunController($uri, $get, $post, $files);
-		if (isset($this->redirection)) {
-			$uri = $this->redirection;
-			unset($this->redirection);
-			if (($query_position = strpos($uri, '?')) !== false) {
-				list($uri, $query) = explode('?', $uri, 2);
-				parse_str(str_replace('&amp;', '&', $query), $get);
-			}
-		}
-		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- redirect
@@ -369,7 +347,8 @@ class Main
 	}
 
 	//-------------------------------------------------------------- resetSessionWithoutConfiguration
-	protected function resetSessionWithoutConfiguration() {
+	protected function resetSessionWithoutConfiguration()
+	{
 			http_response_code(400);
 			die('Bad Request');
 	}
@@ -400,7 +379,20 @@ class Main
 	{
 		$result = null;
 		try {
-			$result = $this->processRun($uri, $get, $post, $files);
+			Loc::$disabled = true;
+			$this->sessionStart($get, $post);
+			$this->applicationUpdate();
+			Loc::$disabled = false;
+			// Todo : replace by runController call where aop priority resolved
+			$result = $this->preRunController($uri, $get, $post, $files);
+			if (isset($this->redirection)) {
+				$uri = $this->redirection;
+				unset($this->redirection);
+				if (($query_position = strpos($uri, '?')) !== false) {
+					list($uri, $query) = explode('?', $uri, 2);
+					parse_str(str_replace('&amp;', '&', $query), $get);
+				}
+			}
 		}
 		catch (Exception $exception) {
 			$handled_error = new Handled_Error(
