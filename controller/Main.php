@@ -250,21 +250,20 @@ class Main
 		return $configurations->load($config);
 	}
 
-	//------------------------------------------------------------------------------ preRunController
+	//------------------------------------------------------------------------------- doRunController
 	/**
-	 * TODO : usage to encapsulate runController and add Aop before aop directly on runController
+	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
 	 * Parse URI and run matching controller
 	 *
-	 * @param $uri         string The URI which describes the called controller and its parameters
-	 * @param $get         array Arguments sent by the caller
-	 * @param $post        array Posted forms sent by the caller
+	 * @param $uri         string  The URI which describes the called controller and its parameters
+	 * @param $get         array   Arguments sent by the caller
+	 * @param $post        array   Posted forms sent by the caller
 	 * @param $files       array[] Files sent by the caller
 	 * @return mixed View data returned by the view the controller called
 	 * @throws Exception
 	 */
-	public function preRunController(
-		$uri, array $get = [], array $post = [], array $files = []
-	) {
+	public function doRunController($uri, array $get = [], array $post = [], array $files = [])
+	{
 		 return $this->runController($uri, $get, $post, $files);
 	}
 
@@ -383,8 +382,8 @@ class Main
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
 			Loc::$disabled = false;
-			// Todo : replace by runController call where aop priority resolved
-			$result = $this->preRunController($uri, $get, $post, $files);
+			// TODO replace by runController call where aop priority resolved
+			$result = $this->doRunController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);

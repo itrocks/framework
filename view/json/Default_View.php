@@ -46,7 +46,7 @@ class Default_View
 			$class_name,
 			$feature_names,
 			(
-			isset($parameters[Template::TEMPLATE])
+				isset($parameters[Template::TEMPLATE])
 				? Names::propertyToClass($parameters[Template::TEMPLATE])
 				: null
 			),
