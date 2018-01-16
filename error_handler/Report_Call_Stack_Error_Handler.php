@@ -133,8 +133,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$this->logError($error);
 
 		if ($code->isFatal() || !$reset_call_stack) {
-			$result =  $this->getDisplayedMessage($error);
-			echo $result;
+			echo $this->getDisplayedMessage($error);
 		}
 
 		if ($reset_call_stack) {
@@ -164,7 +163,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$referer       = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
 			$request_uri   = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI';
 
-			if ((Engine::acceptJson() && $f) || (!Engine::acceptJson())) {
+			if ((Engine::acceptJson() && $f) || !Engine::acceptJson()) {
 				$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
 				$this->out($f, $this->format($request_uri, $as) . $lf);
 				$this->out($f, $referer ? ($this->format($referer, $as) . $lf) : '');
