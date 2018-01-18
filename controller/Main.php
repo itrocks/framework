@@ -137,10 +137,10 @@ class Main
 	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
 	 * Parse URI and run matching controller
 	 *
-	 * @param $uri         string  The URI which describes the called controller and its parameters
-	 * @param $get         array   Arguments sent by the caller
-	 * @param $post        array   Posted forms sent by the caller
-	 * @param $files       array[] Files sent by the caller
+	 * @param $uri   string  The URI which describes the called controller and its parameters
+	 * @param $get   array   Arguments sent by the caller
+	 * @param $post  array   Posted forms sent by the caller
+	 * @param $files array[] Files sent by the caller
 	 * @return mixed View data returned by the view the controller called
 	 * @throws Exception
 	 */

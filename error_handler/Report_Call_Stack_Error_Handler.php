@@ -85,7 +85,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//--------------------------------------------------------------------------- getDisplayedMessage
 	/**
-	 *  Return displayed error message
+	 * Return displayed error message
+	 *
+	 * TODO HIGH $error should not exist, and why is this method used here only public ?
 	 *
 	 * @param $error Handled_Error
 	 * @return string
