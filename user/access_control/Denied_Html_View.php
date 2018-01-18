@@ -21,9 +21,18 @@ class Denied_Html_View extends Default_View
 	 */
 	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
 	{
-		$parameters['host']   = $_SERVER['HTTP_HOST'];
-		$parameters['remote'] = $_SERVER['REMOTE_ADDR'] . ':' . $_SERVER['REMOTE_PORT'];
-		$parameters['uri']    = $_SERVER['REQUEST_URI'];
+		$parameters['host']   = isset($_SERVER['HTTP_HOST'])
+			? $_SERVER['HTTP_HOST']
+			: 'console';
+
+		$parameters['remote'] = isset($_SERVER['REMOTE_ADDR'])
+			? ($_SERVER['REMOTE_ADDR'] . ':' . $_SERVER['REMOTE_PORT'])
+			: 'console';
+
+		$parameters['uri']    = isset($_SERVER['REQUEST_URI'])
+			? $_SERVER['REQUEST_URI']
+			: $_SERVER['SCRIPT_NAME'];
+
 		return parent::run($parameters, $form, $files, $class_name, $feature_name);
 	}
 
