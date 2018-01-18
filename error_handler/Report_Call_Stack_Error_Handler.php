@@ -6,7 +6,6 @@ use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\View\Json\Engine;
-use ITrocks\Framework\View\Json\Json_Error_Response;
 
 /**
  * An error handler that reports the full call stack and not only the error message alone
@@ -93,14 +92,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 */
 	public function getDisplayedMessage(Handled_Error $error)
 	{
-		if ($_SERVER['REMOTE_ADDR'] === 'console') {
-			$result = $this->getUserInformationMessage();
-		}
-		else {
-			$result = '<div class="error">' . $this->getUserInformationMessage() . '</div>';
-		}
-
-		return $result;
+		return ($_SERVER['REMOTE_ADDR'] === 'console')
+			? $this->getUserInformationMessage()
+			: ('<div class="error">' . $this->getUserInformationMessage() . '</div>');
 	}
 
 	//--------------------------------------------------------------------- getUserInformationMessage
@@ -171,6 +165,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				$this->out($f, $this->format($this->formData(), $as));
 				$this->out($f, ($as === self::HTML) ? $call_stack->asHtml() : $call_stack->asText());
 			}
+
 			if ($f) {
 				fputs($f, $lf);
 				fclose($f);

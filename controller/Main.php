@@ -132,6 +132,23 @@ class Main
 		$this->resetSession(Session::current(new Session()));
 	}
 
+	//------------------------------------------------------------------------------- doRunController
+	/**
+	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
+	 * Parse URI and run matching controller
+	 *
+	 * @param $uri         string  The URI which describes the called controller and its parameters
+	 * @param $get         array   Arguments sent by the caller
+	 * @param $post        array   Posted forms sent by the caller
+	 * @param $files       array[] Files sent by the caller
+	 * @return mixed View data returned by the view the controller called
+	 * @throws Exception
+	 */
+	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
+	{
+		return $this->runController($uri, $get, $post, $files);
+	}
+
 	//----------------------------------------------------------------------------- executeController
 	/**
 	 * @param $controller  string
@@ -141,7 +158,7 @@ class Main
 	 * @param $files       array[]
 	 * @return string
 	 */
-	public function executeController($controller, $method_name, Uri $uri, array $post, array $files)
+	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
 		$controller = is_a($controller, Controller::class, true)
 			? Builder::create($controller)
@@ -250,23 +267,6 @@ class Main
 		return $configurations->load($config);
 	}
 
-	//------------------------------------------------------------------------------- doRunController
-	/**
-	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
-	 * Parse URI and run matching controller
-	 *
-	 * @param $uri         string  The URI which describes the called controller and its parameters
-	 * @param $get         array   Arguments sent by the caller
-	 * @param $post        array   Posted forms sent by the caller
-	 * @param $files       array[] Files sent by the caller
-	 * @return mixed View data returned by the view the controller called
-	 * @throws Exception
-	 */
-	public function doRunController($uri, array $get = [], array $post = [], array $files = [])
-	{
-		 return $this->runController($uri, $get, $post, $files);
-	}
-
 	//-------------------------------------------------------------------------------------- redirect
 	/**
 	 * @param $uri string
@@ -324,7 +324,7 @@ class Main
 	/**
 	 * Initialise a new session, or refresh existing session for update
 	 *
-	 * @param Session $session default is current session
+	 * @param $session Session default is current session
 	 */
 	public function resetSession(Session $session = null)
 	{
@@ -382,7 +382,7 @@ class Main
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
 			Loc::$disabled = false;
-			// TODO replace by runController call where aop priority resolved
+			// TODO NORMAL replace by runController call when AOP after-around-before priority is resolved
 			$result = $this->doRunController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
@@ -391,6 +391,7 @@ class Main
 					list($uri, $query) = explode('?', $uri, 2);
 					parse_str(str_replace('&amp;', '&', $query), $get);
 				}
+				$result = $this->run($uri, $get, $post, $files);
 			}
 		}
 		catch (Exception $exception) {
