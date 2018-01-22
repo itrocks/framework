@@ -346,10 +346,13 @@ class Main
 	}
 
 	//-------------------------------------------------------------- resetSessionWithoutConfiguration
-	protected function resetSessionWithoutConfiguration()
+	/**
+	 *
+	 */
+	private function resetSessionWithoutConfiguration()
 	{
-			http_response_code(400);
-			die('Bad Request');
+		http_response_code(400);
+		die('Bad Request');
 	}
 
 	//--------------------------------------------------------------------------------- resumeSession
