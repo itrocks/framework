@@ -78,7 +78,7 @@ abstract class History
 			$this->old_value = (is_object($old_value) && Dao::getObjectIdentifier($old_value))
 				? Dao::getObjectIdentifier($old_value)
 				: strval($old_value);
-			$this->new_value = (is_object($new_value) && Dao::getObjectIdentifier($old_value))
+			$this->new_value = (is_object($new_value) && Dao::getObjectIdentifier($new_value))
 				? Dao::getObjectIdentifier($new_value)
 				: strval($new_value);
 		}
