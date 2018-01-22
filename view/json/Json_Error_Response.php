@@ -34,7 +34,7 @@ class Json_Error_Response
 	 * Json_Error_Response constructor
 	 *
 	 * @param $code        integer
-	 * @param $description string
+	 * @param $description string|array
 	 * @param $error       string
 	 */
 	public function __construct($code, $description = '', $error = null)
@@ -61,7 +61,7 @@ class Json_Error_Response
 				$error = 'not_allowed';
 				break;
 			case Response::INTERNAL_SERVER_ERROR:
-				$error = 'error_description';
+				$error = 'internal_server_error';
 				break;
 			case Response::METHOD_NOT_ALLOWED:
 				$error = 'method_does_not_make_sense';
@@ -135,7 +135,7 @@ class Json_Error_Response
 	/**
 	 * Set the default error description
 	 *
-	 * @param $description string
+	 * @param $description string|array
 	 */
 	private function setDescription($description)
 	{
