@@ -146,7 +146,7 @@ class Main
 	 */
 	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
 	{
-		return $this->runController($uri, $get, $post, $files);
+			return $this->runController($uri, $get, $post, $files);
 	}
 
 	//----------------------------------------------------------------------------- executeController
@@ -397,6 +397,12 @@ class Main
 				$result = $this->run($uri, $get, $post, $files);
 			}
 		}
+		catch (Object_Not_Found_Exception $exception) {
+			return '<div class="error">' . $exception->getMessage() . '</div>';
+		}
+		catch (View_Exception $exception) {
+			return $exception->view_result;
+		}
 		catch (Exception $exception) {
 			$handled_error = new Handled_Error(
 				$exception->getCode(), $exception->getMessage(),
@@ -434,12 +440,8 @@ class Main
 		// once here calling getMainObject(), the other in the specific controller of the URI
 		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
 		// we either loose menu and/or loose Json_Controller behaviors
-		try {
-			$main_object = $parameters->getMainObject();
-		}
-		catch (Object_Not_Found_Exception $exception) {
-			return '<div class="error">' . $exception->getMessage() . '</div>';
-		}
+
+		$main_object = $parameters->getMainObject();
 
 		$controller_name = ($main_object instanceof Set)
 			? $main_object->element_class_name
@@ -448,12 +450,7 @@ class Main
 			$controller_name, $uri->feature_name, $sub_feature
 		);
 
-		try {
-			return $this->executeController($class_name, $method_name, $uri, $post, $files);
-		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
-		}
+		return $this->executeController($class_name, $method_name, $uri, $post, $files);
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart
