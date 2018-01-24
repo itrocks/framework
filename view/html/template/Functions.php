@@ -22,6 +22,7 @@ use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\Displayable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\User\Access_Control;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Builder\File;
 use ITRocks\Framework\View\Html\Builder\Property_Select;
@@ -474,6 +475,28 @@ class Functions
 	{
 		$object = reset($template->objects);
 		return !empty($object);
+	}
+
+	//-------------------------------------------------------------------------------- getHasAccessTo
+	/**
+	 * Check if current user access to the given feature.
+	 *
+	 * @param $template   Template The current template object
+	 * @param $feature    string   The feature to check access to
+	 * @param $class_name string   The object class concerned by the feature (optional).
+	 *                             By default, class of the main object is used.
+	 * @return boolean
+	 */
+	public function getHasAccessTo(Template $template, $feature, $class_name = null)
+	{
+		if (!$class_name) {
+			$main_object = $template->getObject();
+
+			if (!is_object($main_object) || !($class_name = get_class($main_object))) {
+				return false;
+			}
+		}
+		return Access_Control::get()->hasAccessTo([$class_name, $feature]);
 	}
 
 	//-------------------------------------------------------------------------------------- getImage
