@@ -484,17 +484,13 @@ class Functions
 	 * @param $template   Template The current template object
 	 * @param $feature    string   The feature to check access to
 	 * @param $class_name string   The object class concerned by the feature (optional).
-	 *                             By default, class of the main object is used.
+	 *                             By default, the current context class is used.
 	 * @return boolean
 	 */
 	public function getHasAccessTo(Template $template, $feature, $class_name = null)
 	{
 		if (!$class_name) {
-			$main_object = $template->getObject();
-
-			if (!is_object($main_object) || !($class_name = get_class($main_object))) {
-				return false;
-			}
+			$class_name = (string)$this->getClass($template);
 		}
 		return Access_Control::get()->hasAccessTo([$class_name, $feature]);
 	}
