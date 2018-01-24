@@ -146,7 +146,7 @@ class Main
 	 */
 	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
 	{
-			return $this->runController($uri, $get, $post, $files);
+		return $this->runController($uri, $get, $post, $files);
 	}
 
 	//----------------------------------------------------------------------------- executeController
