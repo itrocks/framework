@@ -134,6 +134,8 @@ class Main
 
 	//--------------------------------------------------------------------------- doExecuteController
 	/**
+	 * TODO HIGH these are patches for json AOP for results catching, to be cleaned up someday
+	 *
 	 * @param $controller  string
 	 * @param $method_name string
 	 * @param $uri         Uri
@@ -148,8 +150,9 @@ class Main
 
 	//------------------------------------------------------------------------------- doRunController
 	/**
-	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
 	 * Parse URI and run matching controller
+	 *
+	 * TODO HIGH usage to encapsulate runController and add Aop before aop directly on runController
 	 *
 	 * @param $uri   string  The URI which describes the called controller and its parameters
 	 * @param $get   array   Arguments sent by the caller
@@ -167,6 +170,8 @@ class Main
 	/**
 	 * Used to be called directly by Aop method
 	 *
+	 * TODO HIGH these are patches for json results catching, to be cleaned up someday
+	 *
 	 * @param $uri         string
 	 * @param $get         array
 	 * @param $post        array
@@ -181,9 +186,11 @@ class Main
 		try {
 			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
 		}
+		// thrown only by Parameters::getMainObject
 		catch (Object_Not_Found_Exception $exception) {
 			return '<div class="error">' . $exception->getMessage() . '</div>';
 		}
+		// thrown only by Main::executeController
 		catch (View_Exception $exception) {
 			return $exception->view_result;
 		}
@@ -192,6 +199,8 @@ class Main
 	//-------------------------------------------------------------------------- doRunInnerController
 	/**
 	 * Used to be called directly by Aop method
+	 *
+	 * TODO HIGH these are patches for json results catching, to be cleaned up someday
 	 *
 	 * @param $uri         string
 	 * @param $get         array
