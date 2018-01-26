@@ -132,6 +132,20 @@ class Main
 		$this->resetSession(Session::current(new Session()));
 	}
 
+	//--------------------------------------------------------------------------- doExecuteController
+	/**
+	 * @param $controller  string
+	 * @param $method_name string
+	 * @param $uri         Uri
+	 * @param $post        array
+	 * @param $files       array[]
+	 * @return string
+	 */
+	public function doExecuteController($controller, $method_name, Uri $uri, array $post, array $files)
+	{
+		return $this->executeController($controller, $method_name, $uri, $post, $files);
+	}
+
 	//------------------------------------------------------------------------------- doRunController
 	/**
 	 * TODO usage to encapsulate runController and add Aop before aop directly on runController
@@ -147,6 +161,43 @@ class Main
 	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
 	{
 		return $this->runController($uri, $get, $post, $files);
+	}
+
+	//-------------------------------------------------------------------------- doRunInnerController
+	/**
+	 * Used to be called directly by Aop method
+	 *
+	 * @param $uri   string
+	 * @param $get   array
+	 * @param $post  array
+	 * @param $files array[]
+	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function doRunInnerController(
+		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+	){
+		$uri                  = new Uri($uri, $get);
+		$uri->controller_name = Builder::className($uri->controller_name);
+		$parameters           = clone $uri->parameters;
+
+		// TODO: try to read main object once only from database
+		// Note: here by cloning parameters we read twice the main object in database.
+		// once here calling getMainObject(), the other in the specific controller of the URI
+		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
+		// we either loose menu and/or loose Json_Controller behaviors
+
+		$main_object = $parameters->getMainObject();
+
+		$controller_name = ($main_object instanceof Set)
+			? $main_object->element_class_name
+			: $uri->controller_name;
+		list($class_name, $method_name) = $this->getController(
+			$controller_name, $uri->feature_name, $sub_feature
+		);
+
+		return $this->executeController($class_name, $method_name, $uri, $post, $files);
 	}
 
 	//----------------------------------------------------------------------------- executeController
@@ -397,12 +448,6 @@ class Main
 				$result = $this->run($uri, $get, $post, $files);
 			}
 		}
-		catch (Object_Not_Found_Exception $exception) {
-			return '<div class="error">' . $exception->getMessage() . '</div>';
-		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
-		}
 		catch (Exception $exception) {
 			$handled_error = new Handled_Error(
 				$exception->getCode(), $exception->getMessage(),
@@ -431,26 +476,16 @@ class Main
 	public function runController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
 	) {
-		$uri                  = new Uri($uri, $get);
-		$uri->controller_name = Builder::className($uri->controller_name);
-		$parameters           = clone $uri->parameters;
+		try {
+			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
+		}
+		catch (Object_Not_Found_Exception $exception) {
+			return '<div class="error">' . $exception->getMessage() . '</div>';
+		}
+		catch (View_Exception $exception) {
+			return $exception->view_result;
+		}
 
-		// TODO: try to read main object once only from database
-		// Note: here by cloning parameters we read twice the main object in database.
-		// once here calling getMainObject(), the other in the specific controller of the URI
-		// However, if we try to remove clone and call directly $uri->parameters->getMainObject()
-		// we either loose menu and/or loose Json_Controller behaviors
-
-		$main_object = $parameters->getMainObject();
-
-		$controller_name = ($main_object instanceof Set)
-			? $main_object->element_class_name
-			: $uri->controller_name;
-		list($class_name, $method_name) = $this->getController(
-			$controller_name, $uri->feature_name, $sub_feature
-		);
-
-		return $this->executeController($class_name, $method_name, $uri, $post, $files);
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart
