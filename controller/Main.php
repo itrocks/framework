@@ -163,6 +163,32 @@ class Main
 		return $this->runController($uri, $get, $post, $files);
 	}
 
+	//---------------------------------------------------------------------------- doRunControllerStd
+	/**
+	 * Used to be called directly by Aop method
+	 *
+	 * @param $uri         string
+	 * @param $get         array
+	 * @param $post        array
+	 * @param $files       array[]
+	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function doRunControllerStd(
+		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+	) {
+		try {
+			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
+		}
+		catch (Object_Not_Found_Exception $exception) {
+			return '<div class="error">' . $exception->getMessage() . '</div>';
+		}
+		catch (View_Exception $exception) {
+			return $exception->view_result;
+		}
+	}
+
 	//-------------------------------------------------------------------------- doRunInnerController
 	/**
 	 * Used to be called directly by Aop method
@@ -177,7 +203,7 @@ class Main
 	 */
 	public function doRunInnerController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	){
+	) {
 		$uri                  = new Uri($uri, $get);
 		$uri->controller_name = Builder::className($uri->controller_name);
 		$parameters           = clone $uri->parameters;
@@ -198,32 +224,6 @@ class Main
 		);
 
 		return $this->executeController($class_name, $method_name, $uri, $post, $files);
-	}
-
-	//---------------------------------------------------------------------------- doRunControllerStd
-	/**
-	 * Used to be called directly by Aop method
-	 *
-	 * @param $uri         string
-	 * @param $get         array
-	 * @param $post        array
-	 * @param $files       array[]
-	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
-	 * @return mixed
-	 * @throws Exception
-	 */
-	public function doRunControllerStd(
-		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
-	){
-		try {
-			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
-		}
-		catch (Object_Not_Found_Exception $exception) {
-			return '<div class="error">' . $exception->getMessage() . '</div>';
-		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
-		}
 	}
 
 	//----------------------------------------------------------------------------- executeController
