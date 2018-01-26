@@ -346,7 +346,7 @@ class Access_Control implements Configurable, Registerable
 	{
 		$aop = $register->aop;
 
-		$aop->beforeMethod([Main::class, 'runController'], [$this, 'checkAccess']);
+		$aop->beforeMethod([Main::class, 'doRunController'], [$this, 'checkAccess']);
 
 		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
 		$aop->afterMethod ([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
