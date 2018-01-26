@@ -167,10 +167,10 @@ class Main
 	/**
 	 * Used to be called directly by Aop method
 	 *
-	 * @param $uri   string
-	 * @param $get   array
-	 * @param $post  array
-	 * @param $files array[]
+	 * @param $uri         string
+	 * @param $get         array
+	 * @param $post        array
+	 * @param $files       array[]
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed
 	 * @throws Exception
@@ -198,6 +198,32 @@ class Main
 		);
 
 		return $this->executeController($class_name, $method_name, $uri, $post, $files);
+	}
+
+	//---------------------------------------------------------------------------- doRunControllerStd
+	/**
+	 * Used to be called directly by Aop method
+	 *
+	 * @param $uri         string
+	 * @param $get         array
+	 * @param $post        array
+	 * @param $files       array[]
+	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
+	 * @return mixed
+	 * @throws Exception
+	 */
+	public function doRunControllerStd(
+		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
+	){
+		try {
+			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
+		}
+		catch (Object_Not_Found_Exception $exception) {
+			return '<div class="error">' . $exception->getMessage() . '</div>';
+		}
+		catch (View_Exception $exception) {
+			return $exception->view_result;
+		}
 	}
 
 	//----------------------------------------------------------------------------- executeController
@@ -398,7 +424,9 @@ class Main
 
 	//-------------------------------------------------------------- resetSessionWithoutConfiguration
 	/**
+	 * Without comment there is a bug with with aop
 	 *
+	 * @todo See why
 	 */
 	private function resetSessionWithoutConfiguration()
 	{
@@ -476,16 +504,7 @@ class Main
 	public function runController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
 	) {
-		try {
-			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
-		}
-		catch (Object_Not_Found_Exception $exception) {
-			return '<div class="error">' . $exception->getMessage() . '</div>';
-		}
-		catch (View_Exception $exception) {
-			return $exception->view_result;
-		}
-
+		return $this->doRunControllerStd($uri, $get, $post, $files, $sub_feature);
 	}
 
 	//---------------------------------------------------------------------------------- sessionStart
