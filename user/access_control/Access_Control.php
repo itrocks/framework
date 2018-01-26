@@ -352,6 +352,7 @@ class Access_Control implements Configurable, Registerable
 		);
 		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
 
+		// TODO HIGH Lower security (see #100520#note-25)
 		$aop->beforeMethod([Main::class, 'doRunInnerController'], [$this, 'checkAccess']);
 		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
 		$aop->beforeMethod([View::class, 'run'], [$this, 'removeButtonsWithNoLink']);
