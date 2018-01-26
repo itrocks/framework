@@ -27,7 +27,7 @@ class Immutable_Manager
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Called before write, this ensures that the object will be immutable into the data link
-	 * - if the object already exists into data store, then an exception will occured
+	 * - if the object already exists into data store, then an exception will occurred
 	 * - if the object does not already exists, then save the object as a new one
 	 *
 	 * @param $link Data_Link   Data_Link
@@ -50,56 +50,6 @@ class Immutable_Manager
 			}
 		}
 	}
-
-	// FIXME Will be moved to an asynchronous cron
-//	//---------------------------------------------------------------------- deleteOldObjectIfNotUsed
-//	/**
-//	 * Delete previous object from database if not used in any linked tables
-//	 *
-//	 * @param $previous_object Object Object to delete if not used
-//	 */
-//	private function deleteOldObjectIfNotUsed($previous_object)
-//	{
-//		$id_to_delete = DAO::getObjectIdentifier($previous_object);
-//		if ($id_to_delete) {
-//			$class             = get_class($previous_object);
-//			$explode           = explode(BS, $class);
-//			$id_name_to_search = 'id_' . strtolower(end($explode));
-//			$dao               = Dao::current();
-//			if ($dao instanceof Link && $id_name_to_search) {
-//				$tables = $dao->query(
-//					"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE column_name = "
-//					. Q . $id_name_to_search . Q,
-//					AS_ARRAY
-//				);
-//				if (!$tables || count($tables) == 0) {
-//					$dao->delete($previous_object);
-//				}
-//				else {
-//					$exists = false;
-//					foreach ($tables as $table) {
-//						$found = $dao->query(
-//							'SELECT count(*) FROM ' . BQ . $table['TABLE_NAME'] . BQ
-//							. SP . 'WHERE' . SP
-//							. BQ . $table['TABLE_NAME'] . BQ . DOT . BQ . $id_name_to_search . BQ
-//							. SP . '=' . SP . DAO::getObjectIdentifier($this->auto_link_object)
-//						);
-//						/** @var $found mysqli_result */
-//						if ($found) {
-//							$row = $found->fetch_row();
-//							if ($row && $row[0]) {
-//								$exists = true;
-//								break;
-//							}
-//						}
-//					}
-//					if (!$exists) {
-//						$dao->delete($previous_object);
-//					}
-//				}
-//			}
-//		}
-//	}
 
 	//---------------------------------------------------------------------- replaceCurrentByExisting
 	/**
@@ -129,10 +79,6 @@ class Immutable_Manager
 			if ($existing_object) {
 				if (Dao::getObjectIdentifier($existing_object) != Dao::getObjectIdentifier($this->auto_link_object )) {
 					$this->replaceCurrentByExisting($existing_object);
-					// FIXME Will be moved to an asynchronous cron
-//					if ($existing_object) {
-//						$this->deleteOldObjectIfNotUsed($existing_object);
-//					}
 				}
 			}
 		}
