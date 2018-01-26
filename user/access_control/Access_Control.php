@@ -346,17 +346,15 @@ class Access_Control implements Configurable, Registerable
 	{
 		$aop = $register->aop;
 
-		$aop->beforeMethod([Main::class, 'doRunController'], [$this, 'checkAccess']);
-
-		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
 		$aop->afterMethod ([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
-
 		$aop->afterMethod(
 			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
 		);
-
-		$aop->beforeMethod([View::class, 'run'], [$this, 'removeButtonsWithNoLink']);
 		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
+
+		$aop->beforeMethod([Main::class, 'doRunInnerController'], [$this, 'checkAccess']);
+		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
+		$aop->beforeMethod([View::class, 'run'], [$this, 'removeButtonsWithNoLink']);
 	}
 
 	//----------------------------------------------------------------------- removeButtonsWithNoLink
