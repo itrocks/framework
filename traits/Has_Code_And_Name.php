@@ -6,7 +6,7 @@ namespace ITRocks\Framework\Traits;
  *
  * @representative code, name
  */
-class Has_Code_And_Name
+trait Has_Code_And_Name
 {
 	use Has_Code;
 	use Has_Name { __toString as private hasNameToString; }
