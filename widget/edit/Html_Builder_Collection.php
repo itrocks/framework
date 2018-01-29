@@ -244,7 +244,7 @@ class Html_Builder_Collection extends Collection
 	protected function noAdd()
 	{
 		if (!isset($this->no_add)) {
-			$this->no_add    = $this->getAnnotations()->has(User_Annotation::NO_ADD);
+			$this->no_add = $this->getAnnotations()->has(User_Annotation::NO_ADD);
 		}
 		return $this->no_add;
 	}
