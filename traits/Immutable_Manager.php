@@ -81,6 +81,7 @@ class Immutable_Manager
 					$this->replaceCurrentByExisting($existing_object);
 				}
 			}
+			// else nothing to do
 		}
 		// update
 		else {
@@ -88,6 +89,8 @@ class Immutable_Manager
 				if (Dao::getObjectIdentifier($existing_object) != Dao::getObjectIdentifier($this->auto_link_object )) {
 					$this->replaceCurrentByExisting($existing_object);
 				}
+			} else {
+				$this->link->disconnect($this->auto_link_object);
 			}
 		}
 	}
