@@ -35,7 +35,7 @@ if (!String.prototype.endsWith) {
 }
 
 //-------------------------------------------------------------------------------------- lLastParse
-String.prototype.lLastParse = function (sep, cnt, complete_if_not)
+String.prototype.lLastParse = function(sep, cnt, complete_if_not)
 {
 	var str = this;
 	if (cnt             === undefined) cnt             = 1;
@@ -53,7 +53,7 @@ String.prototype.lLastParse = function (sep, cnt, complete_if_not)
 };
 
 //------------------------------------------------------------------------------------------ lParse
-String.prototype.lParse = function (sep, cnt, complete_if_not)
+String.prototype.lParse = function(sep, cnt, complete_if_not)
 {
 	if (cnt             === undefined) cnt             = 1;
 	if (complete_if_not === undefined) complete_if_not = true;
@@ -89,7 +89,7 @@ String.prototype.repl = function(from, to)
 };
 
 //-------------------------------------------------------------------------------------- rLastParse
-String.prototype.rLastParse = function (sep, cnt, complete_if_not)
+String.prototype.rLastParse = function(sep, cnt, complete_if_not)
 {
 	var str = this;
 	if (cnt             === undefined) cnt             = 1;
@@ -107,7 +107,7 @@ String.prototype.rLastParse = function (sep, cnt, complete_if_not)
 };
 
 //------------------------------------------------------------------------------------------ rParse
-String.prototype.rParse = function (sep, cnt, complete_if_not)
+String.prototype.rParse = function(sep, cnt, complete_if_not)
 {
 	if (cnt             === undefined) cnt             = 1;
 	if (complete_if_not === undefined) complete_if_not = false;
