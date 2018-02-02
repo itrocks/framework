@@ -48,6 +48,19 @@ function beginsWith($haystack, $needle)
 		&& (substr($haystack, 0, $needle_length) === $needle);
 }
 
+//---------------------------------------------------------------------------------------- contains
+/**
+ * Return true if $string contains $substring_to_search, false otherwise
+ *
+ * @param $string              string
+ * @param $substring_to_search string string
+ * @return boolean
+ */
+function contains($string, $substring_to_search)
+{
+	return (strpos($string, $substring_to_search) !== false);
+}
+
 //---------------------------------------------------------------------------------------- endsWith
 /**
  * Returns true if $haystack ends with $needle

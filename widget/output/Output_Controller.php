@@ -10,6 +10,7 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Buttons;
 use ITRocks\Framework\Setting\Custom_Settings;
@@ -19,7 +20,6 @@ use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Button\Code;
 use ITRocks\Framework\Widget\Button\Has_General_Buttons;
-use ITRocks\Framework\Widget\Duplicate\Duplicate;
 use ITRocks\Framework\Widget\Output_Setting\Output_Settings;
 use ITRocks\Framework\Widget\Tab;
 use ITRocks\Framework\Widget\Tab\Tabs_Builder_Object;
@@ -200,7 +200,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		$buttons[Feature::F_EDIT] = new Button(
 			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
-		if ($object instanceof Duplicate) {
+		if ((new Reflection_Class(get_class($object)))->getAnnotations('duplicate')) {
 			$buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE] = new Button(
 				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE
 			);

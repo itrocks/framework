@@ -87,7 +87,16 @@ class Duplicator
 				$callback[1] = 'onDuplicate';
 			}
 			if (isA($object, $callback[0])) {
-				call_user_func([$object, $callback[1]]);
+				if (contains($callback[1], ',')) {
+					$callbacks = explode(',', $callback[1]);
+					foreach ($callbacks as $callback) {
+						$callback = trim($callback);
+						call_user_func([$object, $callback]);
+					}
+				}
+				else {
+					call_user_func([$object, $callback[1]]);
+				}
 			}
 			else {
 				call_user_func([$callback[0], $callback[1]], $object);
