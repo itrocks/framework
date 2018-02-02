@@ -72,13 +72,15 @@ class Json
 					}
 					if (isset($values)) {
 						foreach($values as $value) {
-							$array[] = $this->propertyToStdInternal($property, $value, $type);
+							$array[] = $this->propertyToStdInternal($property, $value, $type, $business_object);
 						}
 					}
 					$standard_object->$name = $array;
 				}
 				else {
-					$standard_object->$name = $this->propertyToStdInternal($property, $property_value, $type);
+					$standard_object->$name = $this->propertyToStdInternal(
+						$property, $property_value, $type, $business_object
+					);
 				}
 			}
 		}
@@ -88,14 +90,16 @@ class Json
 	/**
 	 * Returns value transformed in a suitable format for json
 	 *
-	 * @param $property Reflection_Property
-	 * @param $value    mixed
-	 * @param $type     Type
+	 * @param $property      Reflection_Property
+	 * @param $value         mixed
+	 * @param $type          Type
+	 * @param $parent_object object
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected function propertyToStdInternal(Reflection_Property $property, $value, Type $type = null)
-	{
+	protected function propertyToStdInternal(
+		Reflection_Property $property, $value, Type $type = null, $parent_object
+	)	{
 		if (!isset($type)) {
 			$type = $property->getType();
 		}
@@ -126,8 +130,12 @@ class Json
 
 					// case we should expand
 					if (
-						$property->getAnnotation('component')->value
-						|| Link_Annotation::of($property)->isCollection()
+						(
+							$property->getAnnotation('component')->value
+							// TODO High restore that when implementing fix 2 for #101143
+							/*|| Link_Annotation::of($property)->isCollection()*/
+						)
+						&& ($value !== $parent_object)
 					) {
 						$this->objectToStdClassInternal($sub_object, $value);
 					}
