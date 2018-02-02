@@ -507,6 +507,17 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this;
 	}
 
+	//----------------------------------------------------------------------------------------- today
+	/**
+	 * Returns current date, with an empty time (00:00:00)
+	 *
+	 * @return Date_Time
+	 */
+	public static function today()
+	{
+		return new static(date('Y-m-d 00:00:00'));
+	}
+
 	//----------------------------------------------------------------------------------------- toISO
 	/**
 	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
@@ -535,15 +546,15 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return new static($this->format('Y-m'));
 	}
 
-	//----------------------------------------------------------------------------------------- today
+	//-------------------------------------------------------------------------------------- tomorrow
 	/**
-	 * Returns current date, with an empty time (00:00:00)
+	 * Returns tomorrow date, with an empty time (00:00:00).
 	 *
 	 * @return Date_Time
 	 */
-	public static function today()
+	public static function tomorrow()
 	{
-		return new static(date('Y-m-d 00:00:00'));
+		return static::today()->add(1);
 	}
 
 	//------------------------------------------------------------------------------------- yesterday
