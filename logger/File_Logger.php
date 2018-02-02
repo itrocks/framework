@@ -123,7 +123,7 @@ class File_Logger implements Configurable
 			}
 			if ($identifier) {
 				$file_path = $this->path . SL
-					. ($entry ? $entry->start->format('Y-m-d') : date('Y-m-d')) . SL
+					. (isset($entry->start) ? $entry->start->format('Y-m-d') : date('Y-m-d')) . SL
 					. $identifier . DOT . static::FILE_EXTENSION . (static::GZ ? '.gz' : '');
 				if (!isset($logger)) {
 					return $file_path;
