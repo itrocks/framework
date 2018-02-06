@@ -493,11 +493,12 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$options                  = [
 			$count, Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)
 		];
+		// SM : Moved from readData() and moved before cloning
+		$search = $this->applySearchParameters($list_settings);
+
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
-		// SM : Moved from readData()
-		$search = $this->applySearchParameters($list_settings);
 		try {
 			$data = $this->readData($class_name, $list_settings, $search, $options);
 			// SM : Moved from applyParametersToListSettings()
