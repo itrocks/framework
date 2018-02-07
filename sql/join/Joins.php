@@ -178,7 +178,7 @@ class Joins
 	/**
 	 * Adds a join and automatically set its foreign alias to the next one (if not already set)
 	 *
-	 * @param Join $join
+	 * @param $join Join
 	 */
 	public function addJoin(Join $join)
 	{
