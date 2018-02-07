@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func\Call;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Concat;
+use ITRocks\Framework\Dao\Func\Day;
 use itrocks\framework\dao\func\Expressions;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
@@ -19,6 +20,7 @@ use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
 use ITRocks\Framework\Dao\Func\Range;
 use ITRocks\Framework\Dao\Func\Where;
+use ITRocks\Framework\Dao\Func\Year;
 use ITRocks\Framework\Sql\Builder\Select;
 
 /**
@@ -74,6 +76,18 @@ abstract class Func
 	public static function count()
 	{
 		return new Group_By(Group_By::COUNT);
+	}
+
+	//------------------------------------------------------------------------------------------- day
+	/**
+	 * @param $property_path string If set, will return a key to the instantiated Day object
+	 * @return Day|string
+	 */
+	public static function day($property_path = null)
+	{
+		return $property_path
+			? Expressions::add($property_path, new Day())
+			: new Day();
 	}
 
 	//-------------------------------------------------------------------------------------- distinct
@@ -376,6 +390,18 @@ abstract class Func
 	public static function xorOp($arguments)
 	{
 		return new Logical(Logical::XOR_OPERATOR, $arguments);
+	}
+
+	//------------------------------------------------------------------------------------------ year
+	/**
+	 * @param $property_path string If set, will return a key to the instantiated Year object
+	 * @return Year|string
+	 */
+	public static function year($property_path = null)
+	{
+		return $property_path
+			? Expressions::add($property_path, new Year())
+			: new Year();
 	}
 
 }

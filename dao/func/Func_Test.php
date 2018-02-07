@@ -68,6 +68,35 @@ class Func_Test extends Test
 		);
 	}
 
+	//--------------------------------------------------------------------------------------- testDay
+	public function testDay()
+	{
+		$builder = new Select(
+			Order::class,
+			['date' => Func::day()]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT DAY(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		);
+	}
+
+	//-------------------------------------------------------------------------------- testDayInWhere
+	public function testDayInWhere()
+	{
+		$builder = new Select(
+			Order::class,
+			['number'],
+			[Func::day('date') => 11]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE DAY(t0.`date`) = 11'
+		);
+	}
+
 	//------------------------------------------------------------------------------- testGroupConcat
 	public function testGroupConcat()
 	{
@@ -407,6 +436,35 @@ class Func_Test extends Test
 			__METHOD__,
 			$builder->buildQuery(),
 			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE MONTH(t0.`date`) = 11'
+		);
+	}
+
+	//-------------------------------------------------------------------------------------- testYear
+	public function testYear()
+	{
+		$builder = new Select(
+			Order::class,
+			['date' => Func::year()]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT YEAR(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		);
+	}
+
+	//------------------------------------------------------------------------------- testYearInWhere
+	public function testYearInWhere()
+	{
+		$builder = new Select(
+			Order::class,
+			['number'],
+			[Func::year('date') => 11]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE YEAR(t0.`date`) = 11'
 		);
 	}
 
