@@ -191,12 +191,15 @@ abstract class Func
 
 	//------------------------------------------------------------------------------------------ left
 	/**
-	 * @param $length integer
-	 * @return Left
+	 * @param $property_path string|integer Optional : for use in WHERE clause only
+	 * @param $length        integer
+	 * @return Left|string
 	 */
-	public static function left($length)
+	public static function left($property_path, $length = null)
 	{
-		return new Left($length);
+		return isset($length)
+			? Expressions::add($property_path, new Left($length))
+			: new Left($property_path);
 	}
 
 	//------------------------------------------------------------------------------------- leftMatch

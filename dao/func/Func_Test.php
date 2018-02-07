@@ -180,6 +180,23 @@ class Func_Test extends Test
 		);
 	}
 
+	//------------------------------------------------------------------------------- testLeftInWhere
+	public function testLeftInWhere()
+	{
+		$builder = new Select(
+			Order::class,
+			['number'],
+			[Func::left('number', 3) => '123']
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`' . LF
+			. 'FROM `test_orders` t0' . LF
+			. 'WHERE LEFT(t0.`number`, 3) = "123"'
+		);
+	}
+
 	//--------------------------------------------------------------------------------- testLeftMatch
 	public function testLeftMatch()
 	{
