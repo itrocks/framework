@@ -3,26 +3,23 @@ namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
-use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
 use ITRocks\Framework\Sql\Join\Joins;
-use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * SQL columns list expression builder
  */
-class Columns
+class Columns implements With_Build_Column
 {
+	use Has_Build_Column;
 
 	//--------------------------------------------------------------------------------------- $append
 	/**
@@ -41,14 +38,6 @@ class Columns
 	 * @var boolean
 	 */
 	public $expand_objects = true;
-
-	//---------------------------------------------------------------------------------------- $joins
-	/**
-	 * Sql joins
-	 *
-	 * @var Joins
-	 */
-	private $joins;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -218,59 +207,6 @@ class Columns
 		return $sql_columns;
 	}
 
-	//----------------------------------------------------------------------------------- buildColumn
-	/**
-	 * @param $path            string  The path of the property
-	 * @param $join            Join    For optimisation purpose, if join is already known
-	 * @param $as              boolean If false, prevent 'AS' clause to be added
-	 * @param $resolve_objects boolean If true, a property path for an object will be replace with a
-	 *                         CONCAT of its representative values
-	 * @return string
-	 */
-	public function buildColumn($path, $as = true, $resolve_objects = false, Join $join = null)
-	{
-		if (!isset($join)) {
-			$join = $this->joins->add($path);
-		}
-		list($master_path, $column_name) = Sql\Builder::splitPropertyPath($path);
-		if (!isset($join)) {
-			$join = $this->joins->getJoin($master_path);
-		}
-		if (
-			$resolve_objects
-			&& ($class_name = $this->joins->getClass($path))
-			&& !is_a($class_name, Date_Time::class, true)
-		) {
-			$class             = new Reflection_Class($class_name);
-			$concat_properties = [];
-			foreach (Representative_Annotation::of($class)->values() as $property_name) {
-				$concat_properties[] = $path . DOT . $property_name;
-			}
-			$concat = new Concat($concat_properties);
-			$sql    = $concat->toSql($this, ($as && $this->resolve_aliases) ? $path : null);
-		}
-		else {
-			$force_column = null;
-			$force_column = (
-				(new Reflection_Method(Joins::class, 'getProperty'))->isPublic()
-				&& ($property = $this->joins->getProperty($master_path, $column_name))
-				&& Store_Annotation::of($property)->isFalse()
-			) ? 'NULL' : null;
-			$sql = (
-				$force_column
-				?: (
-					$join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ)
-				)
-			)
-			. (
-				($as && ($column_name !== $path) && $this->resolve_aliases)
-				? (' AS ' . BQ . $path . BQ)
-				: ''
-			);
-		}
-		return $sql;
-	}
-
 	//------------------------------------------------------------------------ buildDaoSelectFunction
 	/**
 	 * @param $path           string
@@ -392,15 +328,6 @@ class Columns
 		}
 
 		return $sql_columns;
-	}
-
-	//-------------------------------------------------------------------------------------- getJoins
-	/**
-	 * @return Joins
-	 */
-	public function getJoins()
-	{
-		return $this->joins;
 	}
 
 	//----------------------------------------------------------------------------- replaceProperties
