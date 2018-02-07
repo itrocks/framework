@@ -84,7 +84,7 @@ class In implements Negate, Where
 	{
 		$sql = '';
 		if ($this->values) {
-			$sql = $builder->buildColumn($property_path, $prefix)
+			$sql = $builder->buildWhereColumn($property_path, $prefix)
 				. ($this->not_in ? ' NOT' : '') . ' IN (';
 			$first = true;
 			foreach ($this->values as $value) {

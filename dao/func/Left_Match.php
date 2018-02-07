@@ -77,7 +77,7 @@ class Left_Match implements Negate, Where
 	 */
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
-		$column = $builder->buildColumn($property_path, $prefix);
+		$column = $builder->buildWhereColumn($property_path, $prefix);
 		$value  = Value::escape($this->value);
 		return $column
 			. ($this->not_match ? ' <> ' : ' = ')

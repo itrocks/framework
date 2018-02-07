@@ -64,7 +64,7 @@ class Property implements Where
 	 */
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
-		return $builder->buildColumn($this->property_path, $this->prefix);
+		return $builder->buildWhereColumn($this->property_path, $this->prefix);
 	}
 
 }

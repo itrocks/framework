@@ -25,12 +25,7 @@ use ITRocks\Framework\Tools\String_Class;
  */
 class Where
 {
-
-	//---------------------------------------------------------------------------------------- $joins
-	/**
-	 * @var Joins
-	 */
-	private $joins;
+	use Has_Joins;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -54,7 +49,8 @@ class Where
 	 *
 	 * Supported columns naming forms are :
 	 * column_name : column_name must correspond to a property of class
-	 * column.foreign_column : column must be a property of class, foreign_column must be a property of column's var class
+	 * column.foreign_column : column must be a property of class, foreign_column must be a property
+	 *   of the column's var class
 	 *
 	 * @param $class_name  string base object class name
 	 * @param $where_array array|Func\Where where array expression, keys are columns names
@@ -104,7 +100,7 @@ class Where
 		$sql = ($this->where_array === false)
 			? 'FALSE'
 			: (
-				is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
+			is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
 			);
 		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
 	}
@@ -125,7 +121,12 @@ class Where
 		$sub_clause = $clause;
 		$first      = true;
 		foreach ($array as $key => $value) {
-			if ($first) $first = false; else $sql .= SP . $clause . SP;
+			if ($first) {
+				$first = false;
+			}
+			else {
+				$sql .= SP . $clause . SP;
+			}
 			$key_clause = strtoupper($key);
 			if (is_numeric($key) && ($value instanceof Logical)) {
 				// if logical, simply build path as if key clause was 'AND' (the simplest)
@@ -145,7 +146,6 @@ class Where
 						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
-						$prefix        = '';
 						$master_path   = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
 						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
 						$properties    = $this->joins->getProperties($master_path);
@@ -155,9 +155,10 @@ class Where
 							if ($link) {
 								$prefix = ($master_path ? ($master_path . DOT) : '')
 									. Store_Name_Annotation::of($property)->value . DOT;
+								$key = $prefix . $key;
 							}
 						}
-						$build = $this->buildPath($prefix . $key, $value, $sub_clause);
+						$build = $this->buildPath($key, $value, $sub_clause);
 					}
 					if (!empty($build)) {
 						$sql .= $build;
@@ -171,51 +172,6 @@ class Where
 			}
 		}
 		return $sql . $sql_close;
-	}
-
-	//----------------------------------------------------------------------------------- buildColumn
-	/**
-	 * @param $path   string The property path
-	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
-	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
-	 */
-	public function buildColumn($path, $prefix = '')
-	{
-		$join      = $this->joins->add($path);
-		$link_join = $this->joins->getIdLinkJoin($path);
-		if (isset($link_join)) {
-			$column = $link_join->foreign_alias . '.`id`';
-		}
-		elseif (isset($join)) {
-			if ($join->type === Join::LINK) {
-				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
-			}
-			else {
-				$property = $this->joins->getStartingClass()->getProperty($path);
-				$column   = ($property && Link_Annotation::of($property)->isCollection())
-					? $join->master_column
-					: $join->foreign_column;
-				$column = $join->foreign_alias . DOT . BQ . $column . BQ;
-			}
-		}
-		else {
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
-			if (!$master_path && ($foreign_column === 'id')) {
-				$class = $this->joins->getStartingClassName();
-				$i     = 0;
-				while ($class = (new Link_Class($class))->getLinkedClassName()) {
-					$i ++;
-				}
-				$tx = 't' . $i;
-			}
-			else {
-				$tx = 't0';
-			}
-			$column = ((!$master_path) || ($master_path === 'id'))
-				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
-				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
-		}
-		return $column;
 	}
 
 	//----------------------------------------------------------------------------------- buildObject
@@ -267,7 +223,8 @@ class Where
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param $path      string|integer Property path starting by a root class property (may be a numeric key, or a structure keyword)
+	 * @param $path      string|integer Property path starting by a root class property
+	 *                   (may be a numeric key, or a structure keyword)
 	 * @param $value     mixed May be a value, or a structured array of multiple where clauses
 	 * @param $clause    string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @param $root_path boolean
@@ -302,7 +259,7 @@ class Where
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
-			case 'NULL':   return $this->buildColumn($path) . ' IS NULL';
+			case 'NULL':   return $this->buildWhereColumn($path) . ' IS NULL';
 			case 'array':  return $this->buildArray($path, $value, $clause);
 			case 'object': return ($value instanceof String_Class)
 				? $this->buildValue($path, $value)
@@ -322,10 +279,55 @@ class Where
 	 */
 	private function buildValue($path, $value, $prefix = '')
 	{
-		$column  = $this->buildColumn($path, $prefix);
+		$column  = $this->buildWhereColumn($path, $prefix);
 		$is_like = Value::isLike($value);
 		return $column . SP . ($is_like ? 'LIKE' : '=') . SP
 			. Value::escape($value, $is_like, $this->getProperty($path));
+	}
+
+	//------------------------------------------------------------------------------ buildWhereColumn
+	/**
+	 * @param $path   string The property path
+	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
+	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
+	 */
+	public function buildWhereColumn($path, $prefix = '')
+	{
+		$join      = $this->joins->add($path);
+		$link_join = $this->joins->getIdLinkJoin($path);
+		if (isset($link_join)) {
+			$column = $link_join->foreign_alias . '.`id`';
+		}
+		elseif (isset($join)) {
+			if ($join->type === Join::LINK) {
+				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
+			}
+			else {
+				$property = $this->joins->getStartingClass()->getProperty($path);
+				$column   = ($property && Link_Annotation::of($property)->isCollection())
+					? $join->master_column
+					: $join->foreign_column;
+				$column = $join->foreign_alias . DOT . BQ . $column . BQ;
+			}
+		}
+		else {
+			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+			if (!$master_path && ($foreign_column === 'id')) {
+				$class = $this->joins->getStartingClassName();
+				$i     = 0;
+				while ($class = (new Link_Class($class))->getLinkedClassName()) {
+					$i ++;
+				}
+				$tx = 't' . $i;
+			}
+			else {
+				$tx = 't0';
+			}
+			$column = ((!$master_path) || ($master_path === 'id'))
+				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
+				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
+		}
+		return $column;
 	}
 
 	//-------------------------------------------------------------------------------------- getJoins

@@ -135,7 +135,7 @@ class Comparison implements Negate, Where
 	 */
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
-		$column = $builder->buildColumn($property_path, $prefix);
+		$column = $builder->buildWhereColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
 			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
 				$close_parenthesis = '';

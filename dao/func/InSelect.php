@@ -37,6 +37,15 @@ class InSelect implements Negate, Where
 		if (isset($not_in)) $this->not_in = $not_in;
 	}
 
+	//---------------------------------------------------------------------------------------- negate
+	/**
+	 * Negate the Dao function
+	 */
+	public function negate()
+	{
+		$this->not_in = !$this->not_in;
+	}
+
 	//--------------------------------------------------------------------------------------- toHuman
 	/**
 	 * Returns the Dao function as Human readable string
@@ -74,21 +83,12 @@ class InSelect implements Negate, Where
 	{
 		$sql = '';
 		if ($this->select) {
-			$sql = $builder->buildColumn($property_path, $prefix)
+			$sql = $builder->buildWhereColumn($property_path, $prefix)
 				. ($this->not_in ? ' NOT' : '') . ' IN (';
 			$sql .= $this->select->buildQuery();
 			$sql .= ')';
 		}
 		return $sql;
-	}
-
-	//---------------------------------------------------------------------------------------- negate
-	/**
-	 * Negate the Dao function
-	 */
-	public function negate()
-	{
-		$this->not_in = !$this->not_in;
 	}
 
 }

@@ -69,7 +69,7 @@ class Is_Greatest implements Where_Inner
 		foreach (array_merge($this->properties, [$property_path]) as $property) {
 			$where .= ' AND '
 				. $join->foreign_alias . DOT . BQ . rLastParse($property, DOT, 1, true) . BQ
-				. ' = ' . $builder->buildColumn($property, $prefix);
+				. ' = ' . $builder->buildWhereColumn($property, $prefix);
 		}
 		$join->where = substr($where, 5);
 		return null;

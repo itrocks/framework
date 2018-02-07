@@ -124,7 +124,7 @@ class Range implements Negate, Where
 	public function toSql(Builder\Where $builder, $property_path, $prefix = '')
 	{
 		return '('
-		. $builder->buildColumn($property_path, $prefix) . ($this->not_between ? ' NOT' : '')
+		. $builder->buildWhereColumn($property_path, $prefix) . ($this->not_between ? ' NOT' : '')
 		. ' BETWEEN '
 		// make SQL secure if given from > to (if from is the greatest, then this will work too)
 		. 'LEAST(' . Value::escape($this->from) . ', ' . Value::escape($this->to) . ') '
