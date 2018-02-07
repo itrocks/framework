@@ -355,8 +355,8 @@ class Date_Time_Test extends Test
 	public function testTomorrow()
 	{
 		$today     = Date_Time::today();
-		$yesterday = Date_Time::tomorrow();
-		$actual    = $today->diff($yesterday);
+		$tomorrow  = Date_Time::tomorrow();
+		$actual    = $today->diff($tomorrow);
 
 		$expected = '1 day 0 hour 0 minute 0 second';
 
