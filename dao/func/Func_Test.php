@@ -381,4 +381,33 @@ class Func_Test extends Test
 		);
 	}
 
+	//------------------------------------------------------------------------------------- testMonth
+	public function testMonth()
+	{
+		$builder = new Select(
+			Order::class,
+			['date' => Func::month()]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT MONTH(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		);
+	}
+
+	//------------------------------------------------------------------------------ testMonthInWhere
+	public function testMonthInWhere()
+	{
+		$builder = new Select(
+			Order::class,
+			['number'],
+			[Func::month('date') => 11]
+		);
+		$this->assume(
+			__METHOD__,
+			$builder->buildQuery(),
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE MONTH(t0.`date`) = 11'
+		);
+	}
+
 }

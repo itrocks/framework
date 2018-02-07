@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func\Call;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Concat;
+use itrocks\framework\dao\func\Expressions;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\In;
@@ -13,6 +14,7 @@ use ITRocks\Framework\Dao\Func\Is_Greatest;
 use ITRocks\Framework\Dao\Func\Left;
 use ITRocks\Framework\Dao\Func\Left_Match;
 use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Dao\Func\Month;
 use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
 use ITRocks\Framework\Dao\Func\Range;
@@ -239,6 +241,18 @@ abstract class Func
 	public static function min()
 	{
 		return new Group_By(Group_By::MIN);
+	}
+
+	//----------------------------------------------------------------------------------------- month
+	/**
+	 * @param $property_path string If set, will return a key to the instantiated Month object
+	 * @return Month|string
+	 */
+	public static function month($property_path = null)
+	{
+		return $property_path
+			? Expressions::add($property_path, new Month())
+			: new Month();
 	}
 
 	//------------------------------------------------------------------------------------ notBetween
