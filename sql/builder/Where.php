@@ -23,9 +23,9 @@ use ITRocks\Framework\Tools\String_Class;
 /**
  * The SQL where section of SQL queries builder
  */
-class Where
+class Where implements With_Build_Column
 {
-	use Has_Joins;
+	use Has_Build_Column;
 
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
@@ -155,9 +155,9 @@ class Where
 							if ($link) {
 								$prefix = ($master_path ? ($master_path . DOT) : '')
 									. Store_Name_Annotation::of($property)->value . DOT;
-								$key = $prefix . $key;
+									$key = $prefix . $key;
+								}
 							}
-						}
 						$build = $this->buildPath($key, $value, $sub_clause);
 					}
 					if (!empty($build)) {
