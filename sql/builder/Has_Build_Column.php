@@ -33,6 +33,10 @@ trait Has_Build_Column
 	 */
 	public function buildColumn($path, $as = true, $resolve_objects = false, Join $join = null)
 	{
+		if (strpos($path, BQ) !== false) {
+			// already built (called twice on Expression)
+			return $path;
+		}
 		if (!isset($join)) {
 			$join = $this->joins->add($path);
 		}
@@ -51,7 +55,11 @@ trait Has_Build_Column
 				$concat_properties[] = $path . DOT . $property_name;
 			}
 			$concat = new Concat($concat_properties);
-			$sql    = $concat->toSql($this, ($as && $this->resolve_aliases) ? $path : null);
+			/** @var $this With_Build_Column|self */
+			$sql = $concat->toSql(
+				$this,
+				($as && ($this instanceof Columns) && $this->resolve_aliases) ? $path : null
+			);
 		}
 		else {
 			$force_column = null;
@@ -60,17 +68,13 @@ trait Has_Build_Column
 				&& ($property = $this->joins->getProperty($master_path, $column_name))
 				&& Store_Annotation::of($property)->isFalse()
 			) ? 'NULL' : null;
-			$sql = (
-				$force_column
-					?: (
+			$sql = $force_column ?: (
 				$join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ)
-				)
-				)
-				. (
-				($as && ($column_name !== $path) && $this->resolve_aliases)
-					? (' AS ' . BQ . $path . BQ)
-					: ''
-				);
+			);
+			$sql
+				.= ($as && ($column_name !== $path) && ($this instanceof Columns) && $this->resolve_aliases)
+				? (' AS ' . BQ . $path . BQ)
+				: '';
 		}
 		return $sql;
 	}

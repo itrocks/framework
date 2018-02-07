@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Expression;
+use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Reflection\Annotation\Class_;
@@ -109,17 +111,19 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for multiple where clauses
 	 *
-	 * @param $path   string Base property path for values (if keys are numeric or structure keywords)
+	 * @param $path   string|Expression Base property path for values
+	 *                (if keys are numeric or structure keywords)
 	 * @param $array  array An array of where conditions
 	 * @param $clause string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @return string
 	 */
 	private function buildArray($path, array $array, $clause)
 	{
-		$sql        = '';
-		$sql_close  = '';
-		$sub_clause = $clause;
-		$first      = true;
+		$property_path = strval($path);
+		$sql           = '';
+		$sql_close     = '';
+		$sub_clause    = $clause;
+		$first         = true;
 		foreach ($array as $key => $value) {
 			if ($first) {
 				$first = false;
@@ -127,7 +131,10 @@ class Where implements With_Build_Column
 			else {
 				$sql .= SP . $clause . SP;
 			}
-			$key_clause = strtoupper($key);
+			if ($key && is_string($key) && (substr($key, 0, 2) === '§')) {
+				$key = Expressions::$current->cache[$key];
+			}
+			$key_clause = is_string($key) ? strtoupper($key) : null;
 			if (is_numeric($key) && ($value instanceof Logical)) {
 				// if logical, simply build path as if key clause was 'AND' (the simplest)
 				$key_clause = 'AND';
@@ -146,8 +153,10 @@ class Where implements With_Build_Column
 						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
-						$master_path   = (($i = strrpos($path, DOT)) !== false) ? substr($path, 0, $i) : '';
-						$property_name = ($i !== false) ? substr($path, $i + 1) : $path;
+						$prefix        = '';
+						$master_path   = (($i = strrpos($property_path, DOT)) !== false)
+							? substr($property_path, 0, $i) : '';
+						$property_name = ($i !== false) ? substr($property_path, $i + 1) : $property_path;
 						$properties    = $this->joins->getProperties($master_path);
 						if (isset($properties[$property_name])) {
 							$property = $properties[$property_name];
@@ -155,10 +164,18 @@ class Where implements With_Build_Column
 							if ($link) {
 								$prefix = ($master_path ? ($master_path . DOT) : '')
 									. Store_Name_Annotation::of($property)->value . DOT;
+								if ($key instanceof Expression) {
+									$key->prefix = $prefix;
+								}
+								else {
 									$key = $prefix . $key;
 								}
 							}
+						}
 						$build = $this->buildPath($key, $value, $sub_clause);
+						if ($prefix && ($key instanceof Expression)) {
+							$key->prefix = null;
+						}
 					}
 					if (!empty($build)) {
 						$sql .= $build;
@@ -185,6 +202,13 @@ class Where implements With_Build_Column
 	 */
 	private function buildObject($path, $object, $root_object = false)
 	{
+		if ($path instanceof Expression) {
+			trigger_error(
+				"Can't associate object property path $path to "
+					. get_class($path->function) . ' function call',
+				E_USER_ERROR
+			);
+		}
 		$class = new Link_Class(get_class($object));
 		if (!$root_object || !Class_\Link_Annotation::of($class)->value) {
 			$id = $this->sql_link->getObjectIdentifier(
@@ -223,8 +247,8 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for given path and value
 	 *
-	 * @param $path      string|integer Property path starting by a root class property
-	 *                   (may be a numeric key, or a structure keyword)
+	 * @param $path      string|integer|Expression Property path starting by a root class property
+	 *                   (may be a numeric key, or a structure keyword, or an Expression)
 	 * @param $value     mixed May be a value, or a structured array of multiple where clauses
 	 * @param $clause    string For multiple where clauses, tell if they are linked with 'OR' or 'AND'
 	 * @param $root_path boolean
@@ -232,9 +256,11 @@ class Where implements With_Build_Column
 	 */
 	private function buildPath($path, $value, $clause, $root_path = false)
 	{
+		$property_path = strval($path);
+
 		if ($value instanceof Func\Where) {
-			$this->joins->add($path);
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+			$this->joins->add($property_path);
+			list($master_path, $foreign_column) = Builder::splitPropertyPath($property_path);
 			if ($foreign_column === 'id') {
 				$prefix = '';
 			}
@@ -252,6 +278,7 @@ class Where implements With_Build_Column
 					$prefix = 'id_';
 				}
 			}
+			// TODO Manage the case of $path instanceof Expression
 			return $value->toSql($this, $path, $prefix);
 		}
 		elseif ($value instanceof Date_Time) {
@@ -272,7 +299,7 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for a unique value
 	 *
-	 * @param $path   string search property path
+	 * @param $path   string|Expression search property path or Expression
 	 * @param $value  mixed search property value
 	 * @param $prefix string Prefix for column name @values '', 'id_'
 	 * @return string
@@ -282,28 +309,29 @@ class Where implements With_Build_Column
 		$column  = $this->buildWhereColumn($path, $prefix);
 		$is_like = Value::isLike($value);
 		return $column . SP . ($is_like ? 'LIKE' : '=') . SP
-			. Value::escape($value, $is_like, $this->getProperty($path));
+			. Value::escape($value, $is_like, $this->getProperty(strval($path)));
 	}
 
 	//------------------------------------------------------------------------------ buildWhereColumn
 	/**
-	 * @param $path   string The property path
+	 * @param $path   string|Expression The property path or Expression
 	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
 	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
 	 */
 	public function buildWhereColumn($path, $prefix = '')
 	{
-		$join      = $this->joins->add($path);
-		$link_join = $this->joins->getIdLinkJoin($path);
+		$property_path = strval($path);
+		$join          = $this->joins->add($property_path);
+		$link_join     = $this->joins->getIdLinkJoin($property_path);
 		if (isset($link_join)) {
 			$column = $link_join->foreign_alias . '.`id`';
 		}
 		elseif (isset($join)) {
 			if ($join->type === Join::LINK) {
-				$column = $join->foreign_alias . DOT . BQ . rLastParse($path, DOT, 1, true) . BQ;
+				$column = $join->foreign_alias . DOT . BQ . rLastParse($property_path, DOT, 1, true) . BQ;
 			}
 			else {
-				$property = $this->joins->getStartingClass()->getProperty($path);
+				$property = $this->joins->getStartingClass()->getProperty($property_path);
 				$column   = ($property && Link_Annotation::of($property)->isCollection())
 					? $join->master_column
 					: $join->foreign_column;
@@ -311,7 +339,7 @@ class Where implements With_Build_Column
 			}
 		}
 		else {
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+			list($master_path, $foreign_column) = Builder::splitPropertyPath($property_path);
 			if (!$master_path && ($foreign_column === 'id')) {
 				$class = $this->joins->getStartingClassName();
 				$i     = 0;
@@ -326,6 +354,9 @@ class Where implements With_Build_Column
 			$column = ((!$master_path) || ($master_path === 'id'))
 				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
 				: ($this->joins->getAlias($master_path) . DOT . BQ . $prefix . $foreign_column . BQ);
+		}
+		if ($path instanceof Expression) {
+			$column = $path->function->toSql($this, $column);
 		}
 		return $column;
 	}
@@ -350,7 +381,7 @@ class Where implements With_Build_Column
 	{
 		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
-		$property = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 		return $property;
 	}
 
