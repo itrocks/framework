@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
-use ITRocks\Framework\Sql\Builder\Columns;
+use ITRocks\Framework\Sql\Builder\With_Build_Column;
 
 /**
  * Dao Left function
@@ -28,11 +28,11 @@ class Left extends Column
 	/**
 	 * Returns the Dao function as SQL
 	 *
-	 * @param $builder       Columns the sql data link
+	 * @param $builder       With_Build_Column the sql data link
 	 * @param $property_path string escaped sql, name of the column
 	 * @return string
 	 */
-	public function toSql(Columns $builder, $property_path)
+	public function toSql(With_Build_Column $builder, $property_path)
 	{
 		return $this->quickSql($builder, $property_path, 'LEFT', [$this->length]);
 	}

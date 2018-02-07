@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Builder\With_Build_Column;
 use ITRocks\Framework\Sql\Value;
 
 /**
@@ -58,11 +59,12 @@ class Condition extends Column
 	/**
 	 * @param $class  Reflection_Class
 	 * @param $result mixed property_path or string
-	 * @param $builder Builder\Columns
+	 * @param $builder With_Build_Column
 	 * @return string
 	 */
-	private function buildConditionResult(Reflection_Class $class, $result, Builder\Columns $builder)
-	{
+	private function buildConditionResult(
+		Reflection_Class $class, $result, With_Build_Column $builder
+	) {
 		if ($result) {
 			if ($result instanceof Column) {
 				return $result->toSql($builder, '');
@@ -81,11 +83,11 @@ class Condition extends Column
 	/**
 	 * Returns the Dao function as SQL
 	 *
-	 * @param $builder       Builder\Columns the sql query builder
+	 * @param $builder       With_Build_Column the sql query builder
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(Builder\Columns $builder, $property_path)
+	public function toSql(With_Build_Column $builder, $property_path)
 	{
 		/** @var $starting_class Reflection_Class */
 		$starting_class    = $builder->getJoins()->getStartingClass();

@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Builder\With_Build_Column;
 use ITRocks\Framework\Sql\Value;
 
 /**
@@ -58,11 +58,11 @@ class Group_Concat extends Column
 	/**
 	 * Returns the Dao function as SQL
 	 *
-	 * @param $builder       Builder\Columns the sql query builder
+	 * @param $builder       With_Build_Column the sql query builder
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	public function toSql(Builder\Columns $builder, $property_path)
+	public function toSql(With_Build_Column $builder, $property_path)
 	{
 		$group_concat_property = $property_path;
 

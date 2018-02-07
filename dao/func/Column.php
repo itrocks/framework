@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Sql\Builder\With_Build_Column;
 use ITRocks\Framework\Sql\Value;
 
 /**
@@ -14,27 +15,29 @@ abstract class Column implements Dao_Function
 	/**
 	 * Gets the sql code for the SQL aliasing
 	 *
-	 * @param $builder       Builder\Columns
-	 * @param $property_path string
+	 * @param $builder       With_Build_Column
+	 * @param $property_path string The alias itself
 	 * @return string @example ' AS `alias_name`' or empty string if alias resolving is "off"
 	 */
-	protected function aliasSql(Builder\Columns $builder, $property_path)
+	protected function aliasSql(With_Build_Column $builder, $property_path)
 	{
-		return $builder->resolve_aliases ? (' AS ' . BQ . $property_path . BQ) : '';
+		return (($builder instanceof Builder\Columns) && $builder->resolve_aliases)
+			? (' AS ' . BQ . $property_path . BQ)
+			: '';
 	}
 
 	//-------------------------------------------------------------------------------------- quickSql
 	/**
 	 * Use this to quickly convert your function to sql without having to do complicated code
 	 *
-	 * @param $builder       Builder\Columns
+	 * @param $builder       With_Build_Column
 	 * @param $property_path string
 	 * @param $sql_function  string
 	 * @param $args          array
 	 * @return string
 	 */
 	protected function quickSql(
-		Builder\Columns $builder, $property_path, $sql_function, array $args = []
+		With_Build_Column $builder, $property_path, $sql_function, array $args = []
 	) {
 		$sql = $sql_function . '(' . $builder->buildColumn($property_path, false);
 		foreach ($args as $arg) {
@@ -47,10 +50,10 @@ abstract class Column implements Dao_Function
 	/**
 	 * Returns the Dao function as SQL
 	 *
-	 * @param $builder       Builder\Columns the sql query builder
+	 * @param $builder       With_Build_Column the sql query builder
 	 * @param $property_path string the property path
 	 * @return string
 	 */
-	abstract public function toSql(Builder\Columns $builder, $property_path);
+	abstract public function toSql(With_Build_Column $builder, $property_path);
 
 }
