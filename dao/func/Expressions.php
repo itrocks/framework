@@ -7,6 +7,9 @@ namespace ITRocks\Framework\Dao\Func;
 class Expressions
 {
 
+	//---------------------------------------------------------------------------------------- MARKER
+	const MARKER = '§';
+
 	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * Please use add() to easily add an expression to the cache
@@ -31,7 +34,7 @@ class Expressions
 	public static function add($property_path, Column $function)
 	{
 		$expression = new Expression($property_path, $function);
-		$key        = '§' . count(static::$current->cache);
+		$key        = static::MARKER . count(static::$current->cache);
 		static::$current->cache[$key] = $expression;
 		return $key;
 	}

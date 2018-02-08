@@ -131,7 +131,10 @@ class Where implements With_Build_Column
 			else {
 				$sql .= SP . $clause . SP;
 			}
-			if ($key && is_string($key) && (substr($key, 0, 2) === '§')) {
+			if (
+				$key && is_string($key)
+				&& (substr($key, 0, strlen(Expressions::MARKER)) === Expressions::MARKER)
+			) {
 				$key = Expressions::$current->cache[$key];
 			}
 			$key_clause = is_string($key) ? strtoupper($key) : null;
