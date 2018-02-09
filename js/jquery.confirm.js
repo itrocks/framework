@@ -10,43 +10,36 @@
 	$.fn.confirm = function ()
 	{
 		/**
-		 * Listener on click event.
+		 * Build a button object with the given parameters.
 		 *
-		 * If link has flag "confirmed", just free the event & remove flag. Otherwise prevent event and
-		 * display a confirm box built with data attributes of the link.
+		 * @param label     {string}   Label of the button.
+		 * @param callback  {function} The callback to call on click.
+		 * @param css_class {string}   The CSS class to apply to the button.
+		 * @returns {*|jQuery}
 		 */
-		this.find('a.confirm').bind('click', function(event) {
-			var $link = $(this);
+		var buildButton = function(label, callback, css_class) {
+			return $('<li>', {
+				class: css_class
+			}).append(
+				$('<a>', {html: label}).on('click', callback)
+			);
+		};
 
-			if (!$link.attr('confirmed')) {
-				event.stopImmediatePropagation();
+		/**
+		 * Close dialog box.
+		 */
+		var closeDialog = function() {
+			$('#messages').html('');
+		};
 
-				var message  = $link.attr('data-confirm-message');
-				var ok_label = $link.attr('data-confirm-ok');
-				var ko_label = $link.attr('data-confirm-cancel');
-
-				if (!message) {
-					message = tr('|Do you confirm this action|: ') + $link.html();
-				}
-
-				/**
-				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
-				 */
-				var callback = function()
-				{
-					setConfirmedFlag($link);
-					$link[0].click();
-				};
-
-				openDialog(message, callback, null, ok_label, ko_label);
-
-				return false;
-			}
-
-			removeConfirmedFlag($link);
-
-			return event;
-		});
+		/**
+		 * Display the given markup in a dialog box.
+		 *
+		 * @param markup {object|string}
+		 */
+		var display = function(markup) {
+			$('#messages').html(markup);
+		};
 
 		/**
 		 * Display a confirm dialog with the given message and callbacks.
@@ -87,35 +80,12 @@
 		};
 
 		/**
-		 * Display the given markup in a dialog box.
+		 * Remove "confirmed" flag to the given object.
 		 *
-		 * @param markup {object|string}
+		 * @param $object {object}
 		 */
-		var display = function(markup) {
-			$('#messages').html(markup);
-		};
-
-		/**
-		 * Close dialog box.
-		 */
-		var closeDialog = function() {
-			$('#messages').html('');
-		};
-
-		/**
-		 * Build a button object with the given parameters.
-		 *
-		 * @param label     {string}   Label of the button.
-		 * @param callback  {function} The callback to call on click.
-		 * @param css_class {string}   The CSS class to apply to the button.
-		 * @returns {*|jQuery}
-		 */
-		var buildButton = function(label, callback, css_class) {
-			return $('<li>', {
-				class: css_class
-			}).append(
-				$('<a>', {html: label}).on('click', callback)
-			);
+		var removeConfirmedFlag = function($object) {
+			$object.removeAttr('confirmed');
 		};
 
 		/**
@@ -128,12 +98,42 @@
 		};
 
 		/**
-		 * Remove "confirmed" flag to the given object.
+		 * Listener on click event.
 		 *
-		 * @param $object {object}
+		 * If link has flag "confirmed", just free the event & remove flag. Otherwise prevent event and
+		 * display a confirm box built with data attributes of the link.
 		 */
-		var removeConfirmedFlag = function($object) {
-			$object.removeAttr('confirmed');
-		};
+		this.find('a.confirm').bind('click', function(event) {
+			var $link = $(this);
+
+			if (!$link.attr('confirmed')) {
+				event.stopImmediatePropagation();
+
+				var message  = $link.attr('data-confirm-message');
+				var ok_label = $link.attr('data-confirm-ok');
+				var ko_label = $link.attr('data-confirm-cancel');
+
+				if (!message) {
+					message = tr('|Do you confirm this action|: ') + $link.html();
+				}
+
+				/**
+				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
+				 */
+				var callback = function()
+				{
+					setConfirmedFlag($link);
+					$link[0].click();
+				};
+
+				openDialog(message, callback, null, ok_label, ko_label);
+
+				return false;
+			}
+
+			removeConfirmedFlag($link);
+
+			return event;
+		});
 	}
 })( jQuery );
