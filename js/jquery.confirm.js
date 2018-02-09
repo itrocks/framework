@@ -10,6 +10,7 @@
 	$.fn.confirm = function ()
 	{
 
+		//----------------------------------------------------------------------------------- buildButton
 		/**
 		 * Build a button object with the given parameters.
 		 *
@@ -27,6 +28,7 @@
 				.append($link);
 		};
 
+		//----------------------------------------------------------------------------------- closeDialog
 		/**
 		 * Close dialog box.
 		 */
@@ -35,6 +37,7 @@
 			$('#messages').html('');
 		};
 
+		//--------------------------------------------------------------------------------------- display
 		/**
 		 * Display the given markup in a dialog box.
 		 *
@@ -45,6 +48,7 @@
 			$('#messages').html(markup);
 		};
 
+		//------------------------------------------------------------------------------------ openDialog
 		/**
 		 * Display a confirm dialog with the given message and callbacks.
 		 *
@@ -83,6 +87,7 @@
 			display(wrapper);
 		};
 
+		//--------------------------------------------------------------------------- removeConfirmedFlag
 		/**
 		 * Remove "confirmed" flag to the given object.
 		 *
@@ -93,6 +98,7 @@
 			$object.removeAttr('confirmed');
 		};
 
+		//------------------------------------------------------------------------------ setConfirmedFlag
 		/**
 		 * Set "confirmed" flag to the given object.
 		 *
@@ -103,6 +109,7 @@
 			$object.attr('confirmed', 'confirmed');
 		};
 
+		//------------------------------------------------------------------------------------- a.confirm
 		/**
 		 * Listener on click event.
 		 *
