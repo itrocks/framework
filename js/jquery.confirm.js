@@ -19,11 +19,11 @@
 		 */
 		var buildButton = function(label, callback, css_class)
 		{
-			return $('<li>', {
-				class: css_class
-			}).append(
-				$('<a>', {html: label}).on('click', callback)
-			);
+			var $link = $('<a>', {html: label}).on('click', callback);
+
+			return $('<li>')
+				.addClass(css_class)
+				.append($link);
 		};
 
 		/**
