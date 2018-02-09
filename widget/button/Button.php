@@ -190,17 +190,17 @@ class Button
 			elseif ($key === self::HINT) {
 				$this->hint = $option;
 			}
-			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
-				$this->target = ($option === Target::NONE) ? null : $option;
+			elseif ($key == Confirm::CANCEL_LABEL) {
+				$this->cancel_label = $option;
 			}
 			elseif ($key == Confirm::CONFIRM_LABEL) {
 				$this->confirm_label = $option;
 			}
-			elseif ($key == Confirm::CANCEL_LABEL) {
-				$this->cancel_label = $option;
-			}
 			elseif ($key == Confirm::MESSAGE) {
 				$this->confirm_message = $option;
+			}
+			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
+				$this->target = ($option === Target::NONE) ? null : $option;
 			}
 		}
 
