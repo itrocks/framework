@@ -1,6 +1,5 @@
 (function($)
 {
-
 	/**
 	 * This plugin will display a confirmation dialog when clicking on confirmation buttons.
 	 * If user confirms action, the normal action of the button processes.
@@ -26,7 +25,9 @@
 				var ok_label = $link.attr('data-confirm-ok');
 				var ko_label = $link.attr('data-confirm-cancel');
 
-				message = message ? message : 'Confirmez-vous cette action: ' + $link.html();
+				if (!message) {
+					message = tr('|Do you confirm this action|: ') + $link.html();
+				}
 
 				/**
 				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
