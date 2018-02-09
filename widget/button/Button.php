@@ -29,7 +29,7 @@ class Button
 
 	//--------------------------------------------------------------------------------- $cancel_label
 	/**
-	 * Label of the cancel button in the confirm dialog.
+	 * Label of the cancel button in the confirm dialog
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ class Button
 
 	//-------------------------------------------------------------------------------- $confirm_label
 	/**
-	 * Label of the confirm button in the confirm dialog.
+	 * Label of the confirm button in the confirm dialog
 	 *
 	 * @var string
 	 */
@@ -93,7 +93,7 @@ class Button
 
 	//------------------------------------------------------------------------------ $confirm_message
 	/**
-	 * Message to display to user in the confirm dialog.
+	 * Message to display to user in the confirm dialog
 	 *
 	 * @var string
 	 */
