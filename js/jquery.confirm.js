@@ -59,7 +59,7 @@
 		var openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label)
 		{
 			// Set default value of cancellation callback if not set.
-			if (typeof ko_callback === 'undefined' || ko_callback === null) {
+			if ((typeof ko_callback === 'undefined') || (ko_callback === null)) {
 				ko_callback = function () {
 					closeDialog();
 				};
