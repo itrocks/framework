@@ -76,10 +76,12 @@
 			var ko_button = buildButton(ko_label, ko_callback, 'delete');
 
 			var html    = '<p>' + message + '</p>';
-			var wrapper = $('<div>').append(html, $('<ul>', {
-				class: 'general actions'
-			}).css('text-align', 'right')
-				.append(ko_button, ok_button));
+			var buttons = $('<ul>')
+				.addClass('general actions')
+				.css('text-align', 'right')
+				.append(ko_button, ok_button);
+
+			var wrapper = $('<div>').append(html, buttons);
 
 			display(wrapper);
 		};
