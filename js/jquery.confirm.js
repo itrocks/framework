@@ -8,8 +8,8 @@
 	 * - Works with <a> tags.
 	 * - Initialise this feature with a single $('body').confirm(); call.
 	 */
-	$.fn.confirm = function () {
-
+	$.fn.confirm = function ()
+	{
 		/**
 		 * Listener on click event.
 		 *
@@ -31,7 +31,8 @@
 				/**
 				 * Add a "confirmed" flag and re-trigger click event to keep normal process.
 				 */
-				var callback = function() {
+				var callback = function()
+				{
 					setConfirmedFlag($link);
 					$link[0].click();
 				};
@@ -55,7 +56,8 @@
 		 * @param ok_label    {string}   Label of the confirm button.
 		 * @param ko_label    {string}   Label of the cancel button.
 		 */
-		var openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label) {
+		var openDialog = function(message, ok_callback, ko_callback, ok_label, ko_label)
+		{
 			// Set default value of cancellation callback if not set.
 			if (typeof ko_callback === 'undefined' || ko_callback === null) {
 				ko_callback = function () {
