@@ -9,6 +9,7 @@
 	 */
 	$.fn.confirm = function ()
 	{
+
 		/**
 		 * Build a button object with the given parameters.
 		 *
@@ -140,5 +141,6 @@
 
 			return event;
 		});
+
 	}
 })( jQuery );
