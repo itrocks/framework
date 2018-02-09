@@ -17,7 +17,8 @@
 		 * @param css_class {string}   The CSS class to apply to the button.
 		 * @returns {*|jQuery}
 		 */
-		var buildButton = function(label, callback, css_class) {
+		var buildButton = function(label, callback, css_class)
+		{
 			return $('<li>', {
 				class: css_class
 			}).append(
@@ -28,7 +29,8 @@
 		/**
 		 * Close dialog box.
 		 */
-		var closeDialog = function() {
+		var closeDialog = function()
+		{
 			$('#messages').html('');
 		};
 
@@ -37,7 +39,8 @@
 		 *
 		 * @param markup {object|string}
 		 */
-		var display = function(markup) {
+		var display = function(markup)
+		{
 			$('#messages').html(markup);
 		};
 
@@ -84,7 +87,8 @@
 		 *
 		 * @param $object {object}
 		 */
-		var removeConfirmedFlag = function($object) {
+		var removeConfirmedFlag = function($object)
+		{
 			$object.removeAttr('confirmed');
 		};
 
@@ -93,7 +97,8 @@
 		 *
 		 * @param $object {object}
 		 */
-		var setConfirmedFlag = function($object) {
+		var setConfirmedFlag = function($object)
+		{
 			$object.attr('confirmed', 'confirmed');
 		};
 
