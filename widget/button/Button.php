@@ -205,8 +205,8 @@ class Button
 		}
 
 		if ($this->feature == Feature::F_CONFIRM) {
-			$this->confirm_label = $this->confirm_label ?: Loc::tr('Confirm');
 			$this->cancel_label  = $this->cancel_label  ?: Loc::tr('Cancel');
+			$this->confirm_label = $this->confirm_label ?: Loc::tr('Confirm');
 
 			$this->class .= (isset($this->class) ? SP : '') . 'confirm';
 		}
