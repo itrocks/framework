@@ -11,12 +11,6 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 class Set implements Iterator
 {
 
-	//------------------------------------------------------------------------------------- $elements
-	/**
-	 * @var object[]
-	 */
-	public $elements;
-
 	//--------------------------------------------------------------------------- $element_class_name
 	/**
 	 * Element class name, with namespace
@@ -24,6 +18,12 @@ class Set implements Iterator
 	 * @var string
 	 */
 	public $element_class_name;
+
+	//------------------------------------------------------------------------------------- $elements
+	/**
+	 * @var object[]
+	 */
+	public $elements;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -111,6 +111,27 @@ class Set implements Iterator
 			$class_name = Names::setToClass($class_name, false);
 		}
 		return Builder::className($class_name);
+	}
+
+	//--------------------------------------------------------------------------------- filterAndSort
+	/**
+	 * @param $filter_elements string[] each filter element is the key into the elements list
+	 * @param $change          boolean if true, the Set elements are update, if false, the filtered
+	 *        and sorted elements list is returned without changing the set
+	 * @return object[] filtered and sorted array of elements
+	 */
+	public function filterAndSort(array $filter_elements, $change = true)
+	{
+		$sorted_elements = [];
+		foreach ($filter_elements as $element_key) {
+			if (isset($this->elements[$element_key])) {
+				$sorted_elements[$element_key] = $this->elements[$element_key];
+			}
+		}
+		if ($change) {
+			$this->elements = $sorted_elements;
+		}
+		return $sorted_elements;
 	}
 
 	//----------------------------------------------------------------------------------------- first
@@ -229,27 +250,6 @@ class Set implements Iterator
 	public function rewind()
 	{
 		return reset($this->elements);
-	}
-
-	//--------------------------------------------------------------------------------- filterAndSort
-	/**
-	 * @param $filter_elements string[] each filter element is the key into the elements list
-	 * @param $change          boolean if true, the Set elements are update, if false, the filtered
-	 *        and sorted elements list is returned without changing the set
-	 * @return object[] filtered and sorted array of elements
-	 */
-	public function filterAndSort(array $filter_elements, $change = true)
-	{
-		$sorted_elements = [];
-		foreach ($filter_elements as $element_key) {
-			if (isset($this->elements[$element_key])) {
-				$sorted_elements[$element_key] = $this->elements[$element_key];
-			}
-		}
-		if ($change) {
-			$this->elements = $sorted_elements;
-		}
-		return $sorted_elements;
 	}
 
 	//----------------------------------------------------------------------------------------- valid
