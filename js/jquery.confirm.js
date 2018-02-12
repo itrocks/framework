@@ -109,7 +109,7 @@
 			$object.attr('confirmed', 'confirmed');
 		};
 
-		//------------------------------------------------------------------------------------- a.confirm
+		//------------------------------------------------------------------------------- a.confirm click
 		/**
 		 * Listener on click event.
 		 *
@@ -127,7 +127,7 @@
 				var ko_label = $link.attr('data-confirm-cancel');
 
 				if (!message) {
-					message = tr('|Do you confirm this action|: ') + $link.html();
+					message = tr('|Do you confirm this action| : ') + $link.html();
 				}
 
 				/**
