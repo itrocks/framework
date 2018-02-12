@@ -17,6 +17,7 @@ use ITRocks\Framework\Dao\Func\Left;
 use ITRocks\Framework\Dao\Func\Left_Match;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Func\Month;
+use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
 use ITRocks\Framework\Dao\Func\Range;
@@ -26,8 +27,12 @@ use ITRocks\Framework\Sql\Builder\Select;
 
 /**
  * Dao_Func shortcut class to all functions constructors
+ *
+ * Could be abstract, but we need a generic empty instance for controllers
+ *
+ * @abstract
  */
-abstract class Func
+class Func
 {
 
 	//----------------------------------------------------------------------------------------- andOp
@@ -351,6 +356,18 @@ abstract class Func
 	public static function notOp($value)
 	{
 		return new Logical(Logical::NOT_OPERATOR, $value);
+	}
+
+	//------------------------------------------------------------------------------------------- now
+	/**
+	 * @param $where boolean if true, get an Expression(new Now) to use it into a where clause
+	 * @return Left|string
+	 */
+	public static function now($where = false)
+	{
+		return $where
+			? Expressions::add(null, new Now())
+			: new Now();
 	}
 
 	//------------------------------------------------------------------------------------------ orOp
