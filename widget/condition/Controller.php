@@ -36,7 +36,8 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		// For testing purpose : a condition on a contract
-		$condition = new Condition($class_name);
+		$condition = new Condition($class_name, Func::andOp([null, null]));
+		/*
 		if (is_a($class_name, Contract::class, true)) {
 			$condition = new Condition($class_name, Func::andOp([
 				'package.name'  => Func::in(['Infinity', 'Infinity Web']),
@@ -48,6 +49,7 @@ class Controller implements Default_Feature_Controller
 				])
 			]));
 		}
+		*/
 //echo PRE . print_r($condition, true) . _PRE;
 		$parameters->set(self::FEATURE, $condition);
 		$parameters = $parameters->getObjects();
