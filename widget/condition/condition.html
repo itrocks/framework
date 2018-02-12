@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|Condition edit|</title>
+	<script type="text/javascript" src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script type="text/javascript"> path = "../../../../"; </script>
+	<script type="text/javascript" src="../../js/all.js"></script>
+	<style type="text/css">
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+	<!--condition-->
+	<div class="condition editor">
+		{/ITRocks/Framework/Dao/Func/select}
+		{/ITRocks/Framework/Property/select/{class_name.path}}
+		<div class="condition">
+			<!--where?-->
+			<div class="operand">CONDITION (SCAN)</div>
+			<!--where?-->
+			<!--!where?-->
+			<div class="operand">CONDITION</div>
+			<!--!where?-->
+		</div>
+	</div>
+	<!--condition-->
+
+<!--END-->
+</body>
+</html>

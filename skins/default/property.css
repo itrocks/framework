@@ -1,15 +1,16 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
+.func_select,
 .property_select {
   background-color: #DCDCDD;
   border: solid 1px #606060;
-  border-radius: 0 2px 2px 2px;
+  border-radius: 0 2px 2px;
   display: inline-block;
   padding: 2px 8px 2px 2px;
-  position: absolute;
   text-align: left;
   z-index: 1; }
+  .func_select .joint,
   .property_select .joint {
     background-color: #DCDCDD;
     display: inline-block;
@@ -18,13 +19,19 @@
     position: absolute;
     top: -1px;
     width: 22px; }
+  .func_select > input,
   .property_select > input {
     margin: 0 0 3px;
     width: 100%; }
+  .func_select > label,
+  .property_select > label {
+    display: none; }
+  .func_select ul,
   .property_select ul {
     background-color: white;
     border-radius: 2px;
     list-style: none; }
+    .func_select ul > li,
     .property_select ul > li {
       background: url("img/tree/string-right.png") 8px -2px no-repeat;
       cursor: default;
@@ -32,12 +39,16 @@
       line-height: 1em;
       margin: 1px 0;
       padding-left: 18px; }
+      .func_select ul > li:last-child,
       .property_select ul > li:last-child {
         background: url("img/tree/string-last.png") 8px -2px no-repeat; }
+      .func_select ul > li:hover,
       .property_select ul > li:hover {
         background-color: #aedc5f; }
+      .func_select ul > li.ui-draggable-handle,
       .property_select ul > li.ui-draggable-handle {
         cursor: grab; }
+      .func_select ul > li > a,
       .property_select ul > li > a {
         background: url("img/tree/plus.png") 4px 2px no-repeat;
         color: black;
@@ -48,12 +59,16 @@
         padding-left: 18px;
         text-decoration: none;
         white-space: nowrap; }
+        .func_select ul > li > a.expanded,
         .property_select ul > li > a.expanded {
           background: url("img/tree/minus.png") 4px 2px no-repeat; }
+      .func_select ul > li span,
       .property_select ul > li span {
         display: block; }
+        .func_select ul > li span:hover,
         .property_select ul > li span:hover {
           background-color: #aedc5f; }
+      .func_select ul > li > section > ul,
       .property_select ul > li > section > ul {
         margin-left: -18px;
         padding-left: 18px; }

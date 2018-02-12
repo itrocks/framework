@@ -1,0 +1,16 @@
+.condition.editor {
+	padding: 1em 0;
+
+	> div {
+
+		&.condition {
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		> ul {
+			height: 11em;
+			overflow-y: scroll;
+		}
+	}
+}

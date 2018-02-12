@@ -44,7 +44,8 @@
 
 		/* head */
 
-		> tbody, > thead {
+		> tbody,
+		> thead {
 			border-bottom: 1px solid lightgray;
 			border-left: 1px solid lightgray;
 			border-right: 1px solid lightgray;
@@ -77,6 +78,10 @@
 
 					> section.popup {
 						left: 0;
+						position: absolute;
+					}
+
+					.property_select {
 						position: absolute;
 					}
 				}

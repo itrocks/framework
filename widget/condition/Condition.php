@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework;
+namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Dao\Func\Where;
 
@@ -34,5 +34,20 @@ class Condition
 	 * @var Where
 	 */
 	public $where;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 * @param $where      Where
+	 */
+	public function __construct($class_name = null, Where $where = null)
+	{
+		if (isset($class_name)) {
+			$this->class_name = $class_name;
+		}
+		if (isset($where)) {
+			$this->where = $where;
+		}
+	}
 
 }

@@ -26,7 +26,8 @@
     .list.window > table > colgroup > col:first-child, .list.window > table > colgroup > col:nth-child(2) {
       max-width: 16px;
       width: 16px; }
-    .list.window > table > tbody, .list.window > table > thead {
+    .list.window > table > tbody,
+    .list.window > table > thead {
       border-bottom: 1px solid lightgray;
       border-left: 1px solid lightgray;
       border-right: 1px solid lightgray; }
@@ -49,6 +50,8 @@
             height: 17px; }
           .list.window > table > thead > tr > th.column_select > section.popup {
             left: 0;
+            position: absolute; }
+          .list.window > table > thead > tr > th.column_select .property_select {
             position: absolute; }
         .list.window > table > thead > tr > th > a {
           background: padding-box right 5px no-repeat;

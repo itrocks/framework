@@ -1,12 +1,12 @@
 @import "colors.scss";
 
+.func_select,
 .property_select {
 	background-color: #DCDCDD;
 	border: solid 1px #606060;
-	border-radius: 0 2px 2px 2px;
+	border-radius: 0 2px 2px;
 	display: inline-block;
 	padding: 2px 8px 2px 2px;
-	position: absolute;
 	text-align: left;
 	z-index: 1;
 
@@ -20,9 +20,13 @@
 		width: 22px;
 	}
 
-	>input {
+	> input {
 		margin: 0 0 3px;
 		width: 100%;
+	}
+
+	> label {
+		display: none;
 	}
 
 	ul {
@@ -30,7 +34,7 @@
 		border-radius: 2px;
 		list-style: none;
 
-		>li {
+		> li {
 			background: url("img/tree/string-right.png") 8px -2px no-repeat;
 			cursor: default;
 			font-weight: normal;
@@ -50,7 +54,7 @@
 				cursor: grab;
 			}
 
-			>a {
+			> a {
 				background: url("img/tree/plus.png") 4px 2px no-repeat;
 				color: black;
 				cursor: pointer;
@@ -73,7 +77,7 @@
 				}
 			}
 
-			>section>ul {
+			> section > ul {
 				margin-left: -18px;
 				padding-left: 18px;
 			}
