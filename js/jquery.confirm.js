@@ -116,7 +116,8 @@
 		 * If link has flag "confirmed", just free the event & remove flag. Otherwise prevent event and
 		 * display a confirm box built with data attributes of the link.
 		 */
-		this.find('a.confirm').bind('click', function(event) {
+		this.find('a.confirm').bind('click', function(event)
+		{
 			var $link = $(this);
 
 			if (!$link.attr('confirmed')) {
