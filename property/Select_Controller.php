@@ -7,11 +7,11 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Property;
+use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
-use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Set;
@@ -24,17 +24,17 @@ use ITRocks\Framework\View;
 class Select_Controller implements Feature_Controller
 {
 
-	//--------------------------------------------------------------------------- $composite_property
-	/**
-	 * @var Reflection\Reflection_Property
-	 */
-	private $composite_property = null;
-
 	//---------------------------------------------------------------------- $composite_link_property
 	/**
 	 * @var Reflection\Reflection_Property
 	 */
 	private $composite_link_property = null;
+
+	//--------------------------------------------------------------------------- $composite_property
+	/**
+	 * @var Reflection\Reflection_Property
+	 */
+	private $composite_property = null;
 
 	//------------------------------------------------------------------------------ filterProperties
 	/**
