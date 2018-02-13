@@ -15,7 +15,6 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Comparison implements Negate, Where
 {
-	use Has_To_String;
 
 	//---------------------------------------------------------------------------------- $sign values
 	const AUTO             = null;
@@ -70,6 +69,15 @@ class Comparison implements Negate, Where
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->sign . SP . $this->than_value;
+	}
+
 	//---------------------------------------------------------------------------------------- negate
 	/**
 	 * Negate the comparison
@@ -90,9 +98,9 @@ class Comparison implements Negate, Where
 	 */
 	public function signToHuman($sign)
 	{
-		return (
-			in_array($sign, [self::LIKE, self::NOT_LIKE]) ?	Loc::tr('is' . SP . strtolower($sign)) : $sign
-		);
+		return in_array($sign, [self::LIKE, self::NOT_LIKE])
+			?	Loc::tr('is' . SP . strtolower($sign))
+			: $sign;
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman

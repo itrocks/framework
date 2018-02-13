@@ -36,22 +36,21 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		// For testing purpose : a condition on a contract
-		$condition = new Condition($class_name, Func::andOp([null, null]));
-		/*
+		$condition = new Condition($class_name, Func::andOp([Func::equal(null), Func::equal(null)]));
 		if (is_a($class_name, Contract::class, true)) {
 			$condition = new Condition($class_name, Func::andOp([
 				'package.name'  => Func::in(['Infinity', 'Infinity Web']),
 				Func::now(true) => Func::greaterOrEqual(new Date_Time('2018-01-02')),
 				'status'        => Func::in([Status::INCOMPLETE, Status::VALID]),
 				Func::orOp([
-					'agency'             => Dao::searchOne(['name' => 'FNAC St Nazaire'], Agency::class),
-					'agency.main_agency' => Dao::searchOne(['name' => 'FNAC ACCES'     ], Agency::class)
+					'agency'             => Func::equal(Dao::searchOne(['name' => 'FNAC St Nazaire'], Agency::class)),
+					'agency.main_agency' => Func::equal(Dao::searchOne(['name' => 'FNAC ACCES'], Agency::class))
 				])
 			]));
 		}
-		*/
 //echo PRE . print_r($condition, true) . _PRE;
 		$parameters->set(self::FEATURE, $condition);
+		$parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
 		return View::run($parameters, $form, $files, $class_name, self::FEATURE);
 	}
