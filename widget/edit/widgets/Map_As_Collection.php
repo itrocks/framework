@@ -6,7 +6,6 @@ use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\Widget\Edit\Html_Builder_Collection;
-use ITRocks\Framework\Widget\Edit\Html_Builder_Collection_Flat;
 use ITRocks\Framework\Widget\Edit\Html_Template;
 
 /**
