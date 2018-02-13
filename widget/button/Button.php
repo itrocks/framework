@@ -7,7 +7,6 @@ use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Color;
-use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button\Code;
 use ITRocks\Framework\Widget\Confirm\Confirm;
@@ -190,13 +189,13 @@ class Button
 			elseif ($key === self::HINT) {
 				$this->hint = $option;
 			}
-			elseif ($key == Confirm::CANCEL_LABEL) {
+			elseif ($key === Confirm::CANCEL_LABEL) {
 				$this->cancel_label = $option;
 			}
-			elseif ($key == Confirm::CONFIRM_LABEL) {
+			elseif ($key === Confirm::CONFIRM_LABEL) {
 				$this->confirm_label = $option;
 			}
-			elseif ($key == Confirm::MESSAGE) {
+			elseif ($key === Confirm::MESSAGE) {
 				$this->confirm_message = $option;
 			}
 			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
