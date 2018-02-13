@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>|Function select|</title>
+	<title>|Condition edit|</title>
 	<script type="text/javascript" src="../../../../../vendor/components/jquery/jquery.js"></script>
 	<script type="text/javascript"> path = "../../../../../"; </script>
 	<script type="text/javascript" src="../../../js/all.js"></script>
@@ -13,14 +13,15 @@
 <body>
 <!--BEGIN-->
 
-	<div class="func_select">
-		<label for="func_search">|function search|</label>
-		<input id="func_search" name="search">
-		<ul class="func_list">
-			<!--functions-->
-			<li class="{name.uri} function" data-function="{@key}">|{name}|</li>
-			<!--functions-->
-		</ul>
+	<div class="<!--!@class?-->empty <!--!@class?-->operand">
+		<!--@class?-->
+
+		|{.}|&nbsp;:
+		<!--arguments-->
+			{/asCondition.html}
+		<!--arguments-->
+
+		<!--@class?-->
 	</div>
 
 <!--END-->

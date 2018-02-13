@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Func;
 use Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Widget\Data_List\Summary_Builder;
 
 /**
@@ -11,7 +12,6 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Logical implements Negate, Where
 {
-	use Has_To_String;
 
 	//-------------------------------------------------------------------------- values for $operator
 	const AND_OPERATOR  = ' AND ';
@@ -69,6 +69,15 @@ class Logical implements Negate, Where
 		) {
 			throw new Exception('Can not build logical not|true expression with array');
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return Names::classToDisplay(static::class) . SP . static::HUMAN[$this->operator];
 	}
 
 	//----------------------------------------------------------------------------------------- isAnd
@@ -173,7 +182,7 @@ class Logical implements Negate, Where
 				$not_first = true;
 			}
 			else {
-				$str .= SP . Loc::tr(self::HUMAN[$this->operator]) . SP;
+				$str .= SP . Loc::tr(static::HUMAN[$this->operator]) . SP;
 			}
 			if (is_array($argument)) {
 				$str .= (new Logical($this->operator, $argument))->toHuman(
@@ -198,7 +207,7 @@ class Logical implements Negate, Where
 			}
 		}
 		return (
-			($this->operator === self::NOT_OPERATOR) ? Loc::tr(self::HUMAN[self::NOT_OPERATOR]) : ''
+			($this->operator === self::NOT_OPERATOR) ? Loc::tr(static::HUMAN[self::NOT_OPERATOR]) : ''
 		)
 		. ' (' . $str . ')';
 	}

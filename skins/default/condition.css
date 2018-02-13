@@ -3,6 +3,18 @@
   .condition.editor > div.condition {
     display: inline-block;
     vertical-align: top; }
+    .condition.editor > div.condition div.operand {
+      border: 1px solid #444;
+      border-radius: 0 2px 2px;
+      cursor: move;
+      margin: 4px;
+      padding: 4px;
+      text-align: center; }
+      .condition.editor > div.condition div.operand.empty {
+        background-color: #fee;
+        font-style: italic; }
+        .condition.editor > div.condition div.operand.empty:before {
+          content: '...'; }
   .condition.editor > div > ul {
     height: 11em;
     overflow-y: scroll; }
