@@ -13,6 +13,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Is_Greatest implements Where_Inner
 {
+	use Has_To_String;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**

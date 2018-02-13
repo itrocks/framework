@@ -11,6 +11,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class InSelect implements Negate, Where
 {
+	use Has_To_String;
 
 	//--------------------------------------------------------------------------------------- $not_in
 	/**

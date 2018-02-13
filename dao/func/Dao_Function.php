@@ -7,4 +7,7 @@ namespace ITRocks\Framework\Dao\Func;
 interface Dao_Function
 {
 
+	//------------------------------------------------------------------------------------ __toString
+	public function __toString();
+
 }

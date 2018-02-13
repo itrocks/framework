@@ -9,6 +9,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Property implements Where
 {
+	use Has_To_String;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**

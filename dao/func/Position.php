@@ -11,6 +11,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Position implements Where
 {
+	use Has_To_String;
 
 	//---------------------------------------------------------------------------------- POSITION_SQL
 	const POSITION_SQL = 'LOCATE';

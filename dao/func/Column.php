@@ -10,6 +10,7 @@ use ITRocks\Framework\Sql\Value;
  */
 abstract class Column implements Dao_Function
 {
+	use Has_To_String;
 
 	//-------------------------------------------------------------------------------------- aliasSql
 	/**

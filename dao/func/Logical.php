@@ -11,6 +11,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Logical implements Negate, Where
 {
+	use Has_To_String;
 
 	//-------------------------------------------------------------------------- values for $operator
 	const AND_OPERATOR  = ' AND ';

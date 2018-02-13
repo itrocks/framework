@@ -15,6 +15,7 @@ use ITRocks\Framework\Widget\Data_List\Summary_Builder;
  */
 class Comparison implements Negate, Where
 {
+	use Has_To_String;
 
 	//---------------------------------------------------------------------------------- $sign values
 	const AUTO             = null;
