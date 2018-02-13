@@ -295,8 +295,9 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 						$classes[$extends] = self::classNameWithoutVendorProject($extends);
 					}
 				}
-				// use (traits)
+				// use and implements (traits, interfaces)
 				$classes = array_merge($classes, self::getTraitsRecursive($reflection_class));
+				$classes = arrayMergeRecursive($classes, self::getInterfacesRecursive($reflection_class));
 				// parent classes
 				$class_name = get_parent_class($class_name);
 			}
@@ -306,6 +307,22 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 		} while ($class_name);
 
 		return $classes;
+	}
+
+	//------------------------------------------------------------------------ getInterfacesRecursive
+	/**
+	 * Get interfaces we can get from, starting from the actual class / interface / trait
+	 *
+	 * @param $class Reflection_Class
+	 * @return string[] key is the full name of each interface, value is it without 'Vendor/Project/'
+	 */
+	static private function getInterfacesRecursive(Reflection_Class $class)
+	{
+		$interfaces = [];
+		foreach ($class->getInterfaces() as $interface) {
+			$interfaces[$interface->name] = self::classNameWithoutVendorProject($interface->name);
+		}
+		return $interfaces;
 	}
 
 	//---------------------------------------------------------------------------- getTraitsRecursive
