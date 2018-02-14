@@ -1,10 +1,8 @@
 <?php
-namespace ITRocks\Framework\Traits;
+namespace ITRocks\Framework\Traits\Is_Immutable;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
-use ITRocks\Framework\Dao\Mysql\Link;
-use mysqli_result;
 
 /**
  * Auto_Link_Manager : Allow to manage the creation and update of autoLink trait
@@ -27,26 +25,21 @@ class Immutable_Manager
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Called before write, this ensures that the object will be immutable into the data link
+	 *
 	 * - if the object already exists into data store, then an exception will occurred
 	 * - if the object does not already exists, then save the object as a new one
 	 *
-	 * @param $link Data_Link   Data_Link
-	 * @param $auto_link_object Object
+	 * @param $link             Data_Link
+	 * @param $auto_link_object object
 	 */
 	public function __construct(Data_Link $link, $auto_link_object)
 	{
 		$this->auto_link_object = $auto_link_object;
-		if ($link) {
-			$this->link = $link;
-		}
-		else {
-			$this->link = Dao::current();
-		}
+		$this->link             = $link ?: Dao::current();
 
-		// Remove spaces
-		foreach (get_object_vars($this->auto_link_object) as $key => $value) {
+		foreach (get_object_vars($this->auto_link_object) as $property_name => $value) {
 			if (is_string($value)) {
-				$this->auto_link_object->$key = str_replace('  ', ' ', trim($value));
+				$this->auto_link_object->$property_name = str_replace(SP . SP, SP, trim($value));
 			}
 		}
 	}
@@ -55,7 +48,7 @@ class Immutable_Manager
 	/**
 	 * Replace $auto_link_object by an existing value
 	 *
-	 * @param $existing_object Object
+	 * @param $existing_object object
 	 */
 	private function replaceCurrentByExisting($existing_object)
 	{
@@ -68,30 +61,30 @@ class Immutable_Manager
 	{
 		// Creation or update ?
 		// no id --> creation
-		$creation = !DAO::getObjectIdentifier($this->auto_link_object);
+		$creation = !Dao::getObjectIdentifier($this->auto_link_object);
 
 		$working_object = clone $this->auto_link_object;
 		$this->link->disconnect($working_object);
 		$existing_object = $this->link->searchOne($working_object);
 
+		// create
 		if ($creation) {
-			// Object exists then use it ?
+			// object exists ? use it !
 			if ($existing_object) {
-				if (Dao::getObjectIdentifier($existing_object) != Dao::getObjectIdentifier($this->auto_link_object )) {
+				if (!Dao::is($existing_object, $this->auto_link_object)) {
 					$this->replaceCurrentByExisting($existing_object);
 				}
 			}
-			// else nothing to do
+			// else : do nothing (the new object will be created)
 		}
 		// update
-		else {
-			if ($existing_object) {
-				if (Dao::getObjectIdentifier($existing_object) != Dao::getObjectIdentifier($this->auto_link_object )) {
-					$this->replaceCurrentByExisting($existing_object);
-				}
-			} else {
-				$this->link->disconnect($this->auto_link_object);
+		elseif ($existing_object) {
+			if (!Dao::is($existing_object, $this->auto_link_object )) {
+				$this->replaceCurrentByExisting($existing_object);
 			}
+		}
+		else {
+			$this->link->disconnect($this->auto_link_object);
 		}
 	}
 

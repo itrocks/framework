@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Traits\Is_Immutable\Immutable_Manager;
 
 /**
  * Is_Immutable : Allow to manage storage of class only if exactly same values don't exist in Table
