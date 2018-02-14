@@ -71,5 +71,24 @@ $('document').ready(function()
 
 		});
 
+		//----------------------------------- .condition.editor fieldset ul.logical > li:before content
+		/**
+		 * Translated 'and' and 'or' css content
+		 */
+		if (!$('header > style[data-condition]').length) {
+			$('<style>')
+				.attr('data-condition', 'condition')
+				.attr('type', 'text/css')
+				.text('\
+					.condition.editor fieldset ul.and > li:before {\
+						content: ' + Q + tr('|and|', 'ITRocks\\Framework\\Widget\\Condition') + Q + ';\
+					}\
+					.condition.editor fieldset ul.or > li:before {\
+						content: ' + Q + tr('|or|', 'ITRocks\\Framework\\Widget\\Condition') + Q + ';\
+					}\
+				')
+				.appendTo('header');
+		}
+
 	});
 });

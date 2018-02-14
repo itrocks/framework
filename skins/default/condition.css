@@ -34,6 +34,7 @@
     .condition.editor fieldset ul.or > li:before {
       content: 'or'; }
     .condition.editor fieldset ul.logical > li:before {
+      cursor: pointer;
       display: inline-block;
       margin-top: 2px;
       padding: 4px; }
