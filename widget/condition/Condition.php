@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Dao\Func\Where;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * A condition
@@ -25,6 +26,26 @@ class Condition
 	 * @var string
 	 */
 	public $class_name;
+
+	//------------------------------------------------------------------------------------------ $now
+	/**
+	 * This property can be used for the special 'now' property, a condition that depends on the
+	 * system, not the data
+	 *
+	 * @link DateTime
+	 * @store false
+	 * @var Date_Time
+	 */
+	public $now;
+
+	//---------------------------------------------------------------------------------------- $title
+	/**
+	 * A title for the condition : depends on the place the condition editor system is used
+	 *
+	 * @store false
+	 * @var string
+	 */
+	public $title = 'Condition editor';
 
 	//---------------------------------------------------------------------------------------- $where
 	/**

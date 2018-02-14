@@ -3,30 +3,54 @@
   .condition.editor > div > ul {
     height: 11em;
     overflow-y: scroll; }
-  .condition.editor .operand {
-    border: 1px solid #444;
-    border-radius: 3px;
-    cursor: move;
+  .condition.editor fieldset {
     display: inline-block;
-    list-style: none;
-    margin: 4px;
-    padding: 4px;
-    text-align: center;
+    margin-left: 1em;
+    margin-top: 2px;
     vertical-align: top; }
-    .condition.editor .operand.empty {
-      background-color: #fee;
-      font-style: italic; }
-      .condition.editor .operand.empty:before {
-        content: '...'; }
-    .condition.editor .operand.replace {
-      border-color: #f00;
-      box-shadow: 0 0 2px 2px #f00 inset; }
-    .condition.editor .operand.outfit {
-      border-color: #0f0;
-      box-shadow: 0 0 2px 2px #0f0; }
-  .condition.editor .operator {
-    display: inline-block; }
-    .condition.editor .operator.logical:before {
-      content: "\A";
-      display: block;
-      white-space: pre; }
+    .condition.editor fieldset div.operator {
+      cursor: pointer;
+      margin-top: 2px;
+      padding: 4px; }
+    .condition.editor fieldset div.property {
+      border: 1px solid black;
+      border-radius: 3px;
+      cursor: move;
+      margin-top: 2px;
+      padding: 3px 3px 4px; }
+    .condition.editor fieldset ul {
+      list-style: none;
+      margin: 0;
+      padding: 0; }
+      .condition.editor fieldset ul > li {
+        margin: 0;
+        padding: 0; }
+      .condition.editor fieldset ul > li > div,
+      .condition.editor fieldset ul > li > ul {
+        display: inline-block;
+        vertical-align: top; }
+    .condition.editor fieldset ul.and > li:before {
+      content: 'and'; }
+    .condition.editor fieldset ul.or > li:before {
+      content: 'or'; }
+    .condition.editor fieldset ul.logical > li:before {
+      display: inline-block;
+      margin-top: 2px;
+      padding: 4px; }
+    .condition.editor fieldset ul.logical > li:first-child:before {
+      color: transparent; }
+    .condition.editor fieldset * ul {
+      border-left: 1px solid black;
+      padding-left: .5em; }
+  .condition.editor > h3 {
+    background-color: #e9ede7;
+    border: lightgrey 1px solid;
+    display: block;
+    height: 14px;
+    white-space: nowrap; }
+  .condition.editor .outfit {
+    border-color: #0f0;
+    box-shadow: 0 0 2px 2px #0f0; }
+  .condition.editor .replace {
+    border-color: #f00;
+    box-shadow: 0 0 2px 2px #f00 inset; }

@@ -15,56 +15,48 @@
 
 	<!--condition-->
 	<div class="{class_name.short.lower} condition editor">
-		{/ITRocks/Framework/Dao/Func/select}
+		<h3>|{title}|</h3>
 		{/ITRocks/Framework/Property/select/{class_name.path}}
 
-		<div class="logical and function operand">
-			<div class="in function operand">
-				<div class="property operand" data-property="package">|package|</div>
-				<div class="in operator">|in|</div>
-				<div class="in operands">
-					{-package.@edit}
-					<div class="value operand"><input value="Infinity"></div>
-					<div class="value operand"><input value="Infinity Web"></div>
-					<div class="empty operand"></div>
-				</div>
-			</div>
-			<div class="logical operator">|and|</div>
-			<div class="comparison function operand">
-				<div class="now function operand" data-function="now">|now|</div>
-				<div class="comparison operator">>=</div>
-				<div class="value operand"><input class="date" value="02/01/2018"></div>
-			</div>
-			<div class="logical operator">|and|</div>
-			<div class="in function operand">
-				<div class="property operand" data-property="status">|status|</div>
-				<div class="in operator">|in|</div>
-				<div class="in operands">
-					{-status.@edit}
-					<div class="value operand"><select><option value="incomplete">|incomplete|</option></select></div>
-					<div class="value operand"><select><option value="valid">|valid|</option></select></div>
-					<div class="empty operand"></div>
-				</div>
-			</div>
-			<div class="logical operator">|and|</div>
-			<div class="logical or function operand">
-				<div class="comparison function operand">
-					<div class="property operand" data-property="agency">|agency|</div>
-					<div class="comparison operator">=</div>
-					<div class="value operand"><input value="FNAC ST NAZAIRE"></div>
-				</div>
-				<div class="logical operator">|or|</div>
-				<div class="comparison function operand">
-					<div class="property operand" data-property="agency.main_agency">|agency.main_agency|</div>
-					<div class="comparison operator">=</div>
-					<div class="value operand"><input value="FNAC ACCES"></div>
-				</div>
-				<div class="logical operator">|or|</div>
-				<div class="empty operand"></div>
-			</div>
-			<div class="logical operator">|and|</div>
-			<div class="empty operand"></div>
-		</div>
+		<fieldset>
+			<ul class="logical and function">
+				<li>
+					<div class="property" data-property="package">|package|</div>
+					<div class="operator">|in|</div>
+					<ul>
+						<li><div class="class field_value">{-package.@edit}</div></li>
+						<li><div class="class field_value">{-package.@edit}</div></li>
+					</ul>
+				</li>
+				<li>
+					<div class="property" data-function="now">|now|</div>
+					<div class="operator">>=</div>
+					<div class="date_time field_value">{now.@edit}</div>
+				</li>
+				<li>
+					<div class="property" data-property="status">|status|</div>
+					<div class="operator">|in|</div>
+					<ul class="values">
+						<li><div class="class field_value">{-status.@edit}</div></li>
+						<li><div class="class field_value">{-status.@edit}</div></li>
+					</ul>
+				</li>
+				<li>
+					<ul class="logical or function">
+						<li>
+							<div class="property" data-property="agency">|agency|</div>
+							<div class="operator">=</div>
+							<div class="class field_value">{-agency.@edit}</div>
+						</li>
+						<li>
+							<div class="property" data-property="agency.main_agency">|agency.main_agency|</div>
+							<div class="operator">=</div>
+							<div class="class field_value">{-agency.@edit}</div>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</fieldset>
 
 	</div>
 	<!--condition-->

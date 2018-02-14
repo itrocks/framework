@@ -6,44 +6,85 @@
 		overflow-y: scroll;
 	}
 
-	.operand {
-		border: 1px solid #444;
-		border-radius: 3px;
-		cursor: move;
+	fieldset {
 		display: inline-block;
-		list-style: none;
-		margin: 4px;
-		padding: 4px;
-		text-align: center;
+		margin-left: 1em;
+		margin-top: 2px;
 		vertical-align: top;
 
-		&.empty {
-			background-color: #fee;
-			font-style: italic;
+		div.operator {
+			cursor: pointer;
+			margin-top: 2px;
+			padding: 4px;
+		}
 
-			&:before {
-				content: '...';
+		div.property {
+			border: 1px solid black;
+			border-radius: 3px;
+			cursor: move;
+			margin-top: 2px;
+			padding: 3px 3px 4px;
+		}
+
+		ul {
+			list-style: none;
+			margin: 0;
+			padding: 0;
+
+			> li {
+				margin: 0;
+				padding: 0;
+			}
+
+			> li {
+
+				> div,
+				> ul {
+					display: inline-block;
+					vertical-align: top;
+				}
 			}
 		}
 
-		&.replace {
-			border-color: #f00;
-			box-shadow: 0 0 2px 2px #f00 inset;
+		ul.and > li:before {
+			content: 'and';
 		}
 
-		&.outfit {
-			border-color: #0f0;
-			box-shadow: 0 0 2px 2px #0f0;
+		ul.or > li:before {
+			content: 'or';
+		}
+
+		ul.logical > li:before {
+			display: inline-block;
+			margin-top: 2px;
+			padding: 4px;
+		}
+
+		ul.logical > li:first-child:before {
+			color: transparent;
+		}
+
+		* ul {
+			border-left: 1px solid black;
+			padding-left: .5em;
 		}
 	}
 
-	.operator {
-		display: inline-block;
+	> h3 {
+		background-color: #e9ede7;
+		border: lightgrey 1px solid;
+		display: block;
+		height: 14px;
+		white-space: nowrap;
+	}
 
-		&.logical:before {
-			content: "\A";
-			display: block;
-			white-space: pre;
-		}
+	.outfit {
+		border-color: #0f0;
+		box-shadow: 0 0 2px 2px #0f0;
+	}
+
+	.replace {
+		border-color: #f00;
+		box-shadow: 0 0 2px 2px #f00 inset;
 	}
 }
