@@ -8,7 +8,11 @@ textarea {
   border: 1px solid #a3a3a3;
   border-radius: 2px;
   height: 18px;
-  padding: 1px 2px; }
+  margin: 2px 0; }
+  input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized):not(select),
+  select:not(select),
+  textarea:not(select) {
+    padding: 1px 2px; }
   input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized)[readonly],
   select[readonly],
   textarea[readonly] {
@@ -18,9 +22,11 @@ textarea {
     resize: none; }
 
 /* datetime input */
-div.date_time, td.date_time {
+div.date_time,
+td.date_time {
   position: relative; }
-  div.date_time .ui-datepicker-trigger, td.date_time .ui-datepicker-trigger {
+  div.date_time .ui-datepicker-trigger,
+  td.date_time .ui-datepicker-trigger {
     background: url("img/input_datetime.png") center no-repeat;
     border: none;
     color: transparent;
@@ -45,20 +51,27 @@ td.date_time .ui-datepicker-trigger {
   overflow-y: scroll; }
 
 /* float / integer input / display */
-.float > input, .integer > input {
+.float > input,
+.integer > input {
   text-align: right; }
 
 /* combo input */
-div.class, td.class {
+div.class,
+td.class {
   position: relative; }
-  div.class > input.combo ~ .ui-helper-hidden-accessible, td.class > input.combo ~ .ui-helper-hidden-accessible {
+  div.class > input.combo ~ .ui-helper-hidden-accessible,
+  td.class > input.combo ~ .ui-helper-hidden-accessible {
     display: none; }
-  div.class > input.combo ~ button, div.class > input.combo ~ a, td.class > input.combo ~ button, td.class > input.combo ~ a {
+  div.class > input.combo ~ a, div.class > input.combo ~ button,
+  td.class > input.combo ~ a,
+  td.class > input.combo ~ button {
     color: transparent;
     height: 24px;
     font-size: 1px;
     width: 22px; }
-    div.class > input.combo ~ button.more, div.class > input.combo ~ a.more, td.class > input.combo ~ button.more, td.class > input.combo ~ a.more {
+    div.class > input.combo ~ a.more, div.class > input.combo ~ button.more,
+    td.class > input.combo ~ a.more,
+    td.class > input.combo ~ button.more {
       background: url("img/input_combo.png") center no-repeat;
       border: none;
       cursor: pointer;
@@ -82,10 +95,12 @@ fieldset {
     /* standard field */
     /* columns */
     /* multiple field */ }
-    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div {
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div,
+    fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label {
       display: table-cell;
       white-space: pre-line; }
-      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(textarea), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(textarea) {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(textarea),
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(textarea) {
         white-space: initial; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple):hover {
       background-color: #defdaf; }
@@ -100,8 +115,6 @@ fieldset {
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div {
       height: 24px;
       vertical-align: middle; }
-      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > input, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > select, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > div > textarea {
-        margin: 2px 0; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).columns {
       display: block;
       width: 100%; }
@@ -135,7 +148,9 @@ fieldset {
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
-        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]), fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]),
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]),
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
           height: 18px;
           margin-top: -2px;
           vertical-align: top;

@@ -7,7 +7,11 @@ textarea {
 	border: 1px solid #a3a3a3;
 	border-radius: 2px;
 	height: 18px;
-	padding: 1px 2px;
+	margin: 2px 0;
+
+	&:not(select) {
+		padding: 1px 2px;
+	}
 
 	&[readonly] {
 		background: none;
@@ -19,7 +23,8 @@ textarea {
 
 /* datetime input */
 
-div.date_time, td.date_time {
+div.date_time,
+td.date_time {
 	position: relative;
 
 	.ui-datepicker-trigger {
@@ -55,7 +60,9 @@ td.date_time .ui-datepicker-trigger {
 
 /* float / integer input / display */
 
-.float, .integer {
+.float,
+.integer {
+
 	> input {
 		text-align: right;
 	}
@@ -63,7 +70,8 @@ td.date_time .ui-datepicker-trigger {
 
 /* combo input */
 
-div.class, td.class {
+div.class,
+td.class {
 	position: relative;
 
 	> input.combo {
@@ -72,7 +80,8 @@ div.class, td.class {
 			display: none;
 		}
 
-		& ~ button, & ~ a {
+		& ~ a,
+		& ~ button {
 			color: transparent;
 			height: 24px;
 			font-size: 1px;
@@ -93,7 +102,8 @@ div.class, td.class {
 }
 
 td.class > input.combo {
-	& ~ a.more, & ~ button.more {
+	& ~ a.more,
+	& ~ button.more {
 		height: 20px;
 		top: 0;
 	}
@@ -103,14 +113,15 @@ td.class > input.combo {
 
 fieldset {
 
-	>div.hidden {
+	> div.hidden {
 		display: none;
 	}
 
-	>div:not(.hidden):not(.tabber):not([class*=before-]) {
+	> div:not(.hidden):not(.tabber):not([class*=before-]) {
 		display: table-row;
 
-		>label, >div {
+		> div,
+		> label {
 			display: table-cell;
 			white-space: pre-line;
 
@@ -121,28 +132,26 @@ fieldset {
 
 		/* standard field */
 		&:not(.multiple) {
+
 			&:hover {
 				background-color: $field_hover;
 			}
 
-			>label {
+			> label {
 				font-weight: bold;
 				height: 24px;
 				vertical-align: middle;
 				white-space: nowrap;
+
 				&:after {
 					content: " :";
 					margin-right: .5em;
 				}
 			}
 
-			>div {
+			> div {
 				height: 24px;
 				vertical-align: middle;
-
-				>input, >select, >textarea {
-					margin: 2px 0;
-				}
 			}
 		}
 
@@ -151,7 +160,7 @@ fieldset {
 			display: block;
 			width: 100%;
 
-			>.column {
+			> .column {
 				vertical-align: top;
 
 				&:not(:first-child) {
@@ -178,12 +187,12 @@ fieldset {
 			caption-side: bottom;
 			display: block;
 
-			>* {
+			> * {
 				display: block;
 				padding: 3px;
 			}
 
-			>label {
+			> label {
 				background-color: #e9ede7;
 				height: 14px;
 				font-weight: bold;
@@ -192,29 +201,30 @@ fieldset {
 
 			table.collection, table.map {
 
-				>thead>tr>th {
+				> thead > tr > th {
 					padding: 1px 2px;
 					white-space: nowrap;
 				}
 
-				>tbody>tr {
+				> tbody > tr {
 
 					&:hover {
 						background-color: $field_hover;
 					}
 
-					>td {
+					> td {
 						padding: 1px 5px 0 0;
 						white-space: nowrap;
 
-						>input:not([type=file]), >textarea {
+						> input:not([type=file]),
+						> textarea {
 							height: 18px;
 							margin-top: -2px;
 							vertical-align: top;
 							width: 100%;
 						}
 
-						>select {
+						> select {
 							height: 22px;
 							margin: -2px -6px -2px 0;
 						}
@@ -228,7 +238,7 @@ fieldset {
 							width: 16px;
 						}
 
-						&.multiple>ul {
+						&.multiple > ul {
 							margin-left: .5em;
 							padding-left: 1em;
 						}
@@ -245,7 +255,7 @@ fieldset {
 		border-radius: 4px;
 		padding: 0 .25em;
 
-		>legend {
+		> legend {
 			color: #202020;
 			font-size: 14px;
 			margin-left: .25em;
@@ -258,7 +268,7 @@ fieldset {
 
 /* main tabber */
 
-form>fieldset:not(:last-child)>.tabber {
+form > fieldset:not(:last-child) > .tabber {
 	border-bottom: 1px solid #575757;
 	padding-bottom: 2px;
 }
