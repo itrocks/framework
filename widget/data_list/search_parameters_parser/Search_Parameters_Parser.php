@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -218,8 +219,14 @@ class Search_Parameters_Parser
 				$search = Date::applyDateValue($search_value);
 				break;
 			}
+			// String types with @values : translate
+			case Type::STRING: {
+				if (Values_Annotation::of($property)->value) {
+					$search_value = Loc::rtr($search_value, $property->final_class);
+				}
+			}
 			// Float | Integer | String types
-			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
+			// case Type::FLOAT: case Type::INTEGER: case Type::STRING]:
 			default: {
 				if (($search = Words::applyEmptyWord($search_value)) !== false) {
 					break;
