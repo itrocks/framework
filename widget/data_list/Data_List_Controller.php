@@ -500,8 +500,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		try {
 			$data = $this->readData($class_name, $list_settings, $search, $options);
 			// SM : Moved from applyParametersToListSettings()
-			// TODO Move back once we have a generic validator (parser) not depending of SQL that we could
-			// TODO fire before save
+			// TODO Move back once we have a generic validator (parser) not depending of SQL that we could fire before save
 			if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
 				$list_settings->save();
 			}
