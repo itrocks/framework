@@ -30,6 +30,7 @@ trait Is_Immutable
 			$link = Dao::current();
 		}
 
+		// TODO this "form cleanup" code must be generalized into a cleanup plugin
 		foreach (get_object_vars($this) as $property_name => $value) {
 			if (is_string($value)) {
 				$this->$property_name = str_replace(SP . SP, SP, trim($value));
