@@ -30,7 +30,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -391,7 +390,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			/** @var $property Property */
 			$property         = Builder::createClone($property, Property::class);
 			$property->search = new Reflection_Property($class_name, $property->path);
-			$this->prepareSearchPropertyComponent($property->search);
+			if (!$property->search->getType()->isString()) {
+				Var_Annotation::local($property->search)->value  = Type::STRING;
+				Link_Annotation::local($property->search)->value = null;
+			}
 			$properties[$property->path] = $property;
 		}
 		foreach ($list_settings->search as $property_path => $search_value) {
@@ -610,7 +612,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	//----------------------------------------------------------------------------------- groupConcat
 	/**
 	 * @param $properties_path string[]
-	 * @param $group_by        Group_By
+	 * @param Group_By         $group_by
 	 */
 	public function groupConcat(array &$properties_path, Group_By $group_by)
 	{
@@ -643,26 +645,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					$row->setValue($property_path, strval($row->getValue($property_path)));
 				}
 			}
-		}
-	}
-
-	//---------------------------------------------------------------- prepareSearchPropertyComponent
-	/**
-	 * Prepare search property component for free search expression typing :
-	 *
-	 * - all properties are dealt as if they are string
-	 * - all string properties do not have pre-selected values
-	 *
-	 * @param $property Reflection_Property
-	 */
-	protected function prepareSearchPropertyComponent(Reflection_Property $property)
-	{
-		if ($property->getType()->isString()) {
-			Values_Annotation::local($property)->value = [];
-		}
-		else {
-			Link_Annotation::local($property)->value = null;
-			Var_Annotation::local($property)->value  = Type::STRING;
 		}
 	}
 
@@ -880,7 +862,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$value = Dao::read($value, $property->getType()->asString());
 			}
 			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
-			$this->prepareSearchPropertyComponent($property);
+			if (!$property->getType()->isString()) {
+				Link_Annotation::local($property)->value = null;
+				Var_Annotation::local($property)->value  = Type::STRING;
+			}
 			$property->value(Loc::propertyToIso($property, $value));
 		}
 		return $property;
