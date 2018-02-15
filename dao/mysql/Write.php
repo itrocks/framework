@@ -24,7 +24,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Map_Delete;
 use ITRocks\Framework\Sql\Builder\Map_Insert;
-use ITRocks\Framework\Traits\Is_Immutable;
 
 /**
  * Write feature for Dao\Mysql link
