@@ -142,6 +142,12 @@ class Parser
 	public static function getAnnotationClassName($class_name, $annotation_name)
 	{
 		static $cache = [];
+		while (!in_array(
+			rLastParse($class_name, BS),
+			['Reflection_Class', 'Reflection_Method', 'Reflection_Property']
+		)) {
+			$class_name = get_parent_class($class_name);
+		}
 		if (!isset($cache[$class_name][$annotation_name])) {
 			$reflection_class = $class_name;
 			$pos              = strrpos($reflection_class, '_');
