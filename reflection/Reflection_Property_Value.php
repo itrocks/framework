@@ -56,6 +56,15 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	private $user;
 
+	//------------------------------------------------------------------------------------ $view_path
+	/**
+	 * The view path includes any prefix needed by the property building for view, if set
+	 * If not set : you should read $path ; and if not : $name
+	 *
+	 * @var string
+	 */
+	public $view_path;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Constructs a reflection property with value
@@ -99,7 +108,7 @@ class Reflection_Property_Value extends Reflection_Property
 	public function __get($key)
 	{
 		$property = new Reflection_Property($this->class, $this->name);
-		$value = isset($property->$key) ? $property->$key : null;
+		$value    = isset($property->$key) ? $property->$key : null;
 		trigger_error(
 			'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !',
 			E_USER_WARNING
@@ -134,8 +143,9 @@ class Reflection_Property_Value extends Reflection_Property
 	public function display()
 	{
 		return $this->display
-			? $this->display
-			: Loc::tr(Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias));
+			?: Loc::tr(
+				Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias)
+			);
 	}
 
 	//---------------------------------------------------------------------------------------- format
@@ -164,7 +174,6 @@ class Reflection_Property_Value extends Reflection_Property
 					break;
 				}
 				if (!empty($property_name)) {
-					$object = is_array($object) ? reset($object) : $object;
 					$object = $object->$property_name;
 				}
 			}
@@ -220,6 +229,28 @@ class Reflection_Property_Value extends Reflection_Property
 					|| !$this->isValueEmpty()
 				))
 			);
+	}
+
+	//----------------------------------------------------------------------------------- pathAsField
+	/**
+	 * Returns path formatted as field : uses [] instead of .
+	 *
+	 * @example if $this->path is 'a.field.path', will return 'a[field][path]'
+	 * @param $class_with_id boolean if true, will append [id] or prepend id_ for class fields
+	 * @return string
+	 */
+	public function pathAsField($class_with_id = false)
+	{
+		$path = Names::propertyPathToField($this->view_path ?: $this->path ?: $this->name);
+		if ($class_with_id && $this->getType()->isClass()) {
+			if (strpos($path, DOT)) {
+				$path .= '[id]';
+			}
+			else {
+				$path = 'id_' . $path;
+			}
+		}
+		return $path;
 	}
 
 	//--------------------------------------------------------------------------------------- tooltip

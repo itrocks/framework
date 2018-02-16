@@ -398,11 +398,17 @@ class Functions
 		$expanded = (new Integrated_Properties())->expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);
-		$result = $expanded ? $expanded : [$property];
+		$result = $expanded ?: [$property];
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
 			foreach ($result as $property) {
-				$property->path       = $expand_property_path . DOT . $property->path;
-				$property->root_class = null;
+				// view_path for html name must include the 'expand property path'
+				if ($property instanceof Reflection_Property_Value) {
+					$property->view_path = $expand_property_path . DOT . $property->path;
+				}
+				// for Reflection_Property : we can "break" $property->path with it : used for html name
+				else {
+					$property->path = $expand_property_path . DOT . $property->path;
+				}
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
 					$property->display = Loc::tr(rLastParse($property->aliased_path, DOT . DOT, 1, true));
 				}
