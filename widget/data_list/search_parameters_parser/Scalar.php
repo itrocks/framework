@@ -16,7 +16,7 @@ abstract class Scalar
 	/**
 	 * @param $search_value   string
 	 * @param $property       Reflection_Property
-	 * @param $is_range_value boolean  true if we parse a range value
+	 * @param $is_range_value boolean true if we parse a range value
 	 * @return string
 	 */
 	public static function applyScalar(

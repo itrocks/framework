@@ -40,10 +40,9 @@ class Limit implements Option
 	 * Will return 10 read users objects, starting with the second read user
 	 * @example Dao::readAll(ITRocks\Framework\User::class, Dao::limit(10));
 	 * Will return the 10 first read users objects
-	 *
-	 * @param $from        integer The offset of the first object to return
-	 *                     (or the maximum number of objects to return if $count is null)
-	 * @param $count       integer The maximum number of objects to return
+	 * @param $from  integer The offset of the first object to return
+	 *               (or the maximum number of objects to return if $count is null)
+	 * @param $count integer The maximum number of objects to return
 	 */
 	public function __construct($from = null, $count = null)
 	{

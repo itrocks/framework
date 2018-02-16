@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
-use ITRocks\Framework\Locale\Option\Context;
-use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Import\Import_Array;
 use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Option\Context;
+use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -144,18 +144,6 @@ class Loc implements Registerable
 		return Locale::current()->date_format;
 	}
 
-	//---------------------------------------------------------------------------------- dateToLocale
-	/**
-	 * Takes an ISO date and make it locale
-	 *
-	 * @param $date string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
-	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
-	 */
-	public static function dateToLocale($date)
-	{
-		return Locale::current()->date_format->toLocale($date);
-	}
-
 	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
 	/**
 	 * @param $result string
@@ -179,6 +167,18 @@ class Loc implements Registerable
 	public static function dateToIso($date, $max = false, $joker = null)
 	{
 		return Locale::current()->date_format->toIso($date, $max, $joker);
+	}
+
+	//---------------------------------------------------------------------------------- dateToLocale
+	/**
+	 * Takes an ISO date and make it locale
+	 *
+	 * @param $date string ie '2001-12-25' '2001-12-25 12:20:00' '2001-12-25 12:20:16'
+	 * @return string '25/12/2011' '25/12/2001 12:20' '25/12/2001 12:20:16'
+	 */
+	public static function dateToLocale($date)
+	{
+		return Locale::current()->date_format->toLocale($date);
 	}
 
 	//---------------------------------------------------------------------------------- enterContext
@@ -396,7 +396,7 @@ class Loc implements Registerable
 	 * @param $translation           string
 	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string
-	 * @return string
+	 * @return string|string[]
 	 */
 	public static function rtr($translation, $context = '', $context_property_path = '')
 	{
