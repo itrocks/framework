@@ -116,6 +116,7 @@ class Functions
 	 * @param $template       Template
 	 * @param $class_name     string
 	 * @param $context_object object
+	 * @return integer
 	 */
 	public function getCounter(Template $template, $class_name = null, $context_object = null)
 	{
@@ -352,7 +353,7 @@ class Functions
 	/**
 	 * Multiple properties come last
 	 *
-	 * @param Template $template
+	 * @param $template Template
 	 * @return string
 	 */
 	public function getEndWithMultiple(Template $template)
@@ -553,7 +554,7 @@ class Functions
 	/**
 	 * Returns the current key of the current element of the currently read array
 	 *
-	 * @param Template $template
+	 * @param $template Template
 	 * @return string|integer
 	 */
 	public function getKey(Template $template)
@@ -570,7 +571,7 @@ class Functions
 	/**
 	 * Returns lines from a text
 	 *
-	 * @param Template $template
+	 * @param $template Template
 	 * @return string[]
 	 */
 	public function getLines(Template $template)
@@ -986,7 +987,7 @@ class Functions
 	/**
 	 * Returns the current value of the current element of the currently read array
 	 *
-	 * @param Template $template
+	 * @param $template Template
 	 * @return string|integer
 	 */
 	public function getValue(Template $template)
