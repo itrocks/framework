@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Wildcard;
 
 /**
  * Translations give the programmer translations features, and store them into cache
@@ -130,10 +131,14 @@ class Translator
 	 * @param $translation           string
 	 * @param $context               string
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function reverse($translation, $context = '', $context_property_path = '')
 	{
+		if (Wildcard::containsWildcards($translation)) {
+			$translation = str_replace(['?', '*'], ['_', '%'], $translation);
+			return $this->reverseWithWildcards($translation, $context, $context_property_path);
+		}
 		if (!trim($translation) || is_numeric($translation)) {
 			return $translation;
 		}
@@ -146,18 +151,18 @@ class Translator
 		}
 		$context_property = str_replace('*', '', $context_property_path);
 		/** @var $search Translation */
-		$search = Search_Object::create(Translation::class);
-		$search->language = $this->language;
+		$search              = Search_Object::create(Translation::class);
+		$search->language    = $this->language;
 		$search->translation = strtolower($translation);
-		$search->context = $context_property_path
+		$search->context     = $context_property_path
 			? (new Reflection_Property($context, $context_property))->final_class
 			: $context;
 		$texts = Dao::search($search);
 		foreach ($texts as $text) if ($text->translation === $translation) break;
 		while (isset($search->context) && $search->context && !isset($text)) {
-			$i = strrpos($search->context, DOT);
-			$search->context = $i ? substr($search->context, 0, $i) : '';
-			$texts = Dao::search($search);
+			$position        = strrpos($search->context, DOT);
+			$search->context = $position ? substr($search->context, 0, $position) : '';
+			$texts           = Dao::search($search);
 			foreach ($texts as $text) if ($text->translation === $translation) break;
 		}
 		if (!isset($text) && strpos($translation, ', ')) {
@@ -171,6 +176,38 @@ class Translator
 		}
 		$text = isset($text) ? $text->text : $translation;
 		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
+	}
+
+	//-------------------------------------------------------------------------- reverseWithWildcards
+	/**
+	 * Reverse translator with wildcards : changes a translated text with wildcards into several
+	 * available original texts
+	 *
+	 * @example '%fermé%' may result on ['close', 'closed']
+	 * @param $translation           string
+	 * @param $context               string
+	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
+	 * @return string|string[]
+	 */
+	protected function reverseWithWildcards($translation, $context, $context_property_path)
+	{
+		$texts = [];
+		/** @var $translations Translation[] */
+		$translations = Dao::search(
+			['translation' => $translation], Translation::class, [Dao::groupBy('text'), Dao::limit(21)]
+		);
+		// security break : do not get any value if a used typed something like '%a%'
+		if (count($translations) < 21) {
+			foreach ($translations as $found_translation) {
+				// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
+				if (!Wildcard::containsWildcards($found_translation->translation)) {
+					$texts[] = $this->reverse(
+						$found_translation->translation, $context, $context_property_path
+					);
+				}
+			}
+		}
+		return ((count($texts) > 1) ? $texts : reset($texts)) ?: 'too many results match your input';
 	}
 
 	//------------------------------------------------------------------------- separatedTranslations

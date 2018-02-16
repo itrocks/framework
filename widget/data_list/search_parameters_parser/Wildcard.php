@@ -30,6 +30,22 @@ abstract class Wildcard
 		return $search_value;
 	}
 
+	//----------------------------------------------------------------------------- containsWildcards
+	/**
+	 * Returns true if as string contains wildcards
+	 *
+	 * Mixed wildcards are accepted :
+	 * - % or * : multiple characters
+	 * - _ or ? : one character
+	 *
+	 * @param $string string
+	 * @return boolean
+	 */
+	public static function containsWildcards($string)
+	{
+		return strpos(strtr($string, '?_%', '***'), '*') !== false;
+	}
+
 	//----------------------------------------------------------------------------------- hasWildcard
 	/**
 	 * Check if expression has any wildcard
