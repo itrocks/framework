@@ -65,8 +65,8 @@ class Integrated_Properties
 	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object if set, replaces the referent root object for all next calls
-	 * @return Reflection_Property[] added properties list (empty if none applies) keys are
-	 *         'property.sub_property'
+	 * @return Reflection_Property_Value[] added properties list (empty if none applies)
+	 *         keys are 'property.sub_property'
 	 */
 	public function expandUsingProperty(array &$properties_list, $property, $object = null)
 	{
@@ -82,8 +82,8 @@ class Integrated_Properties
 	 * @param $property        Reflection_Property
 	 * @param $display_prefix  string
 	 * @param $blocks          string[]
-	 * @return Reflection_Property_Value[] added properties list (empty if none applies) keys are
-	 *         'property.sub_property'
+	 * @return Reflection_Property_Value[] added properties list (empty if none applies)
+	 *         keys are 'property.sub_property'
 	 */
 	protected function expandUsingPropertyInternal(
 		array &$properties_list, $property, $display_prefix = '', array $blocks = []
@@ -135,7 +135,7 @@ class Integrated_Properties
 	/**
 	 * Implicit integrated properties : take from the property type (class) properties list
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return Reflection_Property[]
 	 */
 	protected function getImplicitIntegratedProperties(Reflection_Property $property)
