@@ -128,6 +128,11 @@ class Translator
 	/**
 	 * Reverse translator : changes a translated text into an original text
 	 *
+	 * - If $translation contains wildcards, this may return multiple reverse translations : one per
+	 *   matching text. The return value will be a string[] only in this case. If there is only one
+	 *   reverse translation, a single string will be still returned.
+	 * - For non-wildcards $translation, a single string will be returned.
+	 *
 	 * @param $translation           string
 	 * @param $context               string
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
@@ -181,9 +186,13 @@ class Translator
 	//-------------------------------------------------------------------------- reverseWithWildcards
 	/**
 	 * Reverse translator with wildcards : changes a translated text with wildcards into several
-	 * available original texts
+	 * available original texts.
 	 *
-	 * @example '%fermé%' may result on ['close', 'closed']
+	 * - If only one text matches, returns a single string
+	 * - Il multiple text match, returns a string[]
+	 *
+	 * @example '%fermé%' => ['close', 'closed']
+	 * @example 'o?i' => 'yes'
 	 * @param $translation           string
 	 * @param $context               string
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
@@ -196,7 +205,7 @@ class Translator
 		$translations = Dao::search(
 			['translation' => $translation], Translation::class, [Dao::groupBy('text'), Dao::limit(21)]
 		);
-		// security break : do not get any value if a used typed something like '%a%'
+		// security strengthen : do not get any value if a user types something like '%a%'
 		if (count($translations) < 21) {
 			foreach ($translations as $found_translation) {
 				// disable infinite recursion caused by translation-has-wildcards (limitation, but security)

@@ -238,7 +238,7 @@ class Search_Parameters_Parser
 				}
 			}
 			// Float | Integer | String types
-			// case Type::FLOAT: case Type::INTEGER: case Type::STRING]:
+			// case Type::FLOAT: case Type::INTEGER: case Type::STRING:
 			default: {
 				if (($search = Words::applyEmptyWord($search_value)) === false) {
 					$search = Scalar::applyScalar($search_value, $property);
