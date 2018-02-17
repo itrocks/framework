@@ -379,7 +379,7 @@ class Loc implements Registerable
 		);
 	}
 
-
+	//--------------------------------------------------------------------------------------- replace
 	/**
 	 * @param $replace string[] key is the key for the replacement, value is the replacement value
 	 * @return Replace
