@@ -173,9 +173,7 @@ class Reflection_Property_Value extends Reflection_Property
 				if (!$object) {
 					break;
 				}
-				if (!empty($property_name)) {
-					$object = $object->$property_name;
-				}
+				$object = $object->$property_name;
 			}
 		}
 		return $object;
