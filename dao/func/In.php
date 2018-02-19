@@ -61,11 +61,12 @@ class In implements Negate, Where
 		if ($this->values) {
 			$str = $builder->buildColumn($property_path, $prefix)
 				. ($this->not_in ? (SP . Loc::tr('except')) : '') . SP . Loc::tr('in') . ' (';
-			$first = true;
+			$values = [];
 			foreach ($this->values as $value) {
-				if ($first) $first = false; else $str .= ', ';
-				$str .= $builder->buildScalar($value, $property_path);
+				$values[] = $builder->buildScalar($value, $property_path);
 			}
+			sort($values);
+			$str .= join(', ', $values);
 			$str .= ')';
 		}
 		return $str;
