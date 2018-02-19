@@ -393,20 +393,24 @@ class Loc implements Registerable
 	/**
 	 * Reverse translation
 	 *
-	 * @param $translation           string
+	 * @param $translation           string the translation to search for (can contain wildcards)
 	 * @param $context               string if empty, use the actual context set by enterContext()
-	 * @param $context_property_path string
+	 * @param $context_property_path string additional context : the property path
+	 * @param $limit_to              string[] if set, limit texts to these results (when wildcards)
 	 * @return string|string[]
 	 */
-	public static function rtr($translation, $context = '', $context_property_path = '')
-	{
+	public static function rtr(
+		$translation, $context = '', $context_property_path = '', array $limit_to = null
+	) {
 		if (static::$disabled) {
 			return $translation;
 		}
 		if (!$context) {
 			$context = self::getContext();
 		}
-		return Locale::current()->translations->reverse($translation, $context, $context_property_path);
+		return Locale::current()->translations->reverse(
+			$translation, $context, $context_property_path, $limit_to
+		);
 	}
 
 	//-------------------------------------------------------------------------------------------- tr

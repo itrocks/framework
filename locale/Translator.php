@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Locale;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Wildcard;
@@ -14,6 +15,9 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Wildcard;
  */
 class Translator
 {
+
+	//------------------------------------------------------------- MAX_WILDCARD_REVERSE_TRANSLATIONS
+	const MAX_WILDCARD_REVERSE_TRANSLATIONS = 100;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -133,16 +137,18 @@ class Translator
 	 *   reverse translation, a single string will be still returned.
 	 * - For non-wildcards $translation, a single string will be returned.
 	 *
-	 * @param $translation           string
-	 * @param $context               string
+	 * @param $translation           string the translation to search for (can contain wildcards)
+	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
+	 * @param $limit_to              string[] if set, limit texts to these results (when wildcards)
 	 * @return string|string[]
 	 */
-	public function reverse($translation, $context = '', $context_property_path = '')
-	{
+	public function reverse(
+		$translation, $context = '', $context_property_path = '', array $limit_to = null
+	) {
 		if (Wildcard::containsWildcards($translation)) {
 			$translation = str_replace(['?', '*'], ['_', '%'], $translation);
-			return $this->reverseWithWildcards($translation, $context, $context_property_path);
+			return $this->reverseWithWildcards($translation, $context, $context_property_path, $limit_to);
 		}
 		if (!trim($translation) || is_numeric($translation)) {
 			return $translation;
@@ -193,20 +199,27 @@ class Translator
 	 *
 	 * @example '%fermé%' => ['close', 'closed']
 	 * @example 'o?i' => 'yes'
-	 * @param $translation           string
-	 * @param $context               string
+	 * @param $translation           string the translation to search for (with wildcards)
+	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
+	 * @param $limit_to              string[] if set, limit texts to these results
 	 * @return string|string[]
 	 */
-	protected function reverseWithWildcards($translation, $context, $context_property_path)
-	{
+	protected function reverseWithWildcards(
+		$translation, $context, $context_property_path, array $limit_to
+	) {
+		$limit  = static::MAX_WILDCARD_REVERSE_TRANSLATIONS + 1;
+		$search = ['translation' => $translation];
+		if (isset($limit_to)) {
+			$search['text'] = Func::in($limit_to);
+		}
 		$texts = [];
 		/** @var $translations Translation[] */
 		$translations = Dao::search(
-			['translation' => $translation], Translation::class, [Dao::groupBy('text'), Dao::limit(21)]
+			$search, Translation::class, [Dao::groupBy('text'), Dao::limit($limit)]
 		);
 		// security strengthen : do not get any value if a user types something like '%a%'
-		if (count($translations) < 21) {
+		if (count($translations) < $limit) {
 			foreach ($translations as $found_translation) {
 				// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
 				if (!Wildcard::containsWildcards($found_translation->translation)) {

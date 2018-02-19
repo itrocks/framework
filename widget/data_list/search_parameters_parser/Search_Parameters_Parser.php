@@ -223,7 +223,11 @@ class Search_Parameters_Parser
 			// String types with @values : translate
 			case Type::STRING: {
 				if (Values_Annotation::of($property)->value) {
-					$search_value = Loc::rtr($search_value, $property->final_class, $property->path);
+					$values = [];
+					foreach (Values_Annotation::of($property)->values() as $value) {
+						$values[] = Names::propertyToDisplay($value);
+					}
+					$search_value = Loc::rtr($search_value, $property->final_class, $property->path, $values);
 					if (is_array($search_value)) {
 						foreach ($search_value as &$value) {
 							$value = Names::displayToProperty($value);
