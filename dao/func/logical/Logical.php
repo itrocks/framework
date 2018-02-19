@@ -80,6 +80,15 @@ class Logical implements Negate, Where
 		return Names::classToDisplay(static::class) . SP . static::HUMAN[$this->operator];
 	}
 
+	//--------------------------------------------------------------------------------- humanOperator
+	/**
+	 * @return string
+	 */
+	public function humanOperator()
+	{
+		return static::HUMAN[$this->operator];
+	}
+
 	//----------------------------------------------------------------------------------------- isAnd
 	/**
 	 * @return boolean
@@ -182,7 +191,7 @@ class Logical implements Negate, Where
 				$not_first = true;
 			}
 			else {
-				$str .= SP . Loc::tr(static::HUMAN[$this->operator]) . SP;
+				$str .= SP . Loc::tr($this->humanOperator()) . SP;
 			}
 			if (is_array($argument)) {
 				$str .= (new Logical($this->operator, $argument))->toHuman(
@@ -206,9 +215,7 @@ class Logical implements Negate, Where
 					);
 			}
 		}
-		return (
-			($this->operator === self::NOT_OPERATOR) ? Loc::tr(static::HUMAN[self::NOT_OPERATOR]) : ''
-		)
+		return (($this->operator === self::NOT_OPERATOR) ? Loc::tr($this->humanOperator()) : '')
 		. ' (' . $str . ')';
 	}
 
