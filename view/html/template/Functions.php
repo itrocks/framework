@@ -4,6 +4,8 @@ namespace ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func\Comparison;
+use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -93,6 +95,37 @@ class Functions
 	public function getClass(Template $template)
 	{
 		return $this->displayableClassNameOf(reset($template->objects));
+	}
+
+	//------------------------------------------------------------------------------ getConditionEdit
+	/**
+	 * Parses an edit field for a condition
+	 *
+	 * A shortcut to {@rootObject.{@key}.@edit} that enables the value of the condition
+	 * You must have a Dao_Function with the property.path for the root object as key as parent object
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getConditionEdit(Template $template)
+	{
+		$class_name = get_class($this->getRootObject($template));
+		// the property path is the key for the Func\Comparison or Func\In nearest object
+		$property_path = null;
+		foreach ($template->objects as $property_path_key => $object) {
+			if ($object instanceof Dao_Function) {
+				$property_path = $template->var_names[$property_path_key];
+				break;
+			}
+		}
+		// the stored value of a Comparison is its $than_value property value
+		$object = reset($template->objects);
+		if ($object instanceof Comparison) {
+			$object = $object->than_value;
+		}
+		$property = new Reflection_Property_Value($class_name, $property_path, $object, true, true);
+		$result = $this->getEditReflectionProperty($property, $property_path, true, true);
+		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- getCount
