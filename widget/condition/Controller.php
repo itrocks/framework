@@ -99,7 +99,7 @@ class Controller implements Default_Feature_Controller
 					Dao::searchOne(['name' => 'Infinity'], Package::class),
 					Dao::searchOne(['name' => 'Infinity Web'], Package::class)
 				]),
-				//Func::now(true) => Func::greaterOrEqual(new Date_Time('2018-01-02')),
+				Func::now(true) => Func::greaterOrEqual(new Date_Time('2018-01-02')),
 				'status'        => Func::in([Status::INCOMPLETE, Status::VALID]),
 				Func::orOp([
 					'agency'             => Func::equal(Dao::searchOne(['name' => 'FNAC St Nazaire'], Agency::class)),

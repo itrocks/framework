@@ -6,6 +6,8 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Dao_Function;
+use ITRocks\Framework\Dao\Func\Expressions;
+use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -30,6 +32,7 @@ use ITRocks\Framework\View\Html\Builder\File;
 use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\Widget\Condition;
 use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
@@ -97,6 +100,27 @@ class Functions
 		return $this->displayableClassNameOf(reset($template->objects));
 	}
 
+	//----------------------------------------------------------------------------- getConditionClass
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getConditionClass(Template $template)
+	{
+		// the property path is the key for the Func\Comparison or Func\In nearest object
+		$property_path = $this->getConditionLabel($template, false);
+		if (beginsWith($property_path, Expressions::MARKER)) {
+			$expression = Expressions::$current->cache[$property_path];
+			$class      = is_a($expression->function, Now::class, true) ? 'date_time' : null;
+		}
+		else {
+			$class_name = get_class($this->getRootObject($template));
+			$property   = new Reflection_Property($class_name, $property_path);
+			$class      = Names::classToProperty($property->getType()->getElementTypeAsString());
+		}
+		return $class;
+	}
+
 	//------------------------------------------------------------------------------ getConditionEdit
 	/**
 	 * Parses an edit field for a condition
@@ -109,8 +133,44 @@ class Functions
 	 */
 	public function getConditionEdit(Template $template)
 	{
-		$class_name = get_class($this->getRootObject($template));
 		// the property path is the key for the Func\Comparison or Func\In nearest object
+		$property_path = $this->getConditionLabel($template, false);
+		// special functions (eg Func\Now)
+		if (beginsWith($property_path, Expressions::MARKER)) {
+			$condition = null;
+			foreach ($template->objects as $condition) {
+				if ($condition instanceof Condition) {
+					break;
+				}
+			}
+			$class_name    = get_class($condition);
+			$expression    = Expressions::$current->cache[$property_path];
+			$property_path = is_a($expression->function, Now::class, true) ? 'now' : null;
+		}
+		else {
+			$class_name = get_class($this->getRootObject($template));
+		}
+		$object = reset($template->objects);
+		// the stored value of a Comparison is its $than_value property value
+		if ($object instanceof Comparison) {
+			$object = $object->than_value;
+		}
+		$property = new Reflection_Property_Value($class_name, $property_path, $object, true, true);
+		$output   = $this->getEditReflectionProperty($property, $property_path, true, true);
+		return $output;
+	}
+
+	//----------------------------------------------------------------------------- getConditionLabel
+	/**
+	 * A shortcut to {@key} that enables the label of a condition (property.path or special function)
+	 * You must have a Dao_Function with the property.path for the root object as key as parent object
+	 *
+	 * @param $template                  Template
+	 * @param $resolve_expression_marker boolean
+	 * @return string
+	 */
+	public function getConditionLabel(Template $template, $resolve_expression_marker = true)
+	{
 		$property_path = null;
 		foreach ($template->objects as $property_path_key => $object) {
 			if ($object instanceof Dao_Function) {
@@ -118,14 +178,13 @@ class Functions
 				break;
 			}
 		}
-		// the stored value of a Comparison is its $than_value property value
-		$object = reset($template->objects);
-		if ($object instanceof Comparison) {
-			$object = $object->than_value;
+		if ($resolve_expression_marker && beginsWith($property_path, Expressions::MARKER)) {
+			$expression    = Expressions::$current->cache[$property_path];
+			$property_path = isA($expression->function, Now::class, true)
+				? (new Now)->toHuman()
+				: Names::classToDisplay($expression->function);
 		}
-		$property = new Reflection_Property_Value($class_name, $property_path, $object, true, true);
-		$result = $this->getEditReflectionProperty($property, $property_path, true, true);
-		return $result;
+		return $property_path;
 	}
 
 	//-------------------------------------------------------------------------------------- getCount
