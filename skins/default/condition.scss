@@ -1,9 +1,26 @@
 .condition.editor {
 	padding: 1em 0;
 
-	> div > ul {
-		height: 11em;
-		overflow-y: scroll;
+	> div.tools {
+		display: inline-block;
+
+		> ul.functions {
+			list-style: none;
+
+			> li {
+				border: 1px solid black;
+				border-radius: 3px;
+				cursor: move;
+				display: inline-block;
+				margin: 2px 0 0;
+				padding: 3px 3px 4px;
+			}
+		}
+
+		> div.property_select {
+			height: 11em;
+			overflow-y: scroll;
+		}
 	}
 
 	fieldset {

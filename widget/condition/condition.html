@@ -16,7 +16,14 @@
 	<!--condition-->
 	<div class="{class_name.short.lower} condition editor">
 		<h3>|{title}|</h3>
-		{/ITRocks/Framework/Property/select/{class_name.path}}
+		<div class="tools">
+			{/ITRocks/Framework/Property/select/{class_name.path}}
+			<ul class="functions">
+				<li class="logical and function">|and|</li>
+				<li class="logical or function">|or|</li>
+				<li class="now function">|now|</li>
+			</ul>
+		</div>
 
 		<fieldset>
 			<!--where-->
