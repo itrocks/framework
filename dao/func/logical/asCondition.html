@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>|Condition edit|</title>
+	<title>|Logical condition|</title>
 	<script type="text/javascript" src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script type="text/javascript"> path = "../../../../"; </script>
 	<script type="text/javascript" src="../../js/all.js"></script>
@@ -13,19 +13,13 @@
 <body>
 <!--BEGIN-->
 
-	<!--condition-->
-	<div class="{class_name.short.lower} condition editor">
-		<h3>|{title}|</h3>
-		{/ITRocks/Framework/Property/select/{class_name.path}}
-
-		<fieldset>
-			<!--where-->
+	<ul class="logical {humanOperator}">
+		<!--arguments-->
+		<li>
 			{/asCondition.html}
-			<!--where-->
-		</fieldset>
-
-	</div>
-	<!--condition-->
+		</li>
+		<!--arguments-->
+	</ul>
 
 <!--END-->
 </body>

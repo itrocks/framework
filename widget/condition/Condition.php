@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget;
 
-use ITRocks\Framework\Dao\Func\Where;
+use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -51,17 +51,23 @@ class Condition
 	/**
 	 * A condition is the sum of Where logical / calculation functions, and nothing else
 	 *
+	 * The root condition is always a Func\Logical and / or structure,
+	 * that may contain Func\Logical sub-structures, with no recursion limit,
+	 * and as final Func\Comparison or Func\In
+	 *
+	 * Nothing else is allowed at this time
+	 *
 	 * @store json
-	 * @var Where
+	 * @var Logical
 	 */
 	public $where;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
-	 * @param $where      Where
+	 * @param $where      Logical
 	 */
-	public function __construct($class_name = null, Where $where = null)
+	public function __construct($class_name = null, Logical $where = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
