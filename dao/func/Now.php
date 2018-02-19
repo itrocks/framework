@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder\With_Build_Column;
 
 /**
@@ -9,15 +8,6 @@ use ITRocks\Framework\Sql\Builder\With_Build_Column;
  */
 class Now extends Column
 {
-
-	//--------------------------------------------------------------------------------------- toHuman
-	/**
-	 * @return string
-	 */
-	public function toHuman()
-	{
-		return Loc::tr('now');
-	}
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**

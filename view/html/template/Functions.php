@@ -180,9 +180,7 @@ class Functions
 		}
 		if ($resolve_expression_marker && beginsWith($property_path, Expressions::MARKER)) {
 			$expression    = Expressions::$current->cache[$property_path];
-			$property_path = isA($expression->function, Now::class, true)
-				? (new Now)->toHuman()
-				: Names::classToDisplay($expression->function);
+			$property_path = Names::classToDisplay($expression->function);
 		}
 		return $property_path;
 	}
