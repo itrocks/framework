@@ -108,7 +108,11 @@ class Template
 
 	//------------------------------------------------------------------------------------- $included
 	/**
-	 * @var string[] key is the /include/file/path.html, value is its prepared content
+	 * Keys are :
+	 * - $include_path : the /include/file/path.html
+	 * - $class_name : the contextual class name (can be '' in case of 'no-context')
+	 *
+	 * @var array string $prepared_content[string $include_path][string $class_name]
 	 */
 	protected $included = [];
 
@@ -833,66 +837,93 @@ class Template
 	 */
 	protected function parseInclude($include_uri)
 	{
-		if ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php')) {
-			// includes html template
-			if (!isset($this->included[$include_uri])) {
-				$file_name = $this->parseIncludeResolve($include_uri);
-				if ($file_name) {
-					$included = file_get_contents($file_name);
-					if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
-						$i += 12;
-						$j = strpos($included, '<!--END-->');
-						$this->included[$include_uri] = substr($included, $i, $j - $i);
-					}
-					else {
-						$this->included[$include_uri] = $included;
-					}
-				}
-				else {
-					trigger_error('Could not resolve' . SP . $include_uri, E_USER_ERROR);
-				}
-			}
-			if (isset($this->included[$include_uri])) {
-				return $this->parseVars($this->included[$include_uri]);
-			}
-			else {
-				return null;
-			}
+		return ((substr($include_uri, -5) === '.html') || (substr($include_uri, -4) === '.php'))
+			? $this->parseIncludeTemplate($include_uri)
+			: $this->parseIncludeController($include_uri);
+	}
+
+	//------------------------------------------------------------------------- parseIncludeClassName
+	/**
+	 * @param $include_uri string
+	 * @return string
+	 */
+	protected function parseIncludeClassName($include_uri)
+	{
+		if (ctype_lower($include_uri[0]) && strpos($include_uri, SL)) {
+			return '';
 		}
-		else {
-			$options = [Parameter::IS_INCLUDED => true];
-			if (static::PROPAGATE && (get_class($this) !== __CLASS__)) {
-				$options[self::TEMPLATE_CLASS] = get_class($this);
-			}
-			// includes controller result
-			return (new Main())->runController($include_uri, $options);
+		return strpos($include_uri, SL)
+			? Names::pathToClass(lLastParse($include_uri, SL))
+			: get_class(reset($this->objects));
+	}
+
+	//------------------------------------------------------------------------ parseIncludeController
+	/**
+	 * @param $include_uri string
+	 * @return string
+	 */
+	protected function parseIncludeController($include_uri)
+	{
+		$options = [Parameter::IS_INCLUDED => true];
+		if (static::PROPAGATE && (get_class($this) !== __CLASS__)) {
+			$options[self::TEMPLATE_CLASS] = get_class($this);
 		}
+		return (new Main())->runController($include_uri, $options);
 	}
 
 	//--------------------------------------------------------------------------- parseIncludeResolve
 	/**
 	 * @param $include_uri string
+	 * @param $class_name string
 	 * @return string
 	 */
-	protected function parseIncludeResolve($include_uri)
+	protected function parseIncludeResolve($include_uri, $class_name)
 	{
-if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
-		if (beginsWith($include_uri, SL)) {
-			$include_uri = substr($include_uri, 1);
-		}
-if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . BR;
-		if (ctype_lower($include_uri[0]) && strpos($include_uri, SL)) {
-			$resolve = stream_resolve_include_path($include_uri);
-		}
-		else {
-			$class_name = strpos($include_uri, SL)
-				? Names::pathToClass(lLastParse($include_uri, SL))
-				: get_class(reset($this->objects));
+if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . ' (context:' . $class_name . ')' . BR;
+		if ($class_name) {
 			$feature_name = lParse(rLastParse($include_uri, SL, 1, true), '.html');
 			$resolve      = Engine::getTemplateFile($class_name, [$feature_name]);
 		}
+		else {
+			$resolve = stream_resolve_include_path($include_uri);
+		}
 if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($resolve) . BR;
 		return $resolve;
+	}
+
+	//-------------------------------------------------------------------------- parseIncludeTemplate
+	/**
+	 * @param $include_uri string
+	 * @return string
+	 */
+	protected function parseIncludeTemplate($include_uri)
+	{
+		if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
+		// includes html template
+		if (beginsWith($include_uri, SL)) {
+			$include_uri = substr($include_uri, 1);
+		}
+		$class_name = $this->parseIncludeClassName($include_uri);
+		if (!isset($this->included[$include_uri][$class_name])) {
+			$file_name  = $this->parseIncludeResolve($include_uri, $class_name);
+			if ($file_name) {
+				$included = file_get_contents($file_name);
+				if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
+					$i += 12;
+					$j = strpos($included, '<!--END-->');
+					$this->included[$include_uri][$class_name] = substr($included, $i, $j - $i);
+				}
+				else {
+					$this->included[$include_uri][$class_name] = $included;
+				}
+			}
+			else {
+				trigger_error('Could not resolve' . SP . $include_uri, E_USER_ERROR);
+			}
+		}
+		return isset($this->included[$include_uri][$class_name])
+			? $this->parseVars($this->included[$include_uri][$class_name])
+			: null;
 	}
 
 	//------------------------------------------------------------------------------------- parseLoop
