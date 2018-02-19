@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
@@ -867,6 +868,10 @@ class Template
 		$options = [Parameter::IS_INCLUDED => true];
 		if (static::PROPAGATE && (get_class($this) !== __CLASS__)) {
 			$options[self::TEMPLATE_CLASS] = get_class($this);
+		}
+		// relative controller : on current object
+		if (beginsWith($include_uri, SL) && ctype_lower(substr($include_uri, 1, 1))) {
+			$include_uri = Framework\View::link($this->functions->getObject($this)) . $include_uri;
 		}
 		return (new Main())->runController($include_uri, $options);
 	}
