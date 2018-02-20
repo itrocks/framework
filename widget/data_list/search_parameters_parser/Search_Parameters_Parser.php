@@ -239,20 +239,38 @@ class Search_Parameters_Parser
 					if (!is_array($reverses)) {
 						$reverses = [$reverses];
 					}
-					$searches = [];
+					// to improve summary...
+					// if Type::STRING and no wildcard, no empty word, do a IN for many values, Equal for 1
+					$has_empty_word = false;
+					$has_wildcard   = false;
 					foreach ($reverses as $value) {
-						if (($search = Words::applyEmptyWord($value)) === false) {
-							if (Wildcard::hasWildcard($value)) {
-								$search = Scalar::applyScalar($value, $property);
-							}
-							else {
-								$value = Names::displayToProperty($value);
-								$search = ($type_string == Type::STRING) ? Func::equal($value) : Func::inSet($value);
-							}
-						}
-						$searches[] = $search;
+						if (Words::applyEmptyWord($value) !== false) $has_empty_word = true;
+						if (Wildcard::hasWildcard($value))           $has_wildcard   = true;
 					}
-					$search = (count($searches) > 1) ? Func::orOp($searches) : reset($searches);
+					if (!$has_empty_word && !$has_wildcard) {
+						foreach ($reverses as &$value) {
+							$value = Names::displayToProperty($value);
+						}
+						$search = (count($reverses) > 1) ? Func::in($reverses) : Func::equal(reset($reverses));
+					}
+					else {
+						$searches = [];
+						foreach ($reverses as $value) {
+							if (($search = Words::applyEmptyWord($value)) === false) {
+								if (Wildcard::hasWildcard($value)) {
+									$search = Scalar::applyScalar($value, $property);
+								}
+								else {
+									$value  = Names::displayToProperty($value);
+									$search = ($type_string == Type::STRING)
+										? Func::equal($value)
+										: Func::inSet($value);
+								}
+							}
+							$searches[] = $search;
+						}
+						$search = (count($searches) > 1) ? Func::orOp($searches) : reset($searches);
+					}
 					break;
 				}
 				// without @values : let it continue to 'default' in order to apply the 'default' process
