@@ -228,8 +228,9 @@ class Translator
 					);
 				}
 			}
+			return (count($texts) === 1) ? reset($texts) : $texts;
 		}
-		return ((count($texts) > 1) ? $texts : reset($texts)) ?: 'too many results match your input';
+		return 'too many results match your input';
 	}
 
 	//------------------------------------------------------------------------- separatedTranslations
