@@ -659,7 +659,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	protected function prepareSearchPropertyComponent(Reflection_Property $property)
 	{
 		if ($property->getType()->isString()) {
-			Values_Annotation::local($property)->value = [];
+			// TODO 101535 This is a patch to deactivate this (crashing on @component objects)
+			//Values_Annotation::local($property)->value = [];
 		}
 		else {
 			Link_Annotation::local($property)->value = null;

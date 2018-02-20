@@ -222,7 +222,8 @@ class Search_Parameters_Parser
 			}
 			// String types with @values : translate
 			case Type::STRING: {
-				if (Values_Annotation::of($property)->value) {
+				// TODO 101535 This is a patch to deactivate this (crashing on @component objects)
+				if (Values_Annotation::of($property)->value && false) {
 					$values = [];
 					foreach (Values_Annotation::of($property)->values() as $value) {
 						$values[] = Names::propertyToDisplay($value);
