@@ -237,8 +237,7 @@ class Search_Parameters_Parser
 					if (!is_array($reverses)) {
 						$reverses = [$reverses];
 					}
-					// to improve summary...
-					// if Type::STRING and no wildcard, no empty word, do a IN for many values, Equal for 1
+					// to improve summary if no wildcard, no empty word, do a IN for many values
 					$has_empty_word = false;
 					$has_wildcard   = false;
 					foreach ($reverses as $value) {
