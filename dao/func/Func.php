@@ -10,6 +10,7 @@ use itrocks\framework\dao\func\Expressions;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
 use ITRocks\Framework\Dao\Func\In;
+use ITRocks\Framework\Dao\Func\In_Set;
 use ITRocks\Framework\Dao\Func\InSelect;
 use ITRocks\Framework\Dao\Func\Is_Greatest;
 use ITRocks\Framework\Dao\Func\Left;
@@ -161,6 +162,16 @@ abstract class Func
 		return new InSelect($select);
 	}
 
+	//----------------------------------------------------------------------------------------- inSet
+	/**
+	 * @param $value string
+	 * @return In_Set
+	 */
+	public static function inSet($value)
+	{
+		return new In_Set($value);
+	}
+
 	//------------------------------------------------------------------------------------ isGreatest
 	/**
 	 * @param $properties string[]
@@ -301,6 +312,16 @@ abstract class Func
 	public static function notIn(array $values)
 	{
 		return new In($values, true);
+	}
+
+	//-------------------------------------------------------------------------------------- notInSet
+	/**
+	 * @param $value string
+	 * @return In_Set
+	 */
+	public static function notInSet($value)
+	{
+		return new In_Set($value, true);
 	}
 
 	//--------------------------------------------------------------------------------------- notLike
