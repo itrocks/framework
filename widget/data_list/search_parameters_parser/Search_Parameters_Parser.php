@@ -223,7 +223,7 @@ class Search_Parameters_Parser
 			}
 			// String types with @values : translate
 			case Type::STRING:
-			/** @noinspection PhpMissingBreakStatementInspection */
+				/** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY:
 			{
 				$search_value = trim($search_value);
@@ -233,30 +233,26 @@ class Search_Parameters_Parser
 						$values[] = Names::propertyToDisplay($value);
 					}
 					$reverses = Loc::rtr($search_value, $property->final_class, $property->name, $values);
-					if ($reverses) {
-						if (is_array($reverses)) {
-							foreach ($reverses as &$value) {
-								$value = Names::displayToProperty($value);
-								$value = Words::applyEmptyWord($value) ?: $value;
+					if (!$reverses) {
+						$reverses = $search_value;
+					}
+					if (!is_array($reverses)) {
+						$reverses = [$reverses];
+					}
+					$searches = [];
+					foreach ($reverses as $value) {
+						if (($search = Words::applyEmptyWord($value)) === false) {
+							if (Wildcard::hasWildcard($value)) {
+								$search = Scalar::applyScalar($value, $property);
 							}
-							$search = Func::in($reverses);
-							// all 'default' job has been done for each value : no need to continue
-							break;
+							else {
+								$value = Names::displayToProperty($value);
+								$search = ($type_string == Type::STRING) ? Func::equal($value) : Func::inSet($value);
+							}
 						}
-						else {
-							$search_value = $reverses;
-						}
+						$searches[] = $search;
 					}
-					if (Wildcard::hasWildcard($search_value)) {
-						if (($search = Words::applyEmptyWord($search_value)) === false) {
-							$search = Scalar::applyScalar($search_value, $property);
-						}
-					}
-					else {
-						$search_value = Names::displayToProperty($search_value);
-						$search_value = Words::applyEmptyWord($search_value) ?: $search_value;
-						$search = Func::equal($search_value);
-					}
+					$search = (count($searches) > 1) ? Func::orOp($searches) : reset($searches);
 					break;
 				}
 				// without @values : let it continue to 'default' in order to apply the 'default' process
