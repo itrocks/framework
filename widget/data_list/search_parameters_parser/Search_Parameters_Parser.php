@@ -17,6 +17,7 @@ use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Date;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Range;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Scalar;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Type_Boolean;
+use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Wildcard;
 use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Words;
 
 /**
@@ -234,7 +235,7 @@ class Search_Parameters_Parser
 					$reverses = Loc::rtr($search_value, $property->final_class, $property->name, $values);
 					if ($reverses) {
 						if (is_array($reverses)) {
-							foreach ($search_value as &$value) {
+							foreach ($reverses as &$value) {
 								$value = Names::displayToProperty($value);
 								$value = Words::applyEmptyWord($value) ?: $value;
 							}
@@ -243,21 +244,25 @@ class Search_Parameters_Parser
 							break;
 						}
 						else {
-							// not array but single string means
-							// case wildcards   : single value found
-							// case no wildcard : untranslated
-							$search_value = Names::displayToProperty($reverses);
+							$search_value = $reverses;
+						}
+					}
+					if (Wildcard::hasWildcard($search_value)) {
+						if (($search = Words::applyEmptyWord($search_value)) === false) {
+							$search = Scalar::applyScalar($search_value, $property);
 						}
 					}
 					else {
-						// case no reverse found, search value as if it was the untranslated value
 						$search_value = Names::displayToProperty($search_value);
+						$search_value = Words::applyEmptyWord($search_value) ?: $search_value;
+						$search = Func::equal($search_value);
 					}
+					break;
 				}
-				// let it continue to 'default' in order to apply the 'default' process to $search_value
+				// without @values : let it continue to 'default' in order to apply the 'default' process
 			}
-			// Float | Integer | String types
-			// case Type::FLOAT: case Type::INTEGER: case Type::STRING:
+			// Float | Integer | String types without @values
+			// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 			default: {
 				if (($search = Words::applyEmptyWord($search_value)) === false) {
 					$search = Scalar::applyScalar($search_value, $property);
