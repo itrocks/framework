@@ -99,7 +99,7 @@ class Comparison implements Negate, Where
 	public function signToHuman($sign)
 	{
 		return in_array($sign, [self::LIKE, self::NOT_LIKE])
-			?	Loc::tr('is' . SP . strtolower($sign))
+			? Loc::tr('is' . SP . strtolower($sign))
 			: $sign;
 	}
 
