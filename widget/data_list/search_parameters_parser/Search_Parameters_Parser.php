@@ -249,7 +249,12 @@ class Search_Parameters_Parser
 						foreach ($reverses as &$value) {
 							$value = Names::displayToProperty($value);
 						}
-						$search = (count($reverses) > 1) ? Func::in($reverses) : Func::equal(reset($reverses));
+						$search = (count($reverses) > 1)
+							? Func::in($reverses)
+							: (($type_string == Type::STRING)
+								? Func::equal(reset($reverses))
+								: Func::inSet(reset($reverses))
+							);
 					}
 					else {
 						$searches = [];

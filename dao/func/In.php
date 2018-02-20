@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
@@ -85,17 +86,26 @@ class In implements Negate, Where
 	{
 		$sql = '';
 		if ($this->values) {
+			// 1st we should call buildWhereColumn() to be able to call getProperty() after
+			$column = $builder->buildWhereColumn($property_path, $prefix);
 			$property = $builder->getProperty($property_path);
 			if (
 				$property
 				&& $property->getType()->isMultipleString()
 				&& $property->getListAnnotation('values')->values()
 			) {
-				$sql = (new In_Set($this->values, $this->not_in))->toSql($builder, $property_path, $prefix);
+				$parts = [];
+				foreach($this->values as $value) {
+					$parts[] = new In_Set($value);
+				}
+				$where = Func::orOp($parts);
+				if ($this->not_in) {
+					$where = Func::notOp($where);
+				}
+				$sql .= $where->toSql($builder, $property_path, $prefix);
 			}
 			else {
-				$sql = $builder->buildWhereColumn($property_path, $prefix)
-					. ($this->not_in ? ' NOT' : '') . ' IN (';
+				$sql = $column . ($this->not_in ? ' NOT' : '') . ' IN (';
 				$first = true;
 				foreach ($this->values as $value) {
 					if ($first) $first = false; else $sql .= ', ';
