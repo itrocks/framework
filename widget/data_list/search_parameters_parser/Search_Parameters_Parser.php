@@ -225,7 +225,6 @@ class Search_Parameters_Parser
 			case Type::STRING:
 				/** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY: {
-				$search_value = trim($search_value);
 				if (Values_Annotation::of($property)->value) {
 					$values = [];
 					foreach (Values_Annotation::of($property)->values() as $value) {
