@@ -221,27 +221,40 @@ class Search_Parameters_Parser
 				break;
 			}
 			// String types with @values : translate
-			case Type::STRING: {
-				// TODO 101535 This is a patch to deactivate this (crashing on @component objects)
-				if (Values_Annotation::of($property)->value && false) {
+			case Type::STRING:
+			/** @noinspection PhpMissingBreakStatementInspection */
+			case Type::STRING_ARRAY:
+			{
+				$search_value = trim($search_value);
+				if (Values_Annotation::of($property)->value) {
 					$values = [];
 					foreach (Values_Annotation::of($property)->values() as $value) {
 						$values[] = Names::propertyToDisplay($value);
 					}
-					$search_value = Loc::rtr($search_value, $property->final_class, $property->name, $values)
-						?: $search_value;
-					if (is_array($search_value)) {
-						foreach ($search_value as &$value) {
-							$value = Names::displayToProperty($value);
-							$value = Words::applyEmptyWord($value) ?: $value;
+					$reverses = Loc::rtr($search_value, $property->final_class, $property->name, $values);
+					if ($reverses) {
+						if (is_array($reverses)) {
+							foreach ($search_value as &$value) {
+								$value = Names::displayToProperty($value);
+								$value = Words::applyEmptyWord($value) ?: $value;
+							}
+							$search = Func::in($reverses);
+							// all 'default' job has been done for each value : no need to continue
+							break;
 						}
-						$search = Func::in($search_value);
-						// all 'default' job has been done for each value : no need to continue
-						break;
+						else {
+							// not array but single string means
+							// case wildcards   : single value found
+							// case no wildcard : untranslated
+							$search_value = Names::displayToProperty($reverses);
+						}
 					}
-					$search_value = Names::displayToProperty($search_value);
-					// let it continue to 'default' in order to apply the 'default' process tu $search_value
+					else {
+						// case no reverse found, search value as if it was the untranslated value
+						$search_value = Names::displayToProperty($search_value);
+					}
 				}
+				// let it continue to 'default' in order to apply the 'default' process to $search_value
 			}
 			// Float | Integer | String types
 			// case Type::FLOAT: case Type::INTEGER: case Type::STRING:
