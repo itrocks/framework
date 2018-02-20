@@ -60,15 +60,22 @@ class In implements Negate, Where
 	{
 		$str = '';
 		if ($this->values) {
-			$str = $builder->buildColumn($property_path, $prefix)
-				. ($this->not_in ? (SP . Loc::tr('except')) : '') . SP . Loc::tr('in') . ' (';
+			list($t) = $builder->getTranslateChars();
+
 			$values = [];
 			foreach ($this->values as $value) {
-				$values[] = $builder->buildScalar($value, $property_path);
+				$values[] = $builder->buildScalar($value, $property_path, $builder::SUB_TRANSLATE);
 			}
 			sort($values);
-			$str .= join(', ', $values);
-			$str .= ')';
+			$values = join(', ', $values);
+
+			$str = $t . str_replace(
+					['$property', '$values'],
+					[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
+					Loc::tr(
+						$this->not_in ? '$property is not one of ($values)' : '$property is one of ($values)'
+					)
+				) . $t;
 		}
 		return $str;
 	}
