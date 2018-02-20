@@ -118,8 +118,8 @@ class Comparison implements Negate, Where
 			);
 		}
 		$translate_flag = Summary_Builder::COMPLETE_TRANSLATE;
-		// for a like for property with @value, we do not translate the expression
-		if ($this->sign == self::LIKE || $this->sign == self::NOT_LIKE) {
+		// for a LIKE for property with @values, we do not translate the expression
+		if (($this->sign == self::LIKE) || ($this->sign == self::NOT_LIKE)) {
 			$property = $builder->getProperty($property_path);
 			// check if we are on a enum field with @values list of values
 			$values = ($property ? $property->getListAnnotation('values')->values() : []);

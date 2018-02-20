@@ -224,8 +224,7 @@ class Search_Parameters_Parser
 			// String types with @values : translate
 			case Type::STRING:
 				/** @noinspection PhpMissingBreakStatementInspection */
-			case Type::STRING_ARRAY:
-			{
+			case Type::STRING_ARRAY: {
 				$search_value = trim($search_value);
 				if (Values_Annotation::of($property)->value) {
 					$values = [];

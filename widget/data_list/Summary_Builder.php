@@ -366,7 +366,7 @@ class Summary_Builder
 	{
 		if (Locale::current()) {
 			$t = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');
-			$i = (($translate_flag & self::SUB_TRANSLATE) ? '¦' : '');;
+			$i = (($translate_flag & self::SUB_TRANSLATE)  ? '¦' : '');
 		}
 		else {
 			$t = $i = '';

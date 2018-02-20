@@ -33,8 +33,8 @@ class In_Set implements Negate, Where
 	 */
 	public function __construct($value = null, $not = false)
 	{
-		if (isset($value))  $this->value  = $value;
-		if (isset($not)) $this->not = $not;
+		if (isset($value)) $this->value = $value;
+		if (isset($not))   $this->not   = $not;
 	}
 
 	//---------------------------------------------------------------------------------------- negate
@@ -60,7 +60,7 @@ class In_Set implements Negate, Where
 		$str = '';
 		if ($this->value) {
 			list($t) = $builder->getTranslateChars();
-			$str = $t . sprintf(
+			$str     = $t . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),
 				$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE),
 				$builder->buildScalar($this->value, $property_path, $builder::SUB_TRANSLATE)
