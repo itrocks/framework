@@ -85,14 +85,24 @@ class In implements Negate, Where
 	{
 		$sql = '';
 		if ($this->values) {
-			$sql = $builder->buildWhereColumn($property_path, $prefix)
-				. ($this->not_in ? ' NOT' : '') . ' IN (';
-			$first = true;
-			foreach ($this->values as $value) {
-				if ($first) $first = false; else $sql .= ', ';
-				$sql .= Value::escape($value, false, $builder->getProperty($property_path));
+			$property = $builder->getProperty($property_path);
+			if (
+				$property
+				&& $property->getType()->isMultipleString()
+				&& $property->getListAnnotation('values')->values()
+			) {
+				$sql = (new In_Set($this->values, $this->not_in))->toSql($builder, $property_path, $prefix);
 			}
-			$sql .= ')';
+			else {
+				$sql = $builder->buildWhereColumn($property_path, $prefix)
+					. ($this->not_in ? ' NOT' : '') . ' IN (';
+				$first = true;
+				foreach ($this->values as $value) {
+					if ($first) $first = false; else $sql .= ', ';
+					$sql .= Value::escape($value, false, $builder->getProperty($property_path));
+				}
+				$sql .= ')';
+			}
 		}
 		return $sql;
 	}
