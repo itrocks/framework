@@ -1,20 +1,14 @@
 <?php
 namespace ITRocks\Framework\Widget\Condition;
 
-use Bappli\Sfkgroup\Insurance\Contract;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Condition;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
-use Sfkgroup\Agency;
-use Sfkgroup\Contract\Status;
-use Sfkgroup\Insurance\Contract\Package;
 
 /**
  * Condition controller
@@ -39,9 +33,23 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected $read_only_annotations = [];
 
+	//---------------------------------------------------------------------------------- getCondition
+	/**
+	 * Load and return condition
+	 *
+	 * Default condition is a simple empty 'and' operator for multiple conditions
+	 *
+	 * @param $class_name string
+	 * @return Condition
+	 */
+	protected function getCondition($class_name)
+	{
+		return new Condition($class_name, Func::andOp([]));
+	}
+
 	//----------------------------------------------------------------------------- prepareProperties
 	/**
-	 * Prepare properties to be fully editable for search criteria :
+	 * Prepare properties to be fully editable for search criteria
 	 *
 	 * - remove @user readonly
 	 *
@@ -65,7 +73,7 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------- resetProperties
 	/**
-	 * Reset properties as they were before working on condition view :
+	 * Reset properties as they were before working on condition view
 	 *
 	 * - get back @user readonly
 	 */
@@ -91,28 +99,12 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		// For testing purpose : a condition on a contract
-		$condition = new Condition($class_name, Func::andOp([]));
-		if (is_a($class_name, Contract::class, true)) {
-			$condition = new Condition($class_name, Func::andOp([
-				'package' => Func::in([
-					Dao::searchOne(['name' => 'Infinity'], Package::class),
-					Dao::searchOne(['name' => 'Infinity Web'], Package::class)
-				]),
-				Func::now(true) => Func::greaterOrEqual(new Date_Time('2018-01-02')),
-				'status'        => Func::in([Status::INCOMPLETE, Status::VALID]),
-				Func::orOp([
-					'agency'             => Func::equal(Dao::searchOne(['name' => 'FNAC St Nazaire'], Agency::class)),
-					'agency.main_agency' => Func::equal(Dao::searchOne(['name' => 'FNAC ACCES'], Agency::class))
-				])
-			]));
-		}
-//echo PRE . print_r($condition, true) . _PRE;
-		$parameters->set(self::FEATURE, $condition);
+		$condition = $this->getCondition($class_name);
 		$parameters->getMainObject($class_name);
+		$parameters->set(self::FEATURE, $condition);
 		$this->prepareProperties($class_name);
 		$parameters = $parameters->getObjects();
-		$output = View::run($parameters, $form, $files, $class_name, self::FEATURE);
+		$output     = View::run($parameters, $form, $files, $class_name, self::FEATURE);
 		$this->resetProperties();
 		return $output;
 	}
