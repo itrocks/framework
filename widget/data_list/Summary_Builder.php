@@ -27,6 +27,18 @@ use ITRocks\Framework\Tools\Date_Time;
 class Summary_Builder
 {
 
+	//------------------------------------------------------------------------------- translate flags
+	/**
+	 * COMPLETE_TRANSLATE: surround both with | and ¦ translation chars
+	 * NO_TRANSLATE:       no translation surrounding char
+	 * SUB_TRANSLATE:      surround only with ¦ translation char
+	 *
+	 */
+	const COMPLETE_TRANSLATE = self::MAIN_TRANSLATE | self::SUB_TRANSLATE;
+	const MAIN_TRANSLATE     = 1;
+	const NO_TRANSLATE       = 0;
+	const SUB_TRANSLATE      = 2;
+
 	//---------------------------------------------------------------------------------------- $joins
 	/**
 	 * @var Joins
@@ -181,19 +193,14 @@ class Summary_Builder
 
 	//----------------------------------------------------------------------------------- buildColumn
 	/**
-	 * @param $path   string
-	 * @param $prefix string
+	 * @param $path           string
+	 * @param $prefix         string
+	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string
 	 */
-	public function buildColumn($path, $prefix = '')
+	public function buildColumn($path, $prefix = '', $translate_flag = self::COMPLETE_TRANSLATE)
 	{
-		if (Locale::current()) {
-			$t = '|';
-			$i = '¦';
-		}
-		else {
-			$t = $i = '';
-		}
+		list($t, $i) = $this->getTranslateChars($translate_flag);
 		return $t . $i . ($prefix ? $prefix . '.' : '') . $path . $i . $t;
 	}
 
@@ -276,11 +283,12 @@ class Summary_Builder
 	/**
 	 * Build a scalar value to be human readable
 	 *
-	 * @param $value         string
-	 * @param $property_path string
+	 * @param $value          string
+	 * @param $property_path  string
+	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string
 	 */
-	public function buildScalar($value, $property_path)
+	public function buildScalar($value, $property_path, $translate_flag = self::COMPLETE_TRANSLATE)
 	{
 		static $pattern
 			= '/([0-9%_]{4})-([0-9%_]{2})-([0-9%_]{2})(?:\s([0-9%_]{2}):([0-9%_]{2}):([0-9%_]{2}))?/x';
@@ -288,14 +296,8 @@ class Summary_Builder
 		// check if we are on a enum field with @values list of values
 		$values = ($property ? $property->getListAnnotation('values')->values() : []);
 		if (count($values)) {
-			if (Locale::current()) {
-				$t = '|';
-				$i = '¦';
-			}
-			else {
-				$t = $i = '';
-			}
-			return DQ . $t . $i . $value . $i . $t . DQ;
+			list($t, $i) = $this->getTranslateChars($translate_flag);
+			return DQ . $t . $i . str_replace('_', SP, $value) . $i . $t . DQ;
 		}
 		elseif (preg_match($pattern, $value)) {
 			// in case of a date, we convert to locale with time
@@ -353,6 +355,23 @@ class Summary_Builder
 			$property = new Reflection_Property($this->joins->getClass(''), $path);
 		}
 		return $property;
+	}
+
+	//----------------------------------------------------------------------------- getTranslateChars
+	/**
+	 * @param $translate_flag integer flag for surrounding translation chars
+	 * @return string[] [main char, sub char]
+	 */
+	public function getTranslateChars($translate_flag = self::COMPLETE_TRANSLATE)
+	{
+		if (Locale::current()) {
+			$t = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');
+			$i = (($translate_flag & self::SUB_TRANSLATE) ? '¦' : '');;
+		}
+		else {
+			$t = $i = '';
+		}
+		return [$t, $i];
 	}
 
 }

@@ -117,7 +117,17 @@ class Comparison implements Negate, Where
 				$this->than_value->toHuman($builder, $property_path, $prefix)
 			);
 		}
-		$scalar = $builder->buildScalar($this->than_value, $property_path);
+		$translate_flag = Summary_Builder::COMPLETE_TRANSLATE;
+		// for a like for property with @value, we do not translate the expression
+		if ($this->sign == self::LIKE || $this->sign == self::NOT_LIKE) {
+			$property = $builder->getProperty($property_path);
+			// check if we are on a enum field with @values list of values
+			$values = ($property ? $property->getListAnnotation('values')->values() : []);
+			if ($values) {
+				$translate_flag = Summary_Builder::NO_TRANSLATE;
+			}
+		}
+		$scalar = $builder->buildScalar($this->than_value, $property_path, $translate_flag);
 		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
 			$scalar = str_replace(['_', '%'], ['?', '*'], $scalar);
 		}
