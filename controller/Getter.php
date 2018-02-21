@@ -30,7 +30,7 @@ abstract class Getter
 		// application tree
 		$applications        = Application::current()->getClassesTree(Application::BOTH);
 		$application_classes = $applications[Application::FLAT];
-		$application_tree    = $applications[Application::TREE];
+		$application_nodes   = $applications[Application::NODES];
 
 		// class tree
 		$class_name = $base_class;

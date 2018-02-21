@@ -18,8 +18,17 @@ class Application
 	 */
 	const BOTH = null;
 
+	//-------------------------------------------------------------------------------------- CHILDREN
+	const CHILDREN = 'children';
+
 	//------------------------------------------------------------------------------------------ FLAT
 	const FLAT = 'flat';
+
+	//----------------------------------------------------------------------------------------- NODES
+	const NODES = 'nodes';
+
+	//--------------------------------------------------------------------------------------- PARENTS
+	const PARENTS = 'parents';
 
 	//------------------------------------------------------------------------------------------ TREE
 	const TREE = 'tree';
@@ -121,9 +130,11 @@ class Application
 	 *   'ITRocks\Framework' => ['parents' => ['Application\Class]]
 	 * ]
 	 * @param $flat boolean|string|null if false, returned as tree. If true, returns a flat string[]
-	 *              If null : both are returned : [FLAT => $applications_array, TREE => $tree]
+	 *              If null : multiple intermediate views are returned :
+	 *              [FLAT => $applications_array, NODES => $tree_nodes, TREE => $tree]
 	 *              If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
-	 * @return array The classes tree : string[], tree of strings, or [FLAT => $flat, TREE => $tree]
+	 * @return array The classes tree : string[], tree of strings,
+	 *               or [FLAT => $flat, NODES => $notes TREE => $tree]
 	 */
 	public function getClassesTree($flat = false)
 	{
@@ -147,13 +158,14 @@ class Application
 			return $tree;
 		}
 		// flat
-		static $flat_cache = [];
+		static $flat_cache  = [];
+		static $nodes_cache = [];
 		if (!$flat_cache) {
-			$classes = $this->getClassTreeToArray($tree);
+			$classes = $nodes_cache = $this->getClassTreeToArray($tree);
 			do {
 				$trailing_classes = [];
 				foreach ($classes as $class_name => $relations) {
-					$children          = isset($relations['children']) ? $relations['children'] : [];
+					$children          = $relations[self::CHILDREN];
 					$all_children_done = true;
 					foreach ($children as $child) {
 						if (!isset($flat_cache[$child])) {
@@ -173,21 +185,46 @@ class Application
 		// return as flat, or return both forms
 		return $flat
 			? $flat_cache
-			: [self::FLAT => $flat_cache, self::TREE => $tree];
+			: [self::FLAT => $flat_cache, self::NODES => $nodes_cache, self::TREE => $tree];
 	}
 
 	//--------------------------------------------------------------------------- getClassTreeToArray
 	/**
-	 * @param $class_tree array
-	 * @param $result     array @internal
-	 * @return array integer $dependencies_count[string $class_name][string $parent_class_name]
+	 * @example of $class_tree input
+	 * the tree structure returned by Application::getClassesTree : [
+	 *   Vendor\Final_Project\Application::class => [
+	 *     Vendor\Module_A\Application::class => [
+	 *       ITRocks\Framework\Application::class
+	 *     ],
+	 *     Vendor\Module_B\Application::class => [
+	 *       ITRocks\Framework\Application::class
+	 *     ],
+	 *     Vendor\Module_C\Application::class => [
+	 *       Vendor\Sub_Module\Application::class => [
+	 *         ITRocks\Framework\Application::class
+	 *       ]
+	 *    ]
+	 * ]
+	 * @param $class_tree array string[...]
+	 * @param $result     array @internal The resulting classes list with links, currently being built
+	 * @return array string[][][]
+	 *   [
+	 *     string $class_name => [
+	 *       self::CHILDREN => [string $child_class_name  => string $child_class_name ],
+	 *       self::PARENTS  => [string $parent_class_name => string $parent_class_name]
+	 *     ]
+	 *   ]
 	 */
 	public function getClassTreeToArray(array $class_tree, array &$result = [])
 	{
 		foreach ($class_tree as $class_name => $parents) {
+			if (!isset($result[$class_name])) {
+				$result[$class_name][self::CHILDREN] = [];
+				$result[$class_name][self::PARENTS]  = [];
+			}
 			foreach (array_keys($parents) as $parent_class_name) {
-				$result[$class_name]['parents'][$parent_class_name]  = $parent_class_name;
-				$result[$parent_class_name]['children'][$class_name] = $class_name;
+				$result[$class_name][self::PARENTS][$parent_class_name]  = $parent_class_name;
+				$result[$parent_class_name][self::CHILDREN][$class_name] = $class_name;
 			}
 			$this->getClassTreeToArray($parents, $result);
 		}
