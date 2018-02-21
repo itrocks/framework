@@ -509,13 +509,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$list_settings->save();
 			}
 		}
-		catch (Exception $exception) {
-			// set empty list result
-			$data  = new Default_List_Data($class_name, []);
-			if (
-				($exception instanceof Mysql_Error_Exception)
-				&& Time_Limit::isErrorCodeTimeout($exception->getCode())
-			) {
+		catch (Data_List_Exception $exception) {
+			$this->errors[] = $exception;
+		}
+		catch (Mysql_Error_Exception $exception) {
+			if (Time_Limit::isErrorCodeTimeout($exception->getCode())) {
 				$error = new Exception(
 					Loc::tr('Maximum statement execution time exceeded') . ', '
 					. Loc::tr('please enter more acute search criteria') . DOT
@@ -523,19 +521,17 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$this->errors[] = $error;
 			}
 			else {
-				// set an error to display
-				$error = new Exception(Report_Call_Stack_Error_Handler::getUserInformationMessage());
-				$this->errors[] = $error;
-				// log the error in order software maintainer to be informed
-				$handled = new Handled_Error(
-					$exception->getCode(),
-					$exception->getMessage(),
-					$exception->getFile(),
-					$exception->getLine()
-				);
-				$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
-				$handler->displayError($handled);
-				$handler->logError($handled);
+				$this->reportError($exception);
+			}
+		}
+		catch (Exception $exception) {
+			$this->errors[] = $exception;
+			$this->reportError($exception);
+		}
+		finally {
+			if (!isset($data) || !$data) {
+				// set empty list result
+				$data  = new Default_List_Data($class_name, []);
 			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
@@ -843,6 +839,25 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			}
 		}
 		return [array_combine($properties_path, $properties_path), $search];
+	}
+
+	//----------------------------------------------------------------------------------- reportError
+	/**
+	 * Log the error in order software maintainer to be informed
+	 *
+	 * @param $exception Exception
+	 */
+	protected function reportError($exception)
+	{
+		$handled = new Handled_Error(
+			$exception->getCode(),
+			$exception->getMessage(),
+			$exception->getFile(),
+			$exception->getLine()
+		);
+		$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+		$handler->displayError($handled);
+		$handler->logError($handled);
 	}
 
 	//------------------------------------------------------------------------------------------- run
