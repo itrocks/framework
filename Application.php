@@ -60,7 +60,7 @@ class Application
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param Application $set_current
+	 * @param $set_current Application
 	 * @return Application
 	 */
 	public static function current(Application $set_current = null)
@@ -152,6 +152,7 @@ class Application
 	//--------------------------------------------------------------------------- getClassTreeToArray
 	/**
 	 * @param $class_tree array
+	 * @param $result     array @internal
 	 * @return array integer $dependencies_count[string $class_name][string $parent_class_name]
 	 */
 	public function getClassTreeToArray(array $class_tree, array &$result = [])
