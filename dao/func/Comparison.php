@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
@@ -119,10 +120,10 @@ class Comparison implements Negate, Where
 		}
 		$translate_flag = Summary_Builder::COMPLETE_TRANSLATE;
 		// for a LIKE for property with @values, we do not translate the expression
-		if (($this->sign == self::LIKE) || ($this->sign == self::NOT_LIKE)) {
+		if (in_array($this->sign, [self::LIKE, self::NOT_LIKE])) {
 			$property = $builder->getProperty($property_path);
 			// check if we are on a enum field with @values list of values
-			$values = ($property ? $property->getListAnnotation('values')->values() : []);
+			$values = ($property ? Values_Annotation::of($property)->values() : []);
 			if ($values) {
 				$translate_flag = Summary_Builder::NO_TRANSLATE;
 			}

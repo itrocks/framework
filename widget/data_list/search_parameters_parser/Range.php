@@ -67,7 +67,7 @@ abstract class Range
 			// Float | Integer | String types
 			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {
 			default:
-				$search = Scalar::applyScalar($expression, $property, true);
+				$search = Scalar::applyScalar($expression, true);
 				break;
 		}
 		return $search;

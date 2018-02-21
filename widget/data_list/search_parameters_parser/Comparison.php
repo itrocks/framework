@@ -59,7 +59,7 @@ abstract class Comparison
 				);
 				break;
 			default:
-				$search = Scalar::applyScalar($expression, $property, true);
+				$search = Scalar::applyScalar($expression, true);
 				break;
 		}
 		return $search;

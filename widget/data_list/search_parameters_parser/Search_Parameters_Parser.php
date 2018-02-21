@@ -210,7 +210,7 @@ class Search_Parameters_Parser
 		switch ($type_string) {
 			// boolean type
 			case Type::BOOLEAN: {
-				if (($search = Words::applyEmptyWord($search_value)) !== false) {
+				if ($search = Words::applyWordMeaningEmpty($search_value)) {
 					break;
 				}
 				$search = Type_Boolean::applyBooleanValue($search_value);
@@ -230,37 +230,32 @@ class Search_Parameters_Parser
 					foreach (Values_Annotation::of($property)->values() as $value) {
 						$values[] = Names::propertyToDisplay($value);
 					}
-					$reverses = Loc::rtr($search_value, $property->final_class, $property->name, $values);
-					if (!$reverses) {
-						$reverses = $search_value;
+					$reverse_translations = Loc::rtr(
+						$search_value, $property->final_class, $property->name, $values
+					);
+					if (!$reverse_translations) {
+						$reverse_translations = $search_value;
 					}
-					if (!is_array($reverses)) {
-						$reverses = [$reverses];
+					if (!is_array($reverse_translations)) {
+						$reverse_translations = [$reverse_translations];
 					}
 					// to improve summary if no wildcard, no empty word, do a IN for many values
 					$has_empty_word = false;
 					$has_wildcard   = false;
-					foreach ($reverses as $value) {
-						if (Words::applyEmptyWord($value) !== false) $has_empty_word = true;
-						if (Wildcard::hasWildcard($value))           $has_wildcard   = true;
-					}
-					if (!$has_empty_word && !$has_wildcard) {
-						foreach ($reverses as &$value) {
-							$value = Names::displayToProperty($value);
+					foreach ($reverse_translations as $value) {
+						if (Words::applyWordMeaningEmpty($value)) {
+							$has_empty_word = true;
 						}
-						$search = (count($reverses) > 1)
-							? Func::in($reverses)
-							: (($type_string == Type::STRING)
-								? Func::equal(reset($reverses))
-								: Func::inSet(reset($reverses))
-							);
+						if (Wildcard::hasWildcard($value)) {
+							$has_wildcard = true;
+						}
 					}
-					else {
+					if ($has_empty_word || $has_wildcard) {
 						$searches = [];
-						foreach ($reverses as $value) {
-							if (($search = Words::applyEmptyWord($value)) === false) {
+						foreach ($reverse_translations as $value) {
+							if ($search = Words::applyWordMeaningEmpty($value)) {
 								if (Wildcard::hasWildcard($value)) {
-									$search = Scalar::applyScalar($value, $property);
+									$search = Scalar::applyScalar($value);
 								}
 								else {
 									$value  = Names::displayToProperty($value);
@@ -273,6 +268,17 @@ class Search_Parameters_Parser
 						}
 						$search = (count($searches) > 1) ? Func::orOp($searches) : reset($searches);
 					}
+					else {
+						foreach ($reverse_translations as &$value) {
+							$value = Names::displayToProperty($value);
+						}
+						$search = (count($reverse_translations) > 1)
+							? Func::in($reverse_translations)
+							: (($type_string == Type::STRING)
+								? Func::equal(reset($reverse_translations))
+								: Func::inSet(reset($reverse_translations))
+							);
+					}
 					break;
 				}
 				// without @values : let it continue to 'default' in order to apply the 'default' process
@@ -280,8 +286,8 @@ class Search_Parameters_Parser
 			// Float | Integer | String types without @values
 			// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 			default: {
-				if (($search = Words::applyEmptyWord($search_value)) === false) {
-					$search = Scalar::applyScalar($search_value, $property);
+				if (!($search = Words::applyWordMeaningEmpty($search_value))) {
+					$search = Scalar::applyScalar($search_value);
 				}
 				break;
 			}

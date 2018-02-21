@@ -57,16 +57,16 @@ class In_Set implements Negate, Where
 	 */
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
-		$str = '';
+		$summary = '';
 		if ($this->value) {
 			list($t) = $builder->getTranslateChars();
-			$str     = $t . sprintf(
+			$summary     = $t . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),
 				$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE),
 				$builder->buildScalar($this->value, $property_path, $builder::SUB_TRANSLATE)
 			) . $t;
 		}
-		return $str;
+		return $summary;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql

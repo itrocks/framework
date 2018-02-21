@@ -12,20 +12,20 @@ use ITRocks\Framework\Locale\Loc;
 abstract class Words
 {
 
-	//-------------------------------------------------------------------------------- applyEmptyWord
+	//------------------------------------------------------------------------- applyWordMeaningEmpty
 	/**
-	 * If expression is a date empty word, convert to corresponding value
+	 * If expression is a word meaning "empty", convert to corresponding dao search condition
 	 *
 	 * @param $expression string
-	 * @return mixed|boolean false
+	 * @return Func\Comparison|null
 	 */
-	public static function applyEmptyWord($expression)
+	public static function applyWordMeaningEmpty($expression)
 	{
-		if (self::isEmptyWord($expression)) {
+		if (self::meansEmpty($expression)) {
 			return Func::isNull();
 		}
-		// not an empty word
-		return false;
+		// not a word meaning empty
+		return null;
 	}
 
 	//---------------------------------------------------------------------------- getCompressedWords
@@ -45,16 +45,16 @@ abstract class Words
 		return $words;
 	}
 
-	//----------------------------------------------------------------------------------- isEmptyWord
+	//------------------------------------------------------------------------------------ meansEmpty
 	/**
 	 * Check if expression is an empty word
 	 *
 	 * @param $word string
 	 * @return boolean true if empty word
 	 */
-	private static function isEmptyWord($word)
+	private static function meansEmpty($word)
 	{
-		if (!Wildcard::containsWildCards($word)) {
+		if (!Wildcard::containsWildcards($word)) {
 			$word = Loc::rtr($word);
 		}
 		// TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support !!

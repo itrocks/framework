@@ -372,13 +372,13 @@ abstract class Date
 	/**
 	 * @param $expression string
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
-	 * @return mixed|boolean false
+	 * @return mixed
 	 */
 	public static function applyDateValue($expression, $range_side = Range::NONE)
 	{
 		return self::applyDateSingleWildcard($expression)
 			?: self::applyDateWord($expression, $range_side)
-			?: Words::applyEmptyWord($expression)
+			?: Words::applyWordMeaningEmpty($expression)
 			?: self::applyDateFormatted($expression, $range_side);
 	}
 

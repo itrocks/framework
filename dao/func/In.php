@@ -58,9 +58,9 @@ class In implements Negate, Where
 	 */
 	public function toHuman(Summary_Builder $builder, $property_path, $prefix = '')
 	{
-		$str = '';
+		$summary = '';
 		if ($this->values) {
-			list($t) = $builder->getTranslateChars();
+			list($translation_delimiter) = $builder->getTranslateChars();
 
 			$values = [];
 			foreach ($this->values as $value) {
@@ -69,15 +69,15 @@ class In implements Negate, Where
 			sort($values);
 			$values = join(', ', $values);
 
-			$str = $t . str_replace(
+			$summary = $translation_delimiter  . str_replace(
 					['$property', '$values'],
 					[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
 					Loc::tr(
 						$this->not_in ? '$property is not one of ($values)' : '$property is one of ($values)'
 					)
-				) . $t;
+				) . $translation_delimiter ;
 		}
-		return $str;
+		return $summary;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -94,7 +94,7 @@ class In implements Negate, Where
 		$sql = '';
 		if ($this->values) {
 			// 1st we should call buildWhereColumn() to be able to call getProperty() after
-			$column = $builder->buildWhereColumn($property_path, $prefix);
+			$column   = $builder->buildWhereColumn($property_path, $prefix);
 			$property = $builder->getProperty($property_path);
 			if (
 				$property
@@ -112,10 +112,15 @@ class In implements Negate, Where
 				$sql .= $where->toSql($builder, $property_path, $prefix);
 			}
 			else {
-				$sql = $column . ($this->not_in ? ' NOT' : '') . ' IN (';
 				$first = true;
+				$sql   = $column . ($this->not_in ? ' NOT' : '') . ' IN (';
 				foreach ($this->values as $value) {
-					if ($first) $first = false; else $sql .= ', ';
+					if ($first) {
+						$first = false;
+					}
+					else {
+						$sql .= ', ';
+					}
 					$sql .= Value::escape($value, false, $builder->getProperty($property_path));
 				}
 				$sql .= ')';

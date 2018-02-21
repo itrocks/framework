@@ -29,9 +29,10 @@ class Summary_Builder
 
 	//------------------------------------------------------------------------------- translate flags
 	/**
-	 * COMPLETE_TRANSLATE: surround both with | and ¦ translation chars
-	 * NO_TRANSLATE:       no translation surrounding char
-	 * SUB_TRANSLATE:      surround only with ¦ translation char
+	 * COMPLETE_TRANSLATE: get both translation delimiters for translation text
+	 * MAIN_TRANSLATE:     get main translation delimiter to surround text
+	 * NO_TRANSLATE:       want no translation surrounding delimiter at all
+	 * SUB_TRANSLATE:      get sub translation delimiter to surround a sub part of text
 	 *
 	 */
 	const COMPLETE_TRANSLATE = self::MAIN_TRANSLATE | self::SUB_TRANSLATE;
@@ -296,8 +297,10 @@ class Summary_Builder
 		// check if we are on a enum field with @values list of values
 		$values = ($property ? $property->getListAnnotation('values')->values() : []);
 		if (count($values)) {
-			list($t, $i) = $this->getTranslateChars($translate_flag);
-			return DQ . $t . $i . str_replace('_', SP, $value) . $i . $t . DQ;
+			list($translation_delimiter, $sub_translation_delimiter)
+				= $this->getTranslateChars($translate_flag);
+			return DQ . $translation_delimiter . $sub_translation_delimiter
+				. str_replace('_', SP, $value) . $sub_translation_delimiter . $translation_delimiter . DQ;
 		}
 		elseif (preg_match($pattern, $value)) {
 			// in case of a date, we convert to locale with time
@@ -359,19 +362,22 @@ class Summary_Builder
 
 	//----------------------------------------------------------------------------- getTranslateChars
 	/**
+	 * Returns the delimiters to build a translated string according to current locale and given
+	 * option flag. @see self::const documentation for accepted flags
+	 *
 	 * @param $translate_flag integer flag for surrounding translation chars
-	 * @return string[] [main char, sub char]
+	 * @return string[] [translation delimiter, sub translation delimiter] @example ['|', '¦']
 	 */
 	public function getTranslateChars($translate_flag = self::COMPLETE_TRANSLATE)
 	{
 		if (Locale::current()) {
-			$t = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');
-			$i = (($translate_flag & self::SUB_TRANSLATE)  ? '¦' : '');
+			$translation_delimiter     = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');
+			$sub_translation_delimiter = (($translate_flag & self::SUB_TRANSLATE)  ? '¦' : '');
 		}
 		else {
-			$t = $i = '';
+			$translation_delimiter = $sub_translation_delimiter = '';
 		}
-		return [$t, $i];
+		return [$translation_delimiter, $sub_translation_delimiter];
 	}
 
 }
