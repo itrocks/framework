@@ -41,16 +41,65 @@ class Json
 		return json_encode($object);
 	}
 
+	//--------------------------------------------------------------------------- isBrowsableProperty
+	/**
+	 * @param $property Reflection_Property
+	 * @return bool
+	 */
+	protected function isBrowsableProperty(Reflection_Property $property)
+	{
+		return $property->getAnnotation('component')->value
+			|| Link_Annotation::of($property)->isCollection();
+	}
+
+	//------------------------------------------------------------------------------ objectToKeyClass
+	/**
+	 * mutualise object to key_class
+	 *
+	 * @param $business_object object
+	 * @return null|string
+	 */
+	protected function objectToKeyClass($business_object)
+	{
+		try {
+			return Dao::current()->storeNameOf(get_class($business_object))
+				. SL
+				. Dao::getObjectIdentifier($business_object);
+		} catch (\Exception $e) {
+			return null;
+		}
+	}
+
+	//------------------------------------------------------------------------- objectToShortStdClass
+	/**
+	 * @param $standard_object stdClass
+	 * @param $business_object object
+	 */
+	protected function objectToShortStdClass(stdClass $standard_object, $business_object)
+	{
+		$standard_object->id        = Dao::getObjectIdentifier($business_object);
+		$standard_object->as_string = strval($business_object);
+	}
+
 	//---------------------------------------------------------------------- objectToStdClassInternal
 	/**
-	 * @param $standard_object stdClass object resulting
-	 * @param $business_object object business object to transform
+	 * @param $standard_object   stdClass object resulting
+	 * @param $business_object   object business object to transform
+	 * @param $parent_class_keys array
+	 * @return boolean
 	 * @throws Exception
 	 */
-	protected function objectToStdClassInternal(stdClass $standard_object, $business_object)
-	{
+	protected function objectToStdClassInternal(
+		stdClass $standard_object, $business_object, $parent_class_keys = []
+	) {
 		$class      = new Reflection_Class($business_object);
 		$properties = $class->getProperties([T_USE, T_EXTENDS, Reflection_Class::T_SORT]);
+		// bloc to avoid "death kiss" (infinite loop), detect when a parent is exactly the same object
+		$class_key  = $this->objectToKeyClass($business_object);
+		if ($class_key) {
+			if (in_array($class_key, $parent_class_keys)) return false;
+			array_push($parent_class_keys, $class_key);
+		}
 		foreach ($properties as $property) {
 			if (
 				$property->isVisible()
@@ -72,34 +121,38 @@ class Json
 					}
 					if (isset($values)) {
 						foreach($values as $value) {
-							$array[] = $this->propertyToStdInternal($property, $value, $type, $business_object);
+							$array[] = $this->propertyToStdInternal(
+								$property, $value, $type, $parent_class_keys
+							);
 						}
 					}
 					$standard_object->$name = $array;
 				}
 				else {
 					$standard_object->$name = $this->propertyToStdInternal(
-						$property, $property_value, $type, $business_object
+						$property, $property_value, $type, $parent_class_keys
 					);
 				}
 			}
 		}
+		return true;
 	}
 
 	//------------------------------------------------------------------------- propertyToStdInternal
 	/**
 	 * Returns value transformed in a suitable format for json
 	 *
-	 * @param $property      Reflection_Property
-	 * @param $value         mixed
-	 * @param $type          Type
-	 * @param $parent_object object
+	 * @param $property          Reflection_Property
+	 * @param $value             mixed
+	 * @param $type              Type
+	 * @param $parent_class_keys array
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected function propertyToStdInternal(
-		Reflection_Property $property, $value, Type $type = null, $parent_object
-	)	{
+	protected function propertyToStdInternal (
+		Reflection_Property $property, $value, Type $type = null, $parent_class_keys = []
+	) {
+
 		if (!isset($type)) {
 			$type = $property->getType();
 		}
@@ -129,20 +182,14 @@ class Json
 					$sub_object = new stdClass();
 
 					// case we should expand
-					if (
-						(
-							$property->getAnnotation('component')->value
-							// TODO High restore that when implementing fix 2 for #101143
-							/*|| Link_Annotation::of($property)->isCollection()*/
-						)
-						&& ($value !== $parent_object)
-					) {
-						$this->objectToStdClassInternal($sub_object, $value);
+					if ($this->isBrowsableProperty($property)) {
+						if (!$this->objectToStdClassInternal($sub_object, $value, $parent_class_keys)) {
+							$this->objectToShortStdClass($sub_object, $value);
+						}
 					}
 					// case we do not expand
 					else {
-						$sub_object->id        = Dao::getObjectIdentifier($value);
-						$sub_object->as_string = strval($value);
+						$this->objectToShortStdClass($sub_object, $value);
 					}
 
 					return $sub_object;
@@ -169,6 +216,7 @@ class Json
 	/**
 	 * @param $business_object object of a business class
 	 * @return stdClass representation of object with visible properties
+	 * @throws \Exception
 	 */
 	public function toStdObject($business_object)
 	{
