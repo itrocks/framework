@@ -15,6 +15,42 @@ use ITRocks\Framework\Tools\Namespaces;
 abstract class Getter
 {
 
+	//---------------------------------------------------------------------------- applicationClasses
+	/**
+	 * Application class list
+	 *
+	 * - ordered by applications hierarchy
+	 * - filtered using $base_class hierarchy
+	 *
+	 * @param $base_class string
+	 * @return string[]
+	 */
+	static protected function applicationClasses($base_class)
+	{
+		// application tree
+		$applications        = Application::current()->getClassesTree(Application::BOTH);
+		$application_classes = $applications[Application::FLAT];
+		$application_tree    = $applications[Application::TREE];
+
+		// class tree
+		$class_name = $base_class;
+		do {
+			// Vendor\Project\Application
+			$application_class = lParse($class_name, BS, 2) . BS . 'Application';
+			// special case : Vendor\Application (core projects)
+			if (!isset($application_classes[$application_class])) {
+				$application_class = lParse($application_class, BS) . BS . 'Application';
+			}
+			/** @var $checkpoints string[] application class checkpoints */
+			$checkpoints[$application_class] = [$application_class];
+		}
+		while ($class_name = get_parent_class($class_name));
+
+		// TODO 99581 calculate the route from the top to the bottom of $application_tree, restrict to $checkpoints
+
+		return $application_classes;
+	}
+
 	//----------------------------------------------------------------- classNameWithoutVendorProject
 	/**
 	 * Returns the name of the class, without the beginning 'Vendor\Project\'
@@ -78,7 +114,7 @@ abstract class Getter
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';
-		$application_classes = Application::current()->getClassesTree(true);
+		$application_classes = static::applicationClasses($base_class);
 		$class_name          = $base_class;
 		$ext                 = DOT . $extension;
 		$feature_class       = Names::methodToClass($feature_name);

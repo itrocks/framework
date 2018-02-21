@@ -12,6 +12,18 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 class Application
 {
 
+	//------------------------------------------------------------------------------------------ BOTH
+	/**
+	 * For getClassesTree : want a result with the two forms of applications lists : array, and tree
+	 */
+	const BOTH = null;
+
+	//------------------------------------------------------------------------------------------ FLAT
+	const FLAT = 'flat';
+
+	//------------------------------------------------------------------------------------------ TREE
+	const TREE = 'tree';
+
 	//--------------------------------------------------------------------------------- $applications
 	/**
 	 * Secondary super-applications if your application need modules from several parent applications
@@ -108,45 +120,60 @@ class Application
 	 *   'Application\Class' => ['children' => ['ITRocks\Framework' => true]],
 	 *   'ITRocks\Framework' => ['parents' => ['Application\Class]]
 	 * ]
-	 * @param $flat boolean if false, returned as tree. If true, returns a flat string[]
-	 * @return array The classes tree
+	 * @param $flat boolean|string|null if false, returned as tree. If true, returns a flat string[]
+	 *              If null : both are returned : [FLAT => $applications_array, TREE => $tree]
+	 *              If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
+	 * @return array The classes tree : string[], tree of strings, or [FLAT => $flat, TREE => $tree]
 	 */
 	public function getClassesTree($flat = false)
 	{
+		if (is_string($flat)) {
+			if ($flat === self::FLAT) {
+				$flat = true;
+			}
+			elseif ($flat === self::TREE) {
+				$flat = false;
+			}
+			else {
+				$flat = self::BOTH;
+			}
+		}
 		// tree
 		static $tree = null;
 		if (!isset($tree)) {
 			$tree = [get_class($this) => static::getParentClasses(true)];
 		}
-		if (!$flat) {
+		if ($flat === false) {
 			return $tree;
 		}
 		// flat
-		static $flat = [];
-		if ($flat) {
-			return $flat;
-		}
-		$classes = $this->getClassTreeToArray($tree);
-		do {
-			$trailing_classes = [];
-			foreach ($classes as $class_name => $relations) {
-				$children          = isset($relations['children']) ? $relations['children'] : [];
-				$all_children_done = true;
-				foreach ($children as $child) {
-					if (!isset($flat[$child])) {
-						$all_children_done = false;
-						break;
+		static $flat_cache = [];
+		if (!$flat_cache) {
+			$classes = $this->getClassTreeToArray($tree);
+			do {
+				$trailing_classes = [];
+				foreach ($classes as $class_name => $relations) {
+					$children          = isset($relations['children']) ? $relations['children'] : [];
+					$all_children_done = true;
+					foreach ($children as $child) {
+						if (!isset($flat_cache[$child])) {
+							$all_children_done = false;
+							break;
+						}
+					}
+					if ($all_children_done) {
+						$flat_cache[$class_name] = $class_name;
+					}
+					else {
+						$trailing_classes[$class_name] = $relations;
 					}
 				}
-				if ($all_children_done) {
-					$flat[$class_name] = $class_name;
-				}
-				else {
-					$trailing_classes[$class_name] = $relations;
-				}
-			}
-		} while ($classes = $trailing_classes);
-		return $flat = array_values($flat);
+			} while ($classes = $trailing_classes);
+		}
+		// return as flat, or return both forms
+		return $flat
+			? $flat_cache
+			: [self::FLAT => $flat_cache, self::TREE => $tree];
 	}
 
 	//--------------------------------------------------------------------------- getClassTreeToArray
