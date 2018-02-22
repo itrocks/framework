@@ -62,7 +62,7 @@ abstract class Range
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
-				$search = Date::applyDateRangeValue($expression, $range_side);
+				$search = Date::applyDateRangeValue($expression, $property, $range_side);
 				break;
 			// Float | Integer | String types
 			//case in_array($type_string, [Type::FLOAT, Type::INTEGER, Type::STRING]): {

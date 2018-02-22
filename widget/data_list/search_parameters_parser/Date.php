@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Widget\Data_List\Data_List_Exception;
 
@@ -339,18 +340,20 @@ abstract class Date
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
 	 * @param $expression Option|string
+	 * @param $property   Reflection_Property
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
 	 * @throws Data_List_Exception
 	 */
-	public static function applyDateRangeValue($expression, $range_side)
-	{
+	public static function applyDateRangeValue(
+		$expression, Reflection_Property $property, $range_side
+	) {
 		if (Wildcard::hasWildcard($expression)) {
 			throw new Data_List_Exception(
 				$expression, Loc::tr('You can not have wildcard on a range value')
 			);
 		}
-		return self::applyDateValue($expression, $range_side);
+		return self::applyDateValue($expression, $property, $range_side);
 	}
 
 	//----------------------------------------------------------------------- applyDateSingleWildcard
@@ -371,14 +374,16 @@ abstract class Date
 	//-------------------------------------------------------------------------------- applyDateValue
 	/**
 	 * @param $expression string
+	 * @param $property   Reflection_Property
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
 	 */
-	public static function applyDateValue($expression, $range_side = Range::NONE)
-	{
+	public static function applyDateValue(
+		$expression, Reflection_Property $property, $range_side = Range::NONE
+	) {
 		return self::applyDateSingleWildcard($expression)
 			?: self::applyDateWord($expression, $range_side)
-			?: Words::applyWordMeaningEmpty($expression)
+			?: Words::applyWordMeaningEmpty($expression, $property)
 			?: self::applyDateFormatted($expression, $range_side);
 	}
 
@@ -468,7 +473,7 @@ abstract class Date
 	/**
 	 * Check an expression (part of a datetime) contains wildcards and correct it, if necessary
 	 *
-	 * @param &$expression string
+	 * @param $expression string
 	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
 	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
@@ -500,7 +505,7 @@ abstract class Date
 	/**
 	 * Compile a formula and compute value for a part of date
 	 *
-	 * @param &$expression string formula
+	 * @param $expression string formula
 	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
 	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean true if formula found
@@ -543,7 +548,7 @@ abstract class Date
 	/**
 	 * Compute a date part expression to get a string suitable to build a Date
 	 *
-	 * @param &$expression string numeric or with wildcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
+	 * @param $expression string numeric or with wildcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
 	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
 	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
@@ -574,7 +579,7 @@ abstract class Date
 	/**
 	 * Correct a date expression containing SQL wildcard in order to build a Date string
 	 *
-	 * @param &$expression string
+	 * @param $expression string
 	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
 	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 */

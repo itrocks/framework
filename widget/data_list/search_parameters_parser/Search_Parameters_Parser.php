@@ -210,7 +210,7 @@ class Search_Parameters_Parser
 		switch ($type_string) {
 			// boolean type
 			case Type::BOOLEAN: {
-				if ($search = Words::applyWordMeaningEmpty($search_value)) {
+				if ($search = Words::applyWordMeaningEmpty($search_value, $property)) {
 					break;
 				}
 				$search = Type_Boolean::applyBooleanValue($search_value);
@@ -218,7 +218,7 @@ class Search_Parameters_Parser
 			}
 			// Date_Time type
 			case Date_Time::class: {
-				$search = Date::applyDateValue($search_value);
+				$search = Date::applyDateValue($search_value, $property);
 				break;
 			}
 			// String types with @values : translate
@@ -226,6 +226,10 @@ class Search_Parameters_Parser
 				/** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY: {
 				if (Values_Annotation::of($property)->value) {
+					if (trim($search_value) === '') {
+						$search = Func::equal($search_value);
+						break;
+					}
 					$values = [];
 					foreach (Values_Annotation::of($property)->values() as $value) {
 						$values[] = Names::propertyToDisplay($value);
@@ -243,7 +247,7 @@ class Search_Parameters_Parser
 					$has_empty_word = false;
 					$has_wildcard   = false;
 					foreach ($reverse_translations as $value) {
-						if (Words::applyWordMeaningEmpty($value)) {
+						if (Words::applyWordMeaningEmpty($value, $property)) {
 							$has_empty_word = true;
 						}
 						if (Wildcard::hasWildcard($value)) {
@@ -253,7 +257,7 @@ class Search_Parameters_Parser
 					if ($has_empty_word || $has_wildcard) {
 						$searches = [];
 						foreach ($reverse_translations as $value) {
-							if ($search = Words::applyWordMeaningEmpty($value)) {
+							if (!($search = Words::applyWordMeaningEmpty($value, $property))) {
 								if (Wildcard::hasWildcard($value)) {
 									$search = Scalar::applyScalar($value);
 								}
@@ -286,7 +290,7 @@ class Search_Parameters_Parser
 			// Float | Integer | String types without @values
 			// case Type::FLOAT: case Type::INTEGER: case Type::STRING: case Type::STRING_ARRAY:
 			default: {
-				if (!($search = Words::applyWordMeaningEmpty($search_value))) {
+				if (!($search = Words::applyWordMeaningEmpty($search_value, $property))) {
 					$search = Scalar::applyScalar($search_value);
 				}
 				break;
