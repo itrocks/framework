@@ -6,7 +6,6 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
-use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Word search parameters parser
@@ -27,18 +26,11 @@ abstract class Words
 	public static function applyWordMeaningEmpty($expression, Reflection_Property $property)
 	{
 		if (self::meansEmpty($expression)) {
-			$may_be_null = Null_Annotation::of($property)->value;
 			$type_string = $property->getType()->asString();
 			switch ($type_string) {
-				case Date_Time::class: {
-					if ($may_be_null) {
-						return Func::orOp([Func::isNull(), Func::equal('0000-00-00 00:00:00')]);
-					}
-					return Func::equal('0000-00-00 00:00:00');
-				}
 				case Type::STRING:
 				case Type::STRING_ARRAY: {
-					if ($may_be_null) {
+					if (Null_Annotation::of($property)->value) {
 						return Func::orOp([Func::isNull(), Func::equal('')]);
 					}
 					return Func::equal('');
