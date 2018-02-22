@@ -33,7 +33,6 @@ class Summary_Builder
 	 * MAIN_TRANSLATE:     get main translation delimiter to surround text
 	 * NO_TRANSLATE:       want no translation surrounding delimiter at all
 	 * SUB_TRANSLATE:      get sub translation delimiter to surround a sub part of text
-	 *
 	 */
 	const COMPLETE_TRANSLATE = self::MAIN_TRANSLATE | self::SUB_TRANSLATE;
 	const MAIN_TRANSLATE     = 1;

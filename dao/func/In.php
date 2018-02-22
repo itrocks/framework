@@ -69,13 +69,13 @@ class In implements Negate, Where
 			sort($values);
 			$values = join(', ', $values);
 
-			$summary = $translation_delimiter  . str_replace(
-					['$property', '$values'],
-					[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
-					Loc::tr(
-						$this->not_in ? '$property is not one of ($values)' : '$property is one of ($values)'
-					)
-				) . $translation_delimiter ;
+			$summary = $translation_delimiter . str_replace(
+				['$property', '$values'],
+				[$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE), $values],
+				Loc::tr(
+					$this->not_in ? '$property is not one of ($values)' : '$property is one of ($values)'
+				)
+			) . $translation_delimiter ;
 		}
 		return $summary;
 	}
