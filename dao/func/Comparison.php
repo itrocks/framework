@@ -113,7 +113,7 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			return $this->whereSQL(
+			return $this->whereSql(
 				$column,
 				$this->than_value->toHuman($builder, $property_path, $prefix)
 			);
@@ -183,7 +183,7 @@ class Comparison implements Negate, Where
 			}
 		}
 		if ($this->than_value instanceof Where) {
-			return $this->whereSQL(
+			return $this->whereSql(
 				$column,
 				$this->than_value->toSql($builder, $property_path, $prefix)
 			);
@@ -192,7 +192,7 @@ class Comparison implements Negate, Where
 		. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
 	}
 
-	//-------------------------------------------------------------------------------------- whereSQL
+	//-------------------------------------------------------------------------------------- whereSql
 	/**
 	 * Specific sql parsing in case of Where
 	 *
@@ -200,7 +200,7 @@ class Comparison implements Negate, Where
 	 * @param $sql    string
 	 * @return string
 	 */
-	private function whereSQL($column, $sql)
+	private function whereSql($column, $sql)
 	{
 		if ($this->than_value instanceof Property) {
 			$sql = $column . SP . $this->sign . SP . $sql;
