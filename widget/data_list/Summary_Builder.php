@@ -201,8 +201,10 @@ class Summary_Builder
 	 */
 	public function buildColumn($path, $prefix = '', $translate_flag = self::COMPLETE_TRANSLATE)
 	{
-		list($t, $i) = $this->getTranslateChars($translate_flag);
-		return $t . $i . ($prefix ? $prefix . '.' : '') . $path . $i . $t;
+		list($translation_delimiter, $sub_translation_delimiter)
+			= $this->getTranslationDelimiters($translate_flag);
+		return $translation_delimiter . $sub_translation_delimiter . ($prefix ? $prefix . '.' : '')
+			. $path . $sub_translation_delimiter . $translation_delimiter;
 	}
 
 	//----------------------------------------------------------------------------------- buildObject
@@ -298,7 +300,7 @@ class Summary_Builder
 		$values = ($property ? $property->getListAnnotation('values')->values() : []);
 		if (count($values)) {
 			list($translation_delimiter, $sub_translation_delimiter)
-				= $this->getTranslateChars($translate_flag);
+				= $this->getTranslationDelimiters($translate_flag);
 			return DQ . $translation_delimiter . $sub_translation_delimiter
 				. str_replace('_', SP, $value) . $sub_translation_delimiter . $translation_delimiter . DQ;
 		}
@@ -360,7 +362,7 @@ class Summary_Builder
 		return $property;
 	}
 
-	//----------------------------------------------------------------------------- getTranslateChars
+	//---------------------------------------------------------------------- getTranslationDelimiters
 	/**
 	 * Returns the delimiters to build a translated string according to current locale and given
 	 * option flag. @see self::const documentation for accepted flags
@@ -368,7 +370,7 @@ class Summary_Builder
 	 * @param $translate_flag integer flag for surrounding translation chars
 	 * @return string[] [translation delimiter, sub translation delimiter] @example ['|', '¦']
 	 */
-	public function getTranslateChars($translate_flag = self::COMPLETE_TRANSLATE)
+	public function getTranslationDelimiters($translate_flag = self::COMPLETE_TRANSLATE)
 	{
 		if (Locale::current()) {
 			$translation_delimiter     = (($translate_flag & self::MAIN_TRANSLATE) ? '|' : '');

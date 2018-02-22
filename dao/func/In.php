@@ -60,7 +60,7 @@ class In implements Negate, Where
 	{
 		$summary = '';
 		if ($this->values) {
-			list($translation_delimiter) = $builder->getTranslateChars();
+			list($translation_delimiter) = $builder->getTranslationDelimiters();
 
 			$values = [];
 			foreach ($this->values as $value) {

@@ -474,8 +474,8 @@ abstract class Date
 	 * Check an expression (part of a datetime) contains wildcards and correct it, if necessary
 	 *
 	 * @param $expression string
-	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
-	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part  string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                   Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
 	 */
 	public static function checkDateWildcardExpr(&$expression, $date_part)
@@ -506,8 +506,8 @@ abstract class Date
 	 * Compile a formula and compute value for a part of date
 	 *
 	 * @param $expression string formula
-	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
-	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part  string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                   Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean true if formula found
 	 */
 	private static function computeFormula(&$expression, $date_part)
@@ -549,8 +549,8 @@ abstract class Date
 	 * Compute a date part expression to get a string suitable to build a Date
 	 *
 	 * @param $expression string numeric or with wildcard or formula d+1 | m+3 | y-2 | h+1 | i+3...
-	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
-	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part  string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                   Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 * @return boolean
 	 */
 	protected static function computePart(&$expression, $date_part)
@@ -580,8 +580,8 @@ abstract class Date
 	 * Correct a date expression containing SQL wildcard in order to build a Date string
 	 *
 	 * @param $expression string
-	 * @param $date_part   string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
-	 *                                    Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
+	 * @param $date_part  string @values Date_Time::DAY, Date_Time::MONTH, Date_Time::YEAR,
+	 *                                   Date_Time::HOUR, Date_Time::MINUTE, Date_Time::SECOND
 	 */
 	private static function correctDateWildcardExpr(&$expression, $date_part)
 	{

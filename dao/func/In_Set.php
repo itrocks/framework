@@ -59,12 +59,13 @@ class In_Set implements Negate, Where
 	{
 		$summary = '';
 		if ($this->value) {
-			list($t) = $builder->getTranslateChars();
-			$summary     = $t . sprintf(
+			list($translation_delimiter) = $builder->getTranslationDelimiters();
+
+			$summary = $translation_delimiter . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),
 				$builder->buildColumn($property_path, $prefix, $builder::SUB_TRANSLATE),
 				$builder->buildScalar($this->value, $property_path, $builder::SUB_TRANSLATE)
-			) . $t;
+			) . $translation_delimiter;
 		}
 		return $summary;
 	}
