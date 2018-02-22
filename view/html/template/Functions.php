@@ -492,6 +492,11 @@ class Functions
 		$result = $expanded ?: [$property];
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
 			foreach ($result as $property) {
+				// Store previous values in property to allow search of values
+				if (isA($property, Reflection_Property_Value::class)) {
+					$property->expand_value             = $expand_property_path . DOT;
+					$property->root_class_before_expand = $property->root_class;
+				}
 				// view_path for html name must include the 'expand property path'
 				if ($property instanceof Reflection_Property_Value) {
 					$property->view_path = $expand_property_path . DOT . $property->path;
@@ -500,6 +505,8 @@ class Functions
 				else {
 					$property->path = $expand_property_path . DOT . $property->path;
 				}
+				$property->path       = $expand_property_path . DOT . $property->path;
+				$property->root_class = null;
 				if (($property instanceof Reflection_Property_Value) && !$property->display) {
 					$property->display = Loc::tr(rLastParse($property->aliased_path, DOT . DOT, 1, true));
 				}
