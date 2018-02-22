@@ -64,8 +64,8 @@ class Comparison implements Negate, Where
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
 				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
-				? self::LIKE
-				: self::EQUAL;
+					? self::LIKE
+					: self::EQUAL;
 		}
 	}
 
