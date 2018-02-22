@@ -11,7 +11,7 @@ use ITRocks\Framework\Widget\Data_List;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
 
 /**
- * Class List_Controller
+ * Class Data_List_Controller
  */
 class Data_List_Controller extends Data_List\Data_List_Controller
 {
