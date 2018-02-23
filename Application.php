@@ -161,7 +161,16 @@ class Application
 		static $flat_cache  = [];
 		static $nodes_cache = [];
 		if (!$flat_cache) {
-			$classes = $nodes_cache = $this->getClassTreeToArray($tree);
+			$nodes_cache = $this->getClassTreeToArray($tree);
+			foreach ($nodes_cache as &$class_node) {
+				if (!isset($class_node[self::CHILDREN])) {
+					$class_node[self::CHILDREN] = [];
+				}
+				if (!isset($class_node[self::PARENTS])) {
+					$class_node[self::PARENTS] = [];
+				}
+			}
+			$classes = $nodes_cache;
 			do {
 				$trailing_classes = [];
 				foreach ($classes as $class_name => $relations) {
@@ -218,10 +227,6 @@ class Application
 	public function getClassTreeToArray(array $class_tree, array &$result = [])
 	{
 		foreach ($class_tree as $class_name => $parents) {
-			if (!isset($result[$class_name])) {
-				$result[$class_name][self::CHILDREN] = [];
-				$result[$class_name][self::PARENTS]  = [];
-			}
 			foreach (array_keys($parents) as $parent_class_name) {
 				$result[$class_name][self::PARENTS][$parent_class_name]  = $parent_class_name;
 				$result[$parent_class_name][self::CHILDREN][$class_name] = $class_name;

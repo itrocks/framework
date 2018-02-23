@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Controller;
 
-use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
@@ -14,42 +13,6 @@ use ITRocks\Framework\Tools\Namespaces;
  */
 abstract class Getter
 {
-
-	//---------------------------------------------------------------------------- applicationClasses
-	/**
-	 * Application class list
-	 *
-	 * - ordered by applications hierarchy
-	 * - filtered using $base_class hierarchy
-	 *
-	 * @param $base_class string
-	 * @return string[]
-	 */
-	static protected function applicationClasses($base_class)
-	{
-		// application tree
-		$applications        = Application::current()->getClassesTree(Application::BOTH);
-		$application_classes = $applications[Application::FLAT];
-		$application_nodes   = $applications[Application::NODES];
-
-		// class tree
-		$class_name = $base_class;
-		do {
-			// Vendor\Project\Application
-			$application_class = lParse($class_name, BS, 2) . BS . 'Application';
-			// special case : Vendor\Application (core projects)
-			if (!isset($application_classes[$application_class])) {
-				$application_class = lParse($application_class, BS) . BS . 'Application';
-			}
-			/** @var $checkpoints string[] application class checkpoints */
-			$checkpoints[$application_class] = [$application_class];
-		}
-		while ($class_name = get_parent_class($class_name));
-
-		// TODO 99581 calculate the route from the top to the bottom of $application_tree, restrict to $checkpoints
-
-		return $application_classes;
-	}
 
 	//----------------------------------------------------------------- classNameWithoutVendorProject
 	/**
@@ -114,12 +77,15 @@ abstract class Getter
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';
-		$application_classes = static::applicationClasses($base_class);
-		$class_name          = $base_class;
-		$ext                 = DOT . $extension;
-		$feature_class       = Names::methodToClass($feature_name);
-		$feature_what        = $class_form ? $feature_class : $feature_name;
-		$method              = 'run';
+		$application_classes = (new Application_Class_Tree_Filter($base_class))
+			->prepare()
+			->filter()
+			->classes();
+		$class_name    = $base_class;
+		$ext           = DOT . $extension;
+		$feature_class = Names::methodToClass($feature_name);
+		$feature_what  = $class_form ? $feature_class : $feature_name;
+		$method        = 'run';
 
 		// $classes : the controller class name and its parents and traits
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
