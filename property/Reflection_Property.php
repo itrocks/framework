@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Property;
 
-use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Type;
 
 /**
