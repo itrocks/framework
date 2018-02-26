@@ -114,7 +114,6 @@ abstract class Date
 	//------------------------------------------------------------------------------------- HOUR_ONLY
 	const HOUR_ONLY = 'hour_only';
 
-	//--------------------------------------------------------------------------------- KIND_OF_DATES
 	/**
 	 * All kind of date expression we can have.
 	 */
