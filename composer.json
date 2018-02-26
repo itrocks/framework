@@ -27,7 +27,7 @@
 		"phpoffice/phpexcel":                      "1.*",
 		"setasign/fpdi-tcpdf":                     "1.*",
 		"tecnickcom/tcpdf":                        "6.*",
-		"itrocks/datetimepicker": 								 "1.*"
+		"trentrichardson/jquery-timepicker-addon": "^1.6"
 	},
 	"type": "itrocks"
 }
