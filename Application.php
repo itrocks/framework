@@ -157,12 +157,12 @@ class Application
 		if ($flat === false) {
 			return $tree;
 		}
-		// flat
+		// flat + nodes
 		static $flat_cache  = [];
 		static $nodes_cache = [];
 		if (!$flat_cache) {
-			$nodes_cache = $this->getClassTreeToArray($tree);
-			foreach ($nodes_cache as &$class_node) {
+			$nodes = $this->getClassTreeToArray($tree);
+			foreach ($nodes as &$class_node) {
 				if (!isset($class_node[self::CHILDREN])) {
 					$class_node[self::CHILDREN] = [];
 				}
@@ -170,26 +170,39 @@ class Application
 					$class_node[self::PARENTS] = [];
 				}
 			}
-			$classes = $nodes_cache;
+			$classes       = $nodes;
+			$do_deprecated = false;
 			do {
+				$done             = 0;
 				$trailing_classes = [];
 				foreach ($classes as $class_name => $relations) {
 					$children          = $relations[self::CHILDREN];
 					$all_children_done = true;
 					foreach ($children as $child) {
-						if (!isset($flat_cache[$child])) {
+						if (!isset($nodes_cache[$child])) {
 							$all_children_done = false;
 							break;
 						}
 					}
-					if ($all_children_done) {
-						$flat_cache[$class_name] = $class_name;
+					if (
+						$all_children_done
+						&& (
+							$do_deprecated
+							|| !(new Reflection_Class($class_name))->getAnnotation('deprecated')->value
+						)
+					) {
+						$done ++;
+						$nodes_cache[$class_name] = $relations;
 					}
 					else {
 						$trailing_classes[$class_name] = $relations;
 					}
 				}
+				if (!$done) {
+					$do_deprecated = true;
+				}
 			} while ($classes = $trailing_classes);
+			$flat_cache = array_keys($nodes_cache);
 		}
 		// return as flat, or return both forms
 		return $flat
