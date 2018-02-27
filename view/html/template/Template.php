@@ -1997,6 +1997,9 @@ if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($
 				return $this->replaceLink(SL . $uri);
 			}
 		}
+		if (substr($file_name, -4) !== '.php' && is_file(Paths::$file_root . $file_path)) {
+			$file_path .= '?' . hash_file('md5', Paths::$file_root . $file_path);
+		}
 		return $this->getUriRoot() . $file_path;
 	}
 
