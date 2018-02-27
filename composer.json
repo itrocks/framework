@@ -26,8 +26,7 @@
 		"phpunit/phpunit": 											   "5.*",
 		"phpoffice/phpexcel":                      "1.*",
 		"setasign/fpdi-tcpdf":                     "1.*",
-		"tecnickcom/tcpdf":                        "6.*",
-		"trentrichardson/jquery-timepicker-addon": "^1.6"
+		"tecnickcom/tcpdf":                        "6.*"
 	},
 	"type": "itrocks"
 }
