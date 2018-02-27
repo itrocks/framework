@@ -147,7 +147,7 @@ trait Scanners
 				. '(\w+)\s+'                 // 1 : property name
 				. '(?:'                      // begin annotations loop
 				. '(?:@.*?\s+)?'             // others overridden annotations
-				. '@annotation'           // overridden annotation
+				. '@annotation'              // overridden annotation
 				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
 				. '(\w+)?)?'                 // 2 : method or function name
 				. ')+'                       // end annotations loop
@@ -163,12 +163,14 @@ trait Scanners
 								$disable[$match] = true;
 							}
 							$type = ($annotation === 'setter') ? Handler::WRITE : Handler::READ;
-							$overrides[] = [
-								'type'          => $type,
-								'property_name' => $matches[1][$i],
-								'class_name'    => $matches[2][$i],
-								'method_name'   => $matches[3][$i]
-							];
+							if ($matches[2][$i] && $matches[3][$i]) {
+								$overrides[] = [
+									'class_name'    => $matches[2][$i],
+									'method_name'   => $matches[3][$i],
+									'property_name' => $matches[1][$i],
+									'type'          => $type
+								];
+							}
 						}
 					}
 				}
