@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use DateTime;
+use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
+use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -124,40 +126,20 @@ trait Column_Builder_Property
 				$min_value  = $property->getAnnotation('min_value')->value;
 				$precision  = $property->getAnnotation('precision')->value;
 				$signed     = $property->getAnnotation('signed')->value;
-				$signed_length = $max_length + ($signed ? 1 : 0);
-				if (!isset($max_length)) {
-					if ($property_type->isNumeric()) {
-						$max_length = 18;
-						$signed_length = 18;
-					}
-					else {
-						$max_length = 255;
-					}
-				}
 				if ($property_type->isInteger()) {
-					if (!isset($signed) && ($max_value) < 0 || $min_value < 0) {
-						$signed = true;
-					}
-					return ($max_length <= 3  && $min_value >= -128 && $max_value <= 127 && $signed) ? 'tinyint(' . $signed_length . ')' : (
-						($max_length <= 3 && $min_value >= 0 && $max_value <= 255 && !$signed) ? 'tinyint(' . $max_length . ') unsigned' : (
-						($max_length <= 5 && $min_value >= -32768 && $max_value <= 32767) ? 'smallint(' . $signed_length . ')' : (
-						($max_length <= 5 && $min_value >= 0 && $max_value <= 65535) ? 'smallint(' . $max_length . ') unsigned' : (
-						($max_length <= 7 && $min_value >= -8388608 && $max_value <= 8388607) ? 'mediumint(' . $signed_length . ')' : (
-						($max_length <= 8 && $min_value >= 0 && $max_value <= 16777215) ? 'mediumint(' . $max_length . ') unsigned' : (
-						($max_length <= 10 && $min_value >= -2147483648 && $max_value <= 2147483647) ? 'int(' . $signed_length . ')' : (
-						($max_length <= 10 && $min_value >= 0 && $max_value <= 4294967295) ? 'int(' . $max_length . ') unsigned' : (
-						($max_length <= 19 && $min_value >= -9223372036854775808 && $max_value <= 9223372036854775806) ? 'bigint(' . $signed_length . ')' : (
-						'bigint(' . $max_length . ') unsigned'
-					)))))))));
+					return (new Integer)->type($max_length, $min_value, $max_value, $signed);
 				}
 				elseif ($property_type->isFloat()) {
-					return ($precision ? 'decimal(' . $signed_length . ', ' . $precision . ')' : 'double');
+					return $precision
+						? (new Decimal)->type($max_length, $max_value, $signed, $precision)
+						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {
-					return ($max_length <= 65535) ? 'blob' : (
-						($max_length <= 16777215) ? 'mediumblob' :
+					return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob' : (
+						(isset($max_length) && ($max_length <= 65535)) ? 'blob' : (
+						(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
 						'longblob'
-					);
+					));
 				}
 				else {
 					$values = self::propertyValues($property);
@@ -169,14 +151,17 @@ trait Column_Builder_Property
 							. SP . Database::characterSetCollateSql();
 					}
 					if ($store_annotation_value === Store_Annotation::GZ) {
-						return ($max_length <= 255) ? 'tinyblob' : (
-							($max_length <= 65535)    ? 'blob' : (
-							($max_length <= 16777215) ? 'mediumblob' :
+						return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob' : (
+							(isset($max_length) && ($max_length <= 65535))    ? 'blob' : (
+							(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
 							'longblob'
 						));
 					}
-					return ($max_length <= 3)   ? 'char(' . $max_length . ')' : (
-						($max_length <= 255)      ? 'varchar(' . $max_length . ')' : (
+					if (!isset($max_length)) {
+						$max_length = 255;
+					}
+					return ($max_length <= 3)   ? ('char(' . $max_length . ')') : (
+						($max_length <= 255)      ? ('varchar(' . $max_length . ')') : (
 						($max_length <= 65535)    ? 'text' : (
 						($max_length <= 16777215) ? 'mediumtext' :
 						'longtext'
@@ -210,7 +195,7 @@ trait Column_Builder_Property
 
 	//-------------------------------------------------------------------------------- propertyValues
 	/**
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
 	private static function propertyValues(Reflection_Property $property)
