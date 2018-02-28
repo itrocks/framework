@@ -131,7 +131,7 @@ trait Column_Builder_Property
 				}
 				elseif ($property_type->isFloat()) {
 					return $precision
-						? (new Decimal)->type($max_length, $max_value, $signed, $precision)
+						? (new Decimal)->type($max_length, $min_value, $max_value, $signed, $precision)
 						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {

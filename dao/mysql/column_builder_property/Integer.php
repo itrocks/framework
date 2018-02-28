@@ -39,10 +39,10 @@ class Integer
 
 	//------------------------------------------------------------------------------------------ type
 	/**
-	 * @param $max_length integer
-	 * @param $min_value  integer
-	 * @param $max_value  integer
-	 * @param $signed     boolean
+	 * @param $max_length integer|null
+	 * @param $min_value  integer|null
+	 * @param $max_value  integer|null
+	 * @param $signed     boolean|null
 	 * @return string
 	 */
 	public function type($max_length, $min_value, $max_value, $signed)
