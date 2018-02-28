@@ -150,15 +150,15 @@ trait Column_Builder_Property
 						return 'enum(' . Q . join(Q . ',' . Q, $values) . Q . ')'
 							. SP . Database::characterSetCollateSql();
 					}
-					if ($store_annotation_value === Store_Annotation::GZ) {
-						return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob' : (
-							(isset($max_length) && ($max_length <= 65535))    ? 'blob' : (
-							(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
-							'longblob'
-						));
-					}
 					if (!isset($max_length)) {
 						$max_length = 255;
+					}
+					if ($store_annotation_value === Store_Annotation::GZ) {
+						return ($max_length <= 255) ? 'tinyblob' : (
+							($max_length <= 65535)    ? 'blob' : (
+							($max_length <= 16777215) ? 'mediumblob' :
+							'longblob'
+						));
 					}
 					return ($max_length <= 3)   ? ('char(' . $max_length . ')') : (
 						($max_length <= 255)      ? ('varchar(' . $max_length . ')') : (
