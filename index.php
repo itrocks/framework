@@ -64,3 +64,5 @@ flush();
 // calls. This is a php bug, calling session_write_close() here will serialize session variables
 // within the correct application environment
 session_write_close();
+
+//echo PRE . print_r((new Configuration\File\Builder('bappli/studio/builder.php'))->read(), true) . _PRE;

@@ -1,75 +1,62 @@
 <?php
 namespace ITRocks\Framework\Configuration;
 
+use ITRocks\Framework\Configuration\File\Has_Add_To_Configuration;
 use ITRocks\Framework\Configuration\File\Has_File_Name;
-use ITRocks\Framework\Configuration\File\Read;
-use ITRocks\Framework\Configuration\File\Write;
 
 /**
  * Configuration file
  */
-class File
+abstract class File
 {
 	use Has_File_Name;
 
-	//-------------------------------------------------------------------------------- $configuration
+	//---------------------------------------------------------------------------------- $begin_lines
 	/**
-	 * Configuration file content
+	 * free code lines before the parsed configuration started
 	 *
 	 * @var string[]
 	 */
-	protected $configuration;
+	public $begin_lines;
 
-	//------------------------------------------------------------------------------- $included_files
+	//------------------------------------------------------------------------------------ $end_lines
 	/**
-	 * Included configuration sub-files, if there are some (eg builder.php, menu.php, etc.)
+	 * free code lines after the parsed configuration ended
 	 *
-	 * @var File[]
+	 * @var string[]
 	 */
-	protected $included_files = [];
+	public $end_lines;
 
-	//------------------------------------------------------------------------------------------- add
+	//------------------------------------------------------------------------------------ $namespace
 	/**
-	 * Adds sub-elements to a sub-section path
-	 *
-	 * @param $path string[]
-	 * @param $add  array
+	 * @var string
 	 */
-	public function add(array $path, array $add)
+	public $namespace;
+
+	//------------------------------------------------------------------------------------------ $use
+	/**
+	 * @var string[]
+	 */
+	public $use;
+
+	//------------------------------------------------------------------------------------- isEndLine
+	/**
+	 * @param $line string
+	 * @return boolean
+	 */
+	public function isEndLine($line)
 	{
-		array_unshift($path, '] = [');
-		echo '+ add into ' . print_r($path, true) . BRLF;
-		$configuration = reset($this->configuration);
-		$positions     = [];
-		foreach ($path as $path_element) {
-			$depth = 0;
-			while (
-				($configuration !== false)
-				&& (
-					!$depth
-					|| !strpos($configuration, $path_element)
-					|| !preg_match("/^\s*" . preg_quote($path_element) . "\s*=>/", $configuration)
-				)
-			) {
-				if (substr($configuration, -1) === '[') {
-					$depth ++;
-				}
-				elseif ((substr($configuration, -1) === ']') || (substr($configuration, -2) === '],')) {
-					$depth --;
-				}
-				$configuration = next($this->configuration);
-			}
-			if ($configuration === false) {
-				trigger_error('not found ' . $path_element . ' into ' . $this->file_name, E_USER_ERROR);
-			}
-			else {
-				echo '- found ' . $path_element . ' at position ' . key($this->configuration) . BRLF;
-				$positions[] = key($this->configuration);
-			}
-		}
-		if ($configuration !== false) {
-			echo '- insert ' . print_r($add, true) . ' at position ' . key($this->configuration) . BRLF;
-		}
+		return ($line === '];');
+	}
+
+	//----------------------------------------------------------------------------------- isStartLine
+	/**
+	 * @param $line string
+	 * @return boolean
+	 */
+	public function isStartLine($line)
+	{
+		return ($line === 'return [');
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -78,20 +65,94 @@ class File
 	 */
 	public function read()
 	{
-		$this->configuration = (new Read($this->file_name))->read();
+		$lines = explode(LF, str_replace(CR, '', file_get_contents($this->file_name)));
+		$this
+			->readNamespaceUse($lines)
+			->readBeginLines($lines)
+			->readConfiguration($lines)
+			->readEndLines($lines);
 		return $this;
 	}
 
-	//---------------------------------------------------------------------------------------- remove
+	//-------------------------------------------------------------------------------- readBeginLines
 	/**
-	 * Remove sub-elements from a sub-section path
-	 *
-	 * @param $path   string[]
-	 * @param $remove array
+	 * @param $lines string[]
+	 * @return static
 	 */
-	public function remove(array $path, array $remove)
+	protected function readBeginLines(array &$lines)
 	{
+		$this->begin_lines = [];
+		for (($line = current($lines)), ($started = false); !$started; $line = next($lines)) {
+			if ($this->isStartLine($line)) {
+				$started = true;
+			}
+			else {
+				$this->begin_lines[] = $line;
+			}
+		}
+		return $this;
+	}
 
+	//----------------------------------------------------------------------------- readConfiguration
+	/**
+	 * @param $lines string[]
+	 * @return static
+	 */
+	protected function readConfiguration(array &$lines)
+	{
+		for (($line = current($lines)), ($ended = false); !$ended; $line = next($lines)) {
+			if ($this->isEndLine($line)) {
+				$ended = true;
+			}
+			elseif ($this instanceof Has_Add_To_Configuration) {
+				$this->addToConfiguration($line);
+			}
+		}
+		return $this;
+	}
+
+	//---------------------------------------------------------------------------------- readEndLines
+	/**
+	 * @param $lines string[]
+	 * @return static
+	 */
+	protected function readEndLines(array &$lines)
+	{
+		$this->end_lines = [];
+		while ($line = next($lines)) {
+			$this->end_lines[] = $line;
+		}
+		return $this;
+	}
+
+	//------------------------------------------------------------------------------ readNamespaceUse
+	/**
+	 * @param $lines string[]
+	 * @return static
+	 */
+	protected function readNamespaceUse(array &$lines)
+	{
+		$php             = false;
+		$this->namespace = null;
+		$this->use       = [];
+		for ($line = reset($lines); true; $line = next($lines)) {
+			if (beginsWith($line, '<?php')) {
+				$php = true;
+			}
+			elseif ($php) {
+				if (beginsWith($line, 'namespace ')) {
+					$this->namespace = mParse($line, 'namespace ', ';');
+				}
+				elseif (beginsWith($line, 'use ')) {
+					$this->use[] = mParse($line, 'use ', ';');
+				}
+				elseif ($line) {
+					break;
+				}
+			}
+		}
+		sort($this->use);
+		return $this;
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -100,11 +161,6 @@ class File
 	 */
 	public function write()
 	{
-		(new Write($this->file_name))->write();
-		foreach ($this->included_files as $included_file) {
-			$included_file->write();
-		}
-		$this->included_files = [];
 		return $this;
 	}
 
