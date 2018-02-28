@@ -74,14 +74,14 @@ class Json
 			|| Link_Annotation::of($property)->isCollection();
 	}
 
-	//------------------------------------------------------------------ objectNotBrowsableToStdClass
+	//------------------------------------------------------------------ notBrowsableObjectToStdClass
 	/**
 	 * Smalest object's representation
 	 *
 	 * @param $standard_object stdClass object resulting
 	 * @param $business_object object   object to convert to stdClass
 	 */
-	protected function objectNotBrowsableToStdClass(stdClass $standard_object, $business_object)
+	protected function notBrowsableObjectToStdClass(stdClass $standard_object, $business_object)
 	{
 		$standard_object->id        = Dao::getObjectIdentifier($business_object);
 		$standard_object->as_string = strval($business_object);
@@ -192,12 +192,12 @@ class Json
 					// case we should expand
 					if ($this->isBrowsableProperty($property)) {
 						if (!$this->objectToStdClassInternal($sub_object, $value, $parent_tree)) {
-							$this->objectNotBrowsableToStdClass($sub_object, $value);
+							$this->notBrowsableObjectToStdClass($sub_object, $value);
 						}
 					}
 					// case we do not expand
 					else {
-						$this->objectNotBrowsableToStdClass($sub_object, $value);
+						$this->notBrowsableObjectToStdClass($sub_object, $value);
 					}
 
 					return $sub_object;
