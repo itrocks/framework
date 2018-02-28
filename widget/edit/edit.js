@@ -144,12 +144,8 @@ $('document').ready(function()
 			dateFormat:        dateFormatToDatepicker(app.date_format),
 			showOn:            'button',
 			showOtherMonths:   true,
-<<<<<<< e3f40eee4d9ec404713960aefe11cab2fb8fd814
 			selectOtherMonths: true,
 			showWeek:          true
-=======
-			selectOtherMonths: true
->>>>>>> IMP 110086 removing old dateTimePicker, reverting one of the commit that could'nt be revert automaticly
 		});
 
 		//------------------------------------------------------------------------ input.datetime keyup
