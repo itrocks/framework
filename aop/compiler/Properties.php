@@ -20,6 +20,9 @@ class Properties
 	const INIT_JOINPOINT = '2.joinpoint';
 
 	//------------------------------------------------------------------------------ $SETTER_RESERVED
+	/**
+	 * @var string[]
+	 */
 	private static $SETTER_RESERVED = [
 		'class_name', 'element_type', 'element_type_name', 'joinpoint', 'object',
 		'property', 'property_name', 'result', 'stored', 'type', 'type_name', 'value'
@@ -244,7 +247,7 @@ class Properties
 				$over = $this->overrideMethod('__construct', false);
 				return
 					$over['prototype'] . '
-		$this->__default();
+		if (!isset($this->id)) $this->__default();
 		if (!isset($this->_)) $this->__aop();' . ($over['call'] ? (LF . TAB . TAB . $over['call']) : '')
 					. '
 	}
@@ -784,7 +787,6 @@ class Properties
 	 * @param $parameters  string
 	 * @param $advices     array
 	 * @return string[]
-	 *
 	 * @todo this check only getters, links and setters. This should check AOP links too.
 	 * (the parent class has not this method but it has AOP properties)
 	 */
