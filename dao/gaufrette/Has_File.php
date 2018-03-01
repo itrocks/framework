@@ -12,6 +12,7 @@ trait Has_File
 	//--------------------------------------------------------------------------------- $file_content
 	/**
 	 * @dao gaufrette
+	 * @max_length 1000000000
 	 * @store gz
 	 * @var string
 	 */
