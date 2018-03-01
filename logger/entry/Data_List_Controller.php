@@ -12,6 +12,7 @@ use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
  */
 class Data_List_Controller extends Data_List\Data_List_Controller
 {
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $class_name string The context object or class name
