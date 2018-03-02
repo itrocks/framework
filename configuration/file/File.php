@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration;
 
 use ITRocks\Framework\Configuration\File\Has_Add_To_Configuration;
 use ITRocks\Framework\Configuration\File\Has_File_Name;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * Configuration file
@@ -38,6 +39,22 @@ abstract class File
 	 * @var string[]
 	 */
 	public $use;
+
+	//------------------------------------------------------------------------------- fullClassNameOf
+	/**
+	 * Change a short class name, with maybe spaces and trailing '::class', into a clean full class
+	 * name with full namespace
+	 *
+	 * It uses $namespace and $use for namespace completion
+	 *
+	 * @param $class_name string source short class name to cleanup and extend
+	 * @return string resulting full and clean class name
+	 */
+	protected function fullClassNameOf($class_name)
+	{
+		$class_name = lParse(trim($class_name), '::class');
+		return (new Type($class_name))->applyNamespace($this->namespace, $this->use);
+	}
 
 	//------------------------------------------------------------------------------------- isEndLine
 	/**
