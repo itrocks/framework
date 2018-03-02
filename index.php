@@ -65,4 +65,6 @@ flush();
 // within the correct application environment
 session_write_close();
 
-//echo PRE . print_r((new Configuration\File\Builder('bappli/studio/builder.php'))->read(), true) . _PRE;
+//$builder = new Configuration\File\Builder('bappli/studio/builder.php');
+//$builder->read();
+//echo PRE . print_r($builder, true) . _PRE;
