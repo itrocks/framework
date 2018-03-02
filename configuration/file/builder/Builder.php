@@ -14,7 +14,7 @@ class Builder extends File
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
-	 * @var Built[]|null[]
+	 * @var Built[]|string[] Built classes, or comments if trim begins with '/', or empty lines ''
 	 */
 	public $classes;
 
@@ -32,9 +32,6 @@ class Builder extends File
 			if ($this->isEndLine($line)) {
 				$ended = true;
 			}
-			elseif (!trim($line)) {
-				$this->classes[] = null;
-			}
 			else {
 				// add assembled built class components
 				if ($built_on_next_line && strpos($line, '=>')) {
@@ -42,54 +39,65 @@ class Builder extends File
 					$line               = TAB . $class_name . $line;
 				}
 				if (beginsWith($line, TAB . TAB)) {
-					if (trim($line)) {
-						if ($built instanceof Assembled) {
-							foreach (explode(',', lParse($line, ']')) as $class_name) {
-								$built->components[] = trim($class_name);
-							}
+					if ($built instanceof Assembled) {
+						if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+							$built->components[] = $line;
 						}
 						else {
-							trigger_error(
-								'Only ' . Assembled::class . ' can accept component interface / traits,'
-								. ' bad built object ' . get_class($built) . ' into file ' . $this->file_name
-								. ' line ' . (key($lines) + 1),
-								E_USER_ERROR
-							);
+							foreach (explode(',', lParse($line, ']')) as $class_name) {
+								if (trim($class_name)) {
+									$built->components[] = $this->fullClassNameOf($class_name);
+								}
+							}
 						}
+					}
+					else {
+						trigger_error(
+							'Only ' . Assembled::class . ' can accept component interface / traits,'
+							. ' bad built object ' . get_class($built) . ' into file ' . $this->file_name
+							. ' line ' . (key($lines) + 1),
+							E_USER_ERROR
+						);
 					}
 				}
 				// add built class
 				elseif (beginsWith($line, TAB)) {
-					$class_name = trim(lParse($line, '=>'));
-					// Class_Name::class =>
-					if (strpos($line, '=>')) {
-						// Class_Name::class => [
-						if (strpos($line, '[')) {
-							$built = new Assembled($class_name);
-							// Class_Name::class => [ Class_Name::class, ...
-							// Class_Name::class => [ Class_Name::class, ... ]
-							foreach (explode(',', mParse($line, '[', ']')) as $class_name) {
-								if (trim($class_name)) {
-									$built->components[] = trim($class_name);
-								}
-							}
-						}
-						// Class_Name::class => Replacement::class
-						else {
-							$built = new Replaced($class_name, trim(rParse($line, '=>')));
-						}
-						$this->classes[] = $built;
+					if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+						$this->classes[] = $line;
+					}
+					elseif (in_array(trim($line), [']', '],'])) {
+						$built = null;
 					}
 					else {
-						$built_on_next_line = true;
+						$class_name = $this->fullClassNameOf(lParse($line, '=>'));
+						// Class_Name::class =>
+						if (strpos($line, '=>')) {
+							// Class_Name::class => [
+							if (strpos($line, '[')) {
+								$built = new Assembled($class_name);
+								// Class_Name::class => [ Class_Name::class, ...
+								// Class_Name::class => [ Class_Name::class, ... ]
+								foreach (explode(',', mParse($line, '[', ']')) as $class_name) {
+									if (trim($class_name)) {
+										$built->components[] = $this->fullClassNameOf($class_name);
+									}
+								}
+							} // Class_Name::class => Replacement::class
+							else {
+								$built = new Replaced($class_name, $this->fullClassNameOf(rParse($line, '=>')));
+							}
+							$this->classes[] = $built;
+						}
+						else {
+							$built_on_next_line = true;
+						}
 					}
 				}
+				elseif ($built instanceof Assembled) {
+					$built->components[] = $line;
+				}
 				else {
-					trigger_error(
-						'Bad syntax into file ' . $this->file_name . ' line ' . (key($lines) + 1) . ' :'
-						. ' must begin with a single or double tab',
-						E_USER_ERROR
-					);
+					$this->classes[] = $line;
 				}
 			}
 		}

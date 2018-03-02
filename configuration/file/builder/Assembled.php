@@ -9,7 +9,7 @@ class Assembled extends Built
 
 	//----------------------------------------------------------------------------------- $components
 	/**
-	 * Component class names
+	 * Component class names, or comments if trim begins with '/', or empty lines ''
 	 *
 	 * @var string[]
 	 */
