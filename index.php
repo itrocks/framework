@@ -69,3 +69,8 @@ session_write_close();
 //$builder->read();
 //echo PRE . print_r($builder, true) . _PRE;
 //$builder->write();
+
+//$menu = new Configuration\File\Menu('bappli/studio/menu.php');
+//$menu->read();
+//echo PRE . print_r($menu, true) . _PRE;
+//$menu->write();
