@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration;
 
 use ITRocks\Framework\Configuration\File\Has_File_Name;
 use ITRocks\Framework\Configuration\File\Reader;
+use ITRocks\Framework\Configuration\File\Writer;
 
 /**
  * Configuration file
@@ -54,7 +55,7 @@ abstract class File
 	 */
 	public function write()
 	{
-		// TODO
+		(new Writer($this))->write();
 	}
 
 }

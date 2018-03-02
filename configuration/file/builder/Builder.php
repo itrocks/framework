@@ -25,4 +25,13 @@ class Builder extends File
 		(new Builder\Reader($this))->read();
 	}
 
+	//----------------------------------------------------------------------------------------- write
+	/**
+	 * Write to file
+	 */
+	public function write()
+	{
+		(new Builder\Writer($this))->write();
+	}
+
 }
