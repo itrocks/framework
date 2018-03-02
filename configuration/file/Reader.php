@@ -5,7 +5,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Reflection\Type;
 
 /**
- * Common code for all file readers
+ * Common code for all configuration file readers
  */
 class Reader
 {
@@ -14,7 +14,7 @@ class Reader
 	/**
 	 * @var File
 	 */
-	public $file;
+	protected $file;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
@@ -70,16 +70,16 @@ class Reader
 	//------------------------------------------------------------------------------------------ read
 	public function read()
 	{
-		$this->readLines()
-			->readNamespaceUse()
-			->readBeginLines()
-			->readConfiguration()
-			->readEndLines();
+		$this->readLines();
+		$this->readNamespaceUse();
+		$this->readBeginLines();
+		$this->readConfiguration();
+		$this->readEndLines();
 	}
 
 	//-------------------------------------------------------------------------------- readBeginLines
 	/**
-	 * @return static
+	 * Read begin lines
 	 */
 	protected function readBeginLines()
 	{
@@ -93,12 +93,11 @@ class Reader
 				$this->file->begin_lines[] = $line;
 			}
 		}
-		return $this;
 	}
 
 	//----------------------------------------------------------------------------- readConfiguration
 	/**
-	 * @return static
+	 * Read configuration : the main part of the file
 	 */
 	protected function readConfiguration()
 	{
@@ -107,16 +106,15 @@ class Reader
 			if ($this->isEndLine($line)) {
 				$ended = true;
 			}
-			elseif ($this instanceof Has_Add_To_Configuration) {
+			elseif ($this instanceof Has_Configuration_Accessors) {
 				$this->addToConfiguration($line);
 			}
 		}
-		return $this;
 	}
 
 	//---------------------------------------------------------------------------------- readEndLines
 	/**
-	 * @return static
+	 * Read end lines
 	 */
 	protected function readEndLines()
 	{
@@ -124,22 +122,20 @@ class Reader
 		while ($line = next($this->lines)) {
 			$this->file->end_lines[] = $line;
 		}
-		return $this;
 	}
 
 	//------------------------------------------------------------------------------------- readLines
 	/**
-	 * @return static
+	 * Read raw lines from file
 	 */
 	protected function readLines()
 	{
 		$this->lines = explode(LF, str_replace(CR, '', file_get_contents($this->file->file_name)));
-		return $this;
 	}
 
 	//------------------------------------------------------------------------------ readNamespaceUse
 	/**
-	 * @return static
+	 * Read namespace and use clauses
 	 */
 	protected function readNamespaceUse()
 	{
@@ -163,7 +159,6 @@ class Reader
 			}
 		}
 		sort($this->file->use);
-		return $this;
 	}
 
 }

@@ -68,3 +68,4 @@ session_write_close();
 //$builder = new Configuration\File\Builder('bappli/studio/builder.php');
 //$builder->read();
 //echo PRE . print_r($builder, true) . _PRE;
+//$builder->write();

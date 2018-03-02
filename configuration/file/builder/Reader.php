@@ -15,7 +15,7 @@ class Reader extends File\Reader
 
 	//----------------------------------------------------------------------------- readConfiguration
 	/**
-	 * @return static
+	 * Read configuration : the main part of the file
 	 */
 	protected function readConfiguration()
 	{
@@ -23,6 +23,9 @@ class Reader extends File\Reader
 		$built_on_next_line = false;
 		$class_name         = null;
 		$line               = current($this->lines);
+		while (!trim($line)) {
+			$line = next($this->lines);
+		}
 		for ($ended = false; !$ended; $line = next($this->lines)) {
 			if ($this->isEndLine($line)) {
 				$ended = true;
@@ -96,7 +99,6 @@ class Reader extends File\Reader
 				}
 			}
 		}
-		return $this;
 	}
 
 }

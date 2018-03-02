@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Configuration\File;
 /**
  * If the configuration file works with a single addToConfiguration call per read line
  */
-interface Has_Add_To_Configuration
+interface Has_Configuration_Accessors
 {
 
 	//---------------------------------------------------------------------------- addToConfiguration
@@ -12,5 +12,11 @@ interface Has_Add_To_Configuration
 	 * @param $line string
 	 */
 	function addToConfiguration($line);
+
+	//------------------------------------------------------------------------- getConfigurationLines
+	/**
+	 * @return string[]
+	 */
+	function getConfigurationLines();
 
 }
