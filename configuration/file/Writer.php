@@ -102,6 +102,7 @@ class Writer
 	protected function writeLines()
 	{
 		file_put_contents($this->file->file_name, join(LF, $this->lines));
+		echo PRE . 'WRITE :' . LF . htmlentities(print_r(join(LF, $this->lines), true)) . _PRE;
 	}
 
 	//-------------------------------------------------------------------------------- writeNamespace

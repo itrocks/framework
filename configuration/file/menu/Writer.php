@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Widget\Menu\Block;
+use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * Builder configuration file writer
@@ -31,15 +32,38 @@ class Writer extends File\Writer
 					$this->lines[$last_line_key] .= ',';
 				}
 				if ($block instanceof Block) {
-					$this->lines[] = TAB . ''; // TODO
 					$component_count = count($block->items);
-					foreach ($block->items as $item) {
-						$component_count --;
-						$this->lines[] = TAB . TAB . '' // TODO
-							. ($component_count ? ',' : '');
+					if (($component_count === 1) && ($block->items[0] === 'Menu::ALL => Menu::CLEAR')) {
+						$last_line_key = count($this->lines);
+						$this->lines[] = TAB . Q . str_replace(Q, BS . Q, $block->title) . Q
+							. ' => [Menu::ALL => Menu::CLEAR]';
 					}
-					$last_line_key = count($this->lines);
-					$this->lines[] = TAB . ']';
+					else {
+						$this->lines[] = TAB . Q . str_replace(Q, BS . Q, $block->title) . Q . ' => [';
+						foreach ($block->items as $item) {
+							$component_count --;
+							if ($item instanceof Item) {
+								if (($item->caption === 'Menu::CLEAR') && ($item->link === 'Menu::ALL')) {
+									$this->lines[] = TAB . TAB . 'Menu::ALL => Menu::CLEAR'
+										. ($component_count ? ',' : '');
+								}
+								else {
+									$this->lines[] = TAB . TAB . Q . $item->link . Q
+										. ' => ' . Q . str_replace(Q, BS . Q, $item->caption) . Q
+										. ($component_count ? ',' : '');
+								}
+							}
+							else {
+								$this->lines[] = $item;
+							}
+						}
+						$last_line_key = count($this->lines);
+						$this->lines[] = TAB . ']';
+					}
+				}
+				else {
+					$last_line_key = null;
+					$this->lines[] = $block;
 				}
 			}
 		}
