@@ -65,13 +65,14 @@ class Reader extends File\Reader
 						$title = trim(trim(lParse($line, '=>')), Q . DQ);
 						// 'Menu block title' => [
 						if (strpos($line, '=>') && strpos($line, '[')) {
-							$block        = new Block();
-							$block->title = $title;
+							$block                = new Block();
+							$block->title         = $title;
+							$this->file->blocks[] = $block;
 							// '/Full/Class/Path' => [Menu::ALL => Menu::CLEAR]
 							if (strpos($line, ']')) {
 								$block->items[] = mParse($line, '[', ']');
+								$block          = null;
 							}
-							$this->file->blocks[] = $block;
 						}
 						else {
 							trigger_error(
