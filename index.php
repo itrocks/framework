@@ -74,3 +74,8 @@ session_write_close();
 //$menu->read();
 //echo PRE . print_r($menu, true) . _PRE;
 //$menu->write();
+
+//$config = new Configuration\File\Config('bappli/studio/config.php');
+//$config->read();
+//echo PRE . print_r($config, true) . _PRE;
+//$config->write();
