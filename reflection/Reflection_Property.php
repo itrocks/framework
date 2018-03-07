@@ -547,6 +547,7 @@ class Reflection_Property extends ReflectionProperty
 		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$this->isStatic()
 			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& !$user_annotation->has(User_Annotation::HIDDEN)
 			&& (!$hide_empty_test || !$user_annotation->has(User_Annotation::HIDE_EMPTY));
 	}
 

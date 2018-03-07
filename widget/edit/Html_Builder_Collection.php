@@ -155,6 +155,10 @@ class Html_Builder_Collection extends Collection
 		if ($class = $type->isClassHtml()) {
 			$cell->addClass($class);
 		}
+		if(!$property->isVisible()){
+			$cell->addClass('hidden');
+			$cell->setStyle('display', 'none');
+		}
 		return $cell;
 	}
 
