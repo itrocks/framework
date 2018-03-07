@@ -162,12 +162,11 @@ class Collection
 	 */
 	protected function getProperties()
 	{
-		/** @var $representative Representative_Annotation */
+		$class          = new Reflection_Class($this->class_name);
 		$representative = Representative_Annotation::of($this->property);
 		$properties     = $representative->getProperties();
 		if (!$properties) {
 			// gets all properties from collection element class
-			$class      = new Reflection_Class($this->class_name);
 			$properties = $class->getProperties([T_EXTENDS, T_USE]);
 			// remove replaced properties
 			/** @var $properties Reflection_Property[] */
@@ -199,6 +198,9 @@ class Collection
 				}
 			}
 		}
+		// use @display_order to reorder properties
+		$properties = $class->sortProperties($properties);
+
 		// returns properties
 		return $properties;
 	}
