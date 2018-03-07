@@ -107,11 +107,15 @@ class Collection
 		if ($type->isMultiple()) {
 			$cell->addClass('multiple');
 		}
+		if(!$property->isVisible()){
+			$cell->addClass('hidden');
+			$cell->setStyle('display', 'none');
+		}
 		$cell->addClass($type->asString());
 		return $cell;
 	}
 
-	//------------------------------------------------------------------------------------- buildHead
+//------------------------------------------------------------------------------------- buildHead
 	/**
 	 * @return Head
 	 */
@@ -130,12 +134,17 @@ class Collection
 						$this->class_name
 					)
 				);
+				if(!$property->isVisible()){
+					$cell->addClass('hidden');
+					$cell->setStyle('display', 'none');
+				}
 				$row->addCell($cell);
 			}
 		}
 		$head->addRow($row);
 		return $head;
 	}
+
 
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
