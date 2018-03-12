@@ -60,8 +60,8 @@ class Application_Class_Tree_Filter
 			}
 			$route = $route->child->route;
 			$route->addNode($node);
-			if ($node->next()) {
-				$this->follow($route, $node->next());
+			if ($node->parents) {
+				$this->follow($route, reset($node->parents));
 			}
 		}
 	}
@@ -99,8 +99,8 @@ class Application_Class_Tree_Filter
 		if ($node->opens()) {
 			$this->openRoutes($node);
 		}
-		elseif (!$node->closes()) {
-			$this->follow($route, $node->next());
+		elseif ($node->parents && !$node->closes()) {
+			$this->follow($route, reset($node->parents));
 		}
 	}
 

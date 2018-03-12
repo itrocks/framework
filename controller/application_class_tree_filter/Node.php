@@ -86,17 +86,6 @@ class Node
 		return false;
 	}
 
-	//------------------------------------------------------------------------------------------ next
-	/**
-	 * BEWARE : call this only if opens returns false !
-	 *
-	 * @return Node|null the next parent, or null if it is the last node
-	 */
-	public function next()
-	{
-		return $this->parents ? reset($this->parents) : null;
-	}
-
 	//----------------------------------------------------------------------------------------- opens
 	/**
 	 * @return boolean true if the node opens multiple routes (initial crossroads)
