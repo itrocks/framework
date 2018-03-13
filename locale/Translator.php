@@ -206,7 +206,7 @@ class Translator
 	 * @return string|string[]
 	 */
 	protected function reverseWithWildcards(
-		$translation, $context, $context_property_path, array $limit_to
+		$translation, $context, $context_property_path, array $limit_to = null
 	) {
 		$limit  = static::MAX_WILDCARD_REVERSE_TRANSLATIONS + 1;
 		$search = ['translation' => $translation];
