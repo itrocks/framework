@@ -29,45 +29,52 @@ class List_Annotation extends Annotation
 	 */
 	public function __construct($value)
 	{
-		$values = [];
-		$value = trim($value);
-		$length = strlen($value);
-		$in_quote = ($length && (($value[0] === Q) || ($value[0] === DQ)))
-			? $value[0] : false;
-		$start = ($in_quote ? 1 : 0);
-		$stop = null;
-		$i = $start;
-		while ($i < $length) {
-			if (($value[$i] === BS) && ($i < ($length - 1))) {
-				$i++;
+		$values   = [];
+		$value    = trim($value);
+		$length   = strlen($value);
+		$in_quote = ($length && (($value[0] === Q) || ($value[0] === DQ))) ? $value[0] : false;
+		$start    = ($in_quote ? 1 : 0);
+		$stop     = null;
+		$position = $start;
+		while ($position < $length) {
+			if (($value[$position] === BS) && ($position < ($length - 1))) {
+				$position++;
 			}
-			if ($value[$i] === $in_quote) {
-				$j = $i + 1;
-				while (($j < $length) && ($value[$j] === SP)) $j ++;
-				$stop = $i;
+			if ($value[$position] === $in_quote) {
+				$next_position = $position + 1;
+				while (($next_position < $length) && ($value[$next_position] === SP)) {
+					$next_position ++;
+				}
+				$stop     = $position;
 				$in_quote = false;
-				$i = $j;
+				$position = $next_position;
 			}
-			if (($i == $length) || ($value[$i] === ',') && !$in_quote) {
+			if (($position == $length) || ($value[$position] === ',') && !$in_quote) {
 				if (!isset($stop)) {
-					$stop = $i;
+					$stop = $position;
 				}
 				$values[] = substr($value, $start, $stop - $start);
-				$i ++;
-				if ($i == $length) {
-					$start = $i;
+				$position ++;
+				if ($position == $length) {
+					$start = $position;
 					break;
 				}
-				while (($i < $length) && ($value[$i] === SP)) $i ++;
-				$in_quote = (($i < $length) && (($value[$i] === Q) || ($value[$i] === DQ)))
-					? $value[$i] : false;
-				$start = ($in_quote ? ($i + 1) : $i);
-				$stop = null;
+				while (($position < $length) && ($value[$position] === SP)) {
+					$position ++;
+				}
+				$in_quote = (
+					($position < $length)
+					&& (($value[$position] === Q) || ($value[$position] === DQ))
+				)
+					? $value[$position]
+					: false;
+				$start = ($in_quote ? ($position + 1) : $position);
+				$stop  = null;
 			}
-			$i++;
+			$position++;
 		}
-		if (($i == $length) && ($values || ($i > $start))) {
-			$values[] = substr($value, $start, $i - $start);
+		if (($position == $length) && ($values || ($position > $start))) {
+			$values[] = substr($value, $start, $position - $start);
 		}
 		/** @noinspection PhpParamsInspection $values is now a string[] */
 		parent::__construct($values);
