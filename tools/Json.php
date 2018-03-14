@@ -89,11 +89,11 @@ class Json
 
 	//---------------------------------------------------------------------- objectToStdClassInternal
 	/**
-	 * @param $standard_object   stdClass object resulting
-	 * @param $business_object   object business object to transform
-	 * @param $parent_tree       array array of unduplicate name for each object in calling hierarchy
+	 * @param $standard_object stdClass object resulting
+	 * @param $business_object object business object to transform
+	 * @param $parent_tree     array array of unduplicate name for each object in calling hierarchy
 	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
-	 *     $parent_tree[] => unduplicate name for collection or component property of direct above object
+	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
 	 * @return boolean
 	 * @throws Exception
 	 */
@@ -148,16 +148,16 @@ class Json
 	/**
 	 * Returns value transformed in a suitable format for json
 	 *
-	 * @param $property       Reflection_Property
-	 * @param $value          mixed
-	 * @param $type           Type
-	 * @param $parent_tree    array array of unduplicate name for each object in calling hierarchy
+	 * @param $property    Reflection_Property
+	 * @param $value       mixed
+	 * @param $type        Type
+	 * @param $parent_tree array array of unduplicate name for each object in calling hierarchy
 	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
-	 *     $parent_tree[] => unduplicate name for collection or component property of direct above object
+	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected function propertyToStdInternal (
+	protected function propertyToStdInternal(
 		Reflection_Property $property, $value, Type $type = null, $parent_tree = []
 	) {
 
@@ -212,7 +212,7 @@ class Json
 	//---------------------------------------------------------------------------------------- toJson
 	/**
 	 * @param $standard_object stdClass|array
-	 * @param $options    integer options for json_encode
+	 * @param $options         integer options for json_encode
 	 * @return string json encoded representation of object
 	 */
 	public function toJson($standard_object, $options = 0)
