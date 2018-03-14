@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Func\Select;
 
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
@@ -11,9 +12,6 @@ use ITRocks\Framework\View;
  */
 class Controller implements Feature_Controller
 {
-
-	//--------------------------------------------------------------------------------------- FEATURE
-	const FEATURE = 'select';
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -27,7 +25,7 @@ class Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$parameters->getMainObject(Func_Select::class);
-		return View::run($parameters->getObjects(), $form, $files, Func::class, static::FEATURE);
+		return View::run($parameters->getObjects(), $form, $files, Func::class, Feature::F_SELECT);
 	}
 
 }

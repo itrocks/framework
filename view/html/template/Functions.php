@@ -20,6 +20,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Default_List_Data;
@@ -103,15 +104,15 @@ class Functions
 	//----------------------------------------------------------------------------- getConditionClass
 	/**
 	 * @param $template Template
-	 * @return string
+	 * @return string|null
 	 */
 	public function getConditionClass(Template $template)
 	{
 		// the property path is the key for the Func\Comparison or Func\In nearest object
 		$property_path = $this->getConditionLabel($template, false);
-		if (beginsWith($property_path, Expressions::MARKER)) {
+		if (Expressions::isFunction($property_path)) {
 			$expression = Expressions::$current->cache[$property_path];
-			$class      = is_a($expression->function, Now::class, true) ? 'date_time' : null;
+			$class      = is_a($expression->function, Now::class, true) ? Type::DATE_TIME : null;
 		}
 		else {
 			$class_name = get_class($this->getRootObject($template));
@@ -136,7 +137,7 @@ class Functions
 		// the property path is the key for the Func\Comparison or Func\In nearest object
 		$property_path = $this->getConditionLabel($template, false);
 		// special functions (eg Func\Now)
-		if (beginsWith($property_path, Expressions::MARKER)) {
+		if (Expressions::isFunction($property_path)) {
 			$condition = null;
 			foreach ($template->objects as $condition) {
 				if ($condition instanceof Condition) {
@@ -178,7 +179,7 @@ class Functions
 				break;
 			}
 		}
-		if ($resolve_expression_marker && beginsWith($property_path, Expressions::MARKER)) {
+		if ($resolve_expression_marker && Expressions::isFunction($property_path)) {
 			$expression    = Expressions::$current->cache[$property_path];
 			$property_path = Names::classToDisplay($expression->function);
 		}

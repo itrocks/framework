@@ -39,6 +39,20 @@ class Expressions
 		return $key;
 	}
 
+	//------------------------------------------------------------------------------------ isFunction
+	/**
+	 * Checks if a $property_path into a [$property_path => $value] Dao search expression begins with
+	 * a MARKER, which means this is not a property path but the link to a function stored into
+	 * Expressions' $cache
+	 *
+	 * @param $property_path string
+	 * @return boolean
+	 */
+	public static function isFunction($property_path)
+	{
+		return beginsWith($property_path, static::MARKER);
+	}
+
 }
 
 Expressions::$current = new Expressions();
