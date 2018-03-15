@@ -58,8 +58,10 @@ class Application_Class_Tree_Filter
 			if ($node->hasCheckedClosedRoutes()) {
 				$this->removeUncheckedRouteNodes($node->closed_routes);
 			}
-			$route = $route->child->route;
-			$route->addNode($node);
+			if ($route->child) {
+				$route = $route->child->route;
+				$route->addNode($node);
+			}
 			if ($node->parents) {
 				$this->follow($route, reset($node->parents));
 			}
