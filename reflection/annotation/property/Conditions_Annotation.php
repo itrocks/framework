@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
 /**
  * Conditions annotation
@@ -50,6 +51,29 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 			}
 			$this->value = $conditions;
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- applyTo
+	/**
+	 * Returns true if all conditions apply to a given object
+	 *
+	 * The object must be of a class compatible with the property class, or it may crash.
+	 *
+	 * @param $object object
+	 * @return boolean
+	 */
+	public function applyTo($object)
+	{
+		foreach ($this->value as $property_name => $condition_value) {
+			$class_name       = get_class($object);
+			$condition_values = explode(',', $condition_value);
+			$property_value   = new Reflection_Property_Value($class_name, $property_name, $object);
+			$value            = $property_value->value();
+			if (!in_array($value, $condition_values)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//-------------------------------------------------------------------------- asHtmlAttributeValue

@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -164,6 +165,25 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 		return $did_change ? $output_settings : null;
 	}
 
+	//------------------------------------------------------------------------------ filterProperties
+	/**
+	 * Filter properties which @conditions values do not apply
+	 *
+	 * @param $object         object
+	 * @param $property_names string[] filter the list of properties
+	 * @return string[]       filtered $properties
+	 */
+	protected function filterProperties($object, array $property_names)
+	{
+		foreach ($property_names as $key => $property_name) {
+			$property = new Reflection_Property(get_class($object), $property_name);
+			if (!Conditions_Annotation::of($property)->applyTo($object)) {
+				unset($property_names[$key]);
+			}
+		}
+		return $property_names;
+	}
+
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     object|string object or class name
@@ -306,9 +326,10 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 
 		$this->applyOutputSettings($output_settings);
 		$output_settings->initProperties($this->getPropertiesList($class_name));
+		$property_names = $this->filterProperties($object, array_keys($output_settings->properties));
 		$parameters['customized_lists']            = $customized_list;
 		$parameters['default_title']               = ucfirst(Names::classToDisplay($class_name));
-		$parameters[Parameter::PROPERTIES_FILTER]  = array_keys($output_settings->properties);
+		$parameters[Parameter::PROPERTIES_FILTER]  = $property_names;
 		$parameters[Parameter::PROPERTIES_TITLE]   = $output_settings->propertiesParameter('display');
 		$parameters[Parameter::PROPERTIES_TOOLTIP] = $output_settings->propertiesParameter('tooltip');
 		$parameters['settings']                    = $output_settings;

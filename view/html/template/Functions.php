@@ -544,6 +544,44 @@ class Functions
 		return new File(reset($template->objects));
 	}
 
+	//--------------------------------------------------------------------------- getFilterProperties
+	/**
+	 * Filter a property or a property list that should not be displayed.
+	 * The top object of the template must be a Reflection_Property[], or it will returned as null
+	 *
+	 * @param $template Template
+	 * @return Reflection_Property[]
+	 */
+	public function getFilterProperties(Template $template)
+	{
+		$object            = reset($template->objects);
+		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
+		// no filter : return object as is
+		if (!$properties_filter) {
+			return $object;
+		}
+		// filters properties list
+		if (is_array($object)) {
+			/** @var $properties Reflection_Property[] */
+			$properties = $object;
+			foreach ($properties as $key => $property) {
+				if (!in_array($property->name, $properties_filter)) {
+					unset($properties[$key]);
+				}
+			}
+			return $properties;
+		}
+		// filters property
+		if ($object instanceof Reflection_Property) {
+			$property = $object;
+			if (in_array($property->name, $properties_filter)) {
+				return $property;
+			}
+		}
+		// type does not match or not filtered : returns nothing
+		return null;
+	}
+
 	//-------------------------------------------------------------------------------------- getFirst
 	/**
 	 * Returns the first current array element
