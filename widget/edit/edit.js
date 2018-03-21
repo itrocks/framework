@@ -142,9 +142,9 @@ $('document').ready(function()
 		//------------------------------------------------------------------- input.datetime datePicker
 		this.inside('input.datetime').datepicker({
 			dateFormat:        dateFormatToDatepicker(app.date_format),
+			selectOtherMonths: true,
 			showOn:            'button',
 			showOtherMonths:   true,
-			selectOtherMonths: true,
 			showWeek:          true
 		});
 
