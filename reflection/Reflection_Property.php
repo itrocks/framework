@@ -229,7 +229,7 @@ class Reflection_Property extends ReflectionProperty
 	{
 		$traits = $class->getTraits();
 		foreach ($traits as $trait) {
-			$properties = $trait->getProperties([Reflection_Class::T_SORT]);
+			$properties = $trait->getProperties();
 			if (isset($properties[$this->name])) {
 				return $this->getDeclaringTraitInternal($trait) ?: $trait;
 			}
