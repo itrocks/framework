@@ -25,9 +25,11 @@ trait Is_Immutable
 	 */
 	public function beforeWriteOfImmutable(Data_Link $link = null)
 	{
-		if (!$link instanceof Identifier_Map) return;
 		if (!$link) {
 			$link = Dao::current();
+		}
+		if (!($link instanceof Identifier_Map)) {
+			return;
 		}
 
 		// TODO this "form cleanup" code must be generalized into a cleanup plugin
