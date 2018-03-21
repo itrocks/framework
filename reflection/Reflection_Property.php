@@ -60,14 +60,6 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	private $doc_comment;
 
-	//--------------------------------------------------------------------------------- $expand_value
-	/**
-	 * Contains the expanded value set in parameter of the Widget : EXPAND_PROPERTY_PATH
-	 *
-	 * @var string
-	 */
-	public $expand_value;
-
 	//---------------------------------------------------------------------------------- $final_class
 	/**
 	 * Final class asked when calling getInstanceOf().
@@ -103,14 +95,6 @@ class Reflection_Property extends ReflectionProperty
 	 * @var string
 	 */
 	public $root_class;
-
-	//--------------------------------------------------------------------- $root_class_before_expand
-	/**
-	 * Contains the root class before expand action in template/Functions->expand removes it
-	 *
-	 * @var string
-	 */
-	public $root_class_before_expand;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -473,27 +457,6 @@ class Reflection_Property extends ReflectionProperty
 				$object = reset($object);
 			}
 			return $object ? $property->getValue($object) : null;
-		}
-		// When the root_class is not set it's because a EXPAND_PROPERTY_PATH is used
-		// Then to find the values, we have to search without this path
-		else if (isset($this->root_class_before_expand) && strpos($this->path, DOT)) {
-			// Remove expand value from path to search values correctly
-			$path     = explode(DOT, str_replace($this->expand_value, '', $this->path));
-			$property = new Reflection_Property($this->root_class_before_expand, array_shift($path));
-			foreach ($path as $property_name) {
-				$object = $property->getValue($object);
-				while (is_array($object)) {
-					$object = reset($object);
-				}
-				$property = new Reflection_Property(
-					$property->getType()->getElementTypeAsString(), $property_name
-				);
-			}
-			while (is_array($object)) {
-				$object = reset($object);
-			}
-			return $object ? $property->getValue($object) : null;
-
 		}
 		// TODO HIGHER $object may never be an array here ?!? This while() is probably dead-code, remove
 		while (is_array($object)) {
