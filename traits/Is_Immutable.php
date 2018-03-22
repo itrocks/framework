@@ -35,7 +35,7 @@ trait Is_Immutable
 		// TODO this "form cleanup" code must be generalized into a cleanup plugin
 		foreach (get_object_vars($this) as $property_name => $value) {
 			if (is_string($value)) {
-				$this->$property_name = $this->trimAll($value);
+				$this->$property_name = preg_replace('#\s+#', ' ', trim($value));
 			}
 		}
 
@@ -43,20 +43,6 @@ trait Is_Immutable
 		if ($existing = $link->searchOne($this)) {
 			$link->replace($this, $existing, false);
 		}
-	}
-
-	//--------------------------------------------------------------------------------------- trimAll
-	/**
-	 * Remove all spaces from a string
-	 *
-	 * @param $string string to clean
-	 * @return string string cleaned
-	 */
-	function trimAll($string)
-	{
-		$string = trim($string);
-		$string = preg_replace("#[ ]+#", " ", $string);
-		return $string;
 	}
 
 }
