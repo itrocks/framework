@@ -120,50 +120,6 @@ class Write extends Data_Link\Write
 		return true;
 	}
 
-	//---------------------------------------------------------------------- effectiveDeleteOfMapLink
-	/**
-	 * Effective deletion of an object on a map
-	 *
-	 * @param $property       Reflection_Property
-	 * @param $old_element    object Old element to remove
-	 * @param $delete_builder Map_Delete
-	 */
-	private function effectiveDeleteOfMapLink(
-		Reflection_Property $property, $old_element, $delete_builder
-	) {
-		$remove_event = new Property_Remove(
-			$this->link, $this->object, $old_element, $this->spread_options, $property
-		);
-		$before_remove_elements = $property->getAnnotations('before_remove_element');
-		if ($this->callEvent($remove_event, $before_remove_elements)) {
-			$query = $delete_builder->buildQuery($this->object, $old_element);
-			$this->link->getConnection()->query($query);
-		}
-	}
-
-	//---------------------------------------------------------------------- effectiveInsertOfMapLink
-	/**
-	 * Effective insertion of an object on a map
-	 *
-	 * @param $property       Reflection_Property
-	 * @param $element        object new element to insert
-	 * @param $insert_builder Map_Insert
-	 */
-	private function effectiveInsertOfMapLink(
-		Reflection_Property $property, $element, $insert_builder
-	) {
-		$property_add_event = new Property_Add(
-			$this->link, $this->object, $element, $this->spread_options, $property
-		);
-		$before_add_elements = $property->getAnnotations('before_add_element');
-		if ($this->callEvent($property_add_event, $before_add_elements)) {
-			$query = $insert_builder->buildQuery($this->object, $element);
-			$this->link->getConnection()->query($query);
-			$after_add_elements = $property->getAnnotations('after_add_element');
-			$this->callEvent($property_add_event, $after_add_elements);
-		}
-	}
-
 	//---------------------------------------------------------------------------------- parseOptions
 	/**
 	 * Scan options for things we need for write
@@ -480,33 +436,37 @@ class Write extends Data_Link\Write
 		$old_map = $property->getValue($old_object);
 		// map properties : write each of them
 		$insert_builder = new Map_Insert($property);
-		// remove old unused elements
-		$delete_builder = new Map_Delete($property);
-		$id_set = [];
+		$id_set         = [];
 		foreach ($map as $element) {
 			$id = $this->link->getObjectIdentifier($element)
 				?: $this->link->getObjectIdentifier($this->link->write($element, $this->spread_options));
 			if (!isset($old_map[$id]) && !isset($id_set[$id])) {
-				$this->effectiveInsertOfMapLink($property, $element, $insert_builder);
-			}
-			// We are updating an already link map. (Can arrive when using Map_As_Collection)
-			else if (isset($old_map[$id]) && isset($id)
-				&& ($this->link->getObjectIdentifier($old_map[$id]) == $id)
-			) {
-				$old_element = clone $element;
-				$new_element = $this->link->write($element);
-				// Replace old id by new id (for immutable objects)
-				if ($this->link->getObjectIdentifier($new_element) !== $id) {
-					$this->effectiveInsertOfMapLink($property, $new_element, $insert_builder);
-					$this->effectiveDeleteOfMapLink($property, $old_element, $delete_builder);
+				$property_add_event = new Property_Add(
+					$this->link, $this->object, $element, $this->spread_options, $property
+				);
+				$before_add_elements = $property->getAnnotations('before_add_element');
+				if ($this->callEvent($property_add_event, $before_add_elements)) {
+					$query = $insert_builder->buildQuery($this->object, $element);
+					$this->link->getConnection()->query($query);
+					$after_add_elements = $property->getAnnotations('after_add_element');
+					$this->callEvent($property_add_event, $after_add_elements);
 				}
 			}
 			$id_set[$id] = true;
 		}
+		// remove old unused elements
+		$delete_builder = new Map_Delete($property);
 		foreach ($old_map as $old_element) {
 			$id = $this->link->getObjectIdentifier($old_element);
 			if (!isset($id_set[$id])) {
-				$this->effectiveDeleteOfMapLink($property, $old_element, $delete_builder);
+				$remove_event = new Property_Remove(
+					$this->link, $this->object, $old_element, $this->spread_options, $property
+				);
+				$before_remove_elements = $property->getAnnotations('before_remove_element');
+				if ($this->callEvent($remove_event, $before_remove_elements)) {
+					$query = $delete_builder->buildQuery($this->object, $old_element);
+					$this->link->getConnection()->query($query);
+				}
 			}
 		}
 	}
