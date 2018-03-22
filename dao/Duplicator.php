@@ -87,6 +87,7 @@ class Duplicator
 				$callback[1] = 'onDuplicate';
 			}
 			if (isA($object, $callback[0])) {
+				// TODO LOW check if this is used somewhere : if not, remove
 				if (contains($callback[1], ',')) {
 					$callbacks = explode(',', $callback[1]);
 					foreach ($callbacks as $callback) {
@@ -114,8 +115,9 @@ class Duplicator
 	private function removeCompositeFromComponents(array $elements, $composite_class_name)
 	{
 		if (isA($element = reset($elements), Component::class)) {
-			$getCompositeProperty = [get_class($element), 'getCompositeProperty'];
-			if ($composite_property = call_user_func($getCompositeProperty, $composite_class_name)) {
+			$get_composite_property_method = [get_class($element), 'getCompositeProperty'];
+			$composite_property = call_user_func($get_composite_property_method, $composite_class_name);
+			if ($composite_property) {
 				foreach ($elements as $element) {
 					$id_property_name = 'id_' . $composite_property->name;
 					unset($element->$id_property_name);
