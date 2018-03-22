@@ -145,7 +145,6 @@ class Collection
 		return $head;
 	}
 
-
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
 	 * @param $object object
