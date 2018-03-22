@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit\Widgets;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\Traits\Is_Immutable;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\Widget\Edit\Html_Builder_Collection;
@@ -24,6 +26,12 @@ class Map_As_Collection extends Property
 		// this "if" patch is here because parseSingleValue() calls this both : we have to build html
 		// on first pass only.
 		if (is_array($this->value)) {
+			// - immutable objects : disconnect values
+			foreach ($this->value as $value) {
+				if (isA($value, Is_Immutable::class)) {
+					Dao::disconnect($value);
+				}
+			}
 			// - edit
 			if ($this->template instanceof Html_Template) {
 				$collection = new Html_Builder_Collection($this->property, $this->value);
@@ -36,9 +44,10 @@ class Map_As_Collection extends Property
 			// build
 			return $collection->build();
 		}
-		else {
-			return $this->value;
+		if (isA($this->value, Is_Immutable::class)) {
+			Dao::disconnect($this->value);
 		}
+		return $this->value;
 	}
 
 	//------------------------------------------------------------------------------------ buildValue
@@ -50,14 +59,14 @@ class Map_As_Collection extends Property
 	public function buildValue($object, $null_if_empty)
 	{
 		$builder = new Object_Builder_Array();
-		$objects = $builder->buildCollection($this->property->getType()->getElementTypeAsString(), $this->value);
+		$objects = $builder->buildCollection(
+			$this->property->getType()->getElementTypeAsString(), $this->value
+		);
 
 		// Remove empty objects from collection to avoid control on null value
-		if ($objects) {
-			foreach ($objects as $key => $object) {
-				if (Empty_Object::isEmpty($object)) {
-					unset($objects[$key]);
-				}
+		foreach ($objects as $key => $object) {
+			if (Empty_Object::isEmpty($object)) {
+				unset($objects[$key]);
 			}
 		}
 
