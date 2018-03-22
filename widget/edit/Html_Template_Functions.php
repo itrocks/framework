@@ -11,6 +11,19 @@ use ITRocks\Framework\View\Html\Template\Functions;
 class Html_Template_Functions extends Functions
 {
 
+	//------------------------------------------------------------------------------ filterProperties
+	/**
+	 * Filter properties which @conditions values do not apply
+	 *
+	 * @param $object     object
+	 * @param $properties Reflection_Property[]|string[] filter the list of properties
+	 * @return string[]   filtered $properties
+	 */
+	protected function filterProperties($object, array $properties)
+	{
+		return $properties;
+	}
+
 	//-------------------------------------------------------------------------------------- getField
 	/**
 	 * Return the current data as a field : editable in this case

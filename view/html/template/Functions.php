@@ -73,6 +73,27 @@ class Functions
 			: null;
 	}
 
+	//------------------------------------------------------------------------------ filterProperties
+	/**
+	 * Filter properties which @conditions values do not apply
+	 *
+	 * @param $object     object
+	 * @param $properties Reflection_Property[]|string[] filter the list of properties
+	 * @return string[]   filtered $properties
+	 */
+	protected function filterProperties($object, array $properties)
+	{
+		foreach ($properties as $key => $property) {
+			if (!($property instanceof Reflection_Property)) {
+				$property = new Reflection_Property(get_class($object), $property);
+			}
+			if (!Conditions_Annotation::of($property)->applyTo($object)) {
+				unset($properties[$key]);
+			}
+		}
+		return $properties;
+	}
+
 	//-------------------------------------------------------------------------------- getApplication
 	/**
 	 * Returns application name
@@ -484,14 +505,24 @@ class Functions
 	 */
 	public function getExpand(Template $template)
 	{
+		/** @var $property Reflection_Property */
 		$property = reset($template->objects);
 		$expanded = [];
 		$expanded = (new Integrated_Properties())->expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
 		);
-		$result = $expanded ?: [$property];
+		if ($expanded) {
+			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
+			$first_property = reset($expanded);
+			$object         = $first_property->getObject();
+			$expanded       = $this->filterProperties($object, $expanded);
+			$properties     = $expanded;
+		}
+		else {
+			$properties = [$property];
+		}
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
-			foreach ($result as $property) {
+			foreach ($properties as $property) {
 				// view_path for html name must include the 'expand property path'
 				if ($property instanceof Reflection_Property_Value) {
 					$property->view_path = $expand_property_path . DOT . $property->path;
@@ -505,7 +536,7 @@ class Functions
 				}
 			}
 		}
-		return $result;
+		return $properties;
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
@@ -554,32 +585,35 @@ class Functions
 	 */
 	public function getFilterProperties(Template $template)
 	{
-		$object            = reset($template->objects);
+		/** @var $properties Reflection_Property[] */
+		$properties        = reset($template->objects);
 		$properties_filter = $template->getParameter(Parameter::PROPERTIES_FILTER);
-		// no filter : return object as is
-		if (!$properties_filter) {
-			return $object;
-		}
-		// filters properties list
-		if (is_array($object)) {
-			/** @var $properties Reflection_Property[] */
-			$properties = $object;
-			foreach ($properties as $key => $property) {
-				if (!in_array($property->name, $properties_filter)) {
-					unset($properties[$key]);
+		// properties array
+		if (is_array($properties)) {
+			if ($properties_filter) {
+				foreach ($properties as $key => $property) {
+					if (!in_array($property->name, $properties_filter)) {
+						unset($properties[$key]);
+					}
 				}
 			}
-			return $properties;
+			$object     = $this->getObject($template);
+			$properties = $this->filterProperties($object, $properties);
 		}
-		// filters property
-		if ($object instanceof Reflection_Property) {
-			$property = $object;
-			if (in_array($property->name, $properties_filter)) {
-				return $property;
+		// property
+		elseif ($properties instanceof Reflection_Property) {
+			$property =& $properties;
+			if ($properties_filter && !in_array($property->name, $properties_filter)) {
+				$property = null;
+			}
+			elseif ($property instanceof Reflection_Property_Value) {
+				$object = $property->getObject();
+				if (!$this->filterProperties($object, [$property])) {
+					$property = null;
+				}
 			}
 		}
-		// type does not match or not filtered : returns nothing
-		return null;
+		return $properties;
 	}
 
 	//-------------------------------------------------------------------------------------- getFirst

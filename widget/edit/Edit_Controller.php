@@ -25,19 +25,6 @@ class Edit_Controller extends Output_Controller
 	 */
 	const HIDE_EMPTY_TEST = false;
 
-	//------------------------------------------------------------------------------ filterProperties
-	/**
-	 * Do not filter properties using @conditions with edit controller : this is done in javascript
-	 *
-	 * @param $object         object
-	 * @param $property_names string[] filter the list of properties
-	 * @return string[]       filtered $properties
-	 */
-	protected function filterProperties($object, array $property_names)
-	{
-		return $property_names;
-	}
-
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     object|string object or class name
