@@ -22,6 +22,10 @@ class Reader extends File\Reader
 	{
 		$start = beginsWith($line, '$config[') && endsWith($line, '] = [');
 		if ($start) {
+			$begin_lines =& $this->file->begin_lines;
+			if ($begin_lines && !strlen(end($begin_lines))) {
+				unset($begin_lines[key($begin_lines)]);
+			}
 			$this->file->start_line = $line;
 		}
 		return $start;
