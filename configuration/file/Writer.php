@@ -35,15 +35,20 @@ class Writer
 	 * Simplify the name of the class using its longest reference into use,
 	 * or its start from the current namespace
 	 *
-	 * @param $class_name string
+	 * @param $class_name        string
+	 * @param $maximum_use_depth integer do not care about use greater than t
 	 * @return string
 	 */
-	protected function shortClassNameOf($class_name)
+	protected function shortClassNameOf($class_name, $maximum_use_depth = 999)
 	{
 		$final_class_name = null;
 		$used             = '';
 		foreach ($this->file->use as $use) {
-			if (beginsWith($class_name, $use) && (strlen($use) > strlen($used))) {
+			if (
+				beginsWith($class_name, $use)
+				&& (strlen($use) > strlen($used))
+				&& (substr_count($use, BS) < $maximum_use_depth)
+			) {
 				$final_class_name = rParse($class_name, BS, substr_count($use, BS));
 				$used             = $use;
 			}
@@ -101,8 +106,11 @@ class Writer
 	//------------------------------------------------------------------------------------ writeLines
 	protected function writeLines()
 	{
-		file_put_contents($this->file->file_name, join(LF, $this->lines));
-		echo PRE . 'WRITE :' . LF . htmlentities(print_r(join(LF, $this->lines), true)) . _PRE;
+		$read_buffer  = file_get_contents($this->file->file_name);
+		$write_buffer = join(LF, $this->lines);
+		if ($read_buffer !== $write_buffer) {
+			file_put_contents($this->file->file_name, $write_buffer);
+		}
 	}
 
 	//-------------------------------------------------------------------------------- writeNamespace
