@@ -20,7 +20,11 @@ class Reader extends File\Reader
 	 */
 	public function isStartLine($line)
 	{
-		return beginsWith($line, '$config[') && endsWith($line, '] = [');
+		$start = beginsWith($line, '$config[') && endsWith($line, '] = [');
+		if ($start) {
+			$this->file->start_line = $line;
+		}
+		return $start;
 	}
 
 	//----------------------------------------------------------------------------- readConfiguration
