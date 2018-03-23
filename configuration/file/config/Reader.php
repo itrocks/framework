@@ -69,15 +69,25 @@ class Reader extends File\Reader
 					}
 				}
 				// plugin configuration begin level
-				if (beginsWith($line, TAB . TAB)) {
-					if (in_array(trim($line), [']', '],'])) {
+				elseif (beginsWith($line, TAB . TAB)) {
+					if (in_array(trim($line), [']', '],', ')', '),'])) {
+						if ($plugin instanceof Plugin) {
+							$plugin->configuration .= LF . substr($line, 0, 3);
+						}
 						$plugin = null;
 					}
 					elseif ($priority instanceof Priority) {
+						if (($plugin instanceof Plugin) && endsWith($plugin->configuration, ',')) {
+							$plugin->configuration = substr($plugin->configuration, 0, -1);
+						}
 						$plugin                = new Plugin();
 						$plugin->class_name    = $this->fullClassNameOf(lParse($line, '=>'));
 						$plugin->configuration = trim(rParse($line, '=>'));
 						$priority->plugins[]   = $plugin;
+						if (!$plugin->configuration && !strpos($line, '=>')) {
+							$plugin->configuration = null;
+							$plugin                = null;
+						}
 					}
 					else {
 						trigger_error(
@@ -91,8 +101,11 @@ class Reader extends File\Reader
 				// priority level
 				elseif (beginsWith($line, TAB)) {
 					if (in_array(trim($line), [']', '],'])) {
-						$priority = null;
+						if (($plugin instanceof Plugin) && endsWith($plugin->configuration, ',')) {
+							$plugin->configuration = substr($plugin->configuration, 0, -1);
+						}
 						$plugin   = null;
+						$priority = null;
 					}
 					elseif (trim(lParse($line, '::')) === 'Priority') {
 						$priority = new Priority(trim(mParse($line, 'Priority::', '=>')));
