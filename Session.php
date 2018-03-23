@@ -295,8 +295,8 @@ class Session implements Serializable
 		$data = unserialize($serialized);
 		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
 		$this->current                 = $data[self::CURRENT];
-		$this->plugins                 = $data[self::PLUGINS];
 		$this->environment             = $data[Configuration::ENVIRONMENT];
+		$this->plugins                 = $data[self::PLUGINS];
 		$this->temporary_directory     = $data[Configuration::TEMPORARY_DIRECTORY];
 	}
 
