@@ -130,11 +130,14 @@ class Reader
 					$blank_line              = false;
 					$this->file->end_lines[] = '';
 				}
+				$this->file->end_lines[] = $line;
 			}
 			else {
 				$blank_line = true;
 			}
-			$this->file->end_lines[] = $line;
+		}
+		if ($blank_line) {
+			$this->file->end_lines[] = '';
 		}
 	}
 
@@ -172,7 +175,9 @@ class Reader
 				}
 			}
 		}
-		sort($this->file->use);
+		usort($this->file->use, function($use1, $use2) {
+			return strcmp(strtolower($use1), strtolower($use2));
+		});
 	}
 
 }

@@ -9,6 +9,10 @@ use ITRocks\Framework\Configuration\File;
 class Writer
 {
 
+	//-------------------------------------------- White lines after configuration sections constants
+	const BEGIN_ENDS_WHITE         = true;
+	const CONFIGURATION_ENDS_WHITE = true;
+
 	//----------------------------------------------------------------------------------------- $file
 	/**
 	 * @var $file File
@@ -36,7 +40,7 @@ class Writer
 	 * or its start from the current namespace
 	 *
 	 * @param $class_name        string
-	 * @param $maximum_use_depth integer do not care about use greater than t
+	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
 	 * @return string
 	 */
 	protected function shortClassNameOf($class_name, $maximum_use_depth = 999)
@@ -57,7 +61,7 @@ class Writer
 			beginsWith($class_name, $this->file->namespace)
 			&& (strlen($this->file->namespace) > strlen($used))
 		) {
-			$final_class_name = substr($class_name, strlen($this->file->namespace));
+			$final_class_name = substr($class_name, strlen($this->file->namespace) + 1);
 		}
 		return $final_class_name ?: (BS . $class_name);
 	}
@@ -78,8 +82,10 @@ class Writer
 	protected function writeBeginLines()
 	{
 		if ($this->file->begin_lines) {
-			$this->lines   = array_merge($this->lines, $this->file->begin_lines);
-			$this->lines[] = '';
+			$this->lines = array_merge($this->lines, $this->file->begin_lines);
+			if (static::BEGIN_ENDS_WHITE) {
+				$this->lines[] = '';
+			}
 		}
 	}
 
@@ -90,7 +96,9 @@ class Writer
 			$configuration_lines = $this->getConfigurationLines();
 			if ($configuration_lines) {
 				$this->lines   = array_merge($this->lines,  $configuration_lines);
-				$this->lines[] = '';
+				if (static::CONFIGURATION_ENDS_WHITE) {
+					$this->lines[] = '';
+				}
 			}
 		}
 	}

@@ -30,6 +30,13 @@ class Source extends File
 	 */
 	public $class_name;
 
+	//----------------------------------------------------------------------------------- $class_type
+	/**
+	 * @values class, interface, trait
+	 * @var string
+	 */
+	public $class_type;
+
 	//------------------------------------------------------------------------------------ $class_use
 	/**
 	 * @var Class_Use[]|string[]

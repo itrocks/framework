@@ -126,7 +126,10 @@ class Reader extends File\Reader
 		foreach (explode(SP, $class_text) as $elements) {
 			foreach (explode(',', $elements) as $element) {
 				$element = trim($element);
-				if (in_array($element, ['class', 'interface', 'trait', 'extends', 'implements'])) {
+				if (in_array($element, ['class', 'interface', 'trait'])) {
+					$this->file->class_type = $into = $element;
+				}
+				elseif (in_array($elements, ['extends', 'implements'])) {
 					$into = $element;
 				}
 				elseif ($element && $into) {
