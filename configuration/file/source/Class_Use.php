@@ -23,4 +23,19 @@ class Class_Use
 	 */
 	public $trait_name;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $trait_name string
+	 * @param $rules      string
+	 */
+	public function __construct($trait_name = null ,$rules = null)
+	{
+		if (isset($trait_name)) {
+			$this->trait_name = $trait_name;
+		}
+		if (isset($rules)) {
+			$this->rules = $rules;
+		}
+	}
+
 }
