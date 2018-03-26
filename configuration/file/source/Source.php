@@ -32,7 +32,7 @@ class Source extends File
 
 	//------------------------------------------------------------------------------------ $class_use
 	/**
-	 * @var Class_Use[]
+	 * @var Class_Use[]|string[]
 	 */
 	public $class_use;
 

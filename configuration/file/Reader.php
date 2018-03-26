@@ -83,9 +83,11 @@ class Reader
 	 */
 	protected function readBeginLines()
 	{
-		$this->file->begin_lines = [];
 		$line = current($this->lines);
-		for ($started = false; !$started; $line = next($this->lines)) {
+		if (!$this->file->begin_lines) {
+			$this->file->begin_lines = [];
+		}
+		for ($started = false; ($line !== false) && !$started; $line = next($this->lines)) {
 			if ($this->isStartLine($line)) {
 				$started = true;
 			}
@@ -102,7 +104,7 @@ class Reader
 	protected function readConfiguration()
 	{
 		$line = current($this->lines);
-		for ($ended = false; !$ended; $line = next($this->lines)) {
+		for ($ended = false; ($line !== false) && !$ended; $line = next($this->lines)) {
 			if ($this->isEndLine($line)) {
 				$ended = true;
 			}
@@ -118,8 +120,20 @@ class Reader
 	 */
 	protected function readEndLines()
 	{
-		$this->file->end_lines = [];
-		while ($line = next($this->lines)) {
+		$blank_line = false;
+		if (!$this->file->end_lines) {
+			$this->file->end_lines = [];
+		}
+		while (($line = next($this->lines)) !== false) {
+			if ($line) {
+				if ($blank_line) {
+					$blank_line              = false;
+					$this->file->end_lines[] = '';
+				}
+			}
+			else {
+				$blank_line = true;
+			}
 			$this->file->end_lines[] = $line;
 		}
 	}
@@ -142,7 +156,7 @@ class Reader
 		$php                   = false;
 		$this->file->namespace = null;
 		$this->file->use       = [];
-		for ($line = reset($this->lines); true; $line = next($this->lines)) {
+		for ($line = reset($this->lines); $line !== false; $line = next($this->lines)) {
 			if (beginsWith($line, '<?php')) {
 				$php = true;
 			}
