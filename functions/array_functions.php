@@ -148,6 +148,39 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 	$array = array_merge($array, $array_insert, $second_array);
 }
 
+//------------------------------------------------------------------------------ objectInsertSorted
+/**
+ * An advanced insert function to insert values into an array, with continuous sort
+ *
+ * This does not break any pre-done sort
+ *
+ * @param $array   array to insert the value into
+ * @param $value   mixed the inserted value
+ * @param $compare callable|string objects comparison function, if set
+ * @return array $array with the inserted object
+ */
+function arrayInsertSorted(&$array, $value, $compare = null)
+{
+	$new_array = [];
+	$callable  = $compare ?: function($value1, $value2) { return strcmp($value1, $value2); };
+	// copy existing values, and insert the new value at the right place
+	$inserted = false;
+	foreach ($array as $key => $existing_value) {
+		// insert the new value before the existing value
+		if (!$inserted && ($callable($existing_value, $value) > 0)) {
+			$new_array[] = $value;
+			$inserted    = true;
+		}
+		// insert the exiting value
+		$new_array[] = $existing_value;
+	}
+	// append the new value at the end, if not already inserted (last chance)
+	if (!$inserted) {
+		$new_array[] = $value;
+	}
+	return $new_array;
+}
+
 //--------------------------------------------------------------------------------- arrayIsCallable
 /**
  * Returns true if $array represents a callable :
@@ -323,60 +356,6 @@ function arrayUnnamedValues(array $array)
 	return $result;
 }
 
-//------------------------------------------------------------------------------------- treeToArray
-/**
- * Linearize a tree to an array
- *
- * Keys are cumulated to a single 'key.sub_key.final_key' key name
- *
- * @param $array      array
- * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
- * @return mixed[]
- */
-function treeToArray(array $array, $ignore_key = null)
-{
-	$result = [];
-	foreach ($array as $key => $val) {
-		if (is_array($val)) {
-			foreach (treeToArray($val, $ignore_key) as $sub_key => $sub_val) {
-				$result[$key . ((strval($sub_key) === strval($ignore_key)) ? '' : (DOT . $sub_key))]
-					= $sub_val;
-			}
-		}
-		else {
-			$result[$key] = $val;
-		}
-	}
-	return $result;
-}
-
-//--------------------------------------------------------------- explodeStringInArrayToSimpleArray
-/**
- * Explode strings in array and return a larger array
- *
- * @example explodeStringInArrayToSimpleArray(' ', ['Dot', 'a cat', 'the cat run'))
- *          returns : ['Dot', 'a', 'cat', 'the', 'cat', 'run')
- * @param $delimiter string The boundary string.
- * @param $array     array The input array.
- * @return array Return a larger array explode by delimiter.
- */
-function explodeStringInArrayToSimpleArray($delimiter, array $array)
-{
-	$tab = [];
-	foreach ($array as $element) {
-		$explode = explode($delimiter, $element);
-		if (!empty($explode)) {
-			foreach ($explode as $part) {
-				$tab[] = $part;
-			}
-		}
-		else {
-			$tab[] = $element;
-		}
-	}
-	return $tab;
-}
-
 //--------------------------------------------------------------- explodeStringInArrayToDoubleArray
 /**
  * Explodes strings in array or in array of array, and return an array of array of string.
@@ -408,6 +387,98 @@ function explodeStringInArrayToDoubleArray($delimiter, array $array)
 	return $tab;
 }
 
+//--------------------------------------------------------------- explodeStringInArrayToSimpleArray
+/**
+ * Explode strings in array and return a larger array
+ *
+ * @example explodeStringInArrayToSimpleArray(' ', ['Dot', 'a cat', 'the cat run'))
+ *          returns : ['Dot', 'a', 'cat', 'the', 'cat', 'run')
+ * @param $delimiter string The boundary string.
+ * @param $array     array The input array.
+ * @return array Return a larger array explode by delimiter.
+ */
+function explodeStringInArrayToSimpleArray($delimiter, array $array)
+{
+	$tab = [];
+	foreach ($array as $element) {
+		$explode = explode($delimiter, $element);
+		if (!empty($explode)) {
+			foreach ($explode as $part) {
+				$tab[] = $part;
+			}
+		}
+		else {
+			$tab[] = $element;
+		}
+	}
+	return $tab;
+}
+
+//------------------------------------------------------------------------------ objectInsertSorted
+/**
+ * An advanced insert function to insert values into an array, with continuous sort
+ *
+ * - $array : the source array. sorting is by objects, if the array contains anything else than
+ *   objects, the non-object values are ignored and the insert is immediately before the next object
+ *
+ * @param $array   object[]|array to insert the object into
+ * @param $object  object the inserted object
+ * @param $compare callable|string|string[] objects comparison function or property(ies)
+ * @return array $array with the inserted object
+ */
+function objectInsertSorted(&$array, $object, $compare)
+{
+	$new_array = [];
+	/** @var $callable callable The callable function adapted to $compare */
+	if (is_callable($compare) || (is_array($compare) && arrayIsCallable($compare))) {
+		$callable = $compare;
+	}
+	elseif (is_string($compare)) {
+		$callable = function($object1, $object2) use ($compare) {
+			return strcmp($object1->$compare, $object2->$compare);
+		};
+	}
+	else {
+		$callable = function($object1, $object2) use ($compare) {
+			foreach ($compare as $property_name) {
+				$comparison = strcmp($object1->$property_name, $object2->$property_name);
+				if ($comparison) {
+					return $comparison;
+				}
+			}
+			return 0;
+		};
+	}
+	// search the key of the last object in the list
+	$last_object = end($array);
+	while (($last_object !== false) && !is_object($last_object)) {
+		$last_object = prev($array);
+	}
+	// copy existing objects, and insert the new object at the right place
+	$inserted = false;
+	$last_key = key($array);
+	foreach ($array as $key => $existing_object) {
+		// insert the new object before the existing object
+		if (!$inserted && is_object($existing_object) && ($callable($existing_object, $object) > 0)) {
+			$new_array[] = $object;
+			$inserted    = true;
+		}
+		// insert the exiting object
+		$new_array[] = $existing_object;
+		// insert the new object immediately after the last existing object (not after strings)
+		if (!$inserted && ($key === $last_key)) {
+			$new_array[] = $object;
+			$inserted    = true;
+		}
+	}
+	// append the new object at the end, if not already inserted (last chance)
+	if (!$inserted) {
+		$new_array[] = $object;
+	}
+	return $new_array;
+}
+
+//----------------------------------------------------------------------------------- objectToArray
 /**
  * @param $object      array|object
  * @param $get_private boolean if
@@ -443,4 +514,31 @@ function objectToArray($object, $get_private = false)
 		unset($protected_object->__objectToArray);
 	}
 	return $object;
+}
+
+//------------------------------------------------------------------------------------- treeToArray
+/**
+ * Linearize a tree to an array
+ *
+ * Keys are cumulated to a single 'key.sub_key.final_key' key name
+ *
+ * @param $array      array
+ * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
+ * @return mixed[]
+ */
+function treeToArray(array $array, $ignore_key = null)
+{
+	$result = [];
+	foreach ($array as $key => $val) {
+		if (is_array($val)) {
+			foreach (treeToArray($val, $ignore_key) as $sub_key => $sub_val) {
+				$result[$key . ((strval($sub_key) === strval($ignore_key)) ? '' : (DOT . $sub_key))]
+					= $sub_val;
+			}
+		}
+		else {
+			$result[$key] = $val;
+		}
+	}
+	return $result;
 }
