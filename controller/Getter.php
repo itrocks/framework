@@ -35,7 +35,7 @@ abstract class Getter
 	 * @param $class_name string
 	 * @return string
 	 */
-	static private function classNameWithoutVendorProject($class_name)
+	static public function classNameWithoutVendorProject($class_name)
 	{
 		if (substr_count($class_name, BS) == 1) {
 			$without = substr($class_name, strpos($class_name, BS) + 1);

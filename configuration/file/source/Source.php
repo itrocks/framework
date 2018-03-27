@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework\Configuration\File;
 
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Source\Class_Use;
+use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -43,6 +45,65 @@ class Source extends File
 	 * @var Class_Use[]|string[]
 	 */
 	public $class_use;
+
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Adds class (extends), interface(s) (implements) or trait(s) (use) to the definition of the
+	 * class
+	 *
+	 * @var $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
+	 */
+	public function add($class_interfaces_traits)
+	{
+		if (is_string($class_interfaces_traits)) {
+			if (interface_exists($class_interfaces_traits) || trait_exists($class_interfaces_traits)) {
+				$class_interfaces_traits = [$class_interfaces_traits];
+			}
+		}
+		if (is_string($class_interfaces_traits)) {
+			$this->class_extends = $class_interfaces_traits;
+		}
+		else {
+			foreach ($class_interfaces_traits as $interface_trait) {
+				if (interface_exists($interface_trait)) {
+					arrayInsertSorted($this->class_implements, $interface_trait);
+				}
+				elseif (trait_exists($interface_trait)) {
+					arrayInsertSorted($this->class_use, $interface_trait);
+				}
+				else {
+					trigger_error('Interface or trait ' . $interface_trait . ' does not exist', E_USER_ERROR);
+				}
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------------- create
+	/**
+	 * Create a new final class in the application that extends $class_extends
+	 *
+	 * @param $class_extends string
+	 * @return static::class
+	 */
+	public static function create($class_extends)
+	{
+		$namespace = Application::current()->getNamespace();
+		if (beginsWith($class_extends, $namespace . BS)) {
+			trigger_error(
+				'You cannot create a final class from an existing final class ' . $class_extends,
+				E_USER_ERROR
+			);
+		}
+		$class_name = $namespace . BS . Getter::classNameWithoutVendorProject($class_extends);
+		$source = new Source(
+			strtolower(str_replace(BS, SL, lLastParse($class_name, BS)))
+			. SL . rLastParse($class_name, BS)
+		);
+		$source->class_name = $class_name;
+		$source->namespace  = lLastParse($class_name, BS);
+		$source->addUseFor($class_extends);
+		return $source;
+	}
 
 	//------------------------------------------------------------------------------- defaultFileName
 	/**

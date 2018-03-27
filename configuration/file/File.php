@@ -5,6 +5,7 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Configuration\File\Has_File_Name;
 use ITRocks\Framework\Configuration\File\Reader;
 use ITRocks\Framework\Configuration\File\Writer;
+use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Reflection\Type;
 
 /**
@@ -41,6 +42,21 @@ abstract class File
 	 * @var string[]
 	 */
 	public $use;
+
+	//------------------------------------------------------------------------------------- addUseFor
+	/**
+	 * Adds an use entry for this class name, if it can be
+	 *
+	 * @param $class_name string
+	 */
+	public function addUseFor($class_name)
+	{
+		$class_name_without_vendor_project = Getter::classNameWithoutVendorProject($class_name);
+		$use = lParse($class_name, BS, substr_count($class_name_without_vendor_project, BS) + 1);
+		if (!in_array($use, $this->use)) {
+			$this->use = arrayInsertSorted($this->use, $use);
+		}
+	}
 
 	//------------------------------------------------------------------------------- defaultFileName
 	/**
