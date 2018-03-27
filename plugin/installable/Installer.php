@@ -3,7 +3,10 @@ namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Configuration\File;
+use ITRocks\Framework\Configuration\File\Builder\Assembled;
+use ITRocks\Framework\Configuration\File\Builder\Replaced;
 use ITRocks\Framework\Configuration\File\Menu;
+use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Priority;
@@ -50,21 +53,41 @@ class Installer
 	 * Add interfaces and traits to the base class, into the builder.php configuration file
 	 *
 	 * @param $base_class_name         string
-	 * @param $added_interfaces_traits string[]
+	 * @param $added_interfaces_traits string|string[]
 	 */
-	public function addToClass($base_class_name, array $added_interfaces_traits)
+	public function addToClass($base_class_name, $added_interfaces_traits)
 	{
+		$file  = $this->openFile(File\Builder::class);
+		$built = $file->search($base_class_name);
+		if (!$built) {
+			$file->add($base_class_name, $added_interfaces_traits);
+		}
+		elseif ($built instanceof Assembled) {
+			$built->add($added_interfaces_traits, $file);
+		}
+		elseif ($built instanceof Replaced) {
+			/** @var $file Source PhpStorm is bugged : with meta, it should be found */
+			$file = $this->openFile(Source::class, $built->replacement);
+			$file->add($added_interfaces_traits);
+		}
+		else {
+			trigger_error(
+				'Found class ' . $base_class_name . ' should be Assembled or Replaced', E_USER_ERROR
+			);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- dependsOn
 	/**
 	 * The plugin depends on all these plugins : install them before me
 	 *
-	 * @param $plugin_class_names string[] A list of needed plugin classes
+	 * @param $plugin_class_names string|string[] A list of needed plugin classes
 	 */
-	public function dependsOn(array $plugin_class_names)
+	public function dependsOn($plugin_class_names)
 	{
-		echo PRE . 'Depends on ' . print_r($plugin_class_names, true) . ' plugins' . _PRE;
+		if (!is_array($plugin_class_names)) {
+			$plugin_class_names = [$plugin_class_names];
+		}
 		foreach ($plugin_class_names as $plugin_class_name) {
 			if (is_a($plugin_class_name, Installable::class, true)) {
 				$this->install($plugin_class_name);

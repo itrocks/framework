@@ -159,7 +159,7 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
  * @param $compare callable|string objects comparison function, if set
  * @return array $array with the inserted object
  */
-function arrayInsertSorted(&$array, $value, $compare = null)
+function arrayInsertSorted($array, $value, $compare = null)
 {
 	$new_array = [];
 	$callable  = $compare ?: function($value1, $value2) { return strcmp($value1, $value2); };
@@ -426,7 +426,7 @@ function explodeStringInArrayToSimpleArray($delimiter, array $array)
  * @param $compare callable|string|string[] objects comparison function or property(ies)
  * @return array $array with the inserted object
  */
-function objectInsertSorted(&$array, $object, $compare)
+function objectInsertSorted($array, $object, $compare)
 {
 	$new_array = [];
 	/** @var $callable callable The callable function adapted to $compare */
