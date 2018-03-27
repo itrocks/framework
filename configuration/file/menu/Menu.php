@@ -26,10 +26,10 @@ class Menu extends File
 	{
 		$block = $this->searchBlock($block_title);
 		if (!$block) {
-			$block          = new Block();
-			$block->items   = [];
-			$block->title   = $block_title;
-			$this->insertBlock($block);
+			$block        = new Block();
+			$block->items = [];
+			$block->title = $block_title;
+			$this->blocks = objectInsertSorted($this->blocks, $block, 'title');
 		}
 		return $block;
 	}
@@ -81,42 +81,6 @@ class Menu extends File
 		foreach ($items as $item_link => $item_caption) {
 			$this->addItem($block, $item_link, $item_caption);
 		}
-	}
-
-	//----------------------------------------------------------------------------------- insertBlock
-	/**
-	 * @param $block Block
-	 */
-	protected function insertBlock(Block $block)
-	{
-		$blocks = [];
-		// search the key of the last menu block in the list
-		$last_block = end($this->blocks);
-		while (($last_block !== false) && !($last_block instanceof $block)) {
-			$last_block = prev($this->blocks);
-		}
-		// copy existing blocks, and insert the new block at the right place
-		$inserted       = false;
-		$last_block_key = key($this->blocks);
-		foreach ($this->blocks as $block_key => $existing_block) {
-			// insert the new block before the existing block (alphabetical)
-			if (($existing_block instanceof Block) && ($existing_block->title > $block->title)) {
-				$blocks[] = $block;
-				$inserted = true;
-			}
-			// insert the exiting block
-			$blocks[] = $existing_block;
-			// insert the new block immediately after the last existing block (not after strings)
-			if (($block_key === $last_block_key) && !$inserted) {
-				$blocks[] = $block;
-				$inserted = true;
-			}
-		}
-		// insert the new block at the end, if not already inserted (last chance)
-		if (!$inserted) {
-			$blocks[] = $block;
-		}
-		$this->blocks = $blocks;
 	}
 
 	//------------------------------------------------------------------------------------------ read
