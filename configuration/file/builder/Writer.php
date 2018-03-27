@@ -30,11 +30,12 @@ class Writer extends File\Writer
 					$this->lines[$last_line_key] .= ',';
 				}
 				if ($built_class instanceof Assembled) {
-					$this->lines[] = TAB . $this->shortClassNameOf($built_class->class_name) . '::class => [';
+					$this->lines[] = TAB . $this->file->shortClassNameOf($built_class->class_name) . '::class'
+						. ' => [';
 					$component_count = count($built_class->components);
 					foreach ($built_class->components as $component) {
 						$component_count --;
-						$this->lines[] = TAB . TAB . $this->shortClassNameOf($component) . '::class'
+						$this->lines[] = TAB . TAB . $this->file->shortClassNameOf($component) . '::class'
 							. ($component_count ? ',' : '');
 					}
 					$last_line_key = count($this->lines);
@@ -42,8 +43,8 @@ class Writer extends File\Writer
 				}
 				elseif ($built_class instanceof Replaced) {
 					$last_line_key = count($this->lines);
-					$this->lines[] = TAB . $this->shortClassNameOf($built_class->class_name) . '::class'
-						. ' => ' . $this->shortClassNameOf($built_class->replacement) . '::class';
+					$this->lines[] = TAB . $this->file->shortClassNameOf($built_class->class_name) . '::class'
+						. ' => ' . $this->file->shortClassNameOf($built_class->replacement) . '::class';
 				}
 			}
 		}

@@ -34,38 +34,6 @@ class Writer
 		$this->file = $file;
 	}
 
-	//------------------------------------------------------------------------------ shortClassNameOf
-	/**
-	 * Simplify the name of the class using its longest reference into use,
-	 * or its start from the current namespace
-	 *
-	 * @param $class_name        string
-	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
-	 * @return string
-	 */
-	protected function shortClassNameOf($class_name, $maximum_use_depth = 999)
-	{
-		$final_class_name = null;
-		$used             = '';
-		foreach ($this->file->use as $use) {
-			if (
-				beginsWith($class_name, $use)
-				&& (strlen($use) > strlen($used))
-				&& (substr_count($use, BS) < $maximum_use_depth)
-			) {
-				$final_class_name = rParse($class_name, BS, substr_count($use, BS));
-				$used             = $use;
-			}
-		}
-		if (
-			beginsWith($class_name, $this->file->namespace)
-			&& (strlen($this->file->namespace) > strlen($used))
-		) {
-			$final_class_name = substr($class_name, strlen($this->file->namespace) + 1);
-		}
-		return $final_class_name ?: (BS . $class_name);
-	}
-
 	//----------------------------------------------------------------------------------------- write
 	public function write()
 	{

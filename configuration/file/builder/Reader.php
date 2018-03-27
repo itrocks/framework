@@ -44,7 +44,7 @@ class Reader extends File\Reader
 						else {
 							foreach (explode(',', lParse($line, ']')) as $class_name) {
 								if (trim($class_name)) {
-									$built->components[] = $this->fullClassNameOf($class_name);
+									$built->components[] = $this->file->fullClassNameOf($class_name);
 								}
 							}
 						}
@@ -67,7 +67,7 @@ class Reader extends File\Reader
 						$built = null;
 					}
 					else {
-						$class_name = $this->fullClassNameOf(lParse($line, '=>'));
+						$class_name = $this->file->fullClassNameOf(lParse($line, '=>'));
 						// Class_Name::class =>
 						if (strpos($line, '=>')) {
 							// Class_Name::class => [
@@ -77,12 +77,15 @@ class Reader extends File\Reader
 								// Class_Name::class => [ Class_Name::class, ... ]
 								foreach (explode(',', mParse($line, '[', ']')) as $class_name) {
 									if (trim($class_name)) {
-										$built->components[] = $this->fullClassNameOf($class_name);
+										$built->components[] = $this->file->fullClassNameOf($class_name);
 									}
 								}
 							} // Class_Name::class => Replacement::class
 							else {
-								$built = new Replaced($class_name, $this->fullClassNameOf(rParse($line, '=>')));
+								$built = new Replaced(
+									$class_name,
+									$this->file->fullClassNameOf(rParse($line, '=>'))
+								);
 							}
 							$this->file->classes[] = $built;
 						}

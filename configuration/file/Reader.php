@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Configuration\File;
 
 use ITRocks\Framework\Configuration\File;
-use ITRocks\Framework\Reflection\Type;
 
 /**
  * Common code for all configuration file readers
@@ -29,22 +28,6 @@ class Reader
 	public function __construct(File $file)
 	{
 		$this->file = $file;
-	}
-
-	//------------------------------------------------------------------------------- fullClassNameOf
-	/**
-	 * Change a short class name, with maybe spaces and trailing '::class', into a clean full class
-	 * name with full namespace
-	 *
-	 * It uses $namespace and $use for namespace completion
-	 *
-	 * @param $class_name string source short class name to cleanup and extend
-	 * @return string resulting full and clean class name
-	 */
-	protected function fullClassNameOf($class_name)
-	{
-		$class_name = lParse(trim($class_name), '::class');
-		return (new Type($class_name))->applyNamespace($this->file->namespace, $this->file->use);
 	}
 
 	//------------------------------------------------------------------------------------- isEndLine

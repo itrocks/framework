@@ -87,7 +87,7 @@ class Reader extends File\Reader
 						$parse_char = null;
 					}
 					if ($parse_char) {
-						$use = $this->fullClassNameOf(trim(
+						$use = $this->file->fullClassNameOf(trim(
 							(strpos($line, 'use') !== false)
 							? mParse($line, 'use ', $parse_char)
 							: lParse($line, $parse_char)
@@ -137,13 +137,13 @@ class Reader extends File\Reader
 						case 'class':
 						case 'interface':
 						case 'trait':
-							$this->file->class_name = $this->fullClassNameOf($element);
+							$this->file->class_name = $this->file->fullClassNameOf($element);
 							break;
 						case 'extends':
-							$this->file->class_extends = $this->fullClassNameOf($element);
+							$this->file->class_extends = $this->file->fullClassNameOf($element);
 							break;
 						case 'implements':
-							$this->file->class_implements[] = $this->fullClassNameOf($element);
+							$this->file->class_implements[] = $this->file->fullClassNameOf($element);
 							break;
 					}
 				}
