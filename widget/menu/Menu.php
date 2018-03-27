@@ -109,7 +109,10 @@ class Menu implements Configurable
 					if (in_array($feature, Feature::ON_SET)) {
 						$class_name = Names::classToSet($class_name);
 					}
-					$configuration_items[View::link($class_name, $feature)]
+					$link_feature = (($feature === Feature::F_LIST) && !class_exists($class_name))
+						? null
+						: $feature;
+					$configuration_items[View::link($class_name, $link_feature)]
 						= ucfirst(Names::classToDisplay($class_name));
 				}
 				// feature for the next classes
