@@ -459,7 +459,8 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getType()
 	{
-		$type = new Type($this->getAnnotation('var')->value);
+		$ordered = $this->getAnnotation('ordered')->value;
+		$type = new Type($this->getAnnotation('var')->value, null, $ordered);
 		if ($type->isNull()) {
 			trigger_error(
 				$this->class . '::$' . $this->name . ' type not set using @var annotation', E_USER_ERROR

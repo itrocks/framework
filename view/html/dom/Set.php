@@ -15,6 +15,11 @@ class Set extends Element
 	 */
 	private $base_name;
 
+	/**
+	 * @var boolean
+	 */
+	private $ordered = true;
+
 	//------------------------------------------------------------------------------------- $readonly
 	/**
 	 * @var boolean
@@ -40,9 +45,10 @@ class Set extends Element
 	 * @param $selected  string
 	 * @param $id        string
 	 * @param $readonly  boolean
+	 * @param $ordered   boolean
 	 */
 	public function __construct(
-		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false
+		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false, $ordered = true
 	) {
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');
@@ -51,6 +57,7 @@ class Set extends Element
 		if (isset($readonly))  $this->readonly = $readonly;
 		if (isset($selected))  $this->selected($selected);
 		if (isset($values))    $this->values = $values;
+		if (isset($ordered))   $this->ordered = $ordered;
 	}
 
 	//-------------------------------------------------------------------------------------- addValue
@@ -83,7 +90,9 @@ class Set extends Element
 		}
 		if (!isset($content)) {
 			$values = $this->values;
-			asort($values);
+			if($this->ordered !== "false"){
+				asort($values);
+			}
 			if (isset($values[''])) {
 				unset($values['']);
 			}
