@@ -15,6 +15,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\View\Html\Template;
 use PHPUnit_Framework_TestCase;
 
@@ -39,6 +40,9 @@ $STATIC_METHOD_TYPES = [
 		'' == '@[]'
 	],
 	Dao::write('') => [
+		'' == '@'
+	],
+	Installer::openFile('') => [
 		'' == '@'
 	],
 	Null_Object::create('') => [

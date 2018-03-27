@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration\File;
 
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Source\Class_Use;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Configuration into a source code
@@ -42,6 +43,16 @@ class Source extends File
 	 * @var Class_Use[]|string[]
 	 */
 	public $class_use;
+
+	//------------------------------------------------------------------------------- defaultFileName
+	/**
+	 * @param $class_name string Mandatory (default value for compatibility with parent only)
+	 * @return string
+	 */
+	public static function defaultFileName($class_name = null)
+	{
+		return (new Reflection_Class($class_name))->getFileName();
+	}
 
 	//------------------------------------------------------------------------------------------ read
 	/**
