@@ -35,24 +35,6 @@ class Writer extends File\Writer
 		return strlen($line) + ($tab_count * (static::TAB_LENGTH - 1));
 	}
 
-	//------------------------------------------------------------------------------ shortClassNameOf
-	/**
-	 * Simplify the name of the class using its longest reference into use,
-	 * or its start from the current namespace
-	 *
-	 * @param $class_name        string
-	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
-	 * @return string
-	 */
-	protected function shortClassNameOf($class_name, $maximum_use_depth = 999)
-	{
-		$final_class_name = parent::shortClassNameOf($class_name, $maximum_use_depth);
-		if (strpos($final_class_name, BS) && (lLastParse($class_name, BS) === $this->file->namespace)) {
-			$final_class_name = rLastParse($class_name, BS);
-		}
-		return $final_class_name;
-	}
-
 	//--------------------------------------------------------------------------- writeClassPrototype
 	/**
 	 * Write class prototype : all lines from 'class Class_Name' to '{'
@@ -63,9 +45,9 @@ class Writer extends File\Writer
 	protected function writeClassPrototype()
 	{
 		$class_prototype = $this->file->class_type . SP
-			. $this->shortClassNameOf($this->file->class_name);
+			. $this->file->shortClassNameOf($this->file->class_name);
 		if ($this->file->class_extends) {
-			$class_extends = 'extends ' . $this->shortClassNameOf($this->file->class_extends);
+			$class_extends = 'extends ' . $this->file->shortClassNameOf($this->file->class_extends);
 			if ($this->lineLength($class_prototype . SP . $class_extends) > static::MAX_LINE_LENGTH) {
 				$this->lines[]   = $class_prototype;
 				$class_prototype = TAB . $class_extends;
@@ -77,7 +59,7 @@ class Writer extends File\Writer
 		if ($this->file->class_implements) {
 			$class_implements = [];
 			foreach ($this->file->class_implements as $implements) {
-				$class_implements[] = $this->shortClassNameOf($implements);
+				$class_implements[] = $this->file->shortClassNameOf($implements);
 			}
 			$class_implements = 'implements ' . join(', ', $class_implements);
 			if ($this->lineLength($class_prototype . SP . $class_implements) > static::MAX_LINE_LENGTH) {
@@ -112,7 +94,7 @@ class Writer extends File\Writer
 	{
 		foreach ($this->file->class_use as $class_use) {
 			if (is_object($class_use)) {
-				$this->lines[] = TAB . 'use' . SP . $this->shortClassNameOf($class_use->trait_name)
+				$this->lines[] = TAB . 'use' . SP . $this->file->shortClassNameOf($class_use->trait_name)
 					. (beginsWith($class_use->rules, '{') ? SP : '')
 					. $class_use->rules;
 			}

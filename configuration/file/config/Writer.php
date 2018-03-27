@@ -43,7 +43,8 @@ class Writer extends File\Writer
 				foreach ($plugins as $plugin_key => $plugin) {
 					if ($plugin instanceof Plugin) {
 						$plugins_separator = ($plugin_key === $last_plugin_key) ? '' : ',';
-						$this->lines[] = TAB . TAB . $this->shortClassNameOf($plugin->class_name, 2) . '::class'
+						$this->lines[] = TAB . TAB
+							. $this->file->shortClassNameOf($plugin->class_name, 2) . '::class'
 							. ($plugin->configuration ? (' => ' . $plugin->configuration) : '')
 							. $plugins_separator;
 					}

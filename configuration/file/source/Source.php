@@ -63,6 +63,24 @@ class Source extends File
 		(new Source\Reader($this))->read();
 	}
 
+	//------------------------------------------------------------------------------ shortClassNameOf
+	/**
+	 * Simplify the name of the class using its longest reference into use,
+	 * or its start from the current namespace
+	 *
+	 * @param $class_name        string
+	 * @param $maximum_use_depth integer do not care about use greater than this backslashes counter
+	 * @return string
+	 */
+	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
+	{
+		$final_class_name = parent::shortClassNameOf($class_name, $maximum_use_depth);
+		if (strpos($final_class_name, BS) && (lLastParse($class_name, BS) === $this->namespace)) {
+			$final_class_name = rLastParse($class_name, BS);
+		}
+		return $final_class_name;
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	/**
 	 * Write to file
