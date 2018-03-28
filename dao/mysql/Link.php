@@ -294,6 +294,7 @@ class Link extends Dao\Sql\Link
 				$exclude_properties = $link->value
 					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
+				$this->begin();
 				foreach ($class->accessProperties() as $property) {
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 						if (Link_Annotation::of($property)->isCollection()) {
@@ -328,6 +329,7 @@ class Link extends Dao\Sql\Link
 				}
 				$this->query(Sql\Builder::buildDelete($class_name, $id));
 				$this->disconnect($object);
+				$this->commit();
 				return true;
 			}
 		}
