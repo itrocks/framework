@@ -55,7 +55,7 @@ abstract class Comparison
 			// Date_Time type
 			case Date_Time::class:
 				$search = Date::applyDateRangeValue(
-					$expression, $property, in_array($sign, ['<', '<=']) ? self::MIN : self::MAX
+					$expression, $property, in_array($sign, ['<', '>=']) ? self::MIN : self::MAX
 				);
 				break;
 			default:
