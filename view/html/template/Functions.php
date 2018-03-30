@@ -514,7 +514,7 @@ class Functions
 		if ($expanded) {
 			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
 			$first_property = reset($expanded);
-			$object         = $first_property->getObject();
+			$object         = $first_property->getObject(true);
 			$expanded       = $this->filterProperties($object, $expanded);
 			$properties     = $expanded;
 		}

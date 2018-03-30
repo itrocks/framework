@@ -163,15 +163,23 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * Gets the object containing the value (null if the value was set as a value)
 	 *
+	 * @param $new_if_null boolean if true, return new empty object instead of null object
 	 * @return object|null
 	 */
-	public function getObject()
+	public function getObject($new_if_null = false)
 	{
 		$object = $this->object;
 		if (strpos($this->path, DOT)) {
 			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
 				if (!$object) {
 					break;
+				}
+				if ($new_if_null && !isset($object->$property_name)) {
+					$type = (new Reflection_Property(get_class($object), $property_name))->getType();
+					if ($type->isClass()) {
+						$object = $type->asReflectionClass()->newInstance();
+						continue;
+					}
 				}
 				$object = $object->$property_name;
 			}
