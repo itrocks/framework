@@ -104,7 +104,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 			$this->link_properties = [];
 			if (is_string($text_link_properties)) {
 				// if properties names are told, this will be faster to get their names here
-				$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
+				$properties = $this->class->getProperties([T_USE]);
 				foreach (explode(SP, $text_link_properties) as $property_name) {
 					if ($property_name) {
 						$this->link_properties[$property_name] = $properties[$property_name];
@@ -113,7 +113,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 			}
 			elseif ($this->class) {
 				// if properties names are not set : get explicit composite properties names
-				foreach ($this->class->getProperties([T_EXTENDS, T_USE]) as $property) {
+				foreach ($this->class->getProperties([T_USE]) as $property) {
 					if ($property->getAnnotation('composite')->value) {
 						$this->link_properties[$property->getName()] = $property;
 					}

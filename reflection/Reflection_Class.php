@@ -441,8 +441,10 @@ class Reflection_Class extends ReflectionClass
 		foreach (parent::getProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperties() */
 			$property = new Reflection_Property($this->name, $property->name);
-			$property->final_class = $final_class;
-			$properties[$property->name] = $property;
+			if((in_array(T_EXTENDS, $flags) && $property->class !== $final_class) || $property->class === $final_class){
+				$property->final_class = $final_class;
+				$properties[$property->name] = $property;
+			}
 		}
 		if (in_array(T_EXTENDS, $flags)) {
 			$parent = $this->getParentClass();
