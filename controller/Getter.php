@@ -161,20 +161,24 @@ if (isset($GLOBALS['D']) && $suffix) static::debug('A6', $path . SL . $suffix . 
 		if (empty($class)) {
 			$application_class = reset($application_classes);
 			do {
+				$can_be_project_class = (
+					($base_class === lParse($application_class, BS, 2))
+					|| !isset($project_classes[$application_class])
+				);
 				$namespace = Namespaces::of($application_class);
 				$path      = strtolower(str_replace(BS, SL, $namespace));
-if (isset($GLOBALS['D']) && $suffix) static::debug('B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D']) && $can_be_project_class && $suffix) static::debug('B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
 				if (
-					!isset($project_classes[$application_class])
+					$can_be_project_class
 					&& $suffix
 					&& file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)
 				) {
 					$class = $namespace . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) static::debug('B2', $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B2', $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
 				if (
-					!isset($project_classes[$application_class])
+					$can_be_project_class
 					&& file_exists(
 						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
 					)
@@ -182,14 +186,22 @@ if (isset($GLOBALS['D'])) static::debug('B2', $path . SL . strtolower($feature_c
 					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('B3', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B3', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (
+					$can_be_project_class
+					&& file_exists($path . SL . $feature_what . $_suffix . $ext)
+				) {
+					$class = $namespace . BS . $feature_what . $_suffix;
+					break;
+				}
+if (isset($GLOBALS['D']) && $suffix) static::debug('B4', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
 				if ($suffix && file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) static::debug('B4', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D'])) static::debug('B5', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
 				if (file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL
 					. $feature_what . $_suffix . $ext
@@ -198,14 +210,14 @@ if (isset($GLOBALS['D'])) static::debug('B4', $path . SL . 'widget' . SL . strto
 						. $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('B5', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D']) && $suffix) static::debug('B6', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
 				if ($suffix && file_exists(
 						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext
 					)) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) static::debug('B6', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+if (isset($GLOBALS['D'])) static::debug('B7', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
 				if (file_exists(
 					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL
 					. $feature_what . $_suffix . $ext
