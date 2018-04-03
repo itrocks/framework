@@ -75,7 +75,13 @@ class Application
 	 */
 	public function __construct($name)
 	{
-		list($this->vendor, $this->name) = explode(SL, $name);
+		if (strpos($name, SL)) {
+			list($this->vendor, $this->name) = explode(SL, $name);
+		}
+		else {
+			$this->name   = $name;
+			$this->vendor = $name;
+		}
 		$this->include_path = new Include_Path(get_class($this));
 	}
 
