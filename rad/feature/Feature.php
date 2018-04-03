@@ -1,10 +1,16 @@
 <?php
 namespace ITRocks\Framework\RAD;
 
+use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Plugin\Installable\Installer;
+use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Reflection\Reflection_Class;
+
 /**
  * Final user installable feature
  *
- * @display_order title, description, tags, application_class_name
+ * @display_order title, description, tags, status
+ * @list title, status
  * @representative title
  * @store_name rad_features
  */
@@ -32,6 +38,14 @@ class Feature
 	 * @var string
 	 */
 	public $plugin_class_name;
+
+	//--------------------------------------------------------------------------------------- $status
+	/**
+	 * @user readonly
+	 * @values Status::const
+	 * @var string
+	 */
+	public $status = Status::AVAILABLE;
 
 	//----------------------------------------------------------------------------------------- $tags
 	/**
@@ -65,6 +79,28 @@ class Feature
 	public function __toString()
 	{
 		return strval($this->title);
+	}
+
+	//--------------------------------------------------------------------------------------- install
+	/**
+	 * Installs this feature, ie install the matching Installable plugin
+	 */
+	public function install()
+	{
+		$this->plugin()->install(new Installer());
+	}
+
+	//---------------------------------------------------------------------------------------- plugin
+	/**
+	 * Instantiates an Installable plugin that patches $plugin_class_name
+	 *
+	 * @return Installable
+	 */
+	public function plugin()
+	{
+		/** @var $plugin Installable */
+		$plugin = (new Reflection_Class($this->plugin_class_name))->newInstance();
+		return $plugin;
 	}
 
 }
