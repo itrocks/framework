@@ -43,7 +43,7 @@ abstract class Comparison
 
 	//-------------------------------------------------------------------------- applyComparisonValue
 	/**
-	 * @param $sign string
+	 * @param $sign       string
 	 * @param $expression string|Option
 	 * @param $property     Reflection_Property
 	 * @return string
@@ -67,7 +67,7 @@ abstract class Comparison
 
 	//------------------------------------------------------------------------------- buildComparison
 	/**
-	 * @param $sign string
+	 * @param $sign       string
 	 * @param $than_value mixed
 	 * @return Func\Comparison
 	 */
