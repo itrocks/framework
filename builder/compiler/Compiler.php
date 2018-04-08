@@ -33,9 +33,9 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
-		$builder = Builder::current();
+		$builder        = Builder::current();
 		$builder->build = false;
-		$compiled = false;
+		$compiled       = false;
 		foreach ($source->getClasses() as $class) {
 			$replacement = $builder->getComposition($class->name);
 			if (is_array($replacement)) {
@@ -46,6 +46,15 @@ class Compiler implements ICompiler, Needs_Main
 			}
 		}
 		$builder->build = true;
+		if (endsWith($source->file_name, '/builder.php')) {
+			(new Compiler\Configuration\Builder)->compile($source);
+		}
+		if (endsWith($source->file_name, '/config.php')) {
+			(new Compiler\Configuration\Config)->compile($source);
+		}
+		if (endsWith($source->file_name, '/menu.php')) {
+			(new Compiler\Configuration\Menu)->compile($source);
+		}
 		return $compiled;
 	}
 
@@ -62,7 +71,7 @@ class Compiler implements ICompiler, Needs_Main
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
 		);
 		if (!isset($sources[$dependency->file_name])) {
-			$source = Reflection_Source::ofFile($dependency->file_name, $class_name);
+			$source               = Reflection_Source::ofFile($dependency->file_name, $class_name);
 			$sources[$class_name] = $source;
 			$added[$class_name]   = $source;
 		}
@@ -71,25 +80,28 @@ class Compiler implements ICompiler, Needs_Main
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * @param $sources Reflection_Source[] Key is the file path
-	 * @return Reflection_Source[] added sources list
+	 * @return Reflection_Source[] added sources list. key is the name of the class ?: the file path
 	 */
 	public function moreSourcesToCompile(array &$sources)
 	{
 		$added = [];
 		foreach ($sources as $file_path => $source) {
-			if (!strpos($file_path, SL)) {
+			if (
+				(strpos($file_path, SL) !== false)
+				&& ctype_lower(substr(rLastParse($file_path, SL), 0, 1))
+			) {
 				$reload = true;
 				break;
 			}
 		}
 		if (isset($reload)) {
 			$old_compositions = Builder::current()->getCompositions();
-			$old_levels = Session::current()->plugins->getAll(true);
+			$old_levels       = Session::current()->plugins->getAll(true);
 			if (isset(Main::$current)) {
 				Main::$current->resetSession();
 			}
 			$new_compositions = Builder::current()->getCompositions();
-			$new_levels = Session::current()->plugins->getAll(true);
+			$new_levels       = Session::current()->plugins->getAll(true);
 			// add classes where builder composition changed
 			foreach ($old_compositions as $class_name => $old_composition) {
 				if (

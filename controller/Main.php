@@ -25,6 +25,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\View;
 use ITRocks\Framework\View\View_Exception;
 
 /**
@@ -45,12 +46,22 @@ class Main
 	 * All processes of the original and replacement controller are executed.
 	 * Only the replacement controller resulting view will be returned.
 	 *
-	 * This is set by redirect()
+	 * This is set by redirect() when called without target
 	 * This is used and reset at run's end
 	 *
 	 * @var string
 	 */
 	private $redirection;
+
+	//------------------------------------------------------------------------------------ $redirects
+	/**
+	 * If set, executes multiple redirects at the end of the controller response.
+	 *
+	 * This is set by redirect() when adding a target
+	 *
+	 * @var string[] key is the '#target', value is the redirection controller call
+	 */
+	private $redirects = [];
 
 	//-------------------------------------------------------------------------------------- $running
 	/**
@@ -355,11 +366,17 @@ class Main
 
 	//-------------------------------------------------------------------------------------- redirect
 	/**
-	 * @param $uri string
+	 * @param $uri    string
+	 * @param $target string
 	 */
-	public function redirect($uri)
+	public function redirect($uri, $target = null)
 	{
-		$this->redirection = $uri;
+		if ($target) {
+			$this->redirects[$target] = $uri;
+		}
+		else {
+			$this->redirection = $uri;
+		}
 	}
 
 	//------------------------------------------------------------------------------- registerPlugins
@@ -485,6 +502,10 @@ class Main
 				}
 				$result = $this->run($uri, $get, $post, $files);
 			}
+			foreach ($this->redirects as $target => $redirection) {
+				$result .= View::redirect($redirection, $target);
+			}
+			$this->redirects = [];
 		}
 		catch (Exception $exception) {
 			$handled_error = new Handled_Error(
