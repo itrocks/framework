@@ -31,7 +31,6 @@ abstract class Cache
 	 * Returns the relative or absolute generator cache dir path (default relative)
 	 *
 	 * @param $absolute boolean true if want to get absolute path
-	 *
 	 * @return string
 	 */
 	public static function getCacheDir($absolute = false)
