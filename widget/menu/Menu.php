@@ -17,10 +17,10 @@ class Menu implements Configurable
 	//------------------------------------------------------- Menu configuration array keys constants
 
 	//------------------------------------------------------------------------------------------- ALL
+	/**
+	 * @deprecated Menu::CLEAR without the key Menu::ALL will be enough
+	 */
 	const ALL = ':';
-
-	//----------------------------------------------------------------------------------------- CLEAR
-	const CLEAR = 'clear';
 
 	//------------------------------------------------------------------------------------------ LINK
 	const LINK = 'link';

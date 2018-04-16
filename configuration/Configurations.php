@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Configuration;
 
 use ITRocks\Framework\Configuration;
+use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Priority;
 
 /**
@@ -96,7 +97,9 @@ class Configurations
 					: [$config_options['extends']];
 				unset($config_options['extends']);
 				foreach ($extends_array as $extends) {
-					$config_options = arrayMergeRecursive($configurations[$extends], $config_options);
+					$config_options = arrayMergeRecursive(
+						$configurations[$extends], $config_options, Configurable::CLEAR
+					);
 				}
 			}
 			if (!isset($config_options['app'])) {

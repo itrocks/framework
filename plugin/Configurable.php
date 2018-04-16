@@ -9,6 +9,12 @@ use ITRocks\Framework\Plugin;
 interface Configurable extends Plugin
 {
 
+	//----------------------------------------------------------------------------------------- CLEAR
+	/**
+	 * Apply this constant to configuration trees to clear (unset) them
+	 */
+	const CLEAR = '@CLEAR';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration mixed
