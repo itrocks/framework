@@ -137,15 +137,16 @@ class Compiler implements ICompiler, Needs_Main
 		array &$added, array &$sources, array $old_compositions, array $new_compositions
 	) {
 		foreach ($old_compositions as $class_name => $old_composition) {
-			$new_composition = $new_compositions[$class_name];
+			$new_composition = isset($new_compositions[$class_name])
+				? $new_compositions[$class_name]
+				: null;
 			if (
-				!isset($new_compositions[$class_name])
-				|| ($old_composition != $new_composition)
+				($new_composition != $old_composition)
 				|| (
 					is_array($old_composition)
 					&& (
-						array_diff($old_composition, $new_composition)
-						|| array_diff($new_composition, $old_composition)
+						array_diff($new_composition, $old_composition)
+						|| array_diff($old_composition, $new_composition)
 					)
 				)
 			) {
