@@ -37,9 +37,9 @@ class Wiki implements Registerable
 	 * Parse source code using GeSHi
 	 *
 	 * Source code is delimited between those full lines :
-	 * @language
-	 * ... code here
-	 * @
+	 * | @language
+	 * | ... code here
+	 * | @
 	 *
 	 * It is replaced by a geshi replacement code like `#1` that will be solved later by geshiSolve()
 	 * or now if $solve is true (default)
