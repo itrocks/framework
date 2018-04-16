@@ -19,14 +19,6 @@ class Manager implements IManager, Serializable
 	 */
 	private $activated = [];
 
-	//--------------------------------------------------------------------------------- $plugins_tree
-	/**
-	 * The plugins tree (per level)
-	 *
-	 * @var array
-	 */
-	private $plugins_tree = [];
-
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
 	 * The plugins list : key is the class name
@@ -34,6 +26,14 @@ class Manager implements IManager, Serializable
 	 * @var array
 	 */
 	private $plugins = [];
+
+	//--------------------------------------------------------------------------------- $plugins_tree
+	/**
+	 * The plugins tree (per level)
+	 *
+	 * @var array
+	 */
+	private $plugins_tree = [];
 
 	//-------------------------------------------------------------------------------------- activate
 	/**
