@@ -34,7 +34,7 @@ class Reader extends File\Reader
 				// menu item level
 				if (beginsWith($line, TAB . TAB)) {
 					if ($block instanceof Block) {
-						if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+						if (beginsWith(trim($line), ['//', '/*']) || !strpos($line, '=>')) {
 							$block->items[] = $line;
 						}
 						else {
