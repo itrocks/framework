@@ -159,7 +159,7 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
  * @param $compare callable|string objects comparison function, if set
  * @return array $array with the inserted object
  */
-function arrayInsertSorted($array, $value, $compare = null)
+function arrayInsertSorted(array $array, $value, $compare = null)
 {
 	$new_array = [];
 	$callable  = $compare ?: function($value1, $value2) { return strcmp($value1, $value2); };
@@ -205,17 +205,19 @@ function arrayIsCallable(array $array)
 /**
  * Merges two arrays, with recursion
  *
- * Elements of $array1 and $array2 with same index (even if numeric) : $array2 element replaces $array1 element.
+ * Elements of $array1 and $array2 with same index (even if numeric) :
+ * $array2 element replaces $array1 element.
  * If $array2 element is an array : merge $array1 and $array2 array element, recursively.
  *
  * @param $array1 array
  * @param $array2 array
+ * @param $clear  string You can tell a value that clears every data from $array1 before merge
  * @return array
  */
-function arrayMergeRecursive(array $array1, array $array2)
+function arrayMergeRecursive(array $array1, array $array2, $clear = null)
 {
 	foreach ($array2 as $index => $value2) {
-		if (($index === ':') && ($value2 === 'clear')) {
+		if ($clear && ($value2 === $clear)) {
 			$array1 = null;
 			unset($array2[$index]);
 		}
@@ -227,7 +229,7 @@ function arrayMergeRecursive(array $array1, array $array2)
 				}
 			}
 			elseif (is_array($value2)) {
-				$value2 = arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2);
+				$value2 = arrayMergeRecursive(is_array($value1) ? $value1 : [], $value2, $clear);
 				if (isset($value2)) {
 					$array1[$index] = $value2;
 				}
@@ -269,7 +271,7 @@ function arrayNamedValues(array $array)
  * @example arraySet($array, [1, 2, 3], null);
  * will ensure that $array[1][2][3] is set,
  * and will initialize its value to null if not
- * @param $array array
+ * @param $array array|mixed array or element (will be changed into array, always)
  * @param $keys  integer[]|string[]|null[] multidimensional array keys
  * @param $init  mixed initial / default value
  */
@@ -363,14 +365,12 @@ function arrayUnnamedValues(array $array)
  * @example
  * explodeStringInArrayToDoubleArray(SP, ['Dot', 'a cat', 'the cat runs'])
  * returns [['Dot'], ['a', 'cat'], ['the', 'cat', 'runs']]
- *
  * @example
  * explodeStringInArrayToDoubleArray(SP, [['Dot a'], ['the cat runs'])
  * returns [['Dot', 'a'], ['the', 'cat', 'runs']]
- *
- * @param $delimiter string The boundary string.
- * @param $array     array The input array, can be an array of string or an array of array of string.
- * @return array Return an array of array of string.
+ * @param $delimiter string The boundary string
+ * @param $array     array The input array, can be an array of string or an array of array of string
+ * @return array Return an array of array of string
  */
 function explodeStringInArrayToDoubleArray($delimiter, array $array)
 {
@@ -426,7 +426,7 @@ function explodeStringInArrayToSimpleArray($delimiter, array $array)
  * @param $compare callable|string|string[] objects comparison function or property(ies)
  * @return array $array with the inserted object
  */
-function objectInsertSorted($array, $object, $compare)
+function objectInsertSorted(array $array, $object, $compare)
 {
 	$new_array = [];
 	/** @var $callable callable The callable function adapted to $compare */
