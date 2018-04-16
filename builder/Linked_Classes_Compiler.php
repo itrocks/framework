@@ -87,7 +87,7 @@ class Linked_Classes_Compiler implements ICompiler
 	/**
 	 * When a class is compiled, all classes that extends it must be compiled too
 	 *
-	 * @param &$sources Reflection_Source[]
+	 * @param $sources Reflection_Source[]
 	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(array &$sources)
