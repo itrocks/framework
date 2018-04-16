@@ -258,10 +258,13 @@ class Compiler extends Cache implements
 
 		$this->removeOldDependencies();
 
-		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 		$first_group   = true;
+		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 
 		foreach ($this->compilers as $compilers) {
+			if (isset($GLOBALS['D'])) {
+				echo "- GROUP COMPILE" . BRLF;
+			}
 			// save sources in oder to give them to next compilers too
 			/** @var $compilers ICompiler[] */
 			$this->saved_sources = $this->sources;
@@ -278,6 +281,9 @@ class Compiler extends Cache implements
 		$this->sources = null;
 		$this->text_output->log('Compilation done');
 		$this->text_output->end();
+		if (isset($GLOBALS['D'])) {
+			echo "- END COMPILE" . BRLF;
+		}
 	}
 
 	//--------------------------------------------------------------------------------- compileSource
@@ -295,7 +301,7 @@ class Compiler extends Cache implements
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {
 				echo get_class($compiler) . ' : Compile source file ' . $source->file_name
-					. ' class ' . $source->getFirstClassName() . SP . BR . LF;
+					. ' class ' . $source->getFirstClassName() . BRLF;
 			}
 			$compiler->compile($source, $this);
 		}
