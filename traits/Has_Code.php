@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Traits;
 
 /**
- * For all classes having a code made of true ascii string ([-a-zA-Z0-9_])
+ * For all classes having a code
  */
 trait Has_Code
 {
