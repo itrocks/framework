@@ -87,7 +87,9 @@ class Feature
 	 */
 	public function install()
 	{
-		$this->plugin()->install(new Installer());
+		$installer = new Installer();
+		$this->plugin()->install($installer);
+		$installer->saveFiles();
 	}
 
 	//---------------------------------------------------------------------------------------- plugin
