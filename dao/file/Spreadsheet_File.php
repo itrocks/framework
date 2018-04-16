@@ -4,8 +4,6 @@ namespace ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Option\Replace;
-use ITRocks\Framework\Reflection\Reflection_Class;
-use PHPExcel_IOFactory;
 
 /**
  * Excel file
@@ -31,30 +29,6 @@ class Spreadsheet_File
 			}
 		}
 		return trim($data);
-	}
-
-	//-------------------------------------------------------------------------------- createFromFile
-	/**
-	 * @param $file_name string The Excel file name to be read
-	 * @return Spreadsheet_File
-	 */
-	public static function createFromFile($file_name)
-	{
-		$source_object      = PHPExcel_IOFactory::load($file_name);
-		$destination_object = new Spreadsheet_File();
-		$source_class       = new Reflection_Class(get_class($source_object));
-		$destination_class  = new Reflection_Class(get_called_class());
-		$destination_properties = $destination_class->accessProperties();
-		foreach ($source_class->accessProperties() as $source_property) {
-			if (!$source_property->isStatic()) {
-				$destination_property = $destination_properties[$source_property->name];
-				$destination_property->setValue(
-					$destination_object,
-					$source_property->getValue($source_object)
-				);
-			}
-		}
-		return $destination_object;
 	}
 
 	//----------------------------------------------------------------------------------- fileToArray
