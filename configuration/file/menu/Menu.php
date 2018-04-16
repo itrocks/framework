@@ -19,6 +19,8 @@ class Menu extends File
 
 	//-------------------------------------------------------------------------------------- addBlock
 	/**
+	 * Add a menu block or return the existing block
+	 *
 	 * @param $block_title string
 	 * @return Block
 	 */
@@ -36,6 +38,8 @@ class Menu extends File
 
 	//------------------------------------------------------------------------------------- addBlocks
 	/**
+	 * Add several blocks and their items to the menu
+	 *
 	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
 	public function addBlocks(array $blocks)
@@ -48,6 +52,8 @@ class Menu extends File
 
 	//--------------------------------------------------------------------------------------- addItem
 	/**
+	 * Add a menu item or return the existing item
+	 *
 	 * @param $block        Block|string
 	 * @param $item_link    string
 	 * @param $item_caption string
@@ -70,6 +76,8 @@ class Menu extends File
 
 	//-------------------------------------------------------------------------------------- addItems
 	/**
+	 * Add several items to the given menu block (auto-create block and items)
+	 *
 	 * @param $block Block|string
 	 * @param $items string[] string $item_caption[string $item_link]
 	 */

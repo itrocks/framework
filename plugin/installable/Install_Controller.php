@@ -26,8 +26,10 @@ class Install_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		/** @var $plugin Installable */
-		$plugin = $parameters->getMainObject();
-		$plugin->install(new Installer());
+		$plugin    = $parameters->getMainObject();
+		$installer = new Installer();
+		$plugin->install($installer);
+		$installer->saveFiles();
 		return 'Installed';
 	}
 

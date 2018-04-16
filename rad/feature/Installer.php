@@ -23,7 +23,7 @@ class Installer implements Registerable
 	public function installFeature(Installable $object)
 	{
 		$plugin          = $object;
-		$feature         = Dao::searchone(['plugin_class_name' => get_class($plugin)], Feature::class);
+		$feature         = Dao::searchOne(['plugin_class_name' => get_class($plugin)], Feature::class);
 		$feature->status = Status::INSTALLED;
 		Dao::write($feature, Dao::only('status'));
 	}
