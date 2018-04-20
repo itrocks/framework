@@ -11,59 +11,25 @@ class Dependency
 {
 
 	//---------------------------------------------------------------------------------- $type values
-
-	//--------------------------------------------------------------------------------------- T_CLASS
-	const T_CLASS = 'class';
-
-	//--------------------------------------------------------------------------------- T_DECLARATION
-	const T_DECLARATION = 'declaration';
-
-	//------------------------------------------------------------------------------------- T_EXTENDS
-	const T_EXTENDS = 'extends';
-
-	//---------------------------------------------------------------------------------- T_IMPLEMENTS
-	const T_IMPLEMENTS = 'implements';
-
-	//------------------------------------------------------------------------------- T_NAMESPACE_USE
+	const T_CLASS         = 'class';
+	const T_DECLARATION   = 'declaration';
+	const T_EXTENDS       = 'extends';
+	const T_FEATURE       = 'feature';
+	const T_IMPLEMENTS    = 'implements';
 	const T_NAMESPACE_USE = 'namespace_use';
-
-	//----------------------------------------------------------------------------------------- T_NEW
-	const T_NEW = 'new';
-
-	//--------------------------------------------------------------------------------------- T_PARAM
-	const T_PARAM = 'param';
-
-	//-------------------------------------------------------------------------------------- T_RETURN
-	const T_RETURN = 'return';
-
-	//----------------------------------------------------------------------------------------- T_SET
-	const T_SET = 'set';
-
-	//-------------------------------------------------------------------------------------- T_STATIC
-	const T_STATIC = 'static';
-
-	//--------------------------------------------------------------------------------------- T_STORE
-	const T_STORE = 'store';
-
-	//----------------------------------------------------------------------------------------- T_USE
-	/**
-	 * class use
-	 */
-	const T_USE = 'use';
-
-	//----------------------------------------------------------------------------------------- T_VAR
-	const T_VAR = 'var';
+	const T_NEW           = 'new';
+	const T_PARAM         = 'param';
+	const T_RETURN        = 'return';
+	const T_SET           = 'set';
+	const T_STATIC        = 'static';
+	const T_STORE         = 'store';
+	const T_USE           = 'use'; // class' use <trait>
+	const T_VAR           = 'var';
 
 	//--------------------------------------------------------------------------- $declaration values
-
-	//--------------------------------------------------------------------------- T_CLASS_DECLARATION
-	const T_CLASS_DECLARATION = 'class';
-
-	//----------------------------------------------------------------------- T_INTERFACE_DECLARATION
+	const T_CLASS_DECLARATION     = 'class';
 	const T_INTERFACE_DECLARATION = 'interface';
-
-	//--------------------------------------------------------------------------- T_TRAIT_DECLARATION
-	const T_TRAIT_DECLARATION = 'trait';
+	const T_TRAIT_DECLARATION     = 'trait';
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -119,8 +85,8 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, declaration, extends, implements, namespace_use, new, param, return, set,
-	 *         static, store, use, var
+	 * @values class, declaration, extends, feature, implements, namespace_use, new, param, return,
+	 *         set, static, store, use, var
 	 * @var string
 	 */
 	public $type;

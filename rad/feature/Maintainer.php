@@ -32,6 +32,25 @@ class Maintainer implements Registerable, Updatable
 		return $namespace . BS . 'Application';
 	}
 
+	//------------------------------------------------------------------ featureAnnotationsToFeatures
+	/**
+	 * Scan all @feature class annotations which value start by an uppercase letter : these are
+	 * features here to be installable too
+	 *
+	 * @return Feature[]
+	 */
+	protected function featureAnnotationsToFeatures()
+	{
+		$dependencies = Dao::search(['type' => Dependency::T_FEATURE], Dependency::class);
+		$features     = [];
+		foreach ($dependencies as $dependency) {
+			$features[] = $this->pluginClassNameAndTitleToFeature(
+				$dependency->class_name, $dependency->dependency_name
+			);
+		}
+		return $features;
+	}
+
 	//------------------------------------------------------------------------- installableToFeatures
 	/**
 	 * Search all classes that implements Installable and write them as features you can install or
@@ -60,9 +79,24 @@ class Maintainer implements Registerable, Updatable
 	 */
 	public function installableToFeaturesUpdate()
 	{
-		$features = $this->installableToFeatures();
+		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
 		(new Set())->replace($features, Feature::class);
 		return $features;
+	}
+
+	//-------------------------------------------------------------- pluginClassNameAndTitleToFeature
+	/**
+	 * @param $plugin_class_name string
+	 * @param $title             string
+	 * @return Feature
+	 */
+	protected function pluginClassNameAndTitleToFeature($plugin_class_name, $title)
+	{
+		$feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)
+			?: new Feature($title);
+		$feature->application_class_name = $this->applicationClassName($plugin_class_name);
+		$feature->plugin_class_name      = $plugin_class_name;
+		return $feature;
 	}
 
 	//---------------------------------------------------------------------- pluginClassNameToFeature

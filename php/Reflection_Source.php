@@ -445,6 +445,8 @@ class Reflection_Source
 			elseif ($token_id === T_DOC_COMMENT) {
 				if ($f_instantiates) {
 					$doc_comment = $token[1];
+
+					// dependencies @param, @return, @set, @var
 					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
 					preg_match_all(
 						'%\*\s+@(param|return|set|var)\s+([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
@@ -462,25 +464,25 @@ class Reflection_Source
 						if (strlen($class_names)) {
 							foreach (explode('|', $class_names) as $class_name) {
 								if (ctype_upper($class_name[0])) {
-									$class_name = str_replace(['[', ']'], '', $class_name);
-									$type = $match[1][0];
-									$class_name = $this->fullClassName($class_name);
-									$dependency = new Dependency();
+									$class_name                  = str_replace(['[', ']'], '', $class_name);
+									$type                        = $match[1][0];
+									$class_name                  = $this->fullClassName($class_name);
+									$dependency                  = new Dependency();
 									$dependency->class_name      = $class->name;
 									$dependency->dependency_name = $class_name;
 									$dependency->file_name       = $this->file_name;
 									$dependency->line            = $line;
 									$dependency->type            = $type;
-									$this->instantiates[] = $dependency;
+									$this->instantiates[]        = $dependency;
 									if (!$class->name) {
 										$missing_class_name[] = $dependency;
 									}
 									if ($type === Dependency::T_SET) {
-										$dependency = clone $dependency;
+										$dependency                  = clone $dependency;
 										$dependency->dependency_name = strtolower(
 											Namespaces::shortClassName($class_name)
 										);
-										$dependency->type = Dependency::T_STORE;
+										$dependency->type     = Dependency::T_STORE;
 										$this->dependencies[] = $dependency;
 										if (!$class->name) {
 											$missing_class_name[] = $dependency;
@@ -496,6 +498,25 @@ class Reflection_Source
 								. ' : var type / class is needed',
 								E_USER_WARNING
 							);
+						}
+					}
+
+					// dependency @feature
+					preg_match_all(
+						'%\*\s+@feature\s+([A-Z].*)%', $doc_comment, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+					);
+					foreach ($matches as $match) {
+						list($title, $pos) = $match[1];
+						$line              = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+						$dependency                  = new Dependency();
+						$dependency->class_name      = $class->name;
+						$dependency->dependency_name = $title;
+						$dependency->file_name       = $this->file_name;
+						$dependency->line            = $line;
+						$dependency->type            = Dependency::T_FEATURE;
+						$this->dependencies[]        = $dependency;
+						if (!$class->name) {
+							$missing_class_name[] = $dependency;
 						}
 					}
 				}

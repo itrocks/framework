@@ -84,7 +84,11 @@ class Feature_Cache
 		$feature_annotations = $class->getAnnotations('feature');
 
 		foreach ($feature_annotations as $annotation) {
-			if ($annotation->value && ($annotation->value !== true)) {
+			if (
+				$annotation->value
+				&& ($annotation->value !== true)
+				&& !ctype_upper(substr($annotation->value, 0, 1))
+			) {
 				$ignore_empty_features = true;
 				break;
 			}
@@ -95,7 +99,7 @@ class Feature_Cache
 		$features = [];
 		if (isset($ignore_empty_features)) {
 			foreach ($feature_annotations as $annotation) {
-				if ($annotation->value) {
+				if ($annotation->value && !ctype_upper(substr($annotation->value, 0, 1))) {
 					$path = lParse($annotation->value, SP);
 					$name = rParse($annotation->value, SP);
 					if (!strpos($path, SL)) {
