@@ -115,12 +115,13 @@ class Reader extends File\Reader
 						$plugin   = null;
 						$priority = null;
 					}
-					elseif (trim(lParse($line, '::')) === 'Priority') {
-						$priority = new Priority(trim(mParse($line, 'Priority::', '=>')));
-						$this->file->plugins_by_priority[] = $priority;
-					}
 					elseif (trim(lParse($line, '::')) === 'Configuration') {
 						$this->file->plugins_by_priority[] = $line;
+					}
+					elseif (trim(lParse($line, '::')) === 'Priority') {
+						$priority = new Priority(trim(mParse($line, 'Priority::', '=>')));
+						$priority->config = $this->file;
+						$this->file->plugins_by_priority[] = $priority;
 					}
 					else {
 						trigger_error(

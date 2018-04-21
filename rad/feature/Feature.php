@@ -1,11 +1,8 @@
 <?php
 namespace ITRocks\Framework\RAD;
 
-use ITRocks\Framework\Plugin\Installable;
-use ITRocks\Framework\Plugin\Installable\Implicit;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Status;
-use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Final user installable feature
@@ -89,23 +86,8 @@ class Feature
 	public function install()
 	{
 		$installer = new Installer();
-		$this->plugin()->install($installer);
+		$installer->install($this->plugin_class_name);
 		$installer->saveFiles();
-	}
-
-	//---------------------------------------------------------------------------------------- plugin
-	/**
-	 * Instantiates an Installable plugin that patches $plugin_class_name
-	 *
-	 * @return Installable|object
-	 */
-	public function plugin()
-	{
-		if (is_a($this->plugin_class_name, Installable::class, true)) {
-			/** @var $plugin Installable */
-			return (new Reflection_Class($this->plugin_class_name))->newInstance();
-		}
-		return new Implicit($this->plugin_class_name);
 	}
 
 }

@@ -1,7 +1,9 @@
 <?php
 namespace ITRocks\Framework\Plugin\Installable;
 
+use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -39,6 +41,9 @@ class Implicit implements Installable
 		if ($class->isTrait() && ($class->getListAnnotation('extends')->value)) {
 			$this->type = T_TRAIT;
 		}
+		elseif ($class->isA(Plugin::class, [T_EXTENDS, T_IMPLEMENTS, T_USE])) {
+			$this->type = T_CLASS;
+		}
 		else {
 			trigger_error(
 				"Does not know how class $class->name could be installed as a plugin",
@@ -71,18 +76,28 @@ class Implicit implements Installable
 	public function install(Installer $installer)
 	{
 		switch ($this->type) {
-			case T_TRAIT: $this->installTrait($installer);
+			case T_CLASS: $this->installClass($installer); break;
+			case T_TRAIT: $this->installTrait($installer); break;
 		}
 	}
 
-	//---------------------------------------------------------------------------------- installTrait
+	//---------------------------------------------------------------------------------- installClass
+	/**
+	 * @param $installer Installer
+	 */
+	protected function installClass(Installer $installer)
+	{
+		$installer->addPlugin(Priority::NORMAL, $this->class->name);
+	}
+
+		//---------------------------------------------------------------------------------- installTrait
 	/**
 	 * @param $installer Installer
 	 */
 	protected function installTrait(Installer $installer)
 	{
 		foreach ($this->class->getListAnnotation('extends')->values() as $extends) {
-			$installer->addToClass($extends, [$this->class->name]);
+			$installer->addToClass($extends, $this->class->name);
 		}
 	}
 

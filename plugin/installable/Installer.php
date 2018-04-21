@@ -5,11 +5,11 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
+use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
-use ITRocks\Framework\Plugin\Priority;
 
 /**
  * Installer
@@ -41,11 +41,14 @@ class Installer
 	/**
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
-	 * @param $plugin   Plugin
-	 * @param $priority string @values Priority::const
+	 * @param $priority_value string @values Priority::const
+	 * @param $plugin_name    string
+	 * @param $configuration  mixed
 	 */
-	public function addPlugin($priority = Priority::NORMAL, Plugin $plugin)
+	public function addPlugin($priority_value, $plugin_name, $configuration = null)
 	{
+		$file = $this->openFile(Config::class);
+		$file->addPlugin($priority_value, $plugin_name, $configuration);
 	}
 
 	//------------------------------------------------------------------------------------ addToClass
@@ -89,12 +92,7 @@ class Installer
 			$plugin_class_names = [$plugin_class_names];
 		}
 		foreach ($plugin_class_names as $plugin_class_name) {
-			if (is_a($plugin_class_name, Installable::class, true)) {
-				$this->install($plugin_class_name);
-			}
-			else {
-				trigger_error('Plugin ' . $plugin_class_name . ' is not Installable', E_USER_ERROR);
-			}
+			$this->install($plugin_class_name);
 		}
 	}
 
@@ -105,7 +103,9 @@ class Installer
 	public function install($plugin)
 	{
 		if (is_string($plugin)) {
-			$plugin = Builder::create($plugin);
+			$plugin = is_a($plugin, Installable::class, true)
+				? Builder::create($plugin)
+				: Builder::create(Implicit::class, [$plugin]);
 		}
 		$plugin->install($this);
 	}

@@ -11,6 +11,8 @@ use ITRocks\Framework\Widget\Edit\Html_Template;
 
 /**
  * The wiki plugin enable wiki parsing of multiline properties values
+ *
+ * @feature Enable wiki formatting of descriptive texts using the Textile markup language
  */
 class Wiki implements Registerable
 {

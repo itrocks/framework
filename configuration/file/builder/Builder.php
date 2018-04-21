@@ -56,7 +56,7 @@ class Builder extends File
 					function(Built $object1, Built $object2) use ($builder) {
 						$class1 = $builder->shortClassNameOf($object1->class_name);
 						$class2 = $builder->shortClassNameOf($object2->class_name);
-						return strcmp(strtolower($class1), strtolower($class2));
+						return strcmp($class1, $class2);
 					}
 				);
 			}
