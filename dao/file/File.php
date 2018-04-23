@@ -122,14 +122,13 @@ class File
 	}
 
 	//-------------------------------------------------------------------------- getTemporaryFileName
-	/** @noinspection PhpUnusedPrivateMethodInspection @getter */
 	/**
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
 	 *
 	 * @return string
 	 */
-	private function getTemporaryFileName()
+	protected function getTemporaryFileName()
 	{
 		if (
 			isset($this->content)
