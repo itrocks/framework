@@ -31,10 +31,10 @@ $('document').ready(function()
 			}
 			else {
 				var $table   = $this.closest('table');
-				var $new_row = $table.data('saf_add').clone();
+				var $new_row = $table.data('itrocks_add').clone();
 				$this.closest('tr').replaceWith($new_row);
 				$new_row.build();
-				$table.data('saf_last_index', $table.data('saf_last_index') + 1);
+				$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
 			}
 		});
 
@@ -70,13 +70,16 @@ $('document').ready(function()
 		this.inside('table.collection, table.map').each(function()
 		{
 			var $this = $(this);
-			$this.data('saf_add', $this.children('tbody').children('tr.new').clone());
-			// saf_add_index : the value of the index to be replaced into the model for new rows
-			$this.data('saf_add_index', $this.children('tbody').children('tr').length - 1);
-			// saf_last_index : the last used index (lines count - 1)
-			$this.data('saf_last_index', Math.max(0, $this.data('saf_add_index') - 1));
-			if ($this.data('saf_add_index')) {
-				$this.children('tbody').children('tr.new').remove();
+			$this.data('itrocks_add', $this.children('tbody').children('tr.new').clone());
+			// itrocks_add_index : the value of the index to be replaced into the model for new rows
+			$this.data('itrocks_add_index', $this.children('tbody').children('tr').length - 1);
+			// itrocks_last_index : the last used index (lines count - 1)
+			$this.data('itrocks_last_index', Math.max(0, $this.data('itrocks_add_index') - 1));
+			if ($this.data('itrocks_add_index')) {
+				var $tr_new = $this.children('tbody').children('tr.new');
+				if ($tr_new.find('input:not([class=file]):not([type=hidden]), select, textarea').length) {
+					$tr_new.remove();
+				}
 			}
 		});
 
@@ -96,10 +99,10 @@ $('document').ready(function()
 					}
 					// calculate new row and indexes
 					var $table = $($collection[0]);
-					var $new_row = $table.data('saf_add').clone();
-					$table.data('saf_last_index', $table.data('saf_last_index') + 1);
-					var index = $table.data('saf_last_index');
-					var old_index = $table.data('saf_add_index');
+					var $new_row = $table.data('itrocks_add').clone();
+					$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
+					var index = $table.data('itrocks_last_index');
+					var old_index = $table.data('itrocks_add_index');
 					// increment indexes in new row html code
 					var depthReplace = function(text, open, close, depth)
 					{
