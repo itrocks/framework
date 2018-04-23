@@ -83,7 +83,7 @@ class Write_Controller implements Default_Class_Controller
 
 		Dao::begin();
 		try {
-			$builder = new Post_Files();
+			$builder = new Post_Files(get_class($object));
 			$form    = $builder->appendToForm($form, $files);
 			$builder = new Object_Builder_Array();
 			$builder->null_if_empty_sub_objects = true;
