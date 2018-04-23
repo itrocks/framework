@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
+use Exception;
 use ITRocks\Framework;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
@@ -634,7 +635,14 @@ class Template
 	 */
 	protected function parseCollection(Reflection_Property $property, array $collection)
 	{
-		return $property->getType()->asReflectionClass()->isAbstract()
+		try {
+			$type = $property->getType();
+		}
+		catch (Exception $exception) {
+			trigger_error($exception->getMessage(), E_USER_ERROR);
+			$type = null;
+		}
+		return $type->asReflectionClass()->isAbstract()
 			? (new Html\Builder\Abstract_Collection($property, $collection))->build()
 			: (new Html\Builder\Collection($property, $collection))->build();
 	}
@@ -873,7 +881,13 @@ class Template
 		if (beginsWith($include_uri, SL) && ctype_lower(substr($include_uri, 1, 1))) {
 			$include_uri = Framework\View::link($this->functions->getObject($this)) . $include_uri;
 		}
-		return (new Main())->runController($include_uri, $options);
+		try {
+			return (new Main())->runController($include_uri, $options);
+		}
+		catch (Exception $exception) {
+			trigger_error($exception->getMessage(), E_USER_ERROR);
+			return null;
+		}
 	}
 
 	//--------------------------------------------------------------------------- parseIncludeResolve
@@ -884,7 +898,9 @@ class Template
 	 */
 	protected function parseIncludeResolve($include_uri, $class_name)
 	{
-if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . ' (context:' . $class_name . ')' . BR;
+		if (isset($GLOBALS['D'])) {
+			echo '- resolve ' . $include_uri . ' (context:' . $class_name . ')' . BR;
+		}
 		if ($class_name) {
 			$feature_name = lParse(rLastParse($include_uri, SL, 1, true), '.html');
 			$resolve      = Engine::getTemplateFile($class_name, [$feature_name]);
@@ -892,7 +908,9 @@ if (isset($GLOBALS['D'])) echo '- resolve ' . $include_uri . ' (context:' . $cla
 		else {
 			$resolve = stream_resolve_include_path($include_uri);
 		}
-if (isset($GLOBALS['D'])) echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($resolve) . BR;
+		if (isset($GLOBALS['D'])) {
+			echo '- FOUND INCLUDE ' . Paths::getRelativeFileName($resolve) . BR;
+		}
 		return $resolve;
 	}
 
