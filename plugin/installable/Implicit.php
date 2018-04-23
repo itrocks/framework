@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Priority;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -96,8 +97,10 @@ class Implicit implements Installable
 	 */
 	protected function installTrait(Installer $installer)
 	{
-		foreach ($this->class->getListAnnotation('extends')->values() as $extends) {
-			$installer->addToClass($extends, $this->class->name);
+		foreach (Extends_Annotation::allOf($this->class) as $annotations) {
+			foreach ($annotations->declared_class_names as $extends) {
+				$installer->addToClass($extends, $this->class->name);
+			}
 		}
 	}
 

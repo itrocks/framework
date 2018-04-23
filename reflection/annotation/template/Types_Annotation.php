@@ -19,6 +19,17 @@ use ITRocks\Framework\Reflection\Type;
 trait Types_Annotation
 {
 
+	//------------------------------------------------------------------------- $declared_class_names
+	/**
+	 * The declared class names
+	 *
+	 * $value will contain built class name(s) (after replacement by Builder::className)
+	 * These are the names of the classes as they were declared into the annotation
+	 *
+	 * @var string[]
+	 */
+	public $declared_class_names = [];
+
 	//-------------------------------------------------------------------------------- applyNamespace
 	/**
 	 * Apply namespace and use entries to the type name (if class)
@@ -31,6 +42,9 @@ trait Types_Annotation
 	public function applyNamespace($namespace, array $use = [])
 	{
 		/** @var $this Annotation|Types_Annotation */
+
+		/** @var $declared_class_names string[] */
+		$declared_class_names = [];
 		/** @var $values string[] */
 		$values = is_array($this->value) ? $this->value : [$this->value];
 
@@ -43,16 +57,18 @@ trait Types_Annotation
 				else {
 					$multiple = '';
 				}
-				$values[$key] = Builder::className(
-					(new Type($class_name))->applyNamespace($namespace, $use)
-				) . $multiple;
+				$declared_class_name        = (new Type($class_name))->applyNamespace($namespace, $use);
+				$declared_class_names[$key] = $declared_class_name  . $multiple;
+				$values[$key]               = Builder::className($declared_class_name) . $multiple;
 			}
 			elseif ($class_name[0] === BS) {
-				$values[$key] = substr($class_name, 1);
+				$declared_class_names[$key] = substr($class_name, 1);
+				$values[$key]               = substr($class_name, 1);
 			}
 		}
 
-		$this->value = is_array($this->value) ? $values : reset($values);
+		$this->declared_class_names = $declared_class_names;
+		$this->value                = is_array($this->value) ? $values : reset($values);
 	}
 
 }
