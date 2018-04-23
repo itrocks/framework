@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework\Dao\File\Builder;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Parse post files list like $_FILES to get them into objects
@@ -12,6 +14,23 @@ use ITRocks\Framework\Dao\File;
  */
 class Post_Files
 {
+
+	//------------------------------------------------------------------------------- $for_class_name
+	/**
+	 * @var string
+	 */
+	public $for_class_name;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $for_class_name string
+	 */
+	public function __construct($for_class_name = null)
+	{
+		if (isset($for_class_name)) {
+			$this->for_class_name = $for_class_name;
+		}
+	}
 
 	//---------------------------------------------------------------------------------- appendToForm
 	/**
@@ -28,15 +47,14 @@ class Post_Files
 					$form[$top] = [];
 				}
 				$form[$top] = $this->appendToFormRecurse(
-					$form[$top], $element['name'], $element['tmp_name']
+					$top, $form[$top], $element['name'], $element['tmp_name']
 				);
 			}
 			elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
-				/** @var $file File */
-				$file = Builder::create(File::class);
-				$file->name = $element['name'];
+				$file                      = $this->newFileObject($top);
+				$file->name                = $element['name'];
 				$file->temporary_file_name = $element['tmp_name'];
-				$form[$top] = $file;
+				$form[$top]                = $file;
 			}
 		}
 		return $form;
@@ -44,31 +62,61 @@ class Post_Files
 
 	//--------------------------------------------------------------------------- appendToFormRecurse
 	/**
+	 * @param $property_path    string
 	 * @param $form             array
 	 * @param $name_element     array
 	 * @param $tmp_name_element array
 	 * @return array
 	 */
-	private function appendToFormRecurse(array $form, array $name_element, array $tmp_name_element)
-	{
+	private function appendToFormRecurse(
+		$property_path, array $form, array $name_element, array $tmp_name_element
+	) {
 		foreach ($name_element as $key => $name_sub_element) {
 			if (is_array($name_sub_element)) {
 				if (!isset($form[$key])) {
 					$form[$key] = [];
 				}
 				$form[$key] = $this->appendToFormRecurse(
-					$form[$key], $name_sub_element, $tmp_name_element[$key]
+					$property_path . DOT . $key, $form[$key], $name_sub_element, $tmp_name_element[$key]
 				);
 			}
 			else {
-				/** @var $file File */
-				$file = Builder::create(File::class);
-				$file->name = $name_sub_element;
+				$file                      = $this->newFileObject($property_path);
+				$file->name                = $name_sub_element;
 				$file->temporary_file_name = $tmp_name_element[$key];
-				$form[$key] = $file;
+				$form[$key]                = $file;
 			}
 		}
 		return $form;
+	}
+
+	//--------------------------------------------------------------------------------- newFileObject
+	/**
+	 * Return a file object that complies the file type of the property into the reference class name
+	 *
+	 * @param $property_path string
+	 * @return File
+	 */
+	protected function newFileObject($property_path)
+	{
+		if (
+			$this->for_class_name
+			&& ($property = new Reflection_Property($this->for_class_name, $property_path))
+		) {
+			try {
+				$type = $property->getType();
+			}
+			catch (Exception $exception) {
+				$type = null;
+			}
+			$file_class = $type->getElementTypeAsString();
+		}
+		else {
+			$file_class = File::class;
+		}
+		/** @var $file File */
+		$file = Builder::create($file_class);
+		return $file;
 	}
 
 }
