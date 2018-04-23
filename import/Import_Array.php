@@ -82,10 +82,10 @@ class Import_Array
 	 * The cursor on $array must be set to properties path row before calling this method
 	 * The cursor will stay on the properties path row
 	 *
-	 * @param $this_constants $value = string[$property_path]
-	 * @param $array          $value = string[integer $row_number][integer $column_number]
+	 * @param $this_constants string[] $value = string[$property_path]
+	 * @param $array          array $value = string[integer $row_number][integer $column_number]
 	 */
-	protected static function addConstantsToArray($this_constants, array &$array)
+	protected static function addConstantsToArray(array $this_constants, array &$array)
 	{
 		if ($this_constants) {
 			$constants    = [];
@@ -204,7 +204,7 @@ class Import_Array
 	 * @param $parameters   array
 	 * @return View_Exception
 	 */
-	public static function getException($feature_name, $parameters)
+	public static function getException($feature_name, array $parameters)
 	{
 		$parameters[Parameter::AS_WIDGET] = true;
 		if (isset($parameters['class'])) {
@@ -221,6 +221,7 @@ class Import_Array
 	 * Gets properties alias from current list settings
 	 *
 	 * TODO user must place himself into the list settings matching the import, should search it
+	 *
 	 * @param $class_name string
 	 * @return string[] $property_alias = string[string $property_name]
 	 */
@@ -243,7 +244,7 @@ class Import_Array
 	 *
 	 * The cursor on $array is set to the row containing the properties path.
 	 *
-	 * @param $array      $value = string[integer $row_number][integer $column_number]
+	 * @param $array      array $value = string[integer $row_number][integer $column_number]
 	 * @param $class_name string class name : if set, will use current list settings properties alias
 	 * @return string[] $property_path = string[integer $column_number]
 	 */
