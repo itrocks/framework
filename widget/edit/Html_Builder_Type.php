@@ -243,7 +243,22 @@ class Html_Builder_Type
 	 */
 	protected function buildFile()
 	{
-		$file = new Input($this->getFieldName());
+		$field_name = $this->getFieldName();
+		if (
+			($this->value instanceof File)
+			&& is_numeric($counter = lParse(rLastParse($field_name, '['), ']'))
+		) {
+			$id_input = new Input(
+				lLastParse($field_name, '[') . '[id][' . $counter . ']',
+				Dao::getObjectIdentifier($this->value)
+			);
+			$id_input->addClass('id');
+			$id_input->setAttribute('type', 'hidden');
+		}
+		else {
+			$id_input = '';
+		}
+		$file = new Input($field_name);
 		$file->setAttribute('type', 'file');
 		$file->addClass('file');
 		if ($this->readonly) {
@@ -253,7 +268,7 @@ class Html_Builder_Type
 			? (new Html\Builder\File($this->value))->build()
 			: '';
 		$this->addConditionsToElement($file);
-		return $file . $span;
+		return $id_input . $file . $span;
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat

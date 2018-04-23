@@ -299,6 +299,16 @@ class Object_Builder_Array
 	public function buildMap(array $array, $class_name)
 	{
 		$map = [];
+		// file identifiers are copied to array values
+		if (isset($array['id'])) {
+			foreach ($array['id'] as $key => $identifier) {
+				if (!$array[$key]) {
+					$array[$key] = $identifier;
+				}
+			}
+			unset($array['id']);
+		}
+		// build each element
 		foreach ($array as $key => $element) {
 			if (!empty($element)) {
 				if (is_array($element)) {
