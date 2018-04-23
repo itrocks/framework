@@ -10,6 +10,7 @@ use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Updater\Application_Updater;
 
 /**
  * Installer
@@ -178,8 +179,11 @@ class Installer
 	 */
 	public function saveFiles()
 	{
-		foreach ($this->files as $file) {
-			$file->write();
+		if ($this->files) {
+			foreach ($this->files as $file) {
+				$file->write();
+			}
+			touch(Application_Updater::UPDATE_FILE);
 		}
 	}
 
