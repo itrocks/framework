@@ -18,12 +18,13 @@ class User
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current static
-	 * @return static
+	 * @param $set_current User|object Only set when an user, but other parameters
+	 *        set by @default User::current or @user_default User::current can be set and ignored
+	 * @return User
 	 */
 	public static function current($set_current = null)
 	{
-		return self::pCurrent($set_current);
+		return self::pCurrent(($set_current instanceof User) ? $set_current : null);
 	}
 
 }
