@@ -3,6 +3,7 @@ namespace ITRocks\Framework\RAD\Feature;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Plugin\Installable\Implicit;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\RAD\Feature;
@@ -23,7 +24,8 @@ class Installer implements Registerable
 	public function installFeature(Installable $object)
 	{
 		$plugin          = $object;
-		$feature         = Dao::searchOne(['plugin_class_name' => get_class($plugin)], Feature::class);
+		$class_name      = ($plugin instanceof Implicit) ? $plugin->class->name : get_class($plugin);
+		$feature         = Dao::searchOne(['plugin_class_name' => $class_name], Feature::class);
 		$feature->status = Status::INSTALLED;
 		Dao::write($feature, Dao::only('status'));
 	}

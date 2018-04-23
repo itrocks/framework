@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Set;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Plugin\Installable\Implicit;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\RAD\Feature;
@@ -66,7 +67,9 @@ class Maintainer implements Registerable, Updatable
 		);
 		$features = [];
 		foreach ($dependencies as $dependency) {
-			$features[] = $this->pluginClassNameToFeature($dependency->class_name);
+			if (!is_a($dependency->class_name, Implicit::class, true)) {
+				$features[] = $this->pluginClassNameToFeature($dependency->class_name);
+			}
 		}
 		return $features;
 	}
