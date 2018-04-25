@@ -252,6 +252,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@editor' => Annotation::class,
 
 	/**
+	 * @empty_check [false]
+	 * This property value is checked into Empty_Object and Null_Object only if true (default)
+	 */
+	Parser::T_PROPERTY . '@empty_check' => Default_True_Boolean_Annotation::class,
+
+	/**
 	 * @filters property_name, another_property
 	 * Declares other property names that are used to filter possible values of the property
 	 */

@@ -12,6 +12,35 @@ use ITRocks\Framework\Tools\Can_Be_Empty;
 abstract class Empty_Object
 {
 
+	//---------------------------------------------------------------------------------------- create
+	/**
+	 * Returns a new instance of an object, but sets all its properties values to empty
+	 *
+	 * The empty value depends on the type of the property, simple type get an empty value of the
+	 * same type. Object, resource, callable properties get an empty value of null.
+	 *
+	 * @param $class_name string
+	 * @return object
+	 */
+	public static function create($class_name)
+	{
+		$object = Builder::create($class_name);
+		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+			if (!$property->isStatic()) {
+				switch ($property->getType()->asString()) {
+					case Type::INTEGER:
+					case Type::FLOAT:   $value = 0;     break;
+					case Type::STRING:  $value = '';    break;
+					case Type::BOOLEAN: $value = false; break;
+					case Type::_ARRAY:  $value = [];    break;
+					default:            $value = null;
+				}
+				$property->setValue($object, $value);
+			}
+		}
+		return $object;
+	}
+
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
 	 * Returns true if the object properties values are all empty (or null or unset or equal to
@@ -32,7 +61,11 @@ abstract class Empty_Object
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {
 				$is_composite = $property->getAnnotation('composite')->value;
-				if (!$property->isStatic() && ($check_composite || !$is_composite)) {
+				if (
+					!$property->isStatic()
+					&& ($check_composite || !$is_composite)
+					&& $property->getAnnotation('empty_check')->value
+				) {
 					$value = $property->getValue($object);
 					if (
 						!empty($value)
@@ -49,35 +82,6 @@ abstract class Empty_Object
 			}
 		}
 		return $is_empty;
-	}
-
-	//---------------------------------------------------------------------------------------- create
-	/**
-	 * Returns a new instance of an object, but sets all its properties values to empty
-	 *
-	 * The empty value depends on the type of the property, simple type get an empty value of the
-	 * same type. Object, resource, callable properties get an empty value of null.
-	 *
-	 * @param $class_name string
-	 * @return object
-	 */
-	public static function create($class_name)
-	{
-		$object = Builder::create($class_name);
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
-			if (!$property->isStatic()) {
-				switch ($property->getType()->asString()) {
-					case Type::INTEGER:
-					case Type::FLOAT:   $value = 0;       break;
-					case Type::STRING:  $value = '';      break;
-					case Type::BOOLEAN: $value = false;   break;
-					case Type::_ARRAY:  $value = []; break;
-					default:        $value = null;
-				}
-				$property->setValue($object, $value);
-			}
-		}
-		return $object;
 	}
 
 }

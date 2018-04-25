@@ -433,7 +433,10 @@ class Object_Builder_Array
 				$object->$property_name = $value;
 			}
 		}
-		if (!$property->isValueEmptyOrDefault($value)) {
+		if (
+			$property->getAnnotation('empty_check')->value
+			&& !$property->isValueEmptyOrDefault($value)
+		) {
 			$is_null = false;
 		}
 		return $is_null;
@@ -475,7 +478,9 @@ class Object_Builder_Array
 		elseif (!(
 			$property && $this->buildProperty($build->object, $property, $value, $build->null_if_empty)
 		)) {
-			$build->is_null = false;
+			if (!$property || $property->getAnnotation('empty_check')->value) {
+				$build->is_null = false;
+			}
 		}
 		if ($asterisk) {
 			$build->read_properties[$property_name] = $value;

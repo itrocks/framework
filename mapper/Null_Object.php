@@ -49,7 +49,11 @@ abstract class Null_Object
 		$getter_ignore = Getter::$ignore;
 		$is_empty      = true;
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
-			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
+			if (
+				!$property->isStatic()
+				&& !$property->getAnnotation('composite')->value
+				&& $property->getAnnotation('empty_check')->value
+			) {
 				Getter::$ignore = true;
 				$value          = $property->getValue($object);
 				Getter::$ignore = $getter_ignore;
@@ -94,7 +98,11 @@ abstract class Null_Object
 		}
 		$getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {
-			if (!$property->isStatic() && !$property->getAnnotation('composite')->value) {
+			if (
+				!$property->isStatic()
+				&& !$property->getAnnotation('composite')->value
+				&& $property->getAnnotation('empty_check')->value
+			) {
 				Getter::$ignore = true;
 				$value          = $property->getValue($object);
 				Getter::$ignore = $getter_ignore;
