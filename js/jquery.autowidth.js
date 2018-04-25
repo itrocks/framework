@@ -248,6 +248,7 @@
 		 */
 		var tableColumnWidth = function($td, width)
 		{
+			if ($td.hasClass('no-autowidth')) return;
 			$td.data('max-width', width);
 			var calc = width + parseInt($td.css('padding-left')) + parseInt($td.css('padding-right'));
 			width    = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);

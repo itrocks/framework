@@ -36,6 +36,7 @@ $.getScript(path + 'itrocks/framework/property/select.js');
 $.getScript(path + 'itrocks/framework/rad/output.js');
 $.getScript(path + 'itrocks/framework/rad/rad.js');
 $.getScript(path + 'itrocks/framework/settings/custom.js');
+$.getScript(path + 'itrocks/framework/tools/has_ordering/has_ordering.js');
 $.getScript(path + 'itrocks/framework/view/logger/html_logger.js');
 $.getScript(path + 'itrocks/framework/widget/condition/condition.js');
 $.getScript(path + 'itrocks/framework/widget/data_list/dataList.js');

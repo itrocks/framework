@@ -13,6 +13,9 @@ trait Has_Ordering
 
 	//------------------------------------------------------------------------------------- $ordering
 	/**
+	 * @customized
+	 * @empty_check false
+	 * @user hide_output
 	 * @var integer
 	 */
 	public $ordering;
