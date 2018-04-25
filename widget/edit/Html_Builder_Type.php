@@ -36,6 +36,14 @@ class Html_Builder_Type
 	 */
 	public $conditions;
 
+	//----------------------------------------------------------------------------------- $customized
+	/**
+	 * If true, a 'customized' class attribute will be added
+	 *
+	 * @var boolean
+	 */
+	public $customized = false;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -285,8 +293,11 @@ class Html_Builder_Type
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
 		}
-		$input->addClass('float');
 		$input->addClass('auto_width');
+		if ($this->customized) {
+			$input->addClass('customized');
+		}
+		$input->addClass('float');
 		$this->addConditionsToElement($input);
 		return $input;
 	}
@@ -320,8 +331,11 @@ class Html_Builder_Type
 		if ($this->readonly) {
 			$this->setInputAsReadOnly($input);
 		}
-		$input->addClass('integer');
 		$input->addClass('auto_width');
+		if ($this->customized) {
+			$input->addClass('customized');
+		}
+		$input->addClass('integer');
 		$this->addConditionsToElement($input);
 		return $input;
 	}
@@ -429,8 +443,8 @@ class Html_Builder_Type
 				}
 				else {
 					$hidden = new Input(null, $this->value);
-					$hidden->setAttribute('type', 'hidden');
 					$hidden->setAttribute('readonly');
+					$hidden->setAttribute('type', 'hidden');
 					$input = new Label([$hidden, Loc::tr($values[$this->value])]);
 					$input->setBuildMode(Element::BUILD_MODE_RAW);
 				}
@@ -441,6 +455,9 @@ class Html_Builder_Type
 			$input = $this->makeTextInputOrTextarea($multiline, $this->value);
 		}
 		$this->addConditionsToElement($input);
+		if ($this->customized) {
+			$input->addClass('customized');
+		}
 		if ($this->placeholder) {
 			$input->setAttribute('placeholder', $this->placeholder);
 		}

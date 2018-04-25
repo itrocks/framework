@@ -38,8 +38,9 @@ class Html_Builder_Property extends Html_Builder_Type
 	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
 	{
 		if (isset($property)) {
-			$this->null     = $property->getAnnotation('null')->value;
-			$this->property = $property;
+			$this->customized = $property->getAnnotation('customized')->value;
+			$this->null       = $property->getAnnotation('null')->value;
+			$this->property   = $property;
 
 			/** @var $user_annotation User_Annotation */
 			$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
