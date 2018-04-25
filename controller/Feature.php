@@ -13,6 +13,7 @@ abstract class Feature
 	const F_API           = 'api';
 	const F_BLANK         = 'blank';
 	const F_CANCEL        = 'cancel';
+	const F_CARDS         = 'cards';
 	const F_CLOSE         = 'close';
 	const F_CONFIRM       = 'confirm';
 	const F_CUSTOM_DELETE = 'custom_delete';
@@ -43,7 +44,7 @@ abstract class Feature
 	const FEATURE = 'feature';
 
 	//---------------------------------------------------------------------------------------- ON_SET
-	const ON_SET = [self::F_LIST];
+	const ON_SET = [self::F_CARDS, self::F_LIST];
 
 	//------------------------------------------------------------------------------------- READ_ONLY
 	const READ_ONLY = [

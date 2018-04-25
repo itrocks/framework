@@ -1,4 +1,5 @@
 features:
+  - cards
   - dataList
   - dataListSetting
   - json

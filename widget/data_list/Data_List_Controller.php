@@ -61,6 +61,9 @@ use ITRocks\Framework\Widget\Output\Output_Controller;
 class Data_List_Controller extends Output_Controller implements Has_Selection_Buttons
 {
 
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = Feature::F_LIST;
+
 	//---------------------------------------------------------------------------------- $class_names
 	/**
 	 * @var string The set class name (can be virtual if only the element class name exists)
@@ -861,7 +864,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		}
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), Feature::F_LIST);
+		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), static::FEATURE);
 		Loc::exitContext();
 		return $view;
 	}

@@ -55,6 +55,7 @@ class Feature
 
 	//---------------------------------------------------------------------------------------- OUTPUT
 	const OUTPUT = [
+		Controller\Feature::F_CARDS,
 		Controller\Feature::F_LIST,
 		Controller\Feature::F_OUTPUT
 	];
