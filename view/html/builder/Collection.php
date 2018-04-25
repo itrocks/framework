@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -100,6 +101,15 @@ class Collection
 	protected function buildCell($object, Reflection_Property $property)
 	{
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
+		if (is_array($value)) {
+			$link_annotation = Property\Link_Annotation::of($property);
+			if ($link_annotation->isCollection()) {
+				$value = (new Collection($property, $value))->build();
+			}
+			elseif ($link_annotation->isMap()) {
+				$value = (new Map($property, $value))->build();
+			}
+		}
 		$cell  = ($value instanceof Dao\File)
 			? new Standard_Cell((new File($value))->build())
 			: new Standard_Cell($value);
