@@ -100,14 +100,14 @@ class Collection
 	protected function buildCell($object, Reflection_Property $property)
 	{
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
-		$cell = ($value instanceof Dao\File)
+		$cell  = ($value instanceof Dao\File)
 			? new Standard_Cell((new File($value))->build())
 			: new Standard_Cell($value);
 		$type = $property->getType();
 		if ($type->isMultiple()) {
 			$cell->addClass('multiple');
 		}
-		if(!$property->isVisible()){
+		if (!$property->isVisible()) {
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');
 		}
@@ -115,7 +115,7 @@ class Collection
 		return $cell;
 	}
 
-//------------------------------------------------------------------------------------- buildHead
+	//------------------------------------------------------------------------------------- buildHead
 	/**
 	 * @return Head
 	 */
@@ -134,7 +134,7 @@ class Collection
 						$this->class_name
 					)
 				);
-				if(!$property->isVisible()){
+				if (!$property->isVisible()) {
 					$cell->addClass('hidden');
 					$cell->setStyle('display', 'none');
 				}
@@ -196,12 +196,7 @@ class Collection
 			}
 			// remove static and user-invisible properties
 			foreach ($properties as $property_name => $property) {
-				if (
-					$property->isStatic()
-					|| $property->getListAnnotation(User_Annotation::ANNOTATION)->has(
-						User_Annotation::INVISIBLE
-					)
-				) {
+				if ($property->isStatic() || !$this->isPropertyVisible($property)) {
 					unset($properties[$property_name]);
 				}
 			}
@@ -211,6 +206,18 @@ class Collection
 
 		// returns properties
 		return $properties;
+	}
+
+	//----------------------------------------------------------------------------- isPropertyVisible
+	/**
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	protected function isPropertyVisible(Reflection_Property $property)
+	{
+		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
+			&& !$user_annotation->has(User_Annotation::INVISIBLE);
 	}
 
 }

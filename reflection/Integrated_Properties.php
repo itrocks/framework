@@ -149,6 +149,7 @@ class Integrated_Properties
 		) {
 			if (
 				!$sub_property->isStatic()
+				// TODO move this into Template\Functions::getExpand
 				&& !$sub_property->getListAnnotation(User_Annotation::ANNOTATION)->has(
 					User_Annotation::INVISIBLE
 				)

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit;
 
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\Html\Template\Functions;
@@ -47,7 +48,8 @@ class Html_Template_Functions extends Functions
 	 */
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
-		return $property->isVisible(false);
+		return $property->isVisible(false)
+			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_EDIT);
 	}
 
 }

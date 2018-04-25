@@ -40,4 +40,14 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 		return parent::getEditReflectionProperty($property, $name, $ignore_user, $can_always_be_null);
 	}
 
+	//----------------------------------------------------------------------------- isPropertyVisible
+	/**
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	protected function isPropertyVisible(Reflection_Property $property)
+	{
+		return $property->isVisible();
+	}
+
 }

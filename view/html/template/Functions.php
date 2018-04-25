@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -508,9 +509,9 @@ class Functions
 		/** @var $property Reflection_Property */
 		$property = reset($template->objects);
 		$expanded = [];
-		$expanded = (new Integrated_Properties())->expandUsingProperty(
+		$expanded = $this->visibleProperties((new Integrated_Properties)->expandUsingProperty(
 			$expanded, $property, $template->getParentObject($property->class)
-		);
+		));
 		if ($expanded) {
 			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
 			$first_property = reset($expanded);
@@ -1206,7 +1207,8 @@ class Functions
 	 */
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
-		return $property->isVisible();
+		return $property->isVisible()
+			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_OUTPUT);
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra
@@ -1233,6 +1235,21 @@ class Functions
 			$property      = new Reflection_Property($class_name, $property);
 		}
 		return [$property, $property_path, $value];
+	}
+
+	//----------------------------------------------------------------------------- visibleProperties
+	/**
+	 * @param $properties Reflection_Property[]
+	 * @return Reflection_Property[]
+	 */
+	protected function visibleProperties(array $properties)
+	{
+		foreach ($properties as $key => $property) {
+			if (!$this->isPropertyVisible($property)) {
+				unset($properties[$key]);
+			}
+		}
+		return $properties;
 	}
 
 }
