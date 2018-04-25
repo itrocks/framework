@@ -45,10 +45,8 @@ trait Has_Ordering
 	 */
 	public static function sort(array $objects_having_ordering)
 	{
-		uasort($objects_having_ordering, function ($c1, $c2) {
-			/** @var $c1 Has_Ordering */
-			/** @var $c2 Has_Ordering */
-			return cmp($c1->ordering, $c2->ordering);
+		uasort($objects_having_ordering, function (Has_Ordering $object1, Has_Ordering $object2) {
+			return cmp($object1->ordering, $object2->ordering);
 		});
 		return $objects_having_ordering;
 	}
