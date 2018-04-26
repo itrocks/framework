@@ -90,7 +90,7 @@ class Set extends Element
 		}
 		if (!isset($content)) {
 			$values = $this->values;
-			if($this->ordered !== "false"){
+			if ($this->ordered !== "false") {
 				asort($values);
 			}
 			if (isset($values[''])) {
