@@ -10,6 +10,9 @@ use ITRocks\Framework\Dao;
  * May work with @user_default Class_Name::getDefault too
  *
  * TODO move @default from property to class annotation (default value for the @default property)
+ * TODO move @user_default from property to class annotation
+ *
+ * @after_write onlyOneDefault
  */
 trait Has_Default
 {
@@ -27,6 +30,25 @@ trait Has_Default
 	public static function getDefault()
 	{
 		return Dao::searchOne(['default' => true], static::class);
+	}
+
+	//-------------------------------------------------------------------------------- onlyOneDefault
+	/**
+	 * Called at each write : if default turned to true, reset default to false for all other stored
+	 * objects
+	 */
+	public function onlyOneDefault()
+	{
+		if ($this->default) {
+			Dao::begin();
+			foreach (Dao::search(['default' => true], static::class) as $object) {
+				if (!Dao::is($object, $this)) {
+					$object->default = false;
+					Dao::write($object, Dao::only('default'));
+				}
+			}
+			Dao::commit();
+		}
 	}
 
 }
