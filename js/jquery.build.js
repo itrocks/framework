@@ -28,11 +28,11 @@
 				return result;
 			}
 			// accepts '.myclass .subelems' selectors : .myclass for this working
-			if (nop == undefined) {
+			if (nop === undefined) {
 				nop = true;
 				i = selector.indexOf(' ');
 				var i2 = selector.indexOf('>');
-				if ((i2 > -1) && ((i == -1) || i2 < i)) {
+				if ((i2 > -1) && ((i === -1) || i2 < i)) {
 					i = i2;
 				}
 				if (i > -1) {
@@ -44,9 +44,9 @@
 		};
 
 		// add a callback function
-		if (callback != undefined) {
+		if (callback !== undefined) {
 			window.jquery_build_callback.push(callback);
-			if ((call_now == undefined) || call_now) {
+			if ((call_now === undefined) || call_now) {
 				callback.call(this);
 			}
 		}

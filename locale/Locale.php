@@ -23,15 +23,9 @@ class Locale implements Configurable
 	use Has_Get;
 
 	//----------------------------------------------------- Locale configuration array keys constants
-
-	//------------------------------------------------------------------------------------------ DATE
-	const DATE = 'date';
-
-	//-------------------------------------------------------------------------------------- LANGUAGE
+	const DATE     = 'date';
 	const LANGUAGE = 'language';
-
-	//---------------------------------------------------------------------------------------- NUMBER
-	const NUMBER = 'number';
+	const NUMBER   = 'number';
 
 	//---------------------------------------------------------------------------------- $date_format
 	/**
@@ -168,7 +162,7 @@ class Locale implements Configurable
 	/**
 	 * Set locale's number format
 	 *
-	 * @param Number_Format|array
+	 * @param $number_format Number_Format|array
 	 */
 	public function setNumberFormat($number_format)
 	{

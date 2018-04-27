@@ -20,22 +20,10 @@ class Page
 	use Component;
 	use Has_Ordering;
 
-	//----------------------------------------------------------------------------------------- FIRST
-	const FIRST = 'first';
-
-	//------------------------------------------------------------------------------------------ LAST
-	const LAST = 'last';
-
-	//---------------------------------------------------------------------------------------- MIDDLE
+	//----------------------------------------------------------- page position information constants
+	const FIRST  = 'first';
+	const LAST   = 'last';
 	const MIDDLE = 'middle';
-
-	//---------------------------------------------------------------------------------------- $model
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Model
-	 */
-	public $model;
 
 	//----------------------------------------------------------------------------------- $background
 	/**
@@ -50,6 +38,23 @@ class Page
 	 * @var Field[]
 	 */
 	public $fields;
+
+	//---------------------------------------------------------------------------------------- $model
+	/**
+	 * @composite
+	 * @link Object
+	 * @var Model
+	 */
+	public $model;
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->model) . SP . strval($this->ordering);
+	}
 
 	//------------------------------------------------------------------------------------- getNumber
 	/**
@@ -78,15 +83,6 @@ class Page
 			case self::LAST:   $ordering = 3; break;
 		}
 		$this->ordering = $ordering;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return strval($this->model) . SP . strval($this->ordering);
 	}
 
 }

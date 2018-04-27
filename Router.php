@@ -230,6 +230,25 @@ class Router implements
 		return false;
 	}
 
+	//------------------------------------------------------------------------------- fileToClassName
+	/**
+	 * @param $file_name string
+	 * @return string
+	 */
+	private function fileToClassName($file_name)
+	{
+		$buffer = file_get_contents($file_name);
+		$expr = '%\n\s*(?:namespace\s+)([\w\\\\]+)%s';
+		preg_match($expr, $buffer, $match);
+		$in_namespace = $match ? $match[1] : '';
+		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
+		preg_match($expr, $buffer, $match);
+		$class_name = $match
+			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
+			: null;
+		return $class_name;
+	}
+
 	//-------------------------------------------------------------------------------------- filesFor
 	/**
 	 * @param $short_class_name string
@@ -250,23 +269,39 @@ class Router implements
 		return $result;
 	}
 
-	//------------------------------------------------------------------------------- fileToClassName
+	//------------------------------------------------------------------------------ getClassFileName
 	/**
-	 * @param $file_name string
+	 * Checks, searches, and gets the file path for a class name
+	 *
+	 * @param $class_name string
 	 * @return string
 	 */
-	private function fileToClassName($file_name)
+	public function getClassFileName($class_name)
 	{
-		$buffer = file_get_contents($file_name);
-		$expr = '%\n\s*(?:namespace\s+)([\w\\\\]+)%s';
-		preg_match($expr, $buffer, $match);
-		$in_namespace = $match ? $match[1] : '';
-		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
-		preg_match($expr, $buffer, $match);
-		$class_name = $match
-			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
-			: null;
-		return $class_name;
+		if (isset($this->class_paths[$class_name])) {
+			$class_path = $this->class_paths[$class_name];
+			if (!file_exists($class_path)) {
+				$class_path = $this->addClassPath($class_name);
+			}
+			if ($class_path) {
+				/** @noinspection PhpIncludeInspection */
+				/*
+				include_once Include_Filter::file($class_path);
+				if (
+					!class_exists($class_name, false)
+					&& !interface_exists($class_name, false)
+					&& !trait_exists($class_name, false)
+				) {
+					$class_path = $this->addClassPath($class_name);
+				}
+				*/
+				return $class_path;
+			}
+			return null;
+		}
+		else {
+			return $this->addClassPath($class_name);
+		}
 	}
 
 	//------------------------------------------------------------------------- getElementClassNameOf
@@ -302,41 +337,6 @@ class Router implements
 		}
 		else {
 			return $this->addFullClassName($short_class_name);
-		}
-	}
-
-	//------------------------------------------------------------------------------ getClassFileName
-	/**
-	 * Checks, searches, and gets the file path for a class name
-	 *
-	 * @param $class_name string
-	 * @return string
-	 */
-	public function getClassFileName($class_name)
-	{
-		if (isset($this->class_paths[$class_name])) {
-			$class_path = $this->class_paths[$class_name];
-			if (!file_exists($class_path)) {
-				$class_path = $this->addClassPath($class_name);
-			}
-			if ($class_path) {
-				/** @noinspection PhpIncludeInspection */
-				/*
-				include_once Include_Filter::file($class_path);
-				if (
-					!class_exists($class_name, false)
-					&& !interface_exists($class_name, false)
-					&& !trait_exists($class_name, false)
-				) {
-					$class_path = $this->addClassPath($class_name);
-				}
-				*/
-				return $class_path;
-			}
-			return null;
-		}
-		else {
-			return $this->addClassPath($class_name);
 		}
 	}
 
@@ -478,40 +478,6 @@ class Router implements
 	public function serialize()
 	{
 		return '';
-		/*
-		if ($this->changes) {
-			ksort($this->full_class_names);
-			ksort($this->class_paths);
-			ksort($this->controller_calls);
-			ksort($this->element_class_names);
-			ksort($this->html_templates);
-			ksort($this->view_calls);
-			script_put_contents(
-				$this->routes_file,
-				'<?php
-
-//------------------------------------------------------------------------------------- class_paths
-$this->class_paths = ' . var_export($this->class_paths, true) . ';
-
-//-------------------------------------------------------------------------------- controller_calls
-$this->controller_calls = ' . var_export($this->controller_calls, true) . ';
-
-//----------------------------------------------------------------------------- element_class_names
-$this->element_class_names = ' . var_export($this->element_class_names, true) . ';
-
-//-------------------------------------------------------------------------------- full_class_names
-$this->full_class_names = ' . var_export($this->full_class_names, true) . ';
-
-//---------------------------------------------------------------------------------- html_templates
-$this->html_templates = ' . var_export($this->html_templates, true) . ';
-
-//-------------------------------------------------------------------------------------- view_calls
-$this->view_calls = ' . var_export($this->view_calls, true) . ';
-'
-			);
-		}
-		return '';
-		*/
 	}
 
 	//--------------------------------------------------------------------- setPossibleControllerCall

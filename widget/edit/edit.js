@@ -319,7 +319,7 @@ $('document').ready(function()
 			{
 				var $element = this.element;
 				// set data to lower case for /MAJ combo in term
-				$data =	$.param(comboRequest($element, request)).toLocaleLowerCase();
+				var $data = $.param(comboRequest($element, request)).toLocaleLowerCase();
 				$.getJSON(
 					comboUri($element),
 					$data,

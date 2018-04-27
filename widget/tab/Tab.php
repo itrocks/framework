@@ -17,13 +17,13 @@ use ITRocks\Framework\Tools\Names;
 class Tab
 {
 
-	//---------------------------------------------------------------------------------------- $title
+	//-------------------------------------------------------------------------------------- $columns
 	/**
-	 * Displayable tab title
+	 * Group multiple contents collections into some columns
 	 *
-	 * @var string
+	 * @var mixed[]
 	 */
-	public $title;
+	public $columns = [];
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -33,14 +33,6 @@ class Tab
 	 */
 	public $content;
 
-	//-------------------------------------------------------------------------------------- $columns
-	/**
-	 * Group multiple contents collections into some columns
-	 *
-	 * @var mixed[]
-	 */
-	public $columns = [];
-
 	//------------------------------------------------------------------------------------- $includes
 	/**
 	 * Included sub-tabs collection
@@ -49,6 +41,14 @@ class Tab
 	 * @var Tab[]
 	 */
 	public $includes = [];
+
+	//---------------------------------------------------------------------------------------- $title
+	/**
+	 * Displayable tab title
+	 *
+	 * @var string
+	 */
+	public $title;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -141,6 +141,15 @@ class Tab
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * return @string
+	 */
+	public function getName()
+	{
+		return Names::displayToProperty($this->title);
+	}
+
 	//-------------------------------------------------------------------------------------------- id
 	/**
 	 * Return a calculated id for the tab, calculated from its title
@@ -166,15 +175,6 @@ class Tab
 			}
 		}
 		return $list;
-	}
-
-	//--------------------------------------------------------------------------------------- getName
-	/**
-	 * return @string
-	 */
-	public function getName()
-	{
-		return Names::displayToProperty($this->title);
 	}
 
 	//---------------------------------------------------------------------------- propertiesToValues

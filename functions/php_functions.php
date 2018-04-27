@@ -1,5 +1,6 @@
 <?php
 
+//------------------------------------------------------------------------------ upgradeMemoryLimit
 /**
  * Upgrade memory limit.
  * If $memory_limit is lower than memory_limit, will keep memory_limit.
@@ -33,6 +34,7 @@ function upgradeMemoryLimit($memory_limit)
 	return false;
 }
 
+//-------------------------------------------------------------------------------- upgradeTimeLimit
 /**
  * Upgrade time limit.
  * If $time_limit is lower than max_execution_time, will keep max_execution_time.

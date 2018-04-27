@@ -15,17 +15,17 @@ class Settings_Template
 	 */
 	public $class;
 
-	//-------------------------------------------------------------------------------------- $feature
-	/**
-	 * @var string
-	 */
-	public $feature;
-
 	//------------------------------------------------------------------------------------- $elements
 	/**
 	 * @link Collection
 	 * @var Settings_Template_Element[]
 	 */
 	public $elements;
+
+	//-------------------------------------------------------------------------------------- $feature
+	/**
+	 * @var string
+	 */
+	public $feature;
 
 }

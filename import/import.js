@@ -29,7 +29,7 @@ $('document').ready(function()
 						var property_name = $draggable.attr('class').split(' ')[0];
 						$droppable.css({ background: 'none', border: 'none' });
 						var niouk = (',' + $input.val() + ',').replace(',' + property_name + ',', ',');
-						$input.val((niouk == ',') ? '' : niouk.substr(1, niouk.length - 2));
+						$input.val((niouk === ',') ? '' : niouk.substr(1, niouk.length - 2));
 						$draggable.appendTo($droppable.find('ul'));
 						$input = $($draggable.closest('fieldset').find('input'));
 						$input.val($input.val() + ($input.val() ? ',' : '') + property_name);

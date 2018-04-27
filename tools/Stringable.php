@@ -7,17 +7,17 @@ namespace ITRocks\Framework\Tools;
 interface Stringable
 {
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString();
+
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
 	 * @return self
 	 */
 	public static function fromString($string);
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString();
 
 }

@@ -303,7 +303,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Only a method of current class can be retrieved, not one from parent classes or traits.
 	 *
-	 * @param string
+	 * @param $method_name string
 	 * @return Reflection_Method
 	 */
 	public function getMethod($method_name)

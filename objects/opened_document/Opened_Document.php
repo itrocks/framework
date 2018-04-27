@@ -90,6 +90,26 @@ class Opened_Document
 		return true;
 	}
 
+	//------------------------------------------------------------------------------------ openObject
+	/**
+	 * @param $object object
+	 * @return boolean true if the object can be opened, false if an object was already opened before
+	 */
+	public static function openObject($object)
+	{
+		if (!self::openedObject($object)) {
+			/** @var $opened_document Opened_Document */
+			$opened_document             = Builder::create(Opened_Document::class);
+			$opened_document->class_name = get_class($object);
+			$opened_document->identifier = Dao::getObjectIdentifier($object);
+			$opened_document->ping       = Date_Time::now();
+			$opened_document->user       = User::current();
+			Dao::write($opened_document);
+			return true;
+		}
+		return false;
+	}
+
 	//---------------------------------------------------------------------------------- openedObject
 	/**
 	 * Returns an Opened_Document object if the object is opened
@@ -110,26 +130,6 @@ class Opened_Document
 			static::class
 		);
 		return $opened_document;
-	}
-
-	//------------------------------------------------------------------------------------ openObject
-	/**
-	 * @param $object object
-	 * @return boolean true if the object can be opened, false if an object was already opened before
-	 */
-	public static function openObject($object)
-	{
-		if (!self::openedObject($object)) {
-			/** @var $opened_document Opened_Document */
-			$opened_document             = Builder::create(Opened_Document::class);
-			$opened_document->class_name = get_class($object);
-			$opened_document->identifier = Dao::getObjectIdentifier($object);
-			$opened_document->ping       = Date_Time::now();
-			$opened_document->user       = User::current();
-			Dao::write($opened_document);
-			return true;
-		}
-		return false;
 	}
 
 	//----------------------------------------------------------------------------------------- purge

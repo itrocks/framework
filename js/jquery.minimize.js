@@ -23,8 +23,8 @@
 			var $this = $(this);
 
 			var $button = settings.button;
-			if ($button == undefined) {
-				var html = (settings.html_maximized == undefined) ? 'minimize' : settings.html_maximized;
+			if ($button === undefined) {
+				var html = (settings.html_maximized === undefined) ? 'minimize' : settings.html_maximized;
 				$button = $('<div class="' + settings.minimize_class + '">' + html + '</div>');
 				$this.prepend($button);
 			}
@@ -43,7 +43,7 @@
 					function()
 					{
 						$(this).css({ height: '', overflow: '', padding: '', width: '' });
-						if (settings.html_maximized != undefined) {
+						if (settings.html_maximized !== undefined) {
 							$button.html(settings.html_maximized);
 						}
 					}
@@ -68,7 +68,7 @@
 					settings.duration,
 					function() {
 						$(this).addClass(settings.minimized_class);
-						if (settings.html_minimized != undefined) {
+						if (settings.html_minimized !== undefined) {
 							$button.html(settings.html_minimized);
 						}
 					}

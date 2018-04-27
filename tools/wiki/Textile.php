@@ -33,7 +33,7 @@ class Textile extends Parser
 	 * This override replace '_' by '/' for em and '+' by '_' for ins
 	 * Default is html5
 	 *
-	 * @param string $doc_type The output document type, either 'xhtml' or 'html5'
+	 * @param $doc_type string The output document type, either 'xhtml' or 'html5'
 	 */
 	public function __construct($doc_type = 'html5')
 	{
@@ -132,8 +132,8 @@ class Textile extends Parser
 	 * This override replaces '/' by '`' as REGEX separator
 	 * Replaces textile spans with their equivalent HTML inline tags.
 	 *
-	 * @param  string $text The textile document to perform the replacements in.
-	 * @return string       The textile document with spans replaced by their HTML inline equivalents
+	 * @param  $text string The textile document to perform the replacements in
+	 * @return string The textile document with spans replaced by their HTML inline equivalents
 	 */
 	protected function spans($text)
 	{

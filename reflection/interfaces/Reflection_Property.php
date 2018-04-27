@@ -63,7 +63,7 @@ interface Reflection_Property extends Reflection_Class_Component
 	/**
 	 * Gets value
 	 *
-	 * @param object $object
+	 * @param $object object
 	 * @return mixed
 	 */
 	public function getValue($object);

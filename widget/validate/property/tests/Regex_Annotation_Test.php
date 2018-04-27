@@ -11,33 +11,12 @@ use ITRocks\Framework\Widget\Validate\Property\Regex_Annotation;
 class Regex_Annotation_Test extends Test
 {
 
-	//--------------------------------------------------------------------- $result_ok_with_delimiter
-	/**
-	 * @regex #^[0-3]*$#
-	 * @var string
-	 */
-	public $result_ok_with_delimiter = '0123';
-
 	//--------------------------------------------------------------------- $result_ko_with_delimiter
 	/**
 	 * @regex #^[0-3]*$#
 	 * @var string
 	 */
 	public $result_ko_with_delimiter = '4567';
-
-	//------------------------------------------------------------------ $result_ok_without_delimiter
-	/**
-	 * @regex ^[0-3]*$
-	 * @var string
-	 */
-	public $result_ok_without_delimiter = '0123';
-
-	//------------------------------------------------------------------ $result_ko_without_delimiter
-	/**
-	 * @regex ^[0-3]*$
-	 * @var string
-	 */
-	public $result_ko_without_delimiter = '4567';
 
 	//-------------------------------------------------- $result_ko_with_delimiter_and_case_sensitive
 	/**
@@ -46,12 +25,33 @@ class Regex_Annotation_Test extends Test
 	 */
 	public $result_ko_with_delimiter_and_case_sensitive = 'PHP';
 
+	//------------------------------------------------------------------ $result_ko_without_delimiter
+	/**
+	 * @regex ^[0-3]*$
+	 * @var string
+	 */
+	public $result_ko_without_delimiter = '4567';
+
+	//--------------------------------------------------------------------- $result_ok_with_delimiter
+	/**
+	 * @regex #^[0-3]*$#
+	 * @var string
+	 */
+	public $result_ok_with_delimiter = '0123';
+
 	//------------------------------------------------ $result_ok_with_delimiter_and_case_insensitive
 	/**
 	 * @regex /php/i
 	 * @var string
 	 */
 	public $result_ok_with_delimiter_and_case_insensitive = 'PHP';
+
+	//------------------------------------------------------------------ $result_ok_without_delimiter
+	/**
+	 * @regex ^[0-3]*$
+	 * @var string
+	 */
+	public $result_ok_without_delimiter = '0123';
 
 	//------------------------------------------------------------------------------------------ test
 	/**

@@ -229,15 +229,6 @@ class Select
 		return $this->columns_builder->getJoins();
 	}
 
-	//--------------------------------------------------------------------------------- getWhereArray
-	/**
-	 * @return array|Func\Where|null
-	 */
-	public function getWhereArray()
-	{
-		return $this->where_builder->getWhereArray();
-	}
-
 	//------------------------------------------------------------------------------------ getSqlLink
 	/**
 	 * @return Link
@@ -245,6 +236,15 @@ class Select
 	public function getSqlLink()
 	{
 		return $this->where_builder->getSqlLink();
+	}
+
+	//--------------------------------------------------------------------------------- getWhereArray
+	/**
+	 * @return array|Func\Where|null
+	 */
+	public function getWhereArray()
+	{
+		return $this->where_builder->getWhereArray();
 	}
 
 }

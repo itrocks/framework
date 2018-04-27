@@ -61,17 +61,6 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		}
 	}
 
-	//---------------------------------------------------------------------------------------- format
-	/**
-	 * @param $text string
-	 * @param $as   string @values html, text
-	 * @return string
-	 */
-	private function format($text, $as)
-	{
-		return ($as === self::HTML) ? htmlentities($text) : $text;
-	}
-
 	//-------------------------------------------------------------------------------------- formData
 	/**
 	 * @return string
@@ -81,6 +70,17 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$result = '_GET = ' . print_r($_GET, true);
 		$result .= '_POST = ' . print_r($_POST, true);
 		return $result;
+	}
+
+	//---------------------------------------------------------------------------------------- format
+	/**
+	 * @param $text string
+	 * @param $as   string @values html, text
+	 * @return string
+	 */
+	private function format($text, $as)
+	{
+		return ($as === self::HTML) ? htmlentities($text) : $text;
 	}
 
 	//--------------------------------------------------------------------------- getDisplayedMessage

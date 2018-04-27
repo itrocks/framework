@@ -60,7 +60,7 @@
 					var new_start
 						= Math.round(((position_start * (data_total - data_length)) / scroll_height)) + 1;
 
-					if (new_start != old_start) {
+					if (new_start !== old_start) {
 						$this.attr('href', $this.attr('href').replace('=' + old_start, '=' + new_start));
 						$this.click();
 					}

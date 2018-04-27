@@ -9,6 +9,19 @@ use ITRocks\Framework\Dao\Sql;
 class Table implements Sql\Table
 {
 
+	//--------------------------------------------------------------------------------------- $Engine
+	/**
+	 * @values 'ARCHIVE', 'BDB', 'CSV', 'FEDERATED', 'InnoDB', 'MyISAM', 'MEMORY', 'MERGE', 'NDBCluster'
+	 * @var string
+	 */
+	private $Engine;
+
+	//----------------------------------------------------------------------------------------- $Name
+	/**
+	 * @var string
+	 */
+	private $Name;
+
 	//-------------------------------------------------------------------------------------- $columns
 	/**
 	 * @var Column[] key is the column name
@@ -26,19 +39,6 @@ class Table implements Sql\Table
 	 * @var Index[] key is the index name
 	 */
 	private $indexes;
-
-	//--------------------------------------------------------------------------------------- $Engine
-	/**
-	 * @values 'ARCHIVE', 'BDB', 'CSV', 'FEDERATED', 'InnoDB', 'MyISAM', 'MEMORY', 'MERGE', 'NDBCluster'
-	 * @var string
-	 */
-	private $Engine;
-
-	//----------------------------------------------------------------------------------------- $Name
-	/**
-	 * @var string
-	 */
-	private $Name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

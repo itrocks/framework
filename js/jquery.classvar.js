@@ -20,8 +20,8 @@
 		var length = var_name.length;
 		var classes = this.attr('class').split(' ');
 		for (var i in classes) if (classes.hasOwnProperty(i)) {
-			if (classes[i].substr(0, length) == var_name) {
-				if (set_value != undefined) {
+			if (classes[i].substr(0, length) === var_name) {
+				if (set_value !== undefined) {
 					var replace = (i > 0) ? ' ' + classes[i] : (
 						(i < classes.length - 1) ? classes[i] + ' ' : classes[i]
 					);
@@ -32,8 +32,8 @@
 				}
 			}
 		}
-		if (set_value != undefined) {
-			if ((this.attr('class') != undefined) && (this.attr('class') != '')) {
+		if (set_value !== undefined) {
+			if ((this.attr('class') !== undefined) && (this.attr('class') !== '')) {
 				this.attr('class', this.attr('class') + ' ' + var_name + set_value);
 			}
 			else {

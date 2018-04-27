@@ -31,16 +31,6 @@ class Sql_Link_Restrictor implements Registerable
 	 */
 	private $current_restrictions;
 
-	//--------------------------------------------------------------------------------- $restrictions
-	/**
-	 * Associate classes names and multiple restriction callbacks
-	 *
-	 * This is given by configuration
-	 *
-	 * @var array elements are callable[] : [$class_name][] = callable
-	 */
-	private $restrictions = [];
-
 	//--------------------------------------------------------------------------- $final_restrictions
 	/**
 	 * Associate classes names and multiple restriction callbacks
@@ -50,6 +40,16 @@ class Sql_Link_Restrictor implements Registerable
 	 * @var array associate classes and callbacks : [$class_name][] = callable
 	 */
 	private $final_restrictions = [];
+
+	//--------------------------------------------------------------------------------- $restrictions
+	/**
+	 * Associate classes names and multiple restriction callbacks
+	 *
+	 * This is given by configuration
+	 *
+	 * @var array elements are callable[] : [$class_name][] = callable
+	 */
+	private $restrictions = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -107,15 +107,6 @@ class Sql_Link_Restrictor implements Registerable
 		}
 	}
 
-	//---------------------------------------------------------------- beforeSqlSelectBuilderFinalize
-	/**
-	 * @param $where string where clause, including ' WHERE ' or empty if no filter on read
-	 */
-	public function beforeSqlSelectBuilderFinalize(&$where)
-	{
-		$where = $this->applyCurrentRestrictions($where);
-	}
-
 	//------------------------------------------------------------- beforeSqlSelectBuilderBuildTables
 	/**
 	 * @param $object Select
@@ -123,6 +114,15 @@ class Sql_Link_Restrictor implements Registerable
 	public function beforeSqlSelectBuilderBuildTables(Select $object)
 	{
 		$this->restrict($object);
+	}
+
+	//---------------------------------------------------------------- beforeSqlSelectBuilderFinalize
+	/**
+	 * @param $where string where clause, including ' WHERE ' or empty if no filter on read
+	 */
+	public function beforeSqlSelectBuilderFinalize(&$where)
+	{
+		$where = $this->applyCurrentRestrictions($where);
 	}
 
 	//------------------------------------------------------------------------------- getRestrictions

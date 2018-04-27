@@ -47,35 +47,6 @@ class Link_Class extends Reflection_Class
 		return reset($composite);
 	}
 
-	//-------------------------------------------------------------------------------- getLinkedClass
-	/**
-	 * @return Link_Class
-	 */
-	public function getLinkedClass()
-	{
-		return new Link_Class($this->getLinkedClassName());
-	}
-
-	//---------------------------------------------------------------------------- getLinkedClassName
-	/**
-	 * @return string
-	 */
-	public function getLinkedClassName()
-	{
-		return $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
-	}
-
-	//--------------------------------------------------------------------------- getLinkedProperties
-	/**
-	 * Returns properties list of the linked class, without those of the child class
-	 *
-	 * @return Reflection_Property[]
-	 */
-	public function getLinkedProperties()
-	{
-		return $this->getLinkedClass()->getProperties([T_EXTENDS, T_USE]);
-	}
-
 	//----------------------------------------------------------------------------- getLinkProperties
 	/**
 	 * Returns the two or more properties of the class that make the link
@@ -127,6 +98,35 @@ class Link_Class extends Reflection_Class
 			}
 		}
 		return null;
+	}
+
+	//-------------------------------------------------------------------------------- getLinkedClass
+	/**
+	 * @return Link_Class
+	 */
+	public function getLinkedClass()
+	{
+		return new Link_Class($this->getLinkedClassName());
+	}
+
+	//---------------------------------------------------------------------------- getLinkedClassName
+	/**
+	 * @return string
+	 */
+	public function getLinkedClassName()
+	{
+		return $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
+	}
+
+	//--------------------------------------------------------------------------- getLinkedProperties
+	/**
+	 * Returns properties list of the linked class, without those of the child class
+	 *
+	 * @return Reflection_Property[]
+	 */
+	public function getLinkedProperties()
+	{
+		return $this->getLinkedClass()->getProperties([T_EXTENDS, T_USE]);
 	}
 
 	//---------------------------------------------------------------------------- getLocalProperties

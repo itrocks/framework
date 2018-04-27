@@ -40,7 +40,7 @@ class Link_Table
 	/**
 	 * $property @link annotation must be a Map to manage link tables
 	 *
-	 * @param Reflection_Property $property
+	 * @param $property Reflection_Property
 	 */
 	function __construct(Reflection_Property $property)
 	{

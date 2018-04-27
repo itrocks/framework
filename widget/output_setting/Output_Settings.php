@@ -37,14 +37,6 @@ class Output_Settings extends Custom_Settings
 	 */
 	public $conditions;
 
-	//---------------------------------------------------------------------------------------- $title
-	/**
-	 * The title that will be displayed on the top of the output window
-	 *
-	 * @var string
-	 */
-	public $title;
-
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Property[] key is the path of the property
@@ -56,6 +48,14 @@ class Output_Settings extends Custom_Settings
 	 * @var Tab
 	 */
 	public $tab = null;
+
+	//---------------------------------------------------------------------------------------- $title
+	/**
+	 * The title that will be displayed on the top of the output window
+	 *
+	 * @var string
+	 */
+	public $title;
 
 	//------------------------------------------------------------------------------------- addAction
 	/**
@@ -98,7 +98,7 @@ class Output_Settings extends Custom_Settings
 	 * @return Property
 	 */
 	public function addProperty(
-	 	$add_property_path, $tab_name, $where = 'after', $where_property_path = null
+		$add_property_path, $tab_name, $where = 'after', $where_property_path = null
 	) {
 		$this->initProperties();
 		$add_property = isset($this->properties[$add_property_path])
@@ -217,11 +217,10 @@ class Output_Settings extends Custom_Settings
 	}
 
 	//--------------------------------------------------------------------------------------- initTab
-	/** @noinspection PhpUnusedPrivateMethodInspection */
 	/**
 	 * TODO NORMAL in-tabs management
 	 */
-	private function initTab()
+	protected function initTab()
 	{
 		if (!isset($this->tab)) {
 			$this->tab           = new Tab('main');

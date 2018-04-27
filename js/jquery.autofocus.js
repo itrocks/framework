@@ -14,9 +14,9 @@
 		var length = controls.length;
 		while (
 			((i < length) && (length > 2))
-			|| (controls.eq(i).attr('name') == 'login')
-			|| (controls.eq(i).attr('name') == 'password')
-			|| (controls.eq(i).attr('name') == 'password2')
+			|| (controls.eq(i).attr('name') === 'login')
+			|| (controls.eq(i).attr('name') === 'password')
+			|| (controls.eq(i).attr('name') === 'password2')
 		) {
 			i ++;
 		}

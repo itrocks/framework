@@ -9,18 +9,18 @@ namespace ITRocks\Framework\Setting\Manager;
 class Settings_Manager
 {
 
+	//--------------------------------------------------------------------------------------- $groups
+	/**
+	 * @var //Settings_Groups
+	 */
+	public $groups;
+
 	//------------------------------------------------------------------------------------ $templates
 	/**
 	 * @link All
 	 * @var Settings_Template[]
 	 */
 	public $templates;
-
-	//--------------------------------------------------------------------------------------- $groups
-	/**
-	 * @var //Settings_Groups
-	 */
-	public $groups;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

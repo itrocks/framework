@@ -57,7 +57,7 @@ window.modifiable_waiting  = false;
 
 			//------------------------------------------------------------------------------------ $input
 			var $input = $('<input>').val($this.html().trim());
-			if ($this.data('old') == undefined) {
+			if ($this.data('old') === undefined) {
 				var $popup;
 				$this.data('old', $input.val());
 				$this.html($input);
@@ -66,10 +66,10 @@ window.modifiable_waiting  = false;
 				//----------------------------------------------------------------------------- $input done
 				var done = function () {
 					var ajax = settings.ajax;
-					if (typeof(ajax) == 'string') {
+					if (typeof(ajax) === 'string') {
 						for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
 							var value = settings.aliases[alias];
-							if (typeof(value) == 'function') {
+							if (typeof(value) === 'function') {
 								value = value($this);
 							}
 							ajax = ajax.replace('{' + alias + '}', encodeURI(value));
@@ -87,9 +87,9 @@ window.modifiable_waiting  = false;
 						ajax.target = settings.target;
 
 						// ajax call : post form, use form plugin, or simple post
-						if (settings.ajax_form != undefined) {
+						if (settings.ajax_form !== undefined) {
 							var $ajax_form = $popup.find(settings.ajax_form);
-							if ($ajax_form.ajaxSubmit != undefined) {
+							if ($ajax_form.ajaxSubmit !== undefined) {
 								$ajax_form.ajaxSubmit($.extend(
 									ajax, { type: $ajax_form.attr('method') }
 								));
@@ -118,10 +118,10 @@ window.modifiable_waiting  = false;
 
 				//------------------------------------------------------------------ $input keydown=ESC/RET
 				$input.keydown(function (event) {
-					if (event.keyCode == 13) {
+					if (event.keyCode === 13) {
 						done();
 					}
-					if (event.keyCode == 27) {
+					if (event.keyCode === 27) {
 						var $this = $(this);
 						$this.val($this.parent().data('old'));
 						done();
@@ -132,18 +132,18 @@ window.modifiable_waiting  = false;
 				var blur = function ()
 				{
 					setTimeout(function() {
-						if (($popup == undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
+						if (($popup === undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
 							done();
 						}
 					}, 100);
 				};
 
 				//---------------------------------------------------------------------------------- $popup
-				if (settings.popup != undefined) {
+				if (settings.popup !== undefined) {
 					var popup = settings.popup;
 					for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
 						var value = settings.aliases[alias];
-						if (typeof(value) == 'function') {
+						if (typeof(value) === 'function') {
 							value = value($this);
 						}
 						popup = popup.replace('{' + alias + '}', encodeURI(value));

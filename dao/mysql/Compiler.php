@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
@@ -34,34 +33,6 @@ class Compiler implements ICompiler
 	 */
 	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
-		$dao = Dao::current();
-		if ($dao instanceof Link) {
-			//$dao->begin();
-			//$tables = [];
-
-			/*
-			// drop empty tables
-			foreach ($dao->getConnection()->getTables() as $table_name) {
-				if ($dao->query('SELECT COUNT(*) FROM ' . BQ . $table_name . BQ)->fetch_row()[0]) {
-					$tables[$table_name] = true;
-				}
-				else {
-					@$dao->query('DROP TABLE IF EXISTS ' . BQ . $table_name . BQ);
-				}
-			}
-			*/
-
-			/*
-			// update tables structures
-			foreach ($source->getClasses() as $class) {
-				if (isset($tables[$dao->storeNameOf($class->name)])) {
-					$dao->createStorage($class->name);
-				}
-			}
-			*/
-
-			//$dao->commit();
-		}
 		return false;
 	}
 

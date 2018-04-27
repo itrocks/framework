@@ -4,7 +4,8 @@ namespace ITRocks\Framework\Dao\Mysql;
 use Exception;
 
 /**
- * Class Mysql_Error_Exception
+ * Mysql error exception
+ *
  * @package ITRocks\Framework\Dao\Mysql
  */
 class Mysql_Error_Exception extends Exception

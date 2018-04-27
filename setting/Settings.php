@@ -60,7 +60,7 @@ class Settings extends Set
 
 	//------------------------------------------------------------------------------------------- get
 	/**
-	 * @param string $code
+	 * @param $code string
 	 * @return Setting
 	 */
 	public function get($code)

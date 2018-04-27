@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\View;
 
-use ITRocks\Framework;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Logger\File_Logger;
 use ITRocks\Framework\Plugin\Register;

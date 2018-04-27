@@ -150,7 +150,7 @@ class Sort implements Option
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
-	 * @param string $class_name the contextual class name :
+	 * @param $class_name string the contextual class name :
 	 *                           needed if the constructor was called without columns
 	 * @return Reflection_Property[] the properties
 	 */

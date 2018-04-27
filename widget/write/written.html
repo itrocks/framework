@@ -14,10 +14,11 @@
 
 	<!--fill_combo?-->
 	<script>
-	if ($('[name="{fill_combo}"]').length) {
-		$('[name="{fill_combo}"]').val('{id}');
-		$('[name="{fill_combo}"]').next().val('{.}').focus().keyup();
-	}
+		var $fill_combo = $('[name="{fill_combo}"]');
+		if ($fill_combo.length) {
+			$fill_combo.val('{id}');
+			$fill_combo.next().val('{.}').focus().keyup();
+		}
 	</script>
 	<!--fill_combo?-->
 
@@ -38,8 +39,8 @@
 		(function() {
 			var $window = $('#main .window');
 			if (
-				($window.data('class') == '{@class.escape}')
-				&& (($window.data('id') == '{id}') || ('{new_object}' && !$window.data('id')))
+				($window.data('class') === '{@class.escape}')
+				&& (($window.data('id') === '{id}') || ('{new_object}' && !$window.data('id')))
 			) {
 				redirect('{@link}', '#main');
 			}

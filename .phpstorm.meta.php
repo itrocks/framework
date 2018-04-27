@@ -45,6 +45,9 @@ $STATIC_METHOD_TYPES = [
 	Installer::openFile('') => [
 		'' == '@'
 	],
+	Manager::get('') => [
+		'' == '@'
+	],
 	Null_Object::create('') => [
 		'' == '@'
 	],

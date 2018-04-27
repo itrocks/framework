@@ -15,9 +15,9 @@ trait User_Has_Settings
 
 	//------------------------------------------------------------------------------------- $settings
 	/**
-	 * @user invisible
 	 * @link Collection
 	 * @override
+	 * @user invisible
 	 * @var User_Setting[]
 	 */
 	public $settings;

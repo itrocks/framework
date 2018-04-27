@@ -321,6 +321,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Gets default value of properties
 	 *
 	 * TODO not implemented yet
+	 *
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */

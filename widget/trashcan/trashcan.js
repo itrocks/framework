@@ -19,13 +19,13 @@ $('document').ready(function()
 				var class_name = $this.data('class');
 				var id = $this.data('id');
 				var data_throw = $this.data('throw');
-				if (class_name == undefined) {
+				if (class_name === undefined) {
 					class_name = $this.closest('[data-class]').data('class');
 				}
-				if (id == undefined) {
+				if (id === undefined) {
 					id = $this.closest('[data-id]').data('id');
 				}
-				if (data_throw == undefined) {
+				if (data_throw === undefined) {
 					data_throw = $this.closest('[data-throw]').data('throw');
 				}
 				var text = $this.find('h2').text();
@@ -67,11 +67,12 @@ $('document').ready(function()
 				var $window = ui.draggable.closest('.window');
 				if ($window.length) {
 					var data_class = $window.data('class');
-					if (data_class != undefined) {
+					if (data_class !== undefined) {
 						$(event.target).data(
 							'on-success', function () {
 								if (
-									(($window.data('feature') != 'output') && ($window.data('feature') != 'edit'))
+									($window.data('feature') !== 'output')
+									&& ($window.data('feature') !== 'edit')
 								) {
 									var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
 									$.ajax({

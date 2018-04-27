@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
 /**
  * The same as PHP's ReflectionMethod, but working with PHP source, without loading the class
@@ -155,6 +155,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		if (!isset($this->indent)) {
 			$tokens =& $this->class->source->getTokens();
 			$token_key = $this->token_key;
+			/** @noinspection PhpStatementHasEmptyBodyInspection not really empty (--) */
 			while (is_array($token = $tokens[--$token_key]) && (strpos($token[1], LF) === false));
 			$this->indent = is_array($token) ? $token[1] : '';
 		}
@@ -192,6 +193,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			$this->parameters_names = [];
 			$tokens =& $this->class->source->getTokens();
 			$token_key = $this->token_key;
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
 			while (($token = $tokens[++$token_key]) !== '(');
 			while (($token = $tokens[++$token_key]) !== ')') {
 				if ($token[0] === T_VARIABLE) {
@@ -449,6 +451,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		if (!isset($this->returns_reference)) {
 			$tokens =& $this->class->source->getTokens();
 			$token_key = $this->token_key;
+			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
 			while (is_array($token = $tokens[++$token_key]));
 			$this->returns_reference = ($token === '&');
 		}

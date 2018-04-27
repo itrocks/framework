@@ -14,14 +14,6 @@ class Settings_Template_Element
 {
 	use Component;
 
-	//------------------------------------------------------------------------------------- $template
-	/**
-	 * @composite
-	 * @link Object
-	 * @var Settings_Template
-	 */
-	public $template;
-
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * @var string
@@ -34,17 +26,25 @@ class Settings_Template_Element
 	 */
 	public $subpaths;
 
+	//------------------------------------------------------------------------------------- $template
+	/**
+	 * @composite
+	 * @link Object
+	 * @var Settings_Template
+	 */
+	public $template;
+
 	//----------------------------------------------------------------------------------------- $type
 	/**
-	 * @var string
 	 * @values boolean, values_list
+	 * @var string
 	 */
 	public $type;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
-	 * @var string[]
 	 * @values
+	 * @var string[]
 	 */
 	public $values;
 

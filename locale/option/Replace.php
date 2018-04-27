@@ -22,6 +22,7 @@ class Replace extends Option
 	 * List of keys to be replaces by values
 	 * If it's datetime, convert to local format
 	 * If it's object, transform object to string
+	 *
 	 * @var string[]|object[] [key => value]
 	 */
 	public $replace = [];

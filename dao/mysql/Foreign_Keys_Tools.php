@@ -45,7 +45,7 @@ class Foreign_Keys_Tools
 			AND `referenced_column_name` = '$column'
 		");
 		while ($row = $result->fetch_assoc()) {
-
+			// TODO Some things, I assume
 		}
 	}
 

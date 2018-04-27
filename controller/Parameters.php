@@ -396,7 +396,7 @@ class Parameters
 	 * Changes named parameters (which name is not numeric and value not object) into a 'get-like'
 	 * argument
 	 *
-	 * @param boolean $shift if true, get elements will be removed from parameters
+	 * @param $shift boolean if true, get elements will be removed from parameters
 	 * @return array
 	 */
 	public function toGet($shift = false)

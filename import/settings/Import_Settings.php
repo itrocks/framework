@@ -65,8 +65,11 @@ class Import_Settings extends Custom_Settings
 	 * @param $feature    string
 	 * @return Import_Settings
 	 */
-	public static function current($class_name, $feature = 'import')
+	public static function current($class_name, $feature = null)
 	{
+		if (!isset($feature)) {
+			$feature = 'import';
+		}
 		/** @var $import_settings Import_Settings */
 		$import_settings = parent::current($class_name, $feature);
 		return $import_settings;

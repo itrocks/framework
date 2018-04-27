@@ -31,6 +31,7 @@ class Time_Limit implements Option
 	//---------------------------------------------------------------------------------------- getSql
 	/**
 	 * Directive corresponding of your database
+	 *
 	 * @return string
 	 */
 	public function getSql()

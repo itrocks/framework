@@ -28,10 +28,10 @@ class Tests_Command extends PHPUnit_TextUI_Command
 
 	//--------------------------------------------------------------------------- parsePHPUnitOptions
 	/**
-	 * @param string[] $options array of options key=>value
+	 * @param $options string[] array of options key=>value
 	 * @return string[] of options as un command line
 	 */
-	public function parsePHPUnitOptions($options)
+	public function parsePHPUnitOptions(array $options)
 	{
 		$parsed_options = [];
 
@@ -52,9 +52,9 @@ class Tests_Command extends PHPUnit_TextUI_Command
 	/**
 	 * Run the required tests
 	 *
-	 * @param string[] $query_options Other options passed from query params
+	 * @param $query_options string[] Other options passed from query params
 	 */
-	public function runTests($query_options = [])
+	public function runTests(array $query_options = [])
 	{
 		set_time_limit(0);
 

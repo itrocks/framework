@@ -121,9 +121,9 @@ interface IWeaver
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * Unweave an aspect
+	 * Un-weave an aspect
 	 *
-	 * @param IHandler $handler
+	 * @param $handler IHandler
 	 */
 	public function remove(IHandler $handler);
 

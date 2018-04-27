@@ -33,8 +33,8 @@
 			$this.blur(function()
 			{
 				var $this = $(this);
-				if ($this.val() == '') {
-					if ($this.attr('type') == 'password') {
+				if ($this.val() === '') {
+					if ($this.attr('type') === 'password') {
 						var $container = $('<p>');
 						$container.append($this.clone());
 						var $helper = $($container.html().replace('type="password" ', 'type="text"'));
@@ -52,7 +52,7 @@
 			$this.focus($focus = function()
 			{
 				var $this = $(this);
-				if ($this.val() == $this.attr('title')) {
+				if ($this.val() === $this.attr('title')) {
 					if ($this.data('password')) {
 						$this = $this.prev();
 						$this.next().remove();

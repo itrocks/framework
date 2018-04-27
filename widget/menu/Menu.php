@@ -15,24 +15,14 @@ class Menu implements Configurable
 {
 
 	//------------------------------------------------------- Menu configuration array keys constants
-
-	//------------------------------------------------------------------------------------------- ALL
 	/**
-	 * @deprecated Menu::CLEAR without the key Menu::ALL will be enough
+	 * @deprecated Menu::CLEAR without the key Menu::ALL will be enough : remove ALL
 	 */
-	const ALL = ':';
-
-	//------------------------------------------------------------------------------------------ LINK
-	const LINK = 'link';
-
-	//---------------------------------------------------------------------------------------- MODULE
+	const ALL    = ':';
+	const LINK   = 'link';
 	const MODULE = 'module';
-
-	//---------------------------------------------------------------------------------------- TARGET
 	const TARGET = 'target';
-
-	//----------------------------------------------------------------------------------------- TITLE
-	const TITLE = 'title';
+	const TITLE  = 'title';
 
 	//--------------------------------------------------------------------------------------- $blocks
 	/**

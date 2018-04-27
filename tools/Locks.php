@@ -9,6 +9,9 @@ abstract class Locks
 {
 
 	//---------------------------------------------------------------------------------------- $locks
+	/**
+	 * @var integer[] $lock_count integer[$lock_name string]
+	 */
 	private static $locks = [];
 
 	//--------------------------------------------------------------------------------- decrementLock

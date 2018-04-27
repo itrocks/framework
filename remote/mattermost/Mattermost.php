@@ -1,5 +1,4 @@
 <?php
-
 namespace ITRocks\Framework\Remote;
 
 use Exception;

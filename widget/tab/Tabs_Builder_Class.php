@@ -23,7 +23,6 @@ class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
-	 *
 	 * @param $object            object|string|Reflection_Class object or class name/reflection
 	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
@@ -238,7 +237,7 @@ class Tabs_Builder_Class
 	 * If some group names are into @groups_order, they will be ordered first, in the same order,
 	 * and the trailing groups will come after, sorted alphabetically.
 	 *
-	 * @param array $groups Group_Annotation[] Key is the name of the group
+	 * @param $groups array Group_Annotation[] Key is the name of the group
 	 */
 	protected function sortGroups(array &$groups)
 	{

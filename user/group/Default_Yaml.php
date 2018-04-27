@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
+use Exception;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use Exception;
 use ReflectionException;
 
 /**

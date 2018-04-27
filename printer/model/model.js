@@ -21,7 +21,7 @@ function PDF_Templates(id_print_model)
 			containment: "parent",
 			cursor: "move",
 			opacity: 0.5,
-			snap: (snap == 'snap') ? ".zone, .table_zone, .x_ruler_line, .y_ruler_line" : false,
+			snap: (snap === 'snap') ? ".zone, .table_zone, .x_ruler_line, .y_ruler_line" : false,
 			snapMode: "both",
 			snapTolerance: 10
 		};
@@ -36,9 +36,10 @@ function PDF_Templates(id_print_model)
 		this.counter = 0;
 		this.node = document.createElement("div");
 
-		if (type == 'table_zone') {
+		if (type === 'table_zone') {
 			this.node.className = 'table_zone_dragger';
-		} else {
+		}
+		else {
 			this.node.className = 'zone';
 		}
 

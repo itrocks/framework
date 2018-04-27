@@ -72,15 +72,6 @@ class Parser
 	 */
 	public $scripts;
 
-	//------------------------------------------------------------------------------------- $site_url
-	/**
-	 * The original site base URL
-	 *
-	 * @example 'www.automotoboutic.com'
-	 * @var string
-	 */
-	public $site_url;
-
 	//---------------------------------------------------------------------------------- $site_domain
 	/**
 	 * The original site domain name
@@ -98,6 +89,15 @@ class Parser
 	 * @var string
 	 */
 	public $site_path;
+
+	//------------------------------------------------------------------------------------- $site_url
+	/**
+	 * The original site base URL
+	 *
+	 * @example 'www.automotoboutic.com'
+	 * @var string
+	 */
+	public $site_url;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -271,12 +271,12 @@ class Parser
 	 * if the selector contains ':attributeName', the element attribute value will be returned
 	 *
 	 * @example 'string.title=Configuration :', 'li:alt'
-	 * @param string
+	 * @param $string string
 	 * @return string|null
 	 */
-	public function get()
+	public function get($string)
 	{
-		$pos = 0;
+		$pos      = 0;
 		$selector = null;
 		foreach (func_get_args() as $selector) {
 			$pos = is_numeric($selector) ? $selector : $this->selectorPos($selector, $pos);
@@ -288,15 +288,15 @@ class Parser
 			return null;
 		}
 		$parts = $this->selectorParts($selector);
-		$end = $this->closingTag($this->partsTag($parts), $pos, self::BEFORE);
+		$end   = $this->closingTag($this->partsTag($parts), $pos, self::BEFORE);
 		if (isset($parts[':']['content'])) {
 			$pos = strpos($this->buffer, '>', $pos) + 1;
 		}
 		elseif ($parts[':']) {
 			$attribute = reset($parts[':']);
-			$end = strpos($this->buffer, '>', $pos);
-			$p1 = strpos($this->buffer, $attribute . '=' . Q, $pos);
-			$p2 = strpos($this->buffer, $attribute . '=' . DQ, $pos);
+			$end       = strpos($this->buffer, '>', $pos);
+			$p1        = strpos($this->buffer, $attribute . '=' . Q, $pos);
+			$p2        = strpos($this->buffer, $attribute . '=' . DQ, $pos);
 			if (($p1 !== false) && ($p1 < $end)) {
 				$pos = $p1 + strlen($attribute) + 2;
 				$end = strpos($this->buffer, Q, $pos);
@@ -335,7 +335,6 @@ class Parser
 	 * Stores html source buffer into some elements
 	 *
 	 * @example into('html', 'body', 'div#content') to add some elements around a cut buffer
-	 * @param string
 	 */
 	public function into()
 	{
@@ -430,6 +429,7 @@ class Parser
 	 * Each parameter is as selector for elements to be removed from buffer.
 	 *
 	 * TODO unnamed element should be free instead of div
+	 *
 	 * @example remove('div.classed', '#id')
 	 * @param $selectors       string|string[]
 	 * @param $until_selectors string|string[]

@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate\Property\Tests;
 
-use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use stdClass;
 
 /**
@@ -67,20 +67,6 @@ class Mandatory_Annotation_Test extends Test
 		$this->assertEquals($expected, $actual);
 	}
 
-	//--------------------------------------------------------------------------------- testIsEmptyOk
-	/**
-	 * Tests Mandatory_Annotation::isEmpty() with an empty property.
-	 */
-	public function testIsEmptyOk()
-	{
-		$annotation = Mandatory_Annotation::of(
-			$this->reflection_object->getProperty('empty_property')
-		);
-		$actual = $annotation->isEmpty($this);
-
-		$this->assertTrue($actual);
-	}
-
 	//--------------------------------------------------------------------------------- testIsEmptyKo
 	/**
 	 * Tests Mandatory_Annotation::isEmpty() with a none empty property.
@@ -93,6 +79,20 @@ class Mandatory_Annotation_Test extends Test
 		$actual = $annotation->isEmpty($this);
 
 		$this->assertFalse($actual);
+	}
+
+	//--------------------------------------------------------------------------------- testIsEmptyOk
+	/**
+	 * Tests Mandatory_Annotation::isEmpty() with an empty property.
+	 */
+	public function testIsEmptyOk()
+	{
+		$annotation = Mandatory_Annotation::of(
+			$this->reflection_object->getProperty('empty_property')
+		);
+		$actual = $annotation->isEmpty($this);
+
+		$this->assertTrue($actual);
 	}
 
 	//------------------------------------------------------------------------------ testValidateNull

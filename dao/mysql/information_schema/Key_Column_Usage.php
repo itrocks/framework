@@ -13,14 +13,14 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $COLUMN_NAME;
+	protected $COLUMN_NAME;
 
 	//--------------------------------------------------------------------------- $CONSTRAINT_CATALOG
 	/**
 	 * @values def
 	 * @var string
 	 */
-	private $CONSTRAINT_CATALOG;
+	protected $CONSTRAINT_CATALOG;
 
 	//------------------------------------------------------------------------------ $CONSTRAINT_NAME
 	/**
@@ -28,7 +28,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $CONSTRAINT_NAME;
+	protected $CONSTRAINT_NAME;
 
 	//---------------------------------------------------------------------------- $CONSTRAINT_SCHEMA
 	/**
@@ -36,19 +36,19 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $CONSTRAINT_SCHEMA;
+	protected $CONSTRAINT_SCHEMA;
 
 	//----------------------------------------------------------------------------- $ORDINAL_POSITION
 	/**
 	 * @var integer
 	 */
-	private $ORDINAL_POSITION;
+	protected $ORDINAL_POSITION;
 
 	//---------------------------------------------------------------- $POSITION_IN_UNIQUE_CONSTRAINT
 	/**
 	 * @var integer
 	 */
-	private $POSITION_IN_UNIQUE_CONSTRAINT;
+	protected $POSITION_IN_UNIQUE_CONSTRAINT;
 
 	//----------------------------------------------------------------------- $REFERENCED_COLUMN_NAME
 	/**
@@ -57,7 +57,7 @@ class Key_Column_Usage
 	 * @values id
 	 * @var string
 	 */
-	private $REFERENCED_COLUMN_NAME;
+	protected $REFERENCED_COLUMN_NAME;
 
 	//------------------------------------------------------------------------ $REFERENCED_TABLE_NAME
 	/**
@@ -65,7 +65,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $REFERENCED_TABLE_NAME;
+	protected $REFERENCED_TABLE_NAME;
 
 	//---------------------------------------------------------------------- $REFERENCED_TABLE_SCHEMA
 	/**
@@ -73,14 +73,14 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $REFERENCED_TABLE_SCHEMA;
+	protected $REFERENCED_TABLE_SCHEMA;
 
 	//-------------------------------------------------------------------------------- $TABLE_CATALOG
 	/**
 	 * @values def
 	 * @var string
 	 */
-	private $TABLE_CATALOG;
+	protected $TABLE_CATALOG;
 
 	//----------------------------------------------------------------------------------- $TABLE_NAME
 	/**
@@ -88,7 +88,7 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $TABLE_NAME;
+	protected $TABLE_NAME;
 
 	//--------------------------------------------------------------------------------- $TABLE_SCHEMA
 	/**
@@ -96,6 +96,6 @@ class Key_Column_Usage
 	 *
 	 * @var string
 	 */
-	private $TABLE_SCHEMA;
+	protected $TABLE_SCHEMA;
 
 }

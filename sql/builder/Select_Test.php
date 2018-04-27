@@ -244,6 +244,22 @@ class Select_Test extends Test
 		);
 	}
 
+	//--------------------------------------------------------------------------------- testLinkQuery
+	public function testLinkQuery()
+	{
+		$builder = new Select(
+			Order::class,
+			['date', 'number', 'salesmen.name']
+		);
+		$this->assertEquals(
+			'SELECT t0.`date`, t0.`number`, t2.`name` AS `salesmen.name`' . LF
+			. 'FROM `test_orders` t0' . LF
+			. 'LEFT JOIN `test_orders_salesmen` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`',
+			$builder->buildQuery()
+		);
+	}
+
 	//------------------------------------------------------------------- testLinkedClassObjectSearch
 	public function testLinkedClassObjectSearch()
 	{
@@ -325,22 +341,6 @@ class Select_Test extends Test
 			. LF
 			. 'FROM `test_quotes` t0' . LF
 			. 'LEFT JOIN `test_quote_salesmen` t1 ON t1.`id_quote` = t0.`id`' . LF
-			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`',
-			$builder->buildQuery()
-		);
-	}
-
-	//--------------------------------------------------------------------------------- testLinkQuery
-	public function testLinkQuery()
-	{
-		$builder = new Select(
-			Order::class,
-			['date', 'number', 'salesmen.name']
-		);
-		$this->assertEquals(
-			'SELECT t0.`date`, t0.`number`, t2.`name` AS `salesmen.name`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'LEFT JOIN `test_orders_salesmen` t1 ON t1.`id_order` = t0.`id`' . LF
 			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`',
 			$builder->buildQuery()
 		);

@@ -12,7 +12,9 @@
  * @param $function_name string
  * @param $new_name      string
  */
-function rename_function($function_name, $new_name) {}
+function rename_function($function_name, $new_name)
+{
+}
 
 //------------------------------------------------------------------------------- set_exit_overload
 /**
@@ -26,7 +28,9 @@ function rename_function($function_name, $new_name) {}
  * Callback parameter : the die message, optional
  * Callback returns true to confirm that the script must end, or false to cancel the exit
  */
-function set_exit_overload(callable $callback) {}
+function set_exit_overload(callable $callback)
+{
+}
 
 //-------------------------------------------------------------------------------- set_new_overload
 /**
@@ -36,10 +40,16 @@ function set_exit_overload(callable $callback) {}
  * Callback parameter : the class name string wished by the new operator
  * Callback returns : the class name string to invoke
  */
-function set_new_overload(callable $callback) {}
+function set_new_overload(callable $callback)
+{
+}
 
 //----------------------------------------------------------------------------- unset_exit_overload
-function unset_exit_overload() {}
+function unset_exit_overload()
+{
+}
 
 //------------------------------------------------------------------------------ unset_new_overload
-function unset_new_overload() {}
+function unset_new_overload()
+{
+}

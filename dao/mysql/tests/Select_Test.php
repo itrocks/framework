@@ -42,7 +42,8 @@ class Select_Test extends Test
 	public function everythingProvider()
 	{
 		upgradeTimeLimit(0);
-		$dao = Dao::current();
+		$classes = [];
+		$dao     = Dao::current();
 		if ($dao instanceof Link) {
 			/** @var $dependencies Dependency[] */
 			$dependencies = Dao::search(

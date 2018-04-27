@@ -29,8 +29,8 @@
 		var previous;
 		var next;
 		var truc = 0;
-		if (settings.previous != undefined) {
-			if (typeof settings.previous == 'string') {
+		if (settings.previous !== undefined) {
+			if (typeof settings.previous === 'string') {
 				parent = elements.parent();
 				previous = parent.children(settings.previous);
 				while (parent.length && !previous.length && truc++ < 100) {
@@ -40,8 +40,8 @@
 				settings.previous = previous;
 			}
 		}
-		if (settings.next != undefined) {
-			if (typeof settings.next == 'string') {
+		if (settings.next !== undefined) {
+			if (typeof settings.next === 'string') {
 				parent = elements.parent();
 				next = parent.children(settings.next);
 				while (parent.length && !next.length && truc++ < 100) {
@@ -54,15 +54,15 @@
 
 		//---------------------------------------------------------------------------- elements.hover()
 		elements.hover(function() { hover++; }, function() { hover--; });
-		if (settings.previous != undefined) {
+		if (settings.previous !== undefined) {
 			settings.previous.hover(function() { hover++; }, function() { hover--; });
 		}
-		if (settings.next != undefined) {
+		if (settings.next !== undefined) {
 			settings.next.hover(function() { hover++; }, function() { hover--; });
 		}
 
 		//----------------------------------------------------------------------- previous/next.click()
-		if (settings.previous != undefined) {
+		if (settings.previous !== undefined) {
 			settings.previous.click(function() {
 				$(elements[position]).fadeOut(settings.manual_transition_speed);
 				position --;
@@ -72,7 +72,7 @@
 				$(elements[position]).fadeIn(settings.manual_transition_speed);
 			});
 		}
-		if (settings.next != undefined) {
+		if (settings.next !== undefined) {
 			settings.next.click(function() {
 				$(elements[position]).fadeOut(settings.manual_transition_speed);
 				position ++;

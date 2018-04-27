@@ -1,11 +1,11 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
-use ReflectionClass;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Paths;
+use ReflectionClass;
 
 /**
  * Reflection of PHP source code
@@ -15,24 +15,12 @@ class Reflection_Source
 	use Tokens_Parser;
 
 	//----------------------------------------------------------------------- get() filters constants
-
-	//--------------------------------------------------------------------------------------- CLASSES
-	const CLASSES = 1;
-
-	//---------------------------------------------------------------------------------- DEPENDENCIES
+	const CLASSES      = 1;
 	const DEPENDENCIES = 2;
-
-	//---------------------------------------------------------------------------------- INSTANTIATES
 	const INSTANTIATES = 3;
-
-	//------------------------------------------------------------------------------------ NAMESPACES
-	const NAMESPACES = 4;
-
-	//-------------------------------------------------------------------------------------- REQUIRES
-	const REQUIRES = 5;
-
-	//------------------------------------------------------------------------------------------ USES
-	const USES = 6;
+	const NAMESPACES   = 4;
+	const REQUIRES     = 5;
+	const USES         = 6;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -46,12 +34,6 @@ class Reflection_Source
 	 */
 	private static $cache = [];
 
-	//-------------------------------------------------------------------------------------- $classes
-	/**
-	 * @var Reflection_Class[] the key is the full name of each class
-	 */
-	private $classes;
-
 	//-------------------------------------------------------------------------------------- $changed
 	/**
 	 * This is set to true when you call setSource(), in order to know that source has been changed
@@ -61,6 +43,12 @@ class Reflection_Source
 	 * @var boolean
 	 */
 	private $changed;
+
+	//-------------------------------------------------------------------------------------- $classes
+	/**
+	 * @var Reflection_Class[] the key is the full name of each class
+	 */
+	private $classes;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
@@ -597,6 +585,21 @@ class Reflection_Source
 		return $result;
 	}
 
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * Gets a class from the source
+	 *
+	 * @param $class_name string
+	 * @return Reflection_Class
+	 */
+	public function getClass($class_name)
+	{
+		$classes = $this->getClasses();
+		return isset($classes[$class_name])
+			? $classes[$class_name]
+			: new Reflection_Class($this, $class_name);
+	}
+
 	//-------------------------------------------------------------------------- getClassDependencies
 	/**
 	 * @param $class        Reflection_Class
@@ -616,21 +619,6 @@ class Reflection_Source
 			}
 		}
 		return $dependencies;
-	}
-
-	//-------------------------------------------------------------------------------------- getClass
-	/**
-	 * Gets a class from the source
-	 *
-	 * @param $class_name string
-	 * @return Reflection_Class
-	 */
-	public function getClass($class_name)
-	{
-		$classes = $this->getClasses();
-		return isset($classes[$class_name])
-			? $classes[$class_name]
-			: new Reflection_Class($this, $class_name);
 	}
 
 	//------------------------------------------------------------------------------------ getClasses

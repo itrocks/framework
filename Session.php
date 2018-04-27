@@ -176,6 +176,7 @@ class Session implements Serializable
 	//---------------------------------------------------------------------------- getApplicationName
 	/**
 	 * Gets the current application name without having to unserialize it if serialized
+	 *
 	 * @return Application
 	 */
 	public function getApplicationName()

@@ -22,17 +22,17 @@ $('document').ready(function()
 			$(this).addClass('rad highlight');
 		});
 
-		var $elements = (element_selector[0] == '>')
+		var $elements = (element_selector[0] === '>')
 			? $container.children(element_selector.substr(1))
 			: $container.find(element_selector);
 
 		// horizontal or vertical ? (default is horizontal, if zero or one contained elements only)
-		var vertical = (direction == 'vertical');
-		if (direction == 'auto') {
+		var vertical = (direction === 'vertical');
+		if (direction === 'auto') {
 			if ($elements.length > 1) {
 				var position1 = $($elements[0]).position();
 				var position2 = $($elements[1]).position();
-				vertical = (position1.left == position2.left);
+				vertical = (position1.left === position2.left);
 			}
 		}
 

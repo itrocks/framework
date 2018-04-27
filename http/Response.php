@@ -58,6 +58,9 @@ class Response
 	//------------------------------------------------------------------------------ MULTIPLE_CHOICES
 	const MULTIPLE_CHOICES = 300;
 
+	//------------------------------------------------------------------------------------ NO_CONTENT
+	const NO_CONTENT = 204;
+
 	//----------------------------------------------------------------- NON_AUTHORITATIVE_INFORMATION
 	const NON_AUTHORITATIVE_INFORMATION = 203;
 
@@ -72,9 +75,6 @@ class Response
 
 	//---------------------------------------------------------------------------------- NOT_MODIFIED
 	const NOT_MODIFIED = 304;
-
-	//------------------------------------------------------------------------------------ NO_CONTENT
-	const NO_CONTENT = 204;
 
 	//-------------------------------------------------------------------------------------------- OK
 	const OK = 200;
@@ -91,9 +91,6 @@ class Response
 	//----------------------------------------------------------------- PROXY_AUTHENTICATION_REQUIRED
 	const PROXY_AUTHENTICATION_REQUIRED = 407;
 
-	//--------------------------------------------------------------- REQUESTED_RANGE_NOT_SATISFIABLE
-	const REQUESTED_RANGE_NOT_SATISFIABLE = 416;
-
 	//---------------------------------------------------------------------- REQUEST_ENTITY_TOO_LARGE
 	const REQUEST_ENTITY_TOO_LARGE = 413;
 
@@ -102,6 +99,9 @@ class Response
 
 	//-------------------------------------------------------------------------- REQUEST_URI_TOO_LONG
 	const REQUEST_URI_TOO_LONG = 414;
+
+	//--------------------------------------------------------------- REQUESTED_RANGE_NOT_SATISFIABLE
+	const REQUESTED_RANGE_NOT_SATISFIABLE = 416;
 
 	//--------------------------------------------------------------------------------- RESET_CONTENT
 	const RESET_CONTENT = 205;

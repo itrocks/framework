@@ -1,5 +1,6 @@
 <?php
 
+//---------------------------------------------------------------------------------- pregMatchArray
 /**
  * Checks if a string matches any regular expressions into an array
  *

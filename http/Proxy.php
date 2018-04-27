@@ -13,6 +13,7 @@ class Proxy
 	//-------------------------------------------------------------------------------------- STANDARD
 	/**
 	 * Use new Proxy(Proxy::STANDARD) to get a proxy ready with standard headers and parameters
+	 *
 	 * @var null
 	 */
 	const STANDARD = null;
@@ -508,7 +509,7 @@ class Proxy
 	/**
 	 * Set standard request headers
 	 *
-	 * @param string $method Http::GET or Http::POST
+	 * @param $method string Http::GET or Http::POST
 	 */
 	public function setStandardRequestHeaders($method = Http::GET)
 	{

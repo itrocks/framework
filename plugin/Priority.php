@@ -9,7 +9,7 @@ abstract class Priority
 
 	//---------------------------------------------------------------------------- Priority constants
 	/**
-	 * Ordered in priority order, from the lowest to the highest
+	 * Ordered in priority order, from the lowest to the highest (please keep this order)
 	 */
 	const TOP_CORE = 'top_core';
 	const CORE     = 'core';

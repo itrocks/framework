@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao;
 
-use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 
 /**
  * This is a set of records linked to Dao tools

@@ -79,9 +79,8 @@ class Period
 	 * Return difference between begin and end date
 	 *
 	 * @param $format string force format, if not set only outputs relevant value
-	 *
-	 * @see DateInterval::format()
 	 * @return string
+	 * @see DateInterval::format()
 	 */
 	public function format($format = null)
 	{

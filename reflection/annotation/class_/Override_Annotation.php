@@ -22,8 +22,8 @@ class Override_Annotation extends Template\List_Annotation implements Multiple_A
 	public $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
-	/** @noinspection PhpMissingParentConstructorInspection This does all the wark itself */
 	/**
+	 * @noinspection PhpMissingParentConstructorInspection This does all the wark itself
 	 * @param $value string
 	 */
 	public function __construct($value)

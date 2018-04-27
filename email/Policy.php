@@ -15,6 +15,14 @@ class Policy
 	 */
 	public $delay_between_mail = 0;
 
+	//-------------------------------------------------------------------------- $delay_between_retry
+	/**
+	 * Delay between each retry on the same host, in seconds
+	 *
+	 * @var integer
+	 */
+	public $delay_between_retry = 60;
+
 	//----------------------------------------------------------------------------------- $delay_send
 	/**
 	 * Used for send policy
@@ -50,13 +58,5 @@ class Policy
 	 * @var integer
 	 */
 	public $retry = 1;
-
-	//-------------------------------------------------------------------------- $delay_between_retry
-	/**
-	 * Delay between each retry on the same host, in seconds
-	 *
-	 * @var integer
-	 */
-	public $delay_between_retry = 60;
 
 }

@@ -117,29 +117,55 @@ abstract class Getter
 			foreach ($classes as $short_class_name) {
 				$class_name = $namespace . BS . $short_class_name;
 				$path       = strtolower(str_replace(BS, SL, $class_name));
-if (isset($GLOBALS['D'])) static::debug('A1', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D'])) {
+					static::debug('A1', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				}
 				if (file_exists($path . SL . $feature_what . $_suffix . $ext)) {
 					$class = $class_name . BS . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D'])) static::debug('A2', $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
-				if (file_exists($path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext)) {
+				if (isset($GLOBALS['D'])) {
+					static::debug(
+						'A2',
+						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext,
+						'run',
+						$extension
+					);
+				}
+				if (file_exists(
+					$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
+				)) {
 					$class = $class_name . BS . $feature_class . BS . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('A3', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $suffix) {
+					static::debug(
+						'A3', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension
+					);
+				}
 				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $feature_class . BS . $suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D'])) static::debug('A4', Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D'])) {
+					static::debug(
+						'A4',
+						Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext,
+						'run',
+						$extension
+					);
+				}
 				if (file_exists(
 					Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext
 				)) {
 					$class = $class_name . '_' . $feature_what . $_suffix;
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('A5', $path . SL . $suffix . $ext, 'run' . ucfirst($feature_name), $extension);
+				if (isset($GLOBALS['D']) && $suffix) {
+					static::debug(
+						'A5', $path . SL . $suffix . $ext, 'run' . ucfirst($feature_name), $extension
+					);
+				}
 				if (
 					$suffix
 					&& ($extension !== 'html')
@@ -150,7 +176,9 @@ if (isset($GLOBALS['D']) && $suffix) static::debug('A5', $path . SL . $suffix . 
 					$method = 'run' . ucfirst($feature_name);
 					break 2;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('A6', $path . SL . $suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $suffix) {
+					static::debug('A6', $path . SL . $suffix . $ext, 'run', $extension);
+				}
 				if ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $suffix;
 					break 2;
@@ -169,7 +197,11 @@ if (isset($GLOBALS['D']) && $suffix) static::debug('A6', $path . SL . $suffix . 
 				);
 				$namespace = Namespaces::of($application_class);
 				$path      = strtolower(str_replace(BS, SL, $namespace));
-if (isset($GLOBALS['D']) && $can_be_project_class && $suffix) static::debug('B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $can_be_project_class && $suffix) {
+					static::debug(
+						'B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension
+					);
+				}
 				if (
 					$can_be_project_class
 					&& $suffix
@@ -178,7 +210,14 @@ if (isset($GLOBALS['D']) && $can_be_project_class && $suffix) static::debug('B1'
 					$class = $namespace . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B2', $path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $can_be_project_class) {
+					static::debug(
+						'B2',
+						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext,
+						'run',
+						$extension
+					);
+				}
 				if (
 					$can_be_project_class
 					&& file_exists(
@@ -188,7 +227,9 @@ if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B2', $path . S
 					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B3', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $can_be_project_class) {
+					static::debug('B3', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				}
 				if (
 					$can_be_project_class
 					&& file_exists($path . SL . $feature_what . $_suffix . $ext)
@@ -196,14 +237,29 @@ if (isset($GLOBALS['D']) && $can_be_project_class) static::debug('B3', $path . S
 					$class = $namespace . BS . $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('B4', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $suffix) {
+					static::debug(
+						'B4',
+						$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext,
+						'run',
+						$extension
+					);
+				}
 				if ($suffix && file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) static::debug('B5', $path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D'])) {
+					static::debug(
+						'B5',
+						$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix
+							. $ext,
+						'run',
+						$extension
+					);
+				}
 				if (file_exists(
 					$path . SL . 'widget' . SL . strtolower($feature_class) . SL
 					. $feature_what . $_suffix . $ext
@@ -212,25 +268,41 @@ if (isset($GLOBALS['D'])) static::debug('B5', $path . SL . 'widget' . SL . strto
 						. $feature_what . $_suffix;
 					break;
 				}
-if (isset($GLOBALS['D']) && $suffix) static::debug('B6', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D']) && $suffix) {
+					static::debug(
+						'B6',
+						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext,
+						'run',
+						$extension
+					);
+				}
 				if ($suffix && file_exists(
 						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext
 					)) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
 					break;
 				}
-if (isset($GLOBALS['D'])) static::debug('B7', $path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext, 'run', $extension);
+				if (isset($GLOBALS['D'])) {
+					static::debug(
+						'B7',
+						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what
+							. $_suffix . $ext,
+						'run',
+						$extension
+					);
+				}
 				if (file_exists(
-					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL
-					. $feature_what . $_suffix . $ext
+					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what
+					. $_suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS
-					. $feature_what . $_suffix;
+					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $feature_what
+						. $_suffix;
 					break;
 				}
 
-				// next application is the parent one
-			} while ($application_class = next($application_classes));
+			}
+			// next application is the parent one
+			while ($application_class = next($application_classes));
 
 			// Looking for direct feature call, without using any controller
 			static $last_controller_class  = '';
@@ -250,7 +322,7 @@ if (isset($GLOBALS['D'])) static::debug('B7', $path . SL . 'webservice' . SL . s
 					$last_controller_class  = $base_class;
 					$last_controller_method = $feature_name;
 				}
-if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
+				if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
 				if (
 					method_exists($base_class, $feature_name)
 					&& (new Reflection_Method($base_class, $feature_name))->hasParameter($feature_name)
@@ -276,18 +348,25 @@ if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $exten
 				do {
 					$namespace = Namespaces::of($application_class);
 					$path      = strtolower(str_replace(BS, SL, $namespace));
-if (isset($GLOBALS['D'])) static::debug('C2', $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext, 'run', $extension);
+					if (isset($GLOBALS['D'])) {
+						static::debug(
+							'C2', $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext, 'run', $extension
+						);
+					}
 					if (file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
 					}
-				} while ($application_class = next($application_classes));
+				}
+				while ($application_class = next($application_classes));
 			}
 
 		}
 
 		$result = [isset($class) ? $class : null, $method];
-if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $result[0], $result[1], $extension, 'FOUND');
+		if (isset($GLOBALS['D'])) {
+			static::debug(strtoupper($suffix ?: $extension), $result[0], $result[1], $extension, 'FOUND');
+		}
 		return $result;
 	}
 

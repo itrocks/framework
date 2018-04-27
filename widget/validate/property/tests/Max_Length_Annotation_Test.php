@@ -1,9 +1,9 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate\Property\Tests;
 
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Widget\Validate\Property\Max_Length_Annotation;
 
 /**

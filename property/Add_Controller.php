@@ -49,9 +49,6 @@ class Add_Controller implements Feature_Controller
 		if ($parameters['feature_name'] == Feature::F_LIST) {
 			$this->addPropertyToList($parameters['class_name'], $parameters['property_path']);
 		}
-		if ($parameters['feature_name'] == 'form') {
-			// ...
-		}
 		$parameters[Template::TEMPLATE] = 'added';
 		return View::run($parameters, $form, $files, Property::class, Feature::F_ADD);
 	}

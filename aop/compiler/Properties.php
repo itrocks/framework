@@ -356,8 +356,7 @@ class Properties
 	private function compileIsset(array $advices)
 	{
 		$over = $this->overrideMethod('__isset');
-		$code =
-	$over['prototype'] . '
+		$code = $over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';
@@ -466,8 +465,7 @@ class Properties
 	private function compileSet(array $advices)
 	{
 		$over = $this->overrideMethod('__set', true, $advices);
-		$code =
-	$over['prototype'] . '
+		$code = $over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';
@@ -530,8 +528,7 @@ class Properties
 	private function compileUnset(array $advices)
 	{
 		$over = $this->overrideMethod('__unset');
-		$code =
-	$over['prototype'] . '
+		$code = $over['prototype'] . '
 		if (!isset($this->_) || !isset($this->_[$property_name])) {
 			' . $over['call'] . '
 		}';

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Gaufrette;
 
 use Exception;
+use Gaufrette\Adapter;
 use Gaufrette\Filesystem;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Method;
@@ -56,7 +57,9 @@ class File_System
 
 		$this->name = $name;
 		try {
-			$this->filesystem = new Filesystem(Builder::create($adapter_class, $adapter_arguments));
+			/** @var $adapter Adapter */
+			$adapter          = Builder::create($adapter_class, $adapter_arguments);
+			$this->filesystem = new Filesystem($adapter);
 		}
 		catch (Exception $exception) {
 			throw new Exception("Cannot build adapter $name. See configuration");

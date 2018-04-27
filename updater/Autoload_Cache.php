@@ -41,7 +41,7 @@ class Autoload_Cache implements Activable, Updatable
 		$application_updater = Application_Updater::get();
 		$application_updater->addUpdatable($this);
 		$this->cache_path = Application::current()->include_path->getSourceDirectory() . '/cache';
-		/** @noinspection PhpIncludeInspection */
+		/** @noinspection PhpUsageOfSilenceOperatorInspection */
 		@include $this->cache_path . '/autoload.php';
 		if (!$this->paths || !$this->full_class_names || $application_updater->mustUpdate()) {
 			$this->update();
@@ -53,7 +53,7 @@ class Autoload_Cache implements Activable, Updatable
 	 * @param $object     Autoloader
 	 * @param $class_name string
 	 */
-	public function autoload($object, $class_name)
+	public function autoload(Autoloader $object, $class_name)
 	{
 		if ((strpos($class_name, SL) !== false) && isset($this->full_class_names[$class_name])) {
 			$class_name = $this->full_class_names[$class_name];

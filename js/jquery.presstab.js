@@ -10,7 +10,7 @@
 	{
 		this.keydown(function(event)
 		{
-			if ((event.keyCode == 9) && !event.shiftKey) {
+			if ((event.keyCode === 9) && !event.shiftKey) {
 				var selection_start = this.selectionStart;
 				var selection_end   = this.selectionEnd;
 				var scroll_top = this.scrollTop;
