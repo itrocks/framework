@@ -53,6 +53,9 @@ abstract class File
 	{
 		$class_name_without_vendor_project = Getter::classNameWithoutVendorProject($class_name);
 		$use = lParse($class_name, BS, substr_count($class_name_without_vendor_project, BS) + 1);
+		while (strpos($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
+			$use = lParse($use, BS);
+		}
 		if (!in_array($use, $this->use)) {
 			$this->use = arrayInsertSorted($this->use, $use);
 		}
@@ -131,6 +134,23 @@ abstract class File
 			$final_class_name = substr($class_name, strlen($this->namespace) + 1);
 		}
 		return $final_class_name ?: (BS . $class_name);
+	}
+
+	//----------------------------------------------------------------------------------- useConflict
+	/**
+	 * @param $use string
+	 * @return boolean true if there is a conflict with another use part
+	 */
+	protected function useConflict($use)
+	{
+		$use_part = rLastParse($use, BS, 1, true);
+		foreach ($this->use as $check_use) {
+			$check_use_part = rLastParse($check_use, BS, 1, true);
+			if ($check_use_part === $use_part) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------------- write
