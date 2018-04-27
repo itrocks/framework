@@ -29,7 +29,7 @@ class Remover_Tool_Test extends Test
 		$assume = new Order(new Date_Time('2017-01-26 12:34:00'), '0001');
 		$assume->setLines([0 => $line1, 2 => $line3]);
 
-		$this->assume(__METHOD__, $order, $assume);
+		$this->assertEquals($assume, $order);
 	}
 
 }

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools\Tests;
 
 use DateInterval;
+use Exception;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Date_Interval;
 use ITRocks\Framework\Tools\Date_Interval_Exception;
@@ -20,6 +21,7 @@ class Date_Interval_Test extends Test
 	 * @param $expected_format string
 	 * @param $expected_invert integer
 	 * @see Date_Interval::adjust()
+	 * @throws Exception
 	 */
 	public function testAdjust($hour, $invert, $expected_format, $expected_invert)
 	{
@@ -41,27 +43,27 @@ class Date_Interval_Test extends Test
 	public function testAdjustProvider()
 	{
 		return [
-			[ 25, 0, 'P0Y0M1DT1H0M0S', 0],
-			[ 25, 1, 'P0Y0M1DT1H0M0S', 1],
-			[-25, 0, 'P0Y0M1DT1H0M0S', 1],
-			[-25, 1, 'P0Y0M1DT1H0M0S', 0],
+			'25 hours'           => [25,  0, 'P0Y0M1DT1H0M0S', 0],
+			'25 hours inverted'  => [25,  1, 'P0Y0M1DT1H0M0S', 1],
+			'-25 hours'          => [-25, 0, 'P0Y0M1DT1H0M0S', 1],
+			'-25 hours inverted' => [-25, 1, 'P0Y0M1DT1H0M0S', 0],
 		];
 	}
 
 	//------------------------------------------------------------------------------ testFromDuration
 	/**
 	 * @dataProvider testFromDurationData
-	 * @param $message         string
 	 * @param $duration        integer
 	 * @param $expected_format string
 	 * @param $expected_invert integer
 	 * @see Date_Interval::fromDuration()
+	 * @throws Exception
 	 */
-	public function testFromDuration($message, $duration, $expected_format, $expected_invert)
+	public function testFromDuration($duration, $expected_format, $expected_invert)
 	{
 		$interval = Date_Interval::fromDuration($duration);
-		$this->assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT), $message);
-		$this->assertEquals($expected_invert, $interval->invert, $message);
+		$this->assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
+		$this->assertEquals($expected_invert, $interval->invert);
 	}
 
 	//-------------------------------------------------------------------------- testFromDurationData
@@ -73,10 +75,10 @@ class Date_Interval_Test extends Test
 	public function testFromDurationData()
 	{
 		return [
-			['Zero'                        , 0                             , 'P0Y0M0DT0H0M0S'      , 0],
-			['One day and 10 seconds'      , 86400 + 10                    , 'P0Y0M1DT0H0M10S'     , 0],
-			['Minus one day and 10 seconds', -(86400 + 10)                 , 'P0Y0M1DT0H0M10S'     , 1],
-			['2000 years 1 hour 25 seconds', 2000 * 365 * 86400 + 3600 + 25, 'P0Y0M730000DT1H0M25S', 0]
+			'Zero'                         => [0, 'P0Y0M0DT0H0M0S', 0],
+			'One day and 10 seconds'       => [86400 + 10, 'P0Y0M1DT0H0M10S', 0],
+			'Minus one day and 10 seconds' => [-(86400 + 10), 'P0Y0M1DT0H0M10S', 1],
+			'2000 years 1 hour 25 seconds' => [2000 * 365 * 86400 + 3600 + 25, 'P0Y0M730000DT1H0M25S', 0]
 		];
 	}
 
@@ -84,9 +86,11 @@ class Date_Interval_Test extends Test
 	/**
 	 * @dataProvider testToDaysProvider
 	 * @param $duration integer
-	 * @param $expected $integer
+	 * @param $expected integer
 	 * @param $round    string
 	 * @see Date_Interval::toDays()
+	 * @throws Date_Interval_Exception
+	 * @throws Exception
 	 */
 	public function testToDays($duration, $expected, $round)
 	{
@@ -98,6 +102,7 @@ class Date_Interval_Test extends Test
 	//----------------------------------------------------------------------------- testToDaysIllegal
 	/**
 	 * @see Date_Interval::toDays()
+	 * @throws Exception
 	 */
 	public function testToDaysIllegal()
 	{
@@ -114,19 +119,19 @@ class Date_Interval_Test extends Test
 	public function testToDaysProvider()
 	{
 		return [
-			[ 86400 ,  1, PHP_CEIL ],
-			[ 86400 ,  1, PHP_FLOOR],
-			[ 86400 ,  1, null     ],
-			[-86400 , -1, PHP_CEIL ],
-			[-86400 , -1, PHP_FLOOR],
-			[-86400 , -1, null     ],
-			[ 86401 ,  2, PHP_CEIL ],
-			[ 86401 ,  1, PHP_FLOOR],
-			[ 86401 ,  1, null     ],
+			[  86400,  1, PHP_CEIL ],
+			[  86400,  1, PHP_FLOOR],
+			[  86400,  1, null     ],
+			[ -86400, -1, PHP_CEIL ],
+			[ -86400, -1, PHP_FLOOR],
+			[ -86400, -1, null     ],
+			[  86401,  2, PHP_CEIL ],
+			[  86401,  1, PHP_FLOOR],
+			[  86401,  1, null     ],
 			[ 129601,  2, null     ],
-			[-86401 , -1, PHP_CEIL ],
-			[-86401 , -2, PHP_FLOOR],
-			[-86401 , -1, null     ],
+			[ -86401, -1, PHP_CEIL ],
+			[ -86401, -2, PHP_FLOOR],
+			[ -86401, -1, null     ],
 			[-129601, -2, null     ]
 		];
 	}
@@ -134,6 +139,8 @@ class Date_Interval_Test extends Test
 	//----------------------------------------------------------------------------------- testToHours
 	/**
 	 * @see Date_Interval::toHours()
+	 * @throws Date_Interval_Exception
+	 * @throws Exception
 	 */
 	public function testToHours()
 	{
@@ -148,6 +155,8 @@ class Date_Interval_Test extends Test
 	//--------------------------------------------------------------------------------- testToMinutes
 	/**
 	 * @see Date_Interval::toMinutes()
+	 * @throws Date_Interval_Exception
+	 * @throws Exception
 	 */
 	public function testToMinutes()
 	{
@@ -162,6 +171,8 @@ class Date_Interval_Test extends Test
 	//--------------------------------------------------------------------------------- testToSeconds
 	/**
 	 * @see Date_Interval::toSeconds()
+	 * @throws Date_Interval_Exception
+	 * @throws Exception
 	 */
 	public function testToSeconds()
 	{
@@ -172,6 +183,8 @@ class Date_Interval_Test extends Test
 	//----------------------------------------------------------------------------------- testToWeeks
 	/**
 	 * @see Date_Interval::toWeeks()
+	 * @throws Date_Interval_Exception
+	 * @throws Exception
 	 */
 	public function testToWeeks()
 	{

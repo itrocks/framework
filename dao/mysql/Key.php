@@ -91,14 +91,14 @@ class Key implements Sql\Key
 
 	//----------------------------------------------------------------------------------------- equiv
 	/**
-	 * @todo to be tested
+	 * TODO to be tested
 	 *
-	 * @param Key $key
+	 * @param $key Sql\Key
 	 * @return boolean
 	 */
-	public function equiv($key)
+	public function equiv(Sql\Key $key)
 	{
-		return $key->Column_name === $this->Column_name;
+		return ($key instanceof Key) && ($key->Column_name === $this->Column_name);
 	}
 
 	//--------------------------------------------------------------------------------------- getName

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use Exception;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Activable;
@@ -10,6 +11,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Current_With_Default;
 use ReflectionClass;
+use ReflectionException;
 use Serializable;
 
 /**
@@ -98,6 +100,7 @@ class Builder implements Activable, Serializable
 	 * @param $class_name string
 	 * @param $arguments  array some arguments into an array
 	 * @return object
+	 * @throws ReflectionException
 	 */
 	public static function create($class_name, array $arguments = [])
 	{
@@ -116,6 +119,8 @@ class Builder implements Activable, Serializable
 	 * @param $properties_values array some properties values for the cloned object
 	 * @param $same_identifier   boolean
 	 * @return object
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function createClone(
 		$object, $class_name = null, array $properties_values = [], $same_identifier = true
@@ -222,6 +227,7 @@ class Builder implements Activable, Serializable
 	 * @param $class_name string
 	 * @param $array      array
 	 * @return object
+	 * @throws Exception
 	 */
 	public static function fromArray($class_name, array $array)
 	{
@@ -297,6 +303,8 @@ class Builder implements Activable, Serializable
 	 *
 	 * @param $object object
 	 * @return boolean
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function isObjectSet($object)
 	{
@@ -341,6 +349,7 @@ class Builder implements Activable, Serializable
 	 * @param $class_name string may be short or full class name
 	 * @param $args       array
 	 * @return object
+	 * @throws ReflectionException
 	 */
 	public function newInstanceArgs($class_name, array $args)
 	{

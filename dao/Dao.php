@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\List_Row;
+use ReflectionException;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
@@ -217,6 +218,7 @@ class Dao implements Configurable
 	 *
 	 * @param $properties string[]|string ...
 	 * @return Option\Exclude
+	 * @throws ReflectionException
 	 */
 	public static function exclude($properties)
 	{
@@ -328,7 +330,7 @@ class Dao implements Configurable
 	 * @example Dao::readAll('ITRocks\Framework\User', Dao::limit(10));
 	 * Will return the 10 first read users objects
 	 * @param $from  integer The offset of the first object to return
-	 * (or the maximum number of objects to return if $count is null)
+	 *               (or the maximum number of objects to return if $count is null)
 	 * @param $count integer The maximum number of objects to return
 	 * @return Option\Limit
 	 */
@@ -346,6 +348,7 @@ class Dao implements Configurable
 	 *
 	 * @param $properties string[]|string ...
 	 * @return Option\Only
+	 * @throws ReflectionException
 	 */
 	public static function only($properties)
 	{
@@ -523,7 +526,7 @@ class Dao implements Configurable
 	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data|List_Row[] a list of read records. Each record values (may be objects) are
-	 *         stored in the same order than columns.
+	 *                       stored in the same order than columns.
 	 */
 	public static function select($class, $properties, $filter_object = null, $options = [])
 	{
@@ -552,12 +555,26 @@ class Dao implements Configurable
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name'])
 	 * );
 	 * @param $columns string|string[] A single or several column names.
-	 * If null, the value of annotations 'sort' or 'representative' will be taken as defaults.
+	 *                 If null, the value of annotations 'sort' or 'representative' will be taken as
+	 *                 defaults.
 	 * @return Option\Sort
 	 */
 	public static function sort($columns = null)
 	{
 		return new Option\Sort($columns);
+	}
+
+	//----------------------------------------------------------------------------------- storeNameOf
+	/**
+	 * Gets the store name for records typed as $class_name
+	 *
+	 * @param $class_name string
+	 * @return string
+	 * @throws ReflectionException
+	 */
+	public static function storeNameOf($class_name)
+	{
+		return self::current()->storeNameOf($class_name);
 	}
 
 	//------------------------------------------------------------------------------- storedAsForeign
@@ -574,18 +591,6 @@ class Dao implements Configurable
 		return $type->isClass()
 			&& !$type->isDateTime()
 			&& in_array($property->getAnnotation(Store_Annotation::ANNOTATION)->value, [null, '']);
-	}
-
-	//----------------------------------------------------------------------------------- storeNameOf
-	/**
-	 * Gets the store name for records typed as $class_name
-	 *
-	 * @param $class_name string
-	 * @return string
-	 */
-	public static function storeNameOf($class_name)
-	{
-		return self::current()->storeNameOf($class_name);
 	}
 
 	//------------------------------------------------------------------------------------- timeLimit

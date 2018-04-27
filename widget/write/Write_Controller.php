@@ -5,8 +5,8 @@ use Exception;
 use ITRocks\Framework\Controller\Default_Class_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
@@ -20,19 +20,11 @@ use ITRocks\Framework\View\View_Exception;
 class Write_Controller implements Default_Class_Controller
 {
 
-	//-------------------------------------------------------------------- write controller constants
-
-	//----------------------------------------------------------------------------------------- ERROR
-	const ERROR = 'error';
-
-	//------------------------------------------------------------------------------------ FILL_COMBO
+	//-------------------------------------------------------------------- write controller constant
+	const ERROR      = 'error';
 	const FILL_COMBO = 'fill_combo';
-
-	//-------------------------------------------------------------------------------------- REDIRECT
-	const REDIRECT = 'redirect_after_write';
-
-	//--------------------------------------------------------------------------------------- WRITTEN
-	const WRITTEN = 'written';
+	const REDIRECT   = 'redirect_after_write';
+	const WRITTEN    = 'written';
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**

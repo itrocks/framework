@@ -130,7 +130,7 @@ class Default_List_Row implements List_Row
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
-	 * @param string $property
+	 * @param $property string
 	 * @return mixed
 	 */
 	public function getValue($property)

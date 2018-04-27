@@ -31,7 +31,6 @@ class Create_Table
 	 * This method Returns all necessary queries : CREATE TABLE, then ALTER TABLE ... ADD CONSTRAINT.
 	 *
 	 * @param $skip_constraint boolean If true skip constraint creation
-	 *
 	 * @return string[]
 	 */
 	public function build($skip_constraint = false)

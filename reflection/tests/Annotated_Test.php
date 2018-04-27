@@ -21,16 +21,12 @@ class Annotated_Test extends Test
 
 		$property2 = new reflection_Property(User::class, 'login');
 
-		$this->assume(
-			__METHOD__ . '.modifiedProperty',
-			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE),
-			true
+		$this->assertTrue(
+			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE), 'modifiedProperty'
 		);
 
-		$this->assume(
-			__METHOD__ . '.newProperty',
-			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE),
-			true
+		$this->assertTrue(
+			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE), '.newProperty'
 		);
 
 		// reset for future tests
@@ -45,16 +41,12 @@ class Annotated_Test extends Test
 		$user_annotation->add(User_Annotation::INVISIBLE);
 
 		$property2 = new reflection_Property(User::class, 'login');
-		$this->assume(
-			__METHOD__ . '.modifiedProperty',
-			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE),
-			true
+		$this->assertTrue(
+			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE), 'modifiedProperty'
 		);
 
-		$this->assume(
-			__METHOD__ . '.newProperty',
-			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE),
-			false
+		$this->assertFalse(
+			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE), 'newProperty'
 		);
 	}
 

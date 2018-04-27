@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Data_Link\Transactional;
@@ -12,6 +13,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionException;
 
 /**
  * This is the common class for all SQL data links classes
@@ -20,21 +22,11 @@ abstract class Link extends Identifier_Map implements Transactional
 {
 
 	//--------------------------------------------------- Sql link configuration array keys constants
-
-	//-------------------------------------------------------------------------------------- DATABASE
 	const DATABASE = 'database';
-
-	//------------------------------------------------------------------------------------------ HOST
-	const HOST = 'host';
-
-	//----------------------------------------------------------------------------------------- LOGIN
-	const LOGIN = 'login';
-
-	//-------------------------------------------------------------------------------------- PASSWORD
+	const HOST     = 'host';
+	const LOGIN    = 'login';
 	const PASSWORD = 'password';
-
-	//---------------------------------------------------------------------------------------- TABLES
-	const TABLES = 'tables';
+	const TABLES   = 'tables';
 
 	//--------------------------------------------------------------------------------------- $tables
 	/**
@@ -122,7 +114,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Sql_Link inherited classes must implement getting column name only into this method.
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @param $index mixed The index of the column we want to get the SQL name from
+	 * @param $index      mixed The index of the column we want to get the SQL name from
 	 * @return string
 	 */
 	public abstract function getColumnName($result_set, $index);
@@ -195,13 +187,15 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *
 	 * @param $object_class  string class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *        properties will be read. You can use Dao\Func\Column sub-classes to get result of
-	 *        functions.
+	 *                       properties will be read. You can use Dao\Func\Column sub-classes to get
+	 *                       result of functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options Option|Option[] some options for advanced search
+	 *                       search. Can be an array associating properties names to corresponding
+	 *                       search value too.
+	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
-	 *         the same order than columns.
+	 *                   the same order than columns.
+	 * @throws Exception
 	 */
 	public function select($object_class, $properties, $filter_object = null, $options = [])
 	{
@@ -248,11 +242,13 @@ abstract class Link extends Identifier_Map implements Transactional
 	//------------------------------------------------------------------------------- selectFirstPass
 	/**
 	 * @param $object_class  string class for the read object
-	 * @param $properties    string[]|Column[] the list of property paths : only those properties
-	 *        will be read. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
+	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
+	 *                       functions.
 	 * @param $filter_object object|array source object for filter, set properties will be used for
-	 *        search. Can be an array associating properties names to corresponding search value too.
-	 * @param $options Option[] some options for advanced search
+	 *                       search. Can be an array associating properties names to matching search
+	 *                       value too.
+	 * @param $options       Option[] some options for advanced search
 	 * @return array An array of read objects identifiers
 	 */
 	private function selectFirstPass(
@@ -296,9 +292,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	//--------------------------------------------------------------------- selectFirstPassProperties
 	/**
 	 * @param $object_class  string class for the read object
-	 * @param $properties    string[]|Column[] the list of property paths : only those properties
-	 *        will be read. You can use Dao\Func\Column sub-classes to get result of functions.
-	 * @param $options Option[] some options for advanced search
+	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
+	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
+	 *                       functions.
+	 * @param $options       Option[] some options for advanced search
 	 * @return string[] path of the properties we keep for the first pass, for correct rows counting
 	 */
 	private function selectFirstPassProperties($object_class, array $properties, array $options)
@@ -364,8 +361,9 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * @param $object_class string class for the read object
 	 * @param $columns      string[]|Column[] the list of the columns names : only those properties
-	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
-	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
+	 *                      will be read. You can use 'column.sub_column' to get values from linked
+	 *                      objects from the same data source. You can use Dao\Func\Column sub-classes
+	 *                      to get result of functions.
 	 * @return Default_List_Data
 	 */
 	private function selectList($object_class, array $columns)
@@ -383,9 +381,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	//--------------------------------------------------------------------------------- selectOptions
 	/**
 	 * @param $options Option[] some options for advanced search
-	 * @param $columns string[]|Column[] the list of the columns names : only those properties
-	 *        will be read. You can use 'column.sub_column' to get values from linked objects from the
-	 *        same data source. You can use Dao\Func\Column sub-classes to get result of functions.
+	 * @param $columns string[]|Column[] the list of the columns names : only those properties will be
+	 *                 read. You can use 'column.sub_column' to get values from linked objects from
+	 *                 the same data source. You can use Dao\Func\Column sub-classes to get result of
+	 *                 functions.
 	 * @return array [$double_pass, $list]
 	 */
 	private function selectOptions(array $options, array $columns)
@@ -423,6 +422,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * @param $class_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function storeNameOf($class_name)
 	{
@@ -435,9 +435,11 @@ abstract class Link extends Identifier_Map implements Transactional
 	//-------------------------------------------------------------------------------------- truncate
 	/**
 	 * Truncates the data-set storing $class_name objects
+	 *
 	 * All data is deleted
 	 *
 	 * @param $class_name string
+	 * @throws ReflectionException
 	 */
 	public function truncate($class_name)
 	{
@@ -459,7 +461,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	{
 		user_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name
-			. ' cannot be written alone into a ' . get_class($this) . ' data link',
+				. ' cannot be written alone into a ' . get_class($this) . ' data link',
 			E_USER_ERROR
 		);
 	}

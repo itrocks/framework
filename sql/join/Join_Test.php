@@ -3,11 +3,12 @@ namespace ITRocks\Framework\Sql\Join;
 
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Join;
-use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tests\Objects\Client;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Order_Line;
 use ITRocks\Framework\Tests\Objects\Salesman;
+use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Sql joins tests
@@ -16,6 +17,9 @@ class Join_Test extends Test
 {
 
 	//-------------------------------------------------------------------------------- testCollection
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testCollection()
 	{
 		$assume = Join::newInstance(
@@ -24,18 +28,18 @@ class Join_Test extends Test
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
-		$this->assume(
-			'one-level collection property (Order::lines.number)',
-			Joins::newInstance(Order::class)
-				->addMultiple(['date', 'number', 'lines.number', 'lines.quantity'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'date'           => null,
 				'number'         => null,
 				'lines'          => $assume,
 				'lines.number'   => null,
 				'lines.quantity' => null
-			]
+			],
+			Joins::newInstance(Order::class)
+				->addMultiple(['date', 'number', 'lines.number', 'lines.quantity'])
+				->getJoins(),
+			'one-level collection property (Order::lines.number)'
 		);
 
 		$assume1 = Join::newInstance(
@@ -47,11 +51,7 @@ class Join_Test extends Test
 		);
 		$assume2->master_property = new Reflection_Property(Client::class, 'client');
 
-		$this->assume(
-			'multi-levels collection (Order::client.number and Order::client.client.number)',
-			Joins::newInstance(Order::class)
-				->addMultiple(['number', 'client.number', 'client.client.number', 'client.name'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'number'               => null,
 				'client'               => $assume1,
@@ -59,11 +59,18 @@ class Join_Test extends Test
 				'client.client'        => $assume2,
 				'client.client.number' => null,
 				'client.name'          => null
-			]
+			],
+			Joins::newInstance(Order::class)
+				->addMultiple(['number', 'client.number', 'client.client.number', 'client.name'])
+				->getJoins(),
+			'multi-levels collection (Order::client.number and Order::client.client.number)'
 		);
 	}
 
 	//-------------------------------------------------------------------------------------- testJoin
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testJoin()
 	{
 		$assume = Join::newInstance(
@@ -71,22 +78,25 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		$this->assume(
-			'simple join (Order_Line::order.date)',
-			Joins::newInstance(Order_Line::class)
-				->addMultiple(['order.date', 'order.number', 'number', 'quantity'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'order'        => $assume,
 				'order.date'   => null,
 				'order.number' => null,
 				'number'       => null,
 				'quantity'     => null
-			]
+			],
+			Joins::newInstance(Order_Line::class)
+				->addMultiple(['order.date', 'order.number', 'number', 'quantity'])
+				->getJoins(),
+			'simple join (Order_Line::order.date)'
 		);
 	}
 
 	//--------------------------------------------------------------------------------------- testMap
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testMap()
 	{
 		$assume = Join::newInstance(
@@ -97,11 +107,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
-		$this->assume(
-			'one-level map property (Order::salesmen.name)',
-			$joins = Joins::newInstance(Order::class)
-				->addMultiple(['date', 'number', 'salesmen.name'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'date'          => null,
 				'number'        => null,
@@ -110,11 +116,18 @@ class Join_Test extends Test
 				),
 				'salesmen'      => $assume,
 				'salesmen.name' => null
-			]
+			],
+			$joins = Joins::newInstance(Order::class)
+				->addMultiple(['date', 'number', 'salesmen.name'])
+				->getJoins(),
+			'one-level map property (Order::salesmen.name)'
 		);
 	}
 
 	//------------------------------------------------------------------------------------ testObject
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testObject()
 	{
 		$assume = Join::newInstance(
@@ -123,20 +136,23 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		$this->assume(
-			'object property (Order_Line::order)',
-			Joins::newInstance(Order_Line::class)
-				->addMultiple(['number', 'quantity', 'order'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'number'   => null,
 				'quantity' => null,
 				'order'    => $assume
-			]
+			],
+			Joins::newInstance(Order_Line::class)
+				->addMultiple(['number', 'quantity', 'order'])
+				->getJoins(),
+			'object property (Order_Line::order)'
 		);
 	}
 
 	//----------------------------------------------------------------------------------- testReverse
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testReverse()
 	{
 		$assume = Join::newInstance(
@@ -144,18 +160,18 @@ class Join_Test extends Test
 		);
 		$assume->foreign_property = new Reflection_Property(Order_Line::class, 'order');
 
-		$this->assume(
-			'reverse join (Order::Order_Line->order.number)',
-			Joins::newInstance(Order::class)
-				->addMultiple(['date', 'number', 'Order_Line->order.number', 'Order_Line->order.quantity'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'date'                       => null,
 				'number'                     => null,
 				'Order_Line->order'          => $assume,
 				'Order_Line->order.number'   => null,
 				'Order_Line->order.quantity' => null
-			]
+			],
+			Joins::newInstance(Order::class)
+				->addMultiple(['date', 'number', 'Order_Line->order.number', 'Order_Line->order.quantity'])
+				->getJoins(),
+			'reverse join (Order::Order_Line->order.number)'
 		);
 
 		$assume_client = Join::newInstance(
@@ -168,17 +184,17 @@ class Join_Test extends Test
 		);
 		$assume_order->master_property = new Reflection_Property(Order_Line::class, 'order');
 
-		$this->assume(
-			'reverse object (Client::Order_Line->client.order)',
-			Joins::newInstance(Client::class)
-				->addMultiple(['number', 'name', 'Order_Line->client.order'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'number'                   => null,
 				'name'                     => null,
 				'Order_Line->client'       => $assume_client,
 				'Order_Line->client.order' => $assume_order
-			]
+			],
+			Joins::newInstance(Client::class)
+				->addMultiple(['number', 'name', 'Order_Line->client.order'])
+				->getJoins(),
+			'reverse object (Client::Order_Line->client.order)'
 		);
 
 		$assume = Join::newInstance(
@@ -189,11 +205,7 @@ class Join_Test extends Test
 		);
 		$assume->master_property = new Reflection_Property(Order::class, 'salesmen');
 
-		$this->assume(
-			'reverse map (Salesman::Order->salesmen.number)',
-			Joins::newInstance(Salesman::class)
-				->addMultiple(['Order->salesmen.number', 'name'])
-				->getJoins(),
+		$this->assertEquals(
 			[
 				'Order->salesmen-link' => Join::newInstance(
 					Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman'
@@ -201,19 +213,26 @@ class Join_Test extends Test
 				'Order->salesmen'        => $assume,
 				'Order->salesmen.number' => null,
 				'name'                   => null
-			]
+			],
+			Joins::newInstance(Salesman::class)
+				->addMultiple(['Order->salesmen.number', 'name'])
+				->getJoins(),
+			'reverse map (Salesman::Order->salesmen.number)'
 		);
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testSimple()
 	{
-		$this->assume(
-			'simple properties (Order::number)',
+		$this->assertEquals(
+			['date' => null, 'number' => null],
 			Joins::newInstance(Order::class)
 				->addMultiple(['date', 'number'])
 				->getJoins(),
-			['date' => null, 'number' => null]
+			'simple properties (Order::number)'
 		);
 	}
 

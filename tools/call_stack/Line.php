@@ -10,14 +10,6 @@ use ITRocks\Framework\Dao;
 class Line
 {
 
-	//-------------------------------------------------------------------------- $max_argument_length
-	/**
-	 * Max length for an argument. set this to 0 for 'infinite'
-	 *
-	 * @var integer
-	 */
-	static public $max_argument_length = 100;
-
 	//----------------------------------------------------------------------------------------- $args
 	/**
 	 * @var array
@@ -53,6 +45,14 @@ class Line
 	 * @var integer
 	 */
 	public $line;
+
+	//-------------------------------------------------------------------------- $max_argument_length
+	/**
+	 * Max length for an argument. set this to 0 for 'infinite'
+	 *
+	 * @var integer
+	 */
+	static public $max_argument_length = 100;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -144,7 +144,7 @@ class Line
 		}
 		foreach ($array as $key => $element) {
 			if ($counter) {
-				$dump        .= ',';
+				$dump .= ',';
 				$dump_length ++;
 			}
 			if ($key != $counter) {
@@ -156,7 +156,7 @@ class Line
 				}
 			}
 			elseif ($counter >= 0) {
-				$counter++;
+				$counter ++;
 			}
 			$append = $this->dumpArgument(
 				$element, $max_length, $max_array_length ? ($max_array_length - $dump_length) : 0

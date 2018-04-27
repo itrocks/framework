@@ -1,15 +1,16 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View\Html\Dom\Script;
+use ReflectionException;
 
 /**
  * Built-in ITRocks HTML view engine
@@ -51,12 +52,13 @@ class Engine implements Configurable, Framework\View\Engine
 
 	//------------------------------------------------------------------------------- getTemplateFile
 	/**
-	 * @param $class_name    string   the associated data class name
-	 * @param $feature_names string[] feature and inherited feature which view will be searched
-	 * @param $template      string   if a specific template is set, the view named with it will be
-	 *                       searched into the view / feature namespace first
+	 * @param $class_name         string   the associated data class name
+	 * @param $feature_names      string[] feature and inherited feature which view will be searched
+	 * @param $template           string   if a specific template is set, the view named with it will
+	 *                            be searched into the view / feature namespace first
 	 * @param $template_file_type string can search template files with another extension than 'html'
 	 * @return string the resulting path of the found template file
+	 * @throws ReflectionException
 	 */
 	public static function getTemplateFile(
 		$class_name, array $feature_names, $template = null, $template_file_type = 'html'
@@ -90,6 +92,7 @@ class Engine implements Configurable, Framework\View\Engine
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{

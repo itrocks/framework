@@ -7,8 +7,8 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Tag;
 use ITRocks\Framework\Controller\Target;
-use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Dao\File\Session_File\Files;
 use ITRocks\Framework\Dao\File\Spreadsheet_File;
 use ITRocks\Framework\Import;
@@ -22,6 +22,7 @@ use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Button\Has_General_Buttons;
+use ReflectionException;
 use stdClass;
 
 /**
@@ -54,12 +55,14 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * TODO factorize
+	 *
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
-	 * @todo factorize
+	 * @throws ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{

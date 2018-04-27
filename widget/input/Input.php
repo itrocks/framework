@@ -7,13 +7,13 @@ namespace ITRocks\Framework\Widget;
 class Input
 {
 
-	//----------------------------------------------------------------------------------------- $name
+	//---------------------------------------------------------------------------------- $is_multiple
 	/**
-	 * Input name
+	 * If the input is multi-rows
 	 *
-	 * @var string
+	 * @var boolean
 	 */
-	public $name;
+	public $is_multiple;
 
 	//---------------------------------------------------------------------------------------- $label
 	/**
@@ -23,6 +23,14 @@ class Input
 	 */
 	public $label;
 
+	//----------------------------------------------------------------------------------------- $name
+	/**
+	 * Input name
+	 *
+	 * @var string
+	 */
+	public $name;
+
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * The type of the input
@@ -30,14 +38,6 @@ class Input
 	 * @var string
 	 */
 	public $type;
-
-	//----------------------------------------------------------------------------------- $isMultiple
-	/**
-	 * If the input is multi-rows
-	 *
-	 * @var boolean
-	 */
-	public $isMultiple;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
@@ -49,19 +49,20 @@ class Input
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name string Name of the input
-	 * @param $label string Label of the input
-	 * @param $type string Type of the input
-	 * @param $isMultiple boolean If the input is multi-rows
-	 * @param $value string
+	 * @param $name        string Name of the input
+	 * @param $label       string Label of the input
+	 * @param $type        string Type of the input
+	 * @param $is_multiple boolean If the input is multi-rows
+	 * @param $value       string
 	 */
-	public function __construct($name = null, $label = null, $type = null, $isMultiple = false, $value = null)
-	{
-		if ($name != null) $this->name              = $name;
-		if ($label    != null) $this->label         = $label;
-		if ($type != null) $this->type              = $type;
-		if (is_bool($isMultiple)) $this->isMultiple = $isMultiple;
-		if ($value != null) $this->value            = $value;
+	public function __construct(
+		$name = null, $label = null, $type = null, $is_multiple = false, $value = null
+	) {
+		if (isset($is_multiple)) $this->is_multiple = $is_multiple;
+		if (isset($label))       $this->label       = $label;
+		if (isset($name))        $this->name        = $name;
+		if (isset($type))        $this->type        = $type;
+		if (isset($value))       $this->value       = $value;
 	}
 
 	//--------------------------------------------------------------------------------- newCollection
@@ -76,11 +77,11 @@ class Input
 		$inputs = [];
 		foreach ($inputs_arrays as $array) {
 			switch (count($array)) {
-				case 5: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3], $array[4]); break;
-				case 4: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3]); break;
-				case 3: $inputs[] = new Input($array[0], $array[1], $array[2]); break;
-				case 2: $inputs[] = new Input($array[0], $array[1]); break;
 				case 1: $inputs[] = new Input($array[0]); break;
+				case 2: $inputs[] = new Input($array[0], $array[1]); break;
+				case 3: $inputs[] = new Input($array[0], $array[1], $array[2]); break;
+				case 4: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3]); break;
+				case 5: $inputs[] = new Input($array[0], $array[1], $array[2], $array[3], $array[4]); break;
 			}
 		}
 		return $inputs;

@@ -14,6 +14,7 @@ use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Order_Line;
 use ITRocks\Framework\Tests\Objects\Shop;
 use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Mapping annotations tests
@@ -21,155 +22,145 @@ use ITRocks\Framework\Tests\Test;
 class Annotation_Test extends Test
 {
 
-	//------------------------------------------------------------------------------ $annotation_name
+	//--------------------------------------------------------------------------- providerBeforeWrite
 	/**
-	 * @var string
+	 * @return array
+	 * @see testBeforeWrite
 	 */
-	private $annotation_name;
+	public function providerBeforeWrite()
+	{
+		return [
+			'parsed' => [Item::class, Item::class . '::beforeWrite', 'before_write'],
+			'cached' => [Item::class, Item::class . '::beforeWrite', 'before_write']
+		];
+	}
 
-	//-------------------------------------------------------------------------------- $assumed_class
+	//------------------------------------------------------------------------------- providerForeign
 	/**
-	 * @var string
+	 * @return array
+	 * @see testBeforeWrite
 	 */
-	private $assumed_class;
+	public function providerForeign()
+	{
+		return [
+			'object'                             => [Order_Line::class, 'client', null], // 1A
+			'object myself'                      => [Client::class, 'client', null], // 1B
+			'object concurrent foreign 1'        => [Order::class, 'client', null], // 1C
+			'object concurrent foreign 2'        => [Order::class, 'delivery_client', null], // 1C
+			'object from component'              => [Order_Line::class, 'order', 'lines'], // 1D
+			'same master object'                 => [Item::class, 'main_category', null], // 1E
+			'myself concurrent object'           => [Category::class, 'main_super_category', null], // 1F
+			'simple collection'                  => [Order::class, 'lines', 'order'], // 2A
+			'map object single response'         => [Order::class, 'salesmen', 'order'], // 3A
+			'map myself single response'         => [Item::class, 'cross_selling', 'item'], // 3B
+			'map response Shop'                  => [Shop::class, 'categories', 'shops'], // 3C
+			'map response Cat'                   => [Category::class, 'shops', 'categories'], // 3C
+			'map myself response sub'            => [Category::class, 'super_categories', 'sub_categories'],// 3D
+			'map myself response super'          => [Category::class, 'sub_categories', 'super_categories'],// 3D
+			'map source concurrence no response' => [Item::class, 'secondary_categories', 'item'], // 3E
+			'map component no response'          => [Best_Line::class, 'lines', 'best_line'], // 3F
+			'map component response'             => [Item::class, 'lines', 'item'], // 3G
+		];
+	}
 
-	//------------------------------------------------------------------------- $multiple_annotations
+	//--------------------------------------------------------------------------- providerForeignlink
 	/**
-	 * @var boolean
+	 * @return array
 	 */
-	private $multiple_annotations = false;
+	public function providerForeignlink()
+	{
+		return [
+			'object'                             => [Order_Line::class, 'client', 'client'], // 1A
+			'object myself'                      => [Client::class, 'client', 'client'], // 1B
+			'object concurrent foreign 1'        => [Order::class, 'client', 'client'], // 1C
+			'object concurrent foreign 2'        => [Order::class, 'delivery_client', 'delivery_client'], // 1C
+			'object from component'              => [Order_Line::class, 'order', 'order'], // 1D
+			'same master object'                 => [Item::class, 'main_category', 'main_category'], // 1E
+			'myself concurrent object'           => [Category::class, 'main_super_category', 'main_super_category'], // 1F
+			'simple collection'                  => [Order::class, 'lines', 'lines'], // 2A
+			'map object single response'         => [Order::class, 'salesmen', 'salesman'], // 3A
+			'map myself single response'         => [Item::class, 'cross_selling', 'cross_selling'], // 3B
+			'map response Shop'                  => [Shop::class, 'categories', 'category'], // 3C
+			'map response Cat'                   => [Category::class, 'shops', 'shop'], // 3C
+			'map myself response sub'            => [Category::class, 'super_categories', 'super_category'],// 3D
+			'map myself response super'          => [Category::class, 'sub_categories', 'sub_category'], // 3D
+			'map source concurrence no response' => [Item::class, 'secondary_categories', 'secondary_category'], // 3E
+			'map component no response'          => [Best_Line::class, 'lines', 'line'], // 3F
+			'map component response'             => [Item::class, 'lines', 'line'], // 3G
+		];
+	}
 
-	//------------------------------------------------------------------------------- checkAnnotation
+	//------------------------------------------------------------------------------- testBeforeWrite
 	/**
-	 * @param $description     string
+	 * @dataProvider providerBeforeWrite
+	 * @param $class_name      string
+	 * @param $assumed_value   mixed
+	 * @param $annotation_name string
+	 * @throws ReflectionException
+	 */
+	public function testBeforeWrite($class_name, $assumed_value, $annotation_name)
+	{
+		$class      = new Reflection_Class($class_name);
+		$annotation = $class->getAnnotation($annotation_name);
+		$this->assertEquals(
+			[Method_Annotation::class, $assumed_value],
+			[get_class($annotation), $annotation->value],
+			$class_name . AT . $annotation_name
+		);
+	}
+
+	//----------------------------------------------------------------------------------- testForeign
+	/**
+	 * @dataProvider providerForeign
 	 * @param $class_name      string
 	 * @param $property_name   string
 	 * @param $assumed_value   mixed
 	 * @param $annotation_name string
 	 * @param $assumed_class   string
 	 */
-	private function checkAnnotation(
-		$description, $class_name, $property_name, $assumed_value, $annotation_name = null,
-		$assumed_class = null
+	public function testForeign(
+		$class_name, $property_name, $assumed_value, $annotation_name = null, $assumed_class = null
 	) {
 		if (!isset($annotation_name)) {
-			$annotation_name = $this->annotation_name;
+			$annotation_name = Foreign_Annotation::ANNOTATION;
 		}
-		if (!isset($assumed_class) && isset($this->assumed_class)) {
-			$assumed_class = $this->assumed_class;
+		if (!isset($assumed_class)) {
+			$assumed_class = Foreign_Annotation::class;
 		}
-		$property = new Reflection_Property($class_name, $property_name);
+		$property   = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
-		$this->assume(
-			$class_name . DOT . $property_name . AT . $annotation_name . SP . DQ . $assumed_value . DQ
-				. SP . '(' . $description . ')',
-			($assumed_class ? (get_class($annotation) . ':') : '') . $annotation->value,
-			($assumed_class ? ($assumed_class . ':') : '') . $assumed_value
+		$this->assertEquals(
+			[$assumed_class, $assumed_value],
+			[get_class($annotation), $annotation->value],
+			$class_name . AT . $annotation_name
 		);
 	}
 
-	//------------------------------------------------------------------------------- testBeforeWrite
-	public function testBeforeWrite()
-	{
-		$this->method('@before_write');
-
-		$this->assumed_class = Method_Annotation::class;
-		$this->multiple_annotations = true;
-		$this->checkClassAnnotation(
-			'parsed', Item::class, Item::class . '::beforeWrite', 'before_write'
-		);
-		$this->checkClassAnnotation(
-			'cached', Item::class, Item::class . '::beforeWrite', 'before_write'
-		);
-
-		$this->multiple_annotations = false;
-	}
-
-	//-------------------------------------------------------------------------- checkClassAnnotation
+	//------------------------------------------------------------------------------- testForeignlink
 	/**
-	 * @param $description     string
+	 * @dataProvider providerForeignlink
 	 * @param $class_name      string
+	 * @param $property_name   string
 	 * @param $assumed_value   mixed
 	 * @param $annotation_name string
 	 * @param $assumed_class   string
 	 */
-	private function checkClassAnnotation(
-		$description, $class_name, $assumed_value, $annotation_name = null, $assumed_class = null
+	public function testForeignlink(
+		$class_name, $property_name, $assumed_value, $annotation_name = null, $assumed_class = null
 	) {
 		if (!isset($annotation_name)) {
-			$annotation_name = $this->annotation_name;
+			$annotation_name = 'foreignlink';
 		}
-		if (!isset($assumed_class) && isset($this->assumed_class)) {
-			$assumed_class = $this->assumed_class;
+		if (!isset($assumed_class)) {
+			$assumed_class = Foreignlink_Annotation::class;
 		}
-		$class = new Reflection_Class($class_name);
-		$annotation = $this->multiple_annotations
-			? $class->getAnnotations($annotation_name)[0]
-			: $class->getAnnotation($annotation_name);
-		$this->assume(
-			$class_name . AT . $annotation_name . SP . DQ . $assumed_value . DQ
-			. SP . '(' . $description . ')',
-			($assumed_class ? (get_class($annotation) . ':') : '') . $annotation->value,
-			($assumed_class ? ($assumed_class . ':') : '') . $assumed_value
+		$property   = new Reflection_Property($class_name, $property_name);
+		$annotation = $property->getAnnotation($annotation_name);
+		$this->assertEquals(
+			[$assumed_class, $assumed_value],
+			[get_class($annotation), $annotation->value],
+			$class_name . AT . $annotation_name
 		);
-	}
-
-	//----------------------------------------------------------------------------------- testForeign
-	public function testForeign()
-	{
-		$this->method('@foreign');
-
-		$this->annotation_name = Foreign_Annotation::ANNOTATION;
-		$this->assumed_class   = Foreign_Annotation::class;
-
-		$this->checkAnnotation('object', Order_Line::class, 'client', null); // 1A
-		$this->checkAnnotation('object myself', Client::class, 'client', null); // 1B
-		$this->checkAnnotation('object concurrent foreign 1', Order::class, 'client', null); // 1C
-		$this->checkAnnotation('object concurrent foreign 2', Order::class, 'delivery_client', null); // 1C
-		$this->checkAnnotation('object from component', Order_Line::class, 'order', 'lines'); // 1D
-		$this->checkAnnotation('same master object', Item::class, 'main_category', null); // 1E
-		$this->checkAnnotation('myself concurrent object', Category::class, 'main_super_category', null); // 1F
-
-		$this->checkAnnotation('simple collection', Order::class, 'lines', 'order'); // 2A
-
-		$this->checkAnnotation('map object single response', Order::class, 'salesmen', 'order'); // 3A
-		$this->checkAnnotation('map myself single response', Item::class, 'cross_selling', 'item'); // 3B
-		$this->checkAnnotation('map response', Shop::class, 'categories', 'shops'); // 3C
-		$this->checkAnnotation('map response', Category::class, 'shops', 'categories'); // 3C
-		$this->checkAnnotation('map myself response', Category::class, 'super_categories', 'sub_categories'); // 3D
-		$this->checkAnnotation('map myself response', Category::class, 'sub_categories', 'super_categories'); // 3D
-		$this->checkAnnotation('map source concurrence no response', Item::class, 'secondary_categories', 'item'); // 3E
-		$this->checkAnnotation('map component no response', Best_Line::class, 'lines', 'best_line'); // 3F
-		$this->checkAnnotation('map component response', Item::class, 'lines', 'item'); // 3G
-	}
-
-	//------------------------------------------------------------------------------- testForeignlink
-	public function testForeignlink()
-	{
-		$this->method('@foreignlink');
-
-		$this->annotation_name = 'foreignlink';
-		$this->assumed_class   = Foreignlink_Annotation::class;
-
-		$this->checkAnnotation('object', Order_Line::class, 'client', 'client'); // 1A
-		$this->checkAnnotation('object myself', Client::class, 'client', 'client'); // 1B
-		$this->checkAnnotation('object concurrent foreign 1', Order::class, 'client', 'client'); // 1C
-		$this->checkAnnotation('object concurrent foreign 2', Order::class, 'delivery_client', 'delivery_client'); // 1C
-		$this->checkAnnotation('object from component', Order_Line::class, 'order', 'order'); // 1D
-		$this->checkAnnotation('same master object', Item::class, 'main_category', 'main_category'); // 1E
-		$this->checkAnnotation('myself concurrent object', Category::class, 'main_super_category', 'main_super_category'); // 1F
-
-		$this->checkAnnotation('simple collection', Order::class, 'lines', 'lines'); // 2A
-
-		$this->checkAnnotation('map object single response', Order::class, 'salesmen', 'salesman'); // 3A
-		$this->checkAnnotation('map myself single response', Item::class, 'cross_selling', 'cross_selling'); // 3B
-		$this->checkAnnotation('map response', Shop::class, 'categories', 'category'); // 3C
-		$this->checkAnnotation('map response', Category::class, 'shops', 'shop'); // 3C
-		$this->checkAnnotation('map myself response', Category::class, 'super_categories', 'super_category'); // 3D
-		$this->checkAnnotation('map myself response', Category::class, 'sub_categories', 'sub_category'); // 3D
-		$this->checkAnnotation('map source concurrence no response', Item::class, 'secondary_categories', 'secondary_category'); // 3E
-		$this->checkAnnotation('map component no response', Best_Line::class, 'lines', 'line'); // 3F
-		$this->checkAnnotation('map component response', Item::class, 'lines', 'line'); // 3G
 	}
 
 }

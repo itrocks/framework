@@ -39,7 +39,7 @@ function directoryIsEmpty($directory)
 	return is_dir($directory) && (count(scandir($directory)) === 2);
 }
 
-//------------------------------------------------------------------------------ script_put_content
+//----------------------------------------------------------------------------- script_put_contents
 /**
  * Identical than file_put_contents, but must be used instead for PHP files in order to invalidate
  * PHP caching

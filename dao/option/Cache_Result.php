@@ -35,8 +35,8 @@ class Cache_Result implements Option
 	 */
 	public function cacheResult($where, $class_name, array $options, array $result)
 	{
-		$options = $this->hash($options);
-		$where   = $this->hash($where);
+		$options                                    = $this->hash($options);
+		$where                                      = $this->hash($where);
 		$this->cache[$class_name][$where][$options] = $result;
 	}
 

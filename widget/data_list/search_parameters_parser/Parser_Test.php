@@ -36,14 +36,15 @@ class Parser_Test extends Test
 	 */
 	private $parser;
 
-	//----------------------------------------------------------------------------------- __construct
+	//----------------------------------------------------------------------------------------- setUp
 	/**
-	 * The constructor builds an environment to test parameters parser with some simulated fields
+	 * Changes current date-time for test
+	 *
+	 * {@inheritdoc}
 	 */
-	public function __construct()
+	protected function setUp()
 	{
-		parent::__construct();
-
+		parent::setUp();
 		// TODO Build
 		$this->class_name = Document::class;
 		$this->parser     = new Search_Parameters_Parser($this->class_name);
@@ -118,7 +119,7 @@ class Parser_Test extends Test
 			'%01%' => '_01_',
 			'2%1%' => '2_1_'
 		];
-		foreach($tests as $check => $assume) {
+		foreach ($tests as $check => $assume) {
 			Date::checkDateWildcardExpr($check, Date_Time::YEAR);
 			$this->assertEquals($assume, $check);
 		}
@@ -133,7 +134,7 @@ class Parser_Test extends Test
 			'%6' => '_6',
 			'_6' => '_6'
 		];
-		foreach($tests as $check => $assume) {
+		foreach ($tests as $check => $assume) {
 			Date::checkDateWildcardExpr($check, Date_Time::DAY);
 			$this->assertEquals($assume, $check);
 		}
@@ -349,7 +350,7 @@ class Parser_Test extends Test
 				new Func\Range('2016-06-15 13:29:00', '2016-06-15 13:29:59')
 			])
 		];
-		$this->assume(__FUNCTION__, $check, $assume);
+		$this->assertEquals($assume, $check);
 	}
 
 	//----------------------------------------------------------------- testParseDateTimeWithWildcard
@@ -412,7 +413,7 @@ class Parser_Test extends Test
 				new Func\Range('2013-08-08 00:00:00', '2013-08-08 23:59:59')
 			])
 		];
-		$this->assume(__FUNCTION__, $check, $assume);
+		$this->assertEquals($assume, $check);
 	}
 
 	//--------------------------------------------------------------------- testParseDateWithWildcard

@@ -10,19 +10,31 @@ use ITRocks\Framework\Tests\Test;
 class Option_Test extends Test
 {
 
-	//-------------------------------------------------------------------------------------- testOnly
-	public function testOnly()
+	//---------------------------------------------------------------------------------- onlyProvider
+	/**
+	 * @return Only[]
+	 * @see testOnly
+	 */
+	public function onlyProvider()
 	{
-		$this->method(__METHOD__);
+		return [
+			'arguments' => [Dao::only('one', 'two', 'three', 'four')    ],
+			'array'     => [Dao::only(['one', 'two', 'three', 'four'])  ],
+			'mixed'     => [Dao::only('one', ['two', 'three'], 'four')  ],
+			'mixed2'    => [Dao::only(['one', 'two'], 'three', ['four'])],
+		];
+	}
 
-		$assume = Dao::only([]);
+	//-------------------------------------------------------------------------------------- testOnly
+	/**
+	 * @dataProvider onlyProvider
+	 * @param $only  Only
+	 */
+	public function testOnly(Only $only)
+	{
+		$assume             = Dao::only([]);
 		$assume->properties = ['one', 'two', 'three', 'four'];
-
-
-		$this->assume('arguments', Dao::only('one', 'two', 'three', 'four'), $assume);
-		$this->assume('array',     Dao::only(['one', 'two', 'three', 'four']), $assume);
-		$this->assume('mixed',     Dao::only('one', ['two', 'three'], 'four'), $assume);
-		$this->assume('mixed2',    Dao::only(['one', 'two'], 'three', ['four']), $assume);
+		$this->assertEquals($assume, $only);
 	}
 
 }

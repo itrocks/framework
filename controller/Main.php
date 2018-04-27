@@ -27,6 +27,7 @@ use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\View_Exception;
+use ReflectionException;
 
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
@@ -128,6 +129,7 @@ class Main
 	 * Create the current application object
 	 *
 	 * @param $configuration Configuration
+	 * @throws ReflectionException
 	 */
 	private function createApplication(Configuration $configuration)
 	{
@@ -138,6 +140,9 @@ class Main
 	}
 
 	//--------------------------------------------------------------------------------- createSession
+	/**
+	 * @throws ReflectionException
+	 */
 	private function createSession()
 	{
 		$this->resetSession(Session::current(new Session()));
@@ -153,6 +158,7 @@ class Main
 	 * @param $post        array
 	 * @param $files       array[]
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function doExecuteController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
@@ -254,6 +260,7 @@ class Main
 	 * @param $post        array
 	 * @param $files       array[]
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
@@ -283,6 +290,7 @@ class Main
 	 * @param $sub_feature     string if set, the sub feature controller is searched into the feature
 	 *                         controller namespace
 	 * @return callable
+	 * @throws ReflectionException
 	 */
 	public function getController($controller_name, $feature_name, $sub_feature = null)
 	{
@@ -385,6 +393,7 @@ class Main
 	 *
 	 * @param $plugins       Manager
 	 * @param $configuration Configuration
+	 * @throws ReflectionException
 	 */
 	private function registerPlugins(Manager $plugins, Configuration $configuration)
 	{
@@ -428,6 +437,7 @@ class Main
 	 * Initialise a new session, or refresh existing session for update
 	 *
 	 * @param $session Session default is current session
+	 * @throws ReflectionException
 	 */
 	public function resetSession(Session $session = null)
 	{
@@ -464,6 +474,8 @@ class Main
 	//--------------------------------------------------------------------------------- resumeSession
 	/**
 	 * Resume the session
+	 *
+	 * @throws ReflectionException
 	 */
 	private function resumeSession()
 	{
@@ -544,6 +556,7 @@ class Main
 	 *
 	 * @param $get  array
 	 * @param $post array
+	 * @throws ReflectionException
 	 */
 	private function sessionStart(array &$get, array &$post)
 	{

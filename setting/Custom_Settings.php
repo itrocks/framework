@@ -10,6 +10,7 @@ use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\User;
+use ReflectionException;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration
@@ -132,6 +133,7 @@ abstract class Custom_Settings
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * @return Reflection_Class
+	 * @throws ReflectionException
 	 */
 	public function getClass()
 	{
@@ -221,7 +223,7 @@ abstract class Custom_Settings
 	{
 		if (isset($save_name)) {
 			$this->name = $save_name;
-			$setting = new Setting(
+			$setting    = new Setting(
 				$this->getSourceClassName()
 				. DOT . static::customId($this->setting->getFeature())
 				. ($save_name ? (DOT . $save_name) : '')

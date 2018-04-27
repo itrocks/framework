@@ -7,17 +7,17 @@ namespace ITRocks\Framework\Export\PDF;
 abstract class Font
 {
 
+	//------------------------------------------------------------------------- font styles constants
+	const BOLD   = 'B';
+	const ITALIC = 'I';
+	const NORMAL = '';
+
 	//----------------------------------------------------------------------- font families constants
 	const COURIER   = 'courier';
 	const DINGBATS  = 'zapfdingbats';
 	const HELVETICA = 'helvetica';
 	const SYMBOL    = 'symbol';
 	const TIMES     = 'times';
-
-	//------------------------------------------------------------------------- font styles constants
-	const BOLD   = 'B';
-	const ITALIC = 'I';
-	const NORMAL = '';
 
 	//------------------------------------------------------------------------------------------- get
 	/**

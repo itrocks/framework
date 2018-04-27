@@ -78,12 +78,14 @@ class String_Functions_Test extends Test
 	}
 
 	//----------------------------------------------------------------------- testBase64EncodeUrlSafe
+	/**
+	 * @see base64_decode_url_safe()
+	 */
 	public function testBase64EncodeUrlSafe()
 	{
-		$this->assume(
-			__METHOD__,
-			base64_encode_url_safe('Test encodage avec des +, / et ='),
-			'VGVzdCBlbmNvZGFnZSBhdmVjIGRlcyArLCAvIGV0ID0.'
+		$this->assertEquals(
+			'VGVzdCBlbmNvZGFnZSBhdmVjIGRlcyArLCAvIGV0ID0.',
+			base64_encode_url_safe('Test encodage avec des +, / et =')
 		);
 	}
 
@@ -97,14 +99,12 @@ class String_Functions_Test extends Test
 	 */
 	public function testRemoveAccents($string, $expected)
 	{
-		$actual = removeAccents($string);
-
-		$this->assertEquals($expected, $actual);
+		$this->assertEquals($expected, removeAccents($string));
 	}
 
 	//-------------------------------------------------------------------------------- testStrReplace
 	/**
-	 * @return boolean
+	 * @see strReplace()
 	 */
 	public function testStrReplace()
 	{
@@ -117,7 +117,7 @@ class String_Functions_Test extends Test
 			'ed'   => 'ED'
 		];
 		$result = 'These are some texts where some things wanna be searchED and replacED';
-		return $this->assume(__METHOD__, strReplace($replace, $subject), $result);
+		$this->assertEquals($result, strReplace($replace, $subject));
 	}
 
 }

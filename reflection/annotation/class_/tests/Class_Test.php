@@ -11,9 +11,12 @@ use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Quote;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Traits\Has_Name;
+use ReflectionException;
 
 /**
  * Class annotations unit tests
+ *
+ * @group functional
  */
 class Class_Test extends Test
 {
@@ -37,6 +40,8 @@ class Class_Test extends Test
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has no @extends, parent has a @extends : must result in empty
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExtendsEmptyParentExtends()
 	{
@@ -52,6 +57,8 @@ class Class_Test extends Test
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, parent has an @extends : must return the class @extends alone
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExtendsExtendsParentExtends()
 	{
@@ -67,6 +74,8 @@ class Class_Test extends Test
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, no parent : must return the @extends
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExtendsExtendsWithoutParent()
 	{
@@ -81,6 +90,8 @@ class Class_Test extends Test
 	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
 	/**
 	 * Gets the @store_name from a parent and a trait : the trait must override the parent
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testStoreNameWithParentAndTrait()
 	{

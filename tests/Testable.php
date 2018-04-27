@@ -75,6 +75,7 @@ abstract class Testable extends PHPUnit_Framework_TestCase
 	/**
 	 * Start test method log
 	 *
+	 * @deprecated PhpUnit already register method name
 	 * @param $method_name string
 	 */
 	public function method($method_name)

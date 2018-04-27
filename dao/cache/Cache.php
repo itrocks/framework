@@ -76,7 +76,7 @@ class Cache implements Configurable, Registerable
 	 * - If no configuration or empty array : features default is 'all features cached'
 	 * - If configuration set but no ['features' => ...] : features default is Feature::READ_ONLY
 	 *
-	 * @param array $config
+	 * @param $config array
 	 */
 	public function __construct($config = [])
 	{
@@ -107,10 +107,10 @@ class Cache implements Configurable, Registerable
 		}
 
 		if (is_object($object) && ($identifier = $link->getObjectIdentifier($object))) {
-			$class_name                            = Builder::className(get_class($object));
-if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
+			$class_name = Builder::className(get_class($object));
+			if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
 			$this->cache[$class_name][$identifier] = new Cached($object);
-			$this->count ++;
+			$this->count++;
 			if ($this->count > $this->maximum) {
 				$this->purge();
 			}
@@ -163,7 +163,7 @@ if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
 	 */
 	public function enable($enable = true)
 	{
-		$enabled = $this->enabled;
+		$enabled       = $this->enabled;
 		$this->enabled = $enable;
 		return $enabled;
 	}
@@ -174,7 +174,7 @@ if (isset($GLOBALS['D'])) echo "CACHE add $class_name.$identifier" . BRLF;
 	 */
 	public function flush()
 	{
-if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
+		if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
 		$this->cache = [];
 	}
 
@@ -193,7 +193,7 @@ if (isset($GLOBALS['D'])) echo 'CACHE purge' . BRLF;
 		}
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
-if (isset($GLOBALS['D'])) echo "CACHE get $class_name.$identifier" . BRLF;
+			if (isset($GLOBALS['D'])) echo "CACHE get $class_name.$identifier" . BRLF;
 			return $this->cache[$class_name][$identifier]->object;
 		}
 		return null;
@@ -211,7 +211,7 @@ if (isset($GLOBALS['D'])) echo "CACHE get $class_name.$identifier" . BRLF;
 		foreach ($this->cache as $class_name => $cache) {
 			foreach ($cache as $identifier => $cached) {
 				/** @var $cached Cached */
-				$counter ++;
+				$counter++;
 				$list_id        = $cached->date->toISO() . '-' . sprintf($format, $counter);
 				$list[$list_id] = [$class_name, $identifier];
 			}
@@ -220,10 +220,10 @@ if (isset($GLOBALS['D'])) echo "CACHE get $class_name.$identifier" . BRLF;
 		$threshold = $this->maximum - $this->purge;
 		for (reset($list); $counter > $threshold; next($list)) {
 			list($class_name, $identifier) = current($list);
-if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
+			if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
 			unset($this->cache[$class_name][$identifier]);
-			$this->count --;
-			$counter --;
+			$this->count--;
+			$counter--;
 		}
 	}
 
@@ -254,7 +254,7 @@ if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
 	{
 		$class_name = Builder::className($class_name);
 		if (isset($this->cache[$class_name][$identifier])) {
-if (isset($GLOBALS['D'])) echo "CACHE remove $class_name.$identifier" . BRLF;
+			if (isset($GLOBALS['D'])) echo "CACHE remove $class_name.$identifier" . BRLF;
 			unset($this->cache[$class_name][$identifier]);
 			$this->count--;
 		}
@@ -292,15 +292,15 @@ if (isset($GLOBALS['D'])) echo "CACHE remove $class_name.$identifier" . BRLF;
 		$feature = $uri->feature_name;
 
 		if (
-			in_array(self::ENABLED_FOR_ALL, $this->features)
-				? !in_array($feature, $this->features)
-				: in_array($feature, $this->features)
+		in_array(self::ENABLED_FOR_ALL, $this->features)
+			? !in_array($feature, $this->features)
+			: in_array($feature, $this->features)
 		) {
-if (isset($GLOBALS['D'])) echo 'CACHE toggle ON for ' . $uri . BRLF;
+			if (isset($GLOBALS['D'])) echo 'CACHE toggle ON for ' . $uri . BRLF;
 			$this->enabled = true;
 		}
 		else {
-if (isset($GLOBALS['D'])) echo 'CACHE toggle OFF for ' . $uri . BRLF;
+			if (isset($GLOBALS['D'])) echo 'CACHE toggle OFF for ' . $uri . BRLF;
 			$this->enabled = false;
 			$this->flush();
 		}

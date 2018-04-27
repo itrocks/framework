@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 /**
  * This class extends php's DateTime class : you should use this to be ITRocks compatible
@@ -13,9 +14,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//------------------------------------------------------------------------------------------- DAY
 	const DAY = 'day';
-
-	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
-	const DAYS_IN_MONTH = 't';
 
 	//---------------------------------------------------------------------------------- DAY_OF_MONTH
 	const DAY_OF_MONTH = 'd';
@@ -31,6 +29,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//----------------------------------------------------------------------------------- DAY_OF_YEAR
 	const DAY_OF_YEAR = 's';
+
+	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
+	const DAYS_IN_MONTH = 't';
 
 	//------------------------------------------------------------------------------------------ HOUR
 	const HOUR = 'hour';
@@ -104,6 +105,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $quantity integer|DateInterval
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
+	 * @throws Exception
 	 */
 	public function add(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
@@ -115,7 +117,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		elseif (is_numeric($quantity)) {
 			if ($quantity < 0) {
 				$quantity = -$quantity;
-				$invert = true;
+				$invert   = true;
 			}
 			else {
 				$invert = false;
@@ -130,7 +132,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
 			}
 			if (isset($interval)) {
-				$interval = new DateInterval($interval);
+				$interval         = new DateInterval($interval);
 				$interval->invert = $invert;
 				parent::add($interval);
 			}
@@ -158,15 +160,16 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 */
 	public static function createFromFormat(
-		$format, $time,
+		$format,
+		$time,
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection PhpStorm */ $timezone = null
 	) {
-		$dateTime = $timezone
+		$date_time = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
 			: parent::createFromFormat($format, $time);
 		return $timezone
-			? new static($dateTime->format('Y-m-d H:i:s'), $timezone)
-			: new static($dateTime->format('Y-m-d H:i:s'));
+			? new static($date_time->format('Y-m-d H:i:s'), $timezone)
+			: new static($date_time->format('Y-m-d H:i:s'));
 	}
 
 	//------------------------------------------------------------------------------------------- day
@@ -492,6 +495,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $quantity integer|DateInterval
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
+	 * @throws Exception
 	 */
 	public function sub(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
@@ -520,8 +524,8 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
 	 * @deprecated Please use month() instead
-	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
-	 * @return Date_Time
+	 * @example    'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
+	 * @return     Date_Time
 	 */
 	public function toMonth()
 	{
@@ -547,6 +551,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns yesterday date, with an empty time (00:00:00).
 	 *
 	 * @return Date_Time
+	 * @throws Exception
 	 */
 	public static function yesterday()
 	{

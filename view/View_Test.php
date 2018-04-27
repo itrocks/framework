@@ -13,37 +13,36 @@ use ITRocks\Framework\View;
 class View_Test extends Test
 {
 
-	//-------------------------------------------------------------------------------------- testLink
-	public function testLink()
+	//---------------------------------------------------------------------------------- providerLink
+	/**
+	 * @return array
+	 * @see testLink
+	 */
+	public function providerLink()
 	{
 		$user = new User();
 		/** @noinspection PhpUndefinedFieldInspection simulated, for testing purpose */
 		$user->id = 1;
+		return [
+			'output'          => ['/ITRocks/Framework/User/1',         [$user]],
+			'explicit output' => ['/ITRocks/Framework/User/1/output',  [$user, Feature::F_OUTPUT]],
+			'edit'            => ['/ITRocks/Framework/User/1/edit',    [$user, Feature::F_EDIT]],
+			'add'             => ['/ITRocks/Framework/User',           [User::class]],
+			'explicit add'    => ['/ITRocks/Framework/User/add',       [User::class, Feature::F_ADD]],
+			'list'            => ['/ITRocks/Framework/Users',          [Names::classToSet(User::class)]],
+			'explicit list'   => ['/ITRocks/Framework/Users/dataList', [Names::classToSet(User::class), Feature::F_LIST]],
+		];
+	}
 
-		$this->method(__METHOD__);
-		$this->assume(
-			'output', View::link($user), '/ITRocks/Framework/User/1'
-		);
-		$this->assume(
-			'explicit output', View::link($user, Feature::F_OUTPUT), '/ITRocks/Framework/User/1/output'
-		);
-		$this->assume(
-			'edit', View::link($user, Feature::F_EDIT), '/ITRocks/Framework/User/1/edit'
-		);
-		$this->assume(
-			'add', View::link(User::class), '/ITRocks/Framework/User'
-		);
-		$this->assume(
-			'explicit add', View::link(User::class, Feature::F_ADD), '/ITRocks/Framework/User/add'
-		);
-		$this->assume(
-			'list', View::link(Names::classToSet(User::class)), '/ITRocks/Framework/Users'
-		);
-		$this->assume(
-			'explicit list',
-			View::link(Names::classToSet(User::class), Feature::F_LIST),
-			'/ITRocks/Framework/Users/dataList'
-		);
+	//-------------------------------------------------------------------------------------- testLink
+	/**
+	 * @dataProvider providerLink
+	 * @param $expect     string
+	 * @param $parameters array
+	 */
+	public function testLink($expect, $parameters)
+	{
+		$this->assertEquals($expect, View::link(...$parameters));
 	}
 
 }

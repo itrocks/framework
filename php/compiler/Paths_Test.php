@@ -43,7 +43,7 @@ class Paths_Test extends Test
 		return [
 			[
 				'ITRocks/framework/PHP/Compiler.php',
-				'itrocks/framework/php/Compiler.php',
+				'itrocks/framework/php/compiler/Compiler.php',
 			],
 			[
 				'ITRocks/framework/PHP/compiler/Logger.php',
@@ -58,7 +58,6 @@ class Paths_Test extends Test
 	 * we get back same class name !
 	 *
 	 * @dataProvider classProvider
-	 *
 	 * @param $class_name string The test data
 	 * @param $expected   string Expected result for given data
 	 */
@@ -76,7 +75,6 @@ class Paths_Test extends Test
 	 * we get back same source file name !
 	 *
 	 * @dataProvider fileProvider
-	 *
 	 * @param $source_file string The given source file
 	 * @param $expected    string The expected result for the given source file
 	 */

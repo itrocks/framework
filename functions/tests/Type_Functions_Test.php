@@ -9,162 +9,141 @@ use ITRocks\Framework\Tests\Test;
 class Type_Functions_Test extends Test
 {
 
-	//-------------------------------------------------------------------------- STRICT_NUMERIC_TESTS
-	const STRICT_NUMERIC_TESTS = [
-		/* subtitle,     value,         numeric_result, integer_result, unsigned_integer_result, unsigned_numeric_result */
-		['empty_string', ''           , false,          false,          false,                   false],
-		[_FALSE        , false        , false,          false,          false,                   false],
-		[_TRUE         , true         , false,          false,          false,                   false],
-		['null'        , null         , false,          false,          false,                   false],
-		['1'           , '1'          , true ,          true ,          true ,                   true ],
-		['10'          , '10'         , true ,          true ,          true ,                   true ],
-		['111111111111', '11111111111', true ,          true ,          true ,                   true ],
-		['+1'          , '+1'         , false,          false,          false,                   false],
-		['-1'          , '-1'         , true ,          true ,          false,                   false],
-		['.1'          , '.1'         , true ,          false,          false,                   true ],
-		['-.1'         , '-.1'        , true ,          false,          false,                   false],
-		['0.1'         , '0.1'        , true ,          false,          false,                   true ],
-		['1.1'         , '1.1'        , true ,          false,          false,                   true ],
-		['1,1'         , '1,1'        , false,          false,          false,                   false],
-		['-1.1'        , '-1.1'       , true ,          false,          false,                   false],
-		['1.'          , '1.'         , true ,          false,          false,                   true ],
-		['1E2'         , '1E2'        , false,          false,          false,                   false],
-		['1e2'         , '1e2'        , false,          false,          false,                   false],
-		['array'       , []           , false,          false,          false,                   false],
-		['string'      , 'string'     , false,          false,          false,                   false],
-		['0'           , '0'          , true ,          true ,          true ,                   true ],
-		['(integer)0'  , 0            , true ,          true ,          true ,                   true ],
-		['(float)0.0'  , 0.0          , true ,          false,          false,                   true ],
-		['01'          , '01'         , false,          false,          false,                   false],
-		['-01'         , '-01'        , false,          false,          false,                   false],
-		['(float)-.1'  , -.1          , true ,          false,          false,                   false],
-		['(integer)-1' , -1           , true ,          true,           false,                   false],
-		['(float).1'   , .1           , true ,          false,          false,                   true ],
-		['(integer)1'  , 1            , true ,          true,           true,                    true ]
-	];
+	//----------------------------------------------------------------------- isStrictIntegerProvider
+	/**
+	 * @return array
+	 */
+	public function isStrictIntegerProvider()
+	{
+		return [
+			/* subtitle,      [value,        results                                               ] */
+			/*                               [integer, numeric, unsigned_integer, unsigned_numeric]  */
+			'empty_string' => [''           ,[false,   false,   false,            false           ]],
+			_FALSE         => [false        ,[false,   false,   false,            false           ]],
+			_TRUE          => [true         ,[false,   false,   false,            false           ]],
+			'null'         => [null         ,[false,   false,   false,            false           ]],
+			'1'            => ['1'          ,[true ,   true ,   true ,            true            ]],
+			'10'           => ['10'         ,[true ,   true ,   true ,            true            ]],
+			'111111111111' => ['11111111111',[true ,   true ,   true ,            true            ]],
+			'+1'           => ['+1'         ,[false,   false,   false,            false           ]],
+			'-1'           => ['-1'         ,[true ,   true ,   false,            false           ]],
+			'.1'           => ['.1'         ,[false,   true ,   false,            true            ]],
+			'-.1'          => ['-.1'        ,[false,   true ,   false,            false           ]],
+			'0.1'          => ['0.1'        ,[false,   true ,   false,            true            ]],
+			'1.1'          => ['1.1'        ,[false,   true ,   false,            true            ]],
+			'1,1'          => ['1,1'        ,[false,   false,   false,            false           ]],
+			'-1.1'         => ['-1.1'       ,[false,   true ,   false,            false           ]],
+			'1.'           => ['1.'         ,[false,   true ,   false,            true            ]],
+			'1E2'          => ['1E2'        ,[false,   false,   false,            false           ]],
+			'1e2'          => ['1e2'        ,[false,   false,   false,            false           ]],
+			'array'        => [[]           ,[false,   false,   false,            false           ]],
+			'string'       => ['string'     ,[false,   false,   false,            false           ]],
+			'0'            => ['0'          ,[true ,   true ,   true ,            true            ]],
+			'(integer)0'   => [0            ,[true ,   true ,   true ,            true            ]],
+			'(float)0.0'   => [0.0          ,[false,   true ,   false,            true            ]],
+			'01'           => ['01'         ,[false,   false,   false,            false           ]],
+			'-01'          => ['-01'        ,[false,   false,   false,            false           ]],
+			'(float)-.1'   => [-.1          ,[false,   true ,   false,            false           ]],
+			'(integer)-1'  => [-1           ,[true,    true ,   false,            false           ]],
+			'(float).1'    => [.1           ,[false,   true ,   false,            true            ]],
+			'(integer)1'   => [1            ,[true,    true ,   true,             true            ]]
+		];
+	}
+
+	//-------------------------------------------------------------------------------- maxSetProvider
+	/**
+	 * @see testMaxSet
+	 */
+	public function maxSetProvider()
+	{
+		return [
+			'simple' => [13,[13, 4, 2]],
+			'array'  => [13,[[2, 4, 13]]],
+			'false'  => [13,[2, false, false, 13, 4]],
+			'null'   => [13,[2, null, 13, null, 4]],
+			'mix'    => [19,[3, 2, [-1, 19, false], null, [null, 9], 4]],
+		];
+	}
+
+	//-------------------------------------------------------------------------------- minSetProvider
+	/**
+	 * @see testMinSet
+	 */
+	public function minSetProvider()
+	{
+		return [
+			'simple' => [2,[13, 4, 2]],
+			'array'  => [2,[[2, 4, 13]]],
+			'false'  => [2,[2, false, false, 13, 4]],
+			'null'   => [2,[2, null, 13, null, 4]],
+			'mix'    => [-1,[3, 2, [-1, 19, false], null, [null, 9], 4]],
+		];
+	}
 
 	//--------------------------------------------------------------------------- testIsStrictInteger
 	/**
-	 * @return boolean
+	 * @dataProvider isStrictIntegerProvider
+	 * @param $value          mixed
+	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictInteger()
+	function testIsStrictInteger($value, $array_expected )
 	{
-		$result = true;
-
-		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,, $assume_integer)) {
-			$ok = $this->assume(
-				__METHOD__ . '(' . $subtitle . ')', isStrictInteger($check), $assume_integer
-			);
-			$result &= $ok;
-		}
-
-		return $result;
+		$this->assertEquals($array_expected[0], isStrictInteger($value));
 	}
 
 	//--------------------------------------------------------------------------- testIsStrictNumeric
 	/**
-	 * @return boolean
+	 * @dataProvider isStrictIntegerProvider
+	 * @param $value          mixed
+	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictNumeric()
+	function testIsStrictNumeric($value, $array_expected )
 	{
-		$result = true;
-
-		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check, $assume_numeric)) {
-			$ok = $this->assume(
-				__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check), $assume_numeric
-			);
-			$result &= $ok;
-		}
-
-		return $result;
+		$this->assertEquals($array_expected[1], isStrictNumeric($value));
 	}
 
 	//------------------------------------------------------------------- testIsStrictUnsignedInteger
 	/**
-	 * @return boolean
+	 * @dataProvider isStrictIntegerProvider
+	 * @param $value          mixed
+	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedInteger()
+	function testIsStrictUnsignedInteger($value, $array_expected )
 	{
-		$result = true;
-
-		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,,, $assume_unsigned)) {
-			$ok = $this->assume(
-				__METHOD__ . '(' . $subtitle . ')', isStrictUnsignedInteger($check), $assume_unsigned
-			);
-			$result &= $ok;
-		}
-
-		return $result;
+		$this->assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
 
 	//------------------------------------------------------------------- testIsStrictUnsignedNumeric
 	/**
-	 * @return boolean
+	 * @dataProvider isStrictIntegerProvider
+	 * @param $value          mixed
+	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedNumeric()
+	function testIsStrictUnsignedNumeric($value, $array_expected )
 	{
-		$result = true;
-
-		foreach (self::STRICT_NUMERIC_TESTS as list($subtitle, $check,,,, $assume_unsigned)) {
-			$ok = $this->assume(
-				__METHOD__ . '(' . $subtitle . ')', isStrictNumeric($check, true, false), $assume_unsigned
-			);
-			$result &= $ok;
-		}
-
-		return $result;
+		$this->assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}
 
 	//------------------------------------------------------------------------------------ testMaxSet
 	/**
-	 * @return boolean
+	 * @dataProvider maxSetProvider
+	 * @param $expected integer
+	 * @param $args     mixed
 	 */
-	function testMaxSet()
+	function testMaxSet($expected, $args)
 	{
-		$result = true;
-
-		$ok = $this->assume(__METHOD__ . '.simple', maxSet(13, 4, 2), 13);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.array', maxSet([2, 4, 13]), 13);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.false', maxSet(2, false, false, 13, 4), 13);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.null', maxSet(2, null, 13, null, 4), 13);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.mix', maxSet(3, 2, [-1, 19, false], null, [null, 9], 4), 19);
-		$result &= $ok;
-
-		return $result;
+		$this->assertEquals($expected, call_user_func('maxSet', $args));
 	}
 
 	//------------------------------------------------------------------------------------ testMinSet
 	/**
-	 * @return boolean
+	 * @dataProvider minSetProvider
+	 * @param $expected integer
+	 * @param $args     mixed
 	 */
-	function testMinSet()
+	function testMinSet($expected, $args)
 	{
-		$result = true;
-
-		$ok = $this->assume(__METHOD__ . '.simple', minSet(13, 4, 2), 2);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.array', minSet([13, 2, 4]), 2);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.false', minSet(13, 2, false, false, 4), 2);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.null', minSet(13, 2, null, null, 4), 2);
-		$result &= $ok;
-
-		$ok = $this->assume(__METHOD__ . '.mix', minSet(13, 2, [-1, 9, false], null, [null, 9], 4), -1);
-		$result &= $ok;
-
-		return $result;
+		$this->assertEquals($expected, call_user_func('minSet', $args));
 	}
 
 }

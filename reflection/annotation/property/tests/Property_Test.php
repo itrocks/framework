@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Property annotations unit tests
@@ -21,6 +22,46 @@ class Property_Test extends Test
 	 * @var Test_Object
 	 */
 	private $subject;
+
+	//--------------------------------------------------------- providerIntegratedAnnotationConstruct
+	/**
+	 * @return array
+	 * @see testIntegratedAnnotationConstruct
+	 */
+	public function providerIntegratedAnnotationConstruct()
+	{
+		return [
+			// simple declarations
+			'empty'                     => ['',                                        ['full'],                     []],
+			'full'                      => ['full',                                    ['full'],                     []],
+			'simple'                    => ['simple',                                  ['simple'],                   []],
+			// options with implicit simple
+			'alias'                     => ['alias',                                   ['alias', 'simple'],          []],
+			'block'                     => ['block',                                   ['block', 'simple'],          []],
+			// explicit options
+			'full block'                => ['full block',                              ['full', 'block'],            []],
+			'full alias'                => ['full alias',                              ['full', 'alias'],            []],
+			'full alias block'          => ['full alias block',                        ['full', 'alias', 'block'],   []],
+			'simple block'              => ['simple block',                            ['simple', 'block'],          []],
+			'simple alias'              => ['simple alias',                            ['simple', 'alias'],          []],
+			'simple alias block'        => ['simple alias block',                      ['simple', 'alias', 'block'], []],
+			// simple with properties
+			'simple property'           => ['simple property',                         ['simple'],                   ['property']],
+			'simple properties'         => ['simple property1, property2',             ['simple'],                   ['property1', 'property2']],
+			'simple reserved property'  => ['simple block,',                           ['simple'],                   ['block']],
+			// options and properties
+			'options property'          => ['simple alias block property',             ['simple', 'alias', 'block'], ['property']],
+			'options properties'        => ['simple alias block property1, property2', ['simple', 'alias', 'block'], ['property1', 'property2']],
+			'options reserved property' => ['simple alias block block,',               ['simple', 'alias', 'block'], ['block']],
+			// repeated and alone are properties
+			'repeat alias'              => ['simple alias block alias',                ['simple', 'alias', 'block'], ['alias']],
+			'repeat block'              => ['simple alias block block',                ['simple', 'alias', 'block'], ['block']],
+			'repeat simple'             => ['simple alias block simple',               ['simple', 'alias', 'block'], ['simple']],
+			// excluded reserved words are properties
+			'full simple'               => ['full simple',                             ['full'],                     ['simple']],
+			'simple full'               => ['simple full',                             ['simple'],                   ['full']]
+		];
+	}
 
 	//----------------------------------------------------------------------------------------- setUp
 	protected function setUp()
@@ -41,30 +82,41 @@ class Property_Test extends Test
 	//----------------------------------------------------------------------------- testDefaultSimple
 	/**
 	 * Test @default annotation into the simpliest context : no AOP
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testDefaultSimple()
 	{
 		$robert = new Default_Simple();
 		// TODO LOW default for age should be 43, but this case does not work. Warning in documentation
-		$this->assume('@default.override',      $robert->age,      18);
-		$this->assume('@default.override_null', $robert->null_age, 43);
-		$this->assume('@default.simple',        $robert->name,     'Robert');
-		$this->assume('@default.very_simple',   $robert->surname,  'Mitchum');
-		$this->assume('@default.reflection.override',
-			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(), 18
+		$this->assertEquals(18, $robert->age, '@default.override');
+		$this->assertEquals(43, $robert->null_age, '@default.override_null');
+		$this->assertEquals('Robert', $robert->name, '@default.simple');
+		$this->assertEquals('Mitchum', $robert->surname, '@default.very_simple');
+		$this->assertEquals(
+			18,
+			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
+			'@default.reflection.override'
 		);
-		$this->assume('@default.reflection.override_null',
-			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(), 43
+		$this->assertEquals(
+			43,
+			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(),
+			'@default.reflection.override_null'
 		);
-		$this->assume('@default.reflection.simple',
-			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(), 'Robert'
+		$this->assertEquals(
+			'Robert',
+			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(),
+			'@default.reflection.simple'
 		);
-		$this->assume('@default.reflection.very_simple',
-			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(), 'Mitchum'
+		$this->assertEquals(
+			'Mitchum',
+			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(),
+			'@default.reflection.very_simple'
 		);
-		$this->assume('@default.reflection.all',
+		$this->assertEquals(
+			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum'],
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
-			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum']
+			'@default.reflection.all'
 		);
 	}
 
@@ -87,7 +139,6 @@ class Property_Test extends Test
 	 */
 	public function testGetterAnnotationSet()
 	{
-		$this->method('@getter : setting annotation value');
 		$property = new Reflection_Property(get_class($this->subject), 'property');
 
 		// @getter methodName
@@ -123,118 +174,18 @@ class Property_Test extends Test
 		);
 	}
 
-	//------------------------------------------------------------------ testIntegratedAnnotationInit
-	public function testIntegratedAnnotationInit()
+	//------------------------------------------------------------- testIntegratedAnnotationConstruct
+	/**
+	 * @dataProvider providerIntegratedAnnotationConstruct
+	 * @param $init                 string
+	 * @param $expected_value       string[]
+	 * @param $expected_properties  string[]
+	 */
+	public function testIntegratedAnnotationConstruct($init, $expected_value, $expected_properties)
 	{
-		$this->method(__METHOD__);
-		$assume = ['__CLASS__' => Integrated_Annotation::class, 'properties' => []];
-
-		// simple declarations
-
-		$integrated = new Integrated_Annotation('');
-		$assume ['value'] = ['full'];
-		$this->assume('empty', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('full');
-		$assume['value'] = ['full'];
-		$this->assume('full', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple');
-		$assume['value'] = ['simple'];
-		$this->assume('simple', $integrated, $assume);
-
-		// options with implicit simple
-
-		$integrated = new Integrated_Annotation('alias');
-		$assume['value'] = ['alias', 'simple'];
-		$this->assume('alias', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('block');
-		$assume['value'] = ['block', 'simple'];
-		$this->assume('block', $integrated, $assume);
-
-		// explicit options
-
-		$integrated = new Integrated_Annotation('full block');
-		$assume['value'] = ['full', 'block'];
-		$this->assume('full block', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('full alias');
-		$assume['value'] = ['full', 'alias'];
-		$this->assume('full alias', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('full alias block');
-		$assume['value'] = ['full', 'alias', 'block'];
-		$this->assume('full alias block', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple block');
-		$assume['value'] = ['simple', 'block'];
-		$this->assume('simple block', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias');
-		$assume['value'] = ['simple', 'alias'];
-		$this->assume('simple alias', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias block');
-		$assume['value'] = ['simple', 'alias', 'block'];
-		$this->assume('simple alias block', $integrated, $assume);
-
-		// simple with properties
-
-		$integrated = new Integrated_Annotation('simple property');
-		$assume['properties'] = ['property'];
-		$assume['value']      = ['simple'];
-		$this->assume('simple property', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple property1, property2');
-		$assume['properties'] = ['property1', 'property2'];
-		$this->assume('simple properties', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple block,');
-		$assume['properties'] = ['block'];
-		$this->assume('simple reserved property', $integrated, $assume);
-
-		// options and properties
-
-		$integrated = new Integrated_Annotation('simple alias block property');
-		$assume['properties'] = ['property'];
-		$assume['value']              = ['simple', 'alias', 'block'];
-		$this->assume('options property', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias block property1, property2');
-		$assume['properties'] = ['property1', 'property2'];
-		$this->assume('options properties', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias block block,');
-		$assume['properties'] = ['block'];
-		$this->assume('options reserved property', $integrated, $assume);
-
-		// repeated and alone are properties
-
-		$integrated = new Integrated_Annotation('simple alias block alias');
-		$assume['properties'] = ['alias'];
-		$this->assume('repeat alias', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias block block');
-		$assume['properties'] = ['block'];
-		$this->assume('repeat block', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple alias block simple');
-		$assume['properties'] = ['simple'];
-		$this->assume('repeat simple', $integrated, $assume);
-
-		// excluded reserved words are properties
-
-		$integrated = new Integrated_Annotation('full simple');
-		$assume['properties'] = ['simple'];
-		$assume['value']      = ['full'];
-		$this->assume('full simple', $integrated, $assume);
-
-		$integrated = new Integrated_Annotation('simple full');
-		$assume['properties'] = ['full'];
-		$assume['value']      = ['simple'];
-		$this->assume('simple full', $integrated, $assume);
-
+		$integrated = new Integrated_Annotation($init);
+		$this->assertEquals($expected_value, $integrated->value);
+		$this->assertEquals($expected_properties, $integrated->properties);
 	}
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
@@ -259,9 +210,8 @@ class Property_Test extends Test
 		$this->subject->with_values = 'a_value';
 		$this->assertEquals(
 			['a_value', 'another_value', 'third_value', 'fourth_value'],
-			(new Reflection_Property(get_class($this->subject), 'with_values'))->getListAnnotation('values')
-				->values(),
-			__METHOD__
+			(new Reflection_Property(get_class($this->subject), 'with_values'))
+				->getListAnnotation('values')->values()
 		);
 	}
 

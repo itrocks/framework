@@ -10,6 +10,7 @@ use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionException;
 use ReflectionProperty;
 
 /**
@@ -22,36 +23,37 @@ use ReflectionProperty;
  *
  * The link is configurable and configuration must have this structure :
  * [
- *   'adapters' => [
+ *   self::ADAPTERS => [
  *     self::DEFAULT_ADAPTER => [
- *       'adapter_class_name'  => adapter_class_name,
+ *       'adapter_class_name'  => 'adapter_class_name',
  *       'arguments'           => [
- *         construct_argument_name_1 => value
- *         construct_argument_name_N => value
+ *         'construct_argument_name_1' => 'value'
+ *         'construct_argument_name_N' => 'value'
  *       ]
  *     ],
- *     business_class_name => [
- *       'adapter_class_name'  => adapter_class_name,
+ *     'business_class_name' => [
+ *       'adapter_class_name'  => 'adapter_class_name',
  *       'arguments'           => [
- *         construct_argument_name_1 => value
- *         construct_argument_name_N => value
+ *         'construct_argument_name_1' => 'value'
+ *         'construct_argument_name_N' => 'value'
  *       ]
  *     ],
  *     ...
- *   ],
+ *   ]
  * ]
  */
 class Link extends Identifier_Map
 {
 
-	//-------------------------------------------------- File link configuration array keys constants
-
 	//-------------------------------------------------------------------------------------- ADAPTERS
+	/**
+	 * Configuration key constant for adapters
+	 */
 	const ADAPTERS = 'adapters';
 
 	//------------------------------------------------------------------------------- DEFAULT_ADAPTER
 	/**
-	 * use to define a default adapter for all business class (if not set).
+	 * Use to define a default adapter for all business class (if not set).
 	 * see property doc of adapters.
 	 */
 	const DEFAULT_ADAPTER = 'default';
@@ -115,7 +117,7 @@ class Link extends Identifier_Map
 	 */
 	private function adapterName($object)
 	{
-		$class_name = get_class($object);
+		$class_name        = get_class($object);
 		$source_class_name = Builder\Class_Builder::isBuilt($class_name)
 			? Builder\Class_Builder::sourceClassName($class_name)
 			: $class_name;
@@ -161,7 +163,7 @@ class Link extends Identifier_Map
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
 	 * @param $object object object to delete from data source
-	 * @return bool true if deleted
+	 * @return boolean true if deleted
 	 */
 	public function delete($object)
 	{
@@ -175,6 +177,8 @@ class Link extends Identifier_Map
 	 * @param $prefix       string
 	 * @param $storage_name string
 	 * @return string|null
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function getFilePath($object, $prefix, $storage_name)
 	{
@@ -200,6 +204,7 @@ class Link extends Identifier_Map
 	/**
 	 * @param $object object
 	 * @return File_System
+	 * @throws Exception
 	 */
 	private function getFileSystemFor($object)
 	{
@@ -218,9 +223,11 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	private function getPrefix(
-		$object, /** @noinspection PhpUnusedParameterInspection */ $property_name
+		$object, /** @noinspection PhpUnusedParameterInspection */
+		$property_name
 	) {
 		return $this->storeNameOf(get_class($object));
 	}
@@ -249,7 +256,8 @@ class Link extends Identifier_Map
 	 * @return boolean
 	 */
 	private function needPrefix(
-		$object, /** @noinspection PhpUnusedParameterInspection */ $property_name
+		$object, /** @noinspection PhpUnusedParameterInspection */
+		$property_name
 	) {
 		return ($this->adapterName($object) == self::DEFAULT_ADAPTER);
 	}
@@ -260,6 +268,7 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @param $full_path     boolean if false, returns only the path relative to File_System
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function propertyFileName($object, $property_name, $full_path = true)
 	{
@@ -279,9 +288,9 @@ class Link extends Identifier_Map
 		}
 		if ($full_path) {
 			if (
-				$file_path = $this->getFilePath(
-					$object, $prefix, $this->getObjectIdentifier($object) . '-' . $property_name
-				)
+			$file_path = $this->getFilePath(
+				$object, $prefix, $this->getObjectIdentifier($object) . '-' . $property_name
+			)
 			) {
 				return $file_path;
 			}
@@ -326,6 +335,8 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to read the value of the property
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function readProperty($object, $property_name)
 	{
@@ -357,11 +368,17 @@ class Link extends Identifier_Map
 	/**
 	 * Search objects from data source
 	 *
-	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in order to initialize all properties as unset and build a correct search object.
-	 * If some properties are an not-loaded objects, the search will be done on the object identifier, without joins to the linked object.
-	 * If some properties are loaded objects : if the object comes from a read, the search will be done on the object identifier, without join. If object is not linked to data-link, the search is done with the linked object as others search criterion.
+	 * It is highly recommended to instantiate the $what object using Search_Object::instantiate() in
+	 * order to initialize all properties as unset and build a correct search object. If some
+	 * properties are an not-loaded objects, the search will be done on the object identifier, without
+	 * joins to the linked object.
+	 * If some properties are loaded objects : if the object comes from a read, the search will be
+	 * done on the object identifier, without join.
+	 * If object is not linked to data-link, the search is done with the linked object as others
+	 * search criteria.
 	 *
-	 * @param $what       object|array source object for filter, or filter array (need class_name) only set properties will be used for search
+	 * @param $what       object|array source object for filter, or filter array (need class_name)
+	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
@@ -378,10 +395,13 @@ class Link extends Identifier_Map
 	 *
 	 * @param $class         string class for the read object
 	 * @param $properties    string[]|string|Column[] the list of property paths : only those
-	 *        properties will be read.
-	 * @param $filter_object object|array source object for filter, set properties will be used for search. Can be an array associating properties names to corresponding search value too.
+	 *                       properties will be read.
+	 * @param $filter_object object|array source object for filter, set properties will be used for
+	 *                       search. Can be an array associating properties names to corresponding
+	 *                       search value too.
 	 * @param $options       Option|Option[] some options for advanced search
-	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the same order than columns.
+	 * @return List_Data a list of read records. Each record values (may be objects) are stored in the
+	 *                   same order than columns.
 	 */
 	public function select($class, $properties, $filter_object = null, $options = [])
 	{
@@ -427,12 +447,14 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function writeProperty($object, $property_name, $value = null)
 	{
 		if ($file_system = $this->getFileSystemFor($object)) {
-			$file_name     = $this->propertyFileName($object, $property_name, false);
-			$value         = isset($value) ? $value : $object->$property_name;
+			$file_name = $this->propertyFileName($object, $property_name, false);
+			$value     = isset($value) ? $value : $object->$property_name;
 			if (isset($value)) {
 				$file_system->filesystem->write($file_name, $value, true);
 			}

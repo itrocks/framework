@@ -42,21 +42,11 @@ class Error_Handlers implements Activable, Configurable
 		$this->setAsErrorHandler();
 	}
 
-	//--------------------------------------------------------------------------------------- current
-	/**
-	 * @param $set_current Error_Handlers
-	 * @return Error_Handlers
-	 */
-	public static function current(Error_Handlers $set_current = null)
-	{
-		return self::pCurrent($set_current);
-	}
-
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Register an error handler for error types
 	 *
-	 * @param $error_types integer
+	 * @param $error_types   integer
 	 * @param $error_handler Error_Handler
 	 */
 	public static function add($error_types, Error_Handler $error_handler)
@@ -70,9 +60,9 @@ class Error_Handlers implements Activable, Configurable
 	 *
 	 * You should call setAsErrorHandler() after add of error handlers, as error numbers may not have been registered
 	 *
-	 * @param $err_no integer
+	 * @param $err_no        integer
 	 * @param $error_handler Error_Handler
-	 * @param $priority integer
+	 * @param $priority      integer
 	 * @return Error_Handlers
 	 */
 	public function addHandler(
@@ -81,6 +71,16 @@ class Error_Handlers implements Activable, Configurable
 		$this->error_handlers[$err_no][$priority][] = $error_handler;
 		ksort($this->error_handlers[$err_no]);
 		return $this;
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @param $set_current Error_Handlers
+	 * @return Error_Handlers
+	 */
+	public static function current(Error_Handlers $set_current = null)
+	{
+		return self::pCurrent($set_current);
 	}
 
 	//-------------------------------------------------------------------------- getHandledErrorTypes

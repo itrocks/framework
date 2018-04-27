@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tests;
+use ReflectionException;
 
 /**
  * Column builder property tests
@@ -16,7 +17,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal
 	 *
-	 * @assume decimal(65,2) unsigned
+	 * @assume    decimal(65,2) unsigned
 	 * @precision 2
 	 * @var float
 	 */
@@ -26,7 +27,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal, signed
 	 *
-	 * @assume decimal(65,2)
+	 * @assume    decimal(65,2)
 	 * @precision 2
 	 * @signed
 	 * @var float
@@ -37,9 +38,9 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-length
 	 *
-	 * @assume decimal(9,2) unsigned
+	 * @assume     decimal(9,2) unsigned
 	 * @max_length 10
-	 * @precision 2
+	 * @precision  2
 	 * @var float
 	 */
 	public $decimal2;
@@ -48,9 +49,9 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-length, signed
 	 *
-	 * @assume decimal(8,2)
+	 * @assume     decimal(8,2)
 	 * @max_length 10
-	 * @precision 2
+	 * @precision  2
 	 * @signed
 	 * @var float
 	 */
@@ -60,7 +61,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value
 	 *
-	 * @assume decimal(5,2) unsigned
+	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495.34
 	 * @precision 2
 	 * @var float
@@ -71,7 +72,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value
 	 *
-	 * @assume decimal(5,2) unsigned
+	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495.3
 	 * @precision 2
 	 * @var float
@@ -82,7 +83,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value
 	 *
-	 * @assume decimal(5,2) unsigned
+	 * @assume    decimal(5,2) unsigned
 	 * @max_value 495
 	 * @precision 2
 	 * @var float
@@ -93,7 +94,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value 495.34
 	 * @min_value -495
 	 * @precision 2
@@ -106,7 +107,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value 495
 	 * @min_value -495.3
 	 * @precision 2
@@ -119,7 +120,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value 495
 	 * @min_value -495
 	 * @precision 2
@@ -132,7 +133,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value -495
 	 * @min_value -495.34
 	 * @precision 2
@@ -145,7 +146,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value -494.3
 	 * @min_value -495
 	 * @precision 2
@@ -158,7 +159,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(5,2)
+	 * @assume    decimal(5,2)
 	 * @max_value -495
 	 * @min_value -525
 	 * @precision 2
@@ -171,7 +172,7 @@ class Test extends Tests\Test
 	/**
 	 * fixed precision decimal with max-value, signed
 	 *
-	 * @assume decimal(65,2)
+	 * @assume    decimal(65,2)
 	 * @max_value -495
 	 * @precision 2
 	 * @signed
@@ -183,7 +184,7 @@ class Test extends Tests\Test
 	/**
 	 * min-value only
 	 *
-	 * @assume smallint(5)
+	 * @assume    smallint(5)
 	 * @min_value -2300
 	 * @var integer
 	 */
@@ -193,7 +194,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value and signed : smallint
 	 *
-	 * @assume smallint(5)
+	 * @assume    smallint(5)
 	 * @max_value 32767
 	 * @signed
 	 * @var integer
@@ -204,7 +205,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value and signed : grown
 	 *
-	 * @assume mediumint(7)
+	 * @assume    mediumint(7)
 	 * @max_value 32768
 	 * @signed
 	 * @var integer
@@ -215,7 +216,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value unsigned : tinyint
 	 *
-	 * @assume tinyint(3) unsigned
+	 * @assume    tinyint(3) unsigned
 	 * @max_value 255
 	 * @var integer
 	 */
@@ -225,7 +226,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value unsigned : smallint
 	 *
-	 * @assume smallint(5) unsigned
+	 * @assume    smallint(5) unsigned
 	 * @max_value 65535
 	 * @var integer
 	 */
@@ -235,7 +236,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value unsigned : mediumint
 	 *
-	 * @assume mediumint(8) unsigned
+	 * @assume    mediumint(8) unsigned
 	 * @max_value 16777215
 	 * @var integer
 	 */
@@ -245,7 +246,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value unsigned : int
 	 *
-	 * @assume int(10) unsigned
+	 * @assume    int(10) unsigned
 	 * @max_value 4294967295
 	 * @var integer
 	 */
@@ -255,7 +256,7 @@ class Test extends Tests\Test
 	/**
 	 * max-value unsigned : bigint
 	 *
-	 * @assume bigint(18) unsigned
+	 * @assume    bigint(18) unsigned
 	 * @max_value 4294967296
 	 * @var integer
 	 */
@@ -279,6 +280,7 @@ class Test extends Tests\Test
 	//--------------------------------------------------------------------------------- propertyTests
 	/**
 	 * @param $property_prefix string @values decimal, integer
+	 * @throws ReflectionException
 	 */
 	protected function propertyTests($property_prefix)
 	{
@@ -291,19 +293,25 @@ class Test extends Tests\Test
 				$assume = $property->getAnnotation('assume')->value;
 				if (isset($assume)) {
 					$check = $property_type_to_mysql->invoke(null, $property);
-					$this->assume($property->name, $check, $assume);
+					$this->assertEquals($assume, $check, $property->name);
 				}
 			}
 		}
 	}
 
 	//----------------------------------------------------------------------------------- testDecimal
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testDecimal()
 	{
 		$this->propertyTests('decimal');
 	}
 
 	//----------------------------------------------------------------------------------- testInteger
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testInteger()
 	{
 		$this->propertyTests('integer');

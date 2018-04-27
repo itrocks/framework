@@ -13,6 +13,8 @@ use ITRocks\Framework\Tools\Default_List_Data;
 
 /**
  * Dao functions unit tests
+ *
+ * @group functional
  */
 class Func_Test extends Test
 {
@@ -22,10 +24,8 @@ class Func_Test extends Test
 	{
 		$class_name = Order::class;
 		$properties = ['string_concat' => new Concat(['number', 'date'])];
-		$this->assume(
-			__METHOD__,
-			Dao::select($class_name, $properties),
-			new Default_List_Data($class_name, $properties)
+		$this->assertEquals(
+			new Default_List_Data($class_name, $properties), Dao::select($class_name, $properties)
 		);
 	}
 
@@ -36,11 +36,10 @@ class Func_Test extends Test
 			Order::class,
 			['string_concat' => new Concat(['number', 'date'])]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT CONCAT(t0.`number`, " ", t0.`date`) AS `string_concat`' . LF
-			. 'FROM `test_orders` t0'
+				. 'FROM `test_orders` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -51,20 +50,19 @@ class Func_Test extends Test
 		$builder = new Select(
 			Order::class,
 			[
-				'case_result' => new Condition($search, 'client.name', 'string_client_unknown'),
+				'case_result'      => new Condition($search, 'client.name', 'string_client_unknown'),
 				'case_result_func' => new Condition($search, new Concat(['number', 'client.number'])),
 			]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT '
-			. 'CASE WHEN t1.`number` = "XXXX" THEN t1.`name` ELSE "string_client_unknown" END '
-			. 'AS `case_result`, '
-			. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
-			. 'AS `case_result_func`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`'
+				. 'CASE WHEN t1.`number` = "XXXX" THEN t1.`name` ELSE "string_client_unknown" END '
+				. 'AS `case_result`, '
+				. 'CASE WHEN t1.`number` = "XXXX" THEN CONCAT(t0.`number`, " ", t1.`number`) END '
+				. 'AS `case_result_func`' . LF
+				. 'FROM `test_orders` t0' . LF
+				. 'INNER JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`',
+			$builder->buildQuery()
 		);
 	}
 
@@ -75,10 +73,9 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::day()]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT DAY(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		$this->assertEquals(
+			'SELECT DAY(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -90,10 +87,9 @@ class Func_Test extends Test
 			['number'],
 			[Func::day('date') => 11]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE DAY(t0.`date`) = 11'
+		$this->assertEquals(
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE DAY(t0.`date`) = 11',
+			$builder->buildQuery()
 		);
 	}
 
@@ -103,22 +99,21 @@ class Func_Test extends Test
 		$builder = new Select(
 			Client::class,
 			[
-				'number' => new Group_Concat(),
-				'group_concat' => new Group_Concat('number'),
-				'group_concat_with_sep' => new Group_Concat('number', ';'),
+				'number'                 => new Group_Concat(),
+				'group_concat'           => new Group_Concat('number'),
+				'group_concat_with_sep'  => new Group_Concat('number', ';'),
 				'group_concat_with_func' => new Group_Concat(new Concat(['number', 'name'])),
 			]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `number`, '
-			. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `group_concat`, '
-			. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number` SEPARATOR ";") '
-			. 'AS `group_concat_with_sep`, '
-			. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`) '
-			. 'ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`'. LF
-			. 'FROM `test_clients` t0'
+				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `group_concat`, '
+				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number` SEPARATOR ";") '
+				. 'AS `group_concat_with_sep`, '
+				. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`) '
+				. 'ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`' . LF
+				. 'FROM `test_clients` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -129,19 +124,18 @@ class Func_Test extends Test
 			Order::class,
 			['date']
 		);
-		$builder = new Select(
+		$builder    = new Select(
 			Order::class,
 			null,
 			['date' => Func::inSelect($sub_select)]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE t0.`date` IN ('
-			. 'SELECT t0.`date`' . LF
-			. 'FROM `test_orders` t0)'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE t0.`date` IN ('
+				. 'SELECT t0.`date`' . LF
+				. 'FROM `test_orders` t0)',
+			$builder->buildQuery()
 		);
 	}
 
@@ -153,16 +147,15 @@ class Func_Test extends Test
 			null,
 			['date' => Func::isGreatest(['number'])]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF . 'INNER JOIN ('
-			. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'GROUP BY t0.`number`'
-			. ') t1'
-			. ' ON t1.`number` = t0.`number` AND t1.`date` = t0.`date`'
+				. 'FROM `test_orders` t0' . LF . 'INNER JOIN ('
+				. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`' . LF
+				. 'FROM `test_orders` t0' . LF
+				. 'GROUP BY t0.`number`'
+				. ') t1'
+				. ' ON t1.`number` = t0.`number` AND t1.`date` = t0.`date`',
+			$builder->buildQuery()
 		);
 	}
 
@@ -173,10 +166,9 @@ class Func_Test extends Test
 			Order::class,
 			['number' => Func::left(4)]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `test_orders` t0'
+		$this->assertEquals(
+			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `test_orders` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -188,12 +180,11 @@ class Func_Test extends Test
 			['number'],
 			[Func::left('number', 3) => '123']
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.`number`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE LEFT(t0.`number`, 3) = "123"'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE LEFT(t0.`number`, 3) = "123"',
+			$builder->buildQuery()
 		);
 	}
 
@@ -205,12 +196,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::leftMatch('N01181355010')]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))',
+			$builder->buildQuery()
 		);
 	}
 
@@ -222,12 +212,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::andOp([_TRUE, _FALSE])]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (t0.`number` = "true" AND t0.`number` = "false")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (t0.`number` = "true" AND t0.`number` = "false")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -241,12 +230,11 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))',
+			$builder->buildQuery()
 		);
 	}
 
@@ -254,16 +242,14 @@ class Func_Test extends Test
 	public function testLogicalExceptionRaisedOnNotOrTrueOperatorWithArrayArgument()
 	{
 		$check = false;
-		try
-		{
+		try {
 			$argument = new Logical(Logical::TRUE_OPERATOR, [_TRUE, _FALSE]);
 			unset($argument);
 		}
-		catch (Exception $e)
-		{
+		catch (Exception $e) {
 			$check = true;
 		}
-		$this->assume(__METHOD__,	$check,	true);
+		$this->assertEquals(true, $check);
 	}
 
 	//-------------------------------------------------------------------------------- testLogicalNot
@@ -274,12 +260,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(_TRUE)]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE NOT (t0.`number` = "true")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE NOT (t0.`number` = "true")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -291,12 +276,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(Func::andOp([_TRUE, _FALSE]))]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))',
+			$builder->buildQuery()
 		);
 	}
 
@@ -310,12 +294,11 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (t0.`number` = "true")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (t0.`number` = "true")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -327,12 +310,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(Func::notOp(_TRUE))]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE NOT (NOT (t0.`number` = "true"))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE NOT (NOT (t0.`number` = "true"))',
+			$builder->buildQuery()
 		);
 	}
 
@@ -344,12 +326,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::orOp([_TRUE, _FALSE])]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (t0.`number` = "true" OR t0.`number` = "false")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (t0.`number` = "true" OR t0.`number` = "false")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -359,22 +340,26 @@ class Func_Test extends Test
 		$builder = new Select(
 			Order::class,
 			null,
-			['number' => Func::orOp([
-				Func::orOp([_TRUE, _FALSE]),
-				Func::orOp([_TRUE, _FALSE]),
-			])]
+			[
+				'number' => Func::orOp([
+					Func::orOp([_TRUE, _FALSE]),
+					Func::orOp([_TRUE, _FALSE]),
+				])
+			]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE ((t0.`number` = "true" OR t0.`number` = "false")'
-			. ' OR (t0.`number` = "true" OR t0.`number` = "false"))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE ((t0.`number` = "true" OR t0.`number` = "false")'
+				. ' OR (t0.`number` = "true" OR t0.`number` = "false"))',
+			$builder->buildQuery()
 		);
 	}
 
 	//------------------------------------------------------ testLogicalTrueShouldNotBeCalledDirectly
+	/**
+	 * @throws Exception
+	 */
 	public function testLogicalTrueShouldNotBeCalledDirectly()
 	{
 		$builder = new Select(
@@ -382,12 +367,11 @@ class Func_Test extends Test
 			null,
 			['number' => new Logical(Logical::TRUE_OPERATOR, _TRUE)]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (t0.`number` = "true")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (t0.`number` = "true")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -399,12 +383,11 @@ class Func_Test extends Test
 			null,
 			['number' => Func::xorOp([_TRUE, _FALSE])]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")',
+			$builder->buildQuery()
 		);
 	}
 
@@ -418,12 +401,11 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
+		$this->assertEquals(
 			'SELECT t0.*' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'WHERE NOT ((t0.`number` = "true" XOR t0.`number` = "false"))'
+				. 'FROM `test_orders` t0' . LF
+				. 'WHERE NOT ((t0.`number` = "true" XOR t0.`number` = "false"))',
+			$builder->buildQuery()
 		);
 	}
 
@@ -434,10 +416,9 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::month()]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT MONTH(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		$this->assertEquals(
+			'SELECT MONTH(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -449,10 +430,9 @@ class Func_Test extends Test
 			['number'],
 			[Func::month('date') => 11]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE MONTH(t0.`date`) = 11'
+		$this->assertEquals(
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE MONTH(t0.`date`) = 11',
+			$builder->buildQuery()
 		);
 	}
 
@@ -463,10 +443,9 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::year()]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT YEAR(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0'
+		$this->assertEquals(
+			'SELECT YEAR(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
+			$builder->buildQuery()
 		);
 	}
 
@@ -478,10 +457,9 @@ class Func_Test extends Test
 			['number'],
 			[Func::year('date') => 11]
 		);
-		$this->assume(
-			__METHOD__,
-			$builder->buildQuery(),
-			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE YEAR(t0.`date`) = 11'
+		$this->assertEquals(
+			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE YEAR(t0.`date`) = 11',
+			$builder->buildQuery()
 		);
 	}
 

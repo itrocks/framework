@@ -1,10 +1,12 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
-use ITRocks\Framework\Builder;
+use Exception;
 use ITRocks\Framework;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\View\IView;
+use ReflectionException;
 
 /**
  * The Html default view selects the template associated to wished class and feature names
@@ -18,6 +20,8 @@ class Default_View implements IView
 	 * @param $parameters    array
 	 * @param $feature_name  string
 	 * @return string
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	protected function executeTemplate($template_file, array $parameters, $feature_name)
 	{
@@ -54,6 +58,7 @@ class Default_View implements IView
 	 * @param $class_name   string
 	 * @param $feature_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
 	{

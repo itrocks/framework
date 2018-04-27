@@ -68,6 +68,28 @@ class Text_Output
 		flush();
 	}
 
+	//-------------------------------------------------------------------------------------- progress
+	/**
+	 * @param $message string
+	 * @param $step    string
+	 * @param $total   string
+	 */
+	public function progress($message, $step, $total)
+	{
+		if ($_SERVER['REMOTE_ADDR'] == 'console') {
+			$this->log(sprintf("\r%s%d%%", $message, $step * 100 / $total), $step == $total);
+		}
+		elseif ($step == 1) {
+			$this->log($message, true);
+		}
+		elseif ($step % 100) {
+			$this->log('.', false);
+		}
+		else {
+			$this->log(round($step * 100 / $total) . '%', true);
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- start
 	/**
 	 * Prints html head

@@ -24,4 +24,5 @@ abstract class Confirm
 	 * Confirmation message to display to the user.
 	 */
 	const MESSAGE = 'message';
+
 }

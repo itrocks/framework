@@ -8,9 +8,10 @@ use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tests\Objects\Component;
 use ITRocks\Framework\Tests\Objects\Composite;
-use ITRocks\Framework\Tests\Objects\Object;
+use ITRocks\Framework\Tests\Objects\Resource;
 use ITRocks\Framework\Tests\Objects\Salesman;
 use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Object builder from array unit tests
@@ -19,6 +20,8 @@ use ITRocks\Framework\Tests\Test;
  *
  * TODO may test 'component.name' => 'Component object' format
  * TODO should add tests for all compositions
+ *
+ * @group functional
  */
 class Object_Builder_Array_Test extends Test
 {
@@ -26,6 +29,8 @@ class Object_Builder_Array_Test extends Test
 	//------------------------------------------------------------------------------------ flushCache
 	/**
 	 * Flush DAO cache (if the plugin is enabled)
+	 *
+	 * @throws ReflectionException
 	 */
 	protected function flushCache()
 	{
@@ -39,45 +44,48 @@ class Object_Builder_Array_Test extends Test
 	//---------------------------------------------------------------- testExistingComponentSubObject
 	/**
 	 * What if we build an existing composite with its component sub-object
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExistingComponentSubObject()
 	{
-		Dao::begin();
 		$composite            = new Composite('Composite object');
 		$composite->component = new Component('Component object');
 		Dao::write($composite);
 		$this->flushCache();
 
 		$builder = new Object_Builder_Array(Composite::class);
-		$builder->build([
-			'id'        => Dao::getObjectIdentifier($composite),
-			'name'      => $composite->name,
-			'component' => ['name' => 'Component object']
-		]);
+		$builder->build(
+			[
+				'id'        => Dao::getObjectIdentifier($composite),
+				'name'      => $composite->name,
+				'component' => ['name' => 'Component object']
+			]
+		);
 
 		// only the main object : Dao::write() will always write the @composite property
 		$assume = [new Built_Object($composite)];
 
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
+		$this->assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($composite);
-		Dao::rollback();
 	}
 
 	//------------------------------------------------------------------------- testExistingSubObject
 	/**
 	 * What if we build an existing object and existing sub-objects
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExistingSubObject()
 	{
-		Dao::begin();
-		$object                   = new Object('Hello world');
+		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Salesman('Mandatory object');
 		$object->optional_object  = new Salesman('Optional object');
 		Dao::write($object);
 		$this->flushCache();
 
-		$builder = new Object_Builder_Array(Object::class);
+		$builder = new Object_Builder_Array(Resource::class);
 		$builder->build([
 			'id'                  => Dao::getObjectIdentifier($object),
 			'id_mandatory_object' => Dao::getObjectIdentifier($object->mandatory_object),
@@ -90,28 +98,28 @@ class Object_Builder_Array_Test extends Test
 		// (the default write controller will not write them even if data has changed)
 		$assume = [new Built_Object(Dao::searchOne($object))];
 
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
+		$this->assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($object);
 		Dao::delete($object->mandatory_object);
 		Dao::delete($object->optional_object);
-		Dao::rollback();
 	}
 
 	//--------------------------------------------------------------------- testExistingSubObjectData
 	/**
 	 * What if we build an existing object and data from sub-objects
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testExistingSubObjectData()
 	{
-		Dao::begin();
-		$object                   = new Object('Hello world');
+		$object                   = new Resource('Hello world');
 		$object->mandatory_object = new Salesman('Mandatory object');
 		$object->optional_object  = new Salesman('Optional object');
 		Dao::write($object);
 		$this->flushCache();
 
-		$builder = new Object_Builder_Array(Object::class);
+		$builder = new Object_Builder_Array(Resource::class);
 		$builder->build([
 			'id'               => Dao::getObjectIdentifier($object),
 			'name'             => $object->name,
@@ -127,12 +135,66 @@ class Object_Builder_Array_Test extends Test
 
 		// we have explicitely changed data from sub-objects, so they are explicitely built object
 		// (the default write controller will write them before the object that use them)
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
+		$this->assertEquals($assume, $builder->getBuiltObjects());
 
 		Dao::delete($object);
 		Dao::delete($object->mandatory_object);
 		Dao::delete($object->optional_object);
-		Dao::rollback();
+	}
+
+	//------------------------------------------------------------------------------ testNewSubObject
+	/**
+	 * The form contains data for a new mandatory or optional sub-object
+	 */
+	public function testNewSubObject()
+	{
+		$object                   = new Resource('Hello world');
+		$object->mandatory_object = new Resource('Mandatory object');
+		$object->optional_object  = new Resource('Optional object');
+
+		$builder = new Object_Builder_Array(Resource::class);
+		$builder->build(
+			[
+				'name'             => $object->name,
+				'mandatory_object' => $object->mandatory_object,
+				'optional_object'  => $object->optional_object
+			]
+		);
+
+		// only the main object, that contains the new sub-objects, will be generated
+		// if Dao::write() is called, the new sub-objects will be written because they are new
+		$assume = [new Built_Object($object)];
+
+		$this->assertEquals($assume, $builder->getBuiltObjects());
+	}
+
+	//-------------------------------------------------------------------------- testNewSubObjectData
+	/**
+	 * The form contains data for a new mandatory or optional sub-object
+	 */
+	public function testNewSubObjectData()
+	{
+		$object                   = new Resource('Hello world');
+		$object->mandatory_object = new Salesman('Mandatory object');
+		$object->optional_object  = new Salesman('Optional object');
+
+		$builder = new Object_Builder_Array(Resource::class);
+		$builder->build([
+			'name'             => $object->name,
+			'mandatory_object' => ['name' => $object->mandatory_object->name],
+			'optional_object'  => ['name' => $object->optional_object->name]
+		]);
+
+		// when sub-object data is set, the built objects will always contain those built sub-objects
+		// The default write controller will write the objects, then Dao::write() will not do the job
+		// again, as they will already exist in database at this step
+		$assume = [
+			new Built_Object($object->mandatory_object),
+			new Built_Object($object->optional_object),
+			new Built_Object($object)
+		];
+
+		$this->assertEquals($assume, $builder->getBuiltObjects());
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
@@ -149,60 +211,7 @@ class Object_Builder_Array_Test extends Test
 
 		$assume = [new Built_Object($salesman)];
 
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
-	}
-
-	//------------------------------------------------------------------------------ testNewSubObject
-	/**
-	 * The form contains data for a new mandatory or optional sub-object
-	 */
-	public function testNewSubObject()
-	{
-		$object                   = new Object('Hello world');
-		$object->mandatory_object = new Object('Mandatory object');
-		$object->optional_object  = new Object('Optional object');
-
-		$builder = new Object_Builder_Array(Object::class);
-		$builder->build([
-			'name'             => $object->name,
-			'mandatory_object' => $object->mandatory_object,
-			'optional_object'  => $object->optional_object
-		]);
-
-		// only the main object, that contains the new sub-objects, will be generated
-		// if Dao::write() is called, the new sub-objects will be written because they are new
-		$assume = [new Built_Object($object)];
-
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
-	}
-
-	//-------------------------------------------------------------------------- testNewSubObjectData
-	/**
-	 * The form contains data for a new mandatory or optional sub-object
-	 */
-	public function testNewSubObjectData()
-	{
-		$object                   = new Object('Hello world');
-		$object->mandatory_object = new Salesman('Mandatory object');
-		$object->optional_object  = new Salesman('Optional object');
-
-		$builder = new Object_Builder_Array(Object::class);
-		$builder->build([
-			'name'             => $object->name,
-			'mandatory_object' => ['name' => $object->mandatory_object->name],
-			'optional_object'  => ['name' => $object->optional_object->name]
-		]);
-
-		// when sub-object data is set, the built objects will always contain those built sub-objects
-		// The default write controller will write the objects, then Dao::write() will not do the job
-		// again, as they will already exist in database at this step
-		$assume = [
-			new Built_Object($object->mandatory_object),
-			new Built_Object($object->optional_object),
-			new Built_Object($object)
-		];
-
-		$this->assume(__METHOD__, $builder->getBuiltObjects(), $assume);
+		$this->assertEquals($assume, $builder->getBuiltObjects());
 	}
 
 }

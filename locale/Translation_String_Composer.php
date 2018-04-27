@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Locale;
 
 use ITRocks\Framework\AOP\Joinpoint\Around_Method;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -18,6 +19,7 @@ use ITRocks\Framework\Plugin\Registerable;
  */
 class Translation_String_Composer implements Registerable
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------------- holePipes
 	/**

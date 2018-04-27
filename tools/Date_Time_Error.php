@@ -17,6 +17,15 @@ class Date_Time_Error extends Date_Time
 	 */
 	public $error;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string The error entry
+	 */
+	public function __toString()
+	{
+		return $this->error;
+	}
+
 	//------------------------------------------------------------------------------------- fromError
 	/**
 	 * @param $date string
@@ -27,15 +36,6 @@ class Date_Time_Error extends Date_Time
 		$date_time        = new Date_Time_Error(self::$min_date);
 		$date_time->error = $date;
 		return $date_time;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string The error entry
-	 */
-	public function __toString()
-	{
-		return $this->error;
 	}
 
 }

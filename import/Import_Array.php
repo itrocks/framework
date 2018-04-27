@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Import;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
@@ -83,7 +84,7 @@ class Import_Array
 	 * The cursor will stay on the properties path row
 	 *
 	 * @param $this_constants string[] $value = string[$property_path]
-	 * @param $array          array $value = string[integer $row_number][integer $column_number]
+	 * @param $array          array    $value = string[integer $row_number][integer $column_number]
 	 */
 	protected static function addConstantsToArray(array $this_constants, array &$array)
 	{
@@ -119,6 +120,7 @@ class Import_Array
 	 * @param $class_name string
 	 * @param $search     array
 	 * @return array
+	 * @throws ReflectionException
 	 */
 	protected function createArrayReference($class_name, array $search = null)
 	{
@@ -161,8 +163,8 @@ class Import_Array
 				&& (ctype_upper($array_class_name[0]))
 				&& ((count($row) == 1) || !$row[1])
 			)
-			? $array_class_name
-			: null
+				? $array_class_name
+				: null
 		);
 	}
 
@@ -203,6 +205,7 @@ class Import_Array
 	 * @param $feature_name string
 	 * @param $parameters   array
 	 * @return View_Exception
+	 * @throws ReflectionException
 	 */
 	public static function getException($feature_name, array $parameters)
 	{
@@ -247,6 +250,7 @@ class Import_Array
 	 * @param $array      array $value = string[integer $row_number][integer $column_number]
 	 * @param $class_name string class name : if set, will use current list settings properties alias
 	 * @return string[] $property_path = string[integer $column_number]
+	 * @throws Exception
 	 */
 	public static function getPropertiesFromArray(array &$array, $class_name = null)
 	{
@@ -334,6 +338,9 @@ class Import_Array
 	 * Beware : first row must contain property paths, and will be removed !
 	 *
 	 * @param $array array $value = string[$row_number][$column_number]
+	 * @throws ReflectionException
+	 * @throws View_Exception
+	 * @throws Exception
 	 */
 	public function importArray(array &$array)
 	{
@@ -370,6 +377,8 @@ class Import_Array
 	 *
 	 * @param $class Import_Class
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
+	 * @throws ReflectionException
+	 * @throws View_Exception
 	 */
 	protected function importArrayClass(Import_Class $class, array &$array)
 	{
@@ -378,7 +387,9 @@ class Import_Array
 		$class_properties_column = $this->properties_column[$property_path];
 		$simulation              = $this->simulation;
 		while (($row = next($array)) && (!$this->simulation || $simulation)) {
-			$search = $this->getSearchObject($row, $class->identify_properties, $class_properties_column);
+			$search = $this->getSearchObject(
+				$row, $class->identify_properties, $class_properties_column
+			);
 			$object = in_array(
 				$this->properties_link[$property_path],
 				[Link_Annotation::COLLECTION, Link_Annotation::MAP]
@@ -398,6 +409,7 @@ class Import_Array
 	 * @param $class_properties_column integer[]
 	 * @return object
 	 * @throws View_Exception
+	 * @throws ReflectionException
 	 */
 	public function importSearchObject(
 		$search, array $row, Import_Class $class, array $class_properties_column
@@ -440,6 +452,7 @@ class Import_Array
 	 * @param $use_reverse_translation boolean if true, will try reverse translation of property names
 	 * @param $properties_alias        string[] $property_path = string[string $property_alias]
 	 * @return string
+	 * @throws Exception
 	 */
 	public static function propertyPathOf(
 		$class_name, $property_path, $use_reverse_translation = false, array $properties_alias = null
@@ -451,7 +464,7 @@ class Import_Array
 			$property_class_name = $class_name;
 			$property_names      = [];
 			foreach (explode(DOT, $property_path) as $property_name) {
-				if ($asterisk    = (substr($property_name, -1) == '*')) {
+				if ($asterisk = (substr($property_name, -1) == '*')) {
 					$property_name = substr($property_name, 0, -1);
 				}
 				$property      = null;
@@ -468,6 +481,7 @@ class Import_Array
 						$property_name = $translated_property_name;
 					}
 					catch (ReflectionException $e) {
+						// TODO do not catch without at least reporting the problem
 					}
 				}
 				$property_names[] = $property_name . ($asterisk ? '*' : '');
@@ -539,8 +553,8 @@ class Import_Array
 	protected function sameObject($object1, $object2)
 	{
 		return ($object1 instanceof Date_Time)
-				? $this->sameArray(get_object_vars($object1), get_object_vars($object2))
-				: Dao::is($object1, $object2);
+			? $this->sameArray(get_object_vars($object1), get_object_vars($object2))
+			: Dao::is($object1, $object2);
 	}
 
 	//----------------------------------------------------------------------------------- simulateNew
@@ -582,8 +596,7 @@ class Import_Array
 	 */
 	protected function sortedClasses()
 	{
-		uksort($this->settings->classes, function($class_path_1, $class_path_2)
-		{
+		uksort($this->settings->classes, function ($class_path_1, $class_path_2) {
 			return ($class_path_1 == '')
 				|| (substr_count($class_path_1, DOT) < substr_count($class_path_2, DOT));
 		});
@@ -597,6 +610,7 @@ class Import_Array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
+	 * @throws ReflectionException
 	 */
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
@@ -634,6 +648,7 @@ class Import_Array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
+	 * @throws ReflectionException
 	 */
 	protected function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
 	{

@@ -261,10 +261,10 @@ class Compiler extends Cache implements
 		$first_group   = true;
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 
+		$wave = 0;
 		foreach ($this->compilers as $compilers) {
-			if (isset($GLOBALS['D'])) {
-				echo "- GROUP COMPILE" . BRLF;
-			}
+			$this->text_output->log('Wave ' . ++$wave . ' on ' . count($this->compilers));
+			$this->text_output->log('Compilers : '. join(', ', array_keys($compilers)));
 			// save sources in oder to give them to next compilers too
 			/** @var $compilers ICompiler[] */
 			$this->saved_sources = $this->sources;
@@ -281,9 +281,6 @@ class Compiler extends Cache implements
 		$this->sources = null;
 		$this->text_output->log('Compilation done');
 		$this->text_output->end();
-		if (isset($GLOBALS['D'])) {
-			echo "- END COMPILE" . BRLF;
-		}
 	}
 
 	//--------------------------------------------------------------------------------- compileSource
@@ -325,9 +322,11 @@ class Compiler extends Cache implements
 	 */
 	private function compileSources(array $compilers, $first_group, $cache_dir)
 	{
-		$this->text_output->log('Compiling sources...', false);
 		$this->sortSourcesByParentsCount();
+		$counter = 0;
+		$total   = count($this->sources);
 		foreach ($this->sources as $source) {
+			$this->text_output->progress('Compiling sources......', ++$counter, $total);
 			$this->compileSource($source, $compilers, $cache_dir, $first_group);
 		}
 
@@ -338,7 +337,6 @@ class Compiler extends Cache implements
 				$this->saved_sources[$source_class_name] = $source;
 			}
 		}
-		$this->text_output->log('Done');
 	}
 
 	//------------------------------------------------------------------------------ getClassFileName
@@ -479,14 +477,12 @@ class Compiler extends Cache implements
 	 */
 	private function replaceDependenciesForSources(array $sources)
 	{
-		$i = 0;
+		$counter = 0;
+		$total   = count($sources);
 		foreach ($sources as $source) {
-			$this->text_output->log(
-				!(++$i % 100) ? (round($i * 100 / count($sources)) . '%') : '.', !($i % 100)
-			);
+			$this->text_output->progress('Replace dependencies...', ++$counter, $total);
 			$this->replaceDependencies($source);
 		}
-		$this->text_output->log('Replace dependencies done');
 	}
 
 	//------------------------------------------------------------------------------------- serialize

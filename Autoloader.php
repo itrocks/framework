@@ -1,9 +1,11 @@
 <?php
 namespace ITRocks\Framework;
 
+use Exception;
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Paths;
+use ReflectionException;
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
@@ -16,6 +18,8 @@ class Autoloader
 	 * Includes the php file that contains the given class (must contain namespace)
 	 *
 	 * @param $class_name string class name (with or without namespace)
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function autoload($class_name)
 	{
@@ -65,10 +69,21 @@ class Autoloader
 		return false;
 	}
 
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * Register autoloader
+	 */
+	public function register()
+	{
+		include_once __DIR__ . '/../../vendor/autoload.php';
+		spl_autoload_register([$this, 'autoload'], true, true);
+	}
+
 	//------------------------------------------------------------------------------------- tryToLoad
 	/**
 	 * @param $class_name string class name (with or without namespace)
 	 * @return integer|boolean
+	 * @throws Exception
 	 */
 	public function tryToLoad($class_name)
 	{
@@ -87,16 +102,6 @@ class Autoloader
 			$result = false;
 		}
 		return $result;
-	}
-
-	//-------------------------------------------------------------------------------------- register
-	/**
-	 * Register autoloader
-	 */
-	public function register()
-	{
-		include_once __DIR__ . '/../../vendor/autoload.php';
-		spl_autoload_register([$this, 'autoload'], true, true);
 	}
 
 }

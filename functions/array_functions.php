@@ -2,12 +2,13 @@
 
 use ITRocks\Framework\Debug\Dead_Or_Alive;
 
+//---------------------------------------------------------------------------------------- arrayCut
 /**
  * Cuts a string to create an array, following an array of elements length.
  *
- * @param $string            string The source string tu cut
- * @param $lengths           integer[] The length of each element into the string
- * @param $ignore_characters string|boolean Some characters to ignore. Optional.
+ * @param $string                          string The source string tu cut
+ * @param $lengths                         integer[] The length of each element into the string
+ * @param $ignore_characters               string|boolean Some characters to ignore. Optional
  * @param $get_trailing_characters_element boolean Gets the trailing characters element if true
  * @return string[] The resulting array
  */
@@ -16,7 +17,7 @@ function arrayCut(
 ) {
 	if (is_bool($ignore_characters)) {
 		$get_trailing_characters_element = $ignore_characters;
-		$ignore_characters = '';
+		$ignore_characters               = '';
 	}
 	if (strlen($ignore_characters)) {
 		$string = str_replace(str_split($ignore_characters), '', $string);
@@ -73,7 +74,7 @@ function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show
 	return $diff ? $diff : false;
 }
 
-//------------------------------------------------------------------------ function arrayFormRevert
+//--------------------------------------------------------------------------------- arrayFormRevert
 /**
  * Reverts an array coming from a dynamic form result
  *
@@ -148,7 +149,7 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 	$array = array_merge($array, $array_insert, $second_array);
 }
 
-//------------------------------------------------------------------------------ objectInsertSorted
+//------------------------------------------------------------------------------- arrayInsertSorted
 /**
  * An advanced insert function to insert values into an array, with continuous sort
  *
@@ -162,7 +163,7 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 function arrayInsertSorted(array $array, $value, $compare = null)
 {
 	$new_array = [];
-	$callable  = $compare ?: function($value1, $value2) { return strcmp($value1, $value2); };
+	$callable  = $compare ?: function ($value1, $value2) { return strcmp($value1, $value2); };
 	// copy existing values, and insert the new value at the right place
 	$inserted = false;
 	foreach ($array as $key => $existing_value) {
@@ -434,12 +435,12 @@ function objectInsertSorted(array $array, $object, $compare)
 		$callable = $compare;
 	}
 	elseif (is_string($compare)) {
-		$callable = function($object1, $object2) use ($compare) {
+		$callable = function ($object1, $object2) use ($compare) {
 			return strcmp($object1->$compare, $object2->$compare);
 		};
 	}
 	else {
-		$callable = function($object1, $object2) use ($compare) {
+		$callable = function ($object1, $object2) use ($compare) {
 			foreach ($compare as $property_name) {
 				$comparison = strcmp($object1->$property_name, $object2->$property_name);
 				if ($comparison) {
@@ -492,7 +493,7 @@ function objectToArray($object, $get_private = false)
 		}
 		else {
 			$protected_object = $object;
-			$object = $get_private ? ((array)$object) : get_object_vars($object);
+			$object           = $get_private ? ((array)$object) : get_object_vars($object);
 			$protected_object->__objectToArray = true;
 		}
 	}

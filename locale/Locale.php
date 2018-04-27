@@ -6,6 +6,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Number_Format;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -19,6 +20,7 @@ use ITRocks\Framework\Tools\Date_Time;
 class Locale implements Configurable
 {
 	use Current { current as private pCurrent; }
+	use Has_Get;
 
 	//----------------------------------------------------- Locale configuration array keys constants
 
@@ -145,7 +147,7 @@ class Locale implements Configurable
 	/**
 	 * @param $date_format Date_Format|string if string, must be a date format (ie 'd/m/Y')
 	 */
-	private function setDateFormat($date_format)
+	public function setDateFormat($date_format)
 	{
 		$this->date_format = ($date_format instanceof Date_Format)
 			? $date_format
@@ -156,7 +158,7 @@ class Locale implements Configurable
 	/**
 	 * @param $language string
 	 */
-	private function setLanguage($language)
+	public function setLanguage($language)
 	{
 		$this->language     = $language;
 		$this->translations = new Translator($this->language);
@@ -168,7 +170,7 @@ class Locale implements Configurable
 	 *
 	 * @param Number_Format|array
 	 */
-	private function setNumberFormat($number_format)
+	public function setNumberFormat($number_format)
 	{
 		$this->number_format = ($number_format instanceof Number_Format)
 			? $number_format

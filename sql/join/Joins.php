@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Sql\Join;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
@@ -15,6 +16,7 @@ use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
 use ITRocks\Framework\Sql\Link_Table;
 use ITRocks\Framework\Tools\Namespaces;
+use ReflectionException;
 
 /**
  * This builds and stores SQL tables joins in order to make easy automatic joins generation
@@ -96,11 +98,12 @@ class Joins
 	 *
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
+	 * @throws ReflectionException
 	 */
 	public function __construct($starting_class_name, array $paths = [])
 	{
 		$this->alias_counter = 1;
-		$this->classes[''] = $starting_class_name;
+		$this->classes['']   = $starting_class_name;
 		$this->addProperties('', $starting_class_name);
 		foreach ($paths as $path) {
 			$this->add($path);
@@ -114,6 +117,8 @@ class Joins
 	 * @param $path  string full path to desired property, starting from starting class
 	 * @param $depth integer for internal use : please do not use this
 	 * @return Join the added join, or null if $path does not generate any join
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function add($path, $depth = 0)
 	{
@@ -133,7 +138,7 @@ class Joins
 				return $this->link_joins[$path];
 			}
 		}
-		$join = new Join();
+		$join               = new Join();
 		$foreign_class_name = (strpos($master_property_name, '->'))
 			? $this->addReverseJoin($join, $master_path, $master_property_name, $path)
 			: $this->addSimpleJoin($join, $master_path, $master_property_name, $path);
@@ -154,6 +159,7 @@ class Joins
 	 * @param $foreign_path       string
 	 * @param $depth              integer
 	 * @return Join
+	 * @throws ReflectionException
 	 */
 	private function addFinalize(
 		Join $join, $master_path, $foreign_class_name, $foreign_path, $depth
@@ -197,13 +203,14 @@ class Joins
 	 * @param $linked_class_name  string     the linked class name (the value of @link)
 	 * @param $join_mode          string
 	 * @return Reflection_Property[] the properties that come from the linked class,
-	 * for further exclusion
+	 *                               for further exclusion
+	 * @throws Exception
 	 */
 	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
-		$linked_class    = new Reflection_Class($linked_class_name);
-		$master_property = $class->getCompositeProperty($linked_class_name);
-		$join = new Join();
+		$linked_class          = new Reflection_Class($linked_class_name);
+		$master_property       = $class->getCompositeProperty($linked_class_name);
+		$join                  = new Join();
 		$join->foreign_alias   = 't' . $this->alias_counter;
 		$join->foreign_column  = 'id';
 		$join->foreign_class   = Builder::className($linked_class_name);
@@ -222,18 +229,18 @@ class Joins
 		$this->id_link_joins[$path] = $join;
 		$this->link_joins[$path]    = $join;
 		$more_linked_class_name     = Class_\Link_Annotation::of($linked_class)->value;
-		$exclude_properties = $more_linked_class_name
+		$exclude_properties         = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
 		foreach ($linked_class->getProperties([T_EXTENDS, T_USE]) as $property) {
 			if (!$property->isStatic() && !isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
 				$property_path = ($path ? $path . DOT : '') . $property->name;
-				$type = $property->getType();
+				$type          = $property->getType();
 				if ($type->isClass()) {
 					$this->classes[$property_path] = $property->getType()->getElementTypeAsString();
 				}
-				$this->link_joins[$property_path] = $join;
+				$this->link_joins[$property_path]    = $join;
 				$exclude_properties[$property->name] = true;
 			}
 		}
@@ -248,26 +255,30 @@ class Joins
 	 * @param $foreign_class_name string
 	 * @param $property           Reflection_Property
 	 * @param $reverse            boolean
+	 * @throws ReflectionException
 	 */
 	private function addLinkedJoin(
 		Join $join, $master_path, $foreign_path, $foreign_class_name,
 		Reflection_Property $property, $reverse = false
 	) {
-		$link_table = new Link_Table($property);
-		$linked_join = new Join();
+		$link_table                  = new Link_Table($property);
+		$linked_join                 = new Join();
 		$linked_join->foreign_column = $reverse
-			? $link_table->foreignColumn() : $link_table->masterColumn();
-		$linked_join->foreign_table = $link_table->table();
-		$linked_join->master_column = 'id';
-		$linked_join->mode          = $join->mode;
+			? $link_table->foreignColumn()
+			: $link_table->masterColumn();
+		$linked_join->foreign_table           = $link_table->table();
+		$linked_join->master_column           = 'id';
+		$linked_join->mode                    = $join->mode;
 		$this->joins[$foreign_path . '-link'] = $this->addFinalize(
 			$linked_join, $master_path ? $master_path : 'id', $foreign_class_name, $foreign_path, 1
 		);
-		$join->foreign_column  = 'id';
-		$join->linked_join     = $linked_join;
-		$join->master_alias    = $linked_join->foreign_alias;
-		$join->master_column   = $reverse ? $link_table->masterColumn() : $link_table->foreignColumn();
-		$join->master_property = $property;
+		$join->foreign_column = 'id';
+		$join->linked_join    = $linked_join;
+		$join->master_alias   = $linked_join->foreign_alias;
+		$join->master_column  = $reverse
+			? $link_table->masterColumn()
+			: $link_table->foreignColumn();
+		$join->master_property                            = $property;
 		$this->linked_tables[$linked_join->foreign_table] = [
 			$join->master_column, $linked_join->foreign_column
 		];
@@ -291,6 +302,7 @@ class Joins
 	 *
 	 * @param $paths_array string[]
 	 * @return Joins
+	 * @throws ReflectionException
 	 */
 	public function addMultiple(array $paths_array)
 	{
@@ -310,12 +322,14 @@ class Joins
 	 * @param $path       string
 	 * @param $class_name string
 	 * @param $join_mode  string
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
-		$class = new Link_Class($class_name);
+		$class                         = new Link_Class($class_name);
 		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
-		$linked_class_name = Class_\Link_Annotation::of($class)->value;
+		$linked_class_name             = Class_\Link_Annotation::of($class)->value;
 		if ($linked_class_name) {
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
 		}
@@ -323,12 +337,14 @@ class Joins
 
 	//-------------------------------------------------------------------------------- addReverseJoin
 	/**
+	 * TODO use @store_name to get correct master and foreign columns name
+	 *
 	 * @param $join                 Join
 	 * @param $master_path          string
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
-	 * @todo use @store_name to get correct master and foreign columns name
+	 * @throws Exception
 	 */
 	private function addReverseJoin(
 		Join $join, $master_path, $master_property_name, $foreign_path
@@ -372,6 +388,8 @@ class Joins
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function addSimpleJoin(Join $join, $master_path, $master_property_name, $foreign_path)
 	{
@@ -477,19 +495,6 @@ class Joins
 		return isset($this->classes[$column_name]) ? $this->classes[$column_name] : null;
 	}
 
-	//------------------------------------------------------------------------------------ getClasses
-	/**
-	 * Gets an array of used classes names
-	 *
-	 * Classes can be returned twice if they are used by several property paths
-	 *
-	 * @return string[] key is the path of the matching property
-	 */
-	public function getClasses()
-	{
-		return $this->classes;
-	}
-
 	//--------------------------------------------------------------------------------- getClassNames
 	/**
 	 * Gets an array of used classes names
@@ -511,6 +516,19 @@ class Joins
 	public function getClassProperties($class_name)
 	{
 		return $this->properties[$class_name];
+	}
+
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Gets an array of used classes names
+	 *
+	 * Classes can be returned twice if they are used by several property paths
+	 *
+	 * @return string[] key is the path of the matching property
+	 */
+	public function getClasses()
+	{
+		return $this->classes;
 	}
 
 	//--------------------------------------------------------------------------------- getIdLinkJoin
@@ -629,6 +647,7 @@ class Joins
 	 * Gets starting class as a Reflection_Class object
 	 *
 	 * @return Reflection_Class
+	 * @throws ReflectionException
 	 */
 	public function getStartingClass()
 	{
@@ -659,6 +678,7 @@ class Joins
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
 	 * @return Joins
+	 * @throws ReflectionException
 	 */
 	public static function newInstance($starting_class_name, array $paths = [])
 	{

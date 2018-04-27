@@ -10,7 +10,10 @@ use ITRocks\Framework\Plugin\Configurable;
 class Html_Session implements Activable, Configurable
 {
 
-	//----------------------------------------------- Html session configuration array keys constants
+	//------------------------------------------------------------------------------------ USE_COOKIE
+	/**
+	 * Html session configuration array keys constant
+	 */
 	const USE_COOKIE = 'use_cookie';
 
 	//----------------------------------------------------------------------------------- $use_cookie

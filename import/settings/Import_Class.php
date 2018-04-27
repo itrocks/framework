@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
+use ReflectionException;
 use Serializable;
 
 /**
@@ -27,6 +28,25 @@ class Import_Class implements Serializable
 	 */
 	public $constants = [];
 
+	//-------------------------------------------------------------------------- $identify_properties
+	/**
+	 * @var Import_Property[] key is the name of the property
+	 */
+	public $identify_properties = [];
+
+	//---------------------------------------------------------------------------- $ignore_properties
+	/**
+	 * @var Import_Property[] key is the name of the property
+	 */
+	public $ignore_properties = [];
+
+	//------------------------------------------------------------------- $object_not_found_behaviour
+	/**
+	 * @values create_new_value, do_nothing, tell_it_and_stop_import
+	 * @var string
+	 */
+	public $object_not_found_behaviour = 'do_nothing';
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Reflection_Property cache : the properties object matching write_properties
@@ -42,25 +62,6 @@ class Import_Class implements Serializable
 	 * @var string[] key is the name of the property
 	 */
 	public $property_path;
-
-	//------------------------------------------------------------------- $object_not_found_behaviour
-	/**
-	 * @var string
-	 * @values create_new_value, do_nothing, tell_it_and_stop_import
-	 */
-	public $object_not_found_behaviour = 'do_nothing';
-
-	//-------------------------------------------------------------------------- $identify_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
-	public $identify_properties = [];
-
-	//---------------------------------------------------------------------------- $ignore_properties
-	/**
-	 * @var Import_Property[] key is the name of the property
-	 */
-	public $ignore_properties = [];
 
 	//--------------------------------------------------------------------------- $unknown_properties
 	/**
@@ -85,7 +86,7 @@ class Import_Class implements Serializable
 	) {
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
-			$this->name = Names::classToDisplay($class_name);
+			$this->name       = Names::classToDisplay($class_name);
 		}
 		if (isset($object_not_found_behaviour)) {
 			$this->object_not_found_behaviour = $object_not_found_behaviour;
@@ -107,6 +108,8 @@ class Import_Class implements Serializable
 	//----------------------------------------------------------------------------------- addConstant
 	/**
 	 * Adds a new constant to the list : default value is empty and default name is random
+	 *
+	 * @throws ReflectionException
 	 */
 	public function addConstant()
 	{
@@ -114,7 +117,7 @@ class Import_Class implements Serializable
 			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {
 			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
-				$property = new Reflection_Property_Value($property->class, $property->name);
+				$property              = new Reflection_Property_Value($property->class, $property->name);
 				$property->final_class = $this->class_name;
 				$this->constants[$property->name] = $property;
 				break;
@@ -128,6 +131,7 @@ class Import_Class implements Serializable
 	 * in order to avoid crashes when some components of the setting disappeared in the meantime.
 	 *
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
+	 * @throws ReflectionException
 	 */
 	public function cleanup()
 	{

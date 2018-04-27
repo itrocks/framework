@@ -9,102 +9,73 @@ use ITRocks\Framework\Tests\Test;
 class Array_Functions_Test extends Test
 {
 
+	//------------------------------------------------------------------------------ arrayCutProvider
+	/**
+	 * @return array
+	 * @see testArrayCut
+	 */
+	public function arrayCutProvider()
+	{
+		return [
+			'simple complete call' => [
+				['Word', '123456', 'Last words', 'Trailing things'], [4, 6, 10, 15]
+			],
+			'ignore a single character' => [
+				['Word', '123456', 'Lastwords', 'Trailingthings'], [4, 6, 9, 14], SP
+			],
+			'ignore multiple characters' => [
+				['Wrd', '13456', 'Lastwrds', 'Trailingthings'], [3, 5, 8, 14], '2o '
+			],
+			'ignore the "trailing things" string' => [
+				['Word', '123456', 'Last words'], [4, 6, 10]
+			],
+			'get the complete trailing string without having to tell its size' => [
+				['Word', '123456', 'Last words', 'Trailing things'], [4, 6, 10], '', true
+			],
+			'get the complete trailing string without having to tell its size and ignored letters' => [
+				['Wrd', '13456', 'Lastwrds', 'Trailingthings'], [3, 5, 8], '2o ', true
+			],
+			'not enough elements : we ignore the end of the string' => [
+				['Word', '123456'], [4, 6]
+			],
+			'more elements to cut than available into the string : ignore those too many cuts' => [
+				['Word', '123456', 'Last words', 'Trailing things', false, false, false],
+				[4, 6, 10, 15, 8, 3, 4]
+			],
+			'the same with the last zone too big will give us the same result' => [
+				['Word', '123456', 'Last words', 'Trailing things', false, false, false],
+				[4, 6, 10, 20, 8, 3, 4]
+			]
+		];
+	}
+
 	//---------------------------------------------------------------------------------- testArrayCut
 	/**
 	 * All tests on arrayCut()
 	 *
-	 * @return boolean
+	 * @dataProvider arrayCutProvider
+	 * @param $expected                        string[]
+	 * @param $lengths                         integer[]
+	 * @param $ignore_characters               string|boolean
+	 * @param $get_trailing_characters_element boolean
 	 */
-	public function testArrayCut()
-	{
+	public function testArrayCut(
+		$expected, $lengths, $ignore_characters = null, $get_trailing_characters_element = null
+	) {
 		$string = 'Word123456Last wordsTrailing things';
-		$result = true;
-
-		// a simple complete call
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'complete',
-			arrayCut($string, [4, 6, 10, 15]),
-			['Word', '123456', 'Last words', 'Trailing things']
+		$this->assertEquals(
+			$expected, arrayCut($string, $lengths, $ignore_characters, $get_trailing_characters_element)
 		);
-		$result &= $ok;
-
-		// ignore a single character (space)
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'ignore-single',
-			arrayCut($string, [4, 6, 9, 14], SP),
-			['Word', '123456', 'Lastwords', 'Trailingthings']
-		);
-		$result &= $ok;
-
-		// ignore multiple characters
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'ignore-multiple',
-			arrayCut($string, [3, 5, 8, 14], '2o '),
-			['Wrd', '13456', 'Lastwrds', 'Trailingthings']
-		);
-		$result &= $ok;
-
-		// ignore the 'trailing things' string
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'missing',
-			arrayCut($string, [4, 6, 10]),
-			['Word', '123456', 'Last words']
-		);
-		$result &= $ok;
-
-		// get the complete trailing string without having to tell its size
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'trailing',
-			arrayCut($string, [4, 6, 10], '', true),
-			['Word', '123456', 'Last words', 'Trailing things']
-		);
-		$result &= $ok;
-
-		// get the complete trailing string without having to tell its size, case of ignored letters
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'trailing-ignore',
-			arrayCut($string, [3, 5, 8], '2o ', true),
-			['Wrd', '13456', 'Lastwrds', 'Trailingthings']
-		);
-		$result &= $ok;
-
-		// not enough elements : we ignore the end of the string
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'not-enough',
-			arrayCut($string, [4, 6]),
-			['Word', '123456']
-		);
-		$result &= $ok;
-
-		// more elements to cut than available into the string : ignore those too many cuts
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'more',
-			arrayCut($string, [4, 6, 10, 15, 8, 3, 4]),
-			['Word', '123456', 'Last words', 'Trailing things', false, false, false]
-		);
-		$result &= $ok;
-
-		// the same with the last zone too big will give us the same result
-		$ok = $this->assume(
-			__FUNCTION__ . DOT . 'many-more',
-			arrayCut($string, [4, 6, 10, 20, 8, 3, 4]),
-			['Word', '123456', 'Last words', 'Trailing things', false, false, false]
-		);
-		$result &= $ok;
-
-		return $result;
 	}
 
 	//--------------------------------------------------------------------------- testArrayFormRevert
 	/**
 	 * Simple test of arrayFormRevert()
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevert()
 	{
 		$form = [
-			'id' => [1, 2, 3],
+			'id'      => [1, 2, 3],
 			'id_item' => [101, 102, 103]
 		];
 		$array = [
@@ -112,87 +83,79 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103]
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($form), $array);
+		$this->assertEquals($array, arrayFormRevert($form));
 	}
 
 	//-------------------------------------------------------------------- testArrayFormRevertComplex
 	/**
 	 * Complex well formatted form test of arrayFormRevert()
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertComplex()
 	{
 		$form = [
 			'address' => ['address 1', ''],
-			'city' => [['id' => 11, 'name' => 'NEW-YORK'], ['name' => '']],
-			'id' => ['id1'],
-			'types' => [['client', 'delivery', 'invoicee']]
+			'city'    => [['id' => 11, 'name' => 'NEW-YORK'], ['name' => '']],
+			'id'      => ['id1'],
+			'types'   => [['client', 'delivery', 'invoicee']]
 		];
 		$array = [
 			[
 				'address' => 'address 1',
-				'city' => ['id' => 11, 'name' => 'NEW-YORK'],
-				'id' => 'id1',
-				'types' => ['client', 'delivery', 'invoicee']
+				'city'    => ['id' => 11, 'name' => 'NEW-YORK'],
+				'id'      => 'id1',
+				'types'   => ['client', 'delivery', 'invoicee']
 			],
 			[
 				'address' => '',
-				'city' => ['name' => '']
+				'city'    => ['name' => '']
 			]
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($form, false), $array);
+		$this->assertEquals($array, arrayFormRevert($form, false));
 	}
 
 	//----------------------------------------------------------------- testArrayFormRevertComplexBad
 	/**
 	 * Complex badly formatted form test of arrayFormRevert()
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertComplexBad()
 	{
 		$form = [
 			'address' => ['address 1', ''],
-			'city' => [['id' => 11, 'name' => 'NEW-YORK'], ['name' => '']],
-			'id' => ['id1'],
-			'types' => [['client' => 'on', 'delivery' => 'on', 'invoicee' => 'on']]
+			'city'    => [['id' => 11, 'name' => 'NEW-YORK'], ['name' => '']],
+			'id'      => ['id1'],
+			'types'   => [['client' => 'on', 'delivery' => 'on', 'invoicee' => 'on']]
 		];
 		$array = [
 			[
 				'address' => 'address 1',
-				'city' => ['id' => 11, 'name' => 'NEW-YORK'],
-				'id' => 'id1',
-				'types' => ['client' => 'on', 'delivery' => 'on', 'invoicee' => 'on']
+				'city'    => ['id' => 11, 'name' => 'NEW-YORK'],
+				'id'      => 'id1',
+				'types'   => ['client' => 'on', 'delivery' => 'on', 'invoicee' => 'on']
 			],
 			[
 				'address' => '',
-				'city' => ['name' => '']
+				'city'    => ['name' => '']
 			]
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($form, false), $array);
+		$this->assertEquals($array, arrayFormRevert($form, false));
 	}
 
 	//----------------------------------------------------------------- testArrayFormRevertOfOneMatch
 	/**
 	 * Unit test for arrayFormRevert() call on preg_match_all() call resulting $matches
 	 * with one result
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertOfOneMatch()
 	{
 		$matches = [['match 1 found'], ['match 1 elem 1'], ['match 1 elem 2']];
 		$result  = [['match 1 found', 'match 1 elem 1', 'match 1 elem 2']];
-		return $this->assume(__FUNCTION__, arrayFormRevert($matches), $result);
+		$this->assertEquals($result, arrayFormRevert($matches));
 	}
 
 	//------------------------------------------------------------- testArrayFormRevertOfThreeMatches
 	/**
 	 * Unit test for arrayFormRevert() call on preg_match_all() call resulting $matches
 	 * with three results
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertOfThreeMatches()
 	{
@@ -206,14 +169,12 @@ class Array_Functions_Test extends Test
 			['match 2 found', 'match 2 elem 1', 'match 2 elem 2'],
 			['match 3 found', 'match 3 elem 1', 'match 3 elem 2']
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($matches), $result);
+		$this->assertEquals($result, arrayFormRevert($matches));
 	}
 
 	//-------------------------------------------------------------------- testArrayFormRevertWithSet
 	/**
 	 * Test of arrayFormRevert() with a string[] field (string set)
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertWithSet()
 	{
@@ -227,14 +188,12 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103, 'colors' => ['white', 'red']]
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($form), $array);
+		$this->assertEquals($array, arrayFormRevert($form));
 	}
 
 	//-------------------------------------------------------------- testArrayFormRevertWithStringSet
 	/**
 	 * Test of arrayFormRevert() with a string[] field with string keys (string set)
-	 *
-	 * @return boolean
 	 */
 	public function testArrayFormRevertWithStringSet()
 	{
@@ -248,7 +207,7 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103, 'colors' => ['white' => 'white', 'red' => 'red']]
 		];
-		return $this->assume(__FUNCTION__, arrayFormRevert($form, false), $array);
+		$this->assertEquals($array, arrayFormRevert($form, false));
 	}
 
 }

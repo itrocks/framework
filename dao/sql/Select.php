@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
-//------------------------------------------------------------------------------------------ Select
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Dao_Function;
@@ -12,6 +12,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionException;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query
@@ -180,7 +181,7 @@ class Select
 	 *
 	 * @param $class_name string The name of the main business class to start from
 	 * @param $columns    string[]|Column[] If not set, the columns names will be taken from the
-	 *        query result
+	 *                    query result
 	 * @param $link       Link If not set, the default link will be Dao::current()
 	 */
 	public function __construct($class_name = null, array $columns = null, Link $link = null)
@@ -215,13 +216,14 @@ class Select
 	/**
 	 * @param $data_store List_Data|array[]|object[]
 	 * @return List_Data|array[]|object[]|null
+	 * @throws ReflectionException
 	 */
 	private function doFetch($data_store)
 	{
 		if ($this->class_name && !($data_store instanceof List_Data)) {
 			$this->object_builder = new Object_Builder_Array($this->class_name, false);
 			$this->object_builder->ignore_unknown_properties = $this->ignore_unknown_properties;
-			$data_store = [];
+			$data_store                                      = [];
 		}
 		$first = true;
 		while ($result = $this->link->fetchRow($this->result_set)) {
@@ -245,6 +247,7 @@ class Select
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
+	 * @throws Exception
 	 */
 	public function executeClassColumns($data_store = null, $key = null)
 	{
@@ -260,6 +263,7 @@ class Select
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
+	 * @throws Exception
 	 */
 	public function executeQuery($query, $data_store = null, array $key = null)
 	{
@@ -274,6 +278,7 @@ class Select
 	 * @param $result_set mixed A Link::query() result set
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @return List_Data|array[]|object[]|null
+	 * @throws Exception
 	 */
 	public function fetchResultRows($result_set, $data_store = null)
 	{
@@ -342,6 +347,7 @@ class Select
 	 * - $column_names
 	 *
 	 * @param $data_store List_Data|array[]|object[]|null
+	 * @throws Exception
 	 */
 	private function prepareFetch($data_store)
 	{
@@ -350,7 +356,7 @@ class Select
 		$this->column_names = [];
 		$this->i_to_j       = [];
 		$classes_index      = [];
-		$j = 0;
+		$j                  = 0;
 		for ($i = 0; $i < $this->column_count; $i++) {
 			$this->column_names[$i] = $column_name = $this->link->getColumnName($this->result_set, $i);
 			if (strpos($column_name, ':') == false) {
@@ -362,7 +368,7 @@ class Select
 					$this->preparePathClass($split[0]);
 				}
 				$this->column_names[$i] = $column_name = $split[1];
-				$main_property                         = $split[0];
+				$main_property          = $split[0];
 				$his_j = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
 				if (!isset($his_j)) {
 					$his_j                         = $j;
@@ -389,6 +395,7 @@ class Select
 	 * Must be called after prepareColumns()
 	 *
 	 * @param $property_name string
+	 * @throws Exception
 	 */
 	private function preparePathClass($property_name)
 	{
@@ -400,8 +407,9 @@ class Select
 	//---------------------------------------------------------------------------------- prepareQuery
 	/**
 	 * @param $filter_object object|array|false source object for filter, set properties will be used
-	 *        for search. Can be an array associating properties names to matching search value too.
-	 *        Special values : null for no filter, false to get no result.
+	 *                       for search. Can be an array associating properties names to matching
+	 *                       search value too.
+	 *                       Special values : null for no filter, false to get no result.
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return string
 	 */
@@ -425,6 +433,7 @@ class Select
 	 * @param $result array
 	 * @param $first  boolean
 	 * @return array
+	 * @throws ReflectionException
 	 */
 	private function resultToRow(array $result, $first)
 	{

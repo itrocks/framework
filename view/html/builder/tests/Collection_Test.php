@@ -14,6 +14,8 @@ use ITRocks\Framework\Widget\Edit\Edit_Controller;
 
 /**
  * HTML view collection builder tests
+ *
+ * @group functional
  */
 class Collection_Test extends Test
 {
@@ -25,24 +27,24 @@ class Collection_Test extends Test
 	private function buildVehicle()
 	{
 		// vehicle door pieces
-		$lever = new Vehicle_Door_Piece();
-		$lever->name = 'lever';
-		$lock = new Vehicle_Door_Piece();
-		$lock->name = 'lock';
-		$window = new Vehicle_Door_Piece();
+		$lever        = new Vehicle_Door_Piece();
+		$lever->name  = 'lever';
+		$lock         = new Vehicle_Door_Piece();
+		$lock->name   = 'lock';
+		$window       = new Vehicle_Door_Piece();
 		$window->name = 'window';
 		// the vehicle will have two doors : one with a lock, the other without a lock
-		$door1 = new Vehicle_Door();
-		$door1->code = 'fl';
-		$door1->side = 'front-left';
+		$door1         = new Vehicle_Door();
+		$door1->code   = 'fl';
+		$door1->side   = 'front-left';
 		$door1->pieces = [$lever, $lock, $window];
-		$door2 = new Vehicle_Door();
-		$door2->code = 'fr';
-		$door2->side = 'front-right';
+		$door2         = new Vehicle_Door();
+		$door2->code   = 'fr';
+		$door2->side   = 'front-right';
 		$door2->pieces = [$lever, $window];
 		// vehicle assembly
-		$vehicle = new Vehicle();
-		$vehicle->name = 'Test Vehicle';
+		$vehicle        = new Vehicle();
+		$vehicle->name  = 'Test Vehicle';
 		$vehicle->doors = [$door1, $door2];
 		return $vehicle;
 	}
@@ -65,7 +67,7 @@ class Collection_Test extends Test
 	//--------------------------------------------------------------------------------- getInputNames
 	/**
 	 * @param $html string
-	 * @returns string[]
+	 * @return string[]
 	 */
 	private function getInputNames($html)
 	{
@@ -117,16 +119,14 @@ class Collection_Test extends Test
 	//-------------------------------------------------------------------- testCollectionOfCollection
 	/**
 	 * A collection inside a collection
-	 *
-	 * @return boolean
 	 */
 	public function testCollectionOfCollection()
 	{
-		$vehicle       = $this->buildVehicle();
-		$html          = $this->callVehicleEditController($vehicle);
-		$input_names   = $this->getInputNames($html);
-		$assumed_names = $this->getVehicleAssumedNames();
-		return $this->assume(__METHOD__, $input_names, $assumed_names);
+		$vehicle        = $this->buildVehicle();
+		$html           = $this->callVehicleEditController($vehicle);
+		$input_names    = $this->getInputNames($html);
+		$expected_names = $this->getVehicleAssumedNames();
+		$this->assertEquals($expected_names, $input_names);
 	}
 
 }

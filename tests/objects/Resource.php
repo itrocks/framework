@@ -8,7 +8,7 @@ use ITRocks\Framework\Traits\Has_Name;
  *
  * @store_name test_objects
  */
-class Object
+class Resource
 {
 	use Has_Name;
 

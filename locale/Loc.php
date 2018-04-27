@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ReflectionException;
 use Reflector;
 
 /**
@@ -76,6 +77,7 @@ class Loc implements Registerable
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    boolean|integer|float|string|array
+	 * @throws ReflectionException
 	 */
 	public function beforeObjectBuilderArrayBuildBasicValue(
 		Reflection_Property $property, &$value
@@ -427,40 +429,42 @@ class Loc implements Registerable
 	 */
 	public static function tr($text, $options = [])
 	{
-		if (static::$disabled) {
-			return $text;
-		}
 		if (!is_array($options)) {
 			$options = [$options];
 		}
-		// For now, only 1 context is allowed, but to change
-		$context  = '';
-		$language = '';
-		foreach ($options as $option) {
-			if (is_string($option)) {
-				// Compatibility with old usages of tr
-				$context = $option;
-			}
-			elseif ($option instanceof Locale\Option\Context) {
-				$context = $option->context;
-			}
-			elseif (isA($option, Has_Language::class)) {
-				/** @var $option Has_Language */
-				$language = $option->language->name;
-			}
+		if (static::$disabled) {
+			$translation = $text;
 		}
-		$old_language = '';
-		if ($language) {
-			$old_language = Locale::current()->translations->language;
-			Locale::current()->translations->language = $language;
-		}
-		if (!$context) {
-			$context = self::getContext();
-		}
-		$translation = Locale::current()->translations->translate($text, $context);
-		if ($language) {
-			// If we have change language
-			Locale::current()->translations->language = $old_language;
+		else {
+			// For now, only 1 context is allowed, but to change
+			$context  = '';
+			$language = '';
+			foreach ($options as $option) {
+				if (is_string($option)) {
+					// Compatibility with old usages of tr
+					$context = $option;
+				}
+				elseif ($option instanceof Locale\Option\Context) {
+					$context = $option->context;
+				}
+				elseif (isA($option, Has_Language::class)) {
+					/** @var $option Has_Language */
+					$language = $option->language->name;
+				}
+			}
+			$old_language = '';
+			if ($language) {
+				$old_language                             = Locale::current()->translations->language;
+				Locale::current()->translations->language = $language;
+			}
+			if (!$context) {
+				$context = self::getContext();
+			}
+			$translation = Locale::current()->translations->translate($text, $context);
+			if ($language) {
+				// If we have change language
+				Locale::current()->translations->language = $old_language;
+			}
 		}
 		foreach ($options as $option) {
 			if ($option instanceof Option) {

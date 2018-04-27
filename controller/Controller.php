@@ -7,9 +7,10 @@ namespace ITRocks\Framework;
 interface Controller
 {
 
-	//--------------------------------------------------- THEN specific parameter for action chaining
-
 	//------------------------------------------------------------------------------------------ THEN
+	/**
+	 * THEN specific parameter for action chaining
+	 */
 	const THEN = 'then';
 
 }

@@ -1,27 +1,27 @@
 <?php
 namespace ITRocks\Framework\Tests;
 
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
+use PHPUnit_Framework_Error_Notice;
+
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
  */
 abstract class Test extends Testable
 {
 
-	//-------------------------------------------------------------------------------------- $capture
-	/**
-	 * Capture of the output, filled in by captureStart() and flushed by captureEnd()
-	 *
-	 * @var string
-	 */
-	private $capture;
+	//------------------------------------------------------------------------------ FUNCTIONAL_GROUP
+	const FUNCTIONAL_GROUP = 'functional';
 
 	//---------------------------------------------------------------------------------------- assume
 	/**
 	 * Assumes a checked value is the same than an assumed value
 	 *
-	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
-	 * @param $check       mixed the checked value
+	 * @deprecated use assertEquals
 	 * @param $assume      mixed the assumed value
+	 * @param $check       mixed the checked value
+	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
 	 */
 	protected function assume($test, $check, $assume)
 	{
@@ -30,53 +30,45 @@ abstract class Test extends Testable
 		$this->assertEquals($assume, $check, $test);
 	}
 
-	//--------------------------------------------------------------------------------- assumeCapture
+	//----------------------------------------------------------------------------------------- setUp
 	/**
-	 * Ends default output capture and assume result
+	 * Changes locale for test
 	 *
-	 * @param $test   string the name of the test (ie 'Method_Name[.test_name]')
-	 * @param $assume string the assumed default output capture result
-	 * @return boolean if the checked default output capture string corresponds to the assumed string
+	 * {@inheritdoc}
 	 */
-	protected function assumeCapture($test, $assume)
+	protected function setUp()
 	{
-		return $this->assume($test . '.output', $this->captureEnd(), $assume);
+		parent::setUp();
+		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
+			// Functional testing
+
+			// There will be notice when modifying/creating table
+			PHPUnit_Framework_Error_Notice::$enabled = FALSE;
+			Dao::begin();
+		}
+		else {
+			// Disabling translation
+			Loc::$disabled = true;
+			// TODO Mocking database
+		}
 	}
 
-	//------------------------------------------------------------------------------------ captureEnd
+	//-------------------------------------------------------------------------------------- tearDown
 	/**
-	 * Stops capture of the standard output and returns the captured output
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
-	public function captureEnd()
+	protected function tearDown()
 	{
-		return $this->capture . ob_get_flush();
-	}
+		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
+			// Functional testing
 
-	//---------------------------------------------------------------------------------- captureStart
-	/**
-	 * Start capture of the standard output
-	 */
-	public function captureStart()
-	{
-		$test          = $this;
-		$this->capture = '';
-		ob_start(function($buffer) use ($test) {
-			$test->capture .= $buffer;
-		});
-	}
-
-	//--------------------------------------------------------------------------------------- enabled
-	/**
-	 * Returns true if this test class is enabled, else false.
-	 * If false, unit tests will not be executed for this class
-	 *
-	 * @return boolean
-	 */
-	public function enabled()
-	{
-		return true;
+			Dao::rollback();
+		}
+		else {
+			// Enabled translation
+			Loc::$disabled = false;
+		}
+		parent::tearDown();
 	}
 
 	//--------------------------------------------------------------------------------------- toArray

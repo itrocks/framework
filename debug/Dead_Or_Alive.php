@@ -52,6 +52,15 @@ class Dead_Or_Alive
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->file . ':' . $this->line . ':' . $this->identifier;
+	}
+
 	//--------------------------------------------------------------------------------------- isAlive
 	/**
 	 * Increment a Dead_Or_Alive object matching $identifier
@@ -61,7 +70,7 @@ class Dead_Or_Alive
 	public static function isAlive($identifier)
 	{
 		/** @var $search self */
-		$search = Search_Object::create(__CLASS__);
+		$search             = Search_Object::create(__CLASS__);
 		$search->identifier = $identifier;
 		$search->matchCallStack(['file']);
 		Dao::begin();
@@ -86,15 +95,6 @@ class Dead_Or_Alive
 		$line = $call_stack->lines()[0];
 		if (!$property_names || in_array('file', $property_names)) $this->file = $line->file;
 		if (!$property_names || in_array('line', $property_names)) $this->line = $line->line;
-	}
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return $this->file . ':' . $this->line . ':' . $this->identifier;
 	}
 
 }

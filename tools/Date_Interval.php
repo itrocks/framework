@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
+use Exception;
 
 /**
  * Rich Date interval class
@@ -33,6 +34,7 @@ abstract class Date_Interval
 	 * It's not possible to adjust year/month as it would be dependant from start date)
 	 * @param $interval DateInterval
 	 * @return DateInterval
+	 * @throws Exception
 	 */
 	public static function adjust(DateInterval $interval)
 	{
@@ -50,14 +52,13 @@ abstract class Date_Interval
 	/**
 	 * Creates an interval knowing the duration in seconds
 	 *
-	 * @example
-	 * You can easily get a Date_Interval between two timestamps with this call :
-	 * Date_Interval::createFromDuration($timestamp2 - $timestamp1)
-	 * @notice
-	 * The result can only be time + number of days,
-	 * year/month will be null as they are start date dependant
-	 * @param $duration integer The duration in seconds, may be negative
-	 * @return DateInterval
+	 * @example You can easily get a Date_Interval between two timestamps with this call
+	 *          Date_Interval::createFromDuration($timestamp2 - $timestamp1)
+	 * @notice  The result can only be time + number of days, year/month will be null as they are
+	 *          start date dependant
+	 * @param   $duration integer The duration in seconds, may be negative
+	 * @return  DateInterval
+	 * @throws  Exception
 	 */
 	public static function fromDuration($duration)
 	{
@@ -106,6 +107,7 @@ abstract class Date_Interval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
 	 * @return integer
+	 * @throws Date_Interval_Exception
 	 */
 	public static function toDays(
 		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
@@ -121,6 +123,7 @@ abstract class Date_Interval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
 	 * @return integer
+	 * @throws Date_Interval_Exception
 	 */
 	public static function toHours(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
 	{
@@ -135,6 +138,7 @@ abstract class Date_Interval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
 	 * @return integer
+	 * @throws Date_Interval_Exception
 	 */
 	public static function toMinutes(
 		DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false
@@ -168,6 +172,7 @@ abstract class Date_Interval
 	 * @param $round_mode integer|string @values PHP_CEIL, PHP_FLOOR, PHP_ROUND_HALF_*
 	 * @param $absolute   boolean
 	 * @return integer
+	 * @throws Date_Interval_Exception
 	 */
 	public static function toWeeks(DateInterval $interval, $round_mode = PHP_CEIL, $absolute = false)
 	{

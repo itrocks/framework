@@ -26,6 +26,7 @@ interface Column extends Field
 	//------------------------------------------------------------------------------- getDefaultValue
 	/**
 	 * Gets the default value of a field
+	 *
 	 * @return mixed
 	 */
 	public function getDefaultValue();

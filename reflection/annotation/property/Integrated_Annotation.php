@@ -38,15 +38,15 @@ use ITRocks\Framework\Reflection\Annotation\Template\Options_Properties_Annotati
 class Integrated_Annotation extends Options_Properties_Annotation
 {
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'integrated';
-
 	//------------------------------------------------------------------------------------ my options
 	const ALIAS  = 'alias';
 	const BLOCK  = 'block';
 	const FINAL_ = 'final';
 	const FULL   = 'full';
 	const SIMPLE = 'simple';
+
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'integrated';
 
 	//------------------------------------------------------------------------------- DEFAULT_OPTIONS
 	const DEFAULT_OPTIONS = [self::FULL];

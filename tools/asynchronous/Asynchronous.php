@@ -64,9 +64,9 @@ class Asynchronous
 	 * Calls an URI (controller) from the console asynchronously, using the same session handler than
 	 * the caller
 	 *
-	 * @param string   $uri           Call this URI : link to a controller, including parameters
-	 * @param callable $then          A callback called when the job is done
-	 * @param boolean  $needs_session true to automatically clone current session (authenticated call)
+	 * @param $uri           string   Call this URI : link to a controller, including parameters
+	 * @param $then          callable A callback called when the job is done
+	 * @param $needs_session boolean  true to automatically clone current session (authenticated call)
 	 */
 	public function call($uri, callable $then = null, $needs_session = true)
 	{
@@ -77,7 +77,7 @@ class Asynchronous
 			}
 		}
 		$position = strpos($uri, SP) ?: strlen($uri);
-		$uri = substr($uri, 0, $position)
+		$uri      = substr($uri, 0, $position)
 			. SL . 's' . ++$this->session_counter
 			. substr($uri, $position);
 		$this->run('itrocks/framework/console.php' . SP . rawurldecode($uri), $then, $needs_session);
@@ -87,9 +87,9 @@ class Asynchronous
 	/**
 	 * Calls a command line asynchronously
 	 *
-	 * @param string   $command       The command line to run
-	 * @param callable $then          A callback called when the job is done
-	 * @param boolean  $needs_session true to automatically clone current session (authenticated call)
+	 * @param $command       string   The command line to run
+	 * @param $then          callable A callback called when the job is done
+	 * @param $needs_session boolean  true to automatically clone current session (authenticated call)
 	 * @return Process
 	 */
 	public function run($command, callable $then = null, $needs_session = false)
@@ -156,11 +156,11 @@ class Asynchronous
 	/**
 	 * Wait for all called controllers to have done their job
 	 *
-	 * @param boolean|callable $reload If false (default), returns once all processes are done.
-	 *                         If true, returns once less than $max_processes are still running.
-	 *                         If a callable, this callback is called each time less than
-	 *                         $max_processes are still running.
-	 * @param integer $sleep The sleep between each wait control, in microseconds (default: 1ms)
+	 * @param $reload boolean|callable If false (default), returns once all processes are done.
+	 *                If true, returns once less than $max_processes are still running.
+	 *                If a callable, this callback is called each time less than
+	 *                $max_processes are still running.
+	 * @param $sleep  integer  The sleep between each wait control, in microseconds (default: 1ms)
 	 */
 	public function wait($reload = false, $sleep = 1000)
 	{

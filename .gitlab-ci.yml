@@ -10,7 +10,7 @@ variables:
 
 cache:
   untracked: true
-  key: "$CI_COMMIT_REF_NAME"
+  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .frameworkci_vendor_cache
 

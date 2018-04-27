@@ -54,12 +54,12 @@ class Xdebug implements Registerable
 			$uri = $this->append($uri, self::KEY, $this->key);
 		}
 		if (isset($_COOKIE[self::SESSION])) {
-
+			// TODO Empty test ?
 		}
 		return $uri;
 	}
 
-
+	//---------------------------------------------------------------------------------------- append
 	/**
 	 * @param $uri   string
 	 * @param $key   string
@@ -104,7 +104,7 @@ class Xdebug implements Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * @param Register $register
+	 * @param $register Register
 	 */
 	public function register(Register $register)
 	{

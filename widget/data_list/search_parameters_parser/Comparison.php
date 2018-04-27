@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser;
 
+use Exception;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
@@ -45,8 +46,10 @@ abstract class Comparison
 	/**
 	 * @param $sign       string
 	 * @param $expression string|Option
-	 * @param $property     Reflection_Property
+	 * @param $property   Reflection_Property
 	 * @return string
+	 * @throws Data_List_Exception
+	 * @throws Exception
 	 */
 	protected static function applyComparisonValue($sign, $expression, Reflection_Property $property)
 	{
@@ -84,6 +87,7 @@ abstract class Comparison
 	 * @param $property   Reflection_Property
 	 * @return array
 	 * @throws Data_List_Exception
+	 * @throws Exception
 	 */
 	protected static function getComparisonParts($expression, Reflection_Property $property)
 	{
@@ -124,12 +128,12 @@ abstract class Comparison
 							$expression, Loc::tr('Error in left part of comparison expression')
 						);
 					}
-					}
-					else {
-						throw new Data_List_Exception(
-							$expression, Loc::tr('Error in comparison expression')
-						);
-					}
+				}
+				else {
+					throw new Data_List_Exception(
+						$expression, Loc::tr('Error in comparison expression')
+					);
+				}
 				break;
 			default:
 				if (strstr($expression, '<')) {
@@ -164,6 +168,7 @@ abstract class Comparison
 	 * @param $expression string
 	 * @param $property   Reflection_Property
 	 * @return boolean
+	 * @throws Exception
 	 */
 	public static function isComparison($expression, Reflection_Property $property)
 	{

@@ -222,6 +222,7 @@ abstract class Date
 		$date_parts = self::getParts($expression, $kind_of_date);
 		/**
 		 * created by extract() as references on $date_parts values :
+		 *
 		 * @var $day    string
 		 * @var $month  string
 		 * @var $year   string
@@ -377,6 +378,7 @@ abstract class Date
 	 * @param $property   Reflection_Property
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
+	 * @throws Data_List_Exception
 	 */
 	public static function applyDateValue(
 		$expression, Reflection_Property $property, $range_side = Range::NONE

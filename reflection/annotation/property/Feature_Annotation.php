@@ -43,10 +43,10 @@ class Feature_Annotation
 	private $value_as_string;
 
 	//----------------------------------------------------------------------------------- __construct
-	/** @noinspection PhpMissingParentConstructorInspection This does all the work itself */
 	/**
 	 * Feature_Annotation constructor
 	 *
+	 * @noinspection PhpMissingParentConstructorInspection This does all the work itself
 	 * @param $value string
 	 * @param $property Reflection_Property
 	 */

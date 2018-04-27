@@ -110,14 +110,15 @@ class Contextual_Mysqli extends mysqli
 	 * @param $table_name  string
 	 * @param $column_name string|null If set, drop this column instead of the table
 	 * @return boolean true if dropped, false if was not already existing
+	 * @throws Mysql_Error_Exception
 	 */
 	public function drop($table_name, $column_name = null)
 	{
 		if ($this->exists($table_name, $column_name)) {
 			$this->query(
 				isset($column_name)
-				? "ALTER TABLE `$table_name` DROP `$column_name`"
-				: "DROP TABLE `$table_name`"
+					? "ALTER TABLE `$table_name` DROP `$column_name`"
+					: "DROP TABLE `$table_name`"
 			);
 			return true;
 		}
@@ -128,9 +129,10 @@ class Contextual_Mysqli extends mysqli
 	/**
 	 * Checks if a table or column exists
 	 *
-	 * @param $table_name string
+	 * @param $table_name  string
 	 * @param $column_name string
 	 * @return boolean true if the object exists in current database
+	 * @throws Mysql_Error_Exception
 	 */
 	public function exists($table_name, $column_name = null)
 	{
@@ -157,11 +159,12 @@ class Contextual_Mysqli extends mysqli
 	 * Gets all existing tables names from current database
 	 *
 	 * @return string[]
+	 * @throws Mysql_Error_Exception
 	 */
 	public function getTables()
 	{
 		$tables = [];
-		$res = $this->query('SHOW TABLES');
+		$res    = $this->query('SHOW TABLES');
 		while ($row = $res->fetch_row()) {
 			$tables[] = $row[0];
 		}
@@ -254,14 +257,14 @@ class Contextual_Mysqli extends mysqli
 
 	//------------------------------------------------------------------------------------ lastUpdate
 	/**
-	 * Gets the date of the last update of the table of the given class.
+	 * Gets the date of the last update of the table of the given class
 	 *
 	 * Returns the date of the last update of the table formatted using 'Y-m-d H:i:s'.
 	 * Returns null if the information cannot be retrieved.
 	 *
 	 * @param $class_name string The name of the class.
-	 *
 	 * @return string|null ISO date
+	 * @throws Mysql_Error_Exception
 	 */
 	public function lastUpdate($class_name)
 	{
@@ -287,6 +290,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * @param $result_mode integer one of MYSQLI_*_RESULT constants
 	 * @return mysqli_result|boolean false on failure, true or mysqli_result on success
 	 * @see mysqli::query
+	 * @throws Mysql_Error_Exception
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
@@ -342,6 +346,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	/**
 	 * @param $old_name string
 	 * @param $new_name string
+	 * @throws Mysql_Error_Exception
 	 */
 	public function renameTable($old_name, $new_name)
 	{
@@ -353,6 +358,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * Gets selected database name
 	 *
 	 * @return string
+	 * @throws Mysql_Error_Exception
 	 */
 	public function selectedDatabase()
 	{

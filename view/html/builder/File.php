@@ -33,8 +33,8 @@ class File
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param Dao\File            $file
-	 * @param Reflection_Property $property
+	 * @param $file     Dao\File
+	 * @param $property Reflection_Property
 	 */
 	public function __construct(Dao\File $file, Reflection_Property $property = null)
 	{
@@ -61,7 +61,7 @@ class File
 		/** @var $session_files Files */
 		$session_files          = Session::current()->get(Files::class, true);
 		$session_files->files[] = $file;
-		$image = ($file->getType()->is('image'))
+		$image                  = ($file->getType()->is('image'))
 			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name, 22]))
 			: '';
 		$feature = $image ? 'image' : Feature::F_OUTPUT;
@@ -88,7 +88,7 @@ class File
 	 */
 	public function buildImage($width = null, $height = null)
 	{
-		$file = clone $this->file;
+		$file       = clone $this->file;
 		$file->name = uniqid() . '.' . rLastParse($this->file->name, DOT);
 		/** @var $session_files Files */
 		$session_files          = Session::current()->get(Files::class, true);

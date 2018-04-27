@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -17,7 +18,8 @@ abstract class Identifier_Map extends Data_Link
 	/**
 	 * clear() can't be done with current implementation, as each id is stored into the object itself
 	 */
-	protected function clear() {}
+	protected function clear()
+	{}
 
 	//------------------------------------------------------------------------------------ disconnect
 	/**
@@ -25,6 +27,7 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @param $object object object to disconnect from data source
 	 * @see Data_Link::disconnect()
+	 * @throws ReflectionException
 	 */
 	public function disconnect($object)
 	{

@@ -19,22 +19,29 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tests\Test;
-use PHPUnit_Exception;
 
 /**
  * Mysql select tests for all cases of joins
+ *
+ * @group functional
  */
 class Select_Test extends Test
 {
 
-	//------------------------------------------------------------------------------------ everything
+	//------------------------------------------------------------------------- MAX_TABLE_PER_REQUEST
+	const MAX_TABLE_PER_REQUEST = 60;
+
+	//---------------------------------------------------------------------------- everythingProvider
 	/**
-	 * Test searches on everything with a depth of 1
+	 * Gets all object business object
 	 *
-	 * @param $depth integer
+	 * @return array[] test_name => [ string $query, Select $builder ]
+	 * @see testEverything
+	 * @throws Exception
 	 */
-	private function everything($depth)
+	public function everythingProvider()
 	{
+		upgradeTimeLimit(0);
 		$dao = Dao::current();
 		if ($dao instanceof Link) {
 			/** @var $dependencies Dependency[] */
@@ -52,82 +59,26 @@ class Select_Test extends Test
 				if (
 					!$class->isAbstract()
 					&& $class->getAnnotation('business')->value
+					&& !strpos($class->name, BS . 'Sub0')
 					&& !strpos($class->name, BS . 'Tests' . BS)
 				) {
-					$this->perClass($class, $depth);
+					$properties = $this->propertyNames($class);
+					$builder    = new Select($class->name, $properties);
+					$query      = 'EXPLAIN ' . $builder->buildQuery();
+					if (substr_count($query, 'JOIN') <= static::MAX_TABLE_PER_REQUEST) {
+						$classes[$class->name] = [$query, $builder];
+					}
+					else {
+						foreach ($properties as $property) {
+							$name           = $class->name . '::' . $property;
+							$builder        = new Select($class->name, [$property]);
+							$classes[$name] = ['EXPLAIN ' . $builder->buildQuery(), $builder];
+						}
+					}
 				}
 			}
 		}
-	}
-
-	//-------------------------------------------------------------------------------------- perClass
-	/**
-	 * @param $class Reflection_Class
-	 * @param $depth integer
-	 * @throws Exception
-	 */
-	private function perClass(Reflection_Class $class, $depth)
-	{
-		/** @var $dao Link */
-		$dao        = Dao::current();
-		$errors     = [];
-		$properties = $this->propertyNames($class, $depth - 1);
-		$builder    = new Select($class->name, $properties);
-		$query      = 'EXPLAIN ' . $builder->buildQuery();
-		if (!strpos($query, '.`id_`')) {
-			try {
-				Maintainer::get()->notice = false;
-				$dao->setContext($builder->getJoins()->getClassNames());
-				$dao->query($query);
-			}
-			catch (PHPUnit_Exception $exception) {
-				throw $exception;
-			}
-			catch (Exception $exception) {
-				if ($dao->getConnection()->last_errno == Dao\Mysql\Errors::ER_TOO_MANY_TABLES) {
-					$errors = array_merge($errors,$this->perProperty($class, $depth));
-				}
-				else {
-					$errors[] = $query;
-				}
-				flush();
-				ob_flush();
-			}
-		}
-		$this->assertEquals([], $errors, $class->name);
-	}
-
-	//----------------------------------------------------------------------------------- perProperty
-	/**
-	 * @param $class Reflection_Class
-	 * @param $depth integer
-	 * @return array
-	 * @throws Exception
-	 */
-	private function perProperty(Reflection_Class $class, $depth)
-	{
-		/** @var $dao Link */
-		$dao        = Dao::current();
-		$errors     = [];
-		$properties = $this->propertyNames($class, $depth - 1);
-		foreach ($properties as $property) {
-			$builder = new Select($class->name, [$property]);
-			$query   = 'EXPLAIN ' . $builder->buildQuery();
-			if (!strpos($query, '.id_ ')) {
-				try {
-					$dao->setContext();
-					$dao->query($query);
-				}
-				catch (PHPUnit_Exception $exception) {
-					throw $exception;
-				}
-				catch (Exception $exception) {
-					$errors[] = $query;
-				}
-			}
-		}
-
-		return $errors;
+		return $classes;
 	}
 
 	//--------------------------------------------------------------------------------- propertyNames
@@ -135,8 +86,9 @@ class Select_Test extends Test
 	 * @param $class Reflection_Class
 	 * @param $depth integer
 	 * @return string[]
+	 * @throws Exception
 	 */
-	private function propertyNames(Reflection_Class $class, $depth)
+	private function propertyNames(Reflection_Class $class, $depth = 1)
 	{
 		$properties = Class_\Link_Annotation::of($class)->value
 			? (new Link_Class($class->name))->getLocalProperties()
@@ -176,14 +128,24 @@ class Select_Test extends Test
 		return array_keys($properties);
 	}
 
-	//-------------------------------------------------------------------------- testEverythingDepth2
+	//-------------------------------------------------------------------------------- testEverything
 	/**
-	 * Test searches of everything that has depth 2
+	 * Tests Explain on every object (split to property for large object)
+	 *
+	 * @dataProvider everythingProvider
+	 * @param        $query   string
+	 * @param        $builder Select
 	 */
-	public function testEverythingDepth2()
+	public function testEverything($query, Select $builder)
 	{
-		$this->method(__METHOD__);
-		$this->everything(2);
+		/** @var $dao Link */
+		$dao                      = Dao::current();
+		Maintainer::get()->notice = false;
+		$dao->setContext($builder->getJoins()->getClassNames());
+		$dao->query($query);
+
+		// Failure will be SQL Exception
+		$this->assertTrue(true);
 	}
 
 }

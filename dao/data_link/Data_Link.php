@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use ReflectionException;
 
 /**
  * This class stores methods common to all data links classes,
@@ -52,6 +53,7 @@ abstract class Data_Link
 	//------------------------------------------------------------------------------------- afterRead
 	/**
 	 * @param $object object
+	 * @throws ReflectionException
 	 */
 	public function afterRead($object)
 	{
@@ -70,6 +72,7 @@ abstract class Data_Link
 	/**
 	 * @param $objects object[]
 	 * @param $options Option[]
+	 * @throws ReflectionException
 	 */
 	public function afterReadMultiple(array $objects, array &$options = [])
 	{
@@ -158,7 +161,7 @@ abstract class Data_Link
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
 	 * @param $object object object to delete from data source
-	 * @return bool true if deleted
+	 * @return boolean true if deleted
 	 */
 	abstract public function delete($object);
 
@@ -191,6 +194,7 @@ abstract class Data_Link
 	 * @param $class_name string
 	 * @param $options    Option[]
 	 * @return callable|string|string[]
+	 * @throws ReflectionException
 	 */
 	protected function getKeyPropertyName($class_name, array $options = null)
 	{
@@ -362,6 +366,7 @@ abstract class Data_Link
 	 *
 	 * @param $class_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function storeNameOf($class_name)
 	{
@@ -386,6 +391,7 @@ abstract class Data_Link
 	 * @param $property_name string
 	 * @param $default_value mixed
 	 * @return boolean
+	 * @throws ReflectionException
 	 */
 	protected function valueChanged($element, $property_name, $default_value)
 	{

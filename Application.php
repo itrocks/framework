@@ -3,6 +3,7 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * The class for the global application object
@@ -114,6 +115,45 @@ class Application
 		return __DIR__ . '/../../cache';
 	}
 
+	//--------------------------------------------------------------------------- getClassTreeToArray
+	/**
+	 * @example of $class_tree input
+	 * the tree structure returned by Application::getClassesTree : [
+	 *   Vendor\Final_Project\Application::class => [
+	 *     Vendor\Module_A\Application::class => [
+	 *       ITRocks\Framework\Application::class
+	 *     ],
+	 *     Vendor\Module_B\Application::class => [
+	 *       ITRocks\Framework\Application::class
+	 *     ],
+	 *     Vendor\Module_C\Application::class => [
+	 *       Vendor\Sub_Module\Application::class => [
+	 *         ITRocks\Framework\Application::class
+	 *       ]
+	 *    ]
+	 * ]
+	 * @param $class_tree array string[...]
+	 * @param $result     array @internal The resulting classes list with links, currently being built
+	 * @return array string[][][]
+	 *   [
+	 *     string $class_name => [
+	 *       self::CHILDREN => [string $child_class_name  => string $child_class_name ],
+	 *       self::PARENTS  => [string $parent_class_name => string $parent_class_name]
+	 *     ]
+	 *   ]
+	 */
+	public function getClassTreeToArray(array $class_tree, array &$result = [])
+	{
+		foreach ($class_tree as $class_name => $parents) {
+			foreach (array_keys($parents) as $parent_class_name) {
+				$result[$class_name][self::PARENTS][$parent_class_name]  = $parent_class_name;
+				$result[$parent_class_name][self::CHILDREN][$class_name] = $class_name;
+			}
+			$this->getClassTreeToArray($parents, $result);
+		}
+		return $result;
+	}
+
 	//-------------------------------------------------------------------------------- getClassesTree
 	/**
 	 * Get application class name, and all its parent applications class names
@@ -135,12 +175,13 @@ class Application
 	 *   'Application\Class' => ['children' => ['ITRocks\Framework' => true]],
 	 *   'ITRocks\Framework' => ['parents' => ['Application\Class]]
 	 * ]
-	 * @param $flat boolean|string|null if false, returned as tree. If true, returns a flat string[]
-	 *              If null : multiple intermediate views are returned :
-	 *              [FLAT => $applications_array, NODES => $tree_nodes, TREE => $tree]
-	 *              If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
+	 * @param $flat  boolean|string|null if false, returned as tree. If true, returns a flat string[]
+	 *               If null : multiple intermediate views are returned :
+	 *               [FLAT => $applications_array, NODES => $tree_nodes, TREE => $tree]
+	 *               If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
 	 * @return array The classes tree : string[], tree of strings,
 	 *               or [FLAT => $flat, NODES => $notes TREE => $tree]
+	 * @throws ReflectionException
 	 */
 	public function getClassesTree($flat = false)
 	{
@@ -216,50 +257,12 @@ class Application
 			: [self::FLAT => $flat_cache, self::NODES => $nodes_cache, self::TREE => $tree];
 	}
 
-	//--------------------------------------------------------------------------- getClassTreeToArray
-	/**
-	 * @example of $class_tree input
-	 * the tree structure returned by Application::getClassesTree : [
-	 *   Vendor\Final_Project\Application::class => [
-	 *     Vendor\Module_A\Application::class => [
-	 *       ITRocks\Framework\Application::class
-	 *     ],
-	 *     Vendor\Module_B\Application::class => [
-	 *       ITRocks\Framework\Application::class
-	 *     ],
-	 *     Vendor\Module_C\Application::class => [
-	 *       Vendor\Sub_Module\Application::class => [
-	 *         ITRocks\Framework\Application::class
-	 *       ]
-	 *    ]
-	 * ]
-	 * @param $class_tree array string[...]
-	 * @param $result     array @internal The resulting classes list with links, currently being built
-	 * @return array string[][][]
-	 *   [
-	 *     string $class_name => [
-	 *       self::CHILDREN => [string $child_class_name  => string $child_class_name ],
-	 *       self::PARENTS  => [string $parent_class_name => string $parent_class_name]
-	 *     ]
-	 *   ]
-	 */
-	public function getClassTreeToArray(array $class_tree, array &$result = [])
-	{
-		foreach ($class_tree as $class_name => $parents) {
-			foreach (array_keys($parents) as $parent_class_name) {
-				$result[$class_name][self::PARENTS][$parent_class_name]  = $parent_class_name;
-				$result[$parent_class_name][self::CHILDREN][$class_name] = $class_name;
-			}
-			$this->getClassTreeToArray($parents, $result);
-		}
-		return $result;
-	}
-
 	//---------------------------------------------------------------------------------- getNamespace
 	/**
 	 * Gets namespace of the application
 	 *
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public function getNamespace()
 	{
@@ -295,6 +298,7 @@ class Application
 	 *
 	 * @param $recursive boolean get all parents if true
 	 * @return array[] applications class names : key = class name, value = children class names
+	 * @throws ReflectionException
 	 */
 	public static function getParentClasses($recursive = false)
 	{

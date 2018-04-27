@@ -64,13 +64,13 @@ class Translator
 				}
 			}
 			if ($filter_translations) {
+				$filtered_translations = [];
 				foreach ($translations as $translation_context => $translation_text) {
-					unset($translations[$translation_context]);
 					if (strpos($translation_context, '*') !== false) {
-						unset($translations[$translation_context]);
-						$translations[str_replace('*', '', $translation_context)] = $translation_text;
+						$filtered_translations[str_replace('*', '', $translation_context)] = $translation_text;
 					}
 				}
+				$translations = $filtered_translations;
 			}
 			$context = str_replace('*', '', $context);
 		}
@@ -228,9 +228,8 @@ class Translator
 					);
 				}
 			}
-			return (count($texts) === 1) ? reset($texts) : $texts;
 		}
-		return 'too many results match your input';
+		return ((count($texts) > 1) ? $texts : reset($texts)) ?: 'too many results match your input';
 	}
 
 	//------------------------------------------------------------------------- separatedTranslations

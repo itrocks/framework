@@ -11,8 +11,8 @@ use ITRocks\Framework\Tools\Date_Time;
  * Or create another property with @replaces object
  *
  * @representative object, date, property_name, old_value, new_value
- * @set History
- * @sort date
+ * @set            History
+ * @sort           date
  */
 abstract class History
 {
@@ -20,27 +20,27 @@ abstract class History
 	//----------------------------------------------------------------------------------------- $date
 	/**
 	 * @default Date_Time::now
-	 * @link DateTime
-	 * @var Date_Time
+	 * @link    DateTime
+	 * @var     Date_Time
 	 */
 	public $date;
-
-	//--------------------------------------------------------------------------------------- $object
-	/**
-	 * You must @override object @var Class_Name into the final class
-	 * Or create another property with @replaces object
-	 *
-	 * @link Object
-	 * @mandatory
-	 * @var object
-	 */
-	public $object;
 
 	//------------------------------------------------------------------------------------ $new_value
 	/**
 	 * @var string|mixed
 	 */
 	public $new_value;
+
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * You must @override object @var Class_Name into the final class
+	 * Or create another property with @replaces object
+	 *
+	 * @link      Object
+	 * @mandatory
+	 * @var       object
+	 */
+	public $object;
 
 	//------------------------------------------------------------------------------------ $old_value
 	/**
@@ -57,8 +57,8 @@ abstract class History
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @default User::current
-	 * @link Object
-	 * @var User
+	 * @link    Object
+	 * @var     User
 	 */
 	public $user;
 
@@ -73,12 +73,12 @@ abstract class History
 		$object = null, $property_name = null, $old_value = null, $new_value = null
 	) {
 		if (isset($object) && isset($property_name)) {
-			$this->object = $object;
+			$this->object        = $object;
 			$this->property_name = $property_name;
-			$this->old_value = (is_object($old_value) && Dao::getObjectIdentifier($old_value))
+			$this->old_value     = (is_object($old_value) && Dao::getObjectIdentifier($old_value))
 				? Dao::getObjectIdentifier($old_value)
 				: strval($old_value);
-			$this->new_value = (is_object($new_value) && Dao::getObjectIdentifier($new_value))
+			$this->new_value     = (is_object($new_value) && Dao::getObjectIdentifier($new_value))
 				? Dao::getObjectIdentifier($new_value)
 				: strval($new_value);
 		}

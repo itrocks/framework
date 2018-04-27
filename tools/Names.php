@@ -9,6 +9,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * A library of feature to transform PHP elements names
@@ -78,6 +79,7 @@ abstract class Names
 	 * Changes 'A\Class\Name\Like\This' into 'a/class/name/like/This'
 	 *
 	 * TODO check usages and see if replacement by classToFilePath will work
+	 * TODO Does not work in Engine::getTemplateFile() can't find Application_home.html
 	 *
 	 * @deprecated : now will use classToFilePath()
 	 * @param $class_name string
@@ -107,6 +109,7 @@ abstract class Names
 	 *
 	 * @param $class_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function classToSet($class_name)
 	{
@@ -121,6 +124,7 @@ abstract class Names
 	 * @example User object of id = 1 : 'ITRocks/Framework/User/1'
 	 * @param $class_name object|string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function classToUri($class_name)
 	{
@@ -186,6 +190,7 @@ abstract class Names
 	 *
 	 * @param $file_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function fileToClass($file_name)
 	{
@@ -337,6 +342,7 @@ abstract class Names
 	 * @param $class_name  string
 	 * @param $check_class boolean false if you don't want to check for existing classes
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function setToClass($class_name, $check_class = true)
 	{

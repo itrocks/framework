@@ -1,12 +1,13 @@
 <?php
 namespace ITRocks\Framework\Reflection\Tests;
 
-use ReflectionException;
+use Exception;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Reflection class tests
@@ -49,13 +50,11 @@ class Reflection_Class_Test extends Test
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			}
-			catch (ReflectionException $e) {
+			catch (Exception $e) {
 				$check[$property->name] = self::INACCESSIBLE;
 			}
 		}
-		$this->assume(
-			$method,
-			$check,
+		$this->assertEquals(
 			[
 				'date'            => self::INACCESSIBLE,
 				'delivery_client' => self::INACCESSIBLE,
@@ -64,65 +63,74 @@ class Reflection_Class_Test extends Test
 				'client'          => self::INACCESSIBLE,
 				'lines'           => self::INACCESSIBLE,
 				'salesmen'        => self::INACCESSIBLE
-			]
+			],
+			$check,
+			$method
 		);
 	}
 
 	//-------------------------------------------------------------------------- testAccessProperties
+	/**
+	 * @throws Exception
+	 * @throws ReflectionException
+	 */
 	public function testAccessProperties()
 	{
-		$class = new Reflection_Class(Order::class);
-		$today = date('Y-m-d');
-		$test_order = new Order($today, 'CDE001');
+		$class                    = new Reflection_Class(Order::class);
+		$today                    = date('Y-m-d');
+		$test_order               = new Order($today, 'CDE001');
 		$test_order->has_workflow = true;
 
 		// all properties should not be accessible from an order
 		$this->shouldBeInaccessible(__METHOD__ . '.1 (getAllProperties)', $class, $test_order);
 
 		// does access properties return properties list ?
-		$date   = new Reflection_Property(Document::class, 'date');
-		$number = new Reflection_Property(Document::class, 'number');
+		$date              = new Reflection_Property(Document::class, 'date');
+		$number            = new Reflection_Property(Document::class, 'number');
 		$date->final_class = $number->final_class = Order::class;
-		$test2 = $this->assume(
-			__METHOD__ . '2 (accessProperties)',
+		$this->assertEquals(
+			$this->properties($date, $number),
 			$properties = $class->accessProperties(),
-			$this->properties($date, $number)
+			__METHOD__ . '2 (accessProperties)'
 		);
-		if ($test2) {
-			// are properties now accessible from an order ?
-			$check = [];
-			foreach ($properties as $property) {
-				try {
-					$check[$property->name] = $property->getValue($test_order);
-				}
-				catch (ReflectionException $e) {
-					$check[$property->name] = 'inaccessible';
-				}
+
+		// are properties now accessible from an order ?
+		$check = [];
+		foreach ($properties as $property) {
+			try {
+				$check[$property->name] = $property->getValue($test_order);
 			}
-			$this->assume(
-				__METHOD__ . '.3 (accessProperties, then getValue)',
-				$check,
-				[
-					'date'            => $today,
-					'delivery_client' => null,
-					'number'          => 'CDE001',
-					'has_workflow'    => true,
-					'client'          => null,
-					'lines'           => [],
-					'salesmen'        => []
-				]
-			);
+			catch (Exception $e) {
+				$check[$property->name] = 'inaccessible';
+			}
 		}
+		$this->assertEquals(
+			[
+				'date'            => $today,
+				'delivery_client' => null,
+				'number'          => 'CDE001',
+				'has_workflow'    => true,
+				'client'          => null,
+				'lines'           => [],
+				'salesmen'        => []
+			],
+			$check,
+			__METHOD__ . '.3 (accessProperties, then getValue)'
+		);
+
 		// properties should not be accessible, again
 		$class->accessPropertiesDone();
 		$this->shouldBeInaccessible(__METHOD__ . '.4 (accessPropertiesDone)', $class, $test_order);
 	}
 
 	//---------------------------------------------------------------------- testAccessPropertiesDone
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testAccessPropertiesDone()
 	{
-		$class = new Reflection_Class(Order::class);
-		$test_order = new Order(date('Y-m-d'), 'CDE001');
+		$class                    = new Reflection_Class(Order::class);
+		$test_order               = new Order(date('Y-m-d'), 'CDE001');
 		$test_order->has_workflow = true;
 
 		$class->accessProperties();
@@ -133,16 +141,17 @@ class Reflection_Class_Test extends Test
 	//-------------------------------------------------------------------------- testGetAllProperties
 	/**
 	 * Test get all properties
+	 *
+	 * @throws ReflectionException
 	 */
 	public function testGetAllProperties()
 	{
-		$date   = new Reflection_Property(Document::class, 'date');
-		$number = new Reflection_Property(Document::class, 'number');
+		$date              = new Reflection_Property(Document::class, 'date');
+		$number            = new Reflection_Property(Document::class, 'number');
 		$date->final_class = $number->final_class = Order::class;
-		$this->assume(
-			__METHOD__,
-			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE]),
-			$this->properties($date, $number)
+		$this->assertEquals(
+			$this->properties($date, $number),
+			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE])
 		);
 	}
 

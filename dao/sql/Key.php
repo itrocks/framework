@@ -15,7 +15,7 @@ interface Key extends Field
 	 *
 	 * @param $key Key
 	 */
-	public function equiv($key);
+	public function equiv(Key $key);
 
 	//------------------------------------------------------------------------------------ getSqlType
 	/**

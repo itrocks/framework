@@ -11,49 +11,14 @@ class Join
 {
 
 	//------------------------------------------------------------------------------------- JOIN MODE
-
-	//----------------------------------------------------------------------------------------- INNER
-	/**
-	 * INNER JOIN
-	 */
 	const INNER = 'INNER';
-
-	//------------------------------------------------------------------------------------------ LEFT
-	/**
-	 * LEFT JOIN
-	 */
 	const LEFT = 'LEFT';
-
-	//----------------------------------------------------------------------------------------- OUTER
-	/**
-	 * OUTER JOIN
-	 */
 	const OUTER = 'OUTER';
-
-	//----------------------------------------------------------------------------------------- RIGHT
-	/**
-	 * RIGHT JOIN
-	 */
 	const RIGHT = 'RIGHT';
 
 	//------------------------------------------------------------------------------------- JOIN TYPE
-
-	//------------------------------------------------------------------------------------------ LINK
-	/**
-	 * A property set here because of a 'link' annotated class
-	 */
 	const LINK = 'LINK';
-
-	//---------------------------------------------------------------------------------------- OBJECT
-	/**
-	 * An object property
-	 */
 	const OBJECT = 'OBJECT';
-
-	//---------------------------------------------------------------------------------------- SIMPLE
-	/**
-	 * A simple value property
-	 */
 	const SIMPLE = 'SIMPLE';
 
 	//-------------------------------------------------------------------------------- $foreign_alias
@@ -140,8 +105,8 @@ class Join
 	/**
 	 * Join mode (Sql_Join::INNER, LEFT, OUTER or RIGHT)
 	 *
-	 * @var string
 	 * @values INNER, LEFT, OUTER, RIGHT
+	 * @var string
 	 */
 	public $mode;
 
@@ -149,8 +114,8 @@ class Join
 	/**
 	 * Join column type (Sql_Join::SIMPLE, OBJECT)
 	 *
-	 * @var string
 	 * @values SIMPLE, OBJECT
+	 * @var string
 	 */
 	public $type = self::SIMPLE;
 

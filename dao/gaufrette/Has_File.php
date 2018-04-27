@@ -11,9 +11,9 @@ trait Has_File
 
 	//--------------------------------------------------------------------------------- $file_content
 	/**
-	 * @dao gaufrette
+	 * @dao        gaufrette
 	 * @max_length 1000000000
-	 * @store gz
+	 * @store      gz
 	 * @var string
 	 */
 	public $file_content;
@@ -40,19 +40,18 @@ trait Has_File
 	 * @read_only
 	 * @setter
 	 * @store false
-	 * @user invisible readonly
+	 * @user  invisible readonly
 	 * @var string
 	 */
 	public $storage_name;
 
 	//-------------------------------------------------------------------------------- setStorageName
-	/** @noinspection PhpUnusedPrivateMethodInspection @setter */
 	/**
 	 * Disable setter on storage name. Should only be computed
 	 *
 	 * @throws Exception
 	 */
-	private function setStorageName()
+	protected function setStorageName()
 	{
 		throw new Exception(
 			'File_Link::$storage_name should only be computed with @getter and return unique value'

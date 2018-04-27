@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
+use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -21,6 +22,7 @@ use ITRocks\Framework\View\Html\Dom\Table\Head;
 use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
 use ITRocks\Framework\View\Html\Dom\Table\Row;
 use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
+use ReflectionException;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data
@@ -56,6 +58,7 @@ class Collection
 	/**
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
+	 * @throws Exception
 	 */
 	public function __construct(Reflection_Property $property, array $collection)
 	{
@@ -68,6 +71,7 @@ class Collection
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @return Table
+	 * @throws Exception
 	 */
 	public function build()
 	{
@@ -82,6 +86,7 @@ class Collection
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @return Body
+	 * @throws Exception
 	 */
 	protected function buildBody()
 	{
@@ -97,12 +102,13 @@ class Collection
 	 * @param $object   object
 	 * @param $property Reflection_Property
 	 * @return Standard_Cell
+	 * @throws Exception
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
 		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
 		if (is_array($value)) {
-			$link_annotation = Property\Link_Annotation::of($property);
+			$link_annotation = Annotation\Property\Link_Annotation::of($property);
 			if ($link_annotation->isCollection()) {
 				$value = (new Collection($property, $value))->build();
 			}
@@ -110,7 +116,7 @@ class Collection
 				$value = (new Map($property, $value))->build();
 			}
 		}
-		$cell  = ($value instanceof Dao\File)
+		$cell = ($value instanceof Dao\File)
 			? new Standard_Cell((new File($value))->build())
 			: new Standard_Cell($value);
 		$type = $property->getType();
@@ -128,6 +134,7 @@ class Collection
 	//------------------------------------------------------------------------------------- buildHead
 	/**
 	 * @return Head
+	 * @throws Exception
 	 */
 	protected function buildHead()
 	{
@@ -159,6 +166,7 @@ class Collection
 	/**
 	 * @param $object object
 	 * @return Row
+	 * @throws Exception
 	 */
 	protected function buildRow($object)
 	{
@@ -177,6 +185,7 @@ class Collection
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @return Reflection_Property[]
+	 * @throws ReflectionException
 	 */
 	protected function getProperties()
 	{

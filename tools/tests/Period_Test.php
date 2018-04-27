@@ -16,7 +16,7 @@ class Period_Test extends Test
 	{
 		$date1 = new Date_Time('2016-05-03 12:05:15');
 		$date2 = new Date_Time('2015-06-08 13:02:00');
-		$this->assume(__METHOD__, new Period($date1, $date2), new Period($date2, $date1));
+		$this->assertEquals(new Period($date2, $date1), new Period($date1, $date2));
 	}
 
 	//----------------------------------------------------------------------------------- testExclude
@@ -41,18 +41,16 @@ class Period_Test extends Test
 		$large2 = new Period($date2, $date5);
 		$large3 = new Period($date2, $date4);
 		$second = new Period($date5, $date5);
-		$this->method(__METHOD__);
-		$this->assume('inside',     $full->exclude($middle),   [$begin2, $end2]);
-		$this->assume('in1',        $full->exclude($begin),    [new Period($date2c, $date5)]);
-		$this->assume('in2',        $full->exclude($end),      [new Period($date1, $date3b)]);
-		$this->assume('out-before', $begin->exclude($end),     [$begin]);
-		$this->assume('out-after',  $end->exclude($begin),     [$end]);
-		$this->assume('exclude1',   $large1->exclude($large2), [new Period($date1, $date2b)]);
-		$this->assume('exclude2',   $large2->exclude($large1), [new Period($date3c, $date5)]);
-		$this->assume('same',       $full->exclude($full),     []);
-		$this->assume('micro',      $large2->exclude($second), [$large3]);
-		$this->assume('micro2',     $large2->exclude($large3), [$second]);
-		$this->method('-');
+		$this->assertEquals([$begin2, $end2], $full->exclude($middle), 'inside');
+		$this->assertEquals([new Period($date2c, $date5)], $full->exclude($begin), 'in1');
+		$this->assertEquals([new Period($date1, $date3b)], $full->exclude($end), 'in2');
+		$this->assertEquals([$begin], $begin->exclude($end), 'out-before');
+		$this->assertEquals([$end], $end->exclude($begin), 'out-after');
+		$this->assertEquals([new Period($date1, $date2b)], $large1->exclude($large2), 'exclude1');
+		$this->assertEquals([new Period($date3c, $date5)], $large2->exclude($large1), 'exclude2');
+		$this->assertEquals([], $full->exclude($full), 'same');
+		$this->assertEquals([$large3], $large2->exclude($second), 'micro');
+		$this->assertEquals([$second], $large2->exclude($large3), 'micro2');
 	}
 
 	//------------------------------------------------------------------------------------ testFormat
@@ -105,17 +103,16 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->method(__METHOD__);
-		$this->assume('in',     $middle->in($full),   true);
-		$this->assume('same',   $middle->in($middle), true);
-		$this->assume('begin',  $begin->in($full),    true);
-		$this->assume('end',    $end->in($full),      true);
-		$this->assume('out',    $begin->in($end),     false);
-		$this->assume('large1', $large1->in($large2), false);
-		$this->assume('large2', $large2->in($large1), false);
-		$this->assume('around', $full->in($middle),   false);
-		$this->assume('full1',  $full->in($begin),    false);
-		$this->assume('full2',  $full->in($end),      false);
+		$this->assertEquals(true, $middle->in($full), 'in');
+		$this->assertEquals(true, $middle->in($middle), 'same');
+		$this->assertEquals(true, $begin->in($full), 'begin');
+		$this->assertEquals(true, $end->in($full), 'end');
+		$this->assertEquals(false, $begin->in($end), 'out');
+		$this->assertEquals(false, $large1->in($large2), 'large1');
+		$this->assertEquals(false, $large2->in($large1), 'large2');
+		$this->assertEquals(false, $full->in($middle), 'around');
+		$this->assertEquals(false, $full->in($begin), 'full1');
+		$this->assertEquals(false, $full->in($end), 'full2');
 	}
 
 	//--------------------------------------------------------------------------------- testIntersect
@@ -131,17 +128,14 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->method(__METHOD__);
-		$this->assume('inside',     $full->intersect($middle),   $middle);
-		$this->assume('begin',      $full->intersect($begin),    $begin);
-		$this->assume('end',        $full->intersect($end),      $end);
-		$this->assume('out-before', $begin->intersect($end),     null);
-		$this->assume('out-after',  $end->intersect($begin),     null);
-		$this->assume('intersect1', $large1->intersect($large2), $middle);
-		$this->assume('intersect2', $large2->intersect($large1), $middle);
-		$this->assume('same',       $full->intersect($full),     $full);
-
-		$this->method('-');
+		$this->assertEquals($middle, $full->intersect($middle), 'inside');
+		$this->assertEquals($begin, $full->intersect($begin), 'begin');
+		$this->assertEquals($end, $full->intersect($end), 'end');
+		$this->assertEquals(null, $begin->intersect($end), 'out-before');
+		$this->assertEquals(null, $end->intersect($begin), 'out-after');
+		$this->assertEquals($middle, $large1->intersect($large2), 'intersect1');
+		$this->assertEquals($middle, $large2->intersect($large1), 'intersect2');
+		$this->assertEquals($full, $full->intersect($full), 'same');
 	}
 
 	//--------------------------------------------------------------------------------------- testOut
@@ -157,18 +151,17 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->method(__METHOD__);
-		$this->assume('after',  $begin->out($end),     true);
-		$this->assume('before', $end->out($begin),     true);
-		$this->assume('around', $middle->out($full),   false);
-		$this->assume('same',   $middle->out($middle), false);
-		$this->assume('begin',  $begin->out($full),    false);
-		$this->assume('end',    $end->out($full),      false);
-		$this->assume('large1', $large1->out($large2), false);
-		$this->assume('large2', $large2->out($large1), false);
-		$this->assume('around', $full->out($middle),   false);
-		$this->assume('full1',  $full->out($begin),    false);
-		$this->assume('full2',  $full->out($end),      false);
+		$this->assertEquals(true, $begin->out($end), 'after');
+		$this->assertEquals(true, $end->out($begin), 'before');
+		$this->assertEquals(false, $middle->out($full), 'around');
+		$this->assertEquals(false, $middle->out($middle), 'same');
+		$this->assertEquals(false, $begin->out($full), 'begin');
+		$this->assertEquals(false, $end->out($full), 'end');
+		$this->assertEquals(false, $large1->out($large2), 'large1');
+		$this->assertEquals(false, $large2->out($large1), 'large2');
+		$this->assertEquals(false, $full->out($middle), 'around');
+		$this->assertEquals(false, $full->out($begin), 'full1');
+		$this->assertEquals(false, $full->out($end), 'full2');
 	}
 
 	//---------------------------------------------------------------------------------- testToMonths
@@ -190,9 +183,8 @@ class Period_Test extends Test
 			new Date_Time('2016-04-01'),
 			new Date_Time('2016-05-01')
 		];
-		$this->method(__METHOD__);
-		$this->assume('several', (new Period($date1, $date2))->toMonths(), $months);
-		$this->assume('one',     (new Period($date1, $date1))->toMonths(), [$date1->month()]);
+		$this->assertEquals($months, (new Period($date1, $date2))->toMonths(), 'several');
+		$this->assertEquals([$date1->month()], (new Period($date1, $date1))->toMonths(), 'one');
 	}
 
 	//------------------------------------------------------------------------------------- testUnion
@@ -211,17 +203,15 @@ class Period_Test extends Test
 		$large2 = new Period($date2, $date5);
 		$large3 = new Period($date2, $date4);
 		$micro  = new Period($date4, $date5);
-		$this->method(__METHOD__);
-		$this->assume('inside',     $full->union($middle),   [$full]);
-		$this->assume('in1',        $full->union($begin),    [$full]);
-		$this->assume('in2',        $full->union($end),      [$full]);
-		$this->assume('out-before', $begin->union($end),     [$begin, $end]);
-		$this->assume('out-after',  $end->union($begin),     [$end, $begin]);
-		$this->assume('union1',     $large1->union($large2), [$full]);
-		$this->assume('union2',     $large2->union($large1), [$full]);
-		$this->assume('same',       $full->union($full),     [$full]);
-		$this->assume('micro',      $large3->union($micro),  [$large2]);
-		$this->method('-');
+		$this->assertEquals([$full], $full->union($middle), 'inside');
+		$this->assertEquals([$full], $full->union($begin), 'in1');
+		$this->assertEquals([$full], $full->union($end), 'in2');
+		$this->assertEquals([$full], $large1->union($large2), 'union1');
+		$this->assertEquals([$full], $large2->union($large1), 'union2');
+		$this->assertEquals([$full], $full->union($full), 'same');
+		$this->assertEquals([$begin, $end], $begin->union($end), 'out-before');
+		$this->assertEquals([$end, $begin], $end->union($begin), 'out-after');
+		$this->assertEquals([$large2], $large3->union($micro), 'micro');
 	}
 
 }

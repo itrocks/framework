@@ -3,11 +3,12 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Session;
+use ReflectionException;
 
 /**
  * This class allows you to configure online editor (WYSIWYG), activated with annotation
- * @editor editor_name
  *
+ * @editor editor_name
  * @example config.php : Editor::class => ['name' => 'ckeditor', 'default_version' => 'full']
  * for full version, or 'default_version' => 'standard' for basic version
  * (http://ckeditor.com/demo#full)
@@ -40,10 +41,11 @@ class Editor implements Configurable
 	//-------------------------------------------------------------------------------- buildClassName
 	/**
 	 * Allow build the class that will generate the online editor.
-	 * @example ckeditor full version : class name is 'ckeditor-' version (ckeditor-full)
 	 *
+	 * @example ckeditor full version : class name is 'ckeditor-' version (ckeditor-full)
 	 * @param $version string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function buildClassName($version)
 	{

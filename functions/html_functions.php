@@ -11,8 +11,12 @@
  */
 function htmlEntityDecode($string, $flags = null, $encoding = null)
 {
-	if (!isset($flags))    $flags = ENT_COMPAT | ENT_HTML401;
-	if (!isset($encoding)) $encoding = ini_get('default_charset');
+	if (!isset($flags)) {
+		$flags = ENT_COMPAT | ENT_HTML401;
+	}
+	if (!isset($encoding)) {
+		$encoding = ini_get('default_charset');
+	}
 	if (is_array($string)) {
 		foreach ($string as $key => $value) {
 			$string[$key] = htmlEntityDecode($value, $flags, $encoding);

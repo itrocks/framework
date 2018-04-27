@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
+use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
@@ -12,6 +13,7 @@ use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -32,6 +34,7 @@ use ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Widget\Validate\Property\Var_Annotation;
 use ITRocks\Framework\Widget\Write\Write_Controller;
+use ReflectionException;
 
 /**
  * The object validator links validation processes to objects
@@ -108,6 +111,7 @@ class Validator implements Registerable
 	 * link. Objects must be validated before doing this
 	 *
 	 * @param $joinpoint Before_Method
+	 * @throws Exception
 	 */
 	public function beforePropertyStoreString(Before_Method $joinpoint)
 	{
@@ -130,6 +134,8 @@ class Validator implements Registerable
 	 * @param  $object  object
 	 * @param  $options Option[]
 	 * @throws View_Exception
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function beforeWrite($object, array $options)
 	{
@@ -175,11 +181,14 @@ class Validator implements Registerable
 	 *
 	 * @param $object   object
 	 * @param $property Reflection_Property
-	 * @return object|null
+	 * @return object|Component
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function createSubObject($object, Reflection_Property $property)
 	{
 		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
+		/** @var $sub_object Component */
 		$sub_object = $link_class->newInstance();
 		// we attach composite object, but we do not set the sub_object in its parent property
 		// we simply want to validate the new object, not to save it !
@@ -375,6 +384,8 @@ class Validator implements Registerable
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
 	 * @return string|null|true @values Result::const
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
@@ -444,6 +455,8 @@ class Validator implements Registerable
 	 * @param $exclude_properties string[]
 	 * @param $property           Reflection\Reflection_Property
 	 * @return string|null|true @values Result::const
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function validateComponent(
 		$object,
@@ -500,8 +513,8 @@ class Validator implements Registerable
 
 	//-------------------------------------------------------------------------------- validateObject
 	/**
-	 * @param $object          object
-	 * @param Reflection_Class $class
+	 * @param $object object
+	 * @param $class  Reflection_Class
 	 * @return string|null|true @values Result::const
 	 */
 	protected function validateObject($object, Reflection_Class $class)
@@ -516,6 +529,7 @@ class Validator implements Registerable
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
 	 * @return string|null|true @values Result::const
+	 * @throws Exception
 	 */
 	protected function validateProperties(
 		$object, array $properties, array $only_properties, array $exclude_properties

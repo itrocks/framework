@@ -1,11 +1,12 @@
 <?php
 namespace ITRocks\Framework\AOP\Compiler;
 
-use ReflectionFunction;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Reflection\Reflection_Function;
+use ReflectionException;
+use ReflectionFunction;
 
 /**
  * Functions common to all element compilers classes
@@ -24,6 +25,7 @@ trait Toolbox
 	 * @param $advice               string
 	 * @param $joinpoint_class_name string
 	 * @return array
+	 * @throws ReflectionException
 	 */
 	private function decodeAdvice($advice, $joinpoint_class_name)
 	{
@@ -120,6 +122,7 @@ trait Toolbox
 	 * @param $i2                       string
 	 * @param $result                   string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	private function generateAdviceCode(
 		$advice, $advice_class_name, $advice_method_name, $advice_function_name,

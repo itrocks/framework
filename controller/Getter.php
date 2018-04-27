@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use ReflectionException;
 
 /**
  * Gets the active class for a given base name feature, suffix and file extension
@@ -72,6 +73,7 @@ abstract class Getter
 	 * @param $extension    string File extension, ie 'php', 'html'
 	 * @param $class_form   boolean true to use 'Feature_Class' naming instead of 'featureClass'
 	 * @return string[] [$class, $method]
+	 * @throws ReflectionException
 	 */
 	static public function get($base_class, $feature_name, $suffix, $extension, $class_form = true)
 	{
@@ -295,6 +297,7 @@ if (isset($GLOBALS['D'])) static::debug(strtoupper($suffix ?: $extension), $resu
 	 *
 	 * @param $class_name string
 	 * @return string[] key is the full name of each class, value is it without 'Vendor/Project/'
+	 * @throws ReflectionException
 	 */
 	static private function getClasses($class_name)
 	{

@@ -31,7 +31,8 @@ class Test_Object
 	 * @param $options Option[]
 	 */
 	public static function distantAfterWrite(
-		Test_Object $tests, /* @noinspection PhpUnusedParameterInspection */ Data_Link $link,
+		Test_Object $tests, /* @noinspection PhpUnusedParameterInspection */
+		Data_Link $link,
 		array $options
 	) {
 		$tests->dynamic('dis-after', $options);
@@ -44,7 +45,8 @@ class Test_Object
 	 * @param $options Option[]
 	 */
 	public static function distantBeforeWrite(
-		Test_Object $tests, /* @noinspection PhpUnusedParameterInspection */ Data_Link $link,
+		Test_Object $tests, /* @noinspection PhpUnusedParameterInspection */
+		Data_Link $link,
 		array $options
 	) {
 		$tests->dynamic('dis-before', $options);
@@ -76,8 +78,7 @@ class Test_Object
 	public function localAfterCommit1(
 		/* @noinspection PhpUnusedParameterInspection */
 		Data_Link $link, array $options
-	)
-	{
+	) {
 		$this->dynamic('loc-after-commit1', $options);
 	}
 
@@ -89,8 +90,7 @@ class Test_Object
 	public function localAfterCommit2(
 		/* @noinspection PhpUnusedParameterInspection */
 		Data_Link $link, array $options
-	)
-	{
+	) {
 		$this->dynamic('loc-after-commit2', $options);
 	}
 
@@ -102,8 +102,7 @@ class Test_Object
 	public function localAfterWrite(
 		/* @noinspection PhpUnusedParameterInspection */
 		Data_Link $link, array $options
-	)
-	{
+	) {
 		$this->dynamic('loc-after', $options);
 	}
 
@@ -115,8 +114,7 @@ class Test_Object
 	public function localBeforeWrite(
 		/* @noinspection PhpUnusedParameterInspection */
 		Data_Link $link, array $options
-	)
-	{
+	) {
 		$this->dynamic('loc-before', $options);
 	}
 

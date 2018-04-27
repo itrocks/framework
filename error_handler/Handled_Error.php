@@ -18,14 +18,6 @@ class Handled_Error
 	 */
 	private $call_next_error_handlers = true;
 
-	//--------------------------------------------------------------------------------------- $err_no
-	/**
-	 * Level of the error raised
-	 *
-	 * @var integer
-	 */
-	private $err_no;
-
 	//-------------------------------------------------------------------------------------- $err_msg
 	/**
 	 * The error message
@@ -33,6 +25,14 @@ class Handled_Error
 	 * @var string
 	 */
 	private $err_msg;
+
+	//--------------------------------------------------------------------------------------- $err_no
+	/**
+	 * Level of the error raised
+	 *
+	 * @var integer
+	 */
+	private $err_no;
 
 	//------------------------------------------------------------------------------------- $filename
 	/**
@@ -77,7 +77,7 @@ class Handled_Error
 	 * @param $filename string  php script filename where the error occurs
 	 * @param $line_num integer line number into the php script file where the error occurs
 	 * @param $vars     array   error context : all active variables and their values when the error
-	 *                          occurred
+	 *                  occurred
 	 */
 	public function __construct($err_no, $err_msg, $filename, $line_num, array $vars = [])
 	{

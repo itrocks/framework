@@ -5,12 +5,15 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Widget\Validate\Property\Length_Annotation;
+use ReflectionException;
 
 /**
  * Class Length_Annotation_Tests
  */
 class Length_Annotation_Test extends Test
 {
+
+	//-------------------------------------------------------------------------------- $fail_property
 	/**
 	 * A test property that does not match @length annotation.
 	 *
@@ -36,7 +39,9 @@ class Length_Annotation_Test extends Test
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
-	 * Before each test.
+	 * Before each test
+	 *
+	 * @throws ReflectionException
 	 */
 	public function setUp()
 	{
@@ -45,7 +50,7 @@ class Length_Annotation_Test extends Test
 
 	//-------------------------------------------------------------------------------------- tearDown
 	/**
-	 * After each test.
+	 * After each test
 	 */
 	public function tearDown()
 	{
@@ -54,15 +59,15 @@ class Length_Annotation_Test extends Test
 
 	//------------------------------------------------------------------------- testGetAnnotationName
 	/**
-	 * Tests method Length_Annotation::getAnnotationName().
+	 * Tests method Length_Annotation::getAnnotationName()
 	 */
 	public function testGetAnnotationName()
 	{
-		/** @var Reflection_Property $propertyMock */
-		$propertyMock = $this->getMockBuilder(Reflection_Property::class)
+		/** @var Reflection_Property $property_mock */
+		$property_mock = $this->getMockBuilder(Reflection_Property::class)
 			->disableOriginalConstructor()
 			->getMock();
-		$annotation   = new Length_Annotation('foo', $propertyMock);
+		$annotation = new Length_Annotation('foo', $property_mock);
 
 		$actual   = $annotation->getAnnotationName();
 		$expected = 'length';

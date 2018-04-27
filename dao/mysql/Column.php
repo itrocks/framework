@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use Exception;
 use ITRocks\Framework\Dao\Sql;
-
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Value;
@@ -146,6 +146,7 @@ class Column implements Sql\Column
 	 *
 	 * @param $property Reflection_Property
 	 * @return Column
+	 * @throws Exception
 	 */
 	public static function buildProperty(Reflection_Property $property)
 	{
@@ -192,7 +193,7 @@ class Column implements Sql\Column
 
 	//------------------------------------------------------------------------------------- canBeNull
 	/**
-	 * @return bool
+	 * @return boolean
 	 */
 	public function canBeNull()
 	{
@@ -226,7 +227,7 @@ class Column implements Sql\Column
 	 * Returns true if the column is an equivalent of the other column
 	 *
 	 * @param $column Column
-	 * @return bool
+	 * @return boolean
 	 */
 	public function equiv($column)
 	{

@@ -50,12 +50,13 @@ abstract class Authentication
 	//---------------------------------------------------------------------------- controlNameNotUsed
 	/**
 	 * Control if the name is not already used.
+	 *
 	 * @param $login string The name of the user
 	 * @return boolean true if the login is not used, false if the login is already used.
 	 */
 	public static function controlNameNotUsed($login)
 	{
-		$search = Search_Object::create(User::class);
+		$search        = Search_Object::create(User::class);
 		$search->login = $login;
 		return !Dao::search($search);
 	}
@@ -108,8 +109,8 @@ abstract class Authentication
 	public static function getLoginInputs()
 	{
 		return Input::newCollection([
-			['login', 'login', 'text'],
-			['password',  'password',  'password']
+			['login',    'login',    'text'],
+			['password', 'password', 'password']
 		]);
 	}
 

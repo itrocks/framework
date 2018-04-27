@@ -1,11 +1,13 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
+use Exception;
+use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Widget;
 use PHPUnit\Framework\Assert;
+use ReflectionException;
 
 /**
  * Validate widget testing
@@ -29,7 +31,7 @@ class Validate_Test extends Test
 	/**
 	 * Extract annotations' information in an associative array.
 	 *
-	 * @param array $report : An array of annotation objects.
+	 * @param $report Reflection\Annotation[]|Annotation[] of annotation objects
 	 * @return array
 	 */
 	private function buildAnnotationsInformation(array $report)
@@ -50,7 +52,9 @@ class Validate_Test extends Test
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
-	 * Before each test.
+	 * Before each test
+	 *
+	 * @throws ReflectionException
 	 */
 	protected function setUp()
 	{
@@ -74,7 +78,7 @@ class Validate_Test extends Test
 
 	//-------------------------------------------------------------------------------------- tearDown
 	/**
-	 * Reset after each test.
+	 * Reset after each test
 	 */
 	public function tearDown()
 	{
@@ -85,11 +89,11 @@ class Validate_Test extends Test
 	//----------------------------------------------------------------------- testValidateAnnotations
 	/**
 	 * Launches 3 class validators that returns different results.
+	 *
+	 * @throws Exception
 	 */
 	public function testValidateAnnotations()
 	{
-		Assert::assertEquals('error', $this->validator->validate($this->subject));
-
 		// Expected information about annotations & AOP.
 		$expected = [
 			// Property annotations.
@@ -97,68 +101,57 @@ class Validate_Test extends Test
 				'class'   => Property\Validate_Annotation::class,
 				'message' => null,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidFalse']),
+				'value'   => Test_Object::class . '::notValidFalse',
 			],
 			[
 				'class'   => Property\Validate_Annotation::class,
 				'message' => Test_Object::NOT_VALID_MESSAGE,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidMessage']),
+				'value'   => Test_Object::class . '::notValidMessage',
 			],
 			[
 				'class'   => Property\Validate_Annotation::class,
 				'message' => null,
 				'valid'   => 'information',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'validTrue']),
+				'value'   => Test_Object::class . '::validTrue',
 			],
 			[
 				'class'   => Property\Validate_Annotation::class,
 				'message' => Test_Object::NOT_VALID_DYNAMIC,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidDynamic']),
+				'value'   => Test_Object::class . '::notValidDynamic',
 			],
 			// Class annotations.
 			[
 				'class'   => Class_\Validate_Annotation::class,
 				'message' => null,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidFalse']),
+				'value'   => Test_Object::class . '::notValidFalse',
 			],
 			[
 				'class'   => Class_\Validate_Annotation::class,
 				'message' => Test_Object::NOT_VALID_MESSAGE,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidMessage']),
+				'value'   => Test_Object::class . '::notValidMessage',
 			],
 			[
 				'class'   => Class_\Validate_Annotation::class,
 				'message' => null,
 				'valid'   => 'information',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'validTrue']),
+				'value'   => Test_Object::class . '::validTrue',
 			],
 			[
 				'class'   => Class_\Validate_Annotation::class,
 				'message' => Test_Object::NOT_VALID_DYNAMIC,
 				'valid'   => 'error',
-				'value'   => $this->valueOf([Widget\Validate\Test_Object::class, 'notValidDynamic']),
+				'value'   => Test_Object::class . '::notValidDynamic',
 			],
 		];
 
+		Assert::assertEquals('error', $this->validator->validate($this->subject));
 		$actual = $this->buildAnnotationsInformation($this->validator->report);
 
 		Assert::assertEquals($expected, $actual);
-	}
-
-	//--------------------------------------------------------------------------------------- valueOf
-	/**
-	 * Change a callable into a 'Class_name::methodName' string
-	 *
-	 * @param $callable callable
-	 * @return string
-	 */
-	protected function valueOf(callable $callable)
-	{
-		return join('::', $callable);
 	}
 
 }
