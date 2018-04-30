@@ -45,7 +45,7 @@ class Access_Control implements Configurable, Registerable
 
 	//------------------------------------------------------------------------------------ $all_users
 	/**
-	 * Acces to these features is granted for all logged-in users,
+	 * Access to these features is granted for all logged-in users,
 	 * even if they have no explicit access to them
 	 *
 	 * @var array

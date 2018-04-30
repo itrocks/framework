@@ -11,7 +11,7 @@ use ITRocks\Framework\Tools\Date_Time;
  * Date_Time values are automatically formatted using locale.
  * If you need to translate replacement values, you must call Loc::tr() for each of them.
  *
- * @example Loc::tr('Error for $number elements', Loc::Replace(['number' => 12]))
+ * @example Loc::tr('Error for $number elements', Loc::replace(['number' => 12]))
  *          => 'Error for 12 elements'
  */
 class Replace extends Option
