@@ -349,6 +349,16 @@ abstract class Names
 		if (isset(self::$sets[$class_name])) {
 			return self::$sets[$class_name];
 		}
+		// if $class_name is explicitely declared as 'singular' : return it
+		/** @var $dependency Dependency */
+		$dependency = Dao::searchOne(
+			['class_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
+			Dependency::class
+		);
+		if ($dependency) {
+			return $class_name;
+		}
+		// explicitely declared as 'plural of ...' : return the matching class name
 		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
 			['dependency_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
@@ -358,11 +368,12 @@ abstract class Names
 			self::$sets[$class_name] = $dependency->class_name;
 			return $dependency->class_name;
 		}
+		// guess the singular using common syntactic changes (apply setToSingle to words)
 		$set_class_name = $class_name;
-		$class_name = Namespaces::shortClassName($class_name);
-		$right = '';
+		$class_name     = Namespaces::shortClassName($class_name);
+		$right          = '';
 		do {
-			$class_name = self::setToSingle($class_name);
+			$class_name      = self::setToSingle($class_name);
 			$full_class_name = Namespaces::defaultFullClassName($class_name . $right, $set_class_name);
 			if (class_exists($full_class_name) || trait_exists($full_class_name)) {
 				self::$sets[$set_class_name] = $full_class_name;
@@ -384,22 +395,23 @@ abstract class Names
 					trigger_error('No class found for set ' . $set_class_name, E_USER_ERROR);
 				}
 				else {
-					$right = substr($class_name, $i) . $right;
+					$right      = substr($class_name, $i) . $right;
 					$class_name = substr($class_name, 0, $i);
 				}
 			}
 			else {
-				$right = substr($class_name, $i) . $right;
+				$right      = substr($class_name, $i) . $right;
 				$class_name = substr($class_name, 0, $i);
 			}
-		} while (!empty($class_name));
+		}
+		while (!empty($class_name));
 		$class_name .= $right;
 		if (class_exists($class_name, false) || trait_exists($class_name, false)) {
 			self::$sets[$set_class_name] = $class_name;
 			return $class_name;
 		}
 		elseif (strrpos($set_class_name, '_') > strrpos($set_class_name, BS)) {
-			$namespace = Namespaces::of($set_class_name);
+			$namespace  = Namespaces::of($set_class_name);
 			$class_name = substr($set_class_name, strpos($set_class_name, '_', strlen($namespace)) + 1);
 			self::$sets[$set_class_name] = self::setToClass($namespace . BS . $class_name, $check_class);
 			return self::$sets[$set_class_name];
