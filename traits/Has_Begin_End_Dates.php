@@ -2,7 +2,11 @@
 namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Period;
 
 /**
@@ -24,6 +28,69 @@ trait Has_Begin_End_Dates
 	 * @var Date_Time
 	 */
 	public $end_date;
+
+	//-------------------------------------------------------------------------------------- activeAt
+	/**
+	 * Gets the active object for a given date-time
+	 *
+	 * @param $date_time Date_Time|null @default Date_Time::now
+	 * @return static|null
+	 */
+	public static function activeAt(Date_Time $date_time = null)
+	{
+		if (!isset($date_time)) {
+			$date_time = Date_Time::now();
+		}
+		/** @var $object static */
+		$object = Dao::searchOne(
+			[
+				'begin_date' => Func::lessOrEqual($date_time->day(false)),
+				'end_date'   => Func::greaterOrEqual($date_time->day(false))
+			],
+			get_called_class()
+		);
+		return $object;
+	}
+
+	//--------------------------------------------------------------------------------- checkOverlaps
+	/**
+	 * Returns true if there is no date overlap into $array objects, or an error message if there are
+	 *
+	 * @param $array      static[] an array of elements with begin-end dates
+	 * @param $array_name string a name for the object that contains the array
+	 * @return boolean|string|array
+	 * boolean : true if there is no overlapping error
+	 * string : first error message (if $array_name is set only)
+	 * array[object $first_element, object $second_element] : if $array_name is null, returns overlaps
+	 */
+	public static function checkOverlaps(array $array, $array_name = null)
+	{
+		$overlaps = [];
+		foreach ($array as $first_element) {
+			foreach ($array as $second_element) {
+				if (
+					!Dao::is($first_element, $second_element)
+					&& $first_element->datesOverlap($second_element)
+				) {
+					if (isset($array_name)) {
+						return Loc::tr(
+							"The :name can't be in :element_name :first and :second at the same time",
+							Loc::replace([
+								'element_name' => Names::classToDisplay(get_called_class()),
+								'first'        => $first_element,
+								'name'         => $array_name,
+								'second'       => $second_element
+							])
+						);
+					}
+					else {
+						$overlaps[] = [$first_element, $second_element];
+					}
+				}
+			}
+		}
+		return $overlaps ?: true;
+	}
 
 	//---------------------------------------------------------------------------------- datesOverlap
 	/**
