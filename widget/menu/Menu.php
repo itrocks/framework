@@ -83,17 +83,21 @@ class Menu implements Configurable
 	 * - Each time a string without BS is read : it is the name of feature for the next classes
 	 *
 	 * @param $class_names string|string[] class name(s), can be multiple in one or several arguments
+	 *                     If string[] : key can be class name, then value is the feature
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
 	 */
 	public static function configurationOf($class_names)
 	{
 		$configuration_items = [];
-		$feature             = Feature::F_LIST;
 		foreach (func_get_args() as $class_names) {
 			if (!is_array($class_names)) {
 				$class_names = [$class_names];
 			}
-			foreach ($class_names as $class_name) {
+			foreach ($class_names as $class_name => $feature) {
+				if (is_numeric($class_name)) {
+					$class_name = $feature;
+					$feature    = Feature::F_LIST;
+				}
 				// class name : change it to a menu item
 				if (strpos($class_name, BS))  {
 					if (in_array($feature, Feature::ON_SET)) {
@@ -102,8 +106,9 @@ class Menu implements Configurable
 					$link_feature = (($feature === Feature::F_LIST) && !class_exists($class_name))
 						? null
 						: $feature;
-					$configuration_items[View::link($class_name, $link_feature)]
-						= ucfirst(Names::classToDisplay($class_name));
+					$configuration_items[View::link($class_name, $link_feature)] = ucfirst(
+						Names::classToDisplay($class_name)
+					);
 				}
 				// feature for the next classes
 				else {
