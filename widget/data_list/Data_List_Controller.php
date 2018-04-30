@@ -858,10 +858,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$this->class_names = $class_name;
-		$class_name        = $parameters->getMainObject()->element_class_name;
-		if (!$class_name) {
-			$class_name = $this->forceSetMainObject($parameters);
-		}
+		$main_object       = $parameters->getMainObject();
+		$class_name = (($main_object instanceof Set) && $main_object->element_class_name)
+			? $main_object->element_class_name
+			: $this->forceSetMainObject($parameters);
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), static::FEATURE);
