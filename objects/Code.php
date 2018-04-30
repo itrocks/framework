@@ -1,33 +1,18 @@
 <?php
 namespace ITRocks\Framework\Objects;
 
-use ITRocks\Framework\Dao;
-use ITRocks\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
  * Standard basic codes, with a code and a full name
  *
  * @business
- * @representative code, name
+ * @deprecated use Has_Code_and_Name
+ * @see Has_Code_And_Name
  */
 abstract class Code
 {
-	use Has_Name;
-
-	//----------------------------------------------------------------------------------------- $code
-	/**
-	 * @var string
-	 */
-	public $code;
-
-	//------------------------------------------------------------------------------------ __toString
-	/**
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return trim($this->code . SP . $this->name);
-	}
+	use Has_Code_And_Name { fromString as private fromStringIsAlwaysMultiple; }
 
 	//---------------------------------------------------------------------------------------- equals
 	/**
@@ -40,28 +25,17 @@ abstract class Code
 	 */
 	public function equals(Code $code)
 	{
-		return ($this->code || $code->code)
-			? ($this->code === $code->code)
-			: ($this->name === $code->name);
+		return $this->sameAs($code);
 	}
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
-	 * Returns the Codes that match a string
-	 * - first get all codes matching the string as Code::$code
-	 * - If none found, get all codes matching the string as Code::$name
-	 *
 	 * @param $value string
 	 * @return static[]
 	 */
 	public static function fromString($value)
 	{
-		/** @var $values static[] */
-		$values = Dao::search(['code' => $value], static::class);
-		if (!$values) {
-			$values = Dao::search(['name' => $value], static::class);
-		}
-		return $values;
+		return static::fromStringMultiple($value);
 	}
 
 }
