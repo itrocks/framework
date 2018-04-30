@@ -156,6 +156,18 @@ class Installer
 	{
 	}
 
+	//------------------------------------------------------------------------------------ renameMenu
+	/**
+	 * Rename a menu block
+	 *
+	 * @param $old_menu string
+	 * @param $new_menu string
+	 */
+	public function renameMenu($old_menu, $new_menu)
+	{
+
+	}
+
 	/**
 	 * Remove the installed plugin from the config.php configuration file
 	 *
