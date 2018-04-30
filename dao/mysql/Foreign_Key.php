@@ -90,7 +90,7 @@ class Foreign_Key implements Sql\Foreign_Key
 		$foreign_key->Constraint       = self::propertyConstraintToMysql($table_name, $property);
 		$foreign_key->Fields           = self::propertyFieldsToMysql($property);
 		$foreign_key->On_delete        = self::propertyOnDeleteToMysql($property);
-		$foreign_key->On_update        = self::propertyOnUpdateToMysql();
+		$foreign_key->On_update        = self::propertyOnUpdateToMysql($property);
 		$foreign_key->Reference_fields = self::propertyReferenceFieldsToMysql();
 		$foreign_key->Reference_table  = self::propertyReferenceTableToMysql($property);
 		return $foreign_key;

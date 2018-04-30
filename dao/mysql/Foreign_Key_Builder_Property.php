@@ -48,16 +48,19 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnDeleteToMysql(Reflection_Property $property)
 	{
-		return $property->getAnnotation('composite')->value ? 'CASCADE' : 'RESTRICT';
+		return $property->getAnnotation('composite')->value
+			? Foreign_Key::CASCADE
+			: Foreign_Key::RESTRICT;
 	}
 
 	//----------------------------------------------------------------------- propertyOnUpdateToMysql
 	/**
+	 * @param $property Reflection_Property
 	 * @return string
 	 */
-	private static function propertyOnUpdateToMysql()
+	private static function propertyOnUpdateToMysql(Reflection_Property $property)
 	{
-		return 'RESTRICT';
+		return static::propertyOnDeleteToMysql($property);
 	}
 
 	//---------------------------------------------------------------- propertyReferenceFieldsToMysql
