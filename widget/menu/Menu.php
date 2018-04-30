@@ -110,10 +110,6 @@ class Menu implements Configurable
 						Names::classToDisplay($class_name)
 					);
 				}
-				// feature for the next classes
-				else {
-					$feature = $class_name;
-				}
 			}
 		}
 		return $configuration_items;
