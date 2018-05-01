@@ -23,6 +23,9 @@ $STATIC_METHOD_TYPES = [
 	Builder::create('') => [
 		'' == '@'
 	],
+	Builder::fromArray('') => [
+		'' == '@'
+	],
 	// Dao::read will not work : it will check the first argument only
 	// https://stackoverflow.com/questions/42104222/phpstorm-meta-file-syntax-for-static-methods-with-multiple-arguments
 	/*
@@ -32,6 +35,9 @@ $STATIC_METHOD_TYPES = [
 	*/
 	Dao::readAll('') => [
 		'' == '@[]'
+	],
+	Dao::replace('') => [
+		'' == '@'
 	],
 	Dao::searchOne('') => [
 		'' == '@'
