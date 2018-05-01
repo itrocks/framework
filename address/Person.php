@@ -6,7 +6,6 @@ namespace ITRocks\Framework\Address;
  *
  * @business
  * @representative first_name, last_name
- * @sort first_name, last_name
  */
 trait Person
 {
