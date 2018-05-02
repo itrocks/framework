@@ -158,7 +158,7 @@ abstract class Builder
 			$first = true;
 			foreach ($id as $key => $value) {
 				$sql_update .= $first ? ($first = false) : ' AND';
-				$sql_update .= SP . BQ . $key . BQ . ' = ' . $value;
+				$sql_update .= SP . BQ . $key . BQ . ' = ' . Value::escape($value);
 			}
 		}
 		else {

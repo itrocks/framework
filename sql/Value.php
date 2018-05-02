@@ -42,11 +42,13 @@ abstract class Value
 			$string_value = 'NULL';
 		}
 		elseif (is_array($value)) {
-			$do = false;
+			$do           = false;
 			$string_value = '';
 			foreach ($value as $object_value) {
 				if ($object_value !== null) {
-					if ($do) $string_value .= ',';
+					if ($do) {
+						$string_value .= ',';
+					}
 					$string_value .= str_replace(DQ, DQ . DQ, $object_value);
 					$do = true;
 				}
