@@ -96,7 +96,6 @@ td.class {
 				height: 22px;
 				margin-left: -14px !important;
 				position: absolute;
-				right: 0;
 				top: 2px;
 				width: 14px;
 			}
@@ -108,6 +107,7 @@ td.class > input.combo {
 	& ~ a.more,
 	& ~ button.more {
 		height: 20px;
+		right: 0;
 		top: 0;
 	}
 }
