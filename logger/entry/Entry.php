@@ -147,8 +147,11 @@ class Entry
 			if (isset($uri) && !isset($this->uri)) {
 				$this->uri = $uri;
 			}
-			if (($arguments || $form || $files) && !$this->data) {
+			if (($arguments || $form || $files) && !isset($this->data)) {
 				$this->data = new Data($arguments, $form, $files);
+			}
+			if (!isset($this->memory_usage)) {
+				$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
 			}
 
 			$this->user = User::current();
