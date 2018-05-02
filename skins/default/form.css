@@ -159,7 +159,8 @@ fieldset {
           width: 100%; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > select, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > select {
           height: 22px;
-          margin: -2px -6px -2px 0; }
+          margin: -2px -6px -2px 0;
+          vertical-align: top; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td.minus, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td.minus {
           background: url("img/remove_row.png") right 3px no-repeat;
           color: transparent;
