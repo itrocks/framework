@@ -38,7 +38,7 @@ class Data
 
 	//----------------------------------------------------------------------------------------- $form
 	/**
-	 * @max_length 65000
+	 * @max_length 1000000
 	 * @var string
 	 */
 	public $form;
@@ -68,6 +68,15 @@ class Data
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return json_encode($this, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+	}
+
 	//------------------------------------------------------------------------------------- serialize
 	/**
 	 * @param $value array
@@ -75,8 +84,8 @@ class Data
 	 */
 	private function serialize(array $value)
 	{
-		$value = json_encode($value);
-		return ($value === '[]') ? '' : $value;
+		$json = json_encode($value, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+		return ($json === '[]') ? '' : $json;
 	}
 
 }

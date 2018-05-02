@@ -33,6 +33,7 @@ class Entry
 	//----------------------------------------------------------------------------------------- $data
 	/**
 	 * @component
+	 * @integrated alias
 	 * @link Object
 	 * @var Data
 	 */
@@ -178,17 +179,6 @@ class Entry
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-	}
-
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @param $array string[]
-	 * @return string
-	 */
-	private function serialize($array)
-	{
-		$json = json_encode($array);
-		return ($json === '[]') ? '' : $json;
 	}
 
 	//------------------------------------------------------------------------------------------ stop

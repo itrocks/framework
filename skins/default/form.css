@@ -99,8 +99,8 @@ fieldset {
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label {
       display: table-cell;
       white-space: pre-line; }
-      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(textarea),
-      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(textarea) {
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(pre):not(textarea),
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(pre):not(textarea) {
         white-space: initial; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple):hover {
       background-color: #defdaf; }
