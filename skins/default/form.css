@@ -152,7 +152,8 @@ fieldset {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td input.dtp--date, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td input.dtp--date {
-          margin-top: -2px; }
+          margin-top: -2px;
+          vertical-align: top; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
