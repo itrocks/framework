@@ -40,7 +40,7 @@ dateFormatToDatepicker = function(text)
 //------------------------------------------------------------------------------ getInputTextHeight
 getInputTextHeight = function(context)
 {
-	return Math.max(20, getTextHeight(context, 16));
+	return getTextHeight(context);
 };
 
 //------------------------------------------------------------------------------- getInputTextWidth
@@ -71,7 +71,10 @@ getTextHeight = function($context, extra_height)
 	$height.css('position', 'absolute');
 	var $width = getInputTextWidth($context);
 	$height.width($width);
-	var height = $height.height() + extra_height;
+	var height = $height.height();
+	if (extra_height !== undefined) {
+		height += extra_height;
+	}
 	$height.remove();
 	return height;
 };
