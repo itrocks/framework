@@ -234,6 +234,11 @@ fieldset {
 							vertical-align: top;
 						}
 
+						> textarea {
+							height: 15px;
+							padding-top: 4px;
+						}
+
 						&.minus {
 							background: url("img/remove_row.png") right 3px no-repeat;
 							color: transparent;
