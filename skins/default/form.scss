@@ -216,6 +216,10 @@ fieldset {
 						padding: 1px 5px 0 0;
 						white-space: nowrap;
 
+						input.dtp--date {
+							margin-top: -2px;
+						}
+
 						> input:not([type=file]),
 						> textarea {
 							height: 18px;
