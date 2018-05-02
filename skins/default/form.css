@@ -151,9 +151,11 @@ fieldset {
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
-        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td input.dtp--date, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td input.dtp--date {
-          margin-top: -2px;
-          vertical-align: top; }
+        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > div.dtp--datetimepicker, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > div.dtp--datetimepicker {
+          margin-right: -6px; }
+          fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > div.dtp--datetimepicker input.dtp--date, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > div.dtp--datetimepicker input.dtp--date {
+            margin-top: -2px;
+            vertical-align: top; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
