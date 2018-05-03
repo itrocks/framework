@@ -79,7 +79,7 @@ class Counter
 			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 0
 		);
 		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
-			?: new Counter($identifier);
+			?: new static($identifier);
 		$next_value = $counter->next($object);
 		$dao->write(
 			$counter,
