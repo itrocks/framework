@@ -20,7 +20,7 @@ class User
 	/**
 	 * @param $set_current User|object Only set when an user, but other parameters
 	 *        set by @default User::current or @user_default User::current can be set and ignored
-	 * @return User
+	 * @return static
 	 */
 	public static function current($set_current = null)
 	{
