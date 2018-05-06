@@ -38,6 +38,9 @@ abstract class Getter
 	 */
 	static public function classNameWithoutVendorProject($class_name)
 	{
+		if (!substr_count($class_name, BS)) {
+			return $class_name;
+		}
 		if (substr_count($class_name, BS) == 1) {
 			$without = substr($class_name, strpos($class_name, BS) + 1);
 		}
@@ -66,6 +69,7 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------------------------- get
+
 	/**
 	 * @param $base_class   string The base name for the class, ie 'ITRocks\Framework\User'
 	 * @param $feature_name string The name of the feature, ie 'dataList'
@@ -371,6 +375,7 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
+
 	/**
 	 * Get classes we can get from, starting from the actual lower descendant
 	 *
@@ -408,6 +413,7 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------ getInterfacesRecursive
+
 	/**
 	 * Get interfaces we can get from, starting from the actual class
 	 *
@@ -426,6 +432,7 @@ abstract class Getter
 	}
 
 	//---------------------------------------------------------------------------- getTraitsRecursive
+
 	/**
 	 * Get traits we can get from, starting from the actual class / trait
 	 *

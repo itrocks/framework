@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Tools;
 use Iterator;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * The default Set class for set of objects
@@ -31,6 +32,7 @@ class Set implements Iterator
 	 *
 	 * @param $element_class_name string   the class name
 	 * @param $elements           object[] the set can be initialized with this set of elements
+	 * @throws ReflectionException
 	 */
 	public function __construct($element_class_name = null, array $elements = [])
 	{
@@ -38,6 +40,15 @@ class Set implements Iterator
 			? Names::setToClass(get_class($this))
 			: $element_class_name;
 		$this->elements = $elements;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return Names::classToDisplay($this->element_class_name);
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -89,6 +100,7 @@ class Set implements Iterator
 	 * Get element class reflection object for the current element class name
 	 *
 	 * @return Reflection_Class
+	 * @throws ReflectionException
 	 */
 	public function elementClass()
 	{
@@ -101,6 +113,7 @@ class Set implements Iterator
 	 *
 	 * @param $class_name string
 	 * @return string
+	 * @throws ReflectionException
 	 */
 	public static function elementClassNameOf($class_name)
 	{
@@ -167,6 +180,7 @@ class Set implements Iterator
 	 * @param $class_name string
 	 * @param $elements   object[]
 	 * @return Set
+	 * @throws ReflectionException
 	 */
 	public static function instantiate($class_name, array $elements = [])
 	{
@@ -235,6 +249,7 @@ class Set implements Iterator
 	 * Get the first object, or a Reflection_Class of the object's class if no element
 	 *
 	 * @return object|Reflection_Class
+	 * @throws ReflectionException
 	 */
 	public function object()
 	{

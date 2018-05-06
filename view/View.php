@@ -99,7 +99,9 @@ class View implements Configurable
 		if (!isset($class)) {
 			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
 				foreach ($feature_names as $feature_name) {
-					list($class, $method) = Getter::get($view_name, $feature_name, $suffix, 'php');
+					list($class, $method) = $view_name
+						? Getter::get($view_name, $feature_name, $suffix, 'php')
+						: [null, null];
 					if (isset($class)) break 2;
 				}
 			}

@@ -67,7 +67,7 @@ class Default_View implements IView
 			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
 		$template_file = Engine::getTemplateFile(
-			$class_name,
+			$class_name ?: Engine::class,
 			$feature_names,
 			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null
 		);
