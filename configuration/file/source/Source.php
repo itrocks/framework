@@ -25,7 +25,7 @@ class Source extends File
 	/**
 	 * @var string[]
 	 */
-	public $class_implements;
+	public $class_implements = [];
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -44,14 +44,14 @@ class Source extends File
 	/**
 	 * @var Class_Use[]|string[]
 	 */
-	public $class_use;
+	public $class_use = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**
 	 * Adds class (extends), interface(s) (implements) or trait(s) (use) to the definition of the
 	 * class
 	 *
-	 * @var $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
+	 * @param $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
 	 */
 	public function add($class_interfaces_traits)
 	{
@@ -66,33 +66,71 @@ class Source extends File
 		else {
 			foreach ($class_interfaces_traits as $interface_trait) {
 				if (interface_exists($interface_trait)) {
-					$this->addUseFor($interface_trait);
-					$this->class_implements = arrayInsertSorted(
-						$this->class_implements, $this->shortClassNameOf($interface_trait)
-					);
+					$this->addInterface($interface_trait);
 				}
 				elseif (trait_exists($interface_trait)) {
-					$source = $this;
-					$this->addUseFor($interface_trait);
-					$this->class_use = arrayInsertSorted(
-						$this->class_use,
-						new Class_Use($interface_trait, ';'),
-						function($use1, $use2) use ($source) {
-							if ($use1 instanceof Class_Use) {
-								$use1 = $source->shortClassNameOf($use1->trait_name);
-							}
-							if ($use2 instanceof Class_Use) {
-								$use2 = $source->shortClassNameOf($use2->trait_name);
-							}
-							return strcmp($use1, $use2);
-						}
-					);
+					$this->addTrait($interface_trait);
 				}
 				else {
 					trigger_error('Interface or trait ' . $interface_trait . ' does not exist', E_USER_ERROR);
 				}
 			}
 		}
+	}
+
+	//---------------------------------------------------------------------------------- addInterface
+	/**
+	 * @param $interface string
+	 * @return boolean true if added, false if was already existing
+	 */
+	protected function addInterface($interface)
+	{
+		if (in_array($interface, $this->class_implements)) {
+			return false;
+		}
+		$source = $this;
+		$this->addUseFor($interface);
+		$this->class_implements = arrayInsertSorted(
+			$this->class_implements,
+			$interface,
+			function ($interface1, $interface2) use ($source) {
+				return strcmp(
+					$source->shortClassNameOf($interface1),
+					$source->shortClassNameOf($interface2)
+				);
+			}
+		);
+		return true;
+	}
+
+	//-------------------------------------------------------------------------------------- addTrait
+	/**
+	 * @param $trait string
+	 * @return boolean true if added, false if was already existing
+	 */
+	protected function addTrait($trait)
+	{
+		foreach ($this->class_use as $class_use) {
+			if ($class_use->trait_name === $trait) {
+				return false;
+			}
+		}
+		$source = $this;
+		$this->addUseFor($trait);
+		$this->class_use = arrayInsertSorted(
+			$this->class_use,
+			new Class_Use($trait, ';'),
+			function ($use1, $use2) use ($source) {
+				if ($use1 instanceof Class_Use) {
+					$use1 = $source->shortClassNameOf($use1->trait_name);
+				}
+				if ($use2 instanceof Class_Use) {
+					$use2 = $source->shortClassNameOf($use2->trait_name);
+				}
+				return strcmp($use1, $use2);
+			}
+		);
+		return true;
 	}
 
 	//------------------------------------------------------------------------------------- addUseFor
@@ -150,6 +188,32 @@ class Source extends File
 	public function read()
 	{
 		(new Source\Reader($this))->read();
+	}
+
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove class interfaces and/or traits from the class
+	 *
+	 * @var $class_interfaces_traits string|string[] class, interface(s) and/or trait(s)
+	 */
+	public function remove($class_interfaces_traits)
+	{
+		if (!is_array($class_interfaces_traits)) {
+			$class_interfaces_traits = [$class_interfaces_traits];
+		}
+		foreach ($class_interfaces_traits as $class_interface_trait) {
+			$key = array_search($class_interface_trait, $this->class_implements);
+			if ($key > -1) {
+				unset($this->class_implements[$key]);
+			}
+			else {
+				foreach ($this->class_use as $key => $class_use) {
+					if ($class_use->trait_name === $class_interface_trait) {
+						unset($this->class_use[$key]);
+					}
+				}
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------ shortClassNameOf

@@ -145,6 +145,21 @@ class Installer
 	 */
 	public function removeFromClass($base_class_name, array $removed_interfaces_traits)
 	{
+		$file  = $this->openFile(File\Builder::class);
+		$built = $file->search($base_class_name);
+		if ($built instanceof Assembled) {
+			$built->remove($removed_interfaces_traits);
+		}
+		elseif ($built instanceof Replaced) {
+			/** @var $file Source PhpStorm is bugged : with meta, it should be found */
+			$file = $this->openFile(Source::class, Names::classToFilePath($built->replacement));
+			$file->remove($removed_interfaces_traits);
+		}
+		else {
+			trigger_error(
+				'Found class ' . $base_class_name . ' should be Assembled or Replaced', E_USER_ERROR
+			);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ removeMenu

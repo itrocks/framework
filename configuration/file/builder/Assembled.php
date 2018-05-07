@@ -56,4 +56,21 @@ class Assembled extends Built
 		}
 	}
 
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * @param $interfaces_traits string|string[]
+	 */
+	public function remove($interfaces_traits)
+	{
+		if (is_string($interfaces_traits)) {
+			$interfaces_traits = [$interfaces_traits];
+		}
+		foreach ($interfaces_traits as $interface_trait) {
+			$key = array_search($interface_trait, $this->components);
+			if ($key > -1) {
+				unset($this->components[$key]);
+			}
+		}
+	}
+
 }
