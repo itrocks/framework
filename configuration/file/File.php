@@ -53,6 +53,17 @@ abstract class File
 	{
 		$class_name_without_vendor_project = Getter::classNameWithoutVendorProject($class_name);
 		$use = lParse($class_name, BS, substr_count($class_name_without_vendor_project, BS) + 1);
+		$this->addUseForClassName($use);
+	}
+
+	//---------------------------------------------------------------------------- addUseForClassName
+	/**
+	 * Called by addUseFor when the starting used class name has been calculated
+	 *
+	 * @param $use string
+	 */
+	protected function addUseForClassName($use)
+	{
 		while (strpos($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
 			$use = lParse($use, BS);
 		}

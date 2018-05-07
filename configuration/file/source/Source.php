@@ -66,16 +66,44 @@ class Source extends File
 		else {
 			foreach ($class_interfaces_traits as $interface_trait) {
 				if (interface_exists($interface_trait)) {
-					arrayInsertSorted($this->class_implements, $interface_trait);
+					$this->addUseFor($interface_trait);
+					$this->class_implements = arrayInsertSorted(
+						$this->class_implements, $this->shortClassNameOf($interface_trait)
+					);
 				}
 				elseif (trait_exists($interface_trait)) {
-					arrayInsertSorted($this->class_use, $interface_trait);
+					$source = $this;
+					$this->addUseFor($interface_trait);
+					$this->class_use = arrayInsertSorted(
+						$this->class_use,
+						new Class_Use($interface_trait, ';'),
+						function($use1, $use2) use ($source) {
+							if ($use1 instanceof Class_Use) {
+								$use1 = $source->shortClassNameOf($use1->trait_name);
+							}
+							if ($use2 instanceof Class_Use) {
+								$use2 = $source->shortClassNameOf($use2->trait_name);
+							}
+							return strcmp($use1, $use2);
+						}
+					);
 				}
 				else {
 					trigger_error('Interface or trait ' . $interface_trait . ' does not exist', E_USER_ERROR);
 				}
 			}
 		}
+	}
+
+	//------------------------------------------------------------------------------------- addUseFor
+	/**
+	 * Adds an use entry for this class name, if it can be
+	 *
+	 * @param $class_name string
+	 */
+	public function addUseFor($class_name)
+	{
+		$this->addUseForClassName($class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- create

@@ -10,6 +10,7 @@ use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
 
 /**
@@ -71,7 +72,7 @@ class Installer
 		}
 		elseif ($built instanceof Replaced) {
 			/** @var $file Source PhpStorm is bugged : with meta, it should be found */
-			$file = $this->openFile(Source::class, $built->replacement);
+			$file = $this->openFile(Source::class, Names::classToFilePath($built->replacement));
 			$file->add($added_interfaces_traits);
 		}
 		else {

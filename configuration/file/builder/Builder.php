@@ -48,7 +48,7 @@ class Builder extends File
 						: Assembled::class,
 					[$class]
 				);
-				$builder       = $this;
+				$builder = $this;
 				$this->addUseFor($class->class_name);
 				$this->classes = objectInsertSorted(
 					$this->classes,
