@@ -13,6 +13,7 @@ namespace PHPSTORM_META;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Plugin\Installable\Installer;
@@ -70,6 +71,9 @@ $STATIC_METHOD_TYPES = [
 		'' == '@|PHPUnit_Framework_MockObject_MockObject',
 	],
 	Search_Object::create('') => [
+		'' == '@'
+	],
+	Sort::sortObject('') => [
 		'' == '@'
 	],
 	Template::getParentObject('') => [
