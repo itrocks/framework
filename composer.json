@@ -24,7 +24,6 @@
 		"pear/net_pop3":                           "1.*",
 		"pear/net_smtp":                           "1.*",
 		"phpunit/phpunit": 											   "5.*",
-		"phpoffice/phpexcel":                      "1.*",
 		"setasign/fpdi-tcpdf":                     "1.*",
 		"tecnickcom/tcpdf":                        "6.*"
 	},
