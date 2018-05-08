@@ -1,10 +1,12 @@
 <?php
 namespace ITRocks\Framework\Sql;
 
+use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * Manages link tables for map properties
@@ -53,6 +55,8 @@ class Link_Table
 	 *
 	 * @param $table string table name
 	 * @return mixed
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function applyTableNameDefinitions($table)
 	{
@@ -128,6 +132,8 @@ class Link_Table
 	//----------------------------------------------------------------------------------------- table
 	/**
 	 * @return string
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	function table()
 	{
