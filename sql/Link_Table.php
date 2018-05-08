@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Manages link tables for map properties
@@ -103,7 +104,9 @@ class Link_Table
 	function foreignColumn()
 	{
 		if (!isset($this->foreign_column)) {
-			$this->foreign_column = 'id_' . $this->property->getAnnotation('foreignlink')->value;
+			$this->foreign_column = 'id_' . Names::setToSingle(
+				$this->property->getAnnotation('foreignlink')->value
+			);
 		}
 		return $this->foreign_column;
 	}
@@ -115,7 +118,9 @@ class Link_Table
 	function masterColumn()
 	{
 		if (!isset($this->master_column)) {
-			$this->master_column = 'id_' . Foreign_Annotation::of($this->property)->value;
+			$this->master_column = 'id_' . Names::setToSingle(
+				Foreign_Annotation::of($this->property)->value
+			);
 		}
 		return $this->master_column;
 	}
