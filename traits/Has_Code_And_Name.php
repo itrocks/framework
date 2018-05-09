@@ -55,7 +55,7 @@ trait Has_Code_And_Name
 		return $values;
 	}
 
-	//--------------------------------------------------------------------------------------- samesAs
+	//---------------------------------------------------------------------------------------- sameAs
 	/**
 	 * Returns true if the two objects are the same, in a code?:name meaning
 	 *
@@ -65,7 +65,7 @@ trait Has_Code_And_Name
 	 * @param $object static
 	 * @return boolean
 	 */
-	public function samesAs($object)
+	public function sameAs($object)
 	{
 		return ($object->code || $object->code)
 			? ($object->code === $object->code)
