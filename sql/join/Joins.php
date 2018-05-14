@@ -65,6 +65,14 @@ class Joins
 	 */
 	private $link_joins = [];
 
+	//--------------------------------------------------------------------------- $link_property_name
+	/**
+	 * If set : force the name of the property for the linked object
+	 *
+	 * @var string|null
+	 */
+	private $link_property_name;
+
 	//-------------------------------------------------------------------------------- $linked_tables
 	/**
 	 * linked tables
@@ -98,12 +106,14 @@ class Joins
 	 *
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
+	 * @param $link_property_name  string if set : force the name of the property for linked object
 	 * @throws ReflectionException
 	 */
-	public function __construct($starting_class_name, array $paths = [])
+	public function __construct($starting_class_name, array $paths = [], $link_property_name = null)
 	{
-		$this->alias_counter = 1;
-		$this->classes['']   = $starting_class_name;
+		$this->alias_counter      = 1;
+		$this->classes['']        = $starting_class_name;
+		$this->link_property_name = $link_property_name;
 		$this->addProperties('', $starting_class_name);
 		foreach ($paths as $path) {
 			$this->add($path);
@@ -331,6 +341,7 @@ class Joins
 		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
 		$linked_class_name             = Class_\Link_Annotation::of($class)->value;
 		if ($linked_class_name) {
+			$class->link_property_name = $this->link_property_name;
 			$this->addLinkedClass($path, $class, $linked_class_name, $join_mode);
 		}
 	}

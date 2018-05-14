@@ -16,6 +16,14 @@ class Link_Class extends Reflection_Class
 	 */
 	const ID_SEPARATOR = ';';
 
+	//--------------------------------------------------------------------------- $link_property_name
+	/**
+	 * Set to force the property name which value is the linked object (to avoid conflicts)
+	 *
+	 * @var string
+	 */
+	public $link_property_name;
+
 	//------------------------------------------------------------------------ getCompositeProperties
 	/**
 	 * @return Reflection_Property[]
@@ -44,6 +52,15 @@ class Link_Class extends Reflection_Class
 		}
 		/** @var $composite Reflection_Property[] */
 		$composite = call_user_func([$this->name, 'getCompositeProperties'], $composite_class_name);
+		if ($this->link_property_name) {
+			unset($composite[$this->link_property_name]);
+		}
+		if (count($composite) > 1) {
+			trigger_error(
+				'Several properties can be composite : ' . join(', ', array_keys($composite)),
+				E_USER_WARNING
+			);
+		}
 		return reset($composite);
 	}
 

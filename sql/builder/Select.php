@@ -74,7 +74,8 @@ class Select
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
 		}
-		$this->joins = $joins  = new Joins($class_name);
+		$this->joins = $joins = new Joins($class_name, [], strval(Link_Property_Name::in($options)));
+
 		$this->class_name      = $class_name;
 		$this->columns_builder = new Columns($class_name, $properties, $joins);
 		$this->tables_builder  = new Tables($class_name, $joins);

@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
 
@@ -120,9 +121,10 @@ abstract class Getter
 						/** @var $search_element Component */
 						$search_element->setComposite($object, $property_name);
 						$link_properties_names = (new Link_Class($class_name))->getUniquePropertiesNames();
-						$options = $link_properties_names
-							? [Dao::sort(), Dao::key($link_properties_names)]
-							: [Dao::sort()];
+						$options = [Dao::sort(), new Link_Property_Name($property_name)];
+						if ($link_properties_names) {
+							$options[] = Dao::key($link_properties_names);
+						}
 						$stored = $dao->search($search_element, null, $options);
 					}
 					// when element class is not a component and a property name was found
