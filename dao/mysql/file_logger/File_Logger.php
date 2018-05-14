@@ -103,7 +103,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 			'# ERROR ' . $mysqli->last_errno . ': ' . $mysqli->last_error
 			. ' [' . LF . trim($query) . LF . ']'
 		);
-		$this->writeBuffer($log);
+		$this->writeBuffer($log . LF);
 	}
 
 	//----------------------------------------------------------------------------------- queryResult
