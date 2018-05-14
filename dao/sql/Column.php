@@ -21,7 +21,7 @@ interface Column extends Field
 	 *
 	 * @param $column Column
 	 */
-	public function equiv($column);
+	public function equiv(Column $column);
 
 	//------------------------------------------------------------------------------- getDefaultValue
 	/**

@@ -49,7 +49,7 @@ class Table_Builder_Class
 	public function build($class_name)
 	{
 		$this->dependencies_context = [];
-		$this->excluded_properties = [];
+		$this->excluded_properties  = [];
 		return $this->buildInternal($class_name, null);
 	}
 
@@ -67,7 +67,7 @@ class Table_Builder_Class
 	private function buildClassTable(Reflection_Class $class, $more_field)
 	{
 		$table_name = Dao::current()->storeNameOf($class->name);
-		$table = new Table($table_name);
+		$table      = new Table($table_name);
 		if (!in_array('id', $this->excluded_properties)) {
 			$table->addColumn(Column::buildId());
 		}
@@ -101,7 +101,7 @@ class Table_Builder_Class
 							Link_Annotation::of($property)->isObject()
 							&& !Store_Annotation::of($property)->value
 						) {
-							$class_name = $property->getType()->asString();
+							$class_name                              = $property->getType()->asString();
 							$this->dependencies_context[$class_name] = $class_name;
 							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
 							$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
@@ -141,8 +141,8 @@ class Table_Builder_Class
 	 */
 	private function buildLinkTables($link, $class_name)
 	{
-		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
-		$tables = (new Table_Builder_Class)->build($link_class_name);
+		$link_class_name           = Namespaces::defaultFullClassName($link, $class_name);
+		$tables                    = (new Table_Builder_Class)->build($link_class_name);
 		$this->excluded_properties = array_keys(
 			(new Reflection_Class($link_class_name))->getProperties([T_EXTENDS, T_USE])
 		);

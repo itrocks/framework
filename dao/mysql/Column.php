@@ -110,6 +110,20 @@ class Column implements Sql\Column
 		$this->cleanupDefault();
 	}
 
+	//----------------------------------------------------------------------------- alwaysNullDefault
+	/**
+	 * true if the column type has a DEFAULT value that is always NULL into MySQL, even if NOT NULL
+	 *
+	 * @return boolean
+	 */
+	public function alwaysNullDefault()
+	{
+		return in_array(
+			$this->Type,
+			['blob', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'text', 'tinyblob', 'tinytext']
+		);
+	}
+
 	//--------------------------------------------------------------------------------------- buildId
 	/**
 	 * Builds a Column object for a standard 'id' column
@@ -226,10 +240,10 @@ class Column implements Sql\Column
 	/**
 	 * Returns true if the column is an equivalent of the other column
 	 *
-	 * @param $column Column
+	 * @param $column Column|Sql\Column
 	 * @return boolean
 	 */
-	public function equiv($column)
+	public function equiv(Sql\Column $column)
 	{
 		return ($this->Field === $column->Field)
 			&& ($this->Type    === $column->Type)
@@ -346,12 +360,7 @@ class Column implements Sql\Column
 		if (!$this->canBeNull()) {
 			$sql .= ' NOT NULL';
 		}
-		if (
-			($postfix !== (SP . self::AUTO_INCREMENT))
-			&& !in_array($type, [
-				'tinyblob', 'tinytext', 'blob', 'text', 'mediumblob', 'mediumtext', 'longblob', 'longtext'
-			])
-		) {
+		if (($postfix !== (SP . self::AUTO_INCREMENT)) && !$this->alwaysNullDefault()) {
 			$sql .= ' DEFAULT ' . Value::escape($this->getDefaultValue());
 		}
 		$sql .= $postfix;

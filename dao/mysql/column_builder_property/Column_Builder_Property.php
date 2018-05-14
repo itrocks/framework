@@ -52,7 +52,10 @@ trait Column_Builder_Property
 				if ($property_type->isNumeric()) {
 					$default = 0;
 				}
-				elseif ($property_type->isString() || $property_type->isMultipleString()) {
+				elseif (
+					($property_type->isString() || $property_type->isMultipleString())
+					&& !$column->alwaysNullDefault()
+				) {
 					$default = '';
 				}
 				elseif ($property_type->isDateTime()) {
