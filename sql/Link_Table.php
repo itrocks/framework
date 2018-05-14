@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql;
 use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Foreignlink_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -109,7 +110,7 @@ class Link_Table
 	{
 		if (!isset($this->foreign_column)) {
 			$this->foreign_column = 'id_' . Names::setToSingle(
-				$this->property->getAnnotation('foreignlink')->value
+				Foreignlink_Annotation::of($this->property)->value
 			);
 		}
 		return $this->foreign_column;
