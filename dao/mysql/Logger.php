@@ -91,7 +91,7 @@ class Logger implements Configurable, Registerable
 	 */
 	public function afterMainControllerRun()
 	{
-		$this->main_controller_counter--;
+		$this->main_controller_counter --;
 		if ($this->display_log && !$this->main_controller_counter) {
 			$this->dumpLog();
 		}
@@ -100,7 +100,7 @@ class Logger implements Configurable, Registerable
 	//----------------------------------------------------------------------- beforeMainControllerRun
 	public function beforeMainControllerRun()
 	{
-		$this->main_controller_counter++;
+		$this->main_controller_counter ++;
 	}
 
 	//--------------------------------------------------------------------------------------- dumpLog
@@ -139,8 +139,11 @@ class Logger implements Configurable, Registerable
 	public function onQueryError(Contextual_Mysqli $object, $query)
 	{
 		$mysqli = $object;
-		$error = $mysqli->last_errno . ': ' . $mysqli->last_error . '[' . $query . ']';
-		$this->errors_log[] = $error;
+
+		$error = $mysqli->last_errno . ': ' . $mysqli->last_error . ' [' . LF . trim($query) . LF . ']';
+
+		$this->errors_log[]  = $error;
+		$this->queries_log[] = '# ERROR ' . str_replace(LF, LF . '# ', $error);
 	}
 
 	//-------------------------------------------------------------------------------------- register

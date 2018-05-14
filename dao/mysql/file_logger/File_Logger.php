@@ -88,6 +88,24 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 		$this->time = microtime(true);
 	}
 
+	//------------------------------------------------------------------------------ beforeQueryError
+	/**
+	 * Called each time after a mysql_query() call is done : log the error (if some)
+	 *
+	 * @param $object Contextual_Mysqli
+	 * @param $query  string
+	 */
+	public function beforeQueryError(Contextual_Mysqli $object, $query)
+	{
+		$mysqli = $object;
+		$log    = str_replace(
+			LF, LF . '# ',
+			'# ERROR ' . $mysqli->last_errno . ': ' . $mysqli->last_error
+			. ' [' . LF . trim($query) . LF . ']'
+		);
+		$this->writeBuffer($log);
+	}
+
 	//----------------------------------------------------------------------------------- queryResult
 	/**
 	 * @param $mysqli Contextual_Mysqli
@@ -119,8 +137,9 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod ([Contextual_Mysqli::class, 'query'], [$this, 'afterQuery']);
-		$aop->beforeMethod([Contextual_Mysqli::class, 'query'], [$this, 'beforeQuery']);
+		$aop->afterMethod ([Contextual_Mysqli::class, 'query'],      [$this, 'afterQuery']);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'query'],      [$this, 'beforeQuery']);
+		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'beforeQueryError']);
 	}
 
 	//------------------------------------------------------------------------------------- serialize
