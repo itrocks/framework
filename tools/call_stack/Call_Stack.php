@@ -131,6 +131,28 @@ class Call_Stack
 		return null;
 	}
 
+	//----------------------------------------------------------------------------- getMethodArgument
+	/**
+	 * Get top function argument value
+	 *
+	 * @param $method          array [string $class_name, string $method_name]
+	 * @param $argument_number integer argument number (0..n)
+	 * @return mixed null if not found or value was null
+	 */
+	public function getMethodArgument(array $method, $argument_number = 0)
+	{
+		foreach ($this->stack as $stack) {
+			if (
+				isset($stack['args'])
+				&& isset($stack['function']) && ($stack['function'] === $method[1])
+				&& isset($stack['object']) && isA($stack['object'], $method[0])
+			) {
+				return $stack['args'][$argument_number];
+			}
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * Get top object that is an instance of $class_name from the call stack
@@ -143,6 +165,27 @@ class Call_Stack
 		foreach ($this->stack as $stack) {
 			if (isset($stack['object']) && isA($stack['object'], $class_name)) {
 				return $stack['object'];
+			}
+		}
+		return null;
+	}
+
+	//----------------------------------------------------------------------------- getObjectArgument
+	/**
+	 * Get top object that is the value of an argument of $class_name
+	 *
+	 * @param $class_name string Can be the name of a class, interface or trait
+	 * @return object|null
+	 */
+	public function getObjectArgument($class_name)
+	{
+		foreach ($this->stack as $stack) {
+			if (isset($stack['args'])) {
+				foreach ($stack['args'] as $argument) {
+					if (is_object($argument) && isA($argument, $class_name)) {
+						return $argument;
+					}
+				}
 			}
 		}
 		return null;
