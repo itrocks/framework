@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Logger;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Logger;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Session;
 
 /**
@@ -11,6 +12,7 @@ use ITRocks\Framework\Session;
  */
 class File_Logger implements Configurable
 {
+	use Has_Get;
 
 	//-------------------------------------------------------------------------------- FILE_EXTENSION
 	const FILE_EXTENSION = 'log';

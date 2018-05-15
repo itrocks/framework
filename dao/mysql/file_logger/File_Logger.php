@@ -194,7 +194,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 * @param $log string
 	 * @return boolean true if written directly into file, false if it made $this->buffer grow
 	 */
-	private function writeBuffer($log)
+	public function writeBuffer($log)
 	{
 		if ($f = $this->file()) {
 			if ($this->buffer) {
