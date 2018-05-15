@@ -121,7 +121,7 @@ abstract class Getter
 						/** @var $search_element Component */
 						$search_element->setComposite($object, $property_name);
 						$link_properties_names = (new Link_Class($class_name))->getUniquePropertiesNames();
-						$options = [Dao::sort(), new Link_Property_Name($property_name)];
+						$options               = [Dao::sort(), new Link_Property_Name($property_name)];
 						if ($link_properties_names) {
 							$options[] = Dao::key($link_properties_names);
 						}
@@ -151,11 +151,14 @@ abstract class Getter
 						// $element->setComposite() is not used for optimization reason :
 						// this should go as fast as it can
 						/** @var $element Component */
-						$element = reset($stored);
+						$element              = reset($stored);
 						$composite_properties = $element->getCompositeProperties($object);
 						foreach ($stored as $element) {
 							foreach ($composite_properties as $property) {
-								$property->setValue($element, $object);
+								$id_property = 'id_' . $property->name;
+								if (intval($element->$id_property) === intval($object->id)) {
+									$property->setValue($element, $object);
+								}
 							}
 						}
 					}
