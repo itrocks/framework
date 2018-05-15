@@ -43,7 +43,7 @@ class Class_Builder
 		}
 		else {
 			$interfaces = [];
-			$traits = [];
+			$traits     = [];
 			foreach ($interfaces_traits as $interface_trait) {
 				$class = Reflection_Class::of($interface_trait);
 				if ($class->isInterface()) {
@@ -53,8 +53,8 @@ class Class_Builder
 					foreach ($class->getListAnnotation('implements')->values() as $implements) {
 						$interfaces[$implements] = $implements;
 					}
-					$level = 0;
 					$extends_annotations = $class->getListAnnotations('extends');
+					$level               = 0;
 					foreach ($extends_annotations as $extends_annotation) {
 						foreach ($extends_annotation->values() as $extends) {
 							if (Dao::search(

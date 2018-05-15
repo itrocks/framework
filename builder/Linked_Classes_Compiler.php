@@ -26,6 +26,7 @@ class Linked_Classes_Compiler implements ICompiler
 	 */
 	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
 	{
+		$builder  = Builder::current();
 		$compiled = false;
 		foreach ($source->getClasses() as $class) {
 			// replace extends with the built replacement class
@@ -40,7 +41,10 @@ class Linked_Classes_Compiler implements ICompiler
 				}
 				elseif (
 					($parent_class_name !== $replacement_class_name)
-					&& Class_Builder::isBuilt($replacement_class_name)
+					&& (
+						Class_Builder::isBuilt($replacement_class_name)
+						|| $builder->isReplacement($replacement_class_name)
+					)
 					&& !$this->recursiveReplacement($class, $parent_class_name, $replacement_class_name)
 				) {
 					$this->compileClass($class, $replacement_class_name);

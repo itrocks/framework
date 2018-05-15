@@ -329,6 +329,18 @@ class Builder implements Activable, Serializable
 		return $result;
 	}
 
+	//--------------------------------------------------------------------------------- isReplacement
+	/**
+	 * Returns true if the class name is a replacement class
+	 *
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public function isReplacement($class_name)
+	{
+		return in_array($class_name, $this->replacements, true);
+	}
+
 	//----------------------------------------------------------------------------------- newInstance
 	/**
 	 * Return a new instance of given $class_name, using replacement class if exist
@@ -463,7 +475,7 @@ class Builder implements Activable, Serializable
 	public function sourceClassName($class_name)
 	{
 		$found = array_search($class_name, $this->replacements);
-		return $found ? $this->sourceClassName($found) : $class_name;
+		return ($found === false) ? $class_name : $this->sourceClassName($found);
 	}
 
 	//----------------------------------------------------------------------------------- unserialize
