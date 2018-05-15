@@ -163,9 +163,11 @@ class Columns implements With_Build_Column
 							if (!$sql_columns) {
 								$sql_columns .= $join->foreign_alias . '.`id`, ';
 							}
-							$column_name              = $column_names[$property->name];
-							$id                       = $property->getType()->isClass() ? 'id_' : '';
 							$already[$property->name] = true;
+							$column_name              = $column_names[$property->name];
+							$id = ($property->getType()->isClass() && !$property->getType()->isDateTime())
+								? 'id_'
+								: '';
 							$sql_columns .= $join->foreign_alias . DOT . BQ . $id . $column_name . BQ;
 							if (($column_name !== $property->name) && $this->resolve_aliases) {
 								$sql_columns .= ' AS ' . BQ . $id . $property->name . BQ;
