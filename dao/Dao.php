@@ -300,11 +300,12 @@ class Dao implements Configurable
 	 *
 	 * @param $object1 object
 	 * @param $object2 object
+	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
 	 * @return boolean
 	 */
-	public static function is($object1, $object2)
+	public static function is($object1, $object2, $strict = false)
 	{
-		return self::current()->is($object1, $object2);
+		return self::current()->is($object1, $object2, $strict);
 	}
 
 	//------------------------------------------------------------------------------------------- key

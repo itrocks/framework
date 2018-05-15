@@ -238,9 +238,10 @@ abstract class Data_Link
 	 *
 	 * @param $object1 object
 	 * @param $object2 object
+	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
 	 * @return boolean
 	 */
-	abstract public function is($object1, $object2);
+	abstract public function is($object1, $object2, $strict = false);
 
 	//------------------------------------------------------------------------------------------ read
 	/**
