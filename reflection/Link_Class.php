@@ -156,9 +156,9 @@ class Link_Class extends Reflection_Class
 	public function getLocalProperties()
 	{
 		$properties = [];
-		$exclude = $this->getLinkedProperties();
+		$exclude    = $this->getLinkedProperties();
 		foreach ($this->getProperties([T_EXTENDS, T_USE]) as $property_name => $property) {
-			if (!isset($exclude[$property_name])) {
+			if (!isset($exclude[$property_name]) && !$property->isStatic()) {
 				$properties[$property_name] = $property;
 			}
 		}
