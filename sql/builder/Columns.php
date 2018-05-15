@@ -159,15 +159,15 @@ class Columns implements With_Build_Column
 							!$property->isStatic()
 							&& isset($column_names[$property->name])
 							&& !isset($already[$property->name])
+							&& !Store_Annotation::of($property)->isFalse()
 						) {
 							if (!$sql_columns) {
 								$sql_columns .= $join->foreign_alias . '.`id`, ';
 							}
 							$already[$property->name] = true;
 							$column_name              = $column_names[$property->name];
-							$id = ($property->getType()->isClass() && !$property->getType()->isDateTime())
-								? 'id_'
-								: '';
+							$type                     = $property->getType();
+							$id                       = ($type->isClass() && !$type->isDateTime()) ? 'id_' : '';
 							$sql_columns .= $join->foreign_alias . DOT . BQ . $id . $column_name . BQ;
 							if (($column_name !== $property->name) && $this->resolve_aliases) {
 								$sql_columns .= ' AS ' . BQ . $id . $property->name . BQ;
@@ -187,10 +187,12 @@ class Columns implements With_Build_Column
 				}
 
 				foreach ($column_names as $property_name => $column_name) {
-					if (!isset($already[$property_name])) {
+					$property = $properties[$property_name];
+					if (!isset($already[$property_name]) && !Store_Annotation::of($property)->isFalse()) {
 						$already[$property_name] = true;
-						$id = $properties[$property_name]->getType()->isClass() ? 'id_' : '';
-						$sql_columns .= 't0.' . BQ . $id . $column_name . BQ;
+						$type                    = $property->getType();
+						$id                      = ($type->isClass() && !$type->isDateTime()) ? 'id_' : '';
+						$sql_columns            .= 't0.' . BQ . $id . $column_name . BQ;
 						if (($column_name !== $property_name) && $this->resolve_aliases) {
 							$sql_columns .= ' AS ' . BQ . $id . $property_name . BQ;
 						}
