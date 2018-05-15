@@ -626,28 +626,31 @@ class Object_Builder_Array
 					$property_class_name = $property->getType()->asString();
 					if (is_a($property_class_name, $link->value, true)) {
 						$id_property_value = isset($array[$id_property_name])
-							? $array[$id_property_name] : null;
+							? $array[$id_property_name]
+							: null;
 						$linked_class_name = $property_class_name;
 						if (!isset($array[$id_property_name]) && !isset($array[$property_name])) {
 							$linked_array = $array;
 							foreach (array_keys($link_properties) as $link_property_name) {
 								unset($linked_array[$link_property_name]);
+								unset($linked_array['id_' . $link_property_name]);
 							}
 							$link_class_properties = $link->getLinkClass()->getLocalProperties();
 							foreach (array_keys($link_class_properties) as $link_property_name) {
 								unset($linked_array[$link_property_name]);
+								unset($linked_array['id_' . $link_property_name]);
 							}
-							$builder = new Object_Builder_Array($property_class_name, $this->from_form);
-							$array[$property_name] = $builder->build($linked_array);
+							if ($linked_array) {
+								$builder = new Object_Builder_Array($property_class_name, $this->from_form);
+								$array[$property_name] = $builder->build($linked_array);
+							}
 						}
 					}
 				}
-				else {
-					if (isset($array[$property_name])) {
-						$search[$property_name] = ($property->getType()->isDateTime())
-							? Loc::dateToIso($array[$property_name])
-							: $array[$property_name];
-					}
+				elseif (isset($array[$property_name])) {
+					$search[$property_name] = ($property->getType()->isDateTime())
+						? Loc::dateToIso($array[$property_name])
+						: $array[$property_name];
 				}
 			}
 			if (count($search) >= count($link_properties)) {
