@@ -48,7 +48,6 @@ class Linked_Classes_Compiler implements ICompiler
 					&& !$this->recursiveReplacement($class, $parent_class_name, $replacement_class_name)
 				) {
 					$this->compileClass($class, $replacement_class_name);
-					echo 'Compiled ' . $source->file_name . BR;
 					$compiled = true;
 				}
 			}
