@@ -51,12 +51,13 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 				$property_name = $property->getName();
 				$type_name     = $property->getType()->getElementTypeAsString();
 				trigger_error(
-					'Can\'t guess @foreign for ' . $class_name . '::' . $property_name . ' : '
+					"Can't guess @foreign for " . $class_name . '::' . $property_name . ' : '
 					. 'please set @composite on one (and one only) ' . $type_name . ' property of type '
 					. $class_name . ' object, or force the ' . $class_name . '::' . $property_name
 					. ' @foreign property name. Possibles properties are ' . join(', ', $possibles),
-					E_USER_ERROR
+					E_USER_WARNING
 				);
+				$this->value = reset($possibles);
 			}
 		}
 	}
