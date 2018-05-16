@@ -390,13 +390,19 @@ class Import_Array
 			$search = $this->getSearchObject(
 				$row, $class->identify_properties, $class_properties_column
 			);
-			$object = in_array(
-				$this->properties_link[$property_path],
-				[Link_Annotation::COLLECTION, Link_Annotation::MAP]
-			)
-				? $this->createArrayReference($class->class_name, $search)
-				: $this->importSearchObject($search, $row, $class, $class_properties_column);
-			$array[key($array)][$property_path] = $object;
+			switch ($this->properties_link[$property_path]) {
+				case Link_Annotation::COLLECTION:
+					$object = $this->createArrayReference($class->class_name, $search);
+					$array[key($array)][$property_path] = $object;
+					break;
+				case Link_Annotation::MAP:
+					$object = $this->importSearchObject($search, $row, $class, $class_properties_column);
+					$array[key($array)][$property_path][] = $object;
+					break;
+				default:
+					$object = $this->importSearchObject($search, $row, $class, $class_properties_column);
+					$array[key($array)][$property_path] = $object;
+			}
 			$simulation --;
 		}
 	}
