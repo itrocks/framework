@@ -105,10 +105,12 @@
   border-bottom: 2px solid black;
   padding-bottom: 6px;
   margin-bottom: 1em; }
-  .import.preview.window > .worksheet:not(:last-child) > .class:not(:nth-child(2)) {
+  .import.preview.window > .worksheet:not(:last-child) > .class:not(:first-of-type) {
     border-top: 1px solid darkgray;
     padding-top: 4px;
     margin-top: 4px; }
+  .import.preview.window > .worksheet:not(:last-child) > .class > .constants {
+    display: none; }
 .import.preview.window > .check {
   padding: 0 1.5em; }
 .import.preview.window table.preview {

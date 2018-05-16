@@ -177,10 +177,17 @@
 		padding-bottom: 6px;
 		margin-bottom: 1em;
 
-		> .class:not(:nth-child(2)) {
-			border-top: 1px solid darkgray;
-			padding-top: 4px;
-			margin-top: 4px;
+		> .class {
+
+			&:not(:first-of-type) {
+				border-top: 1px solid darkgray;
+				padding-top: 4px;
+				margin-top: 4px;
+			}
+
+			> .constants {
+				display: none;
+			}
 		}
 
 	}
