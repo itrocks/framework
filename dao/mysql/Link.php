@@ -589,7 +589,8 @@ class Link extends Dao\Sql\Link
 				if (Dao::storedAsForeign($link_property)) {
 					$id = parent::getObjectIdentifier($object, $property_name);
 					if (!isset($id)) {
-						if ($link_class->getCompositeProperty()->name === $property_name) {
+						$link_property = $link_class->getCompositeProperty(null, false);
+						if ($link_property && ($link_property->name === $property_name)) {
 							$id = isset($object->id) ? $object->id : null;
 							if (!isset($id)) {
 								return null;
