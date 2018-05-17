@@ -201,12 +201,16 @@ class Write extends Data_Link\Write
 				}
 				foreach ($write_maps as $write) {
 					list($property, $value) = $write;
-					$this->spreadExcludeAndOnly($this->spread_options, $property->name, $this->exclude, $this->only);
+					$this->spreadExcludeAndOnly(
+						$this->spread_options, $property->name, $this->exclude, $this->only
+					);
 					$this->writeMap($property, $value);
 				}
 				foreach ($write_objects as $write) {
 					list($property, $value) = $write;
-					$this->spreadExcludeAndOnly($this->spread_options, $property->name, $this->exclude, $this->only);
+					$this->spreadExcludeAndOnly(
+						$this->spread_options, $property->name, $this->exclude, $this->only
+					);
 					$this->writeObject($property, $value);
 				}
 				foreach ($write_properties as $write) {
@@ -215,11 +219,15 @@ class Write extends Data_Link\Write
 					$dao->writeProperty($this->object, $property, $value);
 				}
 				// if link class : write linked object too
-				$this->id_property = $link->value ? ('id_' . $class->getCompositeProperty()->name) : null;
-				$class             = $link->value ? new Link_Class($link->value) : null;
+				if ($link->value && !isset($this->link_class_only)) {
+					$this->id_property = ('id_' . $class->getCompositeProperty()->name);
+					$class             = new Link_Class($link->value);
+				}
+				else {
+					$class = $this->id_property = null;
+				}
 			} while (
 				$class
-				&& !isset($this->link_class_only)
 				&& !Null_Object::isNull($this->object, function($properties) use ($class) {
 					return Store_Annotation::storedPropertiesOnly(
 						Reflection_Property::filter($properties, $class->name)
