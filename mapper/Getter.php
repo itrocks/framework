@@ -106,8 +106,8 @@ abstract class Getter
 				else {
 					$search_element = Search_Object::create($class_name);
 					$is_component   = isA($search_element, Component::class);
-					if (isset($property)) {
-						if (!$property instanceof Reflection_Property) {
+					if ($property) {
+						if (!($property instanceof Reflection_Property)) {
 							$property = new Reflection_Property(get_class($object), $property);
 						}
 						$property_name = Foreign_Annotation::of($property)->value;
@@ -121,14 +121,17 @@ abstract class Getter
 						/** @var $search_element Component */
 						$search_element->setComposite($object, $property_name);
 						$link_properties_names = (new Link_Class($class_name))->getUniquePropertiesNames();
-						$options               = [Dao::sort(), new Link_Property_Name($property_name)];
+						$options               = [Dao::sort()];
+						if ($property_name) {
+							$options[] = new Link_Property_Name($property_name);
+						}
 						if ($link_properties_names) {
 							$options[] = Dao::key($link_properties_names);
 						}
 						$stored = $dao->search($search_element, null, $options);
 					}
 					// when element class is not a component and a property name was found
-					elseif (!empty($property_name)) {
+					elseif ($property_name) {
 						$property   = new Reflection_Property(get_class($search_element), $property_name);
 						$accessible = $property->isPublic();
 						if (!$accessible) {
