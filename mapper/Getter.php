@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
+use ReflectionException;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -37,6 +38,7 @@ abstract class Getter
 	 * @param $object     object
 	 * @param $property   string|Reflection_Property
 	 * @return object[]
+	 * @throws ReflectionException
 	 */
 	private static function getAbstractCollection($class_name, $object, $property = null)
 	{
@@ -76,6 +78,8 @@ abstract class Getter
 	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
 	 *        but can be omitted if foreign class is a Component
 	 * @return object[]
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function & getCollection(
 		&$stored = null, $class_name, $object, $property = null
@@ -201,6 +205,7 @@ abstract class Getter
 	 *
 	 * @param $class_name string
 	 * @return string[]
+	 * @throws ReflectionException
 	 */
 	private static function getFinalClasses($class_name)
 	{
@@ -225,6 +230,8 @@ abstract class Getter
 	 * @param $object   object the parent object
 	 * @param $property string|Reflection_Property the source property (or name) for map reading
 	 * @return Component[]
+	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function & getMap(array &$stored = null, $object, $property)
 	{
@@ -266,6 +273,7 @@ abstract class Getter
 	 * @param $object     object the parent object
 	 * @param $property   string|Reflection_Property the parent property
 	 * @return object
+	 * @throws Exception
 	 */
 	public static function getObject(&$stored, $class_name, $object = null, $property = null)
 	{
@@ -348,6 +356,7 @@ abstract class Getter
 	 * @param $stored   array The object stored into an array : [$property_name => $value]
 	 * @param $property Reflection_Property
 	 * @return object
+	 * @throws Exception
 	 */
 	private static function schemaDecode(array $stored, Reflection_Property $property)
 	{
