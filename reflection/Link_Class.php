@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Reflection;
 
-use ITRocks\Framework\Mapper\Composite_Discriminator;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 
@@ -39,14 +38,11 @@ class Link_Class extends Reflection_Class
 	 * Returns the composite property that links to the redundant composite object
 	 *
 	 * @param $composite_class_name string to explicitly give the name of the linked class (faster)
-	 * @param $component_object     object|boolean used if Composite_Discriminator to keep only one
-	 *                              composite. Can be false to ignore warning on multiple composites
-	 * @param $composite_object     object|null the composite object to send to discriminateComposite
+	 * @param $component_object     boolean Can be false to ignore warning on multiple composites
 	 * @return Reflection_Property
 	 */
-	public function getCompositeProperty(
-		$composite_class_name = null, $component_object = null, $composite_object = null
-	) {
+	public function getCompositeProperty($composite_class_name = null, $component_object = null)
+	{
 		if (!isset($composite_class_name)) {
 			$composite_object = $this;
 			$link = $composite_object->getAnnotation(Link_Annotation::ANNOTATION);
@@ -65,11 +61,6 @@ class Link_Class extends Reflection_Class
 		if (count($composite_properties) > 1) {
 			if ($component_object === false) {
 				$composite_properties = [];
-			}
-			elseif ($component_object instanceof Composite_Discriminator) {
-				$composite_properties = [
-					$component_object->discriminateComposite($composite_properties, $composite_object)
-				];
 			}
 			if (count($composite_properties) > 1) {
 				trigger_error(
