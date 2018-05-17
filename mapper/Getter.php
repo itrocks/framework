@@ -158,8 +158,11 @@ abstract class Getter
 						// $element->setComposite() is not used for optimization reason :
 						// this should go as fast as it can
 						/** @var $element Component */
-						$element              = reset($stored);
-						$composite_properties = $element->getCompositeProperties($object);
+						$element = reset($stored);
+						/** @var $composite_properties Reflection_Property[] */
+						$composite_properties = call_user_func(
+							[get_class($element), 'getCompositeProperties'], $object
+						);
 						foreach ($stored as $element) {
 							foreach ($composite_properties as $property) {
 								$id_property = 'id_' . $property->name;
