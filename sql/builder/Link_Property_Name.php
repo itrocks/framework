@@ -2,12 +2,14 @@
 namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Has_In;
 
 /**
  * Link property name Dao option
  */
 class Link_Property_Name implements Option
 {
+	use Has_In;
 
 	//--------------------------------------------------------------------------- $link_property_name
 	/**
@@ -33,23 +35,6 @@ class Link_Property_Name implements Option
 	public function __toString()
 	{
 		return $this->link_property_name;
-	}
-
-	//-------------------------------------------------------------------------------------------- in
-	/**
-	 * Gets the Link_Property_Name option from $options (if there is one)
-	 *
-	 * @param $options Option[]
-	 * @return static|null
-	 */
-	public static function in(array $options)
-	{
-		foreach ($options as $option) {
-			if ($option instanceof static) {
-				return $option;
-			}
-		}
-		return null;
 	}
 
 }

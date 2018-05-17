@@ -65,7 +65,7 @@ trait Component
 	/**
 	 * Get composite properties
 	 *
-	 * @param $class_name    string|object The composite class name or object
+	 * @param $class_name    object|string The composite class name or object
 	 * @param $property_name string The composite property name
 	 * @return Reflection_Property[] key is the name of the property
 	 */
