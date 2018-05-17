@@ -218,8 +218,9 @@ class Joins
 	 */
 	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
-		$linked_class          = new Reflection_Class($linked_class_name);
-		$master_property       = $class->getCompositeProperty($linked_class_name);
+		$linked_class    = new Reflection_Class($linked_class_name);
+		$master_property = $class->getCompositeProperty($linked_class_name);
+
 		$join                  = new Join();
 		$join->foreign_alias   = 't' . $this->alias_counter;
 		$join->foreign_column  = 'id';
@@ -230,9 +231,10 @@ class Joins
 		$join->master_property = $master_property;
 		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
 		$join->type            = Join::LINK;
+
 		$this->alias_counter ++;
+		// this ensures that the main path is set before the linked path
 		if (!isset($this->joins[$path])) {
-			// this ensures that the main path is set before the linked path
 			$this->joins[$path] = null;
 		}
 		$this->joins[($path ? ($path . '-') : '') . $join->foreign_table . '-@link'] = $join;
@@ -242,6 +244,7 @@ class Joins
 		$exclude_properties         = $more_linked_class_name
 			? $this->addLinkedClass($path, $class, $more_linked_class_name, $join_mode)
 			: [];
+
 		foreach ($linked_class->getProperties([T_EXTENDS, T_USE]) as $property) {
 			if (!$property->isStatic() && !isset($exclude_properties[$property->name])) {
 				$this->properties[$linked_class_name][$property->name] = $property;
@@ -254,6 +257,7 @@ class Joins
 				$exclude_properties[$property->name] = true;
 			}
 		}
+
 		return $exclude_properties;
 	}
 
