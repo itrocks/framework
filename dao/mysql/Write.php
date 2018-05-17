@@ -22,6 +22,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
+use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Sql\Builder\Map_Delete;
 use ITRocks\Framework\Sql\Builder\Map_Insert;
 
@@ -282,7 +283,9 @@ class Write extends Data_Link\Write
 		$link = Class_\Link_Annotation::of($class);
 		// link class : id is the couple of composite properties values
 		if ($link->value) {
-			$search = [];
+			$object_identifier = Dao::getObjectIdentifier($this->object, 'id');
+			$option            = [];
+			$search            = [];
 			foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
 				/** @var $property Reflection_Property $link annotates a Reflection_Property */
 				$property_name = $property->getName();
@@ -309,8 +312,14 @@ class Write extends Data_Link\Write
 				else {
 					trigger_error("Can't search $property_name", E_USER_ERROR);
 				}
+				if (
+					$property->getType()->isInstanceOf($link->value)
+					&& ($search[$property_name] != $object_identifier)
+				) {
+					$option[] = new Link_Property_Name($property_name);
+				}
 			}
-			if ($this->link->search($search, $class->name)) {
+			if ($this->link->search($search, $class->name, $option)) {
 				$id = [];
 				foreach ($search as $property_name => $value) {
 					$property     = $properties[$property_name];

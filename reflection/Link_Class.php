@@ -55,12 +55,12 @@ class Link_Class extends Reflection_Class
 		$composite_properties = call_user_func(
 			[$this->name, 'getCompositeProperties'], $composite_class_name
 		);
-		if ($this->link_property_name) {
-			unset($composite_properties[$this->link_property_name]);
-		}
 		if (count($composite_properties) > 1) {
 			if ($component_object === false) {
 				$composite_properties = [];
+			}
+			elseif ($this->link_property_name) {
+				unset($composite_properties[$this->link_property_name]);
 			}
 			if (count($composite_properties) > 1) {
 				trigger_error(
