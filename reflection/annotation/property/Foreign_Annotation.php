@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * The property name into the foreign class that contains current object
@@ -27,6 +28,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	/**
 	 * @param $value    string
 	 * @param $property Reflection_Property
+	 * @throws ReflectionException
 	 */
 	public function __construct($value, Reflection_Property $property)
 	{
@@ -66,6 +68,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	/**
 	 * @param $property Reflection_Property
 	 * @return string[] Possibles properties names
+	 * @throws ReflectionException
 	 */
 	private function defaultCollection(Reflection_Property $property)
 	{
@@ -92,6 +95,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	/**
 	 * @param $property Reflection_Property
 	 * @return string[] Possibles properties names
+	 * @throws ReflectionException
 	 */
 	private function defaultMap(Reflection_Property $property)
 	{
@@ -126,6 +130,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	/**
 	 * @param $property Reflection_Property
 	 * @return string[] Possibles properties names
+	 * @throws ReflectionException
 	 */
 	private function defaultObject(Reflection_Property $property)
 	{
@@ -153,6 +158,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	/**
 	 * @param $property Reflection_Property
 	 * @return Reflection_Class
+	 * @throws ReflectionException
 	 */
 	private function getForeignClass(Reflection_Property $property)
 	{

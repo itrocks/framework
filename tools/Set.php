@@ -79,22 +79,6 @@ class Set implements Iterator
 		return current($this->elements);
 	}
 
-	//------------------------------------------------------------------------- defaultSetClassNameOf
-	/**
-	 * @param $class_name string
-	 * @return string;
-	 */
-	public static function defaultSetClassNameOf($class_name)
-	{
-		return
-			(substr($class_name, -1) === 'y') ? substr($class_name, 0, -1) . 'ies' : (
-			(substr($class_name, -2) === 'an') ? substr($class_name, 0, -2) . 'en' : (
-			(substr($class_name, -2) === 'ss') ? $class_name . 'es' : (
-			(substr($class_name, -1) === 's') ? $class_name : (
-				$class_name . 's'
-			))));
-	}
-
 	//---------------------------------------------------------------------------------- elementClass
 	/**
 	 * Get element class reflection object for the current element class name

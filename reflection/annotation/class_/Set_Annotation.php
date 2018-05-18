@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
-use ITRocks\Framework\Tools\Set;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Use the @set annotation to define the name of the set class (virtual or real) associated to the
@@ -32,7 +32,7 @@ class Set_Annotation extends Annotation
 		parent::__construct($value);
 		if (!$this->value) {
 			$class_name  = $class->getName();
-			$this->value = Set::defaultSetClassNameOf($class_name);
+			$this->value = Names::singleToSet($class_name);
 		}
 	}
 

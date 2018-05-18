@@ -17,6 +17,17 @@ use ReflectionException;
 abstract class Names
 {
 
+	//------------------------------------------------------------------------------------ $irregular
+	/**
+	 * This nouns and adjectives are invariant and should not be changed from/to singular / plural
+	 */
+	public static $irregular = [
+		// invariant nouns @see https://en.wiktionary.org/wiki/Category:English_invariant_nouns
+		'aircraft', 'bass', 'radar', 'sheep',
+		// invariant adjectives : they are all invariant
+		'next', 'previous'
+	];
+
 	//----------------------------------------------------------------------------------------- $sets
 	/**
 	 * @var string[] key is the name of the set class, value is the matching name of the single class
@@ -430,14 +441,40 @@ abstract class Names
 	 */
 	public static function setToSingle($set)
 	{
+		if ($found = array_search($set, static::$irregular)) {
+			return is_numeric($found) ? $set : $found;
+		}
 		if (substr($set, -2) !== 'ss') {
-			if     (substr($set, -3) === 'ies')  return substr($set, 0, -3) . 'y';
-			elseif (substr($set, -3) === 'ses')  return substr($set, 0, -2);
-			elseif (substr($set, -4) === 'ches') return substr($set, 0, -2);
-			elseif (substr($set, -1) === 's')    return substr($set, 0, -1);
-			elseif (substr($set, -2) === 'en')   return substr($set, 0, -2) . 'an';
+			if     (substr($set, -3) === 'ies')   return substr($set, 0, -3) . 'y';
+			elseif (substr($set, -3) === 'ses')   return substr($set, 0, -2);
+			elseif (substr($set, -4) === 'ches')  return substr($set, 0, -2);
+			elseif (substr($set, -1) === 's')     return substr($set, 0, -1);
+			elseif (substr($set, -2) === 'men')   return substr($set, 0, -2) . 'man';
 		}
 		return $set;
+	}
+
+	//----------------------------------------------------------------------------------- singleToSet
+	/**
+	 * @example 'value' -> 'values'
+	 * @param $single string
+	 * @return string
+	 */
+	public static function singleToSet($single)
+	{
+		if (isset(static::$irregular[$single])) {
+			return static::$irregular[$single];
+		}
+		if (array_search($single, static::$irregular)) {
+			return $single;
+		}
+		return
+			(substr($single, -1) === 'y')  ? (substr($single, 0, -1) . 'ies') : (
+			(substr($single, -2) === 'an') ? (substr($single, 0, -2) . 'en') : (
+			(substr($single, -2) === 'ss') ? ($single . 'es') : (
+			(substr($single, -1) === 's')  ? $single : (
+				$single . 's'
+			))));
 	}
 
 }
