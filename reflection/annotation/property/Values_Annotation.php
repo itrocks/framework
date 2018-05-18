@@ -72,7 +72,7 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 		}
 		// a class const that contains an array of values
 		elseif (
-			ctype_upper(preg_replace("/[^a-zA-Z]+/", "", $what))
+			ctype_upper(preg_replace('/[^a-zA-Z]+/', '', $what))
 			&& is_array($constants = $class->getConstant($what))
 		) {
 			$this->value = array_values($constants);
