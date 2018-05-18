@@ -33,6 +33,7 @@ class Comparator
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection $class_name must be valid
 	 * @param $class_name      string
 	 * @param $properties_path string[]|Reverse[]
 	 */
@@ -43,6 +44,7 @@ class Comparator
 			$this->properties_path = $properties_path;
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid  */
 			$this->properties_path = Sort_Annotation::of(new Reflection_Class($class_name))->values();
 		}
 	}

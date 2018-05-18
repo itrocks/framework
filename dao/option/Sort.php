@@ -93,6 +93,7 @@ class Sort implements Option
 	 * This applies default column names if there was no default class name, or if class name changed,
 	 * or if there were no column names.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $class_name must be valid
 	 * @param $class_name string
 	 */
 	private function applyClassName($class_name)
@@ -104,6 +105,7 @@ class Sort implements Option
 		) {
 			$class_name       = Builder::className($class_name);
 			$this->class_name = $class_name;
+			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 			$class            = new Reflection_Class($class_name);
 			$this->columns    = Sort_Annotation::of($class)->values()
 				?: Representative_Annotation::of($class)->values();
