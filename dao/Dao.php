@@ -9,7 +9,6 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\List_Row;
@@ -218,13 +217,10 @@ class Dao implements Configurable
 	 *
 	 * @param $properties string[]|string ...
 	 * @return Option\Exclude
-	 * @throws ReflectionException
 	 */
 	public static function exclude($properties)
 	{
-		/** @var $exclude Option\Exclude */
-		$exclude = (new Reflection_Class(Option\Exclude::class))->newInstanceArgs(func_get_args());
-		return $exclude;
+		return new Option\Exclude(func_get_args());
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -235,6 +231,7 @@ class Dao implements Configurable
 	 *
 	 * @param $dao_identifier string
 	 * @return Data_Link
+	 * @throws ReflectionException
 	 */
 	public static function get($dao_identifier)
 	{
@@ -349,13 +346,24 @@ class Dao implements Configurable
 	 *
 	 * @param $properties string[]|string ...
 	 * @return Option\Only
-	 * @throws ReflectionException
 	 */
 	public static function only($properties)
 	{
-		/** @var $only Option\Only */
-		$only = (new Reflection_Class(Option\Only::class))->newInstanceArgs(func_get_args());
-		return $only;
+		return new Option\Only(func_get_args());
+	}
+
+	//--------------------------------------------------------------------------------------- preLoad
+	/**
+	 * Pre-load objects from the data storage during the query
+	 *
+	 * For optimization purpose : this allows to get multiple linked objects in only one query.
+	 *
+	 * @param $properties string[]|string ...
+	 * @return Option\Pre_Load
+	 */
+	public static function preLoad($properties)
+	{
+		return new Option\Pre_Load(func_get_args());
 	}
 
 	//------------------------------------------------------------------------------------------ read

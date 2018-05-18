@@ -39,7 +39,7 @@ abstract class Properties implements Option
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * @param $properties string[]|string Each property can be a property.path
+	 * @param $properties string|string[] Each property can be a property.path
 	 */
 	public function add($properties)
 	{
