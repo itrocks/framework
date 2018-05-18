@@ -449,7 +449,7 @@ abstract class Names
 			elseif (substr($set, -3) === 'ses')   return substr($set, 0, -2);
 			elseif (substr($set, -4) === 'ches')  return substr($set, 0, -2);
 			elseif (substr($set, -1) === 's')     return substr($set, 0, -1);
-			elseif (substr($set, -2) === 'men')   return substr($set, 0, -2) . 'man';
+			elseif (substr($set, -3) === 'men')   return substr($set, 0, -3) . 'man';
 		}
 		return $set;
 	}
@@ -469,10 +469,10 @@ abstract class Names
 			return $single;
 		}
 		return
-			(substr($single, -1) === 'y')  ? (substr($single, 0, -1) . 'ies') : (
-			(substr($single, -2) === 'an') ? (substr($single, 0, -2) . 'en') : (
-			(substr($single, -2) === 'ss') ? ($single . 'es') : (
-			(substr($single, -1) === 's')  ? $single : (
+			(substr($single, -1) === 'y')   ? (substr($single, 0, -1) . 'ies') : (
+			(substr($single, -3) === 'man') ? (substr($single, 0, -3) . 'men') : (
+			(substr($single, -2) === 'ss')  ? ($single . 'es') : (
+			(substr($single, -1) === 's')   ? $single : (
 				$single . 's'
 			))));
 	}
