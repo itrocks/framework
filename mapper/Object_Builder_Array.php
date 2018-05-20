@@ -728,6 +728,7 @@ class Object_Builder_Array
 		}
 		elseif ($objects) {
 			$new_object = reset($objects);
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
 				$property_name = $property->name;
 				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {

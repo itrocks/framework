@@ -280,14 +280,15 @@ class Test extends Tests\Test
 	//--------------------------------------------------------------------------------- propertyTests
 	/**
 	 * @param $property_prefix string @values decimal, integer
-	 * @throws ReflectionException
 	 */
 	protected function propertyTests($property_prefix)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Reflection method uses constants */
 		$property_type_to_mysql = (new Reflection_Method(
 			Column_Builder_Property::class, 'propertyTypeToMysql'
 		));
 		$property_type_to_mysql->setAccessible(true);
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach ((new Reflection_Class(get_class($this)))->getProperties() as $property) {
 			if (beginsWith($property->name, $property_prefix)) {
 				$assume = $property->getAnnotation('assume')->value;

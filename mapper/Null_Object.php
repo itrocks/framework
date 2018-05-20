@@ -90,7 +90,8 @@ abstract class Null_Object
 		if (!isset($object)) {
 			return true;
 		}
-		$is_null       = true;
+		$is_null = true;
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $properties Reflection_Property[] */
 		$properties = (new Reflection_Class(get_class($object)))->accessProperties();
 		if ($properties_filter) {

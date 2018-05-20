@@ -275,6 +275,7 @@ class Link extends Dao\Sql\Link
 	public function delete($object)
 	{
 		$will_delete = true;
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach (
 			(new Reflection_Class(get_class($object)))->getAnnotations('before_delete') as $before_delete
 		) {
@@ -369,7 +370,8 @@ class Link extends Dao\Sql\Link
 	public function escapeString($value)
 	{
 		if (is_object($value)) {
-			$id         = $this->getObjectIdentifier($value, 'id');
+			$id = $this->getObjectIdentifier($value, 'id');
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			$properties = (new Reflection_Class(get_class($value)))->getAnnotedProperties(
 				Store_Annotation::ANNOTATION, Store_Annotation::FALSE
 			);
@@ -579,6 +581,7 @@ class Link extends Dao\Sql\Link
 	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
 	{
 		if (!isset($link)) {
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			$link = Class_\Link_Annotation::of(new Reflection_Class(get_class($object)));
 		}
 		if ($link->value) {
@@ -790,6 +793,7 @@ class Link extends Dao\Sql\Link
 	 * @param $result mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
 	 * @return mixed|mysqli_result depends on $class_name specific constants used
+	 * @throws Mysql_Error_Exception
 	 */
 	public function query($query, $class_name = null, &$result = null)
 	{

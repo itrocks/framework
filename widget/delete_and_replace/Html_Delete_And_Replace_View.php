@@ -42,6 +42,7 @@ class Html_Delete_And_Replace_View implements View
 	protected function getFilters($object)
 	{
 		$filters = ['id' => Func::notEqual(Dao::getObjectIdentifier($object))];
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach (
 			(new Reflection_Class(get_class($object)))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {

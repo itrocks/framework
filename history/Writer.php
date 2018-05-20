@@ -80,8 +80,10 @@ abstract class Writer
 	 */
 	private static function createHistory(Has_History $before, Has_History $after)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection History class name is always valid */
 		$history_class = new Reflection_Class(Builder::className($after->getHistoryClassName()));
-		$history = [];
+		$history       = [];
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class = new Reflection_Class(get_class($before));
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();

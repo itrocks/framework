@@ -28,6 +28,7 @@ abstract class Search_Object extends Null_Object
 	public static function create($class_name, $deactivate_aop = false)
 	{
 		$object = Builder::create($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				if ($property->isPublic()) {

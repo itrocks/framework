@@ -3,7 +3,6 @@ namespace ITRocks\Framework;
 
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 
 /**
  * The class for the global application object
@@ -181,7 +180,6 @@ class Application
 	 *               If string : can be any const BOTH (eq null), FLAT (eq true) or TREE (eq false)
 	 * @return array The classes tree : string[], tree of strings,
 	 *               or [FLAT => $flat, NODES => $notes TREE => $tree]
-	 * @throws ReflectionException
 	 */
 	public function getClassesTree($flat = false)
 	{
@@ -231,6 +229,7 @@ class Application
 							break;
 						}
 					}
+					/** @noinspection PhpUnhandledExceptionInspection Class exist in production case */
 					if (
 						$all_children_done
 						&& (
@@ -262,10 +261,10 @@ class Application
 	 * Gets namespace of the application
 	 *
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function getNamespace()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		return (new Reflection_Class(get_class($this)))->getNamespaceName();
 	}
 
@@ -298,11 +297,11 @@ class Application
 	 *
 	 * @param $recursive boolean get all parents if true
 	 * @return array[] applications class names : key = class name, value = children class names
-	 * @throws ReflectionException
 	 */
 	public static function getParentClasses($recursive = false)
 	{
-		$class_name          = get_called_class();
+		$class_name = get_called_class();
+		/** @noinspection PhpUnhandledExceptionInspection get_called_class() always valid */
 		$class               = new Reflection_Class($class_name);
 		$parent_class_name   = get_parent_class($class_name);
 		$extends_annotations = Extends_Annotation::allOf($class);

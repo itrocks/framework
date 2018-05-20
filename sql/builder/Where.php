@@ -226,6 +226,7 @@ class Where implements With_Build_Column
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
 		$array = [];
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class = new Reflection_Class(get_class($object));
 		foreach (
 			Replaces_Annotations::removeReplacedProperties($class->accessProperties())

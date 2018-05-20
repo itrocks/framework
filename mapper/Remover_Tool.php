@@ -20,6 +20,7 @@ abstract class Remover_Tool
 	public static function removeObjectFromComposite($composite, $object)
 	{
 		$count = 0;
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach ((new Reflection_Class(get_class($composite)))->accessProperties() as $property) {
 			$type = $property->getType();
 			if ($type->isClass() && isA($object, $type->getElementTypeAsString())) {

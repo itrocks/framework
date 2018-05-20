@@ -51,6 +51,7 @@ abstract class Write
 	 */
 	protected function afterWrite($object, array &$options)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_writes Method_Annotation[] */
 		$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
 		foreach ($after_writes as $after_write) {
@@ -68,6 +69,7 @@ abstract class Write
 	 */
 	protected function beforeWrite($object, array &$options)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
 		if ($before_writes) {
@@ -85,6 +87,7 @@ abstract class Write
 						. 'on object ' . print_r($object, true),
 						E_USER_WARNING
 					);
+					/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 					$before_write = new Method_Annotation(
 						$before_write->value, new Reflection_Class(get_class($object)), 'before_write'
 					);
@@ -111,6 +114,7 @@ abstract class Write
 	 */
 	protected function prepareAfterCommit($object, array $options)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_commits Method_Annotation[] */
 		$after_commits = (new Reflection_Class(get_class($object)))->getAnnotations('after_commit');
 		foreach ($after_commits as $after_commit) {

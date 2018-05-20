@@ -56,8 +56,6 @@ abstract class Empty_Object
 	 * @param $object          object
 	 * @param $check_composite boolean if true, check if @composite properties are empty too
 	 * @return boolean
-	 * @throws ReflectionException
-	 * @throws Exception
 	 */
 	public static function isEmpty($object, $check_composite = false)
 	{
@@ -66,6 +64,7 @@ abstract class Empty_Object
 			$is_empty = $object->isEmpty();
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			$class   = new Reflection_Class(get_class($object));
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {

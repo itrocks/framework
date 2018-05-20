@@ -304,11 +304,11 @@ class Builder implements Activable, Serializable
 	 * @param $object object
 	 * @return boolean
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public static function isObjectSet($object)
 	{
-		$result   = false;
+		$result = false;
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class    = new Reflection_Class(get_class($object));
 		$defaults = $class->getDefaultProperties([T_EXTENDS]);
 		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {

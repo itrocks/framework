@@ -182,6 +182,7 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
 		if (
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			($object instanceof Duplicate)
 			|| (new Reflection_Class(get_class($object)))->getAnnotations('duplicate')
 		) {

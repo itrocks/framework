@@ -883,8 +883,10 @@ class Functions
 		$properties_filter  = $template->getParameter(Parameter::PROPERTIES_FILTER);
 		$properties_title   = $template->getParameter(Parameter::PROPERTIES_TITLE);
 		$properties_tooltip = $template->getParameter(Parameter::PROPERTIES_TOOLTIP);
-		$class              = new Reflection_Class(get_class($object));
-		$result_properties  = [];
+
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+		$class             = new Reflection_Class(get_class($object));
+		$result_properties = [];
 
 		if ($properties_filter) {
 			$properties = [];

@@ -53,10 +53,10 @@ abstract class Data_Link
 	//------------------------------------------------------------------------------------- afterRead
 	/**
 	 * @param $object object
-	 * @throws ReflectionException
 	 */
 	public function afterRead($object)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		foreach (
 			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
 		) {
@@ -72,11 +72,11 @@ abstract class Data_Link
 	/**
 	 * @param $objects object[]
 	 * @param $options Option[]
-	 * @throws ReflectionException
 	 */
 	public function afterReadMultiple(array $objects, array &$options = [])
 	{
 		if ($objects) {
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			/** @var $after_reads Method_Annotation[] */
 			$after_reads = (new Reflection_Class(get_class(reset($objects))))->getAnnotations(
 				'after_read'
@@ -194,7 +194,6 @@ abstract class Data_Link
 	 * @param $class_name string
 	 * @param $options    Option[]
 	 * @return callable|string|string[]
-	 * @throws ReflectionException
 	 */
 	protected function getKeyPropertyName($class_name, array $options = null)
 	{
@@ -209,6 +208,7 @@ abstract class Data_Link
 				}
 			}
 		}
+		/** @noinspection PhpUnhandledExceptionInspection You must call it with a valid class */
 		$class = new Link_Class($class_name);
 		if (($key === 'id') && $class->getLinkedClassName()) {
 			$key = [];
@@ -392,7 +392,6 @@ abstract class Data_Link
 	 * @param $property_name string
 	 * @param $default_value mixed
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	protected function valueChanged($element, $property_name, $default_value)
 	{
@@ -402,6 +401,7 @@ abstract class Data_Link
 		}
 		$element_value = $element->$property_name;
 		if (is_object($element_value)) {
+			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			$class    = new Reflection_Class(get_class($element_value));
 			$defaults = $class->getDefaultProperties([T_EXTENDS]);
 			foreach (Representative_Annotation::of($class)->values() as $property_name) {

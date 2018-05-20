@@ -353,7 +353,6 @@ abstract class Names
 	 * @param $class_name  string
 	 * @param $check_class boolean false if you don't want to check for existing classes
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function setToClass($class_name, $check_class = true)
 	{
@@ -396,6 +395,7 @@ abstract class Names
 			}
 			if ($i === false) {
 				if (
+					/** @noinspection PhpUnhandledExceptionInspection Reflection_Class : class exists */
 					(class_exists($set_class_name) || trait_exists($set_class_name))
 					&& (Set_Annotation::of(new Reflection_Class($set_class_name))->value === $set_class_name)
 				) {
