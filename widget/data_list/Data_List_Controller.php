@@ -509,9 +509,6 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$list_settings->save();
 			}
 		}
-		catch (Data_List_Exception $exception) {
-			$this->errors[] = $exception;
-		}
 		catch (Mysql_Error_Exception $exception) {
 			if (Time_Limit::isErrorCodeTimeout($exception->getCode())) {
 				$error = new Exception(
