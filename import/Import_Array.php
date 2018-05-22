@@ -621,29 +621,34 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
-		$before          = Reflection_Class::getObjectVars($object);
-		$only_properties = [];
-		foreach (array_keys($class->write_properties) as $property_name) {
-			$value = $row[$class_properties_column[$property_name]];
-			if (isset($class->properties[$property_name])) {
-				$value = Loc::propertyToIso($class->properties[$property_name], $value);
-			}
-			if (!$this->sameElement($object->$property_name, $value)) {
-				$object->$property_name = $value;
-				$only_properties[]      = $property_name;
-				unset($before[$property_name]);
-			}
-		}
-		if ($only_properties) {
-			foreach ($before as $property_name => $old_value) {
-				if (!$this->sameElement($object->$property_name, $old_value)) {
-					$only_properties[] = $property_name;
+		// No need to read $before if it will not be used.
+		// Ex: For a characterisitc ve the before read all the properties to do nothing of them
+		// and it is very long. Cf #113940
+		if (array_keys($class->write_properties)) {
+			$before          = Reflection_Class::getObjectVars($object);
+			$only_properties = [];
+			foreach (array_keys($class->write_properties) as $property_name) {
+				$value = $row[$class_properties_column[$property_name]];
+				if (isset($class->properties[$property_name])) {
+					$value = Loc::propertyToIso($class->properties[$property_name], $value);
+				}
+				if (!$this->sameElement($object->$property_name, $value)) {
+					$object->$property_name = $value;
+					$only_properties[]      = $property_name;
+					unset($before[$property_name]);
 				}
 			}
-			if ($this->simulation) {
-				$this->simulateUpdate($class, $object);
+			if ($only_properties) {
+				foreach ($before as $property_name => $old_value) {
+					if (!$this->sameElement($object->$property_name, $old_value)) {
+						$only_properties[] = $property_name;
+					}
+				}
+				if ($this->simulation) {
+					$this->simulateUpdate($class, $object);
+				}
+				Dao::write($object, Dao::only($only_properties));
 			}
-			Dao::write($object, Dao::only($only_properties));
 		}
 		return $object;
 	}
