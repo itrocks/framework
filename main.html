@@ -1,7 +1,7 @@
 <!--use ITRocks\Framework\Html_Session-->
 <!--use ITRocks\Framework\Locale\Loc-->
-<!--use ITRocks\Framework\Session-->
 <!--use ITRocks\Framework\Tools\Paths-->
+<!--use ITRocks\Framework\User\Access_Control-->
 <!--use ITRocks\Framework\Widget\Menu-->
 <!DOCTYPE html>
 <html>
@@ -110,6 +110,9 @@
 <body>
 
 	<header>
+		<!--Access_Control.get-->
+		{/ITRocks/Framework/User/miniDisplay.html}
+		<!--Access_Control.get-->
 		<div id="messages"></div>
 		<ul class="links">
 			<li class="provider itrocks">
@@ -119,9 +122,9 @@
 		</ul>
 	</header>
 
-	<!--Session.current.plugins.get(Menu.class)-->
+	<!--Menu.get-->
 	{/ITRocks/Framework/Widget/Menu/output}
-	<!--Session.current.plugins.get(Menu.class)-->
+	<!--Menu.get-->
 
 	<section class="application center" id="main">
 		{@content}

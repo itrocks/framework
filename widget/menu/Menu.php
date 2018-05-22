@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Menu\Block;
@@ -13,6 +14,7 @@ use ITRocks\Framework\Widget\Menu\Item;
  */
 class Menu implements Configurable
 {
+	use Has_Get;
 
 	//------------------------------------------------------- Menu configuration array keys constants
 	/**
