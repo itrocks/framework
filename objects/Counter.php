@@ -13,6 +13,8 @@ use ITRocks\Framework\View\Html\Template;
  * It deals with application-side locking in order that the next number has no jumps nor replicates
  *
  * @business
+ * @list identifier, last_value, last_update, format
+ * @representative identifier
  */
 class Counter
 {
@@ -26,6 +28,7 @@ class Counter
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
+	 * @user readonly
 	 * @var string
 	 */
 	public $identifier;
@@ -33,12 +36,14 @@ class Counter
 	//---------------------------------------------------------------------------------- $last_update
 	/**
 	 * @link DateTime
+	 * @user readonly
 	 * @var Date_Time
 	 */
 	public $last_update;
 
 	//----------------------------------------------------------------------------------- $last_value
 	/**
+	 * @user readonly
 	 * @var integer
 	 */
 	public $last_value = 0;
@@ -55,6 +60,15 @@ class Counter
 		if (!isset($this->last_update)) {
 			$this->last_update = Date_Time::now();
 		}
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->identifier);
 	}
 
 	//------------------------------------------------------------------------------------- increment
