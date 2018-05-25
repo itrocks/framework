@@ -22,12 +22,14 @@ class Counter
 	//--------------------------------------------------------------------------------------- $format
 	/**
 	 * @example 'F{YEAR}{ITRocks\Framework\User.current.login.0.upper}%04s'
+	 * @mandatory
 	 * @var string
 	 */
 	public $format = '{YEAR}%04s';
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
+	 * @mandatory
 	 * @user readonly
 	 * @var string
 	 */
