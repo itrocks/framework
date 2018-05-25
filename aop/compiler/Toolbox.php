@@ -121,13 +121,14 @@ trait Toolbox
 	 * @param $joinpoint_code           string
 	 * @param $i2                       string
 	 * @param $result                   string
+	 * @param $call_if_no_plugin_object string
 	 * @return string
 	 * @throws ReflectionException
 	 */
 	private function generateAdviceCode(
 		$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 		$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code,
-		$i2, $result
+		$i2, $result, $call_if_no_plugin_object = ''
 	) {
 		// $advice_code
 		if (is_array($advice)) {
@@ -151,13 +152,17 @@ trait Toolbox
 					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 			else {
-				return $i2 . '/** @var $object_ ' . BS . $advice_class_name . ' */'
+				$code = $i2 . '/** @var $object_ ' . BS . $advice_class_name . ' */'
 					. $i2 . '$object_ = \ITRocks\Framework\Session::current()->plugins->get('
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code
 					. $i2 . 'if ($object_) ' . ($advice_has_return ? ($result . SP . '=' . $ref . SP) : '')
 					. '$object_->' . $advice_method_name . '(' . $advice_parameters_string . ');';
+				if ($call_if_no_plugin_object) {
+					$code .= $i2 . 'else ' . trim($call_if_no_plugin_object);
+				}
+				return $code;
 			}
 		}
 		// function call

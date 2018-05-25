@@ -193,7 +193,7 @@ class Method
 			$advice_code = $this->generateAdviceCode(
 				$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 				$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code, $i2,
-				'$result_'
+				'$result_', ($type === 'around') ? $call_code : ''
 			);
 
 			switch ($type) {
