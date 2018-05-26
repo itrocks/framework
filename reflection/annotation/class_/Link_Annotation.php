@@ -87,6 +87,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	public function getLinkClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->>class->getName() always valid */
 		return new Link_Class($this->class->getName());
 	}
 
@@ -99,12 +100,12 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	public function getLinkProperties()
 	{
 		if (!is_array($this->link_properties)) {
-			$temp = $this->link_properties;
+			$text_link_properties  = $this->link_properties;
 			$this->link_properties = [];
-			if (is_string($temp)) {
+			if (is_string($text_link_properties)) {
 				// if properties names are told, this will be faster to get their names here
 				$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
-				foreach (explode(SP, $temp) as $property_name) {
+				foreach (explode(SP, $text_link_properties) as $property_name) {
 					if ($property_name) {
 						$this->link_properties[$property_name] = $properties[$property_name];
 					}

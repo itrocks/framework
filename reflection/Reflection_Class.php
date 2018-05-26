@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
 use ReflectionClass;
+use ReflectionException;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
@@ -72,7 +73,8 @@ class Reflection_Class extends ReflectionClass
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return self
+	 * @return static
+	 * @throws ReflectionException
 	 */
 	public static function fromString($string)
 	{
@@ -174,6 +176,7 @@ class Reflection_Class extends ReflectionClass
 	public function getConstructor()
 	{
 		$constructor = parent::getConstructor();
+		/** @noinspection PhpUnhandledExceptionInspection $constructor has been tested for existing */
 		return $constructor ? new Reflection_Method($this->name, $constructor->name) : null;
 	}
 
@@ -183,13 +186,14 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Note : child classes of a class using a trait will not be listed here
 	 *
-	 * @return array
+	 * @return Reflection_Class[]
 	 */
 	public function getDeclaredClassesUsingTrait()
 	{
 		$classes = [];
 		foreach (get_declared_classes() as $class_name) {
 			if (in_array($this->name, class_uses($class_name))) {
+				/** @noinspection PhpUnhandledExceptionInspection $class_name is a declared class */
 				$classes[$class_name] = new Reflection_Class($class_name);
 			}
 		}
@@ -206,7 +210,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
 	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
 	 * @param $property_name  string for optimization purpose : only get defaults for this property
-	 * @return array
+	 * @return mixed[]
 	 */
 	public function getDefaultProperties(
 		array $flags = [], $use_annotation = true, $property_name = null
@@ -292,6 +296,7 @@ class Reflection_Class extends ReflectionClass
 	{
 		$interfaces = [];
 		foreach (parent::getInterfaces() as $interface) {
+			/** @noinspection PhpUnhandledExceptionInspection $interface from parent::getInterfaces() */
 			$interfaces[$interface->name] = new Reflection_Class($interface->name);
 		}
 		return $interfaces;
@@ -305,10 +310,12 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @param $method_name string
 	 * @return Reflection_Method
+	 * @throws ReflectionException method does not exist
 	 */
 	public function getMethod($method_name)
 	{
 		$method = parent::getMethod($method_name);
+		/** @noinspection PhpUnhandledExceptionInspection $method from parent::getMethods() */
 		return $method ? new Reflection_Method($this->name, $method->name) : null;
 	}
 
@@ -326,6 +333,7 @@ class Reflection_Class extends ReflectionClass
 	{
 		$methods = [];
 		foreach (parent::getMethods() as $method) {
+			/** @noinspection PhpUnhandledExceptionInspection $method from parent::getMethods() */
 			$methods[$method->name] = new Reflection_Method($this->name, $method->name);
 		}
 		if ($flags) {
@@ -369,7 +377,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @param $object object
 	 * @param $aop    boolean if false, AOP is not applied and the actual values are get
-	 * @return array
+	 * @return mixed[]
 	 */
 	public static function getObjectVars($object, $aop = true)
 	{
@@ -393,6 +401,7 @@ class Reflection_Class extends ReflectionClass
 	public function getParentClass()
 	{
 		$parent_class = parent::getParentClass();
+		/** @noinspection PhpUnhandledExceptionInspection $parent_class from parent::getParentClass() */
 		return $parent_class ? new Reflection_Class($parent_class->name) : null;
 	}
 
@@ -415,6 +424,7 @@ class Reflection_Class extends ReflectionClass
 		}
 		$properties = [];
 		foreach (parent::getProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperties() */
 			$property = new Reflection_Property($this->name, $property->name);
 			$property->final_class = $final_class;
 			$properties[$property->name] = $property;
@@ -445,6 +455,7 @@ class Reflection_Class extends ReflectionClass
 	public function getProperty($name)
 	{
 		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
+		/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperty() */
 		return $property ? new Reflection_Property($this->name, $property->name) : null;
 	}
 
@@ -458,6 +469,7 @@ class Reflection_Class extends ReflectionClass
 	{
 		$traits = [];
 		foreach (parent::getTraits() as $trait) {
+			/** @noinspection PhpUnhandledExceptionInspection from parent::getTraits() */
 			$traits[$trait->name] = new Reflection_Class($trait->name);
 		}
 		return $traits;
@@ -490,7 +502,7 @@ class Reflection_Class extends ReflectionClass
 
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
-	 * PHP's ReflectionClass behaviour for this is :
+	 * PHP ReflectionClass behaviour for this is :
 	 * - Abstract classes are abstract (this is the main use)
 	 * - Interfaces are not abstract
 	 * - PHP before 7.0 : Traits are abstract. PHP 7.0 and next : Traits are not abstract.

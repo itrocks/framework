@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 use ReflectionProperty;
 
 /**
@@ -100,6 +101,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @param $class_name    string
 	 * @param $property_name string
+	 * @throws ReflectionException
 	 */
 	public function __construct($class_name, $property_name)
 	{
@@ -145,6 +147,7 @@ class Reflection_Property extends ReflectionProperty
 				if (!property_exists($class_name, $property_name)) {
 					return false;
 				}
+				/** @noinspection PhpUnhandledExceptionInspection property_exists() was called */
 				$property   = new Reflection_Property($class_name, $property_name);
 				$class_name = $property->getType()->getElementTypeAsString();
 			}
@@ -161,6 +164,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $properties Reflection_Property[]
 	 * @param $class_name string
 	 * @return Reflection_Property[]
+	 * @throws ReflectionException
 	 */
 	public static function filter(array $properties, $class_name)
 	{
@@ -190,6 +194,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getDeclaringClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->class is always valid */
 		return new Reflection_Class($this->class);
 	}
 
@@ -267,8 +272,10 @@ class Reflection_Property extends ReflectionProperty
 				$this->setAccessible(true);
 			}
 			if (!isset($default_object)) {
+				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
 				$default_object = Builder::create($this->getFinalClassName());
 			}
+			/** @noinspection PhpUnhandledExceptionInspection Accessibility forced & valid object */
 			$value = $this->getValue($default_object);
 			if (!$was_accessible) {
 				$this->setAccessible(false);
@@ -325,6 +332,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getFinalClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->final_class is valid */
 		return new Reflection_Class($this->final_class);
 	}
 
@@ -346,9 +354,11 @@ class Reflection_Property extends ReflectionProperty
 	public function getFinalProperty()
 	{
 		if (strpos($this->path, DOT)) {
-			$path     = explode(DOT, $this->path);
+			$path = explode(DOT, $this->path);
+			/** @noinspection PhpUnhandledExceptionInspection $this->path is valid */
 			$property = new Reflection_Property($this->class, array_shift($path));
 			foreach ($path as $property_name) {
+				/** @noinspection PhpUnhandledExceptionInspection $this->path is valid */
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
@@ -382,6 +392,7 @@ class Reflection_Property extends ReflectionProperty
 	private function getOverrideDocComment()
 	{
 		$comment = '';
+		/** @noinspection PhpUnhandledExceptionInspection $this->final_class is always valid */
 		foreach (
 			(new Reflection_Class($this->final_class))->getListAnnotations('override') as $annotation
 		) {
@@ -407,6 +418,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getParentProperty()
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
+			/** @noinspection PhpUnhandledExceptionInspection $this->class is always valid */
 			return new Reflection_Property($this->class, substr($this->path, 0, $i));
 		}
 		return null;
@@ -417,15 +429,13 @@ class Reflection_Property extends ReflectionProperty
 	 * Gets the type of the property, as defined by its var annotation
 	 *
 	 * @return Type
-	 * @throws Exception
 	 */
 	public function getType()
 	{
 		$type = new Type($this->getAnnotation('var')->value);
 		if ($type->isNull()) {
-			throw new Exception(
-				$this->class . '::$' . $this->name . ' type not set using @var annotation',
-				E_USER_ERROR
+			trigger_error(
+				$this->class . '::$' . $this->name . ' type not set using @var annotation', E_USER_ERROR
 			);
 		}
 		return $type;
@@ -437,18 +447,20 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @param $object object
 	 * @return mixed
-	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public function getValue($object = null)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
-			$path     = explode(DOT, $this->path);
+			$path = explode(DOT, $this->path);
+			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
 				$object = $property->getValue($object);
 				while (is_array($object)) {
 					$object = reset($object);
 				}
+				/** @noinspection PhpUnhandledExceptionInspection $this->path is valid at this time */
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
@@ -476,6 +488,7 @@ class Reflection_Property extends ReflectionProperty
 					$property_name = $this->name;
 					return $object->$property_name;
 				}
+				/** @var $exception ReflectionException Only valid exception can be this (accessibility) */
 				throw $exception;
 			}
 		}
@@ -585,10 +598,13 @@ class Reflection_Property extends ReflectionProperty
 		$object, $value = self::EMPTY_VALUE
 	) {
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
-			$path     = explode(DOT, $this->path);
+			$path = explode(DOT, $this->path);
+			/** @noinspection PhpUnhandledExceptionInspection $this->root_class and $path are valid */
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
-				$object   = $property->getValue($object);
+				/** @noinspection PhpUnhandledExceptionInspection case is controlled and valid */
+				$object = $property->getValue($object);
+				/** @noinspection PhpUnhandledExceptionInspection $this->path is valid */
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
