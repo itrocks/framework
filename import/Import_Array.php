@@ -621,10 +621,8 @@ class Import_Array
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
 	) {
-		// No need to read $before if it will not be used.
-		// Ex: For a characterisitc ve the before read all the properties to do nothing of them
-		// and it is very long. Cf #113940
-		if (array_keys($class->write_properties)) {
+		// tested for optimization reason : avoid getObjectVars if nothing to do with it
+		if ($class->write_properties) {
 			$before          = Reflection_Class::getObjectVars($object);
 			$only_properties = [];
 			foreach (array_keys($class->write_properties) as $property_name) {
