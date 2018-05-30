@@ -616,7 +616,6 @@ class Import_Array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
-	 * @throws ReflectionException
 	 */
 	protected function updateExistingObject(
 		$object, $row, Import_Class $class, array $class_properties_column
