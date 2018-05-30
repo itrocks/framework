@@ -171,6 +171,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets the constructor of the reflected class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $constructor has been tested for existing
 	 * @return Reflection_Method
 	 */
 	public function getConstructor()
@@ -186,6 +187,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Note : child classes of a class using a trait will not be listed here
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $class_name is a declared class
 	 * @return Reflection_Class[]
 	 */
 	public function getDeclaredClassesUsingTrait()
@@ -290,6 +292,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets interfaces
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $interface from parent::getInterfaces()
 	 * @return Reflection_Class[]
 	 */
 	public function getInterfaces()
@@ -326,6 +329,7 @@ class Reflection_Class extends ReflectionClass
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or
 	 * traits. If you set flags, this will override this limitation.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $method from parent::getMethods()
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the name of the method
 	 */
@@ -373,7 +377,14 @@ class Reflection_Class extends ReflectionClass
 
 	//--------------------------------------------------------------------------------- getObjectVars
 	/**
-	 * Same as get_object_vars, but solves AOP properties
+	 * Same as get_object_vars, but solves AOP properties and does not get hidden id* properties
+	 *
+	 * Get all object vars, but :
+	 * - Remove _ AOP property
+	 * - Remove id_ properties matching AOP properties
+	 * - Remove property_name_ properties matching property_name AOP properties
+	 *
+	 * The result is a clean "object vars list" with only real properties declared into the class.
 	 *
 	 * @param $object object
 	 * @param $aop    boolean if false, AOP is not applied and the actual values are get
@@ -385,10 +396,12 @@ class Reflection_Class extends ReflectionClass
 		if (isset($vars['_'])) {
 			foreach (array_keys($vars['_']) as $property_name) {
 				$vars[$property_name] = $aop ? $object->$property_name : $vars[$property_name . '_'];
+				unset($vars['id_' . $property_name]);
 				unset($vars[$property_name . '_']);
 			}
 			unset($vars['_']);
 		}
+		unset($vars['id']);
 		return $vars;
 	}
 
@@ -396,6 +409,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets parent class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $parent_class from parent::getParentClass()
 	 * @return Reflection_Class
 	 */
 	public function getParentClass()
@@ -413,6 +427,7 @@ class Reflection_Class extends ReflectionClass
 	 * retrieved.
 	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
 	 * @param $flags integer[] T_EXTENDS, T_USE, self::T_SORT. Note: T_USE has no effect
 	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
@@ -449,6 +464,7 @@ class Reflection_Class extends ReflectionClass
 	 * Only a property visible for current class can be retrieved, not the privates ones from parent
 	 * classes or traits.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperty()
 	 * @param $name string The name of the property to get
 	 * @return Reflection_Property
 	 */
@@ -463,6 +479,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets traits
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection from parent::getTraits()
 	 * @return Reflection_Class[]
 	 */
 	public function getTraits()
