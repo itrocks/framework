@@ -107,6 +107,14 @@ class Write_Controller implements Default_Class_Controller
 	 */
 	protected function write(array $write_objects)
 	{
+		$write = Dao::current()->getWrite();
+		foreach ($write_objects as $write_object) {
+			if (!$write->beforeWrite(
+				$write_object->object, $write_object->write_options, 'before_writes'
+			)) {
+				return false;
+			}
+		}
 		foreach ($write_objects as $write_object) {
 			if (!Dao::write($write_object->object, $write_object->write_options)) {
 				return true;

@@ -21,7 +21,7 @@ abstract class Write
 	/**
 	 * @var object
 	 */
-	protected $object;
+	public $object;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
@@ -63,15 +63,17 @@ abstract class Write
 
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
-	 * @param $object  object
-	 * @param $options Option[]
+	 * @param $object                   object
+	 * @param $options                  Option[]
+	 * @param $before_write_annotation string @values before_write, before_writes
 	 * @return boolean
 	 */
-	protected function beforeWrite($object, array &$options)
+	public function beforeWrite($object, array &$options, $before_write_annotation = 'before_write')
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+		$class = new Reflection_Class(get_class($object));
 		/** @var $before_writes Method_Annotation[] */
-		$before_writes = (new Reflection_Class(get_class($object)))->getAnnotations('before_write');
+		$before_writes = $class->getAnnotations($before_write_annotation);
 		if ($before_writes) {
 			foreach ($options as $option) {
 				if ($option instanceof Option\Only) {
@@ -89,10 +91,11 @@ abstract class Write
 					);
 					/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 					$before_write = new Method_Annotation(
-						$before_write->value, new Reflection_Class(get_class($object)), 'before_write'
+						$before_write->value, new Reflection_Class(get_class($object)), $before_write_annotation
 					);
 					trigger_error(
-						'Try executing before_write ' . print_r($before_write, true), E_USER_WARNING
+						'Try executing @' . $before_write_annotation
+						. SP . print_r($before_write, true), E_USER_WARNING
 					);
 				}
 				$response = $before_write->call($object, [$this->link, &$options]);

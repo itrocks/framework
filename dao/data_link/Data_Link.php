@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link\After_Action;
+use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option\Key;
 use ITRocks\Framework\PHP\Dependency;
@@ -231,6 +232,20 @@ abstract class Data_Link
 	 * @return Reflection_Property[]|Sql\Column[]
 	 */
 	abstract public function getStoredProperties($class);
+
+	//-------------------------------------------------------------------------------------- getWrite
+	/**
+	 * Get a new Write object matching the data link
+	 *
+	 * @param $object  object
+	 * @param $options Option[]
+	 * @return Write
+	 */
+	public function getWrite($object = null, array $options = [])
+	{
+		$write_class = Namespaces::of(get_class($this)) . BS . 'Write';
+		return new $write_class($this, $object, $options);
+	}
 
 	//-------------------------------------------------------------------------------------------- is
 	/**

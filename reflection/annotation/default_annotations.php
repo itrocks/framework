@@ -74,6 +74,16 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@before_write' => Method_Annotation::class,
 
 	/**
+	 * @before_writes beforeWrites
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call before the objects is written using a data link
+	 * by the write controller
+	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may return false to cancel the writing of the objects by the controller
+	 */
+	Parser::T_CLASS . '@before_writes' => Method_Annotation::class,
+
+	/**
 	 * @business
 	 * This defines a class or a trait used to describe business objects
 	 */
