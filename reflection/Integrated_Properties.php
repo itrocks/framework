@@ -125,8 +125,19 @@ class Integrated_Properties
 		$property_path        = $property->path ?: $property->name;
 		$sub_properties_class = $property->getType()->asReflectionClass();
 		foreach ($integrated->properties as $integrated_property_path) {
-			$expand_properties[$property_path . DOT . $integrated_property_path]
-				= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
+			// 'all but' mode
+			if (substr($integrated_property_path, 0, 1) === '-') {
+				if (!$expand_properties) {
+					$expand_properties = $this->getImplicitIntegratedProperties($property);
+				}
+				unset($expand_properties[$property_path . DOT . substr($integrated_property_path, 1)]);
+			}
+			// add mode
+			else {
+				/** @noinspection PhpUnhandledExceptionInspection $sub_properties_class->name is valid */
+				$expand_properties[$property_path . DOT . $integrated_property_path]
+					= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
+			}
 		}
 		return $expand_properties;
 	}
