@@ -269,17 +269,24 @@
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
 			if (event.which !== 2) {
+				var anchor        = this;
+				var is_javascript = (anchor.href.substr(0, 11) === 'javascript:');
 				event.preventDefault();
-				if (this.href.substr(0, 11) === 'javascript:') {
-					eval(this.href.substr(11));
-					return false;
-				}
-				else {
-					var $this = $(this);
-					var xhr   = undefined;
+				var executeClick = function() {
+					// ensures that pending messages (blur on a combo) resolve before click
+					if (window.running_combo !== undefined) {
+						setTimeout(executeClick, 1);
+						return;
+					}
+					if (is_javascript) {
+						eval(anchor.href.substr(11));
+						return;
+					}
+					var $anchor = $(anchor);
+					var xhr     = undefined;
 					var jax;
-					if ($this.hasClass(settings.submit)) {
-						var $parent_form = $this.closest('form');
+					if ($anchor.hasClass(settings.submit)) {
+						var $parent_form = $anchor.closest('form');
 						if ($parent_form.length) {
 							/*
 							TODO: 97556 Rework required properties first
@@ -290,7 +297,7 @@
 							if ($parent_form.ajaxSubmit !== undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
 									type: $parent_form.attr('type'),
-									url:  urlAppend(this.href, this.search)
+									url:  urlAppend(anchor.href, anchor.search)
 								}));
 								xhr = $parent_form.data('jqxhr');
 							}
@@ -298,21 +305,25 @@
 								xhr = $.ajax(jax = $.extend(ajax, {
 									data: $parent_form.serialize(),
 									type: $parent_form.attr('method'),
-									url:  urlAppend(this.href, this.search)
+									url:  urlAppend(anchor.href, anchor.search)
 								}));
 							}
 						}
 					}
 					if (!xhr) {
 						xhr = $.ajax(jax = $.extend(ajax, {
-							url: urlAppend(this.href, this.search)
+							url: urlAppend(anchor.href, anchor.search)
 						}));
 					}
 					xhr.ajax     = jax;
-					xhr.from     = this;
+					xhr.from     = anchor;
 					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x;
 					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y;
 					xhr.time_out = setTimeout(function(){ $('body').css({cursor: 'wait'}); }, 500);
+				};
+				executeClick();
+				if (is_javascript) {
+					return false;
 				}
 			}
 		});
@@ -323,26 +334,35 @@
 		 */
 		this.find('form[target^="#"]').add(this.filter('form[target^="#"]')).submit(function(event)
 		{
-			var $this = $(this);
+			var form  = this;
+			var $form = $(form);
 			var jax;
 			var xhr;
 			event.preventDefault();
-			if ($this.ajaxSubmit !== undefined) {
-				$this.ajaxSubmit(jax = $.extend(ajax, {
-					type: $this.attr('type'),
-					url:  urlAppend(this.action, this.action.indexOf('?') > -1)
-				}));
-				xhr = $this.data('jqxhr');
-			}
-			else {
-				xhr = $.ajax(jax = $.extend(ajax, {
-					data: $this.serialize(),
-					type: $this.attr('method'),
-					url:  urlAppend(this.action, this.action.indexOf('?') > -1)
-				}));
-			}
-			xhr.ajax = jax;
-			xhr.from = this;
+			var executeClick = function() {
+				// ensures that pending messages (blur on a combo) resolve before click
+				if (window.running_combo !== undefined) {
+					setTimeout(executeClick, 1);
+					return;
+				}
+				if ($form.ajaxSubmit !== undefined) {
+					$form.ajaxSubmit(jax = $.extend(ajax, {
+						type: $form.attr('type'),
+						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
+					}));
+					xhr = $form.data('jqxhr');
+				}
+				else {
+					xhr = $.ajax(jax = $.extend(ajax, {
+						data: $form.serialize(),
+						type: $form.attr('method'),
+						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
+					}));
+				}
+				xhr.ajax = jax;
+				xhr.from = form;
+			};
+			executeClick();
 		});
 
 		//--------------------------------------------------------------------------- window onpopstate

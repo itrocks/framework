@@ -283,13 +283,16 @@ $('document').ready(function()
 		var comboForce = function($element)
 		{
 			if ($element.val().length) {
-				$.getJSON(
-					comboUri($element),
-					$.param(comboRequest($element, { term: $element.val(), first: true })),
-					function(data) {
+				// window.running_combo enable third-parties to wait for this to be complete (eg clicks)
+				window.running_combo = true;
+				var request = $.param(comboRequest($element, { term: $element.val(), first: true }));
+				$.getJSON(comboUri($element), request)
+					.done(function(data) {
 						comboValue($element, data.id, data.value);
-					}
-				);
+					})
+					.always(function() {
+						window.running_combo = undefined;
+					});
 			}
 			else {
 				comboValue($element, null, '');
@@ -318,13 +321,14 @@ $('document').ready(function()
 			source: function(request, response)
 			{
 				var $element = this.element;
+				window.running_combo = true;
 				// set data to lower case for /MAJ combo in term
-				var $data = $.param(comboRequest($element, request)).toLocaleLowerCase();
-				$.getJSON(
-					comboUri($element),
-					$data,
-					function(data) { response(data); }
-				);
+				var data = $.param(comboRequest($element, request)).toLocaleLowerCase();
+				$.getJSON(comboUri($element), data)
+					.done(response)
+					.always(function() {
+						window.running_combo = undefined;
+					});
 			},
 
 			select: function(event, ui)
