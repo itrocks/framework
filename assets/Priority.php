@@ -7,16 +7,10 @@ namespace ITRocks\Framework\Assets;
 class Priority
 {
 
-	//-------------------------------------------------------------------------------------- EXCLUDED
+	//-----------------------------------------------------------Level of priority for assets loading
 	const EXCLUDED = 'excluded';
-
-	//----------------------------------------------------------------------------------------- FIRST
 	const FIRST = 'first';
-
-	//-------------------------------------------------------------------------------------- INCLUDED
 	const INCLUDED = 'included';
-
-	//------------------------------------------------------------------------------------------ LAST
 	const LAST = 'last';
 
 	//----------------------------------------------------------------------------------------- valid
@@ -26,10 +20,10 @@ class Priority
 	 */
 	public static function valid($value)
 	{
-		return static::EXCLUDED === $value
-			|| static::FIRST === $value
-			|| static::INCLUDED === $value
-			|| static::LAST === $value;
+		return (static::EXCLUDED === $value)
+			|| (static::FIRST === $value)
+			|| (static::INCLUDED === $value)
+			|| (static::LAST === $value);
 	}
 
 }

@@ -5,7 +5,7 @@ use ITRocks\Framework\Assets\Priority;
 use ITRocks\Framework\Tests\Test;
 
 /**
- * Class Priority_Test
+ * Assets Priority Test
  */
 class Priority_Test extends Test
 {

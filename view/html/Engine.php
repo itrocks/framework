@@ -58,7 +58,6 @@ class Engine implements Configurable, Framework\View\Engine
 	 *                            be searched into the view / feature namespace first
 	 * @param $template_file_type string can search template files with another extension than 'html'
 	 * @return string the resulting path of the found template file
-	 * @throws ReflectionException
 	 */
 	public static function getTemplateFile(
 		$class_name, array $feature_names, $template = null, $template_file_type = 'html'

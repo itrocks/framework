@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
-use ReflectionException;
 
 /**
  * Gets the active class for a given base name feature, suffix and file extension
@@ -69,15 +68,14 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------------------------- get
-
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection ReflexionException because method exist
 	 * @param $base_class   string The base name for the class, ie 'ITRocks\Framework\User'
 	 * @param $feature_name string The name of the feature, ie 'dataList'
 	 * @param $suffix       string Class suffix, ie 'Controller', 'View'
 	 * @param $extension    string File extension, ie 'php', 'html'
 	 * @param $class_form   boolean true to use 'Feature_Class' naming instead of 'featureClass'
 	 * @return string[] [$class, $method]
-	 * @throws ReflectionException
 	 */
 	static public function get($base_class, $feature_name, $suffix, $extension, $class_form = true)
 	{
@@ -327,6 +325,7 @@ abstract class Getter
 					$last_controller_method = $feature_name;
 				}
 				if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
+				/** @noinspection PhpUnhandledExceptionInspection first test if method exists*/
 				if (
 					method_exists($base_class, $feature_name)
 					&& (new Reflection_Method($base_class, $feature_name))->hasParameter($feature_name)
@@ -375,13 +374,12 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------------------ getClasses
-
 	/**
 	 * Get classes we can get from, starting from the actual lower descendant
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection ReflexionException because class exists
 	 * @param $class_name string
-	 * @return string[] key is the full name of each class, value is it without 'Vendor/Project/'
-	 * @throws ReflectionException
+	 * @return string[] key is the full name of each class, value is it without 'Vendor/Project/
 	 */
 	static private function getClasses($class_name)
 	{
@@ -390,6 +388,7 @@ abstract class Getter
 		do {
 			$classes[$class_name] = self::classNameWithoutVendorProject($class_name);
 			if (class_exists($class_name)) {
+				/** @noinspection PhpUnhandledExceptionInspection class exists */
 				$reflection_class = new Reflection_Class(Builder::className($class_name));
 				// @extends
 				$extends_annotations = $reflection_class->getListAnnotations('extends');
@@ -413,7 +412,6 @@ abstract class Getter
 	}
 
 	//------------------------------------------------------------------------ getInterfacesRecursive
-
 	/**
 	 * Get interfaces we can get from, starting from the actual class
 	 *
@@ -432,7 +430,6 @@ abstract class Getter
 	}
 
 	//---------------------------------------------------------------------------- getTraitsRecursive
-
 	/**
 	 * Get traits we can get from, starting from the actual class / trait
 	 *

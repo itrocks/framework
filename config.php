@@ -2,6 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\AOP\Weaver;
+use ITRocks\Framework\Assets\Template_Compiler;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Debug\Xdebug;
@@ -99,6 +100,7 @@ $config['ITRocks/Framework'] = [
 			]
 		],
 		Mysql\Maintainer::class,
+		Template_Compiler::class,
 		Tests_Configurator::class => [
 			Tests_Configurator::PHPUNIT_OPTIONS => [
 				__DIR__ . '/../../vendor/bin/phpunit',

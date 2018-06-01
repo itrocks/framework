@@ -33,6 +33,8 @@ class Configuration
 
 	//--------------------------------------------------------------------------------- $applications
 	/**
+	 * Children configurations coming from application inheritance
+	 *
 	 * @var static[]
 	 */
 	public $applications = [];
@@ -45,6 +47,8 @@ class Configuration
 
 	//------------------------------------------------------------------------------------ $file_path
 	/**
+	 * Direct path to assets file for this configuration
+	 *
 	 * @var string
 	 */
 	public $file_path;
@@ -75,13 +79,15 @@ class Configuration
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
+	 * Children configurations coming from application inheritance
+	 *
 	 * @var static[]
 	 */
 	public $plugins = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Configuration constructor.
+	 * Configuration constructor
 	 *
 	 * @param $file_path string
 	 * @throws Assets_Exception
@@ -89,7 +95,7 @@ class Configuration
 	protected function __construct($file_path)
 	{
 		$file_path = $this->checkPath($file_path);
-		if ($file_path && array_search($file_path, $this->getAllFilePaths()) === false) {
+		if ($file_path) {
 			$this->file_path = $file_path;
 			$this->load();
 		}
@@ -104,13 +110,13 @@ class Configuration
 	public function add($file_path, $is_plugin = true)
 	{
 		$file_path = $this->checkPath($file_path);
-		if ($file_path && array_search($file_path, $this->getAllFilePaths()) === false) {
-			$conf = new self($file_path);
+		if ($file_path) {
+			$configuration = new self($file_path);
 			if ($is_plugin) {
-				$this->plugins[] = $conf;
+				$this->plugins[] = $configuration;
 			}
 			else {
-				$this->applications[] = $conf;
+				$this->applications[] = $configuration;
 			}
 		}
 	}
@@ -123,7 +129,7 @@ class Configuration
 	 * @return string[]
 	 * @see Priority
 	 */
-	private function aggregateElements($configurations, $priority, &$cache)
+	private function aggregateElements(array $configurations, $priority, array &$cache)
 	{
 		$elements = [];
 		foreach ($configurations as $configuration) {
@@ -134,12 +140,12 @@ class Configuration
 				Paths::getRelativeFileName($configuration->file_path)
 			);
 
-			/** @var Element $element */
+			/** @var $element Element */
 			foreach ($configuration->$priority as $element) {
 				$element->toRelativePath();
 				if (!isset($cache[$element->path])) {
 					$cache[$element->path] = true;
-					$elements[]            = (string)$element;
+					$elements[]            = strval($element);
 				}
 			}
 		}
@@ -148,14 +154,18 @@ class Configuration
 
 	//------------------------------------------------------------------------------------- checkPath
 	/**
+	 * Gets direct path to assets file
+	 *
 	 * @param $path string
-	 * @return string|false
+	 * @return string|false path if file exist and is not already imported
 	 */
 	protected function checkPath($path)
 	{
 		$path = realpath($path);
 		$path = (is_dir($path) ? $path : dirname($path)) . SL . static::ASSETS_FILENAME;
-		return file_exists($path) ? $path : false;
+		return file_exists($path) && (array_search($path, $this->getAllFilePaths()) === false)
+			? $path
+			: false;
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -228,17 +238,20 @@ class Configuration
 		$first = $this->aggregateElements(
 			$this->getConfigurations(true),
 			Priority::FIRST,
-			$cache);
+			$cache
+		);
 
 		$last = $this->aggregateElements(
 			$this->getConfigurations(),
 			Priority::LAST,
-			$cache);
+			$cache
+		);
 
 		$included = $this->aggregateElements(
 			$this->getConfigurations(),
 			Priority::INCLUDED,
-			$cache);
+			$cache
+		);
 
 		return array_merge($first, $included, $last);
 	}
@@ -259,7 +272,7 @@ class Configuration
 		$nodes = $xpath->query(Element::REGEX);
 
 		$mode = Priority::INCLUDED;
-		/** @var DOMElement $node */
+		/** @var $node DOMElement */
 		foreach ($nodes as $node) {
 			$value = trim($node->nodeValue);
 			if ($node->nodeType === XML_COMMENT_NODE) {

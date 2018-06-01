@@ -8,12 +8,11 @@ use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
 use ITRocks\Framework\View\Html\Template;
-use ReflectionException;
 
 /**
  * Class Plugins
  */
-class Template_Compiled implements Registerable, Updatable
+class Template_Compiler implements Registerable, Updatable
 {
 
 	//------------------------------------------------------------------------------------------ HOOK
@@ -27,6 +26,8 @@ class Template_Compiled implements Registerable, Updatable
 
 	//---------------------------------------------------------------------------------- $source_main
 	/**
+	 * Path to source main.html used as base to create compiled main.html
+	 *
 	 * @var string
 	 */
 	public $source_main;
@@ -73,7 +74,6 @@ class Template_Compiled implements Registerable, Updatable
 	 * @param $last_time integer
 	 * @see Updatable
 	 * @throws Assets_Exception
-	 * @throws ReflectionException
 	 */
 	public function update($last_time)
 	{

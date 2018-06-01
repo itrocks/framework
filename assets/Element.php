@@ -32,13 +32,15 @@ class Element
 	/**
 	 * Attribute name of path location (used for path getter/setter)
 	 *
+	 * @exemple 'src'
+	 * @see Element::__construct
 	 * @var string
 	 */
 	private $path_attribute;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Element constructor.
+	 * Element constructor
 	 *
 	 * @param $element DOMElement
 	 * @param $path    string
@@ -64,10 +66,10 @@ class Element
 	 */
 	public function __toString()
 	{
-		$doc   = new DOMDocument();
+		$document   = new DOMDocument();
 		$clone = $this->element->cloneNode(true);
-		$doc->appendChild($doc->importNode($clone, true));
-		return $doc->saveHTML();
+		$document->appendChild($document->importNode($clone, true));
+		return $document->saveHTML();
 	}
 
 	//--------------------------------------------------------------------------------------- getPath
@@ -92,7 +94,7 @@ class Element
 	/**
 	 * Relative path for a usage in cache/compiled
 	 *
-	 * @see Template_Compiled::getCompiledPath
+	 * @see Template_Compiler::getCompiledPath
 	 */
 	public function toRelativePath()
 	{

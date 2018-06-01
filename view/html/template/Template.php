@@ -30,20 +30,10 @@ class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
-
-	//------------------------------------------------------------------------------------- PROPAGATE
 	const PROPAGATE = true;
-
-	//-------------------------------------------------------------------------------------- TEMPLATE
 	const TEMPLATE = 'template';
-
-	//-------------------------------------------------------------------------------- TEMPLATE_CLASS
 	const TEMPLATE_CLASS = 'template_class';
-
-	//---------------------------------------------------------------------------- TEMPLATE_FUNCTIONS
 	const TEMPLATE_FUNCTIONS = 'template_functions';
-
-	//---------------------------------------------------------------------------- TEMPLATE_NAMESPACE
 	const TEMPLATE_NAMESPACE = 'template_namespace';
 
 	//-------------------------------------------------------------------------------------- $content
@@ -123,7 +113,8 @@ class Template
 	/**
 	 * The main template file path (ie 'itrocks/framework/main.html');
 	 *
-	 * If null or not set : will be automatically set to current application main template 'main.html'
+	 * If null or not set : will be automatically set to current application main template
+	 * 'main.html'
 	 * If false : no main template will be used
 	 *
 	 * @var string|boolean
@@ -163,8 +154,8 @@ class Template
 
 	//---------------------------------------------------------------------------- $properties_prefix
 	/**
-	 * This prepare properties prefix for @edit calls : each loop adds the property name and value to
-	 * $properties_prefix
+	 * This prepare properties prefix for @edit calls : each loop adds the property name and value
+	 * to $properties_prefix
 	 *
 	 * @var string[]
 	 */
@@ -190,12 +181,12 @@ class Template
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Constructs a template object, initializing the source data object and the template access path
+	 * Constructs a template object, initializing the source data object and the template access
+	 * path
 	 *
 	 * @param $object        object
 	 * @param $template_file string full path to template file
 	 * @param $feature_name  string feature name
-	 * @throws ReflectionException
 	 */
 	public function __construct($object = null, $template_file = null, $feature_name = null)
 	{
@@ -301,19 +292,19 @@ class Template
 		if ($i = strpos($func_call, '(')) {
 			$func_name = substr($func_call, 0, $i);
 			$i++;
-			$j = strpos($func_call, ')', $i);
+			$j      = strpos($func_call, ')', $i);
 			$params = $this->parseFuncParams(substr($func_call, $i, $j - $i));
 		}
 		else {
 			$func_name = $func_call;
-			$params = [];
+			$params    = [];
 		}
 		if (is_a($object_call, Functions::class, true)) {
 			if (method_exists($object_call, $func_name)) {
 				$params = array_merge([$this], $params);
 			}
 			else {
-				$func_name = substr($func_name, 3);
+				$func_name    = substr($func_name, 3);
 				$func_name[0] = strtolower($func_name[0]);
 				return call_user_func_array($func_name, $params);
 			}
@@ -359,7 +350,7 @@ class Template
 			if ($i = strrpos($path, SL)) {
 				$path = substr($path, 0, $i);
 			}
-			$path = substr($path, strlen(Paths::$file_root));
+			$path           = substr($path, strlen(Paths::$file_root));
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -382,9 +373,9 @@ class Template
 	public function getHeadLinks($content)
 	{
 		$links = [];
-		$j = 0;
+		$j     = 0;
 		while (($i = strpos($content, '<link rel=', $j)) !== false) {
-			$j = strpos($content, '>', $i) + 1;
+			$j       = strpos($content, '>', $i) + 1;
 			$links[] = substr($content, $i, $j - $i);
 		}
 		return $links;
@@ -398,9 +389,9 @@ class Template
 	protected function getHeadMetas($content)
 	{
 		$metas = [];
-		$j = 0;
+		$j     = 0;
 		while (($i = strpos($content, '<meta', $j)) !== false) {
-			$j = strpos($content, '>', $i) + 1;
+			$j       = strpos($content, '>', $i) + 1;
 			$metas[] = substr($content, $i, $j - $i);
 		}
 		return $metas;
@@ -545,7 +536,7 @@ class Template
 		return (is_array($value) || is_object($value) || is_resource($value) || !isset($value))
 			? $value
 			: str_replace(
-				['{',      '}',      '<!--',    '-->'],
+				['{'     , '}'     , '<!--'   , '-->'   ],
 				['&#123;', '&#125;', '&lt;!--', '--&gt;'],
 				$value
 			);
@@ -624,7 +615,10 @@ class Template
 				return $this->use[$class_name];
 			}
 			else {
-				return Namespaces::defaultFullClassName($class_name, get_class($this->getRootObject()));
+				return Namespaces::defaultFullClassName(
+					$class_name,
+					get_class($this->getRootObject())
+				);
 			}
 		}
 		return $class_name;
@@ -692,14 +686,33 @@ class Template
 	 */
 	protected function parseConst($object, $const_name)
 	{
-		return $this->htmlEntities(
-			(is_array($object) && isset($object[$const_name])) ? $object[$const_name] : (
-				isset($GLOBALS[$const_name]) ? $GLOBALS[$const_name] : (
-				isset($GLOBALS['_' . $const_name]) ? $GLOBALS['_' . $const_name] : (
-					$this->parseConstSpec($object, $const_name)
-				)
-			))
-		);
+		if (is_array($object) && isset($object[$const_name])) {
+			$value = $object[$const_name];
+		}
+		else if ($GLOBALS[$const_name]) {
+			$value = $GLOBALS[$const_name];
+		}
+		else if ($GLOBALS['_' . $const_name]) {
+			$value = $GLOBALS['_' . $const_name];
+		}
+		else {
+			$value = $this->parseConstSpec($object, $const_name);
+		}
+
+		return $this->htmlEntities($value);
+	}
+
+	//-------------------------------------------------------------------------------- parseConstSpec
+	/**
+	 * @param $object     object
+	 * @param $const_name string
+	 * @return string
+	 */
+	protected function parseConstSpec(
+		/** @noinspection PhpUnusedParameterInspection */
+		$object, $const_name
+	) {
+		return $const_name === 'PHPSESSID' ? session_id() : null;
 	}
 
 	//--------------------------------------------------------------------------------- parseConstant
@@ -714,22 +727,6 @@ class Template
 		return substr($const_string, 1, -1);
 	}
 
-	//-------------------------------------------------------------------------------- parseConstSpec
-	/**
-	 * @param $object     object
-	 * @param $const_name string
-	 * @return string
-	 */
-	protected function parseConstSpec(
-		/** @noinspection PhpUnusedParameterInspection */
-		$object, $const_name
-	) {
-		switch ($const_name) {
-			case 'PHPSESSID': return session_id();
-		}
-		return null;
-	}
-
 	//-------------------------------------------------------------------------------- parseContainer
 	/**
 	 * Replace code before <!--BEGIN--> and after <!--END--> by the html main container's code
@@ -741,7 +738,7 @@ class Template
 	{
 		if (isset($this->parameters[Parameter::CONTAINER])) {
 			$container_begin = 'BEGIN:' . $this->parameters[Parameter::CONTAINER];
-			$container_end = 'END:' . $this->parameters[Parameter::CONTAINER];
+			$container_end   = 'END:' . $this->parameters[Parameter::CONTAINER];
 		}
 		else {
 			$container_begin = 'BEGIN';
@@ -761,7 +758,7 @@ class Template
 				$links       = $this->getHeadLinks($content);
 				$metas       = $this->getHeadMetas($content);
 				$title       = $this->getHeadTitle($content);
-				$content = str_replace(
+				$content     = str_replace(
 					'{@content}',
 					$root_object . substr($content, $i, $j - $i) . $root_object,
 					$container
@@ -942,7 +939,7 @@ class Template
 		}
 		$class_name = $this->parseIncludeClassName($include_uri);
 		if (!isset($this->included[$include_uri][$class_name])) {
-			$file_name  = $this->parseIncludeResolve($include_uri, $class_name);
+			$file_name = $this->parseIncludeResolve($include_uri, $class_name);
 			if ($file_name) {
 				$included = file_get_contents($file_name);
 				if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
@@ -1122,40 +1119,8 @@ class Template
 	{
 		if (($i = strrpos($loop->content, '<!--id-->')) !== false) {
 			$loop->content = substr($loop->content, 0, $i) . substr($loop->content, $i + 9);
-			$loop->has_id = true;
+			$loop->has_id  = true;
 		}
-	}
-
-	//------------------------------------------------------------------------------------ parseLoops
-	/**
-	 * Parse all loops and conditions from the template
-	 *
-	 * @example parsed conditions will have those forms :
-	 *   <!--variable_name-->(...)<!--variable_name-->
-	 *   <!--methodName()-->(...)<!--methodName()-->
-	 *   <!--@function-->(...)<!--@function-->
-	 * @param $content string
-	 * @return string updated content
-	 * @throws Exception
-	 */
-	protected function parseLoops($content)
-	{
-		$i_content = 0;
-		while (($i_content = strpos($content, '<!--', $i_content)) !== false) {
-			$i = $i_content + 4;
-			if (substr($content, $i, 4) === 'use ') {
-				$j = strpos($content, '-->', $i);
-				$this->parseUse($content, $i, $j);
-			}
-			elseif ($this->parseThis($content, $i)) {
-				$j = strpos($content, '-->', $i);
-				$this->parseLoop($content, $i, $j);
-			}
-			else {
-				$i_content = strpos($content, '-->', $i) + 3;
-			}
-		}
-		return $content;
 	}
 
 	//---------------------------------------------------------------------------- parseLoopSearchEnd
@@ -1174,7 +1139,7 @@ class Template
 			$position += 4;
 			if (substr($content, $position, 6) === 'end-->') {
 				if ($recurse) {
-					$recurse --;
+					$recurse--;
 				}
 				else {
 					return $position - 4;
@@ -1184,7 +1149,7 @@ class Template
 				(substr($content, $position, 4) !== 'use ')
 				&& $this->parseThis($content, $position)
 			) {
-				$recurse ++;
+				$recurse++;
 			}
 		}
 		return strlen($content);
@@ -1253,6 +1218,38 @@ class Template
 		return $length2;
 	}
 
+	//------------------------------------------------------------------------------------ parseLoops
+	/**
+	 * Parse all loops and conditions from the template
+	 *
+	 * @example parsed conditions will have those forms :
+	 *   <!--variable_name-->(...)<!--variable_name-->
+	 *   <!--methodName()-->(...)<!--methodName()-->
+	 *   <!--@function-->(...)<!--@function-->
+	 * @param $content string
+	 * @return string updated content
+	 * @throws Exception
+	 */
+	protected function parseLoops($content)
+	{
+		$i_content = 0;
+		while (($i_content = strpos($content, '<!--', $i_content)) !== false) {
+			$i = $i_content + 4;
+			if (substr($content, $i, 4) === 'use ') {
+				$j = strpos($content, '-->', $i);
+				$this->parseUse($content, $i, $j);
+			}
+			elseif ($this->parseThis($content, $i)) {
+				$j = strpos($content, '-->', $i);
+				$this->parseLoop($content, $i, $j);
+			}
+			else {
+				$i_content = strpos($content, '-->', $i) + 3;
+			}
+		}
+		return $content;
+	}
+
 	//-------------------------------------------------------------------------------------- parseMap
 	/**
 	 * Parse a map of objects (in case of aggregation)
@@ -1278,7 +1275,7 @@ class Template
 		if ($i = strpos($property_name, '(')) {
 			$method_name = substr($property_name, 0, $i);
 			$i++;
-			$j = strpos($property_name, ')', $i);
+			$j      = strpos($property_name, ')', $i);
 			$params = $this->parseFuncParams(substr($property_name, $i, $j - $i));
 			return $this->htmlEntities(call_user_func_array([$object, $method_name], $params));
 		}
@@ -1299,7 +1296,7 @@ class Template
 		while ($var_name[0] === '-') {
 			list($descendant_name, $descendant) = $this->shift();
 			array_unshift($this->descendants_names, $descendant_name);
-			array_unshift($this->descendants,       $descendant);
+			array_unshift($this->descendants, $descendant);
 			$var_name = substr($var_name, 1);
 		}
 		while ($var_name[0] === '+') {
@@ -1396,6 +1393,7 @@ class Template
 
 	//--------------------------------------------------------------------------------- parseProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection property exists
 	 * @param $object        object
 	 * @param $property_name string
 	 * @return string
@@ -1404,6 +1402,7 @@ class Template
 	{
 		$class_name = get_class($object);
 		if (property_exists($class_name, $property_name)) {
+			/** @noinspection PhpUnhandledExceptionInspection property exists */
 			$getter = (new Reflection_Property($class_name, $property_name))
 				->getAnnotation('user_getter')->value;
 			if ($getter) {
@@ -1538,7 +1537,7 @@ class Template
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
 				/** @var $builder Html\Builder\Property */
-				$object = $builder->buildHtml();
+				$object       = $builder->buildHtml();
 				$format_value = false;
 			}
 			else {
@@ -1774,7 +1773,7 @@ class Template
 			$this->parseVarRemove($content, $i, $j);
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
-		$i += strlen($value);
+		$i      += strlen($value);
 		return $i;
 	}
 
@@ -1804,6 +1803,20 @@ class Template
 		}
 	}
 
+	//------------------------------------------------------------------------ parseVarWillAutoRemove
+	/**
+	 * @param $var_name string
+	 * @return boolean
+	 */
+	protected function parseVarWillAutoRemove(&$var_name)
+	{
+		if ($var_name[0] === '?') {
+			$var_name    = substr($var_name, 1);
+			return true;
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------------- parseVars
 	/**
 	 * Parse all variables from the template
@@ -1825,7 +1838,7 @@ class Template
 	public function parseVars($content)
 	{
 		$content = $this->parseLoops($content);
-		$i = 0;
+		$i       = 0;
 		while (($i = strpos($content, '{', $i)) !== false) {
 			$i++;
 			if ($this->parseThis($content, $i)) {
@@ -1834,23 +1847,6 @@ class Template
 			}
 		}
 		return $content;
-	}
-
-	//------------------------------------------------------------------------ parseVarWillAutoRemove
-	/**
-	 * @param $var_name string
-	 * @return boolean
-	 */
-	protected function parseVarWillAutoRemove(&$var_name)
-	{
-		if ($var_name[0] === '?') {
-			$var_name = substr($var_name, 1);
-			$auto_remove = true;
-		}
-		else {
-			$auto_remove = false;
-		}
-		return $auto_remove;
 	}
 
 	//-------------------------------------------------------------------------------- propertyPrefix
@@ -1911,7 +1907,7 @@ class Template
 				$search = substr($element, 0, strpos($element, ' ', strpos($element, '=')));
 				while (($j = strpos($content, $search)) !== false) {
 					$k = strpos($content, '>', $j) + 1;
-					while (in_array($content[$k], [SP, CR, LF, TAB])) $k ++;
+					while (in_array($content[$k], [SP, CR, LF, TAB])) $k++;
 					$content = substr($content, 0, $j) . substr($content, $k);
 				}
 				if (strpos($element, '=' . DQ . DQ)) {
@@ -1928,7 +1924,7 @@ class Template
 					unset($elements[$element_key]);
 				}
 			}
-			$i = strpos($content, '>', $i) + 1;
+			$i       = strpos($content, '>', $i) + 1;
 			$content = substr($content, 0, $i) . "\n\t" . join("\n\t", $elements)
 				. substr($content, $i);
 		}
@@ -1967,11 +1963,11 @@ class Template
 	{
 		if ($title) {
 			if (($i = strpos($content, '<title')) !== false) {
-				$j = strpos($content, '</title>', $i) + 8;
+				$j       = strpos($content, '</title>', $i) + 8;
 				$content = substr($content, 0, $i) . $title . substr($content, $j);
 			}
 			elseif (($i = strpos($content, '<head')) !== false) {
-				$i = strpos($content, '>', $i) + 1;
+				$i       = strpos($content, '>', $i) + 1;
 				$content = substr($content, 0, $i) . "\n\t" . $title . substr($content, $i);
 			}
 		}
@@ -2008,13 +2004,13 @@ class Template
 	protected function replaceLinks($content)
 	{
 		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
-		$length = strlen($content);
-		$links = ['action=', 'href=', 'location='];
+		$length      = strlen($content);
+		$links       = ['action=', 'href=', 'location='];
 		foreach ($links as $l) {
 			foreach ([DQ, Q] as $quote) {
-				$link = $l . $quote;
+				$link        = $l . $quote;
 				$link_length = strlen($link);
-				$i = 0;
+				$i           = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
 					if ($l == 'href=') {
 						$of = strrpos($content, '<', $i - $length);
@@ -2025,14 +2021,22 @@ class Template
 					}
 					$i += $link_length;
 					$j = strpos($content, $quote, $i);
-					if (!$ok || (substr($content, $i, 1) !== SL) || $this->isInBlackZones($black_zones, $i)) {
+					if (
+						!$ok || (substr($content, $i,
+								1) !== SL) || $this->isInBlackZones($black_zones, $i)
+					) {
 						$i = $j;
 					}
 					else {
 						$replacement_uri = $this->replaceLink(substr($content, $i, $j - $i));
-						$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
-						$length = strlen($content);
-						$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
+						$content         = substr($content, 0, $i) . $replacement_uri
+							. substr($content, $j);
+						$length          = strlen($content);
+						$this->blackZonesInc(
+							$black_zones,
+							strlen($replacement_uri) - ($j - $i),
+							$j
+						);
 						$i += strlen($replacement_uri);
 					}
 				}
@@ -2059,7 +2063,7 @@ class Template
 		) {
 			return $uri;
 		}
-		$position = strrpos($uri, '/vendor/');
+		$position  = strrpos($uri, '/vendor/');
 		$file_name = ($position !== false)
 			? substr($uri, $position + 1)
 			: substr($uri, strrpos($uri, SL) + 1);
@@ -2094,13 +2098,13 @@ class Template
 	protected function replaceUris($content)
 	{
 		$black_zones = $this->blackZonesOf($content, ['<textarea' => '</textarea>']);
-		$length = strlen($content);
-		$links = ['@import ', 'href=', 'src=', 'loadScript('];
+		$length      = strlen($content);
+		$links       = ['@import ', 'href=', 'src=', 'loadScript('];
 		foreach ($links as $l) {
 			foreach ([DQ, Q] as $quote) {
-				$link = $l . $quote;
+				$link        = $l . $quote;
 				$link_length = strlen($link);
-				$i = 0;
+				$i           = 0;
 				while (($i = strpos($content, $link, $i)) !== false) {
 					if ($l == 'href=') {
 						$of = strrpos($content, '<', $i - $length);
@@ -2116,9 +2120,14 @@ class Template
 					}
 					else {
 						$replacement_uri = $this->replaceUri(substr($content, $i, $j - $i));
-						$content = substr($content, 0, $i) . $replacement_uri . substr($content, $j);
-						$length = strlen($content);
-						$this->blackZonesInc($black_zones, strlen($replacement_uri) - ($j - $i), $j);
+						$content         = substr($content, 0, $i) . $replacement_uri
+							. substr($content, $j);
+						$length          = strlen($content);
+						$this->blackZonesInc(
+							$black_zones,
+							strlen($replacement_uri) - ($j - $i),
+							$j
+						);
 						$i += strlen($replacement_uri);
 					}
 				}
@@ -2129,7 +2138,8 @@ class Template
 
 	//-------------------------------------------------------------------------------- restoreContext
 	/**
-	 * @param $context array [string[], array, string[]] [$var_names, $objects, $translation_contexts]
+	 * @param $context array [string[], array, string[]] [$var_names, $objects,
+	 *                 $translation_contexts]
 	 * @see backupContext(), parseValue()
 	 */
 	protected function restoreContext(array $context)
