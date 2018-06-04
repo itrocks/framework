@@ -23,11 +23,13 @@ use ITRocks\Framework\History;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
@@ -752,6 +754,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function readDataSelect(
 		$class_name, array $properties_path, array $search, array $options
 	) {
+		$search = $this->searchObjectsToRepresentative($class_name, $search);
 		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
 		}
@@ -879,6 +882,38 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), static::FEATURE);
 		Loc::exitContext();
 		return $view;
+	}
+
+	//----------------------------------------------------------------- searchObjectsToRepresentative
+	/**
+	 * Replace search criterion on objects into $search by their equivalent in a OR search into its
+	 * representative parts
+	 *
+	 * @param $class_name string
+	 * @param $search     string[] search criterion
+	 * @return array search criterion, may include Func\Logical elements for representative searches
+	 */
+	protected function searchObjectsToRepresentative($class_name, array $search)
+	{
+		foreach ($search as $property_path => $value) {
+			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
+			$property      = new Reflection_Property($class_name, $property_path);
+			$property_type = $property->getType();
+			if ($property_type->isClass()) {
+				$class = $property_type->asReflectionClass();
+				$representative_property_names = Representative_Annotation::of($property)->values()
+					?: Class_\Representative_Annotation::of($class)->values();
+				if ($representative_property_names) {
+					$sub_search = [];
+					foreach ($representative_property_names as $property_name) {
+						$sub_search[$property_path . DOT . $property_name] = $value;
+					}
+					unset($search[$property_path]);
+					$search[] = (count($sub_search) == 1) ? $sub_search : Func::orOp($sub_search);
+				}
+			}
+		}
+		return $search;
 	}
 
 	//-------------------------------------------------------------------------------- searchProperty
