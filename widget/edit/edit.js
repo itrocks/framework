@@ -209,10 +209,10 @@ $('document').ready(function()
 		var comboValue = function($element, id, value)
 		{
 			if (id) {
-				$element.data('value', id);
+				$element.data('combo-value', id);
 			}
 			else {
-				$element.removeData('value');
+				$element.removeData('combo-value');
 			}
 			$element.prev().val(id);
 			$element.val(value);
@@ -269,9 +269,9 @@ $('document').ready(function()
 		 */
 		var comboMatches = function($element)
 		{
-			if ($element.data('value')) {
+			if ($element.data('combo-value')) {
 				var val = $element.val().toLowerCase();
-				var dat = $element.data('value').toLowerCase();
+				var dat = $element.data('combo-value').toLowerCase();
 				return (!val.length) || (dat.indexOf(val) !== -1);
 			}
 			else {
@@ -350,7 +350,7 @@ $('document').ready(function()
 				if (!event.keyCode) {
 					$caption.val(ui.item.value);
 				}
-				$caption.data('value', ui.item.value);
+				$caption.data('combo-value', ui.item.value);
 				if (!comboMatches($caption)) {
 					comboForce($caption);
 				}
@@ -367,7 +367,7 @@ $('document').ready(function()
 		.focus(function()
 		{
 			var $this = $(this);
-			$this.data('value', $this.val());
+			$this.data('combo-value', $this.val());
 		})
 
 		//---------------------------------------------------------------------------- input.combo blur
@@ -379,13 +379,13 @@ $('document').ready(function()
 			}
 			else {
 				if (comboMatches($this)) {
-					$this.val($this.data('value'));
+					$this.val($this.data('combo-value'));
 				}
 				else {
 					comboForce($this);
 				}
 			}
-			$this.removeData('value');
+			$this.removeData('combo-value');
 		})
 
 		//---------------------------------------------------------------------- input.combo ctrl+click
@@ -556,7 +556,31 @@ $('document').ready(function()
 						if (!$field.length) {
 							$field = $element.parent().children();
 						}
-						show ? $field.show() : $field.hide();
+						var $input_parent = $field.is('input, select, textarea') ? $field.parent() : $field;
+						if (show) {
+							// when shown, get the locally saved value back (undo restores last typed value)
+							$input_parent.find('input, select, textarea').each(function() {
+								var $this = $(this);
+								// show can be called on already visible and valued element : ignore them
+								if ($this.data('value')) {
+									$this.val($this.data('value'));
+								}
+								$this.data('value', '');
+							});
+							$field.show();
+						}
+						else {
+							$field.hide();
+							// when hidden, reset value to empty
+							$input_parent.find('input, select, textarea').each(function() {
+								var $this = $(this);
+								$this.data('value', $this.val());
+								// never empty values on required fields TODO should be managed in validator
+								if (!$this.attr('required')) {
+									$this.val('');
+								}
+							});
+						}
 					});
 				});
 			}
