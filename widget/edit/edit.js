@@ -700,7 +700,7 @@ $('document').ready(function()
 
 				// todo comment what is this case about (value starting with ':')?
 				if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
-					if ($input.val() === false) {
+					if (!$input.val().length) {
 						value = value.substr(1);
 					}
 					else {
