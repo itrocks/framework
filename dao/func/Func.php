@@ -67,12 +67,15 @@ class Func
 
 	//---------------------------------------------------------------------------------------- concat
 	/**
-	 * @param $properties string[]
-	 * @return Concat
+	 * @param $properties    string[]
+	 * @param $property_path string If set, will return a key to the instantiated Concat object
+	 * @return Concat|string
 	 */
-	public static function concat(array $properties)
+	public static function concat(array $properties, $property_path = null)
 	{
-		return new Concat($properties);
+		return $property_path
+			? Expressions::add($property_path, new Concat($properties))
+			: new Concat($properties);
 	}
 
 	//----------------------------------------------------------------------------------------- count

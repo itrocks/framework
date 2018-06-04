@@ -891,9 +891,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 *
 	 * @param $class_name string
 	 * @param $search     string[] search criterion
+	 * @param $recurse    boolean @private true if recursive call
 	 * @return array search criterion, may include Func\Logical elements for representative searches
 	 */
-	protected function searchObjectsToRepresentative($class_name, array $search)
+	protected function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
 	{
 		foreach ($search as $property_path => $value) {
 			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
@@ -904,11 +905,19 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$representative_property_names = Representative_Annotation::of($property)->values()
 					?: Class_\Representative_Annotation::of($class)->values();
 				if ($representative_property_names) {
-					$sub_search = [];
+					// search into each value
+					$sub_search            = [];
+					$sub_search_properties = [];
 					foreach ($representative_property_names as $property_name) {
-						$sub_search[$property_path . DOT . $property_name] = $value;
+						$sub_property              = $property_path . DOT . $property_name;
+						$sub_search[$sub_property] = $value;
+						$sub_search_properties[]   = $sub_property;
 					}
-					$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search);
+					$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search, true);
+					// concatenated search
+					if ((count($sub_search) > 1) && !$recurse) {
+						$sub_search[Func::concat($sub_search_properties, true)] = $value;
+					}
 					unset($search[$property_path]);
 					$search[] = (count($sub_search) == 1) ? $sub_search : Func::orOp($sub_search);
 				}
