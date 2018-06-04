@@ -908,11 +908,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 					foreach ($representative_property_names as $property_name) {
 						$sub_search[$property_path . DOT . $property_name] = $value;
 					}
+					$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search);
 					unset($search[$property_path]);
 					$search[] = (count($sub_search) == 1) ? $sub_search : Func::orOp($sub_search);
 				}
 			}
 		}
+
 		return $search;
 	}
 
