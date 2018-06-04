@@ -47,7 +47,7 @@
 			complete: function(xhr)
 			{
 				clearTimeout(xhr.time_out);
-				$('body').css({cursor: 'auto'});
+				$('body').css({ cursor: 'auto' });
 			},
 
 			//-------------------------------------------------------------------------------- ajax.error
@@ -319,7 +319,7 @@
 					xhr.from     = anchor;
 					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x;
 					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y;
-					xhr.time_out = setTimeout(function(){ $('body').css({cursor: 'wait'}); }, 500);
+					xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
 				};
 				executeClick();
 				if (is_javascript) {
@@ -359,8 +359,9 @@
 						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
 					}));
 				}
-				xhr.ajax = jax;
-				xhr.from = form;
+				xhr.ajax     = jax;
+				xhr.from     = form;
+				xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
 			};
 			executeClick();
 		});
