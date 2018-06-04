@@ -20,6 +20,8 @@
 	$.fn.xtarget = function(options)
 	{
 
+		var last_history_entry;
+
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			auto_empty:      {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
@@ -86,7 +88,24 @@
 							title = xhr.from.href;
 						}
 						document.title = title;
-						window.history.pushState({ reload: true }, title, xhr.from.href);
+
+						var history_entry = xhr.from.href;
+						if (history_entry !== undefined) {
+							var history_push = true;
+							for (var without_get_var in settings.history.without_get_vars) {
+								if (settings.history.without_get_vars.hasOwnProperty(without_get_var)) {
+									if (history_entry.match(settings.history.without_get_vars[without_get_var])) {
+										history_push = false;
+										break;
+									}
+								}
+							}
+							if (history_push && (history_entry !== last_history_entry)) {
+								last_history_entry = xhr.from.href;
+								window.history.pushState({reload: true}, title, history_entry);
+							}
+						}
+
 					}
 				}
 			},

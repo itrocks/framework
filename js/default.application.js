@@ -15,8 +15,9 @@ $('document').ready(function()
 			url_append:      'as_widget',
 			success:         function() { $(this).autofocus(); },
 			history: {
-				condition: '.window>h2',
-				title:     '.window>h2'
+				condition:        '.window>h2',
+				title:            '.window>h2',
+				without_get_vars: ['.*/dataList']
 			}
 		});
 
