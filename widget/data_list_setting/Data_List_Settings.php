@@ -286,6 +286,15 @@ class Data_List_Settings extends Custom_Settings
 		}
 	}
 
+	//----------------------------------------------------------------------------------- resetSearch
+	/**
+	 * Reset search criterion
+	 */
+	public function resetSearch()
+	{
+		$this->search = [];
+	}
+
 	//--------------------------------------------------------------------------------------- reverse
 	/**
 	 * @param $property_path string

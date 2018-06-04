@@ -203,6 +203,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$list_settings->propertyTitle($parameters['property_path'], $parameters['property_title']);
 			}
 		}
+		elseif (isset($parameters['reset_search'])) {
+			$list_settings->resetSearch();
+		}
 		elseif (isset($parameters['reverse'])) {
 			$list_settings->reverse($parameters['reverse']);
 		}

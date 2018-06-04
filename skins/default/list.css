@@ -72,6 +72,12 @@
           background-image: url("img/arrow_gray_down.gif"); }
       .list.window > table > thead > tr > td {
         padding: 0 7px 0 0; }
+        .list.window > table > thead > tr > td.reset.search {
+          text-align: center; }
+          .list.window > table > thead > tr > td.reset.search > a {
+            color: black; }
+            .list.window > table > thead > tr > td.reset.search > a:not(:hover) {
+              text-decoration: none; }
         .list.window > table > thead > tr > td > input, .list.window > table > thead > tr > td > select, .list.window > table > thead > tr > td > textarea {
           width: 100%; }
     .list.window > table > tbody > tr {

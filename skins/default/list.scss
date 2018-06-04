@@ -122,6 +122,18 @@
 			> td {
 				padding: 0 7px 0 0;
 
+				&.reset.search {
+					text-align: center;
+
+					> a {
+						color: black;
+
+						&:not(:hover) {
+							text-decoration: none;
+						}
+					}
+				}
+
 				> input, > select, > textarea {
 					width: 100%;
 				}
