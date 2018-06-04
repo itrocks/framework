@@ -299,6 +299,76 @@ $('document').ready(function()
 			}
 		};
 
+		//----------------------------------------------------------------------------- getEditorConfig
+		/**
+		 * @param type string
+		 * @returns {{customConfig: string}}
+		 */
+		var getEditorConfig = function(type)
+		{
+			var file_name = 'ckeditor-config_'+ type +'.js';
+			var config    = {
+				customConfig: window.app.project_uri + SL + 'itrocks/framework/js' + SL + file_name
+			};
+			if (window.app.editorConfig) {
+				config = $.extend({}, config, window.app.editorConfig);
+			}
+			return config;
+		};
+
+		//----------------------------------------------------------------------------- setEditorConfig
+		var setEditorConfig = function(context, type)
+		{
+			var $ckeditor = context.inside('.ckeditor-' + type);
+			if ($ckeditor.length) {
+				$ckeditor.ckeditor(getEditorConfig(type));
+			}
+		};
+
+		//------------------------------------------------------------------------------- setFieldValue
+		/**
+		 * Use always this method to set a new value to a field
+		 * For a simple field, value is a string (or similar)
+		 * For a combo field, value is [id, string representation of value]
+		 *
+		 * @param $form jQuery object for the targeted form
+		 * @param field_name string
+		 * @param value Array|string
+		 * @todo should be able to set value for any form field tag (like select)
+		 */
+		var setFieldValue = function($form, field_name, value)
+		{
+			var search = 'input[name=' + DQ + field_name + DQ + ']'
+				+ ', input[data-name=' + DQ + field_name + DQ + ']';
+			var $input       = $form.find(search);
+			var do_change    = true;
+			var string_value = null;
+
+			// case we receive an array with the value (and id) and its string representation
+			if (Array.isArray(value)) {
+				string_value = ((value.length > 1) ? value[1] : '');
+				value        = (value.length       ? value[0] : '');
+			}
+
+			// todo comment what is this case about (value starting with ':') ?
+			if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
+				if (!$input.val().length) {
+					value = value.substr(1);
+				}
+				else {
+					do_change = false;
+				}
+			}
+
+			if (do_change) {
+				$input.val(value);
+				if ((string_value !== null)) {
+					$input.next().val(string_value);
+				}
+				$input.change();
+			}
+		};
+
 		//-------------------------------------------------------------------- input.combo autocomplete
 		this.inside('input.combo').autocomplete(
 		{
@@ -616,7 +686,7 @@ $('document').ready(function()
 					if (data) {
 						if (data.substr(0, 1) === '{') {
 							$.each(JSON.parse(data), function(name, value) {
-								ITRocks_Edit.setFieldValue(name, value);
+								setFieldValue($form, name, value);
 							});
 						}
 						else {
@@ -631,91 +701,9 @@ $('document').ready(function()
 		//------------------------------------------------------------------------- .vertical.scrollbar
 		this.inside('.vertical.scrollbar').verticalscrollbar();
 
-		//----------------------------------------------------------------------------- getEditorConfig
-		/**
-		 * @param type string
-		 * @returns {{customConfig: string}}
-		 */
-		var getEditorConfig = function(type)
-		{
-			var file_name = 'ckeditor-config_'+ type +'.js';
-			var config    = {
-				customConfig: window.app.project_uri + SL + 'itrocks/framework/js' + SL + file_name
-			};
-			if (window.app.editorConfig) {
-				config = $.extend({}, config, window.app.editorConfig);
-			}
-			return config;
-		};
-
-		//----------------------------------------------------------------------------- setEditorConfig
-		var setEditorConfig = function(context, type)
-		{
-			var $ckeditor = context.inside('.ckeditor-' + type);
-			if ($ckeditor.length) {
-				$ckeditor.ckeditor(getEditorConfig(type));
-			}
-		};
-
 		setEditorConfig(this, 'full');
 		setEditorConfig(this, 'standard');
 
-		//################################################################################ ITRocks_Edit
-		/**
-		 * Library of method to manage form fields
-		 *
-		 */
-		var ITRocks_Edit =
-		{
-
-			//------------------------------------------------------------------------------------- $form
-			/**
-			 * The form that contains fields to manage
-			 *
-			 * @type jQuery collection of form elements
-			 */
-			"$form" : this,
-
-			//----------------------------------------------------------------------------- setFieldValue
-			/**
-			 * Use always this method to set a new value to a field
-			 * For a simple field, value is a string (or similar)
-			 * For a combo field, value is [id, string representation of value]
-			 *
-			 * @param field_name string
-			 * @param value Array|string
-			 * @todo should be able to set value for any form field tag (like select)
-			 */
-			"setFieldValue" : function(field_name, value)
-			{
-				var do_change = true;
-				var $input    = this.$form.find('input[name=' + DQ + field_name + DQ + ']');
-				var string_value = null;
-
-				// case we receive an array with the value (and id) and its string representation
-				if (Array.isArray(value)) {
-					string_value = ((value.length > 1) ? value[1] : '');
-					value     = (value.length ? value[0] : '');
-				}
-
-				// todo comment what is this case about (value starting with ':')?
-				if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
-					if (!$input.val().length) {
-						value = value.substr(1);
-					}
-					else {
-						do_change = false;
-					}
-				}
-
-				if (do_change) {
-					$input.val(value);
-					if (!(string_value === null)) $input.next().val(string_value);
-					$input.change();
-				}
-			}
-
-		}
 	});
 
 });
