@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * A reflection property value is a reflection property enriched with it's display label and a value
@@ -80,6 +81,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *        containing the valued property
 	 * @param $user          boolean set to true if the property value will be used into an user
 	 *        display (ie an HTML template)
+	 * @throws ReflectionException
 	 */
 	public function __construct(
 		$class_name, $property_name, $object = null, $final_value = false, $user = false
@@ -108,6 +110,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function __get($key)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
 		$property = new Reflection_Property($this->class, $this->name);
 		$value    = isset($property->$key) ? $property->$key : null;
 		trigger_error(
@@ -131,7 +134,8 @@ class Reflection_Property_Value extends Reflection_Property
 			'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !',
 			E_USER_WARNING
 		);
-		$property = (new Reflection_Property($this->class, $this->name));
+		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
+		$property = new Reflection_Property($this->class, $this->name);
 		$property->$key = $value;
 	}
 
@@ -176,6 +180,7 @@ class Reflection_Property_Value extends Reflection_Property
 					break;
 				}
 				if ($new_if_null && !isset($object->$property_name)) {
+					/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
 					$type = (new Reflection_Property(get_class($object), $property_name))->getType();
 					if ($type->isClass()) {
 						$object = $type->asReflectionClass()->newInstance();
@@ -304,6 +309,7 @@ class Reflection_Property_Value extends Reflection_Property
 				return $callable->call();
 			}
 		}
+		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
 		return $this->final_value ? $this->object : $this->getValue($this->object);
 	}
 

@@ -8,6 +8,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Menu\Block;
 use ITRocks\Framework\Widget\Menu\Item;
+use ReflectionException;
 
 /**
  * A standard menu for your application
@@ -87,6 +88,7 @@ class Menu implements Configurable
 	 * @param $class_names string|string[] class name(s), can be multiple in one or several arguments
 	 *                     If string[] : key can be class name, then value is the feature
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
+	 * @throws ReflectionException
 	 */
 	public static function configurationOf($class_names)
 	{
