@@ -109,7 +109,6 @@ fieldset {
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > span.unit {
         height: 18px;
         margin-left: .3em;
-        padding-top: 1px;
         vertical-align: middle; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple):hover {
       background-color: #defdaf; }
@@ -196,6 +195,9 @@ fieldset {
       margin-left: .25em;
       padding: 0 .25em;
       white-space: nowrap; }
+
+form fieldset div span.unit {
+  padding-top: 1px; }
 
 /* main tabber */
 form > fieldset:not(:last-child) > .tabber {

@@ -135,7 +135,6 @@ fieldset {
 			> span.unit {
 				height: 18px;
 				margin-left: .3em;
-				padding-top: 1px;
 				vertical-align: middle;
 			}
 		}
@@ -289,6 +288,10 @@ fieldset {
 		}
 	}
 
+}
+
+form fieldset div span.unit {
+	padding-top: 1px;
 }
 
 /* main tabber */
