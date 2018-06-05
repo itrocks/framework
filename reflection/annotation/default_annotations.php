@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation;
 
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Default_True_Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
@@ -393,6 +394,12 @@ Parser::$default_annotations = [
 	 * This tells that the property should be rendered using textile parsing
 	 */
 	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
+
+	/**
+	 * @unit [[\Class\Namespace\]Class_Name::]methodName|constant
+	 * This tells that the property should be rendered using textile parsing
+	 */
+	Parser::T_PROPERTY . '@unit' => Constant_Or_Method_Annotation::class,
 
 	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName

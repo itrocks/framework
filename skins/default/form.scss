@@ -128,8 +128,15 @@ fieldset {
 			display: table-cell;
 			white-space: pre-line;
 
-			>:not(pre):not(textarea) {
+			> :not(pre):not(textarea) {
 				white-space: initial;
+			}
+
+			> span.unit {
+				height: 18px;
+				margin-left: .3em;
+				padding-top: 1px;
+				vertical-align: middle;
 			}
 		}
 

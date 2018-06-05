@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Names;
 
@@ -268,6 +269,17 @@ class Reflection_Property_Value extends Reflection_Property
 	public function tooltip()
 	{
 		return $this->tooltip;
+	}
+
+	//------------------------------------------------------------------------------------------ unit
+	/**
+	 * @return string
+	 */
+	public function unit()
+	{
+		/** @var $annotation Constant_Or_Method_Annotation */
+		$annotation = $this->getAnnotation('unit');
+		return $annotation->call($this->getObject() ?: $this->getFinalClassName(), [$this->name]);
 	}
 
 	//----------------------------------------------------------------------------------------- value

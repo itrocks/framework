@@ -105,6 +105,12 @@ fieldset {
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > :not(pre):not(textarea),
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > :not(pre):not(textarea) {
         white-space: initial; }
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > div > span.unit,
+      fieldset > div:not(.hidden):not(.tabber):not([class*=before-]) > label > span.unit {
+        height: 18px;
+        margin-left: .3em;
+        padding-top: 1px;
+        vertical-align: middle; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple):hover {
       background-color: #defdaf; }
     fieldset > div:not(.hidden):not(.tabber):not([class*=before-]):not(.multiple) > label {
