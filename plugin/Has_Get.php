@@ -2,13 +2,15 @@
 namespace ITRocks\Framework\Plugin;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Plugin;
+use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\Plugin;
 use ITRocks\Framework\Session;
 
 /**
  * Allow plugins to be accessible with a static method get()
  *
  * All plugins should use this trait
+ *
+ * @extends Plugin
  */
 trait Has_Get
 {
@@ -17,12 +19,21 @@ trait Has_Get
 	/**
 	 * Retrieves static implementation form session
 	 *
-	 * @return Plugin|static
+	 * @param $default boolean if true, a default instance of the plugin is created is not set
+	 * @return static
 	 */
-	public static function get()
+	public static function get($default = false)
 	{
-		/** @var $plugin Plugin|static */
+		/** @var $plugin static */
+		/** @noinspection PhpUnhandledExceptionInspection static::class is always valid */
 		$plugin = Session::current()->plugins->get(Builder::className(static::class));
+		if ($default && !$plugin) {
+			static $default_instance;
+			if (!$default_instance) {
+				$default_instance = new static;
+			}
+			return $default_instance;
+		}
 		return $plugin;
 	}
 
