@@ -38,6 +38,7 @@ $('document').ready(function()
 
 			$elements.next(next_elements_selector).removeAttr('required');
 			$elements.removeAttr('required');
+			$form.find('li.bad').removeClass('bad');
 
 			// calculate require
 			var required_parents = [];
@@ -51,6 +52,9 @@ $('document').ready(function()
 				) {
 					$element.attr('required', true);
 					$element.next(next_elements_selector).attr('required', true);
+					if ($element.is(':visible') && !$element.val().length) {
+						requireTab($element);
+					}
 					required_parents[name] = true;
 				}
 				else {
@@ -191,6 +195,25 @@ $('document').ready(function()
 			}
 
 			return parent_name;
+		};
+
+		//---------------------------------------------------------------------------------- requireTab
+		/**
+		 * Add a data-required attribute to all tabs header matching the pages of $element
+		 *
+		 * @param $element jQuery
+		 */
+		var requireTab = function($element)
+		{
+			var $page = $element.closest('.ui-tabber-page');
+			if ($page.length) {
+				var $tabber = $page.closest('.ui-tabber');
+				var $tab = $tabber.find('> .ui-tabber-tabs a[href="#' + $page.attr('id') + '"]').parent();
+				if (!$tab.hasClass('bad')) {
+					$tab.addClass('bad');
+					requireTab($tabber);
+				}
+			}
 		};
 
 		//---------------------------------------------------------------------------------------------
