@@ -30,8 +30,8 @@ $('document').ready(function()
 				var name2_id  = (name2.indexOf('[id]') >= 0);
 				if (name1_id && !name2_id) return -1;
 				if (name2_id && !name1_id) return 1;
-				var count1    = (name1.match('/\\]/g') || []).length;
-				var count2    = (name2.match('/\\]/g') || []).length;
+				var count1    = (name1.match(/]/g) || []).length;
+				var count2    = (name2.match(/]/g) || []).length;
 				return count1 - count2;
 			});
 
@@ -119,11 +119,15 @@ $('document').ready(function()
 			}
 			var filter_in = parent_name.substr(0, id_position);
 			var required  = false;
+			var trailing  = parent_name.match(/\[[0-9]*]$/)
+				? parent_name.substr(parent_name.lastIndexOf('['))
+				: '';
 			$elements.each(function() {
 				var $element = $(this);
 				var name     = elementName($element);
 				if (
 					name.beginsWith(filter_in)
+					&& (!trailing || name.endsWith(trailing))
 					&& (parent_name !== name)
 					&& elementValue($element)
 				) {
@@ -144,9 +148,19 @@ $('document').ready(function()
 		{
 			var id_position;
 			var parent_name = null;
+			var last        = name.lastIndexOf('[');
+			var trailing    = '';
+
+			// remove last [xx] where xx is a strict numeric
+			if (last >= 0) {
+				if (name.match(/\[[0-9]*]$/)) {
+					trailing = name.substr(last);
+					name     = name.substr(0, last);
+				}
+			}
 
 			// parent of 'property' : null
-			if (name.indexOf('[') < 0) {
+			if (last < 0) {
 				parent_name = null;
 			}
 
@@ -164,7 +178,7 @@ $('document').ready(function()
 			// parent of 'parent[property]' : 'parent[id]'
 			else {
 				id_position = name.lastIndexOf('[');
-				parent_name = name.substr(0, id_position) + '[id]';
+				parent_name = name.substr(0, id_position) + '[id]' + trailing;
 			}
 
 			return parent_name;
