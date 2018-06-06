@@ -455,7 +455,12 @@ class Html_Builder_Type
 			$element->setAttribute('placeholder', $this->placeholder);
 		}
 		if ($this->required) {
-			$element->setData('required', true);
+			if ($this->preprop) {
+				$element->setData('required', true);
+			}
+			else {
+				$element->setAttribute('required', true);
+			}
 		}
 		$this->setInputAsReadOnly($element);
 	}

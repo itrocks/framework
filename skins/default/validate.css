@@ -1,2 +1,2 @@
-input:invalid, .bad {
+input:invalid, select:invalid, textarea:invalid, .bad {
   box-shadow: 0 0 2px 2px rgba(255, 0, 0, 0.5) !important; }
