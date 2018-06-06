@@ -79,11 +79,19 @@ class Html_Builder_Type
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
-	 * the control will be read-only
+	 * The control will be read-only
 	 *
 	 * @var boolean
 	 */
 	public $readonly = false;
+
+	//------------------------------------------------------------------------------------- $required
+	/**
+	 * Required / mandatory field
+	 *
+	 * @var boolean
+	 */
+	public $required = false;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
@@ -293,9 +301,7 @@ class Html_Builder_Type
 		$input = new Input($this->getFieldName(), $this->value);
 		$input->setAttribute('type', 'hidden');
 		$input->addClass('id');
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
-		}
+		$this->commonAttributes($input);
 		return $input;
 	}
 
@@ -447,6 +453,9 @@ class Html_Builder_Type
 		}
 		if ($this->placeholder) {
 			$element->setAttribute('placeholder', $this->placeholder);
+		}
+		if ($this->required) {
+			$element->setData('required', true);
 		}
 		$this->setInputAsReadOnly($element);
 	}

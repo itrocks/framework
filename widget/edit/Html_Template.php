@@ -15,6 +15,7 @@ use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\View\Html\Builder\Value_Widget;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\Html\Template\Loop;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * HTML template that changes all properties values to form inputs
@@ -179,7 +180,9 @@ class Html_Template extends Template
 						$parent_object     = $property->getObject();
 						$id                = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
 						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
-						$id_value          = $html_builder_type->setTemplate($this)->build();
+						$html_builder_type->required = Mandatory_Annotation::of($property->getParentProperty())
+							->value;
+						$id_value = $html_builder_type->setTemplate($this)->build();
 					}
 					else {
 						$id_value = '';

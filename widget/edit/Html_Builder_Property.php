@@ -16,6 +16,7 @@ use ITRocks\Framework\Tools\Editor;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Dom\Element;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * Builds a standard form input matching a given property and value
@@ -261,6 +262,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 		}
 		$this->placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property);
+		$this->required    = Mandatory_Annotation::of($this->property)->value;
 		if (!isset($this->tooltip)) {
 			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
 		}
@@ -298,9 +300,6 @@ class Html_Builder_Property extends Html_Builder_Type
 			// @TODO Low : When declaring a editor, it would have to be a default multiline
 			$version_editor = $this->property->getAnnotation('editor')->value;
 			$element->addClass(Editor::buildClassName($version_editor));
-		}
-		if ($this->property->getAnnotation('mandatory')->value) {
-			$element->setData('required', true);
 		}
 		if ($this->property->getAnnotation('password')->value) {
 			$element->setAttribute('type', 'password');
