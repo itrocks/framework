@@ -6,6 +6,7 @@ namespace ITRocks\Framework\Locale;
  * language
  *
  * @business
+ * @display_order language, text, translation, context
  * @representative language, text, context, translation
  */
 class Translation
@@ -19,12 +20,14 @@ class Translation
 
 	//------------------------------------------------------------------------------------- $language
 	/**
+	 * @mandatory
 	 * @var string
 	 */
 	public $language = '';
 
 	//----------------------------------------------------------------------------------------- $text
 	/**
+	 * @mandatory
 	 * @multiline
 	 * @var string
 	 */
@@ -58,7 +61,9 @@ class Translation
 	 */
 	public function __toString()
 	{
-		return '[' . $this->language . ']' . SP . $this->text . SP . ':' . SP . $this->translation;
+		return $this->language
+			? ('[' . $this->language . ']' . SP . $this->text . SP . ':' . SP . $this->translation)
+			: '';
 	}
 
 }
