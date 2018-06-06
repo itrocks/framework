@@ -4,6 +4,7 @@ $('document').ready(function()
 	{
 		if (!this.length || !this.closest('form').length) return;
 
+		var before_length;
 		var elements_selector = 'input[name$="]"], select[name$="]"], textarea[name$="]"]'
 			+ ', input[data-name$="]"], select[data-name$="]"], textarea[data-name$="]"]';
 		var next_elements_selector = 'input:not([data-name], [name])';
@@ -61,8 +62,12 @@ $('document').ready(function()
 		//------------------------------------------------------------------------ delayedApplyRequired
 		var delayedApplyRequired = function()
 		{
-			var element = this;
-			setTimeout(function() { applyRequired.call(element); }, 0);
+			var $element   = $(this);
+			var new_length = $element.val().length;
+			if ((before_length && !new_length) || (new_length && !before_length) ) {
+				before_length = new_length;
+				applyRequired.call($element);
+			}
 		};
 
 		//--------------------------------------------------------------------------------- elementName
@@ -194,6 +199,7 @@ $('document').ready(function()
 		$register_elements = $register_elements.add($register_elements.next(next_elements_selector));
 		$register_elements.add(next_elements_selector)
 			.change(applyRequired)
+			.focus(function() { before_length = $(this).val().length; })
 			.keyup(delayedApplyRequired);
 
 	});
