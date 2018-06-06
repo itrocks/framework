@@ -646,7 +646,7 @@ $('document').ready(function()
 								var $this = $(this);
 								$this.data('value', $this.val());
 								// never empty values on required fields TODO should be managed in validator
-								if (!$this.attr('required')) {
+								if (!$this.attr('required') && !$this.data('required')) {
 									$this.val('');
 								}
 							});

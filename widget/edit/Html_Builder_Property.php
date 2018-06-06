@@ -295,19 +295,16 @@ class Html_Builder_Property extends Html_Builder_Type
 			$values_captions
 		);
 		if ($this->property->getAnnotation('editor')->value) {
-			// @TODO Low : When declaring a editor, it would have to be a default mulitline
+			// @TODO Low : When declaring a editor, it would have to be a default multiline
 			$version_editor = $this->property->getAnnotation('editor')->value;
 			$element->addClass(Editor::buildClassName($version_editor));
 		}
 		if ($this->property->getAnnotation('mandatory')->value) {
-			$element->setAttribute('required', true);
+			$element->setData('required', true);
 		}
 		if ($this->property->getAnnotation('password')->value) {
 			$element->setAttribute('type', 'password');
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
-		}
-		if ($placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property)) {
-			$element->setAttribute('placeholder', $placeholder);
 		}
 		return $element;
 	}

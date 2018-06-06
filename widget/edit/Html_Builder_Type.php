@@ -196,9 +196,7 @@ class Html_Builder_Type
 		$value = strlen($this->value) ? $this->value : ($this->null ? null : 0);
 		if ($this->null) {
 			$input = new Select($this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value);
-			if ($this->readonly) {
-				$this->setInputAsReadOnly($input);
-			}
+			$this->commonAttributes($input);
 			return $input;
 		}
 		else {
@@ -210,12 +208,11 @@ class Html_Builder_Type
 			$checkbox->setAttribute('value', true);
 			if ($this->readonly) {
 				$this->setInputAsReadOnly($input);
-				$this->setInputAsReadOnly($checkbox);
 			}
 			if ($this->value) {
 				$checkbox->setAttribute('checked');
 			}
-			$this->addConditionsToElement($checkbox);
+			$this->commonAttributes($checkbox);
 			return $input . $checkbox;
 		}
 	}
@@ -232,16 +229,10 @@ class Html_Builder_Type
 			$format ? Loc::dateToLocale($this->value) : $this->value
 		);
 		$input->setAttribute('autocomplete', 'off');
-		if ($this->placeholder) {
-			$input->setAttribute('placeholder', $this->placeholder);
-		}
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
-		}
-		else {
+		if (!$this->readonly) {
 			$input->addClass('datetime');
 		}
-		$this->addConditionsToElement($input);
+		$this->commonAttributes($input);
 		return $input;
 	}
 
@@ -269,13 +260,10 @@ class Html_Builder_Type
 		$file = new Input($field_name);
 		$file->setAttribute('type', 'file');
 		$file->addClass('file');
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($file);
-		}
 		$span = ($this->value instanceof File)
 			? (new Html\Builder\File($this->value))->build()
 			: '';
-		$this->addConditionsToElement($file);
+		$this->commonAttributes($file);
 		return $id_input . $file . $span;
 	}
 
@@ -290,15 +278,9 @@ class Html_Builder_Type
 			$this->getFieldName(),
 			$format ? Loc::floatToLocale($this->value) : $this->value
 		);
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
-		}
 		$input->addClass('auto_width');
-		if ($this->customized) {
-			$input->addClass('customized');
-		}
 		$input->addClass('float');
-		$this->addConditionsToElement($input);
+		$this->commonAttributes($input);
 		return $input;
 	}
 
@@ -328,15 +310,9 @@ class Html_Builder_Type
 			$this->getFieldName(),
 			$format ? Loc::integerToLocale($this->value) : $this->value
 		);
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
-		}
 		$input->addClass('auto_width');
-		if ($this->customized) {
-			$input->addClass('customized');
-		}
 		$input->addClass('integer');
-		$this->addConditionsToElement($input);
+		$this->commonAttributes($input);
 		return $input;
 	}
 
@@ -371,7 +347,6 @@ class Html_Builder_Type
 			$id_input->setAttribute('type', 'hidden');
 		}
 		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
 			if (isset($id_input)) {
 				$id_input->setAttribute('disabled');
 			}
@@ -401,7 +376,6 @@ class Html_Builder_Type
 				$input->setAttribute('data-combo-filters', join(',', $html_filters));
 			}
 			$input->addClass('combo');
-			$this->addConditionsToElement($input);
 			// 'more' button
 			$more = new Button('more');
 			$more->addClass('more');
@@ -413,6 +387,7 @@ class Html_Builder_Type
 				$this->setOnChangeAttribute($input);
 			}
 		}
+		$this->commonAttributes($input);
 		return (isset($id_input) ? $id_input : '') . $input . $more;
 	}
 
@@ -454,14 +429,26 @@ class Html_Builder_Type
 		else {
 			$input = $this->makeTextInputOrTextarea($multiline, $this->value);
 		}
-		$this->addConditionsToElement($input);
+		$this->commonAttributes($input);
+		return $input;
+	}
+
+	//------------------------------------------------------------------------------ commonAttributes
+	/**
+	 * Set common attributes, classes, data to the given element
+	 *
+	 * @param $element Element
+	 */
+	protected function commonAttributes(Element $element)
+	{
+		$this->addConditionsToElement($element);
 		if ($this->customized) {
-			$input->addClass('customized');
+			$element->addClass('customized');
 		}
 		if ($this->placeholder) {
-			$input->setAttribute('placeholder', $this->placeholder);
+			$element->setAttribute('placeholder', $this->placeholder);
 		}
-		return $input;
+		$this->setInputAsReadOnly($element);
 	}
 
 	//---------------------------------------------------------------------------------- getFieldName
@@ -534,9 +521,6 @@ class Html_Builder_Type
 			$input->setAttribute('autocomplete', 'off');
 		}
 		$input->addClass('auto_width');
-		if ($this->readonly) {
-			$this->setInputAsReadOnly($input);
-		}
 		return $input;
 	}
 
@@ -563,11 +547,13 @@ class Html_Builder_Type
 	 */
 	public function setInputAsReadOnly($input)
 	{
-		if ($input->getAttribute('name')) {
-			$input->setData('name', $input->getAttribute('name')->value);
-			$input->removeAttribute('name');
+		if ($this->readonly) {
+			if ($input->getAttribute('name')) {
+				$input->setData('name', $input->getAttribute('name')->value);
+				$input->removeAttribute('name');
+			}
+			$input->setAttribute('readonly');
 		}
-		$input->setAttribute('readonly');
 	}
 
 	//-------------------------------------------------------------------------- setOnChangeAttribute
