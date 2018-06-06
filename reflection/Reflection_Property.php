@@ -418,8 +418,8 @@ class Reflection_Property extends ReflectionProperty
 	public function getParentProperty()
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
-			/** @noinspection PhpUnhandledExceptionInspection $this->class is always valid */
-			return new Reflection_Property($this->class, substr($this->path, 0, $i));
+			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
+			return new Reflection_Property($this->root_class, substr($this->path, 0, $i));
 		}
 		return null;
 	}
@@ -633,6 +633,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function toReflectionPropertyValue($object, $user = false)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->class and $this->root_class valid */
 		return new Reflection_Property_Value(
 			$this->root_class ?: $this->class, $this->path, $object, false, $user
 		);
