@@ -44,6 +44,12 @@ class Html_Builder_Type
 	 */
 	public $customized = false;
 
+	//---------------------------------------------------------------------------------- $empty_check
+	/**
+	 * @var boolean
+	 */
+	public $empty_check = true;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -451,9 +457,13 @@ class Html_Builder_Type
 		if ($this->customized) {
 			$element->addClass('customized');
 		}
+		if (!$this->empty_check) {
+			$element->setData('no-empty-check', true);
+		}
 		if ($this->placeholder) {
 			$element->setAttribute('placeholder', $this->placeholder);
 		}
+		$this->setInputAsReadOnly($element);
 		if ($this->required) {
 			if ($this->preprop) {
 				$element->setData('required', true);
@@ -462,7 +472,6 @@ class Html_Builder_Type
 				$element->setAttribute('required', true);
 			}
 		}
-		$this->setInputAsReadOnly($element);
 	}
 
 	//---------------------------------------------------------------------------------- getFieldName

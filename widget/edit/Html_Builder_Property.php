@@ -261,6 +261,7 @@ class Html_Builder_Property extends Html_Builder_Type
 					. ($user_change->target ? (SP . $user_change->target) : '');
 			}
 		}
+		$this->empty_check = $this->property->getAnnotation('empty_check')->value;
 		$this->placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property);
 		$this->required    = Mandatory_Annotation::of($this->property)->value;
 		if (!isset($this->tooltip)) {

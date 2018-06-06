@@ -93,9 +93,13 @@ $('document').ready(function()
 		//-------------------------------------------------------------------------------- elementValue
 		/**
 		 * @param $element jQuery
+		 * @return string|null
 		 */
 		var elementValue = function($element)
 		{
+			if ($element.data('no-empty-check')) {
+				return null;
+			}
 			var value = $element.val();
 			if (!value) {
 				value = $element.next(next_elements_selector).val();
