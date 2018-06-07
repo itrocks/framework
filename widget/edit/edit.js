@@ -142,23 +142,6 @@ $('document').ready(function()
 		//------------------------------------------------- table.collection input,textarea focus,keyup
 		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
-		//------------------------------------------------------------------- input.datetime datePicker
-		this.inside('input.datetime').datepicker({
-			dateFormat:        dateFormatToDatepicker(app.date_format),
-			selectOtherMonths: true,
-			showOn:            'button',
-			showOtherMonths:   true,
-			showWeek:          true
-		});
-
-		//------------------------------------------------------------------------ input.datetime keyup
-		this.inside('input.datetime').keyup(function(event)
-		{
-			if ((event.keyCode !== 13) && (event.keyCode !== 27)) {
-				$(this).datepicker('show');
-			}
-		});
-
 		//-------------------------------------------------------------------------- checkCompletedDate
 		var checkCompletedDate = function($datetime)
 		{
