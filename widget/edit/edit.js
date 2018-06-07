@@ -142,6 +142,15 @@ $('document').ready(function()
 		//------------------------------------------------- table.collection input,textarea focus,keyup
 		this.inside('input, textarea').focus(autoAddLine).keyup(autoAddLine);
 
+		//------------------------------------------------------------------- input.datetime datePicker
+		this.inside('input.datetime').datepicker({
+			dateFormat:        dateFormatToDatepicker(app.date_format),
+			selectOtherMonths: true,
+			showOn:            'button',
+			showOtherMonths:   true,
+			showWeek:          true
+		});
+
 		//-------------------------------------------------------------------------- checkCompletedDate
 		var checkCompletedDate = function($datetime)
 		{
