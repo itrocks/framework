@@ -15,42 +15,42 @@
 	{/ITRocks/Framework/assets.html}
 
 	<script type="text/javascript">
-        window.app = new App(
-            '{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
-            '{Loc.language}', '{Loc.date.format}', '{Html_Session.useCookies}'
-        );
+		window.app = new App(
+			'{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
+			'{Loc.language}', '{Loc.date.format}', '{Html_Session.useCookies}'
+		);
 	</script>
 
 </head>
 
 <body>
 
-<header>
-	<!--Access_Control.get-->
-	{/ITRocks/Framework/User/miniDisplay.html}
-	<!--Access_Control.get-->
-	<div id="messages"></div>
-	<ul class="links">
-		<li class="provider itrocks">
-			<a href="http://itrocks.org" target="_blank" title="itrocks.org">ITRocks</a>
-		</li>
-		<li class="rad enter"><a href="/ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
-	</ul>
-</header>
+	<header>
+		<!--Access_Control.get-->
+		{/ITRocks/Framework/User/miniDisplay.html}
+		<!--Access_Control.get-->
+		<div id="messages"></div>
+		<ul class="links">
+			<li class="provider itrocks">
+				<a href="http://itrocks.org" target="_blank" title="itrocks.org">ITRocks</a>
+			</li>
+			<li class="rad enter"><a href="/ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
+		</ul>
+	</header>
 
-<!--Menu.get-->
-{/ITRocks/Framework/Widget/Menu/output}
-<!--Menu.get-->
+	<!--Menu.get-->
+	{/ITRocks/Framework/Widget/Menu/output}
+	<!--Menu.get-->
 
-<section class="application center" id="main">
-	{@content}
-</section>
+	<section class="application center" id="main">
+		{@content}
+	</section>
 
-<section id="trashcan">
-	<h2>|Trashcan|</h2>
-	<div></div>
-	<a href="/ITRocks/Framework/Widget/Trashcan" target="#trashcan>div">|bin|</a>
-</section>
+	<section id="trashcan">
+		<h2>|Trashcan|</h2>
+		<div></div>
+		<a href="/ITRocks/Framework/Widget/Trashcan" target="#trashcan>div">|bin|</a>
+	</section>
 
 </body>
 </html>

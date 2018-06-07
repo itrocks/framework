@@ -10,7 +10,7 @@ use ITRocks\Framework\Updater\Updatable;
 use ITRocks\Framework\View\Html\Template;
 
 /**
- * Class Plugins
+ * Assets template compiler plugin
  */
 class Template_Compiler implements Registerable, Updatable
 {
@@ -24,13 +24,13 @@ class Template_Compiler implements Registerable, Updatable
 	 */
 	public $configuration;
 
-	//---------------------------------------------------------------------------------- $source_main
+	//--------------------------------------------------------------------------- $main_template_path
 	/**
 	 * Path to source main.html used as base to create compiled main.html
 	 *
 	 * @var string
 	 */
-	public $source_main;
+	public $main_template_path;
 
 	//----------------------------------------------------------------------- getCompiledMainTemplate
 	/**
@@ -78,10 +78,10 @@ class Template_Compiler implements Registerable, Updatable
 	public function update($last_time)
 	{
 		unlinkIfExists($this->getCompiledPath());
-		$this->configuration = Configuration::get();
-		$this->source_main   = Paths::$project_root . SL . (new Template())->getMainTemplateFile();
-		$content             = file_get_contents($this->source_main);
-		$assets              = [];
+		$this->configuration      = Configuration::get();
+		$this->main_template_path = Paths::$project_root . SL . (new Template())->getMainTemplateFile();
+		$content                  = file_get_contents($this->main_template_path);
+		$assets                   = [];
 		foreach ($this->configuration->getStringElements() as $asset) {
 			$assets[] = TAB . $asset;
 		}

@@ -6,7 +6,7 @@ use DOMElement;
 use ITRocks\Framework\Tools\Paths;
 
 /**
- * Class Asset_Element
+ * Assets element
  */
 class Element
 {
@@ -66,8 +66,8 @@ class Element
 	 */
 	public function __toString()
 	{
-		$document   = new DOMDocument();
-		$clone = $this->element->cloneNode(true);
+		$document = new DOMDocument();
+		$clone    = $this->element->cloneNode(true);
 		$document->appendChild($document->importNode($clone, true));
 		return $document->saveHTML();
 	}

@@ -33,7 +33,7 @@ class Configuration
 
 	//--------------------------------------------------------------------------------- $applications
 	/**
-	 * Children configurations coming from application inheritance
+	 * Child configurations coming from application inheritance
 	 *
 	 * @var static[]
 	 */
@@ -79,7 +79,7 @@ class Configuration
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
-	 * Children configurations coming from application inheritance
+	 * Child configurations coming from application inheritance
 	 *
 	 * @var static[]
 	 */
@@ -111,7 +111,7 @@ class Configuration
 	{
 		$file_path = $this->checkPath($file_path);
 		if ($file_path) {
-			$configuration = new self($file_path);
+			$configuration = new static($file_path);
 			if ($is_plugin) {
 				$this->plugins[] = $configuration;
 			}
@@ -175,7 +175,7 @@ class Configuration
 	 */
 	public static function get()
 	{
-		$configuration = new self(
+		$configuration = new static(
 			Names::classToFilePath(get_class(Application::current()))
 		);
 

@@ -24,15 +24,15 @@ use ITRocks\Framework\View\Html\Template\Loop;
 use ReflectionException;
 
 /**
- * built-in ITRocks HTML template engine
+ * Built-in ITRocks HTML template engine
  */
 class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
-	const PROPAGATE = true;
-	const TEMPLATE = 'template';
-	const TEMPLATE_CLASS = 'template_class';
+	const PROPAGATE          = true;
+	const TEMPLATE           = 'template';
+	const TEMPLATE_CLASS     = 'template_class';
 	const TEMPLATE_FUNCTIONS = 'template_functions';
 	const TEMPLATE_NAMESPACE = 'template_namespace';
 
@@ -113,8 +113,7 @@ class Template
 	/**
 	 * The main template file path (ie 'itrocks/framework/main.html');
 	 *
-	 * If null or not set : will be automatically set to current application main template
-	 * 'main.html'
+	 * If null or not set : will be automatically set to current application main template 'main.html'
 	 * If false : no main template will be used
 	 *
 	 * @var string|boolean
@@ -154,8 +153,8 @@ class Template
 
 	//---------------------------------------------------------------------------- $properties_prefix
 	/**
-	 * This prepare properties prefix for @edit calls : each loop adds the property name and value
-	 * to $properties_prefix
+	 * This prepare properties prefix for @edit calls : each loop adds the property name and value to
+	 * $properties_prefix
 	 *
 	 * @var string[]
 	 */
@@ -181,8 +180,7 @@ class Template
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Constructs a template object, initializing the source data object and the template access
-	 * path
+	 * Constructs a template object, initializing the source data object and the template access path
 	 *
 	 * @param $object        object
 	 * @param $template_file string full path to template file
@@ -291,7 +289,7 @@ class Template
 	{
 		if ($i = strpos($func_call, '(')) {
 			$func_name = substr($func_call, 0, $i);
-			$i++;
+			$i ++;
 			$j      = strpos($func_call, ')', $i);
 			$params = $this->parseFuncParams(substr($func_call, $i, $j - $i));
 		}
@@ -689,10 +687,10 @@ class Template
 		if (is_array($object) && isset($object[$const_name])) {
 			$value = $object[$const_name];
 		}
-		else if ($GLOBALS[$const_name]) {
+		elseif (isset($GLOBALS[$const_name])) {
 			$value = $GLOBALS[$const_name];
 		}
-		else if ($GLOBALS['_' . $const_name]) {
+		elseif (isset($GLOBALS['_' . $const_name])) {
 			$value = $GLOBALS['_' . $const_name];
 		}
 		else {
@@ -712,7 +710,7 @@ class Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$object, $const_name
 	) {
-		return $const_name === 'PHPSESSID' ? session_id() : null;
+		return ($const_name === 'PHPSESSID') ? session_id() : null;
 	}
 
 	//--------------------------------------------------------------------------------- parseConstant
@@ -1059,8 +1057,8 @@ class Template
 	protected function parseLoopElement(Loop $loop)
 	{
 		$this->propertyPrefix($loop->element);
-		$loop->counter++;
-		$loop_insert = '';
+		$loop->counter ++;
+		$loop_insert   = '';
 		if (isset($loop->to) && ($loop->counter > $loop->to)) {
 			$loop_insert = null;
 		}
@@ -1093,7 +1091,7 @@ class Template
 		$loop_insert = '';
 		$this->unshift(null, '');
 		while ($loop->counter < $loop->to) {
-			$loop->counter++;
+			$loop->counter ++;
 			if ($loop->counter >= $loop->from) {
 				if ($loop->first) {
 					$loop->first = false;
@@ -1139,7 +1137,7 @@ class Template
 			$position += 4;
 			if (substr($content, $position, 6) === 'end-->') {
 				if ($recurse) {
-					$recurse--;
+					$recurse --;
 				}
 				else {
 					return $position - 4;
@@ -1149,7 +1147,7 @@ class Template
 				(substr($content, $position, 4) !== 'use ')
 				&& $this->parseThis($content, $position)
 			) {
-				$recurse++;
+				$recurse ++;
 			}
 		}
 		return strlen($content);
@@ -1274,7 +1272,7 @@ class Template
 	{
 		if ($i = strpos($property_name, '(')) {
 			$method_name = substr($property_name, 0, $i);
-			$i++;
+			$i ++;
 			$j      = strpos($property_name, ')', $i);
 			$params = $this->parseFuncParams(substr($property_name, $i, $j - $i));
 			return $this->htmlEntities(call_user_func_array([$object, $method_name], $params));
@@ -1296,7 +1294,7 @@ class Template
 		while ($var_name[0] === '-') {
 			list($descendant_name, $descendant) = $this->shift();
 			array_unshift($this->descendants_names, $descendant_name);
-			array_unshift($this->descendants, $descendant);
+			array_unshift($this->descendants,       $descendant);
 			$var_name = substr($var_name, 1);
 		}
 		while ($var_name[0] === '+') {
@@ -1765,7 +1763,7 @@ class Template
 				? $this->parseCollection($object, $value)
 				: $this->parseMap($object, $value);
 		}
-		$i--;
+		$i --;
 		if (is_array($value)) {
 			$value = $value ? ('[' . join(', ', $value) . ']') : '';
 		}
@@ -1790,16 +1788,16 @@ class Template
 			|| (($content[$i - 1] === DQ) && ($content[$j + 1] === DQ))
 			|| (($content[$i - 1] === '|') && ($content[$j + 1] === '|'))
 		) {
-			$i--;
-			$j++;
+			$i --;
+			$j ++;
 		}
 		while (($content[$i] != SP) && ($content[$i] != ',') && ($content[$i] != SL)) {
 			if (($content[$i] == Q) || ($content[$i] == DQ)) {
 				while ($content[$j] != $content[$i]) {
-					$j++;
+					$j ++;
 				}
 			}
-			$i--;
+			$i --;
 		}
 	}
 
@@ -1811,7 +1809,7 @@ class Template
 	protected function parseVarWillAutoRemove(&$var_name)
 	{
 		if ($var_name[0] === '?') {
-			$var_name    = substr($var_name, 1);
+			$var_name = substr($var_name, 1);
 			return true;
 		}
 		return false;
@@ -1840,7 +1838,7 @@ class Template
 		$content = $this->parseLoops($content);
 		$i       = 0;
 		while (($i = strpos($content, '{', $i)) !== false) {
-			$i++;
+			$i ++;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, '}', $i);
 				$i = $this->parseVar($content, $i, $j);
@@ -1907,7 +1905,9 @@ class Template
 				$search = substr($element, 0, strpos($element, ' ', strpos($element, '=')));
 				while (($j = strpos($content, $search)) !== false) {
 					$k = strpos($content, '>', $j) + 1;
-					while (in_array($content[$k], [SP, CR, LF, TAB])) $k++;
+					while (in_array($content[$k], [SP, CR, LF, TAB])) {
+						$k ++;
+					}
 					$content = substr($content, 0, $j) . substr($content, $k);
 				}
 				if (strpos($element, '=' . DQ . DQ)) {

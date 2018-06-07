@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Assets;
 use Exception;
 
 /**
- * Class Assets_Exception
+ * Assets exception
  */
 class Assets_Exception extends Exception
 {
