@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Printer\Model;
+namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Traits\Has_Name;
@@ -9,7 +9,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * to be printed (eg. link to a property, constant text, a drawing)
  *
  * @business
- * @store_name printer_model_fields
+ * @store_name layout_model_fields
  */
 class Field
 {

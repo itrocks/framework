@@ -1,9 +1,9 @@
 <?php
-namespace ITRocks\Framework\Printer\Model;
+namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Printer\Model;
 use ITRocks\Framework\Tools\Has_Ordering;
 
 /**
@@ -13,7 +13,7 @@ use ITRocks\Framework\Tools\Has_Ordering;
  *
  * @override ordering @getter getNumber @setter setNumber @signed
  * @representative model, ordering
- * @store_name printer_model_pages
+ * @store_name layout_model_pages
  */
 class Page
 {
@@ -35,6 +35,7 @@ class Page
 	//--------------------------------------------------------------------------------------- $fields
 	/**
 	 * @link Collection
+	 * @user hide_edit, hide_output
 	 * @var Field[]
 	 */
 	public $fields;

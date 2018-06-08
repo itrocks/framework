@@ -1,7 +1,7 @@
 <?php
-namespace ITRocks\Framework\Printer;
+namespace ITRocks\Framework\Layout;
 
-use ITRocks\Framework\Printer\Model\Page;
+use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
 
@@ -9,8 +9,9 @@ use ITRocks\Framework\Traits\Has_Name;
  * A print model gives the way to print an object of a given class
  *
  * @business
+ * @display layer model
  * @representative class, name
- * @store_name printer_models
+ * @store_name layout_models
  */
 class Model
 {
@@ -18,6 +19,7 @@ class Model
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
+	 * @mandatory
 	 * @store string
 	 * @var Reflection_Class
 	 */
@@ -26,6 +28,7 @@ class Model
 	//---------------------------------------------------------------------------------------- $pages
 	/**
 	 * @link Collection
+	 * @user hide_edit, hide_output
 	 * @var Page[]
 	 */
 	public $pages;
@@ -36,7 +39,7 @@ class Model
 	 */
 	public function __toString()
 	{
-		return $this->class ? $this->class->name : 'Choose a class';
+		return $this->class ? $this->class->name : '';
 	}
 
 }

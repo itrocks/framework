@@ -11,22 +11,14 @@
 	</style>
 </head>
 <body>
-
 <!--BEGIN-->
-<!--use ITRocks\Framework\Property-->
-<form action="{@class.path}/write" class="{@class.short.lower} {@feature.lower} window" id="/{@class.path}<!--id-->/{id}<!--id-->/{@feature}" method="post" name="{form_id}" target="#messages">
+<!--use ITRocks\Framework\Tools\Paths-->
+<form action="/{@class.path}/write" class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{?id}" enctype="multipart/form-data" method="post" name="{@template.getFormId}" target="#messages">
 	<h2>|{@class.display.ucfirst}| |{display}|</h2>
-
 	{/widget/button/general_buttons.html}
+	<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
 
-	<fieldset>
-		<!--@properties-->
-		<div class="{name} {?getType.isMultiple}" id="{path}">
-			<label>|{display}|</label>
-			<div>{value}</div>
-		</div>
-		<!--@properties-->
-	</fieldset>
+	{/widget/output/object.html}
 
 	<div class="container">
 		<!--editing-->
@@ -108,7 +100,7 @@
 					</label>
 					<br />
 					<label title="bordure zone">
-						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<!-- <img src="img/v2/picture_empty.png" title="bordure de zone" /> -->
 						<input type="checkbox" id="props_border" name="props_border" class="zone_props" value="1" />
 					</label>
 					<label title="couleur bordure zone">
@@ -117,7 +109,7 @@
 					</label>
 
 					<label title="bordure zone">
-						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<!-- <img src="img/v2/picture_empty.png" title="bordure de zone" /> -->
 						<input type="checkbox" id="props_vSepBorder" name="props_vSepBorder" class="zone_props" value="1" />
 					</label>
 					<label title="couleur separateurs verticaux">
@@ -126,7 +118,7 @@
 					</label>
 
 					<label title="bordure zone">
-						<!--<img src="img/v2/picture_empty.png" title="bordure de zone" />-->
+						<!-- <img src="img/v2/picture_empty.png" title="bordure de zone" /> -->
 						<input type="checkbox" id="props_hSepBorder" name="props_hSepBorder" class="zone_props" value="1" />
 					</label>
 					<label title="couleur separateurs horizontaux">
@@ -252,6 +244,5 @@
 
 </form>
 <!--END-->
-
 </body>
 </html>

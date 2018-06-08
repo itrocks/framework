@@ -1,13 +1,13 @@
 <?php
-namespace ITRocks\Framework\Printer\Model\Field;
+namespace ITRocks\Framework\Layout\Model\Field;
 
-use ITRocks\Framework\Printer\Model\Field;
+use ITRocks\Framework\Layout\Model\Field;
 
 /**
  * Printer model property field
  *
  * @business
- * @store_name printer_model_properties
+ * @store_name layout_model_properties
  */
 class Property extends Field
 {
