@@ -1112,10 +1112,15 @@ class Template
 	 * Removes <!--id--> code from a loop content
 	 *
 	 * @param $loop Loop
+	 * @todo HIGH see what it is used for (found only for typed_address : maybe should be removed)
 	 */
 	protected function parseLoopId(Loop $loop)
 	{
-		if (($i = strrpos($loop->content, '<!--id-->')) !== false) {
+		if (
+			(($i = strrpos($loop->content, '<!--id-->')) !== false)
+			// patched : only if odd count if <!--id-->. If not, it is a real loop and not a 'has_id'
+			&& (substr_count($loop->content, '<!--id-->') % 2)
+		) {
 			$loop->content = substr($loop->content, 0, $i) . substr($loop->content, $i + 9);
 			$loop->has_id  = true;
 		}
