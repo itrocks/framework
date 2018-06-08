@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>|Layout model pages|</title>
+	<script src="../../../../vendor/components/jquery/jquery.min.js"></script>
+	<script src="../../js/all.js"></script>
+	<style>
+		@import "../../skins/default/all.css";
+	</style>
+</head>
+<body>
+<!--BEGIN-->
+
+	<div class="tabber">
+		<ul>
+			<!--pages-->
+			<li><a href="#page-{orderingCaption}">|{orderingCaption}|</a></li>
+			<!--pages-->
+		</ul>
+		<!--pages-->
+		<fieldset class="page" id="page-{orderingCaption}">
+			<legend>|{orderingCaption}|</legend>
+			{/output.html}
+		</fieldset>
+		<!--pages-->
+	</div>
+
+<!--END-->
+</body>
+</html>

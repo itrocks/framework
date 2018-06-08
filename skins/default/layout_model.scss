@@ -1,0 +1,28 @@
+
+.model.edit.window {
+	> .editor {
+
+		> h3 {
+			visibility: hidden;
+		}
+
+		> :not(h3) {
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		> fieldset > div.tabber {
+			margin-top: 4px;
+
+			> .page {
+				border: 1px solid darkgray;
+				height: 1190px;
+				width: 842px;
+
+				> legend {
+					visibility: hidden;
+				}
+			}
+		}
+	}
+}

@@ -21,6 +21,7 @@ class Model
 	/**
 	 * @mandatory
 	 * @store string
+	 * @user readonly
 	 * @var Reflection_Class
 	 */
 	public $class;
@@ -33,13 +34,21 @@ class Model
 	 */
 	public $pages;
 
+	//----------------------------------------------------------------------------------- __construct
+	public function __construct()
+	{
+		if (!$this->pages) {
+			$this->pages[] = new Page(Page::FIRST);
+		}
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
 	 */
 	public function __toString()
 	{
-		return $this->class ? $this->class->name : '';
+		return $this->class ? Names::classToDisplay($this->class->name) : '';
 	}
 
 }

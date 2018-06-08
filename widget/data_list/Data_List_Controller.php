@@ -20,6 +20,7 @@ use ITRocks\Framework\Dao\Option\Time_Limit;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\History;
+use ITRocks\Framework\Layout\Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
@@ -455,6 +456,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection Names::classToSet($verified_class_name)
 	 * @param $class_name    string class name
 	 * @param $parameters    string[] parameters
 	 * @param $list_settings Custom_Settings|Data_List_Settings
@@ -463,6 +465,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	public function getSelectionButtons(
 		$class_name, array $parameters, Custom_Settings $list_settings = null
 	) {
+		$layout_model_buttons = (new Buttons_Generator($class_name))->getButtons();
+
+		/** @noinspection PhpUnhandledExceptionInspection Names::classToSet($verified_class_name) */
 		return [
 			Feature::F_EXPORT => new Button(
 				'Export',
@@ -476,7 +481,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT,
-				[View::TARGET => Target::NEW_WINDOW]
+				[View::TARGET => Target::NEW_WINDOW, Button::SUB_BUTTONS => $layout_model_buttons]
 			)
 		];
 	}

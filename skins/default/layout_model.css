@@ -1,0 +1,13 @@
+.model.edit.window > .editor > h3 {
+  visibility: hidden; }
+.model.edit.window > .editor > :not(h3) {
+  display: inline-block;
+  vertical-align: top; }
+.model.edit.window > .editor > fieldset > div.tabber {
+  margin-top: 4px; }
+  .model.edit.window > .editor > fieldset > div.tabber > .page {
+    border: 1px solid darkgray;
+    height: 1190px;
+    width: 842px; }
+    .model.edit.window > .editor > fieldset > div.tabber > .page > legend {
+      visibility: hidden; }
