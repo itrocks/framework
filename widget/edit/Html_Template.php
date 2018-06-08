@@ -50,6 +50,12 @@ class Html_Template extends Template
 	 */
 	public function getFormId()
 	{
+		if (!$this->form_id) {
+			$class_name    = get_class(reset($this->objects));
+			$short_class   = Namespaces::shortClassName($class_name);
+			$short_form_id = strtolower($short_class) . '_edit';
+			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
+		}
 		return strval($this->form_id);
 	}
 
@@ -104,6 +110,7 @@ class Html_Template extends Template
 	 */
 	public function parse()
 	{
+		$this->getFormId();
 		$content = parent::parse();
 		$content = $this->replaceEditWindowsByForm($content);
 		return $content;
@@ -233,9 +240,6 @@ class Html_Template extends Template
 					$inside_j      = $parser->closingTag('section', $inside_i, Parser::BEFORE);
 					$outside_j     = $inside_j + 10;
 					$class_name    = get_class(reset($this->objects));
-					$short_class   = Namespaces::shortClassName($class_name);
-					$short_form_id = strtolower($short_class) . '_edit';
-					$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
 					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
 						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
 					$attributes    = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
@@ -243,7 +247,7 @@ class Html_Template extends Template
 						. $attributes
 						. ' enctype="multipart/form-data"'
 						. ' method="post"'
-						. ' name=' . DQ . $this->form_id . DQ
+						. ' name=' . DQ . $this->getFormId() . DQ
 						. ' target="#messages"';
 					$form = '<form' . $attributes . '>'
 						. substr($content, $inside_i, $inside_j - $inside_i)

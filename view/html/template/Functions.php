@@ -822,6 +822,19 @@ class Functions
 		return reset($template->objects) === null;
 	}
 
+	//----------------------------------------------------------------------------------- getTemplate
+	/**
+	 * Allow to navigate through the template object
+	 *
+	 * @example {@template.css}
+	 * @param $template Template
+	 * @return Template
+	 */
+	public function getTemplate(Template $template)
+	{
+		return $template;
+	}
+
 	//------------------------------------------------------------------------------------ getNumeric
 	/**
 	 * Returns true if the object is numeric
