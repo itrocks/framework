@@ -51,8 +51,20 @@ class Html_Template extends Template
 	public function getFormId()
 	{
 		if (!$this->form_id) {
-			$class_name    = get_class(reset($this->objects));
-			$short_class   = Namespaces::shortClassName($class_name);
+			// search reference object for the form
+			reset($this->objects);
+			$count = count($this->objects) ?: 1;
+			while (--$count && !is_object(current($this->objects))) {
+				next($this->objects);
+			}
+			if (is_object(current($this->objects))) {
+				$class_name  = get_class(current($this->objects));
+				$short_class = Namespaces::shortClassName($class_name);
+			}
+			// can use the first var name, or 'unknown' if no object nor var name found
+			else {
+				$short_class = reset($this->var_names) ?: 'unknown';
+			}
 			$short_form_id = strtolower($short_class) . '_edit';
 			$this->form_id = $short_form_id . '_' . $this->nextFormCounter();
 		}
