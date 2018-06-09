@@ -37,7 +37,7 @@
       cursor: default;
       font-weight: normal;
       line-height: 1em;
-      margin: 1px 0;
+      margin: 0 0 2px;
       padding-left: 18px; }
       .func_select ul > li:last-child,
       .property_select ul > li:last-child {
