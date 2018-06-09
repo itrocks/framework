@@ -1,13 +1,23 @@
 $(document).ready(function()
 {
+	var drag_callback = function()
+	{
+		var $dragged = this;
+		var text = $dragged.text();
+		if (text.indexOf(DOT) > -1) {
+			$dragged.text(text.substr(text.lastIndexOf(DOT) + 1));
+		}
+	};
+
 	$('.model.edit.window .editor').build(function() {
 
 		$('.model.edit.window .editor .designer')
 			.documentDesigner({
-				fields:       { element: '.property_tree .property, .editor .tool', name_data: 'property' },
-				remove_class: 'tool',
-				tool_handle:  '.handle',
-				tools:        '.tools'
+				drag_callback: drag_callback,
+				fields:        { element: '.property_tree .property, .editor .tool', name_data: 'property' },
+				remove_class:  'tool',
+				tool_handle:   '.handle',
+				tools:         '.tools'
 			})
 			/*
 			.documentDesigner('setData', [
