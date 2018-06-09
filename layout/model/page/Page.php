@@ -9,8 +9,10 @@ use ITRocks\Framework\Tools\Has_Ordering;
 /**
  * A layout model page : a model linked to a unique page background and design
  *
- * The page number : 1 is the first page, 99 is the last page, 98 is 'middle pages' (use constants).
+ * The page number : 1 is the first page, -1 is the last page, 0 is 'middle pages' (use constants).
  * You can set specific page number presentation, too.
+ *
+ * Page ordering : 1 (first), 2, 3, ..., default is 0 (middle), ..., -3, -2, -1 (last).
  *
  * @store_name layout_model_pages
  */
@@ -21,8 +23,8 @@ class Page
 
 	//----------------------------------------------------------- page position information constants
 	const FIRST  = 1;
-	const LAST   = 99;
-	const MIDDLE = 98;
+	const LAST   = -1;
+	const MIDDLE = 0;
 
 	//----------------------------------------------------------------------------------- $background
 	/**

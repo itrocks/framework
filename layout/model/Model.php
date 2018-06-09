@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -39,6 +40,10 @@ class Model
 	{
 		if (!$this->pages) {
 			$this->pages[] = new Page(Page::FIRST);
+			$this->pages[] = new Page(2);
+			$this->pages[] = new Page(Page::MIDDLE);
+			$this->pages[] = new Page(-2);
+			$this->pages[] = new Page(Page::LAST);
 		}
 	}
 

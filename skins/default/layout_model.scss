@@ -1,5 +1,6 @@
 
 .model.edit.window {
+
 	> .editor {
 
 		> h3 {
@@ -17,10 +18,61 @@
 			> .page {
 				border: 1px solid darkgray;
 				height: 1190px;
+				position: relative;
 				width: 842px;
 
 				> legend {
 					visibility: hidden;
+				}
+			}
+		}
+
+		.designer {
+			left: 11px;
+			position: absolute;
+			top: 11px;
+		}
+
+		.tool {
+
+			&.snap.line {
+				color: transparent;
+				font-size: 1px;
+				position: absolute;
+
+				&.horizontal {
+					border-top: 1px dashed darkgray;
+					height: 0;
+					left: 11px;
+					top: 5px;
+					width: 840px;
+
+					> .handle {
+						cursor: ns-resize;
+						height: 18px;
+						width: 840px;
+						top: -9px;
+					}
+				}
+
+				&.vertical {
+					border-left: 1px dashed darkgray;
+					height: 1188px;
+					left: 5px;
+					top: 11px;
+					width: 0;
+
+					> .handle {
+						cursor: ew-resize;
+						left: -9px;
+						top: 0;
+						height: 1188px;
+						width: 18px;
+					}
+				}
+
+				> .handle {
+					position: absolute;
 				}
 			}
 		}
