@@ -81,10 +81,11 @@ class Json_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		$class_name = Builder::className(Names::setToClass($class_name));
 		$parameters = $parameters->getObjects();
 		// read all objects corresponding to class name
 		if (!$parameters) {
-			return json_encode(Dao::readAll(Names::setToClass($class_name, false), Dao::sort()));
+			return json_encode(Dao::readAll($class_name, Dao::sort()));
 		}
 		// read object
 		$first_parameter = reset($parameters);
@@ -93,8 +94,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 		// single object for autocomplete pull-down list value
 		if (isset($parameters['id']) && $parameters['id']) {
-			$element_class_name = Names::setToClass($class_name);
-			$source_object      = Dao::read($parameters['id'], $element_class_name);
+			$source_object = Dao::read($parameters['id'], $class_name);
 			return $this->buildJson($source_object);
 		}
 		// advanced search returns a json collection
@@ -160,7 +160,6 @@ class Json_Controller implements Default_Feature_Controller
 	 */
 	protected function searchObjects($class_name, $parameters)
 	{
-		$element_class_name   = Names::setToClass($class_name);
 		$search               = [];
 		$search_array_builder = new Search_Array_Builder();
 		$search_options       = [];
@@ -169,7 +168,7 @@ class Json_Controller implements Default_Feature_Controller
 			if (!($property_path && $value)) {
 				throw new Exception('Invalid search parameter (value or property is empty)');
 			}
-			if (!Reflection_Property::exists($element_class_name, $property_path)) {
+			if (!Reflection_Property::exists($class_name, $property_path)) {
 				throw new Exception("Search property $property_path does not exist");
 			}
 			$search = array_merge($search_array_builder->build($property_path, $value), $search);
@@ -178,46 +177,46 @@ class Json_Controller implements Default_Feature_Controller
 			$search_options[] = Dao::limit($parameters['limit']);
 		}
 		if (isset($parameters['get_properties']) && $parameters['get_properties']) {
-			$data = Dao::select(
-				$element_class_name, $parameters['get_properties'], $search, $search_options
-			);
+			$data    = Dao::select($class_name, $parameters['get_properties'], $search, $search_options);
 			$objects = [];
 			foreach ($data->getRows() as $row) {
 				$objects[$row->id()] = $row->getValues();
 			}
 		}
 		else {
-			$objects = $this->search($search, $element_class_name, $search_options);
+			$objects = $this->search($search, $class_name, $search_options);
 		}
 		return $objects;
 	}
 
 	//------------------------------------------------------------- searchObjectsForAutoCompleteCombo
 	/**
-	 * @param $set_name   string
+	 * @noinspection PhpDocMissingThrowsInspection verified class name
+	 * @param $class_name string
 	 * @param $parameters array
 	 * @return string
 	 */
-	protected function searchObjectsForAutoCompleteCombo($set_name, array $parameters)
+	protected function searchObjectsForAutoCompleteCombo($class_name, array $parameters)
 	{
-		$element_class_name = Names::setToClass($set_name, false);
-		$search             = null;
+		$search = null;
 		if (!empty($parameters['term'])) {
+			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$search = (new Search_Array_Builder)->buildMultiple(
-				new Reflection_Class($element_class_name), $parameters['term'], '', '%'
+				new Reflection_Class($class_name), $parameters['term'], '', '%'
 			);
 		}
 		if (isset($parameters['filters']) && $parameters['filters']) {
 			$this->applyFiltersToSearch($search, $parameters['filters']);
 		}
-		if ($filters = Filter_Annotation::apply($element_class_name, Filter_Annotation::FOR_USE)) {
+		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_USE)) {
 			$search = $search ? Dao\Func::andOp([$filters, $search]) : $filters;
 		}
 
 		// first object only
 		if (isset($parameters['first']) && $parameters['first']) {
-			$objects       = $this->search($search, $element_class_name, [Dao::limit(1)]);
-			$source_object = $objects ? reset($objects) : Builder::create($element_class_name);
+			$objects = $this->search($search, $class_name, [Dao::limit(1)]);
+			/** @noinspection PhpUnhandledExceptionInspection verified class name */
+			$source_object = $objects ? reset($objects) : Builder::create($class_name);
 			return $this->buildJson($source_object);
 		}
 		// all results from search
@@ -226,7 +225,7 @@ class Json_Controller implements Default_Feature_Controller
 			if (isset($parameters['limit'])) {
 				$search_options[] = Dao::limit($parameters['limit']);
 			}
-			$objects = $this->search($search, $element_class_name, $search_options);
+			$objects = $this->search($search, $class_name, $search_options);
 			return $this->buildJson($objects);
 		}
 	}
