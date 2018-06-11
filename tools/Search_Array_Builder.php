@@ -61,10 +61,10 @@ class Search_Array_Builder
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$and[] = $this->build('', $search, $prepend, $append);
+				$and[]   = $this->build('', $search, $prepend, $append);
 				$prepend = '%';
 			}
-			$result[$property_name]= Func::andOp($and);
+			$result[$property_name] = Func::andOp($and);
 			return $property_name ? $result : reset($result);
 		}
 		// simple search phrase
@@ -102,7 +102,7 @@ class Search_Array_Builder
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$and[] = $this->buildMultiple($property_names, $search, $prepend, $append);
+				$and[]   = $this->buildMultiple($property_names, $search, $prepend, $append);
 				$prepend = '%';
 			}
 			$result = Func::andOp($and);
