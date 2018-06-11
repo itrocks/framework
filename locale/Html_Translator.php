@@ -42,15 +42,16 @@ class Html_Translator implements Registerable
 	 */
 	public function translateContent(&$content, $context)
 	{
-		$i = 0;
-		while (($i = strpos($content, PIPE, $i)) !== false) {
-			$i ++;
-			if ($i < strlen($content)) {
-				if ($content[$i] == PIPE) {
-					$content = substr($content, 0, $i) . substr($content, $i + 1);
+		$position = 0;
+		while (($position = strpos($content, PIPE, $position)) !== false) {
+			$position ++;
+			if ($position < strlen($content)) {
+				if ($content[$position] == PIPE) {
+					$content = substr($content, 0, $position) . substr($content, $position);
+					$position ++;
 				}
-				elseif (!in_array($content[$i], [SP, CR, LF, TAB])) {
-					$this->translateElement($content, $i, $context);
+				elseif (!in_array($content[$position], [SP, CR, LF, TAB])) {
+					$this->translateElement($content, $position, $context);
 				}
 			}
 		}
@@ -61,18 +62,18 @@ class Html_Translator implements Registerable
 	/**
 	 * Translate a term from an html pages
 	 *
-	 * @param $content string
-	 * @param $i       integer
-	 * @param $context string
+	 * @param $content  string
+	 * @param $position integer
+	 * @param $context  string
 	 */
-	private function translateElement(&$content, &$i, $context)
+	private function translateElement(&$content, &$position, $context)
 	{
-		$j = strpos($content, PIPE, $i);
-		if ($j >= $i) {
-			$text        = substr($content, $i, $j - $i);
+		$next = strpos($content, PIPE, $position);
+		if ($next >= $position) {
+			$text        = substr($content, $position, $next - $position);
 			$translation = Loc::tr($text, $context);
-			$content     = substr($content, 0, $i - 1) . $translation . substr($content, $j + 1);
-			$i += strlen($translation) - 1;
+			$content   = substr($content, 0, $position - 1) . $translation . substr($content, $next + 1);
+			$position += strlen($translation) - 1;
 		}
 	}
 
