@@ -3,29 +3,28 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
+use ReflectionException;
 
 /**
  * A print model gives the way to print an object of a given class
  *
  * @business
  * @display layer model
- * @representative class, name
+ * @representative class_name, name
  * @store_name layout_models
  */
 class Model
 {
 	use Has_Name;
 
-	//---------------------------------------------------------------------------------------- $class
+	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @mandatory
-	 * @store string
 	 * @user readonly
-	 * @var Reflection_Class
+	 * @var string
 	 */
-	public $class;
+	public $class_name;
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
@@ -53,7 +52,17 @@ class Model
 	 */
 	public function __toString()
 	{
-		return $this->class ? Names::classToDisplay($this->class->name) : '';
+		return trim($this->class_name . SP . $this->name);
+	}
+
+	//-------------------------------------------------------------------------------------- getClass
+	/**
+	 * @return Reflection_Class
+	 * @throws ReflectionException
+	 */
+	public function getClass()
+	{
+		return new Reflection_Class($this->class_name);
 	}
 
 }

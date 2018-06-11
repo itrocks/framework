@@ -37,7 +37,7 @@ class Buttons_Generator
 	 */
 	public function getButtons()
 	{
-		$models = Dao::search(['class' => $this->class_name], Model::class, Dao::sort());
+		$models = Dao::search(['class_name' => $this->class_name], Model::class, Dao::sort());
 		foreach ($models as $model) {
 			$buttons[] = new Button(
 				$model->name,
@@ -48,7 +48,7 @@ class Buttons_Generator
 
 		$buttons[] = new Button(
 			'New layout model',
-			View::link(Model::class, Feature::F_ADD, ['class' => $this->class_name]),
+			View::link(Model::class, Feature::F_ADD, ['class_name' => $this->class_name]),
 			Feature::F_ADD
 		);
 

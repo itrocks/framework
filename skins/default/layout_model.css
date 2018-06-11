@@ -1,47 +1,47 @@
-.model.edit.window > .editor > h3 {
+.model.window > .editor > h3 {
   visibility: hidden; }
-.model.edit.window > .editor > :not(h3) {
+.model.window > .editor > :not(h3) {
   display: inline-block;
   vertical-align: top; }
-.model.edit.window > .editor > fieldset > div.tabber {
+.model.window > .editor > fieldset > div.tabber {
   margin-top: 4px; }
-  .model.edit.window > .editor > fieldset > div.tabber > .page {
+  .model.window > .editor > fieldset > div.tabber > .page {
     border: 1px solid darkgray;
     height: 1190px;
     position: relative;
     width: 842px; }
-    .model.edit.window > .editor > fieldset > div.tabber > .page > legend {
+    .model.window > .editor > fieldset > div.tabber > .page > legend {
       visibility: hidden; }
-.model.edit.window > .editor .designer {
+.model.window > .editor .designer {
   left: 11px;
   position: absolute;
   top: 11px; }
-.model.edit.window > .editor .tool.snap.line {
+.model.window > .editor .tool.snap.line {
   color: transparent;
   font-size: 1px;
   position: absolute; }
-  .model.edit.window > .editor .tool.snap.line.horizontal {
+  .model.window > .editor .tool.snap.line.horizontal {
     border-top: 1px dashed darkgray;
     height: 0;
     left: 11px;
     top: 5px;
     width: 840px; }
-    .model.edit.window > .editor .tool.snap.line.horizontal > .handle {
+    .model.window > .editor .tool.snap.line.horizontal > .handle {
       cursor: ns-resize;
       height: 18px;
       width: 840px;
       top: -9px; }
-  .model.edit.window > .editor .tool.snap.line.vertical {
+  .model.window > .editor .tool.snap.line.vertical {
     border-left: 1px dashed darkgray;
     height: 1188px;
     left: 5px;
     top: 11px;
     width: 0; }
-    .model.edit.window > .editor .tool.snap.line.vertical > .handle {
+    .model.window > .editor .tool.snap.line.vertical > .handle {
       cursor: ew-resize;
       left: -9px;
       top: 0;
       height: 1188px;
       width: 18px; }
-  .model.edit.window > .editor .tool.snap.line > .handle {
+  .model.window > .editor .tool.snap.line > .handle {
     position: absolute; }

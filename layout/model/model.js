@@ -23,9 +23,13 @@ $(document).ready(function()
 	};
 
 	//----------------------------------------- .model.edit.window .editor .designer documentDesigner
-	$('.model.edit.window .editor').build(function() {
+	$('.model.edit.window .editor').build(function()
+	{
+		var $model_window = $('.model.edit.window:has(.editor)');
+		var $editor       = $model_window.find('.editor');
+		if (!$editor.length) return;
 
-		$('.model.edit.window .editor .designer')
+		$editor.find('.designer')
 			.documentDesigner({
 				drag_callback: dragCallback,
 				drop_callback: dropCallback,
@@ -48,6 +52,15 @@ $(document).ready(function()
 			])
 			*/
 			.width(840);
+
+		//--------------------------------------- $email_window > .general_actions > .write > a click
+		/**
+		 * Save email : build the standardized data before saving the form,
+		 * as no data is stored into inputs
+		 */
+		$model_window.find('> .general.actions > .write > a').click(function(event)
+		{
+		});
 
 	});
 
