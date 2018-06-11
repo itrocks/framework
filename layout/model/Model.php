@@ -34,18 +34,6 @@ class Model
 	 */
 	public $pages;
 
-	//----------------------------------------------------------------------------------- __construct
-	public function __construct()
-	{
-		if (!$this->pages) {
-			$this->pages[] = new Page(Page::FIRST);
-			$this->pages[] = new Page(2);
-			$this->pages[] = new Page(Page::MIDDLE);
-			$this->pages[] = new Page(-2);
-			$this->pages[] = new Page(Page::LAST);
-		}
-	}
-
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
