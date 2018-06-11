@@ -40,7 +40,10 @@
 			var $window = $('#main .window');
 			if (
 				($window.data('class') === '{@class.escape}')
-				&& (($window.data('id').toString() === '{id}') || ('{new_object}' && !$window.data('id')))
+				&& (
+					($window.data('id') && ($window.data('id').toString() === '{id}'))
+					|| ('{new_object}' && !$window.data('id'))
+				)
 			) {
 				redirect('{@link}', '#main');
 			}
