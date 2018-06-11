@@ -40,8 +40,8 @@ trait Has_Ordering
 	/**
 	 * Sort objects by their value of $ordering
 	 *
-	 * @param $objects_having_ordering object[]|self[]
-	 * @return object[]|self[]
+	 * @param $objects_having_ordering static[]
+	 * @return static[]
 	 */
 	public static function sort(array $objects_having_ordering)
 	{
