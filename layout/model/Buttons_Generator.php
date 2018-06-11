@@ -42,7 +42,8 @@ class Buttons_Generator
 			$buttons[] = new Button(
 				$model->name,
 				View::link($this->class_name, Feature::F_PRINT, View::link($model)),
-				Feature::F_PRINT
+				Feature::F_PRINT,
+				['.object', Button::OBJECT => $model]
 			);
 		}
 

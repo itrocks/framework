@@ -23,6 +23,12 @@ class Button
 	//------------------------------------------------------------------------------------------ HINT
 	const HINT = 'hint';
 
+	//---------------------------------------------------------------------------------------- OBJECT
+	/**
+	 * The button represents an object you can drag'n'drop (eg to trashcan)
+	 */
+	const OBJECT = 'object';
+
 	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
 
@@ -97,6 +103,14 @@ class Button
 	 * @var string
 	 */
 	public $confirm_message;
+
+	//---------------------------------------------------------------------------------- $data_object
+	/**
+	 * Object data linked to the button (optional)
+	 *
+	 * @var integer
+	 */
+	public $data_object;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -184,10 +198,14 @@ class Button
 					: $option;
 			}
 			elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
-				$this->class .= (isset($this->class) ? SP : '') . substr($option, 1);
+				$this->class .= (isset($this->class) ? SP : '')
+					. (is_numeric($key) ? substr($option, 1) : $option);
 			}
 			elseif ($key === self::HINT) {
 				$this->hint = $option;
+			}
+			elseif ($key === self::OBJECT) {
+				$this->data_object = $option;
 			}
 			elseif ($key === Confirm::CANCEL_LABEL) {
 				$this->cancel_label = $option;
