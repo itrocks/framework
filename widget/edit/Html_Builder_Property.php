@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -40,8 +41,10 @@ class Html_Builder_Property extends Html_Builder_Type
 	{
 		if (isset($property)) {
 			$this->customized = $property->getAnnotation('customized')->value;
-			$this->null       = $property->getAnnotation('null')->value;
-			$this->property   = $property;
+			$this->is_new     = ($property instanceof Reflection_Property_Value)
+				&& !Dao::getObjectIdentifier($property->getObject());
+			$this->null     = $property->getAnnotation('null')->value;
+			$this->property = $property;
 
 			/** @var $user_annotation User_Annotation */
 			$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);

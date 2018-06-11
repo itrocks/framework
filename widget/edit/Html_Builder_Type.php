@@ -50,6 +50,14 @@ class Html_Builder_Type
 	 */
 	public $empty_check = true;
 
+	//--------------------------------------------------------------------------------------- $is_new
+	/**
+	 * Is it a form for a new object (true), or a modification form (false) ?
+	 *
+	 * @var boolean
+	 */
+	public $is_new = false;
+
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
@@ -571,7 +579,7 @@ class Html_Builder_Type
 	public function setInputAsReadOnly($input)
 	{
 		if ($this->readonly) {
-			if ($input->getAttribute('name')) {
+			if ($input->getAttribute('name') && !$this->is_new) {
 				$input->setData('name', $input->getAttribute('name')->value);
 				$input->removeAttribute('name');
 			}
