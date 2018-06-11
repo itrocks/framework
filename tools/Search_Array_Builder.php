@@ -120,6 +120,7 @@ class Search_Array_Builder
 
 	//----------------------------------------------------------------- classRepresentativeProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection @representative and @var not verified at this stage
 	 * @param $class   Reflection_Class
 	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
@@ -128,16 +129,18 @@ class Search_Array_Builder
 	{
 		$property_names = Representative_Annotation::of($class)->values();
 		foreach ($property_names as $key => $property_name) {
+			/** @noinspection PhpUnhandledExceptionInspection @representative properties should be good */
 			$property = strpos($property_name, DOT)
 				? new Reflection_Property($class->name, $property_name)
 				: $class->getProperty($property_name);
-			$type = $property->getType();
+			$type        = $property->getType();
 			$type_string = $type->asString();
 			if (!$type->isBasic()) {
 				unset($property_names[$key]);
 				if (!isset($already[$type_string])) {
-					$sub_class = new Reflection_Class($type_string);
-					$sub_already = $already;
+					/** @noinspection PhpUnhandledExceptionInspection @var Type should be valid */
+					$sub_class                 = new Reflection_Class($type_string);
+					$sub_already               = $already;
 					$sub_already[$type_string] = $type_string;
 					foreach (
 						$this->classRepresentativeProperties($sub_class, $sub_already) as $sub_property_name
