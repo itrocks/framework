@@ -20,13 +20,9 @@ $(document).ready(function()
 		if (!$dropped.hasClass('property')) {
 			$dropped.attr('title', '');
 		}
-		// remove tool class
-		if ($dropped.hasClass('tool')) {
-			$dropped.removeClass('tool');
-		}
-		if ($dropped.hasClass('property')) {
-			$dropped.removeClass('property');
-		}
+		// remove property / tool classes
+		$dropped.removeClass('property');
+		$dropped.removeClass('tool');
 	};
 
 	//------------------------------------------------------------------------------- pageLayoutInput
