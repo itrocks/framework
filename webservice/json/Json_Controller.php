@@ -205,7 +205,7 @@ class Json_Controller implements Default_Feature_Controller
 				new Reflection_Class($class_name), $parameters['term'], '', '%'
 			);
 		}
-		if (isset($parameters['filters']) && $parameters['filters']) {
+		if (!empty($parameters['filters'])) {
 			$this->applyFiltersToSearch($search, $parameters['filters']);
 		}
 		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_USE)) {
@@ -213,7 +213,7 @@ class Json_Controller implements Default_Feature_Controller
 		}
 
 		// first object only
-		if (isset($parameters['first']) && $parameters['first']) {
+		if (!empty($parameters['first'])) {
 			$objects = $this->search($search, $class_name, [Dao::limit(1)]);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects ? reset($objects) : Builder::create($class_name);

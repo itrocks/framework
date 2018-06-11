@@ -78,14 +78,15 @@ class Search_Array_Builder
 	//--------------------------------------------------------------------------------- buildMultiple
 	/**
 	 * @param $property_names_or_class string[]|Reflection_Class
-	 * @param $search_phrase string
-	 * @param $prepend string
-	 * @param $append string
+	 * @param $search_phrase           string
+	 * @param $prepend                 string
+	 * @param $append                  string
 	 * @return Logical|array
 	 */
 	public function buildMultiple(
 		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
 	) {
+		$search_phrase  = str_replace(['*', '?'], ['%', '_'], $search_phrase);
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
 			: $property_names_or_class;
