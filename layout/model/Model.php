@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Model\Page;
+use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ReflectionException;
@@ -28,6 +30,7 @@ class Model
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
+	 * @getter
 	 * @link Collection
 	 * @user hide_edit, hide_output
 	 * @var Page[]
@@ -51,6 +54,23 @@ class Model
 	public function getClass()
 	{
 		return new Reflection_Class($this->class_name);
+	}
+
+	//-------------------------------------------------------------------------------------- getPages
+	/**
+	 * Sorted pages getter
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection only valid classes : no exception
+	 * @return Page[]
+	 */
+	public function getPages()
+	{
+		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
+		$property   = new Reflection_Property(get_class($this), 'pages');
+		$page_class = $property->getType()->getElementTypeAsString();
+		/** @noinspection PhpUnhandledExceptionInspection Valid class used */
+		$this->pages = Page::sort(Getter::getCollection($this->pages, $page_class, $this));
+		return $this->pages;
 	}
 
 }

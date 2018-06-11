@@ -22,6 +22,17 @@
 	<section class="editor">
 		<h3>|Layout editor|</h3>
 
+		<ul class="tools">
+			<li>
+				<select id="format">
+					<option value="code128">|code128 barcode|</option>
+					<option value="text" selected>|text|</option>
+				</select>
+			</li>
+			<li>
+				<input id="size" type="number">
+			</li>
+		</ul>
 		{/ITRocks/Framework/Property/select/{class_name.path}}
 
 		<fieldset>

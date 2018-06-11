@@ -14,6 +14,7 @@ use ITRocks\Framework\Tools\Has_Ordering;
  *
  * Page ordering : 1 (first), 2, 3, ..., default is 0 (middle), ..., -3, -2, -1 (last).
  *
+ * @override ordering @signed
  * @store_name layout_model_pages
  */
 class Page
@@ -36,9 +37,20 @@ class Page
 	//--------------------------------------------------------------------------------------- $fields
 	/**
 	 * @link Collection
+	 * @store false
 	 * @var Field[]
 	 */
 	public $fields;
+
+	//--------------------------------------------------------------------------------------- $layout
+	/**
+	 * Raw page layout : a json structure from html_links & document-designer that describes fields
+	 * and how they are laid-out
+	 *
+	 * @max_length 1000000000
+	 * @var string
+	 */
+	public $layout;
 
 	//---------------------------------------------------------------------------------------- $model
 	/**
@@ -50,12 +62,16 @@ class Page
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $ordering integer|string ordering number of constant
+	 * @param $ordering integer ordering number, eg page number (see constants)
+	 * @param $layout   string raw layout of the page
 	 */
-	public function __construct($ordering = null)
+	public function __construct($ordering = null, $layout = null)
 	{
 		if (isset($ordering)) {
 			$this->ordering = $ordering;
+		}
+		if (isset($layout)) {
+			$this->layout = $layout;
 		}
 	}
 
@@ -82,6 +98,47 @@ class Page
 			case static::MIDDLE: return 'middle';
 		}
 		return $this->ordering;
+	}
+
+	//---------------------------------------------------------------------------- orderingToSortable
+	/**
+	 * Return an unsigned numeric value calculated from $this->ordering
+	 *
+	 * @example  1 =>    1 (first)
+	 * @example  2 =>    2
+	 * @example  0 => 1000 (middle)
+	 * @example -2 => 1998
+	 * @example -1 => 1999 (last)
+	 * @return integer
+	 */
+	public function orderingToSortable()
+	{
+		if (!$this->ordering) {
+			return 1000;
+		}
+		if ($this->ordering < 0) {
+			return $this->ordering + 2000;
+		}
+		return $this->ordering;
+	}
+
+	//------------------------------------------------------------------------------------------ sort
+	/**
+	 * Sort objects by their value of $ordering
+	 *
+	 * - first 1 (first), 2, etc.
+	 * - then 0 (middle)
+	 * - at last -2, -1 (last) come last
+	 *
+	 * @param $objects_having_ordering static[]
+	 * @return static[]
+	 */
+	public static function sort(array $objects_having_ordering)
+	{
+		uasort($objects_having_ordering, function (Page $object1, Page $object2) {
+			return cmp($object1->orderingToSortable(), $object2->orderingToSortable());
+		});
+		return $objects_having_ordering;
 	}
 
 }

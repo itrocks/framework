@@ -20,18 +20,34 @@ $(document).ready(function()
 		if (!$dropped.hasClass('property')) {
 			$dropped.attr('title', '');
 		}
+		// remove tool class
+		if ($dropped.hasClass('tool')) {
+			$dropped.removeClass('tool');
+		}
 	};
 
-	//----------------------------------------- .model.edit.window .editor .designer documentDesigner
-	$('.model.edit.window .editor').build(function()
+	//------------------------------------------------------------------------------- pageLayoutInput
+	/**
+	 * @param $page jQuery the page
+	 * @returns jQuery the <input name="page[.][layout]"> of the page
+	 */
+	var pageLayoutInput = function($page)
 	{
-		var $model_window = $('.model.edit.window:has(.editor)');
+		return $page.parent().children('input[name^="pages["][name$="][layout]"]');
+	};
+
+	//---------------------------------------------- .model.window .editor .designer documentDesigner
+	$('.model.window').build(function()
+	{
+		var $model_window = this.inside('.model.window:has(.editor)');
 		var $editor       = $model_window.find('.editor');
 		var $designer     = $editor.find('.designer');
 		if (!$editor.length) return;
 
 		$designer.each(function() {
-			$(this).documentDesigner({
+			var $page  = $(this);
+			var $input = pageLayoutInput($page);
+			$page.documentDesigner({
 				drag_callback: dragCallback,
 				drop_callback: dropCallback,
 				fields:        {element: '.property_tree .property, .editor .tool', name_data: 'property'},
@@ -40,6 +56,11 @@ $(document).ready(function()
 				tools:         '.tools'
 			})
 				.width(840);
+			if ($input.val()) {
+				var json_data = $('<textarea>').html($input.val()).text();
+				var data      = JSON.parse(json_data);
+				$page.documentDesigner('setData', data);
+			}
 		});
 
 		//--------------------------------------- $email_window > .general_actions > .write > a click
@@ -47,12 +68,12 @@ $(document).ready(function()
 		 * Save email : build the standardized data before saving the form,
 		 * as no data is stored into inputs
 		 */
-		$model_window.find('> .general.actions > .write > a').click(function(event)
+		$model_window.find('> .general.actions > .write > a').click(function()
 		{
 			$designer.each(function() {
-				var $page = $(this);
-				var $input = $page.parent().children('input[name^="pages["]');
-				$input.val(JSON.stringify($page.documentDesigner('getData')));
+				var $page  = $(this);
+				var $input = pageLayoutInput($page);
+				$input.val(JSON.stringify($page.documentDesigner('getData').fields));
 			});
 		});
 
