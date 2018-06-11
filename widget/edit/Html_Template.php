@@ -73,11 +73,13 @@ class Html_Template extends Template
 
 	//---------------------------------------------------------------------------------- newFunctions
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection class constant is valid
 	 * @return Html_Template_Functions
 	 */
 	protected function newFunctions()
 	{
 		/** @var $functions Html_Template_Functions */
+		/** @noinspection PhpUnhandledExceptionInspection class constant is valid */
 		$functions = Builder::create(Html_Template_Functions::class);
 		return $functions;
 	}
@@ -158,6 +160,7 @@ class Html_Template extends Template
 	/**
 	 * Parse a variable / function / include and returns its return value
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection Builder::create with valid parameters
 	 * @param $property_name string can be an unique var or path.of.vars
 	 * @param $format_value  boolean
 	 * @return string var value after reading value / executing specs (can be an object)
@@ -174,6 +177,7 @@ class Html_Template extends Template
 				($builder = Widget_Annotation::of($property)->value)
 				&& is_a($builder, Property::class, true)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 				$builder = Builder::create($builder, [$property, $property->value(), $this]);
 				/** @var $builder Property */
 				$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
@@ -199,8 +203,11 @@ class Html_Template extends Template
 						$parent_object     = $property->getObject();
 						$id                = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
 						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
-						$html_builder_type->required = Mandatory_Annotation::of($property->getParentProperty())
-							->value;
+						$parent_property   = $property->getParentProperty();
+						if ($parent_property) {
+							// TODO HIGHER properties via widgets must transmit their context (property path)
+							$html_builder_type->required = Mandatory_Annotation::of($parent_property)->value;
+						}
 						$id_value = $html_builder_type->setTemplate($this)->build();
 					}
 					else {
@@ -234,6 +241,7 @@ class Html_Template extends Template
 	/**
 	 * Replace all <section class="edit window"> into the content by <form>
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection Names::classToUri valid class name
 	 * @param $content string
 	 * @return string
 	 */
@@ -252,16 +260,17 @@ class Html_Template extends Template
 					$inside_j      = $parser->closingTag('section', $inside_i, Parser::BEFORE);
 					$outside_j     = $inside_j + 10;
 					$class_name    = get_class(reset($this->objects));
-					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
+					/** @noinspection PhpUnhandledExceptionInspection $class_name comes from get_class */
+					$action     = $this->replaceLink(SL . Names::classToUri($class_name)
 						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
-					$attributes    = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
-					$attributes    = ' action=' . DQ . $action . DQ
+					$attributes = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
+					$attributes = ' action=' . DQ . $action . DQ
 						. $attributes
 						. ' enctype="multipart/form-data"'
 						. ' method="post"'
 						. ' name=' . DQ . $this->getFormId() . DQ
 						. ' target="#messages"';
-					$form = '<form' . $attributes . '>'
+					$form       = '<form' . $attributes . '>'
 						. substr($content, $inside_i, $inside_j - $inside_i)
 						. '</form>';
 					$content        = substr($content, 0, $outside_i) . $form . substr($content, $outside_j);

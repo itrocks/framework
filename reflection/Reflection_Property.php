@@ -413,6 +413,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets the parent property for a $property.path
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $this->root_class is always valid
 	 * @return Reflection_Property|null
 	 */
 	public function getParentProperty()
