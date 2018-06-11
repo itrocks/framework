@@ -8,27 +8,28 @@
 	{
 		var $this = $(this);
 		var controls = $this
-			.find('input[autocomplete], input[name], select[name], textarea[name]')
+			.find('input[autocomplete], input[name], select[name], textarea[name], input.dtp--date')
 			.filter(':visible:not([readonly])');
-		var i = 0;
-		var length = controls.length;
+		var position = 0;
+		var length   = controls.length;
 		while (
-			((i < length) && (length > 2))
-			|| (controls.eq(i).attr('name') === 'login')
-			|| (controls.eq(i).attr('name') === 'password')
-			|| (controls.eq(i).attr('name') === 'password2')
+			((position < length) && (length > 2))
+			|| (controls.eq(position).attr('name') === 'login')
+			|| (controls.eq(position).attr('name') === 'password')
+			|| (controls.eq(position).attr('name') === 'password2')
 		) {
-			i ++;
+			position ++;
 		}
-		if (i >= length) {
-			i = 0;
+		if (position >= length) {
+			position = 0;
 		}
 		if (length) {
-			var control = controls.eq(i);
-			setTimeout(function() { control.focus(); }, 1);
+			var control = controls.eq(position);
+			setTimeout(function() { control.focus(); }, 0);
 		}
 
 		return true;
 	};
+
 
 })( jQuery );
