@@ -5,6 +5,9 @@ namespace ITRocks\Framework\Tools;
  * Display methods for a displayable object
  *
  * Mainly built from any reflection class, method, or property names.
+ *
+ * @override value @var object|string|null
+ * @property object|string|null value anything that can be displayed using strval()
  */
 class Displayable extends String_Class
 {
@@ -42,8 +45,8 @@ class Displayable extends String_Class
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value     string
-	 * @param $type      string the type of the displayable object : class, method, property or string
+	 * @param $value string
+	 * @param $type  string the type of the displayable object : class, method, property or string
 	 */
 	public function __construct($value, $type)
 	{
@@ -63,6 +66,20 @@ class Displayable extends String_Class
 			case self::TYPE_PROPERTY: return Names::propertyToDisplay($this->value);
 		}
 		return strval($this->value);
+	}
+
+	//------------------------------------------------------------------------------------------ json
+	/**
+	 * Return value encoded with json
+	 *
+	 * @return string
+	 */
+	public function json()
+	{
+		/** @noinspection PhpParamsInspection objects can be displayable */
+		return is_object($this->value)
+			? (new Json)->encodeObject($this->value)
+			: json_encode($this->value);
 	}
 
 	//----------------------------------------------------------------------------------------- lower

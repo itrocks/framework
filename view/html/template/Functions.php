@@ -720,6 +720,18 @@ class Functions
 		return null;
 	}
 
+	//--------------------------------------------------------------------------------------- getJson
+	/**
+	 * Encode using json
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getJson(Template $template)
+	{
+		return json_encode(reset($template->objects));
+	}
+
 	//---------------------------------------------------------------------------------------- getKey
 	/**
 	 * Returns the current key of the current element of the currently read array
