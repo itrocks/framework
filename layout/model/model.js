@@ -24,6 +24,9 @@ $(document).ready(function()
 		if ($dropped.hasClass('tool')) {
 			$dropped.removeClass('tool');
 		}
+		if ($dropped.hasClass('property')) {
+			$dropped.removeClass('property');
+		}
 	};
 
 	//------------------------------------------------------------------------------- pageLayoutInput
