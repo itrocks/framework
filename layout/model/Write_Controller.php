@@ -22,7 +22,7 @@ class Write_Controller extends Write\Write_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		unset($form['page_fields']);
+		unset($form['pages']);
 		unset($form['search']);
 		return parent::run($parameters, $form, $files, $class_name);
 	}
