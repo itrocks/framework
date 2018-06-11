@@ -1,19 +1,34 @@
 $(document).ready(function()
 {
-	var drag_callback = function()
+
+	//---------------------------------------------------------------------------------- dragCallback
+	var dragCallback = function()
 	{
 		var $dragged = this;
-		var text = $dragged.text();
+		var text     = $dragged.text();
+		// remove property.path from text
 		if (text.indexOf(DOT) > -1) {
 			$dragged.text(text.substr(text.lastIndexOf(DOT) + 1));
 		}
 	};
 
+	//---------------------------------------------------------------------------------- dropCallback
+	var dropCallback = function()
+	{
+		var $dropped = this;
+		// remove title from dropped tools
+		if (!$dropped.hasClass('property')) {
+			$dropped.attr('title', '');
+		}
+	};
+
+	//----------------------------------------- .model.edit.window .editor .designer documentDesigner
 	$('.model.edit.window .editor').build(function() {
 
 		$('.model.edit.window .editor .designer')
 			.documentDesigner({
-				drag_callback: drag_callback,
+				drag_callback: dragCallback,
+				drop_callback: dropCallback,
 				fields:        { element: '.property_tree .property, .editor .tool', name_data: 'property' },
 				remove_class:  'tool',
 				tool_handle:   '.handle',
