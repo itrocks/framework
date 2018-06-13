@@ -33,11 +33,11 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------- pageLayoutInput
 	/**
 	 * @param $page jQuery the page
-	 * @returns jQuery the <input name="page[.][layout]"> of the page
+	 * @returns jQuery the <input name="page[layout][.]"> of the page
 	 */
 	var pageLayoutInput = function($page)
 	{
-		return $page.parent().children('input[name^="pages["][name$="][layout]"]');
+		return $page.parent().children('input[name^="pages[layout]["][name$="]"]');
 	};
 
 	//-------------------------------------------------------------------------------------- register

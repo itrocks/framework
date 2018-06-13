@@ -24,6 +24,7 @@
 			<h3>|Layout editor|</h3>
 
 			<div class="toolbox">
+
 				<div class="tools">
 					<h3>|Selected element|</h3>
 					<ul>
@@ -41,7 +42,22 @@
 					</ul>
 				</div>
 
+				<ul class="pages">
+					<!--pages-->
+					<li class="page" data-id="{id}">
+						<h3>|page {ordering}|</h3>
+						<ul>
+							<li>
+								<label for="background{ordering}">|background|</label>
+								<input id="background{ordering}" name="pages[background][{ordering}]" type="file">
+							</li>
+						</ul>
+					</li>
+					<!--pages-->
+				</ul>
+
 				{/ITRocks/Framework/Property/select/{class_name.path}}
+
 			</div>
 
 			<fieldset>

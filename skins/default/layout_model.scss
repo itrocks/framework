@@ -1,6 +1,10 @@
 
 .model.window {
 
+	&.output .toolbox {
+		display: none;
+	}
+
 	> .editor {
 
 		> h3 {
@@ -83,10 +87,15 @@
 				display: block;
 			}
 
-			> .tools {
+			> .pages, > .tools {
 
 				h3 {
 					font-weight: normal;
+				}
+
+				li {
+					list-style: none;
+					margin: 0;
 				}
 
 				ul {
@@ -97,9 +106,8 @@
 					padding: 2px 8px 2px 2px;
 					margin-bottom: 1em;
 
-					li {
+					> li {
 						display: table-row;
-						margin: 0;
 
 						> * {
 							display: table-cell;
@@ -109,6 +117,17 @@
 							padding-right: .5ch;
 						}
 					}
+				}
+			}
+
+			> .pages {
+
+				label[for^="background"] {
+					display: none;
+				}
+
+				input[id^="background"] {
+					column-span: all;
 				}
 			}
 		}
