@@ -4,7 +4,7 @@
   display: inline-block;
   vertical-align: top; }
 .model.window > .editor > fieldset > div.tabber {
-  margin-top: 4px; }
+  margin-top: 0; }
   .model.window > .editor > fieldset > div.tabber > .page {
     border: 1px solid darkgray;
     height: 1190px;
@@ -45,3 +45,16 @@
       width: 18px; }
   .model.window > .editor .tool.snap.line > .handle {
     position: absolute; }
+.model.window > .editor .toolbox > .property_select {
+  display: block; }
+.model.window > .editor .toolbox > .tools h3 {
+  font-weight: normal; }
+.model.window > .editor .toolbox > .tools ul {
+  background-color: #dcdcdd;
+  border: solid 1px #606060;
+  border-radius: 0 2px 2px;
+  padding: 2px 8px 2px 2px;
+  list-style: none;
+  margin-bottom: 1em; }
+  .model.window > .editor .toolbox > .tools ul li {
+    margin: 0; }

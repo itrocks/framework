@@ -13,7 +13,7 @@
 		}
 
 		> fieldset > div.tabber {
-			margin-top: 4px;
+			margin-top: 0;
 
 			> .page {
 				border: 1px solid darkgray;
@@ -73,6 +73,33 @@
 
 				> .handle {
 					position: absolute;
+				}
+			}
+		}
+
+		.toolbox {
+
+			> .property_select {
+				display: block;
+			}
+
+			> .tools {
+
+				h3 {
+					font-weight: normal;
+				}
+
+				ul {
+					background-color: #dcdcdd;
+					border: solid 1px #606060;
+					border-radius: 0 2px 2px;
+					padding: 2px 8px 2px 2px;
+					list-style: none;
+					margin-bottom: 1em;
+
+					li {
+						margin: 0;
+					}
 				}
 			}
 		}

@@ -11,37 +11,47 @@
 </head>
 <body>
 <!--BEGIN-->
-<!--use ITRocks\Framework\Tools\Paths-->
-<form action="/{@class.path}/write" class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{?id}" enctype="multipart/form-data" method="post" name="{@template.getFormId}" target="#messages">
-	<h2>|{@class.display.ucfirst}|</h2>
-	{/widget/button/general_buttons.html}
-	<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
 
-	{/widget/output/object.html}
+	<!--use ITRocks\Framework\Tools\Paths-->
+	<form action="/{@class.path}/write" class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{?id}" enctype="multipart/form-data" method="post" name="{@template.getFormId}" target="#messages">
+		<h2>|{@class.display.ucfirst}|</h2>
+		{/widget/button/general_buttons.html}
+		<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
 
-	<section class="editor">
-		<h3>|Layout editor|</h3>
+		{/widget/output/object.html}
 
-		<ul class="tools">
-			<li>
-				<select id="format">
-					<option value="code128">|code128 barcode|</option>
-					<option value="text" selected>|text|</option>
-				</select>
-			</li>
-			<li>
-				<input id="size" type="number">
-			</li>
-		</ul>
-		{/ITRocks/Framework/Property/select/{class_name.path}}
+		<section class="editor">
+			<h3>|Layout editor|</h3>
 
-		<fieldset>
-			{/pages.html}
-		</fieldset>
+			<div class="toolbox">
+				<div class="tools">
+					<h3>|Selected element|</h3>
+					<ul>
+						<li>
+							<label for="format">|format|</label>
+							<select id="format">
+								<option value="code128">|code128 barcode|</option>
+								<option value="text" selected>|text|</option>
+							</select>
+						</li>
+						<li>
+							<label for="size">|size|</label>
+							<input id="size" type="number">
+						</li>
+					</ul>
+				</div>
 
-	</section>
+				{/ITRocks/Framework/Property/select/{class_name.path}}
+			</div>
 
-</form>
+			<fieldset>
+				{/pages.html}
+			</fieldset>
+
+		</section>
+
+	</form>
+
 <!--END-->
 </body>
 </html>

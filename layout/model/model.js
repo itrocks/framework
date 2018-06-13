@@ -17,8 +17,13 @@ $(document).ready(function()
 	{
 		var $dropped = this;
 		// remove title from dropped tools
-		if (!$dropped.hasClass('property')) {
+		if ($dropped.hasClass('tool')) {
 			$dropped.attr('title', '');
+		}
+		if ($dropped.attr('data-field')) {
+			if (!$dropped.attr('data-format')) {
+				$dropped.attr('data-format', 'text');
+			}
 		}
 		// remove property / tool classes
 		$dropped.removeClass('property');
@@ -35,6 +40,21 @@ $(document).ready(function()
 		return $page.parent().children('input[name^="pages["][name$="][layout]"]');
 	};
 
+	//-------------------------------------------------------------------------------------- register
+	var register = function()
+	{
+		this.register({ attribute: 'title' });
+	};
+
+	//-------------------------------------------------------------------------------- selectCallback
+	var selectCallback = function()
+	{
+		var $selected = this;
+		var $title    = $selected.closest('.editor').find('.tools > h3');
+		$title.text($selected.text());
+		$title.attr('title', $selected.attr('title'));
+	};
+
 	//---------------------------------------------- .model.window .editor .designer documentDesigner
 	$('.model.window').build(function()
 	{
@@ -47,13 +67,15 @@ $(document).ready(function()
 			var $page  = $(this);
 			var $input = pageLayoutInput($page);
 			$page.documentDesigner({
-				default:       { size: 4 },
-				drag_callback: dragCallback,
-				drop_callback: dropCallback,
-				fields:        {element: '.property_tree .property, .editor .tool', name_data: 'property'},
-				remove_class:  'tool',
-				tool_handle:   '.handle',
-				tools:         '.tools'
+				default:      { size: 4 },
+				drag:         dragCallback,
+				drop:         dropCallback,
+				fields:       {element: '.property_tree .property, .editor .tool', name_data: 'property'},
+				register:     register,
+				remove_class: 'tool',
+				select:       selectCallback,
+				tool_handle:  '.handle',
+				tools:        '.tools'
 			})
 				.width(840);
 			if ($input.val()) {
