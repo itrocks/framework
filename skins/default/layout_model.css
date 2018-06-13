@@ -53,8 +53,13 @@
   background-color: #dcdcdd;
   border: solid 1px #606060;
   border-radius: 0 2px 2px;
+  display: table;
   padding: 2px 8px 2px 2px;
-  list-style: none;
   margin-bottom: 1em; }
   .model.window > .editor .toolbox > .tools ul li {
+    display: table-row;
     margin: 0; }
+    .model.window > .editor .toolbox > .tools ul li > * {
+      display: table-cell; }
+    .model.window > .editor .toolbox > .tools ul li > label {
+      padding-right: .5ch; }
