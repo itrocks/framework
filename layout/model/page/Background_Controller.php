@@ -24,13 +24,15 @@ class Background_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		/** @var $page Page */
-		$page       = $parameters->getMainObject();
-		$file_names = (new PDF($page->background->temporary_file_name))->toSvg();
-		$file_name  = reset($file_names);
-		if ($file_name) {
-			header('content-type: image/svg+xml');
-			header('content-length: ' . filesize($file_name));
-			return file_get_contents($file_name);
+		$page = $parameters->getMainObject();
+		if ($page && $page->background) {
+			$file_names = (new PDF($page->background->temporary_file_name))->toSvg();
+			$file_name  = reset($file_names);
+			if ($file_name) {
+				header('content-type: image/svg+xml');
+				header('content-length: ' . filesize($file_name));
+				return file_get_contents($file_name);
+			}
 		}
 		return null;
 	}
