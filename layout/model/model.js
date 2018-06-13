@@ -47,6 +47,7 @@ $(document).ready(function()
 			var $page  = $(this);
 			var $input = pageLayoutInput($page);
 			$page.documentDesigner({
+				default:       { size: 4 },
 				drag_callback: dragCallback,
 				drop_callback: dropCallback,
 				fields:        {element: '.property_tree .property, .editor .tool', name_data: 'property'},
