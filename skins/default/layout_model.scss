@@ -32,6 +32,8 @@
 		}
 
 		.designer {
+			background-repeat: no-repeat;
+			background-size: 840px 1190px;
 			left: 11px;
 			position: absolute;
 			top: 11px;
@@ -102,7 +104,6 @@
 					background-color: #dcdcdd;
 					border: solid 1px #606060;
 					border-radius: 0 2px 2px;
-					display: table;
 					padding: 2px 8px 2px 2px;
 					margin-bottom: 1em;
 
