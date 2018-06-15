@@ -924,6 +924,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	protected function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
 	{
 		foreach ($search as $property_path => $value) {
+			// ignore id filters, which filter current object using direct identifiers (no need to search)
+			if ($property_path === 'id') {
+				continue;
+			}
 			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
 			$property      = new Reflection_Property($class_name, $property_path);
 			$property_type = $property->getType();
