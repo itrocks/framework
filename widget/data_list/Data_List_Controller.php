@@ -93,8 +93,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//-------------------------------------------------------------------------- applyGettersToValues
 	/**
-	 * In Dao::select() result : replace values with their matching result of @user_getter / @getter
+	 * In Dao::select() result : replace values with their matching result of user_getter / getter
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data List_Data
 	 */
 	protected function applyGettersToValues(List_Data $data)
@@ -124,9 +125,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				$object = $row->id();
 				// Optimize memory usage : detach object from the List_Row
 				if (!is_object($object)){
+					/** @noinspection PhpUnhandledExceptionInspection valid */
 					$object = Getter::getObject($object, $row->getClassName());
 				}
 				foreach ($properties_with_getter as list($property, $user_getter)) {
+					/** @noinspection PhpUnhandledExceptionInspection valid $object */
 					/** @var $property Reflection_Property */
 					$value = $user_getter
 						? (new Contextual_Callable($user_getter, $object))->call()
@@ -246,6 +249,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//------------------------------------------------------------------------- applySearchParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $list_settings Data_List_Settings
 	 * @return array search-compatible search array
 	 */
@@ -253,6 +257,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		$class = $list_settings->getClass();
 		/** @var $search_parameters_parser Search_Parameters_Parser */
+		/** @noinspection PhpUnhandledExceptionInspection ::class */
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
 		);
@@ -306,11 +311,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * Force $parameters' main object to a set of $this->class_names
 	 * Replace the already existing Main_Object ($this->mainObject() must be called before this)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @return string
 	 */
 	protected function forceSetMainObject(Parameters $parameters)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection */
 		$set = Set::instantiate($this->class_names);
 		$parameters->shift();
 		$parameters->unshift($set);
@@ -387,6 +394,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $list_settings Data_List_Settings
 	 * @return Property[]
 	 */
@@ -397,8 +405,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		$properties = [];
 		// properties / search
 		foreach ($list_settings->properties as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection ::class */
 			/** @var $property Property */
-			$property         = Builder::createClone($property, Property::class);
+			$property = Builder::createClone($property, Property::class);
+			/** @noinspection PhpUnhandledExceptionInspection valid $property->path and $class_name */
 			$property->search = new Reflection_Property($class_name, $property->path);
 			$this->prepareSearchPropertyComponent($property->search);
 			$properties[$property->path] = $property;
@@ -456,7 +466,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection Names::classToSet($verified_class_name)
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string class name
 	 * @param $parameters    string[] parameters
 	 * @param $list_settings Custom_Settings|Data_List_Settings
@@ -488,6 +498,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
@@ -518,7 +529,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
 				$list_settings->save();
 			}
-		}
+		} /** @noinspection PhpRedundantCatchClauseInspection Dao may be Mysql\Link */
 		catch (Mysql_Error_Exception $exception) {
 			if (Time_Limit::isErrorCodeTimeout($exception->getCode())) {
 				$error = new Exception(
@@ -571,8 +582,10 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			]
 		);
 		// buttons
+		/** @noinspection PhpUnhandledExceptionInspection ::class */
 		/** @var $buttons Buttons */
-		$buttons                      = Builder::create(Buttons::class);
+		$buttons = Builder::create(Buttons::class);
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);
@@ -798,6 +811,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//--------------------------------------------------------------------- removeInvisibleProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string
 	 * @param $properties_path string[] properties path that can include invisible properties
 	 * @param $search          array search where to add Has_History criteria
@@ -807,6 +821,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	{
 		// remove properties directly used as columns
 		foreach ($properties_path as $key => $property_path) {
+			/** @noinspection PhpUnhandledExceptionInspection property must exist at this step */
 			$property = new Reflection_Property($class_name, $property_path);
 			if (!$property->isPublic() || !$property->isVisible(false)) {
 				unset($properties_path[$key]);
@@ -826,8 +841,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				)->getRows();
 				foreach ($property_names as $property_name) {
 					$property_name = $property_name->getValue('property_name');
-					$property      = new Reflection_Property($class_name, $property_name);
-					$annotation    = $property->getListAnnotation(User_Annotation::ANNOTATION);
+					/** @noinspection PhpUnhandledExceptionInspection already verified */
+					$property   = new Reflection_Property($class_name, $property_name);
+					$annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 					if ($annotation->has(User_Annotation::INVISIBLE)) {
 						$all_but[] = $property_name;
 					}
@@ -872,6 +888,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	/**
 	 * Default run method for default 'list-typed' view controller
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -887,6 +904,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			: $this->forceSetMainObject($parameters);
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), static::FEATURE);
 		Loc::exitContext();
 		return $view;
@@ -897,6 +915,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	 * Replace search criterion on objects into $search by their equivalent in a OR search into its
 	 * representative parts
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $search     string[] search criterion
 	 * @param $recurse    boolean @private true if recursive call
@@ -937,6 +956,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 
 	//-------------------------------------------------------------------------------- searchProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $value    string
 	 * @return Reflection_Property_Value
@@ -950,6 +970,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			) {
 				$value = Dao::read($value, $property->getType()->asString());
 			}
+			/** @noinspection PhpUnhandledExceptionInspection valid $property */
 			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
 			$this->prepareSearchPropertyComponent($property);
 			$property->value(Loc::propertyToIso($property, $value));

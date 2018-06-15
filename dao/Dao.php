@@ -229,9 +229,9 @@ class Dao implements Configurable
 	 *
 	 * If no data link matches $dao_identifier or if its empty, gets the current default data link
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection verified $class_name configuration
 	 * @param $dao_identifier string
 	 * @return Data_Link
-	 * @throws ReflectionException
 	 */
 	public static function get($dao_identifier)
 	{
@@ -240,6 +240,7 @@ class Dao implements Configurable
 			if (is_array($dao)) {
 				$class_name = $dao[Configuration::CLASS_NAME];
 				unset($dao[Configuration::CLASS_NAME]);
+				/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
 				$dao = self::$list[$dao_identifier] = Builder::create($class_name, [$dao]);
 			}
 		}

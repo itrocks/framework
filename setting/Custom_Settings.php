@@ -10,7 +10,6 @@ use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\User;
-use ReflectionException;
 
 /**
  * Custom settings objects can be loaded and saved from user configuration
@@ -62,6 +61,7 @@ abstract class Custom_Settings
 	/**
 	 * Get current session / user custom settings object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string class name that identifies setting
 	 * @param $feature    string
 	 * @return static
@@ -74,6 +74,7 @@ abstract class Custom_Settings
 			$custom_settings = $setting->value;
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection */
 			$custom_settings = Builder::create(get_called_class(), [$class_name]);
 			$setting->value  = $custom_settings;
 		}
@@ -83,6 +84,7 @@ abstract class Custom_Settings
 
 	//---------------------------------------------------------------------------- currentUserSetting
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $feature    string
 	 * @return User_Setting
@@ -93,6 +95,7 @@ abstract class Custom_Settings
 		// use a search array with Func::equal() for SQL optimization
 		$code   = $class_name . DOT . static::customId($feature);
 		$search = ['code' => Func::equal($code), 'user' => User::current()];
+		/** @noinspection PhpUnhandledExceptionInspection */
 		/** @var $setting User_Setting */
 		$setting = Dao::searchOne($search, User_Setting::class)
 			?: Builder::create(User_Setting::class, [$code]);
@@ -132,11 +135,12 @@ abstract class Custom_Settings
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
-	 * @throws ReflectionException
 	 */
 	public function getClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection */
 		return new Reflection_Class($this->getClassName());
 	}
 
@@ -193,6 +197,7 @@ abstract class Custom_Settings
 	 *
 	 * If no Custom_Settings named $name is stored, a new one will be returned
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $feature    string
 	 * @param $name       string
@@ -204,6 +209,7 @@ abstract class Custom_Settings
 		$setting         = Search_Object::create(Setting::class);
 		$setting->code   = $class_name . DOT . static::customId($feature) . ($name ? (DOT . $name) : '');
 		$setting         = Dao::searchOne($setting);
+		/** @noinspection PhpUnhandledExceptionInspection get_called_class */
 		$custom_settings = isset($setting)
 			? $setting->value
 			: Builder::create(get_called_class(), [$class_name]);

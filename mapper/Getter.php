@@ -78,7 +78,6 @@ abstract class Getter
 	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
 	 *        but can be omitted if foreign class is a Component
 	 * @return object[]
-	 * @throws Exception
 	 * @throws ReflectionException
 	 */
 	public static function & getCollection(
@@ -124,6 +123,7 @@ abstract class Getter
 					if ($is_component) {
 						/** @var $search_element Component */
 						$search_element->setComposite($object, $property_name);
+						/** @noinspection PhpUnhandledExceptionInspection already verified */
 						$link_properties_names = (new Link_Class($class_name))->getUniquePropertiesNames();
 						$options               = [Dao::sort()];
 						if ($property_name) {
@@ -136,6 +136,7 @@ abstract class Getter
 					}
 					// when element class is not a component and a property name was found
 					elseif ($property_name) {
+						/** @noinspection PhpUnhandledExceptionInspection get_class(...), $property_name */
 						$property   = new Reflection_Property(get_class($search_element), $property_name);
 						$accessible = $property->isPublic();
 						if (!$accessible) {
@@ -206,15 +207,16 @@ abstract class Getter
 	 * Gets final class names of an extensible class
 	 * This uses Dependency cache
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return string[]
-	 * @throws ReflectionException
 	 */
 	private static function getFinalClasses($class_name)
 	{
 		$class_names = [];
 		$search = ['dependency_name' => $class_name, 'type' => Dependency::T_EXTENDS];
 		foreach (Dao::search($search, Dependency::class) as $dependency) {
+			/** @noinspection PhpUnhandledExceptionInspection $dependency must always be valid */
 			/** @var $dependency Dependency */
 			$class = new Reflection_Class($dependency->class_name);
 			if (!$class->isAbstract()) {
@@ -231,9 +233,8 @@ abstract class Getter
 	 *
 	 * @param $stored   object[] actual value of the property (will be returned if not null)
 	 * @param $object   object the parent object
-	 * @param $property string|Reflection_Property the source property (or name) for map reading
+	 * @param $property Reflection_Property|string the source property (or name) for map reading
 	 * @return Component[]
-	 * @throws Exception
 	 * @throws ReflectionException
 	 */
 	public static function & getMap(array &$stored = null, $object, $property)
@@ -243,11 +244,14 @@ abstract class Getter
 				if (!($property instanceof Reflection_Property)) {
 					$property = new Reflection_Property(get_class($object), $property);
 				}
-				$dao               = Dao::get($property->getAnnotation('dao')->value);
-				$class_name        = get_class($object);
-				$linked_class_name = (new Link_Class($class_name))->getLinkedClassName();
+				$dao        = Dao::get($property->getAnnotation('dao')->value);
+				$class_name = get_class($object);
+				/** @noinspection PhpUnhandledExceptionInspection $class_name is a get_class() */
+				$link_class        = new Link_Class($class_name);
+				$linked_class_name = $link_class->getLinkedClassName();
 				if ($linked_class_name) {
-					$object     = (new Link_Class($class_name))->getCompositeProperty()->getValue($object);
+					/** @noinspection PhpUnhandledExceptionInspection valid $object & getCompositeProperty */
+					$object     = $link_class->getCompositeProperty()->getValue($object);
 					$class_name = $linked_class_name;
 				}
 				$element_type = $property->getType()->getElementType();
@@ -276,7 +280,7 @@ abstract class Getter
 	 * @param $object     object the parent object
 	 * @param $property   string|Reflection_Property the parent property
 	 * @return object
-	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function getObject(&$stored, $class_name, $object = null, $property = null)
 	{
@@ -286,7 +290,7 @@ abstract class Getter
 			}
 			elseif (is_string($property) && is_object($object)) {
 				$property_name = $property;
-				$property      = new Reflection_Property(get_class($object), $property_name);
+				$property = new Reflection_Property(get_class($object), $property_name);
 			}
 			if ($property && $property->getAnnotation('component')->value) {
 				$foreign_property_name = Foreign_Annotation::of($property)->value;
@@ -309,8 +313,7 @@ abstract class Getter
 					&& !Store_Annotation::of($property)->isFalse()
 				) {
 					if (Store_Annotation::of($property)->isGz()) {
-						/** @noinspection PhpUsageOfSilenceOperatorInspection if not deflated */
-						$inflated = @gzinflate($stored);
+						$inflated = gzinflate($stored);
 						if ($inflated !== false) {
 							$stored = $inflated;
 						}
@@ -356,10 +359,10 @@ abstract class Getter
 
 	//---------------------------------------------------------------------------------- schemaDecode
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored   array The object stored into an array : [$property_name => $value]
 	 * @param $property Reflection_Property
 	 * @return object
-	 * @throws Exception
 	 */
 	private static function schemaDecode(array $stored, Reflection_Property $property)
 	{
@@ -380,6 +383,7 @@ abstract class Getter
 			$arrays_of_objects = [];
 			foreach ($stored_array as $property_name => $stored_value) {
 				if (is_array($stored_value)) {
+					/** @noinspection PhpUnhandledExceptionInspection stored data is valid */
 					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->getType()->isClass() && $property->getType()->isMultiple()) {
 						$property_class_name = $property->getType()->getElementTypeAsString();
@@ -399,6 +403,7 @@ abstract class Getter
 			foreach ($arrays_of_objects as $property_name => $value) {
 				unset($stored_array[$property_name]);
 			}
+			/** @noinspection PhpUnhandledExceptionInspection stored array is valid */
 			$stored = Builder::fromArray($class_name, $stored_array);
 			foreach ($arrays_of_objects as $property_name => $value) {
 				$stored->$property_name = $value;

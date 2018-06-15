@@ -119,7 +119,6 @@ class Builder implements Activable, Serializable
 	 * @param $properties_values array some properties values for the cloned object
 	 * @param $same_identifier   boolean
 	 * @return object
-	 * @throws Exception
 	 * @throws ReflectionException
 	 */
 	public static function createClone(
