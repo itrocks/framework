@@ -267,28 +267,34 @@ $('document').ready(function()
 
 			updateCount();
 
-			// Selection buttons
-			var check_select_buttons = function(check, type)
+			//------------------------------------------------------------------------------ selectAction
+			/**
+			 * Select / deselect buttons
+			 *
+			 * @param select boolean true to select, false to deselect
+			 * @param type   string  @values all, matching, visible
+ 			 */
+			var selectAction = function(select, type)
 			{
 				if (type === 'all') {
 					// Re-initialize selection
 					excluded_selection[$this.id] = [];
-					select_all[$this.id]         = check;
+					select_all[$this.id]         = select;
 					selection[$this.id]          = [];
-					$this.find('table>tbody>tr>td>input[type=checkbox]').prop('checked', check);
+					$this.find('table>tbody>tr>td>input[type=checkbox]').prop('checked', select);
 				}
 				else {
 					$this.find('table>tbody>tr>td>input[type=checkbox]').each(function () {
 						var checkbox = $(this);
-						checkbox.prop('checked', check);
+						checkbox.prop('checked', select);
 						checkbox.change();
 					});
 				}
-
 				updateCount();
 				return false;
 			};
 
+			//------------------------------------------------------------------- .select_count ... click
 			$this.find('.select_count>.objects').click(function ()
 			{
 				return false;
@@ -296,22 +302,22 @@ $('document').ready(function()
 
 			$this.find('.select_count>ul>li>.deselect_all').click(function ()
 			{
-				return check_select_buttons(false, 'all');
+				return selectAction(false, 'all');
 			});
 
 			$this.find('.select_count>ul>li>.deselect_visible').click(function ()
 			{
-				return check_select_buttons(false);
+				return selectAction(false);
 			});
 
 			$this.find('.select_count>ul>li>.select_all').click(function ()
 			{
-				return check_select_buttons(true, 'all');
+				return selectAction(true, 'all');
 			});
 
 			$this.find('.select_count>ul>li>.select_visible').click(function ()
 			{
-				return check_select_buttons(true);
+				return selectAction(true);
 			});
 
 			$this.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
@@ -321,10 +327,10 @@ $('document').ready(function()
 					select_all:         $this.find('input[name=select_all]').val(),
 					selection:          $this.find('input[name=selection]').val()
 				};
-				var form = document.createElement("form");
+				var form = document.createElement('form');
 				// remember to change me :
 				form.action = event.target;
-				form.method = "post";
+				form.method = 'post';
 				for (var key in data) {
 					var input   = document.createElement('input');
 					input.name  = key;
