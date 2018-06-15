@@ -389,8 +389,9 @@ class Import_Array
 			);
 			switch ($this->properties_link[$property_path]) {
 				case Link_Annotation::COLLECTION:
-					$object = $this->createArrayReference($class->class_name, $search);
-					$array[key($array)][$property_path] = $object;
+					throw new View_Exception(
+						'Component objects import not implemented (' . $property_path . ')'
+					);
 					break;
 				case Link_Annotation::MAP:
 					$object = $this->importSearchObject($search, $row, $class, $class_properties_column);
