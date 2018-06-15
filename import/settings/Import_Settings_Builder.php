@@ -17,8 +17,9 @@ abstract class Import_Settings_Builder
 	//---------------------------------------------------------------------------------- autoIdentify
 	/**
 	 * If no property contains the character '*' in import file, automatically detects which property
-	 * names are used to identify records using the @representative classes annotation
+	 * names are used to identify records using the representative classes annotation
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
 	 * @return array $identified = boolean[string $property_path][integer $position]
@@ -32,6 +33,7 @@ abstract class Import_Settings_Builder
 		}
 		$auto_identify = [];
 		foreach ($properties_path as $property_path) {
+			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 			$class          = new Reflection_Class($class_name);
 			$representative = Representative_Annotation::of($class)->values();
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
@@ -42,6 +44,7 @@ abstract class Import_Settings_Builder
 				if (isset($property)) {
 					$type = $property->getType();
 					if ($type->isClass()) {
+						/** @noinspection PhpUnhandledExceptionInspection type elements are valid */
 						$class          = new Reflection_Class($type->getElementTypeAsString());
 						$representative = Representative_Annotation::of($class)->values();
 					}
@@ -125,6 +128,7 @@ abstract class Import_Settings_Builder
 	/**
 	 * Builds import settings using a recursive array coming from an input form
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $worksheet array
 	 * @return Import_Settings
 	 */
@@ -146,6 +150,7 @@ abstract class Import_Settings_Builder
 				else {
 					// property paths for next elements
 					$property_path = str_replace('>', DOT, $property_path);
+					/** @noinspection PhpUnhandledExceptionInspection class and property are valid */
 					$property      = new Reflection_Property($main_class_name, $property_path);
 					$class_name    = $property->getType()->getElementTypeAsString();
 				}
@@ -159,6 +164,7 @@ abstract class Import_Settings_Builder
 
 	//-------------------------------------------------------------------------------- buildFormClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string
 	 * @param $property_path string
 	 * @param $class         array
@@ -172,6 +178,7 @@ abstract class Import_Settings_Builder
 		);
 		if (isset($class['constants']) && is_array($class['constants'])) {
 			foreach ($class['constants'] as $constant) {
+				/** @noinspection PhpUnhandledExceptionInspection property for constants are valid */
 				$import_class->constants[$constant['name']] = new Reflection_Property_Value(
 					$import_class->class_name, $constant['name'], $constant['value'], true
 				);

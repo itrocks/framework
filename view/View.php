@@ -8,7 +8,6 @@ use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Template;
-use ReflectionException;
 
 /**
  * The View class offers static methods to call views from the application main view engine
@@ -48,6 +47,7 @@ class View implements Configurable
 
 	//----------------------------------------------------------------------------------- executeView
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $view             string
 	 * @param $view_method_name string
 	 * @param $parameters       array
@@ -56,13 +56,13 @@ class View implements Configurable
 	 * @param $class_name       string
 	 * @param $feature_name     string
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	private static function executeView(
 		$view, $view_method_name, array $parameters, array $form, array $files, $class_name,
 		$feature_name
 	) {
 		$object = reset($parameters);
+		/** @noinspection PhpUnhandledExceptionInspection must call with a right $view class */
 		$view_object = (is_object($object) && isA($object, $view))
 			? reset($parameters)
 			: Builder::create($view);
@@ -78,7 +78,6 @@ class View implements Configurable
 	 * @param $template      string   if a specific template is set, the view named with it will be
 	 *                       searched into the view / feature namespace first
 	 * @return callable
-	 * @throws ReflectionException
 	 */
 	private static function getView($view_name, $feature_names, $template = null)
 	{
@@ -152,7 +151,6 @@ class View implements Configurable
 	 * @param $class_name   string  The context class name (class of the first parameter)
 	 * @param $feature_name string  The feature class name
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	public static function run(
 		array $parameters, array $form, array $files, $class_name, $feature_name

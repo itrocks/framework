@@ -30,10 +30,12 @@ class Import_Property
 
 	//------------------------------------------------------------------------------------ toProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
 	public function toProperty()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 		return new Reflection_Property($this->class, $this->name);
 	}
 

@@ -103,6 +103,7 @@ class Import_Settings extends Custom_Settings
 
 	//---------------------------------------------------------------------------------- setConstants
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $constants string[] key is the property path (can be translated or alias)
 	 */
 	public function setConstants(array $constants)
@@ -118,6 +119,7 @@ class Import_Settings extends Custom_Settings
 				? $property_path : substr($property_path, $i + 1);
 			$master_path = substr($property_path, 0, $i);
 			if (isset($this->classes[$master_path])) {
+				/** @noinspection PhpUnhandledExceptionInspection class name and property are valid */
 				$this->classes[$master_path]->constants[$property_name] = new Reflection_Property_Value(
 					$this->classes[$master_path]->class_name, $property_name, $value, true
 				);

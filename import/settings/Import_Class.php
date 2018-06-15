@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
-use ReflectionException;
 use Serializable;
 
 /**
@@ -107,16 +106,17 @@ class Import_Class implements Serializable
 
 	//----------------------------------------------------------------------------------- addConstant
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * Adds a new constant to the list : default value is empty and default name is random
-	 *
-	 * @throws ReflectionException
 	 */
 	public function addConstant()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		foreach (
 			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {
 			if (!$property->isStatic() && !isset($this->constants[$property->name])) {
+				/** @noinspection PhpUnhandledExceptionInspection $property is valid */
 				$property              = new Reflection_Property_Value($property->class, $property->name);
 				$property->final_class = $this->class_name;
 				$this->constants[$property->name] = $property;
@@ -130,8 +130,8 @@ class Import_Class implements Serializable
 	 * This cleanup method is called after loading and getting the current value
 	 * in order to avoid crashes when some components of the setting disappeared in the meantime.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
-	 * @throws ReflectionException
 	 */
 	public function cleanup()
 	{
@@ -157,6 +157,7 @@ class Import_Class implements Serializable
 				$changes_count ++;
 			}
 		}
+		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		foreach (
 			(new Reflection_Class($this->class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {
@@ -259,13 +260,15 @@ class Import_Class implements Serializable
 
 	//----------------------------------------------------------------------------------- unserialize
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized string
 	 */
 	public function unserialize($serialized)
 	{
 		foreach (unserialize($serialized) as $key => $value) {
-			if ($key == 'constants') {
+			if ($key === 'constants') {
 				foreach ($value as $constant_key => $constant_value) {
+					/** @noinspection PhpUnhandledExceptionInspection constants must be valid */
 					$this->constants[$constant_key] = new Reflection_Property_Value(
 						$constant_value['class'],
 						$constant_value['name'],

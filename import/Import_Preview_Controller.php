@@ -22,7 +22,6 @@ use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Button\Has_General_Buttons;
-use ReflectionException;
 use stdClass;
 
 /**
@@ -62,7 +61,6 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
@@ -76,6 +74,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
+						/** @noinspection PhpUnhandledExceptionInspection ::class */
 						/** @var $session_files Files */
 						$session_files = Builder::create(Files::class);
 					}
@@ -83,6 +82,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {
+							/** @noinspection PhpUnhandledExceptionInspection ::class */
 							$import_worksheet = Builder::create(Import_Worksheet::class, [
 								$worksheet_number ++,
 								Import_Settings_Builder::buildArray($worksheet, $class_name),

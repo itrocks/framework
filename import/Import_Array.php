@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Import;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
@@ -117,18 +116,21 @@ class Import_Array
 
 	//-------------------------------------------------------------------------- createArrayReference
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $search     array
 	 * @return array
-	 * @throws ReflectionException
 	 */
 	protected function createArrayReference($class_name, array $search = null)
 	{
-		$array      = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
+		/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
+		$array = (isset($search)) ? [Builder::fromArray($class_name, $search)] : null;
+		/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
 		$class      = new Link_Class($class_name);
 		$link_class = Class_\Link_Annotation::of($class)->value;
 		if ($link_class) {
 			$object                  = reset($array);
+			/** @noinspection PhpUnhandledExceptionInspection valid @link class_name */
 			$link_search             = Builder::create($link_class);
 			$composite_property_name = $class->getCompositeProperty()->name;
 			foreach (array_keys($class->getLinkedProperties()) as $property_name) {
@@ -205,7 +207,6 @@ class Import_Array
 	 * @param $feature_name string
 	 * @param $parameters   array
 	 * @return View_Exception
-	 * @throws ReflectionException
 	 */
 	public static function getException($feature_name, array $parameters)
 	{
@@ -250,7 +251,6 @@ class Import_Array
 	 * @param $array      array $value = string[integer $row_number][integer $column_number]
 	 * @param $class_name string class name : if set, will use current list settings properties alias
 	 * @return string[] $property_path = string[integer $column_number]
-	 * @throws Exception
 	 */
 	public static function getPropertiesFromArray(array &$array, $class_name = null)
 	{
@@ -338,9 +338,7 @@ class Import_Array
 	 * Beware : first row must contain property paths, and will be removed !
 	 *
 	 * @param $array array $value = string[$row_number][$column_number]
-	 * @throws ReflectionException
 	 * @throws View_Exception
-	 * @throws Exception
 	 */
 	public function importArray(array &$array)
 	{
@@ -377,7 +375,6 @@ class Import_Array
 	 *
 	 * @param $class Import_Class
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
-	 * @throws ReflectionException
 	 * @throws View_Exception
 	 */
 	protected function importArrayClass(Import_Class $class, array &$array)
@@ -415,7 +412,6 @@ class Import_Array
 	 * @param $class_properties_column integer[]
 	 * @return object
 	 * @throws View_Exception
-	 * @throws ReflectionException
 	 */
 	public function importSearchObject(
 		$search, array $row, Import_Class $class, array $class_properties_column
@@ -436,7 +432,7 @@ class Import_Array
 			}
 			elseif ($class->object_not_found_behaviour === 'tell_it_and_stop_import') {
 				$object = null;
-				throw $this->getException('notFound', ['class' => $class, 'search' => $search]);
+				throw static::getException('notFound', ['class' => $class, 'search' => $search]);
 			}
 			else {
 				$object = null;
@@ -444,7 +440,7 @@ class Import_Array
 		}
 		else {
 			$object = null;
-			throw $this->getException(
+			throw static::getException(
 				'multipleResults', ['class' => $class, 'found' => $found, 'search' => $search]
 			);
 		}
@@ -458,7 +454,6 @@ class Import_Array
 	 * @param $use_reverse_translation boolean if true, will try reverse translation of property names
 	 * @param $properties_alias        string[] $property_path = string[string $property_alias]
 	 * @return string
-	 * @throws Exception
 	 */
 	public static function propertyPathOf(
 		$class_name, $property_path, $use_reverse_translation = false, array $properties_alias = null
@@ -652,14 +647,15 @@ class Import_Array
 
 	//-------------------------------------------------------------------------------- writeNewObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $row                     array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]|string[]
 	 * @return object
-	 * @throws ReflectionException
 	 */
 	protected function writeNewObject(array $row, Import_Class $class, array $class_properties_column)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection import class must be valid */
 		$object          = Builder::create($class->class_name);
 		$only_properties = [];
 		foreach (array_keys($class->identify_properties) as $property_name) {
@@ -686,6 +682,7 @@ class Import_Array
 			$this->simulateNew($class, $object);
 		}
 		// class with @link annotation will crash without restricting the properties here :
+		/** @noinspection PhpUnhandledExceptionInspection import class must be valid */
 		$is_link_class = Link_Annotation::of(new Link_Class($class->class_name))->value;
 		Dao::write($object, $is_link_class ? Dao::only($only_properties) : []);
 		return $object;
