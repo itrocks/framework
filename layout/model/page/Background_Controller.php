@@ -26,10 +26,10 @@ class Background_Controller implements Feature_Controller
 		/** @var $page Page */
 		$page = $parameters->getMainObject();
 		if ($page && $page->background) {
-			$file_names = (new PDF($page->background->temporary_file_name))->toSvg();
+			$file_names = (new PDF($page->background->temporary_file_name))->toPng();
 			$file_name  = reset($file_names);
 			if ($file_name) {
-				header('content-type: image/svg+xml');
+				header('content-type: image/png');
 				header('content-length: ' . filesize($file_name));
 				return file_get_contents($file_name);
 			}
