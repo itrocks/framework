@@ -134,8 +134,8 @@ class Manager implements IManager, Serializable
 				/** @noinspection PhpUndefinedFieldInspection */
 				$plugin->plugin_configuration = $serialized;
 			}
-			// serialized object or configuration
-			elseif (is_string($serialized)) {
+			// serialized object or configuration or configuration constant
+			elseif (is_string($serialized) || is_numeric($serialized)) {
 				if ((is_a($class_name, Serializable::class, true))) {
 					$plugin = unserialize($serialized);
 				}
