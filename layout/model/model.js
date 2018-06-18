@@ -110,6 +110,17 @@ $(document).ready(function()
 			}
 		});
 
+		//------------------------------------------------------------------ $editor .field:contains(#)
+		/**
+		 * This is a patch because the template engine does not support {text} typing
+		 */
+		$editor.find('.field:contains(#)').each(function() {
+			var $field = $(this);
+			if ($field.text().beginsWith('#')) {
+				$field.text('{' + $field.text().substr(1) + '}');
+			}
+		});
+
 		//--------------------------------------------------------------- $model_window #free-text blur
 		/**
 		 * Mark #free-text as focused until the end of the current events execution loop
