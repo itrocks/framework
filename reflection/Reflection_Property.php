@@ -553,15 +553,17 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Calculate if the property is visible
 	 *
-	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set
+	 * @param $hide_empty_test boolean If false, will be visible even if @user hide_empty is set
+	 * @param $hidden_test boolean If false, will be visible event if @user hidden is set
+	 * @param $invisible_test boolean If false, will be visible event if @user invisible is set
 	 * @return boolean
 	 */
-	public function isVisible($hide_empty_test = true)
+	public function isVisible($hide_empty_test = true, $hidden_test = true, $invisible_test = true)
 	{
 		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$this->isStatic()
-			&& !$user_annotation->has(User_Annotation::HIDDEN)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& (!$hidden_test     || !$user_annotation->has(User_Annotation::HIDDEN))
+			&& (!$invisible_test  || !$user_annotation->has(User_Annotation::INVISIBLE))
 			&& (!$hide_empty_test || !$user_annotation->has(User_Annotation::HIDE_EMPTY));
 	}
 
