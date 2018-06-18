@@ -41,9 +41,14 @@ $(document).ready(function()
 	};
 
 	//-------------------------------------------------------------------------------------- register
-	var register = function()
+	/**
+	 * @param $tools   jQuery
+	 * @param settings object
+	 */
+	var register = function($tools, settings)
 	{
 		this.register({ attribute: 'title' });
+		this.register($tools.find('#align'), 'style', 'text-align', null, settings.default.align);
 	};
 
 	//-------------------------------------------------------------------------------- selectCallback
@@ -89,7 +94,7 @@ $(document).ready(function()
 			var $page  = $(this);
 			var $input = pageLayoutInput($page);
 			$page.documentDesigner({
-				default: { size: 4 },
+				default: { align: 'left', size: 4 },
 				drag:    dragCallback,
 				drop:    dropCallback,
 				fields:  {
