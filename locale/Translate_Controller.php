@@ -23,7 +23,7 @@ class Translate_Controller implements Feature_Controller
 	{
 		if ($form) {
 			$text    = $form['text'];
-			$context = $form['context'];
+			$context = isset($form['context']) ? $form['context'] : '';
 		}
 		else {
 			$text    = $parameters->shift();
