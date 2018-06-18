@@ -9,6 +9,7 @@ use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -100,13 +101,15 @@ class Installer
 
 	//--------------------------------------------------------------------------------------- install
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin Installable|string plugin object or class name
 	 */
 	public function install($plugin)
 	{
 		if (is_string($plugin)) {
+			/** @noinspection PhpUnhandledExceptionInspection $plugin must be a valid class name */
 			$plugin = is_a($plugin, Installable::class, true)
-				? Builder::create($plugin)
+				? Builder::create($plugin, is_a($plugin, Configurable::class, true) ? [[]] : [])
 				: Builder::create(Implicit::class, [$plugin]);
 		}
 		$plugin->install($this);
