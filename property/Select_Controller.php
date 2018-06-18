@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
+use ReflectionException;
 
 /**
  * The property select controller is a class properties tree view controller.
@@ -40,6 +41,7 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * Filter a list of properties by removing properties that should not be visible
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $source_properties Reflection_Property_Value[]
 	 * @return Reflection_Property_Value[]
 	 */
@@ -56,8 +58,9 @@ class Select_Controller implements Feature_Controller
 					|| ($property->name !== $this->composite_link_property->name)
 				)
 				&& $property->isPublic()
-				&& $property->isVisible(false)
+				&& $property->isVisible(false, false)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$properties[$property_name] = new Reflection_Property($property->class, $property->name);
 			}
 		}
@@ -68,6 +71,7 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * Get list of properties to display for a class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class                Reflection_Class
 	 * @param $composite_class_name string
 	 * @return Reflection_Property_Value[]
@@ -85,6 +89,7 @@ class Select_Controller implements Feature_Controller
 			$this->composite_property = null;
 		}
 		if (Link_Annotation::of($class)->value) {
+			/** @noinspection PhpUnhandledExceptionInspection valid $class */
 			$link_class                    = new Link_Class($class->name);
 			$this->composite_link_property = $link_class->getCompositeProperty();
 			$properties = $this->filterProperties($link_class->getProperties([T_EXTENDS, T_USE]));
@@ -105,11 +110,13 @@ class Select_Controller implements Feature_Controller
 	 * @param $form  array not used
 	 * @param $files array[] not used
 	 * @return mixed
+	 * @throws ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
-		$class      = new Reflection_Class($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection $class_name is always valid */
+		$class = new Reflection_Class($class_name);
 		if (List_Annotation::of($class)->has(List_Annotation::LOCK)) {
 			return Loc::tr('You are not allowed to customize this list');
 		}
@@ -125,6 +132,7 @@ class Select_Controller implements Feature_Controller
 		else {
 			$top_property = new Reflection_Property($class_name, $property_path);
 			if ($top_property->getType()->isClass()) {
+				/** @noinspection PhpUnhandledExceptionInspection $top_property already tested */
 				$properties = $this->getProperties(
 					new Reflection_Class($top_property->getType()->getElementTypeAsString()),
 					$top_property->final_class

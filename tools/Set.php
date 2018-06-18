@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Tools;
 use Iterator;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 
 /**
  * The default Set class for set of objects
@@ -32,7 +31,6 @@ class Set implements Iterator
 	 *
 	 * @param $element_class_name string   the class name
 	 * @param $elements           object[] the set can be initialized with this set of elements
-	 * @throws ReflectionException
 	 */
 	public function __construct($element_class_name = null, array $elements = [])
 	{
@@ -83,11 +81,12 @@ class Set implements Iterator
 	/**
 	 * Get element class reflection object for the current element class name
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
-	 * @throws ReflectionException
 	 */
 	public function elementClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $element_class_name must always be valid */
 		return new Reflection_Class($this->element_class_name);
 	}
 
@@ -97,7 +96,6 @@ class Set implements Iterator
 	 *
 	 * @param $class_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function elementClassNameOf($class_name)
 	{
@@ -161,16 +159,17 @@ class Set implements Iterator
 	 * If this class does not exist, this will return a generic Set object constructed with
 	 * the matching element class name.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $elements   object[]
 	 * @return Set
-	 * @throws ReflectionException
 	 */
 	public static function instantiate($class_name, array $elements = [])
 	{
 		if (class_exists($class_name) && ($class_name instanceof Set)) {
 			return new $class_name($elements);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection trait $class_name exists tested */
 		elseif (
 			trait_exists($class_name)
 			&& ($extends_class = (new Reflection_Class($class_name))->getListAnnotation('extends')->value)
@@ -233,7 +232,6 @@ class Set implements Iterator
 	 * Get the first object, or a Reflection_Class of the object's class if no element
 	 *
 	 * @return object|Reflection_Class
-	 * @throws ReflectionException
 	 */
 	public function object()
 	{
