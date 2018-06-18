@@ -823,7 +823,7 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		foreach ($properties_path as $key => $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection property must exist at this step */
 			$property = new Reflection_Property($class_name, $property_path);
-			if (!$property->isPublic() || !$property->isVisible(false)) {
+			if (!$property->isPublic() || !$property->isVisible(false, false)) {
 				unset($properties_path[$key]);
 			}
 			$history_class_name = $property->getFinalClassName();

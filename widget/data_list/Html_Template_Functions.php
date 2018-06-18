@@ -47,7 +47,7 @@ class Html_Template_Functions extends Edit\Html_Template_Functions
 	 */
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
-		return $property->isVisible();
+		return $property->isVisible(false, false);
 	}
 
 }

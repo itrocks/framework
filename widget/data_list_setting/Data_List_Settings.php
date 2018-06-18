@@ -96,6 +96,7 @@ class Data_List_Settings extends Custom_Settings
 
 	//----------------------------------------------------------------------------------- addProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $add_property_path   string
 	 * @param $where               string 'after', 'before' or null
 	 * @param $where_property_path string reference property path for $where
@@ -103,6 +104,7 @@ class Data_List_Settings extends Custom_Settings
 	public function addProperty($add_property_path, $where = 'after', $where_property_path = null)
 	{
 		$this->initProperties();
+		/** @noinspection PhpUnhandledExceptionInspection ::class */
 		$add_property = isset($this->properties[$add_property_path])
 			? $this->properties[$add_property_path]
 			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
@@ -132,6 +134,7 @@ class Data_List_Settings extends Custom_Settings
 	/**
 	 * Cleanup outdated properties and invisible properties from the list setting
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return integer number of changes made during cleanup : if 0, then cleanup was not necessary
 	 */
 	public function cleanup()
@@ -141,12 +144,13 @@ class Data_List_Settings extends Custom_Settings
 		$changes_count = 0;
 		// properties
 		foreach (array_keys($this->properties) as $property_path) {
+			/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
 			$reflection_property = (Reflection_Property::exists($class_name, $property_path))
 				? new Reflection_Property($class_name, $property_path) : null;
 			if (
 				!$reflection_property
 				|| !$reflection_property->isPublic()
-				|| !$reflection_property->isVisible(false)
+				|| !$reflection_property->isVisible(false, false)
 			) {
 				unset($this->properties[$property_path]);
 				$changes_count ++;
@@ -181,6 +185,7 @@ class Data_List_Settings extends Custom_Settings
 
 	//-------------------------------------------------------------------------------- initProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
@@ -205,17 +210,21 @@ class Data_List_Settings extends Custom_Settings
 		if (!$this->properties) {
 			if ($filter_properties) {
 				foreach ($filter_properties as $property_path) {
+					/** @noinspection PhpUnhandledExceptionInspection ::class */
 					$this->properties[$property_path] = Builder::create(
 						Property::class, [$class_name, $property_path]
 					);
 				}
 			}
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
 				foreach (
 					List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
 				) {
+					/** @noinspection PhpUnhandledExceptionInspection valid $class_name::$property_name */
 					$property = new Reflection_Property($class_name, $property_name);
 					if ($property->isPublic() && !$property->isStatic()) {
+						/** @noinspection PhpUnhandledExceptionInspection ::class */
 						$this->properties[$property->path] = Builder::create(
 							Property::class, [$class_name, $property->path]
 						);
