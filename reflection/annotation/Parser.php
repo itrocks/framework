@@ -241,7 +241,8 @@ class Parser
 		$i += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
-			case SP: case TAB:
+			case SP:
+			case TAB:
 				$i ++;
 				$j = strlen($doc_comment);
 				$next_annotation = strpos($doc_comment, SP . '* @', $i);
@@ -255,7 +256,8 @@ class Parser
 				}
 				$value = trim(preg_replace('%\s*\n\s+\*\s*%', SP, substr($doc_comment, $i, $j - $i)));
 				break;
-			case CR: case LF:
+			case CR:
+			case LF:
 				$value = true;
 				break;
 			default:
