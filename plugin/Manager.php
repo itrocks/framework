@@ -5,7 +5,6 @@ use ITRocks\Framework\AOP\Weaver;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 use Serializable;
 
 /**
@@ -43,7 +42,6 @@ class Manager implements IManager, Serializable
 	 *
 	 * @param $class_name string
 	 * @return Activable
-	 * @throws ReflectionException
 	 */
 	public function activate($class_name)
 	{
@@ -55,7 +53,6 @@ class Manager implements IManager, Serializable
 	//------------------------------------------------------------------------------- activatePlugins
 	/**
 	 * @param $level string
-	 * @throws ReflectionException
 	 */
 	public function activatePlugins($level = null)
 	{
@@ -95,12 +92,12 @@ class Manager implements IManager, Serializable
 	 * Gets a plugin object
 	 * If no plugin of this class name exists, the class is instantiated and the plugin registered
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection $class_name must be a valid class name
 	 * @param $class_name string
 	 * @param $level      string
 	 * @param $register   boolean
 	 * @param $activate   boolean
 	 * @return Plugin
-	 * @throws ReflectionException
 	 */
 	public function get($class_name, $level = null, $register = false, $activate = false)
 	{
@@ -108,10 +105,12 @@ class Manager implements IManager, Serializable
 		if (isset($this->plugins[$class_name])) {
 			$plugin = $this->plugins[$class_name];
 		}
+		/** @noinspection PhpUnhandledExceptionInspection */
 		elseif (
 			!($constructor = (new Reflection_Class($class_name))->getConstructor())
 			|| !$constructor->getNumberOfParameters()
 		) {
+			/** @noinspection PhpUnhandledExceptionInspection */
 			$plugin = Builder::create($class_name);
 		}
 		else {
@@ -130,6 +129,7 @@ class Manager implements IManager, Serializable
 			$serialized = $plugin;
 			// configuration
 			if (is_array($serialized)) {
+				/** @noinspection PhpUnhandledExceptionInspection */
 				$plugin = Builder::create($class_name, [$serialized]);
 				/** @noinspection PhpUndefinedFieldInspection */
 				$plugin->plugin_configuration = $serialized;
@@ -141,12 +141,14 @@ class Manager implements IManager, Serializable
 				}
 				else {
 					$configuration = strpos($serialized, ':') ? unserialize($serialized) : $serialized;
-					$plugin        = Builder::create($class_name, [$configuration]);
+					/** @noinspection PhpUnhandledExceptionInspection */
+					$plugin = Builder::create($class_name, [$configuration]);
 					/** @noinspection PhpUndefinedFieldInspection */
 					$plugin->plugin_configuration = $configuration;
 				}
 			}
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection */
 				$plugin = Builder::create($class_name);
 			}
 			// store plugin object into manager
@@ -210,7 +212,6 @@ class Manager implements IManager, Serializable
 	/**
 	 * @param $class_name string the plugin class name
 	 * @return array the plugin configuration, if set
-	 * @throws ReflectionException
 	 */
 	public function getConfiguration($class_name)
 	{
@@ -241,7 +242,6 @@ class Manager implements IManager, Serializable
 	 * @param $configuration array|boolean
 	 * @param $register      boolean
 	 * @return Plugin
-	 * @throws ReflectionException
 	 */
 	public function register($class_name, $level, $configuration = true, $register = true)
 	{
@@ -296,7 +296,6 @@ class Manager implements IManager, Serializable
 	 * @param $plugin     object the instance of the plugin to set (or to remove if null)
 	 * @param $class_name string default is the class of $plugin
 	 * @return object the replaced plugin if there was one for the given class name
-	 * @throws ReflectionException
 	 */
 	public function set($plugin, $class_name = null)
 	{
