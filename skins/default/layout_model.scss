@@ -1,8 +1,12 @@
 
 .model.window {
 
-	&.output .toolbox {
-		display: none;
+	&.output {
+		.snap.line,
+		.toolbox
+		{
+			display: none;
+		}
 	}
 
 	> .editor {
