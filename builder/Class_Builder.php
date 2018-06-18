@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -53,7 +54,7 @@ class Class_Builder
 					foreach ($class->getListAnnotation('implements')->values() as $implements) {
 						$interfaces[$implements] = $implements;
 					}
-					$extends_annotations = $class->getListAnnotations('extends');
+					$extends_annotations = Extends_Annotation::allOf($class);
 					$level               = 0;
 					foreach ($extends_annotations as $extends_annotation) {
 						foreach ($extends_annotation->values() as $extends) {
