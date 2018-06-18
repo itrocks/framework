@@ -25,9 +25,23 @@
 
 			<div class="toolbox" data-class="{class_name}">
 
-				<div class="tools">
+				<div class="add tools">
+					<h3>|Add element|</h3>
+					<ul>
+						<li><span class="field">|Free text|</span></li>
+						<li><span class="rectangle field">|Rectangle|</span></li>
+						<li><span class="horizontal line field">|Horizontal line|</span></li>
+						<li><span class="vertical line field">|Vertical line|</span></li>
+					</ul>
+				</div>
+
+				<div class="selected tools">
 					<h3>|Selected element|</h3>
 					<ul>
+						<li>
+							<label for="free-text">|text|</label>
+							<textarea class="auto_height auto_width" id="free-text"></textarea>
+						</li>
 						<li>
 							<label for="format">|format|</label>
 							<select id="format">
@@ -37,7 +51,7 @@
 						</li>
 						<li>
 							<label for="size">|size|</label>
-							<input id="size" type="number">
+							<input id="size">
 						</li>
 					</ul>
 				</div>

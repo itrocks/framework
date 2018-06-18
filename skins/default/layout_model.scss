@@ -41,6 +41,10 @@
 			left: 11px;
 			position: absolute;
 			top: 11px;
+
+			.field {
+				white-space: pre-line;
+			}
 		}
 
 		.tool {
@@ -120,6 +124,7 @@
 
 						> label {
 							padding-right: .5ch;
+							vertical-align: middle;
 						}
 					}
 				}
