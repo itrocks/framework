@@ -15,6 +15,7 @@
 		"doctrine/instantiator":                 "1.0.*",
 		"easybook/geshi":                        "1.*",
 		"html2text/html2text":                   "4.*",
+		"intelogie/pdf.js":                      "dev-master",
 		"itrocks/datetimepicker":                "dev-master",
 		"jquery-form/form":                      "3.*",
 		"knplabs/gaufrette":                     "^0.3.1",
