@@ -16,7 +16,8 @@ use ITRocks\Framework\View;
  *
  * Page ordering : 1 (first), 2, 3, ..., default is 0 (middle), ..., -3, -2, -1 (last).
  *
- * @override ordering @signed
+ * @override ordering @max_length 2 @var string
+ * @property string ordering
  * @store_name layout_model_pages
  */
 class Page
@@ -25,9 +26,10 @@ class Page
 	use Has_Ordering;
 
 	//----------------------------------------------------------- page position information constants
-	const FIRST  = 1;
-	const LAST   = -1;
-	const MIDDLE = 0;
+	const ALL    = 'A';
+	const FIRST  = '1';
+	const LAST   = '-1';
+	const MIDDLE = '0';
 
 	//----------------------------------------------------------------------------------- $background
 	/**
@@ -105,6 +107,7 @@ class Page
 	public function orderingCaption()
 	{
 		switch ($this->ordering) {
+			case static::ALL:    return 'all';
 			case static::FIRST:  return 'first';
 			case static::LAST:   return 'last';
 			case static::MIDDLE: return 'middle';
@@ -123,15 +126,20 @@ class Page
 	 * @example -1 => 1999 (last)
 	 * @return integer
 	 */
-	public function orderingToSortable()
+	protected function orderingToSortable()
 	{
-		if (!$this->ordering) {
+		$ordering = $this->ordering;
+		if ($ordering === static::ALL) {
+			return -1000;
+		}
+		$ordering = intval($ordering);
+		if (!$ordering) {
 			return 1000;
 		}
-		if ($this->ordering < 0) {
-			return $this->ordering + 2000;
+		if ($ordering < 0) {
+			return $ordering + 2000;
 		}
-		return $this->ordering;
+		return $ordering;
 	}
 
 	//------------------------------------------------------------------------------------------ sort
