@@ -113,6 +113,7 @@ $(document).ready(function()
 				var data      = JSON.parse(json_data.toString());
 				$page.documentDesigner('setData', data);
 			}
+			$page.fileUpload();
 		});
 
 		//------------------------------------------------------------------ $editor .field:contains(#)

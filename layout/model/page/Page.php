@@ -5,6 +5,8 @@ use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Tools\Has_Ordering;
+use ITRocks\Framework\Tools\Paths;
+use ITRocks\Framework\View;
 
 /**
  * A layout model page : a model linked to a unique page background and design
@@ -82,6 +84,16 @@ class Page
 	public function __toString()
 	{
 		return strval($this->model) . SP . strval($this->ordering);
+	}
+
+	//---------------------------------------------------------------------------- backgroundImageUrl
+	/**
+	 * @return string
+	 */
+	public function backgroundImageUrl()
+	{
+		$hash = $this->background ? $this->background->hash : null;
+		return Paths::$uri_base . SL . View::link($this, 'background', null, $hash);
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption
