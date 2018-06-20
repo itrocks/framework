@@ -101,6 +101,7 @@ $(document).ready(function()
 
 		var $designer  = $editor.find('.designer');
 		var $free_text = $model_window.find('#free-text');
+		var $size      = $model_window.find('#size');
 
 		$designer.each(function() {
 			var $page  = $(this);
@@ -160,6 +161,36 @@ $(document).ready(function()
 			if ($selected.length) {
 				$selected.text($free_text.val());
 			}
+		});
+
+		//----------------------------------------------------------------- $model_window #size keydown
+		$size.keydown(function(event)
+		{
+			var $size = $(this);
+
+			var DOWN = 40;
+			var UP   = 38;
+
+			var distance = event.ctrlKey ? 1 : .2;
+
+			// up / down arrows increment / decrement the size from .1
+			if (event.keyCode === DOWN) {
+				$size.val(Math.round(10 * (parseFloat($size.val()) - distance)) / 10);
+				event.preventDefault();
+				event.stopPropagation();
+			}
+			if (event.keyCode === UP) {
+				$size.val(Math.round(10 * (parseFloat($size.val()) + distance)) / 10);
+				event.preventDefault();
+				event.stopPropagation();
+			}
+		});
+
+		//------------------------------------------------------------------- $model_window #size keyup
+		$size.keyup(function()
+		{
+			// once size changes, resize the zone into the designer / html-links
+			$(this).change();
 		});
 
 		//----------------------------------------- $model_window > .general_actions > .write > a click
