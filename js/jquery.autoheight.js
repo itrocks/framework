@@ -9,8 +9,8 @@
 			maximum: 280
 		}, options);
 
-		//---------------------------------------------------------------------------- autoHeight keyup
-		this.keyup(function()
+		//---------------------------------------------------------------------------------- autoHeight
+		var autoHeight = function()
 		{
 			var $this           = $(this);
 			var previous_height = parseInt($this.attr('ui-text-height'));
@@ -33,7 +33,16 @@
 			if (new_height !== previous_height) {
 				$this.height(new_height);
 			}
-		});
+		};
+
+		if (this.data('plugins.autoHeight')) {
+			autoHeight.call(this);
+			return this;
+		}
+		this.data('plugins.autoHeight', true);
+
+		//---------------------------------------------------------------------------- autoHeight keyup
+		this.keyup(autoHeight);
 
 		//----------------------------------------------------------------------------- autoHeight init
 		$(this).keyup();
