@@ -3,9 +3,9 @@ namespace ITRocks\Framework\Layout\Structure\Page;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Page;
-use ITRocks\Framework\Layout\Structure\Text;
-use ITRocks\Framework\Layout\Structure\Text\Property;
 
 /**
  * Builds a structure from JSON data
@@ -20,10 +20,10 @@ class From_Json
 	 * @var array string[$class_name string][string integer|string]
 	 */
 	public $builder = [
-		Property\Resizable::class => ['class' => 'basic', 'field', 'format' => 'text-cr'],
-		Property::class           => ['class' => 'basic', 'field'],
-		Text\Resizable::class     => ['class' => 'field', 'text', 'format' => 'text-cr'],
-		Text::class               => ['class' => 'field', 'text']
+		Property\Resizable::class => ['field', 'format' => 'text-cr'],
+		Property::class           => ['field'],
+		Text\Resizable::class     => ['text', 'format' => 'text-cr'],
+		Text::class               => ['text']
 	];
 
 	//--------------------------------------------------------------------------------------- $ignore

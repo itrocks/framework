@@ -1,12 +1,12 @@
 <?php
-namespace ITRocks\Framework\Layout\Structure\Text;
+namespace ITRocks\Framework\Layout\Structure\Field;
 
-use ITRocks\Framework\Layout\Structure\Text;
+use ITRocks\Framework\Layout\Structure\Field;
 
 /**
  * Layout structure property field
  */
-class Property extends Text
+class Property extends Field
 {
 
 	//-------------------------------------------------------------------------------- $property_path

@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Layout\Structure;
 
 /**
- * Text field : here to display text
+ * A field will contain data, from constant (text) or property.path (property)
  */
-class Text extends Element
+class Field extends Element
 {
 
 	//-------------------------------------------------------------------------- text align constants
@@ -17,12 +17,6 @@ class Text extends Element
 	 * @var integer
 	 */
 	public $font_size;
-
-	//----------------------------------------------------------------------------------------- $text
-	/**
-	 * @var string
-	 */
-	public $text;
 
 	//----------------------------------------------------------------------------------- $text_align
 	/**
