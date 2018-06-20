@@ -16,14 +16,15 @@ $(document).ready(function()
 	var dropCallback = function()
 	{
 		var $dropped = this;
-		// remove title from dropped tools
-		if ($dropped.hasClass('tool')) {
-			$dropped.attr('title', '');
-		}
+		// default format to text for field
 		if ($dropped.attr('data-field')) {
 			if (!$dropped.attr('data-format')) {
 				$dropped.attr('data-format', 'text');
 			}
+		}
+		// remove title from dropped tools
+		else {
+			$dropped.attr('title', '');
 		}
 		// remove property / tool classes
 		$dropped.removeClass('property');
