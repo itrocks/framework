@@ -23,6 +23,8 @@
   top: 11px; }
   .model.window > .editor .designer .field {
     white-space: pre-line; }
+    .model.window > .editor .designer .field.line > .handle {
+      cursor: pointer; }
 .model.window > .editor .tool.snap.line {
   color: transparent;
   font-size: 1px;

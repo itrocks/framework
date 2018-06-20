@@ -44,6 +44,10 @@
 
 			.field {
 				white-space: pre-line;
+
+				&.line > .handle {
+					cursor: pointer;
+				}
 			}
 		}
 
