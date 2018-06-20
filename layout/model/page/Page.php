@@ -38,14 +38,6 @@ class Page
 	 */
 	public $background;
 
-	//--------------------------------------------------------------------------------------- $fields
-	/**
-	 * @link Collection
-	 * @store false
-	 * @var Field[]
-	 */
-	public $fields;
-
 	//--------------------------------------------------------------------------------------- $layout
 	/**
 	 * Raw page layout : a json structure from html_links & document-designer that describes fields
