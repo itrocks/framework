@@ -80,6 +80,7 @@ abstract class Getter
 	 */
 	static public function get($base_class, $feature_name, $suffix, $extension, $class_form = true)
 	{
+		$feature_name = Feature::uriToFeature($feature_name);
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';

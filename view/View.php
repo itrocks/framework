@@ -127,6 +127,7 @@ class View implements Configurable
 	 */
 	public static function link($object, $feature = null, $parameters = null, $arguments = null)
 	{
+		$feature = Feature::featureToUri($feature);
 		return self::current()->link($object, $feature, $parameters, $arguments);
 	}
 
