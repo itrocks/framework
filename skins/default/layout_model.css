@@ -54,26 +54,29 @@
     position: absolute; }
 .model.window > .editor .toolbox > .property_select {
   display: block; }
-.model.window > .editor .toolbox > .pages, .model.window > .editor .toolbox > .tools {
+.model.window > .editor .toolbox > .pages, .model.window > .editor .toolbox > .selected.tools {
   display: none; }
-  .model.window > .editor .toolbox > .pages h3, .model.window > .editor .toolbox > .tools h3 {
-    font-weight: normal; }
-  .model.window > .editor .toolbox > .pages li, .model.window > .editor .toolbox > .tools li {
-    list-style: none;
-    margin: 0; }
-  .model.window > .editor .toolbox > .pages ul, .model.window > .editor .toolbox > .tools ul {
-    background-color: #dcdcdd;
-    border: solid 1px #606060;
-    border-radius: 0 2px 2px;
-    padding: 2px 8px 2px 2px;
-    margin-bottom: 1em; }
-    .model.window > .editor .toolbox > .pages ul > li, .model.window > .editor .toolbox > .tools ul > li {
-      display: table-row; }
-      .model.window > .editor .toolbox > .pages ul > li > *, .model.window > .editor .toolbox > .tools ul > li > * {
-        display: table-cell; }
-      .model.window > .editor .toolbox > .pages ul > li > label, .model.window > .editor .toolbox > .tools ul > li > label {
-        padding-right: .5ch;
-        vertical-align: middle; }
+.model.window > .editor .toolbox > .add.tools span {
+  cursor: pointer;
+  padding: 2px 0; }
+.model.window > .editor .toolbox > .pages h3, .model.window > .editor .toolbox > .tools h3 {
+  font-weight: normal; }
+.model.window > .editor .toolbox > .pages li, .model.window > .editor .toolbox > .tools li {
+  list-style: none;
+  margin: 0; }
+.model.window > .editor .toolbox > .pages ul, .model.window > .editor .toolbox > .tools ul {
+  background-color: #dcdcdd;
+  border: solid 1px #606060;
+  border-radius: 0 2px 2px;
+  padding: 2px 8px 2px 2px;
+  margin-bottom: 1em; }
+  .model.window > .editor .toolbox > .pages ul > li, .model.window > .editor .toolbox > .tools ul > li {
+    display: table-row; }
+    .model.window > .editor .toolbox > .pages ul > li > *, .model.window > .editor .toolbox > .tools ul > li > * {
+      display: table-cell; }
+    .model.window > .editor .toolbox > .pages ul > li > label, .model.window > .editor .toolbox > .tools ul > li > label {
+      padding-right: .5ch;
+      vertical-align: middle; }
 .model.window > .editor .toolbox > .pages label[for^="background"] {
   display: none; }
 .model.window > .editor .toolbox > .pages input[id^="background"] {

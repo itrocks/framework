@@ -97,8 +97,18 @@
 				display: block;
 			}
 
-			> .pages, > .tools {
+			> .pages, > .selected.tools {
 				display: none;
+			}
+
+			> .add.tools {
+				span {
+					cursor: pointer;
+					padding: 2px 0;
+				}
+			}
+
+			> .pages, > .tools {
 
 				h3 {
 					font-weight: normal;

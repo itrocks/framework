@@ -59,7 +59,11 @@ $(document).ready(function()
 		var $tools     = $editor.find('.selected.tools');
 		var $free_text = $tools.find('#free-text');
 		// field
-		if ($selected.hasClass('field')) {
+		if ($selected.hasClass('line') || $selected.hasClass('rectangle')) {
+			$free_text.text('');
+			$tools.hide();
+		}
+		else if ($selected.hasClass('field')) {
 			$free_text.closest('li').show();
 			$free_text.text($selected.text()).change();
 			if (!$free_text.is(':focus') && !$free_text.data('focus')) {
