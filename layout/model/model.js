@@ -58,21 +58,29 @@ $(document).ready(function()
 		var $editor    = $selected.closest('.editor');
 		var $tools     = $editor.find('.selected.tools');
 		var $free_text = $tools.find('#free-text');
-		// field
+		var old_text   = $free_text.val();
+		// draw field
 		if ($selected.hasClass('line') || $selected.hasClass('rectangle')) {
-			$free_text.text('');
+			$free_text.val('');
 			$tools.hide();
 		}
+		// text field
 		else if ($selected.hasClass('field')) {
 			$free_text.closest('li').show();
-			$free_text.text($selected.text()).change();
-			if (!$free_text.is(':focus') && !$free_text.data('focus')) {
+			$free_text.val($selected.text());
+			$free_text.autoHeight();
+			if (
+				// if changed from a $selected to another (approximatively) : keep the focus
+				(old_text !== $selected.text())
+				// if clicked the same $selectded : switch between focused / not focused
+				|| (!$free_text.is(':focus') && !$free_text.data('focus'))
+			) {
 				$free_text.focus();
 			}
 		}
 		else {
 			$free_text.closest('li').hide();
-			$free_text.text('');
+			$free_text.val('');
 		}
 		// title
 		var $title = $tools.children('h3');
