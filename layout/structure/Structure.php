@@ -13,10 +13,27 @@ use ITRocks\Framework\Layout\Structure\Page;
 class Structure
 {
 
+	//----------------------------------------------------------------------------------- $class_name
+	/**
+	 * @var string
+	 */
+	public $class_name;
+
 	//---------------------------------------------------------------------------------------- $pages
 	/**
 	 * @var Page[]
 	 */
 	public $pages;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name string
+	 */
+	public function __construct($class_name = null)
+	{
+		if (isset($class_name)) {
+			$this->class_name = $class_name;
+		}
+	}
 
 }

@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Layout\Structure\Page;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Page;
@@ -22,6 +24,7 @@ class From_Json
 	public $builder = [
 		Property\Resizable::class => ['field', 'format' => 'text-cr'],
 		Property::class           => ['field'],
+		Snap_Line::class          => ['class' => 'snap'],
 		Text\Resizable::class     => ['text', 'format' => 'text-cr'],
 		Text::class               => ['text']
 	];
@@ -117,6 +120,9 @@ class From_Json
 			if (property_exists($class_name, $property_name)) {
 				$element->$property_name = $value;
 			}
+		}
+		if ($element instanceof Has_Init) {
+			$element->init();
 		}
 	}
 

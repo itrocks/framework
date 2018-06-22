@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Layout;
 
+use ITRocks\Framework\Layout\Generator\Associate_Groups;
+use ITRocks\Framework\Layout\Generator\Generate_Groups;
 use ITRocks\Framework\Layout\Generator\Property_To_Text;
 use ITRocks\Framework\Layout\Structure\Page\From_Json;
 
@@ -67,8 +69,10 @@ class Generator
 	public function generate($object)
 	{
 		$this->object    = $object;
-		$this->structure = new Structure();
+		$this->structure = new Structure($this->model->class_name);
 		$this->modelToStructure();
+		(new Associate_Groups($this->structure))->run();
+		(new Generate_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure))->run($this->object);
 		return $this->structure;
 	}
