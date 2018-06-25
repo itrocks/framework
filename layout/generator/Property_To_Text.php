@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Field\Resizable;
 use ITRocks\Framework\Layout\Structure\Group;
+use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Page;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
@@ -17,11 +19,19 @@ class Property_To_Text
 
 	//-------------------------------------------------------------------------------------- $already
 	/**
-	 * Tells which properties, into groups, have already been generated
+	 * Tells which properties text, into groups, have already been generated
 	 *
 	 * @var boolean[] key is the $property_path
 	 */
 	protected $already;
+
+	//----------------------------------------------------------------------------------- $iterations
+	/**
+	 * Already generated iterations into the current page groups
+	 *
+	 * @var Iteration[][] Iteration[string $group_property_path][integer $iteration_number]
+	 */
+	protected $iterations;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -30,14 +40,6 @@ class Property_To_Text
 	 * @var object
 	 */
 	protected $object;
-
-	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * Properties cache
-	 *
-	 * @var Reflection_Property[]
-	 */
-	protected $properties;
 
 	//--------------------------------------------------------------------------------------- element
 	/**
@@ -73,7 +75,8 @@ class Property_To_Text
 		}
 		// Create one Final_Text per final object
 		$page = $element->page;
-		foreach ($objects as $object) {
+		foreach ($objects as $iteration_number => $object) {
+			// change properties to final texts
 			$new_element = new Final_Text($page);
 			foreach (get_object_vars($element) as $property_name => $value) {
 				if (property_exists($new_element, $property_name)) {
@@ -82,8 +85,16 @@ class Property_To_Text
 			}
 			$new_element->element = $element;
 			$new_element->text    = $object;
+			// force height calculation
+			if (!($element instanceof Resizable)) {
+				$new_element->height = 0;
+				$new_element->init();
+			}
+			// append element to the group iteration / page
 			if ($element->group) {
-				$element->group->elements[] = $new_element;
+				$iteration              = $this->iteration($element->group, $iteration_number);
+				$new_element->iteration = $iteration;
+				$iteration->elements[]  = $new_element;
 			}
 			else {
 				$page->elements[] = $new_element;
@@ -113,6 +124,30 @@ class Property_To_Text
 		}
 	}
 
+	//------------------------------------------------------------------------------------- iteration
+	/**
+	 * Get / create the iteration identified by the group and number
+	 *
+	 * @param $group  Group
+	 * @param $number integer
+	 * @return Iteration
+	 */
+	protected function iteration(Group $group, $number)
+	{
+		if (!isset($this->iterations[$group->property_path][$number])) {
+			$iteration         = new Iteration($group->page);
+			$iteration->group  = $group;
+			$iteration->left   = $group->left;
+			$iteration->top    = $group->top;
+			$iteration->width  = $group->width;
+			$group->elements[] = $iteration;
+
+			$this->iterations[$group->property_path][$number] = $iteration;
+			return $iteration;
+		}
+		return $this->iterations[$group->property_path][$number];
+	}
+
 	//------------------------------------------------------------------------------------------ page
 	/**
 	 * Process a page
@@ -121,6 +156,7 @@ class Property_To_Text
 	 */
 	protected function page(Page $page)
 	{
+		$this->iterations = [];
 		foreach ($page->elements as $key => $element) {
 			if ($element instanceof Property) {
 				unset($page->elements[$key]);

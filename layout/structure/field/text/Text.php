@@ -15,4 +15,13 @@ class Text extends Field
 	 */
 	public $text;
 
+	//------------------------------------------------------------------------------------------ init
+	public function init()
+	{
+		if ($this->font_size && !$this->height) {
+			$this->height = $this->font_size * (substr_count($this->text, LF) + 1);
+		}
+		parent::init();
+	}
+
 }

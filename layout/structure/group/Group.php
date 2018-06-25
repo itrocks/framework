@@ -26,6 +26,9 @@ class Group extends Element
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
+	 * Raw elements before moving them into iterations (eg properties)
+	 * Or iterations when they have been generated (eg final-texts)
+	 *
 	 * @var Element[]
 	 */
 	public $elements = [];

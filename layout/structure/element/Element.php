@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure;
 
+use ITRocks\Framework\Layout\Structure\Group\Iteration;
+
 /**
  * The base of the element is : its position, nothing else
  */
@@ -12,7 +14,7 @@ abstract class Element
 	 * If the element has been identified by Associate_Groups or Generate_Groups to be inside a group,
 	 * it will be set here (and the element added to Group::$elements)
 	 *
-	 * @var Group
+	 * @var Group|null
 	 */
 	public $group;
 
@@ -23,6 +25,14 @@ abstract class Element
 	 * @var float
 	 */
 	public $height;
+
+	//------------------------------------------------------------------------------------ $iteration
+	/**
+	 * If the element has been associated to an iteration of a group, this iteration will be set here
+	 *
+	 * @var Iteration|null
+	 */
+	public $iteration;
 
 	//----------------------------------------------------------------------------------------- $left
 	/**
