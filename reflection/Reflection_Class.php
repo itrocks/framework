@@ -443,17 +443,17 @@ class Reflection_Class extends ReflectionClass
 			$property = new Reflection_Property($this->name, $property->name);
 			if (
 				(in_array(T_EXTENDS, $flags) && $property->class !== $final_class)
-				|| $property->class === $final_class
+				|| ($property->class === $final_class)
 			) {
-				$property->final_class = $final_class;
-				$properties[$property->name] = $property;
+				$property->final_class        = $final_class;
+				$properties[$property->name]  = $property;
 			}
 		}
 		if (in_array(T_EXTENDS, $flags)) {
 			$parent = $this->getParentClass();
 			while ($parent) {
 				$properties = array_merge($parent->getProperties([], $final_class), $properties);
-				$parent = $parent->getParentClass();
+				$parent     = $parent->getParentClass();
 			}
 		}
 		if (in_array(self::T_SORT, $flags)) {
