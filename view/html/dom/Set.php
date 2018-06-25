@@ -15,6 +15,7 @@ class Set extends Element
 	 */
 	private $base_name;
 
+	//-------------------------------------------------------------------------------------- $ordered
 	/**
 	 * @var boolean
 	 */

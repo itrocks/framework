@@ -57,7 +57,6 @@ class Type
 	const null = 'null';
 
 	//------------------------------------------------------------------------------------- $absolute
-
 	/**
 	 * If true, the class name was given as an absolute (type string was beginning with a \)
 	 *
@@ -66,7 +65,6 @@ class Type
 	private $absolute;
 
 	//---------------------------------------------------------------------------------- $can_be_null
-
 	/**
 	 * true if the type accepts null values
 	 *
@@ -75,6 +73,7 @@ class Type
 	 */
 	private $can_be_null = false;
 
+	//----------------------------------------------------------------------------------- $is_ordered
 	/**
 	 * False is the list of something must not be ordered
 	 *
@@ -83,7 +82,6 @@ class Type
 	private $is_ordered = true;
 
 	//-------------------------------------------------------------------------------- $numeric_types
-
 	/**
 	 * These are the numeric types
 	 *
@@ -92,7 +90,6 @@ class Type
 	private static $numeric_types = [self::FLOAT, self::INTEGER];
 
 	//---------------------------------------------------------------------------------- $sized_types
-
 	/**
 	 * These are the basic types having size
 	 *
@@ -101,7 +98,6 @@ class Type
 	private static $sized_types = [self::FLOAT, self::INTEGER, self::STRING];
 
 	//------------------------------------------------------------------------- $strictly_basic_types
-
 	/**
 	 * These are the basic non-object php types
 	 *
@@ -114,7 +110,6 @@ class Type
 		];
 
 	//----------------------------------------------------------------------------------------- $type
-
 	/**
 	 * The type name itself :
 	 * - only one type, does not include '|null' or any secondary types
@@ -125,7 +120,6 @@ class Type
 	private $type;
 
 	//----------------------------------------------------------------------------------- __construct
-
 	/**
 	 * @param $type_string string
 	 * @param $can_be_null boolean
@@ -160,7 +154,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------ __toString
-
 	/**
 	 * @return string
 	 */
@@ -170,7 +163,6 @@ class Type
 	}
 
 	//-------------------------------------------------------------------------------- applyNamespace
-
 	/**
 	 * Apply namespace and use entries to the type name (if class)
 	 *
@@ -204,7 +196,6 @@ class Type
 	}
 
 	//----------------------------------------------------------------------------- asReflectionClass
-
 	/**
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
@@ -227,7 +218,6 @@ class Type
 	}
 
 	//-------------------------------------------------------------------------------------- asString
-
 	/**
 	 * Returns the type name as string
 	 * - basic types
@@ -242,7 +232,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------- canBeNull
-
 	/**
 	 * Returns true if the type accepts null values
 	 *
@@ -254,7 +243,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
-
 	/**
 	 * Gets default value for the type
 	 *
@@ -271,20 +259,15 @@ class Type
 			return [];
 		}
 		else switch ($this->asString()) {
-			case self::BOOLEAN:
-				return false;
-			case self::INTEGER:
-				return 0;
-			case self::FLOAT:
-				return 0.0;
-			case self::STRING:
-				return '';
+			case self::BOOLEAN: return false;
+			case self::INTEGER: return 0;
+			case self::FLOAT:   return 0.0;
+			case self::STRING:  return '';
 		}
 		return null;
 	}
 
 	//-------------------------------------------------------------------------------- getElementType
-
 	/**
 	 * Gets a multiple type single element type
 	 *
@@ -298,7 +281,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------ getElementTypeAsString
-
 	/**
 	 * Gets a multiple type single element class name
 	 *
@@ -314,7 +296,6 @@ class Type
 	}
 
 	//--------------------------------------------------------------------------------------- hasSize
-
 	/**
 	 * Tells if a type has a size or not
 	 *
@@ -326,7 +307,6 @@ class Type
 	}
 
 	//--------------------------------------------------------------------------------------- isArray
-
 	/**
 	 * @return boolean
 	 */
@@ -336,7 +316,6 @@ class Type
 	}
 
 	//--------------------------------------------------------------------------------------- isBasic
-
 	/**
 	 * Tells if a type is a basic type or not
 	 *
@@ -356,7 +335,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------- isBoolean
-
 	/**
 	 * Returns true if type is a boolean
 	 *
@@ -368,7 +346,6 @@ class Type
 	}
 
 	//--------------------------------------------------------------------------------------- isClass
-
 	/**
 	 * Returns true if type is a class or multiple classes
 	 *
@@ -380,7 +357,6 @@ class Type
 	}
 
 	//----------------------------------------------------------------------------------- isClassHtml
-
 	/**
 	 * Returns 'class' if type is a class or multiple classes
 	 *
@@ -392,7 +368,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------ isDateTime
-
 	/**
 	 * @return boolean
 	 */
@@ -402,7 +377,6 @@ class Type
 	}
 
 	//--------------------------------------------------------------------------------------- isFloat
-
 	/**
 	 * @return boolean
 	 */
@@ -412,7 +386,6 @@ class Type
 	}
 
 	//---------------------------------------------------------------------------------- isInstanceOf
-
 	/**
 	 * Returns true if the class type is an instance of a class or interface
 	 *
@@ -434,7 +407,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------- isInteger
-
 	/**
 	 * @return boolean
 	 */
@@ -444,7 +416,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------ isMultiple
-
 	/**
 	 * Tells if a type is an array / multiple type or not
 	 *
@@ -460,7 +431,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------ isMultipleString
-
 	/**
 	 * @return boolean
 	 */
@@ -470,7 +440,6 @@ class Type
 	}
 
 	//---------------------------------------------------------------------------------------- isNull
-
 	/**
 	 * @return boolean
 	 */
@@ -480,7 +449,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------- isNumeric
-
 	/**
 	 * Tells if a type is numeric or not
 	 *
@@ -491,6 +459,7 @@ class Type
 		return in_array($this->type, self::$numeric_types);
 	}
 
+	//------------------------------------------------------------------------------------- isOrdered
 	/**
 	 * Tells if the list of something must be ordered or not
 	 *
@@ -502,7 +471,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------- isStrictlyBasic
-
 	/**
 	 * Tells if a type is strictly a basic type or not
 	 *
@@ -517,7 +485,6 @@ class Type
 	}
 
 	//-------------------------------------------------------------------------------------- isString
-
 	/**
 	 * @return boolean
 	 */
@@ -527,7 +494,6 @@ class Type
 	}
 
 	//---------------------------------------------------------------------------------- isStringable
-
 	/**
 	 * @return boolean
 	 */
@@ -541,7 +507,6 @@ class Type
 	}
 
 	//---------------------------------------------------------------------------------- isSubClassOf
-
 	/**
 	 * Returns true if the class type is a subclass of a class or interface
 	 *
@@ -556,7 +521,6 @@ class Type
 	}
 
 	//-------------------------------------------------------------------------------------- multiple
-
 	/**
 	 * Returns the multiple type for given type
 	 *
@@ -569,7 +533,6 @@ class Type
 	}
 
 	//------------------------------------------------------------------------------------- usesTrait
-
 	/**
 	 * Returns true if the class type uses the given trait
 	 *
