@@ -1,9 +1,9 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
-use ITRocks\Framework\Layout\Structure;
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
@@ -13,6 +13,15 @@ use ReflectionException;
  */
 class Property_To_Text
 {
+	use Has_Structure;
+
+	//-------------------------------------------------------------------------------------- $already
+	/**
+	 * Tells which properties, into groups, have already been generated
+	 *
+	 * @var boolean[] key is the $property_path
+	 */
+	protected $already;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -30,24 +39,6 @@ class Property_To_Text
 	 */
 	protected $properties;
 
-	//------------------------------------------------------------------------------------ $structure
-	/**
-	 * The structure that first contains Property, and finally will contain Final_Text instead
-	 * Only data of Final_Text will be filled : coordinates will not be recalculated at this step
-	 *
-	 * @var Structure
-	 */
-	protected $structure;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $structure Structure
-	 */
-	public function __construct(Structure $structure)
-	{
-		$this->structure = $structure;
-	}
-
 	//--------------------------------------------------------------------------------------- element
 	/**
 	 * Process a Property element
@@ -64,7 +55,8 @@ class Property_To_Text
 			foreach ($objects as $object) {
 				try {
 					$property = new Reflection_Property(get_class($object), $property_name);
-				} // bad property.path : no data, ignore the element
+				}
+				// bad property.path : no data, ignore the element
 				catch (ReflectionException $exception) {
 					return;
 				}
@@ -90,7 +82,34 @@ class Property_To_Text
 			}
 			$new_element->element = $element;
 			$new_element->text    = $object;
-			$page->elements[]     = $new_element;
+			if ($element->group) {
+				$element->group->elements[] = $new_element;
+			}
+			else {
+				$page->elements[] = $new_element;
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------------------- group
+	/**
+	 * Process a group
+	 *
+	 * @param $group Group
+	 */
+	protected function group(Group $group)
+	{
+		foreach ($group->elements as $key => $element) {
+			if ($element instanceof Property) {
+				if (!isset($this->already[$element->property_path])) {
+					unset($group->elements[$key]);
+					$this->already[$element->property_path] = true;
+					$this->element($element);
+				}
+			}
+			elseif ($element instanceof Group) {
+				$this->group($element);
+			}
 		}
 	}
 
@@ -106,6 +125,9 @@ class Property_To_Text
 			if ($element instanceof Property) {
 				unset($page->elements[$key]);
 				$this->element($element);
+			}
+			elseif ($element instanceof Group) {
+				$this->group($element);
 			}
 		}
 	}

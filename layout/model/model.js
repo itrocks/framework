@@ -196,16 +196,21 @@ $(document).ready(function()
 
 		//----------------------------------------- $model_window > .general_actions > .write > a click
 		/**
-		 * Save email : build the standardized data before saving the form,
+		 * Save layout model : build the standardized data before saving the form,
 		 * as no data is stored into inputs
 		 */
 		$model_window.find('> .general.actions > .write > a').click(function()
 		{
+			var $active = $designer.closest('.active.page');
+			var $pages  = $designer.closest('.page');
+			$pages.addClass('active');
 			$designer.each(function() {
 				var $page  = $(this);
 				var $input = pageLayoutInput($page);
 				$input.val(JSON.stringify($page.documentDesigner('getData').fields));
 			});
+			$pages.removeClass('active');
+			$active.addClass('active');
 		});
 
 	});

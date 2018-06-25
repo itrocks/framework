@@ -19,7 +19,7 @@ class Snap_Line extends Element implements Has_Init
 	 * @values self::const local
 	 * @var string
 	 */
-	public $direction = self::VERTICAL;
+	public $direction;
 
 	//------------------------------------------------------------------------------------------ init
 	/**
@@ -28,14 +28,16 @@ class Snap_Line extends Element implements Has_Init
 	public function init()
 	{
 		if (!$this->left) {
-			$this->height = $this->page->height;
-			$this->left   = 0;
-			$this->width  = 0;
+			$this->direction = self::HORIZONTAL;
+			$this->height    = 0;
+			$this->left      = 0;
+			$this->width     = $this->page->width;
 		}
 		if (!$this->top) {
-			$this->height = 0;
-			$this->top    = 0;
-			$this->width  = $this->page->width;
+			$this->direction = self::VERTICAL;
+			$this->height    = $this->page->height;
+			$this->top       = 0;
+			$this->width     = 0;
 		}
 	}
 

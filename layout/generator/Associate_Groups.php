@@ -1,28 +1,12 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
-use ITRocks\Framework\Layout\Structure;
-
 /**
  * Associate elements that are strictly inside groups to these groups
  */
 class Associate_Groups
 {
-
-	//------------------------------------------------------------------------------------ $structure
-	/**
-	 * @var Structure
-	 */
-	protected $structure;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $structure Structure
-	 */
-	public function __construct(Structure $structure)
-	{
-		$this->structure = $structure;
-	}
+	use Has_Structure;
 
 	//------------------------------------------------------------------------------------------- run
 	public function run()

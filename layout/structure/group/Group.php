@@ -30,6 +30,17 @@ class Group extends Element
 	 */
 	public $elements = [];
 
+	//--------------------------------------------------------------------------------------- $groups
+	/**
+	 * Set by Link_Groups::run : key is the structure page number, value is the same group in the page
+	 *
+	 * All $linked_groups are the same group in multiple pages
+	 * They are all linked by reference : modify $linked_groups in a group and all the others will be
+	 *
+	 * @var Group[]
+	 */
+	public $groups;
+
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * The path of the property, starting from the layout model context class

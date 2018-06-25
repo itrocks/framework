@@ -120,6 +120,13 @@ class From_Json
 			if (property_exists($class_name, $property_name)) {
 				$element->$property_name = $value;
 			}
+			if (
+				($property_name === 'right')
+				&& property_exists($class_name, 'width')
+				&& !$element->width
+			) {
+				$element->width = $value - ($element->left ?: $raw_element['left']);
+			}
 		}
 		if ($element instanceof Has_Init) {
 			$element->init();

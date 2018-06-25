@@ -3,7 +3,10 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
 use ITRocks\Framework\Layout\Generator\Generate_Groups;
+use ITRocks\Framework\Layout\Generator\Link_Groups;
+use ITRocks\Framework\Layout\Generator\Page_All_Elements;
 use ITRocks\Framework\Layout\Generator\Property_To_Text;
+use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Page\From_Json;
 
 /**
@@ -71,8 +74,12 @@ class Generator
 		$this->object    = $object;
 		$this->structure = new Structure($this->model->class_name);
 		$this->modelToStructure();
+		// associate and auto-generate groups before page all elements to avoid mixing
 		(new Associate_Groups($this->structure))->run();
 		(new Generate_Groups($this->structure))->run();
+		$this->purgeElements();
+		(new Page_All_Elements($this->structure))->run();
+		(new Link_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure))->run($this->object);
 		return $this->structure;
 	}
@@ -84,7 +91,31 @@ class Generator
 	protected function modelToStructure()
 	{
 		foreach ($this->model->pages as $page) {
-			$this->structure->pages[] = (new From_Json)->build($page->layout);
+			$structure_page = (new From_Json)->build($page->layout);
+			if (!$structure_page->isEmpty()) {
+				$structure_page->number                  = $page->ordering;
+				$this->structure->pages[$page->ordering] = $structure_page;
+			}
+		}
+	}
+
+	//--------------------------------------------------------------------------------- purgeElements
+	/**
+	 * Remove :
+	 * - snap line elements
+	 * - elements that are into groups
+	 */
+	protected function purgeElements()
+	{
+		foreach ($this->structure->pages as $page) {
+			foreach ($page->elements as $element_key => $element) {
+				if (
+					($element instanceof Snap_Line)
+					|| $element->group
+				) {
+					unset($page->elements[$element_key]);
+				}
+			}
 		}
 	}
 

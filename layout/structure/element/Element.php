@@ -72,7 +72,7 @@ abstract class Element
 	 */
 	public function bottom()
 	{
-		return $this->top + $this->height -1;
+		return $this->top + $this->height;
 	}
 
 	//----------------------------------------------------------------------------------- insideGroup
@@ -93,7 +93,7 @@ abstract class Element
 	 */
 	public function right()
 	{
-		return $this->left + $this->width - 1;
+		return $this->left + $this->width;
 	}
 
 }

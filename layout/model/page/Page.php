@@ -26,10 +26,14 @@ class Page
 	use Has_Ordering;
 
 	//----------------------------------------------------------- page position information constants
+	/**
+	 * It is independent but must be the same special values than Structure\Page constants
+	 */
 	const ALL    = 'A';
 	const FIRST  = '1';
 	const LAST   = '-1';
 	const MIDDLE = '0';
+	const UNIQUE = 'U';
 
 	//----------------------------------------------------------------------------------- $background
 	/**
@@ -103,6 +107,7 @@ class Page
 			case static::FIRST:  return 'first';
 			case static::LAST:   return 'last';
 			case static::MIDDLE: return 'middle';
+			case static::UNIQUE: return 'unique';
 		}
 		return $this->ordering;
 	}
@@ -121,6 +126,9 @@ class Page
 	protected function orderingToSortable()
 	{
 		$ordering = $this->ordering;
+		if ($ordering === static::UNIQUE) {
+			return -1001;
+		}
 		if ($ordering === static::ALL) {
 			return -1000;
 		}

@@ -23,10 +23,11 @@ class Add_Controller extends Add\Add_Controller
 		$model = $parameters->getMainObject();
 		if (!$model->pages) {
 			$model->pages = [
-				new Page(Page::ALL),
+				new Page(Page::UNIQUE),
 				new Page(Page::FIRST),
 				new Page(Page::MIDDLE),
-				new Page(Page::LAST)
+				new Page(Page::LAST),
+				new Page(Page::ALL)
 			];
 		}
 

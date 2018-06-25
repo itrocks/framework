@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
-use ITRocks\Framework\Layout\Structure;
+use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
@@ -13,6 +13,7 @@ use ITRocks\Framework\Property\Reflection_Property;
  */
 class Generate_Groups
 {
+	use Has_Structure;
 
 	//-------------------------------------------------------------------------------- $bottom_margin
 	/**
@@ -42,21 +43,6 @@ class Generate_Groups
 	 */
 	public $page_margin = 10;
 
-	//------------------------------------------------------------------------------------ $structure
-	/**
-	 * @var Structure
-	 */
-	protected $structure;
-
-	//----------------------------------------------------------------------------------- __construct
-	/**
-	 * @param $structure Structure
-	 */
-	public function __construct(Structure $structure)
-	{
-		$this->structure = $structure;
-	}
-
 	//--------------------------------------------------------------------------------------- element
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -79,7 +65,7 @@ class Generate_Groups
 			if ($type->isMultiple() && !$element->group) {
 				$group = $this->elementGroup($element, $property_path);
 				if ($last_group) {
-					$last_group->group = $group;
+					$group->group = $last_group;
 				}
 				$last_group = $group;
 			}
@@ -100,21 +86,23 @@ class Generate_Groups
 	{
 		if (isset($this->groups[$property_path])) {
 			$group = $this->groups[$property_path];
+			// first enlarge size
+			$group->height = max($group->height, $element->top  - $group->top  + $element->height);
+			$group->width  = max($group->width,  $element->left - $group->left + $element->width);
+			// then move position
+			$group->left   = min($group->left, $element->left);
+			$group->top    = min($group->top,  $element->top);
 		}
 		else {
-			$group = new Group($element->page);
-			$group->elements[]    = $element;
-			$group->left          = 99999;
-			$group->property_path = $property_path;
-			$group->top           = 99999;
+			$group                        = new Group($element->page);
+			$group->height                = $element->height;
+			$group->left                  = $element->left;
+			$group->property_path         = $property_path;
+			$group->top                   = $element->top;
+			$group->width                 = $element->width;
 			$this->groups[$property_path] = $group;
 		}
-		// begin with new height and width growth
-		$group->height = max($group->height, $element->top  - $group->top  + $element->height);
-		$group->width  = max($group->width,  $element->left - $group->left + $element->width);
-		// then enlarge left an top
-		$group->left = min($group->left, $element->left);
-		$group->top  = min($group->top,  $element->top);
+		$group->elements[] = $element;
 		return $group;
 	}
 
@@ -132,14 +120,23 @@ class Generate_Groups
 				// only elements outside of the group
 				!$element->insideGroup($group)
 				&& ($element->top > $group->bottom())
-				&& ($element->right() >= $group->left)
-				&& ($element->left <= $group->right())
+				&& (
+					($element instanceof Snap_Line)
+					|| (
+						($element->right() >= $group->left)
+						&& ($element->left <= $group->right())
+					)
+				)
 			) {
-				$minimal_bottom = min($minimal_bottom, $element->top - $this->bottom_margin);
+				$element_top = $element->top;
+				if (!$element instanceof Snap_Line) {
+					$element_top -= $this->bottom_margin;
+				}
+				$minimal_bottom = min($minimal_bottom, $element_top);
 			}
 		}
 		$minimal_height = $minimal_bottom - $group->top;
-		$group->height = max($group->height, $minimal_height);
+		$group->height  = max($group->height, $minimal_height);
 	}
 
 	//------------------------------------------------------------------------------------------ page
@@ -156,7 +153,7 @@ class Generate_Groups
 		}
 		foreach ($this->groups as $group) {
 			$this->enlargeGroup($group);
-			array_push($group->elements, $group);
+			array_push($page->elements, $group);
 		}
 	}
 
