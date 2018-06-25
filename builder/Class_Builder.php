@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
+use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
@@ -90,6 +91,7 @@ class Class_Builder
 
 	//------------------------------------------------------------------------------------ buildClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name  string
 	 * @param $interfaces  array string[][]
 	 * @param $traits      array string[][]
@@ -98,7 +100,9 @@ class Class_Builder
 	 */
 	private static function buildClass($class_name, array $interfaces, array $traits, $get_source)
 	{
-		if (!$traits) $traits = [0 => []];
+		if (!$traits) {
+			$traits = [0 => []];
+		}
 		end($traits);
 		$end_level        = key($traits);
 		$short_class      = Namespaces::shortClassName($class_name);
@@ -112,6 +116,13 @@ class Class_Builder
 			$count     = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 
+			// TODO can't guess it without loading the class ?
+			/** @noinspection PhpUnhandledExceptionInspection class exists */
+			$abstract
+				= (class_exists($extends) && (new Reflection\Reflection_Class($extends))->isAbstract())
+				? 'abstract '
+				: '';
+
 			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
 			$traits_names     = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
 			$namespace        = $namespace_prefix . $count . $sub_count;
@@ -119,7 +130,7 @@ class Class_Builder
 
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
 				. '/** Built ' . $short_class . ' class */' . LF
-				. 'class ' . $short_class . ' extends ' . $extends
+				. $abstract . 'class ' . $short_class . ' extends ' . $extends
 				. ($interfaces_names ? (LF . TAB . 'implements ' . $interfaces_names) : '')
 				. LF . '{' . LF
 				. ($traits_names ? (TAB . 'use ' . BS . $traits_names . ';' . LF) : '')
