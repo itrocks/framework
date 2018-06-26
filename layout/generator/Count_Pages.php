@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Group;
+use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
 
 /**

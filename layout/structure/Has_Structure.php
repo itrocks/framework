@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Layout\Generator;
+namespace ITRocks\Framework\Layout\Structure;
 
 use ITRocks\Framework\Layout\Structure;
 

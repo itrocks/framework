@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Layout\Structure\Has_Structure;
+
 /**
  * Associate elements that are strictly inside groups to these groups
  */

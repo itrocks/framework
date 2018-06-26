@@ -28,7 +28,7 @@ class PDF extends FPDI
 	{
 		/** @noinspection PhpUndefinedMethodInspection exists into TCPDF */
 		parent::__construct();
-		/** @var $this TCPDF */
+		/** @var $this PDF|TCPDF */
 		$this->setPrintHeader(false);
 		$this->setPrintFooter(false);
 	}

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\View;
@@ -43,7 +44,7 @@ class Buttons_Generator
 				$model->name,
 				View::link($this->class_name, Feature::F_PRINT, View::link($model)),
 				Feature::F_PRINT,
-				['.object', Button::OBJECT => $model]
+				['.object', Button::OBJECT => $model, Target::NONE]
 			);
 		}
 

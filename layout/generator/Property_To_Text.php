@@ -5,6 +5,7 @@ use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
+use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
