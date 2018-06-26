@@ -27,15 +27,18 @@ class Dispatch_Group_Data
 	protected function group(Group $group)
 	{
 		$previous_iterations_height = 0;
-		foreach ($group->elements as $iteration) {
+		foreach ($group->iterations as $iteration) {
+			$iteration->top += $previous_iterations_height;
+			$minimal_top     = reset($iteration->elements)->page->height;
 			/** @var $iteration Iteration At this stage all group elements are Iteration, nothing else */
-			if ($previous_iterations_height) {
-				foreach ($iteration->elements as $element) {
-					$element->top += $previous_iterations_height;
-				}
+			foreach ($iteration->elements as $element) {
+				$element->top += $previous_iterations_height;
+				$minimal_top   = min($minimal_top, $element->top);
 			}
 			// next line shift value
-			$previous_iterations_height += $this->maxHeight($iteration->elements);
+			$max_height        = $this->maxHeight($iteration->elements) - $minimal_top;
+			$iteration->height = $max_height;
+			$previous_iterations_height += $max_height;
 		}
 	}
 
@@ -51,15 +54,9 @@ class Dispatch_Group_Data
 	 */
 	protected function maxHeight(array $elements)
 	{
-		// minimal top (top position of the highest element in the page)
-		$minimal_top = reset($elements)->page->height;
-		foreach ($elements as $element) {
-			$minimal_top = min($minimal_top, $element->top);
-		}
-		// maximal height
 		$height = 0;
 		foreach ($elements as $element) {
-			$height = max($height, $element->height + ($element->top - $minimal_top));
+			$height = max($height, $element->height + $element->top);
 		}
 		return $height;
 	}
@@ -68,10 +65,8 @@ class Dispatch_Group_Data
 	public function run()
 	{
 		foreach ($this->structure->pages as $page) {
-			foreach ($page->elements as $element) {
-				if ($element instanceof Group) {
-					$this->group($element);
-				}
+			foreach ($page->groups as $group) {
+				$this->group($group);
 			}
 		}
 	}

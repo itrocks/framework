@@ -10,6 +10,9 @@ use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 class Snap_Line extends Element implements Has_Init
 {
 
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = '|';
+
 	//---------------------------------------------------------------------------- $direction @values
 	const HORIZONTAL = 'horizontal';
 	const VERTICAL   = 'vertical';

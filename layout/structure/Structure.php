@@ -36,4 +36,26 @@ class Structure
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->dump();
+	}
+
+	//------------------------------------------------------------------------------------------ dump
+	/**
+	 * @return string
+	 */
+	public function dump()
+	{
+		$dump = '';
+		foreach ($this->pages as $page) {
+			$dump .= $page->dump() . LF;
+		}
+		return $dump;
+	}
+
 }

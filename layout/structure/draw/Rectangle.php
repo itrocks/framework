@@ -9,4 +9,7 @@ use ITRocks\Framework\Layout\Structure\Element;
 class Rectangle extends Element
 {
 
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = ']';
+
 }

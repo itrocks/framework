@@ -7,6 +7,7 @@ use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Field\Text;
+use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
 
 /**
@@ -96,7 +97,15 @@ class From_Json
 			}
 			// no element class found : warning (element will be ignored)
 			if ($element) {
-				$page->elements[] = $element;
+				if ($element instanceof Group) {
+					$page->groups[] = $element;
+				}
+				elseif ($element instanceof Property) {
+					$page->properties[] = $element;
+				}
+				else {
+					$page->elements[] = $element;
+				}
 			}
 			elseif (!array_intersect($classes, $this->ignore)) {
 				trigger_error('No build method for ' . print_r($raw_element, true), E_USER_WARNING);

@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
-use ITRocks\Framework\Layout\Structure\Field\Resizable;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Page;
@@ -41,64 +40,21 @@ class Property_To_Text
 	 */
 	protected $object;
 
-	//--------------------------------------------------------------------------------------- element
+	//---------------------------------------------------------------------------------------- append
 	/**
-	 * Process a Property element
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection getValue
-	 * @param $element Property
+	 * @param $final_text       Final_Text
+	 * @param $iteration_number integer
 	 */
-	protected function element(Property $element)
+	protected function append(Final_Text $final_text, $iteration_number)
 	{
-		// This is a 'linear' algorithm, not recursive, to go faster : objects list grow during descend
-		$objects = [$this->object];
-		foreach (explode(DOT, $element->property_path) as $property_name) {
-			$next_objects = [];
-			foreach ($objects as $object) {
-				try {
-					$property = new Reflection_Property(get_class($object), $property_name);
-				}
-				// bad property.path : no data, ignore the element
-				catch (ReflectionException $exception) {
-					return;
-				}
-				/** @noinspection PhpUnhandledExceptionInspection tested by new Reflection_Property */
-				$object = $property->getValue($object);
-				if (is_array($object)) {
-					$next_objects = array_merge($next_objects, $object);
-				}
-				else {
-					$next_objects[] = $object;
-				}
-			}
-			$objects = $next_objects;
+		// append element to the group iteration / page
+		if ($final_text->group) {
+			$iteration             = $this->iteration($final_text->group, $iteration_number);
+			$final_text->iteration = $iteration;
+			$iteration->elements[] = $final_text;
 		}
-		// Create one Final_Text per final object
-		$page = $element->page;
-		foreach ($objects as $iteration_number => $object) {
-			// change properties to final texts
-			$new_element = new Final_Text($page);
-			foreach (get_object_vars($element) as $property_name => $value) {
-				if (property_exists($new_element, $property_name)) {
-					$new_element->$property_name = $value;
-				}
-			}
-			$new_element->element = $element;
-			$new_element->text    = $object;
-			// force height calculation
-			if (!($element instanceof Resizable)) {
-				$new_element->height = 0;
-				$new_element->init();
-			}
-			// append element to the group iteration / page
-			if ($element->group) {
-				$iteration              = $this->iteration($element->group, $iteration_number);
-				$new_element->iteration = $iteration;
-				$iteration->elements[]  = $new_element;
-			}
-			else {
-				$page->elements[] = $new_element;
-			}
+		else {
+			$final_text->page->elements[] = $final_text;
 		}
 	}
 
@@ -110,16 +66,14 @@ class Property_To_Text
 	 */
 	protected function group(Group $group)
 	{
-		foreach ($group->elements as $key => $element) {
-			if ($element instanceof Property) {
-				if (!isset($this->already[$element->property_path])) {
-					unset($group->elements[$key]);
-					$this->already[$element->property_path] = true;
-					$this->element($element);
-				}
-			}
-			elseif ($element instanceof Group) {
-				$this->group($element);
+		foreach ($group->groups as $sub_group) {
+			$this->group($sub_group);
+		}
+		foreach ($group->properties as $key => $property) {
+			if (!isset($this->already[$property->property_path])) {
+				unset($group->properties[$key]);
+				$this->already[$property->property_path] = true;
+				$this->property($property);
 			}
 		}
 	}
@@ -128,24 +82,51 @@ class Property_To_Text
 	/**
 	 * Get / create the iteration identified by the group and number
 	 *
-	 * @param $group  Group
-	 * @param $number integer
+	 * @param $group            Group
+	 * @param $iteration_number integer
 	 * @return Iteration
 	 */
-	protected function iteration(Group $group, $number)
+	protected function iteration(Group $group, $iteration_number)
 	{
-		if (!isset($this->iterations[$group->property_path][$number])) {
-			$iteration         = new Iteration($group->page);
-			$iteration->group  = $group;
-			$iteration->left   = $group->left;
-			$iteration->top    = $group->top;
-			$iteration->width  = $group->width;
-			$group->elements[] = $iteration;
+		if (!isset($this->iterations[$group->property_path][$iteration_number])) {
+			$iteration           = new Iteration($group->page);
+			$iteration->group    = $group;
+			$iteration->left     = $group->left;
+			$iteration->number   = $iteration_number;
+			$iteration->top      = $group->top;
+			$iteration->width    = $group->width;
+			$group->iterations[] = $iteration;
 
-			$this->iterations[$group->property_path][$number] = $iteration;
+			$this->iterations[$group->property_path][$iteration_number] = $iteration;
 			return $iteration;
 		}
-		return $this->iterations[$group->property_path][$number];
+		return $this->iterations[$group->property_path][$iteration_number];
+	}
+
+	//----------------------------------------------------------------------------------- nextObjects
+	/**
+	 * @param $objects       object[]
+	 * @param $property_name string
+	 * @return object[]
+	 * @throws ReflectionException
+	 */
+	protected function nextObjects(array $objects, $property_name)
+	{
+		$next_objects = [];
+		if ($objects) {
+			$reflection_property = new Reflection_Property(get_class(reset($objects)), $property_name);
+			foreach ($objects as $object) {
+				/** @noinspection PhpUnhandledExceptionInspection must be valid here */
+				$object = $reflection_property->getValue($object);
+				if (is_array($object)) {
+					$next_objects = array_merge($next_objects, $object);
+				}
+				elseif (is_object($object) || strlen($object)) {
+					$next_objects[] = $object;
+				}
+			}
+		}
+		return $next_objects;
 	}
 
 	//------------------------------------------------------------------------------------------ page
@@ -157,15 +138,53 @@ class Property_To_Text
 	protected function page(Page $page)
 	{
 		$this->iterations = [];
-		foreach ($page->elements as $key => $element) {
-			if ($element instanceof Property) {
-				unset($page->elements[$key]);
-				$this->element($element);
-			}
-			elseif ($element instanceof Group) {
-				$this->group($element);
+		foreach ($page->groups as $group) {
+			$this->group($group);
+		}
+		foreach ($page->properties as $property_key => $property) {
+			unset($page->elements[$property_key]);
+			$this->property($property);
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- property
+	/**
+	 * Process a Property element
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection getValue
+	 * @param $property Property
+	 */
+	protected function property(Property $property)
+	{
+		// Create one Final_Text per final object
+		foreach ($this->values($property) as $iteration_number => $value) {
+			$final_text = $this->propertyToFinalText($property, $value);
+			$this->append($final_text, $iteration_number);
+		}
+	}
+
+	//--------------------------------------------------------------------------- propertyToFinalText
+	/**
+	 * @param $property Property
+	 * @param $value    string
+	 * @return Final_Text
+	 */
+	protected function propertyToFinalText(Property $property, $value)
+	{
+		// change property to final text
+		$final_text = new Final_Text($property->page);
+		foreach (get_object_vars($property) as $property_name => $property_value) {
+			if (property_exists($final_text, $property_name)) {
+				$final_text->$property_name = $property_value;
 			}
 		}
+		$final_text->property = $property;
+		$final_text->text     = $value;
+		// initialize final text, force height calculation
+		$final_text->height = 0;
+		$final_text->init();
+
+		return $final_text;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -182,6 +201,29 @@ class Property_To_Text
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);
 		}
+	}
+
+	//---------------------------------------------------------------------------------------- values
+	/**
+	 * Descend through property values to 'explode' it into all matching objects
+	 *
+	 * @param $property Property
+	 * @return object[]
+	 */
+	protected function values(Property $property)
+	{
+		// This is a 'linear' algorithm, not recursive, to go faster : objects list grow during descend
+		$objects = [$this->object];
+		foreach (explode(DOT, $property->property_path) as $property_name) {
+			try {
+				$objects = $this->nextObjects($objects, $property_name);
+			}
+			catch (ReflectionException $exception) {
+				// bad property.path : no data, ignore the element
+				return [];
+			}
+		}
+		return $objects;
 	}
 
 }

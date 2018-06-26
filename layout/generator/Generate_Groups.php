@@ -43,69 +43,6 @@ class Generate_Groups
 	 */
 	public $page_margin = 10;
 
-	//--------------------------------------------------------------------------------------- element
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $element Property
-	 */
-	protected function element(Property $element)
-	{
-		$class_name = $this->structure->class_name;
-		/** @var $last_group Group|null */
-		$last_group    = null;
-		$property_path = '';
-		foreach (explode(DOT, $element->property_path) as $property_name) {
-			if ($property_path) {
-				$property_path .= DOT;
-			}
-			$property_path .= $property_name;
-			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
-			$property = new Reflection_Property($class_name, $property_name);
-			$type     = $property->getType();
-			if ($type->isMultiple() && !$element->group) {
-				$group = $this->elementGroup($element, $property_path);
-				if ($last_group) {
-					$group->group = $last_group;
-				}
-				$last_group = $group;
-			}
-			$class_name = $type->getElementTypeAsString();
-		}
-		if ($last_group) {
-			$element->group = $last_group;
-		}
-	}
-
-	//---------------------------------------------------------------------------------- elementGroup
-	/**
-	 * @param $element       Property
-	 * @param $property_path string 'property.path'
-	 * @return Group
-	 */
-	protected function elementGroup(Property $element, $property_path)
-	{
-		if (isset($this->groups[$property_path])) {
-			$group = $this->groups[$property_path];
-			// first enlarge size
-			$group->height = max($group->height, $element->top  - $group->top  + $element->height);
-			$group->width  = max($group->width,  $element->left - $group->left + $element->width);
-			// then move position
-			$group->left   = min($group->left, $element->left);
-			$group->top    = min($group->top,  $element->top);
-		}
-		else {
-			$group                        = new Group($element->page);
-			$group->height                = $element->height;
-			$group->left                  = $element->left;
-			$group->property_path         = $property_path;
-			$group->top                   = $element->top;
-			$group->width                 = $element->width;
-			$this->groups[$property_path] = $group;
-		}
-		$group->elements[] = $element;
-		return $group;
-	}
-
 	//---------------------------------------------------------------------------------- enlargeGroup
 	/**
 	 * Automatically the vertical limit of each generated group
@@ -115,7 +52,7 @@ class Generate_Groups
 	protected function enlargeGroup(Group $group)
 	{
 		$minimal_bottom = $group->page->height - $this->page_margin;
-		foreach ($group->page->elements as $element) {
+		foreach ($group->page->allElements() as $element) {
 			if (
 				// only elements outside of the group
 				!$element->insideGroup($group)
@@ -146,15 +83,80 @@ class Generate_Groups
 	protected function page(Page $page)
 	{
 		$this->groups = [];
-		foreach ($page->elements as $element) {
-			if ($element instanceof Property) {
-				$this->element($element);
+		foreach ($page->properties as $property_key => $property) {
+			if ($this->property($property)) {
+				unset($page->properties[$property_key]);
 			}
 		}
 		foreach ($this->groups as $group) {
 			$this->enlargeGroup($group);
-			array_push($page->elements, $group);
+			array_push($page->groups, $group);
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- property
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $property Property
+	 * @return boolean true if the property was stored into a group, else false
+	 */
+	protected function property(Property $property)
+	{
+		$class_name = $this->structure->class_name;
+		/** @var $last_group Group|null */
+		$last_group    = null;
+		$property_path = '';
+		foreach (explode(DOT, $property->property_path) as $property_name) {
+			if ($property_path) {
+				$property_path .= DOT;
+			}
+			$property_path .= $property_name;
+			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
+			$type = (new Reflection_Property($class_name, $property_name))->getType();
+			if ($type->isMultiple() && !$property->group) {
+				$group = $this->propertyGroup($property, $property_path);
+				if ($last_group) {
+					$group->group = $last_group;
+				}
+				$last_group = $group;
+			}
+			$class_name = $type->getElementTypeAsString();
+		}
+		if ($last_group) {
+			$property->group = $last_group;
+			return true;
+		}
+		return false;
+	}
+
+	//--------------------------------------------------------------------------------- propertyGroup
+	/**
+	 * @param $property      Property
+	 * @param $property_path string 'property.path'
+	 * @return Group
+	 */
+	protected function propertyGroup(Property $property, $property_path)
+	{
+		if (isset($this->groups[$property_path])) {
+			$group = $this->groups[$property_path];
+			// first enlarge size
+			$group->height = max($group->height, $property->top  - $group->top  + $property->height);
+			$group->width  = max($group->width,  $property->left - $group->left + $property->width);
+			// then move position
+			$group->left   = min($group->left, $property->left);
+			$group->top    = min($group->top,  $property->top);
+		}
+		else {
+			$group                        = new Group($property->page);
+			$group->height                = $property->height;
+			$group->left                  = $property->left;
+			$group->property_path         = $property_path;
+			$group->top                   = $property->top;
+			$group->width                 = $property->width;
+			$this->groups[$property_path] = $group;
+		}
+		$group->properties[] = $property;
+		return $group;
 	}
 
 	//------------------------------------------------------------------------------------------- run

@@ -23,7 +23,7 @@ class Dispatch_Group_Data_On_Pages
 	{
 		$group_bottom = $group->bottom();
 		$move_to_page = null;
-		foreach ($group->elements as $iteration) {
+		foreach ($group->iterations as $iteration) {
 			/** @var $iteration Iteration At this stage all group elements are Iteration, nothing else */
 			$move_to_next_page = false;
 			/** @var $element Element[] */
@@ -46,10 +46,8 @@ class Dispatch_Group_Data_On_Pages
 	public function run()
 	{
 		foreach ($this->structure->pages as $page) {
-			foreach ($page->elements as $element) {
-				if ($element instanceof Group) {
-					$this->group($element);
-				}
+			foreach ($page->groups as $group) {
+				$this->group($group);
 			}
 		}
 	}

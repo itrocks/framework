@@ -17,4 +17,14 @@ class Property extends Field
 	 */
 	public $property_path;
 
+	//------------------------------------------------------------------------------------------ dump
+	/**
+	 * @param $level integer
+	 * @return string
+	 */
+	public function dump($level = 0)
+	{
+		return parent::dump($level) . ' = ' . $this->property_path;
+	}
+
 }

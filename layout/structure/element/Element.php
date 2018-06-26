@@ -9,6 +9,9 @@ use ITRocks\Framework\Layout\Structure\Group\Iteration;
 abstract class Element
 {
 
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = '-';
+
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * If the element has been identified by Associate_Groups or Generate_Groups to be inside a group,
@@ -76,6 +79,15 @@ abstract class Element
 		$this->page = $page;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->dump();
+	}
+
 	//---------------------------------------------------------------------------------------- bottom
 	/**
 	 * @return float
@@ -83,6 +95,18 @@ abstract class Element
 	public function bottom()
 	{
 		return $this->top + $this->height;
+	}
+
+	//------------------------------------------------------------------------------------------ dump
+	/**
+	 * @param $level integer
+	 * @return string
+	 */
+	public function dump($level = 0)
+	{
+		$dump_symbol = (($level > -1) ? (static::DUMP_SYMBOL . SP) : '');
+		return str_repeat(SP, max(0, $level) * 2) . $dump_symbol . get_class($this) . ' : '
+			. $this->left . ', ' . $this->top . ' - ' . $this->width . ', ' . $this->height;
 	}
 
 	//----------------------------------------------------------------------------------- insideGroup

@@ -7,10 +7,10 @@ namespace ITRocks\Framework\Layout\Structure\Field;
 class Final_Text extends Text
 {
 
-	//-------------------------------------------------------------------------------------- $element
+	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Property
 	 */
-	public $element;
+	public $property;
 
 }

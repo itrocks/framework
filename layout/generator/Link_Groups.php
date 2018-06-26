@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
+
 use ITRocks\Framework\Layout\Structure\Group;
-use ITRocks\Framework\Layout\Structure\Page;
 
 /**
  * Link groups through pages
@@ -25,27 +25,18 @@ class Link_Groups
 	public function group(Group $group)
 	{
 		$this->links[$group->property_path][$group->page->number] = $group;
-		$group->groups =& $this->links[$group->property_path];
-	}
-
-	//------------------------------------------------------------------------------------------ page
-	/**
-	 * @param $page Page
-	 */
-	public function page(Page $page)
-	{
-		foreach ($page->elements as $element) {
-			if (($element instanceof Group) && !$element->groups) {
-				$this->group($element);
-			}
-		}
+		$group->links =& $this->links[$group->property_path];
 	}
 
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
 		foreach ($this->structure->pages as $page) {
-			$this->page($page);
+			foreach ($page->groups as $group) {
+				if (!$group->links) {
+					$this->group($group);
+				}
+			}
 		}
 	}
 

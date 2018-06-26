@@ -1,6 +1,9 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure;
 
+use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Group\Iteration;
+
 /**
  * A group manages repeated fields
  *
@@ -12,6 +15,9 @@ namespace ITRocks\Framework\Layout\Structure;
  */
 class Group extends Element
 {
+
+	//----------------------------------------------------------------------------------- DUMP_SYMBOL
+	const DUMP_SYMBOL = '>';
 
 	//---------------------------------------------------------------------------- $direction @values
 	const HORIZONTAL = 'horizontal';
@@ -26,14 +32,29 @@ class Group extends Element
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
-	 * Raw elements before moving them into iterations (eg properties)
-	 * Or iterations when they have been generated (eg final-texts)
+	 * Raw elements that are not $groups, $iterations nor $properties
+	 *
+	 * When iterations are generated, this is empty
 	 *
 	 * @var Element[]
 	 */
 	public $elements = [];
 
 	//--------------------------------------------------------------------------------------- $groups
+	/**
+	 * Sub-group elements
+	 *
+	 * @var Group[]
+	 */
+	public $groups = [];
+
+	//----------------------------------------------------------------------------------- $iterations
+	/**
+	 * @var Iteration[]
+	 */
+	public $iterations = [];
+
+	//---------------------------------------------------------------------------------------- $links
 	/**
 	 * Set by Link_Groups::run : key is the structure page number, value is the same group in the page
 	 *
@@ -42,15 +63,53 @@ class Group extends Element
 	 *
 	 * @var Group[]
 	 */
-	public $groups;
+	public $links = [];
+
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * @var Property[]
+	 */
+	public $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * The path of the property, starting from the layout model context class
+	 *
 	 * The final property has always a multiple type (eg Class[], string[])
 	 *
 	 * @var string
 	 */
 	public $property_path;
+
+	//----------------------------------------------------------------------------------- allElements
+	/**
+	 * @return Element[]
+	 */
+	public function allElements()
+	{
+		return array_merge($this->elements, $this->groups, $this->iterations, $this->properties);
+	}
+
+	//------------------------------------------------------------------------------------------ dump
+	/**
+	 * @param $level integer
+	 * @param $detail boolean
+	 * @return string
+	 */
+	public function dump($level = 0, $detail = true)
+	{
+		if ($detail) {
+			$dump = parent::dump($level) . LF;
+			foreach ($this->allElements() as $element) {
+				$dump .= $element->dump($level + 1) . LF;
+			}
+			foreach ($this->links as $link) {
+				$dump .= str_repeat(SP, $level * 2 + 2) . $link->page->number
+					. SP . $link->dump(0, false) . LF;
+			}
+			return $dump;
+		}
+		return parent::dump($level);
+	}
 
 }

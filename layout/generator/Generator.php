@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
 use ITRocks\Framework\Layout\Generator\Dispatch_Group_Data;
-use ITRocks\Framework\Layout\Generator\Dispatch_Group_Data_On_Pages;
 use ITRocks\Framework\Layout\Generator\Generate_Groups;
 use ITRocks\Framework\Layout\Generator\Link_Groups;
 use ITRocks\Framework\Layout\Generator\Page_All_Elements;
@@ -79,11 +78,11 @@ class Generator
 		// associate and auto-generate groups before page all elements to avoid mixing
 		(new Associate_Groups($this->structure))->run();
 		(new Generate_Groups($this->structure))->run();
-		$this->purgeElements();
+		$this->purgeSnapLines();
 		(new Page_All_Elements($this->structure))->run();
 		(new Link_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure))->run($this->object);
-		//(new Dispatch_Group_Data($this->structure))->run();
+		(new Dispatch_Group_Data($this->structure))->run();
 		//(new Dispatch_Group_Data_On_Pages($this->structure))->run();
 		return $this->structure;
 	}
@@ -103,20 +102,15 @@ class Generator
 		}
 	}
 
-	//--------------------------------------------------------------------------------- purgeElements
+	//-------------------------------------------------------------------------------- purgeSnapLines
 	/**
-	 * Remove :
-	 * - snap line elements
-	 * - elements that are into groups
+	 * Remove snap line elements from pages
 	 */
-	protected function purgeElements()
+	protected function purgeSnapLines()
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->elements as $element_key => $element) {
-				if (
-					($element instanceof Snap_Line)
-					|| $element->group
-				) {
+				if ($element instanceof Snap_Line) {
 					unset($page->elements[$element_key]);
 				}
 			}
