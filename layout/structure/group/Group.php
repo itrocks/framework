@@ -48,6 +48,14 @@ class Group extends Element
 	 */
 	public $groups = [];
 
+	//---------------------------------------------------------------------------- $iteration_spacing
+	/**
+	 * Space between iterations (for margins)
+	 *
+	 * @var float
+	 */
+	public $iteration_spacing = .5;
+
 	//----------------------------------------------------------------------------------- $iterations
 	/**
 	 * @var Iteration[]
@@ -110,6 +118,21 @@ class Group extends Element
 			return $dump;
 		}
 		return parent::dump($level);
+	}
+
+	//---------------------------------------------------------------------------------- heightOnPage
+	/**
+	 * Gets the height of the linked group into this page
+	 * If the group is not stored into this page, will return 0 because we can't output it here
+	 *
+	 * @param $page Page
+	 * @return float
+	 */
+	public function heightOnPage(Page $page)
+	{
+		return isset($this->links[$page->number])
+			? $this->links[$page->number]->height
+			: 0;
 	}
 
 }

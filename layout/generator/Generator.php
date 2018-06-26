@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
-use ITRocks\Framework\Layout\Generator\Dispatch_Group_Data;
+use ITRocks\Framework\Layout\Generator\Count_Pages;
+use ITRocks\Framework\Layout\Generator\Dispatch_Iterations;
+use ITRocks\Framework\Layout\Generator\Dispatch_Iterations_On_Pages;
 use ITRocks\Framework\Layout\Generator\Generate_Groups;
 use ITRocks\Framework\Layout\Generator\Link_Groups;
 use ITRocks\Framework\Layout\Generator\Page_All_Elements;
@@ -82,8 +84,9 @@ class Generator
 		(new Page_All_Elements($this->structure))->run();
 		(new Link_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure))->run($this->object);
-		(new Dispatch_Group_Data($this->structure))->run();
-		//(new Dispatch_Group_Data_On_Pages($this->structure))->run();
+		(new Dispatch_Iterations($this->structure))->run();
+		(new Count_Pages($this->structure))->run();
+		(new Dispatch_Iterations_On_Pages($this->structure))->run();
 		return $this->structure;
 	}
 

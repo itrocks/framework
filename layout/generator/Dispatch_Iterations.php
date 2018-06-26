@@ -16,7 +16,7 @@ use ITRocks\Framework\Layout\Structure\Group\Iteration;
  * @see Dispatch_Group_Data_On_Pages for this next step
  * @todo only vertical Group is managed. Do this for horizontal when will be useful
  */
-class Dispatch_Group_Data
+class Dispatch_Iterations
 {
 	use Has_Structure;
 
@@ -36,9 +36,9 @@ class Dispatch_Group_Data
 				$minimal_top   = min($minimal_top, $element->top);
 			}
 			// next line shift value
-			$max_height        = $this->maxHeight($iteration->elements) - $minimal_top;
-			$iteration->height = $max_height;
-			$previous_iterations_height += $max_height;
+			$max_height                  = $this->maxHeight($iteration->elements) - $minimal_top;
+			$iteration->height           = $max_height;
+			$previous_iterations_height += $max_height + $group->iteration_spacing;
 		}
 	}
 

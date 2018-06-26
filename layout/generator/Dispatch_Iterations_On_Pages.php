@@ -11,7 +11,7 @@ use ITRocks\Framework\Layout\Structure\Group\Iteration;
  *
  * This also decides if we use unique page / first + last pages / first + middle + last pages
  */
-class Dispatch_Group_Data_On_Pages
+class Dispatch_Iterations_On_Pages
 {
 	use Has_Structure;
 

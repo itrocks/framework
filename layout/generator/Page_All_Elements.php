@@ -20,7 +20,7 @@ class Page_All_Elements
 					if ($page->number !== Page::ALL) {
 						foreach ($all_page::ALL_ELEMENT_PROPERTIES as $element_property) {
 							foreach ($all_page->$element_property as $element) {
-								$page->$element_property[] = clone $element;
+								array_push($page->$element_property, clone $element);
 							}
 						}
 						$copied = true;

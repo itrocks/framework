@@ -18,6 +18,7 @@ class Page
 	const FIRST  = '1';
 	const LAST   = '-1';
 	const MIDDLE = '0';
+	const UNIQUE = 'U';
 
 	//------------------------------------------------------------------------ ALL_ELEMENT_PROPERTIES
 	const ALL_ELEMENT_PROPERTIES = ['elements', 'groups', 'properties'];

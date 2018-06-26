@@ -21,9 +21,17 @@ class Structure
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
-	 * @var Page[]
+	 * @var Page[] Page[string $page_number] key is the page number or Page constant value
 	 */
 	public $pages;
+
+	//---------------------------------------------------------------------------------- $pages_count
+	/**
+	 * Pages count, calculated by Count_Pages
+	 *
+	 * @var integer
+	 */
+	public $pages_count;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -51,11 +59,58 @@ class Structure
 	 */
 	public function dump()
 	{
-		$dump = '';
+		$dump = $this->pages_count . ' PAGES' . LF . LF;
 		foreach ($this->pages as $page) {
 			$dump .= $page->dump() . LF;
 		}
 		return $dump;
+	}
+
+	//------------------------------------------------------------------------------------------ page
+	/**
+	 * Gets the page model that matches the page number and pages count
+	 *
+	 * @param $page_number integer absolute page number
+	 * @param $pages_count integer default is $this->pages_count
+	 * @param $pages       Page[] default is $this->pages
+	 * @return Page
+	 */
+	public function page($page_number, $pages_count = null, array $pages = null)
+	{
+		if (!$pages) {
+			$pages = $this->pages;
+		}
+		if (!$pages_count) {
+			$pages_count = $this->pages_count;
+			if (!$pages_count) {
+				trigger_error('page was called without pages count', E_USER_ERROR);
+			}
+		}
+		$negative    = strval($page_number - $pages_count - 1);
+		$page_number = strval($page_number);
+
+		if (count($pages) === 1) {
+			return reset($pages);
+		}
+		if (($pages_count === 1) && isset($pages[Page::UNIQUE])) {
+			return $pages[Page::UNIQUE];
+		}
+		if ((abs($negative) < $page_number) && isset($pages[$negative])) {
+			return $pages[$negative];
+		}
+		if (isset($pages[$page_number])) {
+			return $pages[$page_number];
+		}
+		if (isset($pages[$negative])) {
+			return $pages[$negative];
+		}
+		if (isset($pages[Page::MIDDLE])) {
+			return $pages[Page::MIDDLE];
+		}
+		if (isset($pages[Page::UNIQUE])) {
+			return $pages[Page::UNIQUE];
+		}
+		return reset($pages);
 	}
 
 }

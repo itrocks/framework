@@ -22,7 +22,7 @@ class Link_Groups
 	/**
 	 * @param $group Group
 	 */
-	public function group(Group $group)
+	protected function group(Group $group)
 	{
 		$this->links[$group->property_path][$group->page->number] = $group;
 		$group->links =& $this->links[$group->property_path];
