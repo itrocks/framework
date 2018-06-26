@@ -30,14 +30,6 @@ class Iteration extends Element
 	 */
 	public $number;
 
-	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * The original iterated properties
-	 *
-	 * @var Property[]
-	 */
-	public $properties;
-
 	//------------------------------------------------------------------------------ cloneWithContext
 	/**
 	 * @param $page      Page
@@ -67,7 +59,7 @@ class Iteration extends Element
 	public function dump($level = 0)
 	{
 		$dump = parent::dump($level) . SP . '(' . $this->number . ')' . LF;
-		foreach (array_merge($this->elements, $this->properties) as $element) {
+		foreach ($this->elements as $element) {
 			/** @var $element Element */
 			$dump .= $element->dump($level + 1) . LF;
 		}
