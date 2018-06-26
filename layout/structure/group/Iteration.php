@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Layout\Structure\Group;
 
 use ITRocks\Framework\Layout\Structure\Element;
-use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
 
