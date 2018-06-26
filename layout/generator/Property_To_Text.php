@@ -49,10 +49,9 @@ class Property_To_Text
 	{
 		// append element to the group iteration / page
 		if ($final_text->group) {
-			$iteration               = $this->iteration($final_text->group, $iteration_number);
-			$final_text->iteration   = $iteration;
-			$iteration->elements[]   = $final_text;
-			$iteration->properties[] = $final_text->property;
+			$iteration             = $this->iteration($final_text->group, $iteration_number);
+			$final_text->iteration = $iteration;
+			$iteration->elements[] = $final_text;
 		}
 		else {
 			$final_text->page->elements[] = $final_text;
@@ -72,7 +71,6 @@ class Property_To_Text
 		}
 		foreach ($group->properties as $key => $property) {
 			if (!isset($this->already[$property->property_path])) {
-				unset($group->properties[$key]);
 				$this->already[$property->property_path] = true;
 				$this->property($property);
 			}
