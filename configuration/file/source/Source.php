@@ -149,7 +149,7 @@ class Source extends File
 	 * Create a new final class in the application that extends $class_extends
 	 *
 	 * @param $class_extends string
-	 * @return static::class
+	 * @return static
 	 */
 	public static function create($class_extends)
 	{

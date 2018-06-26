@@ -97,6 +97,22 @@ abstract class Element
 		return $this->top + $this->height;
 	}
 
+	//------------------------------------------------------------------------------ cloneWithContext
+	/**
+	 * @param $page      Page
+	 * @param $group     Group|null
+	 * @param $iteration Iteration|null
+	 * @return static
+	 */
+	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+	{
+		$element            = clone $this;
+		$element->page      = $page;
+		$element->group     = $group;
+		$element->iteration = $iteration;
+		return $element;
+	}
+
 	//------------------------------------------------------------------------------------------ dump
 	/**
 	 * @param $level integer

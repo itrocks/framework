@@ -98,6 +98,32 @@ class Page
 		return array_merge($this->elements, $this->groups, $this->properties);
 	}
 
+	//------------------------------------------------------------------------------- cloneWithNumber
+	/**
+	 * Clone with number
+	 *
+	 * All elements are cloned and get the new page context
+	 *
+	 * @param $number integer
+	 * @return static
+	 */
+	public function cloneWithNumber($number)
+	{
+		$page         = clone $this;
+		$page->number = $number;
+
+		foreach (static::ALL_ELEMENT_PROPERTIES as $elements_property_name) {
+			$elements = [];
+			foreach ($this->$elements_property_name as $element) {
+				/** @var $element Element */
+				$elements[] = $element->cloneWithContext($page);
+			}
+			$page->$elements_property_name = $elements;
+		}
+
+		return $page;
+	}
+
 	//------------------------------------------------------------------------------------------ dump
 	/**
 	 * @return string

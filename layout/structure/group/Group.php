@@ -16,6 +16,9 @@ use ITRocks\Framework\Layout\Structure\Group\Iteration;
 class Group extends Element
 {
 
+	//------------------------------------------------------------------------ ALL_ELEMENT_PROPERTIES
+	const ALL_ELEMENT_PROPERTIES = ['elements', 'groups', 'iterations', 'properties'];
+
 	//----------------------------------------------------------------------------------- DUMP_SYMBOL
 	const DUMP_SYMBOL = '>';
 
@@ -69,7 +72,7 @@ class Group extends Element
 	 * All $linked_groups are the same group in multiple pages
 	 * They are all linked by reference : modify $linked_groups in a group and all the others will be
 	 *
-	 * @var Group[]
+	 * @var Group[] Group[string $page_number] page number must always be a string
 	 */
 	public $links = [];
 
@@ -96,6 +99,38 @@ class Group extends Element
 	public function allElements()
 	{
 		return array_merge($this->elements, $this->groups, $this->iterations, $this->properties);
+	}
+
+	//------------------------------------------------------------------------------ cloneWithContext
+	/**
+	 * @param $page      Page
+	 * @param $group     Group|null
+	 * @param $iteration Iteration|null
+	 * @return static
+	 */
+	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+	{
+		/** @var $group static PhpStorm bug */
+		$group = parent::cloneWithContext($page, $group, $iteration);
+		$this->links[strval($group->page->number)] = $group;
+
+		foreach (static::ALL_ELEMENT_PROPERTIES as $elements_property_name) {
+			$elements = [];
+			foreach ($this->$elements_property_name as $element) {
+				/** @var $element Element */
+				if ($element instanceof Iteration) {
+					foreach ($element->elements as $iteration_element) {
+						$elements[] = $iteration_element->cloneWithContext($page, $group);
+					}
+				}
+				else {
+					$elements[] = $element->cloneWithContext($page, $group);
+				}
+			}
+			$this->$elements_property_name = $elements;
+		}
+
+		return $group;
 	}
 
 	//------------------------------------------------------------------------------------------ dump
@@ -130,9 +165,23 @@ class Group extends Element
 	 */
 	public function heightOnPage(Page $page)
 	{
-		return isset($this->links[$page->number])
-			? $this->links[$page->number]->height
+		return isset($this->links[strval($page->number)])
+			? $this->links[strval($page->number)]->height
 			: 0;
+	}
+
+	//------------------------------------------------------------------------------------ linkOnPage
+	/**
+	 * Gets the linked group into this page, if exist
+	 *
+	 * @param $page Page
+	 * @return Group|null
+	 */
+	public function linkOnPage(Page $page)
+	{
+		return isset($this->links[strval($page->number)])
+			? $this->links[strval($page->number)]
+			: null;
 	}
 
 }

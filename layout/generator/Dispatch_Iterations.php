@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Group;
-use ITRocks\Framework\Layout\Structure\Group\Iteration;
 
 /**
  * Dispatch group data
@@ -30,7 +29,6 @@ class Dispatch_Iterations
 		foreach ($group->iterations as $iteration) {
 			$iteration->top += $previous_iterations_height;
 			$minimal_top     = reset($iteration->elements)->page->height;
-			/** @var $iteration Iteration At this stage all group elements are Iteration, nothing else */
 			foreach ($iteration->elements as $element) {
 				$element->top += $previous_iterations_height;
 				$minimal_top   = min($minimal_top, $element->top);

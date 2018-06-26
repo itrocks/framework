@@ -89,6 +89,12 @@ class Structure
 		$negative    = strval($page_number - $pages_count - 1);
 		$page_number = strval($page_number);
 
+		if ($page_number > $pages_count) {
+			trigger_error(
+				"Asked for page number $page_number greater than pages count $pages_count", E_USER_ERROR
+			);
+		}
+
 		if (count($pages) === 1) {
 			return reset($pages);
 		}
