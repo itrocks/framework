@@ -65,4 +65,18 @@ class Iteration extends Element
 		return $dump;
 	}
 
+	//-------------------------------------------------------------------------------------------- up
+	/**
+	 * Move the iteration and all contained elements up
+	 *
+	 * @param $height float The distance to move (mm)
+	 */
+	public function up($height)
+	{
+		$this->top -= $height;
+		foreach ($this->elements as $element) {
+			$element->top -= $height;
+		}
+	}
+
 }

@@ -31,21 +31,41 @@ class Dispatch_Iterations_On_Pages
 	 */
 	protected function group(Group $group)
 	{
-		$done_height = 0;
+		$iterations        = $group->iterations;
+		$group->iterations = [];
+		$page_number       = 0;
+		$page_group        = $this->nextPageGroup($group, $page_number);
+		$shift_top         = $group->top - $page_group->top;
+		$page_group_bottom = $page_group->bottom();
 
-		// get first page containing group
-		$page_number = 1;
-		$page        = $this->page($page_number);
-		$page_group  = $group->linkOnPage($page);
-		while (!$page_group) {
+		foreach ($iterations as $iteration) {
+			$iteration_bottom = $iteration->top + $iteration->height - $shift_top;
+			if ($iteration_bottom > $page_group_bottom) {
+				$page_group = $this->nextPageGroup($group, $page_number);
+				$shift_top  = $iteration->top - $page_group->top;
+			}
+			$iteration->up($shift_top);
+			$page_group->iterations[] = $iteration;
+		}
+	}
+
+	//--------------------------------------------------------------------------------- nextPageGroup
+	/**
+	 * @param $group       Group
+	 * @param $page_number integer Incremented 1..n times : until next page with a linked group found
+	 * @return Group The linked group for the found page
+	 */
+	protected function nextPageGroup(Group $group, &$page_number)
+	{
+		do {
 			$page_number ++;
-			$page        = $this->structure->page($page_number);
+			$page        = $this->page($page_number);
 			$page_group  = $group->linkOnPage($page);
+			$this->pages[$page->number] = $page;
 		}
+		while (!$page_group);
 
-		foreach ($group->iterations as $iteration) {
-
-		}
+		return $page_group;
 	}
 
 	//------------------------------------------------------------------------------------------ page
@@ -55,8 +75,11 @@ class Dispatch_Iterations_On_Pages
 	 * @param $page_number integer
 	 * @return Page
 	 */
-	public function page($page_number)
+	protected function page($page_number)
 	{
+		if (isset($this->pages[$page_number])) {
+			return $this->pages[$page_number];
+		}
 		$model_page = $this->structure->page($page_number);
 		// get unique page without cloning it
 		if ($model_page->number === strval($page_number)) {
