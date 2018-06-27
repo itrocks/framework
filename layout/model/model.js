@@ -158,7 +158,7 @@ $(document).ready(function()
 		$free_text.keyup(function()
 		{
 			var $free_text = $(this);
-			var $selected  = $designer.data('selected');
+			var $selected  = $designer.find('.selected:visible');
 			if ($selected.length) {
 				$selected.text($free_text.val());
 			}
