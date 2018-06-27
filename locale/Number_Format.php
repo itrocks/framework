@@ -88,12 +88,15 @@ class Number_Format
 			$float = number_format(
 				$float, $this->decimal_maximal_count, $this->decimal_separator, $this->thousand_separator
 			);
-			if ($pos = strrpos($float, $this->decimal_separator)) {
-				$decimals = strlen($float) - $pos - 1;
-				while (($float[$pos + $decimals] == '0') && ($decimals > $this->decimal_minimal_count)) {
-					$decimals--;
+			if ($position = strrpos($float, $this->decimal_separator)) {
+				$decimals = strlen($float) - $position - 1;
+				while (
+					($float[$position + $decimals] === '0')
+					&& ($decimals > $this->decimal_minimal_count)
+				) {
+					$decimals --;
 				}
-				$float = substr($float, 0, $pos + $decimals + 1);
+				$float = rtrim(substr($float, 0, $position + $decimals + 1), $this->decimal_separator);
 			}
 		}
 		return $float;

@@ -128,13 +128,39 @@ class Locale implements Configurable
 		if ($value instanceof Date_Time) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 		}
-		return (is_null($value) && $property->getAnnotation('null')->value)
+		if ($property->getType()->isFloat()) {
+			$decimals = explode(
+				',',
+				str_replace([CR, LF, SP, TAB], '', $property->getAnnotation('decimals')->value)
+			);
+			if (!isset($decimals[1])) {
+				$decimals[1] = $decimals[0];
+			}
+			if (strlen($decimals[0])) {
+				$save_decimals = [
+					$this->number_format->decimal_minimal_count,
+					$this->number_format->decimal_maximal_count
+				];
+				list(
+					$this->number_format->decimal_minimal_count,
+					$this->number_format->decimal_maximal_count
+				) = $decimals;
+			}
+		}
+		$result = (is_null($value) && $property->getAnnotation('null')->value)
 			? $value
 			: (
 				$property->getListAnnotation('values')->value
 					? $this->translations->translate($value)
 					: $this->toLocale($value, $property->getType())
 			);
+		if (isset($save_decimals)) {
+			list(
+				$this->number_format->decimal_minimal_count,
+				$this->number_format->decimal_maximal_count
+			) = $save_decimals;
+		}
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- setDateFormat
