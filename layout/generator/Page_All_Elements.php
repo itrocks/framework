@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
 
@@ -21,7 +22,8 @@ class Page_All_Elements
 					if ($page->number !== Page::ALL) {
 						foreach ($all_page::ALL_ELEMENT_PROPERTIES as $element_property) {
 							foreach ($all_page->$element_property as $element) {
-								array_push($page->$element_property, clone $element);
+								/** @var $element Element */
+								array_push($page->$element_property, $element->cloneWithContext($page));
 							}
 						}
 						$copied = true;

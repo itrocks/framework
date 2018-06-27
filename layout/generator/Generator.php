@@ -9,6 +9,7 @@ use ITRocks\Framework\Layout\Generator\Generate_Groups;
 use ITRocks\Framework\Layout\Generator\Link_Groups;
 use ITRocks\Framework\Layout\Generator\Page_All_Elements;
 use ITRocks\Framework\Layout\Generator\Property_To_Text;
+use ITRocks\Framework\Layout\Generator\Text_Templating;
 use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Page\From_Json;
 
@@ -87,6 +88,7 @@ class Generator
 		(new Dispatch_Iterations($this->structure))->run();
 		(new Count_Pages($this->structure))->run();
 		(new Dispatch_Iterations_On_Pages($this->structure))->run();
+		(new Text_Templating($this->structure))->run($this->object);
 		return $this->structure;
 	}
 
