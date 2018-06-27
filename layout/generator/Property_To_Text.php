@@ -7,6 +7,7 @@ use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
 
@@ -164,6 +165,7 @@ class Property_To_Text
 
 	//--------------------------------------------------------------------------- propertyToFinalText
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Property
 	 * @param $value    string
 	 * @return Final_Text
@@ -178,7 +180,11 @@ class Property_To_Text
 			}
 		}
 		$final_text->property = $property;
-		$final_text->text     = $value;
+		/** @noinspection PhpUnhandledExceptionInspection verified property */
+		$final_text->text = Loc::propertyToLocale(
+			new Reflection_Property(get_class($this->object), $property->property_path),
+			$value
+		);
 		// initialize final text, force height calculation
 		$final_text->height = 0;
 		$final_text->init();
