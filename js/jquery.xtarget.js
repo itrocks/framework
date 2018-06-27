@@ -150,6 +150,14 @@
 						}
 					}
 				}
+				setTimeout(function () {
+					if ($target.offset().left + $target.outerWidth() > $(window).outerWidth()) {
+						$target.css('left', $(window).outerWidth() - $target.outerWidth());
+					}
+					if ($target.offset().top + $target.outerHeight() > $(window).outerHeight()) {
+						$target.css('top', $(window).outerHeight() - $target.outerHeight());
+					}
+				}, 1);
 				return $target;
 			},
 
