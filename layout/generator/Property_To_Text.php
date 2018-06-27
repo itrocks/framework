@@ -115,16 +115,19 @@ class Property_To_Text
 	{
 		$next_objects = [];
 		if ($objects) {
+			$iteration           = 0;
 			$reflection_property = new Reflection_Property(get_class(reset($objects)), $property_name);
 			foreach ($objects as $object) {
 				/** @noinspection PhpUnhandledExceptionInspection must be valid here */
 				$object = $reflection_property->getValue($object);
 				if (is_array($object)) {
+					// TODO sub-arrays wont work at all : only one level of array values
 					$next_objects = array_merge($next_objects, $object);
 				}
 				elseif (is_object($object) || strlen($object)) {
-					$next_objects[] = $object;
+					$next_objects[$iteration] = $object;
 				}
+				$iteration ++;
 			}
 		}
 		return $next_objects;
