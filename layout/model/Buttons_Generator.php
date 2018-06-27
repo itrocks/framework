@@ -44,7 +44,7 @@ class Buttons_Generator
 				$model->name,
 				View::link($this->class_name, Feature::F_PRINT, View::link($model)),
 				Feature::F_PRINT,
-				['.object', Button::OBJECT => $model, Target::NONE]
+				['.object', Button::OBJECT => $model, View::TARGET => Target::NEW_WINDOW]
 			);
 		}
 

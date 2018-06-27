@@ -114,15 +114,13 @@ class Group extends Element
 		$group = parent::cloneWithContext($page, $group, $iteration);
 		$this->links[strval($group->page->number)] = $group;
 
-		foreach (static::ALL_ELEMENT_PROPERTIES as $elements_property_name) {
-			if ($elements_property_name !== 'iterations') {
-				$elements = [];
-				foreach ($this->$elements_property_name as $element) {
-					/** @var $element Element */
-					$elements[] = $element->cloneWithContext($page, $group);
-				}
-				$this->$elements_property_name = $elements;
+		foreach (['elements', 'groups'] as $elements_property_name) {
+			$elements = [];
+			foreach ($this->$elements_property_name as $element) {
+				/** @var $element Element */
+				$elements[] = $element->cloneWithContext($page, $group);
 			}
+			$this->$elements_property_name = $elements;
 		}
 
 		return $group;

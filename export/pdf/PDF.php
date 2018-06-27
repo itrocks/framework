@@ -20,6 +20,9 @@ class PDF extends FPDI
 {
 	use Init;
 
+	//------------------------------------------------------------------- MILLIMETERS_TO_POINTS_RATIO
+	const MILLIMETERS_TO_POINTS_RATIO = 2.5;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor prepare the document the same way if coming from FPDF or TCPDF : no header line
@@ -31,6 +34,16 @@ class PDF extends FPDI
 		/** @var $this PDF|TCPDF */
 		$this->setPrintHeader(false);
 		$this->setPrintFooter(false);
+	}
+
+	//--------------------------------------------------------------------------- millimetersToPoints
+	/**
+	 * @param $millimeters float
+	 * @return float
+	 */
+	public function millimetersToPoints($millimeters)
+	{
+		return static::MILLIMETERS_TO_POINTS_RATIO * $millimeters;
 	}
 
 }

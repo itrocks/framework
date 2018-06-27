@@ -7,6 +7,7 @@ use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
+use ITRocks\Framework\Layout\Structure\Page;
 use TCPDF;
 
 /**
@@ -24,6 +25,8 @@ class Exporter
 
 	//----------------------------------------------------------------------------------- appendToPdf
 	/**
+	 * Append final structure containing positioned data into PDF
+	 *
 	 * @param $pdf PDF|TCPDF
 	 */
 	public function appendToPdf(PDF $pdf)
@@ -33,21 +36,45 @@ class Exporter
 		$page_break = $pdf->getAutoPageBreak();
 		$pdf->SetMargins(10, 10);
 		$pdf->SetAutoPageBreak(false);
-		$this->printPages();
+		$this->pages();
 		$pdf->SetMargins($margins['left'], $margins['top'], $margins['right']);
 		$pdf->SetAutoPageBreak($page_break);
 	}
 
-	//---------------------------------------------------------------------------------- printElement
+	//------------------------------------------------------------------------------------ background
 	/**
+	 * Draw page background
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $page Page
+	 */
+	protected function background(Page $page)
+	{
+		if ($page->background) {
+			$pdf = $this->pdf;
+			/** @noinspection PhpUnhandledExceptionInspection Will work */
+			$pdf->setSourceFile($page->background->temporary_file_name);
+			$import_page = $pdf->importPage(1);
+			$pdf->useTemplate($import_page);
+		}
+	}
+
+	//--------------------------------------------------------------------------------------- element
+	/**
+	 * Draw an element into current page
+	 *
 	 * @param $element Element
 	 */
-	protected function printElement(Element $element)
+	protected function element(Element $element)
 	{
+		$pdf = $this->pdf;
 		if ($element instanceof Text) {
 			$position = $element->top;
 			foreach (explode(LF, $element->text) as $text) {
-				$this->pdf->Text($element->left, $position, $text);
+				$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
+				$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
+				$pdf->SetXY($element->left, $position);
+				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align, false, '', 0, false, 'T', 'M');
 				$position += $element->font_size;
 			}
 		}
@@ -56,35 +83,52 @@ class Exporter
 		}
 	}
 
-	//------------------------------------------------------------------------------------ printGroup
+	//----------------------------------------------------------------------------------------- group
 	/**
+	 * Draw a group elements into current page
+	 *
 	 * @param $group Group
 	 */
-	protected function printGroup(Group $group)
+	protected function group(Group $group)
 	{
 		foreach ($group->iterations as $iteration) {
 			foreach ($iteration->elements as $element) {
 				if ($element instanceof Group) {
-					$this->printGroup($element);
+					$this->group($element);
 				}
 				else {
-					$this->printElement($element);
+					$this->element($element);
 				}
 			}
 		}
 	}
 
-	//------------------------------------------------------------------------------------ printPages
-	protected function printPages()
+	//------------------------------------------------------------------------------------------ page
+	/**
+	 * Create a new page and draw page elements into it
+	 *
+	 * @param $page Page
+	 */
+	protected function page(Page $page)
+	{
+		$this->pdf->AddPage();
+		$this->background($page);
+		foreach ($page->elements as $element) {
+			$this->element($element);
+		}
+		foreach ($page->groups as $group) {
+			$this->group($group);
+		}
+	}
+
+	//----------------------------------------------------------------------------------------- pages
+	/**
+	 * Add and draw structure pages to the current PDF
+	 */
+	protected function pages()
 	{
 		foreach ($this->structure->pages as $page) {
-			$this->pdf->AddPage();
-			foreach ($page->elements as $element) {
-				$this->printElement($element);
-			}
-			foreach ($page->groups as $group) {
-				$this->printGroup($group);
-			}
+			$this->page($page);
 		}
 	}
 

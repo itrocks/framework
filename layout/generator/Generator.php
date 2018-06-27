@@ -99,6 +99,7 @@ class Generator
 		foreach ($this->model->pages as $page) {
 			$structure_page = (new From_Json)->build($page->layout);
 			if (!$structure_page->isEmpty()) {
+				$structure_page->background              = $page->background;
 				$structure_page->number                  = $page->ordering;
 				$this->structure->pages[$page->ordering] = $structure_page;
 			}

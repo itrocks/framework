@@ -141,8 +141,7 @@ class Property_To_Text
 		foreach ($page->groups as $group) {
 			$this->group($group);
 		}
-		foreach ($page->properties as $property_key => $property) {
-			unset($page->elements[$property_key]);
+		foreach ($page->properties as $property) {
 			$this->property($property);
 		}
 	}

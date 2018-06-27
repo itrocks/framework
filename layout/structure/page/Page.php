@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure;
 
+use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 
@@ -22,6 +23,12 @@ class Page
 
 	//------------------------------------------------------------------------ ALL_ELEMENT_PROPERTIES
 	const ALL_ELEMENT_PROPERTIES = ['elements', 'groups', 'properties'];
+
+	//----------------------------------------------------------------------------------- $background
+	/**
+	 * @var File
+	 */
+	public $background;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
@@ -112,7 +119,7 @@ class Page
 		$page         = clone $this;
 		$page->number = $number;
 
-		foreach (static::ALL_ELEMENT_PROPERTIES as $elements_property_name) {
+		foreach (['elements', 'groups'] as $elements_property_name) {
 			$elements = [];
 			foreach ($this->$elements_property_name as $element) {
 				/** @var $element Element */

@@ -47,6 +47,9 @@ class Controller implements Default_Feature_Controller
 			$exporter->appendToPdf($pdf);
 		}
 
+		// TODO remove this debug file
+		file_put_contents('/tmp/structure.txt', $structure->dump());
+
 		$file_name = Names::classToDisplay($layout_model->class_name) . '.pdf';
 		return $pdf->Output($file_name, PDF\Output::INLINE);
 	}

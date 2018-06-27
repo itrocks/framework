@@ -327,10 +327,12 @@ $('document').ready(function()
 					select_all:         $this.find('input[name=select_all]').val(),
 					selection:          $this.find('input[name=selection]').val()
 				};
-				var form = document.createElement('form');
+				var form   = document.createElement('form');
+				var target = $(this).attr('target');
 				// remember to change me :
 				form.action = event.target;
 				form.method = 'post';
+				form.target = target;
 				for (var key in data) {
 					var input   = document.createElement('input');
 					input.name  = key;
