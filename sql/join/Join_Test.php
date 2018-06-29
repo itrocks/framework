@@ -164,14 +164,14 @@ class Join_Test extends Test
 			[
 				'date'                       => null,
 				'number'                     => null,
-				'Order_Line->order'          => $assume,
-				'Order_Line->order.number'   => null,
-				'Order_Line->order.quantity' => null
+				'Order_Line(order)'          => $assume,
+				'Order_Line(order).number'   => null,
+				'Order_Line(order).quantity' => null
 			],
 			Joins::newInstance(Order::class)
-				->addMultiple(['date', 'number', 'Order_Line->order.number', 'Order_Line->order.quantity'])
+				->addMultiple(['date', 'number', 'Order_Line(order).number', 'Order_Line(order).quantity'])
 				->getJoins(),
-			'reverse join (Order::Order_Line->order.number)'
+			'reverse join (Order::Order_Line(order).number)'
 		);
 
 		$assume_client = Join::newInstance(
@@ -188,13 +188,13 @@ class Join_Test extends Test
 			[
 				'number'                   => null,
 				'name'                     => null,
-				'Order_Line->client'       => $assume_client,
-				'Order_Line->client.order' => $assume_order
+				'Order_Line(client)'       => $assume_client,
+				'Order_Line(client).order' => $assume_order
 			],
 			Joins::newInstance(Client::class)
-				->addMultiple(['number', 'name', 'Order_Line->client.order'])
+				->addMultiple(['number', 'name', 'Order_Line(client).order'])
 				->getJoins(),
-			'reverse object (Client::Order_Line->client.order)'
+			'reverse object (Client::Order_Line(client).order)'
 		);
 
 		$assume = Join::newInstance(
@@ -207,17 +207,17 @@ class Join_Test extends Test
 
 		static::assertEquals(
 			[
-				'Order->salesmen-link' => Join::newInstance(
+				'Order(salesmen)-link' => Join::newInstance(
 					Join::LEFT, 't0', 'id', 't1', 'test_orders_salesmen', 'id_salesman'
 				),
-				'Order->salesmen'        => $assume,
-				'Order->salesmen.number' => null,
+				'Order(salesmen)'        => $assume,
+				'Order(salesmen).number' => null,
 				'name'                   => null
 			],
 			Joins::newInstance(Salesman::class)
-				->addMultiple(['Order->salesmen.number', 'name'])
+				->addMultiple(['Order(salesmen).number', 'name'])
 				->getJoins(),
-			'reverse map (Salesman::Order->salesmen.number)'
+			'reverse map (Salesman::Order(salesmen).number)'
 		);
 	}
 

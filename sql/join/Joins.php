@@ -148,10 +148,22 @@ class Joins
 				return $this->link_joins[$path];
 			}
 		}
-		$join               = new Join();
-		$foreign_class_name = (strpos($master_property_name, '->'))
-			? $this->addReverseJoin($join, $master_path, $master_property_name, $path)
-			: $this->addSimpleJoin($join, $master_path, $master_property_name, $path);
+		$join = new Join();
+		if (
+			// new Class_Name(property_name)
+			(substr($master_property_name, -1) === ')')
+			// @deprecated Class_Name->property_name
+			|| strpos($master_property_name, '->')
+		) {
+			$foreign_class_name = $this->addReverseJoin(
+				$join, $master_path, $master_property_name, $path
+			);
+		}
+		else {
+			$foreign_class_name = $this->addSimpleJoin(
+				$join, $master_path, $master_property_name, $path
+			);
+		}
 		$this->joins[$path] = $join->mode
 			? $this->addFinalize($join, $master_path, $foreign_class_name, $path, $depth)
 			: null;
@@ -356,7 +368,7 @@ class Joins
 	 *
 	 * @param $join                 Join
 	 * @param $master_path          string
-	 * @param $master_property_name string
+	 * @param $master_property_name string @example From an Order context : 'Order_Line(order)'
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
 	 * @throws Exception
@@ -364,7 +376,15 @@ class Joins
 	private function addReverseJoin(
 		Join $join, $master_path, $master_property_name, $foreign_path
 	) {
-		list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
+		// new Class_Name(property_name)
+		if (strpos($master_property_name, '(')) {
+			list($foreign_class_name, $foreign_property_name) = explode('(', $master_property_name);
+			$foreign_property_name = substr($foreign_property_name, 0, -1);
+		}
+		// @deprecated Class_Name->property_name
+		else {
+			list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
+		}
 		$master_class_name  = $this->classes[$master_path];
 		$foreign_class_name = Namespaces::defaultFullClassName(
 			Builder::className($foreign_class_name), $master_class_name
