@@ -41,7 +41,7 @@ EOT
 		$class  = (new Reflection_Class(__NAMESPACE__ . BS . 'Child_Class'));
 		$assume = [new Method_Annotation(BS . __CLASS__ . '::beforeWrite', $class, 'before_write')];
 		$annotations = $class->getAnnotations('before_write');
-		$this->assertEquals($assume, $annotations);
+		static::assertEquals($assume, $annotations);
 	}
 
 }

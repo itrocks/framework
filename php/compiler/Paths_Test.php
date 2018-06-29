@@ -66,7 +66,7 @@ class Paths_Test extends Test
 		$actual = Compiler::cacheFileNameToClass(
 			basename(Compiler::classToCacheFilePath($class_name))
 		);
-		$this->assertEquals($expected, $actual);
+		static::assertEquals($expected, $actual);
 	}
 
 	//-------------------------------------------------------------- testSourceFileToPathToSourceFile
@@ -83,7 +83,7 @@ class Paths_Test extends Test
 		$actual = Compiler::cacheFileNameToSourceFile(
 			Compiler::sourceFileToCacheFileName($source_file)
 		);
-		$this->assertEquals($expected, $actual);
+		static::assertEquals($expected, $actual);
 	}
 
 }

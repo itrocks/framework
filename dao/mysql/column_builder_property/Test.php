@@ -294,7 +294,7 @@ class Test extends Tests\Test
 				$assume = $property->getAnnotation('assume')->value;
 				if (isset($assume)) {
 					$check = $property_type_to_mysql->invoke(null, $property);
-					$this->assertEquals($assume, $check, $property->name);
+					static::assertEquals($assume, $check, $property->name);
 				}
 			}
 		}

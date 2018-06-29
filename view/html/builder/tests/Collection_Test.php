@@ -126,7 +126,7 @@ class Collection_Test extends Test
 		$html           = $this->callVehicleEditController($vehicle);
 		$input_names    = $this->getInputNames($html);
 		$expected_names = $this->getVehicleAssumedNames();
-		$this->assertEquals($expected_names, $input_names);
+		static::assertEquals($expected_names, $input_names);
 	}
 
 }

@@ -54,7 +54,7 @@ class Reflection_Class_Test extends Test
 				$check[$property->name] = self::INACCESSIBLE;
 			}
 		}
-		$this->assertEquals(
+		static::assertEquals(
 			[
 				'date'            => self::INACCESSIBLE,
 				'delivery_client' => self::INACCESSIBLE,
@@ -88,7 +88,7 @@ class Reflection_Class_Test extends Test
 		$date              = new Reflection_Property(Document::class, 'date');
 		$number            = new Reflection_Property(Document::class, 'number');
 		$date->final_class = $number->final_class = Order::class;
-		$this->assertEquals(
+		static::assertEquals(
 			$this->properties($date, $number),
 			$properties = $class->accessProperties(),
 			__METHOD__ . '2 (accessProperties)'
@@ -104,7 +104,7 @@ class Reflection_Class_Test extends Test
 				$check[$property->name] = 'inaccessible';
 			}
 		}
-		$this->assertEquals(
+		static::assertEquals(
 			[
 				'date'            => $today,
 				'delivery_client' => null,
@@ -149,7 +149,7 @@ class Reflection_Class_Test extends Test
 		$date              = new Reflection_Property(Document::class, 'date');
 		$number            = new Reflection_Property(Document::class, 'number');
 		$date->final_class = $number->final_class = Order::class;
-		$this->assertEquals(
+		static::assertEquals(
 			$this->properties($date, $number),
 			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE])
 		);

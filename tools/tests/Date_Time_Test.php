@@ -35,14 +35,14 @@ class Date_Time_Test extends Test
 	public function testAdd($expected, $args)
 	{
 		$base = new Date_Time('2016-09-23T11:04:02');
-		$this->assertEquals($expected, $base->add(...$args));
+		static::assertEquals($expected, $base->add(...$args));
 	}
 
 	//--------------------------------------------------------------------------------- testConstruct
 	public function testConstruct()
 	{
 		$date = new Date_Time('2016-11-05T19:46:32.56');
-		$this->assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
+		static::assertEquals('2016-11-05 19:46:32', $date->format('Y-m-d H:i:s'));
 	}
 
 	//-------------------------------------------------------------------------------------- testDiff
@@ -56,23 +56,23 @@ class Date_Time_Test extends Test
 
 		// Chronological
 		$actual = $yesterday->diff($tomorrow);
-		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals(0, $actual->invert);
+		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals(0, $actual->invert);
 
 		// Chronological absolute
 		$actual = $yesterday->diff($tomorrow, true);
-		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals(0, $actual->invert);
+		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals(0, $actual->invert);
 
 		// Reverse
 		$actual = $tomorrow->diff($yesterday);
-		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals(1, $actual->invert);
+		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals(1, $actual->invert);
 
 		// Reverse absolute
 		$actual = $tomorrow->diff($yesterday, true);
-		$this->assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals(0, $actual->invert);
+		static::assertEquals('P0Y0M1DT22H59M49S', $actual->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals(0, $actual->invert);
 	}
 
 	//---------------------------------------------------------------------------------- testEarliest
@@ -81,13 +81,13 @@ class Date_Time_Test extends Test
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
 		$later   = new Date_Time('2034-05-12 10:00:00');
-		 $this->assertEquals($earlier, $earlier->earliest($later),       'one argument');
-		 $this->assertEquals($earlier, $earlier->earliest($later, $now), 'two arguments');
-		 $this->assertEquals($earlier, $earlier->earliest($now, $later), 'reverse arguments');
-		 $this->assertEquals($earlier, $now->earliest($earlier, $later), 'another reverse');
-		 $this->assertEquals($earlier, $now->earliest($later, $earlier), 'another 2');
-		 $this->assertEquals($earlier, $later->earliest($earlier, $now), 'another 3');
-		 $this->assertEquals($earlier, $later->earliest($now, $earlier), 'another 4');
+		 static::assertEquals($earlier, $earlier->earliest($later),       'one argument');
+		 static::assertEquals($earlier, $earlier->earliest($later, $now), 'two arguments');
+		 static::assertEquals($earlier, $earlier->earliest($now, $later), 'reverse arguments');
+		 static::assertEquals($earlier, $now->earliest($earlier, $later), 'another reverse');
+		 static::assertEquals($earlier, $now->earliest($later, $earlier), 'another 2');
+		 static::assertEquals($earlier, $later->earliest($earlier, $now), 'another 3');
+		 static::assertEquals($earlier, $later->earliest($now, $earlier), 'another 4');
 	}
 
 	//---------------------------------------------------------------------------------------- testIs
@@ -335,20 +335,20 @@ class Date_Time_Test extends Test
 		$earlier = new Date_Time('2006-01-01 13:29:18');
 		$now     = new Date_Time('2016-10-24 10:48:12');
 		$later   = new Date_Time('2034-05-12 10:00:00');
-		 $this->assertEquals($later, $earlier->latest($later),       'one argument');
-		 $this->assertEquals($later, $earlier->latest($later, $now), 'two arguments');
-		 $this->assertEquals($later, $earlier->latest($now, $later), 'reverse arguments');
-		 $this->assertEquals($later, $now->latest($earlier, $later), 'another reverse');
-		 $this->assertEquals($later, $now->latest($later, $earlier), 'another 2');
-		 $this->assertEquals($later, $later->latest($earlier, $now), 'another 3');
-		 $this->assertEquals($later, $later->latest($now, $earlier), 'another 4');
+		 static::assertEquals($later, $earlier->latest($later),       'one argument');
+		 static::assertEquals($later, $earlier->latest($later, $now), 'two arguments');
+		 static::assertEquals($later, $earlier->latest($now, $later), 'reverse arguments');
+		 static::assertEquals($later, $now->latest($earlier, $later), 'another reverse');
+		 static::assertEquals($later, $now->latest($later, $earlier), 'another 2');
+		 static::assertEquals($later, $later->latest($earlier, $now), 'another 3');
+		 static::assertEquals($later, $later->latest($now, $earlier), 'another 4');
 	}
 
 	//----------------------------------------------------------------------------------- testToMonth
 	public function testToMonth()
 	{
 		$month = (new Date_Time('2016-06-04 12:35:00'))->month()->format('Y-m-d H:i:s');
-		 $this->assertEquals('2016-06-01 00:00:00', $month);
+		 static::assertEquals('2016-06-01 00:00:00', $month);
 	}
 
 	//---------------------------------------------------------------------------------- testTomorrow
@@ -360,7 +360,7 @@ class Date_Time_Test extends Test
 
 		$expected = '1 day 0 hour 0 minute 0 second';
 
-		$this->assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
+		static::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
 	}
 
 	//--------------------------------------------------------------------------------- testYesterday
@@ -375,7 +375,7 @@ class Date_Time_Test extends Test
 
 		$expected = '-1 day 0 hour 0 minute 0 second';
 
-		$this->assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
+		static::assertEquals($expected, $actual->format('%r%d day %h hour %i minute %s second'));
 	}
 
 }

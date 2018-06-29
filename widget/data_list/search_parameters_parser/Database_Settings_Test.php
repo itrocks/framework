@@ -59,7 +59,7 @@ class Database_Settings_Test extends Test
 				}
 			}
 		}
-		$this->assertEquals([], $errors);
+		static::assertEquals([], $errors);
 	}
 
 	//------------------------------------------------------------------------------------------ test

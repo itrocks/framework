@@ -24,7 +24,7 @@ class Func_Test extends Test
 	{
 		$class_name = Order::class;
 		$properties = ['string_concat' => new Concat(['number', 'date'])];
-		$this->assertEquals(
+		static::assertEquals(
 			new Default_List_Data($class_name, $properties), Dao::select($class_name, $properties)
 		);
 	}
@@ -36,7 +36,7 @@ class Func_Test extends Test
 			Order::class,
 			['string_concat' => new Concat(['number', 'date'])]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT CONCAT(t0.`number`, " ", t0.`date`) AS `string_concat`' . LF
 				. 'FROM `test_orders` t0',
 			$builder->buildQuery()
@@ -54,7 +54,7 @@ class Func_Test extends Test
 				'case_result_func' => new Condition($search, new Concat(['number', 'client.number'])),
 			]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT '
 				. 'CASE WHEN t1.`number` = "XXXX" THEN t1.`name` ELSE "string_client_unknown" END '
 				. 'AS `case_result`, '
@@ -73,7 +73,7 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::day()]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT DAY(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
 			$builder->buildQuery()
 		);
@@ -87,7 +87,7 @@ class Func_Test extends Test
 			['number'],
 			[Func::day('date') => 11]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE DAY(t0.`date`) = 11',
 			$builder->buildQuery()
 		);
@@ -105,7 +105,7 @@ class Func_Test extends Test
 				'group_concat_with_func' => new Group_Concat(new Concat(['number', 'name'])),
 			]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `number`, '
 				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `group_concat`, '
 				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number` SEPARATOR ";") '
@@ -129,7 +129,7 @@ class Func_Test extends Test
 			null,
 			['date' => Func::inSelect($sub_select)]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE t0.`date` IN ('
@@ -147,7 +147,7 @@ class Func_Test extends Test
 			null,
 			['date' => Func::isGreatest(['number'])]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF . 'INNER JOIN ('
 				. 'SELECT t0.`number`, MAX(t0.`date`) AS `date`' . LF
@@ -166,7 +166,7 @@ class Func_Test extends Test
 			Order::class,
 			['number' => Func::left(4)]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT LEFT(t0.`number`, 4) AS `number`' . LF . 'FROM `test_orders` t0',
 			$builder->buildQuery()
 		);
@@ -180,7 +180,7 @@ class Func_Test extends Test
 			['number'],
 			[Func::left('number', 3) => '123']
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.`number`' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE LEFT(t0.`number`, 3) = "123"',
@@ -196,7 +196,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::leftMatch('N01181355010')]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE t0.`number` = LEFT("N01181355010", LENGTH(t0.`number`))',
@@ -212,7 +212,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::andOp([_TRUE, _FALSE])]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (t0.`number` = "true" AND t0.`number` = "false")',
@@ -230,7 +230,7 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (NOT (t0.`number` = "true") OR NOT (t0.`number` = "false"))',
@@ -249,7 +249,7 @@ class Func_Test extends Test
 		catch (Exception $e) {
 			$check = true;
 		}
-		$this->assertEquals(true, $check);
+		static::assertEquals(true, $check);
 	}
 
 	//-------------------------------------------------------------------------------- testLogicalNot
@@ -260,7 +260,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(_TRUE)]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE NOT (t0.`number` = "true")',
@@ -276,7 +276,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(Func::andOp([_TRUE, _FALSE]))]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE NOT ((t0.`number` = "true" AND t0.`number` = "false"))',
@@ -294,7 +294,7 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (t0.`number` = "true")',
@@ -310,7 +310,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::notOp(Func::notOp(_TRUE))]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE NOT (NOT (t0.`number` = "true"))',
@@ -326,7 +326,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::orOp([_TRUE, _FALSE])]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (t0.`number` = "true" OR t0.`number` = "false")',
@@ -347,7 +347,7 @@ class Func_Test extends Test
 				])
 			]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE ((t0.`number` = "true" OR t0.`number` = "false")'
@@ -367,7 +367,7 @@ class Func_Test extends Test
 			null,
 			['number' => new Logical(Logical::TRUE_OPERATOR, _TRUE)]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (t0.`number` = "true")',
@@ -383,7 +383,7 @@ class Func_Test extends Test
 			null,
 			['number' => Func::xorOp([_TRUE, _FALSE])]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE (t0.`number` = "true" XOR t0.`number` = "false")',
@@ -401,7 +401,7 @@ class Func_Test extends Test
 			null,
 			['number' => $argument]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.*' . LF
 				. 'FROM `test_orders` t0' . LF
 				. 'WHERE NOT ((t0.`number` = "true" XOR t0.`number` = "false"))',
@@ -416,7 +416,7 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::month()]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT MONTH(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
 			$builder->buildQuery()
 		);
@@ -430,7 +430,7 @@ class Func_Test extends Test
 			['number'],
 			[Func::month('date') => 11]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE MONTH(t0.`date`) = 11',
 			$builder->buildQuery()
 		);
@@ -443,7 +443,7 @@ class Func_Test extends Test
 			Order::class,
 			['date' => Func::year()]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT YEAR(t0.`date`) AS `date`' . LF . 'FROM `test_orders` t0',
 			$builder->buildQuery()
 		);
@@ -457,7 +457,7 @@ class Func_Test extends Test
 			['number'],
 			[Func::year('date') => 11]
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'SELECT t0.`number`' . LF . 'FROM `test_orders` t0' . LF . 'WHERE YEAR(t0.`date`) = 11',
 			$builder->buildQuery()
 		);

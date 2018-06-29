@@ -88,7 +88,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testIsStrictInteger($value, $array_expected )
 	{
-		$this->assertEquals($array_expected[0], isStrictInteger($value));
+		static::assertEquals($array_expected[0], isStrictInteger($value));
 	}
 
 	//--------------------------------------------------------------------------- testIsStrictNumeric
@@ -99,7 +99,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testIsStrictNumeric($value, $array_expected )
 	{
-		$this->assertEquals($array_expected[1], isStrictNumeric($value));
+		static::assertEquals($array_expected[1], isStrictNumeric($value));
 	}
 
 	//------------------------------------------------------------------- testIsStrictUnsignedInteger
@@ -110,7 +110,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testIsStrictUnsignedInteger($value, $array_expected )
 	{
-		$this->assertEquals($array_expected[2], isStrictUnsignedInteger($value));
+		static::assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
 
 	//------------------------------------------------------------------- testIsStrictUnsignedNumeric
@@ -121,7 +121,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testIsStrictUnsignedNumeric($value, $array_expected )
 	{
-		$this->assertEquals($array_expected[3], isStrictNumeric($value, true, false));
+		static::assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}
 
 	//------------------------------------------------------------------------------------ testMaxSet
@@ -132,7 +132,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testMaxSet($expected, $args)
 	{
-		$this->assertEquals($expected, call_user_func('maxSet', $args));
+		static::assertEquals($expected, call_user_func('maxSet', $args));
 	}
 
 	//------------------------------------------------------------------------------------ testMinSet
@@ -143,7 +143,7 @@ class Type_Functions_Test extends Test
 	 */
 	function testMinSet($expected, $args)
 	{
-		$this->assertEquals($expected, call_user_func('minSet', $args));
+		static::assertEquals($expected, call_user_func('minSet', $args));
 	}
 
 }

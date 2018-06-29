@@ -63,7 +63,7 @@ class Array_Functions_Test extends Test
 		$expected, $lengths, $ignore_characters = null, $get_trailing_characters_element = null
 	) {
 		$string = 'Word123456Last wordsTrailing things';
-		$this->assertEquals(
+		static::assertEquals(
 			$expected, arrayCut($string, $lengths, $ignore_characters, $get_trailing_characters_element)
 		);
 	}
@@ -83,7 +83,7 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103]
 		];
-		$this->assertEquals($array, arrayFormRevert($form));
+		static::assertEquals($array, arrayFormRevert($form));
 	}
 
 	//-------------------------------------------------------------------- testArrayFormRevertComplex
@@ -110,7 +110,7 @@ class Array_Functions_Test extends Test
 				'city'    => ['name' => '']
 			]
 		];
-		$this->assertEquals($array, arrayFormRevert($form, false));
+		static::assertEquals($array, arrayFormRevert($form, false));
 	}
 
 	//----------------------------------------------------------------- testArrayFormRevertComplexBad
@@ -137,7 +137,7 @@ class Array_Functions_Test extends Test
 				'city'    => ['name' => '']
 			]
 		];
-		$this->assertEquals($array, arrayFormRevert($form, false));
+		static::assertEquals($array, arrayFormRevert($form, false));
 	}
 
 	//----------------------------------------------------------------- testArrayFormRevertOfOneMatch
@@ -149,7 +149,7 @@ class Array_Functions_Test extends Test
 	{
 		$matches = [['match 1 found'], ['match 1 elem 1'], ['match 1 elem 2']];
 		$result  = [['match 1 found', 'match 1 elem 1', 'match 1 elem 2']];
-		$this->assertEquals($result, arrayFormRevert($matches));
+		static::assertEquals($result, arrayFormRevert($matches));
 	}
 
 	//------------------------------------------------------------- testArrayFormRevertOfThreeMatches
@@ -169,7 +169,7 @@ class Array_Functions_Test extends Test
 			['match 2 found', 'match 2 elem 1', 'match 2 elem 2'],
 			['match 3 found', 'match 3 elem 1', 'match 3 elem 2']
 		];
-		$this->assertEquals($result, arrayFormRevert($matches));
+		static::assertEquals($result, arrayFormRevert($matches));
 	}
 
 	//-------------------------------------------------------------------- testArrayFormRevertWithSet
@@ -188,7 +188,7 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103, 'colors' => ['white', 'red']]
 		];
-		$this->assertEquals($array, arrayFormRevert($form));
+		static::assertEquals($array, arrayFormRevert($form));
 	}
 
 	//-------------------------------------------------------------- testArrayFormRevertWithStringSet
@@ -207,7 +207,7 @@ class Array_Functions_Test extends Test
 			['id' => 2, 'id_item' => 102],
 			['id' => 3, 'id_item' => 103, 'colors' => ['white' => 'white', 'red' => 'red']]
 		];
-		$this->assertEquals($array, arrayFormRevert($form, false));
+		static::assertEquals($array, arrayFormRevert($form, false));
 	}
 
 }

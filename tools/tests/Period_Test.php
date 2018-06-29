@@ -16,7 +16,7 @@ class Period_Test extends Test
 	{
 		$date1 = new Date_Time('2016-05-03 12:05:15');
 		$date2 = new Date_Time('2015-06-08 13:02:00');
-		$this->assertEquals(new Period($date2, $date1), new Period($date1, $date2));
+		static::assertEquals(new Period($date2, $date1), new Period($date1, $date2));
 	}
 
 	//----------------------------------------------------------------------------------- testExclude
@@ -41,16 +41,16 @@ class Period_Test extends Test
 		$large2 = new Period($date2, $date5);
 		$large3 = new Period($date2, $date4);
 		$second = new Period($date5, $date5);
-		$this->assertEquals([$begin2, $end2], $full->exclude($middle), 'inside');
-		$this->assertEquals([new Period($date2c, $date5)], $full->exclude($begin), 'in1');
-		$this->assertEquals([new Period($date1, $date3b)], $full->exclude($end), 'in2');
-		$this->assertEquals([$begin], $begin->exclude($end), 'out-before');
-		$this->assertEquals([$end], $end->exclude($begin), 'out-after');
-		$this->assertEquals([new Period($date1, $date2b)], $large1->exclude($large2), 'exclude1');
-		$this->assertEquals([new Period($date3c, $date5)], $large2->exclude($large1), 'exclude2');
-		$this->assertEquals([], $full->exclude($full), 'same');
-		$this->assertEquals([$large3], $large2->exclude($second), 'micro');
-		$this->assertEquals([$second], $large2->exclude($large3), 'micro2');
+		static::assertEquals([$begin2, $end2], $full->exclude($middle), 'inside');
+		static::assertEquals([new Period($date2c, $date5)], $full->exclude($begin), 'in1');
+		static::assertEquals([new Period($date1, $date3b)], $full->exclude($end), 'in2');
+		static::assertEquals([$begin], $begin->exclude($end), 'out-before');
+		static::assertEquals([$end], $end->exclude($begin), 'out-after');
+		static::assertEquals([new Period($date1, $date2b)], $large1->exclude($large2), 'exclude1');
+		static::assertEquals([new Period($date3c, $date5)], $large2->exclude($large1), 'exclude2');
+		static::assertEquals([], $full->exclude($full), 'same');
+		static::assertEquals([$large3], $large2->exclude($second), 'micro');
+		static::assertEquals([$second], $large2->exclude($large3), 'micro2');
 	}
 
 	//------------------------------------------------------------------------------------ testFormat
@@ -62,7 +62,7 @@ class Period_Test extends Test
 	 */
 	public function testFormat($period, $format, $expected_result)
 	{
-		$this->assertEquals($expected_result, $period->format($format));
+		static::assertEquals($expected_result, $period->format($format));
 	}
 
 	//---------------------------------------------------------------------------- testFormatProvider
@@ -103,16 +103,16 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->assertEquals(true, $middle->in($full), 'in');
-		$this->assertEquals(true, $middle->in($middle), 'same');
-		$this->assertEquals(true, $begin->in($full), 'begin');
-		$this->assertEquals(true, $end->in($full), 'end');
-		$this->assertEquals(false, $begin->in($end), 'out');
-		$this->assertEquals(false, $large1->in($large2), 'large1');
-		$this->assertEquals(false, $large2->in($large1), 'large2');
-		$this->assertEquals(false, $full->in($middle), 'around');
-		$this->assertEquals(false, $full->in($begin), 'full1');
-		$this->assertEquals(false, $full->in($end), 'full2');
+		static::assertEquals(true, $middle->in($full), 'in');
+		static::assertEquals(true, $middle->in($middle), 'same');
+		static::assertEquals(true, $begin->in($full), 'begin');
+		static::assertEquals(true, $end->in($full), 'end');
+		static::assertEquals(false, $begin->in($end), 'out');
+		static::assertEquals(false, $large1->in($large2), 'large1');
+		static::assertEquals(false, $large2->in($large1), 'large2');
+		static::assertEquals(false, $full->in($middle), 'around');
+		static::assertEquals(false, $full->in($begin), 'full1');
+		static::assertEquals(false, $full->in($end), 'full2');
 	}
 
 	//--------------------------------------------------------------------------------- testIntersect
@@ -128,14 +128,14 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->assertEquals($middle, $full->intersect($middle), 'inside');
-		$this->assertEquals($begin, $full->intersect($begin), 'begin');
-		$this->assertEquals($end, $full->intersect($end), 'end');
-		$this->assertEquals(null, $begin->intersect($end), 'out-before');
-		$this->assertEquals(null, $end->intersect($begin), 'out-after');
-		$this->assertEquals($middle, $large1->intersect($large2), 'intersect1');
-		$this->assertEquals($middle, $large2->intersect($large1), 'intersect2');
-		$this->assertEquals($full, $full->intersect($full), 'same');
+		static::assertEquals($middle, $full->intersect($middle), 'inside');
+		static::assertEquals($begin, $full->intersect($begin), 'begin');
+		static::assertEquals($end, $full->intersect($end), 'end');
+		static::assertEquals(null, $begin->intersect($end), 'out-before');
+		static::assertEquals(null, $end->intersect($begin), 'out-after');
+		static::assertEquals($middle, $large1->intersect($large2), 'intersect1');
+		static::assertEquals($middle, $large2->intersect($large1), 'intersect2');
+		static::assertEquals($full, $full->intersect($full), 'same');
 	}
 
 	//--------------------------------------------------------------------------------------- testOut
@@ -151,17 +151,17 @@ class Period_Test extends Test
 		$full   = new Period($date1, $date4);
 		$large1 = new Period($date1, $date3);
 		$large2 = new Period($date2, $date4);
-		$this->assertEquals(true, $begin->out($end), 'after');
-		$this->assertEquals(true, $end->out($begin), 'before');
-		$this->assertEquals(false, $middle->out($full), 'around');
-		$this->assertEquals(false, $middle->out($middle), 'same');
-		$this->assertEquals(false, $begin->out($full), 'begin');
-		$this->assertEquals(false, $end->out($full), 'end');
-		$this->assertEquals(false, $large1->out($large2), 'large1');
-		$this->assertEquals(false, $large2->out($large1), 'large2');
-		$this->assertEquals(false, $full->out($middle), 'around');
-		$this->assertEquals(false, $full->out($begin), 'full1');
-		$this->assertEquals(false, $full->out($end), 'full2');
+		static::assertEquals(true, $begin->out($end), 'after');
+		static::assertEquals(true, $end->out($begin), 'before');
+		static::assertEquals(false, $middle->out($full), 'around');
+		static::assertEquals(false, $middle->out($middle), 'same');
+		static::assertEquals(false, $begin->out($full), 'begin');
+		static::assertEquals(false, $end->out($full), 'end');
+		static::assertEquals(false, $large1->out($large2), 'large1');
+		static::assertEquals(false, $large2->out($large1), 'large2');
+		static::assertEquals(false, $full->out($middle), 'around');
+		static::assertEquals(false, $full->out($begin), 'full1');
+		static::assertEquals(false, $full->out($end), 'full2');
 	}
 
 	//---------------------------------------------------------------------------------- testToMonths
@@ -183,8 +183,8 @@ class Period_Test extends Test
 			new Date_Time('2016-04-01'),
 			new Date_Time('2016-05-01')
 		];
-		$this->assertEquals($months, (new Period($date1, $date2))->toMonths(), 'several');
-		$this->assertEquals([$date1->month()], (new Period($date1, $date1))->toMonths(), 'one');
+		static::assertEquals($months, (new Period($date1, $date2))->toMonths(), 'several');
+		static::assertEquals([$date1->month()], (new Period($date1, $date1))->toMonths(), 'one');
 	}
 
 	//------------------------------------------------------------------------------------- testUnion
@@ -203,15 +203,15 @@ class Period_Test extends Test
 		$large2 = new Period($date2, $date5);
 		$large3 = new Period($date2, $date4);
 		$micro  = new Period($date4, $date5);
-		$this->assertEquals([$full], $full->union($middle), 'inside');
-		$this->assertEquals([$full], $full->union($begin), 'in1');
-		$this->assertEquals([$full], $full->union($end), 'in2');
-		$this->assertEquals([$full], $large1->union($large2), 'union1');
-		$this->assertEquals([$full], $large2->union($large1), 'union2');
-		$this->assertEquals([$full], $full->union($full), 'same');
-		$this->assertEquals([$begin, $end], $begin->union($end), 'out-before');
-		$this->assertEquals([$end, $begin], $end->union($begin), 'out-after');
-		$this->assertEquals([$large2], $large3->union($micro), 'micro');
+		static::assertEquals([$full], $full->union($middle), 'inside');
+		static::assertEquals([$full], $full->union($begin), 'in1');
+		static::assertEquals([$full], $full->union($end), 'in2');
+		static::assertEquals([$full], $large1->union($large2), 'union1');
+		static::assertEquals([$full], $large2->union($large1), 'union2');
+		static::assertEquals([$full], $full->union($full), 'same');
+		static::assertEquals([$begin, $end], $begin->union($end), 'out-before');
+		static::assertEquals([$end, $begin], $end->union($begin), 'out-after');
+		static::assertEquals([$large2], $large3->union($micro), 'micro');
 	}
 
 }

@@ -31,8 +31,8 @@ class Date_Interval_Test extends Test
 		$interval->invert = $invert;
 
 		$interval = Date_Interval::adjust($interval);
-		$this->assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals($expected_invert, $interval->invert);
+		static::assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals($expected_invert, $interval->invert);
 	}
 
 	//---------------------------------------------------------------------------- testAdjustProvider
@@ -62,8 +62,8 @@ class Date_Interval_Test extends Test
 	public function testFromDuration($duration, $expected_format, $expected_invert)
 	{
 		$interval = Date_Interval::fromDuration($duration);
-		$this->assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
-		$this->assertEquals($expected_invert, $interval->invert);
+		static::assertEquals($expected_format, $interval->format(Date_Interval::FULL_FORMAT));
+		static::assertEquals($expected_invert, $interval->invert);
 	}
 
 	//-------------------------------------------------------------------------- testFromDurationData
@@ -94,7 +94,7 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToDays($duration, $expected, $round)
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			$expected, Date_Interval::toDays(Date_Interval::fromDuration($duration), $round)
 		);
 	}
@@ -144,10 +144,10 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToHours()
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			25, Date_Interval::toHours(Date_Interval::fromDuration(86401), PHP_CEIL)
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			24, Date_Interval::toHours(Date_Interval::fromDuration(86401), PHP_FLOOR)
 		);
 	}
@@ -160,10 +160,10 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToMinutes()
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			61, Date_Interval::toMinutes(Date_Interval::fromDuration(3601), PHP_CEIL)
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			60, Date_Interval::toMinutes(Date_Interval::fromDuration(3601), PHP_FLOOR)
 		);
 	}
@@ -176,8 +176,8 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToSeconds()
 	{
-		$this->assertEquals(86400, Date_Interval::toSeconds(Date_Interval::fromDuration(86400)));
-		$this->assertEquals(-86400, Date_Interval::toSeconds(Date_Interval::fromDuration(-86400)));
+		static::assertEquals(86400, Date_Interval::toSeconds(Date_Interval::fromDuration(86400)));
+		static::assertEquals(-86400, Date_Interval::toSeconds(Date_Interval::fromDuration(-86400)));
 	}
 
 	//----------------------------------------------------------------------------------- testToWeeks
@@ -188,10 +188,10 @@ class Date_Interval_Test extends Test
 	 */
 	public function testToWeeks()
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			2, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_CEIL)
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			1, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_FLOOR)
 		);
 	}

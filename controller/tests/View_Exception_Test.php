@@ -34,7 +34,7 @@ class View_Exception_Test extends Test
 			[Parameter::AS_WIDGET => true, Parameter::IS_INCLUDED => true]
 		);
 		$result = str_replace([SP, TAB, LF], '', $result);
-		$this->assertEquals('<ul><li>WORKING</li><li>CRASHED</li><li>WORKING</li></ul>', $result);
+		static::assertEquals('<ul><li>WORKING</li><li>CRASHED</li><li>WORKING</li></ul>', $result);
 	}
 
 }

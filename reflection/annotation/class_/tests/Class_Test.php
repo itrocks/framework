@@ -50,7 +50,7 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		$this->assertEquals(print_r($values, true), print_r([], true), __METHOD__);
+		static::assertEquals(print_r($values, true), print_r([], true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsParentExtends
@@ -67,7 +67,7 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		$this->assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
+		static::assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsWithoutParent
@@ -84,7 +84,7 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		$this->assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
+		static::assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
@@ -98,7 +98,7 @@ class Class_Test extends Test
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(
 			Class_With_Trait_And_Parent::class
 		));
-		$this->assertEquals($store_name->value, 'test_trait_for_class_store_name', __METHOD__);
+		static::assertEquals($store_name->value, 'test_trait_for_class_store_name', __METHOD__);
 	}
 
 	//-------------------------------------------------------------------- testWriteAnnotationsCommit
@@ -112,7 +112,7 @@ class Class_Test extends Test
 		Dao::write($this->subject, Dao::only('data'));
 		Dao::delete($this->subject);
 		Dao::commit();
-		$this->assertEquals(
+		static::assertEquals(
 			'test'
 			. '+loc-before(data)+dis-before(data)'
 			. '+loc-after(data)+dis-after(data)'
@@ -133,7 +133,7 @@ class Class_Test extends Test
 		Dao::write($this->subject, Dao::only('data'));
 		Dao::delete($this->subject);
 		Dao::rollback();
-		$this->assertEquals(
+		static::assertEquals(
 			'test'
 			. '+loc-before(data)+dis-before(data)'
 			. '+loc-after(data)+dis-after(data)',

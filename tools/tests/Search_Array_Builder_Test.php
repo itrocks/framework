@@ -14,19 +14,19 @@ class Search_Array_Builder_Test extends Test
 	//------------------------------------------------------------------------------------- testBuild
 	public function testBuild()
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			['property' => 'test'], (new Tools\Search_Array_Builder())->build('property', 'test'),
 			__METHOD__ . '.simple'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			['property' => Func::andOp(['test', '%what'])],
 			(new Tools\Search_Array_Builder())->build('property', 'test what'), __METHOD__ . '.and'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			['property' => ['test', 'what']],
 			(new Tools\Search_Array_Builder())->build('property', 'test,what'), __METHOD__ . '.or'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			['property' => ['test', Func::andOp(['what', '%else'])]],
 			(new Tools\Search_Array_Builder())->build('property', 'test,what else'), __METHOD__ . '.mix'
 		);
@@ -35,12 +35,12 @@ class Search_Array_Builder_Test extends Test
 	//----------------------------------------------------------------------------- testBuildMultiple
 	public function testBuildMultiple()
 	{
-		$this->assertEquals(
+		static::assertEquals(
 			Func::orOp(['pro1' => 'test', 'pro2' => 'test']),
 			(new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test'),
 			__METHOD__ . '.simple'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			Func::andOp(
 				[
 					Func::orOp(['pro1' => 'test', 'pro2' => 'test']),
@@ -49,7 +49,7 @@ class Search_Array_Builder_Test extends Test
 			), (new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test what'),
 			__METHOD__ . '.and'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			Func::orOp(
 				[
 					'pro1' => ['test', 'what'],
@@ -58,7 +58,7 @@ class Search_Array_Builder_Test extends Test
 			), (new Tools\Search_Array_Builder())->buildMultiple(['pro1', 'pro2'], 'test,what'),
 			__METHOD__ . '.or'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			Func::orOp(
 				[
 					'pro1' => ['test', Func::andOp(['what', '%else'])],

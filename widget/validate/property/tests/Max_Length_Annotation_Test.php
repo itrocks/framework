@@ -65,7 +65,7 @@ class Max_Length_Annotation_Test extends Test
 		$actual   = $annotation->getAnnotationName();
 		$expected = 'max length';
 
-		$this->assertEquals($expected, $actual);
+		static::assertEquals($expected, $actual);
 	}
 
 	//------------------------------------------------------------------------------ testValidateFail

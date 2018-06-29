@@ -86,7 +86,7 @@ class Regex_Annotation_Test extends Test
 			$annotation       = Regex_Annotation::of($property);
 			$result['result'] = $annotation->validate($this);
 
-			$this->assertEquals($assume, $result, __FUNCTION__ . '()' . SP . $property->name);
+			static::assertEquals($assume, $result, __FUNCTION__ . '()' . SP . $property->name);
 		}
 	}
 

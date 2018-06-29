@@ -55,7 +55,7 @@ class Encoder_Test extends Test
 			$assume        = str_replace($assumed_image, $encoded_image, $assume);
 		}
 
-		$this->assertEquals(explode(LF, $assume), explode(LF, $encoded));
+		static::assertEquals(explode(LF, $assume), explode(LF, $encoded));
 	}
 
 }

@@ -64,7 +64,7 @@ class Mandatory_Annotation_Test extends Test
 		$actual   = $annotation->getAnnotationName();
 		$expected = 'mandatory';
 
-		$this->assertEquals($expected, $actual);
+		static::assertEquals($expected, $actual);
 	}
 
 	//--------------------------------------------------------------------------------- testIsEmptyKo

@@ -76,7 +76,7 @@ class Property_Test extends Test
 	public function testDefaultAnnotation()
 	{
 		$property = new Reflection_Property(Test_Object::class, 'property');
-		$this->assertEquals('default value for property', $property->getDefaultValue());
+		static::assertEquals('default value for property', $property->getDefaultValue());
 	}
 
 	//----------------------------------------------------------------------------- testDefaultSimple
@@ -89,31 +89,31 @@ class Property_Test extends Test
 	{
 		$robert = new Default_Simple();
 		// TODO LOW default for age should be 43, but this case does not work. Warning in documentation
-		$this->assertEquals(18, $robert->age, '@default.override');
-		$this->assertEquals(43, $robert->null_age, '@default.override_null');
-		$this->assertEquals('Robert', $robert->name, '@default.simple');
-		$this->assertEquals('Mitchum', $robert->surname, '@default.very_simple');
-		$this->assertEquals(
+		static::assertEquals(18, $robert->age, '@default.override');
+		static::assertEquals(43, $robert->null_age, '@default.override_null');
+		static::assertEquals('Robert', $robert->name, '@default.simple');
+		static::assertEquals('Mitchum', $robert->surname, '@default.very_simple');
+		static::assertEquals(
 			18,
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
 			'@default.reflection.override'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(),
 			'@default.reflection.override_null'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'Robert',
 			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(),
 			'@default.reflection.simple'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			'Mitchum',
 			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(),
 			'@default.reflection.very_simple'
 		);
-		$this->assertEquals(
+		static::assertEquals(
 			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum'],
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
 			'@default.reflection.all'
@@ -127,10 +127,10 @@ class Property_Test extends Test
 	public function testGetterAnnotationCases()
 	{
 		$this->subject->getter_simple = 'a value for simple';
-		$this->assertEquals('a value for simple with getter simple', $this->subject->getter_simple);
+		static::assertEquals('a value for simple with getter simple', $this->subject->getter_simple);
 
 		$this->subject->getter_static = 'a value for static';
-		$this->assertEquals('a value for static with getter static', $this->subject->getter_static);
+		static::assertEquals('a value for static with getter static', $this->subject->getter_static);
 	}
 
 	//----------------------------------------------------------------------- testGetterAnnotationSet
@@ -142,32 +142,32 @@ class Property_Test extends Test
 		$property = new Reflection_Property(get_class($this->subject), 'property');
 
 		// @getter methodName
-		$this->assertEquals(
+		static::assertEquals(
 			get_class($this->subject) . '::testGetterAnnotation',
 			(new Getter_Annotation('testGetterAnnotation', $property))->value,
 			'methodName'
 		);
 		// @getter Local_Class_Name::methodName
-		$this->assertEquals(
+		static::assertEquals(
 			User_Annotation::class . '::has',
 			(new Getter_Annotation('User_Annotation::has', $property))->value,
 			'Local_Class_Name::methodName'
 		);
 		// @getter Distant\Class\Full\Path::methodName
-		$this->assertEquals(
+		static::assertEquals(
 			Annoted::class . '::has',
 			(new Getter_Annotation(BS . Annoted::class . '::has', $property))->value,
 			'Distant\Class\Full\Path\Class_Name::methodName'
 		);
 		// use Distant\Class\Full\Path\Class_Name
 		// @getter Class_Name::methodName
-		$this->assertEquals(
+		static::assertEquals(
 			Annoted::class . '::has',
 			(new Getter_Annotation('Annoted::has', $property))->value,
 			'use Class_Name::methodName'
 		);
 		// default value for getter when there is a @link annotation
-		$this->assertEquals(
+		static::assertEquals(
 			Getter::class . '::getCollection',
 			$property->getAnnotation(Getter_Annotation::ANNOTATION)->value,
 			'default value when @link'
@@ -184,8 +184,8 @@ class Property_Test extends Test
 	public function testIntegratedAnnotationConstruct($init, $expected_value, $expected_properties)
 	{
 		$integrated = new Integrated_Annotation($init);
-		$this->assertEquals($expected_value, $integrated->value);
-		$this->assertEquals($expected_properties, $integrated->properties);
+		static::assertEquals($expected_value, $integrated->value);
+		static::assertEquals($expected_properties, $integrated->properties);
 	}
 
 	//--------------------------------------------------------------------- testSetterAnnotationCases
@@ -195,10 +195,10 @@ class Property_Test extends Test
 	public function testSetterAnnotationCases()
 	{
 		$this->subject->setter_simple = 'a value for simple';
-		$this->assertEquals('a value for simple with setter simple', $this->subject->setter_simple);
+		static::assertEquals('a value for simple with setter simple', $this->subject->setter_simple);
 
 		$this->subject->setter_static = 'a value for static';
-		$this->assertEquals('a value for static with setter static', $this->subject->setter_static);
+		static::assertEquals('a value for static with setter static', $this->subject->setter_static);
 	}
 
 	//-------------------------------------------------------------------------------- testWithValues
@@ -208,7 +208,7 @@ class Property_Test extends Test
 	public function testWithValues()
 	{
 		$this->subject->with_values = 'a_value';
-		$this->assertEquals(
+		static::assertEquals(
 			['a_value', 'another_value', 'third_value', 'fourth_value'],
 			(new Reflection_Property(get_class($this->subject), 'with_values'))
 				->getListAnnotation('values')->values()

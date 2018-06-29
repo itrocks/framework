@@ -42,7 +42,7 @@ class View_Test extends Test
 	 */
 	public function testLink($expect, $parameters)
 	{
-		$this->assertEquals($expect, View::link(...$parameters));
+		static::assertEquals($expect, View::link(...$parameters));
 	}
 
 }

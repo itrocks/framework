@@ -71,12 +71,12 @@ class Translator_Test extends Test
 	public function testTranslate()
 	{
 		// first test : for a non-existing translation
-		$this->assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
-		$this->assertEquals(self::TEST, $this->translator->translate(self::TEST));
+		static::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
+		static::assertEquals(self::TEST, $this->translator->translate(self::TEST));
 
 		// second test : with translations in database
-		$this->assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
-		$this->assertEquals(self::TEST, $this->translator->translate(self::TEST));
+		static::assertEquals(self::TEST, $this->translator->translate(self::TEST, static::class));
+		static::assertEquals(self::TEST, $this->translator->translate(self::TEST));
 	}
 
 	//----------------------------------------------------------------------- testTranslateWithPlural
@@ -103,7 +103,7 @@ class Translator_Test extends Test
 			]
 		);
 		// test
-		$this->assertEquals($expected, $this->translator->translate($text, $context));
+		static::assertEquals($expected, $this->translator->translate($text, $context));
 	}
 
 	//--------------------------------------------------------------- testTranslateWithPluralProvider

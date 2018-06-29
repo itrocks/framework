@@ -100,7 +100,7 @@ class Translation_String_Composer_Test extends Test
 	 */
 	public function testTranslate($expected, $source)
 	{
-		$this->assertEquals($expected, $this->translator->translate($source));
+		static::assertEquals($expected, $this->translator->translate($source));
 	}
 
 }
