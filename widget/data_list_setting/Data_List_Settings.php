@@ -5,12 +5,10 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Setting\Custom_Settings;
-use ITRocks\Framework\Tools\Names;
 
 /**
  * Data list settings : all that can be customized into a list view
