@@ -50,6 +50,11 @@
 				background-color: $hover;
 			}
 
+			&.separator {
+				border-top: 1px solid darkgray;
+				margin: 2px 0;
+			}
+
 			&.ui-draggable-handle {
 				cursor: grab;
 			}

@@ -45,6 +45,10 @@
       .func_select ul > li:hover,
       .property_select ul > li:hover {
         background-color: #aedc5f; }
+      .func_select ul > li.separator,
+      .property_select ul > li.separator {
+        border-top: 1px solid darkgray;
+        margin: 2px 0; }
       .func_select ul > li.ui-draggable-handle,
       .property_select ul > li.ui-draggable-handle {
         cursor: grab; }
