@@ -6,6 +6,7 @@ use ITRocks\Framework\Autoloader;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -50,12 +51,17 @@ abstract class Names
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'class name'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToDisplay($class_name)
 	{
-		return strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
+		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name */
+		$display = class_exists($class_name)
+			? Display_Annotation::of(new Reflection_Class($class_name))->value
+			: null;
+		return $display ?: strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
 	}
 
 	//------------------------------------------------------------------------------- classToFilePath

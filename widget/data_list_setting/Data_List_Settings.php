@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget\Data_List_Setting;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -180,7 +181,7 @@ class Data_List_Settings extends Custom_Settings
 	 */
 	private function getDefaultTitle()
 	{
-		return ucfirst(Names::classToDisplay(Set_Annotation::of($this->getClass())->value));
+		return ucfirst(Displays_Annotation::of($this->getClass())->value);
 	}
 
 	//-------------------------------------------------------------------------------- initProperties
