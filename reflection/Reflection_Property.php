@@ -135,6 +135,7 @@ class Reflection_Property extends ReflectionProperty
 
 	//---------------------------------------------------------------------------------------- exists
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string a class name
 	 * @param $property_name string a property name or a property path starting from the class
 	 * @return boolean true if the property exists
@@ -190,6 +191,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets the declaring class for the reflected property
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
 	public function getDeclaringClass()
@@ -260,6 +262,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
 	 * @param $default_object object INTERNAL, DO NOT USE ! An empty object for optimization purpose
 	 * @return mixed
@@ -328,6 +331,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets the final class where the property came from with a call to getProperties()
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
 	public function getFinalClass()
@@ -349,6 +353,7 @@ class Reflection_Property extends ReflectionProperty
 
 	//------------------------------------------------------------------------------ getFinalProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
 	public function getFinalProperty()
@@ -385,8 +390,9 @@ class Reflection_Property extends ReflectionProperty
 
 	//------------------------------------------------------------------------- getOverrideDocComment
 	/**
-	 * Gets the class @override property doc comment that overrides the original property doc comment
+	 * Gets the class override property doc comment that overrides the original property doc comment
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	private function getOverrideDocComment()
@@ -423,6 +429,17 @@ class Reflection_Property extends ReflectionProperty
 			return new Reflection_Property($this->root_class, substr($this->path, 0, $i));
 		}
 		return null;
+	}
+
+	//---------------------------------------------------------------------------------- getRootClass
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return Reflection_Class
+	 */
+	public function getRootClass()
+	{
+		/** @noinspection PhpUnhandledExceptionInspection valid */
+		return new Reflection_Class($this->root_class);
 	}
 
 	//--------------------------------------------------------------------------------------- getType
@@ -593,6 +610,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Sets value
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
@@ -629,7 +647,7 @@ class Reflection_Property extends ReflectionProperty
 
 	//--------------------------------------------------------------------- toReflectionPropertyValue
 	/**
-	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @param $user   boolean
 	 * @return Reflection_Property_Value
