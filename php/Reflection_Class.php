@@ -9,7 +9,6 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
-use ReflectionException;
 
 /**
  * A reflection class parser that uses php tokens to parse php source code instead of loading
@@ -244,7 +243,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $name string
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	public function getConstant($name)
 	{
@@ -264,7 +262,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
-	 * @throws ReflectionException
 	 */
 	public function getConstants(array $flags = [T_EXTENDS, T_USE])
 	{
@@ -304,7 +301,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Gets the constructor of the reflected class
 	 *
 	 * @return Reflection_Method
-	 * @throws ReflectionException
 	 */
 	public function getConstructor()
 	{
@@ -342,7 +338,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags   integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function getDocComment(array $flags = [], array &$already = [])
 	{
@@ -390,7 +385,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Gets the classes that are into @extends instead of use to allow diamond multiple inheritance
 	 *
 	 * @return Reflection_Class[]
-	 * @throws ReflectionException
 	 */
 	public function getDocExtends()
 	{
@@ -458,7 +452,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
 	 * @return Reflection_Method[] key is the name of the method
-	 * @throws ReflectionException
 	 */
 	public function getMethods($flags = [])
 	{
@@ -552,8 +545,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * If parent is an internal class, of if there is no parent : will return null.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
-	 * @throws ReflectionException
 	 */
 	public function getParentClass()
 	{
@@ -570,6 +563,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						@include_once $require;
 					}
 				}
+				/** @noinspection PhpUnhandledExceptionInspection parent class is always valid */
 				$this->parent = new Reflection\Reflection_Class($parent->name);
 			}
 			else {
@@ -602,7 +596,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags       integer[] T_EXTENDS, T_USE
 	 * @param $final_class Reflection_Class force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
-	 * @throws ReflectionException
 	 */
 	public function getProperties($flags = [], $final_class = null)
 	{
@@ -652,7 +645,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $name string The name of the property to get
 	 * @return Reflection_Property
-	 * @throws ReflectionException
 	 */
 	public function getProperty($name)
 	{
@@ -662,7 +654,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	//------------------------------------------------------------------------------- getSetClassName
 	/**
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function getSetClassName()
 	{
@@ -772,7 +763,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $method_name    string
 	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	public function implementsMethod($method_name, $include_traits = true)
 	{
@@ -788,7 +778,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $property_name  string
 	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	public function implementsProperty($property_name, $include_traits = true)
 	{
@@ -817,7 +806,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name string
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
-	 * @throws ReflectionException
 	 * @todo works only with parents : add interfaces and traits
 	 */
 	public function isA($name, array $flags = [])
