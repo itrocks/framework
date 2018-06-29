@@ -378,7 +378,7 @@ class Reflection_Source
 
 			// class, interface or trait
 			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
-				$use_what = T_CLASS;
+				$use_what   = T_CLASS;
 				$class_name = $this->fullClassName($this->scanClassName(), false);
 				if (substr($class_name, -1) === BS) {
 					trigger_error(
@@ -461,7 +461,10 @@ class Reflection_Source
 									$dependency->file_name       = $this->file_name;
 									$dependency->line            = $line;
 									$dependency->type            = $type;
-									$this->instantiates[]        = $dependency;
+									if ($use_what === T_CLASS) {
+										$dependency->declaration = Dependency::T_PROPERTY_DECLARATION;
+									}
+									$this->instantiates[] = $dependency;
 									if (!$class->name) {
 										$missing_class_name[] = $dependency;
 									}
@@ -725,6 +728,7 @@ class Reflection_Source
 	 * for a class name.
 	 * Use this to get a class from outside current source.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
@@ -735,16 +739,14 @@ class Reflection_Source
 		}
 		else {
 			$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
+			/** @noinspection PhpUnhandledExceptionInspection Source code must be valid, or it crashes */
 			$class = new ReflectionClass($class_name);
 			error_reporting($error_reporting);
 			$filename = Paths::getRelativeFileName($class->getFileName());
 			// consider vendor classes like internal classes : we don't work with their sources
-			if (beginsWith($filename, 'vendor/')) {
-				$source = new Reflection_Source(null, $class_name);
-			}
-			else {
-				$source = Reflection_Source::ofFile($filename, $class_name);
-			}
+			$source = beginsWith($filename, 'vendor/')
+				? new Reflection_Source(null, $class_name)
+				: Reflection_Source::ofFile($filename, $class_name);
 			self::$cache[$class_name] = $source;
 			if (!empty($filename)) {
 				self::$cache[$filename] = $source;

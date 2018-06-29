@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\PHP\Dependency\Tools;
+
 /**
  * This stores a dependency between two class names
  *
@@ -9,6 +11,7 @@ namespace ITRocks\Framework\PHP;
  */
 class Dependency
 {
+	use Tools;
 
 	//---------------------------------------------------------------------------------- $type values
 	const T_CLASS         = 'class';
@@ -29,6 +32,7 @@ class Dependency
 	//--------------------------------------------------------------------------- $declaration values
 	const T_CLASS_DECLARATION     = 'class';
 	const T_INTERFACE_DECLARATION = 'interface';
+	const T_PROPERTY_DECLARATION  = 'property';
 	const T_TRAIT_DECLARATION     = 'trait';
 
 	//----------------------------------------------------------------------------------- $class_name
@@ -41,7 +45,7 @@ class Dependency
 
 	//---------------------------------------------------------------------------------- $declaration
 	/**
-	 * @values class, interface, trait
+	 * @values class, interface, property, trait
 	 * @var string
 	 */
 	public $declaration;
