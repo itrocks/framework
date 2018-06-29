@@ -11,6 +11,16 @@ use ITRocks\Framework\Reflection\Type;
 class Reflection_Property extends Reflection\Reflection_Property
 {
 
+	//-------------------------------------------------------------------------------------- $display
+	/**
+	 * Translated display for the property
+	 *
+	 * @example 'property'
+	 * @example 'Class(property)'
+	 * @var string
+	 */
+	public $display = null;
+
 	//----------------------------------------------------------------------------------- isBasicHtml
 	/**
 	 * Tells if the property type is a basic type or not, with an HTML result if yes

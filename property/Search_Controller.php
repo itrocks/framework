@@ -9,6 +9,7 @@ use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
+use ReflectionException;
 
 /**
  * Property search controller
@@ -28,6 +29,7 @@ class Search_Controller extends Select_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @return mixed
+	 * @throws ReflectionException
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
@@ -49,13 +51,13 @@ class Search_Controller extends Select_Controller
 		array_unshift($objects, $top_property);
 		$objects['class_name']        = $class_name;
 		$objects['properties']        = $properties;
-		$objects['display_full_path'] = true;
 
 		return View::run($objects, $form, $files, Property::class, 'select');
 	}
 
 	//------------------------------------------------------------------------------ searchProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name         string
 	 * @param $search             string
 	 * @param $exclude_properties string[]
@@ -66,8 +68,9 @@ class Search_Controller extends Select_Controller
 	protected function searchProperties(
 		$class_name, $search, array $exclude_properties = [], $prefix = '', $depth = 0
 	) {
+		/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
 		$class            = new Reflection_Class($class_name);
-		$all_properties   = $this->getProperties($class);
+		$all_properties   = $this->getProperties($class, null, true);
 		$first_properties = [];
 		$properties       = [];
 		$more_properties  = [];
@@ -122,6 +125,7 @@ class Search_Controller extends Select_Controller
 						foreach ($sub_properties as $sub_property) {
 							if (!isset($exclude_properties[$sub_property->name])) {
 								$property_path = $property->name . DOT . $sub_property->path;
+								/** @noinspection PhpUnhandledExceptionInspection generated valid $property */
 								$more_properties[$property_path] = new Reflection_Property(
 									$class_name, $property_path
 								);
