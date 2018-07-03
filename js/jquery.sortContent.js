@@ -37,7 +37,7 @@
 				}
 				$this.empty();
 				$.each(elements, function() {
-					elements = this.get();
+					elements = $(this).get();
 					elements.sort(function(a, b) {
 						return (a.textContent.trim().toUpperCase() > b.textContent.trim().toUpperCase())
 							? 1
