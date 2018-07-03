@@ -48,6 +48,9 @@
 				if ($selected && $selected.attr('value')) {
 					$this.val($selected.attr('value'));
 				}
+				else {
+					$this.val(null);
+				}
 			}
 
 		});
