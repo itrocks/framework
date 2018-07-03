@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * Parent class for all data links Write class
@@ -47,14 +48,20 @@ abstract class Write
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object  object
-	 * @param $options Option[]
+	 * @param $object                 object
+	 * @param $options                Option[]
+	 * @param $after_write_annotation string @values after_create, after_write
+	 * @throws ReflectionException
 	 */
-	protected function afterWrite($object, array &$options)
+	protected function afterWrite($object, array &$options, $after_write_annotation)
 	{
+		$reflexion_class = (new Reflection_Class(get_class($object)));
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_writes Method_Annotation[] */
-		$after_writes = (new Reflection_Class(get_class($object)))->getAnnotations('after_write');
+		$after_writes = $reflexion_class->getAnnotations($after_write_annotation);
+		if ($after_write_annotation === 'after_create') {
+			$after_writes = array_merge($after_writes, $reflexion_class->getAnnotations('after_write'));
+		}
 		foreach ($after_writes as $after_write) {
 			if ($after_write->call($object, [$this->link, &$options]) === false) {
 				break;
@@ -67,7 +74,7 @@ abstract class Write
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                   object
 	 * @param $options                  Option[]
-	 * @param $before_write_annotation string @values before_write, before_writes
+	 * @param $before_write_annotation string @values before_create, before_write, before_writes
 	 * @return boolean
 	 */
 	public function beforeWrite($object, array &$options, $before_write_annotation = 'before_write')
@@ -76,6 +83,9 @@ abstract class Write
 		$class = new Reflection_Class(get_class($object));
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = $class->getAnnotations($before_write_annotation);
+		if ($before_write_annotation === 'before_create') {
+			$before_writes = array_merge($before_writes, $class->getAnnotations('before_write'));
+		}
 		if ($before_writes) {
 			foreach ($options as $option) {
 				if ($option instanceof Option\Only) {

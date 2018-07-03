@@ -42,6 +42,14 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@after_transform' => Method_Annotation::class,
 
 	/**
+	 * @after_create afterCreate
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object is created using a data link
+	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 */
+	Parser::T_CLASS . '@after_create' => Method_Annotation::class,
+
+	/**
 	 * @after_write afterWrite
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is written using a data link
@@ -56,6 +64,15 @@ Parser::$default_annotations = [
 	 * - These methods may accept an array as first reference argument, if needed
 	 */
 	Parser::T_CLASS . '@before_build_array' => Annotation::class,
+
+	/**
+	 * @before_create beforeCreate
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call before the object is created using a data link
+	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may return false to cancel the writing of the object
+	 */
+	Parser::T_CLASS . '@before_create' => Method_Annotation::class,
 
 	/**
 	 * @before_delete beforeDelete

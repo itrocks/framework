@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
@@ -25,6 +26,7 @@ use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Sql\Builder\Map_Delete;
 use ITRocks\Framework\Sql\Builder\Map_Insert;
+use ReflectionException;
 
 /**
  * Write feature for Dao\Mysql link
@@ -155,14 +157,21 @@ class Write extends Data_Link\Write
 	}
 
 	//------------------------------------------------------------------------------------------- run
+
 	/**
 	 * Run the write feature
 	 *
 	 * @return object|null
+	 * @throws ReflectionException
+	 * @throws Exception
 	 */
 	public function run()
 	{
-		if ($this->beforeWrite($this->object, $this->options)) {
+		$object_already_exist = Dao::getObjectIdentifier($this->object);
+		if ($this->beforeWrite(
+			$this->object,
+			$this->options, $object_already_exist ? 'before_write' : 'before_create'
+		)) {
 			$this->link->begin();
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->link->disconnect($this->object);
@@ -236,7 +245,9 @@ class Write extends Data_Link\Write
 				})
 			);
 			$this->link->commit();
-			$this->afterWrite($this->object, $this->options);
+			$this->afterWrite(
+				$this->object, $this->options, $object_already_exist ? 'after_write' : 'after_create'
+			);
 			// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
 			if (method_exists($this, 'prepareAfterCommit')) {
 				$this->prepareAfterCommit($this->object, $this->options);
