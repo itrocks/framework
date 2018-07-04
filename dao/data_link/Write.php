@@ -50,7 +50,7 @@ abstract class Write
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                 object
 	 * @param $options                Option[]
-	 * @param $after_write_annotation string @values after_create, after_write
+	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 * @throws ReflectionException
 	 */
 	protected function afterWrite($object, array &$options, $after_write_annotation)
@@ -59,7 +59,7 @@ abstract class Write
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_writes Method_Annotation[] */
 		$after_writes = $reflexion_class->getAnnotations($after_write_annotation);
-		if ($after_write_annotation === 'after_create') {
+		if ($after_write_annotation === 'after_create' || $after_write_annotation === 'after_update') {
 			$after_writes = array_merge($after_writes, $reflexion_class->getAnnotations('after_write'));
 		}
 		foreach ($after_writes as $after_write) {
@@ -74,7 +74,8 @@ abstract class Write
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                   object
 	 * @param $options                  Option[]
-	 * @param $before_write_annotation string @values before_create, before_write, before_writes
+	 * @param $before_write_annotation string @values before_create, before_update, before_write,
+	 *                                 before_writes
 	 * @return boolean
 	 */
 	public function beforeWrite($object, array &$options, $before_write_annotation = 'before_write')
@@ -83,7 +84,8 @@ abstract class Write
 		$class = new Reflection_Class(get_class($object));
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = $class->getAnnotations($before_write_annotation);
-		if ($before_write_annotation === 'before_create') {
+		if ($before_write_annotation === 'before_create'
+			  || $before_write_annotation === 'before_update') {
 			$before_writes = array_merge($before_writes, $class->getAnnotations('before_write'));
 		}
 		if ($before_writes) {
