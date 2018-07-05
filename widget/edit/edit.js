@@ -16,7 +16,9 @@ $('document').ready(function()
 			});
 			$popup.find('.general.actions a').click(function() {
 				var $this = $(this);
-				setTimeout(function() { $this.closest('.popup').remove(); }, 1);
+				if (!$this.hasClass('disabled')) {
+					setTimeout(function () { $this.closest('.popup').remove(); }, 1);
+				}
 			});
 		}
 

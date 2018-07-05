@@ -304,6 +304,9 @@
 					var $anchor = $(anchor);
 					var xhr     = undefined;
 					var jax;
+					if ($anchor.hasClass('disabled')) {
+						return;
+					}
 					if ($anchor.hasClass(settings.submit)) {
 						var $parent_form = $anchor.closest('form');
 						if ($parent_form.length) {

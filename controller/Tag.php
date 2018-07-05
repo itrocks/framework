@@ -8,6 +8,9 @@ namespace ITRocks\Framework\Controller;
 abstract class Tag
 {
 
+	//-------------------------------------------------------------------------------------- DISABLED
+	const DISABLED = '.disabled';
+
 	//---------------------------------------------------------------------------------------- SUBMIT
 	const SUBMIT = '.submit';
 
