@@ -183,42 +183,7 @@ class Button
 			$options = [$options];
 		}
 		foreach ($options as $key => $option) {
-			if ($option instanceof Color) {
-				$this->color = $option;
-			}
-			elseif ($key === self::COLOR) {
-				$this->color = new Color($option);
-			}
-			elseif ($option instanceof Button) {
-				$this->sub_buttons[] = $option;
-			}
-			elseif ($key === self::SUB_BUTTONS) {
-				$this->sub_buttons = is_array($this->sub_buttons)
-					? array_merge($this->sub_buttons, $option)
-					: $option;
-			}
-			elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
-				$this->class .= (isset($this->class) ? SP : '')
-					. (is_numeric($key) ? substr($option, 1) : $option);
-			}
-			elseif ($key === self::HINT) {
-				$this->hint = $option;
-			}
-			elseif ($key === self::OBJECT) {
-				$this->data_object = $option;
-			}
-			elseif ($key === Confirm::CANCEL_LABEL) {
-				$this->cancel_label = $option;
-			}
-			elseif ($key === Confirm::CONFIRM_LABEL) {
-				$this->confirm_label = $option;
-			}
-			elseif ($key === Confirm::MESSAGE) {
-				$this->confirm_message = $option;
-			}
-			elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
-				$this->target = ($option === Target::NONE) ? null : $option;
-			}
+			$this->addOption($option, $key);
 		}
 
 		if ($this->feature == Feature::F_CONFIRM) {
@@ -240,6 +205,53 @@ class Button
 	public function __toString()
 	{
 		return strval($this->caption);
+	}
+
+	//------------------------------------------------------------------------------------- addOption
+	/**
+	 * Add an option to the button
+	 *
+	 * @param $option string Single option
+	 * @param $key    string Key name of the option
+	 */
+	public function addOption($option, $key = '')
+	{
+		if ($option instanceof Color) {
+			$this->color = $option;
+		}
+		elseif ($key === self::COLOR) {
+			$this->color = new Color($option);
+		}
+		elseif ($option instanceof Button) {
+			$this->sub_buttons[] = $option;
+		}
+		elseif ($key === self::SUB_BUTTONS) {
+			$this->sub_buttons = is_array($this->sub_buttons)
+				? array_merge($this->sub_buttons, $option)
+				: $option;
+		}
+		elseif (($key === self::CLASS) || (is_numeric($key) && (substr($option, 0, 1) == DOT))) {
+			$this->class .= (isset($this->class) ? SP : '')
+				. (is_numeric($key) ? substr($option, 1) : $option);
+		}
+		elseif ($key === self::HINT) {
+			$this->hint = $option;
+		}
+		elseif ($key === self::OBJECT) {
+			$this->data_object = $option;
+		}
+		elseif ($key === Confirm::CANCEL_LABEL) {
+			$this->cancel_label = $option;
+		}
+		elseif ($key === Confirm::CONFIRM_LABEL) {
+			$this->confirm_label = $option;
+		}
+		elseif ($key === Confirm::MESSAGE) {
+			$this->confirm_message = $option;
+		}
+		elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
+			$this->target = ($option === Target::NONE) ? null : $option;
+		}
 	}
 
 	//----------------------------------------------------------------------------- conditionsApplyTo
