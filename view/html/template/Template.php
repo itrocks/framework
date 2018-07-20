@@ -2071,7 +2071,7 @@ class Template
 		$position  = strrpos($uri, '/vendor/');
 		$file_name = ($position !== false)
 			? substr($uri, $position + 1)
-			: substr($uri, strrpos($uri, SL) + 1);
+			: str_replace('../', '', $uri);
 		$file_path = null;
 		if (substr($file_name, -4) == '.css') {
 			$file_path = static::getCssPath($this->css) . SL . $file_name;
