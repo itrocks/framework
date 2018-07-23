@@ -22,9 +22,9 @@
 			<li class="separator"></li>
 			<!--!.?-->
 			<!--.?-->
-			<li class="property {?isBasicHtml} {?isStringableHtml}" data-property="{link_path}" title="|{link_path}|">
+			<li class="property {?isBasicHtml} {?isStringableHtml}" data-property="{link_path}" <!--!isExpandable?-->title="|{link_path}|"<!--!isExpandable?-->>
 				<!--isExpandable?-->
-				<a href="/ITRocks/Framework/Property/select/{link_class.path}?property_path={link_path}" target="#tree-{link_path}">
+				<a href="/ITRocks/Framework/Property/select/{link_class.path}?property_path={link_path}" target="#tree-{link_path.uri}" title="|{link_path}|">
 				<!--isExpandable?-->
 					{display}
 				<!--isExpandable?-->

@@ -47,12 +47,6 @@ class Select_Controller implements Feature_Controller
 	 */
 	protected $root_class = null;
 
-	//--------------------------------------------------------------------------- $root_property_path
-	/**
-	 * @var string|null
-	 */
-	protected $root_property_path = null;
-
 	//------------------------------------------------------------------------------ filterProperties
 	/**
 	 * Filter a list of properties by removing properties that should not be visible
@@ -201,7 +195,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * - first shift : the root reference class name (ie a business object)
 	 * - second shift : if set, the selected property path into the root reference class name
-	 * - class : replace first if set : reference class name
+	 * - class_name : replace first if set : reference class name
 	 * - property_path : replace second if set : property path (used for Reverse\Join\Class(property))
 	 * @param $form  array not used
 	 * @param $files array[] not used
@@ -211,43 +205,45 @@ class Select_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$class_name = Set::elementClassNameOf(
-			$parameters->getRawParameter('class') ?: $parameters->shiftUnnamed()
+			$parameters->getRawParameter('class_name') ?: $parameters->shiftUnnamed()
 		);
 		/** @noinspection PhpUnhandledExceptionInspection $class_name is always valid */
 		$this->root_class = new Reflection_Class($class_name);
 		if (List_Annotation::of($this->root_class)->has(List_Annotation::LOCK)) {
 			return Loc::tr('You are not allowed to customize this list');
 		}
-		$this->root_property_path = $parameters->getRawParameter('property_path')
-			?: $parameters->shiftUnnamed();
-		if (empty($this->root_property_path)) {
+		$property_path = $parameters->getRawParameter('property_path') ?: $parameters->shiftUnnamed();
+		$top_property_class = $this->topPropertyClass($class_name, $property_path);
+		if ($top_property_class instanceof Reflection_Class) {
 			$top_property        = new Property();
 			$top_property->class = $class_name;
-			$properties          = $this->getProperties($this->root_class);
+			$properties          = $this->getProperties($top_property_class);
+		}
+		elseif ($top_property_class->getType()->isClass()) {
+			/** @noinspection PhpUnhandledExceptionInspection $top_property already tested */
+			$properties = $this->getProperties(
+				new Reflection_Class($top_property_class->getType()->getElementTypeAsString()),
+				$top_property_class->final_class
+			);
 		}
 		else {
-			$top_property = new Reflection\Reflection_Property($class_name, $this->root_property_path);
-			if ($top_property->getType()->isClass()) {
-				/** @noinspection PhpUnhandledExceptionInspection $top_property already tested */
-				$properties = $this->getProperties(
-					new Reflection_Class($top_property->getType()->getElementTypeAsString()),
-					$top_property->final_class
-				);
-				foreach ($properties as $property) {
-					if ($property) {
-						$property->link_path = $this->root_property_path . DOT . $property->link_path;
-					}
-				}
-				if (!$parameters->getRawParameter(Parameter::CONTAINER)) {
-					$parameters->set(Parameter::CONTAINER, 'subtree');
+			$properties = [];
+		}
+		if ($property_path) {
+			foreach ($properties as $property) {
+				if ($property) {
+					$property->link_path = $property_path . DOT . $property->link_path;
 				}
 			}
-			else {
-				$properties = [];
+			if (!$parameters->getRawParameter(Parameter::CONTAINER)) {
+				$parameters->set(Parameter::CONTAINER, 'subtree');
 			}
 		}
 		$objects = $parameters->getObjects();
-		array_unshift($objects, $top_property);
+		array_unshift(
+			$objects,
+			($top_property_class instanceof Reflection_Property) ? $top_property_class : null
+		);
 		$objects['properties'] = $properties;
 		$objects['class_name'] = $class_name;
 		/**
@@ -256,6 +252,30 @@ class Select_Controller implements Feature_Controller
 		 * 'properties' Reflection_Property[] all properties from the reference class
 		 */
 		return View::run($objects, $form, $files, Property::class, 'select');
+	}
+
+	//------------------------------------------------------------------------------ topPropertyClass
+	/**
+	 * @param $class_name    string
+	 * @param $property_path string
+	 * @return Reflection_Class|Reflection_Property
+	 * @throws ReflectionException
+	 */
+	protected function topPropertyClass($class_name, $property_path)
+	{
+		if ($open_position = strrpos($property_path, '(')) {
+			$class_position = strrpos(substr($property_path, 0, $open_position), DOT) ?: 0;
+			if ($class_position) {
+				$class_position ++;
+			}
+			$class_name    = substr($property_path, $class_position, $open_position - $class_position);
+			$property_path = ($property_position = strpos($property_path, DOT, $open_position))
+				? substr($property_path, $property_position + 1)
+				: null;
+		}
+		return $property_path
+			? new Reflection_Property($class_name, $property_path)
+			: new Reflection_Class($class_name);
 	}
 
 }

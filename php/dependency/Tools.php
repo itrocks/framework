@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency;
@@ -95,8 +96,9 @@ trait Tools
 						// which class inherit / use this property ?
 						$use_class_names = static::extendsUse($class->name, true);
 						foreach ($use_class_names as $use_class_name) {
+							$key_use_class_name = Builder::current()->sourceClassName($use_class_name);
 							/** @noinspection PhpUnhandledExceptionInspection comes from valid dependency */
-							$properties["$use_class_name($property->name)"] = new Reflection_Property(
+							$properties["$key_use_class_name($property->name)"] = new Reflection_Property(
 								$use_class_name, $property->name
 							);
 						}
