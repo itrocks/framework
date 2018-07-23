@@ -55,14 +55,10 @@ $('document').ready(function()
 			drop: function(event, ui)
 			{
 				var app = window.app;
-				var href = event.target.href;
 				// calculate destination href
-				if (ui.helper.data('throw')) {
-					event.target.href = app.uri_base + ui.helper.data('throw')
-				}
-				else {
-					event.target.href = event.target.pathname + SL + 'drop';
-				}
+				var href = ui.helper.data('throw')
+					? (app.uri_base + ui.helper.data('throw'))
+					: (event.target.pathname + SL + 'drop');
 				// after trash call is complete, the source window is reloaded to update displayed content
 				var $window = ui.draggable.closest('.window');
 				if ($window.length) {
@@ -91,23 +87,32 @@ $('document').ready(function()
 						);
 					}
 				}
-				event.target.href += SL + ui.helper.data('class').replace(BS, SL);
+				href += SL + ui.helper.data('class').replace(BS, SL);
 				if (ui.helper.data('id')) {
-					event.target.href += SL + ui.helper.data('id');
+					href += SL + ui.helper.data('id');
 				}
 				if (ui.helper.data('feature')) {
-					event.target.href += SL + ui.helper.data('feature');
+					href += SL + ui.helper.data('feature');
 				}
 				if (ui.helper.data('property')) {
-					event.target.href += '/ITRocks/Framework/Property/' + ui.helper.data('property');
+					var property = ui.helper.data('property');
+					href += '/ITRocks/Framework/Property';
+					if (property.indexOf('(') > -1) {
+						href = app.askAnd(href, 'property_path=' + property);
+					}
+					else {
+						href += SL + property;
+					}
 				}
 				if (ui.helper.data('action')){
-					event.target.href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
+					href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
 				}
-				event.target.href += event.target.search + event.target.hash;
-				event.target.click();
-				// end
+				href += event.target.search + event.target.hash;
+				// call
+				var href_backup   = event.target.href;
 				event.target.href = href;
+				event.target.click();
+				event.target.href = href_backup;
 			}
 		});
 

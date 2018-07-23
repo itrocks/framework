@@ -55,24 +55,27 @@ class Remove_Controller extends Remove\Remove_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		$parameters = $parameters->getObjects();
-		$parameters['class_name']    = array_shift($parameters);
-		$parameters['feature_name']  = Feature::uriToFeature(array_shift($parameters));
-		$parameters['property_path'] = array_shift($parameters);
-		array_unshift($parameters, new Property());
-		switch ($parameters['feature_name']) {
+		$objects = $parameters->getObjects();
+		$objects['class_name'] = $parameters->getRawParameter('class_name')
+			?: array_shift($objects);
+		$objects['feature_name'] = $parameters->getRawParameter('feature_name')
+			?: Feature::uriToFeature(array_shift($objects));
+		$objects['property_path'] = $parameters->getRawParameter('property_path')
+			?: array_shift($objects);
+		array_unshift($objects, new Property());
+		switch ($objects['feature_name']) {
 			case Feature::F_LIST:
-				$this->removePropertyFromList($parameters['class_name'], $parameters['property_path']);
+				$this->removePropertyFromList($objects['class_name'], $objects['property_path']);
 				break;
 			case Feature::F_EDIT:
 			case Feature::F_OUTPUT:
 				$this->removePropertyFromOutput(
-					$parameters['class_name'], $parameters['feature_name'], $parameters['property_path']
+					$objects['class_name'], $objects['feature_name'], $objects['property_path']
 				);
 				break;
 		}
-		$parameters[Template::TEMPLATE] = 'removed';
-		return View::run($parameters, $form, $files, Property::class, Feature::F_REMOVE);
+		$objects[Template::TEMPLATE] = 'removed';
+		return View::run($objects, $form, $files, Property::class, Feature::F_REMOVE);
 	}
 
 }

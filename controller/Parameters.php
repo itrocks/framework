@@ -251,10 +251,24 @@ class Parameters
 	//-------------------------------------------------------------------------- getUnnamedParameters
 	/**
 	 * Gets URI parameters raw values, only those which have no name
+	 *
+	 * @param $parameters_without_value_too boolean if true, parameter= will be returned as value
+	 * @return string[]
 	 */
-	public function getUnnamedParameters()
+	public function getUnnamedParameters($parameters_without_value_too = false)
 	{
-		/** @noinspection PhpParamsInspection inspector bug */
+		if ($parameters_without_value_too) {
+			$parameters = [];
+			foreach ($this->parameters as $key => $value) {
+				if (is_numeric($key)) {
+					$parameters[] = $value;
+				}
+				elseif (!strlen($value)) {
+					$parameters[] = $key;
+				}
+			}
+			return $parameters;
+		}
 		return arrayUnnamedValues($this->parameters);
 	}
 
