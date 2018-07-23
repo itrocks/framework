@@ -57,7 +57,7 @@ class Remove_Controller extends Remove\Remove_Controller
 	{
 		$parameters = $parameters->getObjects();
 		$parameters['class_name']    = array_shift($parameters);
-		$parameters['feature_name']  = array_shift($parameters);
+		$parameters['feature_name']  = Feature::uriToFeature(array_shift($parameters));
 		$parameters['property_path'] = array_shift($parameters);
 		array_unshift($parameters, new Property());
 		switch ($parameters['feature_name']) {
