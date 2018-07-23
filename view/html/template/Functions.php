@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Now;
+use ITRocks\Framework\Import\Settings\Import_Settings_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -35,6 +36,7 @@ use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Widget\Condition;
+use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
 use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
@@ -72,6 +74,18 @@ class Functions
 				Displayable::TYPE_CLASS
 			)
 			: null;
+	}
+
+	//------------------------------------------------------------------------------------ escapeName
+	/**
+	 * @param $name string
+	 * @return string
+	 * @see Data_List_Controller::descapePropertyName()
+	 * @see Import_Settings_Builder::buildForm()
+	 */
+	protected function escapeName($name)
+	{
+		return str_replace([DOT, '(', ')'], ['>', Q, BQ], $name);
 	}
 
 	//------------------------------------------------------------------------------ filterProperties
@@ -308,7 +322,7 @@ class Functions
 		Template $template, $name = null, $ignore_user = false, $can_always_be_null = false
 	) {
 		if (isset($name)) {
-			$name = str_replace(DOT, '>', $name);
+			$name = $this->escapeName($name);
 		}
 		$object = reset($template->objects);
 		// find the first next object
@@ -404,7 +418,7 @@ class Functions
 					$next = Names::classToDisplay($next);
 				}
 				else {
-					$next = str_replace(DOT, '>', $next);
+					$next = $this->escapeName($next);
 				}
 				$prefix .= '[' . $next . ']';
 			}
@@ -494,7 +508,7 @@ class Functions
 	 */
 	public function getEscapeName(Template $template)
 	{
-		return str_replace(DOT, '>', reset($template->objects));
+		return $this->escapeName(reset($template->objects));
 	}
 
 	//------------------------------------------------------------------------------------- getExpand

@@ -6,6 +6,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\String_Class;
+use ReflectionException;
 
 /**
  * Data list setting widget for a property (ie a column of the list)
@@ -35,13 +36,14 @@ class Property implements Can_Be_Empty
 	/**
 	 * @param $class_name    string
 	 * @param $property_path string
+	 * @throws ReflectionException
 	 */
 	public function __construct($class_name = null, $property_path = null)
 	{
 		if (isset($class_name) && isset($property_path)) {
 			$property      = new Reflection_Property_Value($class_name, $property_path);
 			$this->display = $property->display();
-			$this->path    = $property->path;
+			$this->path    = $property_path;
 		}
 	}
 

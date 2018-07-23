@@ -143,7 +143,7 @@ class Data_List_Settings extends Custom_Settings
 		$changes_count = 0;
 		// properties
 		foreach (array_keys($this->properties) as $property_path) {
-			/** @noinspection PhpUnhandledExceptionInspection valid $class_name */
+			/** @noinspection PhpUnhandledExceptionInspection tested with exists */
 			$reflection_property = (Reflection_Property::exists($class_name, $property_path))
 				? new Reflection_Property($class_name, $property_path) : null;
 			if (

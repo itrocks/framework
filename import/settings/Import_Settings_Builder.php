@@ -131,6 +131,7 @@ abstract class Import_Settings_Builder
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $worksheet array
 	 * @return Import_Settings
+	 * @see Functions::escapeName()
 	 */
 	public static function buildForm(array $worksheet)
 	{
@@ -149,10 +150,10 @@ abstract class Import_Settings_Builder
 				}
 				else {
 					// property paths for next elements
-					$property_path = str_replace('>', DOT, $property_path);
+					$property_path = str_replace(['>', Q, BQ], [DOT, '(', ')'], $property_path);
 					/** @noinspection PhpUnhandledExceptionInspection class and property are valid */
-					$property      = new Reflection_Property($main_class_name, $property_path);
-					$class_name    = $property->getType()->getElementTypeAsString();
+					$property   = new Reflection_Property($main_class_name, $property_path);
+					$class_name = $property->getType()->getElementTypeAsString();
 				}
 				$settings->classes[$property_path] = self::buildFormClass(
 					$class_name, $property_path, $class

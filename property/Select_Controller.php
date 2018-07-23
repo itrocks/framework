@@ -175,7 +175,8 @@ class Select_Controller implements Feature_Controller
 				$property->display = Loc::tr(Names::classToDisplay($property_class->name));
 				$property_class_names[$property_path] = $property_class->name;
 			}
-			$property->link_path = $property_class . '(' . $property->name . ')';
+			$property->link_path = Builder::current()->sourceClassName($property_class)
+				. '(' . $property->name . ')';
 		}
 
 		// properties display : only if multiple or different than @display
@@ -213,7 +214,7 @@ class Select_Controller implements Feature_Controller
 			return Loc::tr('You are not allowed to customize this list');
 		}
 		$property_path = $parameters->getRawParameter('property_path') ?: $parameters->shiftUnnamed();
-		$top_property_class = $this->topPropertyClass($class_name, $property_path);
+		$top_property_class = (new Path($class_name, $property_path))->toPropertyClass();
 		if ($top_property_class instanceof Reflection_Class) {
 			$top_property        = new Property();
 			$top_property->class = $class_name;
@@ -252,30 +253,6 @@ class Select_Controller implements Feature_Controller
 		 * 'properties' Reflection_Property[] all properties from the reference class
 		 */
 		return View::run($objects, $form, $files, Property::class, 'select');
-	}
-
-	//------------------------------------------------------------------------------ topPropertyClass
-	/**
-	 * @param $class_name    string
-	 * @param $property_path string
-	 * @return Reflection_Class|Reflection_Property
-	 * @throws ReflectionException
-	 */
-	protected function topPropertyClass($class_name, $property_path)
-	{
-		if ($open_position = strrpos($property_path, '(')) {
-			$class_position = strrpos(substr($property_path, 0, $open_position), DOT) ?: 0;
-			if ($class_position) {
-				$class_position ++;
-			}
-			$class_name    = substr($property_path, $class_position, $open_position - $class_position);
-			$property_path = ($property_position = strpos($property_path, DOT, $open_position))
-				? substr($property_path, $property_position + 1)
-				: null;
-		}
-		return $property_path
-			? new Reflection_Property($class_name, $property_path)
-			: new Reflection_Class($class_name);
 	}
 
 }

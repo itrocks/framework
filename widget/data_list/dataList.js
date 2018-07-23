@@ -15,11 +15,11 @@ $('document').ready(function()
 			var app        = window.app;
 			var class_name = $window.data('class').repl(BS, SL);
 			var uri        = app.uri_base + SL + class_name + SL + 'dataListSetting'
-				+ '?add_property=' + property_name
-				+ '&' + before_after
-				+ '=' + ((before_after_property_name !== undefined) ? before_after_property_name : '')
-				+ '&as_widget'
-				+ app.andSID();
+				+ '?add_property=' + property_name;
+			if (before_after_property_name !== undefined) {
+				uri += '&' + before_after + '=' + before_after_property_name;
+			}
+			uri += '&as_widget' + app.andSID();
 			$.ajax({ url: uri, success: function()
 			{
 				var class_name   = $window.data('class').repl(BS, SL);

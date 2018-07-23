@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection;
 use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Property\Path;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
@@ -105,6 +106,10 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function __construct($class_name, $property_name)
 	{
+		if (strpos($property_name, ')')) {
+			list($class_name, $property_name)
+				= (new Path($class_name, $property_name))->toPropertyClassName();
+		}
 		$this->path       = $property_name;
 		$this->root_class = $class_name;
 		$i                = 0;
@@ -142,6 +147,10 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public static function exists($class_name, $property_name)
 	{
+		if (strpos($property_name, ')')) {
+			list($class_name, $property_name)
+				= (new Path($class_name, $property_name))->toPropertyClassName();
+		}
 		if (strpos($property_name, DOT) !== false) {
 			$properties_name = explode(DOT, $property_name);
 			foreach (array_slice($properties_name, 0, -1) as $property_name) {

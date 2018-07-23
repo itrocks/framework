@@ -296,10 +296,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	/**
 	 * @param $property_name string
 	 * @return string
+	 * @see Functions::escapeName()
 	 */
 	protected function descapePropertyName($property_name)
 	{
-		$property_name = str_replace(['.id_', '>id_', '>'], DOT, $property_name);
+		$property_name = str_replace(
+			['.id_', '>id_', '>', Q, BQ], [DOT, DOT, DOT, '(', ')'], $property_name
+		);
 		if (substr($property_name, 0, 3) == 'id_') {
 			$property_name = substr($property_name, 3);
 		}
