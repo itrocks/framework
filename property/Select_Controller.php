@@ -10,6 +10,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -108,14 +109,11 @@ class Select_Controller implements Feature_Controller
 			$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		}
 		$properties         = $this->filterProperties($properties, $display_full_path);
-		/*
-		// TODO WIP
 		$reverse_properties = $this->getReverseProperties($class);
 		if ($reverse_properties) {
 			$properties[] = null;
 			$properties   = array_merge($properties, $reverse_properties);
 		}
-		*/
 		return $properties;
 	}
 
@@ -128,9 +126,10 @@ class Select_Controller implements Feature_Controller
 	protected function getReverseProperties(Reflection_Class $class)
 	{
 		// class and its parents
-		$base_class  = Builder::current()->sourceClassName($class->name);
-		$class_name  = $class->name;
-		$class_names = [$class_name];
+		$base_class    = Builder::current()->sourceClassName($class->name);
+		$class_display = Display_Annotation::of($class)->value;
+		$class_name    = $class->name;
+		$class_names   = [$class_name];
 		while ($class_name && ($class_name !== $base_class)) {
 			if ($class_name = get_parent_class($class_name)) {
 				$class_names[] = $class_name;
@@ -142,10 +141,11 @@ class Select_Controller implements Feature_Controller
 		$properties = Dependency::propertiesUsingClass($class_names);
 
 		// filter and add properties
-		$properties = $this->filterProperties($properties);
+		$class_count          = [];
+		$properties           = $this->filterProperties($properties);
+		$property_class_names = [];
 		foreach ($properties as $property_path => $property) {
-			$property_class      = $property->getRootClass();
-			$property_class_name = $property_class->name;
+			$property_class = $property->getFinalClass();
 			if (
 				Link_Annotation::of($property_class)->value
 				|| $property->getAnnotation('composite')->value
@@ -153,10 +153,25 @@ class Select_Controller implements Feature_Controller
 				unset($properties[$property_path]);
 			}
 			else {
-				$property->display = Loc::tr(Names::classToDisplay($property_class_name))
-					. SP . '(' . Loc::tr($property->name) . ')';
+				$acute_displays[$property_path] = $property;
+				if (isset($class_count[$property_class->name])) {
+					$class_count[$property_class->name] ++;
+				}
+				else {
+					$class_count[$property_class->name] = ($property->name === $class_display) ? 1 : 2;
+				}
+				$property->display = Loc::tr(Names::classToDisplay($property_class->name));
+				$property_class_names[$property_path] = $property_class->name;
 			}
 		}
+
+		// properties display : only if multiple or different than @display
+		foreach ($properties as $property_path => $property) {
+			if ($class_count[$property_class_names[$property_path]] > 1) {
+				$property->display .= SP . '(' . Loc::tr($property->name) . ')';
+			}
+		}
+
 		return $properties;
 	}
 
