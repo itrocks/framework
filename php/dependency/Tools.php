@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\PHP\Dependency;
 
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency;
@@ -65,7 +64,6 @@ trait Tools
 		);
 		$class_names = [];
 		if ($include_class && !(new Reflection_Class($class_name))->isAbstract()) {
-			$class_name = Builder::current()->sourceClassName($class_name);
 			$class_names[$class_name] = $class_name;
 		}
 		foreach ($children as $child) {

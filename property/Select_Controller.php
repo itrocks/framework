@@ -11,6 +11,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
@@ -32,13 +33,25 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * @var Reflection\Reflection_Property
 	 */
-	private $composite_link_property = null;
+	protected $composite_link_property = null;
 
 	//--------------------------------------------------------------------------- $composite_property
 	/**
 	 * @var Reflection\Reflection_Property
 	 */
-	private $composite_property = null;
+	protected $composite_property = null;
+
+	//----------------------------------------------------------------------------------- $root_class
+	/**
+	 * @var Reflection_Class
+	 */
+	protected $root_class = null;
+
+	//--------------------------------------------------------------------------- $root_property_path
+	/**
+	 * @var string|null
+	 */
+	protected $root_property_path = null;
 
 	//------------------------------------------------------------------------------ filterProperties
 	/**
@@ -49,28 +62,31 @@ class Select_Controller implements Feature_Controller
 	 * @param $display_full_path boolean
 	 * @return Reflection_Property[]
 	 */
-	private function filterProperties(array $source_properties, $display_full_path = false)
+	protected function filterProperties(array $source_properties, $display_full_path = false)
 	{
 		$properties = [];
 		/** @var $source_properties Reflection_Property[] */
 		$source_properties = Replaces_Annotations::removeReplacedProperties($source_properties);
-		foreach ($source_properties as $property_name => $property) {
+		foreach ($source_properties as $property_name => $source_property) {
 			if (
-				(!$this->composite_property || ($property->name !== $this->composite_property->name))
+				(!$this->composite_property || ($source_property->name !== $this->composite_property->name))
 				&& (
 					!$this->composite_link_property
-					|| ($property->name !== $this->composite_link_property->name)
+					|| ($source_property->name !== $this->composite_link_property->name)
 				)
-				&& $property->isPublic()
-				&& $property->isVisible(false, false)
+				&& $source_property->isPublic()
+				&& $source_property->isVisible(false, false)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
-				$properties[$property_name] = new Reflection_Property(
-					$property->root_class, $property->name
-				);
-				$properties[$property_name]->display = Loc::tr(Names::propertyToDisplay(
-					$display_full_path ? $properties[$property_name]->path : $properties[$property_name]->name
+				$property = new Reflection_Property($source_property->class, $source_property->name);
+				$property->display = Loc::tr(Names::propertyToDisplay(
+					$display_full_path ? $source_property->path : $source_property->name
 				));
+				$property->final_class      = $source_property->final_class;
+				$property->link_class       = $this->root_class->name;
+				$property->link_path        = $source_property->path;
+				$property->root_class       = $source_property->root_class;
+				$properties[$property_name] = $property;
 			}
 		}
 		return $properties;
@@ -126,10 +142,11 @@ class Select_Controller implements Feature_Controller
 	protected function getReverseProperties(Reflection_Class $class)
 	{
 		// class and its parents
-		$base_class    = Builder::current()->sourceClassName($class->name);
-		$class_display = Display_Annotation::of($class)->value;
-		$class_name    = $class->name;
-		$class_names   = [$class_name];
+		$base_class     = Builder::current()->sourceClassName($class->name);
+		$class_display  = Display_Annotation::of($class)->value;
+		$class_displays = Displays_Annotation::of($class)->value;
+		$class_name     = $class->name;
+		$class_names    = [$class_name];
 		while ($class_name && ($class_name !== $base_class)) {
 			if ($class_name = get_parent_class($class_name)) {
 				$class_names[] = $class_name;
@@ -158,11 +175,13 @@ class Select_Controller implements Feature_Controller
 					$class_count[$property_class->name] ++;
 				}
 				else {
-					$class_count[$property_class->name] = ($property->name === $class_display) ? 1 : 2;
+					$class_count[$property_class->name]
+						= in_array($property->name, [$class_display, $class_displays]) ? 1 : 2;
 				}
 				$property->display = Loc::tr(Names::classToDisplay($property_class->name));
 				$property_class_names[$property_path] = $property_class->name;
 			}
+			$property->link_path = $property_class . '(' . $property->name . ')';
 		}
 
 		// properties display : only if multiple or different than @display
@@ -180,8 +199,10 @@ class Select_Controller implements Feature_Controller
 	 * Property select controller, starting from a given root class
 	 *
 	 * @param $parameters Parameters
-	 * - first : the root reference class name (ie a business object)
-	 * - second : if set, the selected property path into the root reference class name
+	 * - first shift : the root reference class name (ie a business object)
+	 * - second shift : if set, the selected property path into the root reference class name
+	 * - class : replace first if set : reference class name
+	 * - property_path : replace second if set : property path (used for Reverse\Join\Class(property))
 	 * @param $form  array not used
 	 * @param $files array[] not used
 	 * @return mixed
@@ -189,25 +210,23 @@ class Select_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		$class_name = Set::elementClassNameOf($parameters->shiftUnnamed());
+		$class_name = Set::elementClassNameOf(
+			$parameters->getRawParameter('class') ?: $parameters->shiftUnnamed()
+		);
 		/** @noinspection PhpUnhandledExceptionInspection $class_name is always valid */
-		$class = new Reflection_Class($class_name);
-		if (List_Annotation::of($class)->has(List_Annotation::LOCK)) {
+		$this->root_class = new Reflection_Class($class_name);
+		if (List_Annotation::of($this->root_class)->has(List_Annotation::LOCK)) {
 			return Loc::tr('You are not allowed to customize this list');
 		}
-		$property_path = $parameters->shiftUnnamed();
-		if (empty($property_path)) {
+		$this->root_property_path = $parameters->getRawParameter('property_path')
+			?: $parameters->shiftUnnamed();
+		if (empty($this->root_property_path)) {
 			$top_property        = new Property();
 			$top_property->class = $class_name;
-			$properties          = $this->getProperties($class);
-			foreach ($properties as $property) {
-				if ($property) {
-					$property->path = $property->name;
-				}
-			}
+			$properties          = $this->getProperties($this->root_class);
 		}
 		else {
-			$top_property = new Reflection\Reflection_Property($class_name, $property_path);
+			$top_property = new Reflection\Reflection_Property($class_name, $this->root_property_path);
 			if ($top_property->getType()->isClass()) {
 				/** @noinspection PhpUnhandledExceptionInspection $top_property already tested */
 				$properties = $this->getProperties(
@@ -216,7 +235,7 @@ class Select_Controller implements Feature_Controller
 				);
 				foreach ($properties as $property) {
 					if ($property) {
-						$property->path = $property_path . DOT . $property->name;
+						$property->link_path = $this->root_property_path . DOT . $property->link_path;
 					}
 				}
 				if (!$parameters->getRawParameter(Parameter::CONTAINER)) {

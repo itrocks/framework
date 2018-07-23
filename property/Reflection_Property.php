@@ -16,10 +16,28 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 * Translated display for the property
 	 *
 	 * @example 'property'
-	 * @example 'Class(property)'
+	 * @example 'class (property)'
 	 * @var string
 	 */
 	public $display = null;
+
+	//----------------------------------------------------------------------------------- $link_class
+	/**
+	 * Class for the link : always the root class name
+	 *
+	 * @var string
+	 */
+	public $link_class = null;
+
+	//------------------------------------------------------------------------------------ $link_path
+	/**
+	 * Path to send for the link
+	 *
+	 * @example 'Class\Name(property)'
+	 * @example 'main.class.property.Class\Name(property).path'
+	 * @var string
+	 */
+	public $link_path = null;
 
 	//----------------------------------------------------------------------------------- isBasicHtml
 	/**
