@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<phpunit
+	backupGlobals="false"
+	bootstrap="console_script.php"
+	colors="false"
+	convertErrorsToExceptions="true"
+	convertNoticesToExceptions="true"
+	convertWarningsToExceptions="true"
+	processIsolation="false"
+	stopOnFailure="false"
+	syntaxCheck="true"
+	verbose="true"
+>
+	<filter>
+		<whitelist addUncoveredFilesFromWhitelist="true">
+			<directory suffix=".php">.</directory>
+		</whitelist>
+	</filter>
+	<testsuite name="ITRocks">
+		<directory>.</directory>
+	</testsuite>
+</phpunit>

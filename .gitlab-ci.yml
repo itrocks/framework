@@ -1,4 +1,4 @@
-image: registry.bappli.com/itrocks/debian-ci:latest
+image: registry.bappli.com/images/php-7.2/itrocks:latest
 
 services:
   - mysql:5.7
@@ -36,7 +36,7 @@ before_script:
   - git clone git@gitlab.bappli.com:itrocks/frameworkci.git /frameworkci
 
   # Use branch/tag
-  - sed -i -e "s/dev-master/dev-${CI_COMMIT_REF_NAME}#${CI_COMMIT_REF_SLUG}/g" /frameworkci/composer.json
+  - sed -i -e "s/dev-master/dev-${CI_COMMIT_REF_NAME}#${CI_COMMIT_REF_SLUG} as dev-master/g" /frameworkci/composer.json
 
   # Php info
   - php -v
@@ -58,9 +58,21 @@ before_script:
   - cp /frameworkci/environment/*.php /frameworkci
 
   # Disable mysql strict mode
-  - mysql -uroot -p"${MYSQL_ROOT_PASSWORD}" -h"${MYSQL_PORT_3306_TCP_ADDR}" -P"${MYSQL_PORT_3306_TCP_PORT}" "${MYSQL_DATABASE}" -Bse "SET GLOBAL sql_mode = '';"
+  - php -r "(new mysqli(getenv('MYSQL_PORT_3306_TCP_ADDR').':'.getenv('MYSQL_PORT_3306_TCP_PORT'), 'root', getenv('MYSQL_ROOT_PASSWORD'), getenv('MYSQL_DATABASE')))->query('SET GLOBAL sql_mode = \'\'');"
 
-test:
+code-coverage:
+  stage: quality
   script:
     - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -p verbose=true
-    - php /frameworkci/itrocks/framework/console.php /ITRocks/Framework/Tests/run
+    - docker-php-ext-enable xdebug
+    - php /frameworkci/vendor/bin/phpunit --configuration /frameworkci/itrocks/framework/phpunit.xml.dist --coverage-text --colors=never
+
+test:
+  stage: test
+  script:
+    - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -p verbose=true
+    - php /frameworkci/vendor/bin/phpunit --configuration /frameworkci/itrocks/framework/phpunit.xml.dist
+
+stages:
+  - test
+  - quality
