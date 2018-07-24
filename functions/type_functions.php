@@ -2,7 +2,7 @@
 
 use ITRocks\Framework\Builder;
 
-//-------------------------------------------------------------------------------------- class_tree
+//--------------------------------------------------------------------------------------- classTree
 /**
  * Gets full class names tree, recursively
  *
@@ -40,7 +40,7 @@ function classTree($object, $classes = true, $traits = true, $interfaces = true,
 	return $tree;
 }
 
-//-------------------------------------------------------------------------------------------- diff
+//--------------------------------------------------------------------------------------------- cmp
 /**
  * Returns 0 if $v1 === $v2, -1 if $v1 < $v2, 1 if $v1 > $v2 : use it for smaller uasort() callbacks
  *
@@ -55,6 +55,24 @@ function cmp($v1, $v2, $strict = true)
 		return 0;
 	}
 	return ($v1 < $v2) ? -1 : 1;
+}
+
+//-------------------------------------------------------------------------------------- instanceIn
+/**
+ * Returns if there is an instance of class in the given array of objects
+ *
+ * @param $class_name_or_object string|object
+ * @param $objects              object[]
+ * @return boolean
+ */
+function instanceIn($class_name_or_object, array $objects)
+{
+	foreach ($objects as $object) {
+		if ($object instanceof $class_name_or_object) {
+			return true;
+		}
+	}
+	return false;
 }
 
 //--------------------------------------------------------------------------------------------- isA
@@ -111,7 +129,7 @@ function isA($object, $class_name)
 	return false;
 }
 
-//--------------------------------------------------------------------------------- isStrictNumeric
+//--------------------------------------------------------------------------------- isStrictInteger
 /**
  * Returns true if $value is a strict integer.
  * Same as isStrictNumeric, but :
@@ -156,7 +174,7 @@ function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true
 	return $result;
 }
 
-//--------------------------------------------------------------------------------- isStrictNumeric
+//------------------------------------------------------------------------- isStrictUnsignedInteger
 /**
  * Returns true iv $value is a strict integer.
  * Same as isStrictNumeric, but :

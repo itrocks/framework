@@ -28,7 +28,6 @@ abstract class Properties implements Option
 	 * Will write the values of user's login and password into the database
 	 * @example Dao::write($user, Dao::only(['login', 'password']));
 	 * Will write the values of user's login and password into the database
-	 *
 	 * @param $properties string[]|string ...
 	 */
 	public function __construct($properties = [])
@@ -100,6 +99,18 @@ abstract class Properties implements Option
 			}
 		}
 		return $default;
+	}
+
+	//------------------------------------------------------------------------------------ instanceIn
+	/**
+	 * Returns true options contains at least one option of static class
+	 *
+	 * @param $options Option[]
+	 * @return boolean
+	 */
+	public static function instanceIn(array $options)
+	{
+		return instanceIn(static::class, $options);
 	}
 
 	//------------------------------------------------------------------------------------ properties
