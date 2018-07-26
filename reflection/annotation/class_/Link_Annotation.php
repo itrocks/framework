@@ -102,26 +102,57 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	{
 		if (!is_array($this->link_properties)) {
 			$text_link_properties  = $this->link_properties;
-			$this->link_properties = [];
 			if (is_string($text_link_properties)) {
-				// if properties names are told, this will be faster to get their names here
-				$properties = $this->class->getProperties([T_USE]);
-				foreach (explode(SP, $text_link_properties) as $property_name) {
-					if ($property_name) {
-						$this->link_properties[$property_name] = $properties[$property_name];
-					}
-				}
+				$this->setLinkPropertiesByNames(explode(SP, $text_link_properties));
 			}
 			elseif ($this->class) {
-				// if properties names are not set : get explicit composite properties names
-				foreach ($this->class->getProperties([T_USE]) as $property) {
-					if ($property->getAnnotation('composite')->value) {
-						$this->link_properties[$property->getName()] = $property;
-					}
-				}
+				$this->setLinkPropertiesByClass($this->class);
 			}
 		}
 		return $this->link_properties;
+	}
+
+	//---------------------------------------------------------------------- setLinkPropertiesByClass
+	/**
+	 * Scan @link class for @composite properties, which are the link properties
+	 *
+	 * Do not get @composite properties from parent classes : only the higher class containing
+	 * composite properties match them to link properties.
+	 *
+	 * @param $class Reflection_Class
+	 */
+	protected function setLinkPropertiesByClass(Reflection_Class $class)
+	{
+		while ($class && !$this->link_properties) {
+			// if properties names are not set : get explicit composite properties names
+			foreach ($class->getProperties([T_USE]) as $property) {
+				if ($property->getAnnotation('composite')->value) {
+					$this->link_properties[$property->getName()] = $property;
+					$class                                       = null;
+				}
+			}
+			if ($class) {
+				$class = $class->getParentClass();
+			}
+		}
+	}
+
+	//---------------------------------------------------------------------- setLinkPropertiesByNames
+	/**
+	 * If properties names are told, this will be faster to get their names here
+	 *
+	 * @param $link_properties string[]
+	 */
+	protected function setLinkPropertiesByNames($link_properties)
+	{
+		$this->link_properties = [];
+		$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
+		foreach (explode(SP, $link_properties) as $property_name) {
+			if ($property_name) {
+				$this->link_properties[$property_name] = $properties[$property_name];
+				$class = null;
+			}
+		}
 	}
 
 }
