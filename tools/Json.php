@@ -101,7 +101,7 @@ class Json
 		stdClass $standard_object, $business_object, $parent_tree = []
 	) {
 		$class      = new Reflection_Class($business_object);
-		$properties = $class->getProperties([T_USE, T_EXTENDS, Reflection_Class::T_SORT]);
+		$properties = $class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 		// bloc to avoid "death kiss" (infinite loop), detect when a parent is exactly the same object
 		$unduplicate_name = $this->getUnduplicateNameFromObject($business_object);
 		if (in_array($unduplicate_name, $parent_tree)) return false;

@@ -59,7 +59,8 @@ class Regex_Annotation_Test extends Test
 	 */
 	public function test()
 	{
-		$properties = (new Reflection_Class(__CLASS__))->getProperties();
+		/** @noinspection PhpUnhandledExceptionInspection valid __CLASS__ */
+		$properties = (new Reflection_Class(__CLASS__))->getProperties([]);
 
 		foreach ($properties as $property) {
 

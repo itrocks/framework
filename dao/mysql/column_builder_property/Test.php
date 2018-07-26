@@ -289,7 +289,7 @@ class Test extends Tests\Test
 		));
 		$property_type_to_mysql->setAccessible(true);
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class(get_class($this)))->getProperties() as $property) {
+		foreach ((new Reflection_Class(get_class($this)))->getProperties([]) as $property) {
 			if (beginsWith($property->name, $property_prefix)) {
 				$assume = $property->getAnnotation('assume')->value;
 				if (isset($assume)) {
