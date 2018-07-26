@@ -83,11 +83,12 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 
 	//---------------------------------------------------------------------------------- getLinkClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
 	public function getLinkClass()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection $this->>class->getName() always valid */
+		/** @noinspection PhpUnhandledExceptionInspection valid $this->class->getName() */
 		return new Link_Class($this->class->getName());
 	}
 
