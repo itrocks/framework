@@ -21,7 +21,7 @@ trait Scanners
 	 */
 	private function scanForDefaults(array &$properties, Reflection_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties([]) as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'                // each line beginning by '* '
 				. '@default'                  // default annotation
@@ -53,7 +53,7 @@ trait Scanners
 	 */
 	private function scanForGetters(array &$properties, Reflection_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties([]) as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'               // each line beginning by '* '
 				. '@getter'                  // getter annotation
@@ -96,7 +96,7 @@ trait Scanners
 				}
 			}
 		}
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties([]) as $property) {
 			if (!isset($disable[$property->name]) && strpos($property->getDocComment(), '* @link')) {
 				$expr = '%'
 					. '\n\s+\*\s+'                           // each line beginning by '* '
@@ -227,7 +227,7 @@ trait Scanners
 	 */
 	private function scanForSetters(array &$properties, Reflection_Class $class)
 	{
-		foreach ($class->getProperties() as $property) {
+		foreach ($class->getProperties([]) as $property) {
 			$expr = '%'
 				. '\n\s+\*\s+'               // each line beginning by '* '
 				. '@setter'                  // setter annotation

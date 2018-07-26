@@ -593,12 +593,16 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * A little difference with PHP's Reflection\Reflection_Class::getProperties : if T_USE flag is
 	 * not set, this will not return properties that are declared into traits.
 	 *
-	 * @param $flags       integer[] T_EXTENDS, T_USE
+	 * @param $flags       integer[]|string[] Restriction. self::T_SORT has no effect (never applied).
+	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE
 	 * @param $final_class Reflection_Class force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = [], $final_class = null)
+	public function getProperties($flags = null, $final_class = null)
 	{
+		if (!isset($flags)) {
+			$flags = [T_EXTENDS, T_USE];
+		}
 		if (!isset($this->properties)) {
 			$this->scanUntilClassEnds();
 		}
@@ -640,8 +644,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Retrieves reflected properties
 	 *
-	 * Only a property visible for current class can be retrieved, not the privates ones from parent
-	 * classes or traits.
+	 * Properties visible for current class or private from parents can be retrieved.
+	 * If there is conflicts on a private property name existing in child and parent, the highest
+	 * level property (from child class) will be returned
 	 *
 	 * @param $name string The name of the property to get
 	 * @return Reflection_Property

@@ -428,25 +428,26 @@ class Reflection_Class extends ReflectionClass
 	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
-	 * @param $flags integer[] T_EXTENDS, T_USE, self::T_SORT. Note: T_USE has no effect
+	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
+	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = [], $final_class = null)
+	public function getProperties($flags = null, $final_class = null)
 	{
+		if (!isset($flags)) {
+			$flags = [T_EXTENDS, T_USE];
+		}
 		if (!isset($final_class)) {
 			$final_class = $this->name;
 		}
 		$properties = [];
 		foreach (parent::getProperties() as $property) {
-			/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperties() */
-			$property = new Reflection_Property($this->name, $property->name);
-			if (
-				(in_array(T_EXTENDS, $flags) && $property->class !== $final_class)
-				|| ($property->class === $final_class)
-			) {
-				$property->final_class        = $final_class;
-				$properties[$property->name]  = $property;
+			if ($property->class === $this->name) {
+				/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperties() */
+				$property = new Reflection_Property($this->name, $property->name);
+				$property->final_class       = $final_class;
+				$properties[$property->name] = $property;
 			}
 		}
 		if (in_array(T_EXTENDS, $flags)) {

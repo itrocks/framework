@@ -123,7 +123,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	public function getDeclaringTrait()
 	{
 		if (!isset($this->declaring_trait)) {
-			$properties            = $this->getDeclaringClass()->getProperties();
+			$properties            = $this->getDeclaringClass()->getProperties([]);
 			$this->declaring_trait = isset($properties[$this->name])
 				? $this->getDeclaringClass()
 				: $this->getDeclaringTraitInternal($this->getDeclaringClass());
@@ -140,7 +140,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	{
 		$traits = $class->getTraits();
 		foreach ($traits as $trait) {
-			$properties = $trait->getProperties();
+			$properties = $trait->getProperties([]);
 			if (isset($properties[$this->name])) {
 				return $trait;
 			}
@@ -221,7 +221,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 			$this->parent = false;
 			$parent_class = $this->class->getParentClass();
 			if ($parent_class) {
-				$properties = $parent_class->getProperties();
+				$properties = $parent_class->getProperties([]);
 				if (!isset($properties[$this->name])) {
 					$properties = $parent_class->getProperties([T_USE]);
 					if (!isset($properties[$this->name])) {
@@ -304,10 +304,10 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	/**
 	 * @param $class_name    string
 	 * @param $property_name string
-	 * @param $flags         integer[] T_EXTENDS, T_USE
+	 * @param $flags         integer[] @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE
 	 * @return Reflection_Property
 	 */
-	public static function of($class_name, $property_name, array $flags = [])
+	public static function of($class_name, $property_name, array $flags = null)
 	{
 		$properties = Reflection_Class::of($class_name)->getProperties($flags);
 		return isset($properties[$property_name]) ? $properties[$property_name] : null;
