@@ -333,7 +333,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = [])
+	public function getMethods($flags = null)
 	{
 		$methods = [];
 		foreach (parent::getMethods() as $method) {

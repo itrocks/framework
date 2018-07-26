@@ -453,7 +453,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = [])
+	public function getMethods($flags = null)
 	{
 		if (!isset($this->methods)) {
 			$this->scanUntilClassEnds();

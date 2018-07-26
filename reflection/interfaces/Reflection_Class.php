@@ -86,7 +86,7 @@ interface Reflection_Class extends Reflection
 	 * @return Reflection_Method[] key is the method name
 	 * integer
 	 */
-	public function getMethods($flags = []);
+	public function getMethods($flags = null);
 
 	//------------------------------------------------------------------------------ getNamespaceName
 	/**
