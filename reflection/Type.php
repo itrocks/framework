@@ -37,9 +37,6 @@ class Type
 	//------------------------------------------------------------------------------------------ NULL
 	const NULL = 'NULL';
 
-	//--------------------------------------------------------------------------------------- ORDERED
-	const ORDERED = 'ordered';
-
 	//-------------------------------------------------------------------------------------- RESOURCE
 	const RESOURCE = 'resource';
 
@@ -68,14 +65,6 @@ class Type
 	 * @var boolean
 	 */
 	private $can_be_null = false;
-
-	//----------------------------------------------------------------------------------- $is_ordered
-	/**
-	 * False is the list of something must not be ordered
-	 *
-	 * @var boolean
-	 */
-	private $is_ordered = true;
 
 	//-------------------------------------------------------------------------------- $numeric_types
 	/**
@@ -118,13 +107,9 @@ class Type
 	/**
 	 * @param $type_string string
 	 * @param $can_be_null boolean
-	 * @param $is_ordered boolean
 	 */
-	public function __construct($type_string = null, $can_be_null = null, $is_ordered = true)
+	public function __construct($type_string = null, $can_be_null = null)
 	{
-		if (isset($is_ordered)) {
-			$this->is_ordered = $is_ordered;
-		}
 		if (isset($type_string)) {
 			if (($i = strpos($type_string, '|')) !== false) {
 				if (!isset($can_be_null)) {
@@ -452,17 +437,6 @@ class Type
 	public function isNumeric()
 	{
 		return in_array($this->type, self::$numeric_types);
-	}
-
-	//------------------------------------------------------------------------------------- isOrdered
-	/**
-	 * Tells if the list of something must be ordered or not
-	 *
-	 * @return boolean
-	 */
-	public function isOrdered()
-	{
-		return $this->is_ordered;
 	}
 
 	//------------------------------------------------------------------------------- isStrictlyBasic

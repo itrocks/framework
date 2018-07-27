@@ -338,6 +338,7 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filters   string[] the key is the name of the filter, the value is the name of the form
 	 *   element containing its value
 	 * @param $as_string boolean true if the object should be used as a string
@@ -352,6 +353,7 @@ class Html_Builder_Type
 		$input    = new Input($input_id, strval($this->value));
 		$input->addClass('auto_width');
 		$input->setAttribute('autocomplete', 'off');
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$input->setData('combo-class', Names::classToSet($source_class_name));
 		$input->setData('combo-href',  View::link($source_class_name));
 		$input->setData('target',      Target::POPUP);
@@ -413,18 +415,19 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildString
 	/**
-	 * @param $multiline boolean
-	 * @param $values    string[]
+	 * @param $multiline      boolean
+	 * @param $values         string[]
+	 * @param $ordered_values boolean true if values are ordered and to disable alphabetical sort
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null)
+	protected function buildString($multiline = false, array $values = null, $ordered_values = false)
 	{
 		// case choice of values (single or multiple)
 		if ($values) {
 			if (!$this->readonly) {
 				if ($this->type->isMultipleString()) {
 					$input = new Set(
-						$this->getFieldName(), $values, $this->value, null, null, $this->type->isOrdered()
+						$this->getFieldName(), $values, $this->value, null, null, $ordered_values
 					);
 				}
 				else {
@@ -432,7 +435,7 @@ class Html_Builder_Type
 						$values = ['' => ''] + $values;
 					}
 					$input = new Select($this->getFieldName(), $values, $this->value);
-					if ($this->type->isOrdered()) {
+					if ($ordered_values) {
 						$input->setData('ordered', 'true');
 					}
 				}
@@ -445,7 +448,7 @@ class Html_Builder_Type
 						$this->value,
 						null,
 						$this->readonly,
-						$this->type->isOrdered()
+						$ordered_values
 					);
 				}
 				else {

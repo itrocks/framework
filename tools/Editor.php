@@ -45,7 +45,6 @@ class Editor implements Configurable
 	 * @example ckeditor full version : class name is 'ckeditor-' version (ckeditor-full)
 	 * @param $version string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function buildClassName($version)
 	{

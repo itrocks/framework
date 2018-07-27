@@ -15,11 +15,11 @@ class Set extends Element
 	 */
 	private $base_name;
 
-	//-------------------------------------------------------------------------------------- $ordered
+	//------------------------------------------------------------------------------- $ordered_values
 	/**
 	 * @var boolean
 	 */
-	private $ordered = true;
+	private $ordered_values = false;
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
@@ -41,25 +41,25 @@ class Set extends Element
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $base_name string The base name for all input fields named 'base_name[value]'
-	 * @param $values    string[]
-	 * @param $selected  string
-	 * @param $id        string
-	 * @param $readonly  boolean
-	 * @param $ordered   boolean
+	 * @param $base_name      string The base name for all input fields named 'base_name[value]'
+	 * @param $values         string[]
+	 * @param $selected       string
+	 * @param $id             string
+	 * @param $readonly       boolean
+	 * @param $ordered_values boolean
 	 */
 	public function __construct(
 		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false,
-		$ordered = true
+		$ordered_values = false
 	) {
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');
-		if (isset($base_name)) $this->base_name = $base_name;
-		if (isset($id))        $this->setAttribute('id',   $id);
-		if (isset($ordered))   $this->ordered  = $ordered;
-		if (isset($readonly))  $this->readonly = $readonly;
-		if (isset($selected))  $this->selected($selected);
-		if (isset($values))    $this->values = $values;
+		if (isset($base_name))      $this->base_name = $base_name;
+		if (isset($id))             $this->setAttribute('id', $id);
+		if (isset($ordered_values)) $this->ordered_values = $ordered_values;
+		if (isset($readonly))       $this->readonly       = $readonly;
+		if (isset($selected))       $this->selected($selected);
+		if (isset($values))         $this->values = $values;
 	}
 
 	//-------------------------------------------------------------------------------------- addValue
@@ -92,7 +92,7 @@ class Set extends Element
 		}
 		if (!isset($content)) {
 			$values = $this->values;
-			if (!$this->ordered) {
+			if (!$this->ordered_values) {
 				asort($values);
 			}
 			if (isset($values[''])) {

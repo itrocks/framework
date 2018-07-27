@@ -157,6 +157,7 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//------------------------------------------------------------------------------------ buildFloat
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $format boolean
 	 * @return Element
 	 */
@@ -165,6 +166,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($format) {
 			$property = $this->property;
 			if (!($property instanceof Reflection_Property_Value)) {
+				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$property = new Reflection_Property_Value(
 					$property->class, $property->name, $this->value, true
 				);
@@ -198,6 +200,7 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
 	 * @param $as_string boolean true if the object should be used as a string
@@ -220,6 +223,7 @@ class Html_Builder_Property extends Html_Builder_Type
 					else {
 						$filter_value_name = $filter;
 					}
+					/** @noinspection PhpUnhandledExceptionInspection $filter property name must be valid */
 					if ((new Reflection_Property($foreign_class_name, $filter))->getType()->isClass()) {
 						$filter = 'id_' . $filter;
 					}
@@ -233,6 +237,7 @@ class Html_Builder_Property extends Html_Builder_Type
 						$filters[$filter] = $filter_value_name;
 					}
 					else {
+						/** @noinspection PhpUnhandledExceptionInspection $filter value name must be valid */
 						$property         = new Reflection_Property($class_name, $filter_value_name);
 						$filters[$filter] = $property->pathAsField(true);
 					}
@@ -275,13 +280,15 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildString
 	/**
-	 * @param $multiline boolean keep this value empty, it is not used because the @multiline
-	 *        annotation is automatically used
-	 * @param $values    string[] keep this value empty, it is not used because the @values annotation
-	 *        is automatically used
+	 * @param $multiline      boolean keep this value empty, it is not used
+	 *                        because the @multiline annotation is automatically used
+	 * @param $values         string[] keep this value empty, it is not used
+	 *                        because the @values annotation is automatically used
+	 * @param $ordered_values boolean keep this value default, it is not used
+	 *                        because the @ordered_values is automatically used when @values is set
 	 * @return Element
 	 */
-	protected function buildString($multiline = false, array $values = null)
+	protected function buildString($multiline = false, array $values = null, $ordered_values = false)
 	{
 		$values_captions = [];
 		$values          = $this->property->getListAnnotation('values')->values();
@@ -296,9 +303,13 @@ class Html_Builder_Property extends Html_Builder_Type
 		) {
 			$values_captions[$this->value] = $this->value;
 		}
+		if ($values_captions) {
+			$ordered_values = $this->property->getAnnotation('ordered_values')->value;
+		}
 		$element = parent::buildString(
 			$this->property->getAnnotation('multiline')->value,
-			$values_captions
+			$values_captions,
+			$ordered_values
 		);
 		if ($this->property->getAnnotation('editor')->value) {
 			// @TODO Low : When declaring a editor, it would have to be a default multiline
