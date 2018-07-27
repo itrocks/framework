@@ -27,6 +27,18 @@ use ITRocks\Framework\View\Html\Template;
 class Html_Builder_Type
 {
 
+	//----------------------------------------------------------------------------------- $attributes
+	/**
+	 * @var string[] Additional HTML attributes for your DOM element
+	 */
+	public $attributes = [];
+
+	//-------------------------------------------------------------------------------------- $classes
+	/**
+	 * @var string[] Additional CSS classes for your DOM element class attribute
+	 */
+	public $classes = [];
+
 	//----------------------------------------------------------------------------------- $conditions
 	/**
 	 * The key is the name of the condition, the value is the name of the value that enables
@@ -36,19 +48,11 @@ class Html_Builder_Type
 	 */
 	public $conditions;
 
-	//----------------------------------------------------------------------------------- $customized
+	//----------------------------------------------------------------------------------------- $data
 	/**
-	 * If true, a 'customized' class attribute will be added
-	 *
-	 * @var boolean
+	 * @var string[] Additional data-key attributes for your DOM element
 	 */
-	public $customized = false;
-
-	//---------------------------------------------------------------------------------- $empty_check
-	/**
-	 * @var boolean
-	 */
-	public $empty_check = true;
+	public $data = [];
 
 	//--------------------------------------------------------------------------------------- $is_new
 	/**
@@ -78,12 +82,6 @@ class Html_Builder_Type
 	 * @var string[]
 	 */
 	public $on_change = [];
-
-	//---------------------------------------------------------------------------------- $placeholder
-	/**
-	 * @var string
-	 */
-	public $placeholder;
 
 	//-------------------------------------------------------------------------------------- $preprop
 	/**
@@ -477,14 +475,14 @@ class Html_Builder_Type
 	protected function commonAttributes(Element $element)
 	{
 		$this->addConditionsToElement($element);
-		if ($this->customized) {
-			$element->addClass('customized');
+		foreach ($this->attributes as $attribute_name => $attribute_value) {
+			$element->setAttribute($attribute_name, $attribute_value);
 		}
-		if (!$this->empty_check) {
-			$element->setData('no-empty-check', true);
+		foreach ($this->classes as $class) {
+			$element->addClass($class);
 		}
-		if ($this->placeholder) {
-			$element->setAttribute('placeholder', $this->placeholder);
+		foreach ($this->data as $data_name => $data_value) {
+			$element->setData($data_name, $data_value);
 		}
 		$this->setInputAsReadOnly($element);
 		if ($this->required) {

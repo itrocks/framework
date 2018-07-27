@@ -40,8 +40,10 @@ class Html_Builder_Property extends Html_Builder_Type
 	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
 	{
 		if (isset($property)) {
-			$this->customized = $property->getAnnotation('customized')->value;
-			$this->is_new     = ($property instanceof Reflection_Property_Value)
+			if ($customized = $property->getAnnotation('customized')->value) {
+				$this->classes[] = $customized;
+			}
+			$this->is_new = ($property instanceof Reflection_Property_Value)
 				&& !Dao::getObjectIdentifier($property->getObject());
 			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
@@ -269,8 +271,12 @@ class Html_Builder_Property extends Html_Builder_Type
 					. ($user_change->target ? (SP . $user_change->target) : '');
 			}
 		}
-		$this->empty_check = $this->property->getAnnotation('empty_check')->value;
-		$this->placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property);
+		if (!$this->property->getAnnotation('empty_check')->value) {
+			$this->data['no-empty-check'] = true;
+		}
+		if ($placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property)) {
+			$this->attributes['placeholder'] = $placeholder;
+		}
 		$this->required    = Mandatory_Annotation::of($this->property)->value;
 		if (!isset($this->tooltip)) {
 			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
