@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Tools\Color\RGB;
 
 /**
  * Colors manager
@@ -49,12 +50,14 @@ class Color implements Stringable
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $color string
 	 * @return static
 	 */
 	public static function fromString($color)
 	{
 		/** @var $color static */
+		/** @noinspection PhpUnhandledExceptionInspection valid get_called_class() */
 		$color = Builder::create(get_called_class(), [$color]);
 		return $color;
 	}
@@ -67,11 +70,11 @@ class Color implements Stringable
 	 */
 	public function getBrightness()
 	{
-		$rgb = new RGB_Color($this);
+		$rgb = new RGB($this);
 		return sqrt(
-			$rgb->red   * $rgb->red   * .299 +
-			$rgb->green * $rgb->green * .587 +
-			$rgb->blue  * $rgb->blue  * .114
+			($rgb->red * $rgb->red * .299)
+			+ ($rgb->green * $rgb->green * .587)
+			+ ($rgb->blue * $rgb->blue * .114)
 		);
 	}
 

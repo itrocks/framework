@@ -1,10 +1,12 @@
 <?php
-namespace ITRocks\Framework\Tools;
+namespace ITRocks\Framework\Tools\Color;
+
+use ITRocks\Framework\Tools\Color;
 
 /**
  * Color stored as red, green and blue components
  */
-class RGB_Color
+class RGB
 {
 
 	//----------------------------------------------------------------------------------------- $blue
