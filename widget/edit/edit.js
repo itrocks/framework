@@ -3,8 +3,6 @@ $('document').ready(function()
 	$('form').build(function()
 	{
 		if (!this.length) return;
-		//noinspection JSUnresolvedVariable
-		var app = window.app;
 
 		//------------------------------------------------------------------- .auto_height, .auto_width
 		this.inside('.auto_height').autoHeight();
