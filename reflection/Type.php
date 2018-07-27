@@ -1,5 +1,4 @@
 <?php
-
 namespace ITRocks\Framework\Reflection;
 
 use DateTime;
@@ -38,8 +37,8 @@ class Type
 	//------------------------------------------------------------------------------------------ NULL
 	const NULL = 'NULL';
 
-	//------------------------------------------------------------------------------------------ null
-	const null = 'null';
+	//--------------------------------------------------------------------------------------- ORDERED
+	const ORDERED = 'ordered';
 
 	//-------------------------------------------------------------------------------------- RESOURCE
 	const RESOURCE = 'resource';
@@ -49,9 +48,6 @@ class Type
 
 	//---------------------------------------------------------------------------------- STRING_ARRAY
 	const STRING_ARRAY = 'string[]';
-
-	//--------------------------------------------------------------------------------------- ORDERED
-	const ORDERED = 'ordered';
 
 	//------------------------------------------------------------------------------------------ null
 	const null = 'null';
@@ -103,11 +99,10 @@ class Type
 	 *
 	 * @var string[]
 	 */
-	private static $strictly_basic_types
-		= [
-			self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
-			self::NULL, self::null, self::RESOURCE, self::STRING
-		];
+	private static $strictly_basic_types = [
+		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
+		self::NULL, self::null, self::RESOURCE, self::STRING
+	];
 
 	//----------------------------------------------------------------------------------------- $type
 	/**

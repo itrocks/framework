@@ -49,16 +49,17 @@ class Set extends Element
 	 * @param $ordered   boolean
 	 */
 	public function __construct(
-		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false, $ordered = true
+		$base_name = null, array $values = null, $selected = null, $id = null, $readonly = false,
+		$ordered = true
 	) {
 		parent::__construct('span', true);
 		$this->setAttribute('class', 'set');
 		if (isset($base_name)) $this->base_name = $base_name;
 		if (isset($id))        $this->setAttribute('id',   $id);
+		if (isset($ordered))   $this->ordered  = $ordered;
 		if (isset($readonly))  $this->readonly = $readonly;
 		if (isset($selected))  $this->selected($selected);
 		if (isset($values))    $this->values = $values;
-		if (isset($ordered))   $this->ordered = $ordered;
 	}
 
 	//-------------------------------------------------------------------------------------- addValue
@@ -91,7 +92,7 @@ class Set extends Element
 		}
 		if (!isset($content)) {
 			$values = $this->values;
-			if ($this->ordered !== "false") {
+			if (!$this->ordered) {
 				asort($values);
 			}
 			if (isset($values[''])) {

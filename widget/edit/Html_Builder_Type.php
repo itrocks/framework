@@ -423,7 +423,9 @@ class Html_Builder_Type
 		if ($values) {
 			if (!$this->readonly) {
 				if ($this->type->isMultipleString()) {
-					$input = new Set($this->getFieldName(), $values, $this->value, null, null, $this->type->isOrdered());
+					$input = new Set(
+						$this->getFieldName(), $values, $this->value, null, null, $this->type->isOrdered()
+					);
 				}
 				else {
 					if (!isset($values[''])) {
@@ -434,7 +436,14 @@ class Html_Builder_Type
 			}
 			else {
 				if ($this->type->isMultipleString()) {
-					$input = new Set($this->getFieldName(), $values, $this->value, null, $this->readonly, $this->type->isOrdered());
+					$input = new Set(
+						$this->getFieldName(),
+						$values,
+						$this->value,
+						null,
+						$this->readonly,
+						$this->type->isOrdered()
+					);
 				}
 				else {
 					$hidden = new Input(null, $this->value);

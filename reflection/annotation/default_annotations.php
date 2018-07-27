@@ -317,10 +317,10 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@multiline' => Boolean_Annotation::class,
 
 	/**
-	 * @ordered false
+	 * @ordered_values [false]
 	 * This tells that the property values must not be ordered (default is true)
 	 */
-	Parser::T_PROPERTY . '@ordered' => Annotation::class,
+	Parser::T_PROPERTY . '@ordered_values' => Boolean_Annotation::class,
 
 	/**
 	 * @output serialized
