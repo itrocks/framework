@@ -64,7 +64,7 @@ $('document').ready(function()
 		});
 
 		//-------------------------------------------------------------------------------------- select
-		this.inside('select').sortContent();
+		this.inside('select:not([data-ordered=true])').sortContent();
 
 		//----------------------------------------------------------------- table.collection, table.map
 		this.inside('table.collection, table.map').each(function()

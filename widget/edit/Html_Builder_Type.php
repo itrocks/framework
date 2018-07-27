@@ -432,6 +432,9 @@ class Html_Builder_Type
 						$values = ['' => ''] + $values;
 					}
 					$input = new Select($this->getFieldName(), $values, $this->value);
+					if ($this->type->isOrdered()) {
+						$input->setData('ordered', 'true');
+					}
 				}
 			}
 			else {
