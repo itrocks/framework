@@ -211,16 +211,16 @@ class Select_Test extends Test
 	{
 		$builder = new Select(
 			Client::class,
-			['number', 'name', 'Order_Line->client.order']
+			['number', 'name', 'Order_Line(client).order']
 		);
 		static::assertEquals(
 			'SELECT t0.`number`, t0.`name`,'
-			. ' t2.`date` AS `Order_Line->client.order:date`,'
-			. ' t2.`has_workflow` AS `Order_Line->client.order:has_workflow`,'
-			. ' t2.`number` AS `Order_Line->client.order:number`,'
-			. ' t2.`id_client` AS `Order_Line->client.order:client`,'
-			. ' t2.`id_delivery_client` AS `Order_Line->client.order:delivery_client`,'
-			. ' t2.`id` AS `Order_Line->client.order:id`' . LF
+			. ' t2.`date` AS `Order_Line(client).order:date`,'
+			. ' t2.`number` AS `Order_Line(client).order:number`,'
+			. ' t2.`id_client` AS `Order_Line(client).order:client`,'
+			. ' t2.`id_delivery_client` AS `Order_Line(client).order:delivery_client`,'
+			. ' t2.`has_workflow` AS `Order_Line(client).order:has_workflow`,'
+			. ' t2.`id` AS `Order_Line(client).order:id`' . LF
 			. 'FROM `test_clients` t0' . LF
 			. 'LEFT JOIN `test_order_lines` t1 ON t1.`id_client` = t0.`id`' . LF
 			. 'LEFT JOIN `test_orders` t2 ON t2.`id` = t1.`id_order`',
@@ -356,10 +356,10 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`number`, t0.`quantity`,'
 			. ' t1.`date` AS `order:date`,'
-			. ' t1.`has_workflow` AS `order:has_workflow`,'
 			. ' t1.`number` AS `order:number`,'
 			. ' t1.`id_client` AS `order:client`,'
 			. ' t1.`id_delivery_client` AS `order:delivery_client`,'
+			. ' t1.`has_workflow` AS `order:has_workflow`,'
 			. ' t1.`id` AS `order:id`' . LF
 			. 'FROM `test_order_lines` t0' . LF
 			. 'INNER JOIN `test_orders` t1 ON t1.`id` = t0.`id_order`',

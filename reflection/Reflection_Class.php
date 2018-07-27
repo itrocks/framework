@@ -431,9 +431,10 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class string force the final class to this name (mostly for internal use)
+	 * @param $visibility_flags integer filter parents visibility @values ReflectionProperty::const
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null, $final_class = null)
+	public function getProperties($flags = null, $final_class = null, $visibility_flags = null)
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
@@ -441,20 +442,27 @@ class Reflection_Class extends ReflectionClass
 		if (!isset($final_class)) {
 			$final_class = $this->name;
 		}
-		$properties = [];
-		foreach (parent::getProperties() as $property) {
-			if ($property->class === $this->name) {
+		$extends               = in_array(T_EXTENDS, $flags);
+		$properties            = [];
+		$reflection_properties = $visibility_flags
+			? parent::getProperties($visibility_flags)
+			: parent::getProperties();
+		foreach ($reflection_properties as $reflection_property) {
+			if ($extends || ($reflection_property->class === $this->name)) {
 				/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperties() */
-				$property = new Reflection_Property($this->name, $property->name);
+				$property = new Reflection_Property($this->name, $reflection_property->name);
 				$property->final_class       = $final_class;
 				$properties[$property->name] = $property;
 			}
 		}
-		if (in_array(T_EXTENDS, $flags)) {
-			$parent = $this->getParentClass();
-			while ($parent) {
-				$properties = array_merge($parent->getProperties([], $final_class), $properties);
-				$parent     = $parent->getParentClass();
+		if ($extends) {
+			$parent_class = $this->getParentClass();
+			while ($parent_class) {
+				$parent_class_properties = $parent_class->getProperties(
+					[], $final_class, Reflection_Property::IS_PRIVATE
+				);
+				$properties   = array_merge($parent_class_properties, $properties);
+				$parent_class = $parent_class->getParentClass();
 			}
 		}
 		if (in_array(self::T_SORT, $flags)) {

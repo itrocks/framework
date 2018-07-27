@@ -102,6 +102,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	{
 		if (!is_array($this->link_properties)) {
 			$text_link_properties  = $this->link_properties;
+			$this->link_properties = [];
 			if (is_string($text_link_properties)) {
 				$this->setLinkPropertiesByNames(explode(SP, $text_link_properties));
 			}
@@ -145,7 +146,6 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	protected function setLinkPropertiesByNames($link_properties)
 	{
-		$this->link_properties = [];
 		$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
 		foreach (explode(SP, $link_properties) as $property_name) {
 			if ($property_name) {
