@@ -26,6 +26,62 @@ class Write_Controller implements Default_Class_Controller
 	const REDIRECT   = 'redirect_after_write';
 	const WRITTEN    = 'written';
 
+	//---------------------------------------------------------------------------------- buildObjects
+	/**
+	 * @param $object object
+	 * @param $form   array
+	 * @param $files  array
+	 * @return Built_Object[]
+	 */
+	protected function buildObjects($object, array $form, array $files)
+	{
+		$builder = new Post_Files(get_class($object));
+		$form    = $builder->appendToForm($form, $files);
+		$builder = new Object_Builder_Array();
+		$builder->null_if_empty_sub_objects = true;
+		$builder->build($form, $object);
+		$built_objects = [];
+		foreach ($builder->getBuiltObjects() as $built_object) {
+			if (($built_object->object === $object) || Dao::getObjectIdentifier($built_object->object)) {
+				$built_objects[] = $built_object;
+			}
+		}
+		return $built_objects;
+	}
+
+	//---------------------------------------------------------------------------- checkFormIntegrity
+	/**
+	 * @param $form  array
+	 * @param $files array
+	 * @throws View_Exception
+	 */
+	protected function checkFormIntegrity(array $form, array $files)
+	{
+		if (!$form && !$files) {
+			$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
+			throw new View_Exception(
+				'<div class="error">'
+				. Loc::tr('Unable to write your data : you probably sent too much big files') . BR
+				. Loc::tr(
+					'The maximum allowed size for files / sent data is :max_size',
+					Loc::replace(['max_size' => $max_size])
+				)
+				. '</div>'
+			);
+		}
+	}
+
+	//----------------------------------------------------------------------------- getExistingObject
+	/**
+	 * @param $parameters Parameters
+	 * @param $class_name string
+	 * @return object
+	 */
+	protected function getExistingObject(Parameters $parameters, $class_name)
+	{
+		return $parameters->getMainObject($class_name);
+	}
+
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
 	 * @param $parameters  Parameters
@@ -53,41 +109,18 @@ class Write_Controller implements Default_Class_Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
-	 * @throws Exception
+	 * @throws Exception|View_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		if (!$form && !$files) {
-			$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
-			throw new View_Exception(
-				'<div class="error">'
-				. Loc::tr('Unable to write your data : you probably sent too much big files') . BR
-				. Loc::tr(
-					'The maximum allowed size for files / sent data is :max_size',
-					Loc::replace(['max_size' => $max_size])
-				)
-				. '</div>'
-			);
-		}
-
-		$object     = $parameters->getMainObject($class_name);
+		$this->checkFormIntegrity($form, $files);
+		$object     = $this->getExistingObject($parameters, $class_name);
 		$new_object = !Dao::getObjectIdentifier($object);
 
 		Dao::begin();
 		try {
-			$builder = new Post_Files(get_class($object));
-			$form    = $builder->appendToForm($form, $files);
-			$builder = new Object_Builder_Array();
-			$builder->null_if_empty_sub_objects = true;
-			$builder->build($form, $object);
-			$write_objects = [];
-			foreach ($builder->getBuiltObjects() as $built_object) {
-				$write_object = $built_object->object;
-				if (($write_object == $object) || Dao::getObjectIdentifier($write_object)) {
-					$write_objects[] = $built_object;
-				}
-			}
-			$write_error = $this->write($write_objects);
+			$write_objects = $this->buildObjects($object, $form, $files);
+			$write_error   = $this->write($write_objects);
 			$write_error ? Dao::rollback() : Dao::commit();
 		}
 		catch (Exception $exception) {
