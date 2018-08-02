@@ -5,7 +5,6 @@ use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Paths;
-use ReflectionClass;
 
 /**
  * Reflection of PHP source code
@@ -738,11 +737,7 @@ class Reflection_Source
 			$source = self::$cache[$class_name];
 		}
 		else {
-			$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
-			/** @noinspection PhpUnhandledExceptionInspection Source code must be valid, or it crashes */
-			$class = new ReflectionClass($class_name);
-			error_reporting($error_reporting);
-			$filename = Paths::getRelativeFileName($class->getFileName());
+			$filename = Names::classToFilePath($class_name);
 			// consider vendor classes like internal classes : we don't work with their sources
 			$source = beginsWith($filename, 'vendor/')
 				? new Reflection_Source(null, $class_name)

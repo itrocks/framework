@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Parser;
@@ -553,6 +554,16 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
 		}
+		if ($this->parent) {
+			$parent_class_name = is_string($this->parent) ? $this->parent : $this->parent->name;
+			$replacement_parent_class_name = Builder::className($parent_class_name);
+			if (
+				($replacement_parent_class_name !== $parent_class_name)
+				&& ($replacement_parent_class_name !== $this->name)
+			) {
+				$this->parent = $replacement_parent_class_name;
+			}
+		}
 		if (is_string($this->parent)) {
 			$parent = $this->source->getOutsideClass($this->parent);
 			if ($parent->source->isInternal()) {
@@ -1066,7 +1077,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 						}
 						break;
 
-					case T_PUBLIC: case T_PRIVATE: case T_PROTECTED: case T_VAR:
+					case T_PRIVATE:
+					case T_PROTECTED:
+					case T_PUBLIC:
+					case T_VAR:
 						if ($depth === 1) {
 							$visibility_token = $this->token_key;
 						}

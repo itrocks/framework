@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionClass;
 use ReflectionException;
 
 /**
@@ -69,12 +70,21 @@ abstract class Names
 	 * Changes 'A\Namespace\Class_Name' into 'a/namespace/Class_Name.php' or
 	 * 'a/namespace/class_name/Class_Name.php'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return string
 	 */
 	public static function classToFilePath($class_name)
 	{
-		return Autoloader::getFilePath($class_name);
+		$file_path = Autoloader::getFilePath($class_name);
+		if (!$file_path) {
+			$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED);
+			/** @noinspection PhpUnhandledExceptionInspection Source code must be valid, or it crashes */
+			$class = new ReflectionClass($class_name);
+			error_reporting($error_reporting);
+			$file_path = Paths::getRelativeFileName($class->getFileName());
+		}
+		return $file_path;
 	}
 
 	//--------------------------------------------------------------------------------- classToMethod
