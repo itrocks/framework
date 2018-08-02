@@ -984,7 +984,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				}
 				if ($replacement_parent_class_name !== $parent_class_name) {
 					$this->parent = $replacement_parent_class;
-					echo "$this->name : $parent_class_name replaced by $replacement_parent_class_name<br>";
 				}
 			}
 		}
