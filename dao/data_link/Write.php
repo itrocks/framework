@@ -12,6 +12,14 @@ use ReflectionException;
 abstract class Write
 {
 
+	//----------------------------------------------------------------------------------- ANNOTATIONS
+	const AFTER_CREATE  = 'after_create';
+	const AFTER_UPDATE  = 'after_update';
+	const AFTER_WRITE   = 'after_write';
+	const BEFORE_CREATE = 'before_create';
+	const BEFORE_UPDATE = 'before_update';
+	const BEFORE_WRITE  = 'before_write';
+
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * @var Identifier_Map
@@ -59,8 +67,11 @@ abstract class Write
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_writes Method_Annotation[] */
 		$after_writes = $reflexion_class->getAnnotations($after_write_annotation);
-		if ($after_write_annotation === 'after_create' || $after_write_annotation === 'after_update') {
-			$after_writes = array_merge($after_writes, $reflexion_class->getAnnotations('after_write'));
+		if ($after_write_annotation === self::AFTER_CREATE
+			 || $after_write_annotation === self::AFTER_UPDATE) {
+			$after_writes = array_merge(
+				$after_writes, $reflexion_class->getAnnotations(self::AFTER_WRITE)
+			);
 		}
 		foreach ($after_writes as $after_write) {
 			if ($after_write->call($object, [$this->link, &$options]) === false) {
@@ -74,19 +85,20 @@ abstract class Write
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                   object
 	 * @param $options                  Option[]
-	 * @param $before_write_annotation string @values before_create, before_update, before_write,
-	 *                                 before_writes
+	 * @param $before_write_annotation  string @values before_create, before_update, before_write,
+	 *                                  before_writes
 	 * @return boolean
+	 * @throws ReflectionException
 	 */
-	public function beforeWrite($object, array &$options, $before_write_annotation = 'before_write')
+	public function beforeWrite
+	($object, array &$options, $before_write_annotation = self::BEFORE_WRITE)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class = new Reflection_Class(get_class($object));
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = $class->getAnnotations($before_write_annotation);
-		if ($before_write_annotation === 'before_create'
-			  || $before_write_annotation === 'before_update') {
-			$before_writes = array_merge($before_writes, $class->getAnnotations('before_write'));
+		if (in_array($before_write_annotation, [self::BEFORE_CREATE, self::BEFORE_UPDATE])) {
+			$before_writes = array_merge($before_writes, $class->getAnnotations(self::BEFORE_WRITE));
 		}
 		if ($before_writes) {
 			foreach ($options as $option) {

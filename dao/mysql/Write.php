@@ -166,10 +166,10 @@ class Write extends Data_Link\Write
 	 */
 	public function run()
 	{
-		$object_already_exist = Dao::getObjectIdentifier($this->object);
+		$new_object = !Dao::getObjectIdentifier($this->object);
 		if ($this->beforeWrite(
 			$this->object,
-			$this->options, $object_already_exist ? 'before_update' : 'before_create'
+			$this->options, $new_object ? Write::BEFORE_CREATE : Write::BEFORE_UPDATE
 		)) {
 			$this->link->begin();
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
@@ -245,7 +245,7 @@ class Write extends Data_Link\Write
 			);
 			$this->link->commit();
 			$this->afterWrite(
-				$this->object, $this->options, $object_already_exist ? 'after_update' : 'after_create'
+				$this->object, $this->options, $new_object ? Write::AFTER_CREATE : Write::AFTER_UPDATE
 			);
 			// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
 			if (method_exists($this, 'prepareAfterCommit')) {

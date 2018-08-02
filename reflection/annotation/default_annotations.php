@@ -45,7 +45,8 @@ Parser::$default_annotations = [
 	 * @after_create afterCreate
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is created using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 */
 	Parser::T_CLASS . '@after_create' => Method_Annotation::class,
 
@@ -53,7 +54,8 @@ Parser::$default_annotations = [
 	 * @after_update afterUpdate
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is updated using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 */
 	Parser::T_CLASS . '@after_update' => Method_Annotation::class,
 
@@ -61,7 +63,8 @@ Parser::$default_annotations = [
 	 * @after_write afterWrite
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is written using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 */
 	Parser::T_CLASS . '@after_write' => Method_Annotation::class,
 
@@ -77,7 +80,8 @@ Parser::$default_annotations = [
 	 * @before_create beforeCreate
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call before the object is created using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 * - These methods may return false to cancel the writing of the object
 	 */
 	Parser::T_CLASS . '@before_create' => Method_Annotation::class,
@@ -94,7 +98,8 @@ Parser::$default_annotations = [
 	 * @before_update beforeUpdate
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call before the object is updated using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 * - These methods may return false to cancel the writing of the object
 	 */
 	Parser::T_CLASS . '@before_update' => Method_Annotation::class,
@@ -103,7 +108,8 @@ Parser::$default_annotations = [
 	 * @before_write beforeWrite
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call before the object is written using a data link
-	 * - These methods may accept a Dao\Option[] as first argument, if needed
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
 	 * - These methods may return false to cancel the writing of the object
 	 */
 	Parser::T_CLASS . '@before_write' => Method_Annotation::class,
