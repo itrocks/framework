@@ -79,9 +79,20 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
+	 * This parent is originally set as the parent class name, but is replaced by the replacement
+	 * class name from Builder if there is one by getParent() and getParentName()
+	 *
 	 * @var Reflection_Class|string
 	 */
 	private $parent;
+
+	//---------------------------------------------------------------------------- $parent_class_name
+	/**
+	 * This is the parent class name written into the source code
+	 *
+	 * @var string
+	 */
+	private $parent_class_name;
 
 	//----------------------------------------------------------------------------- $parent_constants
 	/**
@@ -555,14 +566,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$this->scanUntilClassBegins();
 		}
 		if ($this->parent) {
-			$parent_class_name = is_string($this->parent) ? $this->parent : $this->parent->name;
-			$replacement_parent_class_name = Builder::className($parent_class_name);
-			if (
-				($replacement_parent_class_name !== $parent_class_name)
-				&& ($replacement_parent_class_name !== $this->name)
-			) {
-				$this->parent = $replacement_parent_class_name;
-			}
+			$this->parentReplacement();
 		}
 		if (is_string($this->parent)) {
 			$parent = $this->source->getOutsideClass($this->parent);
@@ -596,7 +600,22 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				$this->parent = false;
 			}
 		}
+		if ($this->parent) {
+			$this->parentReplacement();
+		}
 		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : null;
+	}
+
+	//-------------------------------------------------------------------- getParentOriginalClassName
+	/**
+	 * @return string
+	 */
+	public function getParentOriginalClassName()
+	{
+		if (!isset($this->parent)) {
+			$this->getParentName();
+		}
+		return $this->parent_class_name;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -939,6 +958,38 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return Reflection_Source::ofClass($class_name)->getClass($class_name);
 	}
 
+	//----------------------------------------------------------------------------- parentReplacement
+	/**
+	 * Replaces the parent by its replacement class, if already built
+	 */
+	protected function parentReplacement()
+	{
+		$parent_class_name = is_string($this->parent) ? $this->parent : $this->parent->name;
+		if (Builder::current()->isReplaced($parent_class_name, true)) {
+			$replacement_parent_class_name = Builder::className($parent_class_name);
+			if (
+				($replacement_parent_class_name !== $parent_class_name)
+				&& ($replacement_parent_class_name !== $this->name)
+			) {
+				// Builder will not refer to an internal class : can build it directly
+				$replacement_parent_class = $this->source->getOutsideClass($replacement_parent_class_name);
+				// this parent class is valid only if it has not the current class as parent class
+				$parent_parent_class = $replacement_parent_class;
+				while ($parent_parent_class = $parent_parent_class->getParentClass()) {
+					if ($parent_parent_class->name === $this->name) {
+						$replacement_parent_class      = $this->parent;
+						$replacement_parent_class_name = $parent_class_name;
+						break;
+					}
+				}
+				if ($replacement_parent_class_name !== $parent_class_name) {
+					$this->parent = $replacement_parent_class;
+					echo "$this->name : $parent_class_name replaced by $replacement_parent_class_name<br>";
+				}
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- regex
 	/**
 	 * Gets the preg expression to find the class definition in a PHP source that contains one class
@@ -1001,7 +1052,8 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 							$this->interfaces[$class_name] = $class_name;
 						}
 						else {
-							$this->parent = $class_name;
+							$this->parent_class_name = $class_name;
+							$this->parent            = $class_name;
 						}
 					}
 					$token = $this->tokens[$this->token_key];
@@ -1009,6 +1061,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 				else {
 					$token = $this->tokens[++$this->token_key];
 				}
+			}
+
+			if ($this->parent) {
+				$this->parentReplacement();
 			}
 
 		}

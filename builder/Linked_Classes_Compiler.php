@@ -32,7 +32,7 @@ class Linked_Classes_Compiler implements ICompiler
 			// replace extends with the built replacement class
 			if (
 				!Class_Builder::isBuilt($class->name)
-				&& ($parent_class_name = $class->getParentName())
+				&& ($parent_class_name = $class->getParentOriginalClassName())
 			) {
 				$replacement_class_name = Builder::className($parent_class_name);
 				if (is_array($replacement_class_name)) {

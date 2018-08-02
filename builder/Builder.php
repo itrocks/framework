@@ -328,6 +328,27 @@ class Builder implements Activable, Serializable
 		return $result;
 	}
 
+	//------------------------------------------------------------------------------------ isReplaced
+	/**
+	 * @param $class_name string
+	 * @param $strict     boolean if true, the replacement class must be already built
+	 * @return boolean
+	 */
+	public function isReplaced($class_name, $strict = false)
+	{
+		if (!isset($this->replacements[$class_name])) {
+			return false;
+		}
+		if (!$strict) {
+			return true;
+		}
+		$replacement = $this->replacements[$class_name];
+		while (is_string($replacement) && isset($this->replacements[$replacement])) {
+			$replacement = $this->replacements[$replacement];
+		}
+		return is_string($replacement);
+	}
+
 	//--------------------------------------------------------------------------------- isReplacement
 	/**
 	 * Returns true if the class name is a replacement class

@@ -114,6 +114,7 @@ class Compiler extends Cache implements
 	 * This constructor zaps the cache directory if 'Z' argument is sent
 	 * This will result into a complete application cache rebuild
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration array string[integer $wave_number][]
 	 */
 	public function __construct($configuration = [])
@@ -123,6 +124,7 @@ class Compiler extends Cache implements
 
 		foreach ($configuration as $wave_number => $compilers) {
 			foreach ($compilers as $class_name) {
+				/** @noinspection PhpUnhandledExceptionInspection valid compiler class name */
 				$this->compilers[$wave_number][$class_name]
 					= Session::current()->plugins->has($class_name)
 					? Session::current()->plugins->get($class_name)
@@ -584,6 +586,7 @@ class Compiler extends Cache implements
 
 	//----------------------------------------------------------------------------------- unserialize
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $serialized string
 	 */
 	public function unserialize($serialized)
@@ -591,6 +594,7 @@ class Compiler extends Cache implements
 		$this->compilers = [];
 		foreach (unserialize($serialized) as $wave_number => $compilers) {
 			foreach ($compilers as $class_name) {
+				/** @noinspection PhpUnhandledExceptionInspection valid compiler class name */
 				$this->compilers[$wave_number][] = Session::current()->plugins->has($class_name)
 					? Session::current()->plugins->get($class_name)
 					: Builder::create($class_name);
