@@ -8,6 +8,14 @@ $('document').ready(function()
 		this.inside('.auto_height').autoHeight();
 		this.inside('.auto_width').autoWidth();
 
+		//------------------------------------------------------------------------- a with target click
+    this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event) {
+      if ($(this).hasClass('disabled')) {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+      }
+    });
+
 		//--------------------------------------------------------------------------------- close popup
 		if (this.is('.popup') || this.closest('.popup').length) {
 			var $popup = this.is('.popup') ? this : this.closest('.popup');
@@ -16,9 +24,7 @@ $('document').ready(function()
 			});
 			$popup.find('.general.actions a').click(function() {
 				var $this = $(this);
-				if (!$this.hasClass('disabled')) {
-					setTimeout(function () { $this.closest('.popup').remove(); }, 1);
-				}
+				setTimeout(function () { $this.closest('.popup').remove(); }, 1);
 			});
 		}
 
