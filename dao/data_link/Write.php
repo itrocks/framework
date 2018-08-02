@@ -46,6 +46,7 @@ abstract class Write
 
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object  object
 	 * @param $options Option[]
 	 */
@@ -63,6 +64,7 @@ abstract class Write
 
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                   object
 	 * @param $options                  Option[]
 	 * @param $before_write_annotation string @values before_write, before_writes
@@ -112,6 +114,7 @@ abstract class Write
 
 	//---------------------------------------------------------------------------- prepareAfterCommit
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object  object
 	 * @param $options Option[]
 	 */

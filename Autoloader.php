@@ -5,7 +5,6 @@ use Exception;
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Paths;
-use ReflectionException;
 
 /**
  * This is the core autoloader : it searches and load PHP scripts containing classes
@@ -19,7 +18,6 @@ class Autoloader
 	 *
 	 * @param $class_name string class name (with or without namespace)
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function autoload($class_name)
 	{
@@ -89,11 +87,13 @@ class Autoloader
 	{
 		$file_name = self::getFilePath($class_name);
 		if ($file_name !== false) {
+			/** @noinspection PhpIncludeInspection Not analysed : I don't care */
 			$result = include_once(Include_Filter::file($file_name));
 		}
 		if ((!isset($result) || !$result) && Class_Builder::isBuilt($class_name)) {
 			$built_file_name = PHP\Compiler::classToCacheFilePath($class_name);
 			if (file_exists(Paths::$project_root . SL . $built_file_name)) {
+				/** @noinspection PhpIncludeInspection Not analysed : I don't care */
 				$result = include_once(Paths::$project_root . SL . $built_file_name);
 			}
 		}
