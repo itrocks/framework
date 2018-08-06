@@ -76,7 +76,11 @@ class Maintain_Controller implements Feature_Controller
 			$class_name = Builder::className($dependency->class_name);
 			if (!isset($classes[$class_name])) {
 				$class = $this->classNamed($class_name);
-				if ($class && $class->getAnnotation('business')->value) {
+				if (
+					$class
+					&& !$class->isAbstract()
+					&& $class->getAnnotation('business')->value
+				) {
 					$store = true;
 					if (isset($children[$class_name])) {
 						foreach ($children[$class_name] as $child_class_name) {

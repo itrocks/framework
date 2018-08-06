@@ -576,11 +576,11 @@ class Maintainer implements Registerable
 
 			// alter table
 			else {
-				$mysql_columns     = $mysql_table->getColumns();
-				$builder           = new Alter_Table($mysql_table);
-				$alter_columns     = [];
-				$foreign_keys      = null;
-				$alter_primary_key = true;
+				$alter_primary_key  = true;
+				$builder            = new Alter_Table($mysql_table);
+				$foreign_keys       = null;
+				$mysql_columns      = $mysql_table->getColumns();
+				$mysql_foreign_keys = $mysql_table->getForeignKeys();
 				foreach ($class_table->getColumns() as $column) {
 					$column_name = $column->getName();
 					if (!isset($mysql_columns[$column_name])) {
@@ -597,22 +597,35 @@ class Maintainer implements Registerable
 								E_USER_NOTICE
 							);
 						}
-						if (!isset($foreign_keys)) {
-							$foreign_keys = Foreign_Key::buildTable($mysqli, $table_name);
+						$builder->alterColumn($column_name, $column);
+						if (isset($mysql_foreign_keys[$table_name . DOT . $column_name])) {
+							$builder->alterForeignKey($mysql_foreign_keys[$table_name . DOT . $column_name]);
 						}
-						$foreign_key = isset($foreign_keys[$column_name]) ? $foreign_keys[$column_name] : null;
-						$builder->alterColumn($column_name, $column, $foreign_key);
+						// if the column is already a primary key or if not wished : do not alter primary key
 						if (
 							($column->getName() === 'id')
 							&& ($mysql_columns[$column_name]->isPrimaryKey() || !$column->isPrimaryKey())
 						) {
-							// do not alter primary key if the column is already a primary key or if not wished
 							$alter_primary_key = false;
 						}
-						$alter_columns[$column_name] = $column_name;
+					}
+				}
+				$class_foreign_keys = $class_table->getForeignKeys();
+				foreach ($class_foreign_keys as $foreign_key_constraint => $foreign_key) {
+					if (!isset($mysql_foreign_keys[$foreign_key_constraint])) {
+						$builder->addForeignKey($foreign_key);
+					}
+					elseif (!$foreign_key->equiv($mysql_foreign_keys[$foreign_key_constraint])) {
+						$builder->alterForeignKey($foreign_key);
+					}
+				}
+				foreach ($mysql_foreign_keys as $foreign_key_constraint => $foreign_key) {
+					if (!isset($class_foreign_keys[$foreign_key_constraint])) {
+						$builder->dropForeignKey($foreign_key);
 					}
 				}
 				if ($builder->isReady()) {
+					$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
 					foreach ($builder->build(true, $alter_primary_key) as $query) {
 						$this->query($mysqli, $query);
 					}

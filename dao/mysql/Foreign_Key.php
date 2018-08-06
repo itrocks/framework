@@ -156,6 +156,21 @@ class Foreign_Key implements Sql\Foreign_Key
 		return $foreign_keys;
 	}
 
+	//----------------------------------------------------------------------------------------- equiv
+	/**
+	 * @param $foreign_key Foreign_Key
+	 * @return boolean
+	 */
+	public function equiv(Foreign_Key $foreign_key)
+	{
+		return ($this->Constraint === $foreign_key->Constraint)
+			&& ($this->Fields === $foreign_key->Fields)
+			&& ($this->On_delete === $foreign_key->On_delete)
+			&& ($this->On_update === $foreign_key->On_update)
+			&& ($this->Reference_fields === $foreign_key->Reference_fields)
+			&& ($this->Reference_table === $foreign_key->Reference_table);
+	}
+
 	//--------------------------------------------------------------------------------- getConstraint
 	/**
 	 * @return string
