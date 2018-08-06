@@ -544,6 +544,7 @@ class Validator implements Registerable
 				&& !isset($exclude_properties[$property->name])
 				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
 				&& !$property->getAnnotation('composite')->value
+				&& !$property->getAnnotation('link_composite')->value
 			) {
 				$type = $property->getType();
 				// we could do this control for all, but this may run getters and useless data reads

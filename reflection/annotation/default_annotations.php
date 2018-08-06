@@ -281,6 +281,13 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@length' => Annotation::class,
 
 	/**
+	 * @link_composite
+	 * Identifies a property to link to the composite object for @linked classes
+	 * This is useful to declare it explicitely only if the @link class links two identical classes
+	 */
+	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
+
+	/**
 	 * @mandatory [false]
 	 * Set this annotation to tell the data controllers that the property value is mandatory
 	 */

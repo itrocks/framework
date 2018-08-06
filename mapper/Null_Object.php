@@ -52,6 +52,7 @@ abstract class Null_Object
 			if (
 				!$property->isStatic()
 				&& !$property->getAnnotation('composite')->value
+				&& !$property->getAnnotation('link_composite')->value
 				&& $property->getAnnotation('empty_check')->value
 			) {
 				Getter::$ignore = true;

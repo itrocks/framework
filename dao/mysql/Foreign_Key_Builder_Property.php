@@ -48,7 +48,10 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnDeleteToMysql(Reflection_Property $property)
 	{
-		return $property->getAnnotation('composite')->value
+		return (
+				$property->getAnnotation('composite')->value
+				|| $property->getAnnotation('link_composite')->value
+			)
 			? Foreign_Key::CASCADE
 			: Foreign_Key::RESTRICT;
 	}

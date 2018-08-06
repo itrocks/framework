@@ -68,7 +68,8 @@ abstract class Empty_Object
 			$class   = new Reflection_Class(get_class($object));
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {
-				$is_composite = $property->getAnnotation('composite')->value;
+				$is_composite = $property->getAnnotation('composite')->value
+					|| $property->getAnnotation('link_composite')->value;
 				if (
 					!$property->isStatic()
 					&& ($check_composite || !$is_composite)
