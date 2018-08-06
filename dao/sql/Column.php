@@ -51,8 +51,9 @@ interface Column extends Field
 	/**
 	 * Gets the SQL version of the column definition
 	 *
+	 * @param $primary_key boolean if false, no PRIMARY KEY will be added to columns
 	 * @returns string
 	 */
-	public function toSql();
+	public function toSql($primary_key = true);
 
 }

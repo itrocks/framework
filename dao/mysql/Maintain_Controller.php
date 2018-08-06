@@ -1,11 +1,15 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ReflectionException;
 
 /**
  * Runs maintainer on all classes
@@ -13,35 +17,83 @@ use ITRocks\Framework\PHP\Dependency;
 class Maintain_Controller implements Feature_Controller
 {
 
-	//----------------------------------------------------------------------------------- getChildren
+	//-------------------------------------------------------------------------------------- $verbose
 	/**
-	 * @param $class_names string[]
-	 * @return string[]
+	 * @var boolean
 	 */
-	public function getChildren(array $class_names)
+	protected $verbose;
+
+	//------------------------------------------------------------------------------------ classNamed
+	/**
+	 * @param $class_name string
+	 * @return Reflection_Class|null
+	 */
+	protected function classNamed($class_name)
 	{
-		/** @var string[] $child_dependencies */
-		$child_dependencies = array_unique(
-			array_map(
-				function (Dependency $dependency) {
-					return $dependency->class_name;
-				},
-				Dao::search(
-					['dependency_name' => Func::in($class_names), 'type' => Dependency::T_EXTENDS],
-					Dependency::class
-				)
-			)
-		);
-
-		if ($child_dependencies) {
-			$class_names = array_merge(
-				$class_names,
-				$child_dependencies,
-				$this->getChildren($child_dependencies)
-			);
+		static $reflection_classes = [];
+		if (isset($reflection_classes[$class_name])) {
+			return $reflection_classes[$class_name];
 		}
+		try {
+			$class = new Reflection_Class($class_name);
+		}
+		catch (ReflectionException $exception) {
+			if ($this->verbose) {
+				echo "! ignore $class_name : NOT FOUND" . BRLF;
+			}
+			return null;
+		}
+		$reflection_classes[$class_name] = $class;
+		return $class;
+	}
 
-		return $class_names;
+	//------------------------------------------------------------------------------------ getClasses
+	/**
+	 * Get business classes that will be used for source for maintain
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return Reflection_Class[] key is the name of the class
+	 */
+	protected function getClasses()
+	{
+		// cache hierarchy
+		$children = [];
+		$parents  = [];
+		foreach (Dao::search(['type' => Dependency::T_EXTENDS], Dependency::class) as $dependency) {
+			$children[$dependency->dependency_name][$dependency->class_name] = $dependency->class_name;
+			$parents[$dependency->class_name] = $dependency->dependency_name;
+		}
+		// tables
+		/** @var $mysql Mysql\Link */
+		$mysql = Dao::current();
+		/** @noinspection PhpUnhandledExceptionInspection no catch */
+		$table_names = array_flip($mysql->getConnection()->getTables());
+		// @business classes + without Builder replacement + without children with same @store_name
+		// + existing MySQL table
+		$classes = [];
+		$dependencies = Dao::search(['declaration' => Dependency::T_CLASS], Dependency::class);
+		foreach ($dependencies as $dependency) {
+			$class_name = Builder::className($dependency->class_name);
+			if (!isset($classes[$class_name])) {
+				$class = $this->classNamed($class_name);
+				if ($class && $class->getAnnotation('business')->value) {
+					$store = true;
+					if (isset($children[$class_name])) {
+						foreach ($children[$class_name] as $child_class_name) {
+							$child_class = $this->classNamed($child_class_name);
+							if ($child_class && Store_Name_Annotation::equals($child_class, $class)) {
+								$store = false;
+								break;
+							}
+						}
+					}
+					if ($store && isset($table_names[Store_Name_Annotation::of($class)->value])) {
+						$classes[$class_name] = $class;
+					}
+				}
+			}
+		}
+		return $classes;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -55,23 +107,14 @@ class Maintain_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		/** @var string[] $class_names */
-		$class_names = array_unique(
-			array_map(
-				function (Dependency $dependency) {
-					return $dependency->class_name;
-				},
-				Dao::search(
-					['type' => Func::orOp([Dependency::T_STORE, Dependency::T_SET])], Dependency::class
-				)
-			)
-		);
-		$class_names = $this->getChildren($class_names);
+		$classes = $this->getClasses();
 
 		$simulation = !isset($parameters->getRawParameters()['valid']);
 		$verbose    = isset($parameters->getRawParameters()['verbose']);
 
-		Maintainer::get()->notice = false;
+		$this->verbose = $verbose;
+
+		Maintainer::get()->notice = $verbose;
 		if ($simulation) {
 			Maintainer::get()->simulationStart();
 		}
@@ -79,12 +122,12 @@ class Maintain_Controller implements Feature_Controller
 		// Creation only first (no constraint)
 		Maintainer::get()->skip_foreign_keys = true;
 		echo '<h3>Without foreign keys</h3>';
-		$this->updateAllTables($class_names, $verbose, $simulation);
+		$this->updateAllTables($classes, $verbose, $simulation);
 
 		// Then another full update
 		Maintainer::get()->skip_foreign_keys = false;
-		echo '<h3>With foreign keys first</h3>';
-		$this->updateAllTables($class_names, $verbose, $simulation);
+		echo '<h3>With foreign keys</h3>';
+		$this->updateAllTables($classes, $verbose, $simulation);
 
 		if ($simulation) {
 			Maintainer::get()->simulationStop();
@@ -95,14 +138,14 @@ class Maintain_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------- updateAllTables
 	/**
-	 * @param $class_names  String[]
-	 * @param $verbose      string
-	 * @param $simulation   boolean
+	 * @param $classes    Reflection_Class[]
+	 * @param $verbose    string
+	 * @param $simulation boolean
 	 */
-	protected function updateAllTables($class_names, $verbose, $simulation)
+	protected function updateAllTables(array $classes, $verbose, $simulation)
 	{
-		/** @var Dependency $dependency */
-		foreach ($class_names as $class_name) {
+		foreach ($classes as $class) {
+			$class_name = $class->name;
 			if ($verbose) {
 				echo '<h5>' . ($simulation ? '[Simulation] For' : 'For') . SP . $class_name . '</h5>';
 			}

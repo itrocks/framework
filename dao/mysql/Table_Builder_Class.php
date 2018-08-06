@@ -75,7 +75,9 @@ class Table_Builder_Class
 			$table->addColumn($more_field);
 		}
 		if ($class->isAbstract()) {
-			$table->addColumn(new Column('class', 'varchar(255)'));
+			$table->addColumn(
+				new Column('class', 'varchar(255)' . SP . Database::characterSetCollateSql())
+			);
 		}
 		else {
 			/** @var $properties Reflection_Property[] */

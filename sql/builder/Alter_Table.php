@@ -82,10 +82,11 @@ class Alter_Table
 	 * Builds the SQL queries to alter table
 	 * Includes
 	 *
-	 * @param $lock boolean if true, will lock tables before drop-create constraints
+	 * @param $lock              boolean if true, will lock tables before drop-create constraints
+	 * @param $alter_primary_key boolean if false, will not send the PRIMARY KEY field modifier
 	 * @return string[]
 	 */
-	public function build($lock = false)
+	public function build($lock = false, $alter_primary_key = true)
 	{
 		$table_name = $this->table->getName();
 		$alter       = '';
@@ -111,7 +112,7 @@ class Alter_Table
 			$alter .= ($column_name === $alter_column->getName())
 				? 'MODIFY'
 				: ('CHANGE COLUMN ' . BQ . $column_name . BQ);
-			$alter .= SP . $alter_column->toSql();
+			$alter .= SP . $alter_column->toSql($alter_primary_key);
 		}
 		$queries = [];
 		if ($lock && strpos($lock_tables, ',')) {

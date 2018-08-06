@@ -581,10 +581,11 @@ class Maintainer implements Registerable
 
 			// alter table
 			else {
-				$mysql_columns = $mysql_table->getColumns();
-				$builder       = new Alter_Table($mysql_table);
-				$alter_columns = [];
-				$foreign_keys  = null;
+				$mysql_columns     = $mysql_table->getColumns();
+				$builder           = new Alter_Table($mysql_table);
+				$alter_columns     = [];
+				$foreign_keys      = null;
+				$alter_primary_key = true;
 				foreach ($class_table->getColumns() as $column) {
 					$column_name = $column->getName();
 					if (!isset($mysql_columns[$column_name])) {
@@ -606,11 +607,18 @@ class Maintainer implements Registerable
 						}
 						$foreign_key = isset($foreign_keys[$column_name]) ? $foreign_keys[$column_name] : null;
 						$builder->alterColumn($column_name, $column, $foreign_key);
+						if (
+							($column->getName() === 'id')
+							&& ($mysql_columns[$column_name]->isPrimaryKey() || !$column->isPrimaryKey())
+						) {
+							// do not alter primary key if the column is already a primary key or if not wished
+							$alter_primary_key = false;
+						}
 						$alter_columns[$column_name] = $column_name;
 					}
 				}
 				if ($builder->isReady()) {
-					foreach ($builder->build(true) as $query) {
+					foreach ($builder->build(true, $alter_primary_key) as $query) {
 						$this->query($mysqli, $query);
 					}
 					$result = true;

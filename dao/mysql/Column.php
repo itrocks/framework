@@ -22,6 +22,9 @@ class Column implements Sql\Column
 	//-------------------------------------------------------------------------------------------- NO
 	const NO = 'NO';
 
+	//----------------------------------------------------------------------------------- PRIMARY_KEY
+	const PRIMARY_KEY = 'PRI';
+
 	//---------------------------------------------------------------------------------- STRING_TYPES
 	const STRING_TYPES = ['char', 'enum', 'mediumtext', 'set', 'text', 'tinytext', 'varchar'];
 
@@ -42,10 +45,12 @@ class Column implements Sql\Column
 	 * Extra options to the column
 	 * A list of options, the most common is 'auto_increment' for primary auto-increment indexes.
 	 *
+	 * Cannot be null : no extra = ''
+	 *
 	 * @values auto_increment
 	 * @var string
 	 */
-	private $Extra;
+	private $Extra = '';
 
 	//---------------------------------------------------------------------------------------- $Field
 	/**
@@ -59,19 +64,23 @@ class Column implements Sql\Column
 	/**
 	 * Is the data part of an index key ?
 	 *
+	 * Cannot be null : no key = ''
+	 *
 	 * @values PRI, MUL, UNI,
 	 * @var string
 	 */
-	private $Key;
+	private $Key = '';
 
 	//----------------------------------------------------------------------------------------- $Null
 	/**
 	 * Can the data be null ?
 	 *
+	 * Cannot be null : not null = 'NO'
+	 *
 	 * @values YES, NO
 	 * @var string
 	 */
-	private $Null;
+	private $Null = 'NO';
 
 	//----------------------------------------------------------------------------------------- $Type
 	/**
@@ -119,7 +128,7 @@ class Column implements Sql\Column
 	public function alwaysNullDefault()
 	{
 		return in_array(
-			$this->Type,
+			lParse($this->Type, SP),
 			['blob', 'longblob', 'longtext', 'mediumblob', 'mediumtext', 'text', 'tinyblob', 'tinytext']
 		);
 	}
@@ -133,9 +142,10 @@ class Column implements Sql\Column
 	public static function buildId()
 	{
 		$column = new Column('id', 'bigint(18) unsigned');
-		$column->Null    = self::NO;
 		$column->Default = null;
 		$column->Extra   = self::AUTO_INCREMENT;
+		$column->Key     = self::PRIMARY_KEY;
+		$column->Null    = self::NO;
 		return $column;
 	}
 
@@ -149,8 +159,8 @@ class Column implements Sql\Column
 	public static function buildLink($column_name)
 	{
 		$column = new Column($column_name, 'bigint(18) unsigned');
-		$column->Null    = self::NO;
 		$column->Default = 0;
+		$column->Null    = self::NO;
 		return $column;
 	}
 
@@ -165,6 +175,7 @@ class Column implements Sql\Column
 	public static function buildProperty(Reflection_Property $property)
 	{
 		$column = new Column();
+		// instructions order matters : do not change it
 		$column->Field   = self::propertyNameToMysql($property);
 		$column->Type    = self::propertyTypeToMysql($property);
 		$column->Null    = self::propertyNullToMysql($property);
@@ -196,7 +207,12 @@ class Column implements Sql\Column
 		);
 		/** @var $column Column */
 		while ($column = $result->fetch_object(Column::class)) {
-			if (is_null($column->Default) && !$column->canBeNull() && $column->isString()) {
+			if (
+				is_null($column->Default)
+				&& $column->isString()
+				&& !$column->canBeNull()
+				&& !$column->alwaysNullDefault()
+			) {
 				$column->Default = '';
 			}
 			$columns[$column->getName()] = $column;
@@ -245,11 +261,11 @@ class Column implements Sql\Column
 	 */
 	public function equiv(Sql\Column $column)
 	{
-		return ($this->Field === $column->Field)
-			&& ($this->Type    === $column->Type)
-			&& ($this->Null    === $column->Null)
-			&& ($this->Default === $column->Default)
-			&& ($this->Extra   === $column->Extra);
+		return ($this->Default === $column->Default)
+			&& ($this->Extra === $column->Extra)
+			&& ($this->Field === $column->Field)
+			&& ($this->Null  === $column->Null)
+			&& ($this->Type  === $column->Type);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
@@ -329,6 +345,15 @@ class Column implements Sql\Column
 		return !empty($this->Key);
 	}
 
+	//---------------------------------------------------------------------------------- isPrimaryKey
+	/**
+	 * @return boolean
+	 */
+	public function isPrimaryKey()
+	{
+		return ($this->Key === self::PRIMARY_KEY);
+	}
+
 	//-------------------------------------------------------------------------------------- isString
 	/**
 	 * @return boolean
@@ -349,9 +374,10 @@ class Column implements Sql\Column
 
 	//----------------------------------------------------------------------------------------- toSql
 	/**
+	 * @param $primary_key boolean if false, no PRIMARY KEY will be added to auto_increment columns
 	 * @return string
 	 */
-	public function toSql()
+	public function toSql($primary_key = true)
 	{
 		$column_name = $this->getName();
 		$type        = $this->getSqlType();
@@ -364,7 +390,7 @@ class Column implements Sql\Column
 			$sql .= ' DEFAULT ' . Value::escape($this->getDefaultValue());
 		}
 		$sql .= $postfix;
-		if ($postfix === (SP . self::AUTO_INCREMENT)) {
+		if ($primary_key && ($postfix === (SP . self::AUTO_INCREMENT))) {
 			$sql .= ' PRIMARY KEY';
 		}
 		return $sql;

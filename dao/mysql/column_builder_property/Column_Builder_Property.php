@@ -166,16 +166,18 @@ trait Column_Builder_Property
 							'longblob'
 						));
 					}
-					return ($max_length <= 3)   ? ('char(' . $max_length . ')') : (
+					return (
+						($max_length <= 3)   ? ('char(' . $max_length . ')') : (
 						($max_length <= 255)      ? ('varchar(' . $max_length . ')') : (
 						($max_length <= 65535)    ? 'text' : (
 						($max_length <= 16777215) ? 'mediumtext' :
 						'longtext'
-						))) . SP . Database::characterSetCollateSql();
+						)))
+					) . SP . Database::characterSetCollateSql();
 				}
 			}
 			elseif ($store_annotation_value === Store_Annotation::JSON) {
-				return 'text';
+				return 'text' . SP . Database::characterSetCollateSql();
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:

@@ -75,6 +75,17 @@ class Annotation
 		);
 	}
 
+	//---------------------------------------------------------------------------------------- equals
+	/**
+	 * @param $reflection_object       Reflection
+	 * @param $other_reflection_object Reflection
+	 * @return boolean
+	 */
+	public static function equals(Reflection $reflection_object, Reflection $other_reflection_object)
+	{
+		return (static::of($reflection_object)->value === static::of($other_reflection_object)->value);
+	}
+
 	//----------------------------------------------------------------------------- getAnnotationName
 	/**
 	 * Gets annotation name (the displayable root of the annotation class name, when set)
