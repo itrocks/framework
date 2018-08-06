@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -40,7 +41,14 @@ trait Column_Builder_Property
 				$default = floatval($default);
 			}
 			elseif (is_array($default)) {
-				$default = '';
+				if ($default) {
+					$default = join(',', $default);
+				}
+				else {
+					// if @values, then set with a real value
+					// if no @values, the string [] is stored as as text : null default value even if not null
+					$default = Values_Annotation::of($property)->value ? '' : null;
+				}
 			}
 		}
 		else {
