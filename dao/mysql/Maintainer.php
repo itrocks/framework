@@ -73,14 +73,6 @@ class Maintainer implements Registerable
 	 */
 	private $simulation = false;
 
-	//---------------------------------------------------------------------------- $skip_foreign_keys
-	/**
-	 * If true, skip foreign keys updates when create / update tables
-	 *
-	 * @var boolean
-	 */
-	public $skip_foreign_keys;
-
 	//--------------------------------------------------------------------------- createImplicitTable
 	/**
 	 * Create a table in database, which has no associated class, using fields names
@@ -138,7 +130,7 @@ class Maintainer implements Registerable
 				$table->addIndex($index);
 			}
 		}
-		foreach ((new Create_Table($table))->build($this->skip_foreign_keys) as $query) {
+		foreach ((new Create_Table($table))->build() as $query) {
 			$this->query($mysqli, $query);
 		}
 		return true;
@@ -167,8 +159,8 @@ class Maintainer implements Registerable
 		foreach ($build as $table) {
 			if (!$mysqli->exists($table->getName())) {
 				$last_context    = $mysqli->context;
-				$mysqli->context = $builder->dependencies_context;
-				$queries         = (new Create_Table($table))->build($this->skip_foreign_keys);
+				$queries         = (new Create_Table($table))->build();
+				$mysqli->context = array_merge($builder->dependencies_context, [$class_name]);
 				foreach ($queries as $query) {
 					$this->query($mysqli, $query);
 				}
@@ -566,14 +558,17 @@ class Maintainer implements Registerable
 				user_error('Must call updateTable() with a valid $mysqli link', E_USER_ERROR);
 			}
 		}
-		$result = false;
-		foreach ((new Table_Builder_Class)->build($class_name) as $class_table) {
+		$result              = false;
+		$table_builder_class = new Table_Builder_Class();
+		foreach ($table_builder_class->build($class_name) as $class_table) {
 			$table_name  = $class_table->getName();
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
 
 			// create table
 			if (!$mysql_table) {
-				foreach ((new Create_Table($class_table))->build($this->skip_foreign_keys) as $query) {
+				$queries         = (new Create_Table($class_table))->build();
+				$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
+				foreach ($queries as $query) {
 					$this->query($mysqli, $query);
 				}
 				$result = true;

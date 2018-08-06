@@ -119,14 +119,6 @@ class Maintain_Controller implements Feature_Controller
 			Maintainer::get()->simulationStart();
 		}
 
-		// Creation only first (no constraint)
-		Maintainer::get()->skip_foreign_keys = true;
-		echo '<h3>Without foreign keys</h3>';
-		$this->updateAllTables($classes, $verbose, $simulation);
-
-		// Then another full update
-		Maintainer::get()->skip_foreign_keys = false;
-		echo '<h3>With foreign keys</h3>';
 		$this->updateAllTables($classes, $verbose, $simulation);
 
 		if ($simulation) {
