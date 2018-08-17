@@ -35,6 +35,30 @@ function arrayCut(
 	return $result;
 }
 
+//------------------------------------------------------------------------------- arrayDiffCombined
+/**
+ * Return a combined comparative array from array1 to array2
+ *
+ * @param array  $array1
+ * @param array  $array2
+ * @param string $void   string to display for not-set value
+ * @return array
+ */
+function arrayDiffCombined(array $array1, array $array2, $void = 'not-set')
+{
+	$diff  = array_diff($array1, $array2);
+	$diff2 = array_diff($array2, $array1);
+	foreach ($diff as $key => $element) {
+		$diff[$key] = [$element => isset($diff2[$key]) ? $diff2[$key] : $void];
+	}
+	foreach ($diff2 as $key => $element) {
+		if (!isset($diff[$key])) {
+			$diff[$key] = [$void => $element];
+		}
+	}
+	return $diff;
+}
+
 //------------------------------------------------------------------------------ arrayDiffRecursive
 /**
  * @param $array1    array

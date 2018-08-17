@@ -371,6 +371,17 @@ class Column implements Sql\Column
 		return in_array($this->getRawType(), self::STRING_TYPES);
 	}
 
+	//--------------------------------------------------------------------------------------- reduces
+	/**
+	 * @param $old_column Sql\Column
+	 * @return boolean true if $this type reduces data size from $old_column and may break it
+	 */
+	public function reduces(Sql\Column $old_column)
+	{
+		// TODO reduce calculation
+		return false;
+	}
+
 	//------------------------------------------------------------------------------- setDefaultValue
 	/**
 	 * @param $default string

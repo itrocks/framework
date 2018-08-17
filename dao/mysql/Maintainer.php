@@ -22,6 +22,24 @@ class Maintainer implements Registerable
 {
 	use Has_Get;
 
+	//---------------------------------------------------------------------------------------- OUTPUT
+	/**
+	 * value for $notice : output what is done by the maintainer
+	 */
+	const OUTPUT  = 'output';
+
+	//--------------------------------------------------------------------------------------- VERBOSE
+	/**
+	 * value for $notice : verbose output (more things are told)
+	 */
+	const VERBOSE = 'verbose';
+
+	//--------------------------------------------------------------------------------------- WARNING
+	/**
+	 * value for $notice : trigger a warning for each query done by the maintainer (default)
+	 */
+	const WARNING = 'warning';
+
 	//------------------------------------------------------------------------------------ $MAX_RETRY
 	/**
 	 * Maximum retries count
@@ -53,9 +71,10 @@ class Maintainer implements Registerable
 	/**
 	 * If true notice column differences using error notice
 	 *
-	 * @var boolean
+	 * @values self::const local
+	 * @var string
 	 */
-	public $notice = true;
+	public $notice = self::WARNING;
 
 	//------------------------------------------------------------------------------------- $requests
 	/**
@@ -485,7 +504,10 @@ class Maintainer implements Registerable
 	public function query($mysqli, $query)
 	{
 		$this->requests[] = $query;
-		trigger_error('MySQL Maintainer query : ' . $query, E_USER_NOTICE);
+		switch ($this->notice) {
+			case self::OUTPUT: case self::VERBOSE: echo "[ $query ]" . BRLF; break;
+			case self::WARNING: trigger_error('MySQL Maintainer query : ' . $query, E_USER_NOTICE);
+		}
 		return $this->simulation ? true : $mysqli->query($query);
 	}
 
@@ -555,7 +577,7 @@ class Maintainer implements Registerable
 				$mysqli = $data_link->getConnection();
 			}
 			else {
-				user_error('Must call updateTable() with a valid $mysqli link', E_USER_ERROR);
+				trigger_error('Must call updateTable() with a valid $mysqli link', E_USER_ERROR);
 			}
 		}
 		$result              = false;
@@ -588,14 +610,17 @@ class Maintainer implements Registerable
 					}
 					elseif (!$column->equiv($mysql_columns[$column_name])) {
 						if ($this->notice) {
-							trigger_error(
-								'Maintainer alters column ' . $mysql_table->getName() . '.' . $column->getName()
-								. BRLF . PRE
-								. print_r($column, true) . BRLF
-								. print_r($mysql_columns[$column_name], true)
-								. _PRE,
-								E_USER_NOTICE
-							);
+							$message = 'Maintainer alters column '
+								. $mysql_table->getName() . '.' . $column->getName() . BRLF
+								. PRE
+								. print_r(arrayDiffCombined(
+									get_object_vars($mysql_columns[$column_name]), get_object_vars($column)
+								), true)
+								. _PRE;
+							switch ($this->notice) {
+								case self::VERBOSE: echo $message . BRLF; break;
+								case self::WARNING: trigger_error($message, E_USER_NOTICE);
+							}
 						}
 						$builder->alterColumn($column_name, $column);
 						if (isset($mysql_foreign_keys[$table_name . DOT . $column_name])) {
@@ -626,8 +651,17 @@ class Maintainer implements Registerable
 				}
 				if ($builder->isReady()) {
 					$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
-					foreach ($builder->build(true, $alter_primary_key) as $query) {
-						$this->query($mysqli, $query);
+					if ($builder->check($mysqli)) {
+						foreach ($builder->build(true, $alter_primary_key) as $query) {
+							$this->query($mysqli, $query);
+						}
+					}
+					elseif ($this->notice) {
+						$message = "Ignored update of $class_name / $table_name";
+						switch ($this->notice) {
+							case self::OUTPUT: case self::VERBOSE: echo '! ' . $message . BRLF; break;
+							case self::WARNING: trigger_error($message, E_USER_WARNING);
+						}
 					}
 					$result = true;
 				}

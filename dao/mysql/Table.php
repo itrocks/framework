@@ -47,7 +47,7 @@ class Table implements Sql\Table
 	public function __construct($name = null)
 	{
 		if (isset($name)) {
-			$this->Name = $name;
+			$this->Name   = $name;
 			$this->Engine = 'InnoDB';
 		}
 	}

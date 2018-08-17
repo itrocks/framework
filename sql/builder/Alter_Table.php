@@ -1,9 +1,11 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
+use ITRocks\Framework\Dao\Mysql\Table_Builder_Mysqli;
 use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Dao\Sql\Foreign_Key;
 use ITRocks\Framework\Dao\Sql\Table;
+use mysqli;
 
 /**
  * SQL alter table queries builder
@@ -155,6 +157,160 @@ class Alter_Table
 			$queries['unlock'] = 'UNLOCK TABLES';
 		}
 		return $queries;
+	}
+
+	//----------------------------------------------------------------------------------------- check
+	/**
+	 * Check if the changes will crash or lose data
+	 *
+	 * @param $mysqli mysqli
+	 * @param $notice @string @values Maintainer::const local
+	 * @return boolean true if table structure modification will not crash or break stored data
+	 */
+	public function check(mysqli $mysqli, $notice)
+	{
+		$result = true;
+		// all checks must be done, so do not use || or && operations
+		if (!$this->checkForeignKeys($mysqli, $notice)) {
+			$result = false;
+		}
+		if (!$this->checkTypes($mysqli, $notice)) {
+			$result = false;
+		}
+		if (!$this->checkValues($mysqli, $notice)) {
+			$result = false;
+		}
+		return $result;
+	}
+
+	//------------------------------------------------------------------------------ checkForeignKeys
+	/**
+	 * Check if adding foreign keys will crash because of orphan records
+	 *
+	 * @param $mysqli mysqli
+	 * @param $notice @string @values Maintainer::const local
+	 * @return boolean true if adding foreign keys will not result in SQL errors because of orphans
+	 */
+	protected function checkForeignKeys(mysqli $mysqli, $notice)
+	{
+		$orphans_count = 0;
+		$table_name    = $this->table->getName();
+
+		foreach ($this->add_foreign_keys as $foreign_key) {
+			$source_field  = $foreign_key->getFields()[0];
+			$foreign_table = $foreign_key->getReferenceTable();
+			$foreign_field = $foreign_key->getReferenceFields()[0];
+
+			$result = $mysqli->query("SHOW CREATE TABLE `$foreign_table`");
+			$row    = $result->fetch_row();
+			$create = end($row);
+			$result->free();
+			if (!strpos($create, ') ENGINE=InnoDB')) {
+				$error_message = "Could not add foreign key from $table_name"
+					. " to non-InnoDB $foreign_table table";
+				switch ($notice) {
+					case 'verbose': echo $error_message . BRLF; break;
+					case 'warning': trigger_error($error_message, E_USER_NOTICE);
+				}
+				$orphans_count ++;
+			}
+
+			$check_fields_queries = [
+				"SHOW FIELDS FROM `$table_name` LIKE '$source_field'",
+				"SHOW FIELDS FROM `$foreign_table` LIKE '$foreign_field'"
+			];
+			$fields_count = 0;
+			foreach ($check_fields_queries as $check_fields_query) {
+				$result = $mysqli->query($check_fields_query);
+				if ($result->fetch_row()) {
+					$fields_count ++;
+				}
+				$result->free();
+			}
+
+			if ($fields_count === 2) {
+
+				$check_query = "
+					SELECT COUNT(*)
+					FROM `$table_name`
+					WHERE ($source_field IS NOT NULL)
+					AND ($source_field NOT IN (SELECT $foreign_field FROM `$foreign_table`))
+				";
+				$result = $mysqli->query($check_query);
+				$row    = $result->fetch_row();
+				$count  = reset($row);
+				$result->free();
+
+				if ($count) {
+					$detail_query = "
+						SELECT $source_field, COUNT(*)
+						FROM `$table_name`
+						WHERE ($source_field IS NOT NULL)
+						AND ($source_field NOT IN (SELECT $foreign_field FROM `$foreign_table`))
+						GROUP BY $source_field
+						WITH ROLLUP
+					";
+					$error_message = "Could not add foreign key from $table_name.$source_field :"
+						. " $count orphans $foreign_table.$foreign_field called from $table_name.$source_field"
+						. " [$detail_query]";
+					switch ($notice) {
+						case 'output': case 'verbose': echo '! ' . $error_message . BRLF; break;
+						case 'warning': trigger_error($error_message, E_USER_WARNING);
+					}
+					$orphans_count += $count;
+				}
+			}
+		}
+
+		$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
+		$row    = $result->fetch_row();
+		$create = end($row);
+		$result->free();
+		if (!strpos($create, ') ENGINE=InnoDB')) {
+			$error_message = "Could not add foreign key from $table_name non-InnoDB table";
+			switch ($notice) {
+				case 'output':  echo $error_message . BRLF; break;
+				case 'warning': trigger_error($error_message, E_USER_NOTICE);
+			}
+			$orphans_count ++;
+		}
+
+		return ($orphans_count === 0);
+	}
+
+	//------------------------------------------------------------------------------------ checkTypes
+	/**
+	 * Check if reducing size of fields will not break data
+	 *
+	 * @param $mysqli mysqli
+	 * @param $notice @string @values Maintainer::const local
+	 * @return boolean true if data will not be destroyed by the types modifications
+	 */
+	protected function checkTypes(mysqli $mysqli, $notice)
+	{
+		if ($this->alter_columns) {
+			$old_table = Table_Builder_Mysqli::build($mysqli, $this->table->getName());
+			foreach ($this->alter_columns as $column) {
+				if ($old_table->getColumn($column->getName())->reduces($column)) {
+					// TODO search data that will be broken by the reduction
+				}
+			}
+		}
+		return true;
+	}
+
+	//----------------------------------------------------------------------------------- checkValues
+	/**
+	 * Check if changing values for ENUM and SET will not break data
+	 *
+	 * @param $mysqli mysqli
+	 * @param $notice @string @values Maintainer::const local
+	 * @return boolean true if data will not be destroyed by the values modifications
+	 */
+	protected function checkValues(mysqli $mysqli, $notice)
+	{
+		// TODO compare old and new column values : if some are removed, check if they were used
+		return true;
 	}
 
 	//-------------------------------------------------------------------------------- dropForeignKey

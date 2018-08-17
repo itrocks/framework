@@ -118,7 +118,7 @@ class Maintain_Controller implements Feature_Controller
 
 		$this->verbose = $verbose;
 
-		Maintainer::get()->notice = $verbose;
+		Maintainer::get()->notice = $verbose ? Maintainer::VERBOSE : Maintainer::OUTPUT;
 		if ($simulation) {
 			Maintainer::get()->simulationStart();
 		}
