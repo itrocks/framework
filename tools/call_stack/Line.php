@@ -183,6 +183,9 @@ class Line
 			$line->$key = $value;
 		}
 		$line->arguments =& $line->args;
+		if (is_null($line->arguments)) {
+			$line->arguments = [];
+		}
 		return $line;
 	}
 
