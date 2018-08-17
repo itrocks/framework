@@ -96,6 +96,22 @@ class Proxy
 	 */
 	public $response_headers;
 
+	//---------------------------------------------------------------------------------- $retry_count
+	/**
+	 * Retry if there is an error during reading the response of the call
+	 *
+	 * @var integer
+	 */
+	public $retry_count = 0;
+
+	//---------------------------------------------------------------------------------- $retry_delay
+	/**
+	 * Delay between each retry (default : 1000ms = 1s)
+	 *
+	 * @var integer milliseconds
+	 */
+	public $retry_delay = 1000;
+
 	//------------------------------------------------------------------------------------------ $url
 	/**
 	 * The URL to call for the HTTP request
@@ -309,13 +325,15 @@ class Proxy
 	 * @param $url    string
 	 * @param $data   string|string[]
 	 * @param $method string GET, POST
+	 * @param $retry  integer
 	 * @return boolean true if job done, false if any error occurred
 	 */
-	public function request($url = null, $data = null, $method = null)
+	public function request($url = null, $data = null, $method = null, $retry = null)
 	{
 		if (isset($url))    $this->url    = $url;
 		if (isset($method)) $this->method = $method;
 		if (isset($data))   $this->data   = $data;
+		if (!isset($retry)) $retry        = $this->retry_count;
 		// connection
 		$url = parse_url($this->url);
 		if (!isset($url['path'])) {
@@ -366,7 +384,8 @@ class Proxy
 			// read and parse response
 			$result = '';
 			while (!feof($f)) {
-				$result .= fgets($f, 128);
+				/** @noinspection PhpUsageOfSilenceOperatorInspection retry if connexion reset by peer */
+				$result .= @fgets($f, 128);
 			}
 			fclose($f);
 			if (strpos($result, CR . LF . CR . LF) !== false) {
@@ -377,6 +396,13 @@ class Proxy
 			}
 			$this->response_headers = explode(CR . LF, $headers);
 			$this->response         = $response;
+			if ($retry && !$headers && !$response) {
+				if ($this->retry_delay) {
+					usleep($this->retry_delay * 1000);
+				}
+				trigger_error("$this->url : retry $retry of $this->retry_count", E_USER_NOTICE);
+				$this->request(null, null, null, $retry - 1);
+			}
 			return true;
 		}
 		else {
