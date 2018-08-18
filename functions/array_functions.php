@@ -39,21 +39,26 @@ function arrayCut(
 /**
  * Return a combined comparative array from array1 to array2
  *
- * @param array  $array1
- * @param array  $array2
- * @param string $void   string to display for not-set value
+ * @param $array1 array
+ * @param $array2 array
+ * @param $strict boolean Strict type matching
+ * @param $unset  string to display for not-set value (only for destination value and non-strict)
  * @return array
  */
-function arrayDiffCombined(array $array1, array $array2, $void = 'not-set')
+function arrayDiffCombined(array $array1, array $array2, $strict = false, $unset = 'UNSET')
 {
-	$diff  = array_diff($array1, $array2);
-	$diff2 = array_diff($array2, $array1);
+	$diff  = $strict
+		? arrayDiffRecursive($array1, $array2, true, true)
+		: array_diff($array1, $array2);
+	$diff2 = $strict
+		? arrayDiffRecursive($array2, $array1, true, true)
+		: array_diff($array2, $array1);
 	foreach ($diff as $key => $element) {
-		$diff[$key] = [$element => isset($diff2[$key]) ? $diff2[$key] : $void];
+		$diff[$key] = [$element => isset($diff2[$key]) ? $diff2[$key] : $unset];
 	}
 	foreach ($diff2 as $key => $element) {
 		if (!isset($diff[$key])) {
-			$diff[$key] = [$void => $element];
+			$diff[$key] = [$unset => $element];
 		}
 	}
 	return $diff;
@@ -89,7 +94,7 @@ function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show
 			$diff[$key] = $value;
 		}
 		elseif (($strict && ($value !== $array2[$key])) || (strval($value) !== strval($array2[$key]))) {
-			$diff[$key] = strval($value);
+			$diff[$key] = ($strict && !$show_type) ? $value : strval($value);
 			if ($show_type && (gettype($value) !== gettype($array2[$key]))) {
 				$diff[$key] .= SP . '(' . gettype($value) . ')';
 			}

@@ -111,6 +111,7 @@ class Maintain_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
+		upgradeTimeLimit(7200);
 		$classes = $this->getClasses();
 
 		$simulation = !isset($parameters->getRawParameters()['valid']);
@@ -143,7 +144,7 @@ class Maintain_Controller implements Feature_Controller
 		foreach ($classes as $class) {
 			$class_name = $class->name;
 			if ($verbose) {
-				echo '<h5>' . ($simulation ? '[Simulation] For' : 'For') . SP . $class_name . '</h5>';
+				echo '<h5>' . ($simulation ? '[Simulate]' : '[Run]') . SP . $class_name . '</h5>';
 			}
 			Maintainer::get()->updateTable($class_name, null);
 			if (count(Maintainer::get()->requests)) {

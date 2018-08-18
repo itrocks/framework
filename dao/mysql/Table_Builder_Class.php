@@ -25,6 +25,12 @@ class Table_Builder_Class
 	 */
 	public $dependencies_context;
 
+	//-------------------------------------------------------------------------- $exclude_class_names
+	/**
+	 * @var string[]
+	 */
+	public $exclude_class_names = [];
+
 	//-------------------------------------------------------------------------- $excluded_properties
 	/**
 	 * Excluded properties names
@@ -131,7 +137,9 @@ class Table_Builder_Class
 		$class    = new Reflection_Class($class_name);
 		$link     = Class_\Link_Annotation::of($class)->value;
 		$tables   = $link ? $this->buildLinkTables($link, $class_name) : [];
-		$tables[] = $this->buildClassTable($class, $more_field);
+		if (!in_array($class_name, $this->exclude_class_names)) {
+			$tables[] = $this->buildClassTable($class, $more_field);
+		}
 		return $tables;
 	}
 
@@ -143,12 +151,17 @@ class Table_Builder_Class
 	 */
 	private function buildLinkTables($link, $class_name)
 	{
-		$link_class_name           = Namespaces::defaultFullClassName($link, $class_name);
-		$tables                    = (new Table_Builder_Class)->build($link_class_name);
+		$table_builder_class                      = new Table_Builder_Class();
+		$table_builder_class->exclude_class_names = $this->exclude_class_names;
+
+		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
+		$tables          = $table_builder_class->build($link_class_name);
+
 		$this->excluded_properties = array_keys(
 			(new Reflection_Class($link_class_name))->getProperties([T_EXTENDS, T_USE])
 		);
 		$this->excluded_properties[] = 'id';
+
 		return $tables;
 	}
 

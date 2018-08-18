@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -18,9 +19,15 @@ use mysqli_result;
  * This is an intelligent database maintainer that automatically updates a table structure if there
  * is an error when executing a query.
  */
-class Maintainer implements Registerable
+class Maintainer implements Configurable, Registerable
 {
 	use Has_Get;
+
+	//------------------------------------------------------------------------------- EXCLUDE_CLASSES
+	/**
+	 * Configuration key for list of excluded (not maintained because plugin is off) classes
+	 */
+	const EXCLUDE_CLASSES = 'exclude_classes';
 
 	//---------------------------------------------------------------------------------------- OUTPUT
 	/**
@@ -67,6 +74,12 @@ class Maintainer implements Registerable
 	 */
 	private $already = [];
 
+	//------------------------------------------------------------------------------ $exclude_classes
+	/**
+	 * @var string[] Class names
+	 */
+	public $exclude_classes = [];
+
 	//--------------------------------------------------------------------------------------- $notice
 	/**
 	 * If true notice column differences using error notice
@@ -91,6 +104,17 @@ class Maintainer implements Registerable
 	 * @var boolean
 	 */
 	private $simulation = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $configuration array
+	 */
+	public function __construct($configuration = [])
+	{
+		foreach ($configuration as $property_name => $property_value) {
+			$this->$property_name = $property_value;
+		}
+	}
 
 	//--------------------------------------------------------------------------- createImplicitTable
 	/**
@@ -504,11 +528,14 @@ class Maintainer implements Registerable
 	public function query($mysqli, $query)
 	{
 		$this->requests[] = $query;
-		switch ($this->notice) {
-			case self::OUTPUT: case self::VERBOSE: echo "[ $query ]" . BRLF; break;
-			case self::WARNING: trigger_error('MySQL Maintainer query : ' . $query, E_USER_NOTICE);
+		if ($this->simulation) {
+			switch ($this->notice) {
+				case self::OUTPUT: case self::VERBOSE: echo 'Simulation : ' . $query . BRLF; break;
+				case self::WARNING: trigger_error('Simulation : ' . $query, E_USER_NOTICE);
+			}
+			return true;
 		}
-		return $this->simulation ? true : $mysqli->query($query);
+		return $mysqli->query($query);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -571,6 +598,10 @@ class Maintainer implements Registerable
 	 */
 	public function updateTable($class_name, mysqli $mysqli = null)
 	{
+		if (isset($this->exclude_classes[$class_name])) {
+			return false;
+		}
+
 		if (!$mysqli) {
 			$data_link = Dao::current();
 			if ($data_link instanceof Link) {
@@ -582,7 +613,9 @@ class Maintainer implements Registerable
 		}
 		$result              = false;
 		$table_builder_class = new Table_Builder_Class();
-		foreach ($table_builder_class->build($class_name) as $class_table) {
+		$table_builder_class->exclude_class_names = $this->exclude_classes;
+		$class_tables = $table_builder_class->build($class_name);
+		foreach ($class_tables as $class_table) {
 			$table_name  = $class_table->getName();
 			$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
 
@@ -603,6 +636,23 @@ class Maintainer implements Registerable
 				$foreign_keys       = null;
 				$mysql_columns      = $mysql_table->getColumns();
 				$mysql_foreign_keys = $mysql_table->getForeignKeys();
+
+				$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
+				$row    = $result->fetch_row();
+				$result->free();
+				$create_table = end($row);
+				if (!strpos($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
+					$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
+				}
+				else {
+					$result = $mysqli->query("SHOW TABLE STATUS LIKE '$table_name'");
+					$status = $result->fetch_assoc();
+					$result->free();
+					if ($status['Collation'] !== Database::COLLATE) {
+						$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
+					}
+				}
+
 				foreach ($class_table->getColumns() as $column) {
 					$column_name = $column->getName();
 					if (!isset($mysql_columns[$column_name])) {
@@ -613,9 +663,7 @@ class Maintainer implements Registerable
 							$message = 'Maintainer alters column '
 								. $mysql_table->getName() . '.' . $column->getName() . BRLF
 								. PRE
-								. print_r(arrayDiffCombined(
-									get_object_vars($mysql_columns[$column_name]), get_object_vars($column)
-								), true)
+								. print_r($mysql_columns[$column_name]->diffCombined($column), true)
 								. _PRE;
 							switch ($this->notice) {
 								case self::VERBOSE: echo $message . BRLF; break;
@@ -641,6 +689,19 @@ class Maintainer implements Registerable
 						$builder->addForeignKey($foreign_key);
 					}
 					elseif (!$foreign_key->equiv($mysql_foreign_keys[$foreign_key_constraint])) {
+						if ($this->notice) {
+							$message = 'Maintainer alters foreign key constraint '
+								. $mysql_table->getName() . '.' . $foreign_key_constraint . BRLF
+								. PRE
+								. print_r(
+									$mysql_foreign_keys[$foreign_key_constraint]->diffCombined($foreign_key), true
+								)
+								. _PRE;
+							switch ($this->notice) {
+								case self::VERBOSE: echo $message . BRLF; break;
+								case self::WARNING: trigger_error($message, E_USER_NOTICE);
+							}
+						}
 						$builder->alterForeignKey($foreign_key);
 					}
 				}
@@ -651,7 +712,7 @@ class Maintainer implements Registerable
 				}
 				if ($builder->isReady()) {
 					$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
-					if ($builder->check($mysqli)) {
+					if ($builder->check($mysqli, $this->notice)) {
 						foreach ($builder->build(true, $alter_primary_key) as $query) {
 							$this->query($mysqli, $query);
 						}

@@ -40,6 +40,13 @@ trait Column_Builder_Property
 			elseif ($property_type->isFloat()) {
 				$default = floatval($default);
 			}
+			elseif (
+				($default === '')
+				&& $column->alwaysNullDefault()
+				&& ($property_type->isString() || $property_type->isMultipleString())
+			) {
+				$default = null;
+			}
 			elseif (is_array($default)) {
 				if ($default) {
 					$default = join(',', $default);

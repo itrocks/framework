@@ -252,6 +252,16 @@ class Column implements Sql\Column
 		return $this;
 	}
 
+	//---------------------------------------------------------------------------------- diffCombined
+	/**
+	 * @param $column Column
+	 * @return array
+	 */
+	public function diffCombined(Column $column)
+	{
+		return arrayDiffCombined(get_object_vars($this), get_object_vars($column), true);
+	}
+
 	//----------------------------------------------------------------------------------------- equiv
 	/**
 	 * Returns true if the column is an equivalent of the other column

@@ -66,13 +66,13 @@ class Foreign_Key implements Sql\Foreign_Key
 		if (substr($column_name, 0, 3) !== 'id_') {
 			$column_name = 'id_' . $column_name;
 		}
-		$foreign_key = new Foreign_Key();
-		$foreign_key->Constraint = substr($table_name . DOT . $column_name, 0, 64);
-		$foreign_key->Fields = $column_name;
-		$foreign_key->On_delete = $constraint;
-		$foreign_key->On_update = $constraint;
+		$foreign_key                   = new Foreign_Key();
+		$foreign_key->Constraint       = substr($table_name . DOT . $column_name, 0, 64);
+		$foreign_key->Fields           = $column_name;
+		$foreign_key->On_delete        = $constraint;
+		$foreign_key->On_update        = $constraint;
 		$foreign_key->Reference_fields = 'id';
-		$foreign_key->Reference_table = Dao::storeNameOf($class_name);
+		$foreign_key->Reference_table  = Dao::storeNameOf($class_name);
 		return $foreign_key;
 	}
 
@@ -108,22 +108,7 @@ class Foreign_Key implements Sql\Foreign_Key
 	 */
 	public static function buildReferences(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
-		$foreign_keys  = [];
-		$result        = $mysqli->query(
-			'SELECT `constraint_name` AS `Constraint`,'
-			. " RIGHT(`constraint_name`, LENGTH(`constraint_name`) - LOCATE('.', `constraint_name`)) AS `Fields`,"
-			. ' `update_rule` AS `On_update`, `delete_rule` AS `On_delete`,'
-			. " `referenced_table_name` AS `Reference_table`, 'id' AS `Reference_fields`" . LF
-			. 'FROM `information_schema`.`referential_constraints`' . LF
-			. 'WHERE `constraint_schema` = ' . $database_name
-			. ' AND `referenced_table_name` = ' . Q . $table_name . Q
-		);
-		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
-			$foreign_keys[] = $foreign_key;
-		}
-		$result->free();
-		return $foreign_keys;
+		return static::foreignKeysOf($mysqli, 'referenced_table_name', $table_name, $database_name);
 	}
 
 	//------------------------------------------------------------------------------------ buildTable
@@ -137,23 +122,17 @@ class Foreign_Key implements Sql\Foreign_Key
 	 */
 	public static function buildTable(mysqli $mysqli, $table_name, $database_name = null)
 	{
-		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
-		$foreign_keys  = [];
-		$result        = $mysqli->query(
-			'SELECT `constraint_name` AS `Constraint`,'
-			. " RIGHT(`constraint_name`, LENGTH(`constraint_name`) - LOCATE('.', `constraint_name`)) AS `Fields`,"
-			. ' `update_rule` AS `On_update`, `delete_rule` AS `On_delete`,'
-			. " `referenced_table_name` AS `Reference_table`, 'id' AS `Reference_fields`" . LF
-			. 'FROM `information_schema`.`referential_constraints`' . LF
-			. 'WHERE `constraint_schema` = ' . $database_name
-			. ' AND `table_name` = ' . Q . $table_name . Q
-		);
-		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
-			/** @var $foreign_key Foreign_Key */
-			$foreign_keys[$foreign_key->getFields()[0]] = $foreign_key;
-		}
-		$result->free();
-		return $foreign_keys;
+		return static::foreignKeysOf($mysqli, 'table_name', $table_name, $database_name);
+	}
+
+	//---------------------------------------------------------------------------------- diffCombined
+	/**
+	 * @param $foreign_key Foreign_Key
+	 * @return array
+	 */
+	public function diffCombined(Foreign_Key $foreign_key)
+	{
+		return arrayDiffCombined(get_object_vars($this), get_object_vars($foreign_key), true);
 	}
 
 	//----------------------------------------------------------------------------------------- equiv
@@ -169,6 +148,55 @@ class Foreign_Key implements Sql\Foreign_Key
 			&& ($this->On_update === $foreign_key->On_update)
 			&& ($this->Reference_fields === $foreign_key->Reference_fields)
 			&& ($this->Reference_table === $foreign_key->Reference_table);
+	}
+
+	//--------------------------------------------------------------------------------- foreignKeysOf
+	/**
+	 * @param $mysqli            mysqli
+	 * @param $table_name_column string @values referenced_table_name, table_name
+	 * @param $table_name        string @example users
+	 * @param $database_name     string|null if null, will be current database
+	 * @return Foreign_Key[]
+	 */
+	protected static function foreignKeysOf(
+		mysqli $mysqli, $table_name_column, $table_name, $database_name = null
+	) {
+		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+
+		/** @var $foreign_keys Foreign_Key[] */
+		$foreign_keys = [];
+
+		// Constraint, Fields, Reference_fields, Reference_table
+		$result = $mysqli->query("
+			SELECT `constraint_name`   `Constraint`,
+				`column_name`            `Fields`,
+				`referenced_column_name` `Reference_fields`,
+				`referenced_table_name`  `Reference_table`
+			FROM `information_schema`.`key_column_usage`
+			WHERE `constraint_schema` = $database_name
+			AND `$table_name_column` = '$table_name'
+			AND `referenced_column_name` IS NOT NULL
+			AND `referenced_table_name` IS NOT NULL
+		");
+		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
+			/** @var $foreign_key Foreign_Key */
+			$foreign_keys[$foreign_key->Constraint] = $foreign_key;
+		}
+		$result->free();
+
+		// On_delete, On_update
+		$result = $mysqli->query("
+			SELECT `constraint_name` `Constraint`, `delete_rule` `On_delete`, `update_rule` `On_update`
+			FROM `information_schema`.`referential_constraints`
+			WHERE `constraint_schema` = $database_name
+			AND `$table_name_column` = '$table_name'
+		");
+		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
+			$foreign_keys[$foreign_key->Constraint]->On_delete = $foreign_key->On_delete;
+			$foreign_keys[$foreign_key->Constraint]->On_update = $foreign_key->On_update;
+		}
+		$result->free();
+		return $foreign_keys;
 	}
 
 	//--------------------------------------------------------------------------------- getConstraint

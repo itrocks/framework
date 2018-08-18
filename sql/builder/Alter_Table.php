@@ -47,6 +47,15 @@ class Alter_Table
 	 */
 	private $drop_foreign_keys = [];
 
+	//---------------------------------------------------------------------------- $set_character_set
+	/**
+	 * Alter table character set (ie UTF8)
+	 *
+	 * @example DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci
+	 * @var string
+	 */
+	private $set_character_set = null;
+
 	//---------------------------------------------------------------------------------------- $table
 	/**
 	 * @var Table
@@ -128,7 +137,7 @@ class Alter_Table
 		foreach ($this->drop_foreign_keys as $foreign_key) {
 			$this->sqlAddLockTable($lock_tables, $foreign_key->getReferenceTable());
 			if ($alter) $alter .= ',' . LF;
-			$alter .= $foreign_key->toDropSql();
+			$alter .= TAB . $foreign_key->toDropSql();
 		}
 		foreach ($this->alter_columns as $column_name => $alter_column) {
 			if ($alter) $alter .= ',' . LF;
@@ -142,6 +151,10 @@ class Alter_Table
 			$this->sqlAddLockTable($lock_tables, $foreign_key->getReferenceTable());
 			if ($constraints) $constraints .= ',' . LF;
 			$constraints .= TAB . 'ADD' . SP . $foreign_key->toSql();
+		}
+		if ($this->set_character_set) {
+			if ($alter) $alter .= ',' . LF;
+			$alter .= TAB . $this->set_character_set;
 		}
 		$queries = [];
 		if ($lock && strpos($lock_tables, ',')) {
@@ -164,7 +177,7 @@ class Alter_Table
 	 * Check if the changes will crash or lose data
 	 *
 	 * @param $mysqli mysqli
-	 * @param $notice @string @values Maintainer::const local
+	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if table structure modification will not crash or break stored data
 	 */
 	public function check(mysqli $mysqli, $notice)
@@ -188,7 +201,7 @@ class Alter_Table
 	 * Check if adding foreign keys will crash because of orphan records
 	 *
 	 * @param $mysqli mysqli
-	 * @param $notice @string @values Maintainer::const local
+	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if adding foreign keys will not result in SQL errors because of orphans
 	 */
 	protected function checkForeignKeys(mysqli $mysqli, $notice)
@@ -283,7 +296,7 @@ class Alter_Table
 	 * Check if reducing size of fields will not break data
 	 *
 	 * @param $mysqli mysqli
-	 * @param $notice @string @values Maintainer::const local
+	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if data will not be destroyed by the types modifications
 	 */
 	protected function checkTypes(mysqli $mysqli, $notice)
@@ -304,7 +317,7 @@ class Alter_Table
 	 * Check if changing values for ENUM and SET will not break data
 	 *
 	 * @param $mysqli mysqli
-	 * @param $notice @string @values Maintainer::const local
+	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if data will not be destroyed by the values modifications
 	 */
 	protected function checkValues(mysqli $mysqli, $notice)
@@ -337,7 +350,18 @@ class Alter_Table
 		return $this->add_columns
 			|| $this->add_foreign_keys
 			|| $this->alter_columns
-			|| $this->drop_foreign_keys;
+			|| $this->drop_foreign_keys
+			|| $this->set_character_set;
+	}
+
+	//------------------------------------------------------------------------------- setCharacterSet
+	/**
+	 * @param $character_set string
+	 * @param $collate       string
+	 */
+	public function setCharacterSet($character_set, $collate)
+	{
+		$this->set_character_set = "DEFAULT CHARSET=$character_set COLLATE=$collate";
 	}
 
 	//------------------------------------------------------------------------------- sqlAddLockTable
