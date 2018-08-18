@@ -38,7 +38,7 @@ class List_Annotation extends Annotation
 		$position = $start;
 		while ($position < $length) {
 			if (($value[$position] === BS) && ($position < ($length - 1))) {
-				$position++;
+				$position ++;
 			}
 			if ($value[$position] === $in_quote) {
 				$next_position = $position + 1;
@@ -53,7 +53,7 @@ class List_Annotation extends Annotation
 				if (!isset($stop)) {
 					$stop = $position;
 				}
-				$values[] = substr($value, $start, $stop - $start);
+				$values[] = trim(substr($value, $start, $stop - $start));
 				$position ++;
 				if ($position == $length) {
 					$start = $position;
@@ -71,7 +71,7 @@ class List_Annotation extends Annotation
 				$start = ($in_quote ? ($position + 1) : $position);
 				$stop  = null;
 			}
-			$position++;
+			$position ++;
 		}
 		if (($position == $length) && ($values || ($position > $start))) {
 			$values[] = substr($value, $start, $position - $start);
