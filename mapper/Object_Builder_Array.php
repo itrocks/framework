@@ -648,7 +648,7 @@ class Object_Builder_Array
 					}
 				}
 				elseif (isset($array[$property_name])) {
-					$search[$property_name] = ($property->getType()->isDateTime())
+					$search[$property_name] = $property->getType()->isDateTime()
 						? Loc::dateToIso($array[$property_name])
 						: $array[$property_name];
 				}
