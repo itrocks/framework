@@ -187,7 +187,7 @@ class Date_Format
 		// new Date_Time will rise exception if input is incorrect
 		// DateTime::createFromFormat will rise exception if input is incorrect
 		try {
-			if (empty($date) || (new Date_Time($date))->isMin()) {
+			if (empty($date) || (new Date_Time($date))->isEmpty()) {
 				return '';
 			}
 			if (strlen($date) == 10) {
