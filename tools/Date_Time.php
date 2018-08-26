@@ -410,13 +410,15 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns last day of the month (goes to the end of the month)
 	 *
+	 * @deprecated use toEndOf instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-31 23:59:59'
 	 * @return Date_Time
+	 * @see toEndOf
 	 */
 	public function lastDayOfMonth()
 	{
-		if ($this->isMin()) {
-			return static::min();
+		if ($this->isEmpty()) {
+			return new static($this);
 		}
 		return new static($this->format('Y-m-t 23:59:59'));
 	}
@@ -466,12 +468,14 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
+	 * @deprecated use toBeginningOf(Date_Time::MONTH) instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return Date_Time
+	 * @see toBeginningOf
 	 */
 	public function month()
 	{
-		if ($this->isMin()) {
+		if ($this->isEmpty()) {
 			return new static($this);
 		}
 		return new static($this->format('Y-m'));
@@ -507,15 +511,62 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this;
 	}
 
-	//----------------------------------------------------------------------------------------- today
+	//--------------------------------------------------------------------------------- toBeginningOf
 	/**
-	 * Returns current date, with an empty time (00:00:00)
+	 * Returns a date of the beginning of the $unit
 	 *
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MONTH)  => 'YYYY-MM-01 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::YEAR)   => 'YYYY-01-01 00:00:00'
+	 * @param $unit string @values day, hour, month, minute, year
 	 * @return Date_Time
 	 */
-	public static function today()
+	public function toBeginningOf($unit)
 	{
-		return new static(date('Y-m-d 00:00:00'));
+		if ($this->isEmpty()) {
+			return new static($this);
+		}
+		switch ($unit) {
+			case Date_Time::MINUTE: $format = 'Y-m-d H:i:00';     break;
+			case Date_Time::HOUR:   $format = 'Y-m-d H:00:00';    break;
+			case Date_Time::DAY:    $format = 'Y-m-d 00:00:00';   break;
+			case Date_Time::MONTH:  $format = 'Y-m-01 00:00:00';  break;
+			case Date_Time::YEAR:   $format = 'Y-01-01 00:00:00'; break;
+			// invalid value for $unit : a new Date_Time with the same time
+			default: $format = 'Y-m-d H:i:s';
+		}
+		return new static($this->format($format));
+	}
+
+	//--------------------------------------------------------------------------------------- toEndOf
+	/**
+	 * Returns a date of the end of the $unit
+	 *
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MONTH)  => 'YYYY-MM-01 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::YEAR)   => 'YYYY-01-01 00:00:00'
+	 * @param $unit string @values day, hour, month, minute, year
+	 * @return Date_Time
+	 */
+	public function toEndOf($unit)
+	{
+		if ($this->isEmpty()) {
+			return new static($this);
+		}
+		switch ($unit) {
+			case Date_Time::MINUTE: $format = 'Y-m-d H:i:59';     break;
+			case Date_Time::HOUR:   $format = 'Y-m-d H:59:59';    break;
+			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59';   break;
+			case Date_Time::MONTH:  $format = 'Y-m-t 23:59:59';   break;
+			case Date_Time::YEAR:   $format = 'Y-12-31 23:59:59'; break;
+			// invalid value for $unit : a new Date_Time with the same time
+			default: $format = 'Y-m-d H:i:s';
+		}
+		return new static($this->format($format));
 	}
 
 	//----------------------------------------------------------------------------------------- toISO
@@ -544,6 +595,17 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		return new static($this->format('Y-m'));
+	}
+
+	//----------------------------------------------------------------------------------------- today
+	/**
+	 * Returns current date, with an empty time (00:00:00)
+	 *
+	 * @return Date_Time
+	 */
+	public static function today()
+	{
+		return new static(date('Y-m-d 00:00:00'));
 	}
 
 	//-------------------------------------------------------------------------------------- tomorrow
