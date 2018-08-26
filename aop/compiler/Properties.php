@@ -245,10 +245,18 @@ class Properties
 				|| isset($property_advices['replaced'])
 			) {
 				$over = $this->overrideMethod('__construct', false);
+				$code = $over['call'] ?: (
+					$this->class->getParentClass()
+					? "if (method_exists(get_parent_class(__CLASS__), '__construct')) {
+			parent::__construct();
+		}"
+					: ''
+				);
 				return
 					$over['prototype'] . '
 		if (!isset($this->id)) $this->__default();
-		if (!isset($this->_)) $this->__aop();' . ($over['call'] ? (LF . TAB . TAB . $over['call']) : '')
+		if (!isset($this->_)) $this->__aop();'
+					. ($code ? (LF . TAB . TAB . $code) : '')
 					. '
 	}
 ';
@@ -267,10 +275,9 @@ class Properties
 		$over = $this->overrideMethod('__default', false);
 		$code = $over['call'] ?: (
 			$this->class->getParentClass()
-				?
-			'if (method_exists(get_parent_class(__CLASS__), \'__default\')) {
+			? "if (method_exists(get_parent_class(__CLASS__), '__default')) {
 			parent::__default();
-		}'
+		}"
 				: ''
 		);
 		foreach ($advices as $property_name => $property_advices) {
