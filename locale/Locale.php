@@ -100,16 +100,24 @@ class Locale implements Configurable
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string
-	 * @return string|integer|float
+	 * @return string|integer|float|Date_Time
 	 */
 	public function propertyToIso(Reflection_Property $property, $value = null)
 	{
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
 		}
+		$type = $property->getType();
+		if (
+			!$value
+			&& $type->isDateTime()
+			&& ($property->getAnnotation('default')->value === (Date_Time::class . '::max'))
+		) {
+			return Date_Time::max();
+		}
 		return (is_null($value) && $property->getAnnotation('null')->value)
 			? $value
-			: $this->toIso($value, $property->getType());
+			: $this->toIso($value, $type);
 	}
 
 	//------------------------------------------------------------------------------ propertyToLocale
