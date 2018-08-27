@@ -205,6 +205,7 @@ class Maintainer implements Configurable, Registerable
 				$queries         = (new Create_Table($table))->build();
 				$mysqli->context = array_merge($builder->dependencies_context, [$class_name]);
 				foreach ($queries as $query) {
+					$this->updateContextAfterCreate($class_name, $mysqli, $query);
 					$this->query($mysqli, $query);
 				}
 				$mysqli->context = $last_context;
@@ -572,6 +573,31 @@ class Maintainer implements Configurable, Registerable
 		return $this->requests;
 	}
 
+	//---------------------------------------------------------------------- updateContextAfterCreate
+	/**
+	 * Call this before an ALTER TABLE CREATE FOREIGN to ensure that foreign tables are ok
+	 *
+	 * Verify foreign table constraints once the table is created (first query).
+	 * This a patch to avoid crashes on this scenario :
+	 * add constraint > error > create foreign table > add constraint => strange mysql error.
+	 *
+	 * After calling this, you can alter table (or anything else if it was not an ALTER TABLE)
+	 *
+	 * @param $class_name string the name of the class to exclude from updates (main query class)
+	 * @param $mysqli     Contextual_Mysqli the connexion to the contextual mysqli used for queries
+	 * @param $query      string the query that is going to be executed (to filter by 'ALTER TABLE')
+	 */
+	private function updateContextAfterCreate($class_name, Contextual_Mysqli $mysqli, $query = null)
+	{
+		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
+			foreach ($mysqli->context as $context_class_name) {
+				if ($context_class_name !== $class_name) {
+					$this->updateTable($context_class_name, $mysqli);
+				}
+			}
+		}
+	}
+
 	//--------------------------------------------------------------------------- updateContextTables
 	/**
 	 * @param $mysqli  Contextual_Mysqli
@@ -624,6 +650,7 @@ class Maintainer implements Configurable, Registerable
 				$queries         = (new Create_Table($class_table))->build();
 				$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
 				foreach ($queries as $query) {
+					$this->updateContextAfterCreate($class_name, $mysqli, $query);
 					$this->query($mysqli, $query);
 				}
 				$result = true;
