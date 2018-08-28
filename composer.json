@@ -5,6 +5,9 @@
 	"name":         "itrocks/framework",
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
+		"php":        ">=5.6.0",
+		"ext-mysqli": "*",
+
 		"alvaro-prieto/colResizable":            "1.6",
 		"bappli/document-designer":              "dev-master",
 		"components/jquery":                     "2.*",
