@@ -37,9 +37,9 @@ before_script:
 
   # Use relevant branch/tag
   - if [ -z "${CI_COMMIT_TAG}" ]; then
-      sed -i -e "s/dev-master/dev-${CI_COMMIT_REF_NAME}#${CI_COMMIT_REF_SLUG} as dev-master/g" /frameworkci/composer.json
+      sed -i -e "s/dev-master/dev-${CI_COMMIT_REF_NAME}#${CI_COMMIT_REF_SLUG} as dev-master/g" /frameworkci/composer.json;
     else
-      sed -i -e "s/dev-master/${CI_COMMIT_REF_NAME}/g" /frameworkci/composer.json
+      sed -i -e "s/dev-master/${CI_COMMIT_REF_NAME}/g" /frameworkci/composer.json;
     fi
 
   # Php info
@@ -48,7 +48,7 @@ before_script:
   # Copy cache if exist
   - if [ -d "$CI_PROJECT_DIR/.frameworkci_vendor_cache/" ]; then
       echo "Copy cached vendor rsync -qaP $CI_PROJECT_DIR/.frameworkci_vendor_cache/ /frameworkci/vendor/" &&
-      rsync -qaP $CI_PROJECT_DIR/.frameworkci_vendor_cache/ /frameworkci/vendor/
+      rsync -qaP $CI_PROJECT_DIR/.frameworkci_vendor_cache/ /frameworkci/vendor/;
     fi
 
   # Install
