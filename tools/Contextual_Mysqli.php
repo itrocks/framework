@@ -141,10 +141,10 @@ class Contextual_Mysqli extends mysqli
 			return $table->hasColumn($column_name);
 		}
 		else {
-			$res = $this->query('SHOW TABLES');
+			$res = $this->query("SHOW TABLES LIKE '$table_name'");
 			/** @var $table Table */
 			while ($table = $res->fetch_row()) {
-				if ($table[0] == $table_name) {
+				if (reset($table) === $table_name) {
 					$res->free();
 					return true;
 				}
