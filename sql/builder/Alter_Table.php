@@ -210,9 +210,10 @@ class Alter_Table
 		$table_name    = $this->table->getName();
 
 		foreach ($this->add_foreign_keys as $foreign_key) {
-			$source_field  = $foreign_key->getFields()[0];
+			$do_not_count  = true;
 			$foreign_table = $foreign_key->getReferenceTable();
 			$foreign_field = $foreign_key->getReferenceFields()[0];
+			$source_field  = $foreign_key->getFields()[0];
 
 			$result = $mysqli->query("SHOW CREATE TABLE `$foreign_table`");
 			$row    = $result->fetch_row();
@@ -226,6 +227,7 @@ class Alter_Table
 					case 'warning': trigger_error($error_message, E_USER_NOTICE);
 				}
 				$orphans_count ++;
+				$do_not_count = true;
 			}
 
 			$check_fields_queries = [
@@ -241,7 +243,7 @@ class Alter_Table
 				$result->free();
 			}
 
-			if ($fields_count === 2) {
+			if (($fields_count === 2) && !$do_not_count) {
 
 				$check_query = "
 					SELECT COUNT(*)
