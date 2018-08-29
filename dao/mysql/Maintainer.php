@@ -10,6 +10,7 @@ use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -690,7 +691,8 @@ class Maintainer implements Configurable, Registerable
 		else {
 			$properties = $class->getProperties();
 		}
-		foreach ($properties as $property) {
+		foreach (Replaces_Annotations::removeReplacedProperties($properties) as $property) {
+			/** @var $property Reflection_Property */
 			if (Link_Annotation::of($property)->isMap()) {
 				$this->updateImplicitTable($property, $exclude_class_name, $mysqli);
 			}
