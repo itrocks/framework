@@ -61,8 +61,9 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @param $constraint  string CASCADE, NO ACTION, RESTRICT, SET NULL
 	 * @return Foreign_Key
 	 */
-	public static function buildLink($table_name, $column_name, $class_name, $constraint = 'CASCADE')
-	{
+	public static function buildLink(
+		$table_name, $column_name, $class_name, $constraint = self::CASCADE
+	) {
 		if (substr($column_name, 0, 3) !== 'id_') {
 			$column_name = 'id_' . $column_name;
 		}
@@ -166,6 +167,8 @@ class Foreign_Key implements Sql\Foreign_Key
 		/** @var $foreign_keys Foreign_Key[] */
 		$foreign_keys = [];
 
+		// Why two queries ? A single query with a join would be very slower
+
 		// Constraint, Fields, Reference_fields, Reference_table
 		$result = $mysqli->query("
 			SELECT `constraint_name`   `Constraint`,
@@ -196,6 +199,7 @@ class Foreign_Key implements Sql\Foreign_Key
 			$foreign_keys[$foreign_key->Constraint]->On_update = $foreign_key->On_update;
 		}
 		$result->free();
+
 		return $foreign_keys;
 	}
 
