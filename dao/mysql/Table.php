@@ -67,7 +67,11 @@ class Table implements Sql\Table
 	 */
 	public function addForeignKey(Foreign_Key $foreign_key)
 	{
-		$this->foreign_keys[$foreign_key->getConstraint()] = $foreign_key;
+		$constraint = $foreign_key->getConstraint();
+		if (isset($this->foreign_keys[$constraint])) {
+			trigger_error("Foreign key $constraint overrides an existing one", E_USER_WARNING);
+		}
+		$this->foreign_keys[$constraint] = $foreign_key;
 	}
 
 	//-------------------------------------------------------------------------------------- addIndex

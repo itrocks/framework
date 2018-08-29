@@ -58,20 +58,24 @@ class Foreign_Key implements Sql\Foreign_Key
 	 * @param $table_name  string the table name
 	 * @param $column_name string the column name linking to the foreign key (with or without 'id_')
 	 * @param $class_name  string the foreign class name
-	 * @param $constraint  string CASCADE, NO ACTION, RESTRICT, SET NULL
+	 * @param $on          string CASCADE, NO ACTION, RESTRICT, SET NULL
 	 * @return Foreign_Key
 	 */
-	public static function buildLink(
-		$table_name, $column_name, $class_name, $constraint = self::CASCADE
-	) {
+	public static function buildLink($table_name, $column_name, $class_name, $on = self::CASCADE)
+	{
 		if (substr($column_name, 0, 3) !== 'id_') {
 			$column_name = 'id_' . $column_name;
 		}
+		$constraint = $table_name . DOT . $column_name;
+		if (strlen($constraint) > 64) {
+			$constraint = md5($table_name) . md5($column_name);
+		}
+
 		$foreign_key                   = new Foreign_Key();
-		$foreign_key->Constraint       = substr($table_name . DOT . $column_name, 0, 64);
+		$foreign_key->Constraint       = $constraint;
 		$foreign_key->Fields           = $column_name;
-		$foreign_key->On_delete        = $constraint;
-		$foreign_key->On_update        = $constraint;
+		$foreign_key->On_delete        = $on;
+		$foreign_key->On_update        = $on;
 		$foreign_key->Reference_fields = 'id';
 		$foreign_key->Reference_table  = Dao::storeNameOf($class_name);
 		return $foreign_key;

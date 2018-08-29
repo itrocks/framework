@@ -20,15 +20,15 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyConstraintToMysql($table_name, Reflection_Property $property)
 	{
-		return substr(
-			$table_name . DOT . (
-				Link_Annotation::of($property)->value
-					? ('id_' . Store_Name_Annotation::of($property)->value)
-					: Store_Name_Annotation::of($property)->value
-			),
-			0,
-			64
-		);
+		$column_name = Link_Annotation::of($property)->value
+			? ('id_' . Store_Name_Annotation::of($property)->value)
+			: Store_Name_Annotation::of($property)->value;
+
+		$constraint = $table_name . DOT . $column_name;
+		if (strlen($constraint) > 64) {
+			$constraint = md5($table_name) . md5($column_name);
+		}
+		return $constraint;
 	}
 
 	//------------------------------------------------------------------------- propertyFieldsToMysql
