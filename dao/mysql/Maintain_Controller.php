@@ -80,6 +80,7 @@ class Maintain_Controller implements Feature_Controller
 					$class
 					&& !$class->isAbstract()
 					&& $class->getAnnotation('business')->value
+					&& !$class->getAnnotation('deprecated')->value
 				) {
 					$store = true;
 					if (isset($children[$class_name])) {
