@@ -223,7 +223,7 @@ class Alter_Table
 				$error_message = "Could not add foreign key from $table_name"
 					. " to non-InnoDB $foreign_table table";
 				switch ($notice) {
-					case 'verbose': echo $error_message . BRLF; break;
+					case 'verbose': echo '! ' . $error_message . BRLF; break;
 					case 'warning': trigger_error($error_message, E_USER_NOTICE);
 				}
 				$orphans_count ++;
@@ -284,7 +284,7 @@ class Alter_Table
 		if (!strpos($create, ') ENGINE=InnoDB')) {
 			$error_message = "Could not add foreign key from $table_name non-InnoDB table";
 			switch ($notice) {
-				case 'output':  echo $error_message . BRLF; break;
+				case 'output':  echo '! ' . $error_message . BRLF; break;
 				case 'warning': trigger_error($error_message, E_USER_NOTICE);
 			}
 			$orphans_count ++;
