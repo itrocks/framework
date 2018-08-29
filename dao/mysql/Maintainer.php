@@ -2,13 +2,20 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Alter_Table;
 use ITRocks\Framework\Sql\Builder\Create_Table;
+use ITRocks\Framework\Sql\Link_Table;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -132,7 +139,7 @@ class Maintainer implements Configurable, Registerable
 		$only_ids  = true;
 		$table     = new Table($table_name);
 		$ids_index = new Index();
-		$ids_index->setType(Index::UNIQUE);
+		$ids_index->setType(Index::PRIMARY);
 		$indexes = [];
 		foreach ($column_names as $column_name) {
 			$table->addColumn(
@@ -152,9 +159,9 @@ class Maintainer implements Configurable, Registerable
 								Names::setToSingle(Namespaces::shortClassName($context_class))
 							);
 						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
-							$table->addForeignKey(
-								Foreign_Key::buildLink($table_name, $column_name, $context_class)
-							);
+							$table->addForeignKey(Foreign_Key::buildLink(
+								$table_name, $column_name, $context_class
+							));
 							break;
 						}
 					}
@@ -205,7 +212,7 @@ class Maintainer implements Configurable, Registerable
 				$queries         = (new Create_Table($table))->build();
 				$mysqli->context = array_merge($builder->dependencies_context, [$class_name]);
 				foreach ($queries as $query) {
-					$this->updateContextAfterCreate($class_name, $mysqli, $query);
+					$this->updateContextAfterCreate($mysqli, $query, $class_name);
 					$this->query($mysqli, $query);
 				}
 				$mysqli->context = $last_context;
@@ -583,12 +590,13 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * After calling this, you can alter table (or anything else if it was not an ALTER TABLE)
 	 *
-	 * @param $class_name string the name of the class to exclude from updates (main query class)
 	 * @param $mysqli     Contextual_Mysqli the connexion to the contextual mysqli used for queries
 	 * @param $query      string the query that is going to be executed (to filter by 'ALTER TABLE')
+	 * @param $class_name string the name of the class to exclude from updates (main query class)
 	 */
-	private function updateContextAfterCreate($class_name, Contextual_Mysqli $mysqli, $query = null)
-	{
+	private function updateContextAfterCreate(
+		Contextual_Mysqli $mysqli, $query = null, $class_name = null
+	) {
 		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
 			foreach ($mysqli->context as $context_class_name) {
 				if ($context_class_name !== $class_name) {
@@ -614,15 +622,91 @@ class Maintainer implements Configurable, Registerable
 		return isset($retry);
 	}
 
+	//--------------------------------------------------------------------------- updateImplicitTable
+	/**
+	 * @param $property           Reflection_Property a property with @link Map
+	 * @param $exclude_class_name string no need to update this already updated class
+	 * @param $mysqli             Contextual_Mysqli
+	 */
+	private function updateImplicitTable(
+		Reflection_Property $property, $exclude_class_name, Contextual_Mysqli $mysqli
+	) {
+		$link_table          = new Link_Table($property);
+		$column_name         = $link_table->masterColumn();
+		$foreign_column_name = $link_table->foreignColumn();
+		$table_name          = $link_table->table();
+
+		$class_name         = Builder::className($property->getFinalClassName());
+		$foreign_class_name = Builder::className($property->getType()->getElementTypeAsString());
+
+		// only the foreign class may be updated : the main has already been done by caller
+		if ($foreign_class_name !== $exclude_class_name) {
+			$this->updateTable($foreign_class_name, $mysqli, false);
+		}
+
+		$table = new Table($table_name);
+		$table->addColumn(Column::buildLink($column_name));
+		$table->addColumn(Column::buildLink($foreign_column_name));
+
+		$ids_index = new Index();
+		$ids_index->addKey($column_name);
+		$ids_index->addKey($foreign_column_name);
+		$ids_index->setType(Index::PRIMARY);
+		$table->addIndex($ids_index);
+		$table->addForeignKey(Foreign_Key::buildLink(
+			$table_name, $column_name, $class_name
+		));
+
+		$second_index = new Index();
+		$second_index->addKey($foreign_column_name);
+		$table->addIndex($second_index);
+		$table->addForeignKey(Foreign_Key::buildLink(
+			$table_name, $foreign_column_name, $foreign_class_name
+		));
+
+		// do not create empty implicit table if does not already exist
+		// will be automatically created on first needed use
+		if ($mysqli->exists($table_name)) {
+			$context         = $mysqli->context;
+			$mysqli->context = [$class_name, $foreign_class_name];
+			$this->updateTableStructure($table, new Table_Builder_Class(), $mysqli);
+			$mysqli->context = $context;
+		}
+	}
+
+	//-------------------------------------------------------------------------- updateImplicitTables
+	/**
+	 * @param $class              Reflection_Class a class to scan properties for @link Map
+	 * @param $exclude_class_name string no need to update this already updated class
+	 * @param $mysqli             Contextual_Mysqli
+	 */
+	private function updateImplicitTables(
+		Reflection_Class $class, $exclude_class_name, Contextual_Mysqli $mysqli
+	) {
+		if (Class_\Link_Annotation::of($class)->value) {
+			$link_class = new Link_Class($class->name);
+			$properties = $link_class->getLocalProperties();
+		}
+		else {
+			$properties = $class->getProperties();
+		}
+		foreach ($properties as $property) {
+			if (Link_Annotation::of($property)->isMap()) {
+				$this->updateImplicitTable($property, $exclude_class_name, $mysqli);
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------- updateTable
 	/**
 	 * Update table structure corresponding to a data class
 	 *
 	 * @param $class_name string
 	 * @param $mysqli     mysqli If null, Dao::current()->getConnection() will be taken
+	 * @param $implicit   boolean if true, update linked implicit tables (anti-recursion)
 	 * @return boolean true if an update query has been generated and executed
 	 */
-	public function updateTable($class_name, mysqli $mysqli = null)
+	public function updateTable($class_name, mysqli $mysqli = null, $implicit = true)
 	{
 		if (isset($this->exclude_classes[$class_name])) {
 			return false;
@@ -637,122 +721,157 @@ class Maintainer implements Configurable, Registerable
 				trigger_error('Must call updateTable() with a valid $mysqli link', E_USER_ERROR);
 			}
 		}
+
 		$result              = false;
 		$table_builder_class = new Table_Builder_Class();
 		$table_builder_class->exclude_class_names = $this->exclude_classes;
 		$class_tables = $table_builder_class->build($class_name);
 		foreach ($class_tables as $class_table) {
-			$table_name  = $class_table->getName();
-			$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
+			$result = $this->updateTableStructure(
+				$class_table, $table_builder_class, $mysqli, $class_name
+			);
+		}
+		if ($implicit && $result) {
+			$this->updateImplicitTables(new Reflection_Class($class_name), $class_name, $mysqli);
+		}
+		return $result;
+	}
 
-			// create table
-			if (!$mysql_table) {
-				$queries         = (new Create_Table($class_table))->build();
-				$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
-				foreach ($queries as $query) {
-					$this->updateContextAfterCreate($class_name, $mysqli, $query);
-					$this->query($mysqli, $query);
-				}
-				$result = true;
+	//-------------------------------------------------------------------------- updateTableStructure
+	/**
+	 * @param $class_table         Table
+	 * @param $table_builder_class Table_Builder_Class
+	 * @param $mysqli              Contextual_Mysqli
+	 * @param $class_name          string
+	 * @return boolean
+	 */
+	private function updateTableStructure(
+		Table $class_table, Table_Builder_Class $table_builder_class,
+		Contextual_Mysqli $mysqli, $class_name = null
+	) {
+		$table_name  = $class_table->getName();
+		$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
+		// create table
+		if (!$mysql_table) {
+			$queries         = (new Create_Table($class_table))->build();
+			$mysqli->context = $class_name
+				? array_merge($table_builder_class->dependencies_context, [$class_name])
+				: $table_builder_class->dependencies_context;
+			foreach ($queries as $query) {
+				$this->updateContextAfterCreate($mysqli, $query, $class_name);
+				$this->query($mysqli, $query);
 			}
+			$result = true;
+		}
 
-			// alter table
+		// alter table
+		else {
+			$alter_primary_key  = true;
+			$builder            = new Alter_Table($mysql_table);
+			$foreign_keys       = null;
+			$mysql_columns      = $mysql_table->getColumns();
+			$mysql_foreign_keys = $mysql_table->getForeignKeys();
+
+			$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
+			$row    = $result->fetch_row();
+			$result->free();
+			$create_table = end($row);
+			if (!strpos($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
+				$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
+			}
 			else {
-				$alter_primary_key  = true;
-				$builder            = new Alter_Table($mysql_table);
-				$foreign_keys       = null;
-				$mysql_columns      = $mysql_table->getColumns();
-				$mysql_foreign_keys = $mysql_table->getForeignKeys();
-
-				$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
-				$row    = $result->fetch_row();
+				$result = $mysqli->query("SHOW TABLE STATUS LIKE '$table_name'");
+				$status = $result->fetch_assoc();
 				$result->free();
-				$create_table = end($row);
-				if (!strpos($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
+				if ($status['Collation'] !== Database::COLLATE) {
 					$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
 				}
-				else {
-					$result = $mysqli->query("SHOW TABLE STATUS LIKE '$table_name'");
-					$status = $result->fetch_assoc();
-					$result->free();
-					if ($status['Collation'] !== Database::COLLATE) {
-						$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
-					}
-				}
+			}
 
-				foreach ($class_table->getColumns() as $column) {
-					$column_name = $column->getName();
-					if (!isset($mysql_columns[$column_name])) {
-						$builder->addColumn($column);
-					}
-					elseif (!$column->equiv($mysql_columns[$column_name])) {
-						if ($this->notice) {
-							$message = 'Maintainer alters column '
-								. $mysql_table->getName() . '.' . $column->getName() . BRLF
-								. PRE
-								. print_r($mysql_columns[$column_name]->diffCombined($column), true)
-								. _PRE;
-							switch ($this->notice) {
-								case self::VERBOSE: echo $message . BRLF; break;
-								case self::WARNING: trigger_error($message, E_USER_NOTICE);
-							}
-						}
-						$builder->alterColumn($column_name, $column);
-						if (isset($mysql_foreign_keys[$table_name . DOT . $column_name])) {
-							$builder->alterForeignKey($mysql_foreign_keys[$table_name . DOT . $column_name]);
-						}
-						// if the column is already a primary key or if not wished : do not alter primary key
-						if (
-							($column->getName() === 'id')
-							&& ($mysql_columns[$column_name]->isPrimaryKey() || !$column->isPrimaryKey())
-						) {
-							$alter_primary_key = false;
-						}
-					}
+			foreach ($class_table->getColumns() as $column) {
+				$column_name = $column->getName();
+				if (!isset($mysql_columns[$column_name])) {
+					$builder->addColumn($column);
 				}
-				$class_foreign_keys = $class_table->getForeignKeys();
-				foreach ($class_foreign_keys as $foreign_key_constraint => $foreign_key) {
-					if (!isset($mysql_foreign_keys[$foreign_key_constraint])) {
-						$builder->addForeignKey($foreign_key);
-					}
-					elseif (!$foreign_key->equiv($mysql_foreign_keys[$foreign_key_constraint])) {
-						if ($this->notice) {
-							$message = 'Maintainer alters foreign key constraint '
-								. $mysql_table->getName() . '.' . $foreign_key_constraint . BRLF
-								. PRE
-								. print_r(
-									$mysql_foreign_keys[$foreign_key_constraint]->diffCombined($foreign_key), true
-								)
-								. _PRE;
-							switch ($this->notice) {
-								case self::VERBOSE: echo $message . BRLF; break;
-								case self::WARNING: trigger_error($message, E_USER_NOTICE);
-							}
-						}
-						$builder->alterForeignKey($foreign_key);
-					}
-				}
-				foreach ($mysql_foreign_keys as $foreign_key_constraint => $foreign_key) {
-					if (!isset($class_foreign_keys[$foreign_key_constraint])) {
-						$builder->dropForeignKey($foreign_key);
-					}
-				}
-				if ($builder->isReady()) {
-					$mysqli->context = array_merge($table_builder_class->dependencies_context, [$class_name]);
-					if ($builder->check($mysqli, $this->notice)) {
-						foreach ($builder->build(true, $alter_primary_key) as $query) {
-							$this->query($mysqli, $query);
-						}
-					}
-					elseif ($this->notice) {
-						$message = "Ignored update of $class_name / $table_name";
+				elseif (!$column->equiv($mysql_columns[$column_name])) {
+					if ($this->notice) {
+						$message = 'Maintainer alters column '
+							. $mysql_table->getName() . '.' . $column->getName() . BRLF
+							. PRE
+							. print_r($mysql_columns[$column_name]->diffCombined($column), true)
+							. _PRE;
 						switch ($this->notice) {
-							case self::OUTPUT: case self::VERBOSE: echo '! ' . $message . BRLF; break;
-							case self::WARNING: trigger_error($message, E_USER_WARNING);
+							case self::VERBOSE:
+								echo $message . BRLF;
+								break;
+							case self::WARNING:
+								trigger_error($message, E_USER_NOTICE);
 						}
 					}
-					$result = true;
+					$builder->alterColumn($column_name, $column);
+					if (isset($mysql_foreign_keys[$table_name . DOT . $column_name])) {
+						$builder->alterForeignKey($mysql_foreign_keys[$table_name . DOT . $column_name]);
+					}
+					// if the column is already a primary key or if not wished : do not alter primary key
+					if (
+						($column->getName() === 'id')
+						&& ($mysql_columns[$column_name]->isPrimaryKey() || !$column->isPrimaryKey())
+					) {
+						$alter_primary_key = false;
+					}
 				}
+			}
+			$class_foreign_keys = $class_table->getForeignKeys();
+			foreach ($class_foreign_keys as $foreign_key_constraint => $foreign_key) {
+				if (!isset($mysql_foreign_keys[$foreign_key_constraint])) {
+					$builder->addForeignKey($foreign_key);
+				}
+				elseif (!$foreign_key->equiv($mysql_foreign_keys[$foreign_key_constraint])) {
+					if ($this->notice) {
+						$message = 'Maintainer alters foreign key constraint '
+							. $mysql_table->getName() . '.' . $foreign_key_constraint . BRLF
+							. PRE
+							. print_r(
+								$mysql_foreign_keys[$foreign_key_constraint]->diffCombined($foreign_key), true
+							)
+							. _PRE;
+						switch ($this->notice) {
+							case self::VERBOSE:
+								echo $message . BRLF;
+								break;
+							case self::WARNING:
+								trigger_error($message, E_USER_NOTICE);
+						}
+					}
+					$builder->alterForeignKey($foreign_key);
+				}
+			}
+			foreach ($mysql_foreign_keys as $foreign_key_constraint => $foreign_key) {
+				if (!isset($class_foreign_keys[$foreign_key_constraint])) {
+					$builder->dropForeignKey($foreign_key);
+				}
+			}
+			if ($builder->isReady()) {
+				$mysqli->context = $class_name
+					? array_merge($table_builder_class->dependencies_context, [$class_name])
+					: $table_builder_class->dependencies_context;
+				if ($builder->check($mysqli, $this->notice)) {
+					foreach ($builder->build(true, $alter_primary_key) as $query) {
+						$this->query($mysqli, $query);
+					}
+				}
+				elseif ($this->notice) {
+					$message = 'Ignored update of ' . ($class_name ?: 'implicit table') . SP . $table_name;
+					switch ($this->notice) {
+						case self::OUTPUT:
+						case self::VERBOSE:
+							echo '! ' . $message . BRLF;
+							break;
+						case self::WARNING:
+							trigger_error($message, E_USER_WARNING);
+					}
+				}
+				$result = true;
 			}
 		}
 		return $result;
