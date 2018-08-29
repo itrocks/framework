@@ -37,6 +37,7 @@ class Email
 	//-------------------------------------------------------------------------------- $blind_copy_to
 	/**
 	 * @link Map
+	 * @set_store_name emails_recipients_blind_copy_to
 	 * @var Recipient[]
 	 */
 	public $blind_copy_to = [];
@@ -54,6 +55,7 @@ class Email
 	//-------------------------------------------------------------------------------------- $copy_to
 	/**
 	 * @link Map
+	 * @set_store_name emails_recipients_copy_to
 	 * @var Recipient[]
 	 */
 	public $copy_to = [];
@@ -121,6 +123,7 @@ class Email
 	//------------------------------------------------------------------------------------------- $to
 	/**
 	 * @link Map
+	 * @set_store_name emails_recipients_to
 	 * @var Recipient[]
 	 */
 	public $to = [];
