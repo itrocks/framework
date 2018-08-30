@@ -170,7 +170,7 @@ class Write extends Data_Link\Write
 		if ($this->beforeWrite(
 			$this->object,
 			$this->options,
-			$new_object ? Write::BEFORE_CREATE : Write::BEFORE_UPDATE
+			$new_object ? self::BEFORE_CREATE : self::BEFORE_UPDATE
 		)) {
 			$this->link->begin();
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
@@ -246,7 +246,7 @@ class Write extends Data_Link\Write
 			);
 			$this->link->commit();
 			$this->afterWrite(
-				$this->object, $this->options, $new_object ? Write::AFTER_CREATE : Write::AFTER_UPDATE
+				$this->object, $this->options, $new_object ? self::AFTER_CREATE : self::AFTER_UPDATE
 			);
 			// TODO HIGHEST remove this 'anti-crash-on-update' patch condition
 			if (method_exists($this, 'prepareAfterCommit')) {
