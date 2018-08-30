@@ -12,12 +12,12 @@ class Join
 
 	//------------------------------------------------------------------------------------- JOIN MODE
 	const INNER = 'INNER';
-	const LEFT = 'LEFT';
+	const LEFT  = 'LEFT';
 	const OUTER = 'OUTER';
 	const RIGHT = 'RIGHT';
 
 	//------------------------------------------------------------------------------------- JOIN TYPE
-	const LINK = 'LINK';
+	const LINK   = 'LINK';
 	const OBJECT = 'OBJECT';
 	const SIMPLE = 'SIMPLE';
 
@@ -167,8 +167,8 @@ class Join
 	public function toSql()
 	{
 		return LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
-		. ' ON ' . $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ
-		. ' = ' . $this->master_alias . DOT . BQ . $this->master_column . BQ;
+			. ' ON ' . $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ
+			. ' = ' . $this->master_alias . DOT . BQ . $this->master_column . BQ;
 	}
 
 }
