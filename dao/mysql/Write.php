@@ -169,7 +169,8 @@ class Write extends Data_Link\Write
 		$new_object = !Dao::getObjectIdentifier($this->object);
 		if ($this->beforeWrite(
 			$this->object,
-			$this->options, $new_object ? Write::BEFORE_CREATE : Write::BEFORE_UPDATE
+			$this->options,
+			$new_object ? Write::BEFORE_CREATE : Write::BEFORE_UPDATE
 		)) {
 			$this->link->begin();
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {

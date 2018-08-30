@@ -26,6 +26,15 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@after_commit' => Method_Annotation::class,
 
 	/**
+	 * @after_create afterCreate
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object is created using a data link
+	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
+	 * if needed
+	 */
+	Parser::T_CLASS . '@after_create' => Method_Annotation::class,
+
+	/**
 	 * @after_read afterRead
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is read using a data link
@@ -40,15 +49,6 @@ Parser::$default_annotations = [
 	 * - These methods may accept the source object, if needed
 	 */
 	Parser::T_CLASS . '@after_transform' => Method_Annotation::class,
-
-	/**
-	 * @after_create afterCreate
-	 * This is a Multiple_Annotation
-	 * Declare one or several methods to call after the object is created using a data link
-	 * - These methods may accept a Dao\Data_Link as first argument and Dao\Option[] as second,
-	 * if needed
-	 */
-	Parser::T_CLASS . '@after_create' => Method_Annotation::class,
 
 	/**
 	 * @after_update afterUpdate

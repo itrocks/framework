@@ -67,8 +67,7 @@ abstract class Write
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $after_writes Method_Annotation[] */
 		$after_writes = $reflexion_class->getAnnotations($after_write_annotation);
-		if ($after_write_annotation === self::AFTER_CREATE
-			 || $after_write_annotation === self::AFTER_UPDATE) {
+		if (in_array($after_write_annotation, [self::AFTER_CREATE, self::AFTER_UPDATE])) {
 			$after_writes = array_merge(
 				$after_writes, $reflexion_class->getAnnotations(self::AFTER_WRITE)
 			);
@@ -83,15 +82,14 @@ abstract class Write
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object                   object
-	 * @param $options                  Option[]
-	 * @param $before_write_annotation  string @values before_create, before_update, before_write,
-	 *                                  before_writes
+	 * @param $object                  object
+	 * @param $options                 Option[]
+	 * @param $before_write_annotation string @values before_create, before_update, before_write,
+	 *                                 before_writes
 	 * @return boolean
 	 * @throws ReflectionException
 	 */
-	public function beforeWrite
-	($object, array &$options, $before_write_annotation = self::BEFORE_WRITE)
+	public function beforeWrite($object, array &$options, $before_write_annotation)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class = new Reflection_Class(get_class($object));
