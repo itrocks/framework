@@ -9,12 +9,13 @@ $('document').ready(function()
 		this.inside('.auto_width').autoWidth();
 
 		//------------------------------------------------------------------------- a with target click
-    this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event) {
-      if ($(this).hasClass('disabled')) {
-        event.preventDefault()
-        event.stopImmediatePropagation()
-      }
-    });
+		this.find('a, button, input[type=submit]').click(function(event)
+		{
+			if ($(this).hasClass('disabled')) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+			}
+		});
 
 		//--------------------------------------------------------------------------------- close popup
 		if (this.is('.popup') || this.closest('.popup').length) {
