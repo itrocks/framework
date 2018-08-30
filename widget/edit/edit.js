@@ -25,7 +25,7 @@ $('document').ready(function()
 			});
 			$popup.find('.general.actions a').click(function() {
 				var $this = $(this);
-				setTimeout(function () { $this.closest('.popup').remove(); }, 1);
+				setTimeout(function() { $this.closest('.popup').remove(); });
 			});
 		}
 

@@ -294,7 +294,7 @@
 				var executeClick = function() {
 					// ensures that pending messages (blur on a combo) resolve before click
 					if (window.running_combo !== undefined) {
-						setTimeout(executeClick, 1);
+						setTimeout(executeClick);
 						return;
 					}
 					if (is_javascript) {
@@ -361,7 +361,7 @@
 			var executeClick = function() {
 				// ensures that pending messages (blur on a combo) resolve before click
 				if (window.running_combo !== undefined) {
-					setTimeout(executeClick, 1);
+					setTimeout(executeClick);
 					return;
 				}
 				if ($form.ajaxSubmit !== undefined) {
