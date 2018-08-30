@@ -151,11 +151,13 @@
 					}
 				}
 				setTimeout(function () {
-					if (($target.offset().left + $target.outerWidth()) > $(window).outerWidth()) {
-						$target.css('left', ($(window).outerWidth() - $target.outerWidth()));
+					var offset  = $target.offset();
+					var $window = $(window);
+					if ((offset.left + $target.outerWidth()) > $window.outerWidth()) {
+						$target.css('left', ($window.outerWidth() - $target.outerWidth()));
 					}
-					if (($target.offset().top + $target.outerHeight()) > $(window).outerHeight()) {
-						$target.css('top', ($(window).outerHeight() - $target.outerHeight()));
+					if ((offset.top + $target.outerHeight()) > $window.outerHeight()) {
+						$target.css('top', ($window.outerHeight() - $target.outerHeight()));
 					}
 				});
 				return $target;
