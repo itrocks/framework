@@ -107,38 +107,13 @@ class Json
 		if (in_array($unduplicate_name, $parent_tree)) return false;
 		array_push($parent_tree, $unduplicate_name);
 		foreach ($properties as $property) {
-			if (
-				$property->isVisible()
-				&& $property->isPublic()
-				&& !$property->isStatic()
-				&& !$property->getAnnotation('composite')->value
-			) {
-				$name           = $property->name;
-				$property_value = $property->getValue($business_object);
-				$type           = $property->getType();
-				if ($type->isMultiple()) {
-					$array = [];
-					if ($type->isMultipleString()) {
-						//TODO: check with many values, if $property_value is still a string with comma or directly an array?
-						$values = ($property_value !== '') ? explode(',', $property_value): null;
-					}
-					elseif ($property_value) {
-						$values = $property_value;
-					}
-					if (isset($values)) {
-						foreach($values as $value) {
-							$array[] = $this->propertyToStdInternal(
-								$property, $value, $type, $parent_tree
-							);
-						}
-					}
-					$standard_object->$name = $array;
-				}
-				else {
-					$standard_object->$name = $this->propertyToStdInternal(
-						$property, $property_value, $type, $parent_tree
-					);
-				}
+			if ($this->shouldExportProperty($property)) {
+				$name                   = $property->name;
+				$property_value         = $property->getValue($business_object);
+				$type                   = $property->getType();
+				$standard_object->$name = $this->propertyToStdInternal(
+					$property, $property_value, $type, $parent_tree
+				);
 			}
 		}
 		return true;
@@ -164,11 +139,12 @@ class Json
 		if (!isset($type)) {
 			$type = $property->getType();
 		}
-		if (is_array($value)) {
-			throw new Exception('Bad argument given. Value should not be array');
-		}
 		if ($type->isStrictlyBasic() || $type->isMultipleString()) {
 			return $value;
+		}
+		elseif ($type->isMultipleString()) {
+			// TODO: check with many values, if $property_value is still a string with comma or directly an array?
+			return ($value === '') ? [] : explode(',', $value);
 		}
 		elseif ($type->isDateTime()) {
 			if (($value instanceof Date_Time) && !($value instanceof Date_Time_Error)) {
@@ -187,26 +163,64 @@ class Json
 					return null;
 				}
 				else {
-					$sub_object = new stdClass();
-
-					// case we should expand
-					if ($this->isBrowsableProperty($property)) {
-						if (!$this->objectToStdClassInternal($sub_object, $value, $parent_tree)) {
-							$this->notBrowsableObjectToStdClass($sub_object, $value);
+					$browse = $this->isBrowsableProperty($property);
+					if ($type->isMultiple()) {
+						$array = [];
+						if ($value) foreach ($value as $business_object) {
+							$array[] = $this->subObjectToStdClassInternal($browse, $business_object, $parent_tree);
 						}
+						return $array;
 					}
-					// case we do not expand
 					else {
-						$this->notBrowsableObjectToStdClass($sub_object, $value);
+						return $this->subObjectToStdClassInternal($browse, $value, $parent_tree);
 					}
-
-					return $sub_object;
 				}
 			}
 		}
 		else {
-			throw new Exception('Missing type case for Json::objectToStdClassInternal');
+			throw new Exception('Missing type case for Json::propertyToStdInternal');
 		}
+	}
+
+	//-------------------------------------------------------------------------- shouldExportProperty
+	/**
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	public function shouldExportProperty(Reflection_Property $property)
+	{
+		return $property->isVisible()
+			&& $property->isPublic()
+			&& !$property->isStatic()
+			&& !$property->getAnnotation('composite')->value;
+	}
+
+	//------------------------------------------------------------------- subObjectToStdClassInternal
+	/**
+	 * @param $browse          boolean
+	 * @param $business_object mixed
+	 * @param $parent_tree     array of unduplicate name for each object in calling hierarchy
+	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
+	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
+	 * @return mixed
+	 * @return stdClass
+	 */
+	protected function subObjectToStdClassInternal($browse, $business_object, $parent_tree)
+	{
+		$sub_object = new stdClass();
+
+		// case we should expand
+		if ($browse) {
+			if (!$this->objectToStdClassInternal($sub_object, $business_object, $parent_tree)) {
+				$this->notBrowsableObjectToStdClass($sub_object, $business_object);
+			}
+		}
+		// case we do not expand
+		else {
+			$this->notBrowsableObjectToStdClass($sub_object, $business_object);
+		}
+
+		return $sub_object;
 	}
 
 	//---------------------------------------------------------------------------------------- toJson
