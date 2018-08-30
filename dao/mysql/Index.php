@@ -11,8 +11,8 @@ class Index implements Sql\Index
 
 	//------------------------------------------------------------------------ $type values constants
 	const KEY     = 'KEY';
-	const PRIMARY = 'PRIMARY';
-	const UNIQUE  = 'UNIQUE';
+	const PRIMARY = 'PRIMARY KEY';
+	const UNIQUE  = 'UNIQUE KEY';
 
 	//----------------------------------------------------------------------------------------- $keys
 	/**
