@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Controller;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Paths;
 
 /**
  * The controller URI contains the controller name, feature, and additional parameters
@@ -181,6 +182,24 @@ class Uri
 			$this->parameters->addValue(join(BS, $controller_elements));
 		}
 
+	}
+
+	//-------------------------------------------------------------------------------------- previous
+	/**
+	 * Get previous uri
+	 *
+	 * @return string previous uri or default uri ('/')
+	 */
+	public static function previous()
+	{
+		$uri      = SL;
+		$referrer = isset($_SERVER['HTTP_REFERER'])
+			? rParse($_SERVER['HTTP_REFERER'], Paths::$uri_base)
+			: null;
+		if ($referrer && ($referrer !== SL) && ($referrer !== '/?X')) {
+			$uri = $referrer;
+		}
+		return $uri;
 	}
 
 	//----------------------------------------------------------------------------------- setDefaults
