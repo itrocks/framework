@@ -663,7 +663,11 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 		if ($class_properties) {
 			foreach ($data->getRows() as $row) {
 				foreach ($class_properties as $property_path) {
-					$row->setValue($property_path, strval($row->getValue($property_path)));
+					$value = $row->getValue($property_path);
+					if (is_array($value)){
+						$value = join(LF, $value);
+					}
+					$row->setValue($property_path, $value);
 				}
 			}
 		}
