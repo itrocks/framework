@@ -389,12 +389,14 @@ class Write extends Data_Link\Write
 		$element_class = $property->getType()->asReflectionClass();
 		$element_link  = Class_\Link_Annotation::of($element_class);
 		$id_set        = [];
-		$options       = $this->spread_options;
 		// collection properties : write each of them
 		if ($collection) {
-			$options[]             = new Option\Link_Class_Only();
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
 			foreach ($collection as $key => $element) {
+				$options = $this->spread_options;
+				if (!Dao::isLinkedObjectModified($element)) {
+					$options[] = new Option\Link_Class_Only();
+				}
 				if (!is_a($element, $element_class->getName())) {
 					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
 						$element_link->getLinkClass()->getCompositeProperty()->name => $element
@@ -429,6 +431,7 @@ class Write extends Data_Link\Write
 			}
 		}
 		// remove old unused elements
+		$options = $this->spread_options;
 		foreach ($old_collection as $old_element) {
 			$id = $element_link->value
 				? $this->link->getLinkObjectIdentifier($old_element, $element_link)

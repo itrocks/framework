@@ -306,6 +306,17 @@ class Dao implements Configurable
 		return self::current()->is($object1, $object2, $strict);
 	}
 
+	//------------------------------------------------------------------------ isLinkedObjectModified
+	/**
+	 * @param $object object
+	 * @return boolean
+	 * @see modify
+	 */
+	public static function isLinkedObjectModified($object)
+	{
+		return isset($object->_dao_modified_linked_object);
+	}
+
 	//------------------------------------------------------------------------------------------- key
 	/**
 	 * An option to choose what property value will be used as keys for Dao::readAll()
@@ -336,6 +347,26 @@ class Dao implements Configurable
 	public static function limit($from = null, $count = null)
 	{
 		return new Option\Limit($from, $count);
+	}
+
+	//---------------------------------------------------------------------------- modifyLinkedObject
+	/**
+	 * Tells that an object has been modified since it was read from the DAO and should be written.
+	 *
+	 * This disable the Link_Class_Only Dao option automatically set by Write::writeCollection
+	 *
+	 * @param $object object
+	 * @param $modified boolean true to enable 'modified, force write' ; false to disable it
+	 * @see Write::writeCollection
+	 */
+	public static function modifyLinkedObject($object, $modified = true)
+	{
+		if ($modified) {
+			$object->_dao_modified_linked_object = true;
+		}
+		else {
+			unset($object->_dao_modified);
+		}
 	}
 
 	//------------------------------------------------------------------------------------------ only
