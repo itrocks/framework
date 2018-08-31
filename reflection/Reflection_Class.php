@@ -40,11 +40,12 @@ class Reflection_Class extends ReflectionClass
 	 * If class properties are set to accessible several times, they will become non-accessible after
 	 * the same number of done() calls.
 	 *
+	 * @param $flags string[] @values self::T_SORT, T_EXTENDS, T_USE
 	 * @return Reflection_Property[]
 	 */
-	public function accessProperties()
+	public function accessProperties($flags = null)
 	{
-		$properties = $this->getProperties([T_EXTENDS, T_USE]);
+		$properties = $this->getProperties($flags);
 		foreach ($properties as $property) {
 			if (!$property->isPublic()) {
 				$property->setAccessible(true);

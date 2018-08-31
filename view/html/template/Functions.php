@@ -934,7 +934,7 @@ class Functions
 			}
 		}
 		else {
-			$properties = $class->accessProperties();
+			$properties = $class->accessProperties([Reflection_Class::T_SORT, T_EXTENDS, T_USE]);
 		}
 
 		foreach ($properties as $property_path => $property) {
