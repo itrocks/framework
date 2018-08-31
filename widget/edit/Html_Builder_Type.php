@@ -268,7 +268,7 @@ class Html_Builder_Type
 			&& is_numeric($counter = lParse(rLastParse($field_name, '['), ']'))
 		) {
 			$id_input = new Input(
-				lLastParse($field_name, '[') . '[id][' . $counter . ']',
+				lLastParse($field_name, '[') . '[' . $counter . '][id]',
 				Dao::getObjectIdentifier($this->value)
 			);
 			$id_input->addClass('id');
