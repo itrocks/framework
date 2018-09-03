@@ -63,16 +63,16 @@ function cmp($v1, $v2, $strict = true)
  *
  * @param $class_name_or_object string|object
  * @param $objects              object[]
- * @return boolean
+ * @return object|null
  */
 function instanceIn($class_name_or_object, array $objects)
 {
 	foreach ($objects as $object) {
 		if ($object instanceof $class_name_or_object) {
-			return true;
+			return $object;
 		}
 	}
-	return false;
+	return null;
 }
 
 //--------------------------------------------------------------------------------------------- isA

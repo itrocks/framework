@@ -105,8 +105,10 @@ abstract class Properties implements Option
 	/**
 	 * Returns true options contains at least one option of static class
 	 *
+	 * @deprecated should use Has_In and its method in() instead
 	 * @param $options Option[]
-	 * @return boolean
+	 * @return object|null if found, the first instance of the class into $options
+	 * @see Has_In::in
 	 */
 	public static function instanceIn(array $options)
 	{

@@ -6,5 +6,6 @@ namespace ITRocks\Framework\Dao\Option;
  */
 class Only extends Properties
 {
+	use Has_In;
 
 }
