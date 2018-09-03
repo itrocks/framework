@@ -202,10 +202,9 @@ class Json
 	 * @param $parent_tree     array of unduplicate name for each object in calling hierarchy
 	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
 	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
-	 * @return mixed
 	 * @return stdClass
 	 */
-	protected function subObjectToStdClassInternal($browse, $business_object, $parent_tree)
+	protected function subObjectToStdClassInternal($browse, $business_object, array $parent_tree)
 	{
 		$sub_object = new stdClass();
 
