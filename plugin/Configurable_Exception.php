@@ -15,17 +15,15 @@ class Configurable_Exception extends Exception
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Configuration_Exception constructor.
-	 *
 	 * @param $plugin   Plugin
 	 * @param $message  string
 	 * @param $code     integer
 	 * @param $previous Throwable|null
 	 */
 	public function __construct(
-		Plugin $plugin, $message = "", $code = 0, Throwable $previous = null
+		Plugin $plugin, $message = '', $code = 0, Throwable $previous = null
 	) {
-		$message = '[' . get_class($plugin) . ']' . $message;
+		$message = '[' . get_class($plugin) . ']' . SP . $message;
 		parent::__construct($message, $code, $previous);
 	}
 
