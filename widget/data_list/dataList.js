@@ -49,7 +49,17 @@ $('document').ready(function()
 			var $this = $(this);
 			$this.id = $this.attr('id');
 
-			var updateCount = function () {
+			//--------------------------------------------------------------- .list.window resetSelection
+			var resetSelection = function()
+			{
+				excluded_selection = [];
+				select_all         = [];
+				selection          = [];
+			};
+
+			//------------------------------------------------------------------ .list.window updateCount
+			var updateCount = function ()
+			{
 				var count_elements, select_all_content, selection_content, selection_exclude_content, text;
 				if (select_all[$this.id]) {
 					select_all_content        = 1;
@@ -95,15 +105,20 @@ $('document').ready(function()
 			$this.find('.search').find('input, textarea').keydown(function(event)
 			{
 				if (event.keyCode === 13) {
+					resetSelection();
 					$(this).closest('form').submit();
 				}
 			});
 
 			//--------------------------------------------------------------------- .search select change
-			$this.find('.search').find('select').change(function()
+			$this.find('.search select').change(function()
 			{
+				resetSelection();
 				$(this).closest('form').submit();
 			});
+
+			//------------------------------------------------------------- .search .reset.search a click
+			$this.find('.search .reset.search a').click(resetSelection);
 
 			//-------------------------------------------------------------------------------------- drag
 			// when a property is dragged over the droppable object
