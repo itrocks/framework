@@ -658,15 +658,13 @@ class Link extends Dao\Sql\Link
 			}
 			return null;
 		}
-		else {
-			if ($clause === 'SELECT') {
-				$result = $this->connection->query('SELECT FOUND_ROWS()');
-				$row    = $result->fetch_row();
-				$result->free();
-				return $row[0];
-			}
-			return $this->connection->affected_rows;
+		elseif ($clause === 'SELECT') {
+			$result = $this->connection->query('SELECT FOUND_ROWS()');
+			$row    = $result->fetch_row();
+			$result->free();
+			return $row[0];
 		}
+		return $this->connection->affected_rows;
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties

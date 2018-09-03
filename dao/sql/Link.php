@@ -212,28 +212,23 @@ abstract class Link extends Identifier_Map implements Transactional
 		if (!isset($list)) {
 			$list = $this->selectList($object_class, $properties);
 		}
+
 		if ($double_pass) {
 			$new_filter_object = $this->selectFirstPass(
 				$object_class, $properties, $filter_object, $options
 			);
+			if (!$new_filter_object) {
+				return new Default_List_Data($object_class, $properties);
+			}
 			$filter_object = $filter_object
-				? (
-					$new_filter_object
-					? Func::andOp([$filter_object, Func::orOp($new_filter_object)])
-					: $filter_object
-				)
+				? Func::andOp([$filter_object, Func::orOp($new_filter_object)])
 				: $new_filter_object;
 		}
-		if (!$double_pass || ($double_pass && $filter_object)) {
-			$select = new Select($object_class, $properties, $this);
-			$query  = $select->prepareQuery($filter_object, $options);
-		}
-		else {
-			$select = new Select($object_class, [], $this);
-			$query  = $select->prepareQuery(false);
-		}
+
+		$select     = new Select($object_class, $properties, $this);
+		$query      = $select->prepareQuery($filter_object, $options);
 		$result_set = $this->query($query);
-		if (isset($options) && !isset($double_pass)) {
+		if ($options && !$double_pass) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 		}
 		return $select->fetchResultRows($result_set, $list);
@@ -387,11 +382,11 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *                 read. You can use 'column.sub_column' to get values from linked objects from
 	 *                 the same data source. You can use Dao\Func\Column sub-classes to get result of
 	 *                 functions.
-	 * @return array [$double_pass, $list]
+	 * @return array [boolean $double_pass, array $list]
 	 */
 	private function selectOptions(array $options, array $columns)
 	{
-		$double_pass = null;
+		$double_pass = false;
 		$list        = null;
 		foreach ($options as $option) {
 			if ($option instanceof Option\Double_Pass) {
