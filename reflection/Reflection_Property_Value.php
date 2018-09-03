@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
@@ -168,26 +169,33 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * Gets the object containing the value (null if the value was set as a value)
 	 *
-	 * @param $new_if_null boolean if true, return new empty object instead of null object
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $with_default boolean false
 	 * @return object|null
 	 */
-	public function getObject($new_if_null = false)
+	public function getObject($with_default = false)
 	{
 		$object = $this->object;
 		if (strpos($this->path, DOT)) {
 			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
 				if (!$object) {
-					break;
-				}
-				if ($new_if_null && !isset($object->$property_name)) {
-					/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
-					$type = (new Reflection_Property(get_class($object), $property_name))->getType();
-					if ($type->isClass()) {
-						$object = $type->asReflectionClass()->newInstance();
-						continue;
+					if ($with_default && isset($previous_object) && isset($previous_property_name)) {
+						/** @noinspection PhpUnhandledExceptionInspection the property path must be valid */
+						$previous_property = new Reflection_Property(
+							get_class($previous_object), $previous_property_name
+						);
+						/** @noinspection PhpUnhandledExceptionInspection the property type must be valid */
+						$object = Builder::create($previous_property->getType()->getElementTypeAsString());
+					}
+					else {
+						break;
 					}
 				}
-				$object = $object->$property_name;
+				if (!empty($property_name)) {
+					$previous_object        = $object;
+					$previous_property_name = $property_name;
+					$object                 = $object->$property_name;
+				}
 			}
 		}
 		return $object;
