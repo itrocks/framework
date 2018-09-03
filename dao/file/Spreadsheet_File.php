@@ -19,7 +19,6 @@ class Spreadsheet_File
 	 * Cleanup incoming data (string)
 	 *
 	 * @param $data string
-	 * @return string
 	 */
 	protected function cleanupIncomingData(&$data)
 	{
@@ -28,7 +27,7 @@ class Spreadsheet_File
 				$data = str_replace($search, $replace, $data);
 			}
 		}
-		return trim($data);
+		$data = trim($data);
 	}
 
 	//----------------------------------------------------------------------------------- fileToArray
