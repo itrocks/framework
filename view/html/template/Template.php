@@ -2068,21 +2068,20 @@ class Template
 		) {
 			return $uri;
 		}
-		$file_relative_path = str_replace('../', '', $uri);
-		$is_css_file        = substr($file_relative_path, -4) == '.css';
-		if ($is_css_file && (strrpos($uri, '/vendor/') === false)) {
-			$file_relative_path = substr($uri, strrpos($uri, SL) + 1);
-		}
+		$position  = strrpos($uri, '/vendor/');
+		$file_name = ($position !== false)
+			? substr($uri, $position + 1)
+			: substr($uri, strrpos($uri, SL) + 1);
 		$file_path = null;
-		if ($is_css_file) {
-			$file_path = static::getCssPath($this->css) . SL . $file_relative_path;
+		if (substr($file_name, -4) == '.css') {
+			$file_path = static::getCssPath($this->css) . SL . $file_name;
 			if (!file_exists(Paths::$file_root . $file_path)) {
 				$file_path = null;
 			}
 		}
 		if (!isset($file_path)) {
 			$file_path = substr(
-				stream_resolve_include_path($file_relative_path), strlen(Paths::$file_root)
+				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 			);
 			if (!$file_path || !file_exists(Paths::$file_root . $file_path)) {
 				return $this->replaceLink(SL . $uri);
