@@ -521,23 +521,24 @@ class Functions
 	public function getExpand(Template $template)
 	{
 		/** @var $property Reflection_Property */
-		$property = reset($template->objects);
-		$expanded = [];
-		$expanded = $this->visibleProperties((new Integrated_Properties)->expandUsingProperty(
-			$expanded, $property, $template->getParentObject($property->class)
-		));
-		if ($expanded) {
+		$property            = reset($template->objects);
+		$expanded_properties = [];
+		$expanded_properties = $this->visibleProperties(
+			(new Integrated_Properties)->expandUsingProperty(
+				$expanded_properties, $property, $template->getParentObject($property->class)
+			)
+		);
+		if ($expanded_properties) {
 			/** @var $first_property Reflection_Property_Value PhpStorm should see this, but no */
-			$first_property = reset($expanded);
-			$object         = $first_property->getObject(true);
-			$expanded       = $this->filterProperties($object, $expanded);
-			$properties     = $expanded;
+			$first_property      = reset($expanded_properties);
+			$object              = $first_property->getObject(true);
+			$expanded_properties = $this->filterProperties($object, $expanded_properties);
 		}
 		else {
-			$properties = [$property];
+			$expanded_properties = [$property];
 		}
 		if ($expand_property_path = $template->getParameter(Parameter::EXPAND_PROPERTY_PATH)) {
-			foreach ($properties as $property) {
+			foreach ($expanded_properties as $property) {
 				// view_path for html name must include the 'expand property path'
 				if ($property instanceof Reflection_Property_Value) {
 					$property->view_path = $expand_property_path . DOT . $property->path;
@@ -551,7 +552,7 @@ class Functions
 				}
 			}
 		}
-		return $properties;
+		return $expanded_properties;
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
@@ -1285,9 +1286,9 @@ class Functions
 	 */
 	protected function visibleProperties(array $properties)
 	{
-		foreach ($properties as $key => $property) {
+		foreach ($properties as $property_key => $property) {
 			if (!$this->isPropertyVisible($property)) {
-				unset($properties[$key]);
+				unset($properties[$property_key]);
 			}
 		}
 		return $properties;
