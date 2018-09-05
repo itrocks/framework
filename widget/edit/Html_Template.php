@@ -188,7 +188,7 @@ class Html_Template extends Template
 			}
 			else {
 				$value = $property->getType()->isBoolean()
-					? $property->value()
+					? $property->value(null, true)
 					: parent::parseSingleValue($property_name, false);
 				if (
 					($prefix = lLastParse($property->pathAsField(), '[', 1, false))

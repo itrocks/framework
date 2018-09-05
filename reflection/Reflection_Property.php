@@ -472,18 +472,19 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets value
 	 *
-	 * @param $object object
+	 * @param $object       object
+	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed
 	 * @throws ReflectionException
 	 */
-	public function getValue($object = null)
+	public function getValue($object = null, $with_default = false)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
 			$property = new Reflection_Property($this->root_class, array_shift($path));
 			foreach ($path as $property_name) {
-				$object = $property->getValue($object);
+				$object = $property->getValue($object, $with_default);
 				while (is_array($object)) {
 					$object = reset($object);
 				}
@@ -491,11 +492,14 @@ class Reflection_Property extends ReflectionProperty
 				$property = new Reflection_Property(
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
+				if ($with_default && !$object && !is_array($object)) {
+					$object = $property->getFinalClass()->newInstance();
+				}
 			}
 			while (is_array($object)) {
 				$object = reset($object);
 			}
-			return $object ? $property->getValue($object) : null;
+			return $object ? $property->getValue($object, $with_default) : null;
 		}
 		// TODO HIGHER $object may never be an array here ?!? This while() is probably dead-code, remove
 		while (is_array($object)) {

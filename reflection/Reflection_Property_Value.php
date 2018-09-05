@@ -299,10 +299,11 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//----------------------------------------------------------------------------------------- value
 	/**
-	 * @param $value mixed
+	 * @param $value        mixed
+	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed
 	 */
-	public function value($value = null)
+	public function value($value = null, $with_default = false)
 	{
 		if ($value !== null) {
 			if ($this->final_value) {
@@ -320,7 +321,7 @@ class Reflection_Property_Value extends Reflection_Property
 			}
 		}
 		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
-		return $this->final_value ? $this->object : $this->getValue($this->object);
+		return $this->final_value ? $this->object : $this->getValue($this->object, $with_default);
 	}
 
 }
