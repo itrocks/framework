@@ -130,7 +130,7 @@ class Page
 			return -1001;
 		}
 		if ($ordering === static::ALL) {
-			return -1000;
+			return 10000;
 		}
 		$ordering = intval($ordering);
 		if (!$ordering) {
