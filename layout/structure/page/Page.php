@@ -146,22 +146,17 @@ class Page
 
 	//--------------------------------------------------------------------------------------- isEmpty
 	/**
-	 * @return boolean true if the page contains no visible elements
+	 * @return boolean true if the page contains no visible elements / properties
 	 */
 	public function isEmpty()
 	{
-		if (!$this->elements) {
-			return true;
-		}
+		$count_elements = count($this->elements);
 		foreach ($this->elements as $element) {
-			if (!(
-				($element instanceof Snap_Line)
-				|| ($element instanceof Group)
-			)) {
-				return false;
+			if (($element instanceof Snap_Line) || ($element instanceof Group)) {
+				$count_elements --;
 			}
 		}
-		return true;
+		return !$count_elements && !$this->properties;
 	}
 
 }
