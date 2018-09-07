@@ -1,21 +1,29 @@
 $('document').ready(function()
 {
-	$('form').build(function()
+	var $form = $('form');
+
+	$form.build(function()
 	{
 		if (!this.length) return;
 
-		//------------------------------------------------------------------- .auto_height, .auto_width
-		this.inside('.auto_height').autoHeight();
-		this.inside('.auto_width').autoWidth();
-
 		//------------------------------------------------------------------------- a with target click
-		this.find('a, button, input[type=submit]').click(function(event)
+		this.inside('a, button, input[type=submit]').click(function(event)
 		{
 			if ($(this).hasClass('disabled')) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
 			}
 		});
+
+	}, 10);
+
+	$form.build(function()
+	{
+		if (!this.length) return;
+
+		//------------------------------------------------------------------- .auto_height, .auto_width
+		this.inside('.auto_height').autoHeight();
+		this.inside('.auto_width').autoWidth();
 
 		//--------------------------------------------------------------------------------- close popup
 		if (this.is('.popup') || this.closest('.popup').length) {
