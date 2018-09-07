@@ -7,11 +7,6 @@ $(window).scroll(function ()
 		var $parent    = $this.parent();
 		var parent_top = $parent.offset().top;
 
-		$this.css({
-			'border-top-left-radius':  0,
-			'border-top-right-radius': 0
-		});
-
 		if (parent_top < window.scrollbar.top()) {
 			var top = 0;
 			if (!$this.hasClass('fixed')) {
@@ -28,9 +23,10 @@ $(window).scroll(function ()
 							parseInt($element.css('margin-bottom')),
 							parseInt($next_element.css('margin-top'))
 						);
+					var style = $element.attr('style');
 					$element
 						.addClass('fixed')
-						.data('stay-top-style', $element.attr('style') + '')
+						.data('stay-top-style', (style === undefined) ? '' : style)
 						.css({
 							height:    $element.height(),
 							position:  'fixed',
@@ -55,7 +51,9 @@ $(window).scroll(function ()
 					'z-index':       1
 				}).data('stay-top', $this.height()));
 				$element.after($('<div>').addClass('stay-top').css({ height: top + margin_top }));
-				$this.data('stay-top-bottom', top);
+				$this
+					.css({ 'border-top-left-radius': 0, 'border-top-right-radius': 0 })
+					.data('stay-top-bottom', top);
 			}
 			var max_top = parent_top + $parent.height()
 				+ parseInt($parent.css('border-top-width'))
