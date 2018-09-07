@@ -1,19 +1,53 @@
 (function($)
 {
 
-	// this (global) static variable stores all wished build() callbacks
-	window.jquery_build_callback = [];
+	/**
+	 * this (global) static variable stores all wished build() callbacks
+	 * key 1 : integer (priority) ; key 2 : arbitrary counter 0..n (push)
+	 * always sorted by priority
+	 */
+	window.jquery_build_callback = {};
+
+	//----------------------------------------------------------------------------------- keySortPush
+	/**
+	 * This function allow to push an element into an array, with real-time sort by key
+	 *
+	 * The array must already be sorted by key before calling keySortPush, or it will not work well
+	 *
+	 * @example
+	 * keySortPush({1: 'one', 10: 'ten', 11: 'eleven'}, 5, 'five')
+	 * => {1: 'one', 5: 'five', 10: 'ten', 11: 'eleven'}
+	 * @param object
+	 * @param key
+	 * @param value
+	 */
+	var keySortPush = function(object, key, value)
+	{
+		var array = object;
+		object = {};
+		for (var array_key in array) if (array.hasOwnProperty(array_key)) {
+			if ((key !== undefined) && (array_key > key)) {
+				object[key] = value;
+				key         = undefined;
+			}
+			object[array_key] = array[array_key];
+		}
+		if (key !== undefined) {
+			object[key] = value;
+		}
+		return object;
+	};
 
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * Call build(callback) what callback functions you want to be called for future added dom elements
 	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes
 	 *
-	 * @param [callback] function the callback function
-	 * @param [call_now] boolean optional default true
+	 * @param callback function the callback function
+	 * @param priority boolean|integer optional : if boolean, set priority to 1000. default is true
 	 * @return jQuery
 	 */
-	$.fn.build = function (callback, call_now)
+	$.fn.build = function (callback, priority)
 	{
 		// use this.inside(selector) in callback to build the elements
 		this.inside = function(selector, nop)
@@ -43,18 +77,23 @@
 			return this.filter(selector).add(this.find(selector));
 		};
 
-		// add a callback function
+		// add a callback function (sorted by priority)
 		if (callback !== undefined) {
-			window.jquery_build_callback.push(callback);
-			if ((call_now === undefined) || call_now) {
+			if ((priority === undefined) || priority) {
 				callback.call(this);
 			}
+			if ((priority === undefined) || (priority === false) || (priority === true)) {
+				priority = 1000;
+			}
+			priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
+			window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
 		}
 
 		// execute all callback functions
 		else {
-			for (var key in jquery_build_callback) if (jquery_build_callback.hasOwnProperty(key)) {
-				window.jquery_build_callback[key].call(this);
+			var callbacks = window.jquery_build_callback;
+			for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
+				callbacks[key].call(this);
 			}
 		}
 

@@ -213,6 +213,6 @@ $(document).ready(function()
 			$active.addClass('active');
 		});
 
-	});
+	}, 500);
 
 });
