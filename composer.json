@@ -6,6 +6,7 @@
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
 	"require": {
 		"php":        ">=5.6.0",
+		"ext-json":   "*",
 		"ext-mysqli": "*",
 
 		"alvaro-prieto/colResizable":            "1.6",
