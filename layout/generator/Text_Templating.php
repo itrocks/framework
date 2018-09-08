@@ -5,6 +5,7 @@ use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 
 /**
@@ -92,8 +93,10 @@ class Text_Templating
 		while (($position = strpos($text, '{', $position)) !== false) {
 			$position      ++;
 			$end_position  = strpos($text, '}', $position);
-			$property_path = Loc::rtr(substr($text, $position, $end_position - $position));
-			$value         = in_array($property_path, static::PAGE_PROPERTY_PATHS)
+			$property_path = Names::displayToProperty(
+				Loc::rtr(substr($text, $position, $end_position - $position))
+			);
+			$value = in_array($property_path, static::PAGE_PROPERTY_PATHS)
 				? $this->pageProperty($property_path, $element)
 				: $this->objectProperty($property_path);
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
