@@ -1,104 +1,104 @@
 $(document).ready(function()
 {
 
+	//-------------------------------------------------------------------------------- dragCallback
+	var dragCallback = function()
+	{
+		var $dragged = this;
+		var text     = $dragged.text();
+		// remove property.path from text
+		if ($dragged.hasClass('property') && (text.indexOf(DOT) > -1)) {
+			$dragged.text(text.substr(text.lastIndexOf(DOT) + 1));
+		}
+	};
+
+	//-------------------------------------------------------------------------------- dropCallback
+	var dropCallback = function()
+	{
+		var $dropped = this;
+		// default format to text for field
+		if ($dropped.attr('data-field')) {
+			if (!$dropped.attr('data-format')) {
+				$dropped.attr('data-format', 'text');
+			}
+		}
+		// remove title from dropped tools
+		else {
+			$dropped.attr('title', '');
+		}
+		// remove property / tool classes
+		$dropped.removeClass('property');
+		$dropped.removeClass('tool');
+	};
+
+	//----------------------------------------------------------------------------- pageLayoutInput
+	/**
+	 * @param $page jQuery the page
+	 * @returns jQuery the <input name="page[layout][.]"> of the page
+	 */
+	var pageLayoutInput = function($page)
+	{
+		return $page.parent().children('input[name^="pages[layout]["][name$="]"]');
+	};
+
+	//------------------------------------------------------------------------------------ register
+	/**
+	 * @param $tools   jQuery
+	 * @param settings object
+	 */
+	var register = function($tools, settings)
+	{
+		this.register({ attribute: 'title' });
+		this.register($tools.find('#align'), 'style', 'text-align', null, settings.default.align);
+	};
+
+	//------------------------------------------------------------------------------ selectCallback
+	var selectCallback = function()
+	{
+		var $selected  = this;
+		var $editor    = $selected.closest('.editor');
+		var $tools     = $editor.find('.selected.tools');
+		var $free_text = $tools.find('#free-text');
+		var old_text   = $free_text.val();
+		// draw field
+		if ($selected.hasClass('line') || $selected.hasClass('rectangle')) {
+			$free_text.val('');
+			$tools.hide();
+		}
+		// text field
+		else if ($selected.hasClass('field')) {
+			$free_text.closest('li').show();
+			$free_text.val($selected.text());
+			$free_text.autoHeight();
+			if (
+				// if changed from a $selected to another (approximatively) : keep the focus
+				(old_text !== $selected.text())
+				// if clicked the same $selectded : switch between focused / not focused
+				|| (!$free_text.is(':focus') && !$free_text.data('focus'))
+			) {
+				$free_text.focus();
+			}
+		}
+		else {
+			$free_text.closest('li').hide();
+			$free_text.val('');
+		}
+		// title
+		var $title = $tools.children('h3');
+		var title  = $selected.text();
+		if (title.length > 30) {
+			title = '...' + title.substr(title.length - 30);
+		}
+		$title.text(title);
+		$title.attr('title', $selected.attr('title'));
+	};
+
 	//---------------------------------------------- .model.window .editor .designer documentDesigner
 	$('.model.window').build(function()
 	{
 		var $model_window = this.inside('.model.window:has(.editor)');
 		var $editor       = $model_window.find('.editor');
 		if (!$editor.length) return;
-
-		//-------------------------------------------------------------------------------- dragCallback
-		var dragCallback = function()
-		{
-			var $dragged = this;
-			var text     = $dragged.text();
-			// remove property.path from text
-			if ($dragged.hasClass('property') && (text.indexOf(DOT) > -1)) {
-				$dragged.text(text.substr(text.lastIndexOf(DOT) + 1));
-			}
-		};
-
-		//-------------------------------------------------------------------------------- dropCallback
-		var dropCallback = function()
-		{
-			var $dropped = this;
-			// default format to text for field
-			if ($dropped.attr('data-field')) {
-				if (!$dropped.attr('data-format')) {
-					$dropped.attr('data-format', 'text');
-				}
-			}
-			// remove title from dropped tools
-			else {
-				$dropped.attr('title', '');
-			}
-			// remove property / tool classes
-			$dropped.removeClass('property');
-			$dropped.removeClass('tool');
-		};
-
-		//----------------------------------------------------------------------------- pageLayoutInput
-		/**
-		 * @param $page jQuery the page
-		 * @returns jQuery the <input name="page[layout][.]"> of the page
-		 */
-		var pageLayoutInput = function($page)
-		{
-			return $page.parent().children('input[name^="pages[layout]["][name$="]"]');
-		};
-
-		//------------------------------------------------------------------------------------ register
-		/**
-		 * @param $tools   jQuery
-		 * @param settings object
-		 */
-		var register = function($tools, settings)
-		{
-			this.register({ attribute: 'title' });
-			this.register($tools.find('#align'), 'style', 'text-align', null, settings.default.align);
-		};
-
-		//------------------------------------------------------------------------------ selectCallback
-		var selectCallback = function()
-		{
-			var $selected  = this;
-			var $editor    = $selected.closest('.editor');
-			var $tools     = $editor.find('.selected.tools');
-			var $free_text = $tools.find('#free-text');
-			var old_text   = $free_text.val();
-			// draw field
-			if ($selected.hasClass('line') || $selected.hasClass('rectangle')) {
-				$free_text.val('');
-				$tools.hide();
-			}
-			// text field
-			else if ($selected.hasClass('field')) {
-				$free_text.closest('li').show();
-				$free_text.val($selected.text());
-				$free_text.autoHeight();
-				if (
-					// if changed from a $selected to another (approximatively) : keep the focus
-					(old_text !== $selected.text())
-					// if clicked the same $selectded : switch between focused / not focused
-					|| (!$free_text.is(':focus') && !$free_text.data('focus'))
-				) {
-					$free_text.focus();
-				}
-			}
-			else {
-				$free_text.closest('li').hide();
-				$free_text.val('');
-			}
-			// title
-			var $title = $tools.children('h3');
-			var title  = $selected.text();
-			if (title.length > 30) {
-				title = '...' + title.substr(title.length - 30);
-			}
-			$title.text(title);
-			$title.attr('title', $selected.attr('title'));
-		};
 
 		var $designer  = $editor.find('.designer');
 		var $free_text = $model_window.find('#free-text');
