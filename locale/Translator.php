@@ -356,7 +356,9 @@ class Translator
 		}
 		/** @var $translations Translation[] */
 		$translations = Dao::search(
-			['language' => $this->language, 'text' => $text], Translation::class, [Dao::key('context')]
+			['language' => $this->language, 'text' => Func::equal($text)],
+			Translation::class,
+			[Dao::key('context')]
 		);
 		foreach ($translations as $context => $translation) {
 			$translated_text        = $translation->translation ?: $this->defaultTranslation($text);
