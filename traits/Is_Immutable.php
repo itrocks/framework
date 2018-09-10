@@ -4,6 +4,9 @@ namespace ITRocks\Framework\Traits;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * Is_Immutable : Allow to manage storage of class only if exactly same values don't exist in Table
@@ -33,14 +36,26 @@ trait Is_Immutable
 		}
 
 		// TODO this "form cleanup" code must be generalized into a cleanup plugin
-		foreach (get_object_vars($this) as $property_name => $value) {
-			if (is_string($value)) {
-				$this->$property_name = preg_replace('#\s+#', ' ', trim($value));
+		$search = Search_Object::create(get_class($this));
+		foreach ((new Reflection_Class(get_class($this)))->getProperties() as $property) {
+			if (
+				!$property->isStatic()
+				&& !Store_Annotation::of($property)->isFalse()
+				&& ($value = $property->getValue($this))
+			) {
+				if (is_string($value)) {
+					$clean_value = preg_replace('#\s+#', ' ', trim($value));
+					if ($clean_value !== $value) {
+						$value = $clean_value;
+						$property->setValue($this, $value);
+					}
+				}
+				$property->setValue($search, $value);
 			}
 		}
 
 		$link->disconnect($this);
-		if ($existing = $link->searchOne($this)) {
+		if ($existing = $link->searchOne($search)) {
 			$link->replace($this, $existing, false);
 		}
 	}
