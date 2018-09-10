@@ -90,7 +90,7 @@ class Parser
 			}
 			try {
 				$property = new Reflection_Property(get_class($object), $property_path);
-				$value    = $property->getValue($object);
+				$value    = Loc::propertyToLocale($property, $property->getValue($object));
 			}
 			catch (ReflectionException $exception) {
 				$value = '{' . Loc::tr($exception) . '}';

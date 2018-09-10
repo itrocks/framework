@@ -10,6 +10,7 @@ use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
 
@@ -155,9 +156,13 @@ class Property_To_Text
 	 */
 	protected function property(Property $property)
 	{
-		// Create one Final_Text per final object
+		$reflection_property = new Reflection_Property(
+			get_class($this->object), $property->property_path
+		);
 		foreach ($this->values($property->property_path) as $iteration_number => $value) {
-			$final_text = $this->propertyToFinalText($property, $value);
+			$final_text = $this->propertyToFinalText(
+				$property, Loc::propertyToLocale($reflection_property, $value)
+			);
 			$this->append($final_text, $iteration_number);
 		}
 	}
