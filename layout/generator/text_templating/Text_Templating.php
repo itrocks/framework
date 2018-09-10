@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Some free texts may contain some {property.path} (VO / translated) : change them to data
@@ -60,7 +62,7 @@ class Text_Templating
 	protected function text(Text $element)
 	{
 		foreach (static::PAGE_PROPERTY_PATHS as $property_path) {
-			$search = '{' . $property_path . '}';
+			$search = '{' . Names::propertyToDisplay(Loc::tr($property_path)) . '}';
 			if (strpos($element->text, $search) !== false) {
 				$element->text = str_replace(
 					$search, $this->pageProperty($property_path, $element), $element->text
