@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
 use ITRocks\Framework\Layout\Generator\Count_Pages;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations;
@@ -76,7 +77,7 @@ class Generator
 	public function generate($object)
 	{
 		$this->object    = $object;
-		$this->structure = new Structure($this->model->class_name);
+		$this->structure = new Structure(Builder::className($this->model->class_name));
 		$this->modelToStructure();
 		// associate and auto-generate groups before page all elements to avoid mixing
 		(new Associate_Groups($this->structure))->run();

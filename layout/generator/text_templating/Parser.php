@@ -5,7 +5,6 @@ use ITRocks\Framework\Layout\Generator\Text_Templating;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
-use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 
 /**
