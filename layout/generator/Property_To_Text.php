@@ -42,7 +42,7 @@ class Property_To_Text
 	 * @param $final_text       Final_Text
 	 * @param $iteration_number integer
 	 */
-	protected function append(Final_Text $final_text, $iteration_number)
+	protected function append(Final_Text $final_text, $iteration_number = null)
 	{
 		// append element to the group iteration / page
 		if ($final_text->group) {
@@ -68,11 +68,29 @@ class Property_To_Text
 		}
 		foreach ($group->elements as $element) {
 			if ($element instanceof Text) {
-				$this->text($element);
+				$this->groupText($element);
 			}
 		}
 		foreach ($group->properties as $property) {
 			$this->property($property);
+		}
+	}
+
+	//------------------------------------------------------------------------------------- groupText
+	/**
+	 * Process a Text element (always and uniquely from a group)
+	 *
+	 * @param $text Text
+	 */
+	protected function groupText(Text $text)
+	{
+		$property_path = $text->group->property_path;
+		$values        = $this->values($property_path);
+		foreach ($values as $iteration_number => $object) {
+			$parser     = new Parser($object, $this->object, $text->group->property_path);
+			$value      = $parser->elementText($text);
+			$final_text = $this->propertyToFinalText($text, $value);
+			$this->append($final_text, $iteration_number);
 		}
 	}
 
@@ -142,9 +160,29 @@ class Property_To_Text
 		foreach ($page->groups as $group) {
 			$this->group($group);
 		}
+		foreach ($page->elements as $element_key => $element) {
+			if (($element instanceof Text) && (strpos($element->text, '{') !== false)) {
+				$this->pageText($element);
+				unset($page->elements[$element_key]);
+			}
+		}
 		foreach ($page->properties as $property) {
 			$this->property($property);
 		}
+	}
+
+	//-------------------------------------------------------------------------------------- pageText
+	/**
+	 * Process a Text element (always and uniquely from a page, and if contains {property.expression})
+	 *
+	 * @param $text Text
+	 */
+	protected function pageText(Text $text)
+	{
+		$parser     = new Parser($this->object);
+		$value      = $parser->elementText($text);
+		$final_text = $this->propertyToFinalText($text, $value);
+		$this->append($final_text);
 	}
 
 	//-------------------------------------------------------------------------------------- property
@@ -205,24 +243,6 @@ class Property_To_Text
 		$this->object = $object;
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);
-		}
-	}
-
-	//------------------------------------------------------------------------------------------ text
-	/**
-	 * Process a Text element (always and uniquely from a group)
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection getValue
-	 * @param $text Text
-	 */
-	protected function text(Text $text)
-	{
-		$property_path = $text->group->property_path;
-		foreach ($this->values($property_path) as $iteration_number => $object) {
-			$parser     = new Parser($object, $this->object, $text->group->property_path);
-			$value      = $parser->elementText($text);
-			$final_text = $this->propertyToFinalText($text, $value);
-			$this->append($final_text, $iteration_number);
 		}
 	}
 
