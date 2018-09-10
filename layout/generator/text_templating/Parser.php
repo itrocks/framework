@@ -57,9 +57,7 @@ class Parser
 		while (($position = strpos($text, '{', $position)) !== false) {
 			$position            ++;
 			$end_position        = strpos($text, '}', $position);
-			$property_expression = $this->reverseTranslatePropertyExpression(
-				substr($text, $position, $end_position - $position)
-			);
+			$property_expression = substr($text, $position, $end_position - $position);
 			$value     = $this->propertyExpression($property_expression);
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
 			$position += strlen($value) - 1;
@@ -100,20 +98,6 @@ class Parser
 			}
 		}
 		return $value;
-	}
-
-	//------------------------------------------------------------ reverseTranslatePropertyExpression
-	/**
-	 * @param $property_expression string
-	 * @return string
-	 */
-	protected function reverseTranslatePropertyExpression($property_expression)
-	{
-		$translated = [];
-		foreach (explode('?:', $property_expression) as $property_path) {
-			$translated[] = Names::displayToProperty(Loc::rtr($property_path));
-		}
-		return join('?:', $translated);
 	}
 
 }
