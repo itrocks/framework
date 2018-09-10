@@ -19,6 +19,9 @@ class Translator
 	//------------------------------------------------------------- MAX_WILDCARD_REVERSE_TRANSLATIONS
 	const MAX_WILDCARD_REVERSE_TRANSLATIONS = 100;
 
+	//------------------------------------------------------------- TOO_MANY_RESULTS_MATCH_YOUR_INPUT
+	const TOO_MANY_RESULTS_MATCH_YOUR_INPUT = 'too many results match your input';
+
 	//---------------------------------------------------------------------------------------- $cache
 	/**
 	 * @var array[] string[][] string $translation[string $text][string $context]
@@ -229,7 +232,8 @@ class Translator
 				}
 			}
 		}
-		return ((count($texts) > 1) ? $texts : reset($texts)) ?: 'too many results match your input';
+		return ((count($texts) > 1) ? $texts : reset($texts))
+			?: static::TOO_MANY_RESULTS_MATCH_YOUR_INPUT;
 	}
 
 	//------------------------------------------------------------------------- separatedTranslations
@@ -356,7 +360,7 @@ class Translator
 		}
 		/** @var $translations Translation[] */
 		$translations = Dao::search(
-			['language' => $this->language, 'text' => Func::equal($text)],
+			['language' => $this->language, 'text' => ($text === '%') ? Func::equal('%') : $text],
 			Translation::class,
 			[Dao::key('context')]
 		);
