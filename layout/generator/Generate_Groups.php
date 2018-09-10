@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
+use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
@@ -55,9 +57,7 @@ class Generate_Groups
 		$minimal_bottom = $group->page->height - $this->page_margin;
 		foreach ($group->page->allElements() as $element) {
 			if (
-				// only elements outside of the group
-				!$element->insideGroup($group)
-				&& ($element->top > $group->bottom())
+				($element->top > $group->bottom())
 				&& (
 					($element instanceof Snap_Line)
 					|| (
@@ -84,6 +84,15 @@ class Generate_Groups
 	protected function page(Page $page)
 	{
 		$this->groups = [];
+		foreach ($page->elements as $element_key => $element) {
+			if (
+				($element instanceof Text)
+				&& (strpos($element->text, '{') !== false)
+				&& $this->text($element)
+			) {
+				unset($page->elements[$element_key]);
+			}
+		}
 		foreach ($page->properties as $property_key => $property) {
 			if ($this->property($property)) {
 				unset($page->properties[$property_key]);
@@ -114,7 +123,7 @@ class Generate_Groups
 			$property_path .= $property_name;
 			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
 			$type = (new Reflection_Property($class_name, $property_name))->getType();
-			if ($type->isMultiple() && !$property->group) {
+			if ($type->isMultiple()) {
 				$group = $this->propertyGroup($property, $property_path);
 				if ($last_group) {
 					$group->group = $last_group;
@@ -124,7 +133,8 @@ class Generate_Groups
 			$class_name = $type->getElementTypeAsString();
 		}
 		if ($last_group) {
-			$property->group = $last_group;
+			$last_group->properties[] = $property;
+			$property->group          = $last_group;
 			return true;
 		}
 		return false;
@@ -132,31 +142,32 @@ class Generate_Groups
 
 	//--------------------------------------------------------------------------------- propertyGroup
 	/**
-	 * @param $property      Property
+	 * Store a field containing a property path into a group, if needed
+	 *
+	 * @param $field         Field|Property|Text
 	 * @param $property_path string 'property.path'
 	 * @return Group
 	 */
-	protected function propertyGroup(Property $property, $property_path)
+	protected function propertyGroup(Field $field, $property_path)
 	{
 		if (isset($this->groups[$property_path])) {
 			$group = $this->groups[$property_path];
 			// first enlarge size
-			$group->height = max($group->height, $property->top  - $group->top  + $property->height);
-			$group->width  = max($group->width,  $property->left - $group->left + $property->width);
+			$group->height = max($group->height, $field->top  - $group->top  + $field->height);
+			$group->width  = max($group->width,  $field->left - $group->left + $field->width);
 			// then move position
-			$group->left   = min($group->left, $property->left);
-			$group->top    = min($group->top,  $property->top);
+			$group->left   = min($group->left, $field->left);
+			$group->top    = min($group->top,  $field->top);
 		}
 		else {
-			$group                        = new Group($property->page);
-			$group->height                = $property->height;
-			$group->left                  = $property->left;
+			$group                        = new Group($field->page);
+			$group->height                = $field->height;
+			$group->left                  = $field->left;
 			$group->property_path         = $property_path;
-			$group->top                   = $property->top;
-			$group->width                 = $property->width;
+			$group->top                   = $field->top;
+			$group->width                 = $field->width;
 			$this->groups[$property_path] = $group;
 		}
-		$group->properties[] = $property;
 		return $group;
 	}
 
@@ -166,6 +177,49 @@ class Generate_Groups
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);
 		}
+	}
+
+	//------------------------------------------------------------------------------------------ text
+	/**
+	 * @param $text Text
+	 * @return boolean
+	 */
+	protected function text(Text $text)
+	{
+		/** @var $last_group Group|null */
+		$last_group_count = 0;
+		foreach ($text->propertyPaths() as $current_property_path) {
+			if (in_array($current_property_path, Text_Templating::PAGE_PROPERTY_PATHS)) {
+				continue;
+			}
+			$class_name    = $this->structure->class_name;
+			$group_count   = 0;
+			$last_group    = null;
+			$property_path = '';
+			foreach (explode(DOT, $current_property_path) as $property_name) {
+				if ($property_path) {
+					$property_path .= DOT;
+				}
+				$property_path .= $property_name;
+				/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
+				$type = (new Reflection_Property($class_name, $property_name))->getType();
+				if ($type->isMultiple()) {
+					$group = $this->propertyGroup($text, $property_path);
+					if ($last_group) {
+						$group->group = $last_group;
+					}
+					$last_group  = $group;
+					$group_count ++;
+				}
+				$class_name = $type->getElementTypeAsString();
+			}
+			if ($last_group && ($group_count > $last_group_count)) {
+				$last_group->elements[] = $text;
+				$last_group_count       = $group_count;
+				$text->group            = $last_group;
+			}
+		}
+		return isset($text->group);
 	}
 
 }

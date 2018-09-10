@@ -3,12 +3,14 @@ namespace ITRocks\Framework\Layout\Structure\Field;
 
 use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 use ITRocks\Framework\Layout\Structure\Field;
+use ITRocks\Framework\Layout\Structure\Field\Text\Templating;
 
 /**
  * Text field : here to display text
  */
 class Text extends Field implements Has_Init
 {
+	use Templating;
 
 	//----------------------------------------------------------------------------------------- $text
 	/**

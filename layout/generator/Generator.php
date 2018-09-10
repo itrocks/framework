@@ -88,7 +88,7 @@ class Generator
 		(new Dispatch_Iterations($this->structure))->run();
 		(new Count_Pages($this->structure))->run();
 		(new Dispatch_Iterations_On_Pages($this->structure))->run();
-		(new Text_Templating($this->structure))->run($this->object);
+		(new Text_Templating($this->structure))->run();
 		return $this->structure;
 	}
 

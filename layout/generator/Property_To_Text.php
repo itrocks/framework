@@ -1,13 +1,15 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Layout\Generator\Text_Templating\Parser;
+use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
 use ReflectionException;
 
@@ -17,14 +19,6 @@ use ReflectionException;
 class Property_To_Text
 {
 	use Has_Structure;
-
-	//-------------------------------------------------------------------------------------- $already
-	/**
-	 * Tells which properties text, into groups, have already been generated
-	 *
-	 * @var boolean[] key is the $property_path
-	 */
-	protected $already;
 
 	//----------------------------------------------------------------------------------- $iterations
 	/**
@@ -71,11 +65,13 @@ class Property_To_Text
 		foreach ($group->groups as $sub_group) {
 			$this->group($sub_group);
 		}
-		foreach ($group->properties as $key => $property) {
-			if (!isset($this->already[$property->property_path])) {
-				$this->already[$property->property_path] = true;
-				$this->property($property);
+		foreach ($group->elements as $element) {
+			if ($element instanceof Text) {
+				$this->text($element);
 			}
+		}
+		foreach ($group->properties as $property) {
+			$this->property($property);
 		}
 	}
 
@@ -160,7 +156,7 @@ class Property_To_Text
 	protected function property(Property $property)
 	{
 		// Create one Final_Text per final object
-		foreach ($this->values($property) as $iteration_number => $value) {
+		foreach ($this->values($property->property_path) as $iteration_number => $value) {
 			$final_text = $this->propertyToFinalText($property, $value);
 			$this->append($final_text, $iteration_number);
 		}
@@ -168,12 +164,11 @@ class Property_To_Text
 
 	//--------------------------------------------------------------------------- propertyToFinalText
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $property Property
+	 * @param $property Field|Property|Text
 	 * @param $value    string
 	 * @return Final_Text
 	 */
-	protected function propertyToFinalText(Property $property, $value)
+	protected function propertyToFinalText(Field $property, $value)
 	{
 		// change property to final text
 		$final_text = new Final_Text($property->page);
@@ -183,11 +178,8 @@ class Property_To_Text
 			}
 		}
 		$final_text->property = $property;
-		/** @noinspection PhpUnhandledExceptionInspection verified property */
-		$final_text->text = Loc::propertyToLocale(
-			new Reflection_Property(get_class($this->object), $property->property_path),
-			$value
-		);
+		$final_text->text     = $value;
+
 		// initialize final text, force height calculation
 		$final_text->height = 0;
 		$final_text->init();
@@ -211,18 +203,36 @@ class Property_To_Text
 		}
 	}
 
+	//------------------------------------------------------------------------------------------ text
+	/**
+	 * Process a Text element (always and uniquely from a group)
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection getValue
+	 * @param $text Text
+	 */
+	protected function text(Text $text)
+	{
+		$property_path = $text->group->property_path;
+		foreach ($this->values($property_path) as $iteration_number => $object) {
+			$parser     = new Parser($object, $this->object, $text->group->property_path);
+			$value      = $parser->elementText($text);
+			$final_text = $this->propertyToFinalText($text, $value);
+			$this->append($final_text, $iteration_number);
+		}
+	}
+
 	//---------------------------------------------------------------------------------------- values
 	/**
 	 * Descend through property values to 'explode' it into all matching objects
 	 *
-	 * @param $property Property
+	 * @param $property_path string
 	 * @return object[]
 	 */
-	protected function values(Property $property)
+	protected function values($property_path)
 	{
 		// This is a 'linear' algorithm, not recursive, to go faster : objects list grow during descend
 		$objects = [$this->object];
-		foreach (explode(DOT, $property->property_path) as $property_name) {
+		foreach (explode(DOT, $property_path) as $property_name) {
 			try {
 				$objects = $this->nextObjects($objects, $property_name);
 			}
