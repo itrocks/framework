@@ -104,7 +104,7 @@ $(document).ready(function()
 		var $free_text = $model_window.find('#free-text');
 		var $size      = $model_window.find('#size');
 
-		$designer.each(function() {
+		setTimeout(function() { $designer.each(function() {
 			var $page  = $(this);
 			var $input = pageLayoutInput($page);
 			$page.documentDesigner({
@@ -128,7 +128,7 @@ $(document).ready(function()
 				$page.documentDesigner('setData', data);
 			}
 			$page.fileUpload();
-		});
+		})});
 
 		//------------------------------------------------------------------ $editor .field:contains(#)
 		/**
