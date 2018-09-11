@@ -55,6 +55,14 @@ $(window).scroll(function ()
 					.css({ 'border-top-left-radius': 0, 'border-top-right-radius': 0 })
 					.data('stay-top-bottom', top);
 			}
+
+			$parent.children('.fixed').each(function() {
+				$(this).css(
+					'left',
+					$parent.offset().left + parseInt($parent.css('padding-left')) - window.scrollbar.left()
+				);
+			});
+
 			var max_top = parent_top + $parent.height()
 				+ parseInt($parent.css('border-top-width'))
 				+ parseInt($parent.css('border-bottom-width'))
@@ -65,14 +73,14 @@ $(window).scroll(function ()
 			if (top > max_top) {
 				var diff = top - max_top;
 				$this.data('stay-top-diff', diff);
-				$this.parent().children('.fixed').each(function() {
+				$parent.children('.fixed').each(function() {
 					var $element = $(this);
 					$element.css('top', $element.data('stay-top') - diff);
 				});
 			}
 			else if ($this.data('stay-top-diff')) {
 				$this.removeData('stay-top-diff');
-				$this.parent().children('.fixed').each(function() {
+				$parent.children('.fixed').each(function() {
 					var $element = $(this);
 					$element.css('top', $element.data('stay-top'));
 				});
