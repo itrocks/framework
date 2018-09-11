@@ -35,7 +35,7 @@ $(window).scroll(function ()
 
 							'margin-bottom': 0,
 							'margin-top':    0,
-							'z-index':       2
+							'z-index':       window.zindex_counter + 2000
 						})
 						.data('stay-top', top);
 					top += height;
@@ -48,7 +48,7 @@ $(window).scroll(function ()
 					top:             $this.height(),
 					width:           $this.width(),
 					'border-bottom': '1px solid darkgray',
-					'z-index':       1
+					'z-index':       window.zindex_counter + 1000
 				}).data('stay-top', $this.height()));
 				$element.after($('<div>').addClass('stay-top').css({ height: top + margin_top }));
 				$this
