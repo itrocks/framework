@@ -217,17 +217,21 @@ $(window).scroll(function()
 	var $stay_top = $('.model.edit.window > .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
-		$toolbox.parent().attr('style', '');
-		$toolbox.removeClass('fixed stay-top');
+		$fieldset.attr('style', '');
 		$toolbox.attr('style', '');
+		$toolbox.removeClass('fixed stay-top');
 	}
 	// fixed position
 	if ($stay_top.length) {
+		var $parent = $toolbox.parent();
 		if (!$toolbox.hasClass('stay-top')) {
-			$toolbox.parent().css('padding-left', $fieldset.offset().left - $fieldset.parent().offset().left);
+			$fieldset.css('margin-left', $fieldset.offset().left - $fieldset.parent().offset().left);
 			$toolbox.addClass('fixed stay-top');
-			$toolbox.css({left: $toolbox.parent().offset().left, position: 'fixed'});
+			$toolbox.css('position', 'fixed');
 		}
+		$toolbox.css('left',
+			$parent.offset().left + parseInt($parent.css('padding-left')) - window.scrollbar.left()
+		);
 		$toolbox.css('top', Math.max(
 			$fieldset.offset().top - window.scrollbar.top(),
 			$stay_top.height() + parseInt($stay_top.css('top')) + parseInt($stay_top.css('border-bottom-width'))
