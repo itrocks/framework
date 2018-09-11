@@ -154,16 +154,6 @@ $(document).ready(function()
 			setTimeout(function() { $free_text.data('focus', false); }, 0);
 		});
 
-		//-------------------------------------------------------------- $model_window #free-text keyup
-		$free_text.keyup(function()
-		{
-			var $free_text = $(this);
-			var $selected  = $designer.find('.selected:visible');
-			if ($selected.length) {
-				$selected.text($free_text.val());
-			}
-		});
-
 		//----------------------------------------------------------------- $model_window #size keydown
 		$size.keydown(function(event)
 		{
