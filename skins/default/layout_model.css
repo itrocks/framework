@@ -79,6 +79,8 @@
     .model.window > .editor .toolbox > .pages ul > li > label, .model.window > .editor .toolbox > .tools ul > li > label {
       padding-right: .5ch;
       vertical-align: middle; }
+    .model.window > .editor .toolbox > .pages ul > li > input, .model.window > .editor .toolbox > .pages ul > li textarea, .model.window > .editor .toolbox > .tools ul > li > input, .model.window > .editor .toolbox > .tools ul > li textarea {
+      max-width: 200px; }
 .model.window > .editor .toolbox > .pages label[for^="background"] {
   display: none; }
 .model.window > .editor .toolbox > .pages input[id^="background"] {

@@ -3,8 +3,7 @@
 
 	&.output {
 		.snap.line,
-		.toolbox
-		{
+		.toolbox {
 			display: none;
 		}
 	}
@@ -140,6 +139,10 @@
 						> label {
 							padding-right: .5ch;
 							vertical-align: middle;
+						}
+
+						> input, textarea {
+							max-width: 200px;
 						}
 					}
 				}
