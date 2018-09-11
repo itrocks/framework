@@ -207,3 +207,31 @@ $(document).ready(function()
 	}, 500);
 
 });
+
+$(window).scroll(function()
+{
+
+	var $toolbox = $('.model.edit.window > .editor > .toolbox');
+	if (!$toolbox.length) return;
+	var $fieldset = $toolbox.next('fieldset');
+	var $stay_top = $('.model.edit.window > .fixed.stay-top');
+	// reset position
+	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
+		$toolbox.parent().attr('style', '');
+		$toolbox.removeClass('fixed stay-top');
+		$toolbox.attr('style', '');
+	}
+	// fixed position
+	if ($stay_top.length) {
+		if (!$toolbox.hasClass('stay-top')) {
+			$toolbox.parent().css('padding-left', $fieldset.offset().left - $fieldset.parent().offset().left);
+			$toolbox.addClass('fixed stay-top');
+			$toolbox.css({left: $toolbox.parent().offset().left, position: 'fixed'});
+		}
+		$toolbox.css('top', Math.max(
+			$fieldset.offset().top - window.scrollbar.top(),
+			$stay_top.height() + parseInt($stay_top.css('top')) + parseInt($stay_top.css('border-bottom-width'))
+		));
+	}
+
+});
