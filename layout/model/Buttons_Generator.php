@@ -21,14 +21,25 @@ class Buttons_Generator
 	 */
 	protected $class_name;
 
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * @var object
+	 */
+	protected $object = null;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name_object object|string
 	 */
-	public function __construct($class_name = null)
+	public function __construct($class_name_object = null)
 	{
-		if (isset($class_name)) {
-			$this->class_name = Builder::current()->sourceClassName($class_name);
+		if (isset($class_name_object)) {
+			$this->class_name = Builder::current()->sourceClassName(
+				is_string($class_name_object) ? $class_name_object: get_class($class_name_object)
+			);
+		}
+		if (is_object($class_name_object)) {
+			$this->object = $class_name_object;
 		}
 	}
 
@@ -42,7 +53,7 @@ class Buttons_Generator
 		foreach ($models as $model) {
 			$buttons[] = new Button(
 				$model->name,
-				View::link($this->class_name, Feature::F_PRINT, View::link($model)),
+				View::link($this->object ?: $this->class_name, Feature::F_PRINT, View::link($model)),
 				Feature::F_PRINT,
 				['.object', Button::OBJECT => $model, View::TARGET => Target::NEW_WINDOW]
 			);

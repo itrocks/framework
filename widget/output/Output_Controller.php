@@ -6,7 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Layout\Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -190,12 +190,15 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE
 			);
 		}
+
+		$layout_model_buttons      = (new Buttons_Generator($object))->getButtons();
 		$buttons[Feature::F_PRINT] = new Button(
 			'Print',
 			View::link($object, Feature::F_PRINT),
 			Feature::F_PRINT,
-			[View::TARGET => Target::NEW_WINDOW]
+			[Button::SUB_BUTTONS => $layout_model_buttons]
 		);
+		$this->selectPrintButton($buttons[Feature::F_PRINT], $layout_model_buttons);
 
 		if ($settings && $settings->actions) {
 			// default buttons on settings are false : get the default buttons from getGeneralButtons
@@ -369,6 +372,23 @@ class Output_Controller implements Default_Feature_Controller, Has_General_Butto
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
+	}
+
+	//----------------------------------------------------------------------------- selectPrintButton
+	/**
+	 * Select the print button into $print_buttons which will replace the default link of
+	 * $print_button
+	 *
+	 * @param $print_button  Button
+	 * @param $print_buttons Button[]
+	 */
+	protected function selectPrintButton(Button $print_button, array $print_buttons)
+	{
+		if ($print_buttons) {
+			$first_button         = reset($print_buttons);
+			$print_button->link   = $first_button->link;
+			$print_button->target = $first_button->target;
+		}
 	}
 
 }
