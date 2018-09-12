@@ -655,9 +655,9 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	private function objectsToString(List_Data $data)
 	{
 		$class_properties = [];
-		foreach ($data->getProperties() as $property) {
+		foreach ($data->getProperties() as $property_path => $property) {
 			if (($property instanceof Reflection_Property) && $property->getType()->isClass()) {
-				$class_properties[$property->path] = $property->path;
+				$class_properties[$property_path] = $property_path;
 			}
 		}
 		if ($class_properties) {

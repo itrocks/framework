@@ -59,13 +59,13 @@ class Export_Controller implements Default_Feature_Controller
 		fputcsv($file, $row);
 
 		// format dates
-		foreach ($properties as $property) {
+		foreach ($properties as $property_path => $property) {
 			if ($property instanceof Reflection_Property) {
 				if ($property->getType()->isDateTime()) {
-					$date_times[$property->path] = true;
+					$date_times[$property_path] = true;
 				}
 				if ($property->getListAnnotation('values')->values()) {
-					$translate[$property->path] = true;
+					$translate[$property_path] = true;
 				}
 			}
 		}
