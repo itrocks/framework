@@ -480,8 +480,8 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 	) {
 		$layout_model_buttons = (new Buttons_Generator($class_name))->getButtons();
 
-		/** @noinspection PhpUnhandledExceptionInspection Names::classToSet($verified_class_name) */
-		return [
+		/** @var $buttons Button[] */
+		$buttons = [
 			Feature::F_EXPORT => new Button(
 				'Export',
 				View::link(
@@ -494,9 +494,13 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 				'Print',
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT,
-				[View::TARGET => Target::NEW_WINDOW, Button::SUB_BUTTONS => $layout_model_buttons]
+				[Button::SUB_BUTTONS => $layout_model_buttons]
 			)
 		];
+
+		$this->selectPrintButton($buttons[Feature::F_PRINT], $layout_model_buttons);
+
+		return $buttons;
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters
@@ -987,6 +991,23 @@ class Data_List_Controller extends Output_Controller implements Has_Selection_Bu
 			$property->value(Loc::propertyToIso($property, $value));
 		}
 		return $property;
+	}
+
+	//----------------------------------------------------------------------------- selectPrintButton
+	/**
+	 * Select the print button into $print_buttons which will replace the default link of
+	 * $print_button
+	 *
+	 * @param $print_button  Button
+	 * @param $print_buttons Button[]
+	 */
+	protected function selectPrintButton(Button $print_button, array $print_buttons)
+	{
+		if ($print_buttons) {
+			$first_button         = reset($print_buttons);
+			$print_button->link   = $first_button->link;
+			$print_button->target = $first_button->target;
+		}
 	}
 
 }
