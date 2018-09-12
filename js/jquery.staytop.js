@@ -40,7 +40,7 @@ $(window).scroll(function ()
 						.data('stay-top', top);
 					top += height;
 				}
-				while ($next_element.length && !$next_element.is('table, fieldset'));
+				while ($next_element.length && $next_element.is('.general.actions, .global-settings'));
 				$this.after($('<div>').addClass('fixed stay-top').css({
 					background:      'white',
 					height:          top - $this.height(),
