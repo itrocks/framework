@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Reflection;
 
 use DateTime;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
@@ -113,7 +115,10 @@ class Reflection_Property_View
 	 */
 	protected function formatString($value)
 	{
-		if ($this->property->getAnnotation('password')->value) {
+		if (
+			Encrypt_Annotation::of($this->property)->value
+			?: Password_Annotation::of($this->property)->value
+		) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
 		elseif ($this->property->getAnnotation('values')->value) {

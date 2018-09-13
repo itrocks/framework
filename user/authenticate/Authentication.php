@@ -3,6 +3,8 @@ namespace ITRocks\Framework\User\Authenticate;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Password;
@@ -27,9 +29,10 @@ abstract class Authentication
 		/** @var $user User */
 		$user           = Search_Object::create(User::class);
 		$user->login    = $array['login'];
+		$property       = new Reflection_Property(get_class($user), 'password');
 		$user->password = (new Password(
 			$array['password'],
-			(new Reflection_Property(get_class($user), 'password'))->getAnnotation('password')->value
+			Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value
 		))->encrypted();
 		return $user;
 	}

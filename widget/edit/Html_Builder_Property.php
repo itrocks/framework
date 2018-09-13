@@ -4,7 +4,9 @@ namespace ITRocks\Framework\Widget\Edit;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
@@ -324,7 +326,10 @@ class Html_Builder_Property extends Html_Builder_Type
 			$version_editor = $this->property->getAnnotation('editor')->value;
 			$element->addClass(Editor::buildClassName($version_editor));
 		}
-		if ($this->property->getAnnotation('password')->value) {
+		if (
+			Encrypt_Annotation::of($this->property)->value
+				?: Password_Annotation::of($this->property)->value
+		) {
 			$element->setAttribute('type', 'password');
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}

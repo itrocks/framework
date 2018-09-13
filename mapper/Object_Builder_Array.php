@@ -5,8 +5,10 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -390,7 +392,9 @@ class Object_Builder_Array
 			$type = $property->getType();
 			if ($type->isBasic(false)) {
 				// password
-				if ($encryption = $property->getAnnotation('password')->value) {
+				if ($encryption = (
+					Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value
+				)) {
 					if ($value === Password::UNCHANGED) {
 						return true;
 					}
