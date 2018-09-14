@@ -3,7 +3,6 @@ namespace ITRocks\Framework\User\Authenticate;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
-use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
@@ -28,12 +27,11 @@ abstract class Authentication
 	{
 		/** @var $user User */
 		$user           = Search_Object::create(User::class);
-		$user->login    = $array['login'];
 		$property       = new Reflection_Property(get_class($user), 'password');
-		$user->password = (new Password(
-			$array['password'],
-			Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value
-		))->encrypted();
+		$user->login    = $array['login'];
+		$user->password = (
+			new Password($array['password'], Password_Annotation::of($property)->value)
+		)->encrypted();
 		return $user;
 	}
 
@@ -145,13 +143,13 @@ abstract class Authentication
 	public static function login($login, $password)
 	{
 		$search           = Search_Object::create(User::class);
+		$property         = new Reflection_Property(get_class($search), 'password');
 		$search->login    = $login;
-		$search->password = (new Password(
-			$password,
-			Password_Annotation::of(new Reflection_Property(get_class($search), 'password'))->value
-		))->encrypted();
+		$search->password = (
+			new Password($password, Password_Annotation::of($property)->value)
+		)->encrypted();
 
-		/** @var User $user */
+		/** @var $user User */
 		$user = Dao::searchOne($search);
 
 		return $user;
