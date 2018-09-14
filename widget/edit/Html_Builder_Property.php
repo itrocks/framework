@@ -16,6 +16,8 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Editor;
+use ITRocks\Framework\Tools\Encryption;
+use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Dom\Element;
@@ -184,31 +186,6 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (isset($value)) {
 			$this->value = $value;
 		}
-		if (
-			Encrypt_Annotation::of($this->property)->value
-				?: Password_Annotation::of($this->property)->value
-		) {
-			$element->setAttribute('type', 'password');
-			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
-		}
-		return $element;
-	}
-
-	//---------------------------------------------------------------------------------- buildInteger
-	/**
-	 * @param $format boolean
-	 * @return Element
-	 */
-	protected function buildInteger($format = true)
-	{
-		$element = parent::buildInteger($format);
-		if (
-			Encrypt_Annotation::of($this->property)->value
-				?: Password_Annotation::of($this->property)->value
-		) {
-			$element->setAttribute('type', 'password');
-			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
-		}
 		return $element;
 	}
 
@@ -355,7 +332,16 @@ class Html_Builder_Property extends Html_Builder_Type
 			Encrypt_Annotation::of($this->property)->value
 				?: Password_Annotation::of($this->property)->value
 		) {
-			$element->setAttribute('type', 'password');
+			if (Encrypt_Annotation::of($this->property)->value === Encryption::SENSITIVE_DATA) {
+				if ($value = (new Sensitive_Data)->decrypt($this->value, $this->property)) {
+					$element->setAttribute('value', $value);
+					return $element;
+				}
+				$element->setData('sensitive');
+			}
+			if (strlen($this->value) || Password_Annotation::of($this->property)->value) {
+				$element->setAttribute('type', 'password');
+			}
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}
 		return $element;

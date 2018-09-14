@@ -399,6 +399,9 @@ class Object_Builder_Array
 						return true;
 					}
 					$value = (new Password($value, $encryption))->encrypted();
+					if ($value === Password::UNCHANGED) {
+						return true;
+					}
 				}
 				// others basic values
 				else {

@@ -34,9 +34,9 @@ class Attribute
 	 */
 	const BOOLEAN_ATTRIBUTES = [
 		'allowfullscreen', 'allowpaymentrequest', 'allowusermedia', 'async', 'autofocus', 'autoplay',
-		'checked', 'controls', 'default', 'defer', 'disabled', 'formnovalidate', 'hidden', 'ismap',
-		'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline',
-		'readonly', 'required', 'reversed', 'selected', 'truespeed', 'typemustmatch'
+		'checked', 'controls', 'data-sensitive', 'default', 'defer', 'disabled', 'formnovalidate',
+		'hidden', 'ismap', 'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open',
+		'playsinline', 'readonly', 'required', 'reversed', 'selected', 'truespeed', 'typemustmatch'
 	];
 
 	//----------------------------------------------------------------------------------- __construct
