@@ -180,11 +180,36 @@ class Html_Builder_Property extends Html_Builder_Type
 			$value = strlen($this->value) ? $this->value : null;
 			$this->value = (!$this->null || strlen($this->value)) ? $property->format() : null;
 		}
-		$result = parent::buildFloat(false);
+		$element = parent::buildFloat(false);
 		if (isset($value)) {
 			$this->value = $value;
 		}
-		return $result;
+		if (
+			Encrypt_Annotation::of($this->property)->value
+				?: Password_Annotation::of($this->property)->value
+		) {
+			$element->setAttribute('type', 'password');
+			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
+		}
+		return $element;
+	}
+
+	//---------------------------------------------------------------------------------- buildInteger
+	/**
+	 * @param $format boolean
+	 * @return Element
+	 */
+	protected function buildInteger($format = true)
+	{
+		$element = parent::buildInteger($format);
+		if (
+			Encrypt_Annotation::of($this->property)->value
+				?: Password_Annotation::of($this->property)->value
+		) {
+			$element->setAttribute('type', 'password');
+			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
+		}
+		return $element;
 	}
 
 	//-------------------------------------------------------------------------------------- buildMap

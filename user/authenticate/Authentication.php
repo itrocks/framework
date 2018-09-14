@@ -148,8 +148,7 @@ abstract class Authentication
 		$search->login    = $login;
 		$search->password = (new Password(
 			$password,
-			(new Reflection_Property(get_class($search), 'password'))
-				->getAnnotation('password')->value
+			Password_Annotation::of(new Reflection_Property(get_class($search), 'password'))->value
 		))->encrypted();
 
 		/** @var User $user */
