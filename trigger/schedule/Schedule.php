@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Mapper\Comparator;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Schedule\Hour_Range;
@@ -14,6 +15,11 @@ class Schedule extends Trigger
 {
 	use Has_Name;
 
+	//---------------------------------------------------------------------------------- DAYS_OF_WEEK
+	const DAYS_OF_WEEK = [
+		'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'
+	];
+
 	//-------------------------------------------------------------------------------- $days_of_month
 	/**
 	 * @user hide_empty
@@ -25,7 +31,7 @@ class Schedule extends Trigger
 	/**
 	 * @ordered_values
 	 * @user hide_empty
-	 * @values monday, tuesday, wednesday, thursday, friday, saturday, sunday
+	 * @values self::DAYS_OF_WEEK
 	 * @var string[]
 	 */
 	public $days_of_week;
@@ -58,5 +64,131 @@ class Schedule extends Trigger
 	 * @var string
 	 */
 	public $years;
+
+	//-------------------------------------------------------------------------------- getDaysOfMonth
+	/**
+	 * @return string[] @max_value 31 @min_value 01
+	 */
+	public function getDaysOfMonth()
+	{
+		return $this->rangesListToArray($this->days_of_month, 31);
+	}
+
+	//------------------------------------------------------------------------- getExtendedHourRanges
+	/**
+	 * Return hour ranges and hours changed to hour ranges
+	 *
+	 * @return Hour_Range[]
+	 */
+	public function getExtendedHourRanges()
+	{
+		/** @var $hour_ranges Hour_Range[] */
+		$hour_ranges = array_merge($this->hour_ranges, $this->hourRangesListToRanges($this->hours));
+		if ($hour_ranges) {
+			foreach ($hour_ranges as $hour_range) {
+				$hour_range->normalize();
+			}
+			(new Comparator(Hour_Range::class))->sort($hour_ranges);
+		}
+		else {
+			$hour_range                 = new Hour_Range();
+			$hour_range->frequency      = 1;
+			$hour_range->frequency_unit = 'days';
+			$hour_range->from           = '00:00:00';
+			$hour_range->until          = '23:59:59';
+			$hour_ranges                = [$hour_range];
+		}
+		return $hour_ranges;
+	}
+
+	//------------------------------------------------------------------------------------- getMonths
+	/**
+	 * @return string[] @max_value 12 @min_value 01
+	 */
+	public function getMonths()
+	{
+		return $this->rangesListToArray($this->months, 12);
+	}
+
+	//-------------------------------------------------------------------------- getNumericDaysOfWeek
+	/**
+	 * @return integer[] @max_value 7 @min_value 1
+	 */
+	public function getNumericDaysOfWeek()
+	{
+		$days        = [];
+		$day_numbers = array_flip(self::DAYS_OF_WEEK);
+		foreach ($this->days_of_week as $day) {
+			$days[] = $day_numbers[$day] + 1;
+		}
+		return $days;
+	}
+
+	//-------------------------------------------------------------------------------------- getYears
+	/**
+	 * @return string[] @max_value 2999 @min_value 2000
+	 */
+	public function getYears()
+	{
+		return $this->rangesListToArray($this->years, 2999);
+	}
+
+	//------------------------------------------------------------------------ hourRangesListToRanges
+	/**
+	 * @param $values_string string
+	 * @return Hour_Range[]
+	 */
+	protected function hourRangesListToRanges($values_string)
+	{
+		$list        = $values_string ? explode(',', str_replace(SP, '', $values_string)) : [];
+		$hour_ranges = [];
+
+		foreach ($list as $element) {
+			$hour_range = new Hour_Range();
+			if (strpos($element, '-') === false) {
+				$hour_range->from = $hour_range->until = $element;
+			}
+			else {
+				list($hour_range->from, $hour_range->until) = explode('-', $element);
+			}
+			$hour_range->schedule = $this;
+			$hour_range->normalize('00:00:00');
+			$hour_ranges[] = $hour_range;
+		}
+
+		return $hour_ranges;
+	}
+
+	//----------------------------------------------------------------------------- rangesListToArray
+	/**
+	 * @param $values_string string @example '1,2,5-9,7,15' => [01, 02, 05, 06, 07, 08, 09, 15]
+	 * @param $max_value     integer
+	 * @return string[]
+	 */
+	protected function rangesListToArray($values_string, $max_value)
+	{
+		$list       = $values_string ? explode(',', str_replace(SP, '', $values_string)) : [];
+		$max_length = strlen($max_value);
+		$values     = [];
+
+		foreach ($list as $element) {
+			if (strpos($element, '-') === false) {
+				$value = str_pad($element, $max_length, '0', STR_PAD_LEFT);
+				$values[$value] = $value;
+			}
+			else {
+				list($start, $stop) = explode('-', $element);
+				$start = intval($start) ?: 1;
+				$stop  = intval($stop)  ?: $max_value;
+				for ($element = $start; $element <= $stop; $element ++) {
+					$value = str_pad($element, $max_length, '0', STR_PAD_LEFT);
+					$values[$value] = $value;
+				}
+			}
+		}
+
+		sort($values);
+		return $values;
+	}
 
 }

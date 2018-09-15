@@ -6,6 +6,8 @@ use ITRocks\Framework\Trigger\Schedule;
 
 /**
  * Hour range
+ *
+ * @sort from, to, frequency
  */
 class Hour_Range
 {
@@ -31,8 +33,7 @@ class Hour_Range
 	/**
 	 * @max_length 8
 	 * @max_value 23:59:59
-	 * @min_length 5
-	 * @min_value 00:00
+	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 * @var string
 	 */
@@ -50,11 +51,42 @@ class Hour_Range
 	/**
 	 * @max_length 8
 	 * @max_value 23:59:59
-	 * @min_length 5
-	 * @min_value 00:00
+	 * @min_value 0
 	 * @regexp [0-2][0-9]:[0-5][0-9]([0-5][0-9])?
 	 * @var string
 	 */
 	public $until;
+
+	//------------------------------------------------------------------------------------- normalize
+	/**
+	 * Replace empty range limits from and to by their default values 00:00:00 and 23:59:59
+	 * Complete with default minutes / seconds
+	 *
+	 * @param $until string @default 23:59:59
+	 */
+	public function normalize($until = '23:59:59')
+	{
+		if (!$this->from) {
+			$this->from = '00:00:00';
+		}
+		elseif (strlen($this->from) < 8) {
+			if (strlen($this->from) === 1) {
+				$this->from = '0' . $this->from;
+			}
+			$this->from .= substr('00:00:00', strlen($this->from));
+		}
+		if (!$this->until) {
+			$this->until = $until;
+		}
+		elseif (strlen($this->until) < 8) {
+			if (strlen($this->until) === 1) {
+				$this->until = '0' . $this->until;
+			}
+			$this->until .= substr($until, strlen($this->until));
+		}
+		if ($this->frequency && !$this->frequency_unit) {
+			$this->frequency_unit = 'minutes';
+		}
+	}
 
 }
