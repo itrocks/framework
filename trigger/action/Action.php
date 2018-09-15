@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Traits\Is_Immutable;
 use ITRocks\Framework\User;
 
@@ -25,6 +26,15 @@ class Action
 	 * @var User
 	 */
 	public $as_user;
+
+	//----------------------------------------------------------------------------------------- $next
+	/**
+	 * Next scheduled time, if this is a scheduled action
+	 *
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $next;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
