@@ -44,14 +44,23 @@ class Class_Builder
 			return self::$builds[$class_name][$key];
 		}
 		else {
-			$interfaces = [];
-			$traits     = [];
+			$annotations = [];
+			$interfaces  = [];
+			$traits      = [];
 			foreach ($interfaces_traits as $interface_trait) {
+				// @annotation
+				if (substr($interface_trait, 0, 1) === AT) {
+					$annotations[] = $interface_trait;
+					continue;
+				}
+				// Interface\Name::class
 				$class = Reflection_Class::of($interface_trait);
 				if ($class->isInterface()) {
 					$interfaces[$interface_trait] = $interface_trait;
+					continue;
 				}
-				elseif ($class->isTrait()) {
+				// Trait\Name::class
+				if ($class->isTrait()) {
 					foreach ($class->getListAnnotation('implements')->values() as $implements) {
 						$interfaces[$implements] = $implements;
 					}
@@ -72,16 +81,16 @@ class Class_Builder
 						}
 					}
 					$traits[$level][$interface_trait] = $interface_trait;
+					continue;
 				}
-				else {
-					trigger_error(
-						'Unknown interface/trait ' . DQ . $interface_trait . DQ
-						. ' while building ' . $class_name,
-						E_USER_ERROR
-					);
-				}
+				// anything else
+				trigger_error(
+					'Unknown interface/trait ' . DQ . $interface_trait . DQ
+					. ' while building ' . $class_name,
+					E_USER_ERROR
+				);
 			}
-			$built_class = self::buildClass($class_name, $interfaces, $traits, $get_source);
+			$built_class = self::buildClass($class_name, $interfaces, $traits, $annotations, $get_source);
 			if (!$get_source) {
 				self::$builds[$class_name][$key] = $built_class;
 			}
@@ -95,11 +104,13 @@ class Class_Builder
 	 * @param $class_name  string
 	 * @param $interfaces  array string[][]
 	 * @param $traits      array string[][]
+	 * @param $annotations array string[]
 	 * @param $get_source  boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] generated class name
 	 */
-	private static function buildClass($class_name, array $interfaces, array $traits, $get_source)
-	{
+	private static function buildClass(
+		$class_name, array $interfaces, array $traits, array $annotations, $get_source
+	) {
 		if (!$traits) {
 			$traits = [0 => []];
 		}
@@ -112,7 +123,7 @@ class Class_Builder
 			// must be set before $namespace (extends last class)
 			$extends   = BS . (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
 
-			$end       = ($level == $end_level);
+			$end       = ($level === $end_level);
 			$count     = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 
@@ -123,17 +134,28 @@ class Class_Builder
 				? 'abstract '
 				: '';
 
-			$interfaces_names = ($end && $interfaces) ? (BS . join(', ' . BS, $interfaces)) : '';
-			$traits_names     = $class_traits ? join(';' . LF . TAB . 'use ' . BS, $class_traits) : '';
-			$namespace        = $namespace_prefix . $count . $sub_count;
-			$built_class      = $namespace . BS . $short_class;
+			$namespace   = $namespace_prefix . $count . $sub_count;
+			$built_class = $namespace . BS . $short_class;
+
+			$annotations_code = ($end && $annotations)
+				? (' *' . LF . ' * ' . join(LF . ' * ', $annotations) . LF)
+				: '';
+			$interfaces_names = ($end && $interfaces)
+				? (LF . TAB . 'implements ' . BS . join(', ' . BS, $interfaces))
+				: '';
+			$traits_names = $class_traits
+				? (TAB . 'use ' . BS . join(';' . LF . TAB . 'use ' . BS, $class_traits) . ';' . LF)
+				: '';
 
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
-				. '/** Built ' . $short_class . ' class */' . LF
+				. '/**' . LF
+				. ' * Built ' . $short_class . ' class' . LF
+				. $annotations_code
+				. ' */' . LF
 				. $abstract . 'class ' . $short_class . ' extends ' . $extends
-				. ($interfaces_names ? (LF . TAB . 'implements ' . $interfaces_names) : '')
+				. $interfaces_names
 				. LF . '{' . LF
-				. ($traits_names ? (TAB . 'use ' . BS . $traits_names . ';' . LF) : '')
+				. $traits_names
 				. LF . '}' . LF
 				. ($get_source ? '' : (LF . '}' . LF));
 
