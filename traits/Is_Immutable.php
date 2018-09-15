@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Traits;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -50,7 +51,7 @@ trait Is_Immutable
 						$property->setValue($this, $value);
 					}
 				}
-				$property->setValue($search, $value);
+				$property->setValue($search, is_null($value) ? Func::isNull() : Func::equal($value));
 			}
 		}
 
