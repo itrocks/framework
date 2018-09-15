@@ -7,7 +7,7 @@ use DateTimeZone;
 use Exception;
 
 /**
- * This class extends php's DateTime class : you should use this to be ITRocks compatible
+ * This class extends PHP DateTime class : you should use this to be ITRocks compatible
  */
 class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 {
@@ -74,7 +74,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Constructor
 	 *
-	 * @param $time     string|integer|null current time in string or timestamp format
+	 * @param $time     DateTime|integer|string|null current time in string or timestamp format
 	 *                  If null, current time on timezone will be used to initialize
 	 * @param $timezone DateTimeZone
 	 */
