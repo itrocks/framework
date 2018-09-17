@@ -6,6 +6,8 @@ use ITRocks\Framework\Widget\Edit\Widgets\Map_As_Collection;
 
 /**
  * A trigger calculates if an action must be run
+ *
+ * @business
  */
 abstract class Trigger
 {

@@ -28,7 +28,7 @@ class Next_Calculation
 	 *
 	 * @param $schedule Schedule
 	 * @param $date     Date_Time @default Date_Time::now()
-	 * @return Date_Time|null null if the last available date has been exceeded
+	 * @return Date_Time
 	 */
 	public function next(Schedule $schedule, Date_Time $date = null)
 	{
@@ -227,7 +227,7 @@ class Next_Calculation
 		$years     = $this->schedule->getYears();
 		// last year exceeded
 		if ($date_year > end($years)) {
-			$this->date = null;
+			$this->date = Date_Time::max();
 			return true;
 		}
 		// current or next available year

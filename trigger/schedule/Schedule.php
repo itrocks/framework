@@ -10,6 +10,7 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  * A schedule trigger calculates if the action must be run from time factors
  *
  * @display_order name, hours, days_of_month, months, years, days_of_weeks
+ * @store_name schedule_triggers
  */
 class Schedule extends Trigger
 {
@@ -118,6 +119,10 @@ class Schedule extends Trigger
 	{
 		$days        = [];
 		$day_numbers = array_flip(self::DAYS_OF_WEEK);
+		// TODO HIGH Remove this patch when days of week with one value will return an array too
+		if (!is_array($this->days_of_week)) {
+			$this->days_of_week = [$this->days_of_week];
+		}
 		foreach ($this->days_of_week as $day) {
 			$days[] = $day_numbers[$day] + 1;
 		}
