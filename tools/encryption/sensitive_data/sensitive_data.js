@@ -17,7 +17,6 @@ $(document).ready(function()
 				+ SL + $window.data('feature')
 				+ '?as_widget';
 			$('.user.password.window').parent().remove();
-			console.log(uri);
 			redirect(
 				uri,
 				'#popup',
