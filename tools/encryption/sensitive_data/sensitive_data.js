@@ -4,8 +4,6 @@ $(document).ready(function()
 	{
 		var $sensitive_data = this.inside('input[data-sensitive], textarea[data-sensitive]');
 
-		console.log($sensitive_data);
-
 		//---------------------------------------------------------------------- [data-sensitive] click
 		$sensitive_data.dblclick(function()
 		{
