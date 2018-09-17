@@ -64,11 +64,11 @@ class Asynchronous
 	 * Calls an URI (controller) from the console asynchronously, using the same session handler than
 	 * the caller
 	 *
-	 * @param $uri           string   Call this URI : link to a controller, including parameters
-	 * @param $then          callable A callback called when the job is done
-	 * @param $needs_session boolean  true to automatically clone current session (authenticated call)
+	 * @param $uri           string Call this URI : link to a controller, including parameters
+	 * @param $then          callable|array A callback called when the job is done
+	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
 	 */
-	public function call($uri, callable $then = null, $needs_session = true)
+	public function call($uri, array $then = null, $needs_session = true)
 	{
 		if ($position = strpos($uri, '?')) {
 			$uri[$position] = SP;
@@ -76,23 +76,53 @@ class Asynchronous
 				$uri[$position] = SP;
 			}
 		}
-		$position = strpos($uri, SP) ?: strlen($uri);
-		$uri      = substr($uri, 0, $position)
-			. SL . 's' . ++$this->session_counter
-			. substr($uri, $position);
 		$this->run('itrocks/framework/console.php' . SP . rawurldecode($uri), $then, $needs_session);
+	}
+
+	//----------------------------------------------------------------------------------------- flush
+	/**
+	 * Flush asynchronous process running events : done processes, callbacks, run waiting processes
+	 */
+	public function flush()
+	{
+		$done_processes = 0;
+		foreach ($this->running_processes as $key => $process) {
+			if (!$process->status()) {
+				$done_processes ++;
+				unset($this->running_processes[$key]);
+				if ($process->session_id) {
+					$this->free_sessions[] = $process->session_id;
+				}
+			}
+		}
+		if ($done_processes) {
+			$this->runWaitingProcesses();
+		}
+	}
+
+	//-------------------------------------------------------------------------------- processesCount
+	/**
+	 * Counts how many processes are running or waiting (total)
+	 *
+	 * When 0 : all processes are done
+	 *
+	 * @return integer
+	 */
+	public function processesCount()
+	{
+		return count($this->running_processes) + count($this->waiting_processes);
 	}
 
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * Calls a command line asynchronously
 	 *
-	 * @param $command       string   The command line to run
-	 * @param $then          callable A callback called when the job is done
-	 * @param $needs_session boolean  true to automatically clone current session (authenticated call)
+	 * @param $command       string The command line to run
+	 * @param $then          callable|array A callback called when the job is done
+	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
 	 * @return Process
 	 */
-	public function run($command, callable $then = null, $needs_session = false)
+	public function run($command, array $then = null, $needs_session = false)
 	{
 		$process = new Process($command, $then);
 		if ($needs_session) {
@@ -160,32 +190,27 @@ class Asynchronous
 	 *                If true, returns once less than $max_processes are still running.
 	 *                If a callable, this callback is called each time less than
 	 *                $max_processes are still running.
-	 * @param $sleep  integer  The sleep between each wait control, in microseconds (default: 1ms)
+	 * @param $sleep  float The sleep between each wait control, in seconds (default: .1s)
 	 */
-	public function wait($reload = false, $sleep = 1000)
+	public function wait($reload = false, $sleep = .1)
 	{
+		$sleep = floor($sleep * 1000000);
 		if ($reload && ($reload !== true) && (count($this->running_processes) < $this->max_processes)) {
 			call_user_func($reload);
 		}
-		while ($this->running_processes || $this->waiting_processes) {
+		while ($processes_count = $this->processesCount()) {
 			$unset = false;
-			foreach ($this->running_processes as $key => $process) {
-				if (!$process->status()) {
-					unset($this->running_processes[$key]);
-					if ($process->session_id) {
-						$this->free_sessions[] = $process->session_id;
+			$this->flush();
+			if ($this->processesCount() < $processes_count) {
+				if ($reload && (count($this->running_processes) < $this->max_processes)) {
+					if ($reload === true) {
+						return;
 					}
-					$this->runWaitingProcesses();
-					if ($reload && (count($this->running_processes) < $this->max_processes)) {
-						if ($reload === true) {
-							return;
-						}
-						else {
-							call_user_func($reload);
-						}
+					else {
+						call_user_func($reload);
 					}
-					$unset = true;
 				}
+				$unset = true;
 			}
 			if ($sleep && !$unset) {
 				usleep($sleep);

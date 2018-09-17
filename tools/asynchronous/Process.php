@@ -18,7 +18,10 @@ class Process
 	/**
 	 * If set, this will be called once status() returns false (done)
 	 *
-	 * @var callable
+	 * The first two elements are the callable
+	 * Next optional elements are parameters that will be transmitted to the callable
+	 *
+	 * @var callable|array
 	 */
 	public $callback;
 
@@ -72,9 +75,9 @@ class Process
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $command  string
-	 * @param $callback callable
+	 * @param $callback callable|array
 	 */
-	public function __construct($command = null, callable $callback = null)
+	public function __construct($command = null, array $callback = null)
 	{
 		if (isset($command)) {
 			$this->command = $command;
@@ -90,7 +93,7 @@ class Process
 	 * - gets errors
 	 * - gets output
 	 * - closes the process
-	 * - calls the callback with the Process as parameter
+	 * - calls the callback with callback parameters, then the Process as last parameter
 	 */
 	protected function done()
 	{
@@ -103,7 +106,10 @@ class Process
 		proc_close($this->process);
 		$this->process = null;
 		if (isset($this->callback)) {
-			call_user_func($this->callback, $this);
+			call_user_func_array(
+				array_slice($this->callback, 0, 2),
+				array_merge(array_slice($this->callback, 2), [$this])
+			);
 		}
 	}
 
