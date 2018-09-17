@@ -42,6 +42,7 @@ trait Is_Immutable
 			if (
 				!$property->isStatic()
 				&& !Store_Annotation::of($property)->isFalse()
+				&& $property->getAnnotation('immutable')->value
 				&& ($value = $property->getValue($this))
 			) {
 				if (is_string($value)) {

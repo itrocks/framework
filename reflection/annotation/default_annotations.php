@@ -309,6 +309,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@empty_check' => Default_True_Boolean_Annotation::class,
 
 	/**
+	 * @immutable [false]
+	 * This property value is checked into Is_Immutable : property is not part of immutable if false
+	 */
+	Parser::T_PROPERTY . '@immutable' => Default_True_Boolean_Annotation::class,
+
+	/**
 	 * @filters property_name, another_property
 	 * Declares other property names that are used to filter possible values of the property
 	 */
