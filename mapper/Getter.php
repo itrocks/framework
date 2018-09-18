@@ -372,19 +372,32 @@ abstract class Getter
 	 * @param $property Reflection_Property
 	 * @return object
 	 */
-	private static function schemaDecode(array $stored, Reflection_Property $property)
+	public static function schemaDecode(array $stored, Reflection_Property $property = null)
 	{
 		$stored_array = $stored;
-		$class_name   = '';
-		if (
-			isset($stored_array[Store_Annotation::JSON_CLASS])
-			&& $stored_array[Store_Annotation::JSON_CLASS]
-		) {
+		if (isset($stored_array[Store_Annotation::JSON_CLASS])) {
 			$class_name = $stored_array[Store_Annotation::JSON_CLASS];
 			unset($stored_array[Store_Annotation::JSON_CLASS]);
 		}
-		else if ($property->getType()->isClass()) {
+		elseif (isset($stored_array[Store_Annotation::JSON_CLASS_DEPRECATED])) {
+			$class_name = $stored_array[Store_Annotation::JSON_CLASS_DEPRECATED];
+			unset($stored_array[Store_Annotation::JSON_CLASS_DEPRECATED]);
+		}
+		elseif ($property && $property->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
+		}
+		else {
+			$class_name = '';
+		}
+		if (isset($stored_array[Store_Annotation::JSON_CONSTRUCT])) {
+			$constructor_arguments = $stored_array[Store_Annotation::JSON_CONSTRUCT];
+			if (!is_array($constructor_arguments)) {
+				$constructor_arguments = [$constructor_arguments];
+			}
+			unset($stored_array[Store_Annotation::JSON_CONSTRUCT]);
+		}
+		else {
+			$constructor_arguments = [];
 		}
 		if ($class_name) {
 			/** @var $arrays_of_objects array object[$property_name][$key] */
@@ -393,8 +406,11 @@ abstract class Getter
 				if (is_array($stored_value)) {
 					/** @noinspection PhpUnhandledExceptionInspection stored data is valid */
 					$property = new Reflection_Property($class_name, $property_name);
-					if ($property->getType()->isClass() && $property->getType()->isMultiple()) {
-						$property_class_name = $property->getType()->getElementTypeAsString();
+					$type     = $property->getType();
+					if (
+						$type->isClass() && $type->isMultiple() && !$type->asReflectionClass()->isAbstract()
+					) {
+						$property_class_name = $type->getElementTypeAsString();
 						foreach ($stored_value as $key => $object_identifier) {
 							if (is_integer($object_identifier)) {
 								if (!isset($arrays_of_objects[$property_name])) {
@@ -406,13 +422,16 @@ abstract class Getter
 							}
 						}
 					}
+					else {
+						$stored_array[$property_name] = Builder::fromSubarray($stored_value);
+					}
 				}
 			}
 			foreach ($arrays_of_objects as $property_name => $value) {
 				unset($stored_array[$property_name]);
 			}
 			/** @noinspection PhpUnhandledExceptionInspection stored array is valid */
-			$stored = Builder::fromArray($class_name, $stored_array);
+			$stored = Builder::fromArray($class_name, $stored_array, $constructor_arguments);
 			foreach ($arrays_of_objects as $property_name => $value) {
 				$stored->$property_name = $value;
 			}

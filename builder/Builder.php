@@ -3,9 +3,11 @@ namespace ITRocks\Framework;
 
 use Exception;
 use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Activable;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -223,33 +225,63 @@ class Builder implements Activable, Serializable
 	 *
 	 * You should set only public and non-static properties values
 	 *
-	 * @param $class_name string
-	 * @param $array      array
+	 * @param $class_name            string
+	 * @param $array                 array
+	 * @param $constructor_arguments array
 	 * @return object
 	 * @throws Exception
 	 */
-	public static function fromArray($class_name, array $array)
+	public static function fromArray($class_name, array $array, array $constructor_arguments = [])
 	{
-		$object = self::create($class_name);
+		$object = self::create($class_name, $constructor_arguments);
 		foreach ($array as $property_name => $value) {
 			if (is_array($value)) {
 				$property = new Reflection_Property($class_name, $property_name);
-				if ($property->getType()->isClass()) {
-					$property_class_name = $property->getType()->getElementTypeAsString();
-					if ($property->getType()->isMultiple()) {
-						foreach ($value as $key => $val) {
-							$value[$key] = self::fromArray($property_class_name, $val);
-						}
+				$type     = $property->getType();
+				if ($type->isClass()) {
+					if ($type->asReflectionClass()->isAbstract()) {
+						$value = self::fromSubArray($value);
 					}
 					else {
-						$value = self::fromArray($property_class_name, $value);
+						$property_class_name = $type->getElementTypeAsString();
+						if ($type->isMultiple()) {
+							foreach ($value as $key => $val) {
+								$value[$key] = self::fromArray($property_class_name, $val);
+							}
+						}
+						else {
+							$value = self::fromArray($property_class_name, $value);
+						}
 					}
-					$property->setValue($object, $value);
 				}
+				$property->setValue($object, $value);
 			}
-			$object->$property_name = $value;
+			else {
+				$object->$property_name = $value;
+			}
 		}
 		return $object;
+	}
+
+	//---------------------------------------------------------------------------------- fromSubArray
+	/**
+	 * @param $array array
+	 * @return array|object
+	 */
+	public static function fromSubArray(array $array)
+	{
+		if (
+			isset($array[Store_Annotation::JSON_CLASS])
+			|| isset($array[Store_Annotation::JSON_CLASS_DEPRECATED])
+		) {
+			return Getter::schemaDecode($array);
+		}
+		foreach ($array as $key => $value) {
+			if (is_array($value)) {
+				$array[$key] = self::fromSubArray($value);
+			}
+		}
+		return $array;
 	}
 
 	//-------------------------------------------------------------------------------- getComposition

@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
 
 /**
@@ -64,6 +65,15 @@ class Object_To_Write_Array
 	 * @var string[]
 	 */
 	protected $exclude = [];
+
+	//-------------------------------------------------------------------------------- $json_encoding
+	/**
+	 * When encoding an object / sub-objects from an array using json, this is true
+	 * Enable recursive json encoding of sub-objects
+	 *
+	 * @var boolean
+	 */
+	protected $json_encoding;
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
@@ -122,15 +132,17 @@ class Object_To_Write_Array
 	/**
 	 * Constructor
 	 *
-	 * @param $link    Identifier_Map
-	 * @param $object  object
-	 * @param $options Spreadable[]
+	 * @param $link          Identifier_Map
+	 * @param $object        object
+	 * @param $options       Spreadable[]
+	 * @param $json_encoding boolean
 	 */
-	public function __construct(Identifier_Map $link, $object, array $options)
+	public function __construct(Identifier_Map $link, $object, array $options, $json_encoding = false)
 	{
-		$this->link    = $link;
-		$this->object  = $object;
-		$this->options = $options;
+		$this->link          = $link;
+		$this->object        = $object;
+		$this->options       = $options;
+		$this->json_encoding = $json_encoding;
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -195,6 +207,10 @@ class Object_To_Write_Array
 				elseif (is_array($value) && Link_Annotation::of($property)->isMap()) {
 					$this->maps[] = [$property, $this->propertyMapValue($property, $value)];
 				}
+				elseif (is_array($value) && $this->json_encoding) {
+					list($column_name, $value) = $this->propertyTableColumnName($property, $value);
+					$this->array[$column_name] = $value;
+				}
 				// write object
 				elseif (
 					Link_Annotation::of($property)->isObject()
@@ -233,7 +249,7 @@ class Object_To_Write_Array
 			if (is_array($value)) {
 				$value = ($property->getType()->isMultipleString() && $values)
 					? join(',', $value)
-					: json_encode($value);
+					: $this->valueToWriteArray($value, $this->options);
 			}
 			$write_value = $values ? new String_Class($value) : $value;
 		}
@@ -390,6 +406,17 @@ class Object_To_Write_Array
 				$write_value = '';
 			}
 		}
+		// return of value for not-linked array property value using json encoding
+		elseif ($this->json_encoding && is_array($value) && !Store_Annotation::of($property)->value) {
+			$write_value = $this->valueToWriteArray($value, $this->options);
+		}
+		// prepare Date_Time for json encoding
+		elseif ($this->json_encoding && ($value instanceof Date_Time)) {
+			$write_value = [
+				Store_Annotation::JSON_CLASS     => get_class($value),
+				Store_Annotation::JSON_CONSTRUCT => $value->toISO(true)
+			];
+		}
 		// write object id if set or object if no id is set (new object)
 		else {
 			if (is_object($value)) {
@@ -414,7 +441,7 @@ class Object_To_Write_Array
 	 * @param $exclude string[] Will exclude these properties from writing : each value is a name
 	 * @return static
 	 */
-	public function setPropertiesFilters(Link_Class $class, array $only = null, array $exclude)
+	public function setPropertiesFilters(Link_Class $class, array $only = null, array $exclude = null)
 	{
 		$this->class   = $class;
 		$this->exclude = $exclude;
@@ -435,7 +462,8 @@ class Object_To_Write_Array
 		$array = [];
 		if (is_object($value)) {
 			// encode only stored data and map, not collection
-			$object_to_write_array = (new Object_To_Write_Array($this->link, $value, $options))->build();
+			$object_to_write_array = (new Object_To_Write_Array($this->link, $value, $options, true))
+				->build();
 			$array = $object_to_write_array->array;
 			$maps  = $object_to_write_array->maps;
 			// JSON comes first, like it is done by serialize()
