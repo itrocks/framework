@@ -13,7 +13,9 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
+use ITRocks\Framework\Tools\Stringable;
 use ReflectionException;
+use Serializable;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -60,7 +62,7 @@ abstract class Getter
 	 * @param $element_type_name string
 	 * @return object[]
 	 */
-	public static function & getAll(array &$stored = null, $element_type_name)
+	public static function & getAll(array &$stored = null, $element_type_name = null)
 	{
 		if (!(self::$ignore || isset($stored))) {
 			$stored = Dao::readAll($element_type_name, Dao::sort());
@@ -81,7 +83,7 @@ abstract class Getter
 	 * @throws ReflectionException
 	 */
 	public static function & getCollection(
-		&$stored = null, $class_name, $object, $property = null
+		&$stored = null, $class_name = null, $object = null, $property = null
 	) {
 		// TODO JSON will work only if $property is set. Should add string / null case
 		if (
@@ -237,7 +239,7 @@ abstract class Getter
 	 * @return Component[]
 	 * @throws ReflectionException
 	 */
-	public static function & getMap(array &$stored = null, $object, $property)
+	public static function & getMap(array &$stored = null, $object = null, $property = null)
 	{
 		if (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
@@ -324,7 +326,13 @@ abstract class Getter
 							$stored = static::schemaDecode($stored, $property);
 							break;
 						default:
-							$stored = call_user_func([$property->getType()->asString(), 'fromString'], $stored);
+							$property_class_name = $property->getType()->asString();
+							if (is_a($property_class_name, Stringable::class, true)) {
+								$stored = call_user_func([$property_class_name, 'fromString'], $stored);
+							}
+							elseif (is_a($property_class_name, Serializable::class, true)) {
+								$stored = unserialize($stored);
+							}
 							break;
 					}
 				}
