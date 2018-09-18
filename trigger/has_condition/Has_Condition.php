@@ -16,12 +16,16 @@ trait Has_Condition
 
 	//------------------------------------------------------------------------------ $after_condition
 	/**
+	 * @link Object
+	 * @store json
 	 * @var Logical
 	 */
 	public $after_condition;
 
 	//----------------------------------------------------------------------------- $before_condition
 	/**
+	 * @link Object
+	 * @store json
 	 * @var Logical
 	 */
 	public $before_condition;
@@ -46,9 +50,10 @@ trait Has_Condition
 	 * @param $condition Logical @values $after_condition, $before_condition
 	 * @return boolean
 	 */
-	public function verifyConditions($object, Logical $condition)
+	public function verifyConditions($object, Logical $condition = null)
 	{
-		return boolval(Dao::searchOne(Func::andOp([$object, $condition]), get_class($object)));
+		return !$condition
+			|| boolval(Dao::searchOne(Func::andOp([$object, $condition]), get_class($object)));
 	}
 
 }
