@@ -33,8 +33,9 @@ class Plugin implements Registerable
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
 	 * @param $object object
+	 * @param $after_write_annotation string @values after_create, after_update, after_write
 	 */
-	public function afterWrite($object)
+	public function afterWrite($object, $after_write_annotation)
 	{
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
@@ -46,6 +47,16 @@ class Plugin implements Registerable
 				'identifier' => $identifier,
 				'step'       => Run::BEFORE
 			], Run::class);
+			if (
+				!$run
+				&& ($after_write_annotation === Write::AFTER_CREATE)
+				&& !$change->before_condition
+			) {
+				$run = new Run();
+				$run->change     = $change;
+				$run->class_name = $change->class_name;
+				$run->identifier = $identifier;
+			}
 			if ($run) {
 				$run->step = Run::AFTER;
 				Dao::write($run, Dao::only('step'));
