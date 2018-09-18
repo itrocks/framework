@@ -52,8 +52,7 @@ trait Has_Condition
 	 */
 	public function verifyConditions($object, Logical $condition = null)
 	{
-		return !$condition
-			|| boolval(Dao::searchOne(Func::andOp([$object, $condition]), get_class($object)));
+		return !$condition || Dao::count(Func::andOp([$object, $condition]), get_class($object));
 	}
 
 }

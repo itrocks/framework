@@ -16,21 +16,19 @@ use ITRocks\Framework\Trigger\Change;
 class Plugin implements Registerable
 {
 
-	//------------------------------------------------------------------------ $no_after_change_cache
+	//------------------------------------------------------------------------------ $no_change_cache
 	/**
-	 * Class names that have no 'after condition'change triggers
+	 * Class names that have no change triggers
 	 *
 	 * @var string[]
 	 */
-	protected $no_after_change_cache = [];
+	protected $no_change_cache = [];
 
-	//----------------------------------------------------------------------- $no_before_change_cache
+	//----------------------------------------------------------------------------------- $run_action
 	/**
-	 * Class names that have no 'before condition' change triggers
-	 *
-	 * @var string[]
+	 * @var boolean
 	 */
-	protected $no_before_change_cache = [];
+	protected $run_action = false;
 
 	//------------------------------------------------------------------------------------ afterWrite
 	/**
@@ -41,30 +39,17 @@ class Plugin implements Registerable
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
 		}
-		$class_name = Builder::current()->sourceClassName(get_class($object));
-		if (isset($this->no_after_change_cache[$class_name])) {
-			return;
-		}
-		$change_triggers = Dao::search(['class_name' => $class_name], Change::class);
-		if (!$change_triggers) {
-			$this->no_after_change_cache[$class_name] = true;
-			return;
-		}
-		foreach ($change_triggers as $change) {
+		foreach ($this->changeTriggers($object) as $change) {
 			$run = Dao::searchOne([
 				'change'     => $change,
-				'class_name' => $class_name,
+				'class_name' => $change->class_name,
 				'identifier' => $identifier,
 				'step'       => Run::BEFORE
 			], Run::class);
-			if (!$run) {
-				$run             = new Run();
-				$run->change     = $change;
-				$run->class_name = $class_name;
-				$run->identifier = $identifier;
+			if ($run) {
+				$run->step = Run::AFTER;
+				Dao::write($run, Dao::only('step'));
 			}
-			$run->step = Run::AFTER;
-			Dao::write($run, Dao::only('step'));
 		}
 	}
 
@@ -77,33 +62,37 @@ class Plugin implements Registerable
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
 		}
-		$class_name = Builder::current()->sourceClassName(get_class($object));
-		if (isset($this->no_before_change_cache[$class_name])) {
-			return;
-		}
-		$change_triggers = Dao::search(['class_name' => $class_name], Change::class);
-		if (!$change_triggers) {
-			$this->no_before_change_cache[$class_name] = true;
-			return;
-		}
-		unset($this->no_after_change_cache[$class_name]);
-		foreach ($change_triggers as $change) {
+		foreach ($this->changeTriggers($object) as $change) {
 			$run = Dao::searchOne([
 				'change'     => $change,
-				'class_name' => $class_name,
+				'class_name' => $change->class_name,
 				'identifier' => $identifier,
-				'step'       => Run::BEFORE
+				'step'       => [Run::AFTER, Run::BEFORE, Run::PENDING]
 			], Run::class);
-			$change->before_condition;
 			if (!$run && $change->verifyConditions($object, $change->before_condition)) {
 				$run = new Run();
 				$run->change     = $change;
-				$run->class_name = $class_name;
+				$run->class_name = $change->class_name;
 				$run->identifier = $identifier;
 				$run->step       = Run::BEFORE;
 				Dao::write($run);
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------- changeTriggers
+	/**
+	 * @param $object object
+	 * @return Change[]
+	 */
+	protected function changeTriggers($object)
+	{
+		$class_name = Builder::current()->sourceClassName(get_class($object));
+		if (!isset($this->no_change_cache[$class_name])) {
+			$change_triggers = Dao::search(['class_name' => $class_name], Change::class);
+			return $this->no_change_cache[$class_name] = $change_triggers;
+		}
+		return $this->no_change_cache[$class_name];
 	}
 
 	//-------------------------------------------------------------------------------------- register
