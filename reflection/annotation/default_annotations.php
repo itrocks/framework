@@ -422,7 +422,7 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@search_range' => Default_True_Boolean_Annotation::class,
 
 	/**
-	 * @set_store_name Store_Name
+	 * @set_store_name store_name
 	 * Defines the name of the automatically generated link table.
 	 */
 	Parser::T_PROPERTY . '@set_store_name' => Annotation::class,
