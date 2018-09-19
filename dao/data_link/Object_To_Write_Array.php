@@ -17,7 +17,6 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\Tools\String_Class;
 
 /**
  * Object to write array
@@ -251,7 +250,7 @@ class Object_To_Write_Array
 					? join(',', $value)
 					: $this->valueToWriteArray($value, $this->options);
 			}
-			$write_value = $values ? new String_Class($value) : $value;
+			$write_value = $value;
 		}
 		if ($write_property = $this->propertyDao($property, $value)) {
 			$write_value        = '';
