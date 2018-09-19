@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Trigger\Change;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao;
 
 /**
  * Change trigger run controller
@@ -26,21 +25,11 @@ class Run_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		foreach (Dao::search(['step' => Run::AFTER], Run::class) as $run) {
-			/** @var $run Run */
-			// if after conditions are verified : execute change trigger run actions
-			if ($run->change->verifyConditions($run->object, $run->change->after_condition)) {
-				Dao::begin();
-				$run->step = Run::RUNNING;
-				Dao::write($run, Dao::only('step'));
-				$run->change->executeActions($run->object);
-				Dao::commit();
-			}
-			// conditions do not match : cancel run
-			else {
-				Dao::delete($run);
-			}
-		}
+		$runner = new Runner();
+		$runner->qualifyAfterRuns();
+		$runner->detectRunningRuns();
+		$runner->completeRunningRuns();
+		$runner->purgeCompleteRuns();
 		return 'OK';
 	}
 
