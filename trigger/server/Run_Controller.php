@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Trigger\Server;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Trigger\Server;
 
 /**
@@ -24,7 +23,7 @@ class Run_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		(new Server)->run();
-		return Loc::tr('Done');
+		return 'OK';
 	}
 
 }

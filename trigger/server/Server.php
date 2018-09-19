@@ -64,10 +64,8 @@ class Server
 			Dao::commit();
 			if ($action->action !== static::STOP) {
 				/** @var $callback callable */
-				$callback = [$this, 'afterAction'];
-				if (Dao::getObjectIdentifier($action)) {
-					$callback[] = $action;
-				}
+				$callback   = [$this, 'afterAction'];
+				$callback[] = Dao::getObjectIdentifier($action) ? $action : null;
 				$this->asynchronous->call($action->action, $callback, false);
 			}
 			if ($action->action === static::STOP) {

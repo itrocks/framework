@@ -4,9 +4,14 @@ namespace ITRocks\Framework\Trigger\Change;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link\Write;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Trigger\Change;
+use ITRocks\Framework\User;
+use ITRocks\Framework\View;
 
 /**
  * Change trigger plugin
@@ -60,6 +65,25 @@ class Plugin implements Registerable
 			if ($run) {
 				$run->step = Run::AFTER;
 				Dao::write($run, Dao::only('step'));
+				$action_link = View::link(Change::class, 'run');
+				// launch next step as an action (will need a running server)
+				$now  = Date_Time::now();
+				$user = User::current();
+				if (!Dao::searchOne(
+					[
+						'action'  => $action_link,
+						'as_user' => $user,
+						'next'    => Func::lessOrEqual($now),
+						'running' => false
+					],
+					Action::class
+				)) {
+					$action          = new Action();
+					$action->action  = $action_link;
+					$action->as_user = $user;
+					$action->next    = $now;
+					Dao::write($action);
+				}
 			}
 		}
 	}

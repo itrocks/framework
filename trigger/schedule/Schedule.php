@@ -10,6 +10,7 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  * A schedule trigger calculates if the action must be run from time factors
  *
  * @display_order name, hours, days_of_month, months, years, days_of_weeks
+ * @override actions @set_store_name trigger_actions_schedules
  * @store_name schedule_triggers
  */
 class Schedule extends Trigger

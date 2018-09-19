@@ -13,6 +13,7 @@ class Run extends Has_Condition\Run
 	//--------------------------------------------------------------------------------------- $change
 	/**
 	 * @composite
+	 * @link Object
 	 * @var Change
 	 */
 	public $change;

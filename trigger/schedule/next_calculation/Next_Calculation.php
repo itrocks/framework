@@ -46,6 +46,9 @@ class Next_Calculation
 	 */
 	protected function nextDayOfMonth()
 	{
+		if ($this->date->isMax()) {
+			return false;
+		}
 		$forward = $this->nextMonth();
 		if (!trim($this->schedule->days_of_month)) {
 			return $forward;
@@ -86,6 +89,9 @@ class Next_Calculation
 	 */
 	protected function nextDayOfWeek()
 	{
+		if ($this->date->isMax()) {
+			return false;
+		}
 		$forward = $this->nextDayOfMonth();
 		if (!$this->schedule->days_of_week) {
 			return $forward;
@@ -116,6 +122,9 @@ class Next_Calculation
 	 */
 	protected function nextMonth()
 	{
+		if ($this->date->isMax()) {
+			return false;
+		}
 		$forward = $this->nextYear();
 		if (!trim($this->schedule->months)) {
 			return $forward;
@@ -151,6 +160,9 @@ class Next_Calculation
 	 */
 	protected function nextTime($forward = false)
 	{
+		if ($this->date->isMax()) {
+			return false;
+		}
 		if (!trim($this->schedule->hours) && !$this->schedule->hour_ranges) {
 			$this->schedule->hours = '00:00:00';
 		}
@@ -220,7 +232,7 @@ class Next_Calculation
 	 */
 	protected function nextYear()
 	{
-		if (!trim($this->schedule->years)) {
+		if ($this->date->isMax() || !trim($this->schedule->years)) {
 			return false;
 		}
 		$date_year = $this->date->format('Y');
