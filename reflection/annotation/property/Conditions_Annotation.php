@@ -64,6 +64,9 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 */
 	public function applyTo($object)
 	{
+		if (!$object) {
+			return false;
+		}
 		foreach ($this->value as $property_name => $condition_value) {
 			$class_name       = get_class($object);
 			$condition_values = explode(',', $condition_value);
