@@ -7,11 +7,15 @@ textarea {
 	border: 1px solid #a3a3a3;
 	border-radius: 2px;
 	font-size: 12px;
-	height: 18px;
 	line-height: 14px;
 	margin: 2px 0;
 
+	& select {
+		height: 22px;
+	}
+
 	&:not(select) {
+		height: 18px;
 		padding: 1px 2px;
 	}
 

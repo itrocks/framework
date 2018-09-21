@@ -8,12 +8,16 @@ textarea {
   border: 1px solid #a3a3a3;
   border-radius: 2px;
   font-size: 12px;
-  height: 18px;
   line-height: 14px;
   margin: 2px 0; }
+  input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized) select,
+  select select,
+  textarea select {
+    height: 22px; }
   input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized):not(select),
   select:not(select),
   textarea:not(select) {
+    height: 18px;
     padding: 1px 2px; }
   input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized)[readonly],
   select[readonly],
