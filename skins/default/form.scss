@@ -65,11 +65,10 @@ div.dtp--datetimepicker {
 		flex: initial !important;
 		flex-direction: initial !important;
 		justify-content: initial !important;
-		margin-right: -19px;
 		position: initial !important;
 
 		&:not(:first-child) {
-			margin-left: .25em;
+			margin-left: -15px;
 		}
 
 		> input.dtp--date {
@@ -77,14 +76,14 @@ div.dtp--datetimepicker {
 			max-width: initial !important;
 			text-align: initial !important;
 			text-transform: lowercase;
-			width: 86px !important;
+			width: 86px;
 		}
 
 		> input.dtp--time {
 			flex: initial !important;
 			max-width: initial !important;
 			text-align: initial !important;
-			width: 52px !important;
+			width: 52px;
 		}
 
 		> .icon {
