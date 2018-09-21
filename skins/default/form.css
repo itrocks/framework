@@ -23,6 +23,9 @@ textarea {
     overflow: visible !important;
     resize: none; }
 
+input[type=checkbox] {
+  margin-left: 0; }
+
 /* datetime input */
 div.date_time,
 td.date_time {
@@ -43,6 +46,37 @@ td.date_time {
 td.date_time .ui-datepicker-trigger {
   height: 20px;
   top: 0; }
+
+div.dtp--datetimepicker {
+  box-sizing: initial !important;
+  max-width: initial !important;
+  text-rendering: initial !important; }
+  div.dtp--datetimepicker > .dtp--container {
+    border: initial !important;
+    border-radius: initial !important;
+    display: initial !important;
+    flex: initial !important;
+    flex-direction: initial !important;
+    justify-content: initial !important;
+    margin-right: -19px;
+    position: initial !important; }
+    div.dtp--datetimepicker > .dtp--container:not(:first-child) {
+      margin-left: .25em; }
+    div.dtp--datetimepicker > .dtp--container > input.dtp--date {
+      flex: initial !important;
+      max-width: initial !important;
+      text-align: initial !important;
+      text-transform: lowercase;
+      width: 86px !important; }
+    div.dtp--datetimepicker > .dtp--container > input.dtp--time {
+      flex: initial !important;
+      max-width: initial !important;
+      text-align: initial !important;
+      width: 52px !important; }
+    div.dtp--datetimepicker > .dtp--container > .icon {
+      left: -17px;
+      position: relative;
+      top: 3px; }
 
 /* combo list TODO confirm */
 .ui-state-active {
