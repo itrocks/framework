@@ -15,6 +15,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//------------------------------------------------------------------------------------------- DAY
 	const DAY = 'day';
 
+	//-------------------------------------------------------------------------------------- DAY_NAME
+	const DAY_NAME = 'l';
+
+	//-------------------------------------------------------------------------------- DAY_NAME_SHORT
+	const DAY_NAME_SHORT = 'D';
+
 	//---------------------------------------------------------------------------------- DAY_OF_MONTH
 	const DAY_OF_MONTH = 'd';
 
@@ -28,7 +34,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	const DAY_OF_WEEK_ISO = 'N';
 
 	//----------------------------------------------------------------------------------- DAY_OF_YEAR
-	const DAY_OF_YEAR = 's';
+	const DAY_OF_YEAR = 'z';
 
 	//--------------------------------------------------------------------------------- DAYS_IN_MONTH
 	const DAYS_IN_MONTH = 't';
@@ -50,6 +56,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//------------------------------------------------------------------------------------------ WEEK
 	const WEEK = 'week';
+
+	//---------------------------------------------------------------------------------- WEEK_OF_YEAR
+	const WEEK_OF_YEAR = 'W';
 
 	//------------------------------------------------------------------------------------------ YEAR
 	const YEAR = 'year';
@@ -176,8 +185,11 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a new date with only the day of the current date (with an empty time)
 	 *
+	 * @deprecated use toBeginOf(Date_Time::DAY) or toEndOf instead
 	 * @param $end_of_day boolean if true, the time will be 23:59:59 instead of an empty time
 	 * @return Date_Time
+	 * @see toBeginOf
+	 * @see toEndOf
 	 */
 	public function day($end_of_day = false)
 	{
@@ -222,11 +234,29 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this->format(self::DAY_OF_YEAR);
 	}
 
+	//---------------------------------------------------------------------------------------- daysIn
+	/**
+	 * @param $unit string @values day, month, week, year
+	 * @return integer
+	 */
+	public function daysIn($unit)
+	{
+		switch ($unit) {
+			case self::DAY:   return 1;
+			case self::MONTH: return $this->format(self::DAYS_IN_MONTH);
+			case self::WEEK:  return 7;
+			case self::YEAR:  return (new static($this))->toEndOf(self::YEAR)->format(self::DAY_OF_YEAR);
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------------- daysInMonth
 	/**
 	 * Returns the number of days in the given month
 	 *
+	 * @deprecated daysIn is its generic version
 	 * @return integer
+	 * @see daysIn
 	 */
 	public function daysInMonth()
 	{
@@ -468,10 +498,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
-	 * @deprecated use toBeginningOf(Date_Time::MONTH) instead
+	 * @deprecated use toBeginOf(Date_Time::MONTH) instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return Date_Time
-	 * @see toBeginningOf
+	 * @see toBeginOf
 	 */
 	public function month()
 	{
@@ -511,7 +541,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this;
 	}
 
-	//--------------------------------------------------------------------------------- toBeginningOf
+	//------------------------------------------------------------------------------------- toBeginOf
 	/**
 	 * Returns a date of the beginning of the $unit
 	 *
@@ -523,7 +553,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $unit string @values day, hour, month, minute, year
 	 * @return Date_Time
 	 */
-	public function toBeginningOf($unit)
+	public function toBeginOf($unit)
 	{
 		if ($this->isEmpty()) {
 			return new static($this);
@@ -532,12 +562,35 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			case Date_Time::MINUTE: $format = 'Y-m-d H:i:00';     break;
 			case Date_Time::HOUR:   $format = 'Y-m-d H:00:00';    break;
 			case Date_Time::DAY:    $format = 'Y-m-d 00:00:00';   break;
-			case Date_Time::MONTH:  $format = 'Y-m-01 00:00:00';  break;
-			case Date_Time::YEAR:   $format = 'Y-01-01 00:00:00'; break;
+			case Date_Time::WEEK:
+				return (new static($this->format('Y-m-d 00:00:00')))
+					->sub($this->format(self::DAY_OF_WEEK_ISO) - 1);
+				break;
+			case Date_Time::MONTH: $format = 'Y-m-01 00:00:00';  break;
+			case Date_Time::YEAR:  $format = 'Y-01-01 00:00:00'; break;
 			// invalid value for $unit : a new Date_Time with the same time
 			default: $format = 'Y-m-d H:i:s';
 		}
 		return new static($this->format($format));
+	}
+
+	//--------------------------------------------------------------------------------- toBeginningOf
+	/**
+	 * Returns a date of the beginning of the $unit
+	 *
+	 * @deprecated toBeginOf is shorter
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MONTH)  => 'YYYY-MM-01 00:00:00'
+	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::YEAR)   => 'YYYY-01-01 00:00:00'
+	 * @param $unit string @values day, hour, month, minute, year
+	 * @return Date_Time
+	 * @see toBeginOf
+	 */
+	public function toBeginningOf($unit)
+	{
+		return $this->toBeginOf($unit);
 	}
 
 	//--------------------------------------------------------------------------------------- toEndOf
@@ -561,8 +614,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			case Date_Time::MINUTE: $format = 'Y-m-d H:i:59';     break;
 			case Date_Time::HOUR:   $format = 'Y-m-d H:59:59';    break;
 			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59';   break;
-			case Date_Time::MONTH:  $format = 'Y-m-t 23:59:59';   break;
-			case Date_Time::YEAR:   $format = 'Y-12-31 23:59:59'; break;
+			case Date_Time::WEEK:
+				return (new static($this->format('Y-m-d 23:59:59')))
+					->sub(7 - $this->format(self::DAY_OF_WEEK_ISO));
+				break;
+			case Date_Time::MONTH: $format = 'Y-m-t 23:59:59';   break;
+			case Date_Time::YEAR:  $format = 'Y-12-31 23:59:59'; break;
 			// invalid value for $unit : a new Date_Time with the same time
 			default: $format = 'Y-m-d H:i:s';
 		}
