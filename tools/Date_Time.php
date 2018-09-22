@@ -616,7 +616,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59';   break;
 			case Date_Time::WEEK:
 				return (new static($this->format('Y-m-d 23:59:59')))
-					->sub(7 - $this->format(self::DAY_OF_WEEK_ISO));
+					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
 				break;
 			case Date_Time::MONTH: $format = 'Y-m-t 23:59:59';   break;
 			case Date_Time::YEAR:  $format = 'Y-12-31 23:59:59'; break;
