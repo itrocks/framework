@@ -292,9 +292,9 @@ class Cache implements Configurable, Registerable
 		$feature = $uri->feature_name;
 
 		if (
-		in_array(self::ENABLED_FOR_ALL, $this->features)
-			? !in_array($feature, $this->features)
-			: in_array($feature, $this->features)
+			in_array(self::ENABLED_FOR_ALL, $this->features)
+				? !in_array($feature, $this->features)
+				: in_array($feature, $this->features)
 		) {
 			if (isset($GLOBALS['D'])) echo 'CACHE toggle ON for ' . $uri . BRLF;
 			$this->enabled = true;
