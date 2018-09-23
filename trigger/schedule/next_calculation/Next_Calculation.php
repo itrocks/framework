@@ -96,7 +96,7 @@ class Next_Calculation
 		if (!$this->schedule->days_of_week) {
 			return $forward;
 		}
-		$date_day_of_week = $this->date->format('N');
+		$date_day_of_week = $this->date->format(Date_Time::DAY_OF_WEEK_ISO);
 		$days_of_week     = $this->schedule->getNumericDaysOfWeek();
 		// current or next available day of week
 		if (!in_array($date_day_of_week, $days_of_week)) {
