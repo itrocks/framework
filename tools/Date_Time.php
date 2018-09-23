@@ -543,7 +543,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//------------------------------------------------------------------------------------- toBeginOf
 	/**
-	 * Returns a date of the beginning of the $unit
+	 * Returns a new date of the beginning of the $unit
 	 *
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
@@ -559,9 +559,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE: $format = 'Y-m-d H:i:00';     break;
-			case Date_Time::HOUR:   $format = 'Y-m-d H:00:00';    break;
-			case Date_Time::DAY:    $format = 'Y-m-d 00:00:00';   break;
+			case Date_Time::MINUTE: $format = 'Y-m-d H:i:00';   break;
+			case Date_Time::HOUR:   $format = 'Y-m-d H:00:00';  break;
+			case Date_Time::DAY:    $format = 'Y-m-d 00:00:00'; break;
 			case Date_Time::WEEK:
 				return (new static($this->format('Y-m-d 00:00:00')))
 					->sub($this->format(self::DAY_OF_WEEK_ISO) - 1);
@@ -576,7 +576,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//--------------------------------------------------------------------------------- toBeginningOf
 	/**
-	 * Returns a date of the beginning of the $unit
+	 * Returns a new date of the beginning of the $unit
 	 *
 	 * @deprecated toBeginOf is shorter
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
@@ -595,7 +595,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//--------------------------------------------------------------------------------------- toEndOf
 	/**
-	 * Returns a date of the end of the $unit
+	 * Returns a new date of the end of the $unit
 	 *
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
@@ -611,9 +611,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE: $format = 'Y-m-d H:i:59';     break;
-			case Date_Time::HOUR:   $format = 'Y-m-d H:59:59';    break;
-			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59';   break;
+			case Date_Time::MINUTE: $format = 'Y-m-d H:i:59';   break;
+			case Date_Time::HOUR:   $format = 'Y-m-d H:59:59';  break;
+			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59'; break;
 			case Date_Time::WEEK:
 				return (new static($this->format('Y-m-d 23:59:59')))
 					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
