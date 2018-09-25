@@ -8,5 +8,6 @@ namespace ITRocks\Framework\Dao\Option;
  */
 class Pre_Load extends Properties
 {
+	use Has_In;
 
 }

@@ -68,6 +68,10 @@ trait Has_Build_Column
 				&& ($property = $this->joins->getProperty($master_path, $column_name))
 				&& Store_Annotation::of($property)->isFalse()
 			) ? 'NULL' : null;
+			if (($path === DOT) && !$column_name) {
+				$as   = false;
+				$path = '*';
+			}
 			$sql = $force_column ?: (
 				$join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ)
 			);

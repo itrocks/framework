@@ -1060,11 +1060,17 @@ class Link extends Dao\Sql\Link
 			$builder = new Select($class_name, null, $what, $this, $options);
 			$query   = $builder->buildQuery();
 			$this->setContext($builder->getJoins()->getClassNames());
-			$result_set = $this->connection->query($query);
-			if ($options) {
-				$this->getRowsCount('SELECT', $options, $result_set);
+			if (Option\Pre_Load::in($options)) {
+				$objects = [];
+				(new Dao\Sql\Select($class_name, null, $this))->executeQuery($query);
 			}
-			$objects = $this->fetchAll($class_name, $options, $result_set);
+			else {
+				$result_set = $this->connection->query($query);
+				if ($options) {
+					$this->getRowsCount('SELECT', $options, $result_set);
+				}
+				$objects = $this->fetchAll($class_name, $options, $result_set);
+			}
 			// store result in cache
 			if ($cache_result) {
 				$cache_result->cacheResult($what, $class_name, $options, $objects);

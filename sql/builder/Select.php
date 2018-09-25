@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Dao\Option\Pre_Load;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Joins;
@@ -75,6 +76,13 @@ class Select
 			$options = $options ? [$options] : [];
 		}
 		$this->joins = $joins = new Joins($class_name, [], strval(Link_Property_Name::in($options)));
+
+		if ($pre_load = Pre_Load::in($options)) {
+			if (!$properties) {
+				$properties = ['.'];
+			}
+			$properties = array_merge($properties, $pre_load->properties);
+		}
 
 		$this->class_name      = $class_name;
 		$this->columns_builder = new Columns($class_name, $properties, $joins);
