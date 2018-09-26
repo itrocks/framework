@@ -167,11 +167,11 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@groups_order' => List_Annotation::class,
 
 	/**
-	 * @on_data_list onDataList
+	 * @on_list onList
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call on data list Dao::select() call
 	 */
-	Parser::T_CLASS . '@on_data_list' => Method_Annotation::class,
+	Parser::T_CLASS . '@on_list' => Method_Annotation::class,
 
 	/**
 	 * @stored [false]
