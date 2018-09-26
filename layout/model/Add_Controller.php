@@ -7,7 +7,7 @@ use ITRocks\Framework\Widget\Add;
 /**
  * Layout model add controller : initialises pages
  */
-class Add_Controller extends Add\Add_Controller
+class Add_Controller extends Add\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

@@ -5,12 +5,12 @@ use ITRocks\Framework\Import\Import_Array;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
-use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting;
 
 /**
  * Import settings
  */
-class Import_Settings extends Custom_Settings
+class Import_Settings extends Setting\Custom\Set
 {
 
 	//-------------------------------------------------------------------------------------- $classes

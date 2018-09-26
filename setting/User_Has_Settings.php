@@ -1,14 +1,16 @@
 <?php
 namespace ITRocks\Framework\Setting;
 
-use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\User;
+use ITRocks\Framework;
+use ITRocks\Framework\Setting;
 
 /**
  * For users that have settings
  *
  * @business
- * @extends User
+ * @extends Framework\User
  * @implements Has_Settings
+ * @see Framework\User
  */
 trait User_Has_Settings
 {
@@ -18,7 +20,7 @@ trait User_Has_Settings
 	 * @link Collection
 	 * @override
 	 * @user invisible
-	 * @var User_Setting[]
+	 * @var Setting\User[]
 	 */
 	public $settings;
 

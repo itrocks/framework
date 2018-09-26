@@ -3,14 +3,14 @@ namespace ITRocks\Framework\Widget\Duplicate;
 
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Duplicator;
-use ITRocks\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Widget\Edit;
 
 /**
  * Default duplicate controller
  *
  * Opens an edit form, filled with the data of an object, but without it's ids
  */
-class Duplicate_Controller extends Edit_Controller
+class Duplicate_Controller extends Edit\Controller
 {
 
 	//----------------------------------------------------------------------------- getViewParameters

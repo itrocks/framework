@@ -33,14 +33,17 @@ class Performance_Analyzer
 	 */
 	protected function parseLine($line)
 	{
+		// TODO HIGH measurements, log long executions
+		/*
 		if (substr($line, 0, 2) === '# ') {
 			if (preg_match('^# \d\d:\d\d:\d\d\.\d\d\d.+$', $line)) {
-				// TODO HIGH measurements, log long executions
+
 				// long query : more than 0.01
 				// long inter-query work : more than 0.01
 				// very long : more than 0.1 (both cases)
 			}
 		}
+		*/
 	}
 
 	//------------------------------------------------------------------------------------------- run

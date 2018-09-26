@@ -53,9 +53,11 @@ class Xdebug implements Registerable
 		if (isset($this->key)) {
 			$uri = $this->append($uri, self::KEY, $this->key);
 		}
+		// TODO Something, I guess. Empty test ?
+		/*
 		if (isset($_COOKIE[self::SESSION])) {
-			// TODO Empty test ?
 		}
+		*/
 		return $uri;
 	}
 
@@ -99,6 +101,7 @@ class Xdebug implements Registerable
 	 */
 	public static function isEnabled()
 	{
+		/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
 		return function_exists('xdebug_is_enabled') && xdebug_is_enabled();
 	}
 

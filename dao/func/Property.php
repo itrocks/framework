@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Sql\Builder;
-use ITRocks\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Used to retrieve property for use in function

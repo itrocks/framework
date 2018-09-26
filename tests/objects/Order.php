@@ -11,7 +11,6 @@ class Order extends Document
 {
 
 	//--------------------------------------------------------------------------------------- $client
-	/** @noinspection PhpUnusedPrivateFieldInspection for testing purpose Tests*/
 	/**
 	 * Client
 	 *
@@ -22,7 +21,6 @@ class Order extends Document
 	private $client;
 
 	//------------------------------------------------------------------------------ $delivery_client
-	/** @noinspection PhpUnusedPrivateFieldInspection for testing purpose */
 	/**
 	 * Delivery client
 	 *
@@ -42,7 +40,6 @@ class Order extends Document
 	private $lines;
 
 	//------------------------------------------------------------------------------------- $salesmen
-	/** @noinspection PhpUnusedPrivateFieldInspection for testing purpose */
 	/**
 	 * Links to salesmen
 	 *

@@ -58,9 +58,9 @@ class Integer
 
 	//------------------------------------------------------------------------------------------ type
 	/**
-	 * @param $max_length integer|null
-	 * @param $min_value  integer|null
-	 * @param $max_value  integer|null
+	 * @param $max_length int|null
+	 * @param $min_value  int|null
+	 * @param $max_value  int|null
 	 * @param $signed     boolean|null
 	 * @return string
 	 */

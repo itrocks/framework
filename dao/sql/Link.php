@@ -7,7 +7,6 @@ use ITRocks\Framework\Dao\Data_Link\Transactional;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Dao_Function;
-use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -195,7 +194,6 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *                   the same order than columns.
-	 * @throws Mysql_Error_Exception
 	 */
 	public function select($object_class, $properties, $filter_object = null, $options = [])
 	{

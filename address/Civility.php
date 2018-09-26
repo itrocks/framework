@@ -2,15 +2,16 @@
 namespace ITRocks\Framework\Address;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Objects\Code;
+use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
  * A physical person civility
  *
  * @feature
  */
-class Civility extends Code
+class Civility
 {
+	use Has_Code_And_Name;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

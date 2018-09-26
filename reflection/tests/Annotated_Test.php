@@ -21,11 +21,11 @@ class Annotated_Test extends Test
 
 		$property2 = new reflection_Property(User::class, 'login');
 
-		$this->assertTrue(
+		static::assertTrue(
 			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE), 'modifiedProperty'
 		);
 
-		$this->assertTrue(
+		static::assertTrue(
 			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE), '.newProperty'
 		);
 
@@ -41,11 +41,11 @@ class Annotated_Test extends Test
 		$user_annotation->add(User_Annotation::INVISIBLE);
 
 		$property2 = new reflection_Property(User::class, 'login');
-		$this->assertTrue(
+		static::assertTrue(
 			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE), 'modifiedProperty'
 		);
 
-		$this->assertFalse(
+		static::assertFalse(
 			User_Annotation::of($property2)->has(User_Annotation::INVISIBLE), 'newProperty'
 		);
 	}

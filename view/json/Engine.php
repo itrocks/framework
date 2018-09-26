@@ -17,7 +17,8 @@ class Engine implements Registerable, View\Engine
 	/**
 	 * Suffix of json template file name (before file extension)
 	 *
-	 * @example Json_Template => Output_Json_Template | Data_List_Json_Template...
+	 * @example Json_Template => Json_Output_Template | Json_List_Template...
+	 * @todo naming should follow this example : Engine_Feature_Template is the standard naming !
 	 */
 	const JSON_TEMPLATE = 'Json_Template';
 

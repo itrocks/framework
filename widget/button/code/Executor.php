@@ -7,7 +7,7 @@ use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Widget\Button\Code;
-use ITRocks\Framework\Widget\Write\Write_Controller;
+use ITRocks\Framework\Widget\Write;
 
 /**
  * Executes code before executing the controller
@@ -69,7 +69,7 @@ class Executor implements Registerable
 	public function register(Register $register)
 	{
 		$register->aop->beforeMethod([Main::class, 'executeController'], [$this, 'executeNotWrite']);
-		$register->aop->beforeMethod([Write_Controller::class, 'write'], [$this, 'executeWrite']);
+		$register->aop->beforeMethod([Write\Controller::class, 'write'], [$this, 'executeWrite']);
 	}
 
 }

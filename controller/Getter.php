@@ -72,7 +72,7 @@ abstract class Getter
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection ReflexionException because method exist
 	 * @param $base_class   string The base name for the class, ie 'ITRocks\Framework\User'
-	 * @param $feature_name string The name of the feature, ie 'dataList'
+	 * @param $feature_name string The name of the feature, ie 'list'
 	 * @param $suffix       string Class suffix, ie 'Controller', 'View'
 	 * @param $extension    string File extension, ie 'php', 'html'
 	 * @param $class_form   boolean true to use 'Feature_Class' naming instead of 'featureClass'
@@ -80,7 +80,6 @@ abstract class Getter
 	 */
 	static public function get($base_class, $feature_name, $suffix, $extension, $class_form = true)
 	{
-		$feature_name = Feature::uriToFeature($feature_name);
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';
@@ -88,11 +87,12 @@ abstract class Getter
 			->prepare()
 			->filter()
 			->classes();
-		$class_name    = $base_class;
-		$ext           = DOT . $extension;
-		$feature_class = Names::methodToClass($feature_name);
-		$feature_what  = $class_form ? $feature_class : $feature_name;
-		$method        = 'run';
+		$class_name        = $base_class;
+		$ext               = DOT . $extension;
+		$feature_class     = self::reservedFeatures(Names::methodToClass($feature_name));
+		$feature_directory = strtolower($feature_class);
+		$feature_what      = $class_form ? $feature_class : $feature_name;
+		$method            = 'run';
 
 		// $classes : the controller class name and its parents and traits
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
@@ -131,23 +131,23 @@ abstract class Getter
 				if (isset($GLOBALS['D'])) {
 					static::debug(
 						'A2',
-						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext,
+						$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext,
 						'run',
 						$extension
 					);
 				}
 				if (file_exists(
-					$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
+					$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
 				)) {
 					$class = $class_name . BS . $feature_class . BS . $feature_what . $_suffix;
 					break 2;
 				}
 				if (isset($GLOBALS['D']) && $suffix) {
 					static::debug(
-						'A3', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension
+						'A3', $path . SL . $feature_directory . SL . $suffix . $ext, 'run', $extension
 					);
 				}
-				if ($suffix && file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)) {
+				if ($suffix && file_exists($path . SL . $feature_directory . SL . $suffix . $ext)) {
 					$class = $class_name . BS . $feature_class . BS . $suffix;
 					break 2;
 				}
@@ -203,13 +203,13 @@ abstract class Getter
 				$path      = strtolower(str_replace(BS, SL, $namespace));
 				if (isset($GLOBALS['D']) && $can_be_project_class && $suffix) {
 					static::debug(
-						'B1', $path . SL . strtolower($feature_class) . SL . $suffix . $ext, 'run', $extension
+						'B1', $path . SL . $feature_directory . SL . $suffix . $ext, 'run', $extension
 					);
 				}
 				if (
 					$can_be_project_class
 					&& $suffix
-					&& file_exists($path . SL . strtolower($feature_class) . SL . $suffix . $ext)
+					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
 				) {
 					$class = $namespace . BS . $feature_class . BS . $suffix;
 					break;
@@ -217,7 +217,7 @@ abstract class Getter
 				if (isset($GLOBALS['D']) && $can_be_project_class) {
 					static::debug(
 						'B2',
-						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext,
+						$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext,
 						'run',
 						$extension
 					);
@@ -225,7 +225,7 @@ abstract class Getter
 				if (
 					$can_be_project_class
 					&& file_exists(
-						$path . SL . strtolower($feature_class) . SL . $feature_what . $_suffix . $ext
+						$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
 					)
 				) {
 					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
@@ -244,13 +244,13 @@ abstract class Getter
 				if (isset($GLOBALS['D']) && $suffix) {
 					static::debug(
 						'B4',
-						$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext,
+						$path . SL . 'widget' . SL . $feature_directory . SL . $suffix . $ext,
 						'run',
 						$extension
 					);
 				}
 				if ($suffix && file_exists(
-					$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $suffix . $ext
+					$path . SL . 'widget' . SL . $feature_directory . SL . $suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
 					break;
@@ -258,14 +258,14 @@ abstract class Getter
 				if (isset($GLOBALS['D'])) {
 					static::debug(
 						'B5',
-						$path . SL . 'widget' . SL . strtolower($feature_class) . SL . $feature_what . $_suffix
+						$path . SL . 'widget' . SL . $feature_directory . SL . $feature_what . $_suffix
 							. $ext,
 						'run',
 						$extension
 					);
 				}
 				if (file_exists(
-					$path . SL . 'widget' . SL . strtolower($feature_class) . SL
+					$path . SL . 'widget' . SL . $feature_directory . SL
 					. $feature_what . $_suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS
@@ -275,13 +275,13 @@ abstract class Getter
 				if (isset($GLOBALS['D']) && $suffix) {
 					static::debug(
 						'B6',
-						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext,
+						$path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext,
 						'run',
 						$extension
 					);
 				}
 				if ($suffix && file_exists(
-						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $suffix . $ext
+						$path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext
 					)) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
 					break;
@@ -289,14 +289,14 @@ abstract class Getter
 				if (isset($GLOBALS['D'])) {
 					static::debug(
 						'B7',
-						$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what
+						$path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what
 							. $_suffix . $ext,
 						'run',
 						$extension
 					);
 				}
 				if (file_exists(
-					$path . SL . 'webservice' . SL . strtolower($feature_class) . SL . $feature_what
+					$path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what
 					. $_suffix . $ext
 				)) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $feature_what
@@ -446,6 +446,18 @@ abstract class Getter
 			$traits               = array_merge($traits, self::getTraitsRecursive($trait));
 		}
 		return $traits;
+	}
+
+	//------------------------------------------------------------------------------ reservedFeatures
+	/**
+	 * @param $feature string
+	 * @return string
+	 */
+	static protected function reservedFeatures($feature)
+	{
+		return in_array($feature, ['List', 'Print'])
+			? ($feature . '_')
+			: $feature;
 	}
 
 }

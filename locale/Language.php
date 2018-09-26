@@ -1,13 +1,14 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
-use ITRocks\Framework\Objects\Code;
+use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
  * Locale language constants
  */
-class Language extends Code
+class Language
 {
+	use Has_Code_And_Name;
 
 	//-------------------------------------------------------------------------------- Language codes
 	// FIXME 'be' is the Belarusian LANGUAGE code. But BE is the belgium COUNTRY code

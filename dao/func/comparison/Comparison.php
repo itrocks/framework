@@ -7,7 +7,7 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Lesser than is a condition used to get the record where the column has a value lesser than the

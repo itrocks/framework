@@ -141,18 +141,19 @@ trait Column_Builder_Property
 					. SP . Database::characterSetCollateSql();
 			}
 			if ($property_type->hasSize()) {
-				/** @var integer $max_length */
-				$max_length = $property->getAnnotation('max_length')->value;
+				$max_length = intval($property->getAnnotation('max_length')->value);
 				$max_value  = $property->getAnnotation('max_value')->value;
 				$min_value  = $property->getAnnotation('min_value')->value;
 				$precision  = $property->getAnnotation('precision')->value;
 				$signed     = $property->getAnnotation('signed')->value;
 				if ($property_type->isInteger()) {
-					return (new Integer)->type($max_length, $min_value, $max_value, $signed);
+					return (new Integer)->type($max_length, intval($min_value), intval($max_value), $signed);
 				}
 				elseif ($property_type->isFloat()) {
 					return $precision
-						? (new Decimal)->type($max_length, $min_value, $max_value, $signed, $precision)
+						? (new Decimal)->type(
+							$max_length, floatval($min_value), floatval($max_value), $signed, $precision
+						)
 						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {

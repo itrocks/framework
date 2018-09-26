@@ -9,7 +9,7 @@ use ITRocks\Framework\Widget\Add;
 /**
  * Car element edit controller
  */
-class Element_Add_Controller extends Add\Add_Controller
+class Element_Add_Controller extends Add\Controller
 {
 
 	//----------------------------------------------------------------------------- getViewParameters

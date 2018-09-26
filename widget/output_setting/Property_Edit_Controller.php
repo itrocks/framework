@@ -22,7 +22,7 @@ class Property_Edit_Controller implements Feature_Controller
 	 */
 	private function customSettingsProperty($class_name, $feature, $property_path)
 	{
-		$output_settings = Output_Settings::current($class_name, $feature);
+		$output_settings = Set::current($class_name, $feature);
 		$output_settings->cleanup();
 		$property = isset($output_settings->properties[$property_path])
 			? $output_settings->properties[$property_path]

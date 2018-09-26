@@ -15,7 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Widget\List_Setting;
 use ReflectionException;
 use Reflector;
 
@@ -371,7 +371,7 @@ class Loc implements Registerable
 		);
 		// translations
 		$aop->afterMethod(
-			[Data_List_Settings::class, 'getDefaultTitle'],
+			[List_Setting\Set::class, 'getDefaultTitle'],
 			[$this, 'translateReturnedValue']
 		);
 		// translation/reverse of export/import procedures
@@ -495,7 +495,7 @@ class Loc implements Registerable
 	public function translateStringPropertyView(Reflection_Property_View $object, $result)
 	{
 		return ($object->property->getListAnnotation('values')->values())
-			? $this->tr($result, $object->property->final_class)
+			? static::tr($result, $object->property->final_class)
 			: $result;
 	}
 

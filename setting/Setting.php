@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
-use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting\Custom;
 
 /**
  * An application setting
@@ -19,7 +19,7 @@ class Setting
 	/**
 	 * @getter getValue
 	 * @max_length 1000000000
-	 * @var string|Custom_Settings string if serialized (for storage)
+	 * @var string|Custom\Set string if serialized (for storage)
 	 */
 	public $value;
 

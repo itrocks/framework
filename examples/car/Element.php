@@ -1,8 +1,7 @@
 <?php
 namespace ITRocks\Framework\Examples\Car;
 
-use ITRocks\Framework\Traits\Has_Code;
-use ITRocks\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
  * A car element
@@ -11,8 +10,7 @@ use ITRocks\Framework\Traits\Has_Name;
  */
 class Element
 {
-	use Has_Code;
-	use Has_Name;
+	use Has_Code_And_Name;
 
 	//------------------------------------------------------------------------------------- $position
 	/**

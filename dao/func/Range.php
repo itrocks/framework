@@ -4,7 +4,7 @@ namespace ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
-use ITRocks\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Dao Range function

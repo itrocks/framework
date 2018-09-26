@@ -202,6 +202,7 @@ class Application_Updater implements Configurable, Serializable
 			unlink(self::UPDATE_FILE);
 		}
 		if (function_exists('opcache_reset')) {
+			/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
 			opcache_reset();
 		}
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {

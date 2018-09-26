@@ -95,8 +95,8 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	public function getDisplayedMessage(Handled_Error $error)
 	{
 		return ($_SERVER['REMOTE_ADDR'] === 'console')
-			? $this->getUserInformationMessage()
-			: ('<div class="error">' . $this->getUserInformationMessage() . '</div>');
+			? static::getUserInformationMessage()
+			: ('<div class="error">' . static::getUserInformationMessage() . '</div>');
 	}
 
 	//--------------------------------------------------------------------- getUserInformationMessage

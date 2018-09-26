@@ -11,7 +11,6 @@ use ITRocks\Framework\Tests\Objects\Composite;
 use ITRocks\Framework\Tests\Objects\Resource;
 use ITRocks\Framework\Tests\Objects\Salesman;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Object builder from array unit tests
@@ -29,8 +28,6 @@ class Object_Builder_Array_Test extends Test
 	//------------------------------------------------------------------------------------ flushCache
 	/**
 	 * Flush DAO cache (if the plugin is enabled)
-	 *
-	 * @throws ReflectionException
 	 */
 	protected function flushCache()
 	{
@@ -44,8 +41,6 @@ class Object_Builder_Array_Test extends Test
 	//---------------------------------------------------------------- testExistingComponentSubObject
 	/**
 	 * What if we build an existing composite with its component sub-object
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExistingComponentSubObject()
 	{
@@ -74,8 +69,6 @@ class Object_Builder_Array_Test extends Test
 	//------------------------------------------------------------------------- testExistingSubObject
 	/**
 	 * What if we build an existing object and existing sub-objects
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExistingSubObject()
 	{
@@ -108,8 +101,6 @@ class Object_Builder_Array_Test extends Test
 	//--------------------------------------------------------------------- testExistingSubObjectData
 	/**
 	 * What if we build an existing object and data from sub-objects
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExistingSubObjectData()
 	{

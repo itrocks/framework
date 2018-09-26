@@ -15,8 +15,7 @@ use ITRocks\Framework\Import;
 use ITRocks\Framework\Import\Settings\Import_Settings;
 use ITRocks\Framework\Import\Settings\Import_Settings_Builder;
 use ITRocks\Framework\Session;
-use ITRocks\Framework\Setting\Custom_Settings;
-use ITRocks\Framework\Setting\Custom_Settings_Controller;
+use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -34,11 +33,11 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	/**
 	 * @param $class_name string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Custom_Settings|Import_Settings always null (unused)
+	 * @param $settings   Setting\Custom\Set|Import_Settings always null (unused)
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
-		$class_name, array $parameters, Custom_Settings $settings = null
+		$class_name, array $parameters, Setting\Custom\Set $settings = null
 	) {
 		return [
 			Feature::F_WRITE => new Button(
@@ -134,7 +133,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 				$worksheet->settings->classes[lLastParse($parameters['constant_remove'], DOT, 1, false)]
 					->removeConstant(rLastParse($parameters['constant_remove'], DOT, 1, true));
 			}
-			Custom_Settings_Controller::applyParametersToCustomSettings(
+			Setting\Custom\Controller::applyParametersToCustomSettings(
 				$worksheet->settings, array_merge($form, $parameters)
 			);
 		}

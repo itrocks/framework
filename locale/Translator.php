@@ -6,7 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Widget\Data_List\Search_Parameters_Parser\Wildcard;
+use ITRocks\Framework\Widget\List_\Search_Parameters_Parser\Wildcard;
 
 /**
  * Translations give the programmer translations features, and store them into cache

@@ -37,6 +37,8 @@ class Foreign_Keys_Tools
 	 */
 	public function toColumn($table, $column)
 	{
+		// TODO Some things, I assume
+		/*
 		$database = $this->mysqli->selectedDatabase();
 		$result = $this->mysqli->query("
 			SELECT * FROM `information_schema`.`key_column_usage`
@@ -45,8 +47,8 @@ class Foreign_Keys_Tools
 			AND `referenced_column_name` = '$column'
 		");
 		while ($row = $result->fetch_assoc()) {
-			// TODO Some things, I assume
 		}
+		*/
 	}
 
 }

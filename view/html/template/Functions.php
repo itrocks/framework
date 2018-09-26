@@ -36,8 +36,8 @@ use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\Widget\Condition;
-use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
 use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
+use ITRocks\Framework\Widget\List_;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates
@@ -80,7 +80,7 @@ class Functions
 	/**
 	 * @param $name string
 	 * @return string
-	 * @see Data_List_Controller::descapePropertyName()
+	 * @see List_\Controller::descapePropertyName()
 	 * @see Import_Settings_Builder::buildForm()
 	 */
 	protected function escapeName($name)
@@ -849,19 +849,6 @@ class Functions
 		return reset($template->objects) === null;
 	}
 
-	//----------------------------------------------------------------------------------- getTemplate
-	/**
-	 * Allow to navigate through the template object
-	 *
-	 * @example {@template.css}
-	 * @param $template Template
-	 * @return Template
-	 */
-	public function getTemplate(Template $template)
-	{
-		return $template;
-	}
-
 	//------------------------------------------------------------------------------------ getNumeric
 	/**
 	 * Returns true if the object is numeric
@@ -1166,6 +1153,19 @@ class Functions
 			return $stopping_blocks;
 		}
 		return [];
+	}
+
+	//----------------------------------------------------------------------------------- getTemplate
+	/**
+	 * Allow to navigate through the template object
+	 *
+	 * @example {@template.css}
+	 * @param $template Template
+	 * @return Template
+	 */
+	public function getTemplate(Template $template)
+	{
+		return $template;
 	}
 
 	//--------------------------------------------------------------------------------------- getTime

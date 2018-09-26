@@ -79,7 +79,7 @@ class Menu implements Configurable
 
 	//------------------------------------------------------------------------------- configurationOf
 	/**
-	 * Build a menu configuration for a given feature (dataList is the default), given a list of
+	 * Build a menu configuration for a given feature (list is the default), given a list of
 	 * class names.
 	 *
 	 * - The feature is Feature::F_LIST at start if no other feature begins the list

@@ -21,7 +21,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Widget\List_Setting;
 use ReflectionException;
 
 /**
@@ -231,7 +231,7 @@ class Import_Array
 	 */
 	public static function getPropertiesAlias($class_name)
 	{
-		$list_settings    = Data_List_Settings::current($class_name);
+		$list_settings    = List_Setting\Set::current($class_name);
 		$properties_alias = [];
 		foreach ($list_settings->properties_title as $property_path => $property_title) {
 			$properties_alias[Names::displayToProperty($property_title)] = $property_path;

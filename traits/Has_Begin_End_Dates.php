@@ -31,7 +31,7 @@ trait Has_Begin_End_Dates
 
 	//-------------------------------------------------------------------------------------- activeAt
 	/**
-	 * Gets the active object for a given date-time
+	 * Gets the active object for a given date (day)
 	 *
 	 * @param $date_time Date_Time|null @default Date_Time::now
 	 * @return static|null
@@ -44,8 +44,8 @@ trait Has_Begin_End_Dates
 		/** @var $object static */
 		$object = Dao::searchOne(
 			[
-				'begin_date' => Func::lessOrEqual($date_time->day(false)),
-				'end_date'   => Func::greaterOrEqual($date_time->day(false))
+				'begin_date' => Func::lessOrEqual($date_time->toEndOf(Date_Time::DAY)),
+				'end_date'   => Func::greaterOrEqual($date_time->toBeginOf(Date_Time::DAY))
 			],
 			get_called_class()
 		);

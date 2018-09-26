@@ -58,7 +58,7 @@ class Route
 	 * @param $child      Node|null
 	 * @param $first      Node
 	 */
-	public function __construct(Node $child = null, Node $first)
+	public function __construct(Node $child = null, Node $first = null)
 	{
 		$this->child = $child;
 		$this->first = $first;

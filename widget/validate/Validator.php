@@ -6,8 +6,8 @@ use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Object_To_Write_Array;
-use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
@@ -33,7 +33,7 @@ use ITRocks\Framework\Widget\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Widget\Validate\Property\Var_Annotation;
-use ITRocks\Framework\Widget\Write\Write_Controller;
+use ITRocks\Framework\Widget\Write;
 use ReflectionException;
 
 /**
@@ -338,7 +338,7 @@ class Validator implements Registerable
 	public function register(Register $register)
 	{
 		$register->aop->afterMethod(
-			[Write::class, 'beforeWrite'], [$this, 'beforeWrite']
+			[Data_Link\Write::class, 'beforeWrite'], [$this, 'beforeWrite']
 		);
 		$register->aop->afterMethod(
 			[Main::class, 'runController'], [$this, 'afterMainControllerRun']
@@ -350,13 +350,13 @@ class Validator implements Registerable
 			[Object_To_Write_Array::class, 'propertyStoreString'], [$this, 'beforePropertyStoreString']
 		);
 		$register->aop->afterMethod(
-			[Write_Controller::class, 'run'], [$this, 'afterWriteControllerRun']
+			[Write\Controller::class, 'run'], [$this, 'afterWriteControllerRun']
 		);
 		$register->aop->beforeMethod(
-			[Write_Controller::class, 'run'], [$this, 'beforeWriteControllerRun']
+			[Write\Controller::class, 'run'], [$this, 'beforeWriteControllerRun']
 		);
 		$register->aop->afterMethod(
-			[Write_Controller::class, 'write'], [$this, 'afterWriteControllerWrite']
+			[Write\Controller::class, 'write'], [$this, 'afterWriteControllerWrite']
 		);
 		$register->setAnnotations(Parser::T_CLASS, [
 			'validate'   => Class_\Validate_Annotation::class,

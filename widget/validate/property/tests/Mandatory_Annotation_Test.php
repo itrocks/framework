@@ -78,7 +78,7 @@ class Mandatory_Annotation_Test extends Test
 		);
 		$actual = $annotation->isEmpty($this);
 
-		$this->assertFalse($actual);
+		static::assertFalse($actual);
 	}
 
 	//--------------------------------------------------------------------------------- testIsEmptyOk
@@ -92,7 +92,7 @@ class Mandatory_Annotation_Test extends Test
 		);
 		$actual = $annotation->isEmpty($this);
 
-		$this->assertTrue($actual);
+		static::assertTrue($actual);
 	}
 
 	//------------------------------------------------------------------------------ testValidateNull
@@ -106,7 +106,7 @@ class Mandatory_Annotation_Test extends Test
 		$foo_param            = new stdClass();
 
 		$actual = $annotation->validate($foo_param);
-		$this->assertNull($actual);
+		static::assertNull($actual);
 	}
 
 }

@@ -63,7 +63,7 @@ class Textile extends Parser
 	protected function code($text)
 	{
 		$this->in_code = true;
-		$result = parent::code($text);
+		$result        = parent::code($text);
 		$this->in_code = false;
 		return $result;
 	}
@@ -138,12 +138,12 @@ class Textile extends Parser
 	protected function spans($text)
 	{
 		$span_tags = array_keys($this->span_tags);
-		$pnct = '.,"\'?!;:‹›«»„“”‚‘’';
-		$this->span_depth++;
+		$pnct      = '.,"\'?!;:‹›«»„“”‚‘’';
+		$this->span_depth ++;
 
 		if ($this->span_depth <= $this->max_span_depth) {
 			foreach ($span_tags as $tag) {
-				$tag = preg_quote($tag);
+				$tag  = preg_quote($tag);
 				$text = preg_replace_callback(
 					"`
 					(?P<pre>^|(?<=[\s>$pnct\(])|[{[])
@@ -161,7 +161,7 @@ class Textile extends Parser
 				);
 			}
 		}
-		$this->span_depth--;
+		$this->span_depth --;
 		return $text;
 	}
 

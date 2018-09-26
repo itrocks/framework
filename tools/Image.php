@@ -325,6 +325,7 @@ class Image
 
 		switch ($type) {
 			case IMAGETYPE_BMP:
+				/** @noinspection PhpDeprecationInspection PHP documentation don't say it's deprecated */
 				image2wbmp($this->resource, $filename);
 				break;
 			case IMAGETYPE_GIF:

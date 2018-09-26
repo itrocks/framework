@@ -9,7 +9,7 @@ use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\Output_Setting\Output_Setting_Controller;
+use ITRocks\Framework\Widget\Output_Setting;
 
 /**
  * Button write controller
@@ -36,8 +36,8 @@ class Write_Controller implements Feature_Controller
 			$parameters->set('before', $form['custom_before_button']);
 		}
 		$parameters->set(Feature::FEATURE, $form['custom_feature']);
-		/** @var $output_setting_controller Output_Setting_Controller */
-		$output_setting_controller = Builder::create(Output_Setting_Controller::class);
+		/** @var $output_setting_controller Output_Setting\Controller */
+		$output_setting_controller = Builder::create(Output_Setting\Controller::class);
 		$output_setting_controller->run($parameters, [], [], $form['custom_class_name']);
 	}
 

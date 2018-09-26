@@ -1,7 +1,7 @@
 features:
   - cards
-  - dataList
-  - dataListSetting
+  - listSetting
+  - list
   - json
   - output
   - ITRocks/Framework/Property/remove

@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Tests\Replaces;
 
-use ITRocks\Framework\Setting\User_Setting;
+use ITRocks\Framework\Setting;
 use ITRocks\Framework\User;
 
 /**
@@ -11,7 +11,7 @@ use ITRocks\Framework\User;
  *
  * @store_name user_setting_sons
  */
-class User_Setting_Son extends User_Setting
+class User_Setting_Son extends Setting\User
 {
 
 	//------------------------------------------------------------------------------------------ $guy

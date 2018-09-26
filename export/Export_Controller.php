@@ -9,7 +9,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Widget\Data_List\Selection;
+use ITRocks\Framework\Widget\List_\Selection;
 
 /**
  * Default export controller
@@ -51,7 +51,7 @@ class Export_Controller implements Default_Feature_Controller
 
 		// write first line (properties path)
 		$row = [];
-		foreach ($selection->getDataListSettings()->properties as $property) {
+		foreach ($selection->getListSettings()->properties as $property) {
 			if (isset($properties[$property->path])) {
 				$row[] = $property->shortTitle();
 			}

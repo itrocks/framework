@@ -151,8 +151,8 @@ class Period
 	 */
 	public function toMonths()
 	{
-		$start  = $this->begin->month();
-		$stop   = $this->end->month();
+		$start  = $this->begin->toBeginOf(Date_Time::MONTH);
+		$stop   = $this->end->toBeginOf(Date_Time::MONTH);
 		$months = [];
 		while ($start->isBefore($stop)) {
 			$months[] = clone $start;

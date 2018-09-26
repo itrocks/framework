@@ -146,7 +146,7 @@ class Select_Test extends Test
 		$dao->query($query);
 
 		// Failure will be SQL Exception
-		$this->assertTrue(true);
+		static::assertTrue(true);
 	}
 
 }

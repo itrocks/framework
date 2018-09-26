@@ -16,12 +16,12 @@ use ITRocks\Framework\Widget\Cards\Property\Column;
 use ITRocks\Framework\Widget\Cards\Property\Edit;
 use ITRocks\Framework\Widget\Cards\Property\Group;
 use ITRocks\Framework\Widget\Cards\Property\Sum;
-use ITRocks\Framework\Widget\Data_List\Data_List_Controller;
+use ITRocks\Framework\Widget\List_;
 
 /**
  * Cards controller
  */
-class Controller extends Data_List_Controller implements Has_Selection_Buttons
+class Controller extends List_\Controller implements Has_Selection_Buttons
 {
 
 	//--------------------------------------------------------------------------------------- FEATURE

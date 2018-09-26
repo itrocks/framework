@@ -9,7 +9,7 @@ use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Mapper\Object_Not_Found_Exception;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Set;
-use ITRocks\Framework\Widget\Data_List\Selection;
+use ITRocks\Framework\Widget\List_\Selection;
 
 /**
  * Controller parameters contains what objects are passed into the controller's URI

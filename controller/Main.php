@@ -290,7 +290,6 @@ class Main
 	 * @param $sub_feature     string if set, the sub feature controller is searched into the feature
 	 *                         controller namespace
 	 * @return callable
-	 * @throws ReflectionException
 	 */
 	public function getController($controller_name, $feature_name, $sub_feature = null)
 	{
@@ -474,8 +473,6 @@ class Main
 	//--------------------------------------------------------------------------------- resumeSession
 	/**
 	 * Resume the session
-	 *
-	 * @throws ReflectionException
 	 */
 	private function resumeSession()
 	{

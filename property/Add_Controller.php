@@ -7,7 +7,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
+use ITRocks\Framework\Widget\List_Setting;
 
 /**
  * The default property add controller does nothing : we must add a property from a context
@@ -22,7 +22,7 @@ class Add_Controller implements Feature_Controller
 	 */
 	public function addPropertyToList($class_name, $property_path)
 	{
-		$list_settings = Data_List_Settings::current($class_name);
+		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->addProperty($property_path);
 		$list_settings->save();
 	}

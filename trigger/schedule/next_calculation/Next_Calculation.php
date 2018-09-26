@@ -100,7 +100,7 @@ class Next_Calculation
 		$days_of_week     = $this->schedule->getNumericDaysOfWeek();
 		// current or next available day of week
 		if (!in_array($date_day_of_week, $days_of_week)) {
-			$this->date = $this->date->day();
+			$this->date = $this->date->toBeginOf(Date_Time::DAY);
 			do {
 				$this->date->add(1);
 				$date_day_of_week ++;

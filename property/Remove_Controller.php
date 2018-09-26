@@ -6,8 +6,8 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings;
-use ITRocks\Framework\Widget\Output_Setting\Output_Settings;
+use ITRocks\Framework\Widget\List_Setting;
+use ITRocks\Framework\Widget\Output_Setting;
 use ITRocks\Framework\Widget\Remove;
 
 /**
@@ -23,7 +23,7 @@ class Remove_Controller extends Remove\Remove_Controller
 	 */
 	public function removePropertyFromList($class_name, $property_path)
 	{
-		$list_settings = Data_List_Settings::current($class_name);
+		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->removeProperty($property_path);
 		$list_settings->save();
 	}
@@ -36,7 +36,7 @@ class Remove_Controller extends Remove\Remove_Controller
 	 */
 	public function removePropertyFromOutput($class_name, $feature_name, $property_path)
 	{
-		$output_settings = Output_Settings::current($class_name, $feature_name);
+		$output_settings = Output_Setting\Set::current($class_name, $feature_name);
 		$output_settings->removeProperty($property_path);
 		$output_settings->save();
 	}
@@ -59,7 +59,7 @@ class Remove_Controller extends Remove\Remove_Controller
 		$objects['class_name'] = $parameters->getRawParameter('class_name')
 			?: array_shift($objects);
 		$objects['feature_name'] = $parameters->getRawParameter('feature_name')
-			?: Feature::uriToFeature(array_shift($objects));
+			?: array_shift($objects);
 		$objects['property_path'] = $parameters->getRawParameter('property_path')
 			?: array_shift($objects);
 		array_unshift($objects, new Property());

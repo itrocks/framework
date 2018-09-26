@@ -1,16 +1,14 @@
 <?php
 namespace ITRocks\Framework\Widget\Edit\Tests;
 
-use ITRocks\Framework\Traits\Has_Code;
-use ITRocks\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
  * A simple test object
  */
 class Simple
 {
-	use Has_Code;
-	use Has_Name;
+	use Has_Code_And_Name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -10,7 +10,7 @@ use ITRocks\Framework\Tests\Objects\Vehicle_Door;
 use ITRocks\Framework\Tests\Objects\Vehicle_Door_Piece;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Edit\Edit_Controller;
+use ITRocks\Framework\Widget\Edit;
 
 /**
  * HTML view collection builder tests
@@ -56,7 +56,7 @@ class Collection_Test extends Test
 	 */
 	private function callVehicleEditController(Vehicle $vehicle)
 	{
-		$edit       = new Edit_Controller();
+		$edit       = new Edit\Controller();
 		$uri        = new Uri(View::link($vehicle, Feature::F_EDIT));
 		$parameters = new Parameters($uri);
 		$parameters->set(Parameter::IS_INCLUDED, true);

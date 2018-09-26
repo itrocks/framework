@@ -274,7 +274,7 @@ class Button
 	{
 		if (!isset($this->link)) {
 			$parameters = [];
-			if ($this->code->source) {
+			if ($this->code && $this->code->source) {
 				$parameters[] = $this->code;
 			}
 			$this->link = View::link($this->object, $this->feature, $parameters);

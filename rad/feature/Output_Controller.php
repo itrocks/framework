@@ -4,7 +4,7 @@ namespace ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\RAD\Feature;
-use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting;
 use ITRocks\Framework\View;
 use ITRocks\Framework\Widget\Button;
 use ITRocks\Framework\Widget\Output;
@@ -12,17 +12,17 @@ use ITRocks\Framework\Widget\Output;
 /**
  * RAD feature output controller
  */
-class Output_Controller extends Output\Output_Controller
+class Output_Controller extends Output\Controller
 {
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
 	 * @param $object     Feature|string
 	 * @param $parameters array
-	 * @param $settings   Custom_Settings|null
+	 * @param $settings   Setting\Custom\Set|null
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null)
+	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 		$feature = $object;

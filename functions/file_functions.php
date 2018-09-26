@@ -51,6 +51,7 @@ function script_put_contents($filename, $data)
 {
 	if (file_put_contents($filename, $data)) {
 		if (function_exists('opcache_invalidate') && (substr($filename, -4) == '.php')) {
+			/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
 			opcache_invalidate($filename, true);
 		}
 	}

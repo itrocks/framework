@@ -46,7 +46,7 @@ class Select_Controller implements Feature_Controller
 				? Dao::read($set_value, $type->asString())
 				: $set_value;
 			$parameters->set('selected', true);
-			return (new Output_Controller())->run($parameters, $form, $files);
+			return (new Output_Controller)->run($parameters, $form, $files);
 		}
 		else {
 			$objects['controller'] = $this;

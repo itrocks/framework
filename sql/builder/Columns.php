@@ -263,7 +263,7 @@ class Columns implements With_Build_Column
 	 */
 	private function buildObjectColumn(
 		$path, Reflection_Property $property, Join $join = null, Join $linked_join = null,
-		array $linked_properties, &$first_property
+		array $linked_properties = null, &$first_property = null
 	) {
 		$sql           = '';
 		$foreign_alias = (isset($linked_join) && isset($linked_properties[$property->name]))

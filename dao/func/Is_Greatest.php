@@ -6,7 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Subquery;
-use ITRocks\Framework\Widget\Data_List\Summary_Builder;
+use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Is greatest is a condition used to get the record where the column has the greatest value

@@ -8,7 +8,7 @@ use ITRocks\Framework\Widget\Write;
 /**
  * Opened document write controller
  */
-class Write_Controller extends Write\Write_Controller
+class Write_Controller extends Write\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

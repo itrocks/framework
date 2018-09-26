@@ -80,7 +80,7 @@ class Max_Length_Annotation_Test extends Test
 		$actual = $annotation->validate($this);
 		$annotation->reportMessage();
 
-		$this->assertFalse($actual);
+		static::assertFalse($actual);
 	}
 
 	//--------------------------------------------------------------------------- testValidateSuccess
@@ -94,7 +94,7 @@ class Max_Length_Annotation_Test extends Test
 		);
 		$actual = $annotation->validate($this);
 
-		$this->assertTrue($actual);
+		static::assertTrue($actual);
 	}
 
 }

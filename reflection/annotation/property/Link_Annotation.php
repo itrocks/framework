@@ -52,15 +52,18 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 
 	//------------------------------------------------------------------------------------ guessValue
 	/**
-	 * Guess value for @link using the type of the property (@var)
-	 * - property is a Date_Time (or a child class) : @link will be 'DateTime'
-	 * - property is a single object : @link will be 'Object'
-	 * - property is a collection object with '@var Object[] All' : @link will be 'All'
-	 * - property is a collection object with '@var Object[] Collection' : @link will be 'Collection'
-	 * - property is a collection object with '@var Object[] Map' : @link will be 'Map'
+	 * Guess value for link using the type of the property (var)
+	 * - property is a Date_Time (or a child class) : link will be 'DateTime'
+	 * - property is a single object : link will be 'Object'
+	 * - property is a collection object with 'var Object[] All' : link will be 'All'
+	 * - property is a collection object with 'var Object[] Collection' : link will be 'Collection'
+	 * - property is a collection object with 'var Object[] Map' : link will be 'Map'
 	 * - property is a collection object without telling anything :
-	 *   - @link will be 'Collection' if the object is a Component
-	 *   - @link will be 'Map' if the object is not a Component
+	 *   - link will be 'Collection' if the object is a Component
+	 *   - link will be 'Map' if the object is not a Component
+	 *
+	 * Notice : 'link' and 'var' are to be considered as 'property annotation link' and
+	 * 'property annotation var' here.
 	 *
 	 * @param $property Reflection_Property
 	 * @return string returned guessed value for @link

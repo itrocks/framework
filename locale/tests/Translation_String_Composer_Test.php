@@ -83,7 +83,7 @@ class Translation_String_Composer_Test extends Test
 	{
 		parent::setUp();
 		if (!Translation_String_Composer::get()) {
-			$this->markTestSkipped(Translation_String_Composer::class . ' plugin is not actived');
+			static::markTestSkipped(Translation_String_Composer::class . ' plugin is not activated');
 		}
 
 		$this->translator = new Translator();

@@ -84,7 +84,7 @@ class Length_Annotation_Test extends Test
 		$annotation = Length_Annotation::of($this->reflection_object->getProperty('fail_property'));
 		$actual     = $annotation->validate($this);
 
-		$this->assertFalse($actual);
+		static::assertFalse($actual);
 	}
 
 	//--------------------------------------------------------------------------- testValidateSuccess
@@ -98,7 +98,7 @@ class Length_Annotation_Test extends Test
 		);
 		$actual = $annotation->validate($this);
 
-		$this->assertTrue($actual);
+		static::assertTrue($actual);
 	}
 
 }

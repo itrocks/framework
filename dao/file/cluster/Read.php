@@ -51,8 +51,8 @@ class Read implements Configurable, Registerable
 			$this->configuration_file = $configuration;
 		}
 		if (!$this->configuration) {
+			/** @noinspection PhpIncludeInspection dynamic */
 			$this->configuration = file_exists($this->configuration_file)
-				/** @noinspection PhpIncludeInspection dynamic include */
 				? include($this->configuration_file)
 				: new Configuration(new Clusters([]), new Directories([]));
 		}

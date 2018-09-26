@@ -12,7 +12,7 @@ use ITRocks\Framework\Widget\Edit;
 /**
  * Action insert controller
  */
-class Edit_Controller extends Edit\Edit_Controller
+class Edit_Controller extends Edit\Controller
 {
 
 	//----------------------------------------------------------------------------- getPropertiesList

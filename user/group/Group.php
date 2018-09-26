@@ -11,6 +11,7 @@ use ITRocks\Framework\User\Group\Low_Level_Feature;
  * Used by access control plugins to manage the users access
  *
  * @business
+ * @display_order name, groups, features
  * @feature
  */
 class Group

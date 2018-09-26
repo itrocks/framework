@@ -6,7 +6,6 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 
 /**

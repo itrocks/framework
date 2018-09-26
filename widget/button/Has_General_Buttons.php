@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Button;
 
-use ITRocks\Framework\Setting\Custom_Settings;
+use ITRocks\Framework\Setting;
 use ITRocks\Framework\Widget\Button;
 
 /**
@@ -20,9 +20,9 @@ interface Has_General_Buttons
 	 *
 	 * @param $object     object|string The context object or class name
 	 * @param $parameters array Parameters prepared for the view
-	 * @param $settings   Custom_Settings The controller custom settings, if set
+	 * @param $settings   Setting\Custom\Set The controller custom settings, if set
 	 * @return Button[]
 	 */
-	public function getGeneralButtons($object, array $parameters, Custom_Settings $settings = null);
+	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null);
 
 }

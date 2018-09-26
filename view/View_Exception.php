@@ -22,6 +22,7 @@ class View_Exception extends Exception
 	 */
 	public function __construct($result = null)
 	{
+		parent::__construct();
 		if (isset($result)) $this->view_result = $result;
 	}
 

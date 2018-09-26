@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
-use ITRocks\Framework\Dao\Mysql\Table_Builder_Mysqli;
 use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Dao\Sql\Foreign_Key;
 use ITRocks\Framework\Dao\Sql\Table;
@@ -303,14 +302,16 @@ class Alter_Table
 	 */
 	protected function checkTypes(mysqli $mysqli, $notice)
 	{
+		// TODO search data that will be broken by the reduction
+		/*
 		if ($this->alter_columns) {
 			$old_table = Table_Builder_Mysqli::build($mysqli, $this->table->getName());
 			foreach ($this->alter_columns as $column) {
 				if ($old_table->getColumn($column->getName())->reduces($column)) {
-					// TODO search data that will be broken by the reduction
 				}
 			}
 		}
+		*/
 		return true;
 	}
 

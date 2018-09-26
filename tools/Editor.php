@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Session;
-use ReflectionException;
 
 /**
  * This class allows you to configure online editor (WYSIWYG), activated with annotation

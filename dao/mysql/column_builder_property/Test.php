@@ -5,7 +5,6 @@ use ITRocks\Framework\Dao\Mysql\Column_Builder_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tests;
-use ReflectionException;
 
 /**
  * Column builder property tests
@@ -301,18 +300,12 @@ class Test extends Tests\Test
 	}
 
 	//----------------------------------------------------------------------------------- testDecimal
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testDecimal()
 	{
 		$this->propertyTests('decimal');
 	}
 
 	//----------------------------------------------------------------------------------- testInteger
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testInteger()
 	{
 		$this->propertyTests('integer');

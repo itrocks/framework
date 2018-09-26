@@ -8,7 +8,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 /**
  * Class annotation @list [lock] property1[, property2[, etc]]
  *
- * Indicates which property we want by default for the dataList controller on the class
+ * Indicates which property we want by default for the list controller on the class
  * If lock is set, the user can not customize its list by adding / removing columns
  */
 class List_Annotation extends Options_Properties_Annotation implements Class_Context_Annotation

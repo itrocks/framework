@@ -848,7 +848,6 @@ class Template
 	 *
 	 * @param $include_uri string
 	 * @return string|null included template, parsed, or null if included file was not found
-	 * @throws ReflectionException
 	 */
 	protected function parseInclude($include_uri)
 	{
@@ -901,7 +900,6 @@ class Template
 	 * @param $include_uri string
 	 * @param $class_name  string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	protected function parseIncludeResolve($include_uri, $class_name)
 	{
@@ -926,7 +924,6 @@ class Template
 	 * @param $include_uri string
 	 * @return string
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	protected function parseIncludeTemplate($include_uri)
 	{

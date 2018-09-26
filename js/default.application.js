@@ -17,7 +17,7 @@ $('document').ready(function()
 			history: {
 				condition:        '.window>h2',
 				title:            '.window>h2',
-				without_get_vars: ['.*/dataList\\?.*', '.*/list\\?.*']
+				without_get_vars: ['.*/list\\?.*']
 			}
 		});
 

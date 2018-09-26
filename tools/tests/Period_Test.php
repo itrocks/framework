@@ -183,8 +183,12 @@ class Period_Test extends Test
 			new Date_Time('2016-04-01'),
 			new Date_Time('2016-05-01')
 		];
-		static::assertEquals($months, (new Period($date1, $date2))->toMonths(), 'several');
-		static::assertEquals([$date1->month()], (new Period($date1, $date1))->toMonths(), 'one');
+		static::assertEquals(
+			$months, (new Period($date1, $date2))->toMonths(), 'several'
+		);
+		static::assertEquals(
+			[$date1->toBeginOf(Date_Time::MONTH)], (new Period($date1, $date1))->toMonths(), 'one'
+		);
 	}
 
 	//------------------------------------------------------------------------------------- testUnion
