@@ -79,6 +79,10 @@ abstract class Set
 			$setting->value  = $custom_settings;
 		}
 		$custom_settings->setting = $setting;
+		// A patch for retro-compatibility with protected / private $class_name
+		if (!$setting->value->class_name) {
+			$setting->value->class_name = $class_name;
+		}
 		return $custom_settings;
 	}
 
@@ -99,10 +103,6 @@ abstract class Set
 		/** @var $setting Setting\User */
 		$setting = Dao::searchOne($search, Setting\User::class)
 			?: Builder::create(Setting\User::class, [$code]);
-		// A patch for retro-compatibility with protected / private $class_name
-		if (!$setting->value->class_name) {
-			$setting->value->class_name = $class_name;
-		}
 		return $setting;
 	}
 
