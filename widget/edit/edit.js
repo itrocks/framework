@@ -614,6 +614,9 @@ $('document').ready(function()
 						if (!name) {
 							name = $element.prev().attr('name');
 						}
+						if (!name && $element.is('label')) {
+							name = $element.closest('[id]').attr('id');
+						}
 						if (name.beginsWith('id_')) {
 							name = name.substr(3);
 						}
