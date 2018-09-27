@@ -8,7 +8,6 @@ use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Setting\Selected;
-use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\User;
 
@@ -25,7 +24,7 @@ abstract class Set
 	 *
 	 * @var string
 	 */
-	private $class_name;
+	public $class_name;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
@@ -100,6 +99,10 @@ abstract class Set
 		/** @var $setting Setting\User */
 		$setting = Dao::searchOne($search, Setting\User::class)
 			?: Builder::create(Setting\User::class, [$code]);
+		// A patch for retro-compatibility with protected / private $class_name
+		if (!$setting->value->class_name) {
+			$setting->value->class_name = $class_name;
+		}
 		return $setting;
 	}
 
@@ -111,7 +114,10 @@ abstract class Set
 	protected static function customId($feature = null)
 	{
 		if (!$feature) {
-			$feature = lParse(strtolower(Namespaces::shortClassName(get_called_class())), '_settings');
+			/** @var $set_name string @example 'Output_Setting' */
+			$set_name = rLastParse(lParse(get_called_class(), BS . 'Set'), BS);
+			/** @var $feature string @example 'output' */
+			$feature = lParse(strtolower($set_name), '_setting');
 		}
 		return $feature;
 	}
@@ -151,10 +157,6 @@ abstract class Set
 	 */
 	public function getClassName()
 	{
-		// TODO LOWEST remove : this is for unserialize() compatibility with old public $class_name
-		if (!isset($this->class_name) && isset(get_object_vars($this)['class_name'])) {
-			$this->class_name = Builder::current()->sourceClassName(get_object_vars($this)['class_name']);
-		}
 		return Builder::className($this->class_name);
 	}
 

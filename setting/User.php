@@ -19,7 +19,7 @@ class User extends Setting
 	 * @composite
 	 * @link Object
 	 * @mandatory false
-	 * @var User
+	 * @var Framework\User
 	 */
 	public $user;
 

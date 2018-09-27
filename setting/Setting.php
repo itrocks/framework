@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
 
 /**
@@ -65,7 +66,30 @@ class Setting
 			&& (substr($value, 0, 2) == 'O:')
 			&& (substr($value, -1) === '}')
 		) {
+			$value = strReplace([
+				'O:61:"ITRocks\Framework\Widget\Data_List_Setting\Data_List_Settings"'
+					=> 'O:41:"ITRocks\Framework\Widget\List_Setting"',
+				'O:51:"ITRocks\Framework\Widget\Data_List_Setting\Property"'
+					=> 'O:46:"ITRocks\Framework\Widget\List_Setting\Property"',
+				'O:55:"ITRocks\Framework\Widget\Output_Setting\Output_Settings"'
+					=> 'O:43:"ITRocks\Framework\Widget\Output_Setting"',
+				'O:38:"ITRocks\Framework\Setting\User_Setting"'
+					=> 'O:30:"ITRocks\Framework\Setting\User"'
+			], $value);
 			$this->value = unserialize($value);
+			// // A patch for retro-compatibility with protected / private $class_name
+			if (!$this->value->getClassName()) {
+				$class_name = new Reflection_Property(get_class($this->value), 'class_name');
+				$class_name->setAccessible(true);
+				$class_name->setValue(
+					$this->value,
+					Builder::current()->sourceClassName(
+						lParse(rParse(rParse($value, '"class_name";s:'), DQ), DQ)
+					)
+				);
+				$class_name->setAccessible(false);
+			}
+			$this->value->setting->code = str_replace('.data_list', '.list', $this->value->setting->code);
 		}
 		if (!isset($this->value->setting)) {
 			$this->value->setting = $this;
