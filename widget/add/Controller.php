@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Widget\Add;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
@@ -64,7 +65,9 @@ class Controller extends Edit\Controller
 		if (count($objects) > 1) {
 			$this->initializeValues($object, $objects, $properties);
 		}
-		return parent::getViewParameters($parameters, $form, $class_name);
+		$parameters = parent::getViewParameters($parameters, $form, $class_name);
+		$parameters['title'] = Loc::tr('New', $class_name) . SP . $parameters['title'];
+		return $parameters;
 	}
 
 	//------------------------------------------------------------------------------ initializeValues

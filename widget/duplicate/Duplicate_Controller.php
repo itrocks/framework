@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget\Duplicate;
 
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Duplicator;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Widget\Edit;
 
 /**
@@ -25,7 +26,9 @@ class Duplicate_Controller extends Edit\Controller
 		$object     = $parameters->getMainObject($class_name);
 		$duplicator = new Duplicator();
 		$duplicator->createDuplicate($object);
-		return parent::getViewParameters($parameters, $form, $class_name);
+		$parameters = parent::getViewParameters($parameters, $form, $class_name);
+		$parameters['title'] = Loc::tr('New', $class_name) . SP . $parameters['title'];
+		return $parameters;
 	}
 
 }
