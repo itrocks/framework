@@ -89,8 +89,9 @@ abstract class Getter
 			->classes();
 		$class_name        = $base_class;
 		$ext               = DOT . $extension;
-		$feature_class     = self::reservedFeatures(Names::methodToClass($feature_name));
-		$feature_directory = strtolower($feature_class);
+		$feature_class     = Names::methodToClass($feature_name);
+		$feature_namespace = self::reservedFeatures($feature_class);
+		$feature_directory = strtolower($feature_namespace);
 		$feature_what      = $class_form ? $feature_class : $feature_name;
 		$method            = 'run';
 
@@ -139,7 +140,7 @@ abstract class Getter
 				if (file_exists(
 					$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
 				)) {
-					$class = $class_name . BS . $feature_class . BS . $feature_what . $_suffix;
+					$class = $class_name . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break 2;
 				}
 				if (isset($GLOBALS['D']) && $suffix) {
@@ -148,7 +149,7 @@ abstract class Getter
 					);
 				}
 				if ($suffix && file_exists($path . SL . $feature_directory . SL . $suffix . $ext)) {
-					$class = $class_name . BS . $feature_class . BS . $suffix;
+					$class = $class_name . BS . $feature_namespace . BS . $suffix;
 					break 2;
 				}
 				if (isset($GLOBALS['D'])) {
@@ -211,7 +212,7 @@ abstract class Getter
 					&& $suffix
 					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
 				) {
-					$class = $namespace . BS . $feature_class . BS . $suffix;
+					$class = $namespace . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
 				if (isset($GLOBALS['D']) && $can_be_project_class) {
@@ -228,7 +229,7 @@ abstract class Getter
 						$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
 					)
 				) {
-					$class = $namespace . BS . $feature_class . BS . $feature_what . $_suffix;
+					$class = $namespace . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
 				}
 				if (isset($GLOBALS['D']) && $can_be_project_class) {
@@ -252,7 +253,7 @@ abstract class Getter
 				if ($suffix && file_exists(
 					$path . SL . 'widget' . SL . $feature_directory . SL . $suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS . $suffix;
+					$class = $namespace . BS . 'Widget' . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
 				if (isset($GLOBALS['D'])) {
@@ -268,7 +269,7 @@ abstract class Getter
 					$path . SL . 'widget' . SL . $feature_directory . SL
 					. $feature_what . $_suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Widget' . BS . $feature_class . BS
+					$class = $namespace . BS . 'Widget' . BS . $feature_namespace . BS
 						. $feature_what . $_suffix;
 					break;
 				}
@@ -283,7 +284,7 @@ abstract class Getter
 				if ($suffix && file_exists(
 						$path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext
 					)) {
-					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $suffix;
+					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
 				if (isset($GLOBALS['D'])) {
@@ -299,7 +300,7 @@ abstract class Getter
 					$path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what
 					. $_suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Webservice' . BS . $feature_class . BS . $feature_what
+					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what
 						. $_suffix;
 					break;
 				}
