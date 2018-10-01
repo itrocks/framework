@@ -19,7 +19,12 @@ abstract class Date_Interval
 	const DAY_TIME_FORMAT = 'P%aDT%hH%iM%sS';
 
 	//------------------------------------------------------------------------------------------ DAYS
-	const DAYS = '%R%a';
+	const DAYS    = '%R%a';
+	const HOURS   = 'hours';
+	const MINUTES = 'minutes';
+	const MONTHS  = 'months';
+	const SECONDS = 'seconds';
+	const YEARS   = 'years';
 
 	//------------------------------------------------------------------------------------ EMPTY_SPEC
 	const EMPTY_SPEC = 'PT0S';
