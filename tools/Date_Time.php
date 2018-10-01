@@ -327,12 +327,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//-------------------------------------------------------------------------------------------- is
 	/**
-	 * @param $begin_date Date_Time|string|null
+	 * @param $date Date_Time|string|null
 	 * @return boolean
 	 */
-	public function is($begin_date)
+	public function is($date)
 	{
-		return $this->toISO(false) === strval($begin_date);
+		return $this->toISO(false) === strval($date);
 	}
 
 	//--------------------------------------------------------------------------------------- isAfter

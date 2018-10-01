@@ -18,6 +18,14 @@ abstract class Date_Interval
 	//------------------------------------------------------------------------------- DAY_TIME_FORMAT
 	const DAY_TIME_FORMAT = 'P%aDT%hH%iM%sS';
 
+	//---------------------------------------------------------- Interval simple formatting constants
+	const DAYS    = 'd';
+	const HOURS   = 'h';
+	const MINUTES = 'i';
+	const MONTHS  = 'm';
+	const SECONDS = 's';
+	const YEARS   = 'y';
+
 	//------------------------------------------------------------------------------------ EMPTY_SPEC
 	const EMPTY_SPEC = 'PT0S';
 
