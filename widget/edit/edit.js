@@ -147,6 +147,7 @@ $('document').ready(function()
 					$new_row.html(
 						depthReplace(depthReplace($new_row.html(), '%5B', '%5D', depth), '[', ']', depth)
 					);
+					removeDateTimePicker($new_row);
 					// append and build new row
 					$table.children('tbody').append($new_row);
 					$new_row.build();
@@ -313,6 +314,27 @@ $('document').ready(function()
 				config = $.extend({}, config, window.app.editorConfig);
 			}
 			return config;
+		};
+
+		//------------------------------------------------------------------------ removeDateTimePicker
+		/**
+		 * Remove date-time picker specifics from jQuery element(s)
+		 */
+		var removeDateTimePicker = function($element)
+		{
+			$element.find('div.dtp--datetimepicker').remove();
+			var $input      = $element.find('input.dtp--datetimepicker');
+			var input_class = $input.attr('class');
+			if (input_class) {
+				$.each(
+					input_class.split(/\s+/),
+					function (index, class_name) {
+						if (class_name.beginsWith('dtp--datetimepicker')) {
+							$input.removeClass(class_name);
+						}
+					}
+				);
+			}
 		};
 
 		//----------------------------------------------------------------------------- setEditorConfig
