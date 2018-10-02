@@ -155,8 +155,8 @@ $('document').ready(function()
 		};
 
 		//------------------------------------------------- table.collection input,textarea focus,keyup
-		this.inside('input, select, textarea').focus(autoAddLine).keyup(autoAddLine);
-		this.inside('select').change(autoAddLine);
+		this.inside('input, select, textarea')
+			.change(autoAddLine).focus(autoAddLine).keyup(autoAddLine);
 
 		//-------------------------------------------------------------------------- checkCompletedDate
 		var checkCompletedDate = function($datetime)
