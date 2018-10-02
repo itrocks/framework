@@ -328,10 +328,10 @@ abstract class Getter
 					$last_controller_method = $feature_name;
 				}
 				if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
-				/** @noinspection PhpUnhandledExceptionInspection first test if method exists*/
+				/** @noinspection PhpUnhandledExceptionInspection method_exists */
 				if (
 					method_exists($base_class, $feature_name)
-					&& (new Reflection_Method($base_class, $feature_name))->hasParameter($feature_name)
+					&& (new Reflection_Method($base_class, $feature_name))->hasParameter('parameters')
 				) {
 					$class  = $base_class;
 					$method = $feature_name;
