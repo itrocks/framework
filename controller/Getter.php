@@ -331,7 +331,10 @@ abstract class Getter
 				/** @noinspection PhpUnhandledExceptionInspection method_exists */
 				if (
 					method_exists($base_class, $feature_name)
-					&& (new Reflection_Method($base_class, $feature_name))->hasParameter('parameters')
+					&& (
+						!($reflection_method = new Reflection_Method($base_class, $feature_name))->getParameters()
+						|| $reflection_method->hasParameter('parameters')
+					)
 				) {
 					$class  = $base_class;
 					$method = $feature_name;
