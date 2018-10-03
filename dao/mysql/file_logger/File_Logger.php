@@ -30,6 +30,14 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 */
 	public $buffer = '';
 
+	//-------------------------------------------------------------------------------------- $counter
+	/**
+	 * Queries counter
+	 *
+	 * @var integer
+	 */
+	public $counter = 0;
+
 	//------------------------------------------------------------------------------------- $database
 	/**
 	 * @var string
@@ -67,7 +75,8 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 	 */
 	public function afterQuery(Contextual_Mysqli $object, $query, $result)
 	{
-		$log = '#' . SP . rtrim(join(SP, $this->timeDuration())) . LF;
+		$this->counter ++;
+		$log = '#' . $this->counter . SP . rtrim(join(SP, $this->timeDuration())) . LF;
 		if ($object->database !== $this->database) {
 			$log .= 'USE ' . BQ . $object->database . BQ . ';' . LF;
 			$this->database = $object->database;
