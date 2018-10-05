@@ -1099,6 +1099,7 @@ class Link extends Dao\Sql\Link
 	//---------------------------------------------------------------------------------------- unlock
 	/**
 	 * @param $lock Lock
+	 * @see lockRecord
 	 */
 	public function unlock(Lock $lock)
 	{
