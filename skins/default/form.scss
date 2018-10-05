@@ -93,7 +93,7 @@ div.dtp--datetimepicker {
 		> .icon {
 			left: -17px;
 			position: relative;
-			top: 3px;
+			top: 4px;
 		}
 	}
 }
@@ -276,9 +276,11 @@ fieldset {
 
 						> div.dtp--datetimepicker {
 							margin-right: -6px;
+							margin-top: -2px;
+							vertical-align: top;
 
-							input.dtp--date {
-								margin-top: -2px;
+							input.dtp--date, input.dtp--time {
+								margin: 0;
 								vertical-align: top;
 							}
 						}
