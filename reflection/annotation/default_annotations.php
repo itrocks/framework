@@ -328,8 +328,8 @@ Parser::$default_annotations = [
 
 	/**
 	 * @link_composite
-	 * Identifies a property to link to the composite object for @linked classes
-	 * This is useful to declare it explicitely only if the @link class links two identical classes
+	 * Identifies a property to link to the composite object for a @link Class
+	 * This is useful to declare it explicitely only if the @link Class links two identical classes
 	 */
 	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
 
