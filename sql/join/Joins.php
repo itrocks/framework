@@ -5,6 +5,7 @@ use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Same_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -231,7 +232,8 @@ class Joins
 	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
 		$linked_class    = new Reflection_Class($linked_class_name);
-		$master_property = $class->getCompositeProperty($linked_class_name);
+		$link_same       = Link_Same_Annotation::of($class)->getLinkClass() ?: $class;
+		$master_property = $link_same->getCompositeProperty($linked_class_name);
 
 		$join                  = new Join();
 		$join->foreign_alias   = 't' . $this->alias_counter;
