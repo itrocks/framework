@@ -349,6 +349,15 @@ class Dao implements Configurable
 		return new Option\Limit($from, $count);
 	}
 
+	//--------------------------------------------------------------------------------- linkClassOnly
+	/**
+	 * @return Option\Link_Class_Only
+	 */
+	public static function linkClassOnly()
+	{
+		return new Option\Link_Class_Only();
+	}
+
 	//---------------------------------------------------------------------------- modifyLinkedObject
 	/**
 	 * Tells that an object has been modified since it was read from the DAO and should be written.
