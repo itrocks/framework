@@ -45,10 +45,10 @@ class Link_Class extends Reflection_Class
 	{
 		if (!isset($composite_class_name)) {
 			$composite_object = $this;
-			$link = $composite_object->getAnnotation(Link_Annotation::ANNOTATION);
+			$link = Link_Annotation::of($composite_object);
 			while ($link->value) {
 				$composite_class_name = $link->value;
-				$link = (new Link_Class($composite_class_name))->getAnnotation(Link_Annotation::ANNOTATION);
+				$link = Link_Annotation::of(new Link_Class($composite_class_name));
 			}
 		}
 		/** @var $composite_properties Reflection_Property[] */
@@ -82,10 +82,8 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkProperties()
 	{
-		/** @var $link Link_Annotation */
-		$link = $this->getAnnotation(Link_Annotation::ANNOTATION);
 		/** @var $link_properties Reflection_Property[] */
-		$link_properties = $link->getLinkProperties();
+		$link_properties = Link_Annotation::of($this)->getLinkProperties();
 		return $link_properties;
 	}
 
@@ -99,9 +97,7 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkPropertiesNames()
 	{
-		/** @var $link Link_Annotation */
-		$link = $this->getAnnotation(Link_Annotation::ANNOTATION);
-		return array_keys($link->getLinkProperties());
+		return array_keys(Link_Annotation::of($this)->getLinkProperties());
 	}
 
 	//------------------------------------------------------------------------------- getLinkProperty
@@ -114,7 +110,7 @@ class Link_Class extends Reflection_Class
 	public function getLinkProperty($class_name = null)
 	{
 		if (!$class_name) {
-			$class_name = $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
+			$class_name = Link_Annotation::of($this)->value;
 		}
 		foreach ($this->getLinkProperties() as $property) {
 			$property = $this->getProperty($property->name);
@@ -140,7 +136,7 @@ class Link_Class extends Reflection_Class
 	 */
 	public function getLinkedClassName()
 	{
-		return $this->getAnnotation(Link_Annotation::ANNOTATION)->value;
+		return Link_Annotation::of($this)->value;
 	}
 
 	//--------------------------------------------------------------------------- getLinkedProperties

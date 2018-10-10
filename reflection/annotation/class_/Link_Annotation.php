@@ -127,7 +127,10 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 		while ($class && !$this->link_properties) {
 			// if properties names are not set : get explicit composite properties names
 			foreach ($class->getProperties([T_USE]) as $property) {
-				if ($property->getAnnotation('composite')->value) {
+				if (
+					$property->getAnnotation('composite')->value
+					|| $property->getAnnotation('link_composite')->value
+				) {
 					$this->link_properties[$property->getName()] = $property;
 					$class                                       = null;
 				}
