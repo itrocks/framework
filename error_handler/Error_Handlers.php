@@ -73,6 +73,19 @@ class Error_Handlers implements Activable, Configurable
 		return $this;
 	}
 
+	//-------------------------------------------------------------------- allowedMemorySizeExhausted
+	/**
+	 * This method is called when the maximum allowed memory size exhausted
+	 *
+	 * It has 10 more MB allowed for management of the error, you can add more using
+	 * upgradeMemoryLimit()
+	 */
+	public function allowedMemorySizeExhausted()
+	{
+		// TODO what could we do here ? Useful for AOP but nothing else for now
+		echo 'allowed memory size exhausted';
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Error_Handlers
@@ -163,6 +176,19 @@ class Error_Handlers implements Activable, Configurable
 		}
 	}
 
+	//------------------------------------------------------------------ maximumExecutionTimeExceeded
+	/**
+	 * This method is called when the maximum execution time exceeded
+	 *
+	 * It has 10 more seconds allowed for management of the error, you can add more using
+	 * set_time_limit()
+	 */
+	protected function maximumExecutionTimeExceeded()
+	{
+		// TODO what could we do here ? Useful for AOP but nothing else for now
+		echo 'maximum execution time exceeded';
+	}
+
 	//-------------------------------------------------------------------------------------------- on
 	/**
 	 * Activate error handler instance as the main error handler
@@ -178,7 +204,27 @@ class Error_Handlers implements Activable, Configurable
 	 */
 	public function setAsErrorHandler()
 	{
+		register_shutdown_function([$this, 'shutdown']);
 		set_error_handler([$this, 'handle'], $this->getHandledErrorTypesAsInt());
+	}
+
+	//-------------------------------------------------------------------------------------- shutdown
+	/**
+	 * Deal with special case of errors that are not catch 'naturally' by the error handler
+	 */
+	public function shutdown()
+	{
+		if (($error = error_get_last()) && ($error['type'] === E_ERROR)) {
+			if (substr($error['message'], 0, 25) === 'Maximum execution time of') {
+				// 10 more seconds to manage the error
+				set_time_limit(10);
+				$this->maximumExecutionTimeExceeded();
+			}
+			elseif (substr($error['message'], 0, 22) === 'Allowed memory size of') {
+				ini_set('memory_limit', memory_get_peak_usage(true) + 10000000);
+				$this->allowedMemorySizeExhausted();
+			}
+		}
 	}
 
 }
