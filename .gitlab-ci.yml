@@ -74,8 +74,8 @@ code-coverage:
 test:
   stage: test
   script:
-    - php /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -p verbose=true
-    - php /frameworkci/vendor/bin/phpunit --configuration /frameworkci/itrocks/framework/phpunit.xml.dist
+    - php -ddisplay_errors=true /frameworkci/itrocks/framework/console.php /index.php -g X -g Z -p Z=confirmed -p verbose=true
+    - php -ddisplay_errors=true /frameworkci/vendor/bin/phpunit --configuration /frameworkci/itrocks/framework/phpunit.xml.dist
 
 stages:
   - test
