@@ -337,9 +337,9 @@ class Application
 			// one temporary files path per user, in order to avoid conflicts bw www-data and other users
 			// - user is www-data : /tmp/helloworld (no 'www-data' in this case)
 			// - user is root : /tmp/helloworld.root
-			$user = function_exists('posix_getuid') ? posix_getpwuid(posix_getuid())['name'] : 'www-data';
-			/** @var $files File\Link */
-			$root = ($files = Dao::get('tmp-files')) ? $files->getPath() : SL;
+			$user       = function_exists('posix_getuid') ? posix_getpwuid(posix_getuid())['name'] : 'www-data';
+			$files_link = Dao::get('tmp-files');
+			$root       = ($files_link instanceof File\Link) ? $files_link->getPath() : SL;
 			Session::current()->temporary_directory = $root . 'tmp/'
 				. str_replace(SL, '-', strUri($this->name))
 				. (($user === 'www-data') ? '' : (DOT . $user));
