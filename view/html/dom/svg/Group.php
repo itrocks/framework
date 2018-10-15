@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Dom\Svg;
 
-use phpseclib\File\ASN1\Element;
+use ITRocks\Framework\View\Html\Dom\Element;
 
 /**
  * A DOM SVG group (g) element
