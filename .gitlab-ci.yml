@@ -1,4 +1,4 @@
-image: registry.bappli.com/images/php/7.2/itrocks:latest
+image: registry.bappli.com/images/php/7.1/itrocks:latest
 
 services:
   - mysql:5.7
