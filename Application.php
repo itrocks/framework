@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -337,14 +338,17 @@ class Application
 			// - user is www-data : /tmp/helloworld (no 'www-data' in this case)
 			// - user is root : /tmp/helloworld.root
 			$user = function_exists('posix_getuid') ? posix_getpwuid(posix_getuid())['name'] : 'www-data';
-			Session::current()->temporary_directory = '/tmp/' . str_replace(SL, '-', strUri($this->name))
+			/** @var $files File\Link */
+			$root = ($files = Dao::get('tmp-files')) ? $files->getPath() : SL;
+			Session::current()->temporary_directory = $root . 'tmp/'
+				. str_replace(SL, '-', strUri($this->name))
 				. (($user === 'www-data') ? '' : (DOT . $user));
 		}
 
 		$path = Session::current()->temporary_directory;
 
 		if (!is_dir($path)) {
-			mkdir($path);
+			mkdir($path, 0777, true);
 			// in case of this directory is publicly accessible into an Apache2 website
 			file_put_contents($path . '/.htaccess', 'Deny From All');
 		}

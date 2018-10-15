@@ -94,6 +94,15 @@ class Link extends Identifier_Map
 		return false;
 	}
 
+	//--------------------------------------------------------------------------------------- getPath
+	/**
+	 * @return string
+	 */
+	public function getPath()
+	{
+		return $this->path;
+	}
+
 	//--------------------------------------------------------------------------- getStoredProperties
 	/**
 	 * Returns the list of properties of class $class that are stored into data link

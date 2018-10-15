@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools\Files;
 
+use ITRocks\Framework\Application;
+
 /**
  * PDF files manipulation
  */
@@ -34,8 +36,8 @@ class PDF
 	public function toPng()
 	{
 		$file_root   = str_replace(DOT, '-', uniqid('pdf-', true));
-		$output_file = '/tmp/' . $file_root . '.png';
-		$options = [
+		$output_file = Application::current()->getTemporaryFilesPath() . SL . $file_root . '.png';
+		$options     = [
 			'background' => 'white',
 			'density'    => 300,
 			'layers'     => 'flatten',
@@ -50,7 +52,7 @@ class PDF
 		if (is_file($output_file)) {
 			return [$output_file];
 		}
-		return glob('/tmp/' . $file_root . '-*.png');
+		return glob(lLastParse($file_root, DOT) . '-*.png');
 	}
 
 	//----------------------------------------------------------------------------------------- toSvg
@@ -62,14 +64,15 @@ class PDF
 	 */
 	public function toSvg()
 	{
-		$file_root = str_replace(DOT, '-', uniqid('pdf-', true));
-		$output_file = '/tmp/' . $file_root . '.svg';
-		$command = 'pdf2svg ' . DQ . $this->file_name . DQ . SP . $output_file;
+		$file_root = Application::current()->getTemporaryFilesPath() . SL
+			. str_replace(DOT, '-', uniqid('pdf-', true));
+		$output_file = $file_root . '.svg';
+		$command     = 'pdf2svg ' . DQ . $this->file_name . DQ . SP . $output_file;
 		exec($command);
 		if (is_file($output_file)) {
 			return [$output_file];
 		}
-		return glob('/tmp/' . $file_root . '-*.svg');
+		return glob($file_root . '-*.svg');
 	}
 
 }
