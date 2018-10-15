@@ -18,6 +18,17 @@ class Text extends Field implements Has_Init
 	 */
 	public $text;
 
+	//------------------------------------------------------------------------------- calculateHeight
+	/**
+	 * Calculate the height of the zone depending on the number of lines of text and the font height
+	 */
+	public function calculateHeight()
+	{
+		$this->height = strlen($this->text)
+			? ($this->font_size * (substr_count($this->text, LF) + 1))
+			: 0;
+	}
+
 	//------------------------------------------------------------------------------------------ dump
 	/**
 	 * @param $level integer
@@ -32,9 +43,7 @@ class Text extends Field implements Has_Init
 	public function init()
 	{
 		if ($this->font_size && !$this->height) {
-			$this->height = strlen($this->text)
-				? ($this->font_size * (substr_count($this->text, LF) + 1))
-				: 0;
+			$this->calculateHeight();
 		}
 	}
 

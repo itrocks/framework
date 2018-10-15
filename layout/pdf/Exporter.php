@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Layout\PDF;
 
 use ITRocks\Framework\Export\PDF;
+use ITRocks\Framework\Layout\Output;
 use ITRocks\Framework\Layout\Structure\Draw\Rectangle;
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field\Text;
@@ -13,30 +14,43 @@ use TCPDF;
 /**
  * Export structure to PDF
  */
-class Exporter
+class Exporter implements Output
 {
 	use Has_Structure;
+
+	//---------------------------------------------------------------------------- $current_font_size
+	/**
+	 * @var float
+	 */
+	public $current_font_size;
 
 	//------------------------------------------------------------------------------------------ $pdf
 	/**
 	 * @var PDF|TCPDF
 	 */
-	protected $pdf;
+	public $pdf;
 
 	//----------------------------------------------------------------------------------- appendToPdf
 	/**
 	 * Append final structure containing positioned data into PDF
 	 *
-	 * @param $pdf PDF|TCPDF
+	 * Values of $pdf and $structure must have been set before calling this
 	 */
-	public function appendToPdf(PDF $pdf)
+	public function appendToPdf()
 	{
-		$this->pdf  = $pdf;
-		$margins    = $pdf->getMargins();
-		$page_break = $pdf->getAutoPageBreak();
+		$pdf          = $this->pdf;
+		$cell_padding = $pdf->getCellPaddings();
+		$margins      = $pdf->getMargins();
+		$page_break   = $pdf->getAutoPageBreak();
+
+		$pdf->SetCellPadding(0);
 		$pdf->SetMargins(10, 10);
 		$pdf->SetAutoPageBreak(false);
 		$this->pages();
+
+		$pdf->setCellPaddings(
+			$cell_padding['L'], $cell_padding['T'], $cell_padding['R'], $cell_padding['B']
+		);
 		$pdf->SetMargins($margins['left'], $margins['top'], $margins['right']);
 		$pdf->SetAutoPageBreak($page_break);
 	}
@@ -72,7 +86,10 @@ class Exporter
 			$position = $element->top;
 			foreach (explode(LF, $element->text) as $text) {
 				$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
-				$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
+				if ($element->font_size !== $this->current_font_size) {
+					$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
+					$this->current_font_size = $element->font_size;
+				}
 				$pdf->SetXY($element->left, $position);
 				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align, false, '', 0, false, 'T', 'M');
 				$position += $element->font_size;
@@ -130,6 +147,29 @@ class Exporter
 		foreach ($this->structure->pages as $page) {
 			$this->page($page);
 		}
+	}
+
+	//------------------------------------------------------------------------------------- textWidth
+	/**
+	 * Get text width calculated by the output generator
+	 *
+	 * Value of $pdf must have been set before calling this
+	 * Apply a ratio to the calculated width, to fix a width error into PDF libraries
+	 *
+	 * @param $text  string the text
+	 * @param $font  string the font name
+	 * @param $style string the font style
+	 * @param $size  float  the font size, in millimeters
+	 * @return float
+	 */
+	public function textWidth($text, $font = '', $style = '', $size = .0)
+	{
+		$pdf = $this->pdf;
+		if ($size && ($this->current_font_size !== $size)) {
+			$pdf->SetFontSize($pdf->millimetersToPoints($size));
+			$this->current_font_size = $size;
+		}
+		return $pdf->GetStringWidth($text, $font, $style);
 	}
 
 }

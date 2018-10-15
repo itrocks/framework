@@ -50,10 +50,12 @@ class Controller implements Default_Feature_Controller
 
 		$structure = null;
 		foreach ($objects as $object) {
-			$generator = new Generator($layout_model);
-			$structure = $generator->generate($object);
-			$exporter  = new Exporter($structure);
-			$exporter->appendToPdf($pdf);
+			$exporter            = new Exporter();
+			$exporter->pdf       = $pdf;
+			$generator           = new Generator($layout_model, $exporter);
+			$structure           = $generator->generate($object);
+			$exporter->structure = $structure;
+			$exporter->appendToPdf();
 		}
 
 		$file_name = Names::classToDisplay($layout_model->class_name) . '.pdf';

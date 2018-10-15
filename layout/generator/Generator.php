@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
+use ITRocks\Framework\Layout\Generator\Automatic_Line_Feed;
 use ITRocks\Framework\Layout\Generator\Count_Pages;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations_On_Pages;
@@ -45,6 +46,14 @@ class Generator
 	 */
 	public $object;
 
+	//--------------------------------------------------------------------------------------- $output
+	/**
+	 * This allow to ask for some methods from the final output exporter : eg real text width, etc.
+	 *
+	 * @var Output
+	 */
+	public $output;
+
 	//------------------------------------------------------------------------------------ $structure
 	/**
 	 * The data structure : evolves from a raw structure read from the layout to a built structure
@@ -58,12 +67,16 @@ class Generator
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $model Model
+	 * @param $model  Model
+	 * @param $output Output
 	 */
-	public function __construct(Model $model = null)
+	public function __construct(Model $model = null, Output $output = null)
 	{
 		if (isset($model)) {
 			$this->model = $model;
+		}
+		if (isset($output)) {
+			$this->output = $output;
 		}
 	}
 
@@ -86,6 +99,7 @@ class Generator
 		(new Page_All_Elements($this->structure))->run();
 		(new Link_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure))->run($this->object);
+		(new Automatic_Line_Feed($this->structure))->run($this->output);
 		(new Dispatch_Iterations($this->structure))->run();
 		(new Count_Pages($this->structure))->run();
 		(new Dispatch_Iterations_On_Pages($this->structure))->run();

@@ -13,15 +13,17 @@ trait Has_Structure
 	/**
 	 * @var Structure
 	 */
-	protected $structure;
+	public $structure;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $structure Structure
 	 */
-	public function __construct(Structure $structure)
+	public function __construct(Structure $structure = null)
 	{
-		$this->structure = $structure;
+		if (isset($structure)) {
+			$this->structure = $structure;
+		}
 	}
 
 }
