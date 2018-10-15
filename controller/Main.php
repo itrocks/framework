@@ -203,11 +203,11 @@ class Main
 		try {
 			return $this->doRunInnerController($uri, $get, $post, $files, $sub_feature);
 		}
-		// thrown only by Parameters::getMainObject
+		/** @noinspection PhpRedundantCatchClauseInspection thrown only by Parameters::getMainObject */
 		catch (Object_Not_Found_Exception $exception) {
 			return '<div class="error">' . $exception->getMessage() . '</div>';
 		}
-		// thrown only by Main::executeController
+		/** @noinspection PhpRedundantCatchClauseInspection thrown only by Main::executeController */
 		catch (View_Exception $exception) {
 			return $exception->view_result;
 		}
@@ -579,7 +579,10 @@ class Main
 		else {
 			$this->createSession();
 		}
-		ini_set('display_errors', Session::current()->environment === Environment::DEVELOPMENT);
+		ini_set(
+			'display_errors',
+			in_array(Session::current()->environment, [Environment::DEVELOPMENT, Environment::TEST])
+		);
 		if (!Application::current()) {
 			$_SESSION = [];
 			$this->createSession();
