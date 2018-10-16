@@ -94,12 +94,13 @@ class Reflection_Method extends ReflectionMethod
 
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
+	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames()
+	public function getParametersNames($by_name = true)
 	{
 		$parameter_names = array_keys($this->getParameters());
-		return array_combine($parameter_names, $parameter_names);
+		return $by_name ? array_combine($parameter_names, $parameter_names) : $parameter_names;
 	}
 
 	//---------------------------------------------------------------------------- getPrototypeString

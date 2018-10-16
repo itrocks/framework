@@ -23,9 +23,10 @@ interface Reflection_Method extends Reflection_Class_Component
 
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
+	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames();
+	public function getParametersNames($by_name = true);
 
 	//---------------------------------------------------------------------------- getPrototypeString
 	/**

@@ -37,4 +37,19 @@ class Reflection_Function extends ReflectionFunction
 		return $parameters;
 	}
 
+	//---------------------------------------------------------------------------------- hasParameter
+	/**
+	 * @param $parameter_name string
+	 * @return boolean
+	 */
+	public function hasParameter($parameter_name)
+	{
+		foreach (parent::getParameters() as $parameter) {
+			if ($parameter->name === $parameter_name) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 }
