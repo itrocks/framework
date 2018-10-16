@@ -64,13 +64,14 @@ class Menu extends File
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
 		}
+		Menu\Installed::add($block->title, $item_link, $item_caption);
 		$item = $this->searchItem($block, $item_link);
 		if (!$item) {
 			$item           = new Item();
 			$item->link     = $item_link;
 			$block->items[] = $item;
 		}
-		$item->caption  = $item_caption;
+		$item->caption = $item_caption;
 		return $item;
 	}
 
