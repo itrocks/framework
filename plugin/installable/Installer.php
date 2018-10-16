@@ -81,6 +81,12 @@ class Installer
 				'Found class ' . $base_class_name . ' should be Assembled or Replaced', E_USER_ERROR
 			);
 		}
+		if (!is_array($added_interfaces_traits)) {
+			$added_interfaces_traits = [$added_interfaces_traits];
+		}
+		foreach ($added_interfaces_traits as $added_interface_trait) {
+			(new Installed\Builder)->add($base_class_name, $added_interface_trait);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- dependsOn
@@ -106,7 +112,7 @@ class Installer
 	 */
 	public function install($plugin_class_name)
 	{
-		(new Installed($plugin_class_name))->add($plugin_class_name);
+		(new Installed\Plugin($plugin_class_name))->add($plugin_class_name);
 		$this->pluginObject($plugin_class_name)->install($this);
 	}
 
@@ -159,6 +165,15 @@ class Installer
 	 */
 	public function removeFromClass($base_class_name, array $removed_interfaces_traits)
 	{
+		// mark interfaces / traits as removed, without removing them
+		foreach ($removed_interfaces_traits as $removal_key => $removed_interface_trait) {
+			$installed = (new Installed\Builder)->remove($base_class_name, $removed_interface_trait);
+			// do not remove the entry from the built class if it is still used by other features
+			if ($installed && $installed->features) {
+				unset($removed_interfaces_traits[$removal_key]);
+			}
+		}
+		// remove all unused interfaces / traits
 		$file  = $this->openFile(File\Builder::class);
 		$built = $file->search($base_class_name);
 		if ($built instanceof Assembled) {
@@ -212,7 +227,7 @@ class Installer
 	 */
 	public function renameMenu($old_menu, $new_menu)
 	{
-
+		// TODO rename menu, and update installed menus structure too
 	}
 
 	//------------------------------------------------------------------------------------- saveFiles
@@ -252,9 +267,16 @@ class Installer
 			}
 		}
 
+		// remove interfaces / traits from built classes
+		/** @var $installed_builds Installed\Builder[] */
+		$installed_builds = Dao::search($installed_search, Installed\Builder::class);
+		foreach ($installed_builds as $installed_build) {
+			$this->removeFromClass($installed_build->base_class, [$installed_build->added_class]);
+		}
+
 		// remove menus that depend on this plugin (if they depend on this plugin only)
-		/** @var $installed_menus Menu\Installed[] */
-		$installed_menus = Dao::search($installed_search, Menu\Installed::class);
+		/** @var $installed_menus Installed\Menu[] */
+		$installed_menus = Dao::search($installed_search, Installed\Menu::class);
 		foreach ($installed_menus as $installed_menu) {
 			$this->removeMenu([
 				$installed_menu->block_title => [
@@ -265,7 +287,7 @@ class Installer
 
 		// remove the plugin itself
 		$this->removePlugin($plugin_class_name);
-		(new Installed($plugin_class_name))->remove($plugin_class_name);
+		(new Installed\Plugin($plugin_class_name))->remove($plugin_class_name);
 	}
 
 }

@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Configuration\File;
 
 use ITRocks\Framework\Configuration\File;
+use ITRocks\Framework\Plugin\Installable\Installed;
 use ITRocks\Framework\Widget\Menu\Block;
 use ITRocks\Framework\Widget\Menu\Item;
 
@@ -64,7 +65,7 @@ class Menu extends File
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
 		}
-		(new Menu\Installed)->add($block->title, $item_link, $item_caption);
+		(new Installed\Menu)->add($block->title, $item_link, $item_caption);
 		$item = $this->searchItem($block, $item_link);
 		if (!$item) {
 			$item           = new Item();
@@ -110,7 +111,7 @@ class Menu extends File
 		// mark menu blocks / items as removed, without removing them
 		foreach ($blocks as $block_title => $block) {
 			foreach ($block as $item_link => $item_caption) {
-				$removed = (new Menu\Installed)->remove($block_title, $item_link, $item_caption);
+				$removed = (new Installed\Menu)->remove($block_title, $item_link, $item_caption);
 				// do not remove the entry from the configuration file if it is still used by other features
 				if ($removed && $removed->features) {
 					unset($blocks[$block_title][$item_link]);

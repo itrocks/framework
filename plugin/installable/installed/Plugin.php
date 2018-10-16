@@ -1,14 +1,14 @@
 <?php
-namespace ITRocks\Framework\Plugin\Installable;
+namespace ITRocks\Framework\Plugin\Installable\Installed;
 
-use ITRocks\Framework\Configuration\File;
+use ITRocks\Framework\Plugin\Installable\Installed;
 
 /**
- * An installed plugin
+ * An installed plugin (into config.php)
  *
  * @store_name installed_plugins
  */
-class Installed extends File\Installed
+class Plugin extends Installed
 {
 
 	//---------------------------------------------------------------------------- $plugin_class_name

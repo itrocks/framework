@@ -1,14 +1,14 @@
 <?php
-namespace ITRocks\Framework\Configuration\File\Menu;
+namespace ITRocks\Framework\Plugin\Installable\Installed;
 
-use ITRocks\Framework\Configuration\File;
+use ITRocks\Framework\Plugin\Installable\Installed;
 
 /**
- * Installed menu
+ * An installed menu (into menu.php)
  *
  * @store_name installed_menus
  */
-class Installed extends File\Installed
+class Menu extends Installed
 {
 
 	//---------------------------------------------------------------------------------- $block_title

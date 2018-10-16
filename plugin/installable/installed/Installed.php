@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Configuration\File;
+namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
