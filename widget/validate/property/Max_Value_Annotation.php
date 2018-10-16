@@ -60,7 +60,8 @@ class Max_Value_Annotation extends Reflection\Annotation implements Property_Con
 	{
 		if ($this->property instanceof Reflection_Property) {
 			$value = $this->property->getValue($object);
-			return Mandatory_Annotation::of($this->property)->isEmpty($object)
+			return is_null($this->value)
+				|| Mandatory_Annotation::of($this->property)->isEmpty($object)
 				|| (is_null($value) && Null_Annotation::of($this->property)->value)
 				|| ($value <= $this->value);
 		}

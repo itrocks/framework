@@ -56,7 +56,7 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Context_A
 		if ($this->property instanceof Reflection_Property) {
 			if (!$this->value) {
 				$value = $this->property->getValue($object);
-				return $value > 0;
+				return $value >= 0;
 			}
 			return true;
 		}
