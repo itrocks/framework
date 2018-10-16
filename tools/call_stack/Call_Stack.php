@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Tools;
 
 use Exception;
+use ITRocks\Framework\Reflection\Reflection_Function;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Call_Stack\Line;
 use ITRocks\Framework\View\Html\Template;
 
@@ -114,6 +116,44 @@ class Call_Stack
 			}
 		}
 		return false;
+	}
+
+	//------------------------------------------------------------------------------ getArgumentValue
+	/**
+	 * Returns the value of a function / method parameter that matches the name
+	 *
+	 * This use reflection to get the argument names : so beware, this may be slow !
+	 *
+	 * @param $argument_name string
+	 * @param $non_empty     boolean if true, jump to the first function with non-empty value
+	 * @return mixed
+	 */
+	public function getArgumentValue($argument_name, $non_empty = false)
+	{
+		foreach ($this->stack as $stack) {
+			$function = null;
+			if (!empty($stack['class']) && !empty($stack['function'])) {
+				if (method_exists($stack['class'], $stack['function'])) {
+					$function = new Reflection_Method($stack['class'], $stack['function']);
+				}
+			}
+			elseif (!empty($stack['function'])) {
+				if (function_exists($stack['function'])) {
+					$function = new Reflection_Function($stack['function']);
+				}
+			}
+			if ($function && $function->hasParameter($argument_name)) {
+				$arguments = $function->getParametersNames(false);
+				$argument  = array_search($argument_name, $arguments);
+				if (
+					($non_empty && !empty($stack['args'][$argument]))
+					|| (!$non_empty && !isset($stack['args'][$argument]))
+				) {
+					return $stack['args'][$argument];
+				}
+			}
+		}
+		return null;
 	}
 
 	//------------------------------------------------------------------------------------ getFeature
