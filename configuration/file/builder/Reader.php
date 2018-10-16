@@ -41,6 +41,9 @@ class Reader extends File\Reader
 						if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
 							$built->components[] = $line;
 						}
+						elseif (beginsWith(trim($line), [DQ, Q]) || !trim($line)) {
+							$built->components[] = trim(rtrim($line, ','));
+						}
 						else {
 							foreach (explode(',', lParse($line, ']')) as $class_name) {
 								if (trim($class_name)) {

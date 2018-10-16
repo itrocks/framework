@@ -35,8 +35,10 @@ class Writer extends File\Writer
 					$component_count = count($built_class->components);
 					foreach ($built_class->components as $component) {
 						$component_count --;
-						$this->lines[] = TAB . TAB . $this->file->shortClassNameOf($component) . '::class'
-							. ($component_count ? ',' : '');
+						$line = beginsWith($component, [DQ, Q])
+							? $component
+							: ($this->file->shortClassNameOf($component) . '::class');
+						$this->lines[] = TAB . TAB . $line . ($component_count ? ',' : '');
 					}
 					$last_line_key = count($this->lines);
 					$this->lines[] = TAB . ']';
