@@ -185,20 +185,22 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
+	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames()
+	public function getParametersNames($by_name = true)
 	{
+		$counter = 0;
 		if (!isset($this->parameters_names)) {
 			$this->parameters_names = [];
-			$tokens =& $this->class->source->getTokens();
-			$token_key = $this->token_key;
+			$tokens                 =& $this->class->source->getTokens();
+			$token_key              = $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
 			while (($token = $tokens[++$token_key]) !== '(');
 			while (($token = $tokens[++$token_key]) !== ')') {
 				if ($token[0] === T_VARIABLE) {
 					$parameter_name = substr($token[1], 1);
-					$this->parameters_names[$parameter_name] = $parameter_name;
+					$this->parameters_names[$by_name ? $parameter_name : $counter++] = $parameter_name;
 				}
 			}
 		}
