@@ -96,6 +96,10 @@ class Reader extends File\Reader
 							$plugin->configuration = null;
 							$plugin                = null;
 						}
+						elseif (endsWith($plugin->configuration, ',')) {
+							$plugin->configuration = trim(substr($plugin->configuration, 0, -1));
+							$plugin                = null;
+						}
 					}
 					else {
 						trigger_error(
