@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\RAD;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Status;
 
@@ -82,12 +83,29 @@ class Feature
 	//--------------------------------------------------------------------------------------- install
 	/**
 	 * Installs this feature, ie install the matching Installable plugin
+	 *
+	 * @return boolean true if the feature was correctly installed
 	 */
 	public function install()
 	{
 		$installer = new Installer();
 		$installer->install($this->plugin_class_name);
 		$installer->saveFiles();
+		return true;
+	}
+
+	//------------------------------------------------------------------------------------- uninstall
+	/**
+	 * @return boolean true if the feature was correctly uninstalled
+	 */
+	public function uninstall()
+	{
+		if ($this->status === Status::INSTALLED) {
+			$this->status = Status::AVAILABLE;
+			Dao::write($this, Dao::only('status'));
+			return true;
+		}
+		return false;
 	}
 
 }

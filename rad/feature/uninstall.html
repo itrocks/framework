@@ -1,4 +1,14 @@
 <!--BEGIN-->
-|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
-|This feature is not available for the moment|.
+
+	<!--uninstalled?-->
+		|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
+
+		<script> redirect('/{@class.path}/{id}', '#main'); </script>
+	<!--end-->
+
+	<!--!uninstalled?-->
+		|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
+		|This feature is not available for the moment|.
+	<!--end-->
+
 <!--END-->

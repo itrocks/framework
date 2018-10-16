@@ -27,8 +27,8 @@ class Uninstall_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		/** @var $feature Feature */
-		//$feature = $parameters->getMainObject();
-		//$feature->uninstall();
+		$feature = $parameters->getMainObject();
+		$parameters->set('uninstalled', $feature->uninstall());
 		return View::run($parameters->getObjects(), $form, $files, Feature::class, static::FEATURE);
 	}
 
