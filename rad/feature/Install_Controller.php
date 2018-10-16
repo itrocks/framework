@@ -28,7 +28,7 @@ class Install_Controller implements Feature_Controller
 	{
 		/** @var $feature Feature */
 		$feature = $parameters->getMainObject();
-		$feature->install();
+		$parameters->set('installed', $feature->install());
 		return View::run($parameters->getObjects(), $form, $files, Feature::class, static::FEATURE);
 	}
 

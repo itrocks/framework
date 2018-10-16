@@ -65,6 +65,19 @@ class Config extends File
 		(new Config\Reader($this))->read();
 	}
 
+	//---------------------------------------------------------------------------------- removePlugin
+	/**
+	 * @param $plugin_name string
+	 */
+	public function removePlugin($plugin_name)
+	{
+		foreach ($this->plugins_by_priority as $priority) {
+			if ($priority instanceof Priority) {
+				$priority->removePlugin($plugin_name);
+			}
+		}
+	}
+
 	//-------------------------------------------------------------------------------- searchPriority
 	/**
 	 * Search a priority

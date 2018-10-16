@@ -8,6 +8,7 @@ use ITRocks\Framework\RAD\Feature\Status;
 /**
  * Final user installable feature
  *
+ * @business
  * @display_order title, description, tags, status
  * @list title, status
  * @representative title
@@ -88,9 +89,11 @@ class Feature
 	 */
 	public function install()
 	{
+		Dao::begin();
 		$installer = new Installer();
 		$installer->install($this->plugin_class_name);
 		$installer->saveFiles();
+		Dao::commit();
 		return true;
 	}
 
@@ -101,8 +104,13 @@ class Feature
 	public function uninstall()
 	{
 		if ($this->status === Status::INSTALLED) {
+			Dao::begin();
+			$installer = new Installer();
+			$installer->uninstall($this->plugin_class_name);
+			$installer->saveFiles();
 			$this->status = Status::AVAILABLE;
 			Dao::write($this, Dao::only('status'));
+			Dao::commit();
 			return true;
 		}
 		return false;

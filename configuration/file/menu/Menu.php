@@ -64,7 +64,7 @@ class Menu extends File
 		if (is_string($block)) {
 			$block = $this->addBlock($block);
 		}
-		Menu\Installed::add($block->title, $item_link, $item_caption);
+		(new Menu\Installed)->add($block->title, $item_link, $item_caption);
 		$item = $this->searchItem($block, $item_link);
 		if (!$item) {
 			$item           = new Item();
@@ -99,6 +99,37 @@ class Menu extends File
 	public function read()
 	{
 		(new Menu\Reader($this))->read();
+	}
+
+	//---------------------------------------------------------------------------------- removeBlocks
+	/**
+	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
+	 */
+	public function removeBlocks(array $blocks)
+	{
+		// mark menu blocks / items as removed, without removing them
+		foreach ($blocks as $block_title => $block) {
+			foreach ($block as $item_link => $item_caption) {
+				$removed = (new Menu\Installed)->remove($block_title, $item_link, $item_caption);
+				// do not remove the entry from the configuration file if it is still used by other features
+				if ($removed && $removed->features) {
+					unset($blocks[$block_title][$item_link]);
+				}
+			}
+		}
+		// remove all unused menu items / blocks
+		foreach ($this->blocks as $block_key => $block) {
+			if (($block instanceof Block) && isset($blocks[$block->title])) {
+				foreach ($block->items as $item_key => $item) {
+					if (($item instanceof Item) && isset($blocks[$block->title][$item->link])) {
+						unset($block->items[$item_key]);
+						if (!$block->items) {
+							unset($this->blocks[$block_key]);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	//----------------------------------------------------------------------------------- searchBlock

@@ -8,7 +8,7 @@ use ITRocks\Framework\Configuration\File\Builder\Replaced;
 use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
-use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Tools\Names;
@@ -102,17 +102,12 @@ class Installer
 	//--------------------------------------------------------------------------------------- install
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $plugin Installable|string plugin object or class name
+	 * @param $plugin_class_name Installable|string plugin class name
 	 */
-	public function install($plugin)
+	public function install($plugin_class_name)
 	{
-		if (is_string($plugin)) {
-			/** @noinspection PhpUnhandledExceptionInspection $plugin must be a valid class name */
-			$plugin = is_a($plugin, Installable::class, true)
-				? Builder::create($plugin, is_a($plugin, Configurable::class, true) ? [[]] : [])
-				: Builder::create(Implicit::class, [$plugin]);
-		}
-		$plugin->install($this);
+		(new Installed($plugin_class_name))->add($plugin_class_name);
+		$this->pluginObject($plugin_class_name)->install($this);
 	}
 
 	//-------------------------------------------------------------------------------------- openFile
@@ -137,6 +132,22 @@ class Installer
 
 		}
 		return $this->files[$file_name];
+	}
+
+	//---------------------------------------------------------------------------------- pluginObject
+	/**
+	 * @param $plugin Installable|string
+	 * @return Installable
+	 */
+	protected function pluginObject($plugin)
+	{
+		if (is_string($plugin)) {
+			/** @noinspection PhpUnhandledExceptionInspection $plugin must be a valid class name */
+			$plugin = is_a($plugin, Installable::class, true)
+				? Builder::create($plugin, is_a($plugin, Configurable::class, true) ? [[]] : [])
+				: Builder::create(Implicit::class, [$plugin]);
+		}
+		return $plugin;
 	}
 
 	//------------------------------------------------------------------------------- removeFromClass
@@ -169,10 +180,27 @@ class Installer
 	/**
 	 * Remove blocks and items configuration from the menu.php configuration file
 	 *
-	 * @param $blocks array
+	 * @param $blocks array string $item_caption[string $block_title][string $item_link]
 	 */
 	public function removeMenu(array $blocks)
 	{
+		$file = $this->openFile(Menu::class);
+		$file->removeBlocks($blocks);
+	}
+
+	//---------------------------------------------------------------------------------- removePlugin
+	/**
+	 * Remove the installed plugin from the config.php configuration file
+	 *
+	 * - If the plugin is Installable and is not $this : launch the uninstall procedure for it
+	 * - If the plugin is not Installable or is $this : only remove it from the config.php
+	 *
+	 * @param $plugin_class_name string
+	 */
+	public function removePlugin($plugin_class_name)
+	{
+		$file = $this->openFile(Config::class);
+		$file->removePlugin($plugin_class_name);
 	}
 
 	//------------------------------------------------------------------------------------ renameMenu
@@ -187,23 +215,6 @@ class Installer
 
 	}
 
-	/**
-	 * Remove the installed plugin from the config.php configuration file
-	 *
-	 * - If the plugin is Installable and is not $this : launch the uninstall procedure for it
-	 * - If the plugin is not Installable or is $this : only remove it from the config.php
-	 *
-	 * @param $plugin Plugin
-	 */
-	/*
-	public function removePlugin(Plugin $plugin)
-	{
-		foreach (array_keys((new ReflectionClass(Priority::class))->getConstants()) as $constant_name) {
-			$this->file->remove(['Priority::' . $constant_name], [get_class($plugin) . '::class']);
-		}
-	}
-	*/
-
 	//------------------------------------------------------------------------------------- saveFiles
 	/**
 	 * Save opened files
@@ -216,6 +227,45 @@ class Installer
 			}
 			touch(Application_Updater::UPDATE_FILE);
 		}
+	}
+
+	//------------------------------------------------------------------------------------- uninstall
+	/**
+	 * Uninstall a plugin, and all plugins that depend on it
+	 *
+	 * Notice : Developers should beware that the user has well been informed of the full list of
+	 * dependency features he will lost on uninstalling this feature.
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $plugin_class_name Installable|string plugin object or class name
+	 */
+	public function uninstall($plugin_class_name)
+	{
+		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
+
+		// remove all plugins that depend on this plugin
+		/** @var $installed_menus Installed[] */
+		$installed_plugins = Dao::search($installed_search, Installed::class);
+		foreach ($installed_plugins as $installed_plugin) {
+			if ($installed_plugin->plugin_class_name !== $plugin_class_name) {
+				$this->uninstall($installed_plugin->plugin_class_name);
+			}
+		}
+
+		// remove menus that depend on this plugin (if they depend on this plugin only)
+		/** @var $installed_menus Menu\Installed[] */
+		$installed_menus = Dao::search($installed_search, Menu\Installed::class);
+		foreach ($installed_menus as $installed_menu) {
+			$this->removeMenu([
+				$installed_menu->block_title => [
+					$installed_menu->item_link => $installed_menu->item_caption
+				]
+			]);
+		}
+
+		// remove the plugin itself
+		$this->removePlugin($plugin_class_name);
+		(new Installed($plugin_class_name))->remove($plugin_class_name);
 	}
 
 }

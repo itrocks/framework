@@ -11,46 +11,50 @@ use ITRocks\Framework\Configuration\File;
 class Installed extends File\Installed
 {
 
-	//---------------------------------------------------------------------------------------- $block
+	//---------------------------------------------------------------------------------- $block_title
 	/**
 	 * @var string
 	 */
-	public $block;
+	public $block_title;
 
-	//-------------------------------------------------------------------------------------- $caption
+	//--------------------------------------------------------------------------------- $item_caption
 	/**
 	 * @var string
 	 */
-	public $caption;
+	public $item_caption;
 
-	//----------------------------------------------------------------------------------------- $link
+	//------------------------------------------------------------------------------------ $item_link
 	/**
 	 * @var string
 	 */
-	public $link;
+	public $item_link;
 
 	//------------------------------------------------------------------------------------------- add
 	/**
-	 * @param $block   string
-	 * @param $link    string
-	 * @param $caption string
+	 * @param $block_title  string
+	 * @param $item_link    string
+	 * @param $item_caption string
 	 * @return static
 	 */
-	public static function add($block, $link, $caption)
+	public function add($block_title, $item_link, $item_caption)
 	{
-		return static::addProperties(['block' => $block, 'link' => $link, 'caption' => $caption]);
+		return $this->addProperties(
+			['block_title' => $block_title, 'item_link' => $item_link, 'item_caption' => $item_caption]
+		);
 	}
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
-	 * @param $block   string
-	 * @param $link    string
-	 * @param $caption string
+	 * @param $block_title  string
+	 * @param $item_link    string
+	 * @param $item_caption string
 	 * @return static
 	 */
-	public static function remove($block, $link, $caption)
+	public function remove($block_title, $item_link, $item_caption)
 	{
-		return static::removeProperties(['block' => $block, 'link' => $link, 'caption' => $caption]);
+		return $this->removeProperties(
+			['block_title' => $block_title, 'item_link' => $item_link, 'item_caption' => $item_caption]
+		);
 	}
 
 }

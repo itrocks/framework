@@ -73,6 +73,19 @@ class Priority
 		return $plugin;
 	}
 
+	//---------------------------------------------------------------------------------- removePlugin
+	/**
+	 * @param $plugin_name string
+	 */
+	public function removePlugin($plugin_name)
+	{
+		foreach ($this->plugins as $plugin_key => $plugin) {
+			if (($plugin instanceof Plugin) && ($plugin->class_name === $plugin_name)) {
+				unset($this->plugins[$plugin_key]);
+			}
+		}
+	}
+
 	//---------------------------------------------------------------------------------- searchPlugin
 	/**
 	 * Search a plugin
