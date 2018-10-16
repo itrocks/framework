@@ -44,7 +44,8 @@ class Writer extends File\Writer
 	 */
 	protected function writeClassPrototype()
 	{
-		$class_prototype = $this->file->class_type . SP
+		$class_prototype = ($this->file->class_abstract ? 'abstract ' : '')
+			. $this->file->class_type . SP
 			. $this->file->shortClassNameOf($this->file->class_name);
 		if ($this->file->class_extends) {
 			$class_extends = 'extends ' . $this->file->shortClassNameOf($this->file->class_extends);

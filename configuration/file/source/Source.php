@@ -15,6 +15,12 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 class Source extends File
 {
 
+	//------------------------------------------------------------------------------- $class_abstract
+	/**
+	 * @var boolean
+	 */
+	public $class_abstract;
+
 	//-------------------------------------------------------------------------------- $class_extends
 	/**
 	 * @var string

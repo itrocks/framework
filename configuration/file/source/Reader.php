@@ -42,7 +42,7 @@ class Reader extends File\Reader
 	 */
 	public function isStartLine($line)
 	{
-		$start_line = in_array(lParse($line, SP), ['class', 'interface', 'trait']);
+		$start_line = in_array(lParse($line, SP), ['abstract', 'class', 'interface', 'trait']);
 		if ($start_line) {
 			$this->class_buffer = $line;
 		}
@@ -126,6 +126,9 @@ class Reader extends File\Reader
 		foreach (explode(SP, $class_text) as $elements) {
 			foreach (explode(',', $elements) as $element) {
 				$element = trim($element);
+				if (($element === 'abstract') && !$this->file->class_type) {
+					$this->file->class_abstract = true;
+				}
 				if (in_array($element, ['class', 'interface', 'trait'])) {
 					$this->file->class_type = $into = $element;
 				}
