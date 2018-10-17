@@ -24,13 +24,13 @@ class View_Test extends Test
 		/** @noinspection PhpUndefinedFieldInspection simulated, for testing purpose */
 		$user->id = 1;
 		return [
-			'output'          => ['/ITRocks/Framework/User/1',        [$user]],
-			'explicit output' => ['/ITRocks/Framework/User/1/output', [$user, Feature::F_OUTPUT]],
-			'edit'            => ['/ITRocks/Framework/User/1/edit',   [$user, Feature::F_EDIT]],
-			'add'             => ['/ITRocks/Framework/User',          [User::class]],
-			'explicit add'    => ['/ITRocks/Framework/User/add',      [User::class, Feature::F_ADD]],
-			'list'            => ['/ITRocks/Framework/Users',         [Names::classToSet(User::class)]],
-			'explicit list'   => ['/ITRocks/Framework/Users/list',    [Names::classToSet(User::class), Feature::F_LIST]],
+			'output'          => ['/ITRocks/Framework/User/1',      [$user]],
+			'explicit output' => ['/ITRocks/Framework/User/1',      [$user, Feature::F_OUTPUT]],
+			'edit'            => ['/ITRocks/Framework/User/1/edit', [$user, Feature::F_EDIT]],
+			'add'             => ['/ITRocks/Framework/User',        [User::class]],
+			'explicit add'    => ['/ITRocks/Framework/User/add',    [User::class, Feature::F_ADD]],
+			'list'            => ['/ITRocks/Framework/Users',       [Names::classToSet(User::class)]],
+			'explicit list'   => ['/ITRocks/Framework/Users',       [Names::classToSet(User::class), Feature::F_LIST]],
 		];
 	}
 
