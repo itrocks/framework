@@ -37,6 +37,10 @@ div.date_time,
 td.date_time {
 	position: relative;
 
+	input {
+		width: 140px;
+	}
+
 	.ui-datepicker-trigger {
 		background: url("img/input_datetime.png") center no-repeat;
 		border: none;
@@ -55,47 +59,6 @@ td.date_time {
 td.date_time .ui-datepicker-trigger {
 	height: 20px;
 	top: 0;
-}
-
-div.dtp--datetimepicker {
-	box-sizing: initial !important;
-	max-width: initial !important;
-	text-rendering: initial !important;
-
-	> .dtp--container {
-		border: initial !important;
-		border-radius: initial !important;
-		display: initial !important;
-		flex: initial !important;
-		flex-direction: initial !important;
-		justify-content: initial !important;
-		position: initial !important;
-
-		&:not(:first-child) {
-			margin-left: -15px;
-		}
-
-		> input.dtp--date {
-			flex: initial !important;
-			max-width: initial !important;
-			text-align: initial !important;
-			text-transform: lowercase;
-			width: 86px;
-		}
-
-		> input.dtp--time {
-			flex: initial !important;
-			max-width: initial !important;
-			text-align: initial !important;
-			width: 52px;
-		}
-
-		> .icon {
-			left: -17px;
-			position: relative;
-			top: 4px;
-		}
-	}
 }
 
 /* combo list TODO confirm */
@@ -273,17 +236,6 @@ fieldset {
 					> td {
 						padding: 1px 5px 0 0;
 						white-space: nowrap;
-
-						> div.dtp--datetimepicker {
-							margin-right: -6px;
-							margin-top: -2px;
-							vertical-align: top;
-
-							input.dtp--date, input.dtp--time {
-								margin: 0;
-								vertical-align: top;
-							}
-						}
 
 						> input:not([type=file]),
 						> textarea {

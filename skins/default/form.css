@@ -34,6 +34,9 @@ input[type=checkbox] {
 div.date_time,
 td.date_time {
   position: relative; }
+  div.date_time input,
+  td.date_time input {
+    width: 140px; }
   div.date_time .ui-datepicker-trigger,
   td.date_time .ui-datepicker-trigger {
     background: url("img/input_datetime.png") center no-repeat;
@@ -50,36 +53,6 @@ td.date_time {
 td.date_time .ui-datepicker-trigger {
   height: 20px;
   top: 0; }
-
-div.dtp--datetimepicker {
-  box-sizing: initial !important;
-  max-width: initial !important;
-  text-rendering: initial !important; }
-  div.dtp--datetimepicker > .dtp--container {
-    border: initial !important;
-    border-radius: initial !important;
-    display: initial !important;
-    flex: initial !important;
-    flex-direction: initial !important;
-    justify-content: initial !important;
-    position: initial !important; }
-    div.dtp--datetimepicker > .dtp--container:not(:first-child) {
-      margin-left: -15px; }
-    div.dtp--datetimepicker > .dtp--container > input.dtp--date {
-      flex: initial !important;
-      max-width: initial !important;
-      text-align: initial !important;
-      text-transform: lowercase;
-      width: 86px; }
-    div.dtp--datetimepicker > .dtp--container > input.dtp--time {
-      flex: initial !important;
-      max-width: initial !important;
-      text-align: initial !important;
-      width: 52px; }
-    div.dtp--datetimepicker > .dtp--container > .icon {
-      left: -17px;
-      position: relative;
-      top: 4px; }
 
 /* combo list TODO confirm */
 .ui-state-active {
@@ -193,13 +166,6 @@ fieldset {
       fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td {
         padding: 1px 5px 0 0;
         white-space: nowrap; }
-        fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > div.dtp--datetimepicker, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > div.dtp--datetimepicker {
-          margin-right: -6px;
-          margin-top: -2px;
-          vertical-align: top; }
-          fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > div.dtp--datetimepicker input.dtp--date, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > div.dtp--datetimepicker input.dtp--time, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > div.dtp--datetimepicker input.dtp--date, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > div.dtp--datetimepicker input.dtp--time {
-            margin: 0;
-            vertical-align: top; }
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.collection > tbody > tr > td > textarea, fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > input:not([type=file]),
         fieldset > div:not(.hidden):not(.tabber):not([class*=before-]).multiple table.map > tbody > tr > td > textarea {
