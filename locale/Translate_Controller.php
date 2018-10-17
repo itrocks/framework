@@ -17,6 +17,18 @@ class Translate_Controller implements Feature_Controller
 	 */
 	public $context;
 
+	//--------------------------------------------------------------------------------------- $format
+	/**
+	 * Format result using json.
+	 *
+	 * - If not formatted, will only return the translated text, without any other data
+	 * - If formatted, the text and its read context will be returned
+	 *
+	 * @value json,
+	 * @var string
+	 */
+	public $format;
+
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @var string
@@ -32,7 +44,7 @@ class Translate_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------- parseParameters
 	/**
 	 * @output $this->context, $this->language, $this->text
-	 * @param $parameters Parameters optional ['text', 'context', 'language'] or  ['t', 'c', 'l']
+	 * @param $parameters Parameters optional ['text', 'context', 'language'] or [0=>, 1=>, 2=>]
 	 * @param $form       string[]   optional [string $text, string $context, string $language]
 	 */
 	protected function parseParameters(Parameters $parameters, $form)
@@ -41,21 +53,19 @@ class Translate_Controller implements Feature_Controller
 			$this->text     = $form['text'];
 			$this->context  = isset($form['context'])  ? $form['context']  : '';
 			$this->language = isset($form['language']) ? $form['language'] : '';
+			$this->format   = isset($form['format'])   ? $form['format']   : '';
 		}
 		elseif ($parameters->has('text')) {
 			$this->text     = $parameters->getRawParameter('text');
 			$this->context  = $parameters->getRawParameter('context');
 			$this->language = $parameters->getRawParameter('language');
-		}
-		elseif ($parameters->has('t')) {
-			$this->text     = $parameters->getRawParameter('t');
-			$this->context  = $parameters->getRawParameter('c');
-			$this->language = $parameters->getRawParameter('l');
+			$this->format   = $parameters->getRawParameter('format');
 		}
 		else {
 			$this->text     = $parameters->shift();
 			$this->context  = $parameters->shift();
 			$this->language = $parameters->shift();
+			$this->format   = $parameters->shift();
 		}
 	}
 
@@ -95,6 +105,20 @@ class Translate_Controller implements Feature_Controller
 		return $language;
 	}
 
+	//---------------------------------------------------------------------------------------- toJson
+	/**
+	 * @param $translation string
+	 * @return string
+	 */
+	protected function toJson($translation)
+	{
+		$json = [
+			'context'     => Locale::current()->translations->last_context,
+			'translation' => $translation
+		];
+		return json_encode($json);
+	}
+
 	//------------------------------------------------------------------------------------- translate
 	/**
 	 * @input $this->context, $this->text
@@ -109,7 +133,9 @@ class Translate_Controller implements Feature_Controller
 		else {
 			$translation = Loc::tr($this->text, $this->context);
 		}
-		return $translation;
+		return ($this->format === 'json')
+			? $this->toJson($translation)
+			: $translation;
 	}
 
 }

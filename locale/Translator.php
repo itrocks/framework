@@ -34,6 +34,14 @@ class Translator
 	 */
 	public $language;
 
+	//--------------------------------------------------------------------------------- $last_context
+	/**
+	 * The context chosen by the last call to chooseTranslation()
+	 *
+	 * @var string
+	 */
+	public $last_context;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $language string
@@ -104,7 +112,8 @@ class Translator
 	 */
 	private function chooseTranslation(array $translations, $context)
 	{
-		$translation = '';
+		$translation        = '';
+		$this->last_context = '';
 		if (isset($translations['']) && $translations['']) {
 			$translation = $translations[''];
 			unset($translations['']);
@@ -112,9 +121,13 @@ class Translator
 		if ($context) {
 			$this->applyPlural($translations, $translation, $context);
 			foreach ($translations as $translation_context => $contextual_translation) {
-				if ($contextual_translation && isA($context, $translation_context)) {
-					$context     = $translation_context;
-					$translation = $contextual_translation;
+				if (
+					$contextual_translation
+					&& (($context === $translation_context) || isA($context, $translation_context))
+				) {
+					$context            = $translation_context;
+					$translation        = $contextual_translation;
+					$this->last_context = $context;
 				}
 			}
 		}
