@@ -113,9 +113,10 @@ class Engine implements Configurable, Framework\View\Engine
 			: (is_array($object) ? end($object) : null);
 
 		// change list URI to simple set-class URI (without the name of the feature)
-		if (($feature === Feature::F_LIST) && !$identifier && !$set_class) {
-			$class_names = Names::classToSet($class_name);
-			if ($class_name !== $class_names) {
+		if (($feature === Feature::F_LIST) && !$identifier) {
+			$class_name_test = $set_class ? Names::setToClass($class_name) : $class_name;
+			$class_names     = $set_class ? $class_name : Names::classToSet($class_name);
+			if ($class_name_test !== $class_names) {
 				$class_name = $class_names;
 				$feature    = null;
 			}
