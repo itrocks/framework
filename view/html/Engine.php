@@ -3,6 +3,7 @@ namespace ITRocks\Framework\View\Html;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
@@ -100,7 +101,7 @@ class Engine implements Configurable, Framework\View\Engine
 			? get_class($object)
 			: (is_array($object) ? reset($object) : $object);
 		$class_name = Names::setToClass($class_names, false);
-		$set_class  = ($class_name != $class_names);
+		$set_class  = ($class_name !== $class_names);
 		$class_name = Builder::current()->sourceClassName($class_name);
 		if ($set_class) {
 			$class_name = Names::classToSet($class_name);
@@ -110,6 +111,22 @@ class Engine implements Configurable, Framework\View\Engine
 		$identifier = is_object($object)
 			? Dao::getObjectIdentifier($object)
 			: (is_array($object) ? end($object) : null);
+
+		// change list URI to simple set-class URI (without the name of the feature)
+		if (($feature === Feature::F_LIST) && !$identifier && !$set_class) {
+			$class_names = Names::classToSet($class_name);
+			if ($class_name !== $class_names) {
+				$class_name = $class_names;
+				$feature    = null;
+			}
+		}
+		// change output URI to simple URI (without the name of the feature)
+		elseif (($feature === Feature::F_OUTPUT) && !$set_class) {
+			$class_names = Names::classToSet($class_name);
+			if ($class_name !== $class_names) {
+				$feature = null;
+			}
+		}
 
 		// build uri
 		$link = str_replace(BS, SL, $identifier ? ($class_name . SL . $identifier) : $class_name);
