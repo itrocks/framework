@@ -107,7 +107,7 @@ class Set extends Setting\Custom\Set
 			? $this->properties[$add_property_path]
 			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
 		$properties = [];
-		if (($where == 'after') && empty($where_property_path)) {
+		if (($where == 'before') && empty($where_property_path)) {
 			$properties[$add_property_path] = $add_property;
 		}
 		foreach ($this->properties as $property_path => $property) {
@@ -121,7 +121,7 @@ class Set extends Setting\Custom\Set
 				$properties[$add_property_path] = $add_property;
 			}
 		}
-		if (($where == 'before') && empty($where_property_path)) {
+		if (($where == 'after') && empty($where_property_path)) {
 			$properties[$add_property_path] = $add_property;
 		}
 
