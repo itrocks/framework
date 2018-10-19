@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\List_;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
@@ -74,7 +73,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * List of errors on fields' search expression
 	 *
-	 * @var array of Exception
+	 * @var \Exception[]
 	 */
 	private $errors = [];
 
@@ -262,7 +261,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		// check if we have errors in search expressions
 		$this->errors = [];
 		foreach ($search as $property_path => &$search_value) {
-			if ($search_value instanceof Exception) {
+			if ($search_value instanceof \Exception) {
 				$this->errors[$property_path] = $search_value;
 				// reset result value to a valid empty expression that can be given to readData() to work
 				// properly
@@ -546,7 +545,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$this->reportError($exception);
 			}
 		}
-		catch (Exception $exception) {
+		catch (\Exception $exception) {
 			$this->errors[] = $exception;
 			$this->reportError($exception);
 		}
@@ -877,9 +876,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Log the error in order software maintainer to be informed
 	 *
-	 * @param $exception Exception
+	 * @param $exception \Exception
 	 */
-	protected function reportError($exception)
+	protected function reportError(\Exception $exception)
 	{
 		$handled = new Handled_Error(
 			$exception->getCode(),
