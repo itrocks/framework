@@ -318,7 +318,15 @@ class Template
 	 */
 	public function context()
 	{
-		return str_replace(BS, DOT, get_class($this));
+		foreach ($this->objects as $object) {
+			if (is_object($object)) {
+				return Builder::current()->sourceClassName(get_class($object));
+			}
+			if (class_exists($object, false)) {
+				return Builder::current()->sourceClassName($object);
+			}
+		}
+		return get_class($this);
 	}
 
 	//--------------------------------------------------------------------------- getContainerContent
