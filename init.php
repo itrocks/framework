@@ -4,8 +4,8 @@ if ($argc < 3) {
 }
 
 // project
-$vendor_name       = str_replace('.', '_', $argv[1]);
-$project_name      = str_replace('.', '_', $argv[2]);
+$vendor_name       = str_replace(['.', '-'], '_', $argv[1]);
+$project_name      = str_replace(['.', '-'], '_', $argv[2]);
 $dir               = getcwd() . '/' . strtolower($vendor_name . '-' . $project_name);
 $project_directory = $dir . '/' . strtolower($vendor_name . '/' . $project_name);
 $project_password  = uniqid();
