@@ -322,7 +322,7 @@ class Template
 			if (is_object($object)) {
 				return Builder::current()->sourceClassName(get_class($object));
 			}
-			if (class_exists($object, false)) {
+			if (is_string($object) && class_exists($object, false)) {
 				return Builder::current()->sourceClassName($object);
 			}
 		}
