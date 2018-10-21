@@ -735,6 +735,21 @@ class Functions
 		return null;
 	}
 
+	//---------------------------------------------------------------------------------- getIsVisible
+	/**
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public function getIsVisible(Template $template)
+	{
+		foreach ($template->objects as $object) {
+			if ($object instanceof Reflection_Property) {
+				return $this->isPropertyVisible($object);
+			}
+		}
+		return true;
+	}
+
 	//--------------------------------------------------------------------------------------- getJson
 	/**
 	 * Encode using json

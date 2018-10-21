@@ -3,10 +3,12 @@
 <!--@expand-->
 	<!--@startingBlocks--><fieldset class="{.} block" {?data}><legend>|{.}|</legend><!--@startingBlocks-->
 	<!--getAnnotations('before')--><div class="before-{..name}">|{value}|</div><!--getAnnotations('before')-->
+	<!--@isVisible?-->
 	<div class="{name} {?getType.isMultiple} {?isHidden}" id="{path}">
 		<label title="{path.display.@loc}">{display}</label>
 		<div class="{getType.asString.short.lower} {?getType.isClassHtml}" title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--unit?--></div>
 	</div>
+	<!--@isVisible?-->
 	<!--getAnnotations('after')--><div class="after-{..name}">|{value}|</div><!--getAnnotations('after')-->
 	<!--@stoppingBlocks--></fieldset><!--@stoppingBlocks-->
 <!--@expand-->
