@@ -480,12 +480,21 @@ class Reflection_Class extends ReflectionClass
 	 * classes or traits.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperty()
-	 * @param $name string The name of the property to get
+	 * @param $name string The name of the property to get, or a property.path
 	 * @return Reflection_Property
 	 */
 	public function getProperty($name)
 	{
+		// property.path
+		if (strpos($name, DOT)) {
+			return new Reflection_Property($this->name, $name);
+		}
+		// property_name
 		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
+		// TODO Remove null test case if it never happens
+		if (!$property) {
+			//trigger_error("Property does not exist $this->name.$name", E_USER_WARNING);
+		}
 		/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperty() */
 		return $property ? new Reflection_Property($this->name, $property->name) : null;
 	}
