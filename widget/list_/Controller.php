@@ -760,7 +760,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 		foreach ($data->getRows() as $row) {
 			foreach ($row->getValues() as $property_name => $value) {
-				$row->setValue($property_name, htmlspecialchars($value));
+				$row->setValue($property_name, htmlSpecialCharsRecurse($value));
 			}
 		}
 

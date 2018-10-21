@@ -85,6 +85,18 @@ function endsWith($haystack, $needle)
 		&& (substr($haystack, -$needle_length) === $needle);
 }
 
+//------------------------------------------------------------------------- htmlSpecialCharsRecurse
+/**
+ * @param $value string|string[]
+ * @return string|string[]
+ */
+function htmlSpecialCharsRecurse($value)
+{
+	return is_array($value)
+		? array_map('htmlSpecialCharsRecurse', $value)
+		: htmlspecialchars($value);
+}
+
 //-------------------------------------------------------------------------------------- lLastParse
 /**
  * Returns the part of the string left to the last occurrence of the separator
