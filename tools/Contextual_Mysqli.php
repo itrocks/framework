@@ -103,6 +103,22 @@ class Contextual_Mysqli extends mysqli
 		$this->socket   = $socket;
 	}
 
+	//-------------------------------------------------------------------------------- databaseExists
+	/**
+	 * @param $database_name string default is current database
+	 * @return boolean
+	 */
+	public function databaseExists($database_name = null)
+	{
+		if (!$database_name) {
+			$database_name = $this->database;
+		}
+		$res = $this->query("SHOW DATABASES LIKE '%$database_name%'");
+		$row = $res->fetch_row();
+		$res->free();
+		return boolval($row);
+	}
+
 	//------------------------------------------------------------------------------------------ drop
 	/**
 	 * Drop a table or column
@@ -154,6 +170,24 @@ class Contextual_Mysqli extends mysqli
 		}
 	}
 
+	//---------------------------------------------------------------------------------- getDatabases
+	/**
+	 * Gets all visible databases names
+	 *
+	 * @return string[]
+	 * @throws Mysql_Error_Exception
+	 */
+	public function getDatabases()
+	{
+		$databases = [];
+		$res       = $this->query('SHOW DATABASES');
+		while ($row = $res->fetch_row()) {
+			$databases[] = $row[0];
+		}
+		$res->free();
+		return $databases;
+	}
+
 	//------------------------------------------------------------------------------------- getTables
 	/**
 	 * Gets all existing tables names from current database
@@ -168,6 +202,7 @@ class Contextual_Mysqli extends mysqli
 		while ($row = $res->fetch_row()) {
 			$tables[] = $row[0];
 		}
+		$res->free();
 		return $tables;
 	}
 
