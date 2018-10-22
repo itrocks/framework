@@ -68,6 +68,31 @@ class Application_Class_Tree_Filter
 		}
 	}
 
+	//--------------------------------------------------------------------- defaultApplicationClasses
+	/**
+	 * @return string[] Application classes from classes() where we look only for defaults
+	 */
+	public function defaultApplicationClasses()
+	{
+		$class_name = $this->class_name;
+		while (get_parent_class($class_name)) {
+			$class_name = get_parent_class($class_name);
+		}
+
+		$default_application_classes    = [];
+		$do_default_application_classes = false;
+		foreach ($this->classes() as $application_class_name) {
+			if (beginsWith($class_name, lLastParse($application_class_name, BS . 'Application') . BS)) {
+				$do_default_application_classes = true;
+			}
+			elseif ($do_default_application_classes) {
+				$default_application_classes[$application_class_name] = $application_class_name;
+			}
+		}
+
+		return $default_application_classes;
+	}
+
 	//---------------------------------------------------------------------------------------- filter
 	/**
 	 * Filter application classes to keep only routes that go through checkpoints,

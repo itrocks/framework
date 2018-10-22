@@ -83,10 +83,13 @@ abstract class Getter
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix             = $suffix ? ('_' . $suffix) : '';
-		$application_classes = (new Application_Class_Tree_Filter($base_class))
+
+		$application_classes_filter = (new Application_Class_Tree_Filter($base_class))
 			->prepare()
-			->filter()
-			->classes();
+			->filter();
+		$application_classes         = $application_classes_filter->classes();
+		$default_application_classes = $application_classes_filter->defaultApplicationClasses();
+
 		$class_name        = $base_class;
 		$ext               = DOT . $extension;
 		$feature_class     = Names::methodToClass($feature_name);
@@ -99,23 +102,12 @@ abstract class Getter
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
 		$classes = self::getClasses($class_name);
 
-		// list applications that embed a project class
-		// (business class with the same name and path as the project namespace)
-		$project_classes = [];
-		foreach ($application_classes as $application_class) {
-			if (substr_count($application_class, BS) === 2) {
-				$project_class      = mParse($application_class, BS, BS);
-				$project_class_file = strtolower(str_replace(BS, SL, lLastParse($application_class, BS)))
-					. SL . $project_class . '.php';
-				if (file_exists($project_class_file)) {
-					$project_classes[$application_class] = true;
-				}
-			}
-		}
-
 		// Looking for specific controller for each application
 		$application_class = reset($application_classes);
 		do {
+			if (isset($default_application_classes[$application_class])) {
+				continue;
+			}
 			$namespace = Namespaces::of($application_class);
 
 			// for the controller class and its parents
@@ -194,6 +186,21 @@ abstract class Getter
 
 		// Looking for default controller for each application
 		if (empty($class)) {
+
+			// list applications that embed a project class
+			// (business class with the same name and path as the project namespace)
+			$project_classes = [];
+			foreach ($application_classes as $application_class) {
+				if (substr_count($application_class, BS) === 2) {
+					$project_class      = mParse($application_class, BS, BS);
+					$project_class_file = strtolower(str_replace(BS, SL, lLastParse($application_class, BS)))
+						. SL . $project_class . '.php';
+					if (file_exists($project_class_file)) {
+						$project_classes[$application_class] = true;
+					}
+				}
+			}
+
 			$application_class = reset($application_classes);
 			do {
 				$can_be_project_class = (
@@ -304,10 +311,8 @@ abstract class Getter
 						. $_suffix;
 					break;
 				}
-
-			}
-			// next application is the parent one
-			while ($application_class = next($application_classes));
+				// next application is the parent one
+			} while ($application_class = next($application_classes));
 
 			// Looking for direct feature call, without using any controller
 			static $last_controller_class  = '';
