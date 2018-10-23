@@ -15,6 +15,7 @@ $.getScript(path + 'itrocks/framework/js/jquery.autoheight.js');
 $.getScript(path + 'itrocks/framework/js/jquery.autowidth.js');
 $.getScript(path + 'itrocks/framework/js/jquery.build.js');
 $.getScript(path + 'itrocks/framework/js/jquery.classvar.js');
+$.getScript(path + 'itrocks/framework/js/jquery.listfilter.js');
 $.getScript(path + 'itrocks/framework/js/jquery.modifiable.js');
 $.getScript(path + 'itrocks/framework/js/jquery.mouse.js');
 $.getScript(path + 'itrocks/framework/js/jquery.presstab.js');

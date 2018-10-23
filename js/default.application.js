@@ -29,6 +29,9 @@ $('document').ready(function()
 			}
 		});
 
+		// list filter
+		this.inside('.list-filter').listFilter();
+
 		// tab controls
 		this.inside('.tabber').tabber();
 
