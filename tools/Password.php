@@ -74,16 +74,17 @@ class Password
 	 * @param $specials        string special characters that can be used
 	 * @return Password
 	 */
-	public function generate($length = 9, $characters_type = self::T_ALL, $specials = '()[]-_+-*/\\')
-	{
+	public function generate(
+		$length = 9, $characters_type = self::T_ALL, $specials = '()[]{}_+-*/@$=&#!:;,.<>'
+	) {
 		$string = (($characters_type & self::T_LOWERCASE) ? 'abcdefghijklmnopqrstuvwxyz' : '')
 			. (($characters_type & self::T_UPPERCASE)       ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : '')
 			. (($characters_type & self::T_NUMERIC)         ? '0123456789' : '')
 			. (($characters_type & self::T_SPECIAL)         ? $specials : '');
 		$maximum_position = strlen($string) - 1;
-		$this->password = '';
+		$this->password   = '';
 		for ($i = 1; $i <= $length; $i++) {
-			$position = mt_rand(0, $maximum_position);
+			$position        = mt_rand(0, $maximum_position);
 			$this->password .= $string[$position];
 		}
 		return $this;
