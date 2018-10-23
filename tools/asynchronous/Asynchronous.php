@@ -76,7 +76,7 @@ class Asynchronous
 				$uri[$position] = SP;
 			}
 		}
-		$this->run('itrocks/framework/console.php' . SP . rawurldecode($uri), $then, $needs_session);
+		$this->run('itrocks/framework/console' . SP . rawurldecode($uri), $then, $needs_session);
 	}
 
 	//----------------------------------------------------------------------------------------- flush

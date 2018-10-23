@@ -214,7 +214,7 @@ class Console
 		$_SERVER['PATH_INFO']   = $this->uri;
 		$_SERVER['REMOTE_ADDR'] = 'console';
 		$_SERVER['REQUEST_URI'] = $this->uri;
-		$_SERVER['SCRIPT_NAME'] = '/console.php';
+		$_SERVER['SCRIPT_NAME'] = '/console';
 	}
 
 	//------------------------------------------------------------------------------- runningFileName
