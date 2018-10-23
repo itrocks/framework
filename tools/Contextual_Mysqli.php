@@ -113,7 +113,7 @@ class Contextual_Mysqli extends mysqli
 		if (!$database_name) {
 			$database_name = $this->database;
 		}
-		$res = $this->query("SHOW DATABASES LIKE '%$database_name%'");
+		$res = $this->query("SHOW DATABASES LIKE '$database_name'");
 		$row = $res->fetch_row();
 		$res->free();
 		return boolval($row);
