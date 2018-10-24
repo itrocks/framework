@@ -194,7 +194,7 @@ class Uri
 	{
 		$uri      = SL;
 		$referrer = isset($_SERVER['HTTP_REFERER'])
-			? rParse($_SERVER['HTTP_REFERER'], Paths::$uri_base)
+			? rParse($_SERVER['HTTP_REFERER'], '//' . $_SERVER['SERVER_NAME'] . Paths::$uri_base)
 			: null;
 		if (
 			$referrer
