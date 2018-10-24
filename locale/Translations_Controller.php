@@ -68,7 +68,7 @@ class Translations_Controller implements Feature_Controller
 	protected function translations()
 	{
 		$translator   = new Translator($this->language);
-		$translations = $translator->translations($this->text);
+		$translations = $translator->translations($this->text, true);
 		return json_encode($translations);
 	}
 

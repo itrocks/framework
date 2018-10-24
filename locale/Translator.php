@@ -362,10 +362,11 @@ class Translator
 
 	//---------------------------------------------------------------------------------- translations
 	/**
-	 * @param $text string
-	 * @return string[] $translation[$context]
+	 * @param $text    string
+	 * @param $objects boolean if true, will return Translation objects instead of texts
+	 * @return string[]|Translation[] $translation[$context]|Translation[]
 	 */
-	public function translations($text)
+	public function translations($text, $objects = false)
 	{
 		if (endsWith($text, AT)) {
 			$str_uri = true;
@@ -375,13 +376,14 @@ class Translator
 		$translations = Dao::search(
 			['language' => $this->language, 'text' => ($text === '%') ? Func::equal('%') : $text],
 			Translation::class,
-			[Dao::key('context')]
+			$objects ? [] : [Dao::key('context')]
 		);
-		foreach ($translations as $context => $translation) {
-			$translated_text        = $translation->translation ?: $this->defaultTranslation($text);
-			$translations[$context] = isset($str_uri) ? strUri($translated_text) : $translated_text;
+		if (!$objects) {
+			foreach ($translations as $context => $translation) {
+				$translated_text        = $translation->translation ?: $this->defaultTranslation($text);
+				$translations[$context] = isset($str_uri) ? strUri($translated_text) : $translated_text;
+			}
 		}
-		/** @var $translations string[] */
 		return $translations;
 	}
 
