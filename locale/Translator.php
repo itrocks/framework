@@ -365,7 +365,7 @@ class Translator
 	 * @param $text string
 	 * @return string[] $translation[$context]
 	 */
-	private function translations($text)
+	public function translations($text)
 	{
 		if (endsWith($text, AT)) {
 			$str_uri = true;
