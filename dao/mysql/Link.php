@@ -149,8 +149,10 @@ class Link extends Dao\Sql\Link
 			$parameters[self::DATABASE] = str_replace('*', '', $parameters['databases']);
 		}
 		$this->connection = new Contextual_Mysqli(
-			$parameters[self::HOST],     $parameters[self::LOGIN],
-			$parameters[self::PASSWORD], $parameters[self::DATABASE]
+			$parameters[self::HOST],
+			$parameters[self::LOGIN],
+			$parameters[self::PASSWORD],
+			isset($parameters[self::DATABASE]) ? $parameters[self::DATABASE] : null
 		);
 		$this->query('SET NAMES ' . $this->collation);
 	}
