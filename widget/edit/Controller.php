@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Tag;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Names;
@@ -45,7 +46,7 @@ class Controller extends Output\Controller
 		$fill_combo = isset($parameters['fill_combo'])
 			? ['fill_combo' => $parameters['fill_combo']]
 			: [];
-		return ($settings && $settings->actions)
+		$buttons = ($settings && $settings->actions)
 			? $buttons
 			: array_merge([
 				Feature::F_CLOSE => new Button(
@@ -61,6 +62,15 @@ class Controller extends Output\Controller
 					[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
 				)
 			]);
+		if (Dao::getObjectIdentifier($object) && !isset($buttons[Feature::F_DELETE])) {
+			$buttons[Feature::F_DELETE] = new Button(
+				'Delete',
+				View::link($object, Feature::F_DELETE, null, $follows),
+				Feature::F_DELETE,
+				[Target::MESSAGES]
+			);
+		}
+		return $buttons;
 	}
 
 	//----------------------------------------------------------------------------- getViewParameters

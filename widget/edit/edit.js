@@ -37,6 +37,18 @@ $('document').ready(function()
 			});
 		}
 
+		//------------------------------------------------------------------------------- close message
+		if (this.closest('#messages').length) {
+			var $close = this.inside('.actions .close a');
+			if ($close.length) {
+				$close.click(function(event) {
+					$(this).closest('#messages').children().remove();
+					event.stopImmediatePropagation();
+					event.preventDefault();
+				})
+			}
+		}
+
 		//-------------------------------------------------------------------------------- .minus click
 		this.inside('.minus').click(function()
 		{
@@ -737,11 +749,10 @@ $('document').ready(function()
 				$window.data(
 					'width',
 					$window.width()
-					- parseInt($window.css('border-left-width'))
-					- parseInt($window.css('border-right-width'))
+						- parseInt($window.css('border-left-width'))
+						- parseInt($window.css('border-right-width'))
 				);
 			}
-			console.log($window.offset().left, '+', $window.data('width'), '>', $width, '?');
 			if ($window.offset().left + $window.data('width') > $width) {
 				$window.width($width - $window.offset().left);
 			}

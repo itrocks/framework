@@ -6,6 +6,8 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -195,6 +197,15 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			[Button::SUB_BUTTONS => $layout_model_buttons]
 		);
 		$this->selectPrintButton($buttons[Feature::F_PRINT], $layout_model_buttons);
+
+		if (Dao::getObjectIdentifier($object)) {
+			$buttons[Feature::F_DELETE] = new Button(
+				'Delete',
+				View::link($object, Feature::F_DELETE, null, $follows),
+				Feature::F_DELETE,
+				[Target::MESSAGES]
+			);
+		}
 
 		if ($settings && $settings->actions) {
 			// default buttons on settings are false : get the default buttons from getGeneralButtons
