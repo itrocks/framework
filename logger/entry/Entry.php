@@ -15,6 +15,7 @@ use ITRocks\Framework\User;
  * @business
  * @list start, stop, duration, uri, data.arguments
  * @representative start, uri
+ * @sort -start, uri
  * @store_name logs
  */
 class Entry
