@@ -37,7 +37,7 @@ div.date_time,
 td.date_time {
 	position: relative;
 
-	input {
+	input:not([type=checkbox][type=radio]) {
 		width: 140px;
 	}
 

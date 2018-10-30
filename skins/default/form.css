@@ -34,8 +34,8 @@ input[type=checkbox] {
 div.date_time,
 td.date_time {
   position: relative; }
-  div.date_time input,
-  td.date_time input {
+  div.date_time input:not([type=checkbox][type=radio]),
+  td.date_time input:not([type=checkbox][type=radio]) {
     width: 140px; }
   div.date_time .ui-datepicker-trigger,
   td.date_time .ui-datepicker-trigger {
