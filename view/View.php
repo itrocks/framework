@@ -120,7 +120,7 @@ class View implements Configurable
 	 *
 	 * @param $object     object|string|array linked object or class name
 	 *                    Some internal calls may all this with [$class_name, $id]
-	 * @param $feature    string linked feature name
+	 * @param $feature    string|string[] linked feature name. Forced if in array
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string

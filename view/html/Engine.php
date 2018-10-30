@@ -88,7 +88,7 @@ class Engine implements Configurable, Framework\View\Engine
 	 *
 	 * @param $object     object|string|array linked object or class name
 	 *                    Some internal calls may all this with [$class_name, $id]
-	 * @param $feature    string linked feature name
+	 * @param $feature    string|string[] linked feature name, forced if in array
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
@@ -127,6 +127,11 @@ class Engine implements Configurable, Framework\View\Engine
 			if ($class_name !== $class_names) {
 				$feature = null;
 			}
+		}
+
+		// forced feature = can't change URI to simplified version : extract from array
+		if (is_array($feature)) {
+			$feature = reset($feature);
 		}
 
 		// build uri
