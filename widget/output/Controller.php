@@ -82,7 +82,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		$did_change = false;
+		$did_change = isset($parameters['did_change']) ? $parameters['did_change'] : false;
 		if (isset($parameters['add_action'])) {
 			if (!$output_settings->actions) {
 				$output_settings->actions = $this->getGeneralButtons(

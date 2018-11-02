@@ -37,6 +37,17 @@ class Set extends Setting\Custom\Set
 	 */
 	public $conditions;
 
+	//-------------------------------------------------------------------------------------- $objects
+	/**
+	 * Additional objects (optional) : store your associated setting objects here
+	 *
+	 * - Key is the name of the class, value is the stored object
+	 * - If the object is a Setting\Object
+	 *
+	 * @var object[]
+	 */
+	public $objects;
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Property[] key is the path of the property
