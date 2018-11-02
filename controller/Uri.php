@@ -142,17 +142,22 @@ class Uri
 			$this->parameters->set($this->controller_name, intval($this->feature_name));
 			$this->feature_name = array_shift($uri);
 			if (!$this->feature_name) {
-				$reflection_class   = new Reflection_Class($this->controller_name);
-				$default_feature    = $reflection_class->getAnnotation('default_feature')->value;
+				$reflection_class = new Reflection_Class($this->controller_name);
+				$default_feature  = $reflection_class->getAnnotation('default_object_feature')->value
+					?: $reflection_class->getAnnotation('default_feature')->value;
 				$this->feature_name = $default_feature ?: Feature::F_OUTPUT;
 			}
 		}
 		elseif ($this->controller_name && !$this->feature_name) {
 			if (class_exists($this->controller_name)) {
-				$this->feature_name = Feature::F_ADD;
+				$reflection_class   = new Reflection_Class($this->controller_name);
+				$default_feature    = $reflection_class->getAnnotation('default_class_feature')->value;
+				$this->feature_name = $default_feature ?: Feature::F_ADD;
 			}
 			elseif (class_exists(Names::setToClass($this->controller_name))) {
-				$this->feature_name = Feature::F_LIST;
+				$reflection_class   = new Reflection_Class(Names::setToClass($this->controller_name));
+				$default_feature    = $reflection_class->getAnnotation('default_set_feature')->value;
+				$this->feature_name = $default_feature ?: Feature::F_LIST;
 			}
 			else {
 				$this->feature_name = Feature::F_DEFAULT;

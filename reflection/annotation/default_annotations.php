@@ -131,9 +131,25 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@business' => Boolean_Annotation::class,
 
 	/**
+	 * @default_class_feature add
+	 */
+	Parser::T_CLASS . '@default_class_feature' => Annotation::class,
+
+	/**
 	 * @default_feature output
+	 * @deprecated replace by @default_object_feature
 	 */
 	Parser::T_CLASS . '@default_feature' => Annotation::class,
+
+	/**
+	 * @default_object_feature output
+	 */
+	Parser::T_CLASS . '@default_object_feature' => Annotation::class,
+
+	/**
+	 * @default_set_feature list
+	 */
+	Parser::T_CLASS . '@default_set_feature' => Annotation::class,
 
 	/**
 	 * @deprecated [false]
