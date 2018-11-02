@@ -357,9 +357,10 @@ class Set extends Setting\Custom\Set
 	public function title($title = null)
 	{
 		if (isset($title)) {
+			$this->name  = $title;
 			$this->title = $title;
 		}
-		return empty($this->title) ? $this->getDefaultTitle() : $this->title;
+		return $this->name ?: $this->title ?: $this->getDefaultTitle();
 	}
 
 	//------------------------------------------------------------------- unconditionalOutputSettings

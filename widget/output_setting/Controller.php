@@ -26,7 +26,7 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$parameters = $parameters->getObjects();
-		$feature = isset($parameters[Feature::FEATURE])
+		$feature    = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
 			: Feature::F_OUTPUT;
 		$controller_class = Getter::get($class_name, $feature, 'Controller', 'php')[0];

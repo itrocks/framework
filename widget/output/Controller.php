@@ -146,15 +146,12 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			$output_settings->removeProperty($parameters['remove_property']);
 			$did_change = true;
 		}
-		if (isset($parameters['title']) && ($parameters['title'] != $output_settings->title)) {
+		if (isset($parameters['title']) && ($parameters['title'] !== $output_settings->title)) {
+			$output_settings->name  = $parameters['title'];
 			$output_settings->title = $parameters['title'];
 			$did_change = true;
 		}
 		if (Setting\Custom\Controller::applyParametersToCustomSettings($output_settings, $parameters)) {
-			$did_change = true;
-		}
-		if (!$output_settings->name && strlen($output_settings->title)) {
-			$output_settings->name = $output_settings->title;
 			$did_change = true;
 		}
 		if ($did_change) {
