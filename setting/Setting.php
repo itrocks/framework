@@ -1,8 +1,10 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * An application setting
@@ -33,6 +35,15 @@ class Setting
 	{
 		if (isset($code))  $this->code = $code;
 		if (isset($value)) $this->value = $value;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return Loc::tr(Names::classToDisplay(get_class($this)));
 	}
 
 	//-------------------------------------------------------------------------------------- getClass

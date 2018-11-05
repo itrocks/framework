@@ -191,19 +191,6 @@ thead > tr > th {
 	box-shadow: 0 0 3px 3px red;
 }
 
-.delete.message,
-.remove.message {
-	background: url("img/talk_down.png") bottom right no-repeat;
-	padding-bottom: 7px;
-
-	div, h2 {
-		background-color: white;
-		border-right: 1px solid black;
-		display: block;
-		padding: 0 3px 1px 3px;
-	}
-}
-
 .dragging {
 	border: 1px solid lightgray;
 	border-radius: 2px;

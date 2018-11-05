@@ -5,7 +5,7 @@
 	position: fixed;
 	right: 8px;
 
-	a {
+	> a {
 		background: url("img/trashcan.png");
 		color: transparent;
 		display: inline-block;
@@ -16,6 +16,12 @@
 
 	h2 {
 		display: none;
+	}
+
+	.delete.message,
+	.remove.message {
+		background: #fa4 url("img/talk_down.png") bottom right no-repeat;
+		padding: 4px 4px 7px;
 	}
 }
 
