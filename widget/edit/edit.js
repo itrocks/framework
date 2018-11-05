@@ -29,11 +29,17 @@ $('document').ready(function()
 		if (this.is('.popup') || this.closest('.popup').length) {
 			var $popup = this.is('.popup') ? this : this.closest('.popup');
 			$popup.find('.general.actions .close a').click(function() {
-				$(this).removeAttr('href').removeAttr('target');
-			});
-			$popup.find('.general.actions a').click(function() {
 				var $this = $(this);
+				$this.removeAttr('href').removeAttr('target');
 				setTimeout(function() { $this.closest('.popup').remove(); });
+			});
+			$popup.find('a[href]:not([href*="close="])').each(function() {
+				var $this = $(this);
+				var href  = $this.attr('href');
+				if (!href.beginsWith('#')) {
+					var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
+					$this.attr('href', close_link);
+				}
 			});
 		}
 
