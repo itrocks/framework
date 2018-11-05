@@ -17,7 +17,7 @@ class Builder extends File
 	/**
 	 * @var Built[]|string[] Built classes, or comments if trim begins with '/', or empty lines ''
 	 */
-	public $classes;
+	public $classes = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**
