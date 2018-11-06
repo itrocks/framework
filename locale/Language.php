@@ -22,4 +22,22 @@ class Language
 	const FR = 'fr';
 	const NL = 'nl';
 
+	//----------------------------------------------------------------------------------------- FLAGS
+	const FLAGS = [
+		self::EN => 'gb'
+	];
+
+	//------------------------------------------------------------------------------------------ flag
+	/**
+	 * Convert language code to components/flag-icon-css flag code
+	 *
+	 * @return string
+	 */
+	public function flag()
+	{
+		return isset(static::FLAGS[$this->code])
+			? static::FLAGS[$this->code]
+			: $this->code;
+	}
+
 }

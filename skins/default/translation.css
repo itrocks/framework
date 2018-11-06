@@ -7,7 +7,8 @@
       .data.translation.window > fieldset:not([class]) > ul > li > input, .data.translation.window > fieldset:not([class]) > ul > li > label {
         display: table-cell; }
       .data.translation.window > fieldset:not([class]) > ul > li > label {
-        padding-right: .5em; }
+        padding: 3px .5em 0 0;
+        vertical-align: top; }
         .data.translation.window > fieldset:not([class]) > ul > li > label > img {
-          width: 20px;
-          height: 15px; }
+          height: 20px;
+          vertical-align: top; }
