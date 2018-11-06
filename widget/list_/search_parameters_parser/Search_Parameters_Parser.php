@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -225,13 +226,14 @@ class Search_Parameters_Parser
 			case Type::STRING:
 				/** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY: {
-				if (Values_Annotation::of($property)->value) {
+				$property_values = Values_Annotation::of($property)->values();
+				if ($property_values || ($property->getAnnotation('translate')->value === 'common')) {
 					if (trim($search_value) === '') {
 						$search = Func::equal($search_value);
 						break;
 					}
-					$values = [];
-					foreach (Values_Annotation::of($property)->values() as $value) {
+					$values = null;
+					foreach ($property_values as $value) {
 						$values[] = Names::propertyToDisplay($value);
 					}
 					$reverse_translations = Loc::rtr(
@@ -239,6 +241,17 @@ class Search_Parameters_Parser
 					);
 					if (!$reverse_translations) {
 						$reverse_translations = $search_value;
+					}
+					if (!$property_values) {
+						if ($reverse_translations === Translator::TOO_MANY_RESULTS_MATCH_YOUR_INPUT) {
+							$reverse_translations = $search_value;
+						}
+						else {
+							if (!is_array($reverse_translations)) {
+								$reverse_translations = [$reverse_translations];
+							}
+							$reverse_translations[] = $search_value;
+						}
 					}
 					if (!is_array($reverse_translations)) {
 						$reverse_translations = [$reverse_translations];
@@ -262,7 +275,9 @@ class Search_Parameters_Parser
 									$search = Scalar::applyScalar($value);
 								}
 								else {
-									$value  = Names::displayToProperty($value);
+									if ($property_values) {
+										$value = Names::displayToProperty($value);
+									}
 									$search = ($type_string == Type::STRING)
 										? Func::equal($value)
 										: Func::inSet($value);
@@ -273,8 +288,10 @@ class Search_Parameters_Parser
 						$search = (count($searches) > 1) ? Func::orOp($searches) : reset($searches);
 					}
 					else {
-						foreach ($reverse_translations as &$value) {
-							$value = Names::displayToProperty($value);
+						if ($property_values) {
+							foreach ($reverse_translations as &$value) {
+								$value = Names::displayToProperty($value);
+							}
 						}
 						$search = (count($reverse_translations) > 1)
 							? Func::in($reverse_translations)
