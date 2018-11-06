@@ -2,7 +2,11 @@
 namespace ITRocks\Framework\Locale\Translation\Data;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Language;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation\Data;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Data set
@@ -20,12 +24,15 @@ class Set
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
+	 * @getter
 	 * @var Data[]
 	 */
 	public $elements;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
+	 * @class class_name
+	 * @setter
 	 * @var object
 	 */
 	public $object;
@@ -42,17 +49,65 @@ class Set
 	 * @param $property_name string
 	 * @param $elements      Data[]
 	 */
-	public function __construct($object = null, $property_name = null, array $elements = [])
+	public function __construct($object = null, $property_name = null, array $elements = null)
 	{
-		if ($object) {
-			$this->class_name = Builder::current()->sourceClassName(get_class($object));
-			$this->object     = $object;
+		if (isset($elements)) {
+			$this->elements = $elements;
 		}
-		if ($property_name) {
+		if (isset($object)) {
+			$this->object = $object;
+		}
+		if (isset($property_name)) {
 			$this->property_name = $property_name;
 		}
-		if ($elements || !isset($this->elements))
-			$this->elements = $elements;
+	}
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return trim($this->object . SP . Names::propertyToDisplay($this->property_name))
+			. SP . Loc::tr('translations');
+	}
+
+	//----------------------------------------------------------------------------------- getElements
+	/**
+	 * Get elements that match the class_name + property_name couple (one per language)
+	 *
+	 * @return Data[]
+	 */
+	protected function getElements()
+	{
+		if ($this->elements) {
+			return $this->elements;
+		}
+		$this->elements = Dao::search(
+			['class_name' => $this->class_name, 'property_name' => $this->property_name],
+			Data::class,
+			[Dao::key('language.code'), Dao::sort()]
+		);
+		foreach (Dao::readAll(Language::class, Dao::sort()) as $language) {
+			if (!isset($this->elements[$language->code])) {
+				$data                            = new Data();
+				$data->object                    = $this->object;
+				$data->language                  = $language;
+				$data->property_name             = $this->property_name;
+				$this->elements[$language->code] = $data;
+			}
+		}
+		return $this->elements;
+	}
+
+	//------------------------------------------------------------------------------------- setObject
+	/**
+	 * @param $value object
+	 */
+	protected function setObject($value)
+	{
+		$this->class_name = Builder::current()->sourceClassName(get_class($value));
+		$this->object     = $value;
 	}
 
 }

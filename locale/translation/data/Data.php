@@ -84,12 +84,12 @@ class Data
 
 	//------------------------------------------------------------------------------------- setObject
 	/**
-	 * @param $object object
+	 * @param $value object
 	 */
-	protected function setObject($object)
+	protected function setObject($value)
 	{
-		$this->class_name = Builder::current()->sourceClassName(get_class($object));
-		$this->object     = $object;
+		$this->class_name = Builder::current()->sourceClassName(get_class($value));
+		$this->object     = $value;
 	}
 
 }
