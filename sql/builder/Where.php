@@ -325,8 +325,13 @@ class Where implements With_Build_Column
 			$path = Expressions::$current->cache[$path];
 		}
 		$property_path = strval($path);
-		$join      = $this->joins->add($property_path);
+		$property      = $this->joins->getStartingClass()->getProperty($property_path);
+
+		$join = ($property && ($property->getType()->asString() === 'object'))
+			? null
+			: $this->joins->add($property_path);
 		$link_join = $this->joins->getIdLinkJoin($property_path);
+
 		if (isset($link_join)) {
 			$column = $link_join->foreign_alias . '.`id`';
 		}
@@ -335,7 +340,6 @@ class Where implements With_Build_Column
 				$column = $join->foreign_alias . DOT . BQ . rLastParse($property_path, DOT, 1, true) . BQ;
 			}
 			else {
-				$property = $this->joins->getStartingClass()->getProperty($property_path);
 				$column   = ($property && Link_Annotation::of($property)->isCollection())
 					? $join->master_column
 					: $join->foreign_column;
