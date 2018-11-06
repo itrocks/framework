@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>|Data translation|</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<form class="data translation edit window" data-class="{@class}" data-class-name="{class_name}" data-property="{property_name}">
+		<h2>|¦{property_name}¦ translations|</h2>
+		<fieldset class="hidden">
+			<input name="{class_name.path}"  type="hidden" value="{object.id}">
+			<input name="property_name" type="hidden" value="{property_name}">
+		</fieldset>
+		<fieldset>
+			<ul>
+			<!--elements-->
+				<li>
+					<label class="{language.code}" for="translation[{language.code}]">
+						<img alt="|{language.name}|" src="../../../../../vendor/components/flag-icon-css/flags/4x3/{langage.code}.svg">
+					</label>
+					<input class="autoWidth" id="translation[{language.code}]" name="translation[{language.code}]" value="{?translation}">
+				</li>
+			<!--elements-->
+			</ul>
+		</fieldset>
+	</form>
+
+<!--END-->
+</body>
+</html>

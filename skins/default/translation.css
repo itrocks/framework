@@ -1,0 +1,13 @@
+.data.translation.window > fieldset:not([class]) {
+  display: table; }
+  .data.translation.window > fieldset:not([class]) > ul {
+    display: table-row-group; }
+    .data.translation.window > fieldset:not([class]) > ul > li {
+      display: table-row; }
+      .data.translation.window > fieldset:not([class]) > ul > li > input, .data.translation.window > fieldset:not([class]) > ul > li > label {
+        display: table-cell; }
+      .data.translation.window > fieldset:not([class]) > ul > li > label {
+        padding-right: .5em; }
+        .data.translation.window > fieldset:not([class]) > ul > li > label > img {
+          width: 20px;
+          height: 15px; }

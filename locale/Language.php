@@ -15,6 +15,7 @@ class Language
 	// The extension .be at the end of an url is a country not a language
 	// Country  Codes are Uppercases https://www.w3schools.com/tags/ref_country_codes.asp
 	// Language Codes are lowercases https://www.w3schools.com/tags/ref_language_codes.asp
+	// Please respect ISO 639-1 : https://fr.wikipedia.org/wiki/Liste_des_codes_ISO_639-1
 	const BE = 'be';
 	const EN = 'en';
 	const ES = 'es';

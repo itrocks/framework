@@ -1,0 +1,27 @@
+.data.translation.window {
+
+	> fieldset:not([class]) {
+		display: table;
+
+		> ul {
+			display: table-row-group;
+
+			> li {
+				display: table-row;
+
+				> input, > label {
+					display: table-cell;
+				}
+
+				> label {
+					padding-right: .5em;
+
+					> img {
+						width:  20px;
+						height: 15px;
+					}
+				}
+			}
+		}
+	}
+}
