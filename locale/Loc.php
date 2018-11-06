@@ -494,11 +494,16 @@ class Loc implements Registerable
 	 */
 	public function translateStringPropertyView(Reflection_Property_View $object, $result)
 	{
-		$do_translate = $object->property->getListAnnotation('values')->values()
-			|| ($object->property->getAnnotation('translate')->value === 'common');
-		return $do_translate
-			? static::tr($result, $object->property->final_class)
-			: $result;
+		if (
+			$object->property->getListAnnotation('values')->values()
+			|| ($object->property->getAnnotation('translate')->value === 'common')
+		) {
+			return static::tr($result, $object->property->final_class);
+		}
+		if (in_array($object->property->getAnnotation('translate')->value, ['', 'data'], true)) {
+			return (new Translation\Data\Set)->translate($object->property, $result);
+		}
+		return $result;
 	}
 
 }

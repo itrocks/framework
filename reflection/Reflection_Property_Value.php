@@ -154,6 +154,15 @@ class Reflection_Property_Value extends Reflection_Property
 			);
 	}
 
+	//------------------------------------------------------------------------------------ finalValue
+	/**
+	 * @return boolean
+	 */
+	public function finalValue()
+	{
+		return $this->final_value;
+	}
+
 	//---------------------------------------------------------------------------------------- format
 	/**
 	 * @return mixed

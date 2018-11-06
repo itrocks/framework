@@ -6,6 +6,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translation\Data;
+use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 
 /**
@@ -84,7 +86,11 @@ class Set
 			return $this->elements;
 		}
 		$this->elements = Dao::search(
-			['class_name' => $this->class_name, 'property_name' => $this->property_name],
+			[
+				'class_name'    => $this->class_name,
+				'object'        => $this->object,
+				'property_name' => $this->property_name
+			],
 			Data::class,
 			[Dao::key('language.code'), Dao::sort()]
 		);
@@ -108,6 +114,30 @@ class Set
 	{
 		$this->class_name = Builder::current()->sourceClassName(get_class($value));
 		$this->object     = $value;
+	}
+
+	//------------------------------------------------------------------------------------- translate
+	/**
+	 * @param $property Reflection_Property
+	 * @param $value    string
+	 * @param $language string
+	 * @return string
+	 */
+	public function translate(Reflection_Property $property, $value, $language = null)
+	{
+		// pre-requisite : a property value containing the context object
+		if (($property instanceof Reflection_Property_Value) && !$property->finalValue()) {
+			$translation = Dao::searchOne(
+				[
+					'class_name'    => Builder::current()->sourceClassName($property->getFinalClassName()),
+					'object'        => $property->getObject(),
+					'property_name' => $property->name,
+					'language.code' => $language ?: Loc::language()
+				],
+				Data::class
+			);
+		}
+		return (isset($translation) && $translation->translation) ? $translation->translation : $value;
 	}
 
 }
