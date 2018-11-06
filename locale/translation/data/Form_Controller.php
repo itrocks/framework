@@ -8,6 +8,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Translation\Data;
 use ITRocks\Framework\View;
+use ITRocks\Framework\Widget\Button;
+use ITRocks\Framework\Widget\Edit;
 
 /**
  * Data translation form : translate one property value into all available languages in one form
@@ -17,6 +19,17 @@ class Form_Controller implements Feature_Controller
 
 	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = 'form';
+
+	//----------------------------------------------------------------------------- getGeneralButtons
+	/**
+	 * @param $object     object
+	 * @param $parameters array
+	 * @return Button[]
+	 */
+	public function getGeneralButtons($object, array $parameters)
+	{
+		return (new Edit\Controller)->getGeneralButtons($object, $parameters);
+	}
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -47,8 +60,11 @@ class Form_Controller implements Feature_Controller
 				$data_set[$language->code] = $data;
 			}
 		}
-		$parameters->unshift(new Set($object, $property_name, $data_set));
-		return View::run($parameters->getObjects(), $form, $files, Data::class, static::FEATURE);
+		$data_set = new Set($object, $property_name, $data_set);
+		$parameters->unshift($data_set);
+		$parameters = $parameters->getObjects();
+		$parameters['general_buttons'] = $this->getGeneralButtons($data_set, $parameters);
+		return View::run($parameters, $form, $files, Data::class, static::FEATURE);
 	}
 
 }

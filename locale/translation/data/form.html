@@ -7,8 +7,11 @@
 <body>
 <!--BEGIN-->
 
-	<form class="data translation edit window" data-class="{@class}" data-class-name="{class_name}" data-property="{property_name}">
+	<form class="data translation edit window" data-class="{@class}" data-class-name="{class_name}" data-feature="{@feature}" data-property="{property_name}" target="#messages">
 		<h2>|¦{property_name}¦ translations|</h2>
+
+		{/widget/button/general_buttons.html}
+
 		<fieldset class="hidden">
 			<input name="{class_name.path}"  type="hidden" value="{object.id}">
 			<input name="property_name" type="hidden" value="{property_name}">
@@ -25,6 +28,7 @@
 			<!--elements-->
 			</ul>
 		</fieldset>
+
 	</form>
 
 <!--END-->
