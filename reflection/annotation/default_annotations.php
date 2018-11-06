@@ -471,6 +471,14 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
 
 	/**
+	 * @translate [common]
+	 * This property is translated : original in 'default language', use user language to translate
+	 * If common : the common application translation classes / data is used
+	 * If not common (true) : a specific Data_Translation class is used for data-type translations
+	 */
+	Parser::T_PROPERTY . '@translate' => Annotation::class,
+
+	/**
 	 * @unit [[\Class\Namespace\]Class_Name::]methodName|constant
 	 * This tells that the property should be rendered using textile parsing
 	 */

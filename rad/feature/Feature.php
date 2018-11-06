@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\RAD;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\RAD\Feature\Status;
 
@@ -28,6 +29,7 @@ class Feature
 	/**
 	 * @max_length 64000
 	 * @multiline
+	 * @translate common
 	 * @var string
 	 */
 	public $description;
@@ -57,6 +59,7 @@ class Feature
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @mandatory
+	 * @translate common
 	 * @var string
 	 */
 	public $title;
@@ -78,7 +81,7 @@ class Feature
 	 */
 	public function __toString()
 	{
-		return strval($this->title);
+		return Loc::tr($this->title);
 	}
 
 	//--------------------------------------------------------------------------------------- install

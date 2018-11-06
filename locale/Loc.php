@@ -494,7 +494,9 @@ class Loc implements Registerable
 	 */
 	public function translateStringPropertyView(Reflection_Property_View $object, $result)
 	{
-		return ($object->property->getListAnnotation('values')->values())
+		$do_translate = $object->property->getListAnnotation('values')->values()
+			|| ($object->property->getAnnotation('translate')->value === 'common');
+		return $do_translate
 			? static::tr($result, $object->property->final_class)
 			: $result;
 	}
