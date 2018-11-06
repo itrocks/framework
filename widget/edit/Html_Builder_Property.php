@@ -344,6 +344,15 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 			$element->setAttribute('value', strlen($this->value) ? Password::UNCHANGED : '');
 		}
+		if (
+			!$values
+			&& !is_null($translate_mode = $this->property->getAnnotation('translate')->value)
+		) {
+			if (empty($translate_mode)) {
+				$translate_mode = 'data';
+			}
+			$element->setData('translate', $translate_mode);
+		}
 		return $element;
 	}
 
