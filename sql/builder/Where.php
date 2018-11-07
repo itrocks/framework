@@ -325,7 +325,9 @@ class Where implements With_Build_Column
 			$path = Expressions::$current->cache[$path];
 		}
 		$property_path = strval($path);
-		$property      = $this->joins->getStartingClass()->getProperty($property_path);
+		$property      = (!strpos($property_path, '->') && !strpos($property_path, ')'))
+			? $this->joins->getStartingClass()->getProperty($property_path)
+			: null;
 
 		$join = ($property && ($property->getType()->asString() === 'object'))
 			? null
