@@ -48,7 +48,7 @@ class Database_Settings_Test extends Test
 		foreach ($settings as $setting) {
 			$id           = Dao::getObjectIdentifier($setting);
 			$list_setting = $setting->value;
-			if ($list_setting instanceof List_Setting\Set && count($list_setting->search)) {
+			if (($list_setting instanceof List_Setting\Set) && count($list_setting->search)) {
 				// be careful not to write $list_settings after this call. data may have been modified
 				// this is a test script so we do ont want to modify anything in database
 				$this->controller->applySearchParameters($list_setting);
@@ -57,6 +57,9 @@ class Database_Settings_Test extends Test
 					$errors["$class_name($id): $setting->code"] = $this->controller->getErrors();
 				}
 			}
+		}
+		if ($errors) {
+			print_r($errors);
 		}
 		static::assertEquals([], $errors);
 	}
