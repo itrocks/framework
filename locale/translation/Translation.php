@@ -20,8 +20,10 @@ class Translation
 
 	//------------------------------------------------------------------------------------- $language
 	/**
-	 * @length 2
+	 * Allow 2 characters-length ISO codes, and those composite like nl_be, but no more
+	 *
 	 * @mandatory
+	 * @max_length 5
 	 * @var string
 	 */
 	public $language = '';
