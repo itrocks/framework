@@ -11,8 +11,11 @@ use ITRocks\Framework\View\Html\Template;
 /**
  * The default delete controller will be called if no other delete controller is defined
  */
-class Delete_Controller implements Default_Feature_Controller
+class Controller implements Default_Feature_Controller
 {
+
+	//--------------------------------------------------------------------------------------- CONFIRM
+	const CONFIRM = 'confirm';
 
 	//--------------------------------------------------------------------------------------- confirm
 	/**
@@ -28,11 +31,11 @@ class Delete_Controller implements Default_Feature_Controller
 	{
 		$parameters->set(
 			'delete_link',
-			View::link($parameters->getMainObject(), Feature::F_DELETE, null, 'confirm')
+			View::link($parameters->getMainObject(), Feature::F_DELETE, null, static::CONFIRM)
 		);
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
 		$parameters = $parameters->getObjects();
-		$parameters[Template::TEMPLATE] = 'confirm';
+		$parameters[Template::TEMPLATE] = static::CONFIRM;
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
 
@@ -46,23 +49,49 @@ class Delete_Controller implements Default_Feature_Controller
 	 */
 	protected function delete(Parameters $parameters, $form, $files, $class_name)
 	{
-		$parameters = $parameters->getObjects();
-
-		Dao::begin();
-		$deleted = 0;
+		$parameters      = $parameters->getObjects();
+		$deleted_objects = [];
 		foreach ($parameters as $object) {
 			if (is_object($object)) {
-				if (!Dao::delete($object)) {
-					$deleted = 0;
-					break;
-				}
-				$deleted ++;
+				$deleted_objects[] = $object;
+			}
+		}
+
+		$deleted_objects = $this->deleteObjects($deleted_objects);
+
+		$parameters['deleted']         = $deleted_objects ? true : false;
+		$parameters['deleted_objects'] = $deleted_objects;
+
+		// avoid side effects between object and parameters
+		if (is_object(reset($parameters))) {
+			unset(reset($parameters)->deleted);
+			unset(reset($parameters)->deleted_objects);
+		}
+
+		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
+	}
+
+	//--------------------------------------------------------------------------------- deleteObjects
+	/**
+	 * Delete objects in one transaction
+	 *
+	 * If at least one object could not delete, none of the objects will be deleted
+	 * The deleted objects list will be returned as empty if deletion is cancelled
+	 *
+	 * @param $deleted_objects object[]
+	 * @return object[]
+	 */
+	protected function deleteObjects(array $deleted_objects)
+	{
+		Dao::begin();
+		foreach ($deleted_objects as $object) {
+			if (!Dao::delete($object)) {
+				Dao::rollback();
+				return [];
 			}
 		}
 		Dao::commit();
-
-		$parameters['deleted'] = $deleted ? true : false;
-		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
+		return $deleted_objects;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -75,7 +104,7 @@ class Delete_Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		return $parameters->has('confirm')
+		return $parameters->has(static::CONFIRM)
 			? $this->delete($parameters, $form, $files, $class_name)
 			: $this->confirm($parameters, $form, $files, $class_name);
 	}
