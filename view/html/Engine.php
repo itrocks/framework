@@ -112,20 +112,23 @@ class Engine implements Configurable, Framework\View\Engine
 			? Dao::getObjectIdentifier($object)
 			: (is_array($object) ? end($object) : null);
 
-		// change list URI to simple set-class URI (without the name of the feature)
-		if (($feature === Feature::F_LIST) && !$identifier) {
-			$class_name_test = $set_class ? Names::setToClass($class_name) : $class_name;
-			$class_names     = $set_class ? $class_name : Names::classToSet($class_name);
-			if ($class_name_test !== $class_names) {
-				$class_name = $class_names;
-				$feature    = null;
+		// Can simplify URI with removal of feature : only if there are no parameters
+		if (!$parameters) {
+			// change list URI to simple set-class URI (without the name of the feature)
+			if (($feature === Feature::F_LIST) && !$identifier) {
+				$class_name_test = $set_class ? Names::setToClass($class_name) : $class_name;
+				$class_names     = $set_class ? $class_name : Names::classToSet($class_name);
+				if ($class_name_test !== $class_names) {
+					$class_name = $class_names;
+					$feature    = null;
+				}
 			}
-		}
-		// change output URI to simple URI (without the name of the feature)
-		elseif (($feature === Feature::F_OUTPUT) && !$set_class) {
-			$class_names = Names::classToSet($class_name);
-			if ($class_name !== $class_names) {
-				$feature = null;
+			// change output URI to simple URI (without the name of the feature)
+			elseif (($feature === Feature::F_OUTPUT) && !$set_class) {
+				$class_names = Names::classToSet($class_name);
+				if ($class_name !== $class_names) {
+					$feature = null;
+				}
 			}
 		}
 
