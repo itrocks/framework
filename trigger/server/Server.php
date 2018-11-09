@@ -47,6 +47,8 @@ class Server
 	//------------------------------------------------------------------------------------------ loop
 	/**
 	 * Server loop iteration : list, execute and calculate next execution time of actions
+	 *
+	 * @return integer count executed actions
 	 */
 	public function loop()
 	{
@@ -62,17 +64,18 @@ class Server
 			Dao::write($action, Dao::only('running'));
 			$action->next($last);
 			Dao::commit();
-			if ($action->action !== static::STOP) {
+			if ($action->action === static::STOP) {
+				$this->stop = true;
+				break;
+			}
+			else {
 				/** @var $callback callable */
 				$callback   = [$this, 'afterAction'];
 				$callback[] = Dao::getObjectIdentifier($action) ? $action : null;
 				$this->asynchronous->call($action->action, $callback, false);
 			}
-			if ($action->action === static::STOP) {
-				$this->stop = true;
-				break;
-			}
 		}
+		return count($actions);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -84,9 +87,10 @@ class Server
 		$this->asynchronous = new Asynchronous();
 		while (!$this->stop) {
 			$next_execution = floatval(floor(microtime(true) + 1));
-			$this->loop();
-			$sleep_duration = max(0, ceil(($next_execution - microtime(true)) * 1000000));
-			usleep($sleep_duration);
+			if (!$this->loop()) {
+				$sleep_duration = max(0, ceil(($next_execution - microtime(true)) * 1000000));
+				usleep($sleep_duration);
+			}
 			$this->asynchronous->flush();
 		}
 		$this->asynchronous->wait();
