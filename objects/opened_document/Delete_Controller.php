@@ -8,7 +8,7 @@ use ITRocks\Framework\Widget\Delete;
 /**
  * Opened document delete controller
  */
-class Delete_Controller extends Delete\Delete_Controller
+class Delete_Controller extends Delete\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
