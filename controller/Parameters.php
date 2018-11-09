@@ -276,12 +276,24 @@ class Parameters
 	/**
 	 * Returns true if the parameter named $key exist
 	 *
-	 * @param $key string
+	 * @param $key           string
+	 * @param $in_values_too boolean if true, strict-search into values too
 	 * @return boolean
 	 */
-	public function has($key)
+	public function has($key, $in_values_too = false)
 	{
-		return isset($this->parameters[$key]);
+		return isset($this->parameters[$key]) || ($in_values_too && $this->hasValue($key, true));
+	}
+
+	//-------------------------------------------------------------------------------------- hasValue
+	/**
+	 * @param $value  mixed
+	 * @param $strict boolean
+	 * @return boolean
+	 */
+	public function hasValue($value, $strict = false)
+	{
+		return in_array($value, $this->parameters, $strict);
 	}
 
 	//---------------------------------------------------------------------------------------- remove

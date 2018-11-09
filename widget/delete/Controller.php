@@ -104,7 +104,7 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		return $parameters->has(static::CONFIRM)
+		return $parameters->has(static::CONFIRM, true)
 			? $this->delete($parameters, $form, $files, $class_name)
 			: $this->confirm($parameters, $form, $files, $class_name);
 	}
