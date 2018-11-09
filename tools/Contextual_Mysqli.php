@@ -141,6 +141,20 @@ class Contextual_Mysqli extends mysqli
 		return false;
 	}
 
+	//---------------------------------------------------------------------------------- dropDatabase
+	/**
+	 * @param $database_name string
+	 * @return boolean true if was existing and has been removed, false if there was no visible db
+	 */
+	public function dropDatabase($database_name)
+	{
+		if ($this->databaseExists($database_name)) {
+			$this->query("DROP DATABASE `$database_name`");
+			return true;
+		}
+		return false;
+	}
+
 	//---------------------------------------------------------------------------------------- exists
 	/**
 	 * Checks if a table or column exists
