@@ -53,7 +53,7 @@ class Export_Controller implements Default_Feature_Controller
 		$row = [];
 		foreach ($selection->getListSettings()->properties as $property) {
 			if (isset($properties[$property->path])) {
-				$row[] = $property->shortTitle();
+				$row[] = $property->title();
 			}
 		}
 		fputcsv($file, $row);
