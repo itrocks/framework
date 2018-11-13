@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>|Register user|</title>
@@ -8,26 +7,24 @@
 		@import "../../skins/default/all.css";
 	</style>
 </head>
-
 <body>
 <!--BEGIN-->
 
-<div class="user register window">
-	<h2>|User register|</h2>
-	<form name="user_login" action="/ITRocks/Framework/User/Register/register" method="post" target="#main">
-		<div class="fieldset">
-			<!--User_Authentication.getRegisterInputs-->
-			<div class="field">
-				<div class="label">|{label}|</div>
-				<div class="value"><input name="{name}" type="{type}" value="{?value}"></div>
+	<div class="user register window">
+		<h2>|User register|</h2>
+		<form name="user_login" action="/ITRocks/Framework/User/Register/register" method="post" target="#main">
+			<div class="fieldset">
+				<!--User_Authentication.getRegisterInputs-->
+				<div class="field">
+					<div class="label">|{label}|</div>
+					<div class="value"><input name="{name}" type="{type}" value="{?value}"></div>
+				</div>
+				<!--end-->
 			</div>
-			<!--User_Authentication.getRegisterInputs-->
-		</div>
-		<input type="submit" value="|Register|">
-	</form>
-</div>
+			<input type="submit" value="|Register|">
+		</form>
+	</div>
 
 <!--END-->
 </body>
-
 </html>

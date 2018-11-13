@@ -21,11 +21,11 @@
 				{errors_summary}
 			</caption>
 
-			<!--deactivate_condition-->{/{element_class_name.path}/condition}<!--deactivate_condition-->
+			<!--deactivate_condition-->{/{element_class_name.path}/condition}<!--end-->
 
 			<colgroup>
 				<col/><col/>
-				<!--getProperties--><col/><!--sample--><col/><!--getProperties-->
+				<!--getProperties--><col/><!--sample--><col/><!--end-->
 			</colgroup>
 
 			<thead>
@@ -34,7 +34,7 @@
 				<th class="{?column_select}">
 					<!--!lock_columns?-->
 					<a class="popup" href="/ITRocks/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
-					<!--!lock_columns?-->
+					<!--end-->
 				</th>
 				<!--properties-->
 				<th data-property="{path}" class="{path.@cssClass} sort{sort} {?htmlReverse} property">
@@ -44,64 +44,64 @@
 				<th data-property="column2" class="column2 sort property">
 					<a href="/Class/feature?sort=column2" target="#main">column2</a>
 				</th>
-				<!--properties-->
+				<!--end-->
 			</tr>
 			<tr class="search">
 				<td class="reset search" colspan="2">
 					<!--search_summary?-->
 					<a href="/{@class.path}/{@feature}?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
-					<!--search_summary?-->
+					<!--end-->
 				</td>
 				<!--properties-->
 				<td class="{path.@cssClass}">{search.@edit('search[{path.@escapeName}]','true','true')}</td>
 				<!--sample-->
 				<td class="column2"><input name="search[column2]"></td>
-				<!--properties-->
+				<!--end-->
 			</tr>
 			</thead>
 
 			<tbody>
 			<!--elements:-{displayed_lines_count}-->
-			<tr>
-				<!--@isFirst?-->
-				<td class="vertical scrollbar" data-length="{--displayed_lines_count}" data-start="{--display_start}" data-total="{--rows_count}" rowspan="{--displayed_lines_count}">
-					<a class="up" href="/{--@class.path}/{@feature}?move=up" target="#main">/\</a>
-					<a class="position" href="/{--@class.path}/{@feature}?move={--display_start}" target="#main">=</a>
-					<a class="down" href="/{--@class.path}/{@feature}?move=down" target="#main">\/</a>
-				</td>
-				<!--@isFirst?-->
-				<td><input type="checkbox" value="{id}"></td>
-				<!--formatValuesEx:1-->
-				<td class="{path.@cssClass} value">
-					<!----class_name?-->
-					<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="{--getOutputLink}" target="#main">{value.nbsp}</a>
-					<!----class_name?-->
-				</td>
-				<!--formatValuesEx-->
-				<!--formatValuesEx:2----count-->
-				<td class="{path.@cssClass} value">{value}</td>
-				<!--formatValuesEx-->
-			</tr>
-			<!--sample-->
-			<tr>
-				<td></td>
-				<td><input type="checkbox"></td>
-				<td class="column1"><a href="/Class/2">code2</a></td>
-				<td class="column2">3,18</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="checkbox"></td>
-				<td class="column1"><a href="/Class/3">code3</a></td>
-				<td class="column2">2,29</td>
-			</tr>
-			<tr>
-				<td></td>
-				<td><input type="checkbox"></td>
-				<td class="column1"><a href="/Class/4">code4</a></td>
-				<td class="column2">12,39</td>
-			</tr>
-			<!--elements-->
+				<tr>
+					<!--@isFirst?-->
+					<td class="vertical scrollbar" data-length="{--displayed_lines_count}" data-start="{--display_start}" data-total="{--rows_count}" rowspan="{--displayed_lines_count}">
+						<a class="up" href="/{--@class.path}/{@feature}?move=up" target="#main">/\</a>
+						<a class="position" href="/{--@class.path}/{@feature}?move={--display_start}" target="#main">=</a>
+						<a class="down" href="/{--@class.path}/{@feature}?move=down" target="#main">\/</a>
+					</td>
+					<!--end-->
+					<td><input type="checkbox" value="{id}"></td>
+					<!--formatValuesEx:1-->
+					<td class="{path.@cssClass} value">
+						<!----class_name?-->
+						<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="{--getOutputLink}" target="#main">{value.nbsp}</a>
+						<!--end-->
+					</td>
+					<!--end-->
+					<!--formatValuesEx:2----count-->
+					<td class="{path.@cssClass} value">{value}</td>
+					<!--end-->
+				</tr>
+				<!--sample-->
+				<tr>
+					<td></td>
+					<td><input type="checkbox"></td>
+					<td class="column1"><a href="/Class/2">code2</a></td>
+					<td class="column2">3,18</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="checkbox"></td>
+					<td class="column1"><a href="/Class/3">code3</a></td>
+					<td class="column2">2,29</td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="checkbox"></td>
+					<td class="column1"><a href="/Class/4">code4</a></td>
+					<td class="column2">12,39</td>
+				</tr>
+			<!--end-->
 			</tbody>
 		</table>
 

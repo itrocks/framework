@@ -19,9 +19,9 @@
 	<input type="hidden" name="selection">
 
 	<ul class="selection actions">
-		<!--less_twenty?--><li class="less twenty growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?less=20" target="#main" title="|Display the standard lines count|">|Less lines|</a></li><!--less_twenty?-->
-		<!--more_hundred?--><li class="more hundred growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?more=100" target="#main" title="|Display more lines|">|More lines|</a></li><!--more_hundred?-->
-		<!--more_thousand?--><li class="more thousand growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?more=1000" target="#main" title="|Display the maximal lines count|">|Max lines|</a></li><!--more_thousand?-->
+		<!--less_twenty?--><li class="less twenty growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?less=20" target="#main" title="|Display the standard lines count|">|Less lines|</a></li><!--end-->
+		<!--more_hundred?--><li class="more hundred growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?more=100" target="#main" title="|Display more lines|">|More lines|</a></li><!--end-->
+		<!--more_thousand?--><li class="more thousand growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?more=1000" target="#main" title="|Display the maximal lines count|">|Max lines|</a></li><!--end-->
 		<li class="{selected} select_count">
 			<a class="objects {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{@feature}?view=selection">x{selected_lines_count}</a>
 			<ul>
@@ -37,14 +37,14 @@
 			<ul>
 				<!--sub_buttons-->
 				<li class="{feature.lower}"><a class="submit {?class}" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="{link}" target="{?target}">|{caption}|</a></li>
-				<!--sub_buttons-->
+				<!--end-->
 			</ul>
-			<!--sub_buttons?-->
+			<!--end-->
 		</li>
 		<!--sample-->
 		<li class="new"><a class="other classes {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/Class/new" target="#main">New</a></li>
-		<!--selection_buttons-->
-		<li class="rows_count">|!{rows_count}! ¦lines¦ match your search|<!--displayed_lines_count--><br>|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|<!--displayed_lines_count--></li>
+		<!--end-->
+		<li class="rows_count">|!{rows_count}! ¦lines¦ match your search|<!--displayed_lines_count--><br>|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|<!--end--></li>
 	</ul>
 
 <!--END-->

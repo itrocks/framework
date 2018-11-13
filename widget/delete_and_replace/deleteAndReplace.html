@@ -12,16 +12,16 @@
 </head>
 <body>
 <!--BEGIN-->
-<div data-class="{@class}" data-id="{id}">
+	<div data-class="{@class}" data-id="{id}">
 
-	<form action="/{@class.path}/{id}/deleteAndReplace" class="{@class.short.lower} {@feature} form" target="#{@class.path}_{id}">
-		|{@class.short}| = <strong>{.}</strong> est utilisée dans d'autres documents.<br>
-		Pour le supprimer, vous devez sélectionner un |{@class.short.lower}| de remplacement.<br>
-		<input type="submit" value=" |Replace with| ">
-		{combo}
-	</form>
+		<form action="/{@class.path}/{id}/deleteAndReplace" class="{@class.short.lower} {@feature} form" target="#{@class.path}_{id}">
+			|{@class.short}| = <strong>{.}</strong> est utilisée dans d'autres documents.<br>
+			Pour le supprimer, vous devez sélectionner un |{@class.short.lower}| de remplacement.<br>
+			<input type="submit" value=" |Replace with| ">
+			{combo}
+		</form>
 
-</div>
+	</div>
 <!--END-->
 </body>
 </html>

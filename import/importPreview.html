@@ -27,17 +27,17 @@
 				<ul>
 					<!--errors-->
 					<li>{.}</li>
-					<!--errors-->
+					<!--end-->
 				</ul>
 			</div>
-			<!--errors?-->
+			<!--end-->
 
 			<!--settings.classes-->
 			<fieldset class="{name} class">
 				<h3>
 					|{--settings.getClassName.short}|
-					<!--property_path?-->:<!--property_path?-->
-					<!--property_path--><span class="property">|{.}|</span><!--property_path-->
+					<!--property_path?-->:<!--end-->
+					<!--property_path--><span class="property">|{.}|</span><!--end-->
 				</h3>
 				<fieldset class="constants">
 					<!--constants-->
@@ -48,7 +48,7 @@
 							|Remove constant|
 						</a>
 					</div>
-					<!--constants-->
+					<!--end-->
 					<a class="constant add submit action" href="/ITRocks/Framework/Import/preview?constant_add={#}" target="#main">
 						|Add a constant|
 					</a>
@@ -56,7 +56,7 @@
 				<fieldset class="identify properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
 					Identifie chaque <span>|{name}|</span> par
-					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--identify_properties--></ul>
+					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--end--></ul>
 					(doit être unique).
 				</fieldset>
 				<fieldset class="none">
@@ -66,27 +66,27 @@
 				<fieldset class="write properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
 					Met à jour la valeur de
-					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--write_properties--></ul>.
+					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--end--></ul>.
 				</fieldset>
 				<fieldset class="ignore properties">
 					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
 					Ignore la valeur de
-					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--ignore_properties--></ul>
+					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--end--></ul>
 				</fieldset>
 			</fieldset>
-			<!--settings.classes-->
+			<!--end-->
 
 			<!--preview-->
 			<table class="preview">
-				<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--properties--></tr>
+				<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--end--></tr>
 				<!--data:{first_row}-{last_row}-->
-				<tr><!--.:-{--last_column}--><td>{.}</td><!--.--></tr>
-				<!--data-->
+				<tr><!--.:-{--last_column}--><td>{.}</td><!--end--></tr>
+				<!--end-->
 			</table>
-			<!--preview-->
+			<!--end-->
 
 		</fieldset>
-		<!--worksheets-->
+		<!--end-->
 
 		<p class="warning">
 			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>

@@ -1154,12 +1154,14 @@ class Template
 				}
 			}
 			elseif (
-				(substr($content, $position, 4) !== 'use ')
+				(substr($content, $position, 9) !== 'sample-->')
+				&& (substr($content, $position, 4) !== 'use ')
 				&& $this->parseThis($content, $position)
 			) {
 				$recurse ++;
 			}
 		}
+		trigger_error('Missing <!--end--> into template', E_USER_WARNING);
 		return strlen($content);
 	}
 
