@@ -721,6 +721,7 @@ $('document').ready(function()
 		});
 
 		//--------------------------------------------------------------- input[data-on-change] .change
+		var on_change_pool = [];
 		this.inside('input[data-on-change], select[data-on-change]').change(function()
 		{
 			var $this  = $(this);
@@ -732,6 +733,12 @@ $('document').ready(function()
 					target = uri.rParse(SP);
 					uri    = uri.lParse(SP);
 				}
+
+				// on-change-pool avoid calling several times the same handler on several changed inputs
+				var on_change_pool_index = on_change_pool.indexOf(uri);
+				if (on_change_pool_index >= 0) return;
+				on_change_pool.push(uri);
+
 				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
 
 				$.post(uri, $form.formSerialize(), function(data)
@@ -746,6 +753,7 @@ $('document').ready(function()
 							$(target).html(data).build();
 						}
 					}
+					setTimeout(function() { on_change_pool.splice(on_change_pool_index, 1); });
 				});
 
 			});
