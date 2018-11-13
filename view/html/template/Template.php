@@ -1517,6 +1517,9 @@ class Template
 		elseif ($property_name[0] === AT) {
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
+		elseif ($property_name[0] === '§') {
+			$object = $this->parseParameter($object, substr($property_name, 1));
+		}
 		elseif ($i = strpos($property_name, '(')) {
 			if (
 				(is_object($object) || (!empty($object) && ctype_upper($object[0])))
@@ -1655,7 +1658,7 @@ class Template
 				ctype_upper($c)
 				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
-			|| (strpos('#@/.-+?!|="', $c) !== false);
+			|| (strpos('#@§/.-+?!|="', $c) !== false);
 	}
 
 	//-------------------------------------------------------------------------------------- parseUse
