@@ -1154,7 +1154,8 @@ class Template
 				}
 			}
 			elseif (
-				(substr($content, $position, 9) !== 'sample-->')
+				(substr($content, $position, 5) !== 'id-->')
+				&& (substr($content, $position, 9) !== 'sample-->')
 				&& (substr($content, $position, 4) !== 'use ')
 				&& $this->parseThis($content, $position)
 			) {
