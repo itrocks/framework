@@ -135,18 +135,9 @@ class Linked_Classes_Compiler implements ICompiler
 		Reflection_Class $class, $parent_class_name, $replacement_class_name
 	) {
 		if ($replacement_class_name !== $parent_class_name) {
-			$class_exists = class_exists($replacement_class_name, false);
-			if (
-				($class_exists && is_a($replacement_class_name, $parent_class_name, true))
-				|| (
-					!$class_exists
-					&& Reflection_Source::ofClass($replacement_class_name)
-						->getClass($replacement_class_name)
-						->isA($class->name)
-				)
-			) {
-				return true;
-			}
+			return Reflection_Source::ofClass($replacement_class_name)
+				->getClass($replacement_class_name)
+				->isA($class->name);
 		}
 		return false;
 	}
