@@ -138,7 +138,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			case Link_Annotation::COLLECTION: return $this->buildCollection();
 			case Link_Annotation::MAP:        return $this->buildMap();
 		}
-		return (is_array($this->value) && !$this->type->isMultipleString())
+		return ($this->type->isClass() && $this->type->isMultiple() && !$this->type->isMultipleString())
 			? $this->buildMap()
 			: $this->buildSingle();
 	}
