@@ -133,6 +133,7 @@ class Compiler implements ICompiler, Needs_Main
 		// if source has already been compiled for AOP, then do not compile it again
 		preg_match('|\n\s+//#+\sAOP\n|', $class->source->getSource(), $matches);
 		if ($matches) {
+			if (self::DEBUG) echo 'Do not compile again.' . BR;
 			return false;
 		}
 
@@ -194,7 +195,7 @@ class Compiler implements ICompiler, Needs_Main
 			ksort($methods_code);
 
 			if (self::DEBUG && $methods_code) {
-				echo '<pre>' . print_r($methods_code, true) . '</pre>';
+				echo '<pre>methods_code = ' . print_r($methods_code, true) . '</pre>';
 				flush();
 			}
 

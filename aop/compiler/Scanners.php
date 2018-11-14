@@ -69,7 +69,7 @@ trait Scanners
 				$properties[$property->name][] = [Handler::READ, $advice];
 			}
 		}
-		$overrides = $this->scanForOverrides($class->getDocComment([T_EXTENDS, T_USE]), ['getter']);
+		$overrides = $this->scanForOverrides($class->getDocComment(), ['getter']);
 		foreach ($overrides as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
