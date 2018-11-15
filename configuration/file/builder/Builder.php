@@ -95,6 +95,24 @@ class Builder extends File
 		(new Builder\Reader($this))->read();
 	}
 
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * @param $class Built|string
+	 * @return boolean true if removed, false if not found
+	 */
+	public function remove($class)
+	{
+		$class_name = ($class instanceof Built) ? $class->class_name : $class;
+		// remove class name
+		foreach ($this->classes as $key => $built) {
+			if (($built instanceof Built) && $built->class_name === $class_name) {
+				unset($this->classes[$key]);
+				return true;
+			}
+		}
+		return false;
+	}
+
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Search a built class, and return its object if exist

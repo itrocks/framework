@@ -195,6 +195,9 @@ class Installer
 		$built = $file->search($base_class_name);
 		if ($built instanceof Assembled) {
 			$built->remove($removed_interfaces_traits);
+			if (!$built->components) {
+				$file->remove($built);
+			}
 		}
 		elseif ($built instanceof Replaced) {
 			/** @var $file Source PhpStorm is bugged : with meta, it should be found */
