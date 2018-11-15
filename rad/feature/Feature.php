@@ -106,15 +106,12 @@ class Feature
 	 */
 	public function uninstall()
 	{
-		if ($this->status === Status::INSTALLED) {
-			Dao::begin();
-			$installer = new Installer();
-			$installer->uninstall($this->plugin_class_name);
-			$installer->saveFiles();
-			Dao::commit();
-			return true;
-		}
-		return false;
+		Dao::begin();
+		$installer = new Installer();
+		$installer->uninstall($this->plugin_class_name);
+		$installer->saveFiles();
+		Dao::commit();
+		return true;
 	}
 
 }

@@ -283,7 +283,6 @@ class Installer
 	 * dependency features he will lost on uninstalling this feature.
 	 *
 	 * @param $plugin_class_name Installable|string plugin object or class name
-	 * @return boolean true if was uninstalled, false if the plugin had more dependencies
 	 */
 	public function uninstall($plugin_class_name)
 	{
@@ -323,7 +322,6 @@ class Installer
 		}
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
-		return true;
 	}
 
 }
