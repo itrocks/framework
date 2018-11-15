@@ -9,6 +9,7 @@ use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
@@ -52,14 +53,23 @@ class Installer
 	/**
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
-	 * @param $priority_value    string @values Priority::const
-	 * @param $plugin_class_name string
+	 * @param $plugin_class_name string|Installable
 	 * @param $configuration     mixed
+	 * @param $priority_value    string If forced priority only @values Priority::const
 	 */
-	public function addPlugin($priority_value, $plugin_class_name, $configuration = null)
+	public function addPlugin($plugin_class_name, $configuration = null, $priority_value = null)
 	{
-		$file = $this->openFile(Config::class);
-		$file->addPlugin($priority_value, $plugin_class_name, $configuration);
+		if (!is_string($plugin_class_name)) {
+			$plugin_class_name = get_class($plugin_class_name);
+		}
+		if (is_a($plugin_class_name, Plugin::class, true)) {
+			if (!$priority_value) {
+				/** @noinspection PhpUndefinedFieldInspection Plugin::PRIORITY always exist */
+				$priority_value = $plugin_class_name::PRIORITY;
+			}
+			$file = $this->openFile(Config::class);
+			$file->addPlugin($priority_value, $plugin_class_name, $configuration);
+		}
 		(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
 		if ($plugin_class_name !== $this->plugin_class_name) {
 			$this->install($plugin_class_name);
@@ -99,23 +109,6 @@ class Installer
 		foreach ($added_interfaces_traits as $added_interface_trait) {
 			(new Installed\Builder($this->plugin_class_name))
 				->add($base_class_name, $added_interface_trait);
-		}
-	}
-
-	//------------------------------------------------------------------------------------- dependsOn
-	/**
-	 * The plugin depends on all these plugins : install them before me
-	 *
-	 * @param $plugin_class_names string|string[] A list of needed plugin classes
-	 */
-	public function dependsOn($plugin_class_names)
-	{
-		if (!is_array($plugin_class_names)) {
-			$plugin_class_names = [$plugin_class_names];
-		}
-		foreach ($plugin_class_names as $plugin_class_name) {
-			(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
-			$this->install($plugin_class_name);
 		}
 	}
 

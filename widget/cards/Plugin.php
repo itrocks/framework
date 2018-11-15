@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Widget\Cards;
 
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Installable\Installer;
-use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Parser;
@@ -42,7 +41,7 @@ class Plugin implements Installable, Registerable
 	 */
 	public function install(Installer $installer)
 	{
-		$installer->addPlugin(Priority::NORMAL, get_class($this));
+		$installer->addPlugin($this);
 	}
 
 	//-------------------------------------------------------------------------------------- register

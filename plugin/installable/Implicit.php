@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
-use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -88,7 +87,7 @@ class Implicit implements Installable
 	 */
 	protected function installClass(Installer $installer)
 	{
-		$installer->addPlugin(Priority::NORMAL, $this->class->name);
+		$installer->addPlugin($this->class->name);
 	}
 
 		//---------------------------------------------------------------------------------- installTrait
