@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration\File\Builder;
 
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder;
+use ITRocks\Framework\Configuration\File\Writer\Namespace_White_Lines;
 
 /**
  * Builder configuration file writer
@@ -12,6 +13,7 @@ use ITRocks\Framework\Configuration\File\Builder;
  */
 class Writer extends File\Writer
 {
+	use Namespace_White_Lines;
 
 	//---------------------------------------------------------------------------- writeConfiguration
 	/**
@@ -19,18 +21,18 @@ class Writer extends File\Writer
 	 */
 	protected function writeConfiguration()
 	{
-		$this->lines[] = 'return [';
+		$this->initWhiteLine();
 		$last_line_key = null;
+		$this->lines[] = 'return [';
 		foreach ($this->file->classes as $built_class) {
-			if (is_string($built_class)) {
-				$this->lines[] = $built_class;
-			}
-			else {
+			if (is_object($built_class)) {
 				if ($last_line_key) {
 					$this->lines[$last_line_key] .= ',';
 				}
+				$short_class_name = $this->file->shortClassNameOf($built_class->class_name);
+				$this->autoWhiteLine($short_class_name);
 				if ($built_class instanceof Assembled) {
-					$this->lines[] = TAB . $this->file->shortClassNameOf($built_class->class_name) . '::class'
+					$this->lines[] = TAB . $short_class_name . '::class'
 						. ' => [';
 					$component_count = count($built_class->components);
 					foreach ($built_class->components as $component) {
@@ -45,11 +47,15 @@ class Writer extends File\Writer
 				}
 				elseif ($built_class instanceof Replaced) {
 					$last_line_key = count($this->lines);
-					$this->lines[] = TAB . $this->file->shortClassNameOf($built_class->class_name) . '::class'
+					$this->lines[] = TAB . $short_class_name . '::class'
 						. ' => ' . $this->file->shortClassNameOf($built_class->replacement) . '::class';
 				}
 			}
+			elseif (trim($built_class)) {
+				$this->insert_lines[] = $built_class;
+			}
 		}
+		$this->writeInsertLines();
 		$this->lines[] = '];';
 		$this->lines[] = '';
 	}

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Configuration\File\Config;
 
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Config;
+use ITRocks\Framework\Configuration\File\Writer\Namespace_White_Lines;
 
 /**
  * Builder configuration file writer
@@ -12,6 +13,7 @@ use ITRocks\Framework\Configuration\File\Config;
  */
 class Writer extends File\Writer
 {
+	use Namespace_White_Lines;
 
 	//--------------------------------------------------------------------------------- lastObjectKey
 	/**
@@ -37,38 +39,24 @@ class Writer extends File\Writer
 		$this->lines[]     = $this->file->start_line;
 		foreach ($this->file->plugins_by_priority as $priority_key => $priority) {
 			if ($priority instanceof Priority) {
-				$this->lines[]    = TAB . 'Priority::' . strtoupper($priority->priority) . ' => [';
-				$plugins          = $priority->plugins;
-				$insert_lines     = [];
-				$last_plugin_key  = $this->lastObjectKey($plugins);
-				$last_namespace   = '';
-				foreach ($plugins as $plugin_key => $plugin) {
+				$this->initWhiteLine();
+				$last_plugin_key = $this->lastObjectKey($priority->plugins);
+				$this->lines[]   = TAB . 'Priority::' . strtoupper($priority->priority) . ' => [';
+				foreach ($priority->plugins as $plugin_key => $plugin) {
 					if ($plugin instanceof Plugin) {
 						$plugins_separator = ($plugin_key === $last_plugin_key) ? '' : ',';
 						$short_class_name  = $this->file->shortClassNameOf($plugin->class_name, 2);
-						$namespace         = lParse($short_class_name, BS);
-						if ($last_namespace !== $namespace) {
-							if ($last_namespace) {
-								$this->lines[] = '';
-							}
-							foreach ($insert_lines as $line) {
-								$this->lines[] = $line;
-							}
-							$insert_lines   = [];
-							$last_namespace = $namespace;
-						}
+						$this->autoWhiteLine($short_class_name);
 						$this->lines[] = TAB . TAB
 							. $short_class_name . '::class'
 							. ($plugin->configuration ? (' => ' . $plugin->configuration) : '')
 							. $plugins_separator;
 					}
 					elseif (trim($plugin)) {
-						$insert_lines[] = $plugin;
+						$this->insert_lines[] = $plugin;
 					}
 				}
-				foreach ($insert_lines as $line) {
-					$this->lines[] = $line;
-				}
+				$this->writeInsertLines();
 				$priority_separator = ($priority_key === $last_priority_key) ? '' : ',';
 				$this->lines[] = TAB . ']'. $priority_separator;
 			}
