@@ -106,7 +106,6 @@ class Installer
 	/**
 	 * The plugin depends on all these plugins : install them before me
 	 *
-	 * @deprecated please use addPlugin
 	 * @param $plugin_class_names string|string[] A list of needed plugin classes
 	 */
 	public function dependsOn($plugin_class_names)
@@ -115,6 +114,7 @@ class Installer
 			$plugin_class_names = [$plugin_class_names];
 		}
 		foreach ($plugin_class_names as $plugin_class_name) {
+			(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
 			$this->install($plugin_class_name);
 		}
 	}
@@ -299,13 +299,11 @@ class Installer
 
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
 
-		// remove all plugins that depend on this plugin
+		// remove all plugins installed by this plugin
 		/** @var $installed_plugins Installed\Plugin[] */
 		$installed_plugins = Dao::search($installed_search, Installed\Plugin::class);
 		foreach ($installed_plugins as $installed_plugin) {
-			if ($installed_plugin->plugin_class_name !== $plugin_class_name) {
-				$this->removePlugin($installed_plugin->plugin_class_name);
-			}
+			$this->removePlugin($installed_plugin->plugin_class_name);
 		}
 
 		// remove interfaces / traits from built classes
