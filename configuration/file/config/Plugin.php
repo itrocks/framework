@@ -26,4 +26,13 @@ class Plugin
 	 */
 	public $configuration;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return $this->class_name;
+	}
+
 }
