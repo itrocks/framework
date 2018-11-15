@@ -391,22 +391,24 @@ class Object_To_Write_Array
 	 */
 	protected function propertyTableColumnName(Reflection_Property $property, $value)
 	{
-		$element_type   = $property->getType()->getElementType();
-		$storage_name   = Store_Name_Annotation::of($property)->value;
+		$element_type           = $property->getType()->getElementType();
+		$storage_name           = Store_Name_Annotation::of($property)->value;
+		$store_annotation_value = Store_Annotation::of($property)->value;
+		$value_is_json_encoding = ($store_annotation_value == Store_Annotation::JSON);
 		$write_property = null;
-		// write basic
-		if ($element_type->isBasic(false)) {
+		// write basic but test store as json too
+		if ($element_type->isBasic(false) && !$value_is_json_encoding) {
 			$write_value = $this->propertyBasic($property, $value);
 		}
 		// write array or object into a @store gz/hex/string
-		elseif (Store_Annotation::of($property)->value) {
+		elseif ($store_annotation_value) {
 			$write_value = $this->propertyStoreString($property, $value);
 			if ($write_property = $this->propertyDao($property, $write_value)) {
 				$write_value = '';
 			}
 		}
 		// return of value for not-linked array property value using json encoding
-		elseif ($this->json_encoding && is_array($value) && !Store_Annotation::of($property)->value) {
+		elseif ($this->json_encoding && is_array($value) && !$store_annotation_value) {
 			$write_value = $this->valueToWriteArray($value, $this->options);
 		}
 		// prepare Date_Time for json encoding
