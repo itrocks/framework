@@ -111,8 +111,6 @@ class Feature
 			$installer = new Installer();
 			$installer->uninstall($this->plugin_class_name);
 			$installer->saveFiles();
-			$this->status = Status::AVAILABLE;
-			Dao::write($this, Dao::only('status'));
 			Dao::commit();
 			return true;
 		}

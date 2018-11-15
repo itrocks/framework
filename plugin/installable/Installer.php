@@ -11,6 +11,8 @@ use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
 
@@ -50,17 +52,17 @@ class Installer
 	/**
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
-	 * @param $priority_value string @values Priority::const
-	 * @param $plugin_name    string
-	 * @param $configuration  mixed
+	 * @param $priority_value    string @values Priority::const
+	 * @param $plugin_class_name string
+	 * @param $configuration     mixed
 	 */
-	public function addPlugin($priority_value, $plugin_name, $configuration = null)
+	public function addPlugin($priority_value, $plugin_class_name, $configuration = null)
 	{
 		$file = $this->openFile(Config::class);
-		$file->addPlugin($priority_value, $plugin_name, $configuration);
-		(new Installed\Plugin($this->plugin_class_name))->add($plugin_name);
-		if ($this->plugin_class_name !== $plugin_name) {
-			$this->install($plugin_name);
+		$file->addPlugin($priority_value, $plugin_class_name, $configuration);
+		(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
+		if ($plugin_class_name !== $this->plugin_class_name) {
+			$this->install($plugin_class_name);
 		}
 	}
 
@@ -104,6 +106,7 @@ class Installer
 	/**
 	 * The plugin depends on all these plugins : install them before me
 	 *
+	 * @deprecated please use addPlugin
 	 * @param $plugin_class_names string|string[] A list of needed plugin classes
 	 */
 	public function dependsOn($plugin_class_names)
@@ -118,16 +121,21 @@ class Installer
 
 	//--------------------------------------------------------------------------------------- install
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin Installable|string plugin to install
 	 */
 	public function install($plugin)
 	{
+		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
+		$this->plugin_class_name   = $plugin_class_name;
 
-		$this->plugin_class_name = is_string($plugin) ? $plugin : get_class($plugin);
-		$installable             = $this->pluginObject($plugin);
+		$installable = $this->pluginObject($plugin);
 		$installable->install($this);
+
+		if ($feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)) {
+			$feature->status = Status::INSTALLED;
+			Dao::write($feature, Dao::only('status'));
+		}
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 	}
@@ -158,6 +166,7 @@ class Installer
 
 	//---------------------------------------------------------------------------------- pluginObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin Installable|string
 	 * @return Installable
 	 */
@@ -231,6 +240,7 @@ class Installer
 	 * - If the plugin is not Installable or is $this : only remove it from the config.php
 	 *
 	 * @param $plugin_class_name string
+	 * @return boolean true if the plugin had no dependency anymore, false if was dependent
 	 */
 	public function removePlugin($plugin_class_name)
 	{
@@ -238,7 +248,12 @@ class Installer
 		if (!$removed || !$removed->features) {
 			$file = $this->openFile(Config::class);
 			$file->removePlugin($plugin_class_name);
+			if ($plugin_class_name !== $this->plugin_class_name) {
+				$this->uninstall($plugin_class_name);
+			}
+			return true;
 		}
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------ renameMenu
@@ -274,8 +289,8 @@ class Installer
 	 * Notice : Developers should beware that the user has well been informed of the full list of
 	 * dependency features he will lost on uninstalling this feature.
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name Installable|string plugin object or class name
+	 * @return boolean true if was uninstalled, false if the plugin had more dependencies
 	 */
 	public function uninstall($plugin_class_name)
 	{
@@ -285,11 +300,11 @@ class Installer
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
 
 		// remove all plugins that depend on this plugin
-		/** @var $installed_menus Installed[] */
+		/** @var $installed_plugins Installed\Plugin[] */
 		$installed_plugins = Dao::search($installed_search, Installed\Plugin::class);
 		foreach ($installed_plugins as $installed_plugin) {
 			if ($installed_plugin->plugin_class_name !== $plugin_class_name) {
-				$this->uninstall($installed_plugin->plugin_class_name);
+				$this->removePlugin($installed_plugin->plugin_class_name);
 			}
 		}
 
@@ -311,9 +326,13 @@ class Installer
 			]);
 		}
 
-		// remove the plugin itself
+		if ($feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)) {
+			$feature->status = Status::AVAILABLE;
+			Dao::write($feature, Dao::only('status'));
+		}
+
 		$this->plugin_class_name = $stacked_plugin_class_name;
-		$this->removePlugin($plugin_class_name);
+		return true;
 	}
 
 }
