@@ -105,7 +105,7 @@ abstract class Installed
 	//------------------------------------------------------------------------------ removeProperties
 	/**
 	 * @param $property_values mixed[]
-	 * @return static|null removed element after count decrement (0..n). Null of was not installed
+	 * @return static|null removed element after count decrement (0..n). Null if was not installed
 	 */
 	protected function removeProperties(array $property_values)
 	{

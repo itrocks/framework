@@ -63,7 +63,7 @@ class Implicit implements Installable
 	 */
 	public function __toString()
 	{
-		return $this->class->getAnnotation('feature')->value;
+		return strval($this->class->getAnnotation('feature')->value);
 	}
 
 	//--------------------------------------------------------------------------------------- install

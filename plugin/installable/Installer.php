@@ -28,6 +28,12 @@ class Installer
 	 */
 	protected $files = [];
 
+	//---------------------------------------------------------------------------- $plugin_class_name
+	/**
+	 * @var string
+	 */
+	protected $plugin_class_name;
+
 	//--------------------------------------------------------------------------------------- addMenu
 	/**
 	 * Add blocks and items configuration to the menu.php configuration file
@@ -52,6 +58,10 @@ class Installer
 	{
 		$file = $this->openFile(Config::class);
 		$file->addPlugin($priority_value, $plugin_name, $configuration);
+		(new Installed\Plugin($this->plugin_class_name))->add($plugin_name);
+		if ($this->plugin_class_name !== $plugin_name) {
+			$this->install($plugin_name);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ addToClass
@@ -85,7 +95,8 @@ class Installer
 			$added_interfaces_traits = [$added_interfaces_traits];
 		}
 		foreach ($added_interfaces_traits as $added_interface_trait) {
-			(new Installed\Builder)->add($base_class_name, $added_interface_trait);
+			(new Installed\Builder($this->plugin_class_name))
+				->add($base_class_name, $added_interface_trait);
 		}
 	}
 
@@ -108,12 +119,17 @@ class Installer
 	//--------------------------------------------------------------------------------------- install
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $plugin_class_name Installable|string plugin class name
+	 * @param $plugin Installable|string plugin to install
 	 */
-	public function install($plugin_class_name)
+	public function install($plugin)
 	{
-		(new Installed\Plugin($plugin_class_name))->add($plugin_class_name);
-		$this->pluginObject($plugin_class_name)->install($this);
+		$stacked_plugin_class_name = $this->plugin_class_name;
+
+		$this->plugin_class_name = is_string($plugin) ? $plugin : get_class($plugin);
+		$installable             = $this->pluginObject($plugin);
+		$installable->install($this);
+
+		$this->plugin_class_name = $stacked_plugin_class_name;
 	}
 
 	//-------------------------------------------------------------------------------------- openFile
@@ -167,7 +183,8 @@ class Installer
 	{
 		// mark interfaces / traits as removed, without removing them
 		foreach ($removed_interfaces_traits as $removal_key => $removed_interface_trait) {
-			$installed = (new Installed\Builder)->remove($base_class_name, $removed_interface_trait);
+			$installed = (new Installed\Builder($this->plugin_class_name))
+				->remove($base_class_name, $removed_interface_trait);
 			// do not remove the entry from the built class if it is still used by other features
 			if ($installed && $installed->features) {
 				unset($removed_interfaces_traits[$removal_key]);
@@ -214,8 +231,11 @@ class Installer
 	 */
 	public function removePlugin($plugin_class_name)
 	{
-		$file = $this->openFile(Config::class);
-		$file->removePlugin($plugin_class_name);
+		$removed = (new Installed\Plugin($this->plugin_class_name))->remove($plugin_class_name);
+		if (!$removed || !$removed->features) {
+			$file = $this->openFile(Config::class);
+			$file->removePlugin($plugin_class_name);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ renameMenu
@@ -256,11 +276,14 @@ class Installer
 	 */
 	public function uninstall($plugin_class_name)
 	{
+		$stacked_plugin_class_name = $this->plugin_class_name;
+		$this->plugin_class_name   = $plugin_class_name;
+
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
 
 		// remove all plugins that depend on this plugin
 		/** @var $installed_menus Installed[] */
-		$installed_plugins = Dao::search($installed_search, Installed::class);
+		$installed_plugins = Dao::search($installed_search, Installed\Plugin::class);
 		foreach ($installed_plugins as $installed_plugin) {
 			if ($installed_plugin->plugin_class_name !== $plugin_class_name) {
 				$this->uninstall($installed_plugin->plugin_class_name);
@@ -286,8 +309,8 @@ class Installer
 		}
 
 		// remove the plugin itself
+		$this->plugin_class_name = $stacked_plugin_class_name;
 		$this->removePlugin($plugin_class_name);
-		(new Installed\Plugin($plugin_class_name))->remove($plugin_class_name);
 	}
 
 }

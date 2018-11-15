@@ -23,11 +23,12 @@ class Installer implements Registerable
 	 */
 	public function installFeature(Installable $object)
 	{
-		$plugin          = $object;
-		$class_name      = ($plugin instanceof Implicit) ? $plugin->class->name : get_class($plugin);
-		$feature         = Dao::searchOne(['plugin_class_name' => $class_name], Feature::class);
-		$feature->status = Status::INSTALLED;
-		Dao::write($feature, Dao::only('status'));
+		$plugin     = $object;
+		$class_name = ($plugin instanceof Implicit) ? $plugin->class->name : get_class($plugin);
+		if ($feature = Dao::searchOne(['plugin_class_name' => $class_name], Feature::class)) {
+			$feature->status = Status::INSTALLED;
+			Dao::write($feature, Dao::only('status'));
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- register
