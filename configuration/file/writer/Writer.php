@@ -34,19 +34,61 @@ class Writer
 		$this->file = $file;
 	}
 
+	//-------------------------------------------------------------------------------------- usedUses
+	/**
+	 * Filter $this->file->use to keep only use clauses used into $buffer
+	 *
+	 * @param $buffer string
+	 * @return string[]
+	 */
+	protected function usedUses($buffer)
+	{
+		$buffer_length = strlen($buffer);
+		$used_uses     = [];
+		foreach ($this->file->use as $use_key => $use) {
+			$position    = 0;
+			$short_name  = rLastParse($use, BS, 1, true);
+			$name_length = strlen($short_name);
+			while (($position !== false) && ($position < $buffer_length)) {
+				$position = strpos($buffer, $short_name, $position);
+				if ($position !== false) {
+					$previous = $buffer[$position - 1];
+					$next     = $buffer[$position + $name_length];
+					if (
+						!ctype_alnum($previous)
+						&& ($previous !== BS)
+						&& in_array($next, [BS, ':'], true)
+					) {
+						break;
+					}
+					$position ++;
+				}
+			}
+			if ($position) {
+				$used_uses[] = $use;
+			}
+		}
+		return $used_uses;
+	}
+
 	//----------------------------------------------------------------------------------------- write
 	public function write()
 	{
-		$this->lines = ['<?php'];
-		$this->writeNamespace();
-		$this->writeUse();
+		$this->lines = [];
 		$this->writeBeginLines();
 		$this->writeConfiguration();
 		$this->writeEndLines();
-		$this->writeLines();
+		$buffer = $this->writeLines();
+		$this->writeUse($buffer);
+		$this->writeNamespace($buffer);
+		$buffer = '<?php' . LF . $buffer;
+		$this->writeBuffer($buffer);
 	}
 
 	//------------------------------------------------------------------------------- writeBeginLines
+	/**
+	 * Begin lines (between the last use clause and the configuration) into $this->lines[]
+	 */
 	protected function writeBeginLines()
 	{
 		if ($this->file->begin_lines) {
@@ -57,7 +99,23 @@ class Writer
 		}
 	}
 
+	//----------------------------------------------------------------------------------- writeBuffer
+	/**
+	 * Write text buffer into file (if content changed)
+	 *
+	 * @param $write_buffer string
+	 */
+	protected function writeBuffer($write_buffer)
+	{
+		if (file_get_contents($this->file->file_name) !== $write_buffer) {
+			file_put_contents($this->file->file_name, $write_buffer);
+		}
+	}
+
 	//---------------------------------------------------------------------------- writeConfiguration
+	/**
+	 * Configuration into $this->lines[]
+	 */
 	protected function writeConfiguration()
 	{
 		if ($this instanceof Has_Configuration_Accessors) {
@@ -72,6 +130,9 @@ class Writer
 	}
 
 	//--------------------------------------------------------------------------------- writeEndLines
+	/**
+	 * End lines (after configuration) into $this->lines[]
+	 */
 	protected function writeEndLines()
 	{
 		if ($this->file->end_lines) {
@@ -80,32 +141,43 @@ class Writer
 	}
 
 	//------------------------------------------------------------------------------------ writeLines
+	/**
+	 * Change $this->lines into string buffer
+	 *
+	 * @return string
+	 */
 	protected function writeLines()
 	{
-		$read_buffer  = file_get_contents($this->file->file_name);
-		$write_buffer = join(LF, $this->lines);
-		if ($read_buffer !== $write_buffer) {
-			file_put_contents($this->file->file_name, $write_buffer);
-		}
+		return join(LF, $this->lines);
 	}
 
 	//-------------------------------------------------------------------------------- writeNamespace
-	protected function writeNamespace()
+	/**
+	 * Prepend namespace at the beginning of the string buffer
+	 *
+	 * @param $buffer string
+	 */
+	protected function writeNamespace(&$buffer)
 	{
 		if ($this->file->namespace) {
-			$this->lines[] = 'namespace ' . $this->file->namespace . ';';
-			$this->lines[] = '';
+			$buffer = 'namespace ' . $this->file->namespace . ';' . LF . LF . $buffer;
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- writeUse
-	protected function writeUse()
+	/**
+	 * Prepend use clauses at the beginning of the string buffer
+	 *
+	 * @param $buffer string
+	 */
+	protected function writeUse(&$buffer)
 	{
 		if ($this->file->use) {
-			foreach ($this->file->use as $use) {
-				$this->lines[] = 'use ' . $use . ';';
+			$uses = [];
+			foreach ($this->usedUses($buffer) as $use) {
+				$uses[] = 'use ' . $use . ';';
 			}
-			$this->lines[] = '';
+			$buffer = join(LF, $uses) . LF . LF . $buffer;
 		}
 	}
 
