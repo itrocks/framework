@@ -24,8 +24,10 @@ class Builder extends File
 	 * Add or update an existing built class, adding interfaces and traits
 	 * or setting replacement class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class                   Built|string
 	 * @param $class_interfaces_traits string|string[]
+
 	 * @return Assembled|null
 	 */
 	public function add($class, $class_interfaces_traits)
@@ -37,6 +39,7 @@ class Builder extends File
 				$class = $found_class;
 			}
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection Constant::class */
 				$class = Framework\Builder::create(
 					(
 						is_string($class_interfaces_traits)
@@ -49,7 +52,7 @@ class Builder extends File
 					[$class]
 				);
 				$builder = $this;
-				$this->addUseFor($class->class_name);
+				$this->addUseFor($class->class_name, 2);
 				$this->classes = objectInsertSorted(
 					$this->classes,
 					$class,
@@ -72,6 +75,7 @@ class Builder extends File
 				&& !interface_exists($class_interfaces_traits)
 				&& !class_exists($class_interfaces_traits)
 			) {
+				$this->addUseFor($class_interfaces_traits, 2);
 				$class->replacement = $class_interfaces_traits;
 			}
 			else {

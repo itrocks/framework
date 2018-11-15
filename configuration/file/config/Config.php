@@ -33,6 +33,7 @@ class Config extends File
 	{
 		$priority = $this->addPriority($priority_value);
 		$priority->addPlugin($plugin_name, $configuration);
+		$this->addUseFor($plugin_name, 2);
 	}
 
 	//----------------------------------------------------------------------------------- addPriority

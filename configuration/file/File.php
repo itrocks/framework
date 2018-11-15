@@ -48,13 +48,17 @@ abstract class File
 	 * Adds an use entry for this class name, if it can be
 	 *
 	 * @param $class_name string
+	 * @param $force integer
 	 */
-	public function addUseFor($class_name)
+	public function addUseFor($class_name, $force = null)
 	{
-		$class_name_without_vendor_project = Getter::classNameWithoutVendorProject($class_name);
-		$use = lParse(
-			$class_name, BS, max(substr_count($class_name_without_vendor_project, BS) + 1, 2)
-		);
+		if ($force) {
+			$use = lParse($class_name, BS, $force);
+		}
+		else {
+			$class_name_without_vendor_project = Getter::classNameWithoutVendorProject($class_name);
+			$use = lParse($class_name, BS, substr_count($class_name_without_vendor_project, BS) + 1);
+		}
 		$this->addUseForClassName($use);
 	}
 
@@ -69,7 +73,7 @@ abstract class File
 		while (strpos($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
 			$use = lParse($use, BS);
 		}
-		if (!in_array($use, $this->use)) {
+		if (!in_array($use, $this->use) && !$this->useConflict($use)) {
 			$this->use = arrayInsertSorted($this->use, $use);
 		}
 	}

@@ -42,6 +42,7 @@ class Assembled extends Built
 		}
 		foreach ($interfaces_traits as $interface_trait) {
 			if (!in_array($interface_trait, $this->components)) {
+				$builder->addUseFor($interface_trait, 2);
 				// the comparison is done alphabetically, with the short name of the interface / trait
 				$this->components = arrayInsertSorted(
 					$this->components,
