@@ -251,8 +251,11 @@ class Access_Control implements Configurable, Registerable
 	 */
 	private function cleanupUri($uri)
 	{
-		list($uri, $get) = array_pad(explode('?', $uri, 2), 2, '');
-		$get ? parse_str($get, $get) : ($get = []);
+	    $get = [];
+	    if (strpos($uri, '?') !== false) {
+    		list($uri, $get) = array_pad(explode('?', $uri, 2), 2, '');
+    		$get ? parse_str($get, $get) : ($get = []);
+	    }
 		$uri = new Uri($uri, $get);
 		return View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name);
 	}
