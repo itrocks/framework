@@ -530,7 +530,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $quantity integer|DateInterval
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
-	 * @throws Exception
 	 */
 	public function sub(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
