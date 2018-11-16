@@ -268,7 +268,7 @@ class Access_Control implements Configurable, Registerable
 			return false;
 		}
 		if (isA($user, Has_Groups::class)) {
-			$uri = View::link($callable[0], $callable[1]);
+			$uri = View::link($callable[0], [$callable[1]]);
 			return $this->checkFeatures($uri);
 		}
 		return true;

@@ -21,6 +21,7 @@ class Drop_Controller implements Feature_Controller
 	/**
 	 * Delete an object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters array
 	 * - first : the deleted object
 	 * - other parameters are not sent to the delete controller (only as_widget is kept)
@@ -29,6 +30,7 @@ class Drop_Controller implements Feature_Controller
 	private function deleteObject(array $parameters)
 	{
 		$object = array_shift($parameters);
+		/** @noinspection PhpUnhandledExceptionInspection get_class($object) is valid */
 		$controller_uri = SL . Names::classToUri(get_class($object))
 			. SL . Dao::getObjectIdentifier($object)
 			. SL . Feature::F_DELETE;
@@ -75,8 +77,8 @@ class Drop_Controller implements Feature_Controller
 	private function removeElement(
 		$class_name, $context_class_name, $context_feature, array $parameters
 	) {
-		$context = substr(View::link($context_class_name, $context_feature), 1);
-		return (new Main())->runController(
+		$context = substr(View::link($context_class_name, [$context_feature]), 1);
+		return (new Main)->runController(
 			View::link($class_name, Feature::F_REMOVE, [$context]),
 			$parameters
 		);
