@@ -14,6 +14,8 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
 
@@ -114,6 +116,7 @@ class Installer
 
 	//--------------------------------------------------------------------------------------- install
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin Installable|string plugin to install
 	 */
 	public function install($plugin)
@@ -121,6 +124,14 @@ class Installer
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
+
+		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
+		foreach (
+			Feature_Exclude_Annotation::allOf(new Reflection_Class($plugin_class_name))
+			as $feature_exclude
+		) {
+			$this->uninstall($feature_exclude->value);
+		}
 
 		$installable = $this->pluginObject($plugin);
 		$installable->install($this);
