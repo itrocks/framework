@@ -99,6 +99,31 @@ class Compiler implements ICompiler, Needs_Main
 		}
 	}
 
+	//------------------------------------------------------------------------ moreSourcesAddChildren
+	/**
+	 * @param $added   Reflection_Source[]
+	 * @param $sources Reflection_Source[]
+	 */
+	protected function moreSourcesAddChildren(array &$added, array &$sources)
+	{
+		foreach ($added as $source) {
+			$dependencies = Dao::search(
+				[
+					'dependency_name' => $source->getFirstClassName(),
+					'type'            => [Dependency::T_EXTENDS, Dependency::T_USE, Dependency::T_IMPLEMENTS]
+				],
+				Dependency::class
+			);
+			foreach ($dependencies as $dependency) {
+				if (!isset($sources[$dependency->file_name])) {
+					$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
+					$sources[$dependency->class_name] = $source;
+					$added[$dependency->class_name]   = $source;
+				}
+			}
+		}
+	}
+
 	//---------------------------------------------------------------------- moreSourcesAddComposites
 	/**
 	 * When traits / interfaces referenced into builder.php are modified : compile the composite class
@@ -136,9 +161,9 @@ class Compiler implements ICompiler, Needs_Main
 	protected function moreSourcesAddModifiedOrNewCompositions(
 		array &$added, array &$sources, array $old_compositions, array $new_compositions
 	) {
-		foreach ($old_compositions as $class_name => $old_composition) {
-			$new_composition = isset($new_compositions[$class_name])
-				? $new_compositions[$class_name]
+		foreach ($new_compositions as $class_name => $new_composition) {
+			$old_composition = isset($old_compositions[$class_name])
+				? $old_compositions[$class_name]
 				: null;
 			if (
 				($new_composition != $old_composition)
@@ -167,9 +192,9 @@ class Compiler implements ICompiler, Needs_Main
 	protected function moreSourcesAddNewPlugins(
 		array &$added, array &$sources, array $old_levels, array $new_levels
 	) {
-		foreach ($old_levels as $level => $old_plugins) {
-			foreach ($old_plugins as $class_name => $old_plugin) {
-				if (!isset($new_levels[$level][$class_name])) {
+		foreach ($new_levels as $level => $new_plugins) {
+			foreach ($new_plugins as $class_name => $new_plugin) {
+				if (!isset($old_levels[$level][$class_name])) {
 					$this->moreSourcesAdd($class_name, $sources, $added);
 				}
 			}
@@ -188,8 +213,8 @@ class Compiler implements ICompiler, Needs_Main
 	protected function moreSourcesAddRemovedCompositions(
 		array &$added, array &$sources, array $old_compositions, array $new_compositions
 	) {
-		foreach ($new_compositions as $class_name => $new_composition) {
-			if (!isset($old_compositions[$class_name])) {
+		foreach ($old_compositions as $class_name => $old_composition) {
+			if (!isset($new_compositions[$class_name])) {
 				$this->moreSourcesAdd($class_name, $sources, $added);
 			}
 		}
@@ -207,9 +232,9 @@ class Compiler implements ICompiler, Needs_Main
 	protected function moreSourcesAddRemovedPlugins(
 		array &$added, array &$sources, array $old_levels, array $new_levels
 	) {
-		foreach ($new_levels as $level => $new_plugins) {
-			foreach ($new_plugins as $class_name => $new_plugin) {
-				if (!isset($old_levels[$level][$class_name])) {
+		foreach ($old_levels as $level => $old_plugins) {
+			foreach ($old_plugins as $class_name => $old_plugin) {
+				if (!isset($new_levels[$level][$class_name])) {
 					$this->moreSourcesAdd($class_name, $sources, $added);
 				}
 			}
@@ -228,6 +253,7 @@ class Compiler implements ICompiler, Needs_Main
 			$this->moreSourcesToCompileReload($added, $sources);
 		}
 		$this->moreSourcesAddComposites($added, $sources);
+		$this->moreSourcesAddChildren($added, $sources);
 		return $added;
 	}
 

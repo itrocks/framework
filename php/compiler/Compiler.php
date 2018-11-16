@@ -308,11 +308,12 @@ class Compiler extends Cache implements
 			? $source->file_name
 			: ($cache_dir . SL . self::sourceFileToCacheFileName($source->file_name));
 		if ($source->hasChanged()) {
-			$this->replaceDependencies($source);
 			script_put_contents($file_name, $source->getSource());
+			$this->replaceDependencies($source);
 		}
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
+			$this->replaceDependencies($source);
 		}
 	}
 
