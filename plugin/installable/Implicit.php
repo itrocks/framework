@@ -30,11 +30,13 @@ class Implicit implements Installable
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class Reflection_Class|string
 	 */
 	public function __construct($class)
 	{
 		if (is_string($class)) {
+			/** @noinspection PhpUnhandledExceptionInspection $class must be valid */
 			$class = new Reflection_Class($class);
 		}
 		$this->class = $class;

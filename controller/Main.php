@@ -128,20 +128,22 @@ class Main
 	/**
 	 * Create the current application object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration Configuration
-	 * @throws ReflectionException
 	 */
 	private function createApplication(Configuration $configuration)
 	{
-		/** @noinspection PhpParamsInspection Built class will always be an application */
-		Application::current(Builder::create(
+		/** @var $application Application */
+		/** @noinspection PhpUnhandledExceptionInspection always valid application class name */
+		$application = Builder::create(
 			$configuration->getApplicationClassName(), [$configuration->getApplicationName()]
-		));
+		);
+		Application::current($application);
 	}
 
 	//--------------------------------------------------------------------------------- createSession
 	/**
-	 * @throws ReflectionException
+	 * Create session
 	 */
 	private function createSession()
 	{
@@ -392,7 +394,6 @@ class Main
 	 *
 	 * @param $plugins       Manager
 	 * @param $configuration Configuration
-	 * @throws ReflectionException
 	 */
 	private function registerPlugins(Manager $plugins, Configuration $configuration)
 	{
@@ -436,7 +437,6 @@ class Main
 	 * Initialise a new session, or refresh existing session for update
 	 *
 	 * @param $session Session default is current session
-	 * @throws ReflectionException
 	 */
 	public function resetSession(Session $session = null)
 	{
@@ -553,7 +553,6 @@ class Main
 	 *
 	 * @param $get  array
 	 * @param $post array
-	 * @throws ReflectionException
 	 */
 	private function sessionStart(array &$get, array &$post)
 	{

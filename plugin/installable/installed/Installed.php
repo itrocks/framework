@@ -50,6 +50,7 @@ abstract class Installed
 
 	//--------------------------------------------------------------------------------- addProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_values mixed[]
 	 * @return static installed element after count increment (1..n)
 	 */
@@ -72,6 +73,7 @@ abstract class Installed
 		}
 
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection valid class */
 			$installed = Builder::create(static::class, [$this->feature]);
 			foreach ($property_values as $property_name => $value) {
 				$installed->$property_name = $value;
