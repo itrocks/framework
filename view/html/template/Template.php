@@ -758,15 +758,18 @@ class Template
 				$content = substr($content, $i, $j - $i);
 			}
 			else {
-				$file_name   = $this->getMainTemplateFile();
-				$container   = $this->getContainerContent($file_name);
-				$root_object = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
-				$links       = $this->getHeadLinks($content);
-				$metas       = $this->getHeadMetas($content);
-				$title       = $this->getHeadTitle($content);
-				$content     = str_replace(
+				$file_name  = $this->getMainTemplateFile();
+				$container  = $this->getContainerContent($file_name);
+				$root_begin = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
+				$links      = $this->getHeadLinks($content);
+				$metas      = $this->getHeadMetas($content);
+				$title      = $this->getHeadTitle($content);
+				$root_end   = (strpos($container . $content, '<!--end-->') === false)
+					? $root_begin
+					: '<!--end-->';
+				$content = str_replace(
 					'{@content}',
-					$root_object . substr($content, $i, $j - $i) . $root_object,
+					$root_begin . substr($content, $i, $j - $i) . $root_end,
 					$container
 				);
 				$this->replaceHeadTitle($content, $title);
