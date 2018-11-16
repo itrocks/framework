@@ -1,6 +1,6 @@
 {
-	"authors":      [{ "email": "baptiste.pillot@bappli.com", "name": "Baptiste Pillot" }],
-	"description":  "ITRocks",
+	"authors":      [{ "email": "baptiste@pillot.fr", "name": "Baptiste Pillot" }],
+	"description":  "IT.Rocks framework",
 	"license":      "MIT",
 	"name":         "itrocks/framework",
 	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
