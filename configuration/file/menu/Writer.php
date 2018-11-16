@@ -27,6 +27,13 @@ class Writer extends File\Writer
 			if (is_string($block)) {
 				$this->lines[] = $block;
 			}
+			elseif ($block->title === 'Menu::TITLE') {
+				if ($last_line_key) {
+					$this->lines[$last_line_key] .= ',';
+				}
+				$last_line_key = count($this->lines);
+				$this->lines[] = TAB . $block->title . ' => [' . $block->items[0] . ']';
+			}
 			else {
 				if ($last_line_key) {
 					$this->lines[$last_line_key] .= ',';
