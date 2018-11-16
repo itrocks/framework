@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Property;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -74,6 +75,7 @@ class Remove_Controller extends Remove\Remove_Controller
 				);
 				break;
 		}
+		$objects['removed']          = Loc::tr($objects['property_path']);
 		$objects[Template::TEMPLATE] = 'removed';
 		return View::run($objects, $form, $files, Property::class, Feature::F_REMOVE);
 	}
