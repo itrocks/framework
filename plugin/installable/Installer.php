@@ -37,7 +37,7 @@ class Installer
 	/**
 	 * @var string
 	 */
-	protected $plugin_class_name;
+	public $plugin_class_name;
 
 	//--------------------------------------------------------------------------------------- addMenu
 	/**

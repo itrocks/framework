@@ -17,6 +17,7 @@ use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Plugin\Installable\Installer;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\View\Html\Template;
 use PHPUnit_Framework_TestCase;
 
@@ -25,6 +26,9 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	Builder::fromArray('') => [
+		'' == '@'
+	],
+	Call_Stack::getObject('') => [
 		'' == '@'
 	],
 	// Dao::read will not work : it will check the first argument only

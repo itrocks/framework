@@ -96,11 +96,12 @@ abstract class Installed
 	{
 		if (!$plugin_class_name) {
 			$call_stack        = new Call_Stack();
-			$plugin_class_name = $call_stack->getArgumentValue('plugin_class_name', true);
+			$installer         = $call_stack->getObject(Installer::class);
+			$plugin_class_name = $installer->plugin_class_name;
+			if (!$plugin_class_name) {
+				trigger_error('Need Installer in call stack', E_USER_WARNING);
+			}
 		}
-		$plugin_class_name = is_object($plugin_class_name)
-			? Builder::current()->sourceClassName(get_class($plugin_class_name))
-			: $plugin_class_name;
 		return Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class);
 	}
 
