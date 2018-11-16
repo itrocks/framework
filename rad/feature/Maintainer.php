@@ -105,11 +105,13 @@ class Maintainer implements Registerable, Updatable
 
 	//---------------------------------------------------------------------- pluginClassNameToFeature
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name string
 	 * @return Feature
 	 */
 	protected function pluginClassNameToFeature($plugin_class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $plugin_class_name must be valid */
 		$documentation = (new Reflection_Class($plugin_class_name))->getDocComment();
 		$documentation = trim(str_replace(["/**\n", "\n * ", "\n *\n", "\n */"], LF, $documentation));
 
@@ -117,7 +119,7 @@ class Maintainer implements Registerable, Updatable
 			?: new Feature();
 
 		$feature->application_class_name = $this->applicationClassName($plugin_class_name);
-		$feature->description            = trim(mParse($documentation, LF, LF . AT));
+		$feature->description            = trim(rParse(lParse($documentation, LF . AT), LF));
 		$feature->plugin_class_name      = $plugin_class_name;
 		$feature->title                  = lParse($documentation, LF);
 
