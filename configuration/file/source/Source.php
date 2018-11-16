@@ -144,8 +144,9 @@ class Source extends File
 	 * Adds an use entry for this class name, if it can be
 	 *
 	 * @param $class_name string
+	 * @param $force      integer
 	 */
-	public function addUseFor($class_name)
+	public function addUseFor($class_name, $force = null)
 	{
 		$this->addUseForClassName($class_name);
 	}
