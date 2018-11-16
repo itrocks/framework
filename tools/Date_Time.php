@@ -111,10 +111,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Increments a date for a given unit
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $quantity integer|DateInterval
 	 * @param $unit     string any of the Date_Time duration unit constants
 	 * @return Date_Time
-	 * @throws Exception
 	 */
 	public function add(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
@@ -141,6 +141,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
 			}
 			if (isset($interval)) {
+				/** @noinspection PhpUnhandledExceptionInspection $interval is generated and valid */
 				$interval         = new DateInterval($interval);
 				$interval->invert = $invert;
 				parent::add($interval);
