@@ -81,7 +81,7 @@ class Feature
 	 */
 	public function __toString()
 	{
-		return Loc::tr($this->title);
+		return $this->title ? Loc::tr($this->title) : '';
 	}
 
 	//--------------------------------------------------------------------------------------- install

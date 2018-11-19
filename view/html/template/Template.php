@@ -859,6 +859,7 @@ class Template
 	 *
 	 * @param $include_uri string
 	 * @return string|null included template, parsed, or null if included file was not found
+	 * @throws Exception
 	 */
 	protected function parseInclude($include_uri)
 	{
@@ -1520,8 +1521,8 @@ class Template
 		elseif ($property_name[0] === AT) {
 			$object = $this->parseFunc(substr($property_name, 1));
 		}
-		elseif ($property_name[0] === '§') {
-			$object = $this->parseParameter($object, substr($property_name, 1));
+		elseif (substr($property_name, 0, 2) === '§') {
+			$object = $this->parseParameter($object, substr($property_name, 2));
 		}
 		elseif ($i = strpos($property_name, '(')) {
 			if (
@@ -1684,7 +1685,7 @@ class Template
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string|object var value after reading value / executing specs
-	 * @throws ReflectionException
+	 * @throws Exception|ReflectionException
 	 */
 	protected function parseValue($var_name, $as_string = true)
 	{
