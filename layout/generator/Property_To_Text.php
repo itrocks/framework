@@ -130,8 +130,16 @@ class Property_To_Text
 	{
 		$next_objects = [];
 		if ($objects) {
-			$iteration           = 0;
-			$reflection_property = new Reflection_Property(get_class(reset($objects)), $property_name);
+			$iteration = 0;
+			foreach ($objects as $object) {
+				if (is_object($object)) {
+					$reflection_property = new Reflection_Property(get_class($object), $property_name);
+					break;
+				}
+			}
+			if (!isset($reflection_property)) {
+				return [];
+			}
 			foreach ($objects as $object) {
 				/** @noinspection PhpUnhandledExceptionInspection must be valid here */
 				$object = $reflection_property->getValue($object);
@@ -141,6 +149,9 @@ class Property_To_Text
 				}
 				elseif (is_object($object) || strlen($object)) {
 					$next_objects[$iteration] = $object;
+				}
+				else {
+					$next_objects[$iteration] = null;
 				}
 				$iteration ++;
 			}
@@ -194,6 +205,7 @@ class Property_To_Text
 	 */
 	protected function property(Property $property)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid object */
 		$reflection_property = new Reflection_Property(
 			get_class($this->object), $property->property_path
 		);
