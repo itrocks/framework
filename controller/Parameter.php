@@ -14,11 +14,13 @@ class Parameter
 	//-------------------------------------------------------------- Some general parameter constants
 	const AS_WIDGET            = 'as_widget';
 	const CONTAINER            = 'container';
+	const DID_CHANGE           = 'did_change';
 	const EXPAND_PROPERTY_PATH = 'expand_property_path';
 	const IS_INCLUDED          = 'is_included';
 	const PROPERTIES_FILTER    = 'properties_filter';
 	const PROPERTIES_PREFIX    = 'properties_prefix';
 	const PROPERTIES_TITLE     = 'properties_title';
 	const PROPERTIES_TOOLTIP   = 'properties_tooltip';
+	const THEN                 = 'then';
 
 }

@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Output;
 
-use ITRocks\Framework;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
@@ -82,7 +81,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		$did_change = isset($parameters['did_change']) ? $parameters['did_change'] : false;
+		$did_change = isset($parameters[Parameter::DID_CHANGE])
+			? $parameters[Parameter::DID_CHANGE]
+			: false;
 		if (isset($parameters['add_action'])) {
 			if (!$output_settings->actions) {
 				$output_settings->actions = $this->getGeneralButtons(
@@ -282,8 +283,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			: Feature::F_OUTPUT;
 
 		// apply parameters / form to current output settings
-		$output_settings = Output_Setting\Set::current($class_name, $feature);
-		$output_settings->cleanup();
+		$output_settings = $this->outputSettings($class_name, $feature);
 		$this->applyParametersToOutputSettings($output_settings, $parameters, $form);
 		// load customized output settings list
 		$customized_list = $output_settings->getCustomSettings($feature);
@@ -336,6 +336,19 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		return $parameters;
 	}
 
+	//-------------------------------------------------------------------------------- outputSettings
+	/**
+	 * @param $class_name string
+	 * @param $feature    string
+	 * @return Output_Setting\Set
+	 */
+	protected function outputSettings($class_name, $feature)
+	{
+		$settings = Output_Setting\Set::current($class_name, $feature);
+		$settings->cleanup();
+		return $settings;
+	}
+
 	//----------------------------------------------------------------------------------- prepareThen
 	/**
 	 * Prepare close link and follows links for buttons
@@ -350,9 +363,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	protected function prepareThen($object, array $parameters, $default_close_link = null)
 	{
-		if (isset($parameters[Framework\Controller::THEN])) {
-			$close_link = $parameters[Framework\Controller::THEN];
-			$follows    = [Framework\Controller::THEN => $parameters[Framework\Controller::THEN]];
+		if (isset($parameters[Parameter::THEN])) {
+			$close_link = $parameters[Parameter::THEN];
+			$follows    = [Parameter::THEN => $parameters[Parameter::THEN]];
 		}
 		else {
 			$close_link = $default_close_link
