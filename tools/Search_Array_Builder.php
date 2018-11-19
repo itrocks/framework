@@ -1,9 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
@@ -147,12 +150,27 @@ class Search_Array_Builder
 			if ($values = Values_Annotation::of($property)->values()) {
 				$texts = Loc::rtr($search . '%', $class->name, $property_name, $values);
 			}
-			else switch ($property->getAnnotation('translate')->value) {
-				case 'common':
-					$texts = Loc::rtr($search . '%', $class->name, $property_name);
-					break;
-				case 'data':
-					break;
+			elseif (!is_null($translate = $property->getAnnotation('translate')->value)) {
+				switch ($translate) {
+					case 'common':
+						$texts = Loc::rtr($search . '%', $class->name, $property_name);
+						break;
+					case '':
+					case 'data':
+						$property_name = $property->name;
+						$filters = [
+							'class_name'    => Builder::current()->sourceClassName($property->getFinalClassName()),
+							'language.code' => Loc::language(),
+							'property_name' => $property_name,
+							'translation'   => $search . '%'
+						];
+						/** @var $translations Translation\Data[] */
+						$translations = Dao::search($filters, Translation\Data::class);
+						foreach ($translations as $translation) {
+							$texts[] = $translation->object->$property_name;
+						}
+						break;
+				}
 			}
 			if ($texts && ($texts !== Translator::TOO_MANY_RESULTS_MATCH_YOUR_INPUT)) {
 				$found[$property_name] = is_array($texts) ? $texts : [$texts];
