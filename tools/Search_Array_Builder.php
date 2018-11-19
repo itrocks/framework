@@ -3,7 +3,10 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -81,15 +84,19 @@ class Search_Array_Builder
 	 * @param $search_phrase           string
 	 * @param $prepend                 string
 	 * @param $append                  string
+	 * @param $translated              array string[][] translations, by property name
 	 * @return Logical|array
 	 */
 	public function buildMultiple(
-		$property_names_or_class, $search_phrase, $prepend = '', $append = ''
+		$property_names_or_class, $search_phrase, $prepend = '', $append = '', $translated = []
 	) {
 		$search_phrase  = str_replace(['*', '?'], ['%', '_'], $search_phrase);
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
 			: $property_names_or_class;
+		$translated = ($property_names_or_class instanceof Reflection_Class)
+			? $this->buildWithReverseTranslation($property_names_or_class, $search_phrase)
+			: $translated;
 		// search phrase contains OR
 		if (strpos($search_phrase, $this->or) !== false) {
 			$or = [];
@@ -102,7 +109,7 @@ class Search_Array_Builder
 		elseif (strpos($search_phrase, $this->and) !== false) {
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
-				$and[]   = $this->buildMultiple($property_names, $search, $prepend, $append);
+				$and[]   = $this->buildMultiple($property_names, $search, $prepend, $append, $translated);
 				$prepend = '%';
 			}
 			$result = Func::andOp($and);
@@ -111,11 +118,44 @@ class Search_Array_Builder
 		else {
 			$or = [];
 			foreach ($property_names as $property_name) {
-				$or[$property_name] = $prepend . $search_phrase . $append;
+				$or[$property_name] = isset($translated[$property_name])
+					? Func::in($translated[$property_name])
+					: ($prepend . $search_phrase . $append);
 			}
 			$result = (count($or) > 1) ? Func::orOp($or) : $or;
 		}
 		return $result;
+	}
+
+	//------------------------------------------------------------------- buildWithReverseTranslation
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $class  Reflection_Class
+	 * @param $search string
+	 * @return array $text string[$property_name][]
+	 */
+	protected function buildWithReverseTranslation(Reflection_Class $class, $search)
+	{
+		$found = [];
+		foreach ($this->classRepresentativeProperties($class) as $property_name) {
+			/** @noinspection PhpUnhandledExceptionInspection properties should be good */
+			$property = new Reflection_Property($class->name, $property_name);
+			$texts    = null;
+			if ($values = Values_Annotation::of($property)->values()) {
+				$texts = Loc::rtr($search . '%', $class->name, $property_name, $values);
+			}
+			else switch ($property->getAnnotation('translate')->value) {
+				case 'common':
+					$texts = Loc::rtr($search . '%', $class->name, $property_name);
+					break;
+				case 'data':
+					break;
+			}
+			if ($texts && ($texts !== Translator::TOO_MANY_RESULTS_MATCH_YOUR_INPUT)) {
+				$found[$property_name] = is_array($texts) ? $texts : [$texts];
+			}
+		}
+		return $found;
 	}
 
 	//----------------------------------------------------------------- classRepresentativeProperties
