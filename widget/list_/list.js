@@ -171,11 +171,12 @@ $('document').ready(function()
 					var $this        = $(this);
 					var insert_after = $this.data('insert-after');
 					if (insert_after !== undefined) {
-						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_after + ')');
-						var $draggable          = ui.draggable;
-						var after_property_name = $th.data('property');
-						var property_name       = $draggable.data('property');
-						addProperty($this, property_name, 'after', after_property_name);
+						var insert_before = insert_after + 1;
+						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_before + ')');
+						var $draggable           = ui.draggable;
+						var before_property_name = $th.data('property');
+						var property_name        = $draggable.data('property');
+						addProperty($this, property_name, 'before', before_property_name);
 					}
 					out($this, event, ui);
 				},
