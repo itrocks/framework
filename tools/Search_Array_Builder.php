@@ -118,9 +118,12 @@ class Search_Array_Builder
 		else {
 			$or = [];
 			foreach ($property_names as $property_name) {
-				$or[$property_name] = isset($translated[$property_name])
-					? Func::in($translated[$property_name])
-					: ($prepend . $search_phrase . $append);
+				$or[$property_name] = $prepend . $search_phrase . $append;
+				if (isset($translated[$property_name])) {
+					$or[$property_name] = Func::orOp([
+						$or[$property_name], Func::in($translated[$property_name])
+					]);
+				}
 			}
 			$result = (count($or) > 1) ? Func::orOp($or) : $or;
 		}
