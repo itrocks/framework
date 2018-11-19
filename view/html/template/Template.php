@@ -764,7 +764,7 @@ class Template
 				$links      = $this->getHeadLinks($content);
 				$metas      = $this->getHeadMetas($content);
 				$title      = $this->getHeadTitle($content);
-				$root_end   = (strpos($container . $content, '<!--end-->') === false)
+				$root_end   = (!$root_begin || (strpos($container . $content, '<!--end-->') === false))
 					? $root_begin
 					: '<!--end-->';
 				$content = str_replace(
