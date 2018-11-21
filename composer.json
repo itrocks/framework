@@ -3,7 +3,7 @@
 	"description":  "IT.Rocks framework",
 	"license":      "MIT",
 	"name":         "itrocks/framework",
-	"repositories": [{ "type": "composer", "url": "https://packages.bappli.com" }],
+	"repositories": [{ "type": "composer", "url": "https://hub.itrocks.org" }],
 	"require": {
 		"alvaro-prieto/colResizable":            "1.6",
 		"bappli/document-designer":              "dev-master",
