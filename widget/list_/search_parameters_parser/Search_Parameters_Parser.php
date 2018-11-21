@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\List_;
 
-use Exception;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
@@ -103,11 +102,13 @@ class Search_Parameters_Parser
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $search     array user-input search string
 	 */
 	public function __construct($class_name, array $search = [])
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$this->class  = new Reflection_Class($class_name);
 		$this->search = $search;
 		Date::initDates();
@@ -118,6 +119,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
 	 * @return Logical
+	 * @throws Exception
 	 */
 	protected function applyAnd($search_value, Reflection_Property $property)
 	{
@@ -160,6 +162,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
 	 * @return Logical
+	 * @throws Exception
 	 */
 	protected function applyNot($search_value, Reflection_Property $property)
 	{
@@ -182,6 +185,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property     Reflection_Property
 	 * @return Logical
+	 * @throws Exception
 	 */
 	protected function applyOr($search_value, Reflection_Property $property)
 	{
@@ -321,6 +325,7 @@ class Search_Parameters_Parser
 
 	//----------------------------------------------------------------------------------------- parse
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return array search-compatible search array
 	 */
 	public function parse()
@@ -328,6 +333,7 @@ class Search_Parameters_Parser
 		$search   = $this->search;
 		$to_unset = [];
 		foreach ($search as $property_path => &$search_value) {
+			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
 			$property = new Reflection_Property($this->class->name, $property_path);
 			if (strlen($search_value)) {
 				$this->parseField($search_value, $property);
