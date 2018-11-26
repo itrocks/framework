@@ -287,12 +287,16 @@ class Where implements With_Build_Column
 			$value = $value->toISO(false);
 		}
 		switch (gettype($value)) {
-			case 'NULL':   return $this->buildWhereColumn($path) . ' IS NULL';
-			case 'array':  return $this->buildArray($path, $value, $clause);
-			case 'object': return ($value instanceof String_Class)
-				? $this->buildValue($path, $value)
-				: $this->buildObject($path, $value, $root_path);
-			default:       return $this->buildValue($path, $value);
+			case 'NULL':
+				return $this->buildWhereColumn($path) . ' IS NULL';
+			case 'array':
+				return $this->buildArray($path, $value, $clause);
+			case 'object':
+				return ($value instanceof String_Class)
+					? $this->buildValue($path, $value)
+					: $this->buildObject($path, $value, $root_path);
+			default:
+				return $this->buildValue($path, $value);
 		}
 	}
 
@@ -342,7 +346,7 @@ class Where implements With_Build_Column
 				$column = $join->foreign_alias . DOT . BQ . rLastParse($property_path, DOT, 1, true) . BQ;
 			}
 			else {
-				$column   = ($property && Link_Annotation::of($property)->isCollection())
+				$column = ($property && Link_Annotation::of($property)->isCollection())
 					? $join->master_column
 					: $join->foreign_column;
 				$column = $join->foreign_alias . DOT . BQ . $column . BQ;

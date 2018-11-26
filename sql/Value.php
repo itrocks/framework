@@ -67,7 +67,7 @@ abstract class Value
 		}
 		else {
 			if ((substr($value, 0, 2) === ('X' . Q)) && (substr($value, -1) === Q)) {
-				$string_value = $value;
+				$string_value = 'X' . Q . Dao::current()->escapeString(substr($value, 2, -1)) . Q;
 			}
 			else {
 				$string_value = DQ . Dao::current()->escapeString($value) . DQ;

@@ -942,7 +942,7 @@ class Link extends Dao\Sql\Link
 			// it's for optimisation purpose only
 			$query = 'SELECT *' . LF
 				. 'FROM ' . BQ . $this->storeNameOf($class_name) . BQ . LF
-				. 'WHERE `id` = ' . $identifier;
+				. 'WHERE `id` = ' . intval($identifier);
 			$result_set = $this->connection->query($query);
 			$this->prepareFetch($class_name);
 			$object = $this->fetch($result_set, $class_name);
