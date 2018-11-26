@@ -94,6 +94,11 @@ class In implements Negate, Where
 	{
 		$sql = '';
 		if ($this->values) {
+			if (count($this->values) === 1) {
+				$comparison_sign = $this->not_in ? Comparison::NOT_EQUAL : Comparison::EQUAL;
+				$comparison      = new Comparison($comparison_sign, reset($this->values));
+				return $comparison->toSql($builder, $property_path, $prefix);
+			}
 			// 1st we should call buildWhereColumn() to be able to call getProperty() after
 			$column   = $builder->buildWhereColumn($property_path, $prefix);
 			$property = $builder->getProperty($property_path);
