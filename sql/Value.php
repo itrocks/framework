@@ -56,10 +56,14 @@ abstract class Value
 			$string_value = substr($string_value, 2);
 		}
 		elseif ($value instanceof Date_Time) {
-			$string_value = DQ . $value->toISO(false) . DQ;
+			$string_value = Q . $value->toISO(false) . Q;
 		}
 		elseif ($value instanceof String_Class) {
 			$string_value = DQ . Dao::current()->escapeString(strval($value)) . DQ;
+		}
+		elseif (is_object($value)) {
+			$value        = Dao::current()->escapeString($value);
+			$string_value = is_numeric($value) ? $value : (DQ . $value . DQ);
 		}
 		else {
 			if ((substr($value, 0, 2) === ('X' . Q)) && (substr($value, -1) === Q)) {
