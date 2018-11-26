@@ -139,7 +139,7 @@ class Reflection_Property_View
 		elseif ($this->property->getAnnotation('values')->value) {
 			$value = Names::propertyToDisplay($value);
 		}
-		return str_replace(['{', '}'], ['&lbrace;', '&rbrace;'], $value);
+		return str_replace(['{', '}', '<', '>'], ['&lbrace;', '&rbrace;', '&lt;', '&gt;'], $value);
 	}
 
 	//----------------------------------------------------------------------------- formatStringArray

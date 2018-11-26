@@ -16,7 +16,7 @@
 			var previous_height = parseInt($this.attr('ui-text-height'));
 			var new_height      = Math.min(getInputTextHeight($this), settings.maximum);
 
-			var line_height     = function($element)
+			var line_height = function($element)
 			{
 				var font_size   = parseInt($element.css('font-size'));
 				var line_height = $element.css('line-height');
