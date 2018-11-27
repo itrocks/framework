@@ -1,11 +1,9 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
-use Exception;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 
 /**
  * Default yaml file generator
@@ -62,7 +60,6 @@ class Default_Yaml
 	/**
 	 * @param $features   string[]
 	 * @param $class_name string
-	 * @throws ReflectionException
 	 */
 	private function addCollectionDependencies(array $features, $class_name)
 	{
@@ -92,11 +89,10 @@ class Default_Yaml
 	/**
 	 * Get low-level features for dependencies
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $features   string[]
 	 * @param $class_name string
 	 * @return string[]
-	 * @throws ReflectionException
-	 * @throws Exception
 	 */
 	private function getDependencies(array $features, $class_name = null)
 	{
@@ -106,6 +102,7 @@ class Default_Yaml
 			$class_name = $this->class;
 		}
 		if (class_exists($class_name)) {
+			/** @noinspection PhpUnhandledExceptionInspection class_exists */
 			$class = new Reflection_Class($class_name);
 			foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 				$link = Link_Annotation::of($property);
@@ -130,8 +127,6 @@ class Default_Yaml
 	/**
 	 * Initialises $this->yaml with implicit data.
 	 * Called when no file was found for an implicit feature.
-	 *
-	 * @throws ReflectionException
 	 */
 	public function toYaml()
 	{

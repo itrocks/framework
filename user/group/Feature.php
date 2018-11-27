@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\User\Group;
 
 use ITRocks\Framework\Controller;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -168,7 +169,7 @@ class Feature
 	 */
 	public function __toString()
 	{
-		return $this->name ? Loc::tr($this->name) : '';
+		return strval($this->name);
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
@@ -249,7 +250,7 @@ class Feature
 			// fix access to features of removed classes
 			if (class_exists($class_name)) {
 				$class_path = str_replace(BS, SL, $this->getClassName());
-				$features = array_merge(
+				$features   = array_merge(
 					$this->yaml ? $this->yaml->getFeatures($class_path) : [],
 					$this->getPropertiesFeatures()
 				);
@@ -333,15 +334,24 @@ class Feature
 	 */
 	protected function getName()
 	{
-		if (!isset($this->name)) {
+		if (empty($this->name)) {
 			$name = $this->yaml ? $this->yaml->getName() : null;
 			if (isset($name)) {
 				$this->name = $this->resolveName($name);
 			}
 			// default name
 			elseif (isset($this->path)) {
-				$this->name = ucfirst(Names::classToDisplay(Names::classToSet($this->getClassName())))
-					. SP . Names::methodToDisplay($this->getFeatureName());
+				$loc_disabled  = Loc::$disabled;
+				Loc::$disabled = false;
+				$this->name    = ucfirst(Loc::tr(
+					HOLE_PIPE . Names::classToDisplays($this->getClassName()) . HOLE_PIPE
+					. SP . HOLE_PIPE . Names::methodToDisplay($this->getFeatureName()) . HOLE_PIPE,
+					static::class
+				));
+				Loc::$disabled = $loc_disabled;
+			}
+			if (Dao::getObjectIdentifier($this)) {
+				Dao::write($this, Dao::only('name'));
 			}
 		}
 		return $this->name;
@@ -349,15 +359,17 @@ class Feature
 
 	//------------------------------------------------------------------------- getPropertiesFeatures
 	/**
-	 * Scan class properties for @feature with the same name, and add low-level feature 'override'
+	 * Scan class properties for @ feature with the same name, and add low-level feature 'override'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Low_Level_Feature[]
 	 */
 	private function getPropertiesFeatures()
 	{
 		/** @var $features Low_Level_Feature[] */
 		$features = [];
-		$class = new Reflection_Class($this->getClassName());
+		/** @noinspection PhpUnhandledExceptionInspection valid class name */
+		$class        = new Reflection_Class($this->getClassName());
 		$feature_name = $this->getFeatureName();
 		$feature_path = $this->getClassPath() . SL . self::OVERRIDE;
 		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
@@ -405,7 +417,7 @@ class Feature
 			if (!isset($this->yaml)) {
 				if ($this->isImplicit()) {
 					$default_yaml = new Default_Yaml($this->getClassName(), $this->getFeatureName());
-					$this->yaml = $default_yaml->toYaml();
+					$this->yaml   = $default_yaml->toYaml();
 				}
 			}
 		}
@@ -432,14 +444,24 @@ class Feature
 	{
 		// name can contain $class and $feature
 		if (strpos($name, '$') !== false) {
-			$name = ucfirst(str_replace(
-				['$class', '$feature'],
+			$class_name    = $this->getClassName();
+			$feature_name  = $this->getFeatureName();
+			$loc_disabled  = Loc::$disabled;
+			Loc::$disabled = false;
+			$name          = ucfirst(str_replace(
+				['$class feature', '$class', '$feature'],
 				[
-					ucfirst(Names::classToDisplay(Names::classToSet($this->getClassName()))),
-					Names::methodToDisplay($this->getFeatureName())
+					Loc::tr(
+						HOLE_PIPE . ucfirst(Names::classToDisplays($class_name)) . HOLE_PIPE
+						. SP . HOLE_PIPE . Names::methodToDisplay($feature_name) . HOLE_PIPE,
+						static::class
+					),
+					Loc::tr(Names::classToDisplays($class_name), $class_name),
+					Loc::tr(Names::methodToDisplay($feature_name), $class_name)
 				],
 				$name
 			));
+			Loc::$disabled = $loc_disabled;
 		}
 		return $name;
 	}
