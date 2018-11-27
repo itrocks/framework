@@ -7,11 +7,11 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ReflectionClass;
-use ReflectionException;
 
 /**
  * A library of feature to transform PHP elements names
@@ -63,6 +63,29 @@ abstract class Names
 			? Display_Annotation::of(new Reflection_Class($class_name))->value
 			: null;
 		return $display ?: strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
+	}
+
+	//------------------------------------------------------------------------------- classToDisplays
+	/**
+	 * Changes 'A\Namespace\Class_Name' (or set class name) into 'class names'
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function classToDisplays($class_name)
+	{
+		if (!class_exists($class_name)) {
+			$class_name = static::setToClass($class_name);
+		}
+		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name(s) */
+		$displays = class_exists($class_name)
+			? Displays_Annotation::of(new Reflection_Class($class_name))->value
+			: null;
+		return $displays
+			?: strtolower(
+				str_replace('_', SP, Namespaces::shortClassName(static::classToSet($class_name)))
+			);
 	}
 
 	//------------------------------------------------------------------------------- classToFilePath
@@ -134,12 +157,13 @@ abstract class Names
 	/**
 	 * Changes 'A\Namespace\Class_Name' into 'A\Namespace\Class_Names'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function classToSet($class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Must be called with a valid class name */
 		return Set_Annotation::of(new Reflection_Class($class_name))->value;
 	}
 
@@ -147,11 +171,11 @@ abstract class Names
 	/**
 	 * Gets the URI of a class name or object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example class name User : 'ITRocks/Framework/User'
 	 * @example User object of id = 1 : 'ITRocks/Framework/User/1'
 	 * @param $class_name object|string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function classToUri($class_name)
 	{
@@ -161,6 +185,7 @@ abstract class Names
 			$class_name = get_class($class_name);
 		}
 		// link classes : get linked class
+		/** @noinspection PhpUnhandledExceptionInspection Must be called with a valid class name */
 		while (Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$class_name = get_parent_class($class_name);
 		}
@@ -215,9 +240,9 @@ abstract class Names
 	 *
 	 * This checks if the class exist and gets the correct case of it
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $file_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function fileToClass($file_name)
 	{
@@ -229,6 +254,7 @@ abstract class Names
 		)) {
 			$class_name = lLastParse($class_name, BS);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection Class name must be valid */
 		return (new Reflection_Class($class_name))->name;
 	}
 
