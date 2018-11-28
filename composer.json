@@ -1,6 +1,11 @@
 {
 	"authors":      [{ "email": "baptiste@pillot.fr", "name": "Baptiste Pillot" }],
 	"description":  "IT.Rocks framework",
+	"extra": {
+		"merge-plugin": {
+			"include": [ "https://hub.itrocks.org/merge.json" ]
+		}
+	},
 	"license":      "MIT",
 	"name":         "itrocks/framework",
 	"repositories": [{ "type": "composer", "url": "https://hub.itrocks.org" }],
@@ -30,6 +35,7 @@
 		"intelogie/pdf.js":                      "dev-master",
 		"jquery-form/form":                      "3.*",
 		"knplabs/gaufrette":                     "^0.3.1",
+		"wikimedia/composer-merge-plugin":       "1.4.*",
 		"netcarver/textile":                     "3.*",
 		"oomphinc/composer-installers-extender": "~1.1",
 		"pear/mail":                             "1.*",
