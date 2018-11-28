@@ -184,10 +184,8 @@ file_put_contents($composer_file, <<<EOT
 	"minimum-stability": "dev",
 	"name":              "$vendor_name/$project_name",
 	"prefer-stable":     true,
-	"repositories":      [{ "type": "composer", "url": "https://packages.bappli.com" }],
-	"require": {
-		"itrocks/framework": "dev-master"
-	},
+	"repositories":      [{ "type": "composer", "url": "https://hub.itrocks.org" }],
+	"require":           { "itrocks/framework": "dev-master" },
 	"type": "itrocks-final"
 }
 EOT
