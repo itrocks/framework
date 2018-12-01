@@ -449,7 +449,11 @@ $('document').ready(function()
 				var previous_caption = $caption.val();
 				var previous_value   = $value.val();
 				if (has_id) {
-					$value.val(ui.item.id);
+					var val = ui.item.id;
+					if (ui.item.class_name !== undefined) {
+						val = ui.item.class_name + ':' + val;
+					}
+					$value.val(val);
 				}
 				// mouse click : copy the full value to the input
 				if (!event.keyCode) {

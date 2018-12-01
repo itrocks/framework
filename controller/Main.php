@@ -490,7 +490,6 @@ class Main
 	 * @param $post  array
 	 * @param $files array[]
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public function run($uri, array $get, array $post, array $files)
 	{
