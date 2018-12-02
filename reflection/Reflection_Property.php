@@ -619,6 +619,15 @@ class Reflection_Property extends ReflectionProperty
 		return $path;
 	}
 
+	//------------------------------------------------------------------------------- pathIfDifferent
+	/**
+	 * @return string
+	 */
+	public function pathIfDifferent()
+	{
+		return ($this->path === $this->name) ? null : $this->path;
+	}
+
 	//-------------------------------------------------------------------------------------- setValue
 	/**
 	 * Sets value

@@ -5,7 +5,7 @@
 	<!--getAnnotations('before')--><div class="before-{..name}">|{value}|</div><!--end-->
 	<!--@isVisible?-->
 	<div class="{name} {?getType.isMultiple} {?isHidden}" id="{path}">
-		<label title="{path.display.@loc}">{display}</label>
+		<label title="{?pathIfDifferent.display.@loc}">{display}</label>
 		<div class="{getType.asString.short.lower} {?getType.isClassHtml}" title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
 	</div>
 	<!--end-->
