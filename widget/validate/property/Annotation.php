@@ -29,11 +29,13 @@ trait Annotation
 	/**
 	 * Gets the value of the property from the last validated object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return mixed
 	 */
 	public function getPropertyValue()
 	{
 		$property = $this->property;
+		/** @noinspection PhpUnhandledExceptionInspection property is always valid for object */
 		return (isset($this->object) && ($property instanceof Reflection\Reflection_Property))
 			? $property->getValue($this->object)
 			: null;

@@ -64,12 +64,14 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
 		if ($this->property instanceof Reflection_Property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
 			$value = $this->property->getValue($object);
 			// allowed null
 			if (is_null($value) && Null_Annotation::of($this->property)->value) {
