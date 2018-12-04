@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection;
 
 use DateTime;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
@@ -171,6 +172,11 @@ class Reflection_Property_View
 	public function formatValue($value)
 	{
 		$type = $this->property->getType();
+		return $type->isBasic()
+			? Loc::propertyToLocale($this->property, $value)
+			: $value;
+		/* may be deprecated and to purge. Purge AOP on these functions too
+		$type = $this->property->getType();
 		if ($type->isDateTime()) {
 			return $this->formatDateTime($value);
 		}
@@ -184,18 +190,21 @@ class Reflection_Property_View
 			}
 			return $this->formatDefault($value);
 		}
+		*/
 	}
 
 	//----------------------------------------------------------------------------- getFormattedValue
 	/**
 	 * Format the property value, taken from the input object, depending on it's type
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object      object|mixed
 	 * @param $final_value boolean
 	 * @return string
 	 */
 	public function getFormattedValue($object, $final_value = false)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $object class */
 		return $this->formatValue($final_value ? $object : $this->property->getValue($object));
 	}
 

@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions
@@ -133,10 +134,14 @@ class Locale implements Configurable
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
 		}
+		$type = $property->getType();
+		if (is_null($value) && $type->isNumeric() && Mandatory_Annotation::of($property)->value) {
+			$value = 0;
+		}
 		if ($value instanceof Date_Time) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 		}
-		if ($property->getType()->isFloat()) {
+		elseif ($type->isFloat()) {
 			$decimals = explode(
 				',',
 				str_replace([CR, LF, SP, TAB], '', $property->getAnnotation('decimals')->value)
