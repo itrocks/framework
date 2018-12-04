@@ -55,7 +55,7 @@ class Installer
 	/**
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
-	 * @param $plugin_class_name string|Installable
+	 * @param $plugin_class_name string|Plugin
 	 * @param $configuration     mixed
 	 * @param $priority_value    string If forced priority only @values Priority::const
 	 */

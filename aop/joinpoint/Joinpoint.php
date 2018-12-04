@@ -22,7 +22,7 @@ abstract class Joinpoint
 	//----------------------------------------------------------------------------------------- $stop
 	/**
 	 * The advice can set this to true to stop the calling process
-	 * This tops everything, including other advices and original process call
+	 * This stops everything, including other advices and original process call
 	 *
 	 * @var boolean
 	 */
