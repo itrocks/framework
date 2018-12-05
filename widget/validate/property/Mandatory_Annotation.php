@@ -36,12 +36,14 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Contex
 	/**
 	 * Returns true if the object property value is empty
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
 	 */
 	public function isEmpty($object)
 	{
 		if ($this->property instanceof Reflection_Property) {
+			/** @noinspection PhpUnhandledExceptionInspection $object of class containing $property */
 			$value = $this->property->getValue($object);
 			return $this->property->isValueEmpty($value);
 		}

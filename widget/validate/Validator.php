@@ -406,10 +406,10 @@ class Validator implements Registerable
 	//---------------------------------------------------------------------------- validateAnnotation
 	/**
 	 * @param $object     object
-	 * @param $annotation Annotation
+	 * @param $annotation Reflection\Annotation|Annotation
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateAnnotation($object, $annotation)
+	protected function validateAnnotation($object, Reflection\Annotation $annotation)
 	{
 		$annotation->object = $object;
 		$annotation->valid  = $annotation->validate($object);
@@ -432,7 +432,7 @@ class Validator implements Registerable
 	 * Returns true if the object follows validation rules
 	 *
 	 * @param $object      object
-	 * @param $annotations Annotation[]
+	 * @param $annotations Reflection\Annotation[]|Annotation[]
 	 * @return string|null|true @values Result::const
 	 */
 	protected function validateAnnotations($object, array $annotations)
