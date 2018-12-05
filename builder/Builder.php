@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework;
 
-use Exception;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Compiler;
@@ -229,7 +228,7 @@ class Builder implements Activable, Serializable
 	 * @param $array                 array
 	 * @param $constructor_arguments array
 	 * @return object
-	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	public static function fromArray($class_name, array $array, array $constructor_arguments = [])
 	{
@@ -332,17 +331,18 @@ class Builder implements Activable, Serializable
 	 *
 	 * TODO LOW see if it is not a duplicate of Null_Object::isNull or something like that
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
-	 * @throws Exception
 	 */
 	public static function isObjectSet($object)
 	{
 		$result = false;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class    = new Reflection_Class(get_class($object));
+		$class    = new Reflection_Class($object);
 		$defaults = $class->getDefaultProperties([T_EXTENDS]);
 		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
+			/** @noinspection PhpUnhandledExceptionInspection $property comes from $object */
 			$value = $property->getValue($object);
 			if (isset($value)) {
 				$default = isset($defaults[$property->name])

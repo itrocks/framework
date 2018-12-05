@@ -55,6 +55,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	/**
 	 * TODO factorize
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -73,7 +74,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
-						/** @noinspection PhpUnhandledExceptionInspection ::class */
+						/** @noinspection PhpUnhandledExceptionInspection constant */
 						/** @var $session_files Files */
 						$session_files = Builder::create(Files::class);
 					}
@@ -81,7 +82,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {
-							/** @noinspection PhpUnhandledExceptionInspection ::class */
+							/** @noinspection PhpUnhandledExceptionInspection constant */
 							$import_worksheet = Builder::create(Import_Worksheet::class, [
 								$worksheet_number ++,
 								Import_Settings_Builder::buildArray($worksheet, $class_name),

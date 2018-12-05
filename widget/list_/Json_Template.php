@@ -17,6 +17,7 @@ class Json_Template extends View\Json\Json_Template
 	 * Default rendering for a business object to json.
 	 *
 	 * @return string
+	 * @throws Json\Exception
 	 */
 	public function render()
 	{

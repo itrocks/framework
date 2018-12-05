@@ -92,8 +92,9 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $error Handled_Error
 	 * @return string
 	 */
-	public function getDisplayedMessage(Handled_Error $error)
-	{
+	public function getDisplayedMessage(
+		/** @noinspection PhpUnusedParameterInspection */ Handled_Error $error
+	) {
 		return ($_SERVER['REMOTE_ADDR'] === 'console')
 			? static::getUserInformationMessage()
 			: ('<div class="error">' . static::getUserInformationMessage() . '</div>');

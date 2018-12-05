@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Dao_Function;
@@ -12,7 +11,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
-use ReflectionException;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query
@@ -23,13 +21,10 @@ use ReflectionException;
  * @example Minimal example : use current Data_Link, returns an array of rows
  * $select = new Select($class_name, $columns);
  * return $select->fetchResultRows(Dao::query($select->prepareQuery()));
- *
  * @example Compact example that matches the minimal example
  * return Select::executeClassColumns($class_name, $columns);
- *
  * @example Compact example starting from a query and returning an array of rows
  * return Select::executeQuery($query);
- *
  * @example Full-featured SELECT query with options and filter objects (see Link::select())
  * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns a List_Data
  * $list = new Default_List_Data($class_name, $columns);
@@ -40,7 +35,6 @@ use ReflectionException;
  *   $this->getRowsCount('SELECT', $options, $result_set);
  * }
  * return $select->fetchResultRows($result_set, $list);
- *
  * @example Full-featured SELECT query that returns an object[]
  * // needs $data_link, $class_name, $columns, $filter_object, $options ; returns an object[]
  * $select = new Select($class_name, $columns, $data_link);
@@ -216,7 +210,6 @@ class Select
 	/**
 	 * @param $data_store List_Data|array[]|object[]
 	 * @return List_Data|array[]|object[]|null
-	 * @throws ReflectionException
 	 */
 	private function doFetch($data_store)
 	{
@@ -247,7 +240,6 @@ class Select
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
-	 * @throws Exception
 	 */
 	public function executeClassColumns($data_store = null, $key = null)
 	{
@@ -263,7 +255,6 @@ class Select
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @param $key        string[] Key property names
 	 * @return List_Data|array[]|object[]|callable
-	 * @throws Exception
 	 */
 	public function executeQuery($query, $data_store = null, array $key = null)
 	{
@@ -278,7 +269,6 @@ class Select
 	 * @param $result_set mixed A Link::query() result set
 	 * @param $data_store List_Data|array[]|object[]|callable
 	 * @return List_Data|array[]|object[]|null
-	 * @throws Exception
 	 */
 	public function fetchResultRows($result_set, $data_store = null)
 	{
@@ -347,7 +337,6 @@ class Select
 	 * - $column_names
 	 *
 	 * @param $data_store List_Data|array[]|object[]|null
-	 * @throws Exception
 	 */
 	private function prepareFetch($data_store)
 	{
@@ -394,11 +383,12 @@ class Select
 	 * Prepares path_classes if it is null
 	 * Must be called after prepareColumns()
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_name string
-	 * @throws Exception
 	 */
 	private function preparePathClass($property_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class and property name must be valid */
 		$property   = new Reflection_Property($this->class_name, $property_name);
 		$class_name = $property->getType()->getElementTypeAsString();
 		$this->path_classes[$property_name] = $class_name;
@@ -430,10 +420,10 @@ class Select
 
 	//----------------------------------------------------------------------------------- resultToRow
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $result array
 	 * @param $first  boolean
 	 * @return array
-	 * @throws ReflectionException
 	 */
 	private function resultToRow(array $result, $first)
 	{
@@ -446,8 +436,10 @@ class Select
 			else {
 				if (!isset($row[$this->columns[$j]])) {
 					// TODO LOW try to get the object from object map to avoid multiple instances
+					/** @noinspection PhpUnhandledExceptionInspection code classes must be valid */
 					$row[$this->columns[$j]] = Builder::create($this->classes[$j]);
 					if ($first && !isset($this->reflection_classes[$this->classes[$j]])) {
+						/** @noinspection PhpUnhandledExceptionInspection code classes must be valid */
 						$class = new Reflection_Class($this->classes[$j]);
 						$class->accessProperties();
 						$this->reflection_classes[$this->classes[$j]] = $class;

@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\Write;
 
 /**
@@ -22,6 +23,7 @@ class Set_Write_Controller extends Write\Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
+	 * @throws View_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{

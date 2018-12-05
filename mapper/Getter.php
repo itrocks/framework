@@ -14,7 +14,6 @@ use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\Tools\Stringable;
-use ReflectionException;
 use Serializable;
 
 /**
@@ -40,7 +39,6 @@ abstract class Getter
 	 * @param $object     object
 	 * @param $property   string|Reflection_Property
 	 * @return object[]
-	 * @throws ReflectionException
 	 */
 	private static function getAbstractCollection($class_name, $object, $property = null)
 	{
@@ -74,13 +72,13 @@ abstract class Getter
 	/**
 	 * Generic getter for a collection of objects
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored     Component[]|string Actual value of the property (will be returned if not null)
 	 * @param $class_name string Class for each collection's object
 	 * @param $object     object Parent object
 	 * @param $property   string|Reflection_Property Parent property (or property name). Recommended
 	 *        but can be omitted if foreign class is a Component
 	 * @return object[]
-	 * @throws ReflectionException
 	 */
 	public static function & getCollection(
 		&$stored = null, $class_name = null, $object = null, $property = null
@@ -104,7 +102,8 @@ abstract class Getter
 		elseif (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
 				$class_name = Builder::className($class_name);
-				$class      = new Reflection_Class($class_name);
+				/** @noinspection PhpUnhandledExceptionInspection Need valid $class_name */
+				$class = new Reflection_Class($class_name);
 				if ($class->isAbstract()) {
 					$stored = self::getAbstractCollection($class_name, $object, $property);
 				}
@@ -113,7 +112,8 @@ abstract class Getter
 					$is_component   = isA($search_element, Component::class);
 					if ($property) {
 						if (!($property instanceof Reflection_Property)) {
-							$property = new Reflection_Property(get_class($object), $property);
+							/** @noinspection PhpUnhandledExceptionInspection Need valid $property of $object */
+							$property = new Reflection_Property($object, $property);
 						}
 						$property_name = Foreign_Annotation::of($property)->value;
 						$dao           = Dao::get($property->getAnnotation('dao')->value);
@@ -139,7 +139,7 @@ abstract class Getter
 					// when element class is not a component and a property name was found
 					elseif ($property_name) {
 						/** @noinspection PhpUnhandledExceptionInspection get_class(...), $property_name */
-						$property   = new Reflection_Property(get_class($search_element), $property_name);
+						$property   = new Reflection_Property($search_element, $property_name);
 						$accessible = $property->isPublic();
 						if (!$accessible) {
 							$property->setAccessible(true);
@@ -233,18 +233,19 @@ abstract class Getter
 	/**
 	 * Generic getter for mapped objects
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored   object[] actual value of the property (will be returned if not null)
 	 * @param $object   object the parent object
 	 * @param $property Reflection_Property|string the source property (or name) for map reading
 	 * @return Component[]
-	 * @throws ReflectionException
 	 */
 	public static function & getMap(array &$stored = null, $object = null, $property = null)
 	{
 		if (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
 				if (!($property instanceof Reflection_Property)) {
-					$property = new Reflection_Property(get_class($object), $property);
+					/** @noinspection PhpUnhandledExceptionInspection needs valid $property of $object */
+					$property = new Reflection_Property($object, $property);
 				}
 				$dao        = Dao::get($property->getAnnotation('dao')->value);
 				$class_name = get_class($object);
@@ -277,12 +278,12 @@ abstract class Getter
 	/**
 	 * Generic getter for an object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $stored     mixed actual value of the object, or identifier to an object, or null
 	 * @param $class_name string the object class name
 	 * @param $object     object the parent object
 	 * @param $property   string|Reflection_Property the parent property
 	 * @return object
-	 * @throws ReflectionException
 	 */
 	public static function getObject(&$stored, $class_name, $object = null, $property = null)
 	{
@@ -292,7 +293,8 @@ abstract class Getter
 			}
 			elseif (is_string($property) && is_object($object)) {
 				$property_name = $property;
-				$property = new Reflection_Property(get_class($object), $property_name);
+				/** @noinspection PhpUnhandledExceptionInspection get_class and need valid property */
+				$property = new Reflection_Property($object, $property_name);
 			}
 			if ($property && $property->getAnnotation('component')->value) {
 				$foreign_property_name = Foreign_Annotation::of($property)->value;

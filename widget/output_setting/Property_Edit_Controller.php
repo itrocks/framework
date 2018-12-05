@@ -15,6 +15,7 @@ class Property_Edit_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------ customSettingsProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string The name of the class
 	 * @param $feature       string The feature
 	 * @param $property_path string The property
@@ -24,6 +25,7 @@ class Property_Edit_Controller implements Feature_Controller
 	{
 		$output_settings = Set::current($class_name, $feature);
 		$output_settings->cleanup();
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$property = isset($output_settings->properties[$property_path])
 			? $output_settings->properties[$property_path]
 			: Builder::create(Property::class, [$class_name, $property_path]);

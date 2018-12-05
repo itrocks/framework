@@ -133,7 +133,7 @@ class Property_To_Text
 			$iteration = 0;
 			foreach ($objects as $object) {
 				if (is_object($object)) {
-					$reflection_property = new Reflection_Property(get_class($object), $property_name);
+					$reflection_property = new Reflection_Property($object, $property_name);
 					break;
 				}
 			}

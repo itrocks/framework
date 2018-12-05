@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Controller\Tests;
 
-use Exception;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Tests;
@@ -21,7 +20,6 @@ class View_Exception_Test extends Test
 	 * Test a call to a multiple controller
 	 *
 	 * @see Controller::runMultiple
-	 * @throws Exception
 	 */
 	public function testCall()
 	{

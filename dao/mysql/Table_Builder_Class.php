@@ -126,17 +126,19 @@ class Table_Builder_Class
 	 * The internal build method builds Table objects using a Php class definition
 	 *
 	 * It is the same than build(), but enables to add an additional field
-	 * (link field for @link classes)
+	 * (link field for link classes)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $more_field Column
 	 * @return Table[]
 	 */
 	private function buildInternal($class_name, $more_field)
 	{
-		$class    = new Reflection_Class($class_name);
-		$link     = Class_\Link_Annotation::of($class)->value;
-		$tables   = $link ? $this->buildLinkTables($link, $class_name) : [];
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+		$class  = new Reflection_Class($class_name);
+		$link   = Class_\Link_Annotation::of($class)->value;
+		$tables = $link ? $this->buildLinkTables($link, $class_name) : [];
 		if (!in_array($class_name, $this->exclude_class_names)) {
 			$tables[] = $this->buildClassTable($class, $more_field);
 		}
@@ -145,6 +147,7 @@ class Table_Builder_Class
 
 	//------------------------------------------------------------------------------- buildLinkTables
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $link       string
 	 * @param $class_name string
 	 * @return Table[]
@@ -157,6 +160,7 @@ class Table_Builder_Class
 		$link_class_name = Namespaces::defaultFullClassName($link, $class_name);
 		$tables          = $table_builder_class->build($link_class_name);
 
+		/** @noinspection PhpUnhandledExceptionInspection link class name is always valid */
 		$this->excluded_properties = array_keys(
 			(new Reflection_Class($link_class_name))->getProperties([T_EXTENDS, T_USE])
 		);

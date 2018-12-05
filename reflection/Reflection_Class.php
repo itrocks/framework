@@ -487,14 +487,19 @@ class Reflection_Class extends ReflectionClass
 	{
 		// property.path
 		if (strpos($name, DOT)) {
-			return new Reflection_Property($this->name, $name);
+			try {
+				return new Reflection_Property($this->name, $name);
+			}
+			catch (ReflectionException $exception) {
+				return null;
+			}
 		}
 		// property_name
 		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
 		// TODO Remove null test case if it never happens
-		if (!$property) {
+		//if (!$property) {
 			//trigger_error("Property does not exist $this->name.$name", E_USER_WARNING);
-		}
+		//}
 		/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperty() */
 		return $property ? new Reflection_Property($this->name, $property->name) : null;
 	}

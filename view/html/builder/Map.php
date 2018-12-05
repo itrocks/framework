@@ -47,6 +47,7 @@ class Map
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
@@ -55,6 +56,7 @@ class Map
 		$this->property   = $property;
 		$this->map        = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class            = new Reflection_Class($this->class_name);
 		$representative   = Representative_Annotation::of($class);
 		$this->properties = $representative->getProperties();

@@ -58,6 +58,7 @@ class Func_Select extends Func
 			$parent_classes = [];
 			foreach (Dao::search($search, Dependency::class) as $dependency) {
 				/** @var $dependency Dependency */
+				/** @noinspection PhpUnhandledExceptionInspection dependency class name is valid */
 				if (!(new ReflectionClass($dependency->class_name))->isAbstract()) {
 					$functions[] = new Func_Select($dependency->class_name);
 				}

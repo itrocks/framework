@@ -154,12 +154,13 @@ class Router implements
 	/**
 	 * @param $class_name string
 	 * @return string
+	 * @throws Include_Filter\Exception
 	 */
 	public function autoload($class_name)
 	{
 		$file_path = $this->getClassFileName($class_name);
 		if ($file_path) {
-			/** @noinspection PhpIncludeInspection */
+			/** @noinspection PhpIncludeInspection dynamic */
 			include_once Include_Filter::file($file_path);
 			// if included file does not contain the good class : will need to scan for the right file
 			if (

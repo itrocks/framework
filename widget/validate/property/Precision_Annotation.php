@@ -48,6 +48,7 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
 	 */
@@ -55,8 +56,9 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 	{
 		if ($this->property instanceof Reflection_Property) {
 			if ($this->value) {
+				/** @noinspection PhpUnhandledExceptionInspection $property from object and accessible */
 				$value = $this->property->getValue($object);
-				return (strlen(rParse($value, '.')) <= $this->value);
+				return (strlen(rParse($value, DOT)) <= $this->value);
 			}
 			return true;
 		}

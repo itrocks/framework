@@ -37,15 +37,18 @@ class Duplicator
 
 	//------------------------------------------------------------------------------- createDuplicate
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
 	public function createDuplicate($object)
 	{
 		if ($this->dao->getObjectIdentifier($object)) {
 			// duplicate @link Collection and Map properties values
-			$class_name         = get_class($object);
-			$class              = new Reflection_Class($class_name);
-			$link               = Class_\Link_Annotation::of($class);
+			$class_name = get_class($object);
+			/** @noinspection PhpUnhandledExceptionInspection get_class from object */
+			$class = new Reflection_Class($class_name);
+			$link  = Class_\Link_Annotation::of($class);
+			/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
 			$exclude_properties = $link->value
 				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 				: [];
@@ -55,6 +58,7 @@ class Duplicator
 					// @link Collection : must disconnect objects
 					// @link Collection | Map : duplicate and remove reference to the parent id
 					if ($property_link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
+						/** @noinspection PhpUnhandledExceptionInspection property from object and accessible */
 						$elements = $property->getValue($object);
 						if ($property_link->isCollection()) {
 							foreach ($elements as $element) {

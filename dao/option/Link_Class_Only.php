@@ -25,12 +25,14 @@ class Link_Class_Only implements Option
 
 	//---------------------------------------------------------------------------------- propertiesOf
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class Reflection_Class|string
 	 * @return Reflection_Property[] link-class-only properties. empty array if not a Link_Class.
 	 */
 	public static function propertiesOf($class)
 	{
 		if (!is_a($class, Link_Class::class)) {
+			/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 			$class = new Link_Class($class);
 		}
 		return Link_Annotation::of($class)->value ? $class->getLinkProperties() : [];

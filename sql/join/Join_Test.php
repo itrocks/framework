@@ -222,9 +222,6 @@ class Join_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------------ testSimple
-	/**
-	 * @throws ReflectionException
-	 */
 	public function testSimple()
 	{
 		static::assertEquals(

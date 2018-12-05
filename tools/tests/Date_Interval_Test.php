@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Tools\Tests;
 
 use DateInterval;
-use Exception;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Date_Interval;
 use ITRocks\Framework\Tools\Date_Interval_Exception;
@@ -15,17 +14,18 @@ class Date_Interval_Test extends Test
 
 	//------------------------------------------------------------------------------------ testAdjust
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @dataProvider testAdjustProvider
 	 * @param $hour            string
 	 * @param $invert          integer
 	 * @param $expected_format string
 	 * @param $expected_invert integer
 	 * @see Date_Interval::adjust()
-	 * @throws Exception
 	 */
 	public function testAdjust($hour, $invert, $expected_format, $expected_invert)
 	{
 		// Minus one hour interval
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$interval         = new DateInterval(Date_Interval::EMPTY_SPEC);
 		$interval->h      = $hour;
 		$interval->invert = $invert;
@@ -57,7 +57,6 @@ class Date_Interval_Test extends Test
 	 * @param $expected_format string
 	 * @param $expected_invert integer
 	 * @see Date_Interval::fromDuration()
-	 * @throws Exception
 	 */
 	public function testFromDuration($duration, $expected_format, $expected_invert)
 	{
@@ -90,7 +89,6 @@ class Date_Interval_Test extends Test
 	 * @param $round    string
 	 * @see Date_Interval::toDays()
 	 * @throws Date_Interval_Exception
-	 * @throws Exception
 	 */
 	public function testToDays($duration, $expected, $round)
 	{
@@ -102,13 +100,15 @@ class Date_Interval_Test extends Test
 	//----------------------------------------------------------------------------- testToDaysIllegal
 	/**
 	 * @see Date_Interval::toDays()
-	 * @throws Exception
+	 * @throws Date_Interval_Exception
 	 */
 	public function testToDaysIllegal()
 	{
 		$this->expectException(Date_Interval_Exception::class);
 		$this->expectExceptionMessage(Date_Interval_Exception::MESSAGE);
-		Date_Interval::toDays(new DateInterval('P1Y'));
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
+		$interval = new DateInterval('P1Y');
+		Date_Interval::toDays($interval);
 	}
 
 	//---------------------------------------------------------------------------- testToDaysProvider
@@ -139,14 +139,14 @@ class Date_Interval_Test extends Test
 	//----------------------------------------------------------------------------------- testToHours
 	/**
 	 * @see Date_Interval::toHours()
-	 * @throws Date_Interval_Exception
-	 * @throws Exception
 	 */
 	public function testToHours()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			25, Date_Interval::toHours(Date_Interval::fromDuration(86401), PHP_CEIL)
 		);
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			24, Date_Interval::toHours(Date_Interval::fromDuration(86401), PHP_FLOOR)
 		);
@@ -155,14 +155,14 @@ class Date_Interval_Test extends Test
 	//--------------------------------------------------------------------------------- testToMinutes
 	/**
 	 * @see Date_Interval::toMinutes()
-	 * @throws Date_Interval_Exception
-	 * @throws Exception
 	 */
 	public function testToMinutes()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			61, Date_Interval::toMinutes(Date_Interval::fromDuration(3601), PHP_CEIL)
 		);
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			60, Date_Interval::toMinutes(Date_Interval::fromDuration(3601), PHP_FLOOR)
 		);
@@ -171,26 +171,26 @@ class Date_Interval_Test extends Test
 	//--------------------------------------------------------------------------------- testToSeconds
 	/**
 	 * @see Date_Interval::toSeconds()
-	 * @throws Date_Interval_Exception
-	 * @throws Exception
 	 */
 	public function testToSeconds()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(86400, Date_Interval::toSeconds(Date_Interval::fromDuration(86400)));
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(-86400, Date_Interval::toSeconds(Date_Interval::fromDuration(-86400)));
 	}
 
 	//----------------------------------------------------------------------------------- testToWeeks
 	/**
 	 * @see Date_Interval::toWeeks()
-	 * @throws Date_Interval_Exception
-	 * @throws Exception
 	 */
 	public function testToWeeks()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			2, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_CEIL)
 		);
+		/** @noinspection PhpUnhandledExceptionInspection valid call with duration interval */
 		static::assertEquals(
 			1, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_FLOOR)
 		);

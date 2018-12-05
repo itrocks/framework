@@ -21,14 +21,15 @@ trait Person_Set_Default_Name
 	 */
 	public function __toString()
 	{
-		/** @var $this self|Has_Name */
-		$result = $this->parentToString();
+		/** @var $self self|Has_Name */
+		$self   = $this;
+		$result = $self->parentToString();
 		if (
-			$result && $this->name
-			&& (strpos($result, $this->name) === false)
-			&& (strpos($this->name, $result) === false)
+			$result && $self->name
+			&& (strpos($result, $self->name) === false)
+			&& (strpos($self->name, $result) === false)
 		) {
-			$result = $this->name . SP . '(' . $result . ')';
+			$result = $self->name . SP . '(' . $result . ')';
 		}
 		return $result;
 	}
@@ -39,7 +40,9 @@ trait Person_Set_Default_Name
 	 */
 	public function setDefaultNameIfEmpty()
 	{
-		if (empty($this->name)) {
+		/** @var $self self|Has_Name */
+		$self = $this;
+		if (empty($self->name)) {
 			$this->setDefaultName();
 		}
 	}

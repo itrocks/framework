@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Webservice\Json;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;

@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Tools;
 use DateInterval;
 use DateTime;
 use DateTimeZone;
-use Exception;
 
 /**
  * Rich Date interval class
@@ -36,21 +35,23 @@ abstract class Date_Interval
 	/**
 	 * Adjusts a DateInterval to have all fields sort out.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example
 	 * P25H will be P1D1H.
 	 * @notice
 	 * It's not possible to adjust year/month as it would be dependant from start date)
 	 * @param $interval DateInterval
 	 * @return DateInterval
-	 * @throws Exception
 	 */
 	public static function adjust(DateInterval $interval)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant date */
 		$begin_date = new DateTime('2000-01-01', new DateTimeZone('UTC'));
 		$end_date   = clone $begin_date;
 		$end_date->add($interval);
 		$interval = $begin_date->diff($end_date);
 		// Using %a to have the real number of days
+		/** @noinspection PhpUnhandledExceptionInspection generated format is valid */
 		$adjusted_interval         = new DateInterval($interval->format(static::DAY_TIME_FORMAT));
 		$adjusted_interval->invert = $interval->invert;
 		return $adjusted_interval;
@@ -60,17 +61,18 @@ abstract class Date_Interval
 	/**
 	 * Creates an interval knowing the duration in seconds
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example You can easily get a Date_Interval between two timestamps with this call
 	 *          Date_Interval::createFromDuration($timestamp2 - $timestamp1)
 	 * @notice  The result can only be time + number of days, year/month will be null as they are
 	 *          start date dependant
 	 * @param   $duration integer The duration in seconds, may be negative
 	 * @return  DateInterval
-	 * @throws  Exception
 	 */
 	public static function fromDuration($duration)
 	{
 		// Initialize a DateInterval in seconds
+		/** @noinspection PhpUnhandledExceptionInspection constant format is valid */
 		$interval    = new DateInterval(static::EMPTY_SPEC);
 		$interval->s = $duration;
 		return static::adjust($interval);

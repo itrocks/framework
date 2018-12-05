@@ -24,6 +24,7 @@ trait Has_Build_Column
 
 	//----------------------------------------------------------------------------------- buildColumn
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path            string The path of the property
 	 * @param $as              boolean If false, prevent 'AS' clause to be added
 	 * @param $resolve_objects boolean If true, a property path for an object will be replace with a
@@ -49,6 +50,7 @@ trait Has_Build_Column
 			&& ($class_name = $this->joins->getClass($path))
 			&& !is_a($class_name, Date_Time::class, true)
 		) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$class             = new Reflection_Class($class_name);
 			$concat_properties = [];
 			foreach (Representative_Annotation::of($class)->values() as $property_name) {
@@ -63,6 +65,7 @@ trait Has_Build_Column
 		}
 		else {
 			$force_column = null;
+			/** @noinspection PhpUnhandledExceptionInspection valid constants */
 			$force_column = (
 				(new Reflection_Method(Joins::class, 'getProperty'))->isPublic()
 				&& ($property = $this->joins->getProperty($master_path, $column_name))

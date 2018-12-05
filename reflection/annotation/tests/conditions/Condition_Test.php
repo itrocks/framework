@@ -47,6 +47,7 @@ class Condition_Test extends Test
 		$line2  = new Conditions_Collection();
 		$line2->boolean = true;
 		$object->lines  = [$line1, $line2];
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$builder = new Html_Builder_Property(
 			new Reflection_Property(Conditions::class, 'lines'), $object->lines
 		);

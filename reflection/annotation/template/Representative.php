@@ -48,7 +48,6 @@ class Representative extends List_Annotation
 				$each     = explode(DOT, $property_path);
 				$property = $properties[array_shift($each)];
 				foreach ($each as $property_name) {
-					/** @noinspection PhpUndefinedMethodInspection Inspector bug */
 					$property = $property->getType()->asReflectionClass(get_class($this->class))
 						->getProperties([T_EXTENDS, T_USE])[$property_name];
 				}

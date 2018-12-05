@@ -91,12 +91,14 @@ class Html_Builder_Collection extends Collection
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Body
 	 */
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);
@@ -109,6 +111,7 @@ class Html_Builder_Collection extends Collection
 
 	//------------------------------------------------------------------------------------- buildCell
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object   object
 	 * @param $property Reflection_Property
 	 * @return Standard_Cell
@@ -118,6 +121,7 @@ class Html_Builder_Collection extends Collection
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
 		}
+		/** @noinspection PhpUnhandledExceptionInspection property must be from object and accessible */
 		$value = $property->getValue($object);
 		if (strpos($this->preprop, '[]')) {
 			$property_builder = new Html_Builder_Property();
@@ -133,6 +137,7 @@ class Html_Builder_Collection extends Collection
 		}
 		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
 		$input   = $builder->setTemplate($this->template)->build();
+		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		if (
 			($property->name === reset($this->properties)->name)
 			&& !Link_Annotation::of(new Reflection_Class($this->class_name))->value

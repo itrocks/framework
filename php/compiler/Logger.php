@@ -27,13 +27,14 @@ class Logger implements Registerable
 
 	//------------------------------------------------------------------------------- onCompileSource
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $source Reflection_Source
 	 */
 	public function onCompileSource(Reflection_Source $source)
 	{
 		Dao::begin();
 		foreach ($source->getClasses() as $class) {
-			/** @var $log Compiler_Log */
+			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$log = Builder::create(Compiler_Log::class);
 			$log->class_name = $class->getName();
 			$log->date_time  = Date_Time::now();

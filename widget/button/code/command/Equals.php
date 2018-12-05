@@ -40,6 +40,7 @@ class Equals implements Command
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return mixed
 	 */
@@ -59,14 +60,16 @@ class Equals implements Command
 			}
 			// right operand is a property path : get its value
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection object and valid property */
 				$property_value = new Reflection_Property_Value(
-					get_class($object), Names::displayToProperty(Loc::rtr($this->value)), $object
+					$object, Names::displayToProperty(Loc::rtr($this->value)), $object
 				);
 				$value = $property_value->value();
 			}
 			// left operand is a property path
+			/** @noinspection PhpUnhandledExceptionInspection object and valid property */
 			$property_value = new Reflection_Property_Value(
-				get_class($object), Names::displayToProperty(Loc::rtr($this->property_name)), $object
+				$object, Names::displayToProperty(Loc::rtr($this->property_name)), $object
 			);
 			// translate value
 			$values = $property_value->getListAnnotation('values')->values();
@@ -74,6 +77,7 @@ class Equals implements Command
 				$value = Names::displayToProperty(Loc::rtr($value));
 			}
 			// compare values
+			/** @noinspection PhpUnhandledExceptionInspection $property_value from object */
 			return $value == $property_value->getValue($object);
 		}
 		return false;

@@ -55,6 +55,44 @@ class Select_Test extends Test
 		);
 	}
 
+	//----------------------------------------------------------------- testArrayWhereDeepQueryObject
+	public function testArrayWhereDeepQueryObject()
+	{
+		$item       = new Item();
+		$item->code = 1;
+		$builder    = new Select(
+			Order::class,
+			['date', 'number'],
+			['number' => 1, 'lines' => [['number' => 2, 'item' => $item]]]
+		);
+		static::assertEquals(
+			'SELECT t0.`date`, t0.`number`' . LF
+			. 'FROM `test_orders` t0' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
+			$builder->buildQuery()
+		);
+	}
+
+	//------------------------------------------------------------------ testArrayWhereDeepQueryShort
+	public function testArrayWhereDeepQueryShort()
+	{
+		$builder = new Select(
+			Order::class,
+			['date', 'number'],
+			['number' => 1, 'lines' => ['number' => 2, 'item' => ['code' => 1]]]
+		);
+		static::assertEquals(
+			'SELECT t0.`date`, t0.`number`' . LF
+			. 'FROM `test_orders` t0' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
+			$builder->buildQuery()
+		);
+	}
+
 	//---------------------------------------------------------------------- testArrayWhereDeepQuery2
 	public function testArrayWhereDeepQuery2()
 	{
@@ -97,44 +135,6 @@ class Select_Test extends Test
 			. 'LEFT JOIN `test_items_items` t3 ON t3.`id_item` = t2.`id`' . LF
 			. 'LEFT JOIN `test_items` t4 ON t4.`id` = t3.`id_cross_selling`' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1" AND t4.`code` = "3"',
-			$builder->buildQuery()
-		);
-	}
-
-	//----------------------------------------------------------------- testArrayWhereDeepQueryObject
-	public function testArrayWhereDeepQueryObject()
-	{
-		$item       = new Item();
-		$item->code = 1;
-		$builder    = new Select(
-			Order::class,
-			['date', 'number'],
-			['number' => 1, 'lines' => [['number' => 2, 'item' => $item]]]
-		);
-		static::assertEquals(
-			'SELECT t0.`date`, t0.`number`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
-			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
-			$builder->buildQuery()
-		);
-	}
-
-	//------------------------------------------------------------------ testArrayWhereDeepQueryShort
-	public function testArrayWhereDeepQueryShort()
-	{
-		$builder = new Select(
-			Order::class,
-			['date', 'number'],
-			['number' => 1, 'lines' => ['number' => 2, 'item' => ['code' => 1]]]
-		);
-		static::assertEquals(
-			'SELECT t0.`date`, t0.`number`' . LF
-			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
-			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
 			$builder->buildQuery()
 		);
 	}
@@ -390,6 +390,7 @@ class Select_Test extends Test
 	//-------------------------------------------------------------------- testQuoteSalesmanStoreName
 	public function testQuoteSalesmanStoreName()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(Quote_Salesman::class))->value;
 		static::assertEquals('test_quote_salesmen', $store_name, __METHOD__);
 	}

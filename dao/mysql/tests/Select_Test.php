@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql\Tests;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Console;
 use ITRocks\Framework\Dao;
@@ -19,6 +18,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Select;
 use ITRocks\Framework\Tests\Test;
+use ReflectionException;
 
 /**
  * Mysql select tests for all cases of joins
@@ -36,8 +36,8 @@ class Select_Test extends Test
 	 * Gets all object business object
 	 *
 	 * @return array[] test_name => [ string $query, Select $builder ]
-	 * @see testEverything
-	 * @throws Exception
+	 * @see    testEverything
+	 * @throws ReflectionException
 	 */
 	public function everythingProvider()
 	{
@@ -84,13 +84,14 @@ class Select_Test extends Test
 
 	//--------------------------------------------------------------------------------- propertyNames
 	/**
-	 * @param $class Reflection_Class
-	 * @param $depth integer
+	 * @param  $class Reflection_Class
+	 * @param  $depth integer
 	 * @return string[]
-	 * @throws Exception
+	 * @throws ReflectionException
 	 */
 	private function propertyNames(Reflection_Class $class, $depth = 1)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection comes from Reflection_Class */
 		$properties = Class_\Link_Annotation::of($class)->value
 			? (new Link_Class($class->name))->getLocalProperties()
 			: $class->getProperties([T_EXTENDS, T_USE]);

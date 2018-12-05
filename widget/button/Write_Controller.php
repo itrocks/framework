@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Widget\Button;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
@@ -19,12 +20,13 @@ class Write_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------- callOutputSettingController
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $button Button
 	 * @param $form   string[]
 	 */
 	public function callOutputSettingController(Button $button, array $form)
 	{
-		/** @var $parameters Parameters */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$parameters = Builder::create(Parameters::class, [
 			new Uri(str_replace(BS, SL, $form['custom_class_name']) . SL . $form['custom_feature'])
 		]);
@@ -36,7 +38,7 @@ class Write_Controller implements Feature_Controller
 			$parameters->set('before', $form['custom_before_button']);
 		}
 		$parameters->set(Feature::FEATURE, $form['custom_feature']);
-		/** @var $output_setting_controller Output_Setting\Controller */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$output_setting_controller = Builder::create(Output_Setting\Controller::class);
 		$output_setting_controller->run($parameters, [], [], $form['custom_class_name']);
 	}
@@ -49,12 +51,13 @@ class Write_Controller implements Feature_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @return mixed
+	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		/** @var $button Button */
 		$button = $parameters->getMainObject(Button::class);
-		/** @var $builder Object_Builder_Array */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$builder = Builder::create(Object_Builder_Array::class);
 		$builder->ignore_unknown_properties = true;
 		$button = $builder->build($form, $button);

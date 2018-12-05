@@ -14,6 +14,7 @@ class Add_Controller extends Add\Controller
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
@@ -21,6 +22,7 @@ class Add_Controller extends Add\Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$image = new Reflection_Property($class_name, 'image');
 		$image->setAnnotation('alias', new Alias_Annotation('web image', $image));
 

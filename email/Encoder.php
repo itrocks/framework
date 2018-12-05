@@ -48,13 +48,14 @@ class Encoder
 	 * Returns the MIME Multipart string
 	 * If the mail is plain text without attachment, the plain text is returned without any change
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function encode()
 	{
 		if ($this->email->attachments || (strpos($this->email->content, '<body') !== false)) {
 
-			/** @var $mail Mime */
+			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$mail = Builder::create(Mime::class);
 
 			$body = $this->parseImages($mail, $this->email->content);

@@ -20,7 +20,6 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\View\View_Exception;
 use ITRocks\Framework\Widget\List_Setting;
 use ReflectionException;
 
@@ -206,7 +205,7 @@ class Import_Array
 	 *
 	 * @param $feature_name string
 	 * @param $parameters   array
-	 * @return View_Exception
+	 * @return Import_Exception
 	 */
 	public static function getException($feature_name, array $parameters)
 	{
@@ -215,7 +214,7 @@ class Import_Array
 			$parameters['display'] = Names::classToDisplay($parameters['class']->class_name);
 		}
 		$parameters[Template::TEMPLATE] = 'import' . ucfirst($feature_name) . 'Error';
-		return new View_Exception(
+		return new Import_Exception(
 			View::run($parameters, [], [], Import::class, Feature::F_IMPORT)
 		);
 	}
@@ -338,7 +337,7 @@ class Import_Array
 	 * Beware : first row must contain property paths, and will be removed !
 	 *
 	 * @param $array array $value = string[$row_number][$column_number]
-	 * @throws View_Exception
+	 * @throws Import_Exception
 	 */
 	public function importArray(array &$array)
 	{
@@ -375,7 +374,7 @@ class Import_Array
 	 *
 	 * @param $class Import_Class
 	 * @param $array array $value = string[integer $row_number][integer $column_number]
-	 * @throws View_Exception
+	 * @throws Import_Exception
 	 */
 	protected function importArrayClass(Import_Class $class, array &$array)
 	{
@@ -389,7 +388,7 @@ class Import_Array
 			);
 			switch ($this->properties_link[$property_path]) {
 				case Link_Annotation::COLLECTION:
-					throw new View_Exception(
+					throw new Import_Exception(
 						'Component objects import not implemented (' . $property_path . ')'
 					);
 					break;
@@ -412,7 +411,7 @@ class Import_Array
 	 * @param $class                   Import_Class
 	 * @param $class_properties_column integer[]
 	 * @return object
-	 * @throws View_Exception
+	 * @throws Import_Exception
 	 */
 	public function importSearchObject(
 		$search, array $row, Import_Class $class, array $class_properties_column
@@ -564,8 +563,9 @@ class Import_Array
 	 * @param $class  Import_Class
 	 * @param $object object
 	 */
-	protected function simulateNew(Import_Class $class, $object)
-	{
+	protected function simulateNew(
+		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class, $object
+	) {
 		echo '- write new ' . print_r($object, true);
 	}
 
@@ -575,8 +575,11 @@ class Import_Array
 	 * @param $search     string[]
 	 * @param $class_name string
 	 */
-	protected function simulateSearch(Import_Class $class, array $search, $class_name)
-	{
+	protected function simulateSearch(
+		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class,
+		array $search,
+		$class_name
+	) {
 		echo '- search ' . $class_name . ' = ' . print_r($search, true) . BR;
 	}
 
@@ -585,8 +588,9 @@ class Import_Array
 	 * @param $class  Import_Class
 	 * @param $object object
 	 */
-	protected function simulateUpdate(Import_Class $class, $object)
-	{
+	protected function simulateUpdate(
+		/** @noinspection PhpUnusedParameterInspection */ Import_Class $class, $object
+	) {
 		echo '- update ' . print_r($object, true) . BR;
 	}
 

@@ -25,9 +25,9 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\Updater\Application_Updater_Exception;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\View_Exception;
-use ReflectionException;
 
 /**
  * The main controller is called to run the application, with the URI and get/postvars as parameters
@@ -115,7 +115,7 @@ class Main
 	/**
 	 * Update application
 	 *
-	 * @throws Exception
+	 * @throws Application_Updater_Exception
 	 */
 	private function applicationUpdate()
 	{
@@ -160,7 +160,6 @@ class Main
 	 * @param $post        array
 	 * @param $files       array[]
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function doExecuteController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
@@ -178,7 +177,6 @@ class Main
 	 * @param $post  array   Posted forms sent by the caller
 	 * @param $files array[] Files sent by the caller
 	 * @return mixed View data returned by the view the controller called
-	 * @throws Exception
 	 */
 	private function doRunController($uri, array $get = [], array $post = [], array $files = [])
 	{
@@ -197,7 +195,6 @@ class Main
 	 * @param $files       array[]
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public function doRunControllerStd(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
@@ -209,7 +206,7 @@ class Main
 		catch (Object_Not_Found_Exception $exception) {
 			return '<div class="error">' . $exception->getMessage() . '</div>';
 		}
-		/** @noinspection PhpRedundantCatchClauseInspection thrown only by Main::executeController */
+		/** @noinspection PhpRedundantCatchClauseInspection may be thrown by controllers */
 		catch (View_Exception $exception) {
 			return $exception->view_result;
 		}
@@ -227,7 +224,6 @@ class Main
 	 * @param $files       array[]
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public function doRunInnerController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null
@@ -256,16 +252,17 @@ class Main
 
 	//----------------------------------------------------------------------------- executeController
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $controller  string
 	 * @param $method_name string
 	 * @param $uri         Uri
 	 * @param $post        array
 	 * @param $files       array[]
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	private function executeController($controller, $method_name, Uri $uri, array $post, array $files)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection is_a => create*/
 		$controller = is_a($controller, Controller::class, true)
 			? Builder::create($controller)
 			: $uri->parameters->getMainObject($uri->controller_name);
@@ -326,7 +323,7 @@ class Main
 
 	//-------------------------------------------------------------------------------------- includes
 	/**
-	 * @throws Exception
+	 * @throws Include_Filter\Exception
 	 */
 	private function includes()
 	{
@@ -342,7 +339,7 @@ class Main
 	 *
 	 * @param $includes string[]
 	 * @return Main $this
-	 * @throws Exception
+	 * @throws Include_Filter\Exception
 	 */
 	public function init(array $includes = [])
 	{
@@ -538,7 +535,6 @@ class Main
 	 * @param $files       array[] Files sent by the caller
 	 * @param $sub_feature string If set, the sub-feature (used by controllers which call another one)
 	 * @return mixed View data returned by the view the controller called
-	 * @throws Exception
 	 */
 	public function runController(
 		$uri, array $get = [], array $post = [], array $files = [], $sub_feature = null

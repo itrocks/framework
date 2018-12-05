@@ -38,12 +38,14 @@ class Authentication_Server implements Configurable, Registerable
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $configuration array
 	 */
 	public function __construct($configuration)
 	{
 		if (isset($configuration[self::APPLICATIONS])) {
 			foreach ($configuration[self::APPLICATIONS] as $application) {
+				/** @noinspection PhpUnhandledExceptionInspection constant */
 				$application = Builder::create(Application::class, [$application]);
 				if ($application->isValid()) {
 					self::$applications[] = $application;
@@ -59,11 +61,13 @@ class Authentication_Server implements Configurable, Registerable
 	/**
 	 * Compute some SSO properties after a user has been authenticated
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user User
 	 */
 	public function afterAuthenticate(User $user)
 	{
 		// create authentication log
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$authentication = Builder::create(Authentication::class, [
 			$user->login,
 			Authentication::AUTHENTICATE,
@@ -75,11 +79,14 @@ class Authentication_Server implements Configurable, Registerable
 	//------------------------------------------------------------------------------ beforeDisconnect
 	/**
 	 * SSO cleaning before to disconnect a user
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function beforeDisconnect()
 	{
 		// create disconnect log
 		$user           = User::current();
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$authentication = Builder::create(Authentication::class, [
 			$user->login,
 			Authentication::DISCONNECT

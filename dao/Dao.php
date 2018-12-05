@@ -12,7 +12,6 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\List_Row;
-use ReflectionException;
 
 /**
  * The Dao class enables direct access to the main Dao object of the application methods
@@ -620,7 +619,6 @@ class Dao implements Configurable
 	 *
 	 * @param $class_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public static function storeNameOf($class_name)
 	{

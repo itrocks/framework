@@ -181,6 +181,7 @@ class Tab
 	/**
 	 * Change properties or property names stored into tab into values from the object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object           object
 	 * @param $properties_title string[] key is the property path, value is the property display (tr)
 	 * @return Tab
@@ -193,6 +194,7 @@ class Tab
 				$column = $column->getName();
 			}
 			if (is_string($column)) {
+				/** @noinspection PhpUnhandledExceptionInspection class and columns must be valid */
 				$property = new Reflection_Property_Value($class_name, $column, $object, false, true);
 				if (isset($properties_title[$property->name])) {
 					$property->display = $properties_title[$property->name];

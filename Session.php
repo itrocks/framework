@@ -113,6 +113,7 @@ class Session implements Serializable
 	/**
 	 * Get the object of class $class_name from session
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name     string
 	 * @param $create_default boolean|callable Create a default object for the class name if does not
 	 *        exist. Can be callable that creates the default object
@@ -133,6 +134,7 @@ class Session implements Serializable
 			return $current;
 		}
 		elseif ($create_default) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			return $this->current[$class_name] = (
 				is_callable($create_default)
 					? call_user_func($create_default)

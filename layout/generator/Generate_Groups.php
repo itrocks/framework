@@ -181,6 +181,7 @@ class Generate_Groups
 
 	//------------------------------------------------------------------------------------------ text
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $text Text
 	 * @return boolean
 	 */
@@ -201,6 +202,7 @@ class Generate_Groups
 					$property_path .= DOT;
 				}
 				$property_path .= $property_name;
+				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 				$type = (new Reflection_Property($class_name, $property_name))->getType();
 				if ($type->isMultiple()) {
 					$group = $this->propertyGroup($text, $property_path);

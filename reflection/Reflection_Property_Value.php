@@ -74,7 +74,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @example
 	 * $pv = new Reflection_Property_Value('Class_Name', 'property_name', $object);
-	 * @param $class_name    string
+	 * @param $class_name    object|string
 	 * @param $property_name string
 	 * @param $object        object|mixed the object containing the value, or the value itself
 	 *        (in this case set $final_value tu true)
@@ -93,9 +93,11 @@ class Reflection_Property_Value extends Reflection_Property
 			$this->object = $object;
 		}
 		else {
+			if (is_object($class_name)) {
+				$class_name = get_class($class_name);
+			}
 			trigger_error(
-				'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name,
-				E_USER_WARNING
+				'DEAD CODE ? object is set for ' . $class_name . '::' . $property_name, E_USER_WARNING
 			);
 		}
 		$this->user = $user;
@@ -106,6 +108,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Sets additional properties to matching Reflection_Property
 	 * (common for all instances of this property)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $key string
 	 * @return mixed
 	 */
@@ -126,6 +129,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Sets additional properties to matching Reflection_Property
 	 * (common for all instances of this property)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $key   string
 	 * @param $value mixed
 	 */
@@ -308,6 +312,7 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//----------------------------------------------------------------------------------------- value
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value        mixed
 	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed

@@ -21,6 +21,7 @@ class Default_Controller implements Controller
 	 * Loads data from objects given as parameters, then run the view associated to the first parameter class.
 	 * This is called when no other controller was found for the first parameter object.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters   Parameters
 	 * @param $form         array
 	 * @param $files        array[]
@@ -30,6 +31,7 @@ class Default_Controller implements Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name, $feature_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class_exists */
 		$constructor = class_exists($class_name)
 			? (new Reflection_Class($class_name))->getConstructor()
 			: null;

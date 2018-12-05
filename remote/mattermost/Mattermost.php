@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Remote;
 
-use Exception;
 use ITRocks\Framework\Plugin\Configurable;
+use ITRocks\Framework\Remote\Mattermost\Exception;
 use stdClass;
 
 /**

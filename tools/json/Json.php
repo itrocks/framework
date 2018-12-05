@@ -1,13 +1,14 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Json\Exception;
+use ReflectionException;
 use stdClass;
 
 /**
@@ -23,6 +24,7 @@ class Json
 	 * @param $encoded_string string
 	 * @param $class_name     string
 	 * @return array|object
+	 * @throws ReflectionException
 	 */
 	public function decodeObject($encoded_string, $class_name = null)
 	{
@@ -89,6 +91,7 @@ class Json
 
 	//---------------------------------------------------------------------- objectToStdClassInternal
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $standard_object stdClass object resulting
 	 * @param $business_object object business object to transform
 	 * @param $parent_tree     array array of unduplicate name for each object in calling hierarchy
@@ -100,6 +103,7 @@ class Json
 	protected function objectToStdClassInternal(
 		stdClass $standard_object, $business_object, $parent_tree = []
 	) {
+		/** @noinspection PhpUnhandledExceptionInspection An object is always valid */
 		$class      = new Reflection_Class($business_object);
 		$properties = $class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 		// bloc to avoid "death kiss" (infinite loop), detect when a parent is exactly the same object
@@ -109,6 +113,7 @@ class Json
 		foreach ($properties as $property) {
 			if ($this->shouldExportProperty($property)) {
 				$name                   = $property->name;
+				/** @noinspection PhpUnhandledExceptionInspection $property comes from $business_object */
 				$property_value         = $property->getValue($business_object);
 				$type                   = $property->getType();
 				$standard_object->$name = $this->propertyToStdInternal(
@@ -203,6 +208,7 @@ class Json
 	 *     $parent_tree[0] => unduplicate name for top most object (first object parsed)
 	 *     $parent_tree[]  => unduplicate name for collection or component property of direct above object
 	 * @return stdClass
+	 * @throws Exception
 	 */
 	protected function subObjectToStdClassInternal($browse, $business_object, array $parent_tree)
 	{

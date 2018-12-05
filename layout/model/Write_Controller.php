@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Layout\Model;
 
-use Exception;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Widget\Write;
 
@@ -18,7 +17,6 @@ class Write_Controller extends Write\Controller
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
-	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{

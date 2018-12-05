@@ -47,6 +47,7 @@ class Period
 	/**
 	 * Return current period which is not in the period passed in parameters
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $period Period
 	 * @return Period[] Can return 0, 1 or 2 periods
 	 */
@@ -61,11 +62,13 @@ class Period
 		else {
 			$periods = [];
 			if ($this->begin->isBefore($period->begin)) {
+				/** @noinspection PhpUnhandledExceptionInspection from Date_Time */
 				$end = new Date_Time($period->begin);
 				$end->add(-1, Date_Time::SECOND);
 				$periods[] = new Period($this->begin, $end);
 			}
 			if ($this->end->isAfter($period->end)) {
+				/** @noinspection PhpUnhandledExceptionInspection from Date_Time */
 				$begin = new Date_Time($period->end);
 				$begin->add(1, Date_Time::SECOND);
 				$periods[] = new Period($begin, $this->end);

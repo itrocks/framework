@@ -49,6 +49,7 @@ class Contextual_Callable
 
 	//----------------------------------------------------------------------------------- getCallable
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return callable
 	 */
 	public function getCallable()
@@ -70,6 +71,7 @@ class Contextual_Callable
 		else {
 			$class_name = get_class($this->context);
 			$method_name = $this->callable_string;
+			/** @noinspection PhpUnhandledExceptionInspection callable must be a valid */
 			if (!(new Reflection_Method($class_name, $method_name))->isStatic()) {
 				$class_name = $this->context;
 			}

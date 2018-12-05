@@ -677,6 +677,7 @@ class Maintainer implements Configurable, Registerable
 
 	//-------------------------------------------------------------------------- updateImplicitTables
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class              Reflection_Class a class to scan properties for @link Map
 	 * @param $exclude_class_name string no need to update this already updated class
 	 * @param $mysqli             Contextual_Mysqli
@@ -685,6 +686,7 @@ class Maintainer implements Configurable, Registerable
 		Reflection_Class $class, $exclude_class_name, Contextual_Mysqli $mysqli
 	) {
 		if (Class_\Link_Annotation::of($class)->value) {
+			/** @noinspection PhpUnhandledExceptionInspection class is valid */
 			$link_class = new Link_Class($class->name);
 			$properties = $link_class->getLocalProperties();
 		}
@@ -703,6 +705,7 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * Update table structure corresponding to a data class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $mysqli     mysqli If null, Dao::current()->getConnection() will be taken
 	 * @param $implicit   boolean if true, update linked implicit tables (anti-recursion)
@@ -734,6 +737,7 @@ class Maintainer implements Configurable, Registerable
 			);
 		}
 		if ($implicit && $result) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$this->updateImplicitTables(new Reflection_Class($class_name), $class_name, $mysqli);
 		}
 		return $result;

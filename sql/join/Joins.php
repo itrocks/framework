@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Sql\Join;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_;
@@ -17,7 +16,6 @@ use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
 use ITRocks\Framework\Sql\Link_Table;
 use ITRocks\Framework\Tools\Namespaces;
-use ReflectionException;
 
 /**
  * This builds and stores SQL tables joins in order to make easy automatic joins generation
@@ -108,7 +106,6 @@ class Joins
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
 	 * @param $link_property_name  string if set : force the name of the property for linked object
-	 * @throws ReflectionException
 	 */
 	public function __construct($starting_class_name, array $paths = [], $link_property_name = null)
 	{
@@ -128,8 +125,6 @@ class Joins
 	 * @param $path  string full path to desired property, starting from starting class
 	 * @param $depth integer for internal use : please do not use this
 	 * @return Join the added join, or null if $path does not generate any join
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function add($path, $depth = 0)
 	{
@@ -182,7 +177,6 @@ class Joins
 	 * @param $foreign_path       string
 	 * @param $depth              integer
 	 * @return Join
-	 * @throws ReflectionException
 	 */
 	private function addFinalize(
 		Join $join, $master_path, $foreign_class_name, $foreign_path, $depth
@@ -221,16 +215,17 @@ class Joins
 	/**
 	 * Add a link class (using the 'link' class annotation) to joins
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path               string     the property path
 	 * @param $class              Link_Class the link class itself (which contains the @link)
 	 * @param $linked_class_name  string     the linked class name (the value of @link)
 	 * @param $join_mode          string
 	 * @return Reflection_Property[] the properties that come from the linked class,
 	 *                               for further exclusion
-	 * @throws Exception
 	 */
 	private function addLinkedClass($path, Link_Class $class, $linked_class_name, $join_mode)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection linked class name must be valid */
 		$linked_class    = new Reflection_Class($linked_class_name);
 		$link_same       = Link_Same_Annotation::of($class)->getLinkClass() ?: $class;
 		$master_property = $link_same->getCompositeProperty($linked_class_name);
@@ -283,7 +278,6 @@ class Joins
 	 * @param $foreign_class_name string
 	 * @param $property           Reflection_Property
 	 * @param $reverse            boolean
-	 * @throws ReflectionException
 	 */
 	private function addLinkedJoin(
 		Join $join, $master_path, $foreign_path, $foreign_class_name,
@@ -330,7 +324,6 @@ class Joins
 	 *
 	 * @param $paths_array string[]
 	 * @return Joins
-	 * @throws ReflectionException
 	 */
 	public function addMultiple(array $paths_array)
 	{
@@ -347,14 +340,14 @@ class Joins
 	 * Please always call this instead of adding properties manually : it manages 'link'
 	 * class annotations.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path       string
 	 * @param $class_name string
 	 * @param $join_mode  string
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	private function addProperties($path, $class_name, $join_mode = null)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class                         = new Link_Class($class_name);
 		$this->properties[$class_name] = $class->getProperties([T_EXTENDS, T_USE]);
 		$linked_class_name             = Class_\Link_Annotation::of($class)->value;
@@ -366,14 +359,13 @@ class Joins
 
 	//-------------------------------------------------------------------------------- addReverseJoin
 	/**
-	 * TODO use @store_name to get correct master and foreign columns name
-	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $join                 Join
 	 * @param $master_path          string
 	 * @param $master_property_name string @example From an Order context : 'Order_Line(order)'
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
-	 * @throws Exception
+	 * @todo use @store_name to get correct master and foreign columns name
 	 */
 	private function addReverseJoin(
 		Join $join, $master_path, $master_property_name, $foreign_path
@@ -393,6 +385,7 @@ class Joins
 		);
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
+			/** @noinspection PhpUnhandledExceptionInspection master property must be valid in class */
 			$master_property     = new Reflection_Property($master_class_name, $master_property_name);
 			$join->master_column = $master_property->getType()->isClass()
 				? ('id_' . $master_property_name)
@@ -401,6 +394,7 @@ class Joins
 		else {
 			$join->master_column = 'id';
 		}
+		/** @noinspection PhpUnhandledExceptionInspection foreign property must be valid in class */
 		$foreign_property      = new Reflection_Property($foreign_class_name, $foreign_property_name);
 		$foreign_property_type = $foreign_property->getType();
 		$join->foreign_column  = $foreign_property_type->isClass()
@@ -420,13 +414,12 @@ class Joins
 
 	//--------------------------------------------------------------------------------- addSimpleJoin
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $join                 Join
 	 * @param $master_path          string
 	 * @param $master_property_name string
 	 * @param $foreign_path         string
 	 * @return string the foreign class name
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	private function addSimpleJoin(Join $join, $master_path, $master_property_name, $foreign_path)
 	{
@@ -448,7 +441,8 @@ class Joins
 					? Join::INNER
 					: Join::LEFT;
 				// force LEFT if any of the properties in the master property path is not mandatory
-				if (($join->mode == Join::INNER) && $master_path) {
+				if (($join->mode === Join::INNER) && $master_path) {
+					/** @noinspection PhpUnhandledExceptionInspection classes are valid */
 					$root_class    = new Reflection_Class($this->classes['']);
 					$property_path = '';
 					foreach (explode(DOT, $master_path . DOT . $master_property_name) as $property_name) {
@@ -467,6 +461,7 @@ class Joins
 						property_exists($foreign_class_name, $foreign_property_name)
 						&& !Link_Annotation::of($master_property)->isMap()
 					) {
+						/** @noinspection PhpUnhandledExceptionInspection property must be valid in class */
 						$foreign_property = new Reflection_Property(
 							$foreign_class_name, $foreign_property_name
 						);
@@ -683,13 +678,14 @@ class Joins
 	/**
 	 * Gets starting class as a Reflection_Class object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
-	 * @throws ReflectionException
 	 */
 	public function getStartingClass()
 	{
 		if (!$this->starting_class) {
-			$class_name           = $this->getStartingClassName();
+			$class_name = $this->getStartingClassName();
+			/** @noinspection PhpUnhandledExceptionInspection starting class name is always valid */
 			$this->starting_class = new Reflection_Class($class_name);
 		}
 		return $this->starting_class;
@@ -715,7 +711,6 @@ class Joins
 	 * @param $starting_class_name string the class name for the root of property paths
 	 * @param $paths               array a property paths list to add at construction
 	 * @return Joins
-	 * @throws ReflectionException
 	 */
 	public static function newInstance($starting_class_name, array $paths = [])
 	{

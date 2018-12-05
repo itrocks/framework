@@ -2,6 +2,8 @@
 /**
  * DO NEVER INCLUDE THIS SCRIPT
  * These are php functions prototypes for use with the test_helpers extension
+ *
+ * @noinspection ALL
  */
 
 //--------------------------------------------------------------------------------- rename_function

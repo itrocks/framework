@@ -1,8 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Gaufrette;
 
-use Exception;
-
 /**
  * File_Link could be used by classes requiring a single file content
  */

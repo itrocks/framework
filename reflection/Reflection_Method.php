@@ -77,6 +77,7 @@ class Reflection_Method extends ReflectionMethod
 
 	//--------------------------------------------------------------------------------- getParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $by_name boolean
 	 * @return Reflection_Parameter[]
 	 */
@@ -85,6 +86,7 @@ class Reflection_Method extends ReflectionMethod
 		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
 			/** @noinspection PhpParamsInspection callable is accepted instead of string */
+			/** @noinspection PhpUnhandledExceptionInspection from parent::getParameters */
 			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
 				[$this->class, $this->name], $parameter->name
 			);

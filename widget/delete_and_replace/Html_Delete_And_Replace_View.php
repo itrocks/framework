@@ -20,12 +20,14 @@ class Html_Delete_And_Replace_View implements View
 
 	//-------------------------------------------------------------------------------------- getCombo
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return string HTML combo-box with filters
 	 */
 	protected function getCombo($object)
 	{
 		$class_name = get_class($object);
+		/** @noinspection PhpUnhandledExceptionInspection $class_name from existing object is valid */
 		$edit = new Html_Builder_Type(
 			'replace_with',
 			new Type($class_name),
@@ -36,15 +38,16 @@ class Html_Delete_And_Replace_View implements View
 
 	//------------------------------------------------------------------------------------ getFilters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return string[] combo filters
 	 */
 	protected function getFilters($object)
 	{
 		$filters = ['id' => Func::notEqual(Dao::getObjectIdentifier($object))];
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach (
-			(new Reflection_Class(get_class($object)))->getProperties([T_EXTENDS, T_USE]) as $property
+			(new Reflection_Class($object))->getProperties([T_EXTENDS, T_USE]) as $property
 		) {
 			if ($property->getAnnotation('replace_filter')->value) {
 				$filters[$property->name] = Dao::getObjectIdentifier($object, $property->name);

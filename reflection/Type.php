@@ -179,12 +179,14 @@ class Type
 	/**
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
 	 * @return Interfaces\Reflection_Class|PHP\Reflection_Class|Reflection_Class
 	 */
 	public function asReflectionClass($reflection_class_name = null)
 	{
 		if ($reflection_class_name) {
+			/** @noinspection PhpUnhandledExceptionInspection reflection class name must be valid */
 			$reflection_class = is_a($reflection_class_name, PHP\Reflection_Class::class, true)
 				? PHP\Reflection_Class::of($this->getElementTypeAsString())
 				: (new Reflection_Class($reflection_class_name))->newInstance(
@@ -192,6 +194,7 @@ class Type
 				);
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection property var value must be valid */
 			$reflection_class = new Reflection_Class($this->getElementTypeAsString());
 		}
 		return $reflection_class;

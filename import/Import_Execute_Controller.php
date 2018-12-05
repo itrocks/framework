@@ -19,6 +19,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 	/**
 	 * This will be called for this controller, always.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -34,7 +35,9 @@ class Import_Execute_Controller implements Default_Feature_Controller
 			$form, Session::current()->get(Files::class)->files
 		);
 		$import->class_name = $class_name;
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		$parameters->getMainObject($import);
+		/** @noinspection PhpUnhandledExceptionInspection no object */
 		$parameters = $parameters->getObjects();
 		foreach ($import->worksheets as $worksheet) {
 			$array        = $worksheet->file->getCsvContent();

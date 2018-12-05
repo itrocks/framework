@@ -180,11 +180,13 @@ class Source extends File
 
 	//------------------------------------------------------------------------------- defaultFileName
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string Mandatory (default value for compatibility with parent only)
 	 * @return string
 	 */
 	public static function defaultFileName($class_name = null)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 		return (new Reflection_Class($class_name))->getFileName();
 	}
 

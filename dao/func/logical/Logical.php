@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
-use Exception;
+use ITRocks\Framework\Dao\Func\Logical\Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Tools\Names;
@@ -54,10 +54,10 @@ class Logical implements Negate, Where
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $operator string
 	 * @param $arguments Where[]|mixed[]|Where|mixed key can be a property path or numeric if depends
 	 *        on main property part
-	 * @throws Exception
 	 */
 	public function __construct($operator = null, $arguments = null)
 	{
@@ -67,7 +67,8 @@ class Logical implements Negate, Where
 			in_array($this->operator, [self::NOT_OPERATOR, self::TRUE_OPERATOR])
 			&& is_array($this->arguments)
 		) {
-			throw new Exception('Can not build logical not|true expression with array');
+			/** @noinspection PhpUnhandledExceptionInspection not used by intermediate programming */
+			$this->throwException('Can not build logical not|true expression with array');
 		}
 	}
 
@@ -170,6 +171,16 @@ class Logical implements Negate, Where
 				}
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------- throwException
+	/**
+	 * @param $message string
+	 * @throws Exception
+	 */
+	protected function throwException($message)
+	{
+		throw new Exception($message);
 	}
 
 	//--------------------------------------------------------------------------------------- toHuman

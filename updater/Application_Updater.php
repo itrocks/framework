@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Updater;
 
-use Exception;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
@@ -143,7 +142,7 @@ class Application_Updater implements Configurable, Serializable
 	 *
 	 * @param $controller Main
 	 * @return boolean true if updates were made
-	 * @throws Exception
+	 * @throws Application_Updater_Exception
 	 */
 	public function autoUpdate(Main $controller)
 	{
@@ -156,10 +155,10 @@ class Application_Updater implements Configurable, Serializable
 					return true;
 				}
 				else {
-					throw new Exception('Unable to acquire lock');
+					throw new Application_Updater_Exception('Unable to acquire lock');
 				}
 			}
-			catch (Exception $exception) {
+			catch (Application_Updater_Exception $exception) {
 				$this->release();
 				throw $exception;
 			}
@@ -202,7 +201,7 @@ class Application_Updater implements Configurable, Serializable
 			unlink(self::UPDATE_FILE);
 		}
 		if (function_exists('opcache_reset')) {
-			/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
+			/** @noinspection PhpComposerExtensionStubsInspection function_exists */
 			opcache_reset();
 		}
 		if (isset($_GET['Z']) && isset($_POST['Z'])) {

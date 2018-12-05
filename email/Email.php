@@ -152,10 +152,13 @@ class Email
 	 * Called before write : optimize attachments and recipients.
 	 * - Reuse those which are already stored into the data storage.
 	 * - Do not enable to alter an already stored attachment or recipient.
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function beforeWrite()
 	{
 		if (!isset($this->date)) {
+			/** @noinspection PhpUnhandledExceptionInspection valid call */
 			$this->date = new Date_Time();
 		}
 		$this->uniqueAttachments();

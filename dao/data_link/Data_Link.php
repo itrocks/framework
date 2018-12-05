@@ -17,7 +17,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
-use ReflectionException;
 
 /**
  * This class stores methods common to all data links classes,
@@ -53,14 +52,13 @@ abstract class Data_Link
 
 	//------------------------------------------------------------------------------------- afterRead
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
 	public function afterRead($object)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach (
-			(new Reflection_Class(get_class($object)))->getAnnotations('after_read') as $after_read
-		) {
+		foreach ((new Reflection_Class($object))->getAnnotations('after_read') as $after_read) {
 			/** @var $after_read Method_Annotation */
 			$options = [];
 			if ($after_read->call($object, [$this, &$options]) === false) {
@@ -71,6 +69,7 @@ abstract class Data_Link
 
 	//----------------------------------------------------------------------------- afterReadMultiple
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $objects object[]
 	 * @param $options Option[]
 	 */
@@ -79,9 +78,7 @@ abstract class Data_Link
 		if ($objects) {
 			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 			/** @var $after_reads Method_Annotation[] */
-			$after_reads = (new Reflection_Class(get_class(reset($objects))))->getAnnotations(
-				'after_read'
-			);
+			$after_reads = (new Reflection_Class(reset($objects)))->getAnnotations('after_read');
 			foreach ($objects as $object) {
 				foreach ($after_reads as $after_read) {
 					if ($after_read->call($object, [$this, &$options]) === false) {
@@ -192,6 +189,7 @@ abstract class Data_Link
 	 * Gets the key property name taken from any set Sql\Key_Option
 	 * Default will be 'id'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $options    Option[]
 	 * @return callable|string|string[]
@@ -380,12 +378,13 @@ abstract class Data_Link
 	/**
 	 * Gets the store name for records typed as $class_name
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function storeNameOf($class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must always be valid */
 		return Store_Name_Annotation::of(new Reflection_Class($class_name))->value;
 	}
 
@@ -403,6 +402,7 @@ abstract class Data_Link
 	 * Returns true if the element's property value changed since previous value
 	 * and if it is not empty
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $element       object
 	 * @param $property_name string
 	 * @param $default_value mixed
@@ -417,7 +417,7 @@ abstract class Data_Link
 		$element_value = $element->$property_name;
 		if (is_object($element_value)) {
 			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			$class    = new Reflection_Class(get_class($element_value));
+			$class    = new Reflection_Class($element_value);
 			$defaults = $class->getDefaultProperties([T_EXTENDS]);
 			foreach (Representative_Annotation::of($class)->values() as $property_name) {
 				if (

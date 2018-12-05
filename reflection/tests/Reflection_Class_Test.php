@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Reflection\Tests;
 
-use Exception;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Objects\Document;
@@ -20,12 +19,14 @@ class Reflection_Class_Test extends Test
 
 	//------------------------------------------------------------------------------------ properties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $date   Reflection_Property
 	 * @param $number Reflection_Property
 	 * @return Reflection_Property[]
 	 */
 	private function properties(Reflection_Property $date, Reflection_Property $number)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant properties of Order */
 		return [
 			'date'            => $date,
 			'number'          => $number,
@@ -50,7 +51,7 @@ class Reflection_Class_Test extends Test
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			}
-			catch (Exception $e) {
+			catch (ReflectionException $exception) {
 				$check[$property->name] = self::INACCESSIBLE;
 			}
 		}
@@ -71,11 +72,11 @@ class Reflection_Class_Test extends Test
 
 	//-------------------------------------------------------------------------- testAccessProperties
 	/**
-	 * @throws Exception
-	 * @throws ReflectionException
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testAccessProperties()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		$class                    = new Reflection_Class(Order::class);
 		$today                    = date('Y-m-d');
 		$test_order               = new Order($today, 'CDE001');
@@ -85,8 +86,11 @@ class Reflection_Class_Test extends Test
 		$this->shouldBeInaccessible(__METHOD__ . '.1 (getAllProperties)', $class, $test_order);
 
 		// does access properties return properties list ?
-		$date              = new Reflection_Property(Document::class, 'date');
-		$number            = new Reflection_Property(Document::class, 'number');
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property name */
+		$date = new Reflection_Property(Document::class, 'date');
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property name */
+		$number = new Reflection_Property(Document::class, 'number');
+
 		$date->final_class = $number->final_class = Order::class;
 		static::assertEquals(
 			$this->properties($date, $number),
@@ -100,7 +104,7 @@ class Reflection_Class_Test extends Test
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			}
-			catch (Exception $e) {
+			catch (ReflectionException $e) {
 				$check[$property->name] = 'inaccessible';
 			}
 		}
@@ -125,10 +129,13 @@ class Reflection_Class_Test extends Test
 
 	//---------------------------------------------------------------------- testAccessPropertiesDone
 	/**
-	 * @throws ReflectionException
+	 * Test access properties done
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testAccessPropertiesDone()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		$class                    = new Reflection_Class(Order::class);
 		$test_order               = new Order(date('Y-m-d'), 'CDE001');
 		$test_order->has_workflow = true;
@@ -142,13 +149,17 @@ class Reflection_Class_Test extends Test
 	/**
 	 * Test get all properties
 	 *
-	 * @throws ReflectionException
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testGetAllProperties()
 	{
-		$date              = new Reflection_Property(Document::class, 'date');
-		$number            = new Reflection_Property(Document::class, 'number');
+		/** @noinspection PhpUnhandledExceptionInspection constant property */
+		$date = new Reflection_Property(Document::class, 'date');
+		/** @noinspection PhpUnhandledExceptionInspection constant property */
+		$number = new Reflection_Property(Document::class, 'number');
+
 		$date->final_class = $number->final_class = Order::class;
+		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		static::assertEquals(
 			$this->properties($date, $number),
 			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE])

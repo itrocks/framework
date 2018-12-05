@@ -38,13 +38,16 @@ class Integrated_Properties
 	/**
 	 * Get property value, with default
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @return object
 	 */
 	protected function defaultValue(Reflection_Property $property)
 	{
 		// force creation of a default object value for the property, if empty
+		/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 		if (!($value = $property->getValue($this->object))) {
+			/** @noinspection PhpUnhandledExceptionInspection property type must be valid */
 			$value = Builder::create($property->getType()->asString());
 			if ($property->getAnnotation('component')->value && isA($value, Component::class)) {
 				// TODO HIGHEST The composite is not $this->object, but the $value's parent. Test needed
@@ -113,6 +116,7 @@ class Integrated_Properties
 
 	//--------------------------------------------------------------- getExplicitIntegratedProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $integrated Integrated_Annotation
 	 * @return Reflection_Property[]
@@ -213,6 +217,7 @@ class Integrated_Properties
 
 	//----------------------------------------------------------------------- prepareExpandedProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $blocks            string[]
 	 * @param $integrated_alias  boolean
 	 * @param $integrated_simple boolean
@@ -225,6 +230,7 @@ class Integrated_Properties
 		array $blocks, $integrated_alias, $integrated_simple, $sub_property,
 		$sub_property_path, $display
 	) {
+		/** @noinspection PhpUnhandledExceptionInspection root class and sub property path must valid */
 		$sub_property = new Reflection_Property_Value(
 			$sub_property->root_class, $sub_property_path, $this->object, false, true
 		);

@@ -69,12 +69,14 @@ class Html_Builder_Map extends Map
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Body
 	 */
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
 			$body->addRow($row);

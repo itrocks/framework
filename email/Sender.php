@@ -87,6 +87,7 @@ class Sender implements Configurable, Sender_Interface
 	 * Send an email using its account connection information
 	 * or the default SMTP account configuration.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $email Email
 	 * @return boolean|string true if sent, error message if string
 	 */
@@ -96,7 +97,7 @@ class Sender implements Configurable, Sender_Interface
 		$params = $this->sendConfiguration($email);
 
 		// mime encode of email (for html, images and attachments)
-		/** @var $encoder Encoder */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$encoder = Builder::create(Encoder::class, [$email]);
 		$content = $encoder->encode();
 
@@ -114,6 +115,7 @@ class Sender implements Configurable, Sender_Interface
 		if ($send_result instanceof PEAR_Error) {
 			return $email->send_message = strval($send_result) ?: 'Send error : unknown';
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$email->send_date = new Date_Time();
 		/** @noinspection PhpUndefinedFieldInspection */
 		if (isset($mail->queued_as)) {

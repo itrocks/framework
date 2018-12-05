@@ -86,14 +86,14 @@ class Code implements Stringable
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $source string
 	 * @return static
 	 */
 	public static function fromString($source)
 	{
-		/** @var $code static */
-		$code = Builder::create(get_called_class(), [$source]);
-		return $code;
+		/** @noinspection PhpUnhandledExceptionInspection static */
+		return Builder::create(static::class, [$source]);
 	}
 
 }

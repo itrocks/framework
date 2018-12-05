@@ -3,6 +3,8 @@
  * DO NEVER INCLUDE THIS SCRIPT
  * These are php standard functions headers missing from Eclipse / Zend Studio / PhpStorm standard
  * phpdoc.
+ *
+ * @noinspection ALL
  */
 
 //---------------------------------------------------------------------------------------- gzdecode
@@ -16,7 +18,6 @@
  */
 function gzdecode($data, $length = null)
 {
-	return '';
 }
 
 //-------------------------------------------------------------------------------------------- is_a
@@ -35,5 +36,4 @@ function gzdecode($data, $length = null)
  */
 function is_a($object, $class_name, $allow_string = false)
 {
-	return false;
 }

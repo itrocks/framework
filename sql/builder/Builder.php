@@ -182,13 +182,15 @@ abstract class Builder
 	 * Same as get_object_vars, but for objects that may have AOP / identifiers : keep only read
 	 * properties values
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return array
 	 */
 	public static function getObjectVars($object)
 	{
 		$vars = [];
-		foreach ((new ReflectionClass(get_class($object)))->getProperties() as $property) {
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new ReflectionClass($object))->getProperties() as $property) {
 			$value = $property->getValue($object);
 			if (is_array($value)) {
 				$value = DQ . join(',', $value) . DQ;

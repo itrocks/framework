@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Attachment;
 use ITRocks\Framework\Email\Encoder;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tests\Test;
 
 /**
@@ -14,16 +15,20 @@ class Encoder_Test extends Test
 {
 
 	//------------------------------------------------------------------------------- testParseImages
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 */
 	public function testParseImages()
 	{
-		/** @var $email Email */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$email = Builder::create(Email::class);
 		$email->attachments = [
 			'file1.txt' => new Attachment('file1.txt', 'first file'),
 			'file2.txt' => new Attachment('file2.txt', 'second file')
 		];
+		$delete_text = Loc::tr('delete');
 		$email->content = 'Contains an image :'
-			. '<img src="itrocks/framework/skins/default/img/delete.png">';
+			. '<img alt="' . $delete_text . '" src="itrocks/framework/skins/default/img/delete.png">';
 
 		$assume  = file_get_contents(__DIR__ . '/testParseImage.eml');
 		$encoded = str_replace(CR, '', (new Encoder($email))->encode());

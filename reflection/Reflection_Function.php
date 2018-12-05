@@ -23,6 +23,7 @@ class Reflection_Function extends ReflectionFunction
 
 	//--------------------------------------------------------------------------------- getParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $by_name boolean
 	 * @return Reflection_Parameter[]
 	 */
@@ -30,6 +31,7 @@ class Reflection_Function extends ReflectionFunction
 	{
 		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
+			/** @noinspection PhpUnhandledExceptionInspection from parent::getParameters */
 			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
 				$this->name, $parameter->name
 			);

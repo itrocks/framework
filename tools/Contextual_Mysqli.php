@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
-use ITRocks\Framework\Dao\Mysql\Table;
 use ITRocks\Framework\Dao\Mysql\Table_Builder_Mysqli;
 use mysqli;
 use mysqli_result;
@@ -126,11 +125,11 @@ class Contextual_Mysqli extends mysqli
 	 * @param $table_name  string
 	 * @param $column_name string|null If set, drop this column instead of the table
 	 * @return boolean true if dropped, false if was not already existing
-	 * @throws Mysql_Error_Exception
 	 */
 	public function drop($table_name, $column_name = null)
 	{
 		if ($this->exists($table_name, $column_name)) {
+			/** @noinspection SqlResolve dynamic */
 			$this->query(
 				isset($column_name)
 					? "ALTER TABLE `$table_name` DROP `$column_name`"
@@ -162,7 +161,6 @@ class Contextual_Mysqli extends mysqli
 	 * @param $table_name  string
 	 * @param $column_name string
 	 * @return boolean true if the object exists in current database
-	 * @throws Mysql_Error_Exception
 	 */
 	public function exists($table_name, $column_name = null)
 	{
@@ -172,7 +170,6 @@ class Contextual_Mysqli extends mysqli
 		}
 		else {
 			$res = $this->query("SHOW TABLES LIKE '$table_name'");
-			/** @var $table Table */
 			while ($table = $res->fetch_row()) {
 				if (reset($table) === $table_name) {
 					$res->free();
@@ -189,7 +186,6 @@ class Contextual_Mysqli extends mysqli
 	 * Gets all visible databases names
 	 *
 	 * @return string[]
-	 * @throws Mysql_Error_Exception
 	 */
 	public function getDatabases()
 	{
@@ -207,7 +203,6 @@ class Contextual_Mysqli extends mysqli
 	 * Gets all existing tables names from current database
 	 *
 	 * @return string[]
-	 * @throws Mysql_Error_Exception
 	 */
 	public function getTables()
 	{
@@ -313,12 +308,12 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @param $class_name string The name of the class.
 	 * @return string|null ISO date
-	 * @throws Mysql_Error_Exception
 	 */
 	public function lastUpdate($class_name)
 	{
 		$table_name = Dao::current()->storeNameOf($class_name);
-		$query      = "
+		/** @noinspection SqlResolve dynamic */
+		$query = "
 SELECT `UPDATE_TIME`
 FROM `information_schema`.`TABLES`
 WHERE `TABLE_NAME` = '$table_name'
@@ -335,11 +330,11 @@ AND `UPDATE_TIME` IS NOT NULL
 
 	//----------------------------------------------------------------------------------------- query
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $query       string the SQL query
 	 * @param $result_mode integer one of MYSQLI_*_RESULT constants
 	 * @return mysqli_result|boolean false on failure, true or mysqli_result on success
 	 * @see mysqli::query
-	 * @throws Mysql_Error_Exception
 	 */
 	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
 	{
@@ -356,6 +351,8 @@ AND `UPDATE_TIME` IS NOT NULL
 			$this->last_error = 'Unknown error';
 		}
 		if ($this->last_errno || $this->last_error) {
+			/** @noinspection PhpUnhandledExceptionInspection Useless for developers */
+			// Caught by low-level procedures
 			$result = $this->queryError($query);
 		}
 		return $result;
@@ -395,7 +392,6 @@ AND `UPDATE_TIME` IS NOT NULL
 	/**
 	 * @param $old_name string
 	 * @param $new_name string
-	 * @throws Mysql_Error_Exception
 	 */
 	public function renameTable($old_name, $new_name)
 	{
@@ -407,7 +403,6 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * Gets selected database name
 	 *
 	 * @return string
-	 * @throws Mysql_Error_Exception
 	 */
 	public function selectedDatabase()
 	{

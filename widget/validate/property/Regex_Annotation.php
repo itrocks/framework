@@ -64,6 +64,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
@@ -77,6 +78,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 		) {
 			$pattern = self::REGEX_DELIMITER . $pattern . self::REGEX_DELIMITER;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection $property must from $object and accessible */
 		return ($this->property instanceof Reflection_Property)
 			? ((preg_match($pattern, $this->property->getValue($object)) === 1) ? true : false)
 			: null;

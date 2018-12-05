@@ -9,7 +9,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Property annotations unit tests
@@ -72,9 +71,12 @@ class Property_Test extends Test
 	//------------------------------------------------------------------------- testDefaultAnnotation
 	/**
 	 * Test default annotation
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testDefaultAnnotation()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property = new Reflection_Property(Test_Object::class, 'property');
 		static::assertEquals('default value for property', $property->getDefaultValue());
 	}
@@ -83,7 +85,7 @@ class Property_Test extends Test
 	/**
 	 * Test @default annotation into the simpliest context : no AOP
 	 *
-	 * @throws ReflectionException
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testDefaultSimple()
 	{
@@ -93,26 +95,31 @@ class Property_Test extends Test
 		static::assertEquals(43, $robert->null_age, '@default.override_null');
 		static::assertEquals('Robert', $robert->name, '@default.simple');
 		static::assertEquals('Mitchum', $robert->surname, '@default.very_simple');
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			18,
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
 			'@default.reflection.override'
 		);
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			43,
 			(new Reflection_Property(Default_Simple::class, 'null_age'))->getDefaultValue(),
 			'@default.reflection.override_null'
 		);
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			'Robert',
 			(new Reflection_Property(Default_Simple::class, 'name'))->getDefaultValue(),
 			'@default.reflection.simple'
 		);
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			'Mitchum',
 			(new Reflection_Property(Default_Simple::class, 'surname'))->getDefaultValue(),
 			'@default.reflection.very_simple'
 		);
+		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum'],
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
@@ -136,10 +143,13 @@ class Property_Test extends Test
 	//----------------------------------------------------------------------- testGetterAnnotationSet
 	/**
 	 * Test property @getter : setting annotation value
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testGetterAnnotationSet()
 	{
-		$property = new Reflection_Property(get_class($this->subject), 'property');
+		/** @noinspection PhpUnhandledExceptionInspection valid object and constant */
+		$property = new Reflection_Property($this->subject, 'property');
 
 		// @getter methodName
 		static::assertEquals(
@@ -204,13 +214,16 @@ class Property_Test extends Test
 	//-------------------------------------------------------------------------------- testWithValues
 	/**
 	 * Test annotation with multi-lines values
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testWithValues()
 	{
 		$this->subject->with_values = 'a_value';
+		/** @noinspection PhpUnhandledExceptionInspection valid object and constant property */
 		static::assertEquals(
 			['a_value', 'another_value', 'third_value', 'fourth_value'],
-			(new Reflection_Property(get_class($this->subject), 'with_values'))
+			(new Reflection_Property($this->subject, 'with_values'))
 				->getListAnnotation('values')->values()
 		);
 	}

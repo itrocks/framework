@@ -177,10 +177,12 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 
 	//------------------------------------------------------------------------------------- setMethod
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $callable callable
 	 */
 	public function setMethod(callable $callable)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection callable must be valid */
 		$this->static = (new Reflection_Method($callable[0], $callable[1]))->isStatic();
 		$this->value  = $callable;
 	}

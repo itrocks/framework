@@ -23,15 +23,17 @@ class Tabs_Builder_Class
 	/**
 	 * Build tabs containing class properties
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object            object|string|Reflection_Class object or class name/reflection
 	 * @param $filter_properties string[]
 	 * @return Tab[] Tabs will contain Reflection_Property[] as content
 	 */
 	public function build($object, array $filter_properties = null)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 		$this->class = ($object instanceof Reflection_Class)
 			? $object
-			: new Reflection_Class(is_string($object) ? $object : get_class($object));
+			: new Reflection_Class($object);
 		$group_annotations = Group_Annotation::allOf($this->class);
 		$this->removeDuplicateProperties($group_annotations);
 		$this->mergeGroups($group_annotations);
@@ -112,19 +114,20 @@ class Tabs_Builder_Class
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object|string object or class name
 	 * @param $property_path string
 	 * @return Reflection_Property
 	 */
 	protected function getProperty($object, $property_path)
 	{
-		$class_name = is_string($object) ? get_class($object) : $object;
-		return new Reflection_Property($class_name, $property_path);
+		/** @noinspection PhpUnhandledExceptionInspection $object must be valid */
+		return new Reflection_Property($object, $property_path);
 	}
 
 	//---------------------------------------------------------------------------- groupsToProperties
 	/**
-	 * @param $object            object|string object or class name
+	 * @param $object            object|string|Reflection_Class object or class name
 	 * @param $group_annotations Group_Annotation[]
 	 * @param $filter_properties string[] if empty, then get all properties
 	 * @return Reflection_Property[]
@@ -132,6 +135,9 @@ class Tabs_Builder_Class
 	protected function groupsToProperties(
 		$object, array $group_annotations, array $filter_properties
 	) {
+		if ($object instanceof Reflection_Class) {
+			$object = $object->name;
+		}
 		$properties = [];
 		foreach ($group_annotations as $group) {
 			foreach ($group->values() as $property_path) {

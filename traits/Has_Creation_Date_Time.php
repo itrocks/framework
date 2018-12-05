@@ -23,11 +23,13 @@ trait Has_Creation_Date_Time
 
 	//--------------------------------------------------------------------- calculateCreationDateTime
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[]|null
 	 */
 	public function calculateCreationDateTime()
 	{
 		if (!isset($this->creation) || $this->creation->isEmpty()) {
+			/** @noinspection PhpUnhandledExceptionInspection valid call */
 			$this->creation = new Date_Time();
 			$only[]         = 'creation';
 		}

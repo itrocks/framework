@@ -41,6 +41,7 @@ class Assign implements Command
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return mixed
 	 */
@@ -60,14 +61,16 @@ class Assign implements Command
 			}
 			// right operand is a property path : get its value
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 				$property_value = new Reflection_Property_Value(
-					get_class($object), Names::displayToProperty(Loc::rtr($this->value)), $object
+					$object, Names::displayToProperty(Loc::rtr($this->value)), $object
 				);
 				$value = $property_value->value();
 			}
 			// left operand is a property path
+			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 			$property_value = new Reflection_Property_Value(
-				get_class($object), Names::displayToProperty(Loc::rtr($this->property_name)), $object
+				$object, Names::displayToProperty(Loc::rtr($this->property_name)), $object
 			);
 			// translate value
 			$values = $property_value->getListAnnotation('values')->values();

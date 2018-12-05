@@ -75,12 +75,14 @@ class Feature_Cache
 
 	//------------------------------------------------------------------------------------- scanClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return Feature[]
 	 */
 	private function scanClass($class_name)
 	{
-		$class = new Reflection_Class($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection class must be valid */
+		$class               = new Reflection_Class($class_name);
 		$feature_annotations = $class->getAnnotations('feature');
 
 		foreach ($feature_annotations as $annotation) {

@@ -49,11 +49,13 @@ class Length_Annotation extends Reflection\Annotation implements Property_Contex
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $this->property from $object and accessible */
 		return ($this->property instanceof Reflection_Property)
 			? (
 			Mandatory_Annotation::of($this->property)->isEmpty($object)

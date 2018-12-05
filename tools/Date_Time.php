@@ -86,6 +86,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $time     DateTime|integer|string|null current time in string or timestamp format
 	 *                  If null, current time on timezone will be used to initialize
 	 * @param $timezone DateTimeZone
+	 * @throws Exception
 	 */
 	public function __construct($time = self::NOW, DateTimeZone $timezone = null)
 	{
@@ -164,6 +165,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $format   string
 	 * @param $time     string
 	 * @param $timezone DateTimeZone
@@ -177,6 +179,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		$date_time = $timezone
 			? parent::createFromFormat($format, $time, $timezone)
 			: parent::createFromFormat($format, $time);
+		/** @noinspection PhpUnhandledExceptionInspection valid constant format used */
 		return $timezone
 			? new static($date_time->format('Y-m-d H:i:s'), $timezone)
 			: new static($date_time->format('Y-m-d H:i:s'));
@@ -186,6 +189,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a new date with only the day of the current date (with an empty time)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @deprecated use toBeginOf(Date_Time::DAY) or toEndOf instead
 	 * @param $end_of_day boolean if true, the time will be 23:59:59 instead of an empty time
 	 * @return Date_Time
@@ -194,6 +198,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function day($end_of_day = false)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant format */
 		return new static($this->format('Y-m-d') . ($end_of_day ? ' 23:59:59' : ''));
 	}
 
@@ -237,16 +242,22 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//---------------------------------------------------------------------------------------- daysIn
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $unit string @values day, month, week, year
 	 * @return integer
 	 */
 	public function daysIn($unit)
 	{
 		switch ($unit) {
-			case self::DAY:   return 1;
-			case self::MONTH: return $this->format(self::DAYS_IN_MONTH);
-			case self::WEEK:  return 7;
-			case self::YEAR:  return (new static($this))->toEndOf(self::YEAR)->format(self::DAY_OF_YEAR);
+			case self::DAY:
+				return 1;
+			case self::MONTH:
+				return $this->format(self::DAYS_IN_MONTH);
+			case self::WEEK:
+				return 7;
+			case self::YEAR:
+				/** @noinspection PhpUnhandledExceptionInspection copy of valid $this */
+				return (new static($this))->toEndOf(self::YEAR)->format(self::DAY_OF_YEAR);
 		}
 		return null;
 	}
@@ -304,6 +315,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date string
 	 * @param $max  boolean
 	 * @return Date_Time
+	 * @throws Exception
 	 */
 	public static function fromISO($date, $max = false)
 	{
@@ -320,6 +332,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * @param $string string
 	 * @return self
+	 * @throws Exception
 	 */
 	public static function fromString($string)
 	{
@@ -441,6 +454,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns last day of the month (goes to the end of the month)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @deprecated use toEndOf instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-31 23:59:59'
 	 * @return Date_Time
@@ -449,8 +463,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function lastDayOfMonth()
 	{
 		if ($this->isEmpty()) {
+			/** @noinspection PhpUnhandledExceptionInspection copy of valid $this */
 			return new static($this);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid format */
 		return new static($this->format('Y-m-t 23:59:59'));
 	}
 
@@ -477,10 +493,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a maximal date time, far into the future considered as a date that non is after
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
 	public static function max()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		return new static(self::$max_date);
 	}
 
@@ -488,10 +506,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a minimal date time, far into the past considered as a date that none is before
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
 	public static function min()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		return new static(self::$min_date);
 	}
 
@@ -499,6 +519,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @deprecated use toBeginOf(Date_Time::MONTH) instead
 	 * @example 'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return Date_Time
@@ -507,8 +528,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function month()
 	{
 		if ($this->isEmpty()) {
+			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
 			return new static($this);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid format */
 		return new static($this->format('Y-m'));
 	}
 
@@ -516,10 +539,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns current date-time
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
 	public static function now()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call without parameters */
 		return new static();
 	}
 
@@ -545,6 +570,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a new date of the beginning of the $unit
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
@@ -556,21 +582,35 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function toBeginOf($unit)
 	{
 		if ($this->isEmpty()) {
+			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE: $format = 'Y-m-d H:i:00';   break;
-			case Date_Time::HOUR:   $format = 'Y-m-d H:00:00';  break;
-			case Date_Time::DAY:    $format = 'Y-m-d 00:00:00'; break;
+			case Date_Time::MINUTE:
+				$format = 'Y-m-d H:i:00';
+				break;
+			case Date_Time::HOUR:
+				$format = 'Y-m-d H:00:00';
+				break;
+			case Date_Time::DAY:
+				$format = 'Y-m-d 00:00:00';
+				break;
 			case Date_Time::WEEK:
+				/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 				return (new static($this->format('Y-m-d 00:00:00')))
 					->sub($this->format(self::DAY_OF_WEEK_ISO) - 1);
 				break;
-			case Date_Time::MONTH: $format = 'Y-m-01 00:00:00';  break;
-			case Date_Time::YEAR:  $format = 'Y-01-01 00:00:00'; break;
+			case Date_Time::MONTH:
+				$format = 'Y-m-01 00:00:00';
+				break;
+			case Date_Time::YEAR:
+				$format = 'Y-01-01 00:00:00';
+				break;
 			// invalid value for $unit : a new Date_Time with the same time
-			default: $format = 'Y-m-d H:i:s';
+			default:
+				$format = 'Y-m-d H:i:s';
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 		return new static($this->format($format));
 	}
 
@@ -597,6 +637,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a new date of the end of the $unit
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MINUTE) => 'YYYY-MM-DD HH:II:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::HOUR)   => 'YYYY-MM-DD HH:00:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
@@ -608,21 +649,35 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function toEndOf($unit)
 	{
 		if ($this->isEmpty()) {
+			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE: $format = 'Y-m-d H:i:59';   break;
-			case Date_Time::HOUR:   $format = 'Y-m-d H:59:59';  break;
-			case Date_Time::DAY:    $format = 'Y-m-d 23:59:59'; break;
+			case Date_Time::MINUTE:
+				$format = 'Y-m-d H:i:59';
+				break;
+			case Date_Time::HOUR:
+				$format = 'Y-m-d H:59:59';
+				break;
+			case Date_Time::DAY:
+				$format = 'Y-m-d 23:59:59';
+				break;
 			case Date_Time::WEEK:
+				/** @noinspection PhpUnhandledExceptionInspection valid copy of $this and constant format */
 				return (new static($this->format('Y-m-d 23:59:59')))
 					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
 				break;
-			case Date_Time::MONTH: $format = 'Y-m-t 23:59:59';   break;
-			case Date_Time::YEAR:  $format = 'Y-12-31 23:59:59'; break;
+			case Date_Time::MONTH:
+				$format = 'Y-m-t 23:59:59';
+				break;
+			case Date_Time::YEAR:
+				$format = 'Y-12-31 23:59:59';
+				break;
 			// invalid value for $unit : a new Date_Time with the same time
-			default: $format = 'Y-m-d H:i:s';
+			default:
+				$format = 'Y-m-d H:i:s';
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid copy of $this and constant format */
 		return new static($this->format($format));
 	}
 
@@ -642,6 +697,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @deprecated Please use month() instead
 	 * @example    'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return     Date_Time
@@ -649,8 +705,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function toMonth()
 	{
 		if ($this->isMin()) {
+			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
 			return new static($this);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 		return new static($this->format('Y-m'));
 	}
 
@@ -658,10 +716,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns current date, with an empty time (00:00:00)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
 	public static function today()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant format */
 		return new static(date('Y-m-d 00:00:00'));
 	}
 
@@ -681,7 +741,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns yesterday date, with an empty time (00:00:00).
 	 *
 	 * @return Date_Time
-	 * @throws Exception
 	 */
 	public static function yesterday()
 	{

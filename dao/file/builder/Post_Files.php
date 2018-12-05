@@ -94,11 +94,13 @@ class Post_Files
 	/**
 	 * Return a file object that complies the file type of the property into the reference class name
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_path string
 	 * @return File
 	 */
 	protected function newFileObject($property_path)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		if (
 			$this->for_class_name
 			&& ($property = new Reflection_Property($this->for_class_name, $property_path))
@@ -114,6 +116,7 @@ class Post_Files
 		else {
 			$file_class = File::class;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection file class must be a valid class */
 		/** @var $file File */
 		$file = Builder::create($file_class);
 		return $file;

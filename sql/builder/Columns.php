@@ -109,6 +109,7 @@ class Columns implements With_Build_Column
 	/**
 	 * Build the columns list, based on properties paths
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 * @todo factorize
 	 */
@@ -135,6 +136,7 @@ class Columns implements With_Build_Column
 			/** @var $properties Reflection_Property[] */
 			$properties   = [];
 			$column_names = [];
+			/** @noinspection PhpUnhandledExceptionInspection starting class name is always valid */
 			foreach (
 				(new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property
 			) {
@@ -151,6 +153,7 @@ class Columns implements With_Build_Column
 			$sql_columns = '';
 			foreach ($this->joins->getLinkedJoins() as $join) {
 				if (isset($has_storage)) {
+					/** @noinspection PhpUnhandledExceptionInspection foreign class must be valid */
 					foreach (
 						(new Reflection_Class($join->foreign_class))->getProperties([T_EXTENDS, T_USE])
 						as $property
@@ -182,6 +185,7 @@ class Columns implements With_Build_Column
 			}
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
 			if (isset($has_storage)) {
+				/** @noinspection PhpUnhandledExceptionInspection starting class is always valid */
 				if (!Link_Annotation::of(new Link_Class($this->joins->getStartingClassName()))->value) {
 					$sql_columns .= 't0.`id`, ';
 				}
@@ -288,6 +292,7 @@ class Columns implements With_Build_Column
 	/**
 	 * Build columns list for an object, in order to instantiate this object when read
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path           string
 	 * @param $join           Join
 	 * @param $first_property boolean
@@ -298,6 +303,7 @@ class Columns implements With_Build_Column
 		$sql_columns = '';
 
 		// linked join and linked properties list
+		/** @noinspection PhpUnhandledExceptionInspection foreign class must be valid */
 		$class = new Link_Class($join->foreign_class);
 		if (Link_Annotation::of($class)->value) {
 			$linked_join       = $this->joins->getLinkedJoin($join);

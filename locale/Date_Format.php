@@ -117,6 +117,7 @@ class Date_Format
 	 *
 	 * @param $date string
 	 * @return string
+	 * @throws Exception
 	 */
 	public function appendMax($date)
 	{

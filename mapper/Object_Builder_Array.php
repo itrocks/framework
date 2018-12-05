@@ -249,6 +249,7 @@ class Object_Builder_Array
 	 * If an id_foo property is set and not empty, it can be set and associated object is removed
 	 * id_foo must always be set before any forced foo[sub_property] values into the array
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object
 	 * @param $property_name string must start with 'id_'
 	 * @param $value         integer
@@ -272,7 +273,8 @@ class Object_Builder_Array
 		}
 		// forces the call to the AOP / setter, if there is one for the property
 		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
-			$property = new Reflection_Property(get_class($object), $real_property_name);
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$property = new Reflection_Property($object, $real_property_name);
 			/*
 			// Evolution proposal, but not freshly tested (and not enough time to do this)
 			$GLOBALS['D'] = true;
@@ -365,6 +367,7 @@ class Object_Builder_Array
 
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object
 	 * @param $property      Reflection_Property
 	 * @param $value         string
@@ -380,6 +383,7 @@ class Object_Builder_Array
 			&& ($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
+			/** @noinspection PhpUnhandledExceptionInspection widget builder class name must be valid */
 			$builder = Builder::create($builder, [$property, $value]);
 			/** @var $builder Property */
 			$value2 = $builder->buildValue($object, $null_if_empty);
@@ -414,7 +418,8 @@ class Object_Builder_Array
 				if ($link->isObject()) {
 					$class_name       = $property->getType()->asString();
 					$composite_object = $property->getAnnotation('component')->value ? $object : null;
-					$value            = $this->buildObjectValue(
+					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
+					$value = $this->buildObjectValue(
 						$class_name, $property->getValue($object), $value, $null_if_empty, $composite_object
 					);
 				}
@@ -496,6 +501,7 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------------- buildSubObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object
 	 * @param $property      Reflection_Property
 	 * @param $value         mixed
@@ -519,6 +525,7 @@ class Object_Builder_Array
 			);
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			$sub_object = $property->getValue($object);
 			$value      = $builder->build($value, $sub_object, $null_if_empty) ?: $sub_object;
 			if (isset($value)) {
@@ -611,6 +618,7 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------------- initLinkObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array  array
 	 * @param $object object
 	 * @return array
@@ -664,6 +672,7 @@ class Object_Builder_Array
 				$object = Dao::searchOne($search, $this->class->name);
 			}
 			if ($id_property_value && !$object) {
+				/** @noinspection PhpUnhandledExceptionInspection read object must be valid */
 				$object = Builder::createClone(
 					Dao::read($id_property_value, $linked_class_name), $this->class->name
 				);
@@ -719,7 +728,7 @@ class Object_Builder_Array
 
 	//------------------------------------------------------------------------------------ readObject
 	/**
-	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object          object
 	 * @param $read_properties string[] properties names
 	 * @return object
@@ -735,10 +744,11 @@ class Object_Builder_Array
 		}
 		elseif ($objects) {
 			$new_object = reset($objects);
-			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			foreach ((new Reflection_Class($object))->accessProperties() as $property) {
 				$property_name = $property->name;
 				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {
+					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 					$property->setValue($new_object, $property->getValue($object));
 				}
 			}
@@ -749,6 +759,7 @@ class Object_Builder_Array
 
 	//-------------------------------------------------------------------------------------- setClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
 	public function setClass($class_name)
@@ -756,6 +767,7 @@ class Object_Builder_Array
 		if ($this->started) {
 			$this->stop();
 		}
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$this->class = new Reflection_Class(Builder::className($class_name));
 	}
 

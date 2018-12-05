@@ -50,6 +50,7 @@ abstract class Writer
 
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object Has_History
 	 * @param $link Data_Link
 	 */
@@ -64,8 +65,10 @@ abstract class Writer
 				$identifier, $class_name
 			);
 			// call getter for collections and maps in order to get the full value before write
+			/** @noinspection PhpUnhandledExceptionInspection from object */
 			foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 				if ($property->getType()->isMultiple()) {
+					/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 					$property->getValue($before);
 				}
 			}
@@ -74,17 +77,18 @@ abstract class Writer
 
 	//--------------------------------------------------------------------------------- createHistory
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $before Has_History
 	 * @param $after  Has_History
 	 * @return History[]
 	 */
 	private static function createHistory(Has_History $before, Has_History $after)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection History class name is always valid */
+		/** @noinspection PhpUnhandledExceptionInspection valid history class name */
 		$history_class = new Reflection_Class(Builder::className($after->getHistoryClassName()));
 		$history       = [];
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class = new Reflection_Class(get_class($before));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Reflection_Class($before);
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
 			if (
@@ -93,7 +97,9 @@ abstract class Writer
 					$property->getAnnotation(Store_Annotation::ANNOTATION)->value !== Store_Annotation::FALSE
 				)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 				$old_value = $property->getValue($before);
+				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 				$new_value = $property->getValue($after);
 				if (is_array($old_value)) {
 					$old_value = join(', ', $old_value);
@@ -117,6 +123,7 @@ abstract class Writer
 					)
 					|| (strval($old_value) != strval($new_value))
 				) {
+					/** @noinspection PhpUnhandledExceptionInspection valid history class name */
 					$history[] = Builder::create(
 						$history_class->name, [$after, $property->name, $old_value, $new_value]
 					);

@@ -96,12 +96,15 @@ trait Has_Begin_End_Dates
 	/**
 	 * Returns true if begin and end dates for the current object overlap dates of $with
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $with Has_Begin_End_Dates
 	 * @return boolean
 	 */
 	public function datesOverlap($with)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$this_period = Builder::create(Period::class, [$this->begin_date, $this->end_date]);
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$with_period = Builder::create(Period::class, [$with->begin_date, $with->end_date]);
 		return !$this_period->out($with_period);
 	}

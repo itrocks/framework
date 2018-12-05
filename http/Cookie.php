@@ -53,13 +53,14 @@ class Cookie implements Stringable
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $string string
 	 * @return static
 	 */
 	public static function fromString($string)
 	{
-		/** @var $cookie static */
-		$cookie = Builder::create(get_called_class());
+		/** @noinspection PhpUnhandledExceptionInspection static */
+		$cookie = Builder::create(static::class);
 		$cookie->properties = [];
 		foreach (explode(';', $string) as $element) {
 			list($key, $value) = explode('=', $element);

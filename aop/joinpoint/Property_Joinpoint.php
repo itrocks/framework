@@ -71,10 +71,12 @@ abstract class Property_Joinpoint extends Joinpoint
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
 	public function getProperty()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $pointcut must be a valid property */
 		return new Reflection_Property(
 			is_object($this->pointcut[0]) ? get_class($this->pointcut[0]) : $this->pointcut[0],
 			$this->pointcut[1]

@@ -20,14 +20,15 @@ abstract class Authentication
 	/**
 	 * List all of properties to write in user object for the register
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array array The form content
 	 * @return User A list of properties as 'property' => 'value'
 	 */
 	public static function arrayToUser(array $array)
 	{
-		/** @var $user User */
-		$user           = Search_Object::create(User::class);
-		$property       = new Reflection_Property(get_class($user), 'password');
+		$user = Search_Object::create(User::class);
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
+		$property       = new Reflection_Property($user, 'password');
 		$user->login    = $array['login'];
 		$user->password = (
 			new Password($array['password'], Password_Annotation::of($property)->value)
@@ -136,14 +137,16 @@ abstract class Authentication
 	 * Returns logged user if success
 	 * To set logger user as current for environment, you must call authenticate()
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $login    string
 	 * @param $password string
 	 * @return User|null
 	 */
 	public static function login($login, $password)
 	{
-		$search           = Search_Object::create(User::class);
-		$property         = new Reflection_Property(get_class($search), 'password');
+		$search = Search_Object::create(User::class);
+		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
+		$property         = new Reflection_Property($search, 'password');
 		$search->login    = $login;
 		$search->password = (
 			new Password($password, Password_Annotation::of($property)->value)

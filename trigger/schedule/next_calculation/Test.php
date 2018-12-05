@@ -15,6 +15,7 @@ class Test extends Tests\Test
 
 	//---------------------------------------------------------------------------------- executeTests
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $schedule Schedule
 	 * @param $values   string[] key is the source value, expected is the next one
 	 */
@@ -22,6 +23,7 @@ class Test extends Tests\Test
 	{
 		$calculation = new Next_Calculation();
 		foreach ($values as $source => $expected) {
+			/** @noinspection PhpUnhandledExceptionInspection $source must be valid */
 			static::assertEquals(
 				$expected,
 				$calculation->next($schedule, new Date_Time($source))->format('Y-m-d H:i:s'),

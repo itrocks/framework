@@ -24,6 +24,7 @@ class Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection not a stored object */
 		$parameters->getMainObject(Func_Select::class);
 		return View::run($parameters->getObjects(), $form, $files, Func::class, Feature::F_SELECT);
 	}

@@ -532,7 +532,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			if (!is_null($did_change) && !(isset($this->errors) && count($this->errors))) {
 				$list_settings->save();
 			}
-		} /** @noinspection PhpRedundantCatchClauseInspection Dao may be Mysql\Link */
+		}
+		/** @noinspection PhpRedundantCatchClauseInspection Dao may be Mysql\Link */
 		catch (Mysql_Error_Exception $exception) {
 			if (Time_Limit::isErrorCodeTimeout($exception->getCode())) {
 				$error = new Exception(

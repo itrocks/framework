@@ -17,10 +17,12 @@ class Link_Same_Annotation extends Annotation
 
 	//---------------------------------------------------------------------------------- getLinkClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class|null
 	 */
 	public function getLinkClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection annotation value must be a valid class name */
 		return $this->value ? new Link_Class($this->value) : null;
 	}
 

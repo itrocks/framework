@@ -111,6 +111,7 @@ class Annotation_Test extends Test
 
 	//----------------------------------------------------------------------------------- testForeign
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @dataProvider providerForeign
 	 * @param $class_name      string
 	 * @param $property_name   string
@@ -127,6 +128,7 @@ class Annotation_Test extends Test
 		if (!isset($assumed_class)) {
 			$assumed_class = Foreign_Annotation::class;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
 		static::assertEquals(
@@ -138,6 +140,7 @@ class Annotation_Test extends Test
 
 	//------------------------------------------------------------------------------- testForeignlink
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @dataProvider providerForeignlink
 	 * @param $class_name      string
 	 * @param $property_name   string
@@ -154,6 +157,7 @@ class Annotation_Test extends Test
 		if (!isset($assumed_class)) {
 			$assumed_class = Foreignlink_Annotation::class;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);
 		$annotation = $property->getAnnotation($annotation_name);
 		static::assertEquals(

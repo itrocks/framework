@@ -42,6 +42,7 @@ class Next_Calculation
 	/**
 	 * Calculate next allowed day of month
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
 	protected function nextDayOfMonth()
@@ -57,6 +58,7 @@ class Next_Calculation
 		$days_of_month = $this->schedule->getDaysOfMonth();
 		// last day exceeded : next month
 		if ($date_day > end($days_of_month)) {
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(
 				0, 0, 0, $date_month + 1, reset($days_of_month), $date_year
 			));
@@ -71,6 +73,7 @@ class Next_Calculation
 					break;
 				}
 			}
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, $date_day, $date_year));
 			return true;
 		}
@@ -118,6 +121,7 @@ class Next_Calculation
 	/**
 	 * Calculate next allowed month
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
 	protected function nextMonth()
@@ -133,6 +137,7 @@ class Next_Calculation
 		$months = $this->schedule->getMonths();
 		// last month exceeded : next year
 		if ($date_month > end($months)) {
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, reset($months), 1, $date_year + 1));
 			$this->nextMonth();
 			return true;
@@ -145,6 +150,7 @@ class Next_Calculation
 					break;
 				}
 			}
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, 1, $date_year));
 			return true;
 		}
@@ -155,6 +161,7 @@ class Next_Calculation
 	/**
 	 * Calculate next time in the day
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $forward boolean
 	 * @return boolean true if date changed, else false
 	 */
@@ -171,6 +178,7 @@ class Next_Calculation
 		$hour_ranges = $this->schedule->getExtendedHourRanges();
 		// last time exceeded : next day
 		if ($date_time > end($hour_ranges)->until) {
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, $date_day + 1, $date_year));
 			$this->nextDayOfWeek();
 			$this->nextTime();
@@ -184,6 +192,7 @@ class Next_Calculation
 		foreach ($hour_ranges as $hour_range) {
 			if ($forward) {
 				if ($hour_range->frequency) {
+					/** @noinspection PhpUnhandledExceptionInspection date must be valid */
 					$next_date = (new Date_Time($this->date))->add(
 						$hour_range->frequency, substr($hour_range->frequency_unit, 0, -1)
 					)->sub(1, Date_Time::SECOND);
@@ -196,6 +205,7 @@ class Next_Calculation
 			}
 			if ($hour_range->from >= $test_time) {
 				$hour             = explode(':', $hour_range->from);
+				/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 				$possible_dates[] = new Date_Time(mktime(
 					$hour[0], $hour[1], $hour[2],
 					$next_date->format('m'), $next_date->format('d'), $next_date->format('Y')
@@ -207,6 +217,7 @@ class Next_Calculation
 			}
 		}
 		if (!$possible_dates) {
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, $date_day + 1, $date_year));
 			$this->nextDayOfWeek();
 			$this->nextTime();
@@ -228,6 +239,7 @@ class Next_Calculation
 	/**
 	 * Calculate next allowed year
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return boolean true if date changed, else false
 	 */
 	protected function nextYear()
@@ -250,6 +262,7 @@ class Next_Calculation
 					break;
 				}
 			}
+			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(0, 0, 0, 1, 1, $date_year));
 			return true;
 		}

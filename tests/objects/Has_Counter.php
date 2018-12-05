@@ -18,14 +18,15 @@ trait Has_Counter
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @before ITRocks\Framework\Dao\Data_Link::write($this)
 	 */
 	public function setNumber()
 	{
 		if (isA($this, Has_Counter::class)) {
-			/** @var $counter Counter */
 			$counter = Dao::searchOne(['class_name' => get_class($this)], Counter::class);
 			if (!isset($counter)) {
+				/** @noinspection PhpUnhandledExceptionInspection constant */
 				$counter = Builder::create(Counter::class, [get_class($this)]);
 			}
 			$this->setCounter($counter->increment());

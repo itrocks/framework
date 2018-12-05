@@ -14,6 +14,7 @@ class Element_Add_Controller extends Add\Controller
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
@@ -21,6 +22,7 @@ class Element_Add_Controller extends Add\Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class name is valid and has property name */
 		$name        = new Reflection_Property($class_name, 'name');
 		$name_values = Values_Annotation::of($name);
 		$name_values->add('door');

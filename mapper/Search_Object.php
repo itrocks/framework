@@ -21,15 +21,17 @@ abstract class Search_Object extends Null_Object
 	 * This creates an object with unset properties, as only set properties are used for searches.
 	 * Private or protected properties can't be unset : they are kept with a null value.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name     string
 	 * @param $deactivate_aop boolean true to disable AOP on properties for the search object
 	 * @return object
 	 */
 	public static function create($class_name, $deactivate_aop = false)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$object = Builder::create($class_name);
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($object))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				if ($property->isPublic()) {
 					$name = $property->name;

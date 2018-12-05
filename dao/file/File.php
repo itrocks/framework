@@ -57,6 +57,7 @@ class File
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $temporary_file_name string
 	 */
 	public function __construct($temporary_file_name = null)
@@ -68,6 +69,7 @@ class File
 			$this->temporary_file_name = $temporary_file_name;
 		}
 		if (!isset($this->updated_on)) {
+			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$this->updated_on = Builder::create(Date_Time::class);
 		}
 	}
@@ -166,12 +168,14 @@ class File
 
 	//------------------------------------------------------------------------------------ setContent
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $content string
 	 */
 	protected function setContent($content)
 	{
 		$this->content = $content;
 		$this->calcHash();
+		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$this->updated_on = new Date_Time();
 	}
 

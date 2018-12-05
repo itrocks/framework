@@ -11,7 +11,6 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View\Html\Dom\Script;
-use ReflectionException;
 
 /**
  * Built-in ITRocks HTML view engine
@@ -92,7 +91,6 @@ class Engine implements Configurable, Framework\View\Engine
 	 * @param $parameters string|string[]|object|object[] optional parameters list
 	 * @param $arguments  string|string[] optional arguments list
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function link($object, $feature = null, $parameters = null, $arguments = null)
 	{

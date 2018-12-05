@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\AOP;
 
-use Exception;
+use ITRocks\Framework\AOP\Include_Filter\Exception;
 use ITRocks\Framework\Tools\Paths;
 use php_user_filter;
 

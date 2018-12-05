@@ -17,6 +17,7 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -25,15 +26,18 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection no stored object */
 		$parameters = $parameters->getObjects();
 		$feature    = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
 			: Feature::F_OUTPUT;
 		$controller_class = Getter::get($class_name, $feature, 'Controller', 'php')[0];
+		/** @noinspection PhpUnhandledExceptionInspection controller class must be valid */
 		/** @var $output_controller Output\Controller */
 		$output_controller = Builder::create($controller_class);
 		$output_settings   = Set::current($class_name, $feature);
 		$output_controller->applyParametersToOutputSettings($output_settings, $parameters, $form);
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$parameters = array_merge([$class_name => Builder::create($class_name)], $parameters);
 		return View::run($parameters, $form, $files, $class_name, 'outputSetting');
 	}

@@ -39,12 +39,14 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	/**
 	 * Apply output settings rules to output settings properties
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $output_settings Output_Setting\Set
 	 */
 	protected function applyOutputSettings(Output_Setting\Set $output_settings)
 	{
 		if ($output_settings->properties) {
 			foreach ($output_settings->properties as $property_path => $property) {
+				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 				$reflection_property = new Reflection_Property(
 					$output_settings->getClassName(), $property_path
 				);
@@ -178,9 +180,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
 		if (
-			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			($object instanceof Duplicate)
-			|| (new Reflection_Class(get_class($object)))->getAnnotations('duplicate')
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			($object instanceof Duplicate) || (new Reflection_Class($object))->getAnnotations('duplicate')
 		) {
 			$buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE] = new Button(
 				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE

@@ -29,12 +29,14 @@ trait Component
 	/**
 	 * Default disposer call the remove
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string|object The composite class name or object
 	 * @param $property_name string The composite property name
 	 */
 	public function dispose($class_name = null, $property_name = null)
 	{
 		foreach (self::getCompositeProperties($class_name, $property_name) as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $this must be accessible */
 			$composite = $property->getValue($this);
 			if (isset($composite)) {
 				if (isA($composite, Remover::class)) {
@@ -52,12 +54,14 @@ trait Component
 	/**
 	 * Gets composite object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string|object The composite class name or object
 	 * @param $property_name string The composite property name
 	 * @return object
 	 */
 	public function getComposite($class_name = null, $property_name = null)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection property from $this must be accessible */
 		return self::getCompositeProperty($class_name, $property_name)->getValue($this);
 	}
 
@@ -65,6 +69,7 @@ trait Component
 	/**
 	 * Get composite properties
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    object|string The composite class name or object
 	 * @param $property_name string The composite property name
 	 * @return Reflection_Property[] key is the name of the property
@@ -85,6 +90,7 @@ trait Component
 		$path = $self . DOT . $class_name . DOT . $property_name;
 		if (!isset(self::$composite_properties[$path])) {
 			self::$composite_properties[$path] = [];
+			/** @noinspection PhpUnhandledExceptionInspection self, and property that must be valid */
 			$properties = empty($property_name)
 				? (new Reflection_Class($self))->getAnnotedProperties('composite')
 				: [new Reflection_Property($self, $property_name)];
@@ -97,9 +103,8 @@ trait Component
 			}
 			if (!self::$composite_properties[$path]) {
 				// automatic composite property : filter all properties by class name as type
-				foreach (
-					(new Reflection_Class($self))->getProperties([T_EXTENDS, T_USE]) as $property
-				) {
+				/** @noinspection PhpUnhandledExceptionInspection self */
+				foreach ((new Reflection_Class($self))->getProperties([T_EXTENDS, T_USE]) as $property) {
 					$property_class = Builder::current()->sourceClassName($property->getType()->asString());
 					if (!isset($class_name) || is_a($class_name, $property_class, true)) {
 						self::$composite_properties[$path][$property->name] = $property;

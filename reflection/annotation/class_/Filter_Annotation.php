@@ -90,8 +90,9 @@ class Filter_Annotation extends Method_Annotation
 
 	//----------------------------------------------------------------------------------------- apply
 	/**
-	 * Apply all @filter annotations of the class
+	 * Apply all filter annotations of the class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class string|Reflection_Class
 	 * @param $for   string null means 'for any' @values for_use, for_view
 	 * @return object
@@ -99,6 +100,7 @@ class Filter_Annotation extends Method_Annotation
 	public static function apply($class, $for = null)
 	{
 		if (is_string($class)) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$class = new Reflection_Class($class);
 		}
 		$filters = static::allOf($class);

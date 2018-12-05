@@ -153,12 +153,14 @@ class Selection
 	/**
 	 * Gets the Controller object associated to the object / class name
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Controller
 	 */
 	public function getListController()
 	{
 		if (!isset($this->list_controller)) {
-			$list_controllers      = Main::$current->getController($this->class_name, Feature::F_LIST);
+			$list_controllers = Main::$current->getController($this->class_name, Feature::F_LIST);
+			/** @noinspection PhpUnhandledExceptionInspection a controller is always a valid callable */
 			$this->list_controller = Builder::create($list_controllers[0]);
 		}
 		return $this->list_controller;

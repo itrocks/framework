@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
-use Exception;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -89,8 +88,6 @@ class Validate_Test extends Test
 	//----------------------------------------------------------------------- testValidateAnnotations
 	/**
 	 * Launches 3 class validators that returns different results.
-	 *
-	 * @throws Exception
 	 */
 	public function testValidateAnnotations()
 	{

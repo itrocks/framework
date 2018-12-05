@@ -15,6 +15,7 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
@@ -24,6 +25,7 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$element_class_name = Tools\Set::elementClassNameOf($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection no stored object parameter */
 		$parameters         = $parameters->getObjects();
 		$list_controller    = new List_\Controller();
 		$list_settings      = Set::current($element_class_name);

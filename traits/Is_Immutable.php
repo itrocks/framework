@@ -25,6 +25,7 @@ trait Is_Immutable
 	 * - If an object with the same property values exist in data store, then it will be linked to it
 	 * - If it is a new object, it will created
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $link Data_Link
 	 */
 	public function beforeWriteOfImmutable(Data_Link $link = null)
@@ -38,7 +39,9 @@ trait Is_Immutable
 
 		// TODO this "form cleanup" code must be generalized into a cleanup plugin
 		$search = Search_Object::create(get_class($this));
-		foreach ((new Reflection_Class(get_class($this)))->getProperties() as $property) {
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($this))->getProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $this and accessible */
 			if (
 				!$property->isStatic()
 				&& !Store_Annotation::of($property)->isFalse()

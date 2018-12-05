@@ -210,13 +210,15 @@ class Summary_Builder
 	/**
 	 * Build SQL WHERE section for an object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path   string Base property path pointing to the object
 	 * @param $object object The value is an object, which will be used for search
 	 * @return string
 	 */
 	private function buildObject($path, $object)
 	{
-		$class = new Link_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Link_Class($object);
 		$id = $this->sql_link->getObjectIdentifier(
 			$object,
 			Class_\Link_Annotation::of($class)->value ? $class->getCompositeProperty()->name : null
@@ -228,8 +230,8 @@ class Summary_Builder
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
 		$array = [];
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class = new Reflection_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Reflection_Class($object);
 		foreach (
 			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
 			as $property_name => $property
@@ -345,6 +347,7 @@ class Summary_Builder
 	/**
 	 * get the property of a path
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path string
 	 * @return Reflection_Property|null
 	 */
@@ -357,6 +360,7 @@ class Summary_Builder
 		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 		// if null, new way to do
 		if (is_null($property)) {
+			/** @noinspection PhpUnhandledExceptionInspection root class and property must be valid */
 			$property = new Reflection_Property($this->joins->getClass(''), $path);
 		}
 		return $property;

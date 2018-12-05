@@ -43,6 +43,7 @@ class Controller implements Framework\Controller
 	 * - then a crashing controller
 	 * - at least a working controller
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
@@ -50,6 +51,7 @@ class Controller implements Framework\Controller
 	 */
 	public function runMultiple(Parameters $parameters, array $form, array $files)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection */
 		return trim(View::run($parameters->getObjects(), $form, $files, Tests::class, self::MULTIPLE));
 	}
 
@@ -57,6 +59,7 @@ class Controller implements Framework\Controller
 	/**
 	 * A working controller : the view returns 'WORKING'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
@@ -64,6 +67,7 @@ class Controller implements Framework\Controller
 	 */
 	public function runWorking(Parameters $parameters, array $form, array $files)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection */
 		return trim(View::run($parameters->getObjects(), $form, $files, Tests::class, self::WORKING));
 	}
 

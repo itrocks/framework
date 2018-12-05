@@ -49,7 +49,6 @@ class Sort implements Option
 	 *   'ITRocks\Framework\User',
 	 *   Dao::sort(['first_name', 'last_name', 'city.country.name')));
 	 * );
-	 *
 	 * @param $columns string|string[]|Reverse[] a single or several column names, or a class name
 	 * to apply each column name can be followed by ' reverse' into the string for reverse order sort
 	 * If null, the value of annotations 'sort' or 'representative' of the class will be taken.
@@ -106,8 +105,8 @@ class Sort implements Option
 			$class_name       = Builder::className($class_name);
 			$this->class_name = $class_name;
 			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-			$class            = new Reflection_Class($class_name);
-			$this->columns    = Sort_Annotation::of($class)->values()
+			$class         = new Reflection_Class($class_name);
+			$this->columns = Sort_Annotation::of($class)->values()
 				?: Representative_Annotation::of($class)->values();
 			$this->calculateReverse();
 		}
@@ -152,6 +151,7 @@ class Sort implements Option
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string the contextual class name :
 	 *                           needed if the constructor was called without columns
 	 * @return Reflection_Property[] the properties
@@ -160,6 +160,7 @@ class Sort implements Option
 	{
 		$properties = [];
 		foreach ($this->getColumns($class_name) as $column) {
+			/** @noinspection PhpUnhandledExceptionInspection column from valid class */
 			$properties[$column] = new Reflection_Property($this->class_name, $column);
 		}
 		return $properties;

@@ -51,16 +51,18 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * Prepare properties to be fully editable for search criteria
 	 *
-	 * - remove @user readonly
+	 * - remove user readonly annotation value
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
 	protected function prepareProperties($class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
 			$mandatory = Mandatory_Annotation::of($property);
 			if ($mandatory->value) {
-				$mandatory->value = false;
+				$mandatory->value              = false;
 				$this->mandatory_annotations[] = $mandatory;
 			}
 			$user = User_Annotation::of($property);

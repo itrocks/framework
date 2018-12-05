@@ -39,6 +39,7 @@ class Html_Builder_Property_Test extends Test
 			new Simple_Component('O', 'one'),
 			new Simple_Component('T', 'two')
 		];
+		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$builder = new Html_Builder_Property(
 			new Reflection_Property(Has_Collection::class, 'simple_collection'),
 			$object->simple_collection
@@ -66,6 +67,7 @@ class Html_Builder_Property_Test extends Test
 			new Simple('O', 'one'),
 			new Simple('T', 'two')
 		];
+		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$builder = new Html_Builder_Property(
 			new Reflection_Property(Has_Map::class, 'simple_map'),
 			$object->simple_map
@@ -87,6 +89,7 @@ class Html_Builder_Property_Test extends Test
 			new Component_Has_Map('TWO', [new Simple('T', 'two'), new Simple('H', 'three')])
 		];
 
+		/** @noinspection PhpUnhandledExceptionInspection valid constants */
 		$builder = new Html_Builder_Property(
 			new Reflection_Property(Has_Map_Into_Collection::class, 'collection_has_map'),
 			$object->collection_has_map

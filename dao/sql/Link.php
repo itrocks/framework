@@ -12,7 +12,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
-use ReflectionException;
 
 /**
  * This is the common class for all SQL data links classes
@@ -284,6 +283,7 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//--------------------------------------------------------------------- selectFirstPassProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object_class  string class for the read object
 	 * @param $properties    string[]|Column[] the list of property paths : only those properties will
 	 *                       be read. You can use Dao\Func\Column sub-classes to get result of
@@ -309,6 +309,7 @@ abstract class Link extends Identifier_Map implements Transactional
 				foreach (explode(DOT, $property_path) as $property_name) {
 					$path .= ($path ? DOT : '') . $property_name;
 					if (substr($path, -1) !== ')') {
+						/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 						$link  = Link_Annotation::of(new Reflection_Property($object_class, $path));
 						if ($link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
 							$keep_path = $path;
@@ -354,6 +355,7 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//------------------------------------------------------------------------------------ selectList
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object_class string class for the read object
 	 * @param $columns      string[]|Column[] the list of the columns names : only those properties
 	 *                      will be read. You can use 'column.sub_column' to get values from linked
@@ -366,6 +368,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		$properties = [];
 		foreach ($columns as $key => $column) {
 			$property_path              = is_object($column) ? $key : $column;
+			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 			$properties[$property_path] = ($column instanceof Dao_Function)
 				? $column
 				: new Reflection_Property($object_class, $property_path);
@@ -417,7 +420,6 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * @param $class_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function storeNameOf($class_name)
 	{
@@ -434,7 +436,6 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * All data is deleted
 	 *
 	 * @param $class_name string
-	 * @throws ReflectionException
 	 */
 	public function truncate($class_name)
 	{

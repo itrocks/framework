@@ -53,12 +53,14 @@ class Max_Length_Annotation extends Reflection\Annotation implements Property_Co
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
 		if ($this->property instanceof Reflection_Property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			$value = $this->property->getValue($object);
 			return is_null($this->value)
 				|| Mandatory_Annotation::of($this->property)->isEmpty($object)

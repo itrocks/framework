@@ -194,6 +194,7 @@ class Set extends Setting\Custom\Set
 		// TODO LOW this keeps compatibility with deprecated properties_path and properties_title
 		if (isset($this->properties_path) && (!isset($this->properties) || !$this->properties)) {
 			foreach ($this->properties_path as $property_path) {
+				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 				$property = new Property($class_name, $property_path);
 				if (isset($this->properties_title[$property_path])) {
 					$property->display = $this->properties_title[$property_path];

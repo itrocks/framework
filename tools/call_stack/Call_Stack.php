@@ -124,6 +124,7 @@ class Call_Stack
 	 *
 	 * This use reflection to get the argument names : so beware, this may be slow !
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $argument_name string
 	 * @param $non_empty     boolean if true, jump to the first function with non-empty value
 	 * @return mixed
@@ -134,11 +135,13 @@ class Call_Stack
 			$function = null;
 			if (!empty($stack['class']) && !empty($stack['function'])) {
 				if (method_exists($stack['class'], $stack['function'])) {
+					/** @noinspection PhpUnhandledExceptionInspection call stack is valid */
 					$function = new Reflection_Method($stack['class'], $stack['function']);
 				}
 			}
 			elseif (!empty($stack['function'])) {
 				if (function_exists($stack['function'])) {
+					/** @noinspection PhpUnhandledExceptionInspection call stack is valid */
 					$function = new Reflection_Function($stack['function']);
 				}
 			}

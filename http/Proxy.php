@@ -135,6 +135,7 @@ class Proxy
 			$this->method = isset($_SERVER['REQUEST_METHOD'])
 				? (($_SERVER['REQUEST_METHOD'] === Http::POST) ? Http::POST : Http::GET)
 				: (empty($_POST) ? Http::GET : Http::POST);
+			/** @noinspection PhpComposerExtensionStubsInspection optional */
 			$this->request_headers = apache_request_headers();
 		}
 	}

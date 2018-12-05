@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Import;
 
-use Exception;
+use ITRocks\Framework\View\View_Exception;
 
 /**
  * Import exception
  */
-class Import_Exception extends Exception
+class Import_Exception extends View_Exception
 {
 
 }

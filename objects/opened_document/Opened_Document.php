@@ -75,12 +75,14 @@ class Opened_Document
 
 	//------------------------------------------------------------------------------ keepObjectOpened
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true
 	 */
 	public static function keepObjectOpened($object)
 	{
 		if ($opened_document = static::openedObject($object)) {
+			/** @noinspection PhpUnhandledExceptionInspection valid */
 			$opened_document->ping = new Date_Time();
 			Dao::write($opened_document, Dao::only('ping'));
 		}
@@ -92,13 +94,14 @@ class Opened_Document
 
 	//------------------------------------------------------------------------------------ openObject
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if the object can be opened, false if an object was already opened before
 	 */
 	public static function openObject($object)
 	{
 		if (!self::openedObject($object)) {
-			/** @var $opened_document Opened_Document */
+			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$opened_document             = Builder::create(Opened_Document::class);
 			$opened_document->class_name = get_class($object);
 			$opened_document->identifier = Dao::getObjectIdentifier($object);

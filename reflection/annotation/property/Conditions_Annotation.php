@@ -59,6 +59,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 *
 	 * The object must be of a class compatible with the property class, or it may crash.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
 	 */
@@ -68,9 +69,9 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 			return false;
 		}
 		foreach ($this->value as $property_name => $condition_value) {
-			$class_name       = get_class($object);
 			$condition_values = explode(',', $condition_value);
-			$property_value   = new Reflection_Property_Value($class_name, $property_name, $object);
+			/** @noinspection PhpUnhandledExceptionInspection object, property must be valid */
+			$property_value   = new Reflection_Property_Value($object, $property_name, $object);
 			$value            = $property_value->value();
 			if (!in_array($value, $condition_values)) {
 				return false;

@@ -157,7 +157,7 @@ class Application
 	//-------------------------------------------------------------------------------- getClassesTree
 	/**
 	 * Get application class name, and all its parent applications class names
-	 * Include extended parents using T_EXTENDS clause or @extends annotation
+	 * Include extended parents using T_EXTENDS clause or extends annotation
 	 *
 	 * If $flat is not set :
 	 * The result key is the name of the class, the value is the list of its parents, with the same
@@ -168,6 +168,7 @@ class Application
 	 * - key 'children' : the value is an array of [$child_class_name => true]
 	 * - key 'parents' : the value is an array of [$parent_class_name => true]
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example
 	 * not $flat : ['Application\Class' => ['ITRocks\Framework' => true]]
 	 * @example
@@ -230,7 +231,7 @@ class Application
 							break;
 						}
 					}
-					/** @noinspection PhpUnhandledExceptionInspection Class exist in production case */
+					/** @noinspection PhpUnhandledExceptionInspection class must exist */
 					if (
 						$all_children_done
 						&& (
@@ -261,12 +262,13 @@ class Application
 	/**
 	 * Gets namespace of the application
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function getNamespace()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		return (new Reflection_Class(get_class($this)))->getNamespaceName();
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		return (new Reflection_Class($this))->getNamespaceName();
 	}
 
 	//--------------------------------------------------------------------------------- getNamespaces
@@ -294,15 +296,16 @@ class Application
 	//------------------------------------------------------------------------------ getParentClasses
 	/**
 	 * Gets application parent classes names
-	 * Include extended parents using T_EXTENDS clause or @extends annotation
+	 * Include extended parents using T_EXTENDS clause or extends annotation
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $recursive boolean get all parents if true
 	 * @return array[] applications class names : key = class name, value = children class names
 	 */
 	public static function getParentClasses($recursive = false)
 	{
 		$class_name = get_called_class();
-		/** @noinspection PhpUnhandledExceptionInspection get_called_class() always valid */
+		/** @noinspection PhpUnhandledExceptionInspection valid get_called_class */
 		$class               = new Reflection_Class($class_name);
 		$parent_class_name   = get_parent_class($class_name);
 		$extends_annotations = Extends_Annotation::allOf($class);

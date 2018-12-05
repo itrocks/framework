@@ -42,17 +42,20 @@ class Property_Annotation implements Command
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
 	 */
 	public function execute($object)
 	{
-		$property = new Reflection_Property(get_class($object), $this->property_name);
-		$annotate = $this->annotate;
+		/** @noinspection PhpUnhandledExceptionInspection property must belong to object */
+		$property         = new Reflection_Property($object, $this->property_name);
+		$annotate         = $this->annotate;
 		$annotation_class = Annotation\Parser::getAnnotationClassName(
 			Reflection_Property::class, $annotate
 		);
 		if ($annotation_class) {
+			/** @noinspection PhpUnhandledExceptionInspection valid annotation class name */
 			/** @var $annotation Mandatory_Annotation */
 			$annotation = Builder::create($annotation_class, [true, $property]);
 			$property->setAnnotation('mandatory', $annotation);

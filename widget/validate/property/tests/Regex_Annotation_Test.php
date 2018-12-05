@@ -56,6 +56,8 @@ class Regex_Annotation_Test extends Test
 	//------------------------------------------------------------------------------------------ test
 	/**
 	 * Regex annotation test
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function test()
 	{
@@ -80,7 +82,8 @@ class Regex_Annotation_Test extends Test
 					continue 2;
 			}
 			$assume['pattern'] = Regex_Annotation::of($property)->value;
-			$assume['value']   = $property->getValue($this);
+			/** @noinspection PhpUnhandledExceptionInspection $property from $this and accessible */
+			$assume['value'] = $property->getValue($this);
 
 			// initialize $result
 			$result           = $assume;

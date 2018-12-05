@@ -34,6 +34,7 @@ class Around_Method extends Method_Joinpoint
 	/**
 	 * Launch the method that which call was replaced by the advice
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $args mixed The arguments the original method was expected to receive
 	 * @return mixed
 	 */
@@ -45,9 +46,11 @@ class Around_Method extends Method_Joinpoint
 			($this->class_name        == $class_name)
 			&& ($this->process_method == $this->pointcut[1])
 		) {
+			/** @noinspection PhpUnhandledExceptionInspection class and method must be valid */
 			$method = (new ReflectionMethod(get_parent_class($this->class_name), $this->process_method));
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection class and method must be valid */
 			$method = (new ReflectionMethod($this->class_name, $this->process_method));
 		}
 		// the method must be accessible to invoke it

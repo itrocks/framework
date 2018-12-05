@@ -57,6 +57,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * Return values ready for display
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[]
 	 * @see formatValuesEx
 	 */
@@ -65,6 +66,7 @@ class Default_List_Row implements List_Row
 		$values = [];
 		static $cache = [];
 		foreach ($this->values as $property_path => $value) {
+			/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 			$property_view = isset($cache[$this->class_name][$property_path])
 				? $cache[$this->class_name][$property_path]
 				: (

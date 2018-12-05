@@ -300,8 +300,9 @@ class Alter_Table
 	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if data will not be destroyed by the types modifications
 	 */
-	protected function checkTypes(mysqli $mysqli, $notice)
-	{
+	protected function checkTypes(
+		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, $notice
+	) {
 		// TODO search data that will be broken by the reduction
 		/*
 		if ($this->alter_columns) {
@@ -323,8 +324,9 @@ class Alter_Table
 	 * @param $notice string @values Maintainer::const local
 	 * @return boolean true if data will not be destroyed by the values modifications
 	 */
-	protected function checkValues(mysqli $mysqli, $notice)
-	{
+	protected function checkValues(
+		/** @noinspection PhpUnusedParameterInspection */ mysqli $mysqli, $notice
+	) {
 		// TODO compare old and new column values : if some are removed, check if they were used
 		return true;
 	}

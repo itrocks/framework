@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Dao\Mysql;
 
 use DateTime;
-use Exception;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Decimal;
 use ITRocks\Framework\Dao\Mysql\Column_Builder_Property\Integer;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -100,7 +99,6 @@ trait Column_Builder_Property
 	 *
 	 * @param $property Reflection_Property
 	 * @return string
-	 * @throws Exception
 	 */
 	private static function propertyNameToMysql(Reflection_Property $property)
 	{
@@ -128,7 +126,6 @@ trait Column_Builder_Property
 	 *
 	 * @param $property Reflection_Property
 	 * @return string
-	 * @throws Exception
 	 */
 	private static function propertyTypeToMysql(Reflection_Property $property)
 	{

@@ -6,7 +6,6 @@ use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -25,9 +24,9 @@ abstract class Identifier_Map extends Data_Link
 	/**
 	 * Disconnect an object from current data link
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object object to disconnect from data source
 	 * @see Data_Link::disconnect()
-	 * @throws ReflectionException
 	 */
 	public function disconnect($object)
 	{
@@ -35,6 +34,7 @@ abstract class Identifier_Map extends Data_Link
 			unset($object->id);
 		}
 		// disconnect component objects, including collection elements
+		/** @noinspection PhpUnhandledExceptionInspection $object is an object */
 		foreach ((new Reflection_Class($object))->getProperties([T_EXTENDS, T_USE]) as $property) {
 			$property_name = $property->name;
 			if (

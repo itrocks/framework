@@ -52,6 +52,7 @@ class Tests_Command extends PHPUnit_TextUI_Command
 	/**
 	 * Run the required tests
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $query_options string[] Other options passed from query params
 	 */
 	public function runTests(array $query_options = [])
@@ -79,6 +80,7 @@ class Tests_Command extends PHPUnit_TextUI_Command
 				&& ($option !== Tests_Html_ResultPrinter::class)
 				&& class_exists($option)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection options must be valid class names */
 				$file_path = (new ReflectionClass($option))->getFileName();
 				if ($file_path) {
 					$run_options[] = $file_path;

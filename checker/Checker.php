@@ -19,14 +19,16 @@ abstract class Checker
 
 	//----------------------------------------------------------------------------------------- check
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return Report
 	 */
 	public static function check($object)
 	{
 		$check_report = new Report();
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class(get_class($object)))->accessProperties() as $property) {
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($object))->accessProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $object */
 			$check_report->add(self::checkProperty($property, $property->getValue($object)));
 		}
 		return $check_report;

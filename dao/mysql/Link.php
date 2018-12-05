@@ -215,6 +215,7 @@ class Link extends Dao\Sql\Link
 	 * - $what array values for non-multiple properties are ignored
 	 * - if $what contain 'or' searches (numeric keys), they are ignored
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $what       object|array source object for filter, or filter array (need class_name)
 	 *                    only set properties will be used for search
 	 * @param $class_name string must be set if $what is a filter array and not an object
@@ -228,9 +229,11 @@ class Link extends Dao\Sql\Link
 				if (!$class_name) {
 					$class_name = get_class($what);
 				}
+				/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 				$object = Builder::create($class_name);
 				$values = is_array($what) ? $what : get_object_vars($what);
 				foreach ($values as $property_name => $value) {
+					/** @noinspection PhpUnhandledExceptionInspection class name and property must be valid */
 					if (!(
 						is_numeric($property_name)
 						|| ($value instanceof Func)
@@ -270,6 +273,7 @@ class Link extends Dao\Sql\Link
 	 * If object was originally read from data source, matching data will be overwritten.
 	 * If object was not originally read from data source, nothing is done and returns false.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object object to delete from data source
 	 * @return boolean true if deleted
 	 * @see Data_Link::delete()
@@ -278,9 +282,7 @@ class Link extends Dao\Sql\Link
 	{
 		$will_delete = true;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach (
-			(new Reflection_Class(get_class($object)))->getAnnotations('before_delete') as $before_delete
-		) {
+		foreach ((new Reflection_Class($object))->getAnnotations('before_delete') as $before_delete) {
 			/** @var $before_delete Method_Annotation */
 			if ($before_delete->call($object, [$this]) === false) {
 				$will_delete = false;
@@ -291,9 +293,11 @@ class Link extends Dao\Sql\Link
 		if ($will_delete) {
 			$id = $this->getObjectIdentifier($object);
 			if ($id) {
-				$class_name         = get_class($object);
-				$class              = new Reflection_Class($class_name);
-				$link               = Class_\Link_Annotation::of($class);
+				$class_name = get_class($object);
+				/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+				$class = new Reflection_Class($class_name);
+				$link  = Class_\Link_Annotation::of($class);
+				/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
 				$exclude_properties = $link->value
 					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
@@ -302,10 +306,12 @@ class Link extends Dao\Sql\Link
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 						if (Link_Annotation::of($property)->isCollection()) {
 							if ($property->getType()->isMultiple()) {
+								/** @noinspection PhpUnhandledExceptionInspection property from object accessible */
 								$this->deleteCollection($object, $property, $property->getValue($object));
 							}
 							// TODO dead code ? @link Collection is only for @var object[], not for @var object
 							else {
+								/** @noinspection PhpUnhandledExceptionInspection property from object accessible */
 								$this->delete($property->getValue($object));
 								trigger_error(
 									"Dead code into Mysql\\Link::delete() on {$property->name} is not so dead",
@@ -325,7 +331,8 @@ class Link extends Dao\Sql\Link
 							$id[$column_name] = $this->getObjectIdentifier($object, $property_name);
 						}
 						else {
-							$column_name      = Store_Name_Annotation::of($link_property)->value;
+							$column_name = Store_Name_Annotation::of($link_property)->value;
+							/** @noinspection PhpUnhandledExceptionInspection property from object accessible */
 							$id[$column_name] = $link_property->getValue($object);
 						}
 					}
@@ -366,6 +373,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Escape string into string or binary values
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value string|object
 	 * @return string
 	 */
@@ -373,8 +381,8 @@ class Link extends Dao\Sql\Link
 	{
 		if (is_object($value)) {
 			$id = $this->getObjectIdentifier($value, 'id');
-			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			$properties = (new Reflection_Class(get_class($value)))->getAnnotedProperties(
+			/** @noinspection PhpUnhandledExceptionInspection is_object */
+			$properties = (new Reflection_Class($value))->getAnnotedProperties(
 				Store_Annotation::ANNOTATION, Store_Annotation::FALSE
 			);
 			if ($properties) {
@@ -427,6 +435,7 @@ class Link extends Dao\Sql\Link
 
 	//-------------------------------------------------------------------------------------- fetchAll
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $options    Option[]
 	 * @param $result_set mysqli_result
@@ -450,6 +459,7 @@ class Link extends Dao\Sql\Link
 				$object_key = array_pop($keys);
 			}
 		}
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$fetch_class_name = ((new Reflection_Class($class_name))->isAbstract())
 			? Abstract_Class::class
 			: $class_name;
@@ -573,9 +583,10 @@ class Link extends Dao\Sql\Link
 
 	//----------------------------------------------------------------------- getLinkObjectIdentifier
 	/**
-	 * Link classes objects identifiers are the identifiers of all their @composite properties values
+	 * Link classes objects identifiers are the identifiers of all their composite properties values
 	 * also known as link properties values.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @param $link   Class_\Link_Annotation send it for optimization, but this is not mandatory
 	 * @return string identifiers in a single string, separated with '.'
@@ -583,8 +594,8 @@ class Link extends Dao\Sql\Link
 	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
 	{
 		if (!isset($link)) {
-			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			$link = Class_\Link_Annotation::of(new Reflection_Class(get_class($object)));
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$link = Class_\Link_Annotation::of(new Reflection_Class($object));
 		}
 		if ($link->value) {
 			$ids        = [];
@@ -607,6 +618,7 @@ class Link extends Dao\Sql\Link
 					}
 				}
 				else {
+					/** @noinspection PhpUnhandledExceptionInspection valid $link_property from $object */
 					$id = $link_property->getValue($object);
 				}
 				$ids[] = $property_name . '=' . $id;
@@ -760,11 +772,13 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Prepare fetch gets annotations values that transform the read object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
 	private function prepareFetch($class_name)
 	{
 		$this->prepared_fetch = [];
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		foreach ((new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]) as $property) {
 			// dao must be before gz : first we get the value from the file, then we inflate it
 			if ($dao = $property->getAnnotation('dao')->value) {
@@ -793,7 +807,6 @@ class Link extends Dao\Sql\Link
 	 * @param $result mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
 	 * @return mixed|mysqli_result depends on $class_name specific constants used
-	 * @throws Mysql_Error_Exception
 	 */
 	public function query($query, $class_name = null, &$result = null)
 	{
@@ -910,6 +923,7 @@ class Link extends Dao\Sql\Link
 	/**
 	 * Read an object from data source
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $identifier integer|object identifier for the object, or an object to re-read
 	 * @param $class_name string class for read object. Useless if $identifier is an object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
@@ -924,6 +938,7 @@ class Link extends Dao\Sql\Link
 		}
 		$class_name = Builder::className($class_name);
 		$this->setContext($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		if (Class_\Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$what = [];
 			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {

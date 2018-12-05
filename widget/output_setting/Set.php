@@ -102,6 +102,7 @@ class Set extends Setting\Custom\Set
 
 	//----------------------------------------------------------------------------------- addProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $add_property_path   string
 	 * @param $tab_name            string
 	 * @param $where               string 'after', 'before' or null
@@ -112,6 +113,7 @@ class Set extends Setting\Custom\Set
 		$add_property_path, $tab_name, $where = 'after', $where_property_path = null
 	) {
 		$this->initProperties();
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$add_property = isset($this->properties[$add_property_path])
 			? $this->properties[$add_property_path]
 			: Builder::create(Property::class, [$this->getClassName(), $add_property_path]);
@@ -189,6 +191,7 @@ class Set extends Setting\Custom\Set
 
 	//-------------------------------------------------------------------------------- initProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filter_properties string[] property path
 	 * @return Property[]
 	 */
@@ -198,16 +201,19 @@ class Set extends Setting\Custom\Set
 			$class_name = $this->getClassName();
 			if ($filter_properties) {
 				foreach ($filter_properties as $property_path) {
+					/** @noinspection PhpUnhandledExceptionInspection constant */
 					$this->properties[$property_path] = Builder::create(
 						Property::class, [$class_name, $property_path]
 					);
 				}
 			}
 			else {
+				/** @noinspection PhpUnhandledExceptionInspection valid class name */
 				$class      = new Reflection_Class($class_name);
 				$properties = $class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT]);
 				foreach ($properties as $property) {
 					if ($property->isPublic() && !$property->isStatic()) {
+						/** @noinspection PhpUnhandledExceptionInspection constant */
 						$this->properties[$property->name] = Builder::create(
 							Property::class, [$class_name, $property->name]
 						);
@@ -216,6 +222,7 @@ class Set extends Setting\Custom\Set
 				foreach (Group_Annotation::allOf($class) as $group_annotation) {
 					foreach ($group_annotation->values() as $property_path) {
 						if (strpos($property_path, DOT)) {
+							/** @noinspection PhpUnhandledExceptionInspection constant */
 							$this->properties[$property_path] = Builder::create(
 								Property::class, [$class_name, $property_path]
 							);

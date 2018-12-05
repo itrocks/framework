@@ -16,12 +16,15 @@ abstract class Null_Object
 	/**
 	 * Returns a new instance of an object, but sets all its properties values to null
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return object
 	 */
 	public static function create($class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$object = Builder::create($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (!$property->isStatic()) {
 				$property->setValue($object, null);
@@ -34,6 +37,7 @@ abstract class Null_Object
 	/**
 	 * Returns true if the object has only empty or default properties
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object
 	 * @param $class_name string you can set a class name of a parent class to get a partial isNull()
 	 * @return boolean
@@ -48,6 +52,7 @@ abstract class Null_Object
 		}
 		$getter_ignore = Getter::$ignore;
 		$is_empty      = true;
+		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
 			if (
 				!$property->isStatic()
@@ -56,6 +61,7 @@ abstract class Null_Object
 				&& $property->getAnnotation('empty_check')->value
 			) {
 				Getter::$ignore = true;
+				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 				$value          = $property->getValue($object);
 				Getter::$ignore = $getter_ignore;
 				if (
@@ -82,6 +88,7 @@ abstract class Null_Object
 	/**
 	 * Returns true if the object has no set properties (ie was created with Null_Object:create())
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object            object
 	 * @param $properties_filter callable set a callback function that filters properties to be tested
 	 * @return boolean
@@ -94,7 +101,7 @@ abstract class Null_Object
 		$is_null = true;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		/** @var $properties Reflection_Property[] */
-		$properties = (new Reflection_Class(get_class($object)))->accessProperties();
+		$properties = (new Reflection_Class($object))->accessProperties();
 		if ($properties_filter) {
 			$properties = call_user_func($properties_filter, $properties);
 		}
@@ -106,6 +113,7 @@ abstract class Null_Object
 				&& $property->getAnnotation('empty_check')->value
 			) {
 				Getter::$ignore = true;
+				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 				$value          = $property->getValue($object);
 				Getter::$ignore = $getter_ignore;
 				if (

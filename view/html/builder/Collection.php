@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
-use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
@@ -22,7 +21,6 @@ use ITRocks\Framework\View\Html\Dom\Table\Head;
 use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
 use ITRocks\Framework\View\Html\Dom\Table\Row;
 use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
-use ReflectionException;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data
@@ -58,7 +56,6 @@ class Collection
 	/**
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
-	 * @throws Exception
 	 */
 	public function __construct(Reflection_Property $property, array $collection)
 	{
@@ -71,7 +68,6 @@ class Collection
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @return Table
-	 * @throws Exception
 	 */
 	public function build()
 	{
@@ -86,7 +82,6 @@ class Collection
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @return Body
-	 * @throws Exception
 	 */
 	protected function buildBody()
 	{
@@ -102,7 +97,6 @@ class Collection
 	 * @param $object   object
 	 * @param $property Reflection_Property
 	 * @return Standard_Cell
-	 * @throws Exception
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
@@ -134,7 +128,6 @@ class Collection
 	//------------------------------------------------------------------------------------- buildHead
 	/**
 	 * @return Head
-	 * @throws Exception
 	 */
 	protected function buildHead()
 	{
@@ -166,7 +159,6 @@ class Collection
 	/**
 	 * @param $object object
 	 * @return Row
-	 * @throws Exception
 	 */
 	protected function buildRow($object)
 	{
@@ -184,11 +176,12 @@ class Collection
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property[]
-	 * @throws ReflectionException
 	 */
 	protected function getProperties()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class          = new Reflection_Class($this->class_name);
 		$representative = Representative_Annotation::of($this->property);
 		$properties     = $representative->getProperties();
@@ -201,6 +194,7 @@ class Collection
 			// remove linked class properties
 			$linked_class = Link_Annotation::of($class)->value;
 			if ($linked_class) {
+				/** @noinspection PhpUnhandledExceptionInspection link class comes from valid class */
 				foreach (
 					array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
 					as $property_name

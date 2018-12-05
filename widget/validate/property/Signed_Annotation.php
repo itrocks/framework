@@ -48,6 +48,7 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Context_A
 	/**
 	 * Validates the property value within this object context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean
 	 */
@@ -55,6 +56,7 @@ class Signed_Annotation extends Boolean_Annotation implements Property_Context_A
 	{
 		if ($this->property instanceof Reflection_Property) {
 			if (!$this->value) {
+				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 				$value = $this->property->getValue($object);
 				return $value >= 0;
 			}

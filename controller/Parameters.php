@@ -93,6 +93,7 @@ class Parameters
 	 * Beware : the created object will then automatically be added to the beginning
 	 * of the parameters list.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name           string|object
 	 * @param $search_by_properties string[]
 	 * @return object
@@ -117,6 +118,7 @@ class Parameters
 			}
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
+			/** @noinspection PhpUnhandledExceptionInspection class_exists */
 			$object = isset($default_object) ? $default_object : (
 				(isset($class_name) && class_exists($class_name))
 				? Builder::create($class_name)
@@ -134,9 +136,9 @@ class Parameters
 	 * Object is of class $parameter name, and is read from current data link using the parameter
 	 * value as identifier.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameter_name string
 	 * @return object
-	 * @throws Object_Not_Found_Exception
 	 */
 	public function getObject($parameter_name)
 	{
@@ -153,7 +155,9 @@ class Parameters
 				$object = floatval($this->getRawParameter($parameter_name));
 				Mapper\Getter::getObject($object, $class_name);
 				if (empty($object) && floatval($this->getRawParameter($parameter_name))) {
-					throw new Object_Not_Found_Exception(Loc::tr('The object does not exist anymore'));
+					/** @noinspection PhpUnhandledExceptionInspection Useless for developers */
+					// This exception will be catch by the main controller : not to be managed by others
+					$this->throwException('The object does not exist anymore');
 				}
 				$this->objects[$parameter_name] = $object;
 			}
@@ -415,6 +419,16 @@ class Parameters
 			}
 		}
 		return null;
+	}
+
+	//-------------------------------------------------------------------------------- throwException
+	/**
+	 * @param $message string
+	 * @throws Object_Not_Found_Exception
+	 */
+	protected function throwException($message)
+	{
+		throw new Object_Not_Found_Exception(Loc::tr($message));
 	}
 
 	//----------------------------------------------------------------------------------------- toGet

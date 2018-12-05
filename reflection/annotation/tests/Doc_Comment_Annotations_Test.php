@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Reflection\Annotation\Tests;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Doc-comment annotations tests
@@ -18,7 +17,7 @@ class Doc_Comment_Annotations_Test extends Test
 	 * A class implements an interface and inherits a class that implements the same interface
 	 * Will the annotation coming from the annotation be implemented once or twice ? Should once.
 	 *
-	 * @throws ReflectionException
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testSameInterfaceTwice()
 	{
@@ -38,6 +37,7 @@ EOT
 			eval($namespace . 'class Parent_Class implements Test_Interface {} }');
 			eval($namespace . 'class Child_Class extends Parent_Class {} }');
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$class  = (new Reflection_Class(__NAMESPACE__ . BS . 'Child_Class'));
 		$assume = [new Method_Annotation(BS . __CLASS__ . '::beforeWrite', $class, 'before_write')];
 		$annotations = $class->getAnnotations('before_write');

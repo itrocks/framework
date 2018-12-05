@@ -153,6 +153,7 @@ class Translator
 	 *   reverse translation, a single string will be still returned.
 	 * - For non-wildcards $translation, a single string will be returned.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $translation           string the translation to search for (can contain wildcards)
 	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
@@ -181,7 +182,8 @@ class Translator
 		$search              = Search_Object::create(Translation::class);
 		$search->language    = $this->language;
 		$search->translation = strtolower($translation);
-		$search->context     = $context_property_path
+		/** @noinspection PhpUnhandledExceptionInspection context and property must be valid */
+		$search->context = $context_property_path
 			? (new Reflection_Property($context, $context_property))->final_class
 			: $context;
 		$texts = Dao::search($search);
@@ -197,6 +199,7 @@ class Translator
 			foreach (explode(', ', $translation) as $translation_part) {
 				$text_parts[] = $this->reverse($translation_part, $context, $context_property_path);
 			}
+			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$text = Builder::create(Translation::class,
 				[join(', ', $text_parts), $this->language, $context, $translation]
 			);
@@ -294,12 +297,13 @@ class Translator
 
 	//----------------------------------------------------------------------- storeDefaultTranslation
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $text string
 	 * @return string
 	 */
 	private function storeDefaultTranslation($text)
 	{
-		/** @var $translation Translation */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$translation = Builder::create(
 			Translation::class,
 			[strtolower(str_replace('_', SP, rtrim($text, AT))), $this->language]

@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use Exception;
 use ITRocks\Framework\Dao\Sql;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -170,7 +169,6 @@ class Column implements Sql\Column
 	 *
 	 * @param $property Reflection_Property
 	 * @return Column
-	 * @throws Exception
 	 */
 	public static function buildProperty(Reflection_Property $property)
 	{
@@ -386,7 +384,7 @@ class Column implements Sql\Column
 	 * @param $old_column Sql\Column
 	 * @return boolean true if $this type reduces data size from $old_column and may break it
 	 */
-	public function reduces(Sql\Column $old_column)
+	public function reduces(/** @noinspection PhpUnusedParameterInspection */ Sql\Column $old_column)
 	{
 		// TODO reduce calculation
 		return false;

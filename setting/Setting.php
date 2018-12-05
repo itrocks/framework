@@ -66,6 +66,7 @@ class Setting
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string|object
 	 */
 	protected function getValue()
@@ -90,7 +91,8 @@ class Setting
 			$this->value = unserialize($value);
 			// // A patch for retro-compatibility with protected / private $class_name
 			if (!$this->value->getClassName()) {
-				$class_name = new Reflection_Property(get_class($this->value), 'class_name');
+				/** @noinspection PhpUnhandledExceptionInspection constant property from valid object */
+				$class_name = new Reflection_Property($this->value, 'class_name');
 				$class_name->setAccessible(true);
 				$class_name->setValue(
 					$this->value,

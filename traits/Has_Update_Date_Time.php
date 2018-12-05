@@ -25,10 +25,12 @@ trait Has_Update_Date_Time
 	/**
 	 * Calculate $last_update dates at beginning of each Dao::write() call
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[] properties added to Only
 	 */
 	public function calculateLastUpdateDateTime()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid call */
 		$this->last_update = new Date_Time();
 		return ['last_update'];
 	}

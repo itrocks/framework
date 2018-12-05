@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Gaufrette;
 
-use Exception;
 use Gaufrette\Adapter\Local;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
@@ -10,7 +9,6 @@ use ITRocks\Framework\Dao\Sql\Column;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\List_Data;
-use ReflectionException;
 use ReflectionProperty;
 
 /**
@@ -173,18 +171,19 @@ class Link extends Identifier_Map
 
 	//----------------------------------------------------------------------------------- getFilePath
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $object       object
 	 * @param $prefix       string
 	 * @param $storage_name string
 	 * @return string|null
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	private function getFilePath($object, $prefix, $storage_name)
 	{
 		$file_system = $this->getFileSystemFor($object);
 		$adapter     = $file_system->filesystem->getAdapter();
 		if ($adapter instanceof Local) {
+			/** @noinspection PhpUnhandledExceptionInspection valid constants */
 			$property = new ReflectionProperty(Local::class, 'directory');
 			if (!$property->isPublic()) {
 				$property->setAccessible(true);
@@ -223,11 +222,9 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	private function getPrefix(
-		$object, /** @noinspection PhpUnusedParameterInspection */
-		$property_name
+		$object, /** @noinspection PhpUnusedParameterInspection */ $property_name
 	) {
 		return $this->storeNameOf(get_class($object));
 	}
@@ -268,7 +265,7 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @param $full_path     boolean if false, returns only the path relative to File_System
 	 * @return string
-	 * @throws ReflectionException
+	 * @throws Exception
 	 */
 	public function propertyFileName($object, $property_name, $full_path = true)
 	{
@@ -336,7 +333,6 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function readProperty($object, $property_name)
 	{
@@ -448,7 +444,6 @@ class Link extends Identifier_Map
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
 	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function writeProperty($object, $property_name, $value = null)
 	{

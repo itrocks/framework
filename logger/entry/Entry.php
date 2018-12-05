@@ -120,6 +120,7 @@ class Entry
 	/**
 	 * The constructor initialises logged information for a call on script beginning.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $uri       string
 	 * @param $arguments array
 	 * @param $form      array
@@ -131,7 +132,8 @@ class Entry
 		if (isset($uri)) {
 			if (!isset($this->start)) {
 				$this->duration_start = microtime(true);
-				$this->start          = new Date_Time();
+				/** @noinspection PhpUnhandledExceptionInspection valid call */
+				$this->start = new Date_Time();
 			}
 			if (!isset($this->process_id)) {
 				$this->process_id = getmypid();
@@ -186,11 +188,15 @@ class Entry
 	}
 
 	//------------------------------------------------------------------------------------------ stop
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 */
 	public function stop()
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-		$this->stop         = new Date_Time();
+		/** @noinspection PhpUnhandledExceptionInspection valid call */
+		$this->stop = new Date_Time();
 	}
 
 }

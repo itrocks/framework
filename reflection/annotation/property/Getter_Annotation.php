@@ -25,8 +25,11 @@ class Getter_Annotation extends Method_Annotation
 	 * @param $property        Reflection|Reflection_Property
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property, $annotation_name = self::ANNOTATION)
-	{
+	public function __construct(
+		$value,
+		Reflection $property,
+		/** @noinspection PhpUnusedParameterInspection */ $annotation_name = self::ANNOTATION
+	) {
 		parent::__construct($value, $property, self::ANNOTATION);
 		if (empty($this->value)) {
 			$link = Link_Annotation::of($property)->value;

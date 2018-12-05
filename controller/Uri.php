@@ -116,6 +116,7 @@ class Uri
 	/**
 	 * Parse URI text elements to transform them into parameters, feature name and controller name
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example $uri = ['order', 148, 'form') will result on controller 'Order_Form' with parameter 'Order' = 148
 	 * @param $uri string[]
 	 */
@@ -142,6 +143,7 @@ class Uri
 			$this->parameters->set($this->controller_name, intval($this->feature_name));
 			$this->feature_name = array_shift($uri);
 			if (!$this->feature_name) {
+				/** @noinspection PhpUnhandledExceptionInspection controller name must be valid */
 				$reflection_class = new Reflection_Class($this->controller_name);
 				$default_feature  = $reflection_class->getAnnotation('default_object_feature')->value
 					?: $reflection_class->getAnnotation('default_feature')->value;
@@ -150,11 +152,13 @@ class Uri
 		}
 		elseif ($this->controller_name && !$this->feature_name) {
 			if (class_exists($this->controller_name)) {
+				/** @noinspection PhpUnhandledExceptionInspection class_exists */
 				$reflection_class   = new Reflection_Class($this->controller_name);
 				$default_feature    = $reflection_class->getAnnotation('default_class_feature')->value;
 				$this->feature_name = $default_feature ?: Feature::F_ADD;
 			}
 			elseif (class_exists(Names::setToClass($this->controller_name))) {
+				/** @noinspection PhpUnhandledExceptionInspection class_exists */
 				$reflection_class   = new Reflection_Class(Names::setToClass($this->controller_name));
 				$default_feature    = $reflection_class->getAnnotation('default_set_feature')->value;
 				$this->feature_name = $default_feature ?: Feature::F_LIST;

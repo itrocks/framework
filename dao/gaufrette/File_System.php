@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Dao\Gaufrette;
 
-use Exception;
 use Gaufrette\Adapter;
 use Gaufrette\Filesystem;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Traits\Has_Name;
+use ReflectionException;
 
 /**
  * Contains a configured gaufrette Filesystem with a name
@@ -27,6 +27,7 @@ class File_System
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $name                  string
 	 * @param $adapter_configuration array see Link::$configuration for the format
 	 * @throws Exception
@@ -35,7 +36,8 @@ class File_System
 	{
 		$adapter_class     = $adapter_configuration['adapter_class_name'];
 		$adapter_arguments = [];
-		$parameters        = (new Reflection_Method($adapter_class, '__construct'))->getParameters();
+		/** @noinspection PhpUnhandledExceptionInspection $adapter_class must be valid */
+		$parameters = (new Reflection_Method($adapter_class, '__construct'))->getParameters();
 		if (isset($adapter_configuration['arguments'])) {
 			foreach ($parameters as $key => $reflection_parameter) {
 				if (isset($adapter_configuration['arguments'][$key])) {
@@ -43,6 +45,7 @@ class File_System
 				}
 				else {
 					if ($reflection_parameter->isDefaultValueAvailable()) {
+						/** @noinspection PhpUnhandledExceptionInspection isDefaultValueAvailable */
 						$adapter_arguments[$key] = $reflection_parameter->getDefaultValue();
 					}
 					else {
@@ -61,7 +64,7 @@ class File_System
 			$adapter          = Builder::create($adapter_class, $adapter_arguments);
 			$this->filesystem = new Filesystem($adapter);
 		}
-		catch (Exception $exception) {
+		catch (ReflectionException $exception) {
 			throw new Exception("Cannot build adapter $name. See configuration");
 		}
 		finally {

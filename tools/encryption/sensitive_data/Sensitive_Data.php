@@ -80,6 +80,7 @@ class Sensitive_Data
 
 	//--------------------------------------------------------------------------------------- encrypt
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data     string
 	 * @param $property Reflection_Property
 	 * @return string
@@ -87,6 +88,7 @@ class Sensitive_Data
 	public function encrypt($data, Reflection_Property $property)
 	{
 		if (($key = $this->propertyKey($property)) && ($secret = $key->getSecret())) {
+			/** @noinspection PhpUnhandledExceptionInspection valid call */
 			$iv = random_bytes(static::IV_SIZE);
 			return bin2hex($iv) . openssl_encrypt($data, 'AES256', $secret, 0, $iv);
 		}
@@ -106,6 +108,7 @@ class Sensitive_Data
 
 	//----------------------------------------------------------------------------------- propertyKey
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $user     User
 	 * @return Key
@@ -136,6 +139,7 @@ class Sensitive_Data
 				$key             = new Key();
 				$key->class_name = $class_name;
 				$key->user       = User::current();
+				/** @noinspection PhpUnhandledExceptionInspection valid call */
 				$key->setSecret(random_bytes(static::SECRET_SIZE));
 				Dao::write($key);
 			}

@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Data_Link;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Spreadable;
@@ -148,13 +147,14 @@ class Object_To_Write_Array
 	/**
 	 * Build output properties values (all public properties)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return static
-	 * @throws Exception
 	 */
 	public function build()
 	{
 		if (!$this->class) {
-			$this->class = new Link_Class(get_class($this->object));
+			/** @noinspection PhpUnhandledExceptionInspection valid object */
+			$this->class = new Link_Class($this->object);
 		}
 		$link                = Class_\Link_Annotation::of($this->class);
 		$table_columns_names = array_keys($this->link->getStoredProperties($this->class));
@@ -163,6 +163,7 @@ class Object_To_Write_Array
 		$this->maps          = [];
 		$this->objects       = [];
 		$this->properties    = [];
+		/** @noinspection PhpUnhandledExceptionInspection link value must be a valid class */
 		$exclude_properties  = $link->value
 			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 			: [];
@@ -182,6 +183,7 @@ class Object_To_Write_Array
 				Getter::$ignore  = true;
 				$is_property_set = isset($this->object->$property_name);
 				Getter::$ignore  = $aop_getter_ignore;
+				/** @noinspection PhpUnhandledExceptionInspection $property is valid for $object */
 				$value           = $is_property_set ? $property->getValue($this->object) : null;
 				if (is_null($value) && !Null_Annotation::of($property)->value) {
 					$value = '';
@@ -313,6 +315,7 @@ class Object_To_Write_Array
 	/**
 	 * Build data to be written for a property value that has is an object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $value    object
 	 */
@@ -321,8 +324,9 @@ class Object_To_Write_Array
 		$class_name     = get_class($value);
 		$element_type   = $property->getType()->getElementType();
 		$id_column_name = 'id_' . $property->name;
-		$value_class    = new Link_Class($class_name);
-		$id_value       = (
+		/** @noinspection PhpUnhandledExceptionInspection Called for a valid object only */
+		$value_class = new Link_Class($class_name);
+		$id_value    = (
 			$value_class->getLinkedClassName()
 			&& !Class_\Link_Annotation::of($element_type->asReflectionClass())->value
 		) ? ('id_' . $value_class->getCompositeProperty()->name)
@@ -335,8 +339,10 @@ class Object_To_Write_Array
 				);
 			}
 			else {
-				$class_name  = $property->getType()->asString();
-				$clone       = Builder::createClone($value, $class_name);
+				$class_name = $property->getType()->asString();
+				/** @noinspection PhpUnhandledExceptionInspection only valid types allowed */
+				$clone = Builder::createClone($value, $class_name);
+				/** @noinspection PhpUnhandledExceptionInspection only valid types allowed */
 				$value_class = new Link_Class($class_name);
 				$id_value    = (
 					$value_class->getLinkedClassName()

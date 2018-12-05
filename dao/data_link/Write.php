@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ReflectionException;
 
 /**
  * Parent class for all data links Write class
@@ -59,18 +58,15 @@ abstract class Write
 	 * @param $object                 object
 	 * @param $options                Option[]
 	 * @param $after_write_annotation string @values after_create, after_update, after_write
-	 * @throws ReflectionException
 	 */
 	protected function afterWrite($object, array &$options, $after_write_annotation)
 	{
-		$reflexion_class = (new Reflection_Class(get_class($object)));
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Reflection_Class($object);
 		/** @var $after_writes Method_Annotation[] */
-		$after_writes = $reflexion_class->getAnnotations($after_write_annotation);
+		$after_writes = $class->getAnnotations($after_write_annotation);
 		if (in_array($after_write_annotation, [self::AFTER_CREATE, self::AFTER_UPDATE])) {
-			$after_writes = array_merge(
-				$after_writes, $reflexion_class->getAnnotations(self::AFTER_WRITE)
-			);
+			$after_writes = array_merge($after_writes, $class->getAnnotations(self::AFTER_WRITE));
 		}
 		foreach ($after_writes as $after_write) {
 			if ($after_write->call($object, [$this->link, &$options]) === false) {
@@ -87,12 +83,11 @@ abstract class Write
 	 * @param $before_write_annotation string @values before_create, before_update, before_write,
 	 *                                 before_writes
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	public function beforeWrite($object, array &$options, $before_write_annotation)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class = new Reflection_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Reflection_Class($object);
 		/** @var $before_writes Method_Annotation[] */
 		$before_writes = $class->getAnnotations($before_write_annotation);
 		if (in_array($before_write_annotation, [self::BEFORE_CREATE, self::BEFORE_UPDATE])) {
@@ -113,9 +108,9 @@ abstract class Write
 						. 'on object ' . print_r($object, true),
 						E_USER_WARNING
 					);
-					/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+					/** @noinspection PhpUnhandledExceptionInspection object */
 					$before_write = new Method_Annotation(
-						$before_write->value, new Reflection_Class(get_class($object)), $before_write_annotation
+						$before_write->value, new Reflection_Class($object), $before_write_annotation
 					);
 					trigger_error(
 						'Try executing @' . $before_write_annotation
@@ -142,9 +137,9 @@ abstract class Write
 	 */
 	protected function prepareAfterCommit($object, array $options)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		/** @var $after_commits Method_Annotation[] */
-		$after_commits = (new Reflection_Class(get_class($object)))->getAnnotations('after_commit');
+		$after_commits = (new Reflection_Class($object))->getAnnotations('after_commit');
 		foreach ($after_commits as $after_commit) {
 			$this->link->after_commit[] = new After_Action($after_commit, $object, $options);
 		}

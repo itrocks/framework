@@ -27,6 +27,7 @@ class Select_Controller implements Feature_Controller
 	/**
 	 * This will be called for this controller, always.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -35,13 +36,14 @@ class Select_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		$environment = Session::current()->get(Environment::class, true);
-		$objects = $parameters->getObjects();
-		$set_value = isset($objects['']) ? $objects[''] : (isset($objects[1]) ? $objects[1] : null);
-		$name  = $objects[0];
+		$objects     = $parameters->getObjects();
+		$set_value   = isset($objects['']) ? $objects[''] : (isset($objects[1]) ? $objects[1] : null);
+		$name        = $objects[0];
+		/** @noinspection PhpUnhandledExceptionInspection valid $environment */
 		$this->property = (new Reflection_Class($environment))->getProperty($name);
 
 		if ($set_value) {
-			$type = $this->property->getType();
+			$type               = $this->property->getType();
 			$environment->$name = $type->isClass()
 				? Dao::read($set_value, $type->asString())
 				: $set_value;

@@ -195,6 +195,7 @@ class Where implements With_Build_Column
 	/**
 	 * Build SQL WHERE section for an object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path        string Base property path pointing to the object
 	 * @param $object      object The value is an object, which will be used for search
 	 * @param $root_object boolean if true, this is the root object : @link classes do not apply
@@ -209,7 +210,8 @@ class Where implements With_Build_Column
 				E_USER_ERROR
 			);
 		}
-		$class = new Link_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Link_Class($object);
 		if (!$root_object || !Class_\Link_Annotation::of($class)->value) {
 			$id = $this->sql_link->getObjectIdentifier(
 				$object,
@@ -223,8 +225,8 @@ class Where implements With_Build_Column
 		// object is a search object : each property is a search entry, and must join table
 		$this->joins->add($path);
 		$array = [];
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class = new Reflection_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class = new Reflection_Class($object);
 		foreach (
 			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
 			as $property_name => $property
@@ -319,6 +321,7 @@ class Where implements With_Build_Column
 
 	//------------------------------------------------------------------------------ buildWhereColumn
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path   string|Expression The property path or Expression
 	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
 	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
@@ -357,6 +360,7 @@ class Where implements With_Build_Column
 			if (!$master_path && ($foreign_column === 'id')) {
 				$class = $this->joins->getStartingClassName();
 				$i     = 0;
+				/** @noinspection PhpUnhandledExceptionInspection starting class name always valid */
 				while ($class = (new Link_Class($class))->getLinkedClassName()) {
 					$i ++;
 				}

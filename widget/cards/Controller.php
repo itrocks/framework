@@ -84,6 +84,7 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 
 	//----------------------------------------------------------------------------- getViewParameters
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
@@ -91,6 +92,7 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 	 */
 	public function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Main set object is not read itself */
 		$this->class = new Reflection_Class($parameters->getMainObject()->element_class_name);
 		$parameters  = parent::getViewParameters($parameters, $form, $class_name);
 		$this->getCardProperties();

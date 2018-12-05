@@ -8,7 +8,6 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\List_Data;
-use ReflectionException;
 
 /**
  * This data link stores objects into files
@@ -123,7 +122,6 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	public function propertyFileName($object, $property_name)
 	{
@@ -168,7 +166,6 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to read the value of the property
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
-	 * @throws ReflectionException
 	 */
 	public function readProperty($object, $property_name)
 	{
@@ -265,7 +262,6 @@ class Link extends Identifier_Map
 	 * @param $object        object object from which to get the value of the property
 	 * @param $property_name string the name of the property
 	 * @param $value         mixed if set (recommended), the value to be stored. default in $object
-	 * @throws ReflectionException
 	 */
 	public function writeProperty($object, $property_name, $value = null)
 	{

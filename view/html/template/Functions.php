@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Template;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
@@ -90,8 +91,9 @@ class Functions
 
 	//------------------------------------------------------------------------------ filterProperties
 	/**
-	 * Filter properties which @conditions values do not apply
+	 * Filter properties which conditions annotation values do not apply
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object
 	 * @param $properties Reflection_Property[]|string[] filter the list of properties
 	 * @return string[]   filtered $properties
@@ -100,7 +102,8 @@ class Functions
 	{
 		foreach ($properties as $key => $property) {
 			if (!($property instanceof Reflection_Property)) {
-				$property = new Reflection_Property(get_class($object), $property);
+				/** @noinspection PhpUnhandledExceptionInspection object */
+				$property = new Reflection_Property($object, $property);
 			}
 			if (!Conditions_Annotation::of($property)->applyTo($object)) {
 				unset($properties[$key]);
@@ -139,6 +142,7 @@ class Functions
 
 	//----------------------------------------------------------------------------- getConditionClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @return string|null
 	 */
@@ -151,9 +155,10 @@ class Functions
 			$class      = is_a($expression->function, Now::class, true) ? Type::DATE_TIME : null;
 		}
 		else {
-			$class_name = get_class($this->getRootObject($template));
-			$property   = new Reflection_Property($class_name, $property_path);
-			$class      = Names::classToProperty($property->getType()->getElementTypeAsString());
+			$root_object = $this->getRootObject($template);
+			/** @noinspection PhpUnhandledExceptionInspection object, $property_path is controlled */
+			$property = new Reflection_Property($root_object, $property_path);
+			$class    = Names::classToProperty($property->getType()->getElementTypeAsString());
 		}
 		return $class;
 	}
@@ -162,9 +167,10 @@ class Functions
 	/**
 	 * Parses an edit field for a condition
 	 *
-	 * A shortcut to {@rootObject.{@key}.@edit} that enables the value of the condition
+	 * A shortcut to "{@rootObject.{@key}.@edit}" that enables the value of the condition
 	 * You must have a Dao_Function with the property.path for the root object as key as parent object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @return string
 	 */
@@ -180,20 +186,23 @@ class Functions
 					break;
 				}
 			}
-			$class_name    = get_class($condition);
-			$expression    = Expressions::$current->cache[$property_path];
-			$property_path = is_a($expression->function, Now::class, true) ? 'now' : null;
+			$condition_object = $condition;
+			$expression       = Expressions::$current->cache[$property_path];
+			$property_path    = is_a($expression->function, Now::class, true) ? 'now' : null;
 		}
 		else {
-			$class_name = get_class($this->getRootObject($template));
+			$condition_object = $this->getRootObject($template);
 		}
 		$object = reset($template->objects);
 		// the stored value of a Comparison is its $than_value property value
 		if ($object instanceof Comparison) {
 			$object = $object->than_value;
 		}
-		$property = new Reflection_Property_Value($class_name, $property_path, $object, true, true);
-		$output   = $this->getEditReflectionProperty($property, $property_path, true, true);
+		/** @noinspection PhpUnhandledExceptionInspection object, controlled $property_path */
+		$property = new Reflection_Property_Value(
+			$condition_object, $property_path, $object, true, true
+		);
+		$output = $this->getEditReflectionProperty($property, $property_path, true, true);
 		return $output;
 	}
 
@@ -271,6 +280,7 @@ class Functions
 	 *
 	 * @param $template Template
 	 * @return Date_Time
+	 * @throws Exception
 	 */
 	public function getDate(Template $template)
 	{
@@ -312,6 +322,7 @@ class Functions
 	/**
 	 * Returns an HTML edit widget for current property or List_Data property
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template           Template
 	 * @param $name               string
 	 * @param $ignore_user        boolean ignore @user annotation, to disable invisible and read-only
@@ -348,7 +359,8 @@ class Functions
 			return $this->getEditReflectionProperty($object, $name, $ignore_user);
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
-			$property = new Reflection_Property(get_class($object), $property_name);
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$property = new Reflection_Property($object, $property_name);
 			if (isset($property)) {
 				return $this->getEditObjectProperty(
 					$object, $property_name, $property, $template, $name, $ignore_user, $can_always_be_null
@@ -813,6 +825,7 @@ class Functions
 	/**
 	 * Returns a value with application of current locales
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @return mixed
 	 */
@@ -830,8 +843,9 @@ class Functions
 					} while ($parent instanceof Date_Time);
 					if (is_object($parent) && property_exists($parent, current($template->var_names))) {
 						// call propertyToLocale to apply @show_seconds
+						/** @noinspection PhpUnhandledExceptionInspection object, property must be valid */
 						return Loc::propertyToLocale(
-							new Reflection_Property(get_class($parent), current($template->var_names)),
+							new Reflection_Property($parent, current($template->var_names)),
 							$object
 						);
 					}
@@ -839,11 +853,13 @@ class Functions
 				}
 				else {
 					$property_name = reset($template->var_names);
-					if (method_exists(get_class($object), $property_name)) {
-						$method = new Reflection_Method(get_class($object), $property_name);
+					if (method_exists($object, $property_name)) {
+						/** @noinspection PhpUnhandledExceptionInspection method_exists */
+						$method = new Reflection_Method($object, $property_name);
 						return Loc::methodToLocale($method, reset($template->objects));
 					}
-					$property = new Reflection_Property(get_class($object), $property_name);
+					/** @noinspection PhpUnhandledExceptionInspection fatal error is no property exist */
+					$property = new Reflection_Property($object, $property_name);
 					return Loc::propertyToLocale($property, reset($template->objects));
 				}
 			}
@@ -916,6 +932,7 @@ class Functions
 	/**
 	 * Returns object's properties, and their display and value
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @return Reflection_Property_Value[]
 	 */
@@ -926,13 +943,14 @@ class Functions
 		$properties_title   = $template->getParameter(Parameter::PROPERTIES_TITLE);
 		$properties_tooltip = $template->getParameter(Parameter::PROPERTIES_TOOLTIP);
 
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$class             = new Reflection_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class             = new Reflection_Class($object);
 		$result_properties = [];
 
 		if ($properties_filter) {
 			$properties = [];
 			foreach ($properties_filter as $property_path) {
+				/** @noinspection PhpUnhandledExceptionInspection $class->name is valid */
 				$properties[$property_path] = new Reflection_Property($class->name, $property_path);
 			}
 		}
@@ -942,6 +960,7 @@ class Functions
 
 		foreach ($properties as $property_path => $property) {
 			if (!$property->isStatic()) {
+				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 				$property = new Reflection_Property_Value(
 					$class->name, $property->path, $object, false, true
 				);
@@ -985,6 +1004,7 @@ class Functions
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @param $name     string
 	 * @return string
@@ -993,7 +1013,8 @@ class Functions
 	{
 		foreach ($template->objects as $object) {
 			if (is_object($object)) {
-				return new Reflection_Property_Value(get_class($object), $name, $object, false, true);
+				/** @noinspection PhpUnhandledExceptionInspection object, property name must exist */
+				return new Reflection_Property_Value($object, $name, $object, false, true);
 			}
 		}
 		return null;
@@ -1272,6 +1293,7 @@ class Functions
 	/**
 	 * Gets property extra data needed for edit widget
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $property   Reflection_Property_Value|Reflection_Property|string
 	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
@@ -1289,7 +1311,8 @@ class Functions
 		else {
 			$property_path = $property;
 			$value         = '';
-			$property      = new Reflection_Property($class_name, $property);
+			/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
+			$property = new Reflection_Property($class_name, $property);
 		}
 		return [$property, $property_path, $value];
 	}

@@ -41,14 +41,16 @@ while (is_file('lock')) {
 include_once __DIR__ . '/tools/Paths.php';
 Paths::register();
 // enable cache files for compiled scripts : includes must all use this filter
-include_once __DIR__ . '/aop/Include_Filter.php';
+include_once __DIR__ . '/aop/include_filter/Include_Filter.php';
 Include_Filter::register();
 // enable autoloader
-/** @noinspection PhpIncludeInspection */
+/** @noinspection PhpIncludeInspection more static than dynamic */
+/** @noinspection PhpUnhandledExceptionInspection valid file */
 include_once Include_Filter::file(__DIR__ . '/Autoloader.php');
 (new Autoloader)->register();
 
 // run main controller
+/** @noinspection PhpUnhandledExceptionInspection may throw a global Include_Filter\Exception */
 echo (new Main)
 	->init()
 	->addTopCorePlugins([

@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Widget\Validate;
 
-use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
@@ -34,7 +33,6 @@ use ITRocks\Framework\Widget\Validate\Property;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Widget\Validate\Property\Var_Annotation;
 use ITRocks\Framework\Widget\Write;
-use ReflectionException;
 
 /**
  * The object validator links validation processes to objects
@@ -110,15 +108,18 @@ class Validator implements Registerable
 	 * This is called before an object is changed to its string value before writing it using the data
 	 * link. Objects must be validated before doing this
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $joinpoint Before_Method
-	 * @throws Exception
+	 * @throws View_Exception
 	 */
 	public function beforePropertyStoreString(Before_Method $joinpoint)
 	{
 		$object = $joinpoint->parameters['value'];
 		if (is_object($object) && $this->validator_on) {
-			$property = new Reflection\Reflection_Property(get_class($joinpoint->object), 'options');
+			/** @noinspection PhpUnhandledExceptionInspection object, valid property */
+			$property = new Reflection\Reflection_Property($joinpoint->object, 'options');
 			$property->setAccessible(true);
+			/** @noinspection PhpUnhandledExceptionInspection property is of object and accessible */
 			$options = $property->getValue($joinpoint->object);
 			if (!Null_Object::isNull($object)) {
 				$this->beforeWrite($object, $options);
@@ -134,8 +135,6 @@ class Validator implements Registerable
 	 * @param  $object  object
 	 * @param  $options Option[]
 	 * @throws View_Exception
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function beforeWrite($object, array $options)
 	{
@@ -179,14 +178,14 @@ class Validator implements Registerable
 	/**
 	 * Create a new empty component sub-object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object   object
 	 * @param $property Reflection_Property
 	 * @return object|Component
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	private function createSubObject($object, Reflection_Property $property)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection var annotation values must be valid */
 		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
 		/** @var $sub_object Component */
 		$sub_object = $link_class->newInstance();
@@ -381,15 +380,15 @@ class Validator implements Registerable
 
 	//-------------------------------------------------------------------------------------- validate
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object             object
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
 	 * @return string|null|true @values Result::const
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	public function validate($object, array $only_properties = [], array $exclude_properties = [])
 	{
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
 			Link_Annotation::of($class)->value ? $class->getLinkProperties() : $class->accessProperties()
@@ -451,13 +450,12 @@ class Validator implements Registerable
 
 	//----------------------------------------------------------------------------- validateComponent
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object             object
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
 	 * @param $property           Reflection\Reflection_Property
 	 * @return string|null|true @values Result::const
-	 * @throws Exception
-	 * @throws ReflectionException
 	 */
 	private function validateComponent(
 		$object,
@@ -492,7 +490,7 @@ class Validator implements Registerable
 				}
 				// update properties path of report annotations to be relative to parent property
 				$property_class_name = $type->getElementTypeAsString();
-				$class_name = get_class($object);
+				$class_name          = get_class($object);
 				foreach ($this->report as $annotation) {
 					if (
 						isA($annotation, Property\Annotation::class)
@@ -500,6 +498,7 @@ class Validator implements Registerable
 						&& isA($annotation->property, Reflection\Reflection_Property::class)
 						&& $annotation->property->root_class == $property_class_name
 					) {
+						/** @noinspection PhpUnhandledExceptionInspection $class_name comes from an object */
 						$annotation->property = new Reflection\Reflection_Property(
 							$class_name, $property->path . DOT . $annotation->property->path
 						);
@@ -525,12 +524,12 @@ class Validator implements Registerable
 
 	//---------------------------------------------------------------------------- validateProperties
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object             object
 	 * @param $properties         Reflection_Property[]
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
 	 * @return string|null|true @values Result::const
-	 * @throws Exception
 	 */
 	protected function validateProperties(
 		$object, array $properties, array $only_properties, array $exclude_properties
@@ -551,6 +550,7 @@ class Validator implements Registerable
 				// we could do this control for all, but this may run getters and useless data reads
 				// this control was added for date-time format control, and nothing else
 				$var_is_valid = true;
+				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 				if (
 					$type->isDateTime()
 					&& ($property->getValue($object) instanceof Date_Time_Error)

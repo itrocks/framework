@@ -70,6 +70,7 @@ class Key
 
 	//------------------------------------------------------------------------------------- setSecret
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $secret string
 	 */
 	public function setSecret($secret)
@@ -78,6 +79,7 @@ class Key
 			return;
 		}
 		// TODO must get the previous secret key and update all data that use this key in database
+		/** @noinspection PhpUnhandledExceptionInspection valid call */
 		$iv           = random_bytes(static::IV_SIZE);
 		$this->secret = bin2hex($iv) . openssl_encrypt(
 			$secret,

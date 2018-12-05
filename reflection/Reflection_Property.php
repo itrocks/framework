@@ -100,12 +100,15 @@ class Reflection_Property extends ReflectionProperty
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name    string
+	 * @param $class_name    object|string
 	 * @param $property_name string
 	 * @throws ReflectionException
 	 */
 	public function __construct($class_name, $property_name)
 	{
+		if (is_object($class_name)) {
+			$class_name = get_class($class_name);
+		}
 		if (strpos($property_name, ')')) {
 			list($class_name, $property_name)
 				= (new Path($class_name, $property_name))->toPropertyClassName();

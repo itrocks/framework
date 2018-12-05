@@ -55,6 +55,7 @@ abstract class Range
 	 * @param $property     Reflection_Property
 	 * @param $range_side      integer  Range::MIN | Range::MAX | Range::NONE
 	 * @return mixed
+	 * @throws Exception
 	 */
 	protected static function applyRangeValue($expression, Reflection_Property $property,	$range_side)
 	{

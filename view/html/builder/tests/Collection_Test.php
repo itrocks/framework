@@ -51,6 +51,7 @@ class Collection_Test extends Test
 
 	//--------------------------------------------------------------------- callVehicleEditController
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $vehicle Vehicle
 	 * @return string
 	 */
@@ -61,6 +62,7 @@ class Collection_Test extends Test
 		$parameters = new Parameters($uri);
 		$parameters->set(Parameter::IS_INCLUDED, true);
 		$parameters->unshift($vehicle);
+		/** @noinspection PhpUnhandledExceptionInspection object exists, sure */
 		return $edit->run($parameters, [], [], Vehicle::class);
 	}
 

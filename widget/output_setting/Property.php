@@ -73,12 +73,14 @@ class Property implements Can_Be_Empty
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string
 	 * @param $property_path string
 	 */
 	public function __construct($class_name = null, $property_path = null)
 	{
 		if (isset($class_name) && isset($property_path)) {
+			/** @noinspection PhpUnhandledExceptionInspection class name and property must be valid */
 			$property          = new Reflection_Property_Value($class_name, $property_path);
 			$this->display     = $property->display();
 			$this->path        = $property->path;

@@ -45,6 +45,7 @@ class Reflection_Parameter extends ReflectionParameter
 	/**
 	 * Return the parameter as a PHP source string
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @example $parameter_name
 	 * @example &$parameter_name
 	 * @example $parameter_name = 'default'
@@ -56,6 +57,7 @@ class Reflection_Parameter extends ReflectionParameter
 		$optional = $this->isOptional();
 		if ($optional) {
 			if ($this->isDefaultValueAvailable()) {
+				/** @noinspection PhpUnhandledExceptionInspection isDefaultValueAvailable */
 				$default = $this->getDefaultValue();
 			}
 			elseif ($this->getDeclaringClass()) {

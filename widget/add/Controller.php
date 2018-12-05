@@ -50,6 +50,7 @@ class Controller extends Edit\Controller
 	 * - initializes values while taking them from your parameters to add (call to initializeValues)
 	 * - calculates the edit controller getViewParameters
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $parameters Parameters The parameters sent to the add controller
 	 * @param $form       array      The form sent by the caller (if POST call)
 	 * @param $class_name string     The name of the class of the added object
@@ -59,7 +60,8 @@ class Controller extends Edit\Controller
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
-		$object     = $parameters->getMainObject($class_name);
+		$object = $parameters->getMainObject($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$properties = (new Reflection_Class($class_name))->accessProperties();
 		$objects    = $parameters->getObjects();
 		if (count($objects) > 1) {

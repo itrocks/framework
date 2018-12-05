@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Mapper;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Type;
@@ -33,7 +32,6 @@ abstract class Empty_Object
 	 * @param $class_name string
 	 * @return object
 	 * @throws ReflectionException
-	 * @throws Exception
 	 */
 	public static function create($class_name)
 	{
@@ -53,6 +51,7 @@ abstract class Empty_Object
 	 * Returns true if the object properties values are all empty (or null or unset or equal to
 	 * default value) or empty objects.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object          object
 	 * @param $check_composite boolean if true, check if @composite properties are empty too
 	 * @return boolean
@@ -64,8 +63,8 @@ abstract class Empty_Object
 			$is_empty = $object->isEmpty();
 		}
 		else {
-			/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-			$class   = new Reflection_Class(get_class($object));
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$class   = new Reflection_Class($object);
 			$default = get_class_vars($class->name);
 			foreach ($class->accessProperties() as $property) {
 				$is_composite = $property->getAnnotation('composite')->value
@@ -75,6 +74,7 @@ abstract class Empty_Object
 					&& ($check_composite || !$is_composite)
 					&& $property->getAnnotation('empty_check')->value
 				) {
+					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 					$value = $property->getValue($object);
 					if (
 						!empty($value)

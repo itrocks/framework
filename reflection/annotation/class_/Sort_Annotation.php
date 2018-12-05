@@ -26,6 +26,7 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 	 *
 	 * Default representative is the list of non-static properties of the class
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value string
 	 * @param $class Reflection_Class
 	 */
@@ -37,6 +38,7 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 			/** @var $representative string[] @representative property names */
 			$representative = Representative_Annotation::of($class)->value;
 			foreach ($representative as $property_path) {
+				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 				$property = new Reflection_Property($class->getName(), $property_path);
 				if (
 					!$property->isStatic()

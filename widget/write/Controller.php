@@ -104,15 +104,17 @@ class Controller implements Default_Class_Controller
 	 * Save data from the posted form into the first parameter object using standard method.
 	 * Create a new instance of this object if no identifier was given.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return string
-	 * @throws Exception|View_Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection Useless for the developer */
+		// this is managed by the top-level Main\Controller
 		$this->checkFormIntegrity($form, $files);
 		$object     = $this->getExistingObject($parameters, $class_name);
 		$new_object = !Dao::getObjectIdentifier($object);
@@ -123,14 +125,30 @@ class Controller implements Default_Class_Controller
 			$write_error   = $this->write($write_objects);
 			$write_error ? Dao::rollback() : Dao::commit();
 		}
+		// any exception catch, it is more secure
 		catch (Exception $exception) {
 			Dao::rollback();
-			throw $exception;
+			/** @noinspection PhpUnhandledExceptionInspection Useless for the developer */
+			// this is managed by the top-level Main\Controller
+			$this->throwException($exception);
+			return null;
 		}
 
 		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
 		$parameters['new_object'] = $new_object;
 		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
+	}
+
+	//-------------------------------------------------------------------------------- throwException
+	/**
+	 * Throws the exception
+	 *
+	 * @param $exception Exception
+	 * @throws Exception
+	 */
+	protected function throwException(Exception $exception)
+	{
+		throw $exception;
 	}
 
 	//----------------------------------------------------------------------------------------- write

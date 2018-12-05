@@ -37,6 +37,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Returns the composite property that links to the redundant composite object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $composite_class_name string to explicitly give the name of the linked class (faster)
 	 * @param $component_object     boolean Can be false to ignore warning on multiple composites
 	 * @return Reflection_Property
@@ -48,6 +49,7 @@ class Link_Class extends Reflection_Class
 			$link = Link_Annotation::of($composite_object);
 			while ($link->value) {
 				$composite_class_name = $link->value;
+				/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 				$link = Link_Annotation::of(new Link_Class($composite_class_name));
 			}
 		}
@@ -123,10 +125,12 @@ class Link_Class extends Reflection_Class
 
 	//-------------------------------------------------------------------------------- getLinkedClass
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
 	public function getLinkedClass()
 	{
+		/** @noinspection PhpUnhandledExceptionInspection linked class name is always valid */
 		return new Link_Class($this->getLinkedClassName());
 	}
 
@@ -171,11 +175,12 @@ class Link_Class extends Reflection_Class
 
 	//---------------------------------------------------------------------------- getRootLinkedClass
 	/**
-	 * Gets the root linked class, ie of the first parent class that has no @link
+	 * Gets the root linked class, ie of the first parent class that has no link annotation
 	 *
 	 * This is the same as getLinkedClass(), with recursion.
-	 * Another difference : if the current class is not a @link class, this will return $this.
+	 * Another difference : if the current class is not a link class, this will return $this.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
 	public function getRootLinkedClass()
@@ -184,6 +189,7 @@ class Link_Class extends Reflection_Class
 		do {
 			$linked_class_name = $linked_class->getLinkedClassName();
 			if ($linked_class_name) {
+				/** @noinspection PhpUnhandledExceptionInspection linked class name is always valid */
 				$linked_class = new Link_Class($linked_class_name);
 			}
 		} while ($linked_class_name);
@@ -245,6 +251,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * TODO LOW Works with one level linked classes only
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string|object The link or linked class name
 	 * @return string The root linked class name
 	 */
@@ -253,6 +260,7 @@ class Link_Class extends Reflection_Class
 		if (is_object($class_name)) {
 			$class_name = get_class($class_name);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		return (new Link_Class($class_name))->getLinkedClassName() ?: $class_name;
 	}
 
@@ -263,6 +271,7 @@ class Link_Class extends Reflection_Class
 	 * - Only unique properties are kept into the search object
 	 * - If $strict is true, null will be returned if any of the composite properties has no value
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @param $strict boolean
 	 * @return object|null The search object matching $object, with only identifiers set
@@ -270,8 +279,10 @@ class Link_Class extends Reflection_Class
 	public static function searchObject($object, $strict = true)
 	{
 		$search = Search_Object::create(get_class($object));
-		$link   = new Link_Class(get_class($object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$link   = new Link_Class($object);
 		foreach ($link->getUniqueProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from object must be accessible */
 			$value = $property->getValue($object);
 			if ($strict && empty($value) && $property->getAnnotation('composite')->value) {
 				return null;

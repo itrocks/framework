@@ -76,34 +76,6 @@ class Compiler implements ICompiler, Needs_Main
 		}
 	}
 
-	//--------------------------------------------------------------------------------------- cleanup
-	/**
-	 * @param $buffer string
-	 * @return boolean true if cleanup was necessary, false if buffer was clean before cleanup
-	 */
-	private static function cleanup(&$buffer)
-	{
-		// remove all '\r'
-		$buffer = trim(str_replace(CR, '', $buffer));
-		// remove since the line containing '//#### AOP' until the end of the file
-		$expr = '%\n\s*//\#+\s+AOP.*%s';
-		preg_match($expr, $buffer, $match1);
-		$buffer = preg_replace($expr, '$1', $buffer) . ($match1 ? LF . LF . '}' . LF : LF);
-		// replace '/* public */ private [static] function name_?(' by 'public [static] function name('
-		$expr = '%'
-			. '(?:\n\s*/\*\*?\s+@noinspection\s+PhpUnusedPrivateMethodInspection.*?\*/)?'
-			. '(\n\s*)/\*\s*(private|protected|public)\s*\*/(\s*)' // 1 2 3
-			. '(?:(?:private|protected|public)\s+)?'
-			. '(static\s+)?' // 4
-			. 'function\s*(\s?\&\s?)?\s*(\w+)\_[0-9]*\s*' // 5 6
-			. '\('
-			. '%';
-
-		preg_match($expr, $buffer, $match2);
-		$buffer = preg_replace($expr, '$1$2$3$4function $5$6(', $buffer);
-		return $match1 || $match2;
-	}
-
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source

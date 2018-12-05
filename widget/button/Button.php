@@ -284,6 +284,7 @@ class Button
 
 	//------------------------------------------------------------------------------ setObjectContext
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
 	public function setObjectContext($object)
@@ -297,6 +298,7 @@ class Button
 				isA($object, $uri->controller_name)
 				&& !$uri->parameters->getRawParameter($uri->controller_name)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection object must still be here */
 				$uri->parameters->getMainObject($object);
 				$uri->parameters->shift();
 				if ($uri->feature_name == Feature::F_ADD) {

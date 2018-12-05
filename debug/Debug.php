@@ -30,6 +30,7 @@ abstract class Debug
 	 * - all static variables declared into functions
 	 * - all opened resources (ie files or mysql links)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $display boolean|string true or 'pre' if you want to displaying it
 	 * @return array returns the result array
 	 */
@@ -44,12 +45,14 @@ abstract class Debug
 		$dump['CALL_STACK'] = objectToArray($call_stack->lines(), true);
 		// static
 		foreach (array_merge(get_declared_classes(), get_declared_traits()) as $class) {
+			/** @noinspection PhpUnhandledExceptionInspection $class from call stack */
 			foreach ((new Reflection_Class($class))->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if ($property->isStatic()) {
 					if (!$property->isPublic()) {
 						$property->setAccessible(true);
 						$not_accessible = true;
 					}
+					/** @noinspection PhpUnhandledExceptionInspection accessible static property */
 					$dump['STATIC'][$class][$property->name] = $property->getValue();
 					if ($not_accessible) {
 						$property->setAccessible(false);

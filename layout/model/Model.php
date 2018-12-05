@@ -66,7 +66,7 @@ class Model
 	public function getPages()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
-		$property   = new Reflection_Property(get_class($this), 'pages');
+		$property   = new Reflection_Property($this, 'pages');
 		$page_class = $property->getType()->getElementTypeAsString();
 		/** @noinspection PhpUnhandledExceptionInspection Valid class used */
 		$this->pages = Page::sort(Getter::getCollection($this->pages, $page_class, $this));

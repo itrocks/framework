@@ -28,11 +28,13 @@ class Date_Time_Error extends Date_Time
 
 	//------------------------------------------------------------------------------------- fromError
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $date string
 	 * @return Date_Time equals Date_Time::min()
 	 */
 	public static function fromError($date)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date_time        = new Date_Time_Error(self::$min_date);
 		$date_time->error = $date;
 		return $date_time;

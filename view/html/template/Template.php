@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\View\Html;
 
-use Exception;
 use ITRocks\Framework;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
@@ -21,7 +20,6 @@ use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\View\Html\Template\Loop;
-use ReflectionException;
 
 /**
  * Built-in ITRocks HTML template engine
@@ -283,7 +281,6 @@ class Template
 	 * @param $object_call object|string object or class name
 	 * @param $func_call   string 'functionName(param1value,param2value,...)' or 'functionName'
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	public function callFunc($object_call, $func_call)
 	{
@@ -568,12 +565,13 @@ class Template
 
 	//---------------------------------------------------------------------------------- newFunctions
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Functions
-	 * @throws ReflectionException
 	 */
 	protected function newFunctions()
 	{
 		/** @var $functions Functions */
+		/** @noinspection PhpUnhandledExceptionInspection template functions class must be valid */
 		$functions = Builder::create(
 			isset($this->parameters[self::TEMPLATE_FUNCTIONS])
 				? $this->parameters[self::TEMPLATE_FUNCTIONS]
@@ -587,7 +585,6 @@ class Template
 	 * Parse the template replacing templating codes by object's properties and functions results
 	 *
 	 * @return string html content of the parsed page
-	 * @throws Exception
 	 */
 	public function parse()
 	{
@@ -637,17 +634,10 @@ class Template
 	 * @param $property   Reflection_Property
 	 * @param $collection object[]
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function parseCollection(Reflection_Property $property, array $collection)
 	{
-		try {
-			$type = $property->getType();
-		}
-		catch (Exception $exception) {
-			trigger_error($exception->getMessage(), E_USER_ERROR);
-			$type = null;
-		}
+		$type = $property->getType();
 		return $type->asReflectionClass()->isAbstract()
 			? (new Html\Builder\Abstract_Collection($property, $collection))->build()
 			: (new Html\Builder\Collection($property, $collection))->build();
@@ -657,7 +647,6 @@ class Template
 	/**
 	 * @param $property_name string
 	 * @return string|boolean
-	 * @throws ReflectionException
 	 */
 	protected function parseConditional($property_name)
 	{
@@ -800,7 +789,6 @@ class Template
 	/**
 	 * @param $content string
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function parseFullPage($content)
 	{
@@ -818,7 +806,6 @@ class Template
 	 *
 	 * @param $func_name string
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	protected function parseFunc($func_name)
 	{
@@ -837,7 +824,6 @@ class Template
 	 *
 	 * @param $params_string string
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	protected function parseFuncParams($params_string)
 	{
@@ -862,7 +848,6 @@ class Template
 	 *
 	 * @param $include_uri string
 	 * @return string|null included template, parsed, or null if included file was not found
-	 * @throws Exception
 	 */
 	protected function parseInclude($include_uri)
 	{
@@ -901,13 +886,7 @@ class Template
 		if (beginsWith($include_uri, SL) && ctype_lower(substr($include_uri, 1, 1))) {
 			$include_uri = Framework\View::link($this->functions->getObject($this)) . $include_uri;
 		}
-		try {
-			return (new Main())->runController($include_uri, $options);
-		}
-		catch (Exception $exception) {
-			trigger_error($exception->getMessage(), E_USER_ERROR);
-			return null;
-		}
+		return (new Main)->runController($include_uri, $options);
 	}
 
 	//--------------------------------------------------------------------------- parseIncludeResolve
@@ -938,7 +917,6 @@ class Template
 	/**
 	 * @param $include_uri string
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function parseIncludeTemplate($include_uri)
 	{
@@ -976,7 +954,6 @@ class Template
 	 * @param $i       integer
 	 * @param $j       integer
 	 * @return integer
-	 * @throws Exception
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
@@ -1031,7 +1008,6 @@ class Template
 	 * @param $loop     Loop
 	 * @param $elements array
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function parseLoopArray(Loop $loop, array $elements)
 	{
@@ -1064,7 +1040,6 @@ class Template
 	/**
 	 * @param $loop Loop
 	 * @return string|null
-	 * @throws Exception
 	 */
 	protected function parseLoopElement(Loop $loop)
 	{
@@ -1096,7 +1071,6 @@ class Template
 	/**
 	 * @param $loop Loop
 	 * @return string
-	 * @throws Exception
 	 */
 	protected function parseLoopEmptyElements(Loop $loop)
 	{
@@ -1179,7 +1153,6 @@ class Template
 	 * @param $content string
 	 * @param $j       integer
 	 * @return integer the length of the end tag var name
-	 * @throws Exception
 	 */
 	protected function parseLoopVarName(Loop $loop, &$content, &$j)
 	{
@@ -1246,7 +1219,6 @@ class Template
 	 *   <!--@function-->(...)<!--@function-->
 	 * @param $content string
 	 * @return string updated content
-	 * @throws Exception
 	 */
 	protected function parseLoops($content)
 	{
@@ -1286,7 +1258,6 @@ class Template
 	 * @param $object        object
 	 * @param $property_name string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	protected function parseMethod($object, $property_name)
 	{
@@ -1330,7 +1301,6 @@ class Template
 	 *
 	 * @param $property_name string
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	protected function parseNot($property_name)
 	{
@@ -1381,7 +1351,6 @@ class Template
 	 *
 	 * @param $var_name string
 	 * @return array [$object, $property_name]
-	 * @throws ReflectionException
 	 */
 	protected function parsePath($var_name)
 	{
@@ -1461,10 +1430,10 @@ class Template
 
 	//------------------------------------------------------------------------------ parseSingleValue
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_name string
 	 * @param $format_value  boolean
 	 * @return mixed
-	 * @throws ReflectionException
 	 */
 	protected function parseSingleValue($property_name, $format_value = true)
 	{
@@ -1554,6 +1523,7 @@ class Template
 				&& ($builder = Widget_Annotation::of($object)->value)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
+				/** @noinspection PhpUnhandledExceptionInspection widget builder must be valid */
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
@@ -1688,7 +1658,6 @@ class Template
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string|object var value after reading value / executing specs
-	 * @throws Exception|ReflectionException
 	 */
 	protected function parseValue($var_name, $as_string = true)
 	{
@@ -1768,7 +1737,6 @@ class Template
 	 * @param $i       integer
 	 * @param $j       integer
 	 * @return mixed
-	 * @throws Exception
 	 */
 	protected function parseVar(&$content, $i, $j)
 	{
@@ -1854,7 +1822,6 @@ class Template
 	 *     <!--@function-->(...)<!--@function-->
 	 * @param $content string
 	 * @return string updated content
-	 * @throws Exception
 	 */
 	public function parseVars($content)
 	{
@@ -2209,7 +2176,6 @@ class Template
 	 * </ul>
 	 *
 	 * @param $parameters array key is parameter name
-	 * @throws ReflectionException
 	 */
 	public function setParameters(array $parameters)
 	{

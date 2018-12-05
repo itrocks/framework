@@ -13,6 +13,7 @@ abstract class Remover_Tool
 	/**
 	 * Default remover removes an object from all collections properties of the object
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $composite object The object that contains the given object
 	 * @param $object    object contained object to remove
 	 * @return integer removed instances count
@@ -20,8 +21,8 @@ abstract class Remover_Tool
 	public static function removeObjectFromComposite($composite, $object)
 	{
 		$count = 0;
-		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class(get_class($composite)))->accessProperties() as $property) {
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($composite))->accessProperties() as $property) {
 			$type = $property->getType();
 			if ($type->isClass() && isA($object, $type->getElementTypeAsString())) {
 				$property_name = $property->name;
@@ -39,7 +40,7 @@ abstract class Remover_Tool
 							}
 						}
 					}
-				}
+				} /** @noinspection PhpUnhandledExceptionInspection $property from $composite, accessible */
 				elseif ($property->getValue($composite) === $object) {
 					unset($composite->$property_name);
 					$count ++;
