@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
@@ -26,7 +25,6 @@ use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Sql\Builder\Map_Delete;
 use ITRocks\Framework\Sql\Builder\Map_Insert;
-use ReflectionException;
 
 /**
  * Write feature for Dao\Mysql link
@@ -89,6 +87,7 @@ class Write extends Data_Link\Write
 		do {
 			$impacted = false;
 			foreach ($this->only as $property_name) {
+				/** @noinspection PhpUnhandledExceptionInspection valid class name, $only must be valid */
 				$property           = new Reflection_Property($class_name, $property_name);
 				$impact_annotations = $property->getListAnnotations('impacts');
 				foreach ($impact_annotations as $impact_annotation) {
@@ -160,9 +159,8 @@ class Write extends Data_Link\Write
 	/**
 	 * Run the write feature
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return object|null
-	 * @throws ReflectionException
-	 * @throws Exception
 	 */
 	public function run()
 	{
@@ -176,14 +174,16 @@ class Write extends Data_Link\Write
 			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
 				$this->link->disconnect($this->object);
 			}
-			$class             = new Link_Class(get_class($this->object));
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$class             = new Link_Class($this->object);
 			$this->id_property = 'id';
 			$this->parseOptions();
 			do {
 				$link = Class_\Link_Annotation::of($class);
 				if ($link->value) {
 					$link_property = $link->getLinkClass()->getLinkProperty();
-					$link_object   = $link_property->getValue($this->object);
+					/** @noinspection PhpUnhandledExceptionInspection $link_property calculated from object */
+					$link_object = $link_property->getValue($this->object);
 					if (!$link_object) {
 						$id_link_property                = 'id_' . $link_property->name;
 						$this->object->$id_link_property = $this->link->write($link_object, $this->options);
@@ -231,7 +231,8 @@ class Write extends Data_Link\Write
 				// if link class : write linked object too
 				if ($link->value && !isset($this->link_class_only)) {
 					$this->id_property = ('id_' . $class->getCompositeProperty()->name);
-					$class             = new Link_Class($link->value);
+					/** @noinspection PhpUnhandledExceptionInspection link annotation value must be valid */
+					$class = new Link_Class($link->value);
 				}
 				else {
 					$class = $this->id_property = null;
@@ -375,15 +376,16 @@ class Write extends Data_Link\Write
 	 *
 	 * Ie when you write an order, it's implicitly needed to write its lines
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property   Reflection_Property
 	 * @param $collection Component[]
 	 */
 	protected function writeCollection(Reflection_Property $property, array $collection)
 	{
 		// old collection
-		$class_name = get_class($this->object);
-		$old_object = Search_Object::create($class_name);
+		$old_object = Search_Object::create($this->object);
 		$this->link->setObjectIdentifier($old_object, $this->link->getObjectIdentifier($this->object));
+		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $old_object */
 		$old_collection = $property->getValue($old_object);
 
 		$element_class = $property->getType()->asReflectionClass();
@@ -398,9 +400,12 @@ class Write extends Data_Link\Write
 					$options[] = new Option\Link_Class_Only();
 				}
 				if (!is_a($element, $element_class->getName())) {
-					$collection[$key] = $element = Builder::createClone($element, $element_class->getName(), [
-						$element_link->getLinkClass()->getCompositeProperty()->name => $element
-					]);
+					/** @noinspection PhpUnhandledExceptionInspection $element_class always valid */
+					$collection[$key] = $element = Builder::createClone(
+						$element,
+						$element_class->getName(),
+						[$element_link->getLinkClass()->getCompositeProperty()->name => $element]
+					);
 				}
 				$element->setComposite($this->object, $foreign_property_name);
 				$id = $element_link->value
@@ -450,13 +455,15 @@ class Write extends Data_Link\Write
 
 	//-------------------------------------------------------------------------------------- writeMap
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
 	 */
 	protected function writeMap(Reflection_Property $property, array $map)
 	{
 		// old map
-		$class                   = new Link_Class(get_class($this->object));
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$class                   = new Link_Class($this->object);
 		$composite_property_name = Class_\Link_Annotation::of($class)->value
 			? $class->getCompositeProperty()->name
 			: null;
@@ -464,6 +471,7 @@ class Write extends Data_Link\Write
 		$this->link->setObjectIdentifier(
 			$old_object, $this->link->getObjectIdentifier($this->object, $composite_property_name)
 		);
+		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $old_object */
 		$old_map = $property->getValue($old_object);
 		// map properties : write each of them
 		$insert_builder = new Map_Insert($property);
@@ -511,6 +519,7 @@ class Write extends Data_Link\Write
 	 */
 	protected function writeObject(Reflection_Property $property, $component_object)
 	{
+		// notice that this work only because called after write of $this->object (see searches bellow)
 		// if there is already a stored component object : there must be only one
 		if (is_object($component_object)) {
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
@@ -522,13 +531,18 @@ class Write extends Data_Link\Write
 			}
 		}
 		// delete
-		if (Empty_Object::isEmpty($component_object)) {
-			if ($this->link->getObjectIdentifier($component_object)) {
-				$this->link->delete($component_object);
+		if (($component_object && Empty_Object::isEmpty($component_object)) || !$component_object) {
+			$foreign_property_name = Foreign_Annotation::of($property)->value;
+			$components            = $this->link->search(
+				[$foreign_property_name => $this->object],
+				$property->getType()->asString()
+			);
+			foreach ($components as $component) {
+				$this->link->delete($component);
 			}
 		}
 		// create / update
-		else {
+		elseif ($component_object) {
 			$component_object->setComposite($this->object);
 			// for creation if a only option is given, we should always write foreign property
 			if (!Dao::getObjectIdentifier($component_object)) {
