@@ -5,7 +5,6 @@ use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Method;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Reflection\Reflection_Function;
-use ReflectionException;
 use ReflectionFunction;
 
 /**
@@ -22,10 +21,10 @@ trait Toolbox
 
 	//---------------------------------------------------------------------------------- decodeAdvice
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $advice               string
 	 * @param $joinpoint_class_name string
 	 * @return array
-	 * @throws ReflectionException
 	 */
 	private function decodeAdvice($advice, $joinpoint_class_name)
 	{
@@ -73,6 +72,7 @@ trait Toolbox
 			$advice_function_name = $advice;
 			$advice_string = Q . $advice_function_name . Q;
 			$is_advice_static = false;
+			/** @noinspection PhpUnhandledExceptionInspection Only valid advices are allowed */
 			$advice_method = new Reflection_Function($advice_function_name);
 			$advice_parameters = $advice_method->getParameters();
 		}
@@ -111,6 +111,7 @@ trait Toolbox
 
 	//---------------------------------------------------------------------------- generateAdviceCode
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $advice                   string[]|object[]|string
 	 * @param $advice_class_name        string
 	 * @param $advice_method_name       string
@@ -123,7 +124,6 @@ trait Toolbox
 	 * @param $result                   string
 	 * @param $call_if_no_plugin_object string
 	 * @return string
-	 * @throws ReflectionException
 	 */
 	private function generateAdviceCode(
 		$advice, $advice_class_name, $advice_method_name, $advice_function_name,
@@ -167,6 +167,7 @@ trait Toolbox
 		}
 		// function call
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection Only valid advices are allowed */
 			$ref = (new ReflectionFunction($advice_function_name))->returnsReference() ? '&' : '';
 			return $joinpoint_code
 				. $i2 . ($advice_has_return ? $result . SP . '=' . $ref . SP : '')

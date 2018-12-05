@@ -199,7 +199,12 @@ class Method
 			switch ($type) {
 				case 'after':
 					if ($joinpoint_code) {
-						$advice_code .= $i2 . 'if ($joinpoint_->stop) return $result_;';
+						$advice_code .= $i2 . 'if ($joinpoint_->stop) return '
+							. (
+								$advice_has_return
+								? 'isset($result_) ? $result_ : $joinpoint_->result;'
+								: '$joinpoint_->result;'
+							);
 					}
 					$after_code[] = $advice_code;
 					break;
@@ -222,8 +227,12 @@ class Method
 						$advice_code .= $i2 . 'if (isset($result_)) return $result_;';
 					}
 					if ($joinpoint_code) {
-						$advice_code .= $i2
-							. 'if ($joinpoint_->stop) return isset($result_) ? $result_ : null;';
+						$advice_code .= $i2 . 'if ($joinpoint_->stop) return '
+							. (
+								$advice_has_return
+								? 'isset($result_) ? $result_ : $joinpoint_->result;'
+								: '$joinpoint_->result;'
+							);
 					}
 					$before_code[] = $advice_code;
 					break;
