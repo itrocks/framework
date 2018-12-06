@@ -31,7 +31,6 @@ class Output_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		/** @var $session_files Files */
 		$raw_parameters = $parameters->getRawParameters();
 		if (is_numeric(reset($raw_parameters)) && ctype_upper(substr(key($raw_parameters), 0, 1))) {
 			$raw_parameters = array_merge(

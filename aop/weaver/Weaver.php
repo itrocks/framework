@@ -305,8 +305,7 @@ class Weaver implements IWeaver
 			$this->joinpoints[$handler->joinpoint][$handler->index] = null;
 		}
 		else {
-			$this->joinpoints[$handler->joinpoint[0]][$handler->joinpoint[1]][$handler->index]
-				= null;
+			$this->joinpoints[$handler->joinpoint[0]][$handler->joinpoint[1]][$handler->index] = null;
 		}
 	}
 

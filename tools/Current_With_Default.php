@@ -21,8 +21,7 @@ trait Current_With_Default
 	{
 		$current = self::pCurrent($set_current);
 		if (!isset($current)) {
-			$class = get_called_class();
-			$current = self::pCurrent(new $class);
+			$current = self::pCurrent(new static);
 		}
 		return $current;
 	}

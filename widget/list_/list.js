@@ -289,7 +289,7 @@ $('document').ready(function()
 			 *
 			 * @param select boolean true to select, false to deselect
 			 * @param type   string  @values all, matching, visible
- 			 */
+			 */
 			var selectAction = function(select, type)
 			{
 				if (type === 'all') {

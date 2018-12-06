@@ -95,7 +95,7 @@ $('document').ready(function()
 
 			//---------------------------------------------------------------------------- draggable drag
 			drag: function(event, ui)
-      {
+			{
 				var $this      = $(this);
 				var $droppable = $this.data('over-droppable');
 				if ($droppable !== undefined) {

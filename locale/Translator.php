@@ -178,7 +178,6 @@ class Translator
 			return join(DOT, $text);
 		}
 		$context_property = str_replace('*', '', $context_property_path);
-		/** @var $search Translation */
 		$search              = Search_Object::create(Translation::class);
 		$search->language    = $this->language;
 		$search->translation = strtolower($translation);
@@ -376,7 +375,6 @@ class Translator
 			$str_uri = true;
 			$text    = rtrim($text, AT);
 		}
-		/** @var $translations Translation[] */
 		$translations = Dao::search(
 			['language' => $this->language, 'text' => ($text === '%') ? Func::equal('%') : $text],
 			Translation::class,

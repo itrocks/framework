@@ -59,7 +59,6 @@ class Files implements Serializable
 	{
 		$this->files = [];
 		foreach (unserialize($serialized) as $file_name => $temporary_file_name) {
-			/** @var $file File */
 			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$file                      = Builder::create(File::class);
 			$this->files[$file_name]   = $file;

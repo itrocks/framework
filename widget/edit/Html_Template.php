@@ -78,10 +78,8 @@ class Html_Template extends Template
 	 */
 	protected function newFunctions()
 	{
-		/** @var $functions Html_Template_Functions */
 		/** @noinspection PhpUnhandledExceptionInspection class constant is valid */
-		$functions = Builder::create(Html_Template_Functions::class);
-		return $functions;
+		return Builder::create(Html_Template_Functions::class);
 	}
 
 	//----------------------------------------------------------------------------------- nextCounter
@@ -178,8 +176,8 @@ class Html_Template extends Template
 				&& is_a($builder, Property::class, true)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
-				$builder = Builder::create($builder, [$property, $property->value(), $this]);
 				/** @var $builder Property */
+				$builder = Builder::create($builder, [$property, $property->value(), $this]);
 				$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
 				$value = $builder->buildHtml();
 				if ($builder instanceof Value_Widget) {

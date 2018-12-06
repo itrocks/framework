@@ -196,12 +196,11 @@ class Authentication_Server implements Configurable, Registerable
 		}
 		$sort            = Dao::sort('request_time_float');
 		$sort->reverse   = [true];
+		/** @var $authentications Authentication[] */
 		$authentications = Dao::search($search, Authentication::class, [Dao::limit(1), $sort]);
 		if ($authentications) {
-			/** @var $authentication Authentication|null */
 			$authentication = reset($authentications);
 			// search for a disconnection after given
-			/** @var $disconnect Authentication */
 			$disconnect = Dao::searchOne([
 				'action'             => Authentication::DISCONNECT,
 				'login'              => $login,

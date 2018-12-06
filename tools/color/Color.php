@@ -56,10 +56,8 @@ class Color implements Stringable
 	 */
 	public static function fromString($color)
 	{
-		/** @var $color static */
-		/** @noinspection PhpUnhandledExceptionInspection valid get_called_class() */
-		$color = Builder::create(get_called_class(), [$color]);
-		return $color;
+		/** @noinspection PhpUnhandledExceptionInspection static */
+		return Builder::create(static::class, [$color]);
 	}
 
 	//--------------------------------------------------------------------------------- getBrightness

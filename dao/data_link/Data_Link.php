@@ -101,7 +101,6 @@ abstract class Data_Link
 	 */
 	public function classNamesOf($store_name)
 	{
-		/** @var $dependencies Dependency[] */
 		$dependencies = Dao::search(
 			['dependency_name' => $store_name, 'type' => Dependency::T_STORE], Dependency::class
 		);

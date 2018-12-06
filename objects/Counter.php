@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Objects;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\View\Html\Template;
 
@@ -83,7 +83,7 @@ class Counter
 	 */
 	public static function increment($object, $identifier = null)
 	{
-		/** @var $dao Link */
+		/** @var $dao Mysql\Link */
 		$dao = Dao::current();
 		$dao->begin();
 		if (empty($identifier)) {

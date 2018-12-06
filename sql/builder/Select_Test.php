@@ -466,7 +466,6 @@ class Select_Test extends Test
 	//------------------------------------------------------------------ testWhereExistingObjectQuery
 	public function testWhereExistingObjectQuery()
 	{
-		/** @var $client Client */
 		$client = new Client();
 		/** @noinspection PhpUndefinedFieldInspection */
 		$client->id = 12;
@@ -522,7 +521,6 @@ class Select_Test extends Test
 	//-------------------------------------------------------------------- testWhereSearchObjectQuery
 	public function testWhereSearchObjectQuery()
 	{
-		/** @var $client Client */
 		$client         = Search_Object::create(Client::class);
 		$client->number = 1;
 		$client->name   = 'Roger%';

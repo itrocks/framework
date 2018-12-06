@@ -99,7 +99,7 @@ class Method
 
 		// $pointcut_string
 		if ($is_static) {
-			$pointcut_string = '[get_called_class(), ' . Q . $method_name . Q . ']';
+			$pointcut_string = '[static::class, ' . Q . $method_name . Q . ']';
 		}
 		else {
 			$pointcut_string = '[$this, ' . Q . $method_name . Q . ']';

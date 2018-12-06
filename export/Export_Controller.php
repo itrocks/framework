@@ -42,7 +42,6 @@ class Export_Controller implements Default_Feature_Controller
 		$properties = $data->getProperties();
 
 		// create temporary file
-		/** @var $application Application */
 		$application   = Session::current()->get(Application::class);
 		$tmp           = $application->getTemporaryFilesPath();
 		$short_class   = Names::classToProperty($class_name);

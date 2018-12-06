@@ -190,8 +190,8 @@ class Access_Control implements Configurable, Registerable
 	{
 		$last_protect  = self::$protect;
 		self::$protect = true;
-		$user = User::current();
-		$accessible = true;
+		$user          = User::current();
+		$accessible    = true;
 		/** @var $user User|Has_Groups */
 		if (
 			isA($user, Has_Groups::class)
@@ -319,11 +319,11 @@ class Access_Control implements Configurable, Registerable
 		static $anti_loop;
 		if (empty($anti_loop)) {
 			$anti_loop = true;
-			$user = User::current();
+			$user      = User::current();
 			if (isA($user, Has_Groups::class)) {
 				/** @var $user User|Has_Groups */
 				$class_name = $object->getDeclaringClassName();
-				$path = SL . str_replace(BS, SL, $class_name) . SL . Feature::OVERRIDE;
+				$path       = SL . str_replace(BS, SL, $class_name) . SL . Feature::OVERRIDE;
 				if (
 					$user
 					&& !empty($feature = $user->getAccessOptions($path))

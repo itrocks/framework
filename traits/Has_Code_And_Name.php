@@ -47,7 +47,6 @@ trait Has_Code_And_Name
 	 */
 	public static function fromStringMultiple($value)
 	{
-		/** @var $values static[] */
 		$values = Dao::search(['code' => $value], static::class);
 		if (!$values) {
 			$values = Dao::search(['name' => $value], static::class);

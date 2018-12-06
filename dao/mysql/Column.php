@@ -203,7 +203,6 @@ class Column implements Sql\Column
 			. 'FROM `information_schema`.`columns`' . LF
 			. 'WHERE `table_schema` = ' . $database_name . ' AND `table_name` = ' . Q . $table_name . Q
 		);
-		/** @var $column Column */
 		while ($column = $result->fetch_object(Column::class)) {
 			if (
 				is_null($column->Default)

@@ -55,11 +55,11 @@ class Write_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		/** @var $button Button */
 		$button = $parameters->getMainObject(Button::class);
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$builder = Builder::create(Object_Builder_Array::class);
 		$builder->ignore_unknown_properties = true;
+		/** @var $button Button */
 		$button = $builder->build($form, $button);
 		$this->callOutputSettingController($button, $form);
 		return View::run($parameters->getObjects(), $form, $files, get_class($button), 'added');

@@ -113,7 +113,6 @@ class Write extends Data_Link\Write
 	 */
 	protected function callEvent(Event $event, array $annotations)
 	{
-		/** @var $annotations Method_Annotation[] */
 		foreach ($annotations as $annotation) {
 			if ($annotation->call($event->object, [$event]) === false) {
 				return false;
@@ -199,7 +198,6 @@ class Write extends Data_Link\Write
 				$write_objects     = $object_to_write_array->objects;
 				$write_properties  = $object_to_write_array->properties;
 
-				/** @var $properties Reflection_Property[] */
 				$properties = $class->accessProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
 				if ($write) {
@@ -299,7 +297,6 @@ class Write extends Data_Link\Write
 			$option            = [];
 			$search            = [];
 			foreach ($link->getLinkClass()->getUniqueProperties() as $property) {
-				/** @var $property Reflection_Property $link annotates a Reflection_Property */
 				$property_name = $property->getName();
 				$column_name   = Dao::storedAsForeign($property) ? 'id_' : '';
 				$column_name  .= Store_Name_Annotation::of($properties[$property_name])->value;

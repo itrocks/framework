@@ -25,7 +25,7 @@ class Plugin implements Registerable
 	/**
 	 * Class names that have no change triggers
 	 *
-	 * @var string[]
+	 * @var array Change[][]
 	 */
 	protected $no_change_cache = [];
 
@@ -125,7 +125,7 @@ class Plugin implements Registerable
 		$class_name = Builder::current()->sourceClassName(get_class($object));
 		if (!isset($this->no_change_cache[$class_name])) {
 			$change_triggers = Dao::search(['class_name' => $class_name], Change::class);
-			return $this->no_change_cache[$class_name] = $change_triggers;
+			$this->no_change_cache[$class_name] = $change_triggers;
 		}
 		return $this->no_change_cache[$class_name];
 	}

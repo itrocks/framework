@@ -27,7 +27,6 @@ abstract class Table_Builder_Mysqli
 			. (isset($database_name) ? (' IN ' . BQ . $database_name . BQ) : '')
 			. (isset($table_name) ? (' LIKE ' . Q . $table_name . Q) : '')
 		);
-		/** @var $table Table */
 		while ($table = $result->fetch_object(Table::class)) {
 			foreach (Column::buildTable($mysqli, $table->getName(), $database_name) as $column) {
 				$table->addColumn($column);

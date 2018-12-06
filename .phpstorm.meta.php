@@ -10,18 +10,25 @@ namespace PHPSTORM_META;
  * To apply your changes to this file : simply close then re-launch PhpStorm
  */
 
+use mysqli_result;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Mapper\Null_Object;
 use ITRocks\Framework\Mapper\Search_Object;
-use ITRocks\Framework\Plugin\Installable\Installer;
+use ITRocks\Framework\Plugin;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Call_Stack;
+use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\View\Html\Template;
 use PHPUnit_Framework_TestCase;
 
 $STATIC_METHOD_TYPES = [
+	mysqli_result::fetch_object('') => [
+		'' == '@'
+	],
 	Builder::create('') => [
 		'' == '@'
 	],
@@ -31,13 +38,12 @@ $STATIC_METHOD_TYPES = [
 	Call_Stack::getObject('') => [
 		'' == '@'
 	],
-	// Dao::read will not work : it will check the first argument only
-	// https://stackoverflow.com/questions/42104222/phpstorm-meta-file-syntax-for-static-methods-with-multiple-arguments
-	/*
+	Current::current('') => [
+		'' == '@'
+	],
 	Dao::read('') => [
 		'' == '@'
 	],
-	*/
 	Dao::readAll('') => [
 		'' == '@[]'
 	],
@@ -53,11 +59,8 @@ $STATIC_METHOD_TYPES = [
 	Dao::write('') => [
 		'' == '@'
 	],
-	Installer::openFile('') => [
-		'' == '@'
-	],
-	Manager::get('') => [
-		'' == '@'
+	Mysql\Link::query('') => [
+		'' == '@[]'
 	],
 	Null_Object::create('') => [
 		'' == '@'
@@ -69,12 +72,24 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	PHPUnit_Framework_TestCase::createMock('') => [
-		'' == '@|PHPUnit_Framework_MockObject_MockObject',
+		'' == '@',
 	],
 	PHPUnit_Framework_TestCase::getMock('') => [
-		'' == '@|PHPUnit_Framework_MockObject_MockObject',
+		'' == '@',
+	],
+	PHPUnit_Framework_TestCase::getMockBuilder('') => [
+		'' == '@'
+	],
+	Plugin\Installable\Installer::openFile('') => [
+		'' == '@'
+	],
+	Plugin\Manager::get('') => [
+		'' == '@'
 	],
 	Search_Object::create('') => [
+		'' == '@'
+	],
+	Session::get('') => [
 		'' == '@'
 	],
 	Sort::sortObject('') => [

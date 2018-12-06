@@ -70,9 +70,7 @@ class Import_Settings extends Setting\Custom\Set
 		if (!isset($feature)) {
 			$feature = 'import';
 		}
-		/** @var $import_settings Import_Settings */
-		$import_settings = parent::current($class_name, $feature);
-		return $import_settings;
+		return parent::current($class_name, $feature);
 	}
 
 	//---------------------------------------------------------------------------------- getClassName

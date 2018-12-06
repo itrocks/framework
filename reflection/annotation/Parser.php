@@ -284,6 +284,7 @@ class Parser
 		}
 
 		if (isset($annotation) && isA($annotation, Types_Annotation::class)) {
+			/** @var $annotation Types_Annotation */
 			$do = false;
 			if (is_array($annotation->value)) {
 				foreach ($annotation->value as $value) {
@@ -297,7 +298,6 @@ class Parser
 				$do = $annotation->value && ctype_upper($annotation->value[0]);
 			}
 			if ($do) {
-				/** @var $annotation Types_Annotation */
 				$j = strrpos(substr($doc_comment, 0, $i), LF . self::DOC_COMMENT_IN);
 				if ($j === false) {
 					$class_name = ($reflection_object instanceof Reflection_Class_Component)

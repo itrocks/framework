@@ -65,7 +65,7 @@ class Select extends Element
 				unset($values['']);
 				$values = ['' => $value] + $values;
 			}
-			$content = '';
+			$content  = '';
 			$selected = $this->selected();
 			/** @var $selected_option Option */
 			$selected_option = null;

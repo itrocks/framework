@@ -152,8 +152,7 @@ trait Toolbox
 					. '$this->' . $advice_method_name . '(' . $advice_parameters_string . ');';
 			}
 			else {
-				$code = $i2 . '/** @var $object_ ' . BS . $advice_class_name . ' */'
-					. $i2 . '$object_ = \ITRocks\Framework\Session::current()->plugins->get('
+				$code = $i2 . '$object_ = \ITRocks\Framework\Session::current()->plugins->get('
 						. "'$advice_class_name'"
 					. ');'
 					. $joinpoint_code

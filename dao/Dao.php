@@ -184,7 +184,7 @@ class Dao implements Configurable
 	 */
 	public static function disconnect($object)
 	{
-		return self::current()->disconnect($object);
+		self::current()->disconnect($object);
 	}
 
 	//-------------------------------------------------------------------------------------- distinct

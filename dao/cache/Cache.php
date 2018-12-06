@@ -8,7 +8,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Cache\Cached;
-use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -93,9 +93,9 @@ class Cache implements Configurable, Registerable
 	 * If more than ::$maximum objects are stored, purge ::$purge objects
 	 *
 	 * @param $object object
-	 * @param $link   Link
+	 * @param $link   Mysql\Link
 	 */
-	public function add($object, Link $link = null)
+	public function add($object, Mysql\Link $link = null)
 	{
 		// Do nothing if cache is disabled.
 		if (!$this->enabled) {
@@ -131,7 +131,7 @@ class Cache implements Configurable, Registerable
 			return;
 		}
 
-		/** @var $link Link */
+		/** @var $link Mysql\Link */
 		$link = $joinpoint ? $joinpoint->object : Dao::current();
 		$this->add($result, $link);
 	}
@@ -148,7 +148,7 @@ class Cache implements Configurable, Registerable
 	public function cacheWriteObject($object, $options = [], Method_Joinpoint $joinpoint = null)
 	{
 		if ($this->enabled && !$options) {
-			/** @var $link Link */
+			/** @var $link Mysql\Link */
 			$link = $joinpoint ? $joinpoint->object : Dao::current();
 			$this->add($object, $link);
 		}
@@ -236,10 +236,10 @@ class Cache implements Configurable, Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod ([Link::class, 'read'],              [$this, 'cacheReadObject']);
-		$aop->afterMethod ([Link::class, 'write'],             [$this, 'cacheWriteObject']);
-		$aop->beforeMethod([Link::class, 'read'],              [$this, 'getCachedObject']);
-		$aop->afterMethod ([Link::class, 'delete'],            [$this, 'removeObject']);
+		$aop->afterMethod ([Mysql\Link::class, 'read'],              [$this, 'cacheReadObject']);
+		$aop->afterMethod ([Mysql\Link::class, 'write'],             [$this, 'cacheWriteObject']);
+		$aop->beforeMethod([Mysql\Link::class, 'read'],              [$this, 'getCachedObject']);
+		$aop->afterMethod ([Mysql\Link::class, 'delete'],            [$this, 'removeObject']);
 		$aop->beforeMethod([Main::class, 'executeController'], [$this, 'toggleCacheActivation']);
 	}
 
@@ -270,7 +270,7 @@ class Cache implements Configurable, Registerable
 	 */
 	public function removeObject($object, Method_Joinpoint $joinpoint = null)
 	{
-		/** @var $link Link */
+		/** @var $link Mysql\Link */
 		$link = $joinpoint ? $joinpoint->object : Dao::current();
 		if (
 			is_object($object)

@@ -186,7 +186,6 @@ class Foreign_Key implements Sql\Foreign_Key
 			AND `referenced_table_name` IS NOT NULL
 		");
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
-			/** @var $foreign_key Foreign_Key */
 			$foreign_keys[$foreign_key->Constraint] = $foreign_key;
 		}
 		$result->free();

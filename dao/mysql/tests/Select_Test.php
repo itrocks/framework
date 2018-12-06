@@ -5,7 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Console;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao\Mysql\Maintainer;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\PHP\Dependency;
@@ -44,8 +44,7 @@ class Select_Test extends Test
 		upgradeTimeLimit(0);
 		$classes = [];
 		$dao     = Dao::current();
-		if ($dao instanceof Link) {
-			/** @var $dependencies Dependency[] */
+		if ($dao instanceof Mysql\Link) {
 			$dependencies = Dao::search(
 				[
 					'class_name'  => Func::notOp(Console::class),
@@ -140,7 +139,7 @@ class Select_Test extends Test
 	 */
 	public function testEverything($query, Select $builder)
 	{
-		/** @var $dao Link */
+		/** @var $dao Mysql\Link */
 		$dao                      = Dao::current();
 		Maintainer::get()->notice = false;
 		$dao->setContext($builder->getJoins()->getClassNames());

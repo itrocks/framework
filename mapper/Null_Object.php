@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -100,7 +99,6 @@ abstract class Null_Object
 		}
 		$is_null = true;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		/** @var $properties Reflection_Property[] */
 		$properties = (new Reflection_Class($object))->accessProperties();
 		if ($properties_filter) {
 			$properties = call_user_func($properties_filter, $properties);

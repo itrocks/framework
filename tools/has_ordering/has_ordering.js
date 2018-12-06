@@ -18,17 +18,17 @@ $(document).ready(function() {
 		var selector = 'input.customized.integer[name*="[ordering]"]:not([type])';
 		var $ordering = $this.find(selector);
 		$ordering.each(function()
-			{
-				var $input  = $(this);
-				var $parent = $input.parent();
-				if ($parent.is('td')) {
-					var position = $parent.prevAll().length + 1;
-					$input.closest('table').find('>thead>tr>th:nth-child(' + position + ')')
-						.addClass('no-autowidth');
-					$parent.addClass('ordering');
-					$input.attr('type', 'hidden');
-				}
-			});
+		{
+			var $input  = $(this);
+			var $parent = $input.parent();
+			if ($parent.is('td')) {
+				var position = $parent.prevAll().length + 1;
+				$input.closest('table').find('>thead>tr>th:nth-child(' + position + ')')
+					.addClass('no-autowidth');
+				$parent.addClass('ordering');
+				$input.attr('type', 'hidden');
+			}
+		});
 
 		var $tbody = $ordering.parent().filter('td').closest('tbody');
 

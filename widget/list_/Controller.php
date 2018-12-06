@@ -252,7 +252,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	public function applySearchParameters(List_Setting\Set $list_settings)
 	{
 		$class = $list_settings->getClass();
-		/** @var $search_parameters_parser Search_Parameters_Parser */
 		/** @noinspection PhpUnhandledExceptionInspection ::class */
 		$search_parameters_parser = Builder::create(
 			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
@@ -587,9 +586,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		);
 		// buttons
 		/** @noinspection PhpUnhandledExceptionInspection ::class */
-		/** @var $buttons Setting\Buttons */
 		$buttons = Builder::create(Setting\Buttons::class);
-		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$parameters['custom_buttons'] = $buttons->getButtons(
 			'custom list', Names::classToSet($class_name)
 		);

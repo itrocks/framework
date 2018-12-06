@@ -219,7 +219,6 @@ trait Column_Builder_Property
 	 */
 	private static function propertyValues(Reflection_Property $property)
 	{
-		/** @var $values string[] */
 		$values = $property->getListAnnotation('values')->values();
 		if ($values) {
 			foreach ($values as $key => $value) {

@@ -89,7 +89,6 @@ class Condition extends Column
 	 */
 	public function toSql(With_Build_Column $builder, $property_path)
 	{
-		/** @var $starting_class Reflection_Class */
 		$starting_class    = $builder->getJoins()->getStartingClass();
 		$condition_builder = (new Builder\Where(
 			$starting_class->getName(), $this->condition, null, $builder->getJoins()

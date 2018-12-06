@@ -69,8 +69,7 @@ class Dead_Or_Alive
 	 */
 	public static function isAlive($identifier)
 	{
-		/** @var $search self */
-		$search             = Search_Object::create(__CLASS__);
+		$search             = Search_Object::create(static::class);
 		$search->identifier = $identifier;
 		$search->matchCallStack(['file']);
 		Dao::begin();

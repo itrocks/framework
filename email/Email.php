@@ -222,7 +222,6 @@ class Email
 	 */
 	private function uniqueAttachments()
 	{
-		/** @var $search Attachment */
 		$search = Search_Object::create(Attachment::class);
 		foreach ($this->attachments as $attachment) {
 			$search->hash = $attachment->hash;
@@ -248,8 +247,7 @@ class Email
 	 */
 	private function uniqueRecipients()
 	{
-		/** @var $search Recipient */
-		$search = Search_Object::create(Recipient::class);
+		$search     = Search_Object::create(Recipient::class);
 		$recipients = array_merge(
 			[$this->from, $this->reply_to, $this->return_path],
 			$this->to, $this->copy_to, $this->blind_copy_to

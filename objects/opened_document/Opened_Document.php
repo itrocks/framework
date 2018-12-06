@@ -123,8 +123,7 @@ class Opened_Document
 	public static function openedObject($object)
 	{
 		$since = Date_Time::now()->sub(static::DELAY, Date_Time::SECOND);
-		/** @var $opened_document static|null */
-		$opened_document = Dao::searchOne(
+		return Dao::searchOne(
 			[
 				'class_name' => get_class($object),
 				'identifier' => Dao::getObjectIdentifier($object),
@@ -132,7 +131,6 @@ class Opened_Document
 			],
 			static::class
 		);
-		return $opened_document;
 	}
 
 	//----------------------------------------------------------------------------------------- purge
@@ -144,7 +142,6 @@ class Opened_Document
 	{
 		Dao::begin();
 		$since = Date_Time::now()->sub(static::DELAY, Date_Time::SECOND);
-		/** @var $opened_documents Opened_Document[] */
 		$opened_documents = Dao::search(['ping' => Dao\Func::less($since)], static::class);
 		foreach ($opened_documents as $opened_document) {
 			Dao::delete($opened_document);

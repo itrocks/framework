@@ -41,15 +41,13 @@ trait Has_Begin_End_Dates
 		if (!isset($date_time)) {
 			$date_time = Date_Time::now();
 		}
-		/** @var $object static */
-		$object = Dao::searchOne(
+		return Dao::searchOne(
 			[
 				'begin_date' => Func::lessOrEqual($date_time->toEndOf(Date_Time::DAY)),
 				'end_date'   => Func::greaterOrEqual($date_time->toBeginOf(Date_Time::DAY))
 			],
-			get_called_class()
+			static::class
 		);
-		return $object;
 	}
 
 	//--------------------------------------------------------------------------------- checkOverlaps
@@ -76,7 +74,7 @@ trait Has_Begin_End_Dates
 						return Loc::tr(
 							"The :name can't be in :element_name :first and :second at the same time",
 							Loc::replace([
-								'element_name' => Names::classToDisplay(get_called_class()),
+								'element_name' => Names::classToDisplay(static::class),
 								'first'        => $first_element,
 								'name'         => $array_name,
 								'second'       => $second_element

@@ -167,7 +167,6 @@ class Call_Stack
 	 */
 	public function getFeature()
 	{
-		/** @var $template Template */
 		if ($template = $this->getObject(Template::class)) {
 			return $template->getFeature();
 		}

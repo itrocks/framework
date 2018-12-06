@@ -50,7 +50,6 @@ class Feature_Cache
 	public function saveToCache(array $features)
 	{
 		Dao::begin();
-		/** @var $old_features Feature[] */
 		$old_features = Dao::readAll(Feature::class, Dao::key('path'));
 		foreach ($features as $feature) {
 			if (isset($old_features[$feature->path])) {
@@ -170,10 +169,10 @@ class Feature_Cache
 	{
 		/** @var $features Feature[] */
 		$features = [];
-		$buffer = file_get_contents($filename);
+		$buffer   = file_get_contents($filename);
 		if ($this->isFeatureClass($buffer)) {
 			$class_name = Names::fileToClass($filename);
-			$features = $this->scanClass($class_name);
+			$features   = $this->scanClass($class_name);
 		}
 		return $features;
 	}
@@ -188,7 +187,7 @@ class Feature_Cache
 		/** @var $features Feature[] */
 		$features = [];
 		foreach (Yaml::fromFile($filename) as $path => $yaml) {
-			$features[$path] = new Feature($path);
+			$features[$path]       = new Feature($path);
 			$features[$path]->yaml = $yaml;
 		}
 		return $features;

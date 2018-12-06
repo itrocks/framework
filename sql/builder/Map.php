@@ -17,7 +17,6 @@ abstract class Map
 	 *
 	 * @example
 	 * list($table, $field1, $field2, $id1, $id2) = Sql_Map_Builder::sqlElementsOf( (...) );
-	 *
 	 * @param $object         object the source object
 	 * @param $property       Reflection_Property the property of the source object used for the mapping
 	 * @param $foreign_object object the mapped object

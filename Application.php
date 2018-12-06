@@ -101,9 +101,7 @@ class Application
 		if ($session == null) {
 			$session = new Session();
 		}
-		/** @var $application Application */
-		$application = $session->get(Application::class);
-		return $application;
+		return $session->get(Application::class);
 	}
 
 	//----------------------------------------------------------------------------------- getCacheDir
@@ -304,7 +302,7 @@ class Application
 	 */
 	public static function getParentClasses($recursive = false)
 	{
-		$class_name = get_called_class();
+		$class_name = static::class;
 		/** @noinspection PhpUnhandledExceptionInspection valid get_called_class */
 		$class               = new Reflection_Class($class_name);
 		$parent_class_name   = get_parent_class($class_name);

@@ -570,8 +570,8 @@ class Template
 	 */
 	protected function newFunctions()
 	{
-		/** @var $functions Functions */
 		/** @noinspection PhpUnhandledExceptionInspection template functions class must be valid */
+		/** @var $functions Functions */
 		$functions = Builder::create(
 			isset($this->parameters[self::TEMPLATE_FUNCTIONS])
 				? $this->parameters[self::TEMPLATE_FUNCTIONS]
@@ -1524,10 +1524,10 @@ class Template
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection widget builder must be valid */
+				/** @var $builder Html\Builder\Property */
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
-				/** @var $builder Html\Builder\Property */
 				$object       = $builder->buildHtml();
 				$format_value = false;
 			}

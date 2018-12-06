@@ -24,8 +24,8 @@ trait Has_Get
 	 */
 	public static function get($default = false)
 	{
-		/** @var $plugin static */
 		/** @noinspection PhpUnhandledExceptionInspection static::class is always valid */
+		/** @var $plugin static */
 		$plugin = Session::current()->plugins->get(Builder::className(static::class));
 		if ($default && !$plugin) {
 			static $default_instance;

@@ -59,7 +59,6 @@ class Iteration extends Element
 	{
 		$dump = parent::dump($level) . SP . '(' . $this->number . ')' . LF;
 		foreach ($this->elements as $element) {
-			/** @var $element Element */
 			$dump .= $element->dump($level + 1) . LF;
 		}
 		return $dump;

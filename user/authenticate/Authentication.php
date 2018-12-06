@@ -167,9 +167,8 @@ abstract class Authentication
 	 */
 	public static function register(array $form)
 	{
-		/** @var $user User */
-		$user = Dao::write(self::arrayToUser($form));
-		return $user;
+		$user = static::arrayToUser($form);
+		return Dao::write($user);
 	}
 
 }

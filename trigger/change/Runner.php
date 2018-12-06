@@ -76,7 +76,6 @@ class Runner
 	public function qualifyAfterRuns()
 	{
 		foreach (Dao::search(['step' => Run::AFTER], Run::class) as $run) {
-			/** @var $run Run */
 			// if after conditions are verified : execute change trigger run actions
 			if ($run->change->verifyConditions($run->object, $run->change->after_condition)) {
 				Dao::begin();

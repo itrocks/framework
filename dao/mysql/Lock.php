@@ -122,15 +122,14 @@ class Lock
 		if (!$link) {
 			$link = Dao::current();
 		}
-		/** @var $lock Lock[] */
-		$lock = $link->query(
+		/** @var $locks Lock[] */
+		$locks = $link->query(
 			'SELECT * FROM `locks`' . LF
 			. ' WHERE `table_name` = ' . DQ . $table_name . DQ
 			. ' AND `identifier` = ' . $record_identifier,
 			Lock::class
 		);
-		$lock = reset($lock);
-		/** @var $lock Lock */
+		$lock = reset($locks);
 		if ($lock) {
 			// is the lock still alive ?
 			$alive = false;

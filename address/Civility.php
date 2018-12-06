@@ -28,9 +28,7 @@ class Civility
 	 */
 	public static function getAll()
 	{
-		/** @var $civilities static[] */
-		$civilities = Dao::readAll(get_called_class());
-		return $civilities;
+		return Dao::readAll(static::class);
 	}
 
 }

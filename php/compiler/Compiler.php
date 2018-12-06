@@ -18,7 +18,6 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Router;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
-use ITRocks\Framework\Tools\List_Row;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
@@ -419,17 +418,14 @@ class Compiler extends Cache implements
 			foreach (
 				Dao::select(Dependency::class, ['file_name' => Func::distinct()]) as $file_dependency
 			) {
-				/** @var $file_dependency List_Row */
 				$file_name = $file_dependency->getValue('file_name');
 				if (!file_exists($file_name)) {
 					foreach (Dao::search(['file_name' => $file_name], Dependency::class) as $dependency) {
-						/** @var $dependency Dependency */
 						Dao::delete($dependency);
 						foreach (
 							Dao::search(['dependency_name' => $dependency->class_name], Dependency::class)
 							as $sub_dependency
 						) {
-							/** @var $sub_dependency Dependency */
 							Dao::delete($sub_dependency);
 						}
 					}

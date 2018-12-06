@@ -26,7 +26,6 @@ trait Tools
 	 */
 	public static function classesWithPropertiesUsingClass($class_name)
 	{
-		/** @var $used_by Dependency[] */
 		$used_by = Dao::search(
 			[
 				'declaration'     => Dependency::T_PROPERTY_DECLARATION,
@@ -55,7 +54,6 @@ trait Tools
 	 */
 	public static function extendsUse($class_name, $include_class = false)
 	{
-		/** @var $children Dependency[] */
 		$children = Dao::search(
 			[
 				'dependency_name' => $class_name,

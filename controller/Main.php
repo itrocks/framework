@@ -119,7 +119,6 @@ class Main
 	 */
 	private function applicationUpdate()
 	{
-		/** @var $application_updater Application_Updater */
 		$application_updater = Application_Updater::get();
 		$application_updater->autoUpdate($this);
 	}
@@ -133,8 +132,8 @@ class Main
 	 */
 	private function createApplication(Configuration $configuration)
 	{
-		/** @var $application Application */
 		/** @noinspection PhpUnhandledExceptionInspection always valid application class name */
+		/** @var $application Application */
 		$application = Builder::create(
 			$configuration->getApplicationClassName(), [$configuration->getApplicationName()]
 		);

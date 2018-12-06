@@ -63,7 +63,6 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 					!($class_property instanceof Reflection_Property)
 					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
 				) {
-					/** @var $dependencies Dependency[] */
 					$dependencies = Dao::search(
 						['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
 						Dependency::class

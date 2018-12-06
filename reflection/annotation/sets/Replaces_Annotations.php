@@ -41,7 +41,6 @@ abstract class Replaces_Annotations
 		if ($properties) {
 			// replace properties with their replacement properties (key is still the old property name)
 			$property = reset($properties);
-			/** @var $property Reflection_Property */
 			$replaced = false;
 			foreach ($property->getFinalClass()->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if (!strpos($property, DOT)) {

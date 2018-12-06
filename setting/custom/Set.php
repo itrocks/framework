@@ -74,8 +74,8 @@ abstract class Set
 			$custom_settings = $setting->value;
 		}
 		else {
-			/** @noinspection PhpUnhandledExceptionInspection */
-			$custom_settings = Builder::create(get_called_class(), [$class_name]);
+			/** @noinspection PhpUnhandledExceptionInspection static */
+			$custom_settings = Builder::create(static::class, [$class_name]);
 			$setting->value  = $custom_settings;
 		}
 		$custom_settings->setting = $setting;
@@ -115,7 +115,7 @@ abstract class Set
 	{
 		if (!$feature) {
 			/** @var $set_name string @example 'Output_Setting' */
-			$set_name = rLastParse(lParse(get_called_class(), BS . 'Set'), BS);
+			$set_name = rLastParse(lParse(static::class, BS . 'Set'), BS);
 			/** @var $feature string @example 'output' */
 			$feature = lParse(strtolower($set_name), '_setting');
 		}
@@ -208,14 +208,13 @@ abstract class Set
 	 */
 	public static function load($class_name, $feature, $name = null)
 	{
-		/** @var $setting Setting */
 		$setting         = Search_Object::create(Setting::class);
 		$setting->code   = $class_name . DOT . static::customId($feature) . ($name ? (DOT . $name) : '');
 		$setting         = Dao::searchOne($setting);
-		/** @noinspection PhpUnhandledExceptionInspection get_called_class */
+		/** @noinspection PhpUnhandledExceptionInspection static */
 		$custom_settings = isset($setting)
 			? $setting->value
-			: Builder::create(get_called_class(), [$class_name]);
+			: Builder::create(static::class, [$class_name]);
 		$custom_settings->setting        = self::currentUserSetting($class_name, $feature);
 		$custom_settings->setting->value = $custom_settings;
 		return $custom_settings;
@@ -249,7 +248,7 @@ abstract class Set
 	//-------------------------------------------------------------- selectedSettingsToCustomSettings
 	/**
 	 * @param $selected_settings Selected[]
-	 * @return Setting\Custom\Set[]
+	 * @return static[]
 	 */
 	public function selectedSettingsToCustomSettings(array $selected_settings)
 	{

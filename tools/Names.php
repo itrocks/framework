@@ -402,7 +402,6 @@ abstract class Names
 			return self::$sets[$class_name];
 		}
 		// if $class_name is explicitely declared as 'singular' : return it
-		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
 			['class_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
 			Dependency::class
@@ -411,7 +410,6 @@ abstract class Names
 			return $class_name;
 		}
 		// explicitely declared as 'plural of ...' : return the matching class name
-		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
 			['dependency_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
 			Dependency::class

@@ -53,7 +53,6 @@ class Logger implements Registerable
 		if ($this->log_flag) {
 			Dao::begin();
 			foreach (Dao::search(['log' => Func::isNull()], Compiler_Log::class) as $logger) {
-				/** @var $logger Compiler_Log */
 				$logger->log = $object->log_entry;
 				Dao::write($logger, Dao::only('log'));
 			}

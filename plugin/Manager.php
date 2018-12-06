@@ -172,7 +172,6 @@ class Manager implements IManager, Serializable
 			$weaver = isset($this->plugins[Weaver::class])
 				? $this->plugins[Weaver::class]
 				: null;
-			/** @var $plugin Registerable */
 			$plugin->register(new Register(
 					isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $weaver)
 			);
@@ -186,7 +185,6 @@ class Manager implements IManager, Serializable
 				);
 			}
 			else {
-				/** @var $plugin Activable */
 				$plugin->activate();
 				$this->activated[$class_name] = $plugin;
 			}

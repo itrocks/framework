@@ -88,7 +88,6 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	protected function moreSourcesAdd($class_name, array &$sources, array &$added)
 	{
-		/** @var $dependency Dependency */
 		$dependency = Dao::searchOne(
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
 		);

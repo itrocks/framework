@@ -68,14 +68,12 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		if ($files) {
 			$errors = [];
 			$form   = (new Post_Files())->appendToForm($form, $files);
-			/** @var $import Import */
 			$import             = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
 						/** @noinspection PhpUnhandledExceptionInspection constant */
-						/** @var $session_files Files */
 						$session_files = Builder::create(Files::class);
 					}
 					$excel = (new Spreadsheet_File)->fileToArray($file->temporary_file_name, $errors);

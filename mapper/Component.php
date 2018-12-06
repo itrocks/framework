@@ -86,7 +86,7 @@ trait Component
 		elseif (is_object($class_name)) {
 			$class_name = get_class($class_name);
 		}
-		$self = get_called_class();
+		$self = static::class;
 		$path = $self . DOT . $class_name . DOT . $property_name;
 		if (!isset(self::$composite_properties[$path])) {
 			self::$composite_properties[$path] = [];

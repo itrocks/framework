@@ -50,7 +50,7 @@ trait Current
 	 */
 	public static function current($set_current = null)
 	{
-		$called_class = get_called_class();
+		$called_class = static::class;
 
 		// set current (ignore Reflection_Property : to enable use of @default Class::current)
 		if ($set_current && !is_a($set_current, Reflection_Property::class)) {

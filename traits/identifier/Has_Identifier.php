@@ -27,8 +27,7 @@ trait Has_Identifier
 	public function uniqueIdentifier()
 	{
 		if (isset($this->identifier)) {
-			/** @var $search Identifier */
-			$search = Search_Object::create(Identifier::class);
+			$search       = Search_Object::create(Identifier::class);
 			$search->name = $this->identifier->name;
 			if ($find = Dao::searchOne($search)) {
 				Dao::replace($this->identifier, $find, false);
