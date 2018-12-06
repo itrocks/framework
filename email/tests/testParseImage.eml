@@ -6,7 +6,7 @@ Content-Type: multipart/alternative;
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain; charset=UTF-8
 
-Contains an image :
+Contains an image : [delete]
 --=_9999bd862eb91d80be7240d44e223538
 Content-Type: multipart/related;
  boundary="=_fe0ace3ead9ba3e4203f611255a71bab"
@@ -15,7 +15,8 @@ Content-Type: multipart/related;
 Content-Transfer-Encoding: quoted-printable
 Content-Type: text/html; charset=UTF-8
 
-Contains an image :<img src=3D"cid:14854373065889f97aba701242897005">
+Contains an image :
+<img alt=3D"delete" src=3D"cid:14854373065889f97aba701242897005">
 --=_fe0ace3ead9ba3e4203f611255a71bab
 Content-Transfer-Encoding: base64
 Content-ID: <14854373065889f97aba701242897005>

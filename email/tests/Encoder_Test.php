@@ -27,7 +27,7 @@ class Encoder_Test extends Test
 			'file2.txt' => new Attachment('file2.txt', 'second file')
 		];
 		$delete_text = Loc::tr('delete');
-		$email->content = 'Contains an image :'
+		$email->content = 'Contains an image :' . LF
 			. '<img alt="' . $delete_text . '" src="itrocks/framework/skins/default/img/delete.png">';
 
 		$assume  = file_get_contents(__DIR__ . '/testParseImage.eml');
