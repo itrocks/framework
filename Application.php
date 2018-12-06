@@ -302,10 +302,9 @@ class Application
 	 */
 	public static function getParentClasses($recursive = false)
 	{
-		$class_name = static::class;
-		/** @noinspection PhpUnhandledExceptionInspection valid get_called_class */
-		$class               = new Reflection_Class($class_name);
-		$parent_class_name   = get_parent_class($class_name);
+		/** @noinspection PhpUnhandledExceptionInspection static */
+		$class               = new Reflection_Class(static::class);
+		$parent_class_name   = get_parent_class(static::class);
 		$extends_annotations = Extends_Annotation::allOf($class);
 		$parents             = [];
 		// 1st : php extends
