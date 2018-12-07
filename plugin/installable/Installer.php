@@ -73,9 +73,6 @@ class Installer
 			$file->addPlugin($priority_value, $plugin_class_name, $configuration);
 		}
 		(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
-		if ($plugin_class_name !== $this->plugin_class_name) {
-			$this->install($plugin_class_name);
-		}
 	}
 
 	//------------------------------------------------------------------------------------ addToClass
