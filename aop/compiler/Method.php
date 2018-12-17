@@ -67,8 +67,8 @@ class Method
 		}
 
 		$class_name = $this->class->name;
-		$buffer = $this->class->source->getSource();
-		$result = '';
+		$buffer     = $this->class->source->getSource();
+		$result     = '';
 
 		if (self::DEBUG) echo '<h3>Method ' . $class_name . '::' . $method_name . '</h3>';
 
@@ -106,8 +106,8 @@ class Method
 		}
 
 		// $code the generated code starts by the doc comments and prototype
-		$after_code  = [];
-		$before_code = [];
+		$after_code    = [];
+		$before_code   = [];
 		$advices_count = count($advices);
 		$advice_number = 0;
 
@@ -115,14 +115,17 @@ class Method
 			echo 'in_parent = true for ' . $class_name . '::' . $method_name . BR;
 		}
 
-		$ref = $source_method->returnsReference() ? '&' : '';
+		$ref       = $source_method->returnsReference() ? '&' : '';
 		$call_code = $i2 . ($joinpoint_has_return ? ('$result_ =' . $ref . SP) : '')
 			. ($is_static ? 'self::' : ($in_parent ? 'parent::' : '$this->'))
 			. $method_name . ($in_parent ? '' : ('_' . $count))
 			. '(' . $parameters_names . ');';
+		if ($joinpoint_has_return) {
+			$declared_result['after'] = true;
+		}
 
 		foreach (array_reverse($advices) as $advice) {
-			$advice_number++;
+			$advice_number ++;
 			$type = $advice[0];
 
 			if (self::DEBUG) {
@@ -168,6 +171,7 @@ class Method
 							$joinpoint_code = $i2 . '$joinpoint_ = new \ITRocks\Framework\AOP\Joinpoint\After_Method('
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', $result_, ' . $advice_string
 								. $i2 . ');';
+							$declared_result['after'] = true;
 							break;
 						case 'around':
 							$process_callback = ($methods[$method_name]->class->name == $this->class->name)
@@ -183,6 +187,15 @@ class Method
 								. $i3 . '__CLASS__, ' . $pointcut_string . ', ' . $joinpoint_parameters_string . ', ' . $advice_string
 								. $i2 . ');';
 							break;
+					}
+					if (isset($advice_parameters['result']) && ($type !== 'after')) {
+						if (isset($declared_result['before'])) {
+							$joinpoint_code .= LF . $i2 . '$joinpoint->result =& $result_;';
+						}
+						else {
+							$joinpoint_code .= LF . $i2 . '$result_ =& $joinpoint->result;';
+							$declared_result['before'] = true;
+						}
 					}
 				}
 			}
@@ -200,11 +213,7 @@ class Method
 				case 'after':
 					if ($joinpoint_code) {
 						$advice_code .= $i2 . 'if ($joinpoint_->stop) return '
-							. (
-								$advice_has_return
-								? 'isset($result_) ? $result_ : $joinpoint_->result;'
-								: '$joinpoint_->result;'
-							);
+							. (isset($declared_result) ? '$result_;' : '$joinpoint_->result;');
 					}
 					$after_code[] = $advice_code;
 					break;
@@ -220,7 +229,7 @@ class Method
 						$count ++;
 					}
 					$before_code = [];
-					$after_code = [];
+					$after_code  = [];
 					break;
 				case 'before':
 					if ($advice_has_return) {
@@ -228,11 +237,7 @@ class Method
 					}
 					if ($joinpoint_code) {
 						$advice_code .= $i2 . 'if ($joinpoint_->stop) return '
-							. (
-								$advice_has_return
-								? 'isset($result_) ? $result_ : $joinpoint_->result;'
-								: '$joinpoint_->result;'
-							);
+							. (isset($declared_result['before']) ? '$result_;' : '$joinpoint_->result;');
 					}
 					$before_code[] = $advice_code;
 					break;

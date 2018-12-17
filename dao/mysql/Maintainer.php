@@ -381,12 +381,10 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @param $object    Contextual_Mysqli
 	 * @param $query     string
-	 * @param $result    mysqli_result|boolean
 	 * @param $joinpoint Before_Method
 	 */
-	public function onMysqliQueryError(
-		Contextual_Mysqli $object, $query, &$result, Before_Method $joinpoint
-	) {
+	public function onMysqliQueryError(Contextual_Mysqli $object, $query, Before_Method $joinpoint)
+	{
 		$mysqli     = $object;
 		$last_errno = $mysqli->last_errno;
 		$last_error = $mysqli->last_error;
@@ -427,7 +425,7 @@ class Maintainer implements Configurable, Registerable
 			}
 			// retry
 			if ($retry) {
-				$result = $mysqli->query($query);
+				$joinpoint->result = $mysqli->query($query);
 				if (!$mysqli->last_errno && !$mysqli->last_error) {
 					$joinpoint->stop = true;
 				}

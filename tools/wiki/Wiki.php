@@ -108,9 +108,9 @@ class Wiki implements Registerable
 
 	//----------------------------------------------------------------------------------- noParseZone
 	/**
+	 * @output $joinpoint->result string value after reading value or exec specs (can be an object)
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $joinpoint Around_Method
-	 * @return string var value after reading value / executing specs (can be an object)
 	 */
 	public function noParseZone($var_name, Around_Method $joinpoint)
 	{
@@ -118,11 +118,10 @@ class Wiki implements Registerable
 		if (!$is_include) {
 			$this->dont_parse_wiki ++;
 		}
-		$result = $joinpoint->process();
+		$joinpoint->result = $joinpoint->process();
 		if (!$is_include) {
 			$this->dont_parse_wiki --;
 		}
-		return $result;
 	}
 
 	//-------------------------------------------------------------------------------------- register

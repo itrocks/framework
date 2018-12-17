@@ -7,7 +7,6 @@ use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\User;
-use mysqli_result;
 
 /**
  * Mysql\Reconnect plugin allow auto-reconnect when a server disconnected error is thrown
@@ -19,14 +18,13 @@ class Reconnect implements Registerable
 	/**
 	 * This is called after each mysql query error in order to reconnect lost connexion to server
 	 *
+	 * @output $joinpoint->result mysqli_result|boolean
 	 * @param $object    Contextual_Mysqli
 	 * @param $query     string
-	 * @param $result    mysqli_result|boolean
 	 * @param $joinpoint Before_Method
 	 */
-	public function onMysqliQueryError(
-		Contextual_Mysqli &$object, $query, &$result, Before_Method $joinpoint
-	) {
+	public function onMysqliQueryError(Contextual_Mysqli &$object, $query, Before_Method $joinpoint)
+	{
 		$mysqli =& $object;
 		if (in_array($mysqli->last_errno, [Errors::CR_SERVER_GONE_ERROR, Errors::CR_SERVER_LOST])) {
 			// wait 1 second an try to reconnect
@@ -38,7 +36,7 @@ class Reconnect implements Registerable
 					);
 				}
 			}
-			$result = $mysqli->query($query);
+			$joinpoint->result = $mysqli->query($query);
 			if (!$mysqli->last_errno && !$mysqli->last_error) {
 				$joinpoint->stop = true;
 			}
