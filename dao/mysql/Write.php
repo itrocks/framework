@@ -380,7 +380,7 @@ class Write extends Data_Link\Write
 	protected function writeCollection(Reflection_Property $property, array $collection)
 	{
 		// old collection
-		$old_object = Search_Object::create($this->object);
+		$old_object = Search_Object::create(get_class($this->object));
 		$this->link->setObjectIdentifier($old_object, $this->link->getObjectIdentifier($this->object));
 		/** @noinspection PhpUnhandledExceptionInspection $property belongs to $old_object */
 		$old_collection = $property->getValue($old_object);
