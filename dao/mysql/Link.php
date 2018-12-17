@@ -593,6 +593,9 @@ class Link extends Dao\Sql\Link
 	 */
 	public function getLinkObjectIdentifier($object, Class_\Link_Annotation $link = null)
 	{
+		if (!$object) {
+			return null;
+		}
 		if (!isset($link)) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			$link = Class_\Link_Annotation::of(new Reflection_Class($object));
