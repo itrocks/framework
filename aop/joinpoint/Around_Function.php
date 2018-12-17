@@ -17,12 +17,13 @@ class Around_Function extends Function_Joinpoint
 	/**
 	 * @param $pointcut         string
 	 * @param $parameters       array
+	 * @param $result           mixed
 	 * @param $advice           string[]|object[]|string
 	 * @param $process_function string
 	 */
-	public function __construct($pointcut, array $parameters, $advice, $process_function)
+	public function __construct($pointcut, array $parameters, &$result, $advice, $process_function)
 	{
-		parent::__construct($pointcut, $parameters, $advice);
+		parent::__construct($pointcut, $parameters, $result, $advice);
 		$this->process_function = $process_function;
 	}
 

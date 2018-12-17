@@ -30,11 +30,12 @@ abstract class Method_Joinpoint extends Function_Joinpoint
 	 * @param $class_name  string
 	 * @param $pointcut    string[]|object[]
 	 * @param $parameters  array
+	 * @param $result      mixed
 	 * @param $advice      string[]|object[]|string
 	 */
-	public function __construct($class_name, array $pointcut, $parameters, $advice)
+	public function __construct($class_name, array $pointcut, $parameters, &$result, $advice)
 	{
-		parent::__construct($pointcut, $parameters, $advice);
+		parent::__construct($pointcut, $parameters, $result, $advice);
 		$this->class_name  = $class_name;
 		$this->method_name = $pointcut[1];
 		$this->object      = is_object($pointcut[0]) ? $pointcut[0] : null;
