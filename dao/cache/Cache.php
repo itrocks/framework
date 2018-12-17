@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao;
 
-use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
+use ITRocks\Framework\AOP\Joinpoint\After_Method;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Main;
@@ -121,10 +121,9 @@ class Cache implements Configurable, Registerable
 	/**
 	 * Store object into cache on Dao::read()
 	 *
-	 * @param $result    object
-	 * @param $joinpoint Method_Joinpoint
+	 * @param $joinpoint After_Method
 	 */
-	public function cacheReadObject($result, Method_Joinpoint $joinpoint = null)
+	public function cacheReadObject(After_Method $joinpoint = null)
 	{
 		// Do nothing if cache is disabled.
 		if (!$this->enabled) {
@@ -133,7 +132,7 @@ class Cache implements Configurable, Registerable
 
 		/** @var $link Mysql\Link */
 		$link = $joinpoint ? $joinpoint->object : Dao::current();
-		$this->add($result, $link);
+		$this->add($joinpoint->result, $link);
 	}
 
 	//------------------------------------------------------------------------------ cacheWriteObject
@@ -143,9 +142,9 @@ class Cache implements Configurable, Registerable
 	 *
 	 * @param $object    object
 	 * @param $options   Option|Option[]
-	 * @param $joinpoint Method_Joinpoint
+	 * @param $joinpoint After_Method
 	 */
-	public function cacheWriteObject($object, $options = [], Method_Joinpoint $joinpoint = null)
+	public function cacheWriteObject($object, $options = [], After_Method $joinpoint = null)
 	{
 		if ($this->enabled && !$options) {
 			/** @var $link Mysql\Link */
@@ -266,9 +265,9 @@ class Cache implements Configurable, Registerable
 	 * Is called each time an object is deleted from the DAO
 	 *
 	 * @param $object    object
-	 * @param $joinpoint Method_Joinpoint
+	 * @param $joinpoint After_Method
 	 */
-	public function removeObject($object, Method_Joinpoint $joinpoint = null)
+	public function removeObject($object, After_Method $joinpoint = null)
 	{
 		/** @var $link Mysql\Link */
 		$link = $joinpoint ? $joinpoint->object : Dao::current();
