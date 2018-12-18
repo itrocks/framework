@@ -30,8 +30,16 @@ trait Entry
 	private function deactivateScripts($output)
 	{
 		return str_ireplace(
-			['<script', '</script>'],
-			['<pre>&lt;script', '&lt/script></pre>'],
+			[
+				'<script', '</script>',
+				'<link', '</link>',
+				'<head>', '</head>'
+			],
+			[
+				'&lt;script', '&lt/script>',
+				'&lt;link', '&lt/link&gt;',
+				'<pre>&lt;head>', '&lt;/head></pre>'
+			],
 			$output
 		);
 	}
