@@ -315,12 +315,19 @@ class Translator
 	/**
 	 * Translates a text using current language and an optional given context
 	 *
-	 * @param $text    string
+	 * @param $text    string|string[]
 	 * @param $context string
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function translate($text, $context = '')
 	{
+		if (is_array($text)) {
+			$translations = [];
+			foreach ($text as $key => $text_entry) {
+				$translations[$key] = $this->translate($text_entry, $context);
+			}
+			return $translations;
+		}
 		// no text : no translation
 		if (!trim($text) || is_numeric($text)) {
 			$translation = $text;

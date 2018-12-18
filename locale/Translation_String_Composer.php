@@ -120,14 +120,17 @@ class Translation_String_Composer implements Registerable
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param $text      string
+	 * @param $text      string|string[]
 	 * @param $object    Translator
 	 * @param $context   string
 	 * @param $joinpoint Around_Method
-	 * @return string
+	 * @return string|string[]
 	 */
 	public function onTranslate($text, Translator $object, $context, Around_Method $joinpoint)
 	{
+		if (is_array($text)) {
+			return $joinpoint->process($text, $context);
+		}
 		static $top_call = true;
 		$context = isset($context) ? $context : '';
 		if (
