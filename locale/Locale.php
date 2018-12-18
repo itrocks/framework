@@ -164,8 +164,10 @@ class Locale implements Configurable
 			? $value
 			: (
 				$property->getListAnnotation('values')->value
-					? $this->translations->translate($value)
-					: $this->toLocale($value, $property->getType())
+					? $this->translations->translate(
+						$value, $type->isClass() ? $type->getElementTypeAsString() : Loc::getContext()
+					)
+					: $this->toLocale($value, $type)
 			);
 		if (isset($save_decimals)) {
 			list(
@@ -255,8 +257,7 @@ class Locale implements Configurable
 				return $this->number_format->integerToLocale($value);
 			}
 		}
-		$context = $type->isClass() ? $type->getElementTypeAsString() : Loc::getContext();
-		return $this->translations->translate($value, $context);
+		return $value;
 	}
 
 }
