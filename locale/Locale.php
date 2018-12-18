@@ -2,8 +2,8 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Locale\Date_Format;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Number_Format;
+use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
@@ -160,15 +160,23 @@ class Locale implements Configurable
 				) = $decimals;
 			}
 		}
-		$result = (is_null($value) && $property->getAnnotation('null')->value)
-			? $value
-			: (
-				$property->getListAnnotation('values')->value
-					? $this->translations->translate(
-						$value, $type->isClass() ? $type->getElementTypeAsString() : Loc::getContext()
-					)
-					: $this->toLocale($value, $type)
+		if (is_null($value) && $property->getAnnotation('null')->value) {
+			$result = $value;
+		}
+		elseif (
+			$property->getListAnnotation('values')->value
+			|| ($property->getAnnotation('translate')->value === 'common')
+		) {
+			$result = $this->translations->translate(
+				$value, $type->isClass() ? $type->getElementTypeAsString() : $property->final_class
 			);
+		}
+		elseif (in_array($property->getAnnotation('translate')->value, ['', 'data'], true)) {
+			$result = (new Translation\Data\Set)->translate($property, $value);
+		}
+		else {
+			$result = $this->toLocale($value, $type);
+		}
 		if (isset($save_decimals)) {
 			list(
 				$this->number_format->decimal_minimal_count,

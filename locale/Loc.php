@@ -498,7 +498,11 @@ class Loc implements Registerable
 			$object->property->getListAnnotation('values')->values()
 			|| ($object->property->getAnnotation('translate')->value === 'common')
 		) {
-			return static::tr($result, $object->property->final_class);
+			$type = $object->property->getType();
+			return static::tr(
+				$result,
+				$type->isClass() ? $type->getElementTypeAsString() : $object->property->final_class
+			);
 		}
 		if (in_array($object->property->getAnnotation('translate')->value, ['', 'data'], true)) {
 			return (new Translation\Data\Set)->translate($object->property, $result);
