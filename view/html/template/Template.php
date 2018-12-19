@@ -1749,14 +1749,18 @@ class Template
 		$auto_remove = $this->parseVarWillAutoRemove($var_name);
 		$value       = $this->parseValue($var_name);
 		$object      = reset($this->objects);
-		if (is_array($value) && ($object instanceof Reflection_Property)) {
+		if (
+			is_array($value)
+			&& ($object instanceof Reflection_Property)
+			&& $object->getType()->isClass()
+		) {
 			$value = Link_Annotation::of($object)->isCollection()
 				? $this->parseCollection($object, $value)
 				: $this->parseMap($object, $value);
 		}
 		$i --;
 		if (is_array($value)) {
-			$value = $value ? ('[' . join(', ', $value) . ']') : '';
+			$value = $value ? join(', ', $value) : '';
 		}
 		if ($auto_remove && !strlen($value)) {
 			$this->parseVarRemove($content, $i, $j);
