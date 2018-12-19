@@ -5,6 +5,8 @@ use ITRocks\Framework\Application;
 
 /**
  * PDF files manipulation
+ *
+ * @depends poppler-utils
  */
 class PDF
 {
@@ -35,24 +37,21 @@ class PDF
 	 */
 	public function toPng()
 	{
-		$file_root   = str_replace(DOT, '-', uniqid('pdf-', true));
-		$output_file = Application::current()->getTemporaryFilesPath() . SL . $file_root . '.png';
-		$options     = [
-			'background' => 'white',
-			'density'    => 300,
-			'layers'     => 'flatten',
-			'quality'    => '100%'
-		];
+		$file_root    = str_replace(DOT, '-', uniqid('pdf-', true));
+		$output_file  = Application::current()->getTemporaryFilesPath() . SL . $file_root;
+		$options      = ['png', 'r' => 300];
 		$text_options = '';
 		foreach ($options as $option_name => $option_value) {
-			$text_options .= SP . '-' . $option_name . SP . $option_value;
+			if (is_numeric($option_name)) {
+				$text_options .= SP . '-' . $option_value;
+			}
+			else {
+				$text_options .= SP . '-' . $option_name . SP . $option_value;
+			}
 		}
-		$command = 'convert' . $text_options . SP . DQ . $this->file_name . DQ . SP . $output_file;
+		$command = 'pdftoppm' . $text_options . SP . DQ . $this->file_name . DQ . SP . $output_file;
 		exec($command);
-		if (is_file($output_file)) {
-			return [$output_file];
-		}
-		return glob(lLastParse($file_root, DOT) . '-*.png');
+		return glob($output_file . '-*.png');
 	}
 
 	//----------------------------------------------------------------------------------------- toSvg
