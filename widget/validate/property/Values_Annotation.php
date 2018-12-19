@@ -71,7 +71,18 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 			return true;
 		}
 		$this->object_value = $this->property->getValue($object);
-		return !$this->object_value || in_array($this->object_value, $values);
+		if (!$this->object_value) {
+			return true;
+		}
+		if (is_array($this->object_value)) {
+			foreach ($this->object_value as $value) {
+				if (!in_array($value, $values)) {
+					return false;
+				}
+			}
+			return true;
+		}
+		return in_array($this->object_value, $values);
 	}
 
 }
