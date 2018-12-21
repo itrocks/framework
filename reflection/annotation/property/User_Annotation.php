@@ -19,14 +19,16 @@ class User_Annotation extends List_Annotation
 	const CREATE_ONLY = 'create_only';
 
 	//-------------------------------------------------------------------------- Constants for $value
-	const HIDDEN      = 'hidden';
-	const HIDE_EDIT   = 'hide_edit';
-	const HIDE_EMPTY  = 'hide_empty';
-	const HIDE_OUTPUT = 'hide_output';
-	const IF_EMPTY    = 'if_empty';
-	const INVISIBLE   = 'invisible';
-	const NO_ADD      = 'no_add';
-	const NO_DELETE   = 'no_delete';
+	const HIDDEN           = 'hidden';
+	const HIDE_EDIT        = 'hide_edit';
+	const HIDE_EMPTY       = 'hide_empty';
+	const HIDE_OUTPUT      = 'hide_output';
+	const IF_EMPTY         = 'if_empty';
+	const INVISIBLE        = 'invisible';
+	const INVISIBLE_EDIT   = 'invisible_edit';
+	const INVISIBLE_OUTPUT = 'invisible_output';
+	const NO_ADD           = 'no_add';
+	const NO_DELETE        = 'no_delete';
 
 	//-------------------------------------------------------------------------------------- READONLY
 	/**

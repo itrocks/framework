@@ -230,7 +230,8 @@ class Collection
 	{
 		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE);
+			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& !$user_annotation->has(User_Annotation::INVISIBLE_OUTPUT);
 	}
 
 }

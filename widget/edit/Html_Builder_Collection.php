@@ -254,7 +254,8 @@ class Html_Builder_Collection extends Collection
 	{
 		$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$user_annotation->has(User_Annotation::HIDE_EDIT)
-			&& !$user_annotation->has(User_Annotation::INVISIBLE);
+			&& !$user_annotation->has(User_Annotation::INVISIBLE)
+			&& !$user_annotation->has(User_Annotation::INVISIBLE_EDIT);
 	}
 
 	//----------------------------------------------------------------------------------------- noAdd
