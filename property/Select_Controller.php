@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -160,21 +161,22 @@ class Select_Controller implements Feature_Controller
 			if (
 				Link_Annotation::of($property_class)->value
 				|| $property->getAnnotation('composite')->value
+				// TODO this consideration is only on some cases (here : lists can't deal with @store false)
+				|| Store_Annotation::of($property)->isFalse()
 			) {
 				unset($properties[$property_path]);
+				continue;
+			}
+			$acute_displays[$property_path] = $property;
+			if (isset($class_count[$property_class->name])) {
+				$class_count[$property_class->name] ++;
 			}
 			else {
-				$acute_displays[$property_path] = $property;
-				if (isset($class_count[$property_class->name])) {
-					$class_count[$property_class->name] ++;
-				}
-				else {
-					$class_count[$property_class->name]
-						= in_array($property->name, [$class_display, $class_displays]) ? 1 : 2;
-				}
-				$property->display = Loc::tr(Names::classToDisplay($property_class->name));
-				$property_class_names[$property_path] = $property_class->name;
+				$class_count[$property_class->name]
+					= in_array($property->name, [$class_display, $class_displays]) ? 1 : 2;
 			}
+			$property->display = Loc::tr(Names::classToDisplay($property_class->name));
+			$property_class_names[$property_path] = $property_class->name;
 			$property->link_path = Builder::current()->sourceClassName($property_class)
 				. '(' . $property->name . ')';
 		}
