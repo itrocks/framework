@@ -255,6 +255,9 @@ class Locale implements Configurable
 	public function toLocale($value, Type $type = null)
 	{
 		if (isset($type)) {
+			if ($type->isBoolean()) {
+				return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);
+			}
 			if ($type->isDateTime()) {
 				return $this->date_format->toLocale($value);
 			}
