@@ -48,7 +48,7 @@ $('document').ready(function()
 			var $close = this.inside('.actions .close a');
 			if ($close.length) {
 				$close.click(function(event) {
-					$(this).closest('#messages').children().remove();
+					$(this).closest('#messages').empty();
 					event.stopImmediatePropagation();
 					event.preventDefault();
 				})
