@@ -22,7 +22,8 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	 */
 	public function __construct($value)
 	{
-		$this->build_class_name = false;
+		// TODO remove this totally if it is confirmed it was not the right thing to do
+		//$this->build_class_name = false;
 		parent::__construct($value);
 	}
 
