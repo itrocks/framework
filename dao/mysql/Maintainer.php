@@ -449,8 +449,9 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * @param $mysqli  Contextual_Mysqli
 	 * @param $query   string
-	 * @param $context string[]
+	 * @param $context array|string[]
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
+	 * @see Contextual_Mysqli::$context
 	 */
 	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, array $context)
 	{
@@ -461,12 +462,12 @@ class Maintainer implements Configurable, Registerable
 		}
 		foreach ($context as $key => $context_class) {
 			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
-			if (in_array($context_table, $error_table_names)) {
-				if (!is_array($context_class)) {
-					$this->createTable($context_class, $mysqli);
+			if (in_array($context_table, $error_table_names) || !$mysqli->exists($context_table)) {
+				if (is_array($context_class)) {
+					$this->createImplicitTable($mysqli, $context_table, $context_class);
 				}
 				else {
-					$this->createImplicitTable($mysqli, $context_table, $context_class);
+					$this->createTable($context_class, $mysqli);
 				}
 				$retry = true;
 			}
