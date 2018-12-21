@@ -226,3 +226,37 @@ redirectLight = function(uri, target, condition)
 		});
 	}
 };
+
+//----------------------------------------------------------------------------------------- refresh
+/**
+ * Refresh a window embedding data-class, and optionally data-feature and/or data-id
+ *
+ * @example refresh('#main'); refresh('#messages');
+ * @param selector
+ */
+refresh = function(selector)
+{
+	$(selector).each(function() {
+		var $target = $(this);
+		var $window = $target.children('[data-class]');
+		if (!$window.length) {
+			return;
+		}
+		var feature = $window.data('feature');
+		var id      = $window.data('id');
+		var uri     = SL + $window.data('class').repl(BS, SL);
+		if (id) {
+			uri += SL + id;
+		}
+		if (feature) {
+			uri += SL + feature;
+		}
+		uri += '?as_widget';
+		$.ajax({
+			url: app.addSID(app.uri_base + uri),
+			success: function(data) {
+				$target.html(data).build();
+			}
+		});
+	});
+};
