@@ -48,7 +48,7 @@ class Controller extends Output\Controller
 			: [];
 		$buttons = ($settings && $settings->actions)
 			? $buttons
-			: array_merge([
+			: [
 				Feature::F_CLOSE => new Button(
 					'Close',
 					$close_link,
@@ -61,7 +61,7 @@ class Controller extends Output\Controller
 					Feature::F_WRITE,
 					[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
 				)
-			]);
+			];
 		if (Dao::getObjectIdentifier($object) && !isset($buttons[Feature::F_DELETE])) {
 			$buttons[Feature::F_DELETE] = new Button(
 				'Delete',
