@@ -16,4 +16,14 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'extends';
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $value string
+	 */
+	public function __construct($value)
+	{
+		$this->build_class_name = false;
+		parent::__construct($value);
+	}
+
 }

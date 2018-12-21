@@ -19,6 +19,12 @@ use ITRocks\Framework\Reflection\Type;
 trait Types_Annotation
 {
 
+	//----------------------------------------------------------------------------- $build_class_name
+	/**
+	 * @var boolean
+	 */
+	protected $build_class_name = true;
+
 	//------------------------------------------------------------------------- $declared_class_names
 	/**
 	 * The declared class names
@@ -49,22 +55,28 @@ trait Types_Annotation
 		$values = is_array($this->value) ? $this->value : [$this->value];
 
 		foreach ($values as $key => $class_name) {
+			if (substr($class_name, -2) == '[]') {
+				$class_name = substr($class_name, 0, -2);
+				$multiple   = '[]';
+			}
+			else {
+				$multiple = '';
+			}
 			if (ctype_upper($class_name[0])) {
-				if (substr($class_name, -2) == '[]') {
-					$class_name = substr($class_name, 0, -2);
-					$multiple   = '[]';
-				}
-				else {
-					$multiple = '';
-				}
-				$declared_class_name        = (new Type($class_name))->applyNamespace($namespace, $use);
-				$declared_class_names[$key] = $declared_class_name  . $multiple;
-				$values[$key]               = Builder::className($declared_class_name) . $multiple;
+				$declared_class_name = (new Type($class_name))->applyNamespace($namespace, $use);
 			}
 			elseif ($class_name[0] === BS) {
-				$declared_class_names[$key] = substr($class_name, 1);
-				$values[$key]               = substr($class_name, 1);
+				$declared_class_name = substr($class_name, 1);
 			}
+			else {
+				trigger_error('Bad class name ' . $class_name, E_USER_ERROR);
+				$declared_class_name = null;
+			}
+			$declared_class_names[$key] = $declared_class_name  . $multiple;
+			if ($this->build_class_name) {
+				$declared_class_name = Builder::className($declared_class_name);
+			}
+			$values[$key] = $declared_class_name . $multiple;
 		}
 
 		$this->declared_class_names = $declared_class_names;
