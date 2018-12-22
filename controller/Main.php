@@ -373,11 +373,12 @@ class Main
 	/**
 	 * @param $uri    string
 	 * @param $target string
+	 * @param $data   mixed
 	 */
-	public function redirect($uri, $target = null)
+	public function redirect($uri, $target = null, $data = null)
 	{
 		if ($target) {
-			$this->redirects[$target] = $uri;
+			$this->redirects[$target] = $data ? [$uri, $data] : $uri;
 		}
 		else {
 			$this->redirection = $uri;

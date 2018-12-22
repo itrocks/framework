@@ -10,7 +10,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Paths;
-use ITRocks\Framework\View\Html\Dom\Script;
+use ITRocks\Framework\View\Html\Dom\Anchor;
 
 /**
  * Built-in ITRocks HTML view engine
@@ -186,6 +186,9 @@ class Engine implements Configurable, Framework\View\Engine
 	 */
 	public function redirect($link, $options)
 	{
+		if (is_array($link)) {
+			list($link, $data) = $link;
+		}
 		$link = Paths::$uri_base . str_replace('&amp;', '&', $link);
 		if (isset($_GET['as_widget']) && (strpos($link, 'as_widget') === false)) {
 			$link .= ((strpos($link, '?') === false) ? '?' : '&') . 'as_widget';
@@ -199,11 +202,14 @@ class Engine implements Configurable, Framework\View\Engine
 				$target = $option;
 			}
 		}
-		$element = new Script(
-			'$.get(' . Q . $link . Q .', function(data) {'
-			. ' $(' . Q . $target . Q . ').html(data).build();'
-			. ' });'
-		);
+		$element = new Anchor($link, $link);
+		$element->addClass('auto-redirect');
+		if (isset($data)) {
+			$element->setData('post', http_build_query($data));
+		}
+		if ($target) {
+			$element->setAttribute('target', $target);
+		}
 		return strval($element);
 	}
 
