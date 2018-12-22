@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Widget\Add;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -64,8 +65,8 @@ class Controller extends Edit\Controller
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$properties = (new Reflection_Class($class_name))->accessProperties();
 		$objects    = $parameters->getObjects();
-		if (count($objects) > 1) {
-			$this->initializeValues($object, $objects, $properties);
+		if ((count($objects) > 1) || $form) {
+			$this->initializeValues($object, array_merge($objects, $form), $properties);
 		}
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['title'] = Loc::tr('New', $class_name) . SP . $parameters['title'];
@@ -103,6 +104,15 @@ class Controller extends Edit\Controller
 			}
 			// initializes the value for the property
 			if ($property_name && isset($properties[$property_name])) {
+				$type = $properties[$property_name]->getType();
+				if (is_array($value) && $type->isClass() && $type->isMultiple()) {
+					$class_name = $type->getElementTypeAsString();
+					foreach ($value as $key => $val) {
+						if (!is_object($val)) {
+							$value[$key] = Dao::read($val, $class_name);
+						}
+					}
+				}
 				$object->$property_name = $value;
 			}
 		}
