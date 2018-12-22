@@ -352,7 +352,7 @@ class Write extends Data_Link\Write
 		if ($write) {
 			$this->link->setContext($class->name);
 			if (empty($id) || isset($this->force_add)) {
-				$this->link->disconnect($this->object);
+				$this->link->disconnect($this->object, false);
 				if (isset($this->force_add) && !empty($id)) {
 					$write['id'] = $id;
 				}

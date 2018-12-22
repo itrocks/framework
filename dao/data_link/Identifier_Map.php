@@ -25,13 +25,17 @@ abstract class Identifier_Map extends Data_Link
 	 * Disconnect an object from current data link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object object to disconnect from data source
+	 * @param $object                object object to disconnect from data source
+	 * @param $disconnect_components boolean
 	 * @see Data_Link::disconnect()
 	 */
-	public function disconnect($object)
+	public function disconnect($object, $disconnect_components = true)
 	{
 		if (isset($object->id)) {
 			unset($object->id);
+		}
+		if (!$disconnect_components) {
+			return;
 		}
 		// disconnect component objects, including collection elements
 		/** @noinspection PhpUnhandledExceptionInspection $object is an object */
