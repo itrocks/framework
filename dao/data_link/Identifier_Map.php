@@ -4,8 +4,10 @@ namespace ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Widget\Edit\Widgets\Collection_As_Map;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -26,16 +28,12 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object                object object to disconnect from data source
-	 * @param $disconnect_components boolean
 	 * @see Data_Link::disconnect()
 	 */
-	public function disconnect($object, $disconnect_components = true)
+	public function disconnect($object)
 	{
 		if (isset($object->id)) {
 			unset($object->id);
-		}
-		if (!$disconnect_components) {
-			return;
 		}
 		// disconnect component objects, including collection elements
 		/** @noinspection PhpUnhandledExceptionInspection $object is an object */
@@ -47,6 +45,7 @@ abstract class Identifier_Map extends Data_Link
 					|| $property->getAnnotation('component')->value
 				)
 				&& !empty($object->$property_name)
+				&& !is_a(Widget_Annotation::of($property)->value, Collection_As_Map::class, true)
 			) {
 				$value = $object->$property_name;
 				if (is_array($value)) {
