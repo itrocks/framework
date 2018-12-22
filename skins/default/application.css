@@ -2,7 +2,7 @@ html, body {
   height: 100%; }
 
 a.auto-redirect {
-  visibility: hidden; }
+  display: none; }
 
 body {
   background-color: white;
