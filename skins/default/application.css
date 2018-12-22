@@ -1,6 +1,9 @@
 html, body {
   height: 100%; }
 
+a.auto-redirect {
+  visibility: hidden; }
+
 body {
   background-color: white;
   font-family: arial, helvetica, sans-serif;
