@@ -75,7 +75,7 @@ class Password
 	 * @return Password
 	 */
 	public function generate(
-		$length = 9, $characters_type = self::T_ALL, $specials = '()[]{}_+-*/@$=&#!:;,.<>'
+		$length = 9, $characters_type = self::T_ALL, $specials = '()[]{}_+-*/@$=&#!:;,.'
 	) {
 		$string = (($characters_type & self::T_LOWERCASE) ? 'abcdefghijklmnopqrstuvwxyz' : '')
 			. (($characters_type & self::T_UPPERCASE)       ? 'ABCDEFGHIJKLMNOPQRSTUVWXYZ' : '')
