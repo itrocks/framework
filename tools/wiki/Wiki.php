@@ -55,7 +55,7 @@ class Wiki implements Registerable
 		$lf    = LF;
 		$count = count($this->geshi_replace);
 		$i     = 0;
-		while (($i < strlen($string)) && (($i = strpos($string, AT, $i)) !== false)) {
+		while (($i < strlen($string)) && (($i = strpos(LF . $string, LF . AT, $i)) !== false)) {
 			$i ++;
 			$j = strpos($string, $lf, $i);
 			if (($j !== false) && ($j < strpos($string, SP, $i))) {
