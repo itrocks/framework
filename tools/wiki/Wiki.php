@@ -131,8 +131,8 @@ class Wiki implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->aroundMethod([Html_Template::class, 'parseValue'],              [$this, 'noParseZone']);
-		$aop->afterMethod( [Reflection_Property_View::class, 'formatString'], [$this, 'stringWiki']);
+		$aop->afterMethod ([Reflection_Property_View::class, 'formatValue'], [$this, 'stringWiki']);
+		$aop->aroundMethod([Html_Template::class, 'parseValue'],             [$this, 'noParseZone']);
 	}
 
 	//------------------------------------------------------------------------------------ stringWiki
