@@ -1,6 +1,18 @@
-$(document).ready(function() {
+$(document).ready(function()
+{
 
-	document.mouse = { which: 0, x: 0, y: 0 };
+	//-------------------------------------------------------------------------------- document.mouse
+	document.mouse = {
+		which: 0,
+		x:     0,
+		y:     0,
+
+		//--------------------------------------------------------------------- document.mouse.distance
+		distance: function(from)
+		{
+			return Math.sqrt(Math.pow(from.x - this.x, 2) + Math.pow(from.y - this.y, 2));
+		}
+	};
 
 	//---------------------------------------------------------------------------- document.mousedown
 	$(document).mousedown(function(event)
