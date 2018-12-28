@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Source;
@@ -82,30 +83,27 @@ class Compiler implements ICompiler, Needs_Main
 
 	//-------------------------------------------------------------------------------- moreSourcesAdd
 	/**
-	 * @param $class_name string
-	 * @param $sources    Reflection_Source[] key is $class_name, or $file_path if no class
-	 * @param $added      Reflection_Source[]
+	 * @param $class_name   string
+	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAdd($class_name, array &$sources, array &$added)
+	protected function moreSourcesAdd($class_name, More_Sources $more_sources)
 	{
 		$dependency = Dao::searchOne(
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
 		);
-		if (!isset($sources[$dependency->file_name])) {
-			$source               = Reflection_Source::ofFile($dependency->file_name, $class_name);
-			$sources[$class_name] = $source;
-			$added[$class_name]   = $source;
+		if (!isset($more_sources->sources[$dependency->file_name])) {
+			$source = Reflection_Source::ofFile($dependency->file_name, $class_name);
+			$more_sources->add($source, $class_name, null, true);
 		}
 	}
 
 	//------------------------------------------------------------------------ moreSourcesAddChildren
 	/**
-	 * @param $added   Reflection_Source[]
-	 * @param $sources Reflection_Source[]
+	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAddChildren(array &$added, array &$sources)
+	protected function moreSourcesAddChildren(More_Sources $more_sources)
 	{
-		foreach ($added as $source) {
+		foreach ($more_sources->added as $source) {
 			$dependencies = Dao::search(
 				[
 					'dependency_name' => $source->getFirstClassName(),
@@ -114,10 +112,9 @@ class Compiler implements ICompiler, Needs_Main
 				Dependency::class
 			);
 			foreach ($dependencies as $dependency) {
-				if (!isset($sources[$dependency->file_name])) {
+				if (!isset($more_sources->sources[$dependency->file_name])) {
 					$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
-					$sources[$dependency->class_name] = $source;
-					$added[$dependency->class_name]   = $source;
+					$more_sources->add($source, $dependency->class_name, null, true);
 				}
 			}
 		}
@@ -127,10 +124,9 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * When traits / interfaces referenced into builder.php are modified : compile the composite class
 	 *
-	 * @param $added   Reflection_Source[]
-	 * @param $sources Reflection_Source[] key is $class_name, or $file_path if no class
+	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAddComposites(array &$added, array &$sources)
+	protected function moreSourcesAddComposites(More_Sources $more_sources)
 	{
 		foreach (Builder::current()->getCompositions() as $built_class_name => $composition) {
 			if (is_string($composition)) {
@@ -138,11 +134,11 @@ class Compiler implements ICompiler, Needs_Main
 			}
 			foreach ($composition as $component_class_name) {
 				if (
-					isset($sources[$component_class_name])
-					&& !isset($sources[$built_class_name])
-					&& !isset($added[$built_class_name])
+					isset($more_sources->sources[$component_class_name])
+					&& !isset($more_sources->sources[$built_class_name])
+					&& !isset($more_sources->added[$built_class_name])
 				) {
-					$this->moreSourcesAdd($built_class_name, $sources, $added);
+					$this->moreSourcesAdd($built_class_name, $more_sources);
 				}
 			}
 		}
@@ -152,13 +148,12 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * Compositions in builder.php that were added or modified : compile composite class
 	 *
-	 * @param $added            Reflection_Source[]
-	 * @param $sources          Reflection_Source[] key is $class_name, or $file_path if no class
+	 * @param $more_sources     More_Sources
 	 * @param $old_compositions array string[string $composite_class_name][integer]
 	 * @param $new_compositions array string[string $composite_class_name][integer]
 	 */
 	protected function moreSourcesAddModifiedOrNewCompositions(
-		array &$added, array &$sources, array $old_compositions, array $new_compositions
+		More_Sources $more_sources, array $old_compositions, array $new_compositions
 	) {
 		foreach ($new_compositions as $class_name => $new_composition) {
 			$old_composition = isset($old_compositions[$class_name])
@@ -174,7 +169,7 @@ class Compiler implements ICompiler, Needs_Main
 					)
 				)
 			) {
-				$this->moreSourcesAdd($class_name, $sources, $added);
+				$this->moreSourcesAdd($class_name, $more_sources);
 			}
 		}
 	}
@@ -183,18 +178,17 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * Compile new plugins
 	 *
-	 * @param $added      Reflection_Source[]
-	 * @param $sources    Reflection_Source[] key is $class_name, or $file_path if no class
-	 * @param $old_levels array mixed[string $priority_level][string $plugin_name]
-	 * @param $new_levels array mixed[string $priority_level][string $plugin_name]
+	 * @param $more_sources More_Sources
+	 * @param $old_levels   array mixed[string $priority_level][string $plugin_name]
+	 * @param $new_levels   array mixed[string $priority_level][string $plugin_name]
 	 */
 	protected function moreSourcesAddNewPlugins(
-		array &$added, array &$sources, array $old_levels, array $new_levels
+		More_Sources $more_sources, array $old_levels, array $new_levels
 	) {
 		foreach ($new_levels as $level => $new_plugins) {
 			foreach ($new_plugins as $class_name => $new_plugin) {
 				if (!isset($old_levels[$level][$class_name])) {
-					$this->moreSourcesAdd($class_name, $sources, $added);
+					$this->moreSourcesAdd($class_name, $more_sources);
 				}
 			}
 		}
@@ -204,17 +198,16 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * Compositions in builder.php that were removed : compile composite class
 	 *
-	 * @param $added            Reflection_Source[]
-	 * @param $sources          Reflection_Source[] key is $class_name, or $file_path if no class
+	 * @param $more_sources     More_Sources
 	 * @param $old_compositions array string[string $composite_class_name][integer]
 	 * @param $new_compositions array string[string $composite_class_name][integer]
 	 */
 	protected function moreSourcesAddRemovedCompositions(
-		array &$added, array &$sources, array $old_compositions, array $new_compositions
+		More_Sources $more_sources, array $old_compositions, array $new_compositions
 	) {
 		foreach ($old_compositions as $class_name => $old_composition) {
 			if (!isset($new_compositions[$class_name])) {
-				$this->moreSourcesAdd($class_name, $sources, $added);
+				$this->moreSourcesAdd($class_name, $more_sources);
 			}
 		}
 	}
@@ -223,18 +216,17 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * Compile removed plugins
 	 *
-	 * @param $added      Reflection_Source[]
-	 * @param $sources    Reflection_Source[] key is $class_name, or $file_path if no class
-	 * @param $old_levels array mixed[string $priority_level][string $plugin_name]
-	 * @param $new_levels array mixed[string $priority_level][string $plugin_name]
+	 * @param $more_sources More_Sources
+	 * @param $old_levels   array mixed[string $priority_level][string $plugin_name]
+	 * @param $new_levels   array mixed[string $priority_level][string $plugin_name]
 	 */
 	protected function moreSourcesAddRemovedPlugins(
-		array &$added, array &$sources, array $old_levels, array $new_levels
+		More_Sources $more_sources, array $old_levels, array $new_levels
 	) {
 		foreach ($old_levels as $level => $old_plugins) {
 			foreach ($old_plugins as $class_name => $old_plugin) {
 				if (!isset($new_levels[$level][$class_name])) {
-					$this->moreSourcesAdd($class_name, $sources, $added);
+					$this->moreSourcesAdd($class_name, $more_sources);
 				}
 			}
 		}
@@ -242,28 +234,24 @@ class Compiler implements ICompiler, Needs_Main
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * @param $sources Reflection_Source[] key is $class_name, or $file_path if no class
-	 * @return Reflection_Source[] added sources list. key is the name of the class ?: the file path
+	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(array &$sources)
+	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		$added = [];
-		if ($this->hasConfigurationFile($sources)) {
-			$this->moreSourcesToCompileReload($added, $sources);
+		if ($this->hasConfigurationFile($more_sources->sources)) {
+			$this->moreSourcesToCompileReload($more_sources);
 		}
-		$this->moreSourcesAddComposites($added, $sources);
-		$this->moreSourcesAddChildren($added, $sources);
-		return $added;
+		$this->moreSourcesAddComposites($more_sources);
+		$this->moreSourcesAddChildren($more_sources);
 	}
 
 	//-------------------------------------------------------------------- moreSourcesToCompileReload
 	/**
 	 * When traits / interfaces are added / removed into builder.php : compile the composite class
 	 *
-	 * @param $added   Reflection_Source[]
-	 * @param $sources Reflection_Source[] key is $class_name, or $file_path if no class
+	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesToCompileReload(array &$added, array &$sources)
+	protected function moreSourcesToCompileReload(More_Sources $more_sources)
 	{
 		// save compositions before changes
 		$old_compositions = Builder::current()->getCompositions();
@@ -276,14 +264,14 @@ class Compiler implements ICompiler, Needs_Main
 		$new_levels       = Session::current()->plugins->getAll(true);
 		// add classes where builder composition changed
 		$this->moreSourcesAddModifiedOrNewCompositions(
-			$added, $sources, $old_compositions, $new_compositions
+			$more_sources, $old_compositions, $new_compositions
 		);
 		$this->moreSourcesAddRemovedCompositions(
-			$added, $sources, $old_compositions, $new_compositions
+			$more_sources, $old_compositions, $new_compositions
 		);
 		// add classes of globally added/removed plugins
-		$this->moreSourcesAddNewPlugins($added, $sources, $old_levels, $new_levels);
-		$this->moreSourcesAddRemovedPlugins($added, $sources, $old_levels, $new_levels);
+		$this->moreSourcesAddNewPlugins($more_sources, $old_levels, $new_levels);
+		$this->moreSourcesAddRemovedPlugins($more_sources, $old_levels, $new_levels);
 	}
 
 	//----------------------------------------------------------------------------- setMainController

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\PHP\Compiler\More_Sources;
+
 /**
  * All Php compiler files should use this interface
  */
@@ -19,9 +21,9 @@ interface ICompiler
 	/**
 	 * Extends the list of sources to compile
 	 *
-	 * @param &$sources Reflection_Source[]
+	 * @param $more_sources More_Sources
 	 * @return Reflection_Source[] added sources list
 	 */
-	public function moreSourcesToCompile(array &$sources);
+	public function moreSourcesToCompile(More_Sources $more_sources);
 
 }

@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
@@ -44,12 +45,10 @@ class Compiler implements ICompiler
 	 * - the class itself
 	 * - all classes that extend the class or use the trait
 	 *
-	 * @param &$sources Reflection_Source[]
-	 * @return Reflection_Source[] added sources list
+	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(array &$sources)
+	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		$added = [];
 		// Builder is disabled during the listing as we want to get the original linked class name when
 		// reading class annotation @link
 		Builder::current()->enabled = false;
@@ -59,30 +58,27 @@ class Compiler implements ICompiler
 			'type'      => Func::orOp([Dependency::T_EXTENDS, Dependency::T_USE])
 		];
 
-		foreach ($sources as $source) {
+		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				while ($linked_class = Link_Annotation::of($class)->value) {
 					$source = Reflection_Class::of($linked_class)->source;
-					if (!isset($sources[$source->file_name])) {
-						$sources[$source->file_name]                               = $source;
-						$added[$source->getFirstClassName() ?: $source->file_name] = $source;
+					if (!isset($more_sources->sources[$source->file_name])) {
+						$more_sources->add($source, $source->getFirstClassName(), $source->file_name, true);
 					}
 					$class = $source->getClass($linked_class);
 				}
 				$search['dependency_name'] = Func::equal($class->name);
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
-					if (!isset($sources[$dependency->file_name])) {
+					if (!isset($more_sources->sources[$dependency->file_name])) {
 						$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
-						$sources[$dependency->file_name] = $source;
-						$added[$source->getFirstClassName() ?: $dependency->file_name] = $source;
+						$more_sources->add($source, $source->getFirstClassName(), $dependency->file_name, true);
 					}
 				}
 			}
 		}
 
 		Builder::current()->enabled = true;
-		return $added;
 	}
 
 }

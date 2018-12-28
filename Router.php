@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\PHP\Class_File_Name_Getter;
 use ITRocks\Framework\PHP\Compiler;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Plugin\Configurable;
@@ -425,12 +426,10 @@ class Router implements
 	/**
 	 * Extends the list of files to compile
 	 *
-	 * @param $files Reflection_Source[] Key is the file path
-	 * @return Reflection_Source[] added sources list
+	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(array &$files)
+	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		return [];
 	}
 
 	//-------------------------------------------------------------------------------------- register

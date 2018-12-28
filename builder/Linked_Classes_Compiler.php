@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
@@ -91,15 +92,13 @@ class Linked_Classes_Compiler implements ICompiler
 	/**
 	 * When a class is compiled, all classes that extends it must be compiled too
 	 *
-	 * @param $sources Reflection_Source[]
-	 * @return Reflection_Source[] added sources list
+	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(array &$sources)
+	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		$added = [];
 		// we will search all extends dependencies
 		$search = ['type' => Dependency::T_EXTENDS];
-		foreach ($sources as $source) {
+		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if (!Class_Builder::isBuilt($class->name)) {
 					// add all classes that extend source classes
@@ -107,19 +106,18 @@ class Linked_Classes_Compiler implements ICompiler
 					foreach (Dao::search($search, Dependency::class) as $dependency) {
 						/** @var $dependency Dependency */
 						if (
-							!isset($sources[$dependency->file_name])
+							!isset($more_sources->sources[$dependency->file_name])
 							&& !Class_Builder::isBuilt($dependency->class_name)
 						) {
-							$added[$dependency->class_name] = Reflection_Source::ofFile(
-								$dependency->file_name, $dependency->class_name
+							$more_sources->add(
+								Reflection_Source::ofFile($dependency->file_name, $dependency->class_name),
+								$dependency->class_name
 							);
 						}
 					}
 				}
 			}
 		}
-
-		return $added;
 	}
 
 	//-------------------------------------------------------------------------- recursiveReplacement

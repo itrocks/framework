@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\PHP;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
@@ -194,16 +195,13 @@ class Compiler implements ICompiler, Needs_Main
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * @param $sources Reflection_Source[]
-	 * @return Reflection_Source[] added sources list
+	 * @param $more_sources More_Sources
 	 */
-	public function moreSourcesToCompile(array &$sources)
+	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		$added = [];
-
 		// search into dependencies : used classes
 		$search = ['type' => Dependency::T_USE];
-		foreach ($sources as $source) {
+		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if ($class->type === T_TRAIT) {
 					$search['dependency_name'] = Func::equal($class->name);
@@ -230,10 +228,11 @@ class Compiler implements ICompiler, Needs_Main
 								);
 							}
 						}
-						if (!isset($sources[$dependency->file_name])) {
+						if (!isset($more_sources->sources[$dependency->file_name])) {
 							$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
-							$sources[$dependency->file_name] = $source;
-							$added[$source->getFirstClassName() ?: $dependency->file_name] = $source;
+							$more_sources->add(
+								$source, $source->getFirstClassName(), $dependency->file_name, true
+							);
 						}
 					}
 				}
@@ -241,7 +240,7 @@ class Compiler implements ICompiler, Needs_Main
 		}
 
 		// search into dependencies : registered methods
-		foreach ($sources as $source) {
+		foreach ($more_sources->sources as $source) {
 			$search['dependency_name'] = Func::equal(Registerable::class);
 			$search['file_name']       = Func::equal($source->file_name);
 			$search['type']            = Dependency::T_IMPLEMENTS;
@@ -251,17 +250,16 @@ class Compiler implements ICompiler, Needs_Main
 				foreach (Dao::search($search, Dependency::class) as $dependency) {
 					/** @var $dependency Dependency */
 					$source = Reflection_Source::ofClass($dependency->dependency_name);
-					if (!$source->isInternal() && !isset($sources[$source->file_name])) {
-						$sources[$source->file_name] = $source;
-						$added[$source->getFirstClassName() ?: $source->file_name] = $source;
+					if (!$source->isInternal() && !isset($more_sources->sources[$source->file_name])) {
+						$more_sources->add($source, $source->getFirstClassName(), $source->file_name, true);
 					}
 				}
 			}
 		}
 
-		// classes that are already into $sources
+		// classes that are already into $more_sources->sources
 		$already = [];
-		foreach ($sources as $source) {
+		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				$already[$class->name] = true;
 			}
@@ -279,39 +277,16 @@ class Compiler implements ICompiler, Needs_Main
 							}
 							if (isset($already[$advice_class])) {
 								$source = Reflection_Source::ofClass($class_name);
-								/*
-								if ($source->file_name && !$source->isInternal() && !is_file($source->file_name)) {
-									$applicant_source = Reflection_Source::ofClass($advice_class);
-									if (
-										!$source->searchFile($class_name, array_keys($applicant_source->getRequires()))
-									) {
-										trigger_error(
-											'Reflection_Source file not found for class ' . $class_name, E_USER_ERROR
-										);
-									}
-								}
-								*/
 								if ($source->getClass($class_name)) {
-									$sources[$source->file_name] = $source;
-									$added[$class_name]          = $source;
-									$already[$class_name]        = true;
+									$more_sources->add($source, $class_name, $source->file_name, true);
+									$already[$class_name] = true;
 								}
-								/*
-								else {
-									trigger_error(
-										'No class ' . $class_name . ' into file ' . $source->file_name,
-										E_USER_ERROR
-									);
-								}
-								*/
 							}
 						}
 					}
 				}
 			}
 		}
-
-		return $added;
 	}
 
 	//------------------------------------------------------------------------------- scanForAbstract

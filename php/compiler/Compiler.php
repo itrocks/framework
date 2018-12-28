@@ -11,6 +11,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Set;
 use ITRocks\Framework\Logger\Text_Output;
+use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -149,20 +150,20 @@ class Compiler extends Cache implements
 	private function addMoreSources(array $compilers)
 	{
 		do {
-			$added = [];
+			$more_sources = new More_Sources($this->sources);
 
 			// ask each compiler for adding of compiled files, until they have nothing to add
 			foreach ($compilers as $compiler) {
 				if ($compiler instanceof Needs_Main) {
 					$compiler->setMainController($this->main_controller);
 				}
-				$added = array_merge($added, $compiler->moreSourcesToCompile($this->sources));
+				$compiler->moreSourcesToCompile($more_sources);
 			}
 
-			foreach ($added as $added_key => $source) {
+			foreach ($more_sources->added as $added_key => $source) {
 				$source_file_name = $source->getFirstClassName() ?: $source->file_name;
 				if (isset($this->sources[$source_file_name])) {
-					unset($added[$added_key]);
+					unset($more_sources->added[$added_key]);
 				}
 				else {
 					$this->replaceDependencies($source);
@@ -171,10 +172,11 @@ class Compiler extends Cache implements
 			}
 
 			if (count($compilers) == 1) {
-				$added = [];
+				$more_sources->added = [];
 			}
 
-		} while ($added);
+		}
+		while ($more_sources->added);
 	}
 
 	//------------------------------------------------------------------------------------- addSource
