@@ -57,18 +57,30 @@ class Maintainer implements Registerable, Updatable
 	 * Search all classes that implements Installable and write them as features you can install or
 	 * uninstall
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $abstract_installable_class_name string Installable is on the abstract class : get sons
 	 * @return Feature[]
 	 */
-	protected function installableToFeatures()
+	protected function installableToFeatures($abstract_installable_class_name = null)
 	{
-		$dependencies = Dao::search(
-			['dependency_name' => Installable::class, 'type' => Dependency::T_IMPLEMENTS],
-			Dependency::class
-		);
-		$features = [];
+		$search = $abstract_installable_class_name
+			? ['dependency_name' => $abstract_installable_class_name, 'type' => Dependency::T_EXTENDS]
+			: ['dependency_name' => Installable::class, 'type' => Dependency::T_IMPLEMENTS];
+		/** @var $dependencies Dependency[] */
+		$dependencies = Dao::search($search, Dependency::class);
+		$features     = [];
 		foreach ($dependencies as $dependency) {
-			if (!is_a($dependency->class_name, Implicit::class, true)) {
-				$features[] = $this->pluginClassNameToFeature($dependency->class_name);
+			if (
+				!is_a($dependency->class_name, Implicit::class, true)
+				&& class_exists($dependency->class_name)
+			) {
+				/** @noinspection PhpUnhandledExceptionInspection class_exists */
+				if ((new Reflection_Class($dependency->class_name))->isAbstract()) {
+					$features = array_merge($features, $this->installableToFeatures($dependency->class_name));
+				}
+				else {
+					$features[] = $this->pluginClassNameToFeature($dependency->class_name);
+				}
 			}
 		}
 		return $features;

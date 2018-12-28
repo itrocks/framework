@@ -107,8 +107,11 @@ class Manager implements IManager, Serializable
 		}
 		/** @noinspection PhpUnhandledExceptionInspection */
 		elseif (
-			!($constructor = (new Reflection_Class($class_name))->getConstructor())
-			|| !$constructor->getNumberOfParameters()
+			(
+				!($constructor = ($class = new Reflection_Class($class_name))->getConstructor())
+				|| !$constructor->getNumberOfParameters()
+			)
+			&& !$class->isAbstract()
 		) {
 			/** @noinspection PhpUnhandledExceptionInspection */
 			$plugin = Builder::create($class_name);
