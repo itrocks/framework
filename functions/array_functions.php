@@ -76,26 +76,34 @@ function arrayDiffRecursive(array $array1, array $array2, $strict = false, $show
 {
 	$diff = [];
 	foreach ($array1 as $key => $value) {
+		if (is_object($value)) {
+			$value = get_object_vars($value);
+		}
 		if (!(isset($array2[$key]) || array_key_exists($key, $array2))) {
 			$diff[$key] = $value;
+			continue;
 		}
-		elseif (is_array($value)) {
-			if (!is_array($array2[$key])) {
+		$value2 = $array2[$key];
+		if (is_object($value2)) {
+			$value2 = get_object_vars($value2);
+		}
+		if (is_array($value)) {
+			if (!is_array($value2)) {
 				$diff[$key] = $value;
 			}
 			else {
-				$sub_diff = arrayDiffRecursive($value, $array2[$key], $strict, $show_type);
+				$sub_diff = arrayDiffRecursive($value, $value2, $strict, $show_type);
 				if ($sub_diff !== false) {
 					$diff[$key] = $sub_diff;
 				}
 			}
 		}
-		elseif (is_array($array2[$key])) {
+		elseif (is_array($value2)) {
 			$diff[$key] = $value;
 		}
-		elseif (($strict && ($value !== $array2[$key])) || (strval($value) !== strval($array2[$key]))) {
+		elseif (($strict && ($value !== $value2)) || (strval($value) !== strval($value2))) {
 			$diff[$key] = ($strict && !$show_type) ? $value : strval($value);
-			if ($show_type && (gettype($value) !== gettype($array2[$key]))) {
+			if ($show_type && (gettype($value) !== gettype($value2))) {
 				$diff[$key] .= SP . '(' . gettype($value) . ')';
 			}
 		}
