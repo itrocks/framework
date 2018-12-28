@@ -103,6 +103,12 @@ interface IWeaver
 	 */
 	public function beforeMethod($joinpoint, $advice);
 
+	//------------------------------------------------------------------------------- defaultFileName
+	/**
+	 * @return string
+	 */
+	public function defaultFileName();
+
 	//-------------------------------------------------------------------------------- loadJoinpoints
 	/**
 	 * @param $file_name string

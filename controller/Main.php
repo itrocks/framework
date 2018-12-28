@@ -425,7 +425,7 @@ class Main
 			}
 		}
 		if (isset($weaver)) {
-			$weaver->saveJoinpoints(Application::getCacheDir() . SL . 'weaver.php');
+			$weaver->saveJoinpoints($weaver->defaultFileName());
 		}
 	}
 

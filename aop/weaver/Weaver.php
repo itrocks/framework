@@ -4,6 +4,7 @@ namespace ITRocks\Framework\AOP;
 use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\AOP\Weaver\IHandler;
 use ITRocks\Framework\AOP\Weaver\IWeaver;
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Session;
 
 /**
@@ -126,6 +127,21 @@ class Weaver implements IWeaver
 		);
 	}
 
+	//------------------------------------------------------------------------------------ backupFile
+	/**
+	 * Copy weaver.php to weaver.php.old for compiler changes detection
+	 */
+	public function backupFile()
+	{
+		if (!$this->file_name) {
+			$this->file_name = $this->defaultFileName();
+		}
+		if (file_exists($this->file_name . '.old')) {
+			unlink($this->file_name . '.old');
+		}
+		copy($this->file_name, $this->file_name . '.old');
+	}
+
 	//-------------------------------------------------------------------------------- beforeFunction
 	/**
 	 * Weave an aspect before the execution of a given function
@@ -202,6 +218,15 @@ class Weaver implements IWeaver
 		return $changed_class_names;
 	}
 
+	//------------------------------------------------------------------------------- defaultFileName
+	/**
+	 * @return string
+	 */
+	public function defaultFileName()
+	{
+		return Application::getCacheDir() . SL . 'weaver.php';
+	}
+
 	//------------------------------------------------------------------------------------- dumpArray
 	/**
 	 * Change joinpoints array into a dumped php source [...].
@@ -273,12 +298,12 @@ class Weaver implements IWeaver
 	private function fileClassesAsText($file_name)
 	{
 		$classes = [];
-		$parts = explode("\n\t'", file_get_contents($file_name));
+		$parts   = explode("\n\t'", file_exists($file_name) ? file_get_contents($file_name) : '');
 		foreach ($parts as $part) {
-			if (!ctype_upper($part[0])) {
+			if (!$part || !ctype_upper($part[0])) {
 				continue;
 			}
-			$class_name = substr($part, 0, strpos($part, Q));
+			$class_name           = substr($part, 0, strpos($part, Q));
 			$classes[$class_name] = rtrim(substr($part, strlen($class_name) + 1), "\t\n\r,");
 		}
 		return $classes;
@@ -373,14 +398,6 @@ class Weaver implements IWeaver
 	public function saveJoinpoints($file_name)
 	{
 		$this->file_name = $file_name;
-		// the .old file is an helper for AOP\Compiler::moreSourcesToCompile()
-		static $already_saved = false;
-		if (file_exists($file_name) && !$already_saved) {
-			if (file_exists($file_name . '.old')) {
-				unlink($file_name . '.old');
-			}
-			copy($file_name, $file_name . '.old');
-		}
 		// write new weaver.php file content
 		file_put_contents(
 			$file_name,
@@ -388,7 +405,6 @@ class Weaver implements IWeaver
 			. '$plugins = ' . Session::class . '::current()->plugins;' . LF . LF
 			. 'return ' . $this->dumpArray($this->joinpoints) . ';' . LF
 		);
-		$already_saved = true;
 	}
 
 	//--------------------------------------------------------------------------------- writeProperty

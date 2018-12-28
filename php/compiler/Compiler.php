@@ -281,6 +281,13 @@ class Compiler extends Cache implements
 			$first_group   = false;
 			$this->text_output->log('Wave done');
 		}
+		foreach ($this->compilers as $compilers) {
+			foreach ($compilers as $compiler) {
+				if ($compiler instanceof Done_Compiler) {
+					$compiler->doneCompile();
+				}
+			}
+		}
 		$this->sources = null;
 		$this->text_output->log('Compilation done');
 		$this->text_output->end();

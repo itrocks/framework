@@ -4,7 +4,6 @@ namespace ITRocks\Framework\AOP;
 use ITRocks\Framework\AOP\Compiler\Scanners;
 use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\AOP\Weaver\IWeaver;
-use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
@@ -14,6 +13,7 @@ use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\PHP\Compiler\More_Sources;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\Done_Compiler;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
@@ -25,7 +25,7 @@ use ITRocks\Framework\Session;
 /**
  * Standard aspect weaver compiler
  */
-class Compiler implements ICompiler, Needs_Main
+class Compiler implements Done_Compiler, ICompiler, Needs_Main
 {
 	use Scanners;
 
@@ -190,6 +190,12 @@ class Compiler implements ICompiler, Needs_Main
 	public function compileFile($file_name)
 	{
 		return $this->compileClass(Reflection_Source::ofFile($file_name)->getFirstClass());
+	}
+
+	//----------------------------------------------------------------------------------- doneCompile
+	public function doneCompile()
+	{
+		$this->weaver->backupFile();
 	}
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
@@ -387,7 +393,7 @@ class Compiler implements ICompiler, Needs_Main
 		// AOP compiler needs all plugins to be registered again, in order to build the complete
 		// weaver's advices tree
 		if (!$this->weaver->hasJoinpoints()) {
-			$this->weaver->loadJoinpoints(Application::getCacheDir() . SL . 'weaver.php');
+			$this->weaver->loadJoinpoints($this->weaver->defaultFileName());
 		}
 	}
 
