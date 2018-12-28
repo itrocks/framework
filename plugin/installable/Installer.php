@@ -214,7 +214,7 @@ class Installer
 			$file = $this->openFile(Source::class, Names::classToFilePath($built->replacement));
 			$file->remove($removed_interfaces_traits);
 		}
-		else {
+		elseif ($built) {
 			trigger_error(
 				'Found class ' . $base_class_name . ' should be Assembled or Replaced', E_USER_ERROR
 			);
