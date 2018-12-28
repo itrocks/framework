@@ -12,6 +12,15 @@ use ITRocks\Framework\Session;
 class Weaver implements IWeaver
 {
 
+	//------------------------------------------------------------------------------------ $file_name
+	/**
+	 * The last loaded / saved cache file name
+	 *
+	 * @see loadJoinpoints
+	 * @var string
+	 */
+	private $file_name;
+
 	//----------------------------------------------------------------------------------- $joinpoints
 	/**
 	 * All joinpoints are stored here
@@ -165,6 +174,34 @@ class Weaver implements IWeaver
 		);
 	}
 
+	//----------------------------------------------------------------------------- changedClassNames
+	/**
+	 * @return string[] class names of changed joinpoints since before call of saveJoinpoints()
+	 */
+	public function changedClassNames()
+	{
+		$changed_class_names = [];
+
+		$new_classes = $this->fileClassesAsText($this->file_name);
+		$old_classes = $this->fileClassesAsText($this->file_name . '.old');
+
+		// added / changed classes
+		foreach ($new_classes as $class_name => $new_configuration) {
+			if (!isset($old_classes[$class_name]) || ($new_configuration !== $old_classes[$class_name])) {
+				if (isset($GLOBALS['D'])) echo "AOP Added / Changed class $class_name" . BRLF;
+				$changed_class_names[$class_name] = $class_name;
+			}
+		}
+		// removed classes
+		foreach (array_keys($old_classes) as $class_name) {
+			if (!isset($new_classes[$class_name])) {
+				if (isset($GLOBALS['D'])) echo "AOP Removed class $class_name" . BRLF;
+				$changed_class_names[$class_name] = $class_name;
+			}
+		}
+		return $changed_class_names;
+	}
+
 	//------------------------------------------------------------------------------------- dumpArray
 	/**
 	 * Change joinpoints array into a dumped php source [...].
@@ -228,6 +265,25 @@ class Weaver implements IWeaver
 		return $dump;
 	}
 
+	//----------------------------------------------------------------------------- fileClassesAsText
+	/**
+	 * @param $file_name string
+	 * @return string[] key is the name of the class, value is its raw configuration into weaver.php
+	 */
+	private function fileClassesAsText($file_name)
+	{
+		$classes = [];
+		$parts = explode("\n\t'", file_get_contents($file_name));
+		foreach ($parts as $part) {
+			if (!ctype_upper($part[0])) {
+				continue;
+			}
+			$class_name = substr($part, 0, strpos($part, Q));
+			$classes[$class_name] = rtrim(substr($part, strlen($class_name) + 1), "\t\n\r,");
+		}
+		return $classes;
+	}
+
 	//---------------------------------------------------------------------------------- getJoinpoint
 	/**
 	 * Gets existing joinpoints for a class method or property
@@ -272,6 +328,7 @@ class Weaver implements IWeaver
 	 */
 	public function loadJoinpoints($file_name)
 	{
+		$this->file_name = $file_name;
 		/** @noinspection PhpIncludeInspection */
 		$this->joinpoints = file_exists($file_name) ? (include $file_name) : [];
 	}
@@ -315,12 +372,23 @@ class Weaver implements IWeaver
 	 */
 	public function saveJoinpoints($file_name)
 	{
+		$this->file_name = $file_name;
+		// the .old file is an helper for AOP\Compiler::moreSourcesToCompile()
+		static $already_saved = false;
+		if (file_exists($file_name) && !$already_saved) {
+			if (file_exists($file_name . '.old')) {
+				unlink($file_name . '.old');
+			}
+			copy($file_name, $file_name . '.old');
+		}
+		// write new weaver.php file content
 		file_put_contents(
 			$file_name,
 			'<?php' . LF . LF
 			. '$plugins = ' . Session::class . '::current()->plugins;' . LF . LF
 			. 'return ' . $this->dumpArray($this->joinpoints) . ';' . LF
 		);
+		$already_saved = true;
 	}
 
 	//--------------------------------------------------------------------------------- writeProperty

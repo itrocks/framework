@@ -17,7 +17,6 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
-use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -240,51 +239,10 @@ class Compiler implements ICompiler, Needs_Main
 		}
 
 		// search into dependencies : registered methods
-		foreach ($more_sources->sources as $source) {
-			$search['dependency_name'] = Func::equal(Registerable::class);
-			$search['file_name']       = Func::equal($source->file_name);
-			$search['type']            = Dependency::T_IMPLEMENTS;
-			if (Dao::searchOne($search, Dependency::class)) {
-				unset($search['dependency_name']);
-				$search['type'] = Dependency::T_CLASS;
-				foreach (Dao::search($search, Dependency::class) as $dependency) {
-					/** @var $dependency Dependency */
-					$source = Reflection_Source::ofClass($dependency->dependency_name);
-					if (!$source->isInternal() && !isset($more_sources->sources[$source->file_name])) {
-						$more_sources->add($source, $source->getFirstClassName(), $source->file_name, true);
-					}
-				}
-			}
-		}
-
-		// classes that are already into $more_sources->sources
-		$already = [];
-		foreach ($more_sources->sources as $source) {
-			foreach ($source->getClasses() as $class) {
-				$already[$class->name] = true;
-			}
-		}
-
-		// search into advices and add sources that have sources to compile as advice
-		foreach ($this->weaver->getJoinpoints() as $class_name => $joinpoint) {
-			if (!isset($already[$class_name])) {
-				foreach ($joinpoint as $advices) {
-					foreach ($advices as $advice) {
-						if (is_array($advice = $advice[1])) {
-							$advice_class = $advice[0];
-							if (is_object($advice_class)) {
-								$advice_class = get_class($advice_class);
-							}
-							if (isset($already[$advice_class])) {
-								$source = Reflection_Source::ofClass($class_name);
-								if ($source->getClass($class_name)) {
-									$more_sources->add($source, $class_name, $source->file_name, true);
-									$already[$class_name] = true;
-								}
-							}
-						}
-					}
-				}
+		foreach ($this->weaver->changedClassNames() as $class_name) {
+			$source = Reflection_Source::ofClass($class_name);
+			if (!isset($more_sources->sources[$source->file_name])) {
+				$more_sources->add($source, $source->getFirstClassName(), $source->file_name, true);
 			}
 		}
 	}
