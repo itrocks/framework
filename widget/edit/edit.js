@@ -201,6 +201,9 @@ $('document').ready(function()
 			}
 		});
 
+		//------------------------------------------------------- button.ui-datepicker-trigger tabindex
+		this.inside('button.ui-datepicker-trigger').attr('tabindex', -1);
+
 		//-------------------------------------------------------------------------- checkCompletedDate
 		var checkCompletedDate = function($datetime)
 		{
