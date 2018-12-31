@@ -191,8 +191,13 @@ $('document').ready(function()
 		//------------------------------------------------------------------------ input.datetime keyup
 		this.inside('input.datetime').keyup(function(event)
 		{
-			if ((event.keyCode !== 13) && (event.keyCode !== 27)) {
-				$(this).datepicker('show');
+			if (!event.ctrlKey) {
+				if (event.keyCode === 38) {
+					$(this).datepicker('hide');
+				}
+				if (event.keyCode === 40) {
+					$(this).datepicker('show');
+				}
 			}
 		});
 
