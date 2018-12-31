@@ -177,9 +177,11 @@ $('document').ready(function()
 			.change(autoAddLine).focus(autoAddLine).keyup(autoAddLine);
 
 		//------------------------------------------------------------------- input.datetime datePicker
+		$.datepicker.setDefaults($.datepicker.regional[window.app.language]);
 		this.inside('input.datetime').datepicker({
 			constrainInput:    false,
 			dateFormat:        dateFormatToDatepicker(window.app.date_format),
+			firstDay:          1,
 			showOn:            'button',
 			showOtherMonths:   true,
 			selectOtherMonths: true,
