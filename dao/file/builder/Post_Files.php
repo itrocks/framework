@@ -81,7 +81,7 @@ class Post_Files
 				);
 			}
 			else {
-				$file                      = $this->newFileObject($property_path);
+				$file                      = $this->newFileObject($property_path . DOT . $key);
 				$file->name                = $name_sub_element;
 				$file->temporary_file_name = $tmp_name_element[$key];
 				$form[$key]                = $file;
