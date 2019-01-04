@@ -12,7 +12,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\Widget\List_Setting;
@@ -146,16 +145,6 @@ class Loc implements Registerable
 		return Locale::current()->date_format;
 	}
 
-	//----------------------------------------------------------------- dateTimeReturnedValueToLocale
-	/**
-	 * @param $result string
-	 * @return string
-	 */
-	public function dateTimeReturnedValueToLocale($result)
-	{
-		return self::dateToLocale($result);
-	}
-
 	//------------------------------------------------------------------------------------- dateToIso
 	/**
 	 * Takes a locale date and make it ISO
@@ -203,16 +192,6 @@ class Loc implements Registerable
 		array_pop(self::$contexts_stack);
 	}
 
-	//-------------------------------------------------------------------- floatReturnedValueToLocale
-	/**
-	 * @param $result string
-	 * @return string
-	 */
-	public function floatReturnedValueToLocale($result)
-	{
-		return self::floatToLocale($result);
-	}
-
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
 	 * @param $float string
@@ -248,16 +227,6 @@ class Loc implements Registerable
 			$context = prev(self::$contexts_stack);
 		}
 		return $context;
-	}
-
-	//------------------------------------------------------------------ integerReturnedValueToLocale
-	/**
-	 * @param $result string
-	 * @return string
-	 */
-	public function integerReturnedValueToLocale($result)
-	{
-		return self::integerToLocale($result);
 	}
 
 	//---------------------------------------------------------------------------------- integerToIso
@@ -348,26 +317,6 @@ class Loc implements Registerable
 		$aop->afterMethod(
 			[Functions::class, 'toEditPropertyExtra'],
 			[$this, 'afterHtmlTemplateFunctionsToEditPropertyExtra']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_View::class, 'formatBoolean'],
-			[$this, 'translateReturnedValue']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_View::class, 'formatDateTime'],
-			[$this, 'dateTimeReturnedValueToLocale']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_View::class, 'formatFloat'],
-			[$this, 'floatReturnedValueToLocale']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_View::class, 'formatInteger'],
-			[$this, 'integerReturnedValueToLocale']
-		);
-		$aop->afterMethod(
-			[Reflection_Property_View::class, 'formatString'],
-			[$this, 'translateStringPropertyView']
 		);
 		// translations
 		$aop->afterMethod(
@@ -484,30 +433,6 @@ class Loc implements Registerable
 	public function translateReturnedValue($result)
 	{
 		return self::tr($result);
-	}
-
-	//------------------------------------------------------------------- translateStringPropertyView
-	/**
-	 * @param $object Reflection_Property_View
-	 * @param $result string
-	 * @return string
-	 */
-	public function translateStringPropertyView(Reflection_Property_View $object, $result)
-	{
-		if (
-			$object->property->getListAnnotation('values')->values()
-			|| ($object->property->getAnnotation('translate')->value === 'common')
-		) {
-			$type = $object->property->getType();
-			return static::tr(
-				$result,
-				$type->isClass() ? $type->getElementTypeAsString() : $object->property->final_class
-			);
-		}
-		if (in_array($object->property->getAnnotation('translate')->value, ['', 'data'], true)) {
-			return (new Translation\Data\Set)->translate($object->property, $result);
-		}
-		return $result;
 	}
 
 }

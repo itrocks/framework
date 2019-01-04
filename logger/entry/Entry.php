@@ -90,6 +90,7 @@ class Entry
 	//---------------------------------------------------------------------------------------- $start
 	/**
 	 * @link DateTime
+	 * @show_seconds
 	 * @var Date_Time
 	 */
 	public $start;
@@ -97,6 +98,7 @@ class Entry
 	//----------------------------------------------------------------------------------------- $stop
 	/**
 	 * @link DateTime
+	 * @show_seconds
 	 * @var Date_Time
 	 */
 	public $stop;

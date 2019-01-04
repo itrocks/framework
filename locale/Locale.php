@@ -7,12 +7,16 @@ use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
+use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Method;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
@@ -135,10 +139,16 @@ class Locale implements Configurable
 			$value = $property->value();
 		}
 		$type = $property->getType();
+		if (is_null($value) && Null_Annotation::of($property)->value) {
+			return null;
+		}
 		if (is_null($value) && $type->isNumeric() && Mandatory_Annotation::of($property)->value) {
 			$value = 0;
 		}
-		if ($value instanceof Date_Time) {
+		if (Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value) {
+			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
+		}
+		elseif ($value instanceof Date_Time) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 		}
 		elseif ($type->isFloat()) {
@@ -164,9 +174,12 @@ class Locale implements Configurable
 			$result = $value;
 		}
 		elseif (
-			$property->getListAnnotation('values')->value
+			($values = $property->getListAnnotation('values')->value)
 			|| ($property->getAnnotation('translate')->value === 'common')
 		) {
+			if ($values && (count($values) === 2) && $type->isBoolean()) {
+				$value = $value ? $values[0] : $values[1];
+			}
 			$result = $this->translations->translate(
 				$value, $type->isClass() ? $type->getElementTypeAsString() : $property->final_class
 			);
@@ -256,6 +269,9 @@ class Locale implements Configurable
 	{
 		if (isset($type)) {
 			if ($type->isBoolean()) {
+				if (is_null($value)) {
+					return $value;
+				}
 				return $value ? $this->translations->translate(YES) : $this->translations->translate(NO);
 			}
 			if ($type->isDateTime()) {
