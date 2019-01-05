@@ -134,7 +134,7 @@ EOT
 echo '- Create hello-world home template file ' . $hello_world_template . "\n";
 file_put_contents($hello_world_template, <<<EOT
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>Hello, world !</title>
@@ -193,7 +193,7 @@ EOT
 
 echo '- get composer hash' . "\n";
 $download_page = file_get_contents('https://getcomposer.org/download/');
-$hash_begin = "hash_file('SHA384', 'composer-setup.php') === '";
+$hash_begin = "hash_file('sha384', 'composer-setup.php') === '";
 $hash_end = "'";
 $hash_position = strpos($download_page, $hash_begin) + strlen($hash_begin);
 $hash = substr(
@@ -204,7 +204,7 @@ echo $hash . "\n";
 echo '- download composer into ' . $composer_executable . "\n";
 chdir($dir);
 copy('https://getcomposer.org/installer', $composer_setup);
-if (hash_file('SHA384', $composer_setup) === $hash) { echo 'Installer verified'; }
+if (hash_file('sha384', $composer_setup) === $hash) { echo 'Installer verified'; }
 else { echo 'Installer corrupt'; unlink('composer-setup.php'); }
 echo PHP_EOL;
 
