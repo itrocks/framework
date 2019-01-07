@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Contextual_Callable;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\No_Escape;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html;
@@ -1317,6 +1318,9 @@ class Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$object, $property_name
 	) {
+		if ($object instanceof No_Escape) {
+			return strval($object);
+		}
 		return method_exists($object, '__toString') ? $this->htmlEntities($object) : '';
 	}
 
