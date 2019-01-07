@@ -16,7 +16,7 @@ interface Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return self
+	 * @return static
 	 */
 	public static function fromString($string);
 
