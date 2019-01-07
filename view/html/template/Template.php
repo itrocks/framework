@@ -1321,7 +1321,7 @@ class Template
 		if ($object instanceof No_Escape) {
 			return strval($object);
 		}
-		return method_exists($object, '__toString') ? $this->htmlEntities($object) : '';
+		return method_exists($object, '__toString') ? $this->htmlEntities(strval($object)) : '';
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
