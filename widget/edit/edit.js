@@ -514,16 +514,16 @@ $('document').ready(function()
 				var $this = $(this);
 				var id    = $this.prev().val();
 				var uri;
-				if ($this.data('combo-href') && (event.ctrlKey || event.metaKey)) {
-					uri = $this.data('combo-href');
-					if (id) {
-						uri += SL + id + '/edit';
-					}
-				}
-				else if ($this.data('combo-href') && event.shiftKey) {
+				if ($this.data('combo-href') && event.shiftKey) {
 					uri = $this.data('combo-href');
 					if (id) {
 						uri += SL + id;
+					}
+				}
+				else if ($this.data('combo-href') && (event.ctrlKey || event.metaKey)) {
+					uri = $this.data('combo-href');
+					if (id) {
+						uri += SL + id + '/edit';
 					}
 				}
 				else if ($this.data('edit-class')) {
@@ -531,9 +531,13 @@ $('document').ready(function()
 					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
 				}
 				if (uri !== undefined) {
+					var target = $this.data('target');
+					if (!target) {
+						target = ((event.ctrlKey || event.metaKey) && event.shiftKey) ? '#main' : '#popup';
+					}
 					redirect(
 						uri + '?fill_combo=' + $this.prev().attr('name'),
-						$this.data('target') ? $this.data('target') : '#popup',
+						target,
 						$this,
 						function($target) {
 							$target.autofocus();
