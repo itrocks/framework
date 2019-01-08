@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Widget\Edit;
 use DateTime;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameter;
-use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
@@ -354,7 +353,6 @@ class Html_Builder_Type
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$input->setData('combo-class', Names::classToSet($source_class_name));
 		$input->setData('combo-href',  View::link($source_class_name));
-		$input->setData('target',      Target::POPUP);
 		if ($this->tooltip) {
 			$input->setAttribute('title', $this->tooltip);
 		}
