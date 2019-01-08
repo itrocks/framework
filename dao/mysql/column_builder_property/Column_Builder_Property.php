@@ -152,11 +152,7 @@ trait Column_Builder_Property
 						: 'double';
 				}
 				elseif ($property->getAnnotation('binary')->value) {
-					return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob' : (
-						(isset($max_length) && ($max_length <= 65535)) ? 'blob' : (
-						(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
-						'longblob'
-					));
+					return static::sqlBlobColumn($max_length);
 				}
 				else {
 					$values = self::propertyValues($property);
@@ -171,11 +167,7 @@ trait Column_Builder_Property
 						$max_length = 255;
 					}
 					if ($store_annotation_value === Store_Annotation::GZ) {
-						return ($max_length <= 255) ? 'tinyblob' : (
-							($max_length <= 65535)    ? 'blob' : (
-							($max_length <= 16777215) ? 'mediumblob' :
-							'longblob'
-						));
+						return static::sqlBlobColumn($max_length);
 					}
 					return static::sqlTextColumn($max_length);
 				}
@@ -222,6 +214,20 @@ trait Column_Builder_Property
 		else {
 			return [];
 		}
+	}
+
+	//--------------------------------------------------------------------------------- sqlBlobColumn
+	/**
+	 * @param $max_length \integer
+	 * @return string
+	 */
+	private static function sqlBlobColumn($max_length)
+	{
+		return (isset($max_length) && ($max_length <= 255)) ? 'tinyblob'   : (
+			(isset($max_length) && ($max_length <= 65535))    ? 'blob'       : (
+			(isset($max_length) && ($max_length <= 16777215)) ? 'mediumblob' :
+			'longblob'
+		));
 	}
 
 	//--------------------------------------------------------------------------------- sqlTextColumn
