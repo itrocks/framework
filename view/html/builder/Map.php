@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
@@ -8,6 +9,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Dom\Anchor;
 use ITRocks\Framework\View\Html\Dom\Table;
 use ITRocks\Framework\View\Html\Dom\Table\Body;
 use ITRocks\Framework\View\Html\Dom\Table\Head;
@@ -95,7 +98,9 @@ class Map
 	 */
 	protected function buildCell($object)
 	{
-		return new Standard_Cell(strval($object));
+		$anchor = new Anchor(View::link($object), strval($object));
+		$anchor->setAttribute('target', Target::MAIN);
+		return new Standard_Cell($anchor);
 	}
 
 	//------------------------------------------------------------------------------------- buildHead

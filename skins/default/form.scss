@@ -237,6 +237,11 @@ fieldset {
 						padding: 1px 5px 0 0;
 						white-space: nowrap;
 
+						> a {
+							color: black;
+							text-decoration: none;
+						}
+
 						> input:not([type=file]),
 						> textarea {
 							height: 18px;
