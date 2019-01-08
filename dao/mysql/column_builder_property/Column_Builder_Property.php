@@ -180,11 +180,8 @@ trait Column_Builder_Property
 					return static::sqlTextColumn($max_length);
 				}
 			}
-			elseif (
-				in_array($store_annotation_value, [Store_Annotation::JSON, Store_Annotation::STRING])
-				&& !$property_type->isDateTime()
-			) {
-				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 255);
+			elseif ($store_annotation_value === Store_Annotation::JSON) {
+				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 65535);
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:
