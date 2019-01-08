@@ -177,18 +177,14 @@ trait Column_Builder_Property
 							'longblob'
 						));
 					}
-					return (
-						($max_length <= 3)   ? ('char(' . $max_length . ')') : (
-						($max_length <= 255)      ? ('varchar(' . $max_length . ')') : (
-						($max_length <= 65535)    ? 'text' : (
-						($max_length <= 16777215) ? 'mediumtext' :
-						'longtext'
-						)))
-					) . SP . Database::characterSetCollateSql();
+					return static::sqlTextColumn($max_length);
 				}
 			}
-			elseif ($store_annotation_value === Store_Annotation::JSON) {
-				return 'text' . SP . Database::characterSetCollateSql();
+			elseif (
+				in_array($store_annotation_value, [Store_Annotation::JSON, Store_Annotation::STRING])
+				&& !$property_type->isDateTime()
+			) {
+				return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 255);
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:
@@ -204,7 +200,7 @@ trait Column_Builder_Property
 				case DateTime::class: case Date_Time::class:
 					return 'datetime';
 				default:
-					return 'char(255)' . SP . Database::characterSetCollateSql();
+					return static::sqlTextColumn($property->getAnnotation('max_length')->value ?: 255);
 			}
 		}
 		else {
@@ -229,6 +225,23 @@ trait Column_Builder_Property
 		else {
 			return [];
 		}
+	}
+
+	//--------------------------------------------------------------------------------- sqlTextColumn
+	/**
+	 * @param $max_length \integer
+	 * @return string
+	 */
+	private static function sqlTextColumn($max_length)
+	{
+		return (
+			($max_length <= 3)        ? ('char('    . $max_length . ')') : (
+			($max_length <= 255)      ? ('varchar(' . $max_length . ')') : (
+			($max_length <= 65535)    ? 'text' : (
+			($max_length <= 16777215) ? 'mediumtext' :
+				'longtext'
+			)))
+			) . SP . Database::characterSetCollateSql();
 	}
 
 }
