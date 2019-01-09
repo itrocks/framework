@@ -184,7 +184,7 @@ class Object_To_Write_Array
 				$is_property_set = isset($this->object->$property_name);
 				Getter::$ignore  = $aop_getter_ignore;
 				/** @noinspection PhpUnhandledExceptionInspection $property is valid for $object */
-				$value           = $is_property_set ? $property->getValue($this->object) : null;
+				$value = $is_property_set ? $property->getValue($this->object) : null;
 				if (is_null($value) && !Null_Annotation::of($property)->value) {
 					$value = '';
 				}
