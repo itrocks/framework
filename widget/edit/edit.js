@@ -535,12 +535,16 @@ $('document').ready(function()
 					if (!target) {
 						target = ((event.ctrlKey || event.metaKey) && event.shiftKey) ? '#main' : '#popup';
 					}
+					var target_exists = $(target).length;
 					redirect(
 						uri + '?fill_combo=' + $this.prev().attr('name'),
 						target,
 						$this,
 						function($target) {
 							$target.autofocus();
+							if (target_exists) {
+								return;
+							}
 							$target.draggable({
 								handle: 'h2',
 								stop: function() {
