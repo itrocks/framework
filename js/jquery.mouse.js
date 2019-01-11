@@ -33,5 +33,4 @@ $(document).ready(function()
 		document.mouse.which = 0;
 	});
 
-
 });
