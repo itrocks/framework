@@ -691,6 +691,9 @@ class Template
 		elseif (isset($GLOBALS['_' . $const_name])) {
 			$value = $GLOBALS['_' . $const_name];
 		}
+		elseif (defined($const_name)) {
+			$value = constant($const_name);
+		}
 		else {
 			$value = $this->parseConstSpec($object, $const_name);
 		}
