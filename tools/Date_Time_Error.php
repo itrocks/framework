@@ -23,7 +23,7 @@ class Date_Time_Error extends Date_Time
 	 */
 	public function __toString()
 	{
-		return $this->error;
+		return strval($this->error);
 	}
 
 	//------------------------------------------------------------------------------------- fromError
