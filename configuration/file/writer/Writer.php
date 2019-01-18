@@ -52,6 +52,10 @@ class Writer
 			while (($position !== false) && ($position < $buffer_length)) {
 				$position = strpos($buffer, $short_name, $position);
 				if ($position !== false) {
+					$previous = substr($buffer, $position - 5, 5);
+					if ($previous === (TAB . 'use' . SP)) {
+						break;
+					}
 					$previous = $buffer[$position - 1];
 					$next     = $buffer[$position + $name_length];
 					if (
