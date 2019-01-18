@@ -509,12 +509,13 @@ abstract class Names
 			return $single;
 		}
 		return
+			(substr($single, -2) === 'ay')  ? ($single . 's') : (
 			(substr($single, -1) === 'y')   ? (substr($single, 0, -1) . 'ies') : (
 			(substr($single, -3) === 'man') ? (substr($single, 0, -3) . 'men') : (
 			(substr($single, -2) === 'ss')  ? ($single . 'es') : (
 			(substr($single, -1) === 's')   ? $single : (
 				$single . 's'
-			))));
+			)))));
 	}
 
 }
