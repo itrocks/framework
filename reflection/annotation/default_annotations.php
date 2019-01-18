@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Documented_Type_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 
 //-------------------------------------------------------------------- Parser::$default_annotations
 /**
@@ -206,6 +207,14 @@ Parser::$default_annotations = [
 	 * values (ie a client can have the same contract several times, with different dates)
 	 */
 	Parser::T_CLASS . '@unique' => List_Annotation::class,
+
+	/**
+	 * @user_remove [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
+	 * Associates a feature controller to call each time a sub / linked object is removed by the final
+	 * user to an input form (target of a @link Collection or link @Map).
+	 * a target selector can be used to define where the result is loaded (#messages as default)
+	 */
+	Parser::T_CLASS . '@user_remove' => Method_Target_Annotation::class,
 
 	/**
 	 * @advice
@@ -483,6 +492,14 @@ Parser::$default_annotations = [
 	 * This tells that the property should be rendered using textile parsing
 	 */
 	Parser::T_PROPERTY . '@unit' => Constant_Or_Method_Annotation::class,
+
+	/**
+	 * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
+	 * Associates a feature controller to call each time a property value is changed by the final user
+	 * to an input form.
+	 * a target selector can be used to define where the result is loaded (#messages as default)
+	 */
+	Parser::T_PROPERTY . '@user_change' => Method_Target_Annotation::class,
 
 	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName

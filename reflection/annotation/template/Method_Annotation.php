@@ -43,6 +43,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				? $class_property->getFinalClass()
 				: $class_property;
 			if ($pos = strpos($value, '::')) {
+				$is_composite    = false;
 				$type_annotation = new Type_Annotation(substr($value, 0, $pos));
 				if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
 					$type_annotation->value = BS . $class->getName();
@@ -55,13 +56,17 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				}
 				elseif ($type_annotation->value == 'composite') {
 					/** @var $composite_property Reflection_Property */
-					$composite_property = call_user_func([$class->getName(), 'getCompositeProperty']);
+					$composite_property     = call_user_func([$class->getName(), 'getCompositeProperty']);
 					$type_annotation->value = $composite_property->getType()->asString();
+					$is_composite           = true;
 				}
 				// if the property is declared into the final class : try using the class namespace name
 				if (
-					!($class_property instanceof Reflection_Property)
-					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
+					!$is_composite
+					&& (
+						!($class_property instanceof Reflection_Property)
+						|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
+					)
 				) {
 					$dependencies = Dao::search(
 						['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],

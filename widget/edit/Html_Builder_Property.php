@@ -11,8 +11,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\User_Change_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Editor;
@@ -271,10 +271,9 @@ class Html_Builder_Property extends Html_Builder_Type
 			!$this->property->getType()->isMultiple()
 			&& ($user_changes = $this->property->getAnnotations('user_change'))
 		) {
-			/** @var $user_changes User_Change_Annotation[] */
+			/** @var $user_changes Method_Target_Annotation[] */
 			foreach ($user_changes as $user_change) {
-				$this->on_change[] = str_replace([BS, '::'], SL, $user_change->value)
-					. ($user_change->target ? (SP . $user_change->target) : '');
+				$this->on_change[] = $user_change->asHtmlData();
 			}
 		}
 		if (!$this->property->getAnnotation('empty_check')->value) {

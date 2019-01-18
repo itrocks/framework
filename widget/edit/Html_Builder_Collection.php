@@ -6,6 +6,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Namespaces;
@@ -86,7 +87,20 @@ class Html_Builder_Collection extends Collection
 	 */
 	public function build()
 	{
-		return parent::build();
+		$table = parent::build();
+
+		/** @var $user_remove_annotations Method_Target_Annotation[] */
+		$property_class          = $this->property->getType()->asReflectionClass();
+		$user_remove_annotations = $property_class->getAnnotations('user_remove');
+		$user_removes            = [];
+		foreach ($user_remove_annotations as $user_remove_annotation) {
+			$user_removes[] = $user_remove_annotation->asHtmlData();
+		}
+		if ($user_removes) {
+			$table->setData('on-remove', join(',', $user_removes));
+		}
+
+		return $table;
 	}
 
 	//------------------------------------------------------------------------------------- buildBody

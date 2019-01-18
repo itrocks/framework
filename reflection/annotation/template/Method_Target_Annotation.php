@@ -1,22 +1,16 @@
 <?php
-namespace ITRocks\Framework\Reflection\Annotation\Property;
+namespace ITRocks\Framework\Reflection\Annotation\Template;
 
-use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 /**
- * Associates a feature controller to call each time a property value is changed by the final user
- * to an input form.
- *
  * a target selector can be used to define where the result is loaded (#messages as default)
  *
- * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
+ * @example @annotation [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
  */
-class User_Change_Annotation extends Method_Annotation
+class Method_Target_Annotation extends Method_Annotation
 {
-
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'user_change';
 
 	//--------------------------------------------------------------------------------------- $target
 	/**
@@ -36,6 +30,18 @@ class User_Change_Annotation extends Method_Annotation
 			list($value, $this->target) = explode(SP, $value, 2);
 		}
 		parent::__construct($value, $class_property, $annotation_name);
+	}
+
+	//------------------------------------------------------------------------------------ asHtmlData
+	/**
+	 * @return string
+	 */
+	public function asHtmlData()
+	{
+		list($class_name, $method_name) = explode('::', $this->value);
+		$class_name = Builder::current()->sourceClassName($class_name);
+		return str_replace(BS, SL, $class_name) . SL . $method_name
+			. ($this->target ? (SP . $this->target) : '');
 	}
 
 }

@@ -59,16 +59,19 @@ $('document').ready(function()
 		this.inside('.minus').click(function()
 		{
 			var $this = $(this);
-			if ($this.closest('tbody').children().length > 1) {
-				$this.closest('tr').remove();
-			}
-			else {
-				var $table   = $this.closest('table');
-				var $new_row = $table.data('itrocks_add').clone();
-				$this.closest('tr').replaceWith($new_row);
-				$new_row.build();
-				$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
-			}
+			// setTimeout allows other click events to .minus to execute before the row is removed
+			setTimeout(function() {
+				if ($this.closest('tbody').children().length > 1) {
+					$this.closest('tr').remove();
+				}
+				else {
+					var $table   = $this.closest('table');
+					var $new_row = $table.data('itrocks_add').clone();
+					$this.closest('tr').replaceWith($new_row);
+					$new_row.build();
+					$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
+				}
+			});
 		});
 
 		//----------------------------------------------------------------- input[type=checkbox] change
@@ -742,26 +745,30 @@ $('document').ready(function()
 			}
 		});
 
-		//--------------------------------------------------------------- input[data-on-change] .change
-		var on_change_pool = [];
-		this.inside('input[data-on-change], select[data-on-change]').change(function()
+		//------------------------------------------------------------------------------------- onEvent
+		var on_event_pool = [];
+		var onEvent = function(event)
 		{
 			var $this  = $(this);
 			var $form  = $this.closest('form');
 			var target = '#messages';
-			var uri    = $this.data('on-change');
+			var uri    = $this.data(event);
 			$.each(uri.split(','), function(key, uri) {
 				if (uri.indexOf(SP) > -1) {
 					target = uri.rParse(SP);
 					uri    = uri.lParse(SP);
 				}
 
-				// on-change-pool avoid calling several times the same handler on several changed inputs
-				var on_change_pool_index = on_change_pool.indexOf(uri);
-				if (on_change_pool_index >= 0) return;
-				on_change_pool.push(uri);
+				// on-event-pool avoid calling several times the same handler on several changed inputs
+				var on_event_pool_index = on_event_pool.indexOf(uri);
+				if (on_event_pool_index >= 0) return;
+				on_event_pool.push(uri);
 
-				uri = window.app.uri_base + SL + uri + SL + $this.prop('name') + '?as_widget';
+				uri = window.app.uri_base + SL + uri;
+				if ($this.prop('name')) {
+					uri += SL + $this.prop('name');
+				}
+				uri += '?as_widget';
 
 				$.post(uri, $form.formSerialize(), function(data)
 				{
@@ -775,10 +782,33 @@ $('document').ready(function()
 							$(target).html(data).build();
 						}
 					}
-					setTimeout(function() { on_change_pool.splice(on_change_pool_index, 1); });
+					setTimeout(function() { on_event_pool.splice(on_event_pool_index, 1); });
 				});
 
 			});
+		};
+
+		//--------------------------------------------------------------- input[data-on-change] .change
+		this.inside('input[data-on-change], select[data-on-change]').change(function()
+		{
+			onEvent.call(this, 'on-change');
+		});
+
+		//------------------------------------------------------- table[data-on-remove] td.minus .click
+		this.inside('table[data-on-remove] .minus').click(function()
+		{
+			var $this  = $(this);
+			var $table = $this.closest('table[data-on-remove]');
+			// do not execute before the row has been removed : the event happens AFTER removal
+			var call = function() {
+				if ($this.closest('table').length) {
+					setTimeout(call);
+				}
+				else {
+					onEvent.call($table, 'on-remove');
+				}
+			};
+			call();
 		});
 
 		//------------------------------------------------------------------------- .vertical.scrollbar
