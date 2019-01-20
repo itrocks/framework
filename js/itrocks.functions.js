@@ -121,8 +121,9 @@ getTextWidth = function($context, extra_width)
  * @param target   string|object jquery set object (object) or selector (string)
  * @param after    string|object jquery set object (object) or selector (string)
  * @param callback call this function when target was loaded (parameter is $target)
+ * @param history boolean
  */
-redirect = function(uri, target, after, callback)
+redirect = function(uri, target, after, callback, history)
 {
 	//noinspection JSUnresolvedVariable
 	var app = window.app;
@@ -183,7 +184,9 @@ redirect = function(uri, target, after, callback)
 						title = uri;
 					}
 					document.title = title;
-					window.history.pushState({reload: true}, title, uri);
+					if ((history === undefined) || history) {
+						window.history.pushState({reload: true}, title, uri);
+					}
 				}
 				if ((callback !== undefined) && callback) {
 					callback.call($target, $target);
