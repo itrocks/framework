@@ -10,7 +10,7 @@ use ITRocks\Framework\Widget\Delete_And_Replace;
 /**
  * Default delete-and-replace controller
  */
-class Delete_And_Replace_Controller implements Default_Feature_Controller
+class Controller implements Default_Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

@@ -18,7 +18,7 @@ use ITRocks\Framework\Tools\Search_Array_Builder;
 /**
  * A default json controller to output any object or objects collection into json format
  */
-class Json_Controller implements Default_Feature_Controller
+class Controller implements Default_Feature_Controller
 {
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch

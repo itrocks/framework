@@ -13,7 +13,7 @@ use ITRocks\Framework\Mapper\Object_Builder_Array;
  *   Initialize properties values into parameters and/or form.
  *   The created object identifier is returned to the caller.
  */
-class Api_Controller implements Default_Feature_Controller
+class Controller implements Default_Feature_Controller
 {
 
 	//---------------------------------------------------------------------------------------- CREATE

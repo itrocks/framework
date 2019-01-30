@@ -11,7 +11,7 @@ use stdClass;
 /**
  * The default remove controller will be called if no other remove controller is defined
  */
-class Remove_Controller implements Feature_Controller
+class Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

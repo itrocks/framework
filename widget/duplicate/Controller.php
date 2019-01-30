@@ -11,7 +11,7 @@ use ITRocks\Framework\Widget\Edit;
  *
  * Opens an edit form, filled with the data of an object, but without it's ids
  */
-class Duplicate_Controller extends Edit\Controller
+class Controller extends Edit\Controller
 {
 
 	//----------------------------------------------------------------------------- getViewParameters

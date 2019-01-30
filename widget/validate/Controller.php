@@ -14,7 +14,7 @@ use ITRocks\Framework\View;
  * - if there are no errors/warnings or if the user confirmed, outputs a validated view
  * - for classes that have a "validated" status property, set its value to true
  */
-class Validate_Controller implements Default_Class_Controller
+class Controller implements Default_Class_Controller
 {
 
 	//-------------------------------------------------------------------------------------- VALIDATE

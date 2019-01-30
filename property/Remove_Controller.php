@@ -14,7 +14,7 @@ use ITRocks\Framework\Widget\Remove;
 /**
  * The default property remove controller does nothing : we must remove a property from a context
  */
-class Remove_Controller extends Remove\Remove_Controller
+class Remove_Controller extends Remove\Controller
 {
 
 	//------------------------------------------------------------------------ removePropertyFromList
