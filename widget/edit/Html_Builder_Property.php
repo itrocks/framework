@@ -221,7 +221,6 @@ class Html_Builder_Property extends Html_Builder_Type
 			$filters_values     = $filters_annotation->values();
 			if ($filters_values) {
 				$class_name         = $this->property->getFinalClassName();
-				$foreign_class_name = $this->property->getType()->getElementTypeAsString();
 				foreach ($filters_values as $filter) {
 					if (strpos($filter, '=')) {
 						list($filter, $filter_value_name) = explode('=', $filter);
@@ -230,10 +229,6 @@ class Html_Builder_Property extends Html_Builder_Type
 					}
 					else {
 						$filter_value_name = $filter;
-					}
-					/** @noinspection PhpUnhandledExceptionInspection $filter property name must be valid */
-					if ((new Reflection_Property($foreign_class_name, $filter))->getType()->isClass()) {
-						$filter = 'id_' . $filter;
 					}
 					if (
 						is_numeric($filter_value_name)
