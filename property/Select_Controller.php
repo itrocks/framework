@@ -167,7 +167,6 @@ class Select_Controller implements Feature_Controller
 				unset($properties[$property_path]);
 				continue;
 			}
-			$acute_displays[$property_path] = $property;
 			if (isset($class_count[$property_class->name])) {
 				$class_count[$property_class->name] ++;
 			}
