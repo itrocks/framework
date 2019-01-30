@@ -224,6 +224,17 @@ class Controller implements Default_Feature_Controller
 			if (isset($parameters['limit'])) {
 				$search_options[] = Dao::limit($parameters['limit']);
 			}
+			if (is_array($search)) {
+				foreach ($search as $property_name => $value) {
+					/** @noinspection PhpUnhandledExceptionInspection property of the class */
+					if (
+						!strlen($value)
+						&& (new Reflection_Property($class_name, $property_name))->getType()->isClass()
+					) {
+						$search[$property_name] = Dao\Func::isNull();
+					}
+				}
+			}
 			$objects = $this->search($search, $class_name, $search_options);
 			return $this->buildJson($objects);
 		}
