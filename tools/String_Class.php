@@ -20,7 +20,7 @@ class String_Class
 	/**
 	 * @param $value string
 	 */
-	public function __construct($value)
+	public function __construct($value = '')
 	{
 		$this->value = $value;
 	}
