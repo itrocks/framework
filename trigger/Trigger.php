@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Widget\Edit\Widgets\Map_As_Collection;
 
@@ -11,6 +12,7 @@ use ITRocks\Framework\Widget\Edit\Widgets\Map_As_Collection;
  */
 abstract class Trigger
 {
+	use Has_Name;
 
 	//-------------------------------------------------------------------------------------- $actions
 	/**

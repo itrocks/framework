@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Mapper\Comparator;
-use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Schedule\Hour_Range;
 
@@ -15,7 +14,6 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  */
 class Schedule extends Trigger
 {
-	use Has_Name;
 
 	//---------------------------------------------------------------------------------- DAYS_OF_WEEK
 	const DAYS_OF_WEEK = [
