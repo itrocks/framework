@@ -16,11 +16,11 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql\Builder\Alter_Table;
 use ITRocks\Framework\Sql\Builder\Create_Table;
+use ITRocks\Framework\Sql\Builder\Create_View;
 use ITRocks\Framework\Sql\Link_Table;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
-use mysqli;
 use mysqli_result;
 
 /**
@@ -128,14 +128,14 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
-	 * @param $mysqli       mysqli
+	 * @param $mysqli       Contextual_Mysqli
 	 * @param $table_name   string
 	 * @param $column_names string[]
 	 * @return boolean
 	 * @todo mysqli context should contain sql builder (ie Select) in order to know if this was
 	 *       an implicit link table. If then : only one unique index should be built
 	 */
-	private function createImplicitTable(mysqli $mysqli, $table_name, array $column_names)
+	private function createImplicitTable(Contextual_Mysqli $mysqli, $table_name, array $column_names)
 	{
 		$only_ids  = true;
 		$table     = new Table($table_name);
@@ -202,7 +202,7 @@ class Maintainer implements Configurable, Registerable
 				$mysqli = $data_link->getConnection();
 			}
 			else {
-				user_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
+				trigger_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
 			}
 		}
 		$builder = new Table_Builder_Class();
@@ -311,6 +311,39 @@ class Maintainer implements Configurable, Registerable
 			}
 		}
 		return $this->createImplicitTable($mysqli, $table_name, $column_names);
+	}
+
+	//------------------------------------------------------------------------------------ createView
+	/**
+	 * Create a table in database, using a data class structure
+	 *
+	 * @param $class_name string
+	 * @param $mysqli     Contextual_Mysqli
+	 */
+	private function createView($class_name, Contextual_Mysqli $mysqli = null)
+	{
+		if (!$mysqli) {
+			$data_link = Dao::current();
+			if ($data_link instanceof Link) {
+				$mysqli = $data_link->getConnection();
+			}
+			else {
+				trigger_error('Must call createTable() with a valid $mysqli link', E_USER_ERROR);
+			}
+		}
+		$builder = new View_Builder_Class();
+		$build   = $builder->build($class_name, $mysqli);
+		foreach ($build as $view) {
+			if (!$mysqli->exists($view->getName())) {
+				$last_context    = $mysqli->context;
+				$queries         = (new Create_View($view))->build();
+				$mysqli->context = array_keys($view->select_queries);
+				foreach ($queries as $query) {
+					$this->query($mysqli, $query);
+				}
+				$mysqli->context = $last_context;
+			}
+		}
 	}
 
 	//---------------------------------------------------------------------------------- guessContext
@@ -447,6 +480,7 @@ class Maintainer implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------- onNoSuchTableError
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $mysqli  Contextual_Mysqli
 	 * @param $query   string
 	 * @param $context array|string[]
@@ -465,6 +499,10 @@ class Maintainer implements Configurable, Registerable
 			if (in_array($context_table, $error_table_names) || !$mysqli->exists($context_table)) {
 				if (is_array($context_class)) {
 					$this->createImplicitTable($mysqli, $context_table, $context_class);
+				}
+				/** @noinspection PhpUnhandledExceptionInspection context class must be valid */
+				elseif ((new Reflection_Class($context_class))->isAbstract()) {
+					$this->createView($context_class, $mysqli);
 				}
 				else {
 					$this->createTable($context_class, $mysqli);
@@ -529,19 +567,30 @@ class Maintainer implements Configurable, Registerable
 
 	//----------------------------------------------------------------------------------------- query
 	/**
-	 * @param $mysqli Mysqli
+	 * @param $mysqli Contextual_Mysqli
 	 * @param $query  string
 	 * @return boolean|mysqli_result
 	 */
-	public function query($mysqli, $query)
+	public function query(Contextual_Mysqli $mysqli, $query)
 	{
 		$this->requests[] = $query;
 		if ($this->simulation) {
 			switch ($this->notice) {
-				case self::OUTPUT: case self::VERBOSE: echo 'Simulation : ' . $query . BRLF; break;
-				case self::WARNING: trigger_error('Simulation : ' . $query, E_USER_NOTICE);
+				case self::OUTPUT:
+				case self::VERBOSE:
+					echo 'Simulation : ' . $query . BRLF;
+					break;
+				case self::WARNING:
+					trigger_error('Simulation : ' . $query, E_USER_NOTICE);
 			}
 			return true;
+		}
+		if (beginsWith($query, ['ALTER TABLE', 'CREATE TABLE'])) {
+			foreach ($mysqli->getViews() as $view_name) {
+				if (endsWith($view_name, '_view')) {
+					$mysqli->query('DROP VIEW' . SP . BQ . $view_name . BQ);
+				}
+			}
 		}
 		return $mysqli->query($query);
 	}
@@ -706,11 +755,11 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
-	 * @param $mysqli     mysqli If null, Dao::current()->getConnection() will be taken
+	 * @param $mysqli     Contextual_Mysqli If null, Dao::current()->getConnection() will be taken
 	 * @param $implicit   boolean if true, update linked implicit tables (anti-recursion)
 	 * @return boolean true if an update query has been generated and executed
 	 */
-	public function updateTable($class_name, mysqli $mysqli = null, $implicit = true)
+	public function updateTable($class_name, Contextual_Mysqli $mysqli = null, $implicit = true)
 	{
 		if (isset($this->exclude_classes[$class_name])) {
 			return false;

@@ -16,6 +16,7 @@ use ITRocks\Framework\Tools\Namespaces;
  */
 class Table_Builder_Class
 {
+	use Property_Filter;
 
 	//------------------------------------------------------------------------- $dependencies_context
 	/**
@@ -30,17 +31,6 @@ class Table_Builder_Class
 	 * @var string[]
 	 */
 	public $exclude_class_names = [];
-
-	//-------------------------------------------------------------------------- $excluded_properties
-	/**
-	 * Excluded properties names
-	 *
-	 * For classes with a link annotation, all properties names from the linked parent class
-	 * and its own parents are excluded.
-	 *
-	 * @var string[]
-	 */
-	private $excluded_properties;
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -89,31 +79,16 @@ class Table_Builder_Class
 			/** @var $properties Reflection_Property[] */
 			$properties = Replaces_Annotations::removeReplacedProperties($class->accessProperties());
 			foreach ($properties as $property) {
-				if (!in_array($property->name, $this->excluded_properties)) {
-					$type = $property->getType();
+				if ($this->filterProperty($property)) {
+					$table->addColumn(Column::buildProperty($property));
 					if (
-						(
-							$type->isMultipleString()
-							|| !$type->isMultiple()
-							|| in_array(
-								$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
-								[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
-							)
-						)
-						&& !$property->isStatic()
-						&& !$property->getAnnotation('component')->value
-						&& !Store_Annotation::of($property)->isFalse()
+						Link_Annotation::of($property)->isObject()
+						&& !Store_Annotation::of($property)->value
 					) {
-						$table->addColumn(Column::buildProperty($property));
-						if (
-							Link_Annotation::of($property)->isObject()
-							&& !Store_Annotation::of($property)->value
-						) {
-							$class_name                              = $property->getType()->asString();
-							$this->dependencies_context[$class_name] = $class_name;
-							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
-							$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
-						}
+						$class_name                              = $property->getType()->asString();
+						$this->dependencies_context[$class_name] = $class_name;
+						$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
+						$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));
 					}
 				}
 			}

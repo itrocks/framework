@@ -29,6 +29,9 @@ class Store_Name_Annotation extends Annotation
 		parent::__construct(strtolower($value));
 		if (!$this->value) {
 			$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
+			if ($class->isAbstract()) {
+				$this->value .= '_view';
+			}
 		}
 	}
 
