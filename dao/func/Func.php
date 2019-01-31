@@ -21,6 +21,7 @@ use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
 use ITRocks\Framework\Dao\Func\Range;
+use ITRocks\Framework\Dao\Func\Value;
 use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Func\Year;
 use ITRocks\Framework\Sql\Builder\Select;
@@ -424,6 +425,16 @@ class Func
 	public static function trim()
 	{
 		return new Call(Call::TRIM);
+	}
+
+	//----------------------------------------------------------------------------------------- value
+	/**
+	 * @param $value mixed
+	 * @return Value
+	 */
+	public static function value($value)
+	{
+		return new Value($value);
 	}
 
 	//----------------------------------------------------------------------------------------- xorOp
