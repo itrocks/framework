@@ -53,6 +53,14 @@ class Html_Builder_Type
 	 */
 	public $data = [];
 
+	//---------------------------------------------------------------------------------- $is_abstract
+	/**
+	 * true if the component is used for an abstract class
+	 *
+	 * @var boolean
+	 */
+	public $is_abstract = false;
+
 	//--------------------------------------------------------------------------------------- $is_new
 	/**
 	 * Is it a form for a new object (true), or a modification form (false) ?
@@ -358,9 +366,16 @@ class Html_Builder_Type
 		}
 		// id input. Should always be output, except if as_string, cause can be used by other properties
 		if (!$as_string) {
-			$id_input = new Input(
-				$this->getFieldName('id_'), $this->value ? Dao::getObjectIdentifier($this->value) : ''
-			);
+			if ($this->value) {
+				$identifier = Dao::getObjectIdentifier($this->value);
+				$identifier = ($identifier && $this->is_abstract)
+					? (Builder::current()->sourceClassName(get_class($this->value)) . ':' . $identifier)
+					: $identifier;
+			}
+			else {
+				$identifier = '';
+			}
+			$id_input = new Input($this->getFieldName('id_'), $identifier);
 			$id_input->addClass('id');
 			$id_input->setAttribute('type', 'hidden');
 		}

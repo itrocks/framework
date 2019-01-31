@@ -321,6 +321,17 @@ class Object_Builder_Array
 					);
 				}
 				else {
+					if (!is_numeric($element) && strpos($element, ':')) {
+						list($real_class_name, $element) = explode(':', $element);
+						if (!isA($real_class_name, $class_name)) {
+							// this is for security purpose, to disallow unauthorized classes injection
+							trigger_error(
+								$real_class_name . ' must inherit abstract/trait ' . $class_name,
+								E_USER_ERROR
+							);
+						}
+						$class_name = $real_class_name;
+					}
 					$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
 				}
 			}

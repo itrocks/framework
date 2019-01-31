@@ -4,8 +4,10 @@ namespace ITRocks\Framework\Widget\Edit;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Namespaces;
+use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
 use ITRocks\Framework\View\Html\Dom\Table\Body;
 use ITRocks\Framework\View\Html\Dom\Table\Row;
@@ -77,7 +79,10 @@ class Html_Builder_Map extends Map
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$row = $this->buildRow(Builder::create($this->class_name));
+			$is_abstract = (new Reflection_Class($this->class_name))->isAbstract();
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+			$object = $is_abstract ? new String_Class : Builder::create($this->class_name);
+			$row    = $this->buildRow($object);
 			$row->addClass('new');
 			$body->addRow($row);
 		}
@@ -95,13 +100,16 @@ class Html_Builder_Map extends Map
 	protected function buildCell($object)
 	{
 		$property = $this->property;
-		$value = $object;
-		$preprop = $this->preprop ?: $property->name;
+		$value    = $object;
+		$preprop  = $this->preprop ?: $property->name;
+
 		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $preprop);
-		$builder->readonly = $this->readOnly();
+		$builder->is_abstract = $this->is_abstract;
+		$builder->readonly    = $this->readOnly();
+
 		$input = $builder->setTemplate($this->template)->build();
-		$cell = new Standard_Cell($input);
-		$type = $property->getType();
+		$cell  = new Standard_Cell($input);
+		$type  = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
 		if ($class = $type->isClassHtml()) {
 			$cell->addClass($class);
@@ -147,7 +155,7 @@ class Html_Builder_Map extends Map
 	{
 		if (!isset($this->no_add)) {
 			$user_annotation = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->no_add = $user_annotation->has(User_Annotation::NO_ADD);
+			$this->no_add    = $user_annotation->has(User_Annotation::NO_ADD);
 		}
 		return $this->no_add;
 	}

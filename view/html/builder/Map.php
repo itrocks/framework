@@ -30,6 +30,12 @@ class Map
 	 */
 	protected $class_name;
 
+	//---------------------------------------------------------------------------------- $is_abstract
+	/**
+	 * @var boolean
+	 */
+	protected $is_abstract;
+
 	//------------------------------------------------------------------------------------------ $map
 	/**
 	 * @var object[]
@@ -60,9 +66,10 @@ class Map
 		$this->map        = $map;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-		$class            = new Reflection_Class($this->class_name);
-		$representative   = Representative_Annotation::of($class);
-		$this->properties = $representative->getProperties();
+		$class             = new Reflection_Class($this->class_name);
+		$representative    = Representative_Annotation::of($class);
+		$this->properties  = $representative->getProperties();
+		$this->is_abstract = $class->isAbstract();
 	}
 
 	//----------------------------------------------------------------------------------------- build
