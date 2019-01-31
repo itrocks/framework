@@ -709,9 +709,11 @@ class Maintainer implements Configurable, Registerable
 		$second_index = new Index();
 		$second_index->addKey($foreign_column_name);
 		$table->addIndex($second_index);
-		$table->addForeignKey(Foreign_Key::buildLink(
-			$table_name, $foreign_column_name, $foreign_class_name
-		));
+		if (!$property->getType()->asReflectionClass()->isAbstract()) {
+			$table->addForeignKey(Foreign_Key::buildLink(
+				$table_name, $foreign_column_name, $foreign_class_name
+			));
+		}
 
 		// do not create empty implicit table if does not already exist
 		// will be automatically created on first needed use
@@ -761,7 +763,11 @@ class Maintainer implements Configurable, Registerable
 	 */
 	public function updateTable($class_name, Contextual_Mysqli $mysqli = null, $implicit = true)
 	{
-		if (isset($this->exclude_classes[$class_name])) {
+		/** @noinspection PhpUnhandledExceptionInspection valid class name */
+		if (
+			isset($this->exclude_classes[$class_name])
+			|| (new Reflection_Class($class_name))->isAbstract()
+		) {
 			return false;
 		}
 

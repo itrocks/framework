@@ -277,10 +277,10 @@ class Alter_Table
 		}
 
 		$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
-		$row    = $result->fetch_row();
-		$create = end($row);
+		$row    = $result->fetch_assoc();
+		$create = isset($row['Create Table']) ? $row['Create Table'] : '';
 		$result->free();
-		if (!strpos($create, ') ENGINE=InnoDB')) {
+		if ($create && !strpos($create, ') ENGINE=InnoDB')) {
 			$error_message = "Could not add foreign key from $table_name non-InnoDB table";
 			switch ($notice) {
 				case 'output':  echo '! ' . $error_message . BRLF; break;
