@@ -46,23 +46,39 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------- buildJson
 	/**
-	 * @param $objects object[]|object
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $objects    object[]|object
+	 * @param $class_name string
 	 * @return string
 	 */
-	protected function buildJson($objects)
+	protected function buildJson($objects, $class_name)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection valid class name */
+		$is_abstract = (new Reflection_Class($class_name))->isAbstract();
 		if (is_array($objects)) {
 			$entries = [];
 			foreach ($objects as $source_object) {
-				$entries[] = new Autocomplete_Entry(
-					Dao::getObjectIdentifier($source_object), strval($source_object)
-				);
+				$identifier = Dao::getObjectIdentifier($source_object);
+				$value      = strval($source_object);
+				if ($is_abstract) {
+					$class_name = Builder::current()->sourceClassName(get_class($source_object));
+					$entries[] = new Autocomplete_Entry_With_Class_Name($identifier, $value, $class_name);
+				}
+				else {
+					$entries[] = new Autocomplete_Entry($identifier, $value);
+				}
 			}
 		}
 		else {
-			$entries = new Autocomplete_Entry(
-				Dao::getObjectIdentifier($objects), strval($objects)
-			);
+			$identifier = Dao::getObjectIdentifier($objects);
+			$value      = strval($objects);
+			if ($is_abstract) {
+				$class_name = Builder::current()->sourceClassName(get_class($objects));
+				$entries    = new Autocomplete_Entry_With_Class_Name($identifier, $value, $class_name);
+			}
+			else {
+				$entries = new Autocomplete_Entry($identifier, $value);
+			}
 		}
 		return json_encode($entries);
 	}
@@ -94,7 +110,7 @@ class Controller implements Default_Feature_Controller
 		// single object for autocomplete pull-down list value
 		if (isset($parameters['id']) && $parameters['id']) {
 			$source_object = Dao::read($parameters['id'], $class_name);
-			return $this->buildJson($source_object);
+			return $this->buildJson($source_object, $class_name);
 		}
 		// advanced search returns a json collection
 		elseif (isset($parameters['search']) && $parameters['search']) {
@@ -216,7 +232,7 @@ class Controller implements Default_Feature_Controller
 			$objects = $this->search($search, $class_name, [Dao::limit(1)]);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects ? reset($objects) : Builder::create($class_name);
-			return $this->buildJson($source_object);
+			return $this->buildJson($source_object, $class_name);
 		}
 		// all results from search
 		else {
@@ -236,7 +252,7 @@ class Controller implements Default_Feature_Controller
 				}
 			}
 			$objects = $this->search($search, $class_name, $search_options);
-			return $this->buildJson($objects);
+			return $this->buildJson($objects, $class_name);
 		}
 	}
 
