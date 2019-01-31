@@ -217,6 +217,23 @@ class Contextual_Mysqli extends mysqli
 		return $tables;
 	}
 
+	//-------------------------------------------------------------------------------------- getViews
+	/**
+	 * Gets all existing view names from current database
+	 *
+	 * @return string[]
+	 */
+	public function getViews()
+	{
+		$views = [];
+		$res   = $this->query('SHOW FULL TABLES WHERE TABLE_TYPE LIKE ' . DQ . 'VIEW' . DQ);
+		while ($row = $res->fetch_row()) {
+			$views[] = $row[0];
+		}
+		$res->free();
+		return $views;
+	}
+
 	//-------------------------------------------------------------------------------------------- is
 	/**
 	 * Returns true if the two mysqli connexions are the same one
