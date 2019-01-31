@@ -15,4 +15,17 @@ class Feature extends Trigger
 {
 	use Has_Condition;
 
+	//--------------------------------------------------------------------------------- $feature_name
+	/**
+	 * @var string
+	 */
+	public $feature_name;
+
+	//----------------------------------------------------------------------------------------- $when
+	/**
+	 * @values after, before
+	 * @var string
+	 */
+	public $when;
+
 }

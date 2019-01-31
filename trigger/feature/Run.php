@@ -13,6 +13,7 @@ class Run extends Has_Condition\Run
 	//-------------------------------------------------------------------------------------- $feature
 	/**
 	 * @composite
+	 * @link Object
 	 * @var Feature
 	 */
 	public $feature;
