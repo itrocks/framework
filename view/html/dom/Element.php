@@ -101,7 +101,7 @@ abstract class Element
 		if (!isset($class)) {
 			return $this->setAttribute('class', $class_name);
 		}
-		elseif (strpos(SP . $class->value . SP, $class_name) === false) {
+		elseif (strpos(SP . $class->value . SP, SP . $class_name . SP) === false) {
 			$class->value .= SP . $class_name;
 		}
 		return $class;
