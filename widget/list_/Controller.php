@@ -937,7 +937,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
 			$property      = new Reflection_Property($class_name, $property_path);
 			$property_type = $property->getType();
-			if ($property_type->isClass()) {
+			if ($property_type->isClass() && !Store_Annotation::of($property)->isString()) {
 				$class = $property_type->asReflectionClass();
 				$representative_property_names = Representative_Annotation::of($property)->values()
 					?: Class_\Representative_Annotation::of($class)->values();
@@ -974,10 +974,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	private function searchProperty(Reflection_Property $property, $value)
 	{
 		if (strlen($value) && !is_null($value)) {
-			if (
-				$property->getType()->isClass()
-				&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
-			) {
+			if ($property->getType()->isClass() && !Store_Annotation::of($property)->value) {
 				$value = Dao::read($value, $property->getType()->asString());
 			}
 			/** @noinspection PhpUnhandledExceptionInspection valid $property */
