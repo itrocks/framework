@@ -359,8 +359,8 @@ class Html_Builder_Type
 		$input->addClass('auto_width');
 		$input->setAttribute('autocomplete', 'off');
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
-		$input->setData('combo-class', Names::classToSet($source_class_name));
-		$input->setData('combo-href',  View::link($source_class_name));
+		$input->setData('combo-class', $source_class_name);
+		$input->setData('combo-set-class', Names::classToSet($source_class_name));
 		if ($this->tooltip) {
 			$input->setAttribute('title', $this->tooltip);
 		}

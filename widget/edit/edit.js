@@ -269,7 +269,7 @@ $('document').ready(function()
 		//------------------------------------------------------------------------ input.combo comboUri
 		var comboUri = function($element)
 		{
-			return window.app.uri_base + SL + $element.data('combo-class') + SL + 'json'
+			return window.app.uri_base + SL + $element.data('combo-set-class') + SL + 'json'
 		};
 
 		//-------------------------------------------------------------------- input.combo comboRequest
@@ -516,47 +516,43 @@ $('document').ready(function()
 			if (event.ctrlKey || event.metaKey || event.shiftKey) {
 				var $this = $(this);
 				var id    = $this.prev().val();
-				var uri;
-				if ($this.data('combo-href') && event.shiftKey) {
-					uri = $this.data('combo-href');
-					if (id) {
-						uri += SL + id;
-					}
+				var uri   = $this.data('combo-class');
+				if ((uri === undefined) || !uri) {
+					return;
 				}
-				else if ($this.data('combo-href') && (event.ctrlKey || event.metaKey)) {
-					uri = $this.data('combo-href');
-					if (id) {
-						uri += SL + id + '/edit';
-					}
+				if (id.indexOf(':') > -1) {
+					uri = id.lParse(':');
+					id  = id.rParse(':');
 				}
-				else if ($this.data('edit-class')) {
-					var path = $this.data('edit-class').repl(BS, SL);
-					uri      = SL + path + SL + id + SL + (event.shiftKey ? 'output' : 'edit');
+				uri = uri.repl(BS, SL);
+				if (id) {
+					uri += SL + id;
 				}
-				if (uri !== undefined) {
-					var target = $this.data('target');
-					if (!target) {
-						target = ((event.ctrlKey || event.metaKey) && event.shiftKey) ? '#main' : '#popup';
-					}
-					var target_exists = $(target).length;
-					redirect(
-						uri + '?fill_combo=' + $this.prev().attr('name'),
-						target,
-						$this,
-						function($target) {
-							$target.autofocus();
-							if (target_exists) {
-								return;
-							}
-							$target.draggable({
-								handle: 'h2',
-								stop: function() {
-									$(this).find('h2>span').data('stop-click', true);
-								}
-							});
+				if (event.ctrlKey || event.metaKey) {
+					uri += '/edit';
+				}
+				var target = $this.data('target');
+				if (!target) {
+					target = ((event.ctrlKey || event.metaKey) && event.shiftKey) ? '#main' : '#popup';
+				}
+				var target_exists = $(target).length;
+				redirect(
+					app.uri_base + SL + uri + '?fill_combo=' + $this.prev().attr('name'),
+					target,
+					$this,
+					function($target) {
+						$target.autofocus();
+						if (target_exists) {
+							return;
 						}
-					);
-				}
+						$target.draggable({
+							handle: 'h2',
+							stop: function() {
+								$(this).find('h2>span').data('stop-click', true);
+							}
+						});
+					}
+				);
 			}
 		})
 
