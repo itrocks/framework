@@ -48,6 +48,7 @@ class Comparison implements Negate, Where
 
 	//----------------------------------------------------------------------------------- $than_value
 	/**
+	 * @null
 	 * @var mixed
 	 */
 	public $than_value;

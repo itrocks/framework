@@ -405,7 +405,7 @@ class Object_To_Write_Array
 		$storage_name           = Store_Name_Annotation::of($property)->value;
 		$store_annotation_value = Store_Annotation::of($property)->value;
 		$value_is_json_encoding = ($store_annotation_value == Store_Annotation::JSON);
-		$write_property = null;
+		$write_property         = null;
 		// write basic but test store as json too
 		if ($element_type->isBasic(false) && !$value_is_json_encoding) {
 			$write_value = $this->propertyBasic($property, $value);
@@ -427,6 +427,9 @@ class Object_To_Write_Array
 				Store_Annotation::JSON_CLASS     => get_class($value),
 				Store_Annotation::JSON_CONSTRUCT => $value->toISO(true)
 			];
+		}
+		elseif ($element_type->isMixed()) {
+			$write_value = $value;
 		}
 		// write object id if set or object if no id is set (new object)
 		else {
