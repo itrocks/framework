@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Logical;
+use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Trigger\Has_Condition\Run;
 
 /**
@@ -18,7 +18,7 @@ trait Has_Condition
 	/**
 	 * @link Object
 	 * @store json
-	 * @var Logical
+	 * @var Where
 	 */
 	public $after_condition;
 
@@ -26,7 +26,7 @@ trait Has_Condition
 	/**
 	 * @link Object
 	 * @store json
-	 * @var Logical
+	 * @var Where
 	 */
 	public $before_condition;
 
@@ -47,10 +47,10 @@ trait Has_Condition
 	//------------------------------------------------------------------------------ verifyConditions
 	/**
 	 * @param $object    object
-	 * @param $condition Logical @values $after_condition, $before_condition
+	 * @param $condition Where @values $after_condition, $before_condition
 	 * @return boolean
 	 */
-	public function verifyConditions($object, Logical $condition = null)
+	public function verifyConditions($object, Where $condition = null)
 	{
 		return !$condition || Dao::count(Func::andOp([$object, $condition]), get_class($object));
 	}

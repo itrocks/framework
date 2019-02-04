@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Tools\Date_Time;
@@ -21,6 +22,7 @@ use ITRocks\Framework\View;
  */
 class Plugin implements Registerable
 {
+	use Has_Get;
 
 	//----------------------------------------------------------------------------- $no_feature_cache
 	/**

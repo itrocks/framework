@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Tools\Date_Time;
@@ -20,6 +21,7 @@ use ITRocks\Framework\View;
  */
 class Plugin implements Registerable
 {
+	use Has_Get;
 
 	//------------------------------------------------------------------------------ $no_change_cache
 	/**
@@ -141,6 +143,18 @@ class Plugin implements Registerable
 		$aop = $register->aop;
 		$aop->afterMethod ([Write::class, 'afterWrite'],  [$this, 'afterWrite']);
 		$aop->beforeMethod([Write::class, 'beforeWrite'], [$this, 'beforeWrite']);
+	}
+
+	//------------------------------------------------------------------------------------ resetCache
+	/**
+	 * @param $class_name string
+	 */
+	public function resetCache($class_name)
+	{
+		$class_name = Builder::current()->sourceClassName($class_name);
+		if (isset($this->no_change_cache[$class_name])) {
+			unset($this->no_change_cache[$class_name]);
+		}
 	}
 
 }
