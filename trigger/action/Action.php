@@ -81,6 +81,17 @@ class Action
 	 */
 	public $running;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $action string
+	 */
+	public function __construct($action = null)
+	{
+		if (isset($action)) {
+			$this->action = $action;
+		}
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
