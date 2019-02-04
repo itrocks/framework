@@ -132,6 +132,25 @@ class Column implements Sql\Column
 		);
 	}
 
+	//---------------------------------------------------------------------------- buildClassProperty
+	/**
+	 * Builds a Column object that contains the name of the class for an abstract object property
+	 *
+	 * @param $property Reflection_Property
+	 * @return Column
+	 */
+	public static function buildClassProperty(Reflection_Property $property)
+	{
+		$column = new Column();
+		// instructions order may matters : do not change it
+		$column->Field   = self::propertyNameToMysql($property) . '_class';
+		$column->Type    = self::sqlTextColumn(255);
+		$column->Null    = self::NO;
+		$column->Default = '';
+		$column->Extra   = '';
+		return $column;
+	}
+
 	//--------------------------------------------------------------------------------------- buildId
 	/**
 	 * Builds a Column object for a standard 'id' column

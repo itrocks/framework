@@ -82,6 +82,10 @@ class Table_Builder_Class
 			foreach ($properties as $property) {
 				if ($this->filterProperty($property)) {
 					$table->addColumn(Column::buildProperty($property));
+					$type = $property->getType();
+					if ($type->isClass() && $type->asReflectionClass()->isAbstract()) {
+						$table->addColumn(Column::buildClassProperty($property));
+					}
 					if (
 						Link_Annotation::of($property)->isObject()
 						&& !Store_Annotation::of($property)->value
