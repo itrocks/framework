@@ -56,6 +56,14 @@ class Contextual_Mysqli extends mysqli
 	 */
 	public $last_error;
 
+	//----------------------------------------------------------------------------------------- $lock
+	/**
+	 * true if a LOCK TABLES is currently active
+	 *
+	 * @var boolean
+	 */
+	public $lock = false;
+
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @var string
@@ -67,6 +75,14 @@ class Contextual_Mysqli extends mysqli
 	 * @var integer
 	 */
 	public $port;
+
+	//------------------------------------------------------------------------ $queries_when_unlocked
+	/**
+	 * Queries than are gonna be called when unlock() is called
+	 *
+	 * @var string[]
+	 */
+	protected $queries_when_unlocked = [];
 
 	//--------------------------------------------------------------------------------------- $socket
 	/**
@@ -374,6 +390,16 @@ AND `UPDATE_TIME` IS NOT NULL
 			// Caught by low-level procedures
 			$result = $this->queryError($query);
 		}
+		elseif (substr($query, 0, 11) === 'LOCK TABLES') {
+			$this->lock = true;
+		}
+		elseif (substr($query, 0, 13) === 'UNLOCK TABLES') {
+			$this->lock = false;
+			foreach ($this->queries_when_unlocked as $query) {
+				$this->query($query);
+			}
+			$this->queries_when_unlocked = [];
+		}
 		return $result;
 	}
 
@@ -389,6 +415,22 @@ AND `UPDATE_TIME` IS NOT NULL
 			throw new Mysql_Error_Exception($this->last_errno, $this->last_error, $query);
 		}
 		return false;
+	}
+
+	//----------------------------------------------------------------------------- queryWhenUnlocked
+	/**
+	 * Executes the query when the lock is removed if locked, or immediately if there is no lock
+	 *
+	 * @param $query string
+	 */
+	public function queryWhenUnlocked($query)
+	{
+		if ($this->lock) {
+			$this->queries_when_unlocked[] = $query;
+		}
+		else {
+			$this->query($query);
+		}
 	}
 
 	//------------------------------------------------------------------------------------- reconnect

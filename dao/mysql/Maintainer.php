@@ -588,7 +588,7 @@ class Maintainer implements Configurable, Registerable
 		if (beginsWith($query, ['ALTER TABLE', 'CREATE TABLE'])) {
 			foreach ($mysqli->getViews() as $view_name) {
 				if (endsWith($view_name, '_view')) {
-					$mysqli->query('DROP VIEW' . SP . BQ . $view_name . BQ);
+					$mysqli->queryWhenUnlocked('DROP VIEW' . SP . BQ . $view_name . BQ);
 				}
 			}
 		}
