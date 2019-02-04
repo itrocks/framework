@@ -190,11 +190,14 @@ class Object_To_Write_Array
 				}
 				// write a property that matches a stored property (a table column name)
 				if (in_array($property_name, $table_columns_names)) {
-					list($column_name, $value, $write_property) = $this->propertyTableColumnName(
+					list($column_name, $value, $write_property, $class_name) = $this->propertyTableColumnName(
 						$property, $value
 					);
 					if ($value !== self::DO_NOT_WRITE) {
 						$this->array[$column_name] = $value;
+						if ($class_name) {
+							$this->array[$column_name . '_class'] = $class_name;
+						}
 					}
 					if (isset($write_property)) {
 						$this->properties[] = $write_property;
@@ -393,10 +396,11 @@ class Object_To_Write_Array
 	 *
 	 * @param $property Reflection_Property The property
 	 * @param $value    mixed The value of the property to be written
-	 * @return array [string $storage_name, mixed $write_value, $write_property]
+	 * @return array [string $storage_name, mixed $write_value, $write_property, $class_name]
 	 */
 	protected function propertyTableColumnName(Reflection_Property $property, $value)
 	{
+		$class_name             = null;
 		$element_type           = $property->getType()->getElementType();
 		$storage_name           = Store_Name_Annotation::of($property)->value;
 		$store_annotation_value = Store_Annotation::of($property)->value;
@@ -435,8 +439,11 @@ class Object_To_Write_Array
 				(Null_Annotation::of($property)->value && !isset($this->object->$id_column_name))
 				? null
 				: intval($this->object->$id_column_name);
+			if (is_object($value) && $element_type->asReflectionClass()->isAbstract()) {
+				$class_name = Builder::current()->sourceClassName(get_class($value));
+			}
 		}
-		return [$storage_name, $write_value, $write_property];
+		return [$storage_name, $write_value, $write_property, $class_name];
 	}
 
 	//-------------------------------------------------------------------------- setPropertiesFilters

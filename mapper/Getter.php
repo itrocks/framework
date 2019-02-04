@@ -309,6 +309,14 @@ abstract class Getter
 				if (isset($object->$id_property_name)) {
 					$stored = $object->$id_property_name;
 				}
+				$id_property_name_class = $id_property_name . '_class';
+				/** @noinspection PhpUnhandledExceptionInspection valid class name */
+				if (
+					isset($object->$id_property_name_class)
+					&& (new Reflection_Class($class_name))->isAbstract()
+				) {
+					$class_name = $object->$id_property_name_class;
+				}
 			}
 			if (isset($stored) && !is_object($stored)) {
 				if (
@@ -328,6 +336,8 @@ abstract class Getter
 							$stored = static::schemaDecode($stored, $property);
 							break;
 						default:
+							// TODO QUESTION $class_name and $property_class_name... Isn't it the same ?
+							// TODO QUESTION Is Builder::className($property_class_name) missing ?
 							$property_class_name = $property->getType()->asString();
 							if (is_a($property_class_name, Stringable::class, true)) {
 								$stored = call_user_func([$property_class_name, 'fromString'], $stored);
