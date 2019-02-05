@@ -15,6 +15,7 @@ use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -128,6 +129,14 @@ class Installer
 			as $feature_exclude
 		) {
 			$this->uninstall($feature_exclude->value);
+		}
+
+		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
+		foreach (
+			Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name))
+			as $feature_include
+		) {
+			$this->install($feature_include->value);
 		}
 
 		$installable = $this->pluginObject($plugin);
