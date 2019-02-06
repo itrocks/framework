@@ -9,7 +9,6 @@ use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\Element;
@@ -360,7 +359,12 @@ class Html_Builder_Type
 		$input->setAttribute('autocomplete', 'off');
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$input->setData('combo-class', $source_class_name);
-		$input->setData('combo-set-class', Names::classToSet($source_class_name));
+		$input->setData(
+			'combo-set-class',
+			($source_class_name === Type::OBJECT)
+				? $source_class_name
+				: Names::classToSet($source_class_name)
+		);
 		if ($this->tooltip) {
 			$input->setAttribute('title', $this->tooltip);
 		}
