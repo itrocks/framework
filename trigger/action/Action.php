@@ -133,8 +133,8 @@ class Action
 			$this->parent = clone $this;
 			Dao::disconnect($this);
 			$this->action = str_replace(
-				['{class}', '{object}'],
-				[Names::classToUri($class_name), View::link($object)],
+				['{class}', '{object}', SL . SL],
+				[Names::classToUri($class_name), View::link($object), SL],
 				$this->action
 			);
 			if ($this->keep_user) {

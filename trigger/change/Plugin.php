@@ -56,8 +56,13 @@ class Plugin implements Registerable
 			], Run::class);
 			if (
 				!$run
-				&& ($after_write_annotation === Write::AFTER_CREATE)
-				&& !$change->before_condition
+				&& (
+					!$change->before_condition
+					|| (
+						($after_write_annotation === Write::AFTER_CREATE)
+						&& $change->conditionIsNull($change->before_condition)
+					)
+				)
 			) {
 				$run = new Run();
 				$run->change     = $change;
@@ -66,7 +71,7 @@ class Plugin implements Registerable
 			}
 			if ($run) {
 				$run->step = Run::AFTER;
-				Dao::write($run, Dao::only('step'));
+				Dao::write($run, Dao::getObjectIdentifier($run) ? Dao::only('step') : []);
 				$action_link = View::link(Change::class, 'run');
 				// launch next step as an action (will need a running server)
 				$now  = Date_Time::now();

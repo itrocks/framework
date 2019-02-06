@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Trigger\Has_Condition\Run;
 
@@ -44,6 +45,34 @@ trait Has_Condition
 	 */
 	public $running;
 
+	//---------------------------------------------------------------------------- conditionIsNotNull
+	/**
+	 * Return true if $condition is Func::isNotNull()
+	 *
+	 * @param $condition Where
+	 * @return boolean
+	 */
+	public function conditionIsNotNull(Where $condition = null)
+	{
+		return ($condition instanceof Comparison)
+			&& ($condition->sign !== Comparison::EQUAL)
+			&& is_null($condition->than_value);
+	}
+
+	//------------------------------------------------------------------------------- conditionIsNull
+	/**
+	 * Return true if $condition is Func::isNull()
+	 *
+	 * @param $condition Where
+	 * @return boolean
+	 */
+	public function conditionIsNull(Where $condition = null)
+	{
+		return ($condition instanceof Comparison)
+			&& ($condition->sign === Comparison::EQUAL)
+			&& is_null($condition->than_value);
+	}
+
 	//------------------------------------------------------------------------------ verifyConditions
 	/**
 	 * @param $object    object
@@ -52,7 +81,16 @@ trait Has_Condition
 	 */
 	public function verifyConditions($object, Where $condition = null)
 	{
-		return !$condition || Dao::count(Func::andOp([$object, $condition]), get_class($object));
+		if (!$condition) {
+			return true;
+		}
+		if ($this->conditionIsNotNull($condition)) {
+			return Dao::getObjectIdentifier($object);
+		}
+		if ($this->conditionIsNull($condition)) {
+			return !Dao::getObjectIdentifier($object);
+		}
+		return Dao::count(Func::andOp([$object, $condition]), get_class($object));
 	}
 
 }
