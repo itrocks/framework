@@ -154,7 +154,7 @@ class File_Logger implements Configurable
 		return file_exists($filename)
 			? (
 				(substr($filename, -3) == '.gz')
-					? join(LF, gzfile($filename))
+					? join('', gzfile($filename))
 					: file_get_contents($filename)
 			)
 			: ('no file ' . $filename)

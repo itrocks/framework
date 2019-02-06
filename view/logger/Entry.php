@@ -3,6 +3,7 @@ namespace ITRocks\Framework\View\Logger;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\No_Escape;
 use ITRocks\Framework\View\Logger;
 
 /**
@@ -32,13 +33,13 @@ trait Entry
 		return str_ireplace(
 			[
 				'<script', '</script>',
-				'<link', '</link>',
-				'<head>', '</head>'
+				'<link',   '</link>',
+				'<head',   '</head>'
 			],
 			[
-				'&lt;script', '&lt/script>',
-				'&lt;link', '&lt/link&gt;',
-				'<pre>&lt;head>', '&lt;/head></pre>'
+				'&lt;script',    '&lt/script>',
+				'&lt;link',      '&lt/link&gt;',
+				'<pre>&lt;head', '&lt;/head></pre>'
 			],
 			$output
 		);
@@ -62,7 +63,7 @@ trait Entry
 	 */
 	public function userGetOutput()
 	{
-		return $this->deactivateScripts($this->getOutput());
+		return new No_Escape($this->deactivateScripts($this->getOutput()), No_Escape::TYPE_STRING);
 	}
 
 }
