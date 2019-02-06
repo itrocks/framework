@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder\Alter_Table;
 use ITRocks\Framework\Sql\Builder\Create_Table;
 use ITRocks\Framework\Sql\Builder\Create_View;
@@ -480,7 +481,6 @@ class Maintainer implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------- onNoSuchTableError
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $mysqli  Contextual_Mysqli
 	 * @param $query   string
 	 * @param $context array|string[]
@@ -500,8 +500,7 @@ class Maintainer implements Configurable, Registerable
 				if (is_array($context_class)) {
 					$this->createImplicitTable($mysqli, $context_table, $context_class);
 				}
-				/** @noinspection PhpUnhandledExceptionInspection context class must be valid */
-				elseif ((new Reflection_Class($context_class))->isAbstract()) {
+				elseif ((new Type($context_class))->isAbstractClass()) {
 					$this->createView($context_class, $mysqli);
 				}
 				else {
@@ -709,7 +708,7 @@ class Maintainer implements Configurable, Registerable
 		$second_index = new Index();
 		$second_index->addKey($foreign_column_name);
 		$table->addIndex($second_index);
-		if (!$property->getType()->asReflectionClass()->isAbstract()) {
+		if (!$property->getType()->isAbstractClass()) {
 			$table->addForeignKey(Foreign_Key::buildLink(
 				$table_name, $foreign_column_name, $foreign_class_name
 			));
@@ -763,11 +762,7 @@ class Maintainer implements Configurable, Registerable
 	 */
 	public function updateTable($class_name, Contextual_Mysqli $mysqli = null, $implicit = true)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid class name */
-		if (
-			isset($this->exclude_classes[$class_name])
-			|| (new Reflection_Class($class_name))->isAbstract()
-		) {
+		if (isset($this->exclude_classes[$class_name]) || (new Type($class_name))->isAbstractClass()) {
 			return false;
 		}
 

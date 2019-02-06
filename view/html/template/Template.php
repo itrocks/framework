@@ -639,7 +639,7 @@ class Template
 	protected function parseCollection(Reflection_Property $property, array $collection)
 	{
 		$type = $property->getType();
-		return $type->asReflectionClass()->isAbstract()
+		return $type->isAbstractClass()
 			? (new Html\Builder\Abstract_Collection($property, $collection))->build()
 			: (new Html\Builder\Collection($property, $collection))->build();
 	}

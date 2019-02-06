@@ -155,7 +155,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!$this->value) {
 			$this->value = [];
 		}
-		$collection = $this->property->getType()->asReflectionClass()->isAbstract()
+		$collection = $this->property->getType()->isAbstractClass()
 			? new Html_Builder_Abstract_Collection($this->property, $this->value)
 			: new Html_Builder_Collection($this->property, $this->value);
 		$collection->preprop = $this->preprop;

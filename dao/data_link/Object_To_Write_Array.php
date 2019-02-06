@@ -442,7 +442,7 @@ class Object_To_Write_Array
 				(Null_Annotation::of($property)->value && !isset($this->object->$id_column_name))
 				? null
 				: intval($this->object->$id_column_name);
-			if (is_object($value) && $element_type->asReflectionClass()->isAbstract()) {
+			if (is_object($value) && $element_type->isAbstractClass()) {
 				$class_name = Builder::current()->sourceClassName(get_class($value));
 			}
 		}

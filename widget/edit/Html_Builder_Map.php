@@ -4,8 +4,8 @@ namespace ITRocks\Framework\Widget\Edit;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
@@ -78,8 +78,7 @@ class Html_Builder_Map extends Map
 	{
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
-			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$is_abstract = (new Reflection_Class($this->class_name))->isAbstract();
+			$is_abstract = (new Type($this->class_name))->isAbstractClass();
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$object = $is_abstract ? new String_Class : Builder::create($this->class_name);
 			$row    = $this->buildRow($object);

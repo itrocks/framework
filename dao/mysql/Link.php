@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Count;
 use ITRocks\Framework\Sql\Builder\Select;
@@ -435,7 +436,6 @@ class Link extends Dao\Sql\Link
 
 	//-------------------------------------------------------------------------------------- fetchAll
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $options    Option[]
 	 * @param $result_set mysqli_result
@@ -459,8 +459,7 @@ class Link extends Dao\Sql\Link
 				$object_key = array_pop($keys);
 			}
 		}
-		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-		$fetch_class_name = ((new Reflection_Class($class_name))->isAbstract())
+		$fetch_class_name = ((new Type($class_name))->isAbstractClass())
 			? Abstract_Class::class
 			: $class_name;
 		$this->prepareFetch($fetch_class_name);

@@ -56,7 +56,6 @@ class Table_Builder_Class
 	 * This takes care of excluded properties, so buildLinkTable() should be called
 	 * before buildClassTable().
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class      Reflection_Class
 	 * @param $more_field Column
 	 * @return Table
@@ -83,17 +82,16 @@ class Table_Builder_Class
 				if ($this->filterProperty($property)) {
 					$table->addColumn(Column::buildProperty($property));
 					$type = $property->getType();
-					if ($type->isClass() && $type->asReflectionClass()->isAbstract()) {
+					if ($type->isClass() && $type->isAbstractClass()) {
 						$table->addColumn(Column::buildClassProperty($property));
 					}
 					if (
 						Link_Annotation::of($property)->isObject()
 						&& !Store_Annotation::of($property)->value
 					) {
-						$class_name                              = $property->getType()->asString();
+						$class_name                              = $type->asString();
 						$this->dependencies_context[$class_name] = $class_name;
-						/** @noinspection PhpUnhandledExceptionInspection valid class name */
-						if (!(new Reflection_Class($class_name))->isAbstract()) {
+						if (!$type->isAbstractClass()) {
 							$table->addForeignKey(Foreign_Key::buildProperty($table_name, $property));
 						}
 						$table->addIndex(Index::buildLink(Store_Name_Annotation::of($property)->value));

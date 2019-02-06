@@ -238,7 +238,7 @@ class Builder implements Activable, Serializable
 				$property = new Reflection_Property($class_name, $property_name);
 				$type     = $property->getType();
 				if ($type->isClass()) {
-					if ($type->asReflectionClass()->isAbstract()) {
+					if ($type->isAbstractClass()) {
 						$value = self::fromSubArray($value);
 					}
 					else {

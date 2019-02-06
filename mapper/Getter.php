@@ -10,6 +10,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
@@ -102,9 +103,7 @@ abstract class Getter
 		elseif (!(self::$ignore || isset($stored))) {
 			if (Dao::getObjectIdentifier($object)) {
 				$class_name = Builder::className($class_name);
-				/** @noinspection PhpUnhandledExceptionInspection Need valid $class_name */
-				$class = new Reflection_Class($class_name);
-				if ($class->isAbstract()) {
+				if ((new Type($class_name))->isAbstractClass()) {
 					$stored = self::getAbstractCollection($class_name, $object, $property);
 				}
 				else {
@@ -258,7 +257,7 @@ abstract class Getter
 					$class_name = $linked_class_name;
 				}
 				$element_type = $property->getType()->getElementType();
-				$is_abstract  = $element_type->asReflectionClass()->isAbstract();
+				$is_abstract  = $element_type->isAbstractClass();
 				$sort         = $is_abstract ? Dao::sort(['id']) : Dao::sort();
 				$stored       = $dao->search(
 					[$class_name . '->' . $property->name => $object], $element_type->asString(), [$sort]
@@ -310,11 +309,7 @@ abstract class Getter
 					$stored = $object->$id_property_name;
 				}
 				$id_property_name_class = $id_property_name . '_class';
-				/** @noinspection PhpUnhandledExceptionInspection valid class name */
-				if (
-					isset($object->$id_property_name_class)
-					&& (new Reflection_Class($class_name))->isAbstract()
-				) {
+				if (isset($object->$id_property_name_class) && (new Type($class_name))->isAbstractClass()) {
 					$class_name = $object->$id_property_name_class;
 				}
 			}
@@ -419,9 +414,7 @@ abstract class Getter
 					/** @noinspection PhpUnhandledExceptionInspection stored data is valid */
 					$property = new Reflection_Property($class_name, $property_name);
 					$type     = $property->getType();
-					if (
-						$type->isClass() && $type->isMultiple() && !$type->asReflectionClass()->isAbstract()
-					) {
+					if ($type->isClass() && $type->isMultiple() && !$type->isAbstractClass()) {
 						$property_class_name = $type->getElementTypeAsString();
 						foreach ($stored_value as $key => $object_identifier) {
 							if (is_integer($object_identifier)) {

@@ -12,6 +12,7 @@ use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
 
@@ -46,15 +47,13 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------- buildJson
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $objects    object[]|object
 	 * @param $class_name string
 	 * @return string
 	 */
 	protected function buildJson($objects, $class_name)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid class name */
-		$is_abstract = (new Reflection_Class($class_name))->isAbstract();
+		$is_abstract = (new Type($class_name))->isAbstractClass();
 		if (is_array($objects)) {
 			$entries = [];
 			foreach ($objects as $source_object) {

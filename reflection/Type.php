@@ -40,6 +40,9 @@ class Type
 	//------------------------------------------------------------------------------------------ NULL
 	const NULL = 'NULL';
 
+	//---------------------------------------------------------------------------------------- OBJECT
+	const OBJECT = 'object';
+
 	//-------------------------------------------------------------------------------------- RESOURCE
 	const RESOURCE = 'resource';
 
@@ -290,6 +293,18 @@ class Type
 	public function hasSize()
 	{
 		return in_array($this->type, self::$sized_types);
+	}
+
+	//------------------------------------------------------------------------------- isAbstractClass
+	/**
+	 * Returns true if the class is abstract (works with class types only)
+	 * object is considered as abstract
+	 *
+	 * @return boolean
+	 */
+	public function isAbstractClass()
+	{
+		return beginsWith($this->type, static::OBJECT) || $this->asReflectionClass()->isAbstract();
 	}
 
 	//--------------------------------------------------------------------------------------- isArray
