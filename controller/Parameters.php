@@ -399,6 +399,11 @@ class Parameters
 				unset($this->parameters[$key]);
 				return $value;
 			}
+			elseif (ucfirst(substr($key, 0, 1)) && class_exists($key)) {
+				$value = Dao::read($value, $key);
+				unset($this->parameters[$key]);
+				return $value;
+			}
 		}
 		return null;
 	}
