@@ -9,6 +9,7 @@ use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
@@ -69,7 +70,8 @@ class Maintainer implements Configurable, Registerable
 	 * @var integer[]
 	 */
 	private static $MAX_RETRY = [
-		Errors::ER_DUP_ENTRY => 5
+		Errors::ER_DUP_ENTRY     => 5,
+		Errors::ER_NO_SUCH_TABLE => 2
 	];
 
 	//-------------------------------------------------------------------------------------- $already
@@ -647,7 +649,17 @@ class Maintainer implements Configurable, Registerable
 	) {
 		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
 			foreach ($mysqli->context as $context_class_name) {
-				if ($context_class_name !== $class_name) {
+				$same_table = false;
+				if ($context_class_name === $class_name) {
+					$same_table = true;
+				}
+				elseif (class_exists($context_class_name) && class_exists($class_name)) {
+					$same_table = (
+						Store_Name_Annotation::of(new Reflection_Class($context_class_name))->value
+						=== Store_Name_Annotation::of(new Reflection_Class($class_name))->value
+					);
+				}
+				if (!$same_table) {
 					$this->updateTable($context_class_name, $mysqli);
 				}
 			}
