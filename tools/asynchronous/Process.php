@@ -43,6 +43,15 @@ class Process
 	 */
 	public $errors;
 
+	//----------------------------------------------------------------------------------- $identifier
+	/**
+	 * This is the process identifier on the system where it is launched
+	 *
+	 * @null
+	 * @var integer
+	 */
+	public $identifier;
+
 	//--------------------------------------------------------------------------------------- $output
 	/**
 	 * The standard output stream :
@@ -71,6 +80,14 @@ class Process
 	 * @var string
 	 */
 	public $session_id;
+
+	//---------------------------------------------------------------------------- $unique_identifier
+	/**
+	 * You can associate an unique identifier, eg using uniqid('prefix_', true), to your process
+	 *
+	 * @var string
+	 */
+	public $unique_identifier;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -122,8 +139,11 @@ class Process
 		$this->process = proc_open(
 			$this->command, [['pipe', 'r'], ['pipe', 'w'], ['pipe', 'w']], $pipes
 		);
-		$this->output  = $pipes[1];
-		$this->errors  = $pipes[2];
+		$this->output = $pipes[1];
+		$this->errors = $pipes[2];
+		if ($status = proc_get_status($this->process)) {
+			$this->identifier = $status['pid'];
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- status

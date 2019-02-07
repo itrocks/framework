@@ -43,14 +43,22 @@ class Data
 	 */
 	public $form;
 
+	//--------------------------------------------------------------------------- $request_identifier
+	/**
+	 * @var string
+	 */
+	public $request_identifier;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $arguments array
-	 * @param $form      array
-	 * @param $files     array[]
+	 * @param $arguments          array
+	 * @param $form               array
+	 * @param $files              array[]
+	 * @param $request_identifier string
 	 */
-	public function __construct(array $arguments = null, array $form = null, array $files = null)
-	{
+	public function __construct(
+		array $arguments = null, array $form = null, array $files = null, $request_identifier = null
+	) {
 		if (isset($arguments) && !isset($this->arguments)) {
 			if (isset($arguments['as_widget'])) {
 				unset($arguments['as_widget']);
@@ -65,6 +73,9 @@ class Data
 				$form['password'] = '***';
 			}
 			$this->form = $this->serialize($form);
+		}
+		if (isset($request_identifier)) {
+			$this->request_identifier = $request_identifier;
 		}
 	}
 

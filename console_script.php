@@ -162,7 +162,10 @@ class Console
 				list($name, $value) = strpos($argument, '=')
 					? explode('=', $argument, 2)
 					: [$argument, false];
-				switch ($var) {
+				if ($var === '-h') {
+					$_SERVER ['HTTP_' . strtoupper(str_replace('-', '_', $name))] = $value;
+				}
+				else switch ($var) {
 					case '-c': $_COOKIE [$name] = $value; break;
 					case '-f': $_FILES  [$name] = $value; break;
 					case '-g': $_GET    [$name] = $value; break;

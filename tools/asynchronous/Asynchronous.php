@@ -64,11 +64,13 @@ class Asynchronous
 	 * Calls an URI (controller) from the console asynchronously, using the same session handler than
 	 * the caller
 	 *
-	 * @param $uri           string Call this URI : link to a controller, including parameters
-	 * @param $then          callable|array A callback called when the job is done
-	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
+	 * @param $uri              string Call this URI : link to a controller, including parameters
+	 * @param $then             callable|array A callback called when the job is done
+	 * @param $needs_session    boolean true automatically clones current session (authenticated call)
+	 * @param $needs_identifier boolean true generates an unique identifier for X-Request-ID
+	 * @return Process
 	 */
-	public function call($uri, array $then = null, $needs_session = true)
+	public function call($uri, array $then = null, $needs_session = true, $needs_identifier = false)
 	{
 		if ($position = strpos($uri, '?')) {
 			$uri[$position] = SP;
@@ -76,7 +78,23 @@ class Asynchronous
 				$uri[$position] = SP;
 			}
 		}
-		$this->run('itrocks/framework/console' . SP . rawurldecode($uri), $then, $needs_session);
+		if ($needs_identifier) {
+			$unique_identifier = uniqid('async-', true);
+			$parameters        = $needs_identifier ? (' -h X-Request-ID=' . $unique_identifier) : '';
+		}
+		else {
+			$parameters = '';
+		}
+
+		$process = $this->run(
+			'itrocks/framework/console' . SP . rawurldecode($uri) . $parameters,
+			$then,
+			$needs_session
+		);
+		if (isset($unique_identifier)) {
+			$process->unique_identifier = $unique_identifier;
+		}
+		return $process;
 	}
 
 	//----------------------------------------------------------------------------------------- flush

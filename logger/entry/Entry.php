@@ -152,8 +152,16 @@ class Entry
 			if (isset($uri) && !isset($this->uri)) {
 				$this->uri = $uri;
 			}
-			if (($arguments || $form || $files) && !isset($this->data)) {
-				$this->data = new Data($arguments, $form, $files);
+			if (
+				($arguments || $form || $files || isset($_SERVER['HTTP_X_REQUEST_ID']))
+				&& !isset($this->data)
+			) {
+				$this->data = new Data(
+					$arguments,
+					$form,
+					$files,
+					isset($_SERVER['HTTP_X_REQUEST_ID']) ? $_SERVER['HTTP_X_REQUEST_ID'] : null
+				);
 			}
 			if (!isset($this->memory_usage)) {
 				$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
