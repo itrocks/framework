@@ -1,15 +1,20 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Comparator;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Trigger;
+use ITRocks\Framework\Trigger\Action\Status;
 use ITRocks\Framework\Trigger\Schedule\Hour_Range;
 
 /**
  * A schedule trigger calculates if the action must be run from time factors
  *
+ * @after_write calculateActionsNextLaunchDateTime
  * @display_order name, hours, days_of_month, months, years, days_of_weeks
- * @override actions @set_store_name schedule_trigger_actions
+ * @override actions @set_store_name schedule_trigger_actions @var Schedule\Action[]
+ * @property Schedule\Action[] actions
  * @store_name schedule_triggers
  */
 class Schedule extends Trigger
@@ -64,6 +69,21 @@ class Schedule extends Trigger
 	 * @var string
 	 */
 	public $years;
+
+	//------------------------------------------------------------ calculateActionsNextLaunchDateTime
+	/**
+	 * Must be called on actions that are already written into database (after write)
+	 */
+	public function calculateActionsNextLaunchDateTime()
+	{
+		Dao::begin();
+		$now = Date_Time::now();
+		foreach ($this->actions as $action) {
+			$action->status = Status::STATIC;
+			$action->next(($action->last && $action->last->isEmpty()) ? $now : $action->last);
+		}
+		Dao::commit();
+	}
 
 	//-------------------------------------------------------------------------------- getDaysOfMonth
 	/**

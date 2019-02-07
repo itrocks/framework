@@ -52,7 +52,7 @@ class Plugin implements Registerable
 				'change'     => $change,
 				'class_name' => $change->class_name,
 				'identifier' => $identifier,
-				'step'       => Run::BEFORE
+				'step'       => [Run::AFTER, Run::BEFORE, Run::PENDING]
 			], Run::class);
 			if (
 				!$run
@@ -78,10 +78,11 @@ class Plugin implements Registerable
 				$user = User::current();
 				if (!Dao::searchOne(
 					[
-						'action'  => $action_link,
-						'as_user' => $user,
-						'next'    => Func::lessOrEqual($now),
-						'running' => false
+						'action'    => $action_link,
+						'as_user'   => $user,
+						'keep_user' => false,
+						'next'      => Func::lessOrEqual($now),
+						'status'    => Action\Status::PENDING
 					],
 					Action::class
 				)) {

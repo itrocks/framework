@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger\Change;
 
+use ITRocks\Framework\Trigger\Action;
 use ITRocks\Framework\Trigger\Change;
 use ITRocks\Framework\Trigger\Has_Condition;
 
@@ -9,6 +10,13 @@ use ITRocks\Framework\Trigger\Has_Condition;
  */
 class Run extends Has_Condition\Run
 {
+
+	//-------------------------------------------------------------------------------------- $actions
+	/**
+	 * @link Map
+	 * @var Action[]
+	 */
+	public $actions;
 
 	//--------------------------------------------------------------------------------------- $change
 	/**

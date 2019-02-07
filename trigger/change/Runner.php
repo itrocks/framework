@@ -5,7 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\View;
+use ITRocks\Framework\Trigger\Action;
 
 /**
  * Change trigger runner
@@ -19,34 +19,45 @@ class Runner
 	 */
 	public function completeRunningRuns()
 	{
-		foreach (Dao::search(['step' => Run::RUNNING], Run::class) as $run) {
-			$search = [
-				'uri'  => View::link($run->object),
-				'stop' => Func::greaterOrEqual($run->last_update)
-			];
-			if (Dao::searchOne($search, Entry::class)) {
+		foreach (
+			Dao::search(['step' => [Run::PARTIAL, Run::PENDING, Run::RUNNING]], Run::class) as $run
+		) {
+			$done_actions = 0;
+			$search       = ['start' => Func::greaterOrEqual($run->last_update)];
+			foreach ($run->actions as $action) {
+				$search['uri'][]                     = $action->action;
+				$search['data.request_identifier'][] = $action->request_identifier;
+				if (in_array(
+					$action->status,
+					[Action\Status::DONE, Action\Status::ERROR, Action\Status::LAUNCH_ERROR]
+				)) {
+					$done_actions ++;
+				}
+			}
+			if ($done_actions === count($run->actions)) {
 				$run->step = Run::COMPLETE;
 				Dao::write($run, Dao::only('step'));
+				return;
 			}
-		}
-	}
-
-	//----------------------------------------------------------------------------- detectRunningRuns
-	/**
-	 * Look at logs to detect runs that started. Mark them as 'running'.
-	 */
-	public function detectRunningRuns()
-	{
-		foreach (Dao::search(['step' => Run::PENDING], Run::class) as $run) {
-			$search = [
-				'uri'   => View::link($run->object),
-				'start' => Func::greaterOrEqual($run->last_update)
-			];
-			/** @var $entry Entry */
-			if ($entry = Dao::searchOne($search, Entry::class)) {
-				$run->step = ($entry->stop->isEmpty() ? Run::RUNNING : Run::COMPLETE);
-				Dao::write($run, Dao::only('step'));
+			/** @var $entries Entry[] */
+			$entries      = Dao::search($search, Entry::class);
+			$done_entries = 0;
+			foreach ($entries as $entry) {
+				if (!$entry->stop->isEmpty()) {
+					$done_entries ++;
+				}
 			}
+			switch ($done_entries) {
+				case 0:
+					$run->step = Run::RUNNING;
+					break;
+				case count($run->actions):
+					$run->step = Run::COMPLETE;
+					break;
+				default:
+					$run->step = Run::PARTIAL;
+			}
+			Dao::write($run, Dao::only('step'));
 		}
 	}
 
@@ -81,7 +92,8 @@ class Runner
 				Dao::begin();
 				$run->step = Run::PENDING;
 				Dao::write($run, Dao::only('step'));
-				$run->change->executeActions($run->object);
+				$run->actions = $run->change->executeActions($run->object);
+				Dao::write($run, Dao::only('actions'));
 				Dao::commit();
 			}
 			// conditions do not match : cancel run

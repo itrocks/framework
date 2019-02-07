@@ -1,17 +1,17 @@
 <?php
-namespace ITRocks\Framework\Trigger\Change;
+namespace ITRocks\Framework\Trigger\Server;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Trigger\Action;
+use ITRocks\Framework\Trigger\Server;
 
 /**
- * Change trigger run controller
- *
- * - List change runs in step 'AFTER'
- * - Qualify them
- * - Run qualified runs
+ * Trigger server stop controller
  */
-class Run_Controller implements Feature_Controller
+class Stop_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
@@ -25,10 +25,7 @@ class Run_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		$runner = new Runner();
-		$runner->qualifyAfterRuns();
-		$runner->completeRunningRuns();
-		$runner->purgeCompleteRuns();
+		Dao::write(new Action(Server::STOP, Date_Time::now()));
 		return 'OK';
 	}
 

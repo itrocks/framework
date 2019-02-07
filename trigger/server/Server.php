@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Tools\Asynchronous;
 use ITRocks\Framework\Tools\Date_Time;
 
@@ -36,11 +37,49 @@ class Server
 	/**
 	 * @param $action Action
 	 */
-	public function afterAction(Action $action = null)
+	public function afterAction(Action $action)
 	{
-		if ($action) {
-			$action->running = false;
-			Dao::write($action, Dao::only('running'));
+		$this->launchedActionStatus($action, true);
+	}
+
+	//---------------------------------------------------------------------------------- launchAction
+	/**
+	 * @param $action Action
+	 * @param $last   Date_Time
+	 */
+	protected function launchAction(Action $action, Date_Time $last)
+	{
+		Dao::begin();
+		$action->status = Action\Status::LAUNCHING;
+		Dao::write($action, Dao::only('status'));
+		$action->next($last, true);
+		Dao::commit();
+		/** @var $callback callable */
+		$callback       = [$this, 'afterAction'];
+		$callback[]     = Dao::getObjectIdentifier($action) ? $action : null;
+		$process        = $this->asynchronous->call($action->action, $callback, false, true);
+		$action->status = ($process->identifier && $process->unique_identifier)
+			? Action\Status::LAUNCHED
+			: Action\Status::LAUNCH_ERROR;
+		$action->request_identifier = $process->unique_identifier;
+		Dao::write($action, Dao::only('request_identifier', 'status'));
+	}
+
+	//-------------------------------------------------------------------------- launchedActionStatus
+	/**
+	 * Calculate the status of an action that is launched or running
+	 *
+	 * @param $action       Action
+	 * @param $process_done boolean if true, the process is done and an empty stop date-time is error
+	 */
+	protected function launchedActionStatus(Action $action, $process_done = false)
+	{
+		$data = Dao::searchOne(['request_identifier' => $action->request_identifier], Data::class);
+		if ($data) {
+			$action->status = $data->entry->stop->isEmpty()
+				? ($process_done ? Action\Status::ERROR : Action\Status::RUNNING)
+				: Action\Status::DONE;
+			Dao::write($action, Dao::only('status'));
 		}
 	}
 
@@ -54,25 +93,30 @@ class Server
 	{
 		// next scheduled actions
 		$actions = Dao::search(
-			['next' => Func::lessOrEqual(Date_Time::now()), 'running' => false],
+			[
+				'next'   => Func::lessOrEqual(Date_Time::now()),
+				'status' => [Action\Status::LAUNCHED, Action\Status::PENDING, Action\Status::STATIC]
+			],
 			Action::class
 		);
 		$last = Date_Time::now();
 		foreach ($actions as $action) {
-			Dao::begin();
-			$action->running = true;
-			Dao::write($action, Dao::only('running'));
-			$action->next($last);
-			Dao::commit();
 			if ($action->action === static::STOP) {
-				$this->stop = true;
-				break;
+				$this->stopAction($action, $last);
 			}
-			else {
-				/** @var $callback callable */
-				$callback   = [$this, 'afterAction'];
-				$callback[] = Dao::getObjectIdentifier($action) ? $action : null;
-				$this->asynchronous->call($action->action, $callback, false);
+			if ($this->stop) {
+				continue;
+			}
+			if ($action->status === Action\Status::LAUNCHED) {
+				$this->launchedActionStatus($action);
+			}
+			elseif ($action->status === Action\Status::PENDING) {
+				$this->launchAction($action, $last);
+			}
+			elseif ($action->status === Action\Status::STATIC) {
+				if ($action = $action->execute()) {
+					$this->launchAction($action, $last);
+				}
 			}
 		}
 		return count($actions);
@@ -94,6 +138,19 @@ class Server
 			$this->asynchronous->flush();
 		}
 		$this->asynchronous->wait();
+	}
+
+	//------------------------------------------------------------------------------------ stopAction
+	/**
+	 * @param $action Action
+	 * @param $last   Date_Time
+	 */
+	public function stopAction(Action $action, Date_Time $last)
+	{
+		$this->stop     = true;
+		$action->last   = $last;
+		$action->status = Action\Status::DONE;
+		Dao::write($action, Dao::only('last', 'status'));
 	}
 
 }

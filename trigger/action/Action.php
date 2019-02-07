@@ -2,9 +2,10 @@
 namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Traits\Is_Immutable;
+use ITRocks\Framework\Trigger\Action\Status;
 use ITRocks\Framework\Trigger\Schedule\Next_Calculation;
 use ITRocks\Framework\User;
 use ITRocks\Framework\View;
@@ -17,7 +18,6 @@ use ITRocks\Framework\View;
  */
 class Action
 {
-	use Is_Immutable;
 
 	//--------------------------------------------------------------------------------------- $action
 	/**
@@ -46,7 +46,6 @@ class Action
 	/**
 	 * Last execution time
 	 *
-	 * @immutable false
 	 * @link DateTime
 	 * @user readonly
 	 * @var Date_Time
@@ -57,7 +56,6 @@ class Action
 	/**
 	 * Next scheduled time, if this is a scheduled action
 	 *
-	 * @immutable false
 	 * @link DateTime
 	 * @user readonly
 	 * @var Date_Time
@@ -72,23 +70,33 @@ class Action
 	 */
 	public $parent;
 
-	//-------------------------------------------------------------------------------------- $running
+	//--------------------------------------------------------------------------- $request_identifier
 	/**
-	 * Tell is this action is currently running or not
+	 * This identifier, if set, matches Logger\Entry\Data::$request_identifier
 	 *
-	 * @immutable false
-	 * @var boolean
+	 * @var string
 	 */
-	public $running;
+	public $request_identifier;
+
+	//--------------------------------------------------------------------------------------- $status
+	/**
+	 * @values Status::const
+	 * @var string
+	 */
+	public $status = Status::PENDING;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $action string
+	 * @param $next   Date_Time|null
 	 */
-	public function __construct($action = null)
+	public function __construct($action = null, $next = null)
 	{
 		if (isset($action)) {
 			$this->action = $action;
+		}
+		if (isset($next)) {
+			$this->next = $next;
 		}
 	}
 
@@ -103,14 +111,19 @@ class Action
 
 	//--------------------------------------------------------------------------------------- execute
 	/**
+	 * Asynchronous execution of an action : this plans the action for execution
+	 *
+	 * To really launch planned actions, you must make /ITRocks/Framework/Trigger/Server/run as daemon
+	 *
 	 * @param $object object|string object or class name
+	 * @return static|null scheduled action
 	 */
 	public function execute($object = null)
 	{
 		// can execute an action twice only if it is not running nor planned for now at this time
 		$now = Date_Time::now();
-		if ($this->next->isBeforeOrEqual($now) && !$this->running) {
-			return;
+		if (($this->status === Status::PENDING) && $this->next->isBeforeOrEqual($now)) {
+			return null;
 		}
 
 		if (is_string($object)) {
@@ -124,25 +137,44 @@ class Action
 		$this->next = $now;
 
 		// simple execution of the action itself
-		if ((strpos($this->action, '{') === false) && !$this->keep_user) {
+		if (
+			!$this->keep_user
+			&& ($this->status !== Action\Status::STATIC)
+			&& (strpos($this->action, '{') === false)
+		) {
 			Dao::write($this, Dao::only('next'));
 		}
 
 		// the action contains dynamic {class} or {object} or keeps user : execute a clone of the action
 		else {
-			$this->parent = clone $this;
-			Dao::disconnect($this);
-			$this->action = str_replace(
+			$action = str_replace(
 				['{class}', '{object}', SL . SL],
 				[Names::classToUri($class_name), View::link($object), SL],
 				$this->action
 			);
-			if ($this->keep_user) {
-				$this->as_user   = User::current();
-				$this->keep_user = false;
+			$as_user = $this->keep_user ? User::current() : null;
+			$status  = Status::PENDING;
+			if (Dao::searchOne(
+				[
+					'action'    => $action,
+					'as_user'   => $as_user,
+					'keep_user' => $this->keep_user,
+					'next'      => Func::lessOrEqual($this->next),
+					'status'    => $status
+				],
+				Action::class
+			)) {
+				return null;
 			}
+			$parent = clone $this;
+			Dao::disconnect($this);
+			$this->action  = $action;
+			$this->as_user = $as_user;
+			$this->parent  = $parent;
+			$this->status  = $status;
 			Dao::write($this);
 		}
+		return $this;
 	}
 
 	//------------------------------------------------------------------------------------------ next
@@ -152,23 +184,28 @@ class Action
 	 * - scheduled action : calculate and update next execution time
 	 * - one-shot action : delete the action
 	 *
-	 * @param $last Date_Time the last execution time @default Date_Time::now
+	 * @param $last       Date_Time the last execution time @default Date_Time::now
+	 * @param $write_last boolean update last execution time using $last / now
 	 */
-	public function next(Date_Time $last = null)
+	public function next(Date_Time $last = null, $write_last = false)
 	{
-		if ($next = $this->nextExecutionTime($last)) {
+		if ($write_last && $last && $last->isAfter($this->last)) {
 			$this->last = $last;
-			$this->next = $next;
-			Dao::write($this, Dao::only(['last', 'next']));
+			$only[]     = 'last';
 		}
 
-		else {
-			if ($this->parent) {
-				$this->parent->last = $last;
-				Dao::write($this->parent, Dao::only('last'));
+		$this->next = ($this->parent ?: $this)->nextExecutionTime($last) ?: Date_Time::max();
+		$only[]     = 'next';
+
+		if ($this->parent) {
+			if (in_array('last', $only)) {
+				$this->parent->last = $this->last;
 			}
-			Dao::delete($this);
+			$this->parent->next = $this->next;
+			Dao::write($this->parent, $only);
 		}
+
+		Dao::write($this, Dao::getObjectIdentifier($this) ? $only : []);
 	}
 
 	//----------------------------------------------------------------------------- nextExecutionTime

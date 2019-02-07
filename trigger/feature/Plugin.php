@@ -70,10 +70,11 @@ class Plugin implements Registerable
 				$user = User::current();
 				if (!Dao::searchOne(
 					[
-						'action'  => $action_link,
-						'as_user' => $user,
-						'next'    => Func::lessOrEqual($now),
-						'running' => false
+						'action'    => $action_link,
+						'as_user'   => $user,
+						'keep_user' => false,
+						'next'      => Func::lessOrEqual($now),
+						'status'    => Action\Status::PENDING
 					],
 					Action::class
 				)) {

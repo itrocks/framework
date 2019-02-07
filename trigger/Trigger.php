@@ -28,14 +28,18 @@ abstract class Trigger
 	 * Tells the trigger server it can run the actions
 	 *
 	 * @param $object object|string can receive a context object or class name
+	 * @return Action[]
 	 */
 	public function executeActions($object)
 	{
+		$actions = [];
 		foreach ($this->actions as $action) {
-			if (!$action->running) {
-				$action->execute($object);
+			$scheduled_action = $action->execute($object);
+			if ($scheduled_action) {
+				$actions[] = $scheduled_action;
 			}
 		}
+		return $actions;
 	}
 
 }

@@ -36,6 +36,13 @@ abstract class Run
 	 */
 	const COMPLETE = 'complete';
 
+	//--------------------------------------------------------------------------------------- PARTIAL
+	/**
+	 * Step 5
+	 * Some run actions are complete, some are still running
+	 */
+	const PARTIAL = 'partial';
+
 	//--------------------------------------------------------------------------------------- PENDING
 	/**
 	 * Step 3

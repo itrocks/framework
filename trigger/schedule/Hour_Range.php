@@ -7,7 +7,7 @@ use ITRocks\Framework\Trigger\Schedule;
 /**
  * Hour range
  *
- * @sort from, to, frequency
+ * @sort from, until, frequency
  */
 class Hour_Range
 {
