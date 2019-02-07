@@ -85,7 +85,7 @@ class Include_Filter extends php_user_filter
 		$source_file_name = realpath(Paths::$project_root . SL . $path_prefix . $file_name);
 		$cache_file_name
 			= Paths::$project_root . SL . self::CACHE_DIR . SL . self::cacheFile($file_name);
-		if (file_exists($cache_file_name)) {
+		if (file_exists($cache_file_name) && !$_POST['Z']) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
 			}
