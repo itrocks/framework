@@ -124,7 +124,7 @@ $('document').ready(function()
 		{
 			var $this = $(this);
 			var $tr = $this.closest('tr');
-			if ($this.val() && $tr.length && !$tr.next('tr').length) {
+			if ($this.val() && ($this.val() !== '0') && $tr.length && !$tr.next('tr').length) {
 				var $collection = $tr.closest('table.collection, table.map');
 				if ($collection.length) {
 					// calculate depth in order to increment the right index
