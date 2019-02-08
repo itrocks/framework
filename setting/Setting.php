@@ -78,16 +78,6 @@ class Setting
 			&& (substr($value, 0, 2) == 'O:')
 			&& (substr($value, -1) === '}')
 		) {
-			$value = strReplace([
-				'O:61:"ITRocks\Framework\Feature\Data_List_Setting\Data_List_Settings"'
-					=> 'O:41:"ITRocks\Framework\Feature\List_Setting\Set"',
-				'O:51:"ITRocks\Framework\Feature\Data_List_Setting\Property"'
-					=> 'O:46:"ITRocks\Framework\Feature\List_Setting\Property"',
-				'O:55:"ITRocks\Framework\Feature\Output_Setting\Output_Settings"'
-					=> 'O:43:"ITRocks\Framework\Feature\Output_Setting\Set"',
-				'O:38:"ITRocks\Framework\Setting\User_Setting"'
-					=> 'O:30:"ITRocks\Framework\Setting\User"'
-			], $value);
 			$this->value = unserialize($value);
 			// // A patch for retro-compatibility with protected / private $class_name
 			if (!$this->value->getClassName()) {
