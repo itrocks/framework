@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
+use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Sql\Builder;
-use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * A Dao where function applies only to conditions : it changes the condition behaviour

@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Configuration\File\Menu;
 
+use ITRocks\Framework\Component\Menu\Block;
+use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Menu;
-use ITRocks\Framework\Widget\Menu\Block;
-use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * Builder configuration file reader

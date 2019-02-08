@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Configuration\File;
 
+use ITRocks\Framework\Component\Menu\Block;
+use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Plugin\Installable\Installed;
-use ITRocks\Framework\Widget\Menu\Block;
-use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * The menu.php configuration file

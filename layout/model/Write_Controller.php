@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Widget\Write;
+use ITRocks\Framework\Feature\Write;
 
 /**
  * Layout model write controller

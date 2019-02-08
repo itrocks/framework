@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Locale\Date_Format;
 use ITRocks\Framework\Locale\Number_Format;
 use ITRocks\Framework\Locale\Translation;
@@ -17,7 +18,6 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Password;
-use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions

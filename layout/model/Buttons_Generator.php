@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Button;
 
 /**
  * Layout model buttons generator

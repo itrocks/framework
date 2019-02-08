@@ -192,7 +192,7 @@ $('document').ready(function()
 });
 
 /**
- //enter('.general.actions', '>li', 'Insérer une action', 'horizontal', '/ITRocks/Framework/Widget/Button/edit/{class}/{feature}/{li->class}');
+ //enter('.general.actions', '>li', 'Insérer une action', 'horizontal', '/ITRocks/Framework/Component/Button/edit/{class}/{feature}/{li->class}');
  //enter('.actions>li>ul', '>li', 'Insérer une action secondaire', 'vertical');
  //enter('fieldset', '>div:not(.tabber, .columns)', 'Insérer un champ', 'vertical','add_property');
 

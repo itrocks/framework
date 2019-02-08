@@ -1,13 +1,13 @@
 <?php
 namespace ITRocks\Framework\RAD\Feature;
 
+use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\Output;
 
 /**
  * RAD feature output controller

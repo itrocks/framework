@@ -4,11 +4,11 @@ namespace ITRocks\Framework\Locale\Translation\Data;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Write;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
-use ITRocks\Framework\Widget\Write;
 
 /**
  * Data translation set write controller

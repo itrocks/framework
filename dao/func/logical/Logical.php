@@ -2,10 +2,10 @@
 namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Dao\Func\Logical\Exception;
+use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Dao AND function

@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 
+use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
 use ITRocks\Framework\Reflection\Annotation\Tests\Conditions;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
 
 /**
  * Tests for @conditions annotation

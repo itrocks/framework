@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\AOP\Joinpoint\Around_Method;
+use ITRocks\Framework\Feature\Edit\Html_Template;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Wiki\GeSHi;
 use ITRocks\Framework\Tools\Wiki\Textile;
-use ITRocks\Framework\Widget\Edit\Html_Template;
 
 /**
  * The wiki plugin enable wiki parsing of multiline properties values

@@ -15,10 +15,10 @@
 	<!--use ITRocks\Framework\Tools\Paths-->
 	<form action="/{@class.path}/write" class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{?id}" enctype="multipart/form-data" method="post" name="{@template.getFormId}" target="#messages">
 		<h2>|{@class.display.ucfirst}|</h2>
-		{/widget/button/general_buttons.html}
+		{/component/button/general_buttons.html}
 		<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
 
-		{/widget/output/object.html}
+		{/feature/output/object.html}
 
 		<section class="editor">
 			<h3>|Layout editor|</h3>

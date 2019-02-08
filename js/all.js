@@ -33,17 +33,17 @@ $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
 $.getScript(path + 'itrocks/framework/js/tr.js');
 
 $.getScript(path + 'itrocks/framework/debug/debug.js');
-$.getScript(path + 'itrocks/framework/import_export/import.js');
+$.getScript(path + 'itrocks/framework/feature/condition/condition.js');
+$.getScript(path + 'itrocks/framework/feature/list_/list.js');
+$.getScript(path + 'itrocks/framework/feature/edit/edit.js');
+$.getScript(path + 'itrocks/framework/feature/import/import.js');
+$.getScript(path + 'itrocks/framework/component/trashcan/trashcan.js');
+$.getScript(path + 'itrocks/framework/feature/validate/not_validated.js');
 $.getScript(path + 'itrocks/framework/property/select.js');
 $.getScript(path + 'itrocks/framework/rad/output.js');
 $.getScript(path + 'itrocks/framework/rad/rad.js');
 $.getScript(path + 'itrocks/framework/settings/custom.js');
 $.getScript(path + 'itrocks/framework/tools/has_ordering/has_ordering.js');
 $.getScript(path + 'itrocks/framework/view/logger/html_logger.js');
-$.getScript(path + 'itrocks/framework/widget/condition/condition.js');
-$.getScript(path + 'itrocks/framework/widget/list_/list.js');
-$.getScript(path + 'itrocks/framework/widget/edit/edit.js');
-$.getScript(path + 'itrocks/framework/widget/trashcan/trashcan.js');
-$.getScript(path + 'itrocks/framework/widget/validate/not_validated.js');
 
 $.getScript(path + 'itrocks/framework/js/default.application.js');

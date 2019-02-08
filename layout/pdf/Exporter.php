@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\PDF;
 
-use ITRocks\Framework\Export\PDF;
+use ITRocks\Framework\Feature\Export\PDF;
 use ITRocks\Framework\Layout\Output;
 use ITRocks\Framework\Layout\Structure\Draw\Rectangle;
 use ITRocks\Framework\Layout\Structure\Element;

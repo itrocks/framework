@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Layout\Model;
 
 use Exception;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Widget\Add;
+use ITRocks\Framework\Feature\Add;
 
 /**
  * Layout model add controller : initialises pages

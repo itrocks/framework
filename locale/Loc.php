@@ -1,7 +1,8 @@
 <?php
 namespace ITRocks\Framework\Locale;
 
-use ITRocks\Framework\Import\Import_Array;
+use ITRocks\Framework\Feature\Import\Import_Array;
+use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Option\Context;
 use ITRocks\Framework\Locale\Option\Replace;
@@ -14,7 +15,6 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
-use ITRocks\Framework\Widget\List_Setting;
 use ReflectionException;
 use Reflector;
 

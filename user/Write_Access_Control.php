@@ -2,19 +2,19 @@
 namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
+use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Feature\Add;
+use ITRocks\Framework\Feature\Edit;
+use ITRocks\Framework\Feature\List_;
+use ITRocks\Framework\Feature\Output;
+use ITRocks\Framework\Feature\Write;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\User;
-use ITRocks\Framework\Widget\Add;
-use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\Edit;
-use ITRocks\Framework\Widget\List_;
-use ITRocks\Framework\Widget\Menu;
-use ITRocks\Framework\Widget\Menu\Item;
-use ITRocks\Framework\Widget\Output;
-use ITRocks\Framework\Widget\Write;
 
 /**
  * Write access control plugin

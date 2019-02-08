@@ -17,7 +17,7 @@ class Menu extends Configuration
 	 */
 	public function compile(Reflection_Source $source)
 	{
-		Main::$current->redirect('/ITRocks/Framework/Widget/Menu/output?container=blocks', '#menu');
+		Main::$current->redirect('/ITRocks/Framework/Component/Menu/output?container=blocks', '#menu');
 	}
 
 }

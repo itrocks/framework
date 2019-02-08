@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
+use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
-use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Dao FIND_IN_SET function (mysql specific)

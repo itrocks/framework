@@ -1,11 +1,11 @@
 <?php
 namespace ITRocks\Framework\Dao\Func;
 
+use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Option\Replace;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
-use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Dao Left_Match function

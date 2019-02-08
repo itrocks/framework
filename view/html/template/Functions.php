@@ -9,7 +9,10 @@ use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Now;
-use ITRocks\Framework\Import\Settings\Import_Settings_Builder;
+use ITRocks\Framework\Feature\Condition;
+use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
+use ITRocks\Framework\Feature\Import\Settings\Import_Settings_Builder;
+use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -36,9 +39,6 @@ use ITRocks\Framework\View\Html\Builder\File;
 use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\Widget\Condition;
-use ITRocks\Framework\Widget\Edit\Html_Builder_Property;
-use ITRocks\Framework\Widget\List_;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates

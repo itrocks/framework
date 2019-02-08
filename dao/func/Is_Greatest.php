@@ -3,10 +3,10 @@ namespace ITRocks\Framework\Dao\Func;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Subquery;
-use ITRocks\Framework\Widget\List_\Summary_Builder;
 
 /**
  * Is greatest is a condition used to get the record where the column has the greatest value

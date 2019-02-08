@@ -4,10 +4,10 @@ namespace ITRocks\Framework\Property;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\Widget\List_Setting;
 
 /**
  * The default property add controller does nothing : we must add a property from a context

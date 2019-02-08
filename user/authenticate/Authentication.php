@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Component\Input;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
@@ -8,7 +9,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\User;
-use ITRocks\Framework\Widget\Input;
 
 /**
  * The user authentication class gives direct access to login, register and disconnect user features

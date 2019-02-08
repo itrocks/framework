@@ -252,31 +252,31 @@ abstract class Getter
 				if (isset($GLOBALS['D']) && $suffix) {
 					static::debug(
 						'B4',
-						$path . SL . 'widget' . SL . $feature_directory . SL . $suffix . $ext,
+						$path . SL . 'feature' . SL . $feature_directory . SL . $suffix . $ext,
 						'run',
 						$extension
 					);
 				}
 				if ($suffix && file_exists(
-					$path . SL . 'widget' . SL . $feature_directory . SL . $suffix . $ext
+					$path . SL . 'feature' . SL . $feature_directory . SL . $suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Widget' . BS . $feature_namespace . BS . $suffix;
+					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
 				if (isset($GLOBALS['D'])) {
 					static::debug(
 						'B5',
-						$path . SL . 'widget' . SL . $feature_directory . SL . $feature_what . $_suffix
+						$path . SL . 'feature' . SL . $feature_directory . SL . $feature_what . $_suffix
 							. $ext,
 						'run',
 						$extension
 					);
 				}
 				if (file_exists(
-					$path . SL . 'widget' . SL . $feature_directory . SL
+					$path . SL . 'feature' . SL . $feature_directory . SL
 					. $feature_what . $_suffix . $ext
 				)) {
-					$class = $namespace . BS . 'Widget' . BS . $feature_namespace . BS
+					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS
 						. $feature_what . $_suffix;
 					break;
 				}

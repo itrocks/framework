@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Objects\Opened_Document;
 
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Objects\Opened_Document;
-use ITRocks\Framework\Widget\Write;
+use ITRocks\Framework\Feature\Write;
 
 /**
  * Opened document write controller

@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Locale\Translation\Data;
 
+use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Locale\Translation\Data;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\Edit;
 
 /**
  * Data translation form : translate one property value into all available languages in one form

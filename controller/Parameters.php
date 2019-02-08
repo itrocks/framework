@@ -4,12 +4,12 @@ namespace ITRocks\Framework\Controller;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Mapper\Object_Not_Found_Exception;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Set;
-use ITRocks\Framework\Widget\List_\Selection;
 
 /**
  * Controller parameters contains what objects are passed into the controller's URI

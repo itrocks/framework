@@ -5,12 +5,12 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Tests\Objects\Vehicle;
 use ITRocks\Framework\Tests\Objects\Vehicle_Door;
 use ITRocks\Framework\Tests\Objects\Vehicle_Door_Piece;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Edit;
 
 /**
  * HTML view collection builder tests

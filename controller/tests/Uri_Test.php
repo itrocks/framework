@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Controller\Tests;
 
+use ITRocks\Framework\Component\Tab;
+use ITRocks\Framework\Component\Trashcan;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
@@ -8,8 +10,6 @@ use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\Widget\Tab;
-use ITRocks\Framework\Widget\Trashcan;
 
 /**
  * Controller uri features tests
@@ -21,7 +21,7 @@ class Uri_Test extends Test
 	public function testDeleteControllers()
 	{
 		$controller_uri = new Uri(
-			'/ITRocks/Framework/Widget/Tab/remove/'
+			'/ITRocks/Framework/Component/Tab/remove/'
 			. Names::classToSet(Order::class) . SL . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
@@ -151,7 +151,7 @@ class Uri_Test extends Test
 	public function testTrashcanDropOutput()
 	{
 		$controller_uri = new Uri(
-			'/ITRocks/Framework/Widget/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
+			'/ITRocks/Framework/Component/Trashcan/drop/Order/1/' . Feature::F_OUTPUT . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		static::assertEquals(
@@ -173,7 +173,7 @@ class Uri_Test extends Test
 	public function testTrashcanDropParameters()
 	{
 		$controller_uri = new Uri(
-			'/ITRocks/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
+			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number'
 		);
 		static::assertEquals(
 			[
@@ -193,7 +193,7 @@ class Uri_Test extends Test
 	public function testTrashcanDropWithArguments()
 	{
 		$controller_uri = new Uri(
-			'/ITRocks/Framework/Widget/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
+			'/ITRocks/Framework/Component/Trashcan/drop/Orders/' . Feature::F_LIST . '/date/number',
 			[Parameter::AS_WIDGET => true, '_' => 2]
 		);
 		static::assertEquals(

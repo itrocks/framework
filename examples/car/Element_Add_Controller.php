@@ -2,9 +2,9 @@
 namespace ITRocks\Framework\Examples\Car;
 
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Feature\Add;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Widget\Add;
 
 /**
  * Car element edit controller

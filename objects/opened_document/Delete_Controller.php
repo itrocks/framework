@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Objects\Opened_Document;
 
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Feature\Delete;
 use ITRocks\Framework\Objects\Opened_Document;
-use ITRocks\Framework\Widget\Delete;
 
 /**
  * Opened document delete controller

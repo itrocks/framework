@@ -2,6 +2,11 @@
 namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Component\Button\Has_General_Buttons;
+use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
+use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
@@ -16,11 +21,6 @@ use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group\Feature;
 use ITRocks\Framework\User\Group\Has_Groups;
 use ITRocks\Framework\View;
-use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\Button\Has_General_Buttons;
-use ITRocks\Framework\Widget\Button\Has_Selection_Buttons;
-use ITRocks\Framework\Widget\Menu;
-use ITRocks\Framework\Widget\Menu\Item;
 
 /**
  * Very simple user access control plugin :

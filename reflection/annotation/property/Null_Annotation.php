@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
+use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Widget\Validate\Property\Mandatory_Annotation;
 
 /**
  * This tells that the property can take the null value as a valid value (default is false)

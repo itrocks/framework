@@ -1,11 +1,11 @@
 <?php
 namespace ITrocks\Framework\Logger\Entry;
 
+use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Feature\List_;
+use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Setting;
-use ITRocks\Framework\Widget\Button;
-use ITRocks\Framework\Widget\List_;
-use ITRocks\Framework\Widget\List_Setting;
 
 /**
  * Logger entry data list controller
