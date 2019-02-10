@@ -155,10 +155,20 @@
 					var offset  = $target.offset();
 					var $window = $(window);
 					if ((offset.left + $target.outerWidth()) > $window.outerWidth()) {
-						$target.css('left', ($window.outerWidth() - $target.outerWidth()));
+						offset.left = Math.max(0, $window.outerWidth() - $target.outerWidth());
+						$target.css('left', offset.left);
 					}
 					if ((offset.top + $target.outerHeight()) > $window.outerHeight()) {
-						$target.css('top', ($window.outerHeight() - $target.outerHeight()));
+						offset.top = Math.max(0, $window.outerHeight() - $target.outerHeight());
+						$target.css('top', offset.top);
+					}
+					if (window.scrollbar !== undefined) {
+						if (offset.left < window.scrollbar.left()) {
+							$target.css('left', window.scrollbar.left());
+						}
+						if (offset.top < window.scrollbar.top()) {
+							$target.css('top', window.scrollbar.top());
+						}
 					}
 				});
 				return $target;
