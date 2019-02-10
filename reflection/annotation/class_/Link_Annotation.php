@@ -124,7 +124,10 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	protected function setLinkPropertiesByClass(Reflection_Class $class)
 	{
-		while ($class && !$this->link_properties) {
+		if ($this->link_properties) {
+			return;
+		}
+		while ($class) {
 			// if properties names are not set : get explicit composite properties names
 			foreach ($class->getProperties([T_USE]) as $property) {
 				if (
@@ -132,11 +135,11 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 					|| $property->getAnnotation('link_composite')->value
 				) {
 					$this->link_properties[$property->getName()] = $property;
-					$class                                       = null;
 				}
 			}
-			if ($class) {
-				$class = $class->getParentClass();
+			$class = $class->getParentClass();
+			if ($class->getName() === $this->value) {
+				$class = null;
 			}
 		}
 	}
