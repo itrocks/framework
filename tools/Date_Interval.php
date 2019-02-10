@@ -17,12 +17,13 @@ abstract class Date_Interval
 	//------------------------------------------------------------------------------- DAY_TIME_FORMAT
 	const DAY_TIME_FORMAT = 'P%aDT%hH%iM%sS';
 
-	//------------------------------------------------------------------------------------------ DAYS
+	//------------------------------------------------------------------------------ duration formats
 	const DAYS    = '%R%a';
 	const HOURS   = 'hours';
 	const MINUTES = 'minutes';
 	const MONTHS  = 'months';
 	const SECONDS = 'seconds';
+	const WEEKS   = 'weeks';
 	const YEARS   = 'years';
 
 	//------------------------------------------------------------------------------------ EMPTY_SPEC
