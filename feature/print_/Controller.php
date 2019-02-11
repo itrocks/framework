@@ -5,9 +5,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Export\PDF;
-use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Layout\Generator;
 use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Layout\PDF\Exporter;
@@ -73,15 +71,7 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		$object = $parameters->getMainObject($class_name);
-		if (Dao::getObjectIdentifier($object)) {
-			$objects = [$object];
-		}
-		else {
-			$selection = new Selection($class_name);
-			$selection->setFormData($form);
-			$objects = $selection->readObjects();
-		}
+		$objects = $parameters->getSelectedObjects($form);
 
 		/** @noinspection PhpUnhandledExceptionInspection Object should always be found */
 		$layout_model = $parameters->getObject(Model::class);
