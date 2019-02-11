@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 
@@ -36,6 +37,7 @@ class Controller implements Default_Feature_Controller
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
 		$parameters = $parameters->getObjects();
 		$parameters[Template::TEMPLATE] = static::CONFIRM;
+
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
 
@@ -66,6 +68,7 @@ class Controller implements Default_Feature_Controller
 		if (is_object(reset($parameters))) {
 			unset(reset($parameters)->deleted);
 			unset(reset($parameters)->deleted_objects);
+			$parameters['set_class'] = Names::classToSet(key($parameters));
 		}
 
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);

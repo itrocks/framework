@@ -46,78 +46,71 @@ $('document').ready(function()
 		// trash is droppable
 		var accept = '.column label, .list table th.property, .object, .objects, .throwable';
 		this.inside('#trashcan a')
-		.data('accept', accept)
-		.droppable({
-			accept:     accept,
-			hoverClass: 'candrop',
-			tolerance:  'touch',
+			.data('accept', accept)
+			.droppable({
+				accept:     accept,
+				hoverClass: 'candrop',
+				tolerance:  'touch',
 
-			drop: function(event, ui)
-			{
-				var app = window.app;
-				// calculate destination href
-				var href = ui.helper.data('throw')
-					? (app.uri_base + ui.helper.data('throw'))
-					: (event.target.pathname + SL + 'drop');
-				// after trash call is complete, the source window is reloaded to update displayed content
-				var $window = ui.draggable.closest('.window');
-				if ($window.length) {
-					var data_class = $window.data('class');
-					if (data_class !== undefined) {
-						$(event.target).data(
-							'on-success', function () {
-								if (
-									($window.data('feature') !== 'output')
-									&& ($window.data('feature') !== 'edit')
-								) {
-									var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
-									$.ajax({
-										url:     app.uri_base + uri + '?as_widget' + app.andSID(),
-										success: function (data) {
-											var $parent = $window.parent();
-											$parent.html(data);
-											$parent.children().build();
-										}
-									});
+				drop: function(event, ui)
+				{
+					var app = window.app;
+					// calculate destination href
+					var href = ui.helper.data('throw')
+						? (app.uri_base + ui.helper.data('throw'))
+						: (event.target.pathname + SL + 'drop');
+					// after trash call is complete, the source window is reloaded to update displayed content
+					var $window = ui.draggable.closest('.window');
+					if ($window.length) {
+						var data_class = $window.data('class');
+						if (data_class !== undefined) {
+							$(event.target).data(
+								'on-success', function () {
+									if (
+										($window.data('feature') !== 'output')
+										&& ($window.data('feature') !== 'edit')
+									) {
+										var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
+										$.ajax({
+											url:     app.uri_base + uri + '?as_widget' + app.andSID(),
+											success: function (data) {
+												var $parent = $window.parent();
+												$parent.html(data);
+												$parent.children().build();
+											}
+										});
+									}
+									else {
+										ui.draggable.closest('div[class][id]').remove();
+									}
 								}
-								else {
-									ui.draggable.closest('div[class][id]').remove();
-								}
-							}
-						);
+							);
+						}
 					}
-				}
-				href += SL + ui.helper.data('class').replace(BS, SL);
-				if (ui.helper.data('id')) {
-					href += SL + ui.helper.data('id');
-				}
-				if (ui.helper.data('feature')) {
-					href += SL + ui.helper.data('feature');
-				}
-				if (ui.helper.data('property')) {
-					var property = ui.helper.data('property');
-					href += '/ITRocks/Framework/Property';
-					if (property.indexOf('(') > -1) {
-						href = app.askAnd(href, 'property_path=' + property);
+					href += SL + ui.helper.data('class').replace(BS, SL);
+					if (ui.helper.data('id')) {
+						href += SL + ui.helper.data('id');
 					}
-					else {
-						href += SL + property;
+					if (ui.helper.data('feature')) {
+						href += SL + ui.helper.data('feature');
 					}
+					if (ui.helper.data('property')) {
+						var property = ui.helper.data('property');
+						href += '/ITRocks/Framework/Property';
+						if (property.indexOf('(') > -1) {
+							href = app.askAnd(href, 'property_path=' + property);
+						}
+						else {
+							href += SL + property;
+						}
+					}
+					if (ui.helper.data('action')){
+						href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
+					}
+					href += event.target.search + event.target.hash;
+					redirectLight(href, '#messages');
 				}
-				if (ui.helper.data('action')){
-					href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
-				}
-				href += event.target.search + event.target.hash;
-				// call
-				var href_backup   = event.target.href;
-				event.target.href = href;
-				event.target.click();
-				event.target.href = href_backup;
-			}
-		});
-
-		// trash message can be hidden
-		this.inside('#trashcan .delete.message').click(function() { $(this).remove(); });
+			});
 
 	});
 

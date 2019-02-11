@@ -1,6 +1,32 @@
 $('document').ready(function()
 {
 
+	var closeWindows = function(class_name, identifier)
+	{
+		var selector = '[data-class=' + class_name.repl(BS, BS + BS) + ']';
+		if (identifier !== undefined) {
+			selector += '[data-id=' + identifier + ']';
+		}
+
+		// close main window
+		var $main_window = $('#main').children(selector);
+		if ($main_window.length) {
+			var $close_anchor = $main_window.find('.actions > .close > a');
+			if ($close_anchor.length) {
+				$close_anchor.click();
+			}
+			else if (identifier !== undefined) {
+				$main_window.remove();
+			}
+			else {
+				refresh($('#main'));
+			}
+		}
+
+		// close popup windows
+		$('.closeable-popup > .window' + selector).remove();
+	};
+
 	$('.confirmed.delete.message').build(function()
 	{
 		var $message = this.inside('.confirmed.delete.message');
@@ -10,27 +36,14 @@ $('document').ready(function()
 		}
 		$message = $message.closest('.confirmed.delete.message');
 
-		var class_name = $message.data('class');
-		var identifier = $message.data('id');
+		var class_name     = $message.data('class');
+		var identifier     = $message.data('id');
+		var set_class_name = $message.data('set-class');
 		if (!class_name || !identifier) {
 			return;
 		}
-		var selector = '[data-class=' + class_name.repl(BS, BS + BS) + '][data-id=' + identifier + ']';
-
-		// close main window
-		var $main_window = $('#main').children(selector);
-		if ($main_window.length) {
-			var $close_anchor = $main_window.find('.actions > .close > a');
-			if ($close_anchor.length) {
-				$close_anchor.click();
-			}
-			else {
-				$main_window.remove();
-			}
-		}
-
-		// close popup windows
-		$('.closeable-popup > .window' + selector).remove();
+		closeWindows(class_name, identifier);
+		closeWindows(set_class_name);
 	});
 
 });
