@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>|Deleted ¦{@class.display.ucfirst}¦|</title>
@@ -10,15 +10,11 @@
 <body>
 <!--BEGIN-->
 
-	<div class="delete message">
+	<div class="confirmed delete message" data-class="{@class}" data-id="{id}">
 		<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
 		<!--deleted--><div>|¦{@class.display.ucfirst}¦ !{.}! has been deleted|</div><!--end-->
 		<!--!deleted--><div>|Unable to delete ¦{@class.display.ucfirst}¦ !{.}!|</div><!--end-->
 	</div>
-
-	<script>
-		$('#trashcan > div').remove();
-	</script>
 
 <!--END-->
 </body>
