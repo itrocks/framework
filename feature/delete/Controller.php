@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Delete;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
@@ -17,6 +18,14 @@ class Controller implements Default_Feature_Controller
 
 	//--------------------------------------------------------------------------------------- CONFIRM
 	const CONFIRM = 'confirm';
+
+	//-------------------------------------------------------------------------------------- $objects
+	/**
+	 * Objects to delete
+	 *
+	 * @var object[]
+	 */
+	protected $objects;
 
 	//--------------------------------------------------------------------------------------- confirm
 	/**
@@ -35,9 +44,16 @@ class Controller implements Default_Feature_Controller
 			View::link($parameters->getMainObject(), Feature::F_DELETE, null, static::CONFIRM)
 		);
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
+
+		if ($form) {
+			$parameters->set('data_post', http_build_query($form));
+			if (!Dao::getObjectIdentifier($parameters->getMainObject())) {
+				$parameters->unshift(new Multiple($this->objects));
+			}
+		}
+
 		$parameters = $parameters->getObjects();
 		$parameters[Template::TEMPLATE] = static::CONFIRM;
-
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
 
@@ -52,14 +68,7 @@ class Controller implements Default_Feature_Controller
 	protected function delete(Parameters $parameters, $form, $files, $class_name)
 	{
 		$parameters      = $parameters->getObjects();
-		$deleted_objects = [];
-		foreach ($parameters as $object) {
-			if (is_object($object)) {
-				$deleted_objects[] = $object;
-			}
-		}
-
-		$deleted_objects = $this->deleteObjects($deleted_objects);
+		$deleted_objects = $this->deleteObjects($this->objects);
 
 		$parameters['deleted']         = $deleted_objects ? true : false;
 		$parameters['deleted_objects'] = $deleted_objects;
@@ -68,7 +77,9 @@ class Controller implements Default_Feature_Controller
 		if (is_object(reset($parameters))) {
 			unset(reset($parameters)->deleted);
 			unset(reset($parameters)->deleted_objects);
-			$parameters['set_class'] = Names::classToSet(key($parameters));
+			$parameters['set_class'] = Names::classToSet(
+				Builder::current()->sourceClassName($class_name)
+			);
 		}
 
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
@@ -107,6 +118,7 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		$this->objects = $parameters->getSelectedObjects($form);
 		return $parameters->has(static::CONFIRM, true)
 			? $this->delete($parameters, $form, $files, $class_name)
 			: $this->confirm($parameters, $form, $files, $class_name);

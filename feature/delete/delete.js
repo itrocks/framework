@@ -39,10 +39,12 @@ $('document').ready(function()
 		var class_name     = $message.data('class');
 		var identifier     = $message.data('id');
 		var set_class_name = $message.data('set-class');
-		if (!class_name || !identifier) {
+		if (!class_name) {
 			return;
 		}
-		closeWindows(class_name, identifier);
+		if (identifier) {
+			closeWindows(class_name, identifier);
+		}
 		closeWindows(set_class_name);
 	});
 

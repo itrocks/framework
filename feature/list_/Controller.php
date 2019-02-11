@@ -490,6 +490,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				View::link($class_name, Feature::F_PRINT),
 				Feature::F_PRINT,
 				[Button::SUB_BUTTONS => $layout_model_buttons]
+			),
+			Feature::F_DELETE => new Button(
+				'Delete',
+				View::link($class_name, Feature::F_DELETE),
+				Feature::F_DELETE,
+				Target::MESSAGES
 			)
 		];
 
