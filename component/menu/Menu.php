@@ -6,6 +6,9 @@ use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
@@ -103,15 +106,18 @@ class Menu implements Configurable
 				}
 				// class name : change it to a menu item
 				if (strpos($class_name, BS))  {
-					if (in_array($feature, Feature::ON_SET)) {
-						/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-						$class_name = Names::classToSet($class_name);
-					}
-					$link_feature = (($feature === Feature::F_LIST) && !class_exists($class_name))
+					/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
+					$link_class_name = in_array($feature, Feature::ON_SET)
+						? Names::classToSet($class_name)
+						: $class_name;
+					$link_feature = (($feature === Feature::F_LIST) && !class_exists($link_class_name))
 						? null
 						: $feature;
-					$configuration_items[View::link($class_name, $link_feature)] = ucfirst(
-						Names::classToDisplay($class_name)
+					/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+					$configuration_items[View::link($link_class_name, $link_feature)] = ucfirst(
+						in_array($feature, Feature::ON_SET)
+							? Displays_Annotation::of(new Reflection_Class($class_name))->value
+							: Display_Annotation::of(new Reflection_Class($class_name))->value
 					);
 				}
 			}
