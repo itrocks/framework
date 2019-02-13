@@ -40,7 +40,8 @@ class Compiler implements ICompiler, Needs_Main
 		foreach ($source->getClasses() as $class) {
 			$replacement = $builder->getComposition($class->name);
 			if (is_array($replacement)) {
-				foreach (Class_Builder::build($class->name, $replacement, true) as $built_source) {
+				$built_sources = Class_Builder::build($class->name, $replacement, true);
+				if (is_array($built_sources)) foreach ($built_sources as $built_source) {
 					$compiler->addSource((new Reflection_Source())->setSource('<?php' . LF . $built_source));
 					$compiled = true;
 				}
