@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Component;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
@@ -133,10 +132,15 @@ class Installer
 		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
 			$this->install($feature_include->value);
 		}
+		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
+		$menu_items = [];
 		foreach (Feature_Menu_Annotation::allOf($plugin_class) as $feature_menu) {
-			$this->addMenu([
-				$feature_menu->block => Component\Menu::configurationOf($feature_menu->value)
-			]);
+			$menu_items[$feature_menu->value] = [
+				$feature_menu->block_caption => [$feature_menu->value => $feature_menu->item_caption]
+			];
+		}
+		foreach ($menu_items as $menu) {
+			$this->addMenu($menu);
 		}
 
 		$installable = $this->pluginObject($plugin);

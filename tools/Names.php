@@ -518,4 +518,17 @@ abstract class Names
 			)))));
 	}
 
+	//------------------------------------------------------------------------------------ uriToClass
+	/**
+	 * @param $uri string
+	 * @return string
+	 */
+	public static function uriToClass($uri)
+	{
+		while (!ctype_upper(substr(rLastParse($uri, SL), 0, 1))) {
+			$uri = lLastParse($uri, SL);
+		}
+		return Names::setToSingle(str_replace(SL, BS, substr($uri, 1)));
+	}
+
 }
