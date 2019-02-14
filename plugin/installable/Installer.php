@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
@@ -16,6 +17,7 @@ use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -72,8 +74,8 @@ class Installer
 			}
 			$file = $this->openFile(Config::class);
 			$file->addPlugin($priority_value, $plugin_class_name, $configuration);
+			(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
 		}
-		(new Installed\Plugin($this->plugin_class_name))->add($plugin_class_name);
 	}
 
 	//------------------------------------------------------------------------------------ addToClass
@@ -122,21 +124,19 @@ class Installer
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
-
 		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
-		foreach (
-			Feature_Exclude_Annotation::allOf(new Reflection_Class($plugin_class_name))
-			as $feature_exclude
-		) {
+		$plugin_class = new Reflection_Class($plugin_class_name);
+
+		foreach (Feature_Exclude_Annotation::allOf($plugin_class) as $feature_exclude) {
 			$this->uninstall($feature_exclude->value);
 		}
-
-		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
-		foreach (
-			Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name))
-			as $feature_include
-		) {
+		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
 			$this->install($feature_include->value);
+		}
+		foreach (Feature_Menu_Annotation::allOf($plugin_class) as $feature_menu) {
+			$this->addMenu([
+				$feature_menu->block => Component\Menu::configurationOf($feature_menu->value)
+			]);
 		}
 
 		$installable = $this->pluginObject($plugin);

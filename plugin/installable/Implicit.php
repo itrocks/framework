@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Plugin\Installable;
 
-use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -43,14 +42,8 @@ class Implicit implements Installable
 		if ($class->isTrait() && ($class->getListAnnotation('extends')->value)) {
 			$this->type = T_TRAIT;
 		}
-		elseif ($class->isA(Plugin::class, [T_EXTENDS, T_IMPLEMENTS, T_USE])) {
-			$this->type = T_CLASS;
-		}
 		else {
-			trigger_error(
-				"Does not know how class $class->name could be installed as a plugin",
-				E_USER_ERROR
-			);
+			$this->type = T_CLASS;
 		}
 	}
 
