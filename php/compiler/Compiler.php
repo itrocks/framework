@@ -615,7 +615,14 @@ class Compiler extends Cache implements
 	 */
 	public function update($last_time = 0)
 	{
+		if (isset($_GET['Z']) && isset($_POST['Z'])) {
+			$last_active            = Include_Filter::$active;
+			Include_Filter::$active = false;
+		}
 		$this->compile($last_time);
+		if (isset($last_active)) {
+			Include_Filter::$active = $last_active;
+		}
 	}
 
 }

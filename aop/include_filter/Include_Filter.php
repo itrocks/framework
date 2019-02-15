@@ -21,6 +21,12 @@ class Include_Filter extends php_user_filter
 	//-------------------------------------------------------------------------------------------- ID
 	const ID = 'aop.include';
 
+	//--------------------------------------------------------------------------------------- $active
+	/**
+	 * @var boolean
+	 */
+	public static $active = true;
+
 	//------------------------------------------------------------------------------------ $file_name
 	/**
 	 * The name of the file currently being included
@@ -85,7 +91,7 @@ class Include_Filter extends php_user_filter
 		$source_file_name = realpath(Paths::$project_root . SL . $path_prefix . $file_name);
 		$cache_file_name
 			= Paths::$project_root . SL . self::CACHE_DIR . SL . self::cacheFile($file_name);
-		if (file_exists($cache_file_name) && !isset($_POST['Z'])) {
+		if (file_exists($cache_file_name) && static::$active) {
 			if (isset($GLOBALS['D'])) {
 				return $cache_file_name;
 			}
