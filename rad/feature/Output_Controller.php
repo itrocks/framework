@@ -24,11 +24,10 @@ class Output_Controller extends Output\Controller
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
 	{
-		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
+		$buttons[Controller\Feature::F_CLOSE]
+			= parent::getGeneralButtons($object, $parameters, $settings)[Controller\Feature::F_CLOSE];
+
 		$feature = $object;
-
-		unset($buttons[Controller\Feature::F_EDIT]);
-
 		if ($feature->status === Status::AVAILABLE) {
 			$buttons[Install_Controller::FEATURE] = new Button(
 				'Install',
