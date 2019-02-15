@@ -194,15 +194,19 @@ fieldset {
           margin-left: .5em;
           padding-left: 1em; }
   fieldset.block {
-    border: 1px solid #a3a3a3;
-    border-radius: 4px;
-    padding: 0 .25em; }
+    border: 1px solid lightgray;
+    padding: 0 .25em;
+    position: relative; }
     fieldset.block > legend {
-      color: #202020;
-      font-size: 14px;
-      margin-left: .25em;
-      padding: 0 .25em;
-      white-space: nowrap; }
+      background-color: #e9ede7;
+      border: 1px solid lightgray;
+      border-bottom: none;
+      display: block;
+      font-weight: bold;
+      margin: 0 0 0 -4px;
+      padding: 3px 3px 5px;
+      white-space: nowrap;
+      width: 100%; }
 
 form fieldset div span.unit {
   padding-top: 1px; }
