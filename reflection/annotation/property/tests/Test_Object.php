@@ -2,10 +2,13 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**
  * Simple object to test annotations
+ *
+ * @see User_Annotation used in tests : testGetterAnnotationSet crashes without the use clause
  */
 class Test_Object
 {
