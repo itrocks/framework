@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Configuration\File;
 
-use /** @noinspection PhpUnusedAliasInspection @values */ ITRocks\Framework;
+use ITRocks\Framework;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Config\Priority;
 
@@ -28,6 +28,7 @@ class Config extends File
 	 * @param $priority_value string @values Framework\Plugin\Priority::const
 	 * @param $plugin_name    string plugin class name
 	 * @param $configuration  mixed
+	 * @see Framework\Plugin\Priority::const
 	 */
 	public function addPlugin($priority_value, $plugin_name, $configuration)
 	{

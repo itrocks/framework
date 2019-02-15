@@ -2,8 +2,6 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
-use /** @noinspection PhpUnusedAliasInspection used in tests */
-	ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 
 /**

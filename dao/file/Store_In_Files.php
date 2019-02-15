@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\File;
 
-use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Dao\File;
 
 /**
  * Apply this interface to File to allow storage of file content into the file system instead of the
@@ -9,6 +9,7 @@ use /** @noinspection PhpUnusedAliasInspection @extends */ ITRocks\Framework\Dao
  *
  * @extends File
  * @override content @dao files
+ * @see File
  */
 interface Store_In_Files
 {

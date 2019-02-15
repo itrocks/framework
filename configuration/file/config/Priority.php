@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Configuration\File\Config;
 
-use /** @noinspection PhpUnusedAliasInspection @values */ ITRocks\Framework;
+use ITRocks\Framework;
 use ITRocks\Framework\Configuration\File\Config;
 
 /**
@@ -28,6 +28,7 @@ class Priority
 	/**
 	 * The priority constant name
 	 *
+	 * @see Framework\Plugin\Priority::const
 	 * @values Framework\Plugin\Priority::const
 	 * @var string
 	 */
@@ -38,6 +39,7 @@ class Priority
 	 * Priority constructor
 	 *
 	 * @param $priority string @values Framework\Plugin\Priority::const
+	 * @see Framework\Plugin\Priority::const
 	 */
 	public function __construct($priority)
 	{

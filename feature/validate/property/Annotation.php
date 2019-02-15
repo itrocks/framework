@@ -3,8 +3,7 @@ namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Reflection;
-use /** @noinspection PhpUnusedAliasInspection @implements */
-	ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
@@ -12,6 +11,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  *
  * @extends Reflection\Annotation
  * @implements Property_Context_Annotation
+ * @see Property_Context_Annotation
  */
 trait Annotation
 {
