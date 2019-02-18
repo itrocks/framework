@@ -98,7 +98,7 @@ class Maintainer implements Configurable, Registerable
 	 * @values self::const local
 	 * @var string
 	 */
-	public $notice = self::WARNING;
+	public $notice = false;
 
 	//------------------------------------------------------------------------------------- $requests
 	/**
@@ -640,6 +640,7 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * After calling this, you can alter table (or anything else if it was not an ALTER TABLE)
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $mysqli     Contextual_Mysqli the connexion to the contextual mysqli used for queries
 	 * @param $query      string the query that is going to be executed (to filter by 'ALTER TABLE')
 	 * @param $class_name string the name of the class to exclude from updates (main query class)
@@ -654,6 +655,7 @@ class Maintainer implements Configurable, Registerable
 					$same_table = true;
 				}
 				elseif (class_exists($context_class_name) && class_exists($class_name)) {
+					/** @noinspection PhpUnhandledExceptionInspection known class names */
 					$same_table = (
 						Store_Name_Annotation::of(new Reflection_Class($context_class_name))->value
 						=== Store_Name_Annotation::of(new Reflection_Class($class_name))->value
