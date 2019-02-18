@@ -13,7 +13,7 @@ use ReflectionException;
 /**
  * The installation of the features will install this menu entry
  *
- * [/Called/Class/Path[/feature]] Block caption [, item caption]
+ * [/Called/Class/Path[/feature]] [:] Block caption [>|/|, item caption]
  */
 class Feature_Menu_Annotation extends Annotation implements Class_Context_Annotation
 {
@@ -41,6 +41,7 @@ class Feature_Menu_Annotation extends Annotation implements Class_Context_Annota
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
+		$value = str_replace(':', SP, $value);
 		if (substr($value, 0, 1) !== SL) {
 			$value = View::link(Names::classToSet($class->getName()), Feature::F_LIST) . SP . $value;
 			$this->item_caption = ucfirst(Displays_Annotation::of($class));
@@ -55,7 +56,13 @@ class Feature_Menu_Annotation extends Annotation implements Class_Context_Annota
 		parent::__construct($link);
 		$value = trim($value);
 		if (strpos($value, ',')) {
-			list($this->block_caption, $this->item_caption) = explode(',', $value, 2);
+			$value = str_replace(',', '>', $value);
+		}
+		if (strpos($value, '/')) {
+			$value = str_replace('/', '>', $value);
+		}
+		if (strpos($value, '>')) {
+			list($this->block_caption, $this->item_caption) = explode('>', $value, 2);
 			$this->block_caption = trim($this->block_caption);
 			$this->item_caption  = trim($this->item_caption);
 		}
