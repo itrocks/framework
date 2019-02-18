@@ -127,10 +127,10 @@ class Installer
 		$plugin_class = new Reflection_Class($plugin_class_name);
 
 		foreach (Feature_Exclude_Annotation::allOf($plugin_class) as $feature_exclude) {
-			$this->uninstall($feature_exclude->value);
+			$this->uninstall(Builder::current()->sourceClassName($feature_exclude->value));
 		}
 		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
-			$this->install($feature_include->value);
+			$this->install(Builder::current()->sourceClassName($feature_include->value));
 		}
 		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
 		$menu_items = [];
