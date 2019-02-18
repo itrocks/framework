@@ -65,8 +65,6 @@ class Write_Access_Control implements Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Registration code for the plugin
-	 *
 	 * @param $register Register
 	 */
 	public function register(Register $register)

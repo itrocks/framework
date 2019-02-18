@@ -49,10 +49,6 @@ class Implicit implements Installable
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * Returns the short description of the installable plugin
-	 *
-	 * It is the feature caption exactly how it will be displayed to the user
-	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -62,10 +58,6 @@ class Implicit implements Installable
 
 	//--------------------------------------------------------------------------------------- install
 	/**
-	 * This code is called when the plugin is installed by the user
-	 *
-	 * Use the $installer parameter to install the components of your plugin.
-	 *
 	 * @param $installer Installer
 	 */
 	public function install(Installer $installer)

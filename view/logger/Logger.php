@@ -38,8 +38,6 @@ class Logger extends File_Logger implements Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Registration code for the plugin
-	 *
 	 * @param $register Register
 	 */
 	public function register(Register $register)

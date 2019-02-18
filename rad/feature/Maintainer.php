@@ -140,8 +140,6 @@ class Maintainer implements Registerable, Updatable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Registration code for the plugin
-	 *
 	 * @param $register Register
 	 */
 	public function register(Register $register)

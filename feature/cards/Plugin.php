@@ -20,10 +20,6 @@ class Plugin implements Installable, Registerable
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
-	 * Returns the short description of the installable plugin
-	 *
-	 * It is the feature caption exactly how it will be displayed to the user
-	 *
 	 * @return string
 	 */
 	public function __toString()
@@ -33,10 +29,6 @@ class Plugin implements Installable, Registerable
 
 	//--------------------------------------------------------------------------------------- install
 	/**
-	 * This code is called when the plugin is installed by the user
-	 *
-	 * Use the $installer parameter to install the components of your plugin.
-	 *
 	 * @param $installer Installer
 	 */
 	public function install(Installer $installer)
@@ -46,8 +38,6 @@ class Plugin implements Installable, Registerable
 
 	//-------------------------------------------------------------------------------------- register
 	/**
-	 * Registration code for the plugin
-	 *
 	 * @param $register Register
 	 */
 	public function register(Register $register)
