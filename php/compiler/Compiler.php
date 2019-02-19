@@ -152,7 +152,8 @@ class Compiler extends Cache implements
 		$more_sources = new More_Sources($this->more_sources);
 		$search = [
 			'class_name'      => Func::notEqual($class_name),
-			'dependency_name' => Func::equal($class_name)
+			'dependency_name' => Func::equal($class_name),
+			'type'            => [Dependency::T_EXTENDS, Dependency::T_IMPLEMENTS, Dependency::T_USE]
 		];
 		foreach (Dao::search($search, Dependency::class) as $dependency) {
 			/** @var $dependency Dependency */
@@ -324,10 +325,11 @@ class Compiler extends Cache implements
 	private function compileSource(
 		Reflection_Source $source, array $compilers, $cache_dir, $first_group
 	) {
+		$class_name = $source->getFirstClassName();
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {
 				echo get_class($compiler) . ' : Compile source file ' . $source->file_name
-					. ' class ' . $source->getFirstClassName() . BRLF;
+					. ' class ' . $class_name . BRLF;
 			}
 			$compiler->compile($source, $this);
 		}
@@ -340,7 +342,7 @@ class Compiler extends Cache implements
 		}
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
-			$this->addMoreDependentSources($source->getFirstClassName());
+			$this->addMoreDependentSources($class_name);
 			$this->replaceDependencies($source);
 		}
 	}
