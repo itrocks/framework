@@ -34,6 +34,19 @@ class Writer
 		$this->file = $file;
 	}
 
+	//---------------------------------------------------------------------- removeMultipleWhiteLines
+	/**
+	 * Remove multiple white lines : only one is accepted
+	 *
+	 * @param $buffer string
+	 */
+	protected function removeMultipleWhiteLines(&$buffer)
+	{
+		while (strpos($buffer, LF . LF . LF)) {
+			$buffer = str_replace(LF . LF . LF, LF . LF, $buffer);
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- usedUses
 	/**
 	 * Filter $this->file->use to keep only use clauses used into $buffer
@@ -86,6 +99,7 @@ class Writer
 		$this->writeUse($buffer);
 		$this->writeNamespace($buffer);
 		$buffer = '<?php' . LF . $buffer;
+		$this->removeMultipleWhiteLines($buffer);
 		$this->writeBuffer($buffer);
 	}
 
