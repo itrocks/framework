@@ -322,6 +322,7 @@ class Compiler extends Cache implements
 	 */
 	private function compileSource(Reflection_Source $source, array $compilers, $cache_dir)
 	{
+		$source->refuseCompiledSource();
 		$class_name = $source->getFirstClassName();
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {

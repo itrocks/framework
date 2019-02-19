@@ -182,16 +182,6 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 		return boolval($methods_code);
 	}
 
-	//----------------------------------------------------------------------------------- compileFile
-	/**
-	 * @param $file_name string
-	 * @return boolean
-	 */
-	public function compileFile($file_name)
-	{
-		return $this->compileClass(Reflection_Source::ofFile($file_name)->getFirstClass());
-	}
-
 	//----------------------------------------------------------------------------------- doneCompile
 	public function doneCompile()
 	{

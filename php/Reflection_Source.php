@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -20,6 +21,14 @@ class Reflection_Source
 	const NAMESPACES   = 4;
 	const REQUIRES     = 5;
 	const USES         = 6;
+
+	//----------------------------------------------------------------------- $accept_compiled_source
+	/**
+	 * If true, getSource() will be able to load source from its compiled version instead of original
+	 *
+	 * @var boolean
+	 */
+	private $accept_compiled_source;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -116,6 +125,7 @@ class Reflection_Source
 	 */
 	public function __construct($file_name = null, $class_name = null)
 	{
+		$this->accept_compiled_source = !empty($file_name);
 		if (isset($file_name)) {
 			if (substr($file_name, 0, 5) === '<?php') {
 				$this->source = $file_name;
@@ -764,15 +774,20 @@ class Reflection_Source
 
 	//------------------------------------------------------------------------------------- getSource
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
 	public function getSource()
 	{
 		if (!isset($this->source)) {
 			if ($this->file_name) {
+				/** @noinspection PhpUnhandledExceptionInspection file_exists */
+				$file_name = $this->accept_compiled_source
+					? Include_Filter::file($this->file_name)
+					: $this->file_name;
 				$this->source = isset($this->lines)
 					? join(LF, $this->lines)
-					: file_get_contents($this->file_name);
+					: file_get_contents($file_name);
 			}
 			else {
 				$this->source = '';
@@ -869,6 +884,21 @@ class Reflection_Source
 			$result = new Reflection_Source($file_name);
 		}
 		return $result;
+	}
+
+	//-------------------------------------------------------------------------- refuseCompiledSource
+	/**
+	 * Refuse compiled source :
+	 *
+	 * - When getSource() will be called, this always be the original file
+	 * - Free source if was already loaded with acceptance of compiled source
+	 */
+	public function refuseCompiledSource()
+	{
+		if ($this->accept_compiled_source) {
+			$this->accept_compiled_source = false;
+			$this->free(0);
+		}
 	}
 
 	//------------------------------------------------------------------------------------ searchFile
