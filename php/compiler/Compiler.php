@@ -143,6 +143,25 @@ class Compiler extends Cache implements
 		$this->compilers[] = $compiler;
 	}
 
+	//----------------------------------------------------------------------- addMoreDependentSources
+	/**
+	 * @param $class_name string
+	 */
+	protected function addMoreDependentSources($class_name)
+	{
+		$more_sources = new More_Sources($this->more_sources);
+		$search = [
+			'class_name'      => Func::notEqual($class_name),
+			'dependency_name' => Func::equal($class_name)
+		];
+		foreach (Dao::search($search, Dependency::class) as $dependency) {
+			/** @var $dependency Dependency */
+			$more_sources->add(
+				Reflection_Source::ofClass($dependency->class_name), $dependency->class_name, null, true
+			);
+		}
+	}
+
 	//-------------------------------------------------------------------------------- addMoreSources
 	/**
 	 * @param $compilers ICompiler[] ICompiler[string $class_name]
@@ -321,6 +340,7 @@ class Compiler extends Cache implements
 		}
 		elseif (file_exists($file_name) && $first_group) {
 			unlink($file_name);
+			$this->addMoreDependentSources($source->getFirstClassName());
 			$this->replaceDependencies($source);
 		}
 	}
