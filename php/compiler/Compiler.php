@@ -150,6 +150,7 @@ class Compiler extends Cache implements
 	protected function addMoreDependentSources($class_name)
 	{
 		$more_sources = new More_Sources($this->more_sources);
+		// add removed class descendants
 		$search = [
 			'class_name'      => Func::notEqual($class_name),
 			'dependency_name' => Func::equal($class_name),
@@ -281,7 +282,6 @@ class Compiler extends Cache implements
 
 		$this->removeOldDependencies();
 
-		$first_group   = true;
 		$this->sources = array_merge($this->more_sources, $this->getFilesToCompile($last_time));
 
 		$wave = 0;
@@ -295,10 +295,9 @@ class Compiler extends Cache implements
 				$this->replaceDependenciesForSources($this->sources);
 				$this->addMoreSources($compilers);
 				$this->saved_sources = array_merge($this->saved_sources, $this->sources);
-				$this->compileSources($compilers, $first_group, $cache_dir);
+				$this->compileSources($compilers, $cache_dir);
 			}
 			$this->sources = $this->saved_sources;
-			$first_group   = false;
 			$this->text_output->log('Wave done');
 		}
 		foreach ($this->compilers as $compilers) {
@@ -320,11 +319,9 @@ class Compiler extends Cache implements
 	 * @param $source      Reflection_Source
 	 * @param $compilers   ICompiler[]
 	 * @param $cache_dir   string
-	 * @param $first_group boolean
 	 */
-	private function compileSource(
-		Reflection_Source $source, array $compilers, $cache_dir, $first_group
-	) {
+	private function compileSource(Reflection_Source $source, array $compilers, $cache_dir)
+	{
 		$class_name = $source->getFirstClassName();
 		foreach ($compilers as $compiler) {
 			if (isset($GLOBALS['D'])) {
@@ -336,11 +333,13 @@ class Compiler extends Cache implements
 		$file_name = Files::isInPath($source->file_name, $cache_dir)
 			? $source->file_name
 			: ($cache_dir . SL . self::sourceFileToCacheFileName($source->file_name));
+		static $has_been_compiled = [];
 		if ($source->hasChanged()) {
+			$has_been_compiled[$file_name] = true;
 			script_put_contents($file_name, $source->getSource());
 			$this->replaceDependencies($source);
 		}
-		elseif (file_exists($file_name) && $first_group) {
+		elseif (file_exists($file_name) && !isset($has_been_compiled[$file_name])) {
 			unlink($file_name);
 			$this->addMoreDependentSources($class_name);
 			$this->replaceDependencies($source);
@@ -349,18 +348,17 @@ class Compiler extends Cache implements
 
 	//-------------------------------------------------------------------------------- compileSources
 	/**
-	 * @param $compilers   ICompiler[] ICompiler[string $class_name]
-	 * @param $first_group boolean
-	 * @param $cache_dir   string
+	 * @param $compilers ICompiler[] ICompiler[string $class_name]
+	 * @param $cache_dir string
 	 */
-	private function compileSources(array $compilers, $first_group, $cache_dir)
+	private function compileSources(array $compilers, $cache_dir)
 	{
 		$this->sortSourcesByParentsCount();
 		$counter = 0;
 		$total   = count($this->sources);
 		foreach ($this->sources as $source) {
 			$this->text_output->progress('Compiling sources......', ++$counter, $total);
-			$this->compileSource($source, $compilers, $cache_dir, $first_group);
+			$this->compileSource($source, $compilers, $cache_dir);
 		}
 
 		$this->sources      = $this->more_sources;
