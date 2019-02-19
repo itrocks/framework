@@ -35,9 +35,10 @@ class Maintainer implements Registerable, Updatable
 
 	//------------------------------------------------------------------ featureAnnotationsToFeatures
 	/**
-	 * Scan all @feature class annotations which value start by an uppercase letter : these are
+	 * Scan all class feature annotations which value start by an uppercase letter : these are
 	 * features here to be installable too
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Feature[]
 	 */
 	protected function featureAnnotationsToFeatures()
@@ -45,9 +46,12 @@ class Maintainer implements Registerable, Updatable
 		$dependencies = Dao::search(['type' => Dependency::T_FEATURE], Dependency::class);
 		$features     = [];
 		foreach ($dependencies as $dependency) {
-			$features[] = $this->pluginClassNameAndTitleToFeature(
-				$dependency->class_name, $dependency->dependency_name
-			);
+			/** @noinspection PhpUnhandledExceptionInspection valid dependency */
+			if (!(new Reflection_Class($dependency->class_name))->getAnnotation('feature_off')->value) {
+				$features[] = $this->pluginClassNameAndTitleToFeature(
+					$dependency->class_name, $dependency->dependency_name
+				);
+			}
 		}
 		return $features;
 	}
@@ -70,9 +74,11 @@ class Maintainer implements Registerable, Updatable
 		$dependencies = Dao::search($search, Dependency::class);
 		$features     = [];
 		foreach ($dependencies as $dependency) {
+			/** @noinspection PhpUnhandledExceptionInspection valid dependency */
 			if (
 				!is_a($dependency->class_name, Implicit::class, true)
 				&& class_exists($dependency->class_name)
+				&& !(new Reflection_Class($dependency->class_name))->getAnnotation('feature_off')->value
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection class_exists */
 				if ((new Reflection_Class($dependency->class_name))->isAbstract()) {

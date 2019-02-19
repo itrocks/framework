@@ -14,6 +14,8 @@ use ITRocks\Framework\Reflection\Annotation\Parser;
 
 /**
  * Display your documents into an interactive multiple dimensional cards viewer
+ *
+ * @feature_off Not ready
  */
 class Plugin implements Installable, Registerable
 {
