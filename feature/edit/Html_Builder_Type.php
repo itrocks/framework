@@ -614,6 +614,7 @@ class Html_Builder_Type
 				$input->removeAttribute('name');
 			}
 			$input->setAttribute('readonly');
+			$input->setAttribute('tabindex', -1);
 		}
 	}
 
