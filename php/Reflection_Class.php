@@ -124,6 +124,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public $requires;
 
+	//---------------------------------------------------------------------------- $short_trait_names
+	/**
+	 * @var string[] key is the full name of the class, value is the short name as in source code
+	 */
+	public $short_trait_names;
+
 	//--------------------------------------------------------------------------------------- $source
 	/**
 	 * The PHP source reflection object containing the class
@@ -790,6 +796,18 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		return $this->traits;
 	}
 
+	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * @return integer
+	 */
+	public function getType()
+	{
+		if (!isset($this->type)) {
+			$this->scanUntilClassName();
+		}
+		return $this->type;
+	}
+
 	//------------------------------------------------------------------------------ implementsMethod
 	/**
 	 * Returns true if this class or any of its direct traits implements the method.
@@ -1096,9 +1114,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 					case T_USE:
 						if ($depth === 1) {
-							foreach ($this->scanTraitNames() as $trait_name => $line) {
-								$trait_name = $this->fullClassName($trait_name);
-								$this->traits[$trait_name] = $trait_name;
+							foreach ($this->scanTraitNames() as $short_trait_name => $line) {
+								$trait_name                           = $this->fullClassName($short_trait_name);
+								$this->short_trait_names[$trait_name] = $short_trait_name;
+								$this->traits[$trait_name]            = $trait_name;
 							}
 						}
 						break;

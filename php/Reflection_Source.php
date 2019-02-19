@@ -743,6 +743,9 @@ class Reflection_Source
 	 */
 	public function getOutsideClass($class_name)
 	{
+		if (substr($class_name, 0, 1) === BS) {
+			$class_name = substr($class_name, 1);
+		}
 		if (isset(self::$cache[$class_name])) {
 			$source = self::$cache[$class_name];
 		}

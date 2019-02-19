@@ -205,7 +205,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 						while ($dependency && Class_Builder::isBuilt($dependency->class_name)) {
 							$search_built_parent = Search_Object::create(Dependency::class);
 							$search_built_parent->class_name = $dependency->class_name;
-							$search_built_parent->type       = Dependency::T_EXTENDS;
+							$search_built_parent->type       = [Dependency::T_EXTENDS, Dependency::T_USE];
 							$dependency = Dao::searchOne($search_built_parent);
 							if (!$dependency) {
 								trigger_error(

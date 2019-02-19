@@ -6,7 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Reflection_Class;
-use ITRocks\Framework\Reflection;
+use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Namespaces;
@@ -100,7 +100,6 @@ class Class_Builder
 
 	//------------------------------------------------------------------------------------ buildClass
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name  string
 	 * @param $interfaces  array string[][]
 	 * @param $traits      array string[][]
@@ -121,18 +120,24 @@ class Class_Builder
 		$namespace        = $built_class = null;
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $namespace (extends last class)
-			$extends   = BS . (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
+			$extends   = (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
 
 			$end       = ($level === $end_level);
 			$count     = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 
-			// TODO can't guess it without loading the class ?
-			/** @noinspection PhpUnhandledExceptionInspection class exists */
-			$abstract
-				= (class_exists($extends) && (new Reflection\Reflection_Class($extends))->isAbstract())
-				? 'abstract '
-				: '';
+			$class = Reflection_Source::ofClass($extends)->getFirstClass();
+			if ($class->getType() === T_TRAIT) {
+				array_unshift($class_traits, $extends);
+				$abstract = '';
+				$extends  = '';
+				$type     = 'trait';
+			}
+			else {
+				$abstract = $class->isAbstract() ? 'abstract ' : '';
+				$extends  = ' extends ' . BS . $extends;
+				$type     = 'class';
+			}
 
 			$namespace   = $namespace_prefix . $count . $sub_count;
 			$built_class = $namespace . BS . $short_class;
@@ -149,10 +154,10 @@ class Class_Builder
 
 			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
 				. '/**' . LF
-				. ' * Built ' . $short_class . ' class' . LF
+				. ' * Built ' . $short_class . ' ' . $type . LF
 				. $annotations_code
 				. ' */' . LF
-				. $abstract . 'class ' . $short_class . ' extends ' . $extends
+				. $abstract . $type . ' ' . $short_class . $extends
 				. $interfaces_names
 				. LF . '{' . LF
 				. $traits_names

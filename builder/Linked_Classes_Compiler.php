@@ -52,6 +52,26 @@ class Linked_Classes_Compiler implements ICompiler
 					$compiled = true;
 				}
 			}
+			foreach ($class->getTraitNames() as $trait_name) {
+				if (!Class_Builder::isBuilt($trait_name)) {
+					$replacement_trait_name = Builder::className($trait_name);
+					if (is_array($replacement_trait_name)) {
+						trigger_error('Replacement traits should all be compiled', E_USER_ERROR);
+						$compiler->addSource($source);
+					}
+					elseif (
+						($trait_name !== $replacement_trait_name)
+						&& (
+							Class_Builder::isBuilt($replacement_trait_name)
+							|| $builder->isReplacement($replacement_trait_name)
+						)
+						&& !$this->recursiveReplacement($class, $trait_name, $replacement_trait_name)
+					) {
+						$this->compileUse($class, $trait_name, $replacement_trait_name);
+						$compiled = true;
+					}
+				}
+			}
 		}
 		return $compiled;
 	}
@@ -85,6 +105,28 @@ class Linked_Classes_Compiler implements ICompiler
 				$buffer
 			);
 		}
+		$class->source->setSource($buffer);
+	}
+
+	//------------------------------------------------------------------------------------ compileUse
+	/**
+	 * Compile the class use clause : replace use $trait_name by use $replacement_trait_name
+	 *
+	 * @param $class                  Reflection_Class
+	 * @param $trait_name             string
+	 * @param $replacement_trait_name string
+	 */
+	protected function compileUse(Reflection_Class $class, $trait_name, $replacement_trait_name)
+	{
+		$buffer           = $class->source->getSource();
+		$short_trait_name = $class->short_trait_names[$trait_name];
+		$buffer           = preg_replace_callback(
+			'%(\s+use\s+)(' . str_replace(BS, BS . BS, $short_trait_name) . ')([;\s])%',
+			function($match) use ($replacement_trait_name) {
+				return $match[1] . BS . $replacement_trait_name . $match[3];
+			},
+			$buffer
+		);
 		$class->source->setSource($buffer);
 	}
 
