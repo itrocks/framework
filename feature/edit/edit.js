@@ -771,7 +771,12 @@ $('document').ready(function()
 					if (data) {
 						if (data.substr(0, 1) === '{') {
 							$.each(JSON.parse(data), function(name, value) {
-								setFieldValue($form, name, value);
+								if ((name.indexOf('#')) > -1 || (name.indexOf('.') > -1)) {
+									$(name).html(value);
+								}
+								else {
+									setFieldValue($form, name, value);
+								}
 							});
 						}
 						else {
