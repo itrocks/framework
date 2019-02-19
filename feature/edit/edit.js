@@ -796,9 +796,12 @@ $('document').ready(function()
 		});
 
 		//------------------------------------------------------- table[data-on-remove] td.minus .click
-		this.inside('table[data-on-remove] .minus').click(function()
+		this.inside('.minus').click(function()
 		{
-			var $this  = $(this);
+			var $this = $(this);
+			if (!$this.closest('table[data-on-remove]').length) {
+				return;
+			}
 			var $table = $this.closest('table[data-on-remove]');
 			// do not execute before the row has been removed : the event happens AFTER removal
 			var call = function() {
