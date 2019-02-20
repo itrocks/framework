@@ -46,10 +46,10 @@
   color: white; }
 
 /* modules windows */
-.window.purchases_order > h2, .window.purchases_orders > h2, .window.purchases_receipt > h2, .window.purchases_receipts > h2, .window.purchases_invoice > h2, .window.purchases_invoices > h2, .window.purchases_credit > h2, .window.purchases_credits > h2, .window.supplier > h2, .window.suppliers > h2 {
+.window.purchase_order > h2, .window.purchase_orders > h2, .window.purchase_receipt > h2, .window.purchase_receipts > h2, .window.purchase_invoice > h2, .window.purchase_invoices > h2, .window.purchase_credit > h2, .window.purchase_credits > h2, .window.supplier > h2, .window.suppliers > h2 {
   background-color: #5184d2;
   color: white; }
-.window.client > h2, .window.clients > h2, .window.sales_quote > h2, .window.sales_quotes > h2, .window.sales_order > h2, .window.sales_orders > h2, .window.sales_invoice > h2, .window.sales_invoices > h2, .window.sales_preparation > h2, .window.sales_preparations > h2, .window.sales_credit > h2, .window.sales_credits > h2, .window.salesman > h2, .window.salesmen > h2, .window.shipping_cost > h2, .window.shipping_costs > h2 {
+.window.client > h2, .window.clients > h2, .window.sale_quote > h2, .window.sale_quotes > h2, .window.sale_order > h2, .window.sale_orders > h2, .window.sale_invoice > h2, .window.sale_invoices > h2, .window.sale_preparation > h2, .window.sale_preparations > h2, .window.sale_credit > h2, .window.sale_credits > h2, .window.salesman > h2, .window.salesmen > h2, .window.shipping_cost > h2, .window.shipping_costs > h2 {
   background-color: #93c437;
   color: white; }
 .window.category > h2, .window.categories > h2, .window.characteristic > h2, .window.characteristics > h2, .window.item > h2, .window.items > h2, .window.media > h2, .window.medias > h2, .window.value > h2, .window.values > h2 {

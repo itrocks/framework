@@ -85,10 +85,10 @@
 
 .window {
 
-	&.purchases_order, &.purchases_orders,
-	&.purchases_receipt, &.purchases_receipts,
-	&.purchases_invoice, &.purchases_invoices,
-	&.purchases_credit, &.purchases_credits,
+	&.purchase_order, &.purchase_orders,
+	&.purchase_receipt, &.purchase_receipts,
+	&.purchase_invoice, &.purchase_invoices,
+	&.purchase_credit, &.purchase_credits,
 	&.supplier, &.suppliers {
 		>h2 {
 			background-color: $blue;
@@ -97,11 +97,11 @@
 	}
 
 	&.client, &.clients,
-	&.sales_quote, &.sales_quotes,
-	&.sales_order, &.sales_orders,
-	&.sales_invoice, &.sales_invoices,
-	&.sales_preparation, &.sales_preparations,
-	&.sales_credit, &.sales_credits,
+	&.sale_quote, &.sale_quotes,
+	&.sale_order, &.sale_orders,
+	&.sale_invoice, &.sale_invoices,
+	&.sale_preparation, &.sale_preparations,
+	&.sale_credit, &.sale_credits,
 	&.salesman, &.salesmen,
 	&.shipping_cost, &.shipping_costs {
 		>h2 {
