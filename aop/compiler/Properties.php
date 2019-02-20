@@ -292,6 +292,9 @@ class Properties
 		}";
 			}
 		}
+		if (!isset($operator) && beginsWith($over['call'], 'parent::')) {
+			return '';
+		}
 		return $over['prototype'] . LF . TAB . TAB . $code . LF . TAB . '}' . LF;
 	}
 
@@ -384,8 +387,10 @@ class Properties
 				}
 			}
 		}
+		if (!isset($switch) && beginsWith($over['call'], 'return parent::')) {
+			return '';
+		}
 		if (isset($switch)) {
-			unset($switch);
 			$code .= '
 		}';
 		}
@@ -517,6 +522,15 @@ class Properties
 			$code .= join('', $over['cases']) . '
 		}';
 		}
+		if (beginsWith($over['call'], 'parent::')) {
+			if (!isset($switch)) {
+				return '';
+			}
+			return $code . '
+		return parent::__set($property_name, $value);
+	}
+';
+		}
 		return $code . '
 		$id_property_name = \'id_\' . $property_name;
 		if (is_object($value) && isset($value->id)) $this->$id_property_name = $value->id;
@@ -556,8 +570,10 @@ class Properties
 				}
 			}
 		}
+		if (!isset($switch) && beginsWith($over['call'], 'parent::')) {
+			return '';
+		}
 		if (isset($switch)) {
-			unset($switch);
 			$code .= '
 		}';
 		}
@@ -578,6 +594,9 @@ class Properties
 	private function compileWakeup()
 	{
 		$over = $this->overrideMethod('__wakeup', false);
+		if (beginsWith($over['call'], 'parent::')) {
+			return '';
+		}
 		return $over['prototype'] . '
 		foreach (array_keys($this->_) as $aop_property) {
 			unset($this->$aop_property);
