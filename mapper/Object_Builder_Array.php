@@ -275,12 +275,7 @@ class Object_Builder_Array
 		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			$property = new Reflection_Property($object, $real_property_name);
-			/*
-			// Evolution proposal, but not freshly tested (and not enough time to do this)
-			$GLOBALS['D'] = true;
-			if (isset($object->_[$real_property_name])) {
-			*/
-			if ($property->getAnnotation('setter')->value) {
+			if (method_exists($object, '_' . $real_property_name . '_write')) {
 				$dao                         = Dao::get($property->getAnnotation('dao')->value);
 				$object->$real_property_name = $dao->read($value, $property->getType()->asString());
 			}
