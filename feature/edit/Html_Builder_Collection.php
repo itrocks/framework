@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
@@ -94,7 +95,9 @@ class Html_Builder_Collection extends Collection
 		$user_remove_annotations = $property_class->getAnnotations('user_remove');
 		$user_removes            = [];
 		foreach ($user_remove_annotations as $user_remove_annotation) {
-			$user_removes[] = $user_remove_annotation->asHtmlData();
+			$user_removes[] = $user_remove_annotation->asHtmlData(
+				($this->property instanceof Reflection_Property_Value) ? $this->property->getObject() : null
+			);
 		}
 		if ($user_removes) {
 			$table->setData('on-remove', join(',', $user_removes));
@@ -149,8 +152,9 @@ class Html_Builder_Collection extends Collection
 				? ($this->preprop . '[' . $this->property->name . ']')
 				: $this->property->name;
 		}
-		$builder = (new Html_Builder_Property($property, $value, $preprop . '[]'));
-		$input   = $builder->setTemplate($this->template)->build();
+		$builder         = (new Html_Builder_Property($property, $value, $preprop . '[]'));
+		$builder->object = $object;
+		$input           = $builder->setTemplate($this->template)->build();
 		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		if (
 			($property->name === reset($this->properties)->name)

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
@@ -28,6 +29,12 @@ use ITRocks\Framework\View\Html\Dom\Element;
  */
 class Html_Builder_Property extends Html_Builder_Type
 {
+
+	//--------------------------------------------------------------------------------------- $object
+	/**
+	 * @var object
+	 */
+	public $object;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
@@ -268,7 +275,14 @@ class Html_Builder_Property extends Html_Builder_Type
 		) {
 			/** @var $user_changes Method_Target_Annotation[] */
 			foreach ($user_changes as $user_change) {
-				$this->on_change[] = $user_change->asHtmlData();
+				$object = ($this->property instanceof Reflection_Property_Value)
+					? $this->property->getObject()
+					: $this->object;
+				if ($object && $user_change->is_composite) {
+					/** @var $object Component */
+					$object = $object->getComposite();
+				}
+				$this->on_change[] = $user_change->asHtmlData($object);
 			}
 		}
 		if (!$this->property->getAnnotation('empty_check')->value) {

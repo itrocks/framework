@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Annotation\Template;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 /**
@@ -34,13 +35,17 @@ class Method_Target_Annotation extends Method_Annotation
 
 	//------------------------------------------------------------------------------------ asHtmlData
 	/**
+	 * @param $object object The reference object, if set
 	 * @return string
 	 */
-	public function asHtmlData()
+	public function asHtmlData($object = null)
 	{
+		$identifier = $object ? Dao::getObjectIdentifier($object) : null;
 		list($class_name, $method_name) = explode('::', $this->value);
 		$class_name = Builder::current()->sourceClassName($class_name);
-		return str_replace(BS, SL, $class_name) . SL . $method_name
+		return str_replace(BS, SL, $class_name)
+			. ($identifier ? (SL . $identifier) : '')
+			. SL . $method_name
 			. ($this->target ? (SP . $this->target) : '');
 	}
 
