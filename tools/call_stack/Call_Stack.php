@@ -173,11 +173,35 @@ class Call_Stack
 		return null;
 	}
 
+	//------------------------------------------------------------------------------------- getMethod
+	/**
+	 * Get top matching method Line
+	 *
+	 * @param $method callable|array if object, must be exactly the same instance
+	 * @return Line|null
+	 */
+	public function getMethod(array $method)
+	{
+		foreach ($this->stack as $stack) {
+			if (
+				isset($stack['args'])
+				&& isset($stack['function']) && ($stack['function'] === $method[1])
+				&& isset($stack['object']) && (
+					(is_object($method[0]) && ($stack['object'] === $method[0]))
+					|| (is_string($method[0]) && isA($stack['object'], $method[0]))
+				)
+			) {
+				return Line::fromDebugBackTraceArray($stack);
+			}
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------- getMethodArgument
 	/**
-	 * Get top function argument value
+	 * Get top matching method argument value
 	 *
-	 * @param $method          array [string $class_name, string $method_name]
+	 * @param $method          callable|array if object, must be exactly the same instance
 	 * @param $argument_number integer argument number (0..n)
 	 * @return mixed null if not found or value was null
 	 */
@@ -187,7 +211,10 @@ class Call_Stack
 			if (
 				isset($stack['args'])
 				&& isset($stack['function']) && ($stack['function'] === $method[1])
-				&& isset($stack['object']) && isA($stack['object'], $method[0])
+				&& isset($stack['object']) && (
+					(is_object($method[0]) && ($stack['object'] === $method[0]))
+					|| (is_string($method[0]) && isA($stack['object'], $method[0]))
+				)
 			) {
 				return $stack['args'][$argument_number];
 			}
