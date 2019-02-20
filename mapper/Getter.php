@@ -6,6 +6,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -226,6 +227,39 @@ abstract class Getter
 			$class_names = array_merge($class_names, self::getFinalClasses($class->name));
 		}
 		return $class_names;
+	}
+
+	//--------------------------------------------------------------------------------------- getLink
+	/**
+	 * Getter call shortcut : do automatically what is needed to call the appropriate getter using
+	 * the property link annotation value
+	 *
+	 * You may call this from your getter that overrides a link annotation
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object        object the object
+	 * @param $property_name string the property to get value of : must exist for the object class
+	 * @return object|object[]
+	 */
+	public static function & getLink($object, $property_name)
+	{
+		/** @noinspection PhpUnhandledExceptionInspection valid object property */
+		$property   = new Reflection_Property($object, $property_name);
+		$class_name = $property->getType()->getElementTypeAsString();
+		$link       = Link_Annotation::of($property);
+		switch ($link->value) {
+			case Link_Annotation::ALL:
+				return static::getAll($object->$property_name, $class_name);
+			case Link_Annotation::COLLECTION:
+				return static::getCollection($object->$property_name, $class_name, $object, $property);
+			case Link_Annotation::DATETIME:
+				return static::getDateTime($object->$property_name);
+			case Link_Annotation::MAP:
+				return static::getMap($object->$property_name, $object, $property);
+			case Link_Annotation::OBJECT:
+				return static::getObject($object->$property_name, $object, $property);
+		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
