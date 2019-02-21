@@ -49,7 +49,8 @@ class Html_Template_Functions extends Functions
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
 		return $property->isVisible(false)
-			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_EDIT);
+			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_EDIT)
+			&& !User_Annotation::of($property)->has(User_Annotation::INVISIBLE_EDIT);
 	}
 
 }

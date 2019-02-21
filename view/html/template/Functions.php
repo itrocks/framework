@@ -1286,7 +1286,8 @@ class Functions
 	protected function isPropertyVisible(Reflection_Property $property)
 	{
 		return $property->isVisible()
-			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_OUTPUT);
+			&& !User_Annotation::of($property)->has(User_Annotation::HIDE_OUTPUT)
+			&& !User_Annotation::of($property)->has(User_Annotation::INVISIBLE_OUTPUT);
 	}
 
 	//--------------------------------------------------------------------------- toEditPropertyExtra
