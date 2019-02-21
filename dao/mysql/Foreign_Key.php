@@ -166,7 +166,8 @@ class Foreign_Key implements Sql\Foreign_Key
 	protected static function foreignKeysOf(
 		mysqli $mysqli, $table_name_column, $table_name, $database_name = null
 	) {
-		$database_name = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+		$database_name     = isset($database_name) ? (Q . $database_name . Q) : 'DATABASE()';
+		$table_name_column = BQ . $table_name_column . BQ;
 
 		/** @var $foreign_keys Foreign_Key[] */
 		$foreign_keys = [];
@@ -181,7 +182,7 @@ class Foreign_Key implements Sql\Foreign_Key
 				`referenced_table_name`  `Reference_table`
 			FROM `information_schema`.`key_column_usage`
 			WHERE `constraint_schema` = $database_name
-			AND `$table_name_column` = '$table_name'
+			AND $table_name_column = '$table_name'
 			AND `referenced_column_name` IS NOT NULL
 			AND `referenced_table_name` IS NOT NULL
 		");
@@ -195,7 +196,7 @@ class Foreign_Key implements Sql\Foreign_Key
 			SELECT `constraint_name` `Constraint`, `delete_rule` `On_delete`, `update_rule` `On_update`
 			FROM `information_schema`.`referential_constraints`
 			WHERE `constraint_schema` = $database_name
-			AND `$table_name_column` = '$table_name'
+			AND $table_name_column = '$table_name'
 		");
 		while ($foreign_key = $result->fetch_object(Foreign_Key::class)) {
 			$foreign_keys[$foreign_key->Constraint]->On_delete = $foreign_key->On_delete;
