@@ -66,9 +66,9 @@ abstract class Files
 	 */
 	public static function delete($path)
 	{
-		$path = self::appendSlash($path);
 		if (is_dir($path)) {
-			$result = true;
+			$path       = self::appendSlash($path);
+			$result     = true;
 			$list_files = scandir($path);
 			foreach ($list_files as $entry) {
 				if (is_dir($path . $entry) && ($entry != DOT) && ($entry != DD)) {
