@@ -128,12 +128,12 @@ class Reflection_Source
 		$this->accept_compiled_source = !empty($file_name);
 		if (isset($file_name)) {
 			if (substr($file_name, 0, 5) === '<?php') {
-				$this->source = $file_name;
+				$this->source  = $file_name;
 				$this->changed = true;
 			}
 			else {
 				$this->file_name = $file_name;
-				$this->changed = false;
+				$this->changed   = false;
 			}
 		}
 		if ($this->internal = (!$file_name && $class_name)) {
@@ -258,7 +258,7 @@ class Reflection_Source
 		$this->getTokens();
 		$tokens_count = count($this->tokens);
 		for ($this->token_key = 0; $this->token_key < $tokens_count; $this->token_key ++) {
-			$token = $this->tokens[$this->token_key];
+			$token    = $this->tokens[$this->token_key];
 			$token_id = $token[0];
 			if (isset($class_end) && is_array($token)) {
 				$class->stop = $token[2] - 1;
