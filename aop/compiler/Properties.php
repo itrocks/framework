@@ -631,7 +631,7 @@ class Properties
 ';
 				}
 				$advice_code = $this->compileAdvice($property_name, Handler::WRITE, $advice, $init);
-				if (strpos($advice_code, ' = ') !== false) {
+				if (strpos($advice_code, '$value = ') !== false) {
 					$advice_code .= LF . TAB . TAB . '$this->' . $property_name . ' = $value;';
 				}
 				$code .= $advice_code;
