@@ -772,7 +772,7 @@ $('document').ready(function()
 						if (data.substr(0, 1) === '{') {
 							$.each(JSON.parse(data), function(name, value) {
 								if ((name.indexOf('#')) > -1 || (name.indexOf('.') > -1)) {
-									$(name).html(value);
+									$(name).html(value).build();
 								}
 								else {
 									setFieldValue($form, name, value);
