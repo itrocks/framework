@@ -37,11 +37,11 @@ class Class_Builder
 	 * @param $get_source        boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] the full name of the built class
 	 */
-	public static function build($class_name, array $interfaces_traits = [], $get_source = false)
+	public function build($class_name, array $interfaces_traits = [], $get_source = false)
 	{
 		$key = join(DOT, $interfaces_traits);
-		if (isset(self::$builds[$class_name][$key])) {
-			return self::$builds[$class_name][$key];
+		if (isset(static::$builds[$class_name][$key])) {
+			return static::$builds[$class_name][$key];
 		}
 		else {
 			$annotations = [];
@@ -90,9 +90,11 @@ class Class_Builder
 					E_USER_ERROR
 				);
 			}
-			$built_class = self::buildClass($class_name, $interfaces, $traits, $annotations, $get_source);
+			$built_class = $this->buildClass(
+				$class_name, $interfaces, $traits, $annotations, $get_source
+			);
 			if (!$get_source) {
-				self::$builds[$class_name][$key] = $built_class;
+				static::$builds[$class_name][$key] = $built_class;
 			}
 			return $built_class;
 		}
@@ -107,7 +109,7 @@ class Class_Builder
 	 * @param $get_source  boolean if true, get built [$name, $source] instead of $name
 	 * @return string|string[] generated class name
 	 */
-	private static function buildClass(
+	protected function buildClass(
 		$class_name, array $interfaces, array $traits, array $annotations, $get_source
 	) {
 		if (!$traits) {
@@ -116,14 +118,14 @@ class Class_Builder
 		end($traits);
 		$end_level        = key($traits);
 		$short_class      = Namespaces::shortClassName($class_name);
-		$namespace_prefix = Namespaces::of(self::builtClassName($class_name));
+		$namespace_prefix = Namespaces::of(static::builtClassName($class_name));
 		$namespace        = $built_class = null;
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $namespace (extends last class)
 			$extends   = (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
 
 			$end       = ($level === $end_level);
-			$count     = isset(self::$builds[$class_name]) ? count(self::$builds[$class_name]) : '';
+			$count     = isset(static::$builds[$class_name]) ? count(static::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 
 			$class = Reflection_Source::ofClass($extends)->getFirstClass();
@@ -140,7 +142,7 @@ class Class_Builder
 			}
 
 			$namespace   = $namespace_prefix . $count . $sub_count;
-			$built_class = $namespace . BS . $short_class;
+			$built_class = $this->buildClassName($namespace, $short_class);
 
 			$annotations_code = ($end && $annotations)
 				? (' *' . LF . ' * ' . join(LF . ' * ', $annotations) . LF)
@@ -171,10 +173,26 @@ class Class_Builder
 				$get_source[$built_class] = $source;
 			}
 			else {
-				self::buildClassSource($built_class, $source);
+				$this->buildClassSource($built_class, $source);
 			}
 		}
 		return $get_source ?: $built_class;
+	}
+
+	//-------------------------------------------------------------------------------- buildClassName
+	/**
+	 * Final part of the building of the name of the class
+	 *
+	 * Default behaviour is to concatenate namespace and class name.
+	 * More can be done by child classes.
+	 *
+	 * @param $namespace        string
+	 * @param $short_class_name string
+	 * @return string
+	 */
+	protected function buildClassName(&$namespace, &$short_class_name)
+	{
+		return $namespace . BS . $short_class_name;
 	}
 
 	//------------------------------------------------------------------------------ buildClassSource
@@ -182,7 +200,7 @@ class Class_Builder
 	 * @param $class_name string
 	 * @param $source     string
 	 */
-	private static function buildClassSource(
+	protected function buildClassSource(
 		/** @noinspection PhpUnusedParameterInspection */ $class_name, $source
 	) {
 		eval($source);
@@ -198,10 +216,10 @@ class Class_Builder
 	 */
 	public static function builtClassName($class_name)
 	{
-		if (self::isBuilt($class_name)) {
+		if (static::isBuilt($class_name)) {
 			return $class_name;
 		}
-		if ($namespace = self::getBuiltNameSpace()) {
+		if ($namespace = static::getBuiltNameSpace()) {
 			// TODO wait for process of database migration to rollback above. see #88021
 			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
 			//return $namespace . $class_name;
@@ -236,7 +254,7 @@ class Class_Builder
 	 */
 	public static function isBuilt($class_name)
 	{
-		return ($namespace = self::getBuiltNameSpace())
+		return ($namespace = static::getBuiltNameSpace())
 			? (substr($class_name, 0, strlen($namespace)) === $namespace)
 			: false;
 	}
@@ -251,10 +269,10 @@ class Class_Builder
 	 */
 	public static function sourceClassName($class_name)
 	{
-		if (!self::isBuilt($class_name)) {
+		if (!static::isBuilt($class_name)) {
 			return $class_name;
 		}
-		if ($namespace = self::getBuiltNameSpace()) {
+		if ($namespace = static::getBuiltNameSpace()) {
 			// SM: temporarily disable patch #88021 (vendor is part of built class_name)
 			//return str_replace($namespace, '', $class_name);
 			// TODO wait for process of database migration to rollback above. see #88021

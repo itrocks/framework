@@ -464,7 +464,7 @@ class Builder implements Activable, Serializable
 						$result = $built_class_name;
 					}
 					else {
-						$result = Class_Builder::build($class_name, $result);
+						$result = (new Class_Builder)->build($class_name, $result);
 					}
 					$this->replacements[$class_name] = $result;
 				}
