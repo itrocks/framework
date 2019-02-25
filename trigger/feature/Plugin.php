@@ -94,7 +94,8 @@ class Plugin implements Registerable
 	 */
 	public function beforeExecuteController(Uri $uri)
 	{
-		$object = $uri->parameters->getMainObject();
+		$parameters = clone $uri->parameters;
+		$object     = $parameters->getMainObject();
 		if (!($identifier = Dao::getObjectIdentifier($object))) {
 			return;
 		}
