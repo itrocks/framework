@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Address;
 /**
  * A Has_Name Person which $name is always replaced by "$first_name $last_name"
  *
+ * @display_order civility, first_name, last_name, name
  * @override civility   @impacts name @setter setNameComponent
  * @override first_name @impacts name @setter setNameComponent
  * @override last_name  @impacts name @setter setNameComponent
