@@ -7,6 +7,7 @@ use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Stringable;
+use ITRocks\Framework\Tools\Value_Lists;
 use ReflectionClass;
 use ReflectionException;
 
@@ -420,6 +421,18 @@ class Reflection_Class extends ReflectionClass
 		return $parent_class ? new Reflection_Class($parent_class->name) : null;
 	}
 
+	//---------------------------------------------------------------------------- getParentClassName
+	/**
+	 * Gets parent class name
+	 *
+	 * @return string
+	 */
+	public function getParentClassName()
+	{
+		$parent_class = parent::getParentClass();
+		return $parent_class ? $parent_class->name : null;
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Gets an array of properties for the class
@@ -460,12 +473,25 @@ class Reflection_Class extends ReflectionClass
 			$parent_class = $this->getParentClass();
 			while ($parent_class) {
 				$parent_class_properties = $parent_class->getProperties(
-					[], $final_class, Reflection_Property::IS_PRIVATE
+					in_array(T_USE, $flags) ? [T_USE] : [], $final_class, Reflection_Property::IS_PRIVATE
 				);
 				$properties   = array_merge($parent_class_properties, $properties);
 				$parent_class = $parent_class->getParentClass();
 			}
 		}
+		// if no T_USE : remove properties from class traits
+		// TODO This crashes, for the moment. Not used, but see what matters
+		/*
+		if ($properties && is_array($flags) && !in_array(T_USE, $flags)) {
+			$trait_properties = [];
+			foreach ($this->getTraits() as $trait) {
+				$trait_properties = array_merge($trait_properties, $trait->getProperties([T_USE]));
+			}
+			if ($trait_properties) {
+				$properties = array_diff_key($properties, $trait_properties);
+			}
+		}
+		*/
 		if (in_array(self::T_SORT, $flags)) {
 			$properties = $this->sortProperties($properties);
 		}
@@ -495,6 +521,7 @@ class Reflection_Class extends ReflectionClass
 			}
 		}
 		// property_name
+		/** @noinspection PhpUnhandledExceptionInspection property_exists */
 		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
 		// TODO Remove null test case if it never happens
 		//if (!$property) {
@@ -574,12 +601,16 @@ class Reflection_Class extends ReflectionClass
 	{
 		/** @var $annotations Display_Order_Annotation[] */
 		if ($annotations = $this->getListAnnotations(Display_Order_Annotation::ANNOTATION)) {
-			$sorted_properties = [];
+			$lists = [];
 			foreach ($annotations as $annotation) {
-				foreach ($annotation->values() as $property_name) {
-					if (isset($properties[$property_name])) {
-						$sorted_properties[$property_name] = $properties[$property_name];
-					}
+				if ($annotation->value) {
+					$lists[] = $annotation->value;
+				}
+			}
+			$sorted_properties = [];
+			foreach ((new Value_Lists($lists))->assembly() as $property_name) {
+				if (isset($properties[$property_name])) {
+					$sorted_properties[$property_name] = $properties[$property_name];
 				}
 			}
 			foreach ($properties as $property_name => $property) {
