@@ -83,7 +83,7 @@ trait Tools
 	public static function propertiesUsingClass($class_names)
 	{
 		$properties = [];
-		foreach ((is_array($class_names) ? $class_names : array($class_names)) as $class_name) {
+		foreach ((is_array($class_names) ? $class_names : [$class_names]) as $class_name) {
 			foreach (static::classesWithPropertiesUsingClass($class_name) as $dependency_class_name) {
 				/** @noinspection PhpUnhandledExceptionInspection comes from valid dependency */
 				$class            = new Reflection_Class($dependency_class_name);

@@ -520,7 +520,7 @@ class Parser
 	 * Change css-like element selector into a selector parts array
 	 *
 	 * @example 'div.class#name:content' will become
-	 *   ['<' => array('div'), '.' => array('class'), '#' => array('name'), ':' => array('content')]
+	 *   ['<' => ['div'], '.' => ['class'], '#' => ['name'], ':' => ['content']]
 	 * @param $selector string
 	 * @return array string[][]
 	 */
