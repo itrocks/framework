@@ -9,6 +9,7 @@ use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
@@ -34,6 +35,12 @@ class Installer
 	 * @var File[] File[string $file_name]
 	 */
 	protected $files = [];
+
+	//----------------------------------------------------------------------- $modified_built_classes
+	/**
+	 * @var string[]
+	 */
+	protected $modified_built_classes = [];
 
 	//---------------------------------------------------------------------------- $plugin_class_name
 	/**
@@ -86,6 +93,7 @@ class Installer
 	 */
 	public function addToClass($base_class_name, $added_interfaces_traits)
 	{
+		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		$file  = $this->openFile(File\Builder::class);
 		$built = $file->search($base_class_name);
 		if (!$built) {
@@ -108,8 +116,36 @@ class Installer
 			$added_interfaces_traits = [$added_interfaces_traits];
 		}
 		foreach ($added_interfaces_traits as $added_interface_trait) {
-			(new Installed\Builder($this->plugin_class_name))
-				->add($base_class_name, $added_interface_trait);
+			if (!beginsWith($added_interface_trait, AT)) {
+				(new Installed\Builder($this->plugin_class_name))
+					->add($base_class_name, $added_interface_trait);
+			}
+		}
+	}
+
+	//------------------------------------------------------------------------------ buildAnnotations
+	/**
+	 * Build dynamic annotations
+	 */
+	public function buildAnnotations()
+	{
+		$exhaustive_class = new Exhaustive_Class($this->files);
+		$modified_built_classes = $this->modified_built_classes;
+		foreach ($modified_built_classes as $class_name) {
+			/** @noinspection PhpUnhandledExceptionInspection must exist */
+			foreach (Dependency::extendsUse($class_name) as $descendent_class_name) {
+				if (
+					isset($exhaustive_class->assembly[$descendent_class_name])
+					&& !isset($modified_built_classes[$descendent_class_name])
+				) {
+					$modified_built_classes[$descendent_class_name] = $descendent_class_name;
+				}
+			}
+		}
+		foreach ($modified_built_classes as $base_class_name) {
+			foreach ($exhaustive_class->classAnnotations($base_class_name) as $name => $raw_value) {
+				$this->addToClass($base_class_name, AT . $name . SP . $raw_value);
+			}
 		}
 	}
 
@@ -204,6 +240,7 @@ class Installer
 	 */
 	public function removeFromClass($base_class_name, array $removed_interfaces_traits)
 	{
+		$this->modified_built_classes[$base_class_name] = $base_class_name;
 		// mark interfaces / traits as removed, without removing them
 		foreach ($removed_interfaces_traits as $removal_key => $removed_interface_trait) {
 			$installed = (new Installed\Builder($this->plugin_class_name))
@@ -289,6 +326,7 @@ class Installer
 	public function saveFiles()
 	{
 		if ($this->files) {
+			$this->buildAnnotations();
 			foreach ($this->files as $file) {
 				$file->write();
 			}
