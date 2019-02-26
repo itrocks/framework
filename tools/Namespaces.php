@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Router;
 
 /**
@@ -14,6 +15,27 @@ abstract class Namespaces
 	 * @var Router
 	 */
 	public static $router;
+
+	//-------------------------------------------------------------------------- applicationNamespace
+	/**
+	 * Gets the namespace of the application where the class is stored
+	 *
+	 * @param $class_name string
+	 * @return string|null
+	 */
+	public static function applicationNamespace($class_name)
+	{
+		$application_namespaces = Application::current()->getNamespaces();
+		// priority to long namespaces, before short namespaces
+		// eg Vendor\Project before Vendor, if a core project exists
+		sort($application_namespaces);
+		foreach (array_reverse($application_namespaces) as $application_namespace) {
+			if (beginsWith($class_name, $application_namespace . BS)) {
+				return $application_namespace;
+			}
+		}
+		return null;
+	}
 
 	//--------------------------------------------------------------------------------- checkFilePath
 	/**
