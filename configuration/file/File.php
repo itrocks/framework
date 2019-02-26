@@ -132,6 +132,9 @@ abstract class File
 	 */
 	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
 	{
+		if (beginsWith($class_name, AT)) {
+			return $class_name;
+		}
 		$final_class_name = null;
 		$used             = '';
 		foreach ($this->use as $use) {

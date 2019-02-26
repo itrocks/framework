@@ -37,6 +37,9 @@ class Writer extends File\Writer
 					$component_count = count($built_class->components);
 					foreach ($built_class->components as $component) {
 						$component_count --;
+						if (beginsWith($component, AT)) {
+							$component = Q . $component . Q;
+						}
 						$line = beginsWith($component, [DQ, Q])
 							? $component
 							: ($this->file->shortClassNameOf($component) . '::class');

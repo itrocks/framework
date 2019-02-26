@@ -42,7 +42,17 @@ class Assembled extends Built
 		}
 		foreach ($interfaces_traits as $interface_trait) {
 			if (!in_array($interface_trait, $this->components)) {
-				$builder->addUseFor($interface_trait, 2);
+				if (beginsWith($interface_trait, AT)) {
+					$annotation_name = lParse($interface_trait, SP);
+					foreach ($this->components as $key => $component) {
+						if (beginsWith($component, $annotation_name)) {
+							unset($this->components[$key]);
+						}
+					}
+				}
+				else {
+					$builder->addUseFor($interface_trait, 2);
+				}
 				// the comparison is done alphabetically, with the short name of the interface / trait
 				$this->components = arrayInsertSorted(
 					$this->components,
@@ -50,6 +60,8 @@ class Assembled extends Built
 					function($class1, $class2) use ($builder) {
 						$class1 = $builder->shortClassNameOf($class1);
 						$class2 = $builder->shortClassNameOf($class2);
+						if (beginsWith($class1, AT)) $class1 = SP . $class1;
+						if (beginsWith($class2, AT)) $class2 = SP . $class2;
 						return strcmp($class1, $class2);
 					}
 				);
