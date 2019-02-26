@@ -306,19 +306,24 @@ class Reflection_Property extends ReflectionProperty
 	 * TODO LOW use $flags ?
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $cache boolean true if save cache
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [T_USE])
+	public function getDocComment(array $flags = [T_USE], $cache = true)
 	{
-		if (!isset($this->doc_comment)) {
+		if (!isset($this->doc_comment) || !$cache) {
 			$overridden_property  = $this->getOverriddenProperty();
 			$declaring_trait_name = $this->getDeclaringTrait()->name;
-			$this->doc_comment    =
+			$doc_comment          =
 				$this->getOverrideDocComment()
 				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. parent::getDocComment()
 				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : '');
+			if ($cache) {
+				$this->doc_comment = $doc_comment;
+			}
+			return $doc_comment;
 		}
 		return $this->doc_comment;
 	}

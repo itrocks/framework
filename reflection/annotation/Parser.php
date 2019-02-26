@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
+use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Annotation_In;
 use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
@@ -96,10 +97,11 @@ class Parser
 	 * @param $annotation_name   string
 	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a
 	 *                           Multiple_Annotation
+	 * @param $local             boolean if true, only local doc-comments is read
 	 * @return Annotation|Annotation[]
 	 */
 	public static function byName(
-		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null
+		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null, $local = false
 	) {
 		$annotation_class = static::getAnnotationClassName(
 			get_class($reflection_object), $annotation_name
@@ -107,7 +109,13 @@ class Parser
 		if (!isset($multiple)) {
 			$multiple = is_a($annotation_class, Multiple_Annotation::class, true);
 		}
-		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
+		$doc_comment = $local
+			? (
+				($reflection_object instanceof Reflection_Property)
+					? $reflection_object->getDocComment([], false)
+					: $reflection_object->getDocComment([])
+				)
+			: $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
 		$annotation  = null;
 		$i           = 0;
