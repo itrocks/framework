@@ -50,7 +50,6 @@ trait Tools
 	 * @param $class_name    string
 	 * @param $include_class boolean if true, $class_name is included if not an abstract class
 	 * @return string[]
-	 * @throws ReflectionException
 	 */
 	public static function extendsUse($class_name, $include_class = false)
 	{
@@ -62,8 +61,14 @@ trait Tools
 			Dependency::class
 		);
 		$class_names = [];
-		if ($include_class && !(new Reflection_Class($class_name))->isAbstract()) {
-			$class_names[$class_name] = $class_name;
+		if ($include_class) {
+			try {
+				if (!(new Reflection_Class($class_name))->isAbstract()) {
+					$class_names[$class_name] = $class_name;
+				}
+			}
+			catch (ReflectionException $exception) {
+			}
 		}
 		foreach ($children as $child) {
 			foreach (static::extendsUse($child->class_name, true) as $child_class_name) {
