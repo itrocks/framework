@@ -600,7 +600,6 @@ class Compiler extends Cache implements
 			) {
 				$parents_count ++;
 				$parent_name = $parent_class->getParentName();
-				flush();
 				if ($parent_name) {
 					if (isset($this->saved_sources[$parent_name])) {
 						$parent_class = $this->saved_sources[$parent_name]->getClasses();

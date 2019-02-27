@@ -40,9 +40,9 @@ class Text_Output
 
 		if ($_SERVER['REMOTE_ADDR'] !== 'console') {
 			echo '</body></html>';
+			ob_flush();
+			flush();
 		}
-		ob_flush();
-		flush();
 	}
 
 	//------------------------------------------------------------------------------------------- log
@@ -61,11 +61,11 @@ class Text_Output
 		}
 		if ($message) {
 			echo $message . ($new_line ? LF : '');
+			if ($_SERVER['REMOTE_ADDR'] !== 'console') {
+				ob_flush();
+				flush();
+			}
 		}
-
-		// Then output the result on-the-flow.
-		ob_flush();
-		flush();
 	}
 
 	//-------------------------------------------------------------------------------------- progress
@@ -114,10 +114,9 @@ class Text_Output
 </head>
 <body>
 EOT;
-		}
-
-		if (ob_get_length() === false) {
-			ob_start();
+			if (ob_get_length() === false) {
+				ob_start();
+			}
 		}
 	}
 
