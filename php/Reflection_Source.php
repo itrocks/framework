@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\Paths;
@@ -501,9 +502,40 @@ class Reflection_Source
 						}
 					}
 
+					// dependency @compatibility
+					preg_match_all(
+						'%\*\s+@compatibility\s+([A-Z].*)%',
+						$doc_comment,
+						$matches,
+						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+					);
+					foreach ($matches as $match) {
+						foreach ($match[1] as $key => $compatibility_value) {
+							list($compatibility_value, $pos) = $match[1];
+							$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+							$compatibility_annotation    = new List_Annotation($compatibility_value);
+							foreach ($compatibility_annotation->values() as $compatibility_class_name) {
+								$compatibility_class_name = $this->fullClassName($compatibility_class_name);
+								$dependency = new Dependency();
+								$dependency->class_name      = $class->name;
+								$dependency->dependency_name = $compatibility_class_name;
+								$dependency->file_name       = $this->file_name;
+								$dependency->line            = $line;
+								$dependency->type            = Dependency::T_COMPATIBILITY;
+								$this->dependencies[] = $dependency;
+								if (!$class->name) {
+									$missing_class_name[] = $dependency;
+								}
+							}
+						}
+					}
+
 					// dependency @feature
 					preg_match_all(
-						'%\*\s+@feature\s+([A-Z].*)%', $doc_comment, $matches, PREG_OFFSET_CAPTURE | PREG_SET_ORDER
+						'%\*\s+@feature\s+([A-Z].*)%',
+						$doc_comment,
+						$matches,
+						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 					);
 					foreach ($matches as $match) {
 						list($title, $pos) = $match[1];

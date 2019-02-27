@@ -15,6 +15,7 @@ class Dependency
 
 	//---------------------------------------------------------------------------------- $type values
 	const T_CLASS         = 'class';
+	const T_COMPATIBILITY = 'compatibility';
 	const T_DECLARATION   = 'declaration';
 	const T_EXTENDS       = 'extends';
 	const T_FEATURE       = 'feature';
@@ -89,8 +90,8 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, declaration, extends, feature, implements, namespace_use, new, param, return,
-	 *         set, static, store, use, var
+	 * @values class, compatibility, declaration, extends, feature, implements, namespace_use, new,
+	 *         param, return, set, static, store, use, var
 	 * @var string
 	 */
 	public $type;
