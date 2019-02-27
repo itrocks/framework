@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Asynchronous;
 use Serializable;
 
 /**
@@ -54,6 +55,14 @@ class Application_Updater implements Configurable, Serializable
 	 * @var resource
 	 */
 	private static $lock_file;
+
+	//------------------------------------------------------------------------------------- $maintain
+	/**
+	 * Launch maintainer when update ends
+	 *
+	 * @var boolean
+	 */
+	public static $maintain = true;
 
 	//-------------------------------------------------------------------------- $nb_max_lock_retries
 	/**
@@ -305,6 +314,20 @@ class Application_Updater implements Configurable, Serializable
 		}
 	}
 
+	//--------------------------------------------------------------------------------- runMaintainer
+	/**
+	 * @return static
+	 */
+	public function runMaintainer()
+	{
+		if (self::$maintain) {
+			$asynchronous = new Asynchronous();
+			$asynchronous->call('/ITRocks/Framework/Dao/Mysql/maintain valid=1 verbose=1');
+			$asynchronous->wait();
+		}
+		return $this;
+	}
+
 	//------------------------------------------------------------------------------------- serialize
 	/**
 	 * @return string the string representation of the object : only class names are kept
@@ -401,3 +424,4 @@ class Application_Updater implements Configurable, Serializable
 	}
 
 }
+

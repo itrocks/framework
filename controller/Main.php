@@ -120,7 +120,9 @@ class Main
 	private function applicationUpdate()
 	{
 		$application_updater = Application_Updater::get();
-		$application_updater->autoUpdate($this);
+		if ($application_updater->autoUpdate($this)) {
+			$application_updater->runMaintainer();
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- close
@@ -548,6 +550,7 @@ class Main
 		}
 
 		$this->running = false;
+
 		return $result;
 	}
 
