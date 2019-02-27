@@ -171,9 +171,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @values T_CLASS, T_INTERFACE, T_TRAIT
-	 * @var integer
+	 * @var integer|null
 	 */
-	public $type;
+	public $type = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -190,7 +190,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		unset($this->line);
 		unset($this->name);
 		unset($this->stop);
-		unset($this->type);
 
 		if (isset($name)) {
 			$this->name = (substr($name, 0, 1) === BS) ? substr($name, 1) : $name;
@@ -802,7 +801,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function getType()
 	{
-		if (!isset($this->type)) {
+		if (!$this->type) {
 			$this->scanUntilClassName();
 		}
 		return $this->type;
