@@ -3,3 +3,4 @@ ITRocks\Framework\Component\Menu:
     - /ITRocks/Framework/Users
     - /ITRocks/Framework/Layout/Models
     - /ITRocks/Framework/RAD/Features
+    - /ITRocks/Framework/Logger/Entries

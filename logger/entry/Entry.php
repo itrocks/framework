@@ -13,6 +13,8 @@ use ITRocks\Framework\User;
  * Log class stores logs information
  *
  * @business
+ * @feature Consulting the software usage log
+ * @feature_menu Administration
  * @list start, stop, duration, uri, data.arguments
  * @representative start, uri
  * @sort -start, uri
