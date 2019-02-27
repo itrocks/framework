@@ -254,7 +254,7 @@ class Installer
 		$file  = $this->openFile(File\Builder::class);
 		$built = $file->search($base_class_name);
 		if ($built instanceof Assembled) {
-			$built->remove($removed_interfaces_traits);
+			$built->remove($removed_interfaces_traits, $file);
 			if (!$built->components) {
 				$file->remove($built);
 			}
