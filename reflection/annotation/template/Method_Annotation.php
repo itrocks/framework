@@ -45,68 +45,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	public function __construct($value, Reflection $class_property, $annotation_name)
 	{
 		if (!empty($value)) {
-			$class = ($class_property instanceof Reflection_Property)
-				? $class_property->getFinalClass()
-				: $class_property;
-			if ($pos = strpos($value, '::')) {
-				$type_annotation = new Type_Annotation(substr($value, 0, $pos));
-				if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
-					$type_annotation->value = BS . $class->getName();
-				}
-				elseif ($type_annotation->value == 'static') {
-					if ($class_property instanceof Reflection_Property) {
-						$class = $class_property->getDeclaringClass();
-					}
-					$type_annotation->value = BS . $class->getName();
-				}
-				elseif ($type_annotation->value == 'composite') {
-					/** @var $composite_property Reflection_Property */
-					$composite_property     = call_user_func([$class->getName(), 'getCompositeProperty']);
-					$type_annotation->value = $composite_property->getType()->asString();
-					$this->is_composite     = true;
-				}
-				// if the property is declared into the final class : try using the class namespace name
-				if (
-					!$this->is_composite
-					&& (
-						!($class_property instanceof Reflection_Property)
-						|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
-					)
-				) {
-					$dependencies = Dao::search(
-						['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
-						Dependency::class
-					);
-					$use = [];
-					foreach ($dependencies as $dependency) {
-						$use[] = $dependency->dependency_name;
-					}
-					$type_annotation->applyNamespace($class->getNamespaceName(), $use);
-				}
-				if (!class_exists($type_annotation->value)) {
-					$this->searchIntoDeclaringTrait($class_property, $type_annotation, $value, $pos);
-				}
-				if (!class_exists($type_annotation->value)) {
-					$this->searchIntoFinalClass($class_property, $type_annotation, $value, $pos);
-				}
-				if (!class_exists($type_annotation->value) && !trait_exists($type_annotation->value)) {
-					trigger_error(
-						sprintf(
-							'Not found full class name for Method_Annotation %s value %s class %s property %s',
-							$annotation_name, $value, $class->getName(), $class_property->getName()
-						),
-						E_USER_ERROR
-					);
-				}
-				$value = $type_annotation->value . substr($value, $pos);
-				$this->static = true;
-			}
-			else {
-				if ($value === true) {
-					$value = Names::propertyToMethod($annotation_name);
-				}
-				$value = $class->getName() . '::' . $value;
-			}
+			$value = $this->completeValue($value, $class_property, $annotation_name);
 		}
 		parent::__construct($value);
 	}
@@ -130,6 +69,80 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			return call_user_func_array($this->value, $arguments);
 		}
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
+	}
+
+	//--------------------------------------------------------------------------------- completeValue
+	/**
+	 * @param $value           string
+	 * @param $class_property  Reflection
+	 * @param $annotation_name string
+	 * @return string
+	 */
+	protected function completeValue($value, Reflection $class_property, $annotation_name)
+	{
+		$class = ($class_property instanceof Reflection_Property)
+			? $class_property->getFinalClass()
+			: $class_property;
+		if ($pos = strpos($value, '::')) {
+			$type_annotation = new Type_Annotation(substr($value, 0, $pos));
+			if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
+				$type_annotation->value = BS . $class->getName();
+			}
+			elseif ($type_annotation->value == 'static') {
+				if ($class_property instanceof Reflection_Property) {
+					$class = $class_property->getDeclaringClass();
+				}
+				$type_annotation->value = BS . $class->getName();
+			}
+			elseif ($type_annotation->value == 'composite') {
+				/** @var $composite_property Reflection_Property */
+				$composite_property     = call_user_func([$class->getName(), 'getCompositeProperty']);
+				$type_annotation->value = $composite_property->getType()->asString();
+				$this->is_composite     = true;
+			}
+			// if the property is declared into the final class : try using the class namespace name
+			if (
+				!$this->is_composite
+				&& (
+					!($class_property instanceof Reflection_Property)
+					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
+				)
+			) {
+				$dependencies = Dao::search(
+					['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
+					Dependency::class
+				);
+				$use = [];
+				foreach ($dependencies as $dependency) {
+					$use[] = $dependency->dependency_name;
+				}
+				$type_annotation->applyNamespace($class->getNamespaceName(), $use);
+			}
+			if (!class_exists($type_annotation->value)) {
+				$this->searchIntoDeclaringTrait($class_property, $type_annotation, $value, $pos);
+			}
+			if (!class_exists($type_annotation->value)) {
+				$this->searchIntoFinalClass($class_property, $type_annotation, $value, $pos);
+			}
+			if (!class_exists($type_annotation->value) && !trait_exists($type_annotation->value)) {
+				trigger_error(
+					sprintf(
+						'Not found full class name for Method_Annotation %s value %s class %s property %s',
+						$annotation_name, $value, $class->getName(), $class_property->getName()
+					),
+					E_USER_ERROR
+				);
+			}
+			$value = $type_annotation->value . substr($value, $pos);
+			$this->static = true;
+		}
+		else {
+			if ($value === true) {
+				$value = Names::propertyToMethod($annotation_name);
+			}
+			$value = $class->getName() . '::' . $value;
+		}
+		return $value;
 	}
 
 	//---------------------------------------------------------------------- searchIntoDeclaringTrait
