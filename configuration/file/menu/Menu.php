@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Component\Menu\Block;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Configuration\File;
+use ITRocks\Framework\Configuration\File\Menu\Exhaustive;
 use ITRocks\Framework\Plugin\Installable\Installed;
 
 /**
@@ -32,7 +33,7 @@ class Menu extends File
 			$block        = new Block();
 			$block->items = [];
 			$block->title = $block_title;
-			$this->blocks = objectInsertSorted($this->blocks, $block, 'title');
+			(new Exhaustive($this))->addBlock($block);
 		}
 		return $block;
 	}
@@ -70,7 +71,7 @@ class Menu extends File
 		if (!$item) {
 			$item           = new Item();
 			$item->link     = $item_link;
-			$block->items[] = $item;
+			(new Exhaustive($this))->addItem($block, $item);
 		}
 		$item->caption = $item_caption;
 		return $item;

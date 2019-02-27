@@ -1,0 +1,5 @@
+ITRocks\Framework\Component\Menu:
+  Administration:
+    - /ITRocks/Framework/Users
+    - /ITRocks/Framework/Layout/Models
+    - /ITRocks/Framework/RAD/Features
