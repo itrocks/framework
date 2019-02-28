@@ -238,6 +238,7 @@ class Html_Builder_Type
 			if ($this->value) {
 				$checkbox->setAttribute('checked');
 			}
+			$this->setOnChangeAttribute($checkbox);
 			$this->commonAttributes($checkbox);
 			return $input . $checkbox;
 		}
