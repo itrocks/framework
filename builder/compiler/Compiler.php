@@ -103,20 +103,29 @@ class Compiler implements ICompiler, Needs_Main
 	 */
 	protected function moreSourcesAddChildren(More_Sources $more_sources)
 	{
-		foreach ($more_sources->added as $source) {
-			$dependencies = Dao::search(
-				[
-					'dependency_name' => $source->getFirstClassName(),
-					'type'            => [Dependency::T_EXTENDS, Dependency::T_USE, Dependency::T_IMPLEMENTS]
-				],
-				Dependency::class
-			);
-			foreach ($dependencies as $dependency) {
-				if (!isset($more_sources->sources[$dependency->file_name])) {
-					$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
-					$more_sources->add($source, $dependency->class_name, null, true);
+		$add_to = $more_sources->added;
+		while ($add_to) {
+			$next_add_to = [];
+			foreach ($add_to as $source) {
+				$dependencies = Dao::search(
+					[
+						'dependency_name' => $source->getFirstClassName(),
+						'type' => [Dependency::T_EXTENDS, Dependency::T_USE, Dependency::T_IMPLEMENTS]
+					],
+					Dependency::class
+				);
+				foreach ($dependencies as $dependency) {
+					if (
+						!isset($more_sources->sources[$dependency->file_name])
+						&& !isset($more_sources->sources[$dependency->class_name])
+					) {
+						$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
+						$more_sources->add($source, $dependency->class_name, null, true);
+						$next_add_to[$dependency->class_name] = $source;
+					}
 				}
 			}
+			$add_to = $next_add_to;
 		}
 	}
 
