@@ -44,6 +44,39 @@ class Class_Builder
 			return static::$builds[$class_name][$key];
 		}
 		else {
+			$classes        = [];
+			$traits_before  = [];
+			$traits_extends = [];
+			foreach ($interfaces_traits as $position => $interface_trait) {
+				if (substr($interface_trait, 0, 1) === AT) {
+					continue;
+				}
+				$class                     = Reflection_Class::of($interface_trait);
+				$classes[$interface_trait] = $class;
+				if ($class->isTrait()) {
+					$extends_annotations = Extends_Annotation::allOf($class);
+					foreach ($extends_annotations as $extends_annotation) {
+						foreach ($extends_annotation->values() as $extends) {
+							if (Dao::search(
+								['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
+								Dependency::class
+							)) {
+								$traits_extends[$interface_trait][$extends] = $extends;
+							}
+						}
+					}
+					if (isset($traits_extends[$interface_trait])) {
+						foreach ($traits_extends[$interface_trait] as $extends) {
+							if (in_array($extends, $interfaces_traits) && !isset($traits_before[$extends])) {
+								unset($interfaces_traits[$position]);
+								$interfaces_traits[] = $interface_trait;
+								continue 2;
+							}
+						}
+					}
+					$traits_before[$interface_trait] = true;
+				}
+			}
 			$annotations = [];
 			$interfaces  = [];
 			$traits      = [];
@@ -54,7 +87,7 @@ class Class_Builder
 					continue;
 				}
 				// Interface\Name::class
-				$class = Reflection_Class::of($interface_trait);
+				$class = $classes[$interface_trait];
 				if ($class->isInterface()) {
 					$interfaces[$interface_trait] = $interface_trait;
 					continue;
@@ -64,18 +97,12 @@ class Class_Builder
 					foreach ($class->getListAnnotation('implements')->values() as $implements) {
 						$interfaces[$implements] = $implements;
 					}
-					$extends_annotations = Extends_Annotation::allOf($class);
-					$level               = 0;
-					foreach ($extends_annotations as $extends_annotation) {
-						foreach ($extends_annotation->values() as $extends) {
-							if (Dao::search(
-								['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
-								Dependency::class
-							)) {
-								foreach ($traits as $trait_level => $trait_names) {
-									if (isset($trait_names[$extends])) {
-										$level = max($level, $trait_level + 1);
-									}
+					$level = 0;
+					if (isset($traits_extends[$interface_trait])) {
+						foreach ($traits_extends[$interface_trait] as $extends) {
+							foreach ($traits as $trait_level => $trait_names) {
+								if (isset($trait_names[$extends])) {
+									$level = max($level, $trait_level + 1);
 								}
 							}
 						}
