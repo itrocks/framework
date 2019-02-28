@@ -262,8 +262,14 @@ $('document').ready(function()
 			else {
 				$element.removeData('combo-value');
 			}
-			$element.prev().val(id);
-			$element.val(value);
+			if ($element.prev().val() !== id) {
+				$element.prev().val(id);
+				$element.prev().change();
+			}
+			if ($element.val() !== value) {
+				$element.val(value);
+				$element.change();
+			}
 		};
 
 		//------------------------------------------------------------------------ input.combo comboUri
