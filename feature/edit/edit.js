@@ -294,7 +294,7 @@ $('document').ready(function()
 						);
 					var $filter_element = is_constant
 						? { length: 0 }
-						: $($element.get(0).form).find('[name=' + DQ + filter[1] + DQ + ']');
+						: $element.closest('form').find('[name=' + DQ + filter[1] + DQ + ']');
 					if ($filter_element.length) {
 						request['filters[' + filter[0] + ']'] = $filter_element.val();
 					}
@@ -610,7 +610,7 @@ $('document').ready(function()
 					$condition = will_change[condition[0]];
 				}
 				else {
-					$condition = $($this.get(0).form).find('[name=' + DQ + condition[0] + DQ + ']');
+					$condition = $this.closest('form').find('[name=' + DQ + condition[0] + DQ + ']');
 					will_change[condition[0]] = $condition;
 				}
 				var condition_name = $condition.attr('name');
