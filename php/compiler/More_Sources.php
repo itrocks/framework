@@ -23,11 +23,15 @@ class More_Sources
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $sources Reflection_Source[]
+	 * @param $sources      Reflection_Source[]
+	 * @param $more_sources Reflection_Source[]
 	 */
-	public function __construct(array& $sources)
+	public function __construct(array& $sources, array& $more_sources = null)
 	{
 		$this->sources =& $sources;
+		if ($more_sources) {
+			$this->added =& $more_sources;
+		}
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -40,9 +44,10 @@ class More_Sources
 	public function add(
 		Reflection_Source $source, $class_name, $file_name = null, $add_to_sources = false
 	) {
-		$this->added[$class_name ?: $file_name] = $source;
+		$add_key               = ($class_name ?: $file_name);
+		$this->added[$add_key] = $source;
 		if ($add_to_sources) {
-			$this->sources[$file_name ?: $class_name] = $source;
+			$this->sources[$add_key] = $source;
 		}
 	}
 

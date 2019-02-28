@@ -251,7 +251,20 @@ class Compiler extends Cache implements
 				);
 			}
 		}
-		$this->more_sources[$source->getFirstClassName() ?: $source->file_name] = $source;
+		// Don't do this with More_Sources, because add more only if not already into saved / sources
+		// This works in 'existing source replacement mode'
+		$source_key = $source->getFirstClassName() ?: $source->file_name;
+		if (isset($this->saved_sources[$source_key])) {
+			$this->saved_sources[$source_key] = $source;
+			$added = true;
+		}
+		if (isset($this->sources[$source_key])) {
+			$this->sources[$source_key] = $source;
+			$added = true;
+		}
+		if (isset($this->more_sources[$source_key]) || !isset($added)) {
+			$this->more_sources[$source_key] = $source;
+		}
 	}
 
 	//-------------------------------------------------------------------------- cacheFileNameToClass
