@@ -149,6 +149,7 @@ class Linked_Classes_Compiler implements ICompiler
 						/** @var $dependency Dependency */
 						if (
 							!isset($more_sources->sources[$dependency->file_name])
+							&& !isset($more_sources->sources[$dependency->class_name])
 							&& !Class_Builder::isBuilt($dependency->class_name)
 						) {
 							$more_sources->add(
