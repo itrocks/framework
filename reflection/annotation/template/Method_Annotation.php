@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Template;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Event;
 use ITRocks\Framework\PHP\Dependency;
@@ -80,9 +81,17 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 */
 	protected function completeValue($value, Reflection $class_property, $annotation_name)
 	{
-		$class = ($class_property instanceof Reflection_Property)
-			? $class_property->getFinalClass()
-			: $class_property;
+		if ($class_property instanceof Reflection_Property) {
+			$class = (
+				($class_property instanceof Framework\Reflection\Reflection_Property)
+				&& strpos($class_property->path, DOT)
+			)
+				? $class_property->getRootClass()
+				: $class_property->getFinalClass();
+		}
+		else {
+			$class = $class_property;
+		}
 		if ($pos = strpos($value, '::')) {
 			$type_annotation = new Type_Annotation(substr($value, 0, $pos));
 			if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {

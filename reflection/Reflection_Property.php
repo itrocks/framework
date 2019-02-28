@@ -323,9 +323,16 @@ class Reflection_Property extends ReflectionProperty
 			if ($cache) {
 				$this->doc_comment = $doc_comment;
 			}
-			return $doc_comment;
 		}
-		return $this->doc_comment;
+		else {
+			$doc_comment = $this->doc_comment;
+		}
+		if (strpos($this->path, DOT)) {
+			$doc_comment = LF . Parser::DOC_COMMENT_IN . $this->root_class . LF
+				. $this->getOverrideRootDocComment()
+				. $doc_comment;
+		}
+		return $doc_comment;
 	}
 
 	//--------------------------------------------------------------------------------- getEmptyValue
@@ -423,8 +430,37 @@ class Reflection_Property extends ReflectionProperty
 			if ($annotation->property_name === $this->name) {
 				$comment .= '/**' . LF;
 				foreach ($annotation->values() as $key => $value) {
-					$comment .= Parser::DOC_COMMENT_IN . $annotation->class_name . LF;
-					$comment .= TAB . SP . '*' . SP . AT . $key . SP . $value . LF;
+					$comment .= Parser::DOC_COMMENT_IN . $annotation->class_name . LF
+						. TAB . SP . '*' . SP . AT . $key . SP . $value . LF;
+				}
+				$comment .= TAB . SP . '*/';
+			}
+		}
+		return $comment;
+	}
+
+	//--------------------------------------------------------------------- getOverrideRootDocComment
+	/**
+	 * In case of property.path : return override property.path values from the root class that
+	 * match property.path
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string
+	 */
+	private function getOverrideRootDocComment()
+	{
+		$comment = '';
+		/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
+		foreach (
+			(new Reflection_Class($this->root_class))->getListAnnotations('override') as $annotation
+		) {
+			/** @var $annotation Override_Annotation */
+			if ($annotation->property_name === $this->path) {
+				$comment .= '/**' . LF;
+				foreach ($annotation->values() as $key => $value) {
+					$comment .= Parser::DOC_COMMENT_IN . $annotation->class_name
+						. SP . '@override' . SP . $this->path . LF
+						. TAB . SP . '*' . SP . AT . $key . SP . $value . LF;
 				}
 				$comment .= TAB . SP . '*/';
 			}
