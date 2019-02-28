@@ -37,7 +37,6 @@ trait Is_Immutable
 			return;
 		}
 
-		// TODO this "form cleanup" code must be generalized into a cleanup plugin
 		$search = Search_Object::create(get_class($this));
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties() as $property) {
@@ -48,13 +47,6 @@ trait Is_Immutable
 				&& $property->getAnnotation('immutable')->value
 				&& ($value = $property->getValue($this))
 			) {
-				if (is_string($value)) {
-					$clean_value = preg_replace('#\s+#', ' ', trim($value));
-					if ($clean_value !== $value) {
-						$value = $clean_value;
-						$property->setValue($this, $value);
-					}
-				}
 				$property->setValue($search, is_null($value) ? Func::isNull() : Func::equal($value));
 			}
 		}
