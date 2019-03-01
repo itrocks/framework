@@ -40,7 +40,7 @@ class Writer extends File\Writer
 				}
 				if ($block instanceof Block) {
 					$component_count = count($block->items);
-					if (($component_count === 1) && ($block->items[0] === 'Menu::ALL => Menu::CLEAR')) {
+					if (($component_count === 1) && (reset($block->items) === 'Menu::ALL => Menu::CLEAR')) {
 						$last_line_key = count($this->lines);
 						$this->lines[] = TAB . Q . str_replace(Q, BS . Q, $block->title) . Q
 							. ' => [Menu::ALL => Menu::CLEAR]';
