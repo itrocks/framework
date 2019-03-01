@@ -45,7 +45,7 @@ abstract class Additional_Annotations
 				? file_get_contents($cached_annotations_file)
 				: '';
 			if ($buffer !== $cache) {
-				file_put_contents($cached_annotations_file, $buffer);
+				script_put_contents($cached_annotations_file, $buffer);
 			}
 		}
 		else {

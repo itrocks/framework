@@ -399,7 +399,7 @@ class Weaver implements IWeaver
 	{
 		$this->file_name = $file_name;
 		// write new weaver.php file content
-		file_put_contents(
+		script_put_contents(
 			$file_name,
 			'<?php' . LF . LF
 			. '$plugins = ' . Session::class . '::current()->plugins;' . LF . LF

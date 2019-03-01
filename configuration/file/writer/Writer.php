@@ -126,7 +126,7 @@ class Writer
 	protected function writeBuffer($write_buffer)
 	{
 		if (file_get_contents($this->file->file_name) !== $write_buffer) {
-			file_put_contents($this->file->file_name, $write_buffer);
+			script_put_contents($this->file->file_name, $write_buffer);
 		}
 	}
 

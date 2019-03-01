@@ -84,7 +84,7 @@ class Template_Compiler implements Registerable, Updatable
 			$assets[] = TAB . $asset;
 		}
 		$content = preg_replace(static::HOOK, implode('', $assets), $content);
-		file_put_contents($this->getCompiledPath(), $content);
+		script_put_contents($this->getCompiledPath(), $content);
 	}
 
 }

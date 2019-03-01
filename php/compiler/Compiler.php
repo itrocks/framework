@@ -394,6 +394,9 @@ class Compiler extends Cache implements
 			&& file_exists($file_name)
 			&& !isset($this->has_changed[$source->file_name])
 		) {
+			if ($GLOBALS['D']) {
+				echo "<strong>unlink($file_name)</strong><br>";
+			}
 			unlink($file_name);
 			$this->addMoreDependentSources($class_name);
 			$this->replaceDependencies($source);

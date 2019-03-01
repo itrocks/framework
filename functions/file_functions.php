@@ -39,6 +39,17 @@ function directoryIsEmpty($directory)
 	return is_dir($directory) && (count(scandir($directory)) === 2);
 }
 
+//------------------------------------------------------------------------------ opcache_invalidate
+/**
+ * @param $filename string
+ */
+if (!function_exists('opcache_invalidate')) {
+	function opcache_invalidate($filename)
+	{
+		// if there is no opcache, there is nothing to do
+	}
+}
+
 //----------------------------------------------------------------------------- script_put_contents
 /**
  * Identical than file_put_contents, but must be used instead for PHP files in order to invalidate
@@ -49,12 +60,9 @@ function directoryIsEmpty($directory)
  */
 function script_put_contents($filename, $data)
 {
-	if (file_put_contents($filename, $data)) {
-		if (function_exists('opcache_invalidate') && (substr($filename, -4) == '.php')) {
-			/** @noinspection PhpComposerExtensionStubsInspection function_exists called */
-			opcache_invalidate($filename, true);
-		}
-	}
+	file_put_contents($filename, $data);
+	clearstatcache(true, $filename);
+	opcache_invalidate($filename);
 }
 
 //---------------------------------------------------------------------------------- unlinkIfExists
@@ -67,10 +75,5 @@ function script_put_contents($filename, $data)
 function unlinkIfExists($filename)
 {
 	clearstatcache(true, $filename);
-	if (file_exists($filename)) {
-		return unlink($filename);
-	}
-	else {
-		return null;
-	}
+	return file_exists($filename) ? unlink($filename) : null;
 }
