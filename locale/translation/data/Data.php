@@ -9,6 +9,7 @@ use ITRocks\Framework\Locale\Loc;
 /**
  * Application data translation
  *
+ * @business
  * @representative class_name, property_name, language.code, translation
  * @store_name data_translations
  */

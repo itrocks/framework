@@ -85,6 +85,14 @@ class Maintainer implements Configurable, Registerable
 	 */
 	private $already = [];
 
+	//-------------------------------------------------------------------------- $create_empty_tables
+	/**
+	 * Set this to true if you want empty implicit tables to be created even if it will be empty
+	 *
+	 * @var boolean
+	 */
+	public $create_empty_tables = false;
+
 	//------------------------------------------------------------------------------ $exclude_classes
 	/**
 	 * @var string[] Class names
@@ -649,7 +657,7 @@ class Maintainer implements Configurable, Registerable
 		Contextual_Mysqli $mysqli, $query = null, $class_name = null
 	) {
 		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
-			foreach ($mysqli->context as $context_class_name) {
+			if ($mysqli->context) foreach ($mysqli->context as $context_class_name) {
 				$same_table = false;
 				if ($context_class_name === $class_name) {
 					$same_table = true;
@@ -730,7 +738,7 @@ class Maintainer implements Configurable, Registerable
 
 		// do not create empty implicit table if does not already exist
 		// will be automatically created on first needed use
-		if ($mysqli->exists($table_name)) {
+		if ($this->create_empty_tables || $mysqli->exists($table_name)) {
 			$context         = $mysqli->context;
 			$mysqli->context = [$class_name, $foreign_class_name];
 			$this->updateTableStructure($table, new Table_Builder_Class(), $mysqli);
