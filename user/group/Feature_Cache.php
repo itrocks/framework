@@ -149,11 +149,15 @@ class Feature_Cache
 		$php_files_features  = [];
 		$yaml_files_features = [];
 		foreach ($files as $filename) {
-			if (substr($filename, -5) === '.yaml') {
-				if (substr($filename, 0, 34) !== 'itrocks/framework/user/group/defaults/')
+			if (endsWith($filename, '.yaml')) {
+				if (
+					!beginsWith($filename, 'itrocks/framework/user/group/defaults/')
+					&& !endsWith($filename, '/exhaustive.yaml')
+				) {
 					$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
+				}
 			}
-			elseif (substr($filename, -4) === '.php') {
+			elseif (endsWith($filename, '.php')) {
 				$php_files_features = array_merge($php_files_features, $this->scanPhpFile($filename));
 			}
 		}
