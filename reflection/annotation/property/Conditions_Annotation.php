@@ -5,6 +5,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * Conditions annotation
@@ -38,10 +39,17 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 				}
 				else {
 					$property_name = $condition;
+					if (beginsWith($property_name, '!')) {
+						$condition     = '@empty';
+						$property_name = substr($property_name, 1);
+					}
+					elseif ($this->typeOf($property, $property_name)->isClass()) {
+						$condition = '@set';
+					}
 				}
 				if (
 					in_array($condition, [_FALSE, _TRUE])
-					&& $property->getFinalClass()->getProperty($property_name)->getType()->isBoolean()
+					&& $this->typeOf($property, $property_name)->isBoolean()
 				) {
 					$condition = ($condition === _TRUE) ? 1 : 0;
 				}
@@ -92,6 +100,17 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 			$html_conditions[] = $condition_name . '=' . $condition_value;
 		}
 		return join(';', $html_conditions);
+	}
+
+	//---------------------------------------------------------------------------------------- typeOf
+	/**
+	 * @param $property      Reflection_Property
+	 * @param $property_name string
+	 * @return Type
+	 */
+	protected function typeOf(Reflection_Property $property, $property_name)
+	{
+		return $property->getFinalClass()->getProperty($property_name)->getType();
 	}
 
 }

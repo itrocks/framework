@@ -616,7 +616,13 @@ $('document').ready(function()
 					$condition = will_change[condition[0]];
 				}
 				else {
-					$condition = $this.closest('form').find('[name=' + DQ + condition[0] + DQ + ']');
+					$condition = $this.closest('form').find('[name="id_' + condition[0] + DQ + ']');
+					if ($condition.length) {
+						$condition = $condition.next();
+					}
+					else {
+						$condition = $this.closest('form').find('[name=' + DQ + condition[0] + DQ + ']');
+					}
 					will_change[condition[0]] = $condition;
 				}
 				var condition_name = $condition.attr('name');
@@ -666,7 +672,16 @@ $('document').ready(function()
 								var element_value = (element_type === 'checkbox')
 									? (element.is(':checked') ? 1 : 0)
 									: element.val();
-								return !(found = (element_value === value));
+								if (value === '@empty') {
+									found = !element_value.length;
+								}
+								else if (value === '@set') {
+									found = element_value.length;
+								}
+								else {
+									found = (element_value === value);
+								}
+								return !found;
 							});
 							return (show = found);
 						});
