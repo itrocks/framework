@@ -3,11 +3,11 @@ namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
-use ITRocks\Framework\Feature\Edit\Widgets\Collection_As_Map;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Widget\Collection_As_Map;
 
 /**
  * Source of data link classes that use a map between internal identifiers and business objects
@@ -28,22 +28,18 @@ abstract class Identifier_Map extends Data_Link
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object object to disconnect from data source
+	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public function disconnect($object)
+	public function disconnect($object, $load_linked_objects = false)
 	{
-		if (isset($object->id)) {
-			unset($object->id);
-		}
 		// disconnect component objects, including collection elements
 		/** @noinspection PhpUnhandledExceptionInspection $object is an object */
 		foreach ((new Reflection_Class($object))->getProperties([T_EXTENDS, T_USE]) as $property) {
-			$property_name = $property->name;
+			$property_name   = $property->name;
+			$link_annotation = Link_Annotation::of($property);
 			if (
-				(
-					Link_Annotation::of($property)->isCollection()
-					|| $property->getAnnotation('component')->value
-				)
+				($link_annotation->isCollection() || $property->getAnnotation('component')->value)
 				&& !empty($object->$property_name)
 				&& !is_a(Widget_Annotation::of($property)->value, Collection_As_Map::class, true)
 			) {
@@ -57,6 +53,12 @@ abstract class Identifier_Map extends Data_Link
 					$this->disconnect($value);
 				}
 			}
+			elseif ($load_linked_objects && $link_annotation->isMap()) {
+				$object->$property_name;
+			}
+		}
+		if (isset($object->id)) {
+			unset($object->id);
 		}
 	}
 

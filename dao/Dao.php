@@ -179,12 +179,13 @@ class Dao implements Configurable
 	/**
 	 * Disconnect an object from current data link
 	 *
-	 * @param $object object object to disconnect from data source
+	 * @param $object              object object to disconnect from data source
+	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	public static function disconnect($object)
+	public static function disconnect($object, $load_linked_objects = false)
 	{
-		self::current()->disconnect($object);
+		self::current()->disconnect($object, $load_linked_objects);
 	}
 
 	//-------------------------------------------------------------------------------------- distinct

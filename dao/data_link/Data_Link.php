@@ -166,10 +166,11 @@ abstract class Data_Link
 	/**
 	 * Disconnect an object from current data link
 	 *
-	 * @param $object object object to disconnect from data source
+	 * @param $object              object object to disconnect from data source
+	 * @param $load_linked_objects boolean if true, load linked objects before disconnect
 	 * @see Data_Link::disconnect()
 	 */
-	abstract public function disconnect($object);
+	abstract public function disconnect($object, $load_linked_objects = false);
 
 	//---------------------------------------------------------------------------------- escapeString
 	/**
