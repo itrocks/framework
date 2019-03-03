@@ -9,7 +9,8 @@ $('document').ready(function()
 		}
 
 		// close main window
-		var $main_window = $('#main').children(selector);
+		var $main = $('#main');
+		var $main_window = $main.children(selector);
 		if ($main_window.length) {
 			var $close_anchor = $main_window.find('.actions > .close > a');
 			if ($close_anchor.length) {
@@ -19,7 +20,7 @@ $('document').ready(function()
 				$main_window.remove();
 			}
 			else {
-				refresh($('#main'));
+				refresh($main);
 			}
 		}
 
@@ -45,7 +46,9 @@ $('document').ready(function()
 		if (identifier) {
 			closeWindows(class_name, identifier);
 		}
-		closeWindows(set_class_name);
+		if (set_class_name) {
+			closeWindows(set_class_name);
+		}
 	});
 
 });
