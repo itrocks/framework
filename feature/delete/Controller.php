@@ -39,10 +39,9 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected function confirm(Parameters $parameters, $form, $files, $class_name)
 	{
-		$parameters->set(
-			'delete_link',
-			View::link($parameters->getMainObject(), Feature::F_DELETE, null, static::CONFIRM)
-		);
+		$link = $parameters->uri->uri;
+		$link .= (strpos($link, '?') ? '&' : '?') . static::CONFIRM;
+		$parameters->set('delete_link', $link);
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
 
 		if ($form) {
