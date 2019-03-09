@@ -41,22 +41,24 @@ class Editor implements Configurable
 	/**
 	 * Allow build the class that will generate the online editor.
 	 *
-	 * @example ckeditor full version : class name is 'ckeditor-' version (ckeditor-full)
+	 * @example ckeditor full version : class name is name-version (ckeditor-full)
 	 * @param $version string
 	 * @return string
 	 */
 	public static function buildClassName($version)
 	{
 		$settings = Session::current()->plugins->get(Editor::class)->settings;
-		// If it's string character, a parameter has been passed to the property.
-		// else not parameter, use default setting
-		if (is_string($version)) {
-			$class_name = $settings['name'] . '-' . $version;
+		$version  = trim($version);
+		if (strpos($version, SP)) {
+			$build_name    = trim(lLastParse($version, SP));
+			$build_version = trim(lLastParse($version, SP));
 		}
 		else {
-			$class_name = $settings['name'] . '-' . $settings['default_version'];
+			$build_name = $build_version = null;
 		}
-		return $class_name;
+		$name    = $build_name ?: $settings['name'];
+		$version = $build_version ?: $version ?: $settings['default_version'];
+		return $name . '-' . $version;
 	}
 
 }

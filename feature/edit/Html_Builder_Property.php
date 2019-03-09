@@ -333,8 +333,8 @@ class Html_Builder_Property extends Html_Builder_Type
 		);
 		if ($this->property->getAnnotation('editor')->value) {
 			// @TODO Low : When declaring a editor, it would have to be a default multiline
-			$version_editor = $this->property->getAnnotation('editor')->value;
-			$element->addClass(Editor::buildClassName($version_editor));
+			$editor_name = $this->property->getAnnotation('editor')->value;
+			$element->addClass(Editor::buildClassName($editor_name));
 		}
 		if (
 			Encrypt_Annotation::of($this->property)->value
