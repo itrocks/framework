@@ -13,7 +13,7 @@
 		var autoHeight = function()
 		{
 			var $this           = $(this);
-			var previous_height = parseInt($this.attr('ui-text-height'));
+			var previous_height = parseInt($this.data('ui-text-height'));
 			var new_height      = Math.min(getInputTextHeight($this), settings.maximum);
 
 			var line_height = function($element)
@@ -29,7 +29,7 @@
 			}($this);
 
 			new_height = Math.round(new_height / line_height) * line_height + 1;
-			$this.attr('ui-text-height', new_height);
+			$this.data('ui-text-height', new_height);
 			if (new_height !== previous_height) {
 				$this.height(new_height);
 			}
