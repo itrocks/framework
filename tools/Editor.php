@@ -51,7 +51,7 @@ class Editor implements Configurable
 		$version  = trim($version);
 		if (strpos($version, SP)) {
 			$build_name    = trim(lLastParse($version, SP));
-			$build_version = trim(lLastParse($version, SP));
+			$build_version = trim(rLastParse($version, SP));
 		}
 		else {
 			$build_name = $build_version = null;
