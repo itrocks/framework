@@ -2,6 +2,8 @@ $('document').ready(function()
 {
 	var $form = $('form');
 
+	CKEDITOR.disableAutoInline = true;
+
 	$form.build(function()
 	{
 		if (!this.length) return;
