@@ -52,7 +52,10 @@ getInputTextWidth = function(context)
 
 getTextContentAsArray = function($context)
 {
-	return $context.val().replace('<', '&lt;').replace('>', '&gt;').split("\n");
+	var text = $context.is('div')
+		? $context.html().replace('<br>', "\n").replace('<p>', "\n\n")
+		: $context.val();
+	return text.replace('<', '&lt;').replace('>', '&gt;').split("\n");
 };
 
 //----------------------------------------------------------------------------------- getTextHeight
