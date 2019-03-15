@@ -132,3 +132,6 @@ ul.actions > li.rows_count {
   text-align: right; }
 ul.actions > li.select_count:not(.selected) {
   display: none; }
+
+.popup .property.edit.window fieldset > div > div {
+  white-space: inherit; }

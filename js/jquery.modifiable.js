@@ -64,7 +64,8 @@ window.modifiable_waiting  = false;
 				$input.autoWidth();
 
 				//----------------------------------------------------------------------------- $input done
-				var done = function () {
+				var done = function()
+				{
 					var ajax = settings.ajax;
 					if (typeof(ajax) === 'string') {
 						for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
@@ -78,7 +79,7 @@ window.modifiable_waiting  = false;
 						ajax = {
 							url:    ajax,
 							target: settings.target,
-							success: function (data, status, xhr)
+							success: function(data, status, xhr)
 							{
 								var destination = xhr.target;
 								$(destination).html(data);
@@ -117,7 +118,8 @@ window.modifiable_waiting  = false;
 				};
 
 				//------------------------------------------------------------------ $input keydown=ESC/RET
-				$input.keydown(function (event) {
+				$input.keydown(function(event)
+				{
 					if (event.keyCode === 13) {
 						done();
 					}
@@ -129,7 +131,7 @@ window.modifiable_waiting  = false;
 				});
 
 				//------------------------------------------------------------- $input, popup elements blur
-				var blur = function ()
+				var blur = function()
 				{
 					setTimeout(function() {
 						if (($popup === undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
@@ -158,7 +160,8 @@ window.modifiable_waiting  = false;
 					});
 					$.ajax({
 						url: popup,
-						success: function(data) {
+						success: function(data)
+						{
 							$popup.html(data).build();
 							$popup.appendTo('body');
 							$popup.find('input, select, textarea').blur(blur);
