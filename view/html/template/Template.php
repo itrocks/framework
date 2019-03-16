@@ -1978,6 +1978,8 @@ class Template
 	/**
 	 * Replace link with correct link path
 	 *
+	 * Commonly called for action=, link href=, location=
+	 *
 	 * @param $link string
 	 * @return string
 	 */
@@ -1998,6 +2000,8 @@ class Template
 	//---------------------------------------------------------------------------------- replaceLinks
 	/**
 	 * Replace links with correct absolute paths into $content
+	 *
+	 * Commonly called for a href=, action=, location=
 	 *
 	 * @param $content string
 	 * @return string updated content
@@ -2050,6 +2054,8 @@ class Template
 	/**
 	 * Replace URI with correct URI path
 	 *
+	 * Commonly called for @import, link href=, src=, loadScript( of gif, jpg, png, css, js files
+	 *
 	 * @param $uri string
 	 * @return string updated uri
 	 */
@@ -2092,6 +2098,8 @@ class Template
 	//----------------------------------------------------------------------------------- replaceUris
 	/**
 	 * Replace URIs with correct URIs paths into $content
+	 *
+	 * Commonly called for @import, link href=, src=, loadScript( of gif, jpg, png, css, js files
 	 *
 	 * @param $content string
 	 * @return string updated content
