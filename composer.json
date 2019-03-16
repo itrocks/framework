@@ -11,6 +11,7 @@
 	"repositories": [{ "type": "composer", "url": "https://hub.itrocks.org" }],
 	"require": {
 		"alvaro-prieto/colResizable":            "1.6",
+		"apache-incubator/echarts":              "1.4.1",
 		"bappli/document-designer":              "dev-master",
 		"components/flag-icon-css":              "3.*",
 		"components/jquery":                     "2.*",
@@ -44,6 +45,7 @@
 		"pear/net_smtp":                         "1.*",
 		"php":                                   "5.6.* || 7.1.*",
 		"phpunit/phpunit": 											 "5.*",
+		"quilljs/quill":                         "1.3.6",
 		"setasign/fpdi-tcpdf":                   "1.*",
 		"tecnickcom/tcpdf":                      "6.*"
 	},
