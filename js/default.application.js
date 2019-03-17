@@ -42,7 +42,7 @@ $('document').ready(function()
 		});
 
 		// minimize menu
-		this.inside('.menu.output').minimize({ absolute_next: true });
+		$('#menu').minimize({ absolute_next: true });
 
 		// change all titles attributes to tooltips
 		this.tooltip();
