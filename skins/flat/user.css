@@ -1,0 +1,4 @@
+.connected.user > a > .disconnect {
+  display: none; }
+.connected.user > .user {
+  display: none; }

@@ -11,6 +11,7 @@ $('document').ready(function()
 
 		var addProperty = function($object, property_name, before_after, before_after_property_name)
 		{
+			console.log($object, $object.closest('.list.window'));
 			var $window    = $object.closest('.list.window');
 			var app        = window.app;
 			var class_name = $window.data('class').repl(BS, SL);
@@ -128,10 +129,10 @@ $('document').ready(function()
 				var draggable_left = ui.offset.left + (ui.helper.width() / 2);
 				var count          = 0;
 				var found          = 0;
-				$droppable.find('thead>tr:first>th:not(:first)').each(function() {
+				$droppable.find('ol>li:not(:first)').each(function() {
 					count ++;
 					var $this = $(this);
-					var $prev = $this.prev('th');
+					var $prev = $this.prev('li');
 					var left  = $prev.offset().left + $prev.width();
 					var right = $this.offset().left + $this.width();
 					if ((draggable_left > left) && (draggable_left <= right)) {
@@ -139,10 +140,10 @@ $('document').ready(function()
 						var old = $droppable.data('insert-after');
 						if (found !== old) {
 							if (old !== undefined) {
-								$droppable.find('colgroup>col:nth-child(' + old + ')').removeClass('insert-right');
+								$droppable.find('ol>li:nth-child(' + old + ')').removeClass('insert-right');
 							}
 							if (found > 1) {
-								$droppable.find('colgroup>col:nth-child(' + found + ')').addClass('insert-right');
+								$droppable.find('ol>li:nth-child(' + found + ')').addClass('insert-right');
 								$droppable.data('insert-after', found);
 							}
 						}
@@ -162,7 +163,7 @@ $('document').ready(function()
 			};
 
 			//--------------------------------------------------------------------------- table droppable
-			$this.children('table').droppable({
+			$this.find('> form > ul').droppable({
 				accept:    '.property',
 				tolerance: 'touch',
 
@@ -172,7 +173,7 @@ $('document').ready(function()
 					var insert_after = $this.data('insert-after');
 					if (insert_after !== undefined) {
 						var insert_before = insert_after + 1;
-						var $th = $this.find('thead>tr:first>th:nth-child(' + insert_before + ')');
+						var $th = $this.find('ol:first>li:nth-child(' + insert_before + ')');
 						var $draggable           = ui.draggable;
 						var before_property_name = $th.data('property');
 						var property_name        = $draggable.data('property');
@@ -203,7 +204,7 @@ $('document').ready(function()
 			};
 			var propertyPath = function($this)
 			{
-				return $this.closest('th').data('property');
+				return $this.closest('li').data('property');
 			};
 
 			var callback_uri = window.app.uri_base + '/{className}/listSetting?as_widget'
@@ -227,7 +228,7 @@ $('document').ready(function()
 			});
 
 			// list column header (property path) double-click
-			$this.find('table>thead>tr>th.property>a').modifiable({
+			$this.find('form > ul > li:first > ol > li.property > a').modifiable({
 				ajax:      callback_uri + '&property_path={propertyPath}&property_title={value}',
 				ajax_form: 'form',
 				aliases:   { 'className': className, 'propertyPath': propertyPath },
@@ -236,7 +237,7 @@ $('document').ready(function()
 			});
 
 			//--------------------------------------------------------------- input[type=checkbox] change
-			var checkboxes_select = 'table>tbody>tr>td>input[type=checkbox]';
+			var checkboxes_select = 'input[type=checkbox]';
 			var checkboxes        = $this.find(checkboxes_select);
 			if ($this.id in selection) {
 				checkboxes.each(function() {
@@ -297,10 +298,10 @@ $('document').ready(function()
 					excluded_selection[$this.id] = [];
 					select_all[$this.id]         = select;
 					selection[$this.id]          = [];
-					$this.find('table>tbody>tr>td>input[type=checkbox]').prop('checked', select);
+					$this.find('input[type=checkbox]').prop('checked', select);
 				}
 				else {
-					$this.find('table>tbody>tr>td>input[type=checkbox]').each(function () {
+					$this.find('input[type=checkbox]').each(function () {
 						var checkbox = $(this);
 						checkbox.prop('checked', select);
 						checkbox.change();

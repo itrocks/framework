@@ -1,0 +1,19 @@
+@import 'colors.scss';
+@import 'margins.scss';
+
+.window {
+	padding: $window-padding;
+
+	> h2 {
+		background-color: $window-head-background;
+		color: $window-head-color;
+		margin-bottom: $window-padding;
+		margin-left: -$window-padding;
+		margin-top: -$window-padding;
+		padding: $window-padding;
+	}
+
+	> .custom {
+		display: none;
+	}
+}

@@ -33,15 +33,15 @@
 			<!--settings.classes-->
 			<fieldset class="{name} class">
 				<h3>
-					|{--settings.getClassName.short}|
+					|{..settings.getClassName.short}|
 					<!--property_path?-->:<!--end-->
 					<!--property_path--><span class="property">|{.}|</span><!--end-->
 				</h3>
 				<fieldset class="constants">
 					<!--constants-->
 					<div>
-						<label>{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
-						<div>{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
+						<label>{@propertySelect("worksheets[{....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
+						<div>{@edit("worksheets[....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
 						<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
 							|Remove constant|
 						</a>
@@ -52,22 +52,22 @@
 					</a>
 				</fieldset>
 				<fieldset class="identify properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
+					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
 					Identifie chaque <span>|{name}|</span> par
 					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--end--></ul>
 					(doit être unique).
 				</fieldset>
 				<fieldset class="none">
 					Si aucun <span>|{name}|</span> ne correspond,
-					{object_not_found_behaviour.@edit("worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
+					{object_not_found_behaviour.@edit("worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
 				</fieldset>
 				<fieldset class="write properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
+					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
 					Met à jour la valeur de
 					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--end--></ul>.
 				</fieldset>
 				<fieldset class="ignore properties">
-					<input type="hidden" name="worksheets[{--name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
+					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
 					Ignore la valeur de
 					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--end--></ul>
 				</fieldset>

@@ -1,0 +1,86 @@
+@import 'colors.scss';
+@import 'margins.scss';
+
+.func_select,
+.property_select {
+	border: $thin-border;
+	display: inline-block;
+	top: 1.5em;
+
+	> input {
+		width: 100%;
+	}
+
+	> label {
+		display: none;
+	}
+
+	ul {
+
+		> li {
+			display: block;
+			padding: .3em .3em .3em 1.2em;
+
+			&:not([data-is-class]):hover {
+				background-color: $action-focus-background;
+				color: $action-focus-color;
+			}
+
+			&.separator {
+				border-top: $thin-border;
+			}
+
+			&.ui-draggable-handle {
+				cursor: grab;
+			}
+
+			> a {
+				background-image: url('img/tree/plus.png');
+				background-position-x: .3em;
+				background-position-y: center;
+				background-repeat: no-repeat;
+				display: block;
+				font-weight: bold;
+				margin: -.3em -.3em -.3em -1.2em;
+				padding-left: 1.2em;
+				white-space: nowrap;
+
+				&.expanded {
+					background-image: url('img/tree/minus.png');
+				}
+			}
+		}
+	}
+
+	> ul {
+		border-top: $thin-border;
+	}
+}
+
+.object.ui-draggable-dragging,
+:not(.model.edit.window .editor) .property.ui-draggable-dragging {
+	background: rgba(255, 255, 255, .6);
+	border: $thin-border;
+	font-weight: bold;
+	padding: $list-margin;
+}
+
+.insert-bottom {
+	border-bottom: 3px solid $action-focus-background;
+	margin-bottom: -3px;
+}
+
+.insert-left {
+	border-left: 3px solid $action-focus-background;
+	margin-left: -3px;
+}
+
+.insert-right {
+	border-right: 3px solid $action-focus-background;
+	margin-right: -3px;
+}
+
+.insert-top {
+	border-top: 3px solid $action-focus-background;
+	margin-top: -3px;
+}

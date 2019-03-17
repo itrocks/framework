@@ -22,6 +22,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Integrated_Properties;
+use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -1058,6 +1059,21 @@ class Functions
 		return null;
 	}
 
+	//---------------------------------------------------------------------------- getPropertyTypeCss
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getPropertyTypeCss(Template $template)
+	{
+		foreach ($template->objects as $object) {
+			if ($object instanceof Interfaces\Reflection_Property) {
+				return Names::classToProperty($object->getType()->getElementTypeAsString());
+			}
+		}
+		return null;
+	}
+
 	//---------------------------------------------------------------------------------- getRootClass
 	/**
 	 * Returns root class from template objects stack
@@ -1229,6 +1245,21 @@ class Functions
 	public function getTop(Template $template)
 	{
 		return $template->getObject();
+	}
+
+	//------------------------------------------------------------------------------------ getTypeCss
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getTypeCss(Template $template)
+	{
+		foreach ($template->objects as $object) {
+			if ($object instanceof Type) {
+				return Names::classToProperty($object->getElementTypeAsString());
+			}
+		}
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- getValue

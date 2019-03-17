@@ -1,0 +1,114 @@
+@import 'colors.scss';
+@import 'margins.scss';
+
+.list.window {
+
+	> .summary {
+
+		&.error {
+			border: 1px solid $error-border-color;
+		}
+	}
+
+	> form, > ul {
+		margin: $list-horizontal-margin 0;
+	}
+
+	> form {
+
+		> ul {
+			border-left: $thin-border;
+			border-right: $thin-border;
+			display: table;
+
+
+			> li {
+				display: table-row-group;
+				position: relative;
+
+				&:not(:first-child) > ol > li {
+					border-bottom: $thin-border;
+
+					&:first-child > a {
+						display: none;
+					}
+				}
+
+				&:nth-child(n+3):hover {
+					background-color: $action-zone-background;
+				}
+
+				&.search {
+
+					input {
+						background-color: transparent;
+						border: none;
+						min-width: 100%;
+						padding: $list-margin;
+
+						&:focus {
+							background-color: $edit-focus-background;
+							color: $edit-focus-color;
+						}
+						&:hover {
+							background-color: $action-focus-background;
+							color: $action-focus-color;
+						}
+					}
+				}
+
+				&.title {
+					background-color: $head-background;
+					color: $head-color;
+					text-align: center;
+
+					> ol > li {
+						padding: $list-margin;
+						vertical-align: middle;
+
+						&.column_select {
+							position: relative;
+
+							> a {
+								background-image: url('img/column-select-white.png');
+								background-position: center;
+								background-repeat: no-repeat;
+								color: transparent;
+								font-size: 0;
+								height: 100%;
+								position: absolute;
+								top: 0;
+								width: 100%;
+							}
+						}
+					}
+				}
+
+				> ol {
+					display: table-row;
+
+					> li {
+						display: table-cell;
+
+						> a {
+							display: block;
+							margin: -$list-margin;
+						}
+
+						&.value {
+							padding: $list-margin;
+
+							&.date_time {
+								text-align: center;
+							}
+
+							&.float, &.integer {
+								text-align: right;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+}

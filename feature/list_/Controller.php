@@ -408,6 +408,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$property = Builder::createClone($property, Property::class);
 			/** @noinspection PhpUnhandledExceptionInspection valid $property->path and $class_name */
 			$property->search = new Reflection_Property($class_name, $property->path);
+			$property->type   = $property->search->getType();
 			$this->prepareSearchPropertyComponent($property->search);
 			$properties[$property->path] = $property;
 		}

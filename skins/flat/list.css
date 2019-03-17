@@ -1,0 +1,60 @@
+.list.window > .summary.error {
+  border: 1px solid darkred; }
+.list.window > form, .list.window > ul {
+  margin: 0.5em 0; }
+.list.window > form > ul {
+  border-left: 1px solid lightgray;
+  border-right: 1px solid lightgray;
+  display: table; }
+  .list.window > form > ul > li {
+    display: table-row-group;
+    position: relative; }
+    .list.window > form > ul > li:not(:first-child) > ol > li {
+      border-bottom: 1px solid lightgray; }
+      .list.window > form > ul > li:not(:first-child) > ol > li:first-child > a {
+        display: none; }
+    .list.window > form > ul > li:nth-child(n+3):hover {
+      background-color: #dff; }
+    .list.window > form > ul > li.search input {
+      background-color: transparent;
+      border: none;
+      min-width: 100%;
+      padding: 0.3em; }
+      .list.window > form > ul > li.search input:focus {
+        background-color: #ddd;
+        color: #444; }
+      .list.window > form > ul > li.search input:hover {
+        background-color: #00b39c;
+        color: #efe; }
+    .list.window > form > ul > li.title {
+      background-color: #444;
+      color: white;
+      text-align: center; }
+      .list.window > form > ul > li.title > ol > li {
+        padding: 0.3em;
+        vertical-align: middle; }
+        .list.window > form > ul > li.title > ol > li.column_select {
+          position: relative; }
+          .list.window > form > ul > li.title > ol > li.column_select > a {
+            background-image: url("img/column-select-white.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            color: transparent;
+            font-size: 0;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            width: 100%; }
+    .list.window > form > ul > li > ol {
+      display: table-row; }
+      .list.window > form > ul > li > ol > li {
+        display: table-cell; }
+        .list.window > form > ul > li > ol > li > a {
+          display: block;
+          margin: -0.3em; }
+        .list.window > form > ul > li > ol > li.value {
+          padding: 0.3em; }
+          .list.window > form > ul > li > ol > li.value.date_time {
+            text-align: center; }
+          .list.window > form > ul > li > ol > li.value.float, .list.window > form > ul > li > ol > li.value.integer {
+            text-align: right; }

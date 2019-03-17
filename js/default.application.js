@@ -11,7 +11,6 @@ $('document').ready(function()
 		this.xtarget({
 			auto_empty:      {'#main': '#messages'},
 			draggable_blank: '.window>h2',
-			popup_element:   'section',
 			url_append:      'as_widget',
 			success:         function() { $(this).autofocus(); },
 			history: {

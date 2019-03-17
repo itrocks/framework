@@ -1,0 +1,19 @@
+ul.actions > li {
+  display: inline-block;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap; }
+  ul.actions > li > ul {
+    display: none; }
+  ul.actions > li:hover > ul {
+    background-color: #fff;
+    border: 1px solid lightgray;
+    display: inline-block;
+    left: 0;
+    position: absolute;
+    top: 1.3em;
+    z-index: 1; }
+    ul.actions > li:hover > ul > li {
+      display: block; }
+      ul.actions > li:hover > ul > li > a {
+        display: block; }

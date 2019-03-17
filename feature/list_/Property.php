@@ -5,6 +5,7 @@ use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * List property (ie visible column)
@@ -31,6 +32,15 @@ class Property extends List_Setting\Property
 	 * @var integer 1..n if sort : then is the sort position, null if do not sort
 	 */
 	public $sort;
+
+	//----------------------------------------------------------------------------------------- $type
+	/**
+	 * The property stored into $search may have a changed (simplified) type, to force search input
+	 * Here is the original property type
+	 *
+	 * @var Type
+	 */
+	public $type;
 
 	//----------------------------------------------------------------------------------- htmlReverse
 	/**

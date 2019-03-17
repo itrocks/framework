@@ -851,25 +851,4 @@ $('document').ready(function()
 
 	});
 
-	//--------------------------------------------------------------------------------- window.resize
-	$(window).resize(function()
-	{
-		var $width = $(window).width();
-		$('section.window').each(function() {
-			var $window = $(this);
-			if ($window.closest('.popup').length) return;
-			if ($window.data('width') === undefined) {
-				$window.data(
-					'width',
-					$window.width()
-						- parseInt($window.css('border-left-width'))
-						- parseInt($window.css('border-right-width'))
-				);
-			}
-			if ($window.offset().left + $window.data('width') > $width) {
-				$window.width($width - $window.offset().left);
-			}
-		})
-	}).resize();
-
 });

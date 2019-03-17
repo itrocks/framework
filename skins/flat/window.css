@@ -1,0 +1,11 @@
+.window {
+  padding: 0.5em; }
+  .window > h2 {
+    background-color: #00b39c;
+    color: #eef;
+    margin-bottom: 0.5em;
+    margin-left: -0.5em;
+    margin-top: -0.5em;
+    padding: 0.5em; }
+  .window > .custom {
+    display: none; }

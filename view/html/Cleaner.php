@@ -17,7 +17,8 @@ class Cleaner implements Registerable
 	public function clean(&$result)
 	{
 		$result = str_replace(CR, '', $result);
-		$result = preg_replace('/(\n)([\\s|\\t]+)(\n)/', LF, $result);
+		$result = preg_replace('~\n\s+\n~', LF, $result);
+		$result = preg_replace('~</nav>\s+<main~', '</nav><main', $result);
 	}
 
 	//-------------------------------------------------------------------------------------- register

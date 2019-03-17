@@ -13,9 +13,10 @@
 
 	<!--use ITRocks\Framework\User-->
 	<!--User.current.login?-->
-	<div class="connect">
+	<div class="connected user">
 		<a href="app://ITRocks/Framework/User/disconnect" target="#main" title="|Click to disconnect|">
-			|disconnect !<span class="login">{User.current.login}</span>!|
+			<span class="disconnect">|disconnect|</span>
+			<span class="login">{User.current.login}</span>
 		</a>
 		<div class="user">{User.current}</div>
 	</div>

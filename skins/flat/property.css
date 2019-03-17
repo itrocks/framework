@@ -1,0 +1,65 @@
+.func_select,
+.property_select {
+  border: 1px solid lightgray;
+  display: inline-block;
+  top: 1.5em; }
+  .func_select > input,
+  .property_select > input {
+    width: 100%; }
+  .func_select > label,
+  .property_select > label {
+    display: none; }
+  .func_select ul > li,
+  .property_select ul > li {
+    display: block;
+    padding: .3em .3em .3em 1.2em; }
+    .func_select ul > li:not([data-is-class]):hover,
+    .property_select ul > li:not([data-is-class]):hover {
+      background-color: #00b39c;
+      color: #efe; }
+    .func_select ul > li.separator,
+    .property_select ul > li.separator {
+      border-top: 1px solid lightgray; }
+    .func_select ul > li.ui-draggable-handle,
+    .property_select ul > li.ui-draggable-handle {
+      cursor: grab; }
+    .func_select ul > li > a,
+    .property_select ul > li > a {
+      background-image: url("img/tree/plus.png");
+      background-position-x: .3em;
+      background-position-y: center;
+      background-repeat: no-repeat;
+      display: block;
+      font-weight: bold;
+      margin: -.3em -.3em -.3em -1.2em;
+      padding-left: 1.2em;
+      white-space: nowrap; }
+      .func_select ul > li > a.expanded,
+      .property_select ul > li > a.expanded {
+        background-image: url("img/tree/minus.png"); }
+  .func_select > ul,
+  .property_select > ul {
+    border-top: 1px solid lightgray; }
+
+.object.ui-draggable-dragging,
+:not(.model.edit.window .editor) .property.ui-draggable-dragging {
+  background: rgba(255, 255, 255, 0.6);
+  border: 1px solid lightgray;
+  font-weight: bold;
+  padding: 0.3em; }
+
+.insert-bottom {
+  border-bottom: 3px solid #00b39c;
+  margin-bottom: -3px; }
+
+.insert-left {
+  border-left: 3px solid #00b39c;
+  margin-left: -3px; }
+
+.insert-right {
+  border-right: 3px solid #00b39c;
+  margin-right: -3px; }
+
+.insert-top {
+  border-top: 3px solid #00b39c;
+  margin-top: -3px; }

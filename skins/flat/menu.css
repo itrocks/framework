@@ -1,0 +1,30 @@
+@media screen and (max-width: 479px) {
+  #menu {
+    display: none; } }
+#menu {
+  background-color: #444;
+  color: white;
+  position: relative; }
+  #menu > .minimize {
+    background: #444 url("img/menu-button-white.png");
+    background-size: contain;
+    color: transparent;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0;
+    height: 2em;
+    margin-top: -2.2em;
+    position: absolute;
+    width: 2em; }
+  #menu > h2 {
+    display: none; }
+  #menu > ul > li > h3 {
+    background-color: #888;
+    padding: 0.3em; }
+  #menu > ul > li > ul > li {
+    background-color: #777;
+    color: white; }
+    #menu > ul > li > ul > li:not(:first-child) {
+      margin-top: 1px; }
+    #menu > ul > li > ul > li > a {
+      display: block; }

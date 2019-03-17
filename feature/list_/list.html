@@ -12,18 +12,18 @@
 <!--BEGIN-->
 
 	<!--use ITRocks\Framework\Html\Engine-->
-	<section class="{@class.short.lower} list window">
+	<section class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
 		<h2>{title}</h2>
 		{/setting/custom.html}
 		{/component/button/general_buttons.html}
 		<!--search_summary?-->
-		<details class="search_summary">
+		<details class="search summary">
 			<summary>|search summary|</summary>
 			<p>{search_summary}</p>
 		</details>
 		<!--end-->
 		<!--errors_summary?-->
-		<details class="errors_summary">
+		<details class="errors summary">
 			<summary>|errors summary</summary>
 			<p>{errors_summary}</p>
 		</details>

@@ -27,16 +27,11 @@
 
 	<!--!inside-->
 	<header>
+		<div class="{@application.lower} logo">{@application.ucwords}</div>
 		<!--Access_Control.get-->
 		{/ITRocks/Framework/User/miniDisplay.html}
 		<!--end-->
 		<div id="messages"></div>
-		<ul class="links">
-			<li class="provider itrocks">
-				<a href="http://itrocks.org" target="_blank" title="itrocks.org">ITRocks</a>
-			</li>
-			<li class="rad enter"><a href="app://ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
-		</ul>
 	</header>
 
 	<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
