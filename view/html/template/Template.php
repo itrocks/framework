@@ -796,7 +796,7 @@ class Template
 	 */
 	protected function parseFullPage($content)
 	{
-		$content = $this->parseVars($content);
+		$content = $this->parseContent($content);
 		if (!isset($this->parameters[Parameter::IS_INCLUDED])) {
 			$content = $this->replaceLinks($content);
 			$content = $this->replaceUris($content);
@@ -948,7 +948,7 @@ class Template
 			}
 		}
 		return isset($this->included[$include_uri][$class_name])
-			? $this->parseVars($this->included[$include_uri][$class_name])
+			? $this->parseContent($this->included[$include_uri][$class_name])
 			: null;
 	}
 
@@ -1817,6 +1817,19 @@ class Template
 		return false;
 	}
 
+	//---------------------------------------------------------------------------------- parseContent
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	public function parseContent($content)
+	{
+		$content = $this->prepareW3Links($content);
+		$content = $this->parseVars($content);
+		$content = $this->removeAppLinks($content);
+		return $content;
+	}
+
 	//------------------------------------------------------------------------------------- parseVars
 	/**
 	 * Parse all variables from the template
@@ -1834,7 +1847,7 @@ class Template
 	 * @param $content string
 	 * @return string updated content
 	 */
-	public function parseVars($content)
+	protected function parseVars($content)
 	{
 		$content = $this->parseLoops($content);
 		$i       = 0;
@@ -1843,6 +1856,33 @@ class Template
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, '}', $i);
 				$i = $this->parseVar($content, $i, $j);
+			}
+		}
+		return $content;
+	}
+
+	//-------------------------------------------------------------------------------- prepareW3Links
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function prepareW3Links($content)
+	{
+		foreach (['app', 'dyn'] as $protocol) {
+			$i = 0;
+			while ($i = strpos($content, $protocol . '://', $i)) {
+				$delimiter = $content[$i - 1];
+				$i        += 5;
+				$j         = strpos($content, $delimiter, $i);
+				$i2        = $i;
+				while (($i2 = strpos($content, '(', $i2)) && ($i2 < $j)) {
+					$content[$i2] = '{';
+				}
+				$i2 = $i;
+				while (($i2 = strpos($content, ')', $i2)) && ($i2 < $j)) {
+					$content[$i2] = '}';
+				}
+				$i = $j;
 			}
 		}
 		return $content;
@@ -1885,6 +1925,18 @@ class Template
 				$loop->content = substr($loop->content, 0, $i);
 			}
 		}
+	}
+
+	//-------------------------------------------------------------------------------- removeAppLinks
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function removeAppLinks($content)
+	{
+		$content = str_replace(['app:///', 'app://'], SL, $content);
+		$content = str_replace(['dyn:///', 'dyn://'], '', $content);
+		return $content;
 	}
 
 	//--------------------------------------------------------------------------- replaceHeadElements

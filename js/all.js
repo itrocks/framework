@@ -33,6 +33,7 @@ $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
 $.getScript(path + 'itrocks/framework/js/tr.js');
 
 $.getScript(path + 'itrocks/framework/debug/debug.js');
+$.getScript(path + 'itrocks/framework/dao/file/session_file/image.js');
 $.getScript(path + 'itrocks/framework/feature/condition/condition.js');
 $.getScript(path + 'itrocks/framework/feature/list_/list.js');
 $.getScript(path + 'itrocks/framework/feature/edit/edit.js');

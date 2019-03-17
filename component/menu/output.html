@@ -2,27 +2,26 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
 	<title>|Main menu|</title>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
 </head>
 <body>
-<!-- default css need a top bar -->
-<div style="height:34px;"></div>
 <!--BEGIN-->
 
 	<!--blocks?-->
 	<nav id="menu">
 		<!--BEGIN:blocks-->
-		<h2><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="{title_link}" target="#main">{ITRocks\Framework\Application.current.name}</a></h2>
+		<h2><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(title_link)" target="#main">{ITRocks\Framework\Application.current.name}</a></h2>
 		<ul>
 			<!--blocks-->
 			<li class="{module}">
 				<h3>|{title}|</h3>
 				<ul>
 					<!--items-->
-					<li><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="{link}" target="#main">|{caption}|</a></li>
+					<li><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(link)" target="#main">|{caption}|</a></li>
 					<!--sample-->
 					<li><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="#" target="#main">Another caption</a></li>
 					<li><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="#" target="#main">The last one</a></li>
@@ -41,7 +40,6 @@
 			<!--end-->
 		</ul>
 		<!--END:blocks-->
-
 	</nav>
 	<!--end-->
 

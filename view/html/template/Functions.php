@@ -923,7 +923,7 @@ class Functions
 	 */
 	public function getParse(Template $template)
 	{
-		return $template->parseVars(
+		return $template->parseContent(
 			str_replace(['&#123;', '&#125;'], ['{', '}'], reset($template->objects))
 		);
 	}

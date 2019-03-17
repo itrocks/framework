@@ -2,16 +2,14 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{title}</title>
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
-	<script> path = "../../"; </script>
+	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
 </head>
 <body>
-<form action="/{@class.path}/{@feature}" class="{@class.short.lower} cards window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
+<form action="app://(@class.path)/(@feature)" class="{@class.short.lower} cards window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
 <!--BEGIN-->
 
 	Here comes the body of the cards view

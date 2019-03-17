@@ -1,14 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>|¦{@class.display.ucfirst}¦ unchanged|</title>
+</head>
+<body>
 <!--BEGIN-->
 
 	<!--uninstalled?-->
-		|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
-
-		<script> redirect('/{@class.path}/{id}', 'main'); </script>
+	|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
+	<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
 	<!--end-->
 
 	<!--!uninstalled?-->
-		|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
-		|This feature is not available for the moment|.
+	|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
+	|This feature is not available for the moment|.
 	<!--end-->
 
 <!--END-->
+</body>
+</html>

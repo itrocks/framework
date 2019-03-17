@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
 	<title>|Delete ¦{@class.display.ucfirst}¦|</title>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
 </head>
 <body>
 <!--BEGIN-->
@@ -16,10 +17,10 @@
 		<div class="warning">|All data will be lost|</div>
 		<ul class="actions">
 			<li class="delete">
-				<a data-post="{?data_post}" href="{delete_link}" target="#messages">|Delete|</a>
+				<a data-post="{?data_post}" href="app://(delete_link)" target="#messages">|Delete|</a>
 			</li>
 			<li class="close">
-				<a href="{close_link}" target="#main">|Cancel|</a>
+				<a href="app://(close_link)" target="#main">|Cancel|</a>
 			</li>
 		</ul>
 	</div>

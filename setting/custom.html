@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../"; </script>
+	<script src="../js/all.js"></script>
+	<style> @import "../skins/default/all.css"; </style>
 	<title>|Custom settings|</title>
-	<style type="text/css">
-		@import "../skins/default/all.css";
-	</style>
 </head>
 <body>
 <!--BEGIN-->
@@ -15,11 +16,11 @@
 
 	<ul class="custom selection">
 		<li>
-			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{@class.path}/{?id}/{@feature}?load_name=" target="#main">|{default_title}|</a>
+			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(?id)/(@feature)?load_name=" target="#main">|{default_title}|</a>
 		</li>
 		<!--customized_lists-->
 		<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
-			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="/{--@class.path}/{?--id}/{@feature}?load_name={#}" target="#main">{#}</a>
+			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(--@class.path)/(?--id)/(@feature)?load_name=(#)" target="#main">{#}</a>
 		</li>
 		<!--end-->
 	</ul>
@@ -28,7 +29,7 @@
 	<ul class="custom actions">
 		<!--custom_buttons-->
 		<li class="{feature.lower}">
-			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="{link}" target="{?target}" title="|{?hint}|">|{caption}|</a>
+			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(link)" target="{?target}" title="|{?hint}|">|{caption}|</a>
 		</li>
 		<!--end-->
 	</ul>

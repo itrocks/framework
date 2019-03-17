@@ -2,12 +2,11 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>|Layout model pages|</title>
-	<script src="../../../../vendor/components/jquery/jquery.min.js"></script>
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style>
-		@import "../../skins/default/all.css";
-	</style>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>|Layout model pages|</title>
 </head>
 <body>
 <!--BEGIN-->
@@ -15,14 +14,14 @@
 	<div class="tabber">
 		<ul>
 			<!--pages-->
-			<li><a href="#page-{orderingCaption}">|{orderingCaption}|</a></li>
+			<li><a href="dyn://#page-(orderingCaption)">|{orderingCaption}|</a></li>
 			<!--end-->
 		</ul>
 		<!--pages-->
-		<div class="page" id="page-{orderingCaption}">
+		<fieldset class="page" id="page-{orderingCaption}">
 			<legend>|{orderingCaption}|</legend>
 			{/output.html}
-		</div>
+		</fieldset>
 		<!--end-->
 	</div>
 

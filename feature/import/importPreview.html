@@ -2,18 +2,16 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
 	<title>|Import ¦{class_name.display}¦|</title>
-    <script> path = "../../"; </script>
-	<script src="../../../vendor/jquery/jquery-1.8.3.js"></script>
-    <script src="../main/js/all.js"></script>
-    <style type="text/css">
-        @import "../skins/default/all.css";
-    </style>
 </head>
 <body>
 <!--BEGIN-->
 
-	<form action="/{class_name.path}/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.path}/import/preview" method="post" target="#main">
+	<form action="app://(class_name.path)/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.path}/import/preview" method="post" target="#main">
 		<h2>|Import preview|</h2>
 
 		<!--worksheets-->
@@ -44,12 +42,12 @@
 					<div>
 						<label>{@propertySelect("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
 						<div>{@edit("worksheets[{----name}][classes][{--getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
-						<a class="constant remove submit" href="/ITRocks/Framework/Feature/Import/preview?constant_remove={--getPropertyPathValue}.{#}" target="#main">
+						<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
 							|Remove constant|
 						</a>
 					</div>
 					<!--end-->
-					<a class="constant add submit action" href="/ITRocks/Framework/Feature/Import/preview?constant_add={#}" target="#main">
+					<a class="constant add submit action" href="app://ITRocks/Framework/Feature/Import/preview?constant_add=(#)" target="#main">
 						|Add a constant|
 					</a>
 				</fieldset>
@@ -80,7 +78,7 @@
 			<table class="preview">
 				<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--end--></tr>
 				<!--data:{first_row}-{last_row}-->
-				<tr><!--.:-{--last_column}--><td>{.}</td><!--end--></tr>
+				<tr><!--.:-{..last_column}--><td>{.}</td><!--end--></tr>
 				<!--end-->
 			</table>
 			<!--end-->
@@ -90,12 +88,13 @@
 
 		<p class="warning">
 			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
-			<a class="import execute action submit" href="/{class_name.path}/import/execute" target="#import_execute">|Execute import|</a>
+			<a class="import execute action submit" href="app://(class_name.path)/import/execute" target="#import_execute">|Execute import|</a>
 		</p>
 
 	</form>
 
 	<section id="import_execute">
+		<h2>|Execute import|</h2>
 	</section>
 
 <!--END-->

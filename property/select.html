@@ -2,10 +2,11 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../"; </script>
+	<script src="../js/all.js"></script>
+	<style> @import "../skins/default/all.css"; </style>
 	<title>|Select a ¦property¦|</title>
-	<style type="text/css">
-		@import "../skins/default/all.css";
-	</style>
 </head>
 <body>
 <!--BEGIN-->
@@ -24,7 +25,7 @@
 			<!--.?-->
 			<li class="property {?isBasicHtml} {?isStringableHtml}" data-property="{link_path}" <!--!isExpandable?-->title="|{link_path.path}|"<!--end-->>
 				<!--isExpandable?-->
-				<a href="/ITRocks/Framework/Property/select/{link_class.path}?property_path={link_path}" target="#tree-{link_path.uri}" title="|{link_path.path}|">
+				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{link_path.uri}" title="|{link_path.path}|">
 				<!--end-->
 					{display}
 				<!--isExpandable?-->
@@ -37,16 +38,16 @@
 			<li class="basic stringable property" data-property="property_2" title="property 2">property 2</li>
 			<li class="basic property" data-property="property_3" title="property 3">property 3</li>
 			<li class="property" data-property="sub_object" title="sub object">
-				<a href="/ITRocks/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
+				<a href="app://ITRocks/Framework/Property/select/Class/sub_object" target="#tree-sub_object">sub_object</a>
 			</li>
 			<li class="expanded property" data-property="weight_unit" title="weight unit">
-				<a href="/Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
-				<section id="tree-weight_unit">
+				<a href="app://Property/select/Class/weight_unit" target="#tree-weight_unit">weight unit</a>
+				<div id="tree-weight_unit">
 					<ul class="property_tree">
 						<li class="property basic" data-property="weight_unit.code" title="weight unit.code">code</li>
 						<li class="property basic" data-property="weight_unit.name" title="weight unit.name">name</li>
 					</ul>
-				</section>
+				</div>
 			</li>
 		<!--end-->
 		<!--END:inside_tree-->

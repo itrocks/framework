@@ -1,7 +1,20 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>|The feature ¦{title}¦ has been installed|</title>
+</head>
+<body>
 <!--BEGIN-->
 
 	|The feature <strong>¦{title}¦</strong> has been installed|.
 
-	<script> redirect('/{@class.path}/{id}', '#main'); </script>
+	<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
 
 <!--END-->
+</body>
+</html>

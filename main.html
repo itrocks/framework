@@ -9,17 +9,18 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</title>
-
-	{/ITRocks/Framework/assets.html}
-
+	<script src="../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../"; </script>
+	<script src="js/all.js"></script>
+	<!--assets-->
 	<script>
 		window.app = new App(
 			'{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
 			'{Loc.language}', '{Loc.date.format}', '{Html_Session.useCookies}'
 		);
 	</script>
-
+	<style> @import "skins/default/all.css"; </style>
+	<title>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</title>
 </head>
 
 <body>
@@ -34,7 +35,7 @@
 			<li class="provider itrocks">
 				<a href="http://itrocks.org" target="_blank" title="itrocks.org">ITRocks</a>
 			</li>
-			<li class="rad enter"><a href="/ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
+			<li class="rad enter"><a href="app://ITRocks/Framework/Rad/enter" title="|Enter application modification mode|">RAD</a></li>
 		</ul>
 	</header>
 
@@ -52,7 +53,7 @@
 	<div id="trashcan">
 		<h2>|Trashcan|</h2>
 		<div></div>
-		<a href="/ITRocks/Framework/Component/Trashcan" target="#trashcan>div">|bin|</a>
+		<a href="app://ITRocks/Framework/Component/Trashcan" target="#trashcan>div">|bin|</a>
 	</div>
 
 </body>

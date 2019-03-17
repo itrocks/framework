@@ -16,7 +16,7 @@ class Template_Compiler implements Registerable, Updatable
 {
 
 	//------------------------------------------------------------------------------------------ HOOK
-	const HOOK = '#\{.*\/assets\.html\}#';
+	const HOOK = '<!--assets-->';
 
 	//-------------------------------------------------------------------------------- $configuration
 	/**
@@ -83,7 +83,7 @@ class Template_Compiler implements Registerable, Updatable
 		foreach ($this->configuration->getStringElements() as $asset) {
 			$assets[] = TAB . $asset;
 		}
-		$content = preg_replace(static::HOOK, implode('', $assets), $content);
+		$content = str_replace(static::HOOK, join('', $assets), $content);
 		script_put_contents($this->getCompiledPath(), $content);
 	}
 

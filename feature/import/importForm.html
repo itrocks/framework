@@ -2,15 +2,16 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
 	<title>|Import ¦{class_name.display}¦|</title>
-    <style type="text/css">
-        @import "../skins/default/all.css";
-    </style>
 </head>
 <body>
 <!--BEGIN-->
 
-	<form action="/{class_name.path}/import/preview" class="{class_name.short.lower} import form window" id="/{class_name.path}/import/form" method="post" enctype="multipart/form-data" target="#import_preview">
+	<form action="app://(class_name.path)/import/preview" class="{class_name.short.lower} import form window" id="/{class_name.path}/import/form" method="post" enctype="multipart/form-data" target="#import_preview">
 		<h2>|¦{class_name.short}¦ {@class.lower}|</h2>
 
 		<fieldset>
@@ -27,6 +28,7 @@
 	</form>
 
 	<section id="import_preview">
+		<h2>|Import preview|</h2>
 	</section>
 
 <!--END-->

@@ -2,19 +2,17 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{title}</title>
-	<script src="../../../../vendor/jquery/jquery-1.8.3.js"></script>
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
-	<script src="../../main/js/all.js"></script>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
 </head>
 <body>
 <!--BEGIN-->
 	<div data-class="{@class}" data-id="{id}">
 
-		<form action="/{@class.path}/{id}/deleteAndReplace" class="{@class.short.lower} {@feature} form" target="#{@class.path}_{id}">
+		<form action="app://(@class.path)/(id)/deleteAndReplace" class="{@class.short.lower} {@feature} form" target="#{@class.path}_{id}">
 			|{@class.short}| = <strong>{.}</strong> est utilisée dans d'autres documents.<br>
 			Pour le supprimer, vous devez sélectionner un |{@class.short.lower}| de remplacement.<br>
 			<input type="submit" value=" |Replace with| ">

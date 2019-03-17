@@ -2,29 +2,35 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{title}</title>
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
 </head>
 <body>
 <!--BEGIN-->
 
 	<!--use ITRocks\Framework\Html\Engine-->
-	<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
-		<h2><span>{title}</span></h2>
+	<section class="{@class.short.lower} list window">
+		<h2>{title}</h2>
 		{/setting/custom.html}
-
 		{/component/button/general_buttons.html}
-
+		<!--search_summary?-->
+		<details class="search_summary">
+			<summary>|search summary|</summary>
+			<p>{search_summary}</p>
+		</details>
+		<!--end-->
+		<!--errors_summary?-->
+		<details class="errors_summary">
+			<summary>|errors summary</summary>
+			<p>{errors_summary}</p>
+		</details>
+		<!--end-->
 		{/feature/list_/body.html}
-
 		{/feature/list_/selection_buttons.html}
-
-	</form>
+	</section>
 
 <!--END-->
 </body>

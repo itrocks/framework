@@ -2,7 +2,11 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>Environment selector</title>
+	<script src="../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../"; </script>
+	<script src="../js/all.js"></script>
+	<style> @import "../skins/default/all.css"; </style>
+	<title>|Environment selector|</title>
 </head>
 <body>
 <!--BEGIN-->
@@ -13,12 +17,12 @@
 	<!--@properties-->
 		<!--!value?-->
 		<li class="empty {name}">
-			<a href="/{@rootClass.path}/select/{name}" target="#environments">|all {name}s|</a>
+			<a href="app://(@rootClass.path)/select/(name)" target="#environments">|all {name}s|</a>
 		</li>
 		<!--end-->
 		<!--value?-->
 		<li class="{value.__toString.uri} {name}">
-			<a href="/{@rootClass.path}/select/{name}" target="#environments">{value}</a>
+			<a href="app://(@rootClass.path)/select/(name)" target="#environments">{value}</a>
 		</li>
 		<!--end-->
 	<!--end-->
@@ -28,9 +32,8 @@
 
 	<!--selected-->
 	<script>
-		var action = $('#main>form').attr('action');
+		var action = $('main>form').attr('action');
 		if (action) {
-			console.log(action);
 			redirect(action, '#main');
 		}
 	</script>

@@ -2,110 +2,47 @@
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>{title}</title>
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
-	<script> path = "../../"; </script>
+	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style type="text/css">
-		@import "../../skins/default/all.css";
-	</style>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
 </head>
 <body>
-	<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
 	<!--BEGIN-->
+	<!--use ITRocks\Framework\Html\Engine-->
 
-		<!--use ITRocks\Framework\Html\Engine-->
-		<table>
-			<caption class="search_summary">
-				{search_summary}
-				{errors_summary}
-			</caption>
+	<form action="app://(@class.path)/(@feature)" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
 
-			<!--deactivate_condition-->{/{element_class_name.path}/condition}<!--end-->
+		<ul>
 
-			<colgroup>
-				<col><col>
-				<!--getProperties--><col><!--sample--><col><!--end-->
-			</colgroup>
-
-			<thead>
-			<tr>
-				<th></th>
-				<th class="{?column_select}">
-					<!--!lock_columns?-->
-					<a class="popup" href="/ITRocks/Framework/Property/select/{@class.path}" target="#column_select">|select columns|</a>
-					<!--end-->
-				</th>
-				<!--properties-->
-				<th data-property="{path}" class="{path.@cssClass} sort{sort} {?htmlReverse} property">
-					<a href="/{--@class.path}/{@feature}?{htmlSortLink}={path}" target="#main" title="{title}">{shortTitle}</a>
-				</th>
-				<!--sample-->
-				<th data-property="column2" class="column2 sort property">
-					<a href="/Class/feature?sort=column2" target="#main">column2</a>
-				</th>
-				<!--end-->
-			</tr>
-			<tr class="search">
-				<td class="reset search" colspan="2">
-					<!--search_summary?-->
-					<a href="/{@class.path}/{@feature}?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
-					<!--end-->
-				</td>
-				<!--properties-->
-				<td class="{path.@cssClass}">{search.@edit('search[{path.@escapeName}]','true','true')}</td>
-				<!--sample-->
-				<td class="column2"><input name="search[column2]"></td>
-				<!--end-->
-			</tr>
-			</thead>
-
-			<tbody>
-			<!--elements:-{displayed_lines_count}-->
-				<tr>
-					<!--@isFirst?-->
-					<td class="vertical scrollbar" data-length="{--displayed_lines_count}" data-start="{--display_start}" data-total="{--rows_count}" rowspan="{--displayed_lines_count}">
-						<a class="up" href="/{--@class.path}/{@feature}?move=up" target="#main">/\</a>
-						<a class="position" href="/{--@class.path}/{@feature}?move={--display_start}" target="#main">=</a>
-						<a class="down" href="/{--@class.path}/{@feature}?move=down" target="#main">\/</a>
-					</td>
-					<!--end-->
-					<td><input type="checkbox" value="{id}"></td>
-					<!--formatValuesEx:1-->
-					<td class="{path.@cssClass} value">
-						<!----class_name?-->
-						<a class="object" data-class="{--class_name.source}" data-id="{--id}" href="{--getOutputLink}" target="#main">{value.nbsp}</a>
+			<li class="title">
+				<ol>
+					<li></li>
+					<li class="?column_select">
+						<!--!lock_columns?-->
+						<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
 						<!--end-->
-					</td>
+					</li>
+					<!--properties-->
+					<li></li>
 					<!--end-->
-					<!--formatValuesEx:2----count-->
-					<td class="{path.@cssClass} value">{value}</td>
-					<!--end-->
-				</tr>
-				<!--sample-->
-				<tr>
-					<td></td>
-					<td><input type="checkbox"></td>
-					<td class="column1"><a href="/Class/2">code2</a></td>
-					<td class="column2">3,18</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="checkbox"></td>
-					<td class="column1"><a href="/Class/3">code3</a></td>
-					<td class="column2">2,29</td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="checkbox"></td>
-					<td class="column1"><a href="/Class/4">code4</a></td>
-					<td class="column2">12,39</td>
-				</tr>
-			<!--end-->
-			</tbody>
-		</table>
+				</ol>
+			</li>
+
+			<li class="search">
+
+			</li>
+			<li>
+				<ol>
+					<li></li>
+				</ol>
+			</li>
+
+		</ul>
+
+	</form>
 
 	<!--END-->
-	</form>
 </body>
 </html>
