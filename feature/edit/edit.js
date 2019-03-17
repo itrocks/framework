@@ -544,7 +544,11 @@ $('document').ready(function()
 				if (!target) {
 					target = ((event.ctrlKey || event.metaKey) && event.shiftKey) ? '#main' : '#popup';
 				}
-				var target_exists = $(target).length;
+				var $target = $(target);
+				if (target.endsWith('main') && !$target.length) {
+					$target = $(target.beginsWith('#') ? 'main' : '#main');
+				}
+				var target_exists = $target.length;
 				redirect(
 					app.uri_base + SL + uri + '?fill_combo=' + $this.prev().attr('name'),
 					target,

@@ -142,6 +142,9 @@ redirect = function(uri, target, after, callback, history)
 	else {
 		var close_function;
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		if (target.endsWith('main') && !$target.length) {
+			$target = $(target.beginsWith('#') ? 'main' : '#main');
+		}
 		if (!$target.length) {
 			window.zindex_counter ++;
 			var $after = (after && (typeof after === 'object')) ? after : $(after);
@@ -222,6 +225,9 @@ redirectLight = function(uri, target, condition)
 	}
 	if (more) {
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		if (target.endsWith('main') && !$target.length) {
+			$target = $(target.beginsWith('#') ? 'main' : '#main');
+		}
 		$.ajax({
 			url:     app.addSID(uri + more),
 			success: function(data) {
@@ -238,11 +244,15 @@ redirectLight = function(uri, target, condition)
  * Refresh a window embedding data-class, and optionally data-feature and/or data-id
  *
  * @example refresh('#main'); refresh('#messages');
- * @param selector
+ * @param target string
  */
-refresh = function(selector)
+refresh = function(target)
 {
-	$(selector).each(function() {
+	var $target = $(target);
+	if (target.endsWith('main') && !$target.length) {
+		$target = $(target.beginsWith('#') ? 'main' : '#main');
+	}
+	$target.each(function() {
 		var $target = $(this);
 		var $window = $target.children('[data-class]');
 		if (!$window.length) {

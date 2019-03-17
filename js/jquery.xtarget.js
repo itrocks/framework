@@ -177,9 +177,13 @@
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
+				var target       = xhr.from.target;
 				var $from        = $(xhr.from);
-				var $target      = $(xhr.from.target);
+				var $target      = $(target);
 				var build_target = false;
+				if (target.endsWith('main') && !$target.length) {
+					$target = $(target.beginsWith('#') ? 'main' : '#main');
+				}
 				// popup a new element
 				if ($target.is('.' + settings.closeable_popup)) {
 					$target.remove();
@@ -197,7 +201,7 @@
 				// auto empty
 				if (settings.auto_empty !== undefined) {
 					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
-						if ($target.is(key)) {
+						if ($target.is(key) || $(target).is(key)) {
 							$(settings.auto_empty[key]).empty();
 						}
 					}
@@ -225,7 +229,7 @@
 					}
 				}
 				// on success callbacks
-				var target = $target.get()[0];
+				target = $target.get()[0];
 				if (settings.success !== undefined) {
 					settings.success.call(target, data, status, xhr);
 				}

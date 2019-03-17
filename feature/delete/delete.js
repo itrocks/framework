@@ -9,7 +9,7 @@ $('document').ready(function()
 		}
 
 		// close main window
-		var $main = $('#main');
+		var $main = $('main, #main');
 		var $main_window = $main.children(selector);
 		if ($main_window.length) {
 			var $close_anchor = $main_window.find('.actions > .close > a');

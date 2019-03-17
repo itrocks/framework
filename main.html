@@ -1,16 +1,15 @@
+<!DOCTYPE html>
+<!--use ITRocks\Framework\Application-->
 <!--use ITRocks\Framework\Component\Menu-->
 <!--use ITRocks\Framework\Html_Session-->
 <!--use ITRocks\Framework\Locale\Loc-->
 <!--use ITRocks\Framework\Tools\Paths-->
 <!--use ITRocks\Framework\User\Access_Control-->
-<!DOCTYPE html>
 <html lang="en">
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<title>
-		|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|
-	</title>
+	<title>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</title>
 
 	{/ITRocks/Framework/assets.html}
 
@@ -39,20 +38,22 @@
 		</ul>
 	</header>
 
+	<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
+
 	<!--Menu.get-->
 	{/ITRocks/Framework/Component/Menu/output}
 	<!--end-->
 	<!--end-->
 
-	<div class="application center" id="main">
+	<main>
 		{@content}
-	</div>
+	</main>
 
-	<section id="trashcan">
+	<div id="trashcan">
 		<h2>|Trashcan|</h2>
 		<div></div>
 		<a href="/ITRocks/Framework/Component/Trashcan" target="#trashcan>div">|bin|</a>
-	</section>
+	</div>
 
 </body>
 </html>
