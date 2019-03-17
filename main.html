@@ -4,17 +4,17 @@
 <!--use ITRocks\Framework\Tools\Paths-->
 <!--use ITRocks\Framework\User\Access_Control-->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>
 		|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|
 	</title>
 
 	{/ITRocks/Framework/assets.html}
 
-	<script type="text/javascript">
+	<script>
 		window.app = new App(
 			'{PHPSESSID}', '{Paths.uri_root}', '{Paths.script_name}', '{Paths.project_uri}',
 			'{Loc.language}', '{Loc.date.format}', '{Html_Session.useCookies}'
@@ -44,9 +44,9 @@
 	<!--end-->
 	<!--end-->
 
-	<section class="application center" id="main">
+	<div class="application center" id="main">
 		{@content}
-	</section>
+	</div>
 
 	<section id="trashcan">
 		<h2>|Trashcan|</h2>

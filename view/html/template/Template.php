@@ -1920,8 +1920,10 @@ class Template
 				. substr($content, $i);
 		}
 		elseif (($i = strpos($content, '<head')) !== false) {
+			$j            = strpos($content, '</head>', $i);
+			$head_content = substr($content, $i, $j - $i);
 			foreach ($elements as $element_key => $element) {
-				if (strpos($element, '=' . DQ . DQ)) {
+				if (strpos($element, '=' . DQ . DQ) || (strpos($head_content, $element) !== false)) {
 					unset($elements[$element_key]);
 				}
 			}

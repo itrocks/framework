@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>{title}</title>
-	<script type="text/javascript" src="../../../../vendor/components/jquery/jquery.js"></script>
-	<script type="text/javascript"> path = "../../../../"; </script>
-	<script type="text/javascript" src="../../js/all.js"></script>
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
 	<style type="text/css">
 		@import "../../skins/default/all.css";
 	</style>
@@ -15,10 +15,8 @@
 
 	<!--use ITRocks\Framework\Html\Engine-->
 	<form action="/{@class.path}/{@feature}" class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}" method="post" target="#main">
-		<h2>
-			<span>{title}</span>
-			{/setting/custom.html}
-		</h2>
+		<h2><span>{title}</span></h2>
+		{/setting/custom.html}
 
 		{/component/button/general_buttons.html}
 

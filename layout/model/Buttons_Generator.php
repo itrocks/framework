@@ -7,6 +7,7 @@ use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
 /**
@@ -61,7 +62,11 @@ class Buttons_Generator
 
 		$buttons[] = new Button(
 			'New layout model',
-			View::link(Model::class, Feature::F_ADD, ['class_name' => $this->class_name]),
+			View::link(
+				Model::class,
+				Feature::F_ADD,
+				['class_name' => Names::classToPath($this->class_name)]
+			),
 			Feature::F_ADD
 		);
 
