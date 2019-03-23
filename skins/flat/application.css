@@ -1,6 +1,14 @@
 @media screen and (min-width: 480px) {
   body {
     white-space: nowrap; } }
+a {
+  color: inherit;
+  padding: 0.3em 0.5em;
+  text-decoration: inherit; }
+  a:hover {
+    background-color: #00b39c;
+    color: #efe; }
+
 body {
   background-color: white;
   color: #444;
@@ -8,20 +16,6 @@ body {
   height: 100%;
   position: absolute;
   width: 100%; }
-  body a {
-    color: inherit;
-    padding: 0.3em 0.5em;
-    text-decoration: inherit; }
-    body a:hover {
-      background-color: #00b39c;
-      color: #efe; }
-  body div.popup {
-    background-color: white;
-    color: #444;
-    left: 0;
-    position: absolute;
-    text-align: left;
-    z-index: 1; }
   body > :not(nav) {
     white-space: initial; }
   body > h1 {
@@ -35,7 +29,6 @@ body {
     body > header > .logo {
       background: white url("img/bappli-studio-logo.png") center no-repeat;
       background-size: contain;
-      color: transparent;
       font-size: 0; }
     body > header > :nth-child(n+3) {
       display: none; }
@@ -47,3 +40,14 @@ body {
     vertical-align: top; }
   body > main {
     width: 100%; }
+
+div.popup {
+  background-color: white;
+  color: #444;
+  left: 0;
+  position: absolute;
+  text-align: left;
+  z-index: 1; }
+
+summary {
+  cursor: pointer; }

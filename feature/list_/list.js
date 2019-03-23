@@ -9,9 +9,9 @@ $('document').ready(function()
 	{
 		if (!this.length) return;
 
+		//--------------------------------------------------------------------------------- addProperty
 		var addProperty = function($object, property_name, before_after, before_after_property_name)
 		{
-			console.log($object, $object.closest('.list.window'));
 			var $window    = $object.closest('.list.window');
 			var app        = window.app;
 			var class_name = $window.data('class').repl(BS, SL);
@@ -47,7 +47,10 @@ $('document').ready(function()
 
 		this.inside('.list.window').each(function()
 		{
-			var $this = $(this);
+			var $this     = $(this);
+			var $list     = $this.find('ul.list');
+			var $search   = $list.children('.search');
+			var $selector = $this.find('ul.footer > .selector');
 			$this.id = $this.attr('id');
 
 			//--------------------------------------------------------------- .list.window resetSelection
@@ -59,14 +62,14 @@ $('document').ready(function()
 			};
 
 			//------------------------------------------------------------------ .list.window updateCount
-			var updateCount = function ()
+			var updateCount = function()
 			{
 				var count_elements, select_all_content, selection_content, selection_exclude_content, text;
 				if (select_all[$this.id]) {
 					select_all_content        = 1;
 					selection_content         = '';
 					selection_exclude_content = excluded_selection[$this.id].join();
-					count_elements  = ($this.find('.select_count>ul>li>.select_all').data('count'));
+					count_elements  = $selector.find('> ul > li.select_all').data('count');
 					count_elements -= excluded_selection[$this.id].length;
 					text            = 'x' + count_elements;
 				}
@@ -76,15 +79,15 @@ $('document').ready(function()
 					selection_exclude_content = '';
 					text                      = 'x' + selection[$this.id].length;
 				}
-				$this.find('.select_count>.objects').html(text);
-				$this.find('input[name=excluded_selection]').val(selection_exclude_content);
-				$this.find('input[name=select_all]').val(select_all_content);
-				$this.find('input[name=selection]').val(selection_content);
+				$selector.children('a').html(text);
+				$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
+				$selector.children('input[name=select_all]')        .val(select_all_content);
+				$selector.children('input[name=selection]')         .val(selection_content);
 			};
 
-			//-------------------------------------------------------------- .column_select>a.popup click
+			//------------------------------------------------------------ .column_select > a.popup click
 			// column select popup
-			$this.find('.column_select>a.popup').click(function(event)
+			$this.find('.column_select > a.popup').click(function(event)
 			{
 				var $this = $(this);
 				var $div  = $this.closest('.column_select').find('#column_select');
@@ -103,7 +106,7 @@ $('document').ready(function()
 
 			//------------------------------------------------------------ .search input|textarea keydown
 			// reload list when #13 pressed into a search input
-			$this.find('.search').find('input, textarea').keydown(function(event)
+			$search.find('input, textarea').keydown(function(event)
 			{
 				if (event.keyCode === 13) {
 					resetSelection();
@@ -112,14 +115,14 @@ $('document').ready(function()
 			});
 
 			//--------------------------------------------------------------------- .search select change
-			$this.find('.search select').change(function()
+			$search.find('select').change(function()
 			{
 				resetSelection();
 				$(this).closest('form').submit();
 			});
 
 			//------------------------------------------------------------- .search .reset.search a click
-			$this.find('.search .reset.search a').click(resetSelection);
+			$search.find('.reset > a').click(resetSelection);
 
 			//-------------------------------------------------------------------------------------- drag
 			// when a property is dragged over the droppable object
@@ -129,7 +132,7 @@ $('document').ready(function()
 				var draggable_left = ui.offset.left + (ui.helper.width() / 2);
 				var count          = 0;
 				var found          = 0;
-				$droppable.find('ol>li:not(:first)').each(function() {
+				$droppable.find('ol > li:not(:first)').each(function() {
 					count ++;
 					var $this = $(this);
 					var $prev = $this.prev('li');
@@ -140,10 +143,10 @@ $('document').ready(function()
 						var old = $droppable.data('insert-after');
 						if (found !== old) {
 							if (old !== undefined) {
-								$droppable.find('ol>li:nth-child(' + old + ')').removeClass('insert-right');
+								$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
 							}
 							if (found > 1) {
-								$droppable.find('ol>li:nth-child(' + found + ')').addClass('insert-right');
+								$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
 								$droppable.data('insert-after', found);
 							}
 						}
@@ -162,8 +165,8 @@ $('document').ready(function()
 				ui.draggable.removeData('over-droppable');
 			};
 
-			//--------------------------------------------------------------------------- table droppable
-			$this.find('> form > ul').droppable({
+			//--------------------------------------------------------------------------- .list droppable
+			$list.droppable({
 				accept:    '.property',
 				tolerance: 'touch',
 
@@ -173,7 +176,7 @@ $('document').ready(function()
 					var insert_after = $this.data('insert-after');
 					if (insert_after !== undefined) {
 						var insert_before = insert_after + 1;
-						var $th = $this.find('ol:first>li:nth-child(' + insert_before + ')');
+						var $th = $this.find('ol:first > li:nth-child(' + insert_before + ')');
 						var $draggable           = ui.draggable;
 						var before_property_name = $th.data('property');
 						var property_name        = $draggable.data('property');
@@ -196,7 +199,7 @@ $('document').ready(function()
 
 			});
 
-			//---------------------------------------- .window.title, table.list th.property a modifiable
+			//-------------------------------------------- (.window h2, ul.list li.property a) modifiable
 			// modifiable list and columns titles
 			var className = function($this)
 			{
@@ -215,20 +218,20 @@ $('document').ready(function()
 				+ window.app.andSID();
 
 			// list title (class name) double-click
-			$this.find('h2>span').modifiable({
+			$this.find('> h2').modifiable({
 				ajax:    callback_uri + '&title={value}',
 				aliases: { 'className': className },
 				target:  '#messages',
 				start: function() {
-					$(this).closest('h2').children('.custom.actions').css('display', 'none');
+					$(this).closest('.list.window').find('> div.custom > ul.actions').css('display', 'none');
 				},
 				stop: function() {
-					$(this).closest('h2').children('.custom.actions').css('display', '');
+					$(this).closest('.list.window').find('> div.custom > ul.actions').css('display', '');
 				}
 			});
 
 			// list column header (property path) double-click
-			$this.find('form > ul > li:first > ol > li.property > a').modifiable({
+			$this.find('> form > ul.list > li:first > ol > li.property > a').modifiable({
 				ajax:      callback_uri + '&property_path={propertyPath}&property_title={value}',
 				ajax_form: 'form',
 				aliases:   { 'className': className, 'propertyPath': propertyPath },
@@ -312,27 +315,27 @@ $('document').ready(function()
 			};
 
 			//------------------------------------------------------------------- .select_count ... click
-			$this.find('.select_count>.objects').click(function ()
+			$selector.find('> a.objects').click(function ()
 			{
 				return false;
 			});
 
-			$this.find('.select_count>ul>li>.deselect_all').click(function ()
+			$selector.find('li.deselect_all > a').click(function ()
 			{
 				return selectAction(false, 'all');
 			});
 
-			$this.find('.select_count>ul>li>.deselect_visible').click(function ()
+			$selector.find('li.deselect_visible > a').click(function ()
 			{
 				return selectAction(false);
 			});
 
-			$this.find('.select_count>ul>li>.select_all').click(function ()
+			$selector.find('li.select_all > a').click(function ()
 			{
 				return selectAction(true, 'all');
 			});
 
-			$this.find('.select_count>ul>li>.select_visible').click(function ()
+			$selector.find('li.select_visible > a').click(function ()
 			{
 				return selectAction(true);
 			});
@@ -340,9 +343,9 @@ $('document').ready(function()
 			$this.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
 			{
 				var data = {
-					excluded_selection: $this.find('input[name=excluded_selection]').val(),
-					select_all:         $this.find('input[name=select_all]').val(),
-					selection:          $this.find('input[name=selection]').val()
+					excluded_selection: $selector.children('input[name=excluded_selection]').val(),
+					select_all:         $selector.children('input[name=select_all]').val(),
+					selection:          $selector.children('input[name=selection]').val()
 				};
 				var form   = document.createElement('form');
 				var target = $(this).attr('target');

@@ -17,19 +17,21 @@
 		{/setting/custom.html}
 		{/component/button/general_buttons.html}
 		<!--search_summary?-->
-		<details class="search summary">
-			<summary>|search summary|</summary>
+		<details class="search">
+			<summary>|results filtered by your search|</summary>
 			<p>{search_summary}</p>
 		</details>
 		<!--end-->
 		<!--errors_summary?-->
-		<details class="errors summary">
-			<summary>|errors summary</summary>
+		<details class="errors">
+			<summary>|an error occurred on your search|</summary>
 			<p>{errors_summary}</p>
 		</details>
 		<!--end-->
-		{/feature/list_/body.html}
-		{/feature/list_/selection_buttons.html}
+		<form action="app://(@class.path)/(@feature)" method="post" target="#main">
+			{/feature/list_/body.html}
+			{/feature/list_/footer.html}
+		</form>
 	</section>
 
 <!--END-->

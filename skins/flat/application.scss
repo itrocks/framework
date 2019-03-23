@@ -9,6 +9,17 @@
 	}
 }
 
+a {
+	color: inherit;
+	padding: $list-margin $list-horizontal-margin;
+	text-decoration: inherit;
+
+	&:hover {
+		background-color: $action-focus-background;
+		color: $action-focus-color;
+	}
+}
+
 body {
 	background-color: $background;
 	color: $color;
@@ -16,26 +27,6 @@ body {
 	height: 100%;
 	position: absolute;
 	width: 100%;
-
-	a {
-		color: inherit;
-		padding: $list-margin $list-horizontal-margin;
-		text-decoration: inherit;
-
-		&:hover {
-			background-color: $action-focus-background;
-			color: $action-focus-color;
-		}
-	}
-
-	div.popup {
-		background-color: $background;
-		color: $color;
-		left: 0;
-		position: absolute;
-		text-align: left;
-		z-index: 1;
-	}
 
 	> :not(nav) {
 		white-space: initial;
@@ -55,7 +46,6 @@ body {
 		> .logo {
 			background: $background url('img/bappli-studio-logo.png') center no-repeat;
 			background-size: contain;
-			color: transparent;
 			font-size: 0;
 		}
 
@@ -78,3 +68,17 @@ body {
 		width: 100%;
 	}
 }
+
+div.popup {
+	background-color: $background;
+	color: $color;
+	left: 0;
+	position: absolute;
+	text-align: left;
+	z-index: 1;
+}
+
+summary {
+	cursor: pointer;
+}
+

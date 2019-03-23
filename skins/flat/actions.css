@@ -1,10 +1,24 @@
+li.actions > ul,
+ul.actions {
+  display: block; }
+
+li.action,
+li.actions > ul > li,
 ul.actions > li {
   display: inline-block;
   position: relative;
   vertical-align: top;
   white-space: nowrap; }
+  li.action > a,
+  li.actions > ul > li > a,
+  ul.actions > li > a {
+    display: inline-block; }
+  li.action > ul,
+  li.actions > ul > li > ul,
   ul.actions > li > ul {
     display: none; }
+  li.action:hover > ul,
+  li.actions > ul > li:hover > ul,
   ul.actions > li:hover > ul {
     background-color: #fff;
     border: 1px solid lightgray;
@@ -13,7 +27,11 @@ ul.actions > li {
     position: absolute;
     top: 1.3em;
     z-index: 1; }
+    li.action:hover > ul > li,
+    li.actions > ul > li:hover > ul > li,
     ul.actions > li:hover > ul > li {
       display: block; }
+      li.action:hover > ul > li > a,
+      li.actions > ul > li:hover > ul > li > a,
       ul.actions > li:hover > ul > li > a {
         display: block; }

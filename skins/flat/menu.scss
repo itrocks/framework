@@ -4,12 +4,12 @@
 
 @media screen and (max-width: $phone-max-width) {
 
-	#menu {
+	nav#menu {
 		display: none;
 	}
 }
 
-#menu {
+nav#menu {
 	background-color: $head-background;
 	color: $head-color;
 	position: relative;
@@ -17,7 +17,6 @@
 	> .minimize {
 		background: $head-background url('img/menu-button-white.png');
 		background-size: contain;
-		color: transparent;
 		cursor: pointer;
 		display: inline-block;
 		font-size: 0;

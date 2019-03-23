@@ -1,33 +1,41 @@
 @import 'colors.scss';
 @import 'margins.scss';
 
+li.actions > ul,
 ul.actions {
+	display: block;
+}
 
-	> li {
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+	display: inline-block;
+	position: relative;
+	vertical-align: top;
+	white-space: nowrap;
+
+	> a {
 		display: inline-block;
-		position: relative;
-		vertical-align: top;
-		white-space: nowrap;
+	}
 
-		> ul {
-			display: none;
-		}
+	> ul {
+		display: none;
+	}
 
-		&:hover > ul {
-			background-color: #fff;
-			border: $thin-border;
-			display: inline-block;
-			left: 0;
-			position: absolute;
-			top: 1.3em;
-			z-index: 1;
+	&:hover > ul {
+		background-color: #fff;
+		border: $thin-border;
+		display: inline-block;
+		left: 0;
+		position: absolute;
+		top: 1.3em;
+		z-index: 1;
 
-			> li {
+		> li {
+			display: block;
+
+			> a {
 				display: block;
-
-				> a {
-					display: block;
-				}
 			}
 		}
 	}

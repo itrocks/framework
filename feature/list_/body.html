@@ -9,104 +9,100 @@
 	<title>{title}</title>
 </head>
 <body>
-	<!--BEGIN-->
-	<!--use ITRocks\Framework\Html\Engine-->
+<!--BEGIN-->
+<!--use ITRocks\Framework\Html\Engine-->
 
-	<form action="app://(@class.path)/(@feature)" method="post" target="#main">
+	<ul class="list">
+		<li class="title">
+			<ol>
+				<li></li>
+				<li class="column_select">
+					<!--!lock_columns?-->
+					<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
+					<!--end-->
+				</li>
+				<!--properties-->
+				<li class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-property="{path}">
+					<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
+				</li>
+				<!--sample-->
+				<li class="column_name_2 sort reverse float property" data-property="path.column_name_2">
+					<a href="app://Class/feature?sort=column_name_2" target="#main">column2</a>
+				</li>
+				<!--end-->
+			</ol>
+		</li>
 
-		<ul>
-			<li class="title">
-				<ol>
-					<li></li>
-					<li class="column_select">
-						<!--!lock_columns?-->
-						<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
-						<!--end-->
-					</li>
-					<!--properties-->
-					<li class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-property="{path}">
-						<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
-					</li>
-					<!--sample-->
-					<li class="column_name_2 sort reverse float property" data-property="path.column_name_2">
-						<a href="app://Class/feature?sort=column_name_2" target="#main">column2</a>
-					</li>
+		<li class="search">
+			<ol>
+				<li></li>
+				<li class="reset">
+					<!--search_summary?-->
+					<a href="app://(@class.path)/(@feature)?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
 					<!--end-->
-				</ol>
-			</li>
+				</li>
+				<!--properties-->
+				<li class="{path.@cssClass} {type.@typeCss}">{search.@edit('search[{path.@escapeName}]','true','true')}</li>
+				<!--sample-->
+				<li class="column_name_2 float"><input name="search[path][column_name_2]"></li>
+				<!--end-->
+			</ol>
+		</li>
 
-			<li class="search">
-				<ol>
-					<li></li>
-					<li class="reset search">
-						<!--search_summary?-->
-						<a href="app://(@class.path)/(@feature)?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
-						<!--end-->
-					</li>
-					<!--properties-->
-					<li class="{path.@cssClass} {type.@typeCss}">{search.@edit('search[{path.@escapeName}]','true','true')}</li>
-					<!--sample-->
-					<li class="column_name_2 float"><input name="search[path][column_name_2]"></li>
+		<!--elements:-{displayed_lines_count}-->
+		<li class="line">
+			<ol>
+				<!--@isFirst?-->
+				<li class="vertical scrollbar" data-length="{..displayed_lines_count}" data-row-span="{..displayed_lines_count}" data-start="{..display_start}" data-total="{..rows_count}">
+					<a class="up" href="app://(..@class.path)/(@feature)?move=up" target="#main">/\</a>
+					<a class="position" href="app://(..@class.path)/(@feature)?move=(..display_start)" target="#main">=</a>
+					<a class="down" href="app://(..@class.path)/(@feature)?move=down" target="#main">\/</a>
+				</li>
+				<!--end-->
+				<!--!@isFirst?-->
+				<li></li>
+				<!--end-->
+				<li class="select"><input type="checkbox" value="{id}"></li>
+				<!--formatValuesEx:1-->
+				<li class="{path.@cssClass} {....properties.{@key}.type.@typeCss} value">
+					<!--..class_name?-->
+					<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
 					<!--end-->
-				</ol>
-			</li>
+				</li>
+				<!--end-->
+				<!--formatValuesEx:2-...count-->
+				<li class="{path.@cssClass} {....properties.{@key}.type.@typeCss} value">{value}</li>
+				<!--end-->
+			</ol>
+		</li>
+		<!--sample-->
+		<li class="line">
+			<ol>
+				<li></li>
+				<li class="select"><input type="checkbox"></li>
+				<li class="column1 string value"><a href="app://Class/2">code2</a></li>
+				<li class="column2 float value">3,18</li>
+			</ol>
+		</li>
+		<li class="line">
+			<ol>
+				<li></li>
+				<li class="select"><input type="checkbox"></li>
+				<li class="column1 string value"><a href="app://Class/3">code3</a></li>
+				<li class="column2 float value">2,29</li>
+			</ol>
+		</li>
+		<li class="line">
+			<ol>
+				<li></li>
+				<li class="select"><input type="checkbox"></li>
+				<li class="column1 string value"><a href="app://Class/4">code4</a></li>
+				<li class="column2 float value">12,39</li>
+			</ol>
+		</li>
+		<!--end-->
+	</ul>
 
-			<!--elements:-{displayed_lines_count}-->
-			<li>
-				<ol>
-					<!--@isFirst?-->
-					<li class="vertical scrollbar" data-length="{..displayed_lines_count}" data-row-span="{..displayed_lines_count}" data-start="{..display_start}" data-total="{..rows_count}">
-						<a class="up" href="app://(..@class.path)/(@feature)?move=up" target="#main">/\</a>
-						<a class="position" href="app://(..@class.path)/(@feature)?move=(..display_start)" target="#main">=</a>
-						<a class="down" href="app://(..@class.path)/(@feature)?move=down" target="#main">\/</a>
-					</li>
-					<!--end-->
-					<!--!@isFirst?-->
-					<li></li>
-					<!--end-->
-					<li><input type="checkbox" value="{id}"></li>
-					<!--formatValuesEx:1-->
-					<li class="{path.@cssClass} {....properties.{@key}.type.@typeCss} value">
-						<!--..class_name?-->
-						<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
-						<!--end-->
-					</li>
-					<!--end-->
-					<!--formatValuesEx:2-...count-->
-					<li class="{path.@cssClass} {....properties.{@key}.type.@typeCss} value">{value}</li>
-					<!--end-->
-				</ol>
-			</li>
-			<!--sample-->
-			<li>
-				<ol>
-					<li></li>
-					<li><input type="checkbox"></li>
-					<li class="column1 string"><a href="app://Class/2">code2</a></li>
-					<li class="column2 float">3,18</li>
-				</ol>
-			</li>
-			<li>
-				<ol>
-					<li></li>
-					<li><input type="checkbox"></li>
-					<li class="column1 string"><a href="app://Class/3">code3</a></li>
-					<li class="column2 float">2,29</li>
-				</ol>
-			</li>
-			<li>
-				<ol>
-					<li></li>
-					<li><input type="checkbox"></li>
-					<li class="column1 string"><a href="app://Class/4">code4</a></li>
-					<li class="column2 float">12,39</li>
-				</ol>
-			</li>
-			<!--end-->
-		</ul>
-
-	</form>
-
-	<!--END-->
+<!--END-->
 </body>
 </html>

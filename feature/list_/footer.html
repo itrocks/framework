@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
+</head>
+<body>
+<!--BEGIN-->
+<!--use ITRocks\Framework\Html\Engine-->
+
+	<ul class="footer">
+		<li class="{selected} selector action">
+			<input type="hidden" name="excluded_selection">
+			<input type="hidden" name="select_all" value="0">
+			<input type="hidden" name="selection">
+			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?view=selection">
+				x{selected_lines_count}
+			</a>
+			<ul>
+				<li class="select_visible {?class}">
+					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=visible">
+						|select the !{displayed_lines_count}! visible lines|
+					</a>
+				</li>
+				<li class="deselect_visible {?class}">
+					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?deselect=visible">
+						|deselect the !{displayed_lines_count}! visible lines|
+					</a>
+				</li>
+				<li class="select_all {?class}">
+					<a data-count='{rows_count}' data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=all">
+						|select all !{rows_count}! matching lines|
+					</a>
+				</li>
+				<li class="deselect_all {?class}">
+					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=none">
+						|deselect all lines|
+					</a>
+				</li>
+			</ul>
+		</li>
+		<li class="selection actions">
+			{/feature/list_/selection_buttons.html}
+		</li>
+		<li class="visible lines">
+			<ul>
+				<li class="actions">
+					<ul>
+						<!--less_twenty?-->
+						<li class="less twenty">
+							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?less=20" target="#main" title="|Display the standard lines count|">
+								|Less lines|
+							</a>
+						</li>
+						<!--end-->
+						<!--more_hundred?-->
+						<li class="more hundred">
+							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=100" target="#main" title="|Display more lines|">
+								|More lines|
+							</a>
+						</li>
+						<!--end-->
+						<!--more_thousand?-->
+						<li class="more thousand">
+							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=1000" target="#main" title="|Display the maximal lines count|">
+								|Max lines|
+							</a>
+						</li>
+						<!--end-->
+					</ul>
+				</li>
+				<!--!displayed_lines_count-->
+				<li class="display" title="|!{rows_count}! ¦lines¦ match your search|">
+					|!{rows_count}! lines|
+				</li>
+				<!--end-->
+				<!--displayed_lines_count-->
+				<li class="display" title="|!{rows_count}! ¦lines¦ match your search|
+|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|">
+					|lines !{display_start}! - !{displayed_lines_count}! / !{rows_count}!|
+				</li>
+				<!--end-->
+			</ul>
+		</li>
+	</ul>
+
+<!--END-->
+</body>
+</html>

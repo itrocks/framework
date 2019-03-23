@@ -1,41 +1,101 @@
 @import 'colors.scss';
 @import 'margins.scss';
 
-.list.window {
+section.list.window {
 
-	> .summary {
+	> ul.actions, > form > ul.footer {
+		margin: $list-horizontal-margin 0;
+	}
+
+	> details {
 
 		&.error {
 			border: 1px solid $error-border-color;
 		}
 	}
 
-	> form, > ul {
-		margin: $list-horizontal-margin 0;
-	}
-
 	> form {
+		display: inline-block;
 
-		> ul {
-			border-left: $thin-border;
-			border-right: $thin-border;
+		> ul.footer {
+			position: relative;
+
+			> li {
+				display: inline-block;
+
+				&.selector:after {
+					content: '>';
+				}
+
+				&.visible.lines {
+					position: absolute;
+					right: 0;
+
+					> ul > li {
+						display: inline-block;
+
+						&.actions > ul > li {
+
+							> a {
+								font-size: 0;
+
+								&:before {
+									color: initial;
+									font-size: initial;
+									padding: $list-margin $list-horizontal-margin;
+								}
+
+								&:hover:before {
+									background-color: $action-focus-background;
+									color: $action-focus-color;
+								}
+							}
+
+							&.twenty.less > a:before {
+								content: '[-]';
+							}
+
+							&.hundred.more > a:before {
+								content: '[+]';
+							}
+
+							&.thousand.more > a:before {
+								content: '[#]';
+							}
+						}
+					}
+				}
+			}
+		}
+
+		> ul.list {
+			border: $thin-border;
 			display: table;
-
 
 			> li {
 				display: table-row-group;
 				position: relative;
 
 				&:not(:first-child) > ol > li {
-					border-bottom: $thin-border;
 
 					&:first-child > a {
 						display: none;
 					}
 				}
 
-				&:nth-child(n+3):hover {
-					background-color: $action-zone-background;
+				&:nth-child(n+3) {
+
+					&:nth-child(even) {
+						background-color: $line-even;
+					}
+
+					&:nth-child(odd) {
+						background-color: $line-odd;
+					}
+
+					&:hover {
+						background-color: $action-zone-background;
+					}
 				}
 
 				&.search {
@@ -73,7 +133,6 @@
 								background-image: url('img/column-select-white.png');
 								background-position: center;
 								background-repeat: no-repeat;
-								color: transparent;
 								font-size: 0;
 								height: 100%;
 								position: absolute;
@@ -90,11 +149,6 @@
 					> li {
 						display: table-cell;
 
-						> a {
-							display: block;
-							margin: -$list-margin;
-						}
-
 						&.value {
 							padding: $list-margin;
 
@@ -105,6 +159,11 @@
 							&.float, &.integer {
 								text-align: right;
 							}
+						}
+
+						> a {
+							display: block;
+							margin: -$list-margin;
 						}
 					}
 				}

@@ -12,37 +12,25 @@
 <!--BEGIN-->
 <!--use ITRocks\Framework\Html\Engine-->
 
-	<input type="hidden" name="excluded_selection">
-	<input type="hidden" name="select_all" value="0">
-	<input type="hidden" name="selection">
-
 	<ul class="selection actions">
-		<!--less_twenty?--><li class="less twenty growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?less=20" target="#main" title="|Display the standard lines count|">|Less lines|</a></li><!--end-->
-		<!--more_hundred?--><li class="more hundred growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=100" target="#main" title="|Display more lines|">|More lines|</a></li><!--end-->
-		<!--more_thousand?--><li class="more thousand growth"><a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=1000" target="#main" title="|Display the maximal lines count|">|Max lines|</a></li><!--end-->
-		<li class="{selected} select_count">
-			<a class="objects {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?view=selection">x{selected_lines_count}</a>
-			<ul>
-				<li><a class="select_visible {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=visible">|select the !{displayed_lines_count}! visible lines|</a></li>
-				<li><a class="deselect_visible {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?deselect=visible">|deselect the !{displayed_lines_count}! visible lines|</a></li>
-				<li><a class="select_all {?class}" data-count='{rows_count}' data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=all">|select all !{rows_count}! matching lines|</a></li>
-				<li><a class="deselect_all {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=none">|deselect all lines|</a></li>
-			</ul>
-		</li>
 		<!--selection_buttons-->
-		<li class="{feature.lower}"><a class="submit {?class}" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">|{caption}|</a>
+		<li class="{feature.lower}">
+			<a class="submit {?class}" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">
+				|{caption}|
+			</a>
 			<!--sub_buttons?-->
 			<ul>
 				<!--sub_buttons-->
-				<li class="{feature.lower}"><a class="submit {?class}" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">|{caption}|</a></li>
+				<li class="{feature.lower}">
+					<a class="submit {?class}" data-class="{?data_object.@class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" data-id="{?data_object.id}" href="app://(link)" target="{?target}">
+						|{caption}|
+					</a>
+				</li>
 				<!--end-->
 			</ul>
 			<!--end-->
 		</li>
-		<!--sample-->
-		<li class="new"><a class="other classes {?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://Class/new" target="#main">New</a></li>
 		<!--end-->
-		<li class="rows_count">|!{rows_count}! ¦lines¦ match your search|<!--displayed_lines_count--><br>|!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|<!--end--></li>
 	</ul>
 
 <!--END-->
