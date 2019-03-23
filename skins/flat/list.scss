@@ -16,6 +16,7 @@ section.list.window {
 
 	> form {
 		display: inline-block;
+		min-width: 480px;
 
 		> ul.footer {
 			position: relative;
@@ -33,6 +34,7 @@ section.list.window {
 
 					> ul > li {
 						display: inline-block;
+						padding: $list-margin $list-horizontal-margin;
 
 						&.actions > ul > li {
 
@@ -71,6 +73,7 @@ section.list.window {
 		> ul.list {
 			border: $thin-border;
 			display: table;
+			width: 100%;
 
 			> li {
 				display: table-row-group;

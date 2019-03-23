@@ -3,7 +3,8 @@ section.list.window > ul.actions, section.list.window > form > ul.footer {
 section.list.window > details.error {
   border: 1px solid darkred; }
 section.list.window > form {
-  display: inline-block; }
+  display: inline-block;
+  min-width: 480px; }
   section.list.window > form > ul.footer {
     position: relative; }
     section.list.window > form > ul.footer > li {
@@ -14,7 +15,8 @@ section.list.window > form {
         position: absolute;
         right: 0; }
         section.list.window > form > ul.footer > li.visible.lines > ul > li {
-          display: inline-block; }
+          display: inline-block;
+          padding: 0.3em 0.5em; }
           section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
             font-size: 0; }
             section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
@@ -32,7 +34,8 @@ section.list.window > form {
             content: '[#]'; }
   section.list.window > form > ul.list {
     border: 1px solid lightgray;
-    display: table; }
+    display: table;
+    width: 100%; }
     section.list.window > form > ul.list > li {
       display: table-row-group;
       position: relative; }
