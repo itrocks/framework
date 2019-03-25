@@ -1,3 +1,7 @@
+@media screen and (max-width: 479px) {
+  body > header > .logo,
+  body > header > .top.bar > .logo {
+    display: none !important; } }
 @media screen and (min-width: 480px) {
   body {
     white-space: nowrap; } }
@@ -26,15 +30,25 @@ body {
     display: table-row;
     height: 3em;
     position: relative; }
+    body > header > * {
+      display: table-cell; }
     body > header > .logo {
       background: white url("img/bappli-studio-logo.png") center no-repeat;
       background-size: contain;
       font-size: 0; }
-    body > header > :nth-child(n+3) {
-      display: none; }
-    body > header > :nth-child(-n+2) {
-      display: table-cell;
+    body > header > .top.bar {
       vertical-align: middle; }
+      body > header > .top.bar > .logo {
+        background: url("img/bappli-studio-logo-for-dark.png") center no-repeat;
+        background-size: contain;
+        color: transparent;
+        display: inline-block;
+        height: 3em;
+        padding: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 11.75em; }
   body > main, body > nav {
     display: table-cell;
     vertical-align: top; }

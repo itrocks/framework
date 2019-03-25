@@ -2,6 +2,17 @@
 @import 'margins.scss';
 @import 'responsive.scss';
 
+@media screen and (max-width: $phone-max-width) {
+
+	body > header {
+
+		> .logo,
+		> .top.bar > .logo {
+			display: none !important;
+		}
+	}
+}
+
 @media screen and (min-width: $tab-min-width) {
 
 	body {
@@ -43,19 +54,31 @@ body {
 		height: 3em;
 		position: relative;
 
+		> * {
+			display: table-cell;
+		}
+
 		> .logo {
 			background: $background url('img/bappli-studio-logo.png') center no-repeat;
 			background-size: contain;
 			font-size: 0;
 		}
 
-		> :nth-child(n+3) {
-			display: none;
-		}
-
-		> :nth-child(-n+2) {
-			display: table-cell;
+		> .top.bar {
 			vertical-align: middle;
+
+			> .logo {
+				background: url('img/bappli-studio-logo-for-dark.png') center no-repeat;
+				background-size: contain;
+				color: transparent;
+				display: inline-block;
+				height: 3em;
+				padding: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 11.75em;
+			}
 		}
 	}
 
