@@ -9,9 +9,9 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
-use ITRocks\Framework\View\Html\Dom\Table\Body;
-use ITRocks\Framework\View\Html\Dom\Table\Row;
-use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\View\Html\Dom\List_\Item;
+use ITRocks\Framework\View\Html\Dom\List_\Ordered;
+use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * Takes a map of objects and build a HTML edit subform containing their data
@@ -69,10 +69,20 @@ class Html_Builder_Map extends Map
 		$this->preprop = $preprop;
 	}
 
+	//----------------------------------------------------------------------------------------- build
+	/**
+	 * @return Unordered
+	 */
+	public function build()
+	{
+		$table = parent::build();
+		return $table;
+	}
+
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Body
+	 * @return Item[]
 	 */
 	protected function buildBody()
 	{
@@ -83,10 +93,7 @@ class Html_Builder_Map extends Map
 			$object = $is_abstract ? new String_Class : Builder::create($this->class_name);
 			$row    = $this->buildRow($object);
 			$row->addClass('new');
-			$body->addRow($row);
-		}
-		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
-			$body->setAttribute('title', $tooltip);
+			$body[] = $row;
 		}
 		return $body;
 	}
@@ -94,7 +101,7 @@ class Html_Builder_Map extends Map
 	//------------------------------------------------------------------------------------- buildCell
 	/**
 	 * @param $object object
-	 * @return Standard_Cell
+	 * @return Item
 	 */
 	protected function buildCell($object)
 	{
@@ -107,7 +114,7 @@ class Html_Builder_Map extends Map
 		$builder->readonly    = $this->readOnly();
 
 		$input = $builder->setTemplate($this->template)->build();
-		$cell  = new Standard_Cell($input);
+		$cell  = new Item($input);
 		$type  = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
 		if ($class = $type->isClassHtml()) {
@@ -118,13 +125,14 @@ class Html_Builder_Map extends Map
 
 	//------------------------------------------------------------------------------------- buildHead
 	/**
-	 * @return string
+	 * @return Ordered
 	 */
 	protected function buildHead()
 	{
 		$head = parent::buildHead();
-		foreach ($head->rows as $row) {
-			$row->addCell(new Standard_Cell(''));
+		$head->addItem(new Item());
+		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
+			$head->setAttribute('title', $tooltip);
 		}
 		return $head;
 	}
@@ -132,16 +140,16 @@ class Html_Builder_Map extends Map
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
 	 * @param $object object
-	 * @return Row
+	 * @return Ordered
 	 */
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
 		if (!$this->readOnly() && !$this->noDelete()) {
-			$cell = new Standard_Cell('-');
+			$cell = new Item('-');
 			$cell->setAttribute('title', '|remove line|');
 			$cell->addClass('minus');
-			$row->addCell($cell);
+			$row->addItem($cell);
 		}
 		return $row;
 	}

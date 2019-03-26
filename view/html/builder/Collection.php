@@ -15,12 +15,9 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
-use ITRocks\Framework\View\Html\Dom\Table;
-use ITRocks\Framework\View\Html\Dom\Table\Body;
-use ITRocks\Framework\View\Html\Dom\Table\Head;
-use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
-use ITRocks\Framework\View\Html\Dom\Table\Row;
-use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\View\Html\Dom\List_\Item;
+use ITRocks\Framework\View\Html\Dom\List_\Ordered;
+use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data
@@ -67,27 +64,29 @@ class Collection
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * @return Table
+	 * @return Unordered
 	 */
 	public function build()
 	{
 		(new Mapper\Collection($this->collection))->sort();
-		$table = new Table();
-		$table->addClass('collection');
-		$table->head = $this->buildHead();
-		$table->body = $this->buildBody();
-		return $table;
+		$list = new Unordered();
+		$list->addClass('collection');
+		$list->addItem($this->buildHead());
+		foreach ($this->buildBody() as $line) {
+			$list->addItem($line);
+		}
+		return $list;
 	}
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
-	 * @return Body
+	 * @return Item[]
 	 */
 	protected function buildBody()
 	{
-		$body = new Body();
+		$body = [];
 		foreach ($this->collection as $object) {
-			$body->addRow($this->buildRow($object));
+			$body[] = $this->buildRow($object);
 		}
 		return $body;
 	}
@@ -96,7 +95,7 @@ class Collection
 	/**
 	 * @param $object   object
 	 * @param $property Reflection_Property
-	 * @return Standard_Cell
+	 * @return Item
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
@@ -110,9 +109,7 @@ class Collection
 				$value = (new Map($property, $value))->build();
 			}
 		}
-		$cell = ($value instanceof Dao\File)
-			? new Standard_Cell((new File($value))->build())
-			: new Standard_Cell($value);
+		$cell = new Item(($value instanceof Dao\File) ? (new File($value))->build() : $value);
 		$type = $property->getType();
 		if ($type->isMultiple()) {
 			$cell->addClass('multiple');
@@ -127,18 +124,17 @@ class Collection
 
 	//------------------------------------------------------------------------------------- buildHead
 	/**
-	 * @return Head
+	 * @return Ordered
 	 */
 	protected function buildHead()
 	{
-		$head = new Head();
-		$row  = new Row();
+		$head = new Ordered();
 		foreach ($this->properties as $property) {
 			if (
 				!$property->getType()->isMultiple()
 				|| ($property->getType()->getElementTypeAsString() != $property->getFinalClass()->name)
 			) {
-				$cell = new Header_Cell(
+				$cell = new Item(
 					Loc::tr(
 						Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
 						$this->class_name
@@ -148,27 +144,26 @@ class Collection
 					$cell->addClass('hidden');
 					$cell->setStyle('display', 'none');
 				}
-				$row->addCell($cell);
+				$head->addItem($cell);
 			}
 		}
-		$head->addRow($row);
 		return $head;
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
 	 * @param $object object
-	 * @return Row
+	 * @return Ordered
 	 */
 	protected function buildRow($object)
 	{
-		$row = new Row();
+		$row = new Ordered();
 		foreach ($this->properties as $property) {
 			if (
 				!$property->getType()->isMultiple()
 				|| ($property->getType()->getElementTypeAsString() != get_class($object))
 			) {
-				$row->addCell($this->buildCell($object, $property));
+				$row->addItem($this->buildCell($object, $property));
 			}
 		}
 		return $row;

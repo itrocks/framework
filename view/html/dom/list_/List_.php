@@ -1,37 +1,38 @@
 <?php
-namespace ITRocks\Framework\View\Html\Dom\Lists;
+namespace ITRocks\Framework\View\Html\Dom;
 
-use ITRocks\Framework\View\Html\Dom\Element;
+use ITRocks\Framework\View\Html\Dom\List_\Item;
 
 /**
  * A DOM element class for HTML tables <table>
  */
-class Unordered_List extends Element
+abstract class List_ extends Element
 {
 
 	//---------------------------------------------------------------------------------------- $items
 	/**
-	 * @var List_Item[]
+	 * @var Item[]
 	 */
 	public $items = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $items List_Item[]
+	 * @param $name  string
+	 * @param $items Item[]
 	 */
-	public function __construct(array $items = null)
+	public function __construct($name, array $items = null)
 	{
-		parent::__construct('ul');
+		parent::__construct($name);
 		if (isset($items)) $this->items = $items;
 	}
 
 	//--------------------------------------------------------------------------------------- addItem
 	/**
-	 * @param $item string
+	 * @param $item Item|string
 	 */
 	public function addItem($item)
 	{
-		$this->items[] = $item;
+		$this->items[] = ($item instanceof Item) ? $item : new Item($item);
 		$this->setContent(null);
 	}
 
@@ -47,7 +48,7 @@ class Unordered_List extends Element
 			asort($items);
 			$content = '';
 			foreach ($items as $item) {
-				$content .= new List_Item($item);
+				$content .= $item;
 			}
 			$this->setContent($content);
 		}

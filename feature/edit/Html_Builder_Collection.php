@@ -13,12 +13,9 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
-use ITRocks\Framework\View\Html\Dom\Table;
-use ITRocks\Framework\View\Html\Dom\Table\Body;
-use ITRocks\Framework\View\Html\Dom\Table\Head;
-use ITRocks\Framework\View\Html\Dom\Table\Header_Cell;
-use ITRocks\Framework\View\Html\Dom\Table\Row;
-use ITRocks\Framework\View\Html\Dom\Table\Standard_Cell;
+use ITRocks\Framework\View\Html\Dom\List_\Item;
+use ITRocks\Framework\View\Html\Dom\List_\Ordered;
+use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data
@@ -84,7 +81,7 @@ class Html_Builder_Collection extends Collection
 	 * + AOP should create a build_() method that calls parent::build()
 	 * + AOP should complete parameters like Table to give full path as they may not be in use clause
 	 *
-	 * @return Table
+	 * @return Unordered
 	 */
 	public function build()
 	{
@@ -109,7 +106,7 @@ class Html_Builder_Collection extends Collection
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Body
+	 * @return Item[]
 	 */
 	protected function buildBody()
 	{
@@ -118,10 +115,7 @@ class Html_Builder_Collection extends Collection
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$row = $this->buildRow(Builder::create($this->class_name));
 			$row->addClass('new');
-			$body->addRow($row);
-		}
-		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
-			$body->setAttribute('title', $tooltip);
+			$body[] = $row;
 		}
 		return $body;
 	}
@@ -131,7 +125,7 @@ class Html_Builder_Collection extends Collection
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object   object
 	 * @param $property Reflection_Property
-	 * @return Standard_Cell
+	 * @return Item
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
@@ -171,7 +165,7 @@ class Html_Builder_Collection extends Collection
 			$property_builder->setInputAsReadOnly($id_input);
 			$input = $id_input . $input;
 		}
-		$cell = new Standard_Cell($input);
+		$cell = new Item($input);
 		$type = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
 		if ($class = $type->isClassHtml()) {
@@ -186,13 +180,14 @@ class Html_Builder_Collection extends Collection
 
 	//------------------------------------------------------------------------------------- buildHead
 	/**
-	 * @return Head
+	 * @return Ordered
 	 */
 	protected function buildHead()
 	{
 		$head = parent::buildHead();
-		foreach ($head->rows as $row) {
-			$row->addCell(new Header_Cell());
+		$head->addItem(new Item());
+		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
+			$head->setAttribute('title', $tooltip);
 		}
 		return $head;
 	}
@@ -200,16 +195,16 @@ class Html_Builder_Collection extends Collection
 	//-------------------------------------------------------------------------------------- buildRow
 	/**
 	 * @param $object object
-	 * @return Row
+	 * @return Ordered
 	 */
 	protected function buildRow($object)
 	{
 		$row = parent::buildRow($object);
 		if (!$this->readOnly() && !$this->noDelete()) {
-			$cell = new Standard_Cell('-');
+			$cell = new Item('-');
 			$cell->setAttribute('title', '|remove line|');
 			$cell->addClass('minus');
-			$row->addCell($cell);
+			$row->addItem($cell);
 		}
 		return $row;
 	}
