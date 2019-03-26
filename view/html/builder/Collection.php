@@ -119,6 +119,13 @@ class Collection
 			$cell->setStyle('display', 'none');
 		}
 		$cell->addClass($type->asString());
+		$cell->setData(
+			'name',
+			Loc::tr(
+				Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
+				$this->class_name
+			)
+		);
 		return $cell;
 	}
 

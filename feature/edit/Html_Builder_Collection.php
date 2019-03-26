@@ -2,7 +2,9 @@
 namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
@@ -10,6 +12,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
@@ -175,6 +178,13 @@ class Html_Builder_Collection extends Collection
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');
 		}
+		$cell->setData(
+			'name',
+			Loc::tr(
+				Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
+				$this->class_name
+			)
+		);
 		return $cell;
 	}
 
