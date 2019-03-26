@@ -94,9 +94,9 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------- .model.window .editor .designer documentDesigner
-	$('.model.window').build(function()
+	$('article.model').build(function()
 	{
-		var $model_window = this.inside('.model.window:has(.editor)');
+		var $model_window = this.inside('article.model:has(.editor)');
 		var $editor       = $model_window.find('.editor');
 		if (!$editor.length) return;
 
@@ -191,7 +191,7 @@ $(document).ready(function()
 		 */
 		this.inside('.general.actions > .write > a').click(function()
 		{
-			var $designer = $(this).closest('.model.window').find('.editor .designer');
+			var $designer = $(this).closest('article.model').find('.editor .designer');
 			var $active   = $designer.closest('.active.page');
 			var $pages    = $designer.closest('.page');
 			$pages.addClass('active');
@@ -211,10 +211,10 @@ $(document).ready(function()
 $(window).scroll(function()
 {
 
-	var $toolbox = $('.model.edit.window > .editor > .toolbox');
+	var $toolbox = $('article.model.edit > .editor > .toolbox');
 	if (!$toolbox.length) return;
 	var $fieldset = $toolbox.next('fieldset');
-	var $stay_top = $('.model.edit.window > .fixed.stay-top');
+	var $stay_top = $('article.model.edit > .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
 		$fieldset.attr('style', '');

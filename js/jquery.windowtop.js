@@ -103,7 +103,7 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------------- windowTop
 	var windowTop = function ()
 	{
-		$('.window>h2:first-child').each(function()
+		$('article > header > h2:first-child').each(function()
 		{
 			var $top    = $(this);
 			var $window = $top.parent();

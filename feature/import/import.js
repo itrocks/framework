@@ -1,11 +1,11 @@
 $('document').ready(function()
 {
 
-	$('.import.preview.window').build(function()
+	$('article.import.preview').build(function()
 	{
 		if (!this.length) return;
 
-		this.inside('.import.preview.window').each(function()
+		this.inside('article.import.preview').each(function()
 		{
 			var $this = $(this);
 

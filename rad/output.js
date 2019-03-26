@@ -2,10 +2,10 @@
 function radOutput()
 {
 
-	$('.edit.window, .output.window').build(function()
+	$('article.edit, article.output').build(function()
 	{
 		if (!this.length) return;
-		this.inside('.edit.window>fieldset, .output.window>fieldset').each(function()
+		this.inside('article.edit > fieldset, article.output > fieldset').each(function()
 		{
 			var $this = $(this);
 
@@ -45,7 +45,7 @@ function radOutput()
 				});
 			};
 
-			//---------------------------------- .edit.window>fieldset, .output.window>fieldset droppable
+			//------------------------------ article.edit > fieldset, article.output > fieldset droppable
 			$this.droppable({
 				accept:    '.property',
 				tolerance: 'touch',
@@ -66,7 +66,7 @@ function radOutput()
 						var insert_property = $insert.attr('id');
 						if (div_property !== insert_property) {
 							var $fieldset  = $insert.closest('fieldset[class]');
-							var $window    = $this.closest('.window');
+							var $window    = $this.closest('article');
 							var app        = window.app;
 							var class_name = $window.data('class').repl(BS, SL);
 							var side       = $insert_top.length ? 'before' : 'after';
@@ -125,12 +125,12 @@ function radOutput()
 
 			var className = function($this)
 			{
-				return $this.closest('.window').data('class').repl(BS, SL);
+				return $this.closest('article').data('class').repl(BS, SL);
 			};
 
 			var featureName = function($this)
 			{
-				return $this.closest('.window').data('feature');
+				return $this.closest('article').data('feature');
 			};
 
 			var propertyPath = function($this)
@@ -149,9 +149,9 @@ function radOutput()
 				+ '/ITRocks/Framework/Feature/Output_Setting/Property/edit/{className}/{featureName}/{propertyPath}?as_widget'
 				+ window.app.andSID();
 
-			//--------------------------------------- .windows h2>span, div[class][id]>label>a modifiable
+			//------------------------------ article > header > h2, div[class][id] > label > a modifiable
 			// output title is modifiable (dbl-click)
-			$this.parent().find('h2>span').modifiable({
+			$this.parent().find('header > h2').modifiable({
 				ajax:      callback_uri + '&title={value}',
 				ajax_form: 'form',
 				aliases:   {className: className, featureName: featureName},

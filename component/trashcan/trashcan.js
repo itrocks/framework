@@ -60,7 +60,7 @@ $('document').ready(function()
 						? (app.uri_base + ui.helper.data('throw'))
 						: (event.target.pathname + SL + 'drop');
 					// after trash call is complete, the source window is reloaded to update displayed content
-					var $window = ui.draggable.closest('.window');
+					var $window = ui.draggable.closest('article');
 					if ($window.length) {
 						var data_class = $window.data('class');
 						if (data_class !== undefined) {

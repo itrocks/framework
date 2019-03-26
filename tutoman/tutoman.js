@@ -142,7 +142,7 @@ $('document').ready(function()
 			wait:   function() { return ($('#password').val().length > 3); }
 		})
 		.step({
-			action: tuto.goRightOf('form.user.login.window input[type=submit]'),
+			action: tuto.goRightOf('article.user.login > form input[type=submit]'),
 			done:   'Enfin, cliquez sur le bouton Connexion pour continuer',
 			wait:   function() { return () }
 		});

@@ -50,7 +50,7 @@
 			//---------------------------------------------------------------------------------- settings
 			settings = $.extend({
 				window_identifier: 'data-class',
-				window_selector:   '.window'
+				window_selector:   'article'
 			}, action);
 
 			//---------------------------------------------------------------------------------- each tab

@@ -12,27 +12,31 @@
 <!--BEGIN-->
 
 	<!--use ITRocks\Framework\Html\Engine-->
-	<section class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
-		<h2>{title}</h2>
-		{/setting/custom.html}
+	<article class="{@class.short.lower} list window" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
+		<header>
+			<h2>{title}</h2>
+			{/setting/custom.html}
+		</header>
 		{/component/button/general_buttons.html}
-		<!--search_summary?-->
-		<details class="search">
-			<summary>|results filtered by your search|</summary>
-			<p>{search_summary}</p>
-		</details>
-		<!--end-->
-		<!--errors_summary?-->
-		<details class="errors">
-			<summary>|an error occurred on your search|</summary>
-			<p>{errors_summary}</p>
-		</details>
-		<!--end-->
+		<section class="summary">
+			<!--search_summary?-->
+			<details class="search">
+				<summary>|results filtered by your search|</summary>
+				<p>{search_summary}</p>
+			</details>
+			<!--end-->
+			<!--errors_summary?-->
+			<details class="errors">
+				<summary>|an error occurred on your search|</summary>
+				<p>{errors_summary}</p>
+			</details>
+			<!--end-->
+		</section>
 		<form action="app://(@class.path)/(@feature)" method="post" target="#main">
 			{/feature/list_/body.html}
 			{/feature/list_/footer.html}
 		</form>
-	</section>
+	</article>
 
 <!--END-->
 </body>

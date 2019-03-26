@@ -1,73 +1,71 @@
-section.list.window > ul.actions, section.list.window > form > ul.footer {
+article.list > ul.actions, article.list > form > ul.footer {
   margin: 0.5em 0; }
-section.list.window > details.error {
+article.list > .summary > details.error {
   border: 1px solid darkred; }
-section.list.window > form {
+article.list > form {
   display: inline-block;
   min-width: 480px; }
-  section.list.window > form > ul.footer {
+  article.list > form > ul.footer {
     position: relative; }
-    section.list.window > form > ul.footer > li {
+    article.list > form > ul.footer > li {
       display: inline-block; }
-      section.list.window > form > ul.footer > li.selector:after {
+      article.list > form > ul.footer > li.selector:after {
         content: '>'; }
-      section.list.window > form > ul.footer > li.visible.lines {
+      article.list > form > ul.footer > li.visible.lines {
         position: absolute;
         right: 0; }
-        section.list.window > form > ul.footer > li.visible.lines > ul > li {
+        article.list > form > ul.footer > li.visible.lines > ul > li {
           display: inline-block;
           padding: 0.3em 0.5em; }
-          section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
             font-size: 0; }
-            section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
+            article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
               color: initial;
               font-size: initial;
               padding: 0.3em 0.5em; }
-            section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:hover:before {
+            article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:hover:before {
               background-color: #00b39c;
               color: #efe; }
-          section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.twenty.less > a:before {
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.twenty.less > a:before {
             content: '[-]'; }
-          section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.hundred.more > a:before {
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.hundred.more > a:before {
             content: '[+]'; }
-          section.list.window > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
             content: '[#]'; }
-  section.list.window > form > ul.list {
-    border: 1px solid lightgray;
+  article.list > form > ul.list {
     display: table;
     width: 100%; }
-    section.list.window > form > ul.list > li {
+    article.list > form > ul.list > li {
       display: table-row-group;
       position: relative; }
-      section.list.window > form > ul.list > li:not(:first-child) > ol > li:first-child > a {
+      article.list > form > ul.list > li:not(:first-child) > ol > li:first-child > a {
         display: none; }
-      section.list.window > form > ul.list > li:nth-child(n+3):nth-child(even) {
-        background-color: white; }
-      section.list.window > form > ul.list > li:nth-child(n+3):nth-child(odd) {
-        background-color: #f1f1f1; }
-      section.list.window > form > ul.list > li:nth-child(n+3):hover {
+      article.list > form > ul.list > li:nth-child(n+3):nth-child(even) {
+        background-color: #ececec; }
+      article.list > form > ul.list > li:nth-child(n+3):nth-child(odd) {
+        background-color: #dedede; }
+      article.list > form > ul.list > li:nth-child(n+3):hover {
         background-color: #dff; }
-      section.list.window > form > ul.list > li.search input {
+      article.list > form > ul.list > li.search input {
         background-color: transparent;
         border: none;
         min-width: 100%;
         padding: 0.3em; }
-        section.list.window > form > ul.list > li.search input:focus {
+        article.list > form > ul.list > li.search input:focus {
           background-color: #ddd;
           color: #444; }
-        section.list.window > form > ul.list > li.search input:hover {
+        article.list > form > ul.list > li.search input:hover {
           background-color: #00b39c;
           color: #efe; }
-      section.list.window > form > ul.list > li.title {
+      article.list > form > ul.list > li.title {
         background-color: #444;
         color: white;
         text-align: center; }
-        section.list.window > form > ul.list > li.title > ol > li {
-          padding: 0.3em;
+        article.list > form > ul.list > li.title > ol > li {
           vertical-align: middle; }
-          section.list.window > form > ul.list > li.title > ol > li.column_select {
+          article.list > form > ul.list > li.title > ol > li.column_select {
             position: relative; }
-            section.list.window > form > ul.list > li.title > ol > li.column_select > a {
+            article.list > form > ul.list > li.title > ol > li.column_select > a {
               background-image: url("img/column-select-white.png");
               background-position: center;
               background-repeat: no-repeat;
@@ -76,16 +74,20 @@ section.list.window > form {
               position: absolute;
               top: 0;
               width: 100%; }
-      section.list.window > form > ul.list > li > ol {
-        display: table-row; }
-        section.list.window > form > ul.list > li > ol > li {
-          display: table-cell; }
-          section.list.window > form > ul.list > li > ol > li.value {
+          article.list > form > ul.list > li.title > ol > li:not(.column_select) {
             padding: 0.3em; }
-            section.list.window > form > ul.list > li > ol > li.value.date_time {
+      article.list > form > ul.list > li > ol {
+        display: table-row; }
+        article.list > form > ul.list > li > ol > li {
+          display: table-cell; }
+          article.list > form > ul.list > li > ol > li:not(:first-child) {
+            border-left: 1px solid white; }
+          article.list > form > ul.list > li > ol > li.value {
+            padding: 0.3em; }
+            article.list > form > ul.list > li > ol > li.value.date_time {
               text-align: center; }
-            section.list.window > form > ul.list > li > ol > li.value.float, section.list.window > form > ul.list > li > ol > li.value.integer {
+            article.list > form > ul.list > li > ol > li.value.float, article.list > form > ul.list > li > ol > li.value.integer {
               text-align: right; }
-          section.list.window > form > ul.list > li > ol > li > a {
+          article.list > form > ul.list > li > ol > li > a {
             display: block;
             margin: -0.3em; }

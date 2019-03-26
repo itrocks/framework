@@ -5,14 +5,14 @@ $('document').ready(function()
 	var select_all         = [];
 	var selection          = [];
 
-	$('.list.window').build(function()
+	$('article.list').build(function()
 	{
 		if (!this.length) return;
 
 		//--------------------------------------------------------------------------------- addProperty
 		var addProperty = function($object, property_name, before_after, before_after_property_name)
 		{
-			var $window    = $object.closest('.list.window');
+			var $window    = $object.closest('article.list');
 			var app        = window.app;
 			var class_name = $window.data('class').repl(BS, SL);
 			var uri        = app.uri_base + SL + class_name + SL + 'listSetting'
@@ -37,7 +37,7 @@ $('document').ready(function()
 		};
 
 		//---------------------------------------------------------- .column_select li.basic.property
-		if (this.closest('.list.window .column_select').length) {
+		if (this.closest('article.list .column_select').length) {
 			this.find('li.basic.property').click(function()
 			{
 				var $this = $(this);
@@ -45,7 +45,7 @@ $('document').ready(function()
 			});
 		}
 
-		this.inside('.list.window').each(function()
+		this.inside('article.list').each(function()
 		{
 			var $this     = $(this);
 			var $list     = $this.find('ul.list');
@@ -53,7 +53,7 @@ $('document').ready(function()
 			var $selector = $this.find('ul.footer > .selector');
 			$this.id = $this.attr('id');
 
-			//--------------------------------------------------------------- .list.window resetSelection
+			//--------------------------------------------------------------- article.list resetSelection
 			var resetSelection = function()
 			{
 				excluded_selection = [];
@@ -61,7 +61,7 @@ $('document').ready(function()
 				selection          = [];
 			};
 
-			//------------------------------------------------------------------ .list.window updateCount
+			//------------------------------------------------------------------ article.list updateCount
 			var updateCount = function()
 			{
 				var count_elements, select_all_content, selection_content, selection_exclude_content, text;
@@ -199,11 +199,11 @@ $('document').ready(function()
 
 			});
 
-			//-------------------------------------------- (.window h2, ul.list li.property a) modifiable
+			//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
 			// modifiable list and columns titles
 			var className = function($this)
 			{
-				return $this.closest('.list.window').data('class');
+				return $this.closest('article.list').data('class');
 			};
 			var propertyPath = function($this)
 			{
@@ -223,10 +223,10 @@ $('document').ready(function()
 				aliases: { 'className': className },
 				target:  '#messages',
 				start: function() {
-					$(this).closest('.list.window').find('> div.custom > ul.actions').css('display', 'none');
+					$(this).closest('article.list').find('> div.custom > ul.actions').css('display', 'none');
 				},
 				stop: function() {
-					$(this).closest('.list.window').find('> div.custom > ul.actions').css('display', '');
+					$(this).closest('article.list').find('> div.custom > ul.actions').css('display', '');
 				}
 			});
 

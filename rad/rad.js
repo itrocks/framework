@@ -201,7 +201,7 @@ $('document').ready(function()
  //$('.menu>ul').radAdd('>li', 'Insérer un bloc de menu', 'vertical');
  //$('.menu>ul>li>ul').radAdd('>li', 'Insérer un lien dans le menu', 'vertical');
  //$('.actions>li>ul').radAdd('>li', 'Insérer une action secondaire', 'vertical');
- //$('.list.window>table>thead>tr:first-child').radAdd('>th.property', 'Insérer une colonne', 'horizontal');
+ //$('article.list>table>thead>tr:first-child').radAdd('>th.property', 'Insérer une colonne', 'horizontal');
  //$('.tabber>ul').radAdd('>li', 'Insérer un onglet', 'horizontal');
  //$('.columns').radAdd('>.column', 'Insérer un bloc de champs en colonne', 'horizontal');
  //$('table.collection>thead>tr:first-child').radAdd('>th:not(:last-child)', 'Insérer une colonne', 'horizontal');

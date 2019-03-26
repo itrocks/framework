@@ -42,7 +42,7 @@
     border-top: 1px solid lightgray; }
 
 .object.ui-draggable-dragging,
-:not(.model.edit.window .editor) .property.ui-draggable-dragging {
+:not(article.model.edit .editor) .property.ui-draggable-dragging {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid lightgray;
   font-weight: bold;

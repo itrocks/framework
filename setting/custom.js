@@ -1,6 +1,6 @@
 $('document').ready(function()
 {
-	$('.window').build(function()
+	$('article').build(function()
 	{
 		if (!this.length) return;
 

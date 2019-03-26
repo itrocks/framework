@@ -749,7 +749,7 @@ $('document').ready(function()
 		{
 			if (event.ctrlKey || event.metaKey) {
 				var $this         = $(this);
-				var $form         = $this.closest('.window');
+				var $form         = $this.closest('article');
 				var class_path    = $form.data('class').repl(BS, SL);
 				var id            = $form.data('id');
 				var property_name = $this.attr('name');

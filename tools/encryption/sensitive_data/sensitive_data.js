@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
-	$('.window').build(function()
+	$('article[data-class]').build(function()
 	{
 		var $sensitive_data = this.inside('input[data-sensitive], textarea[data-sensitive]');
 
@@ -8,13 +8,13 @@ $(document).ready(function()
 		$sensitive_data.dblclick(function()
 		{
 			var $this   = $(this);
-			var $window = $this.closest('.window[data-class]');
+			var $window = $this.closest('article[data-class]');
 			var uri     = '/ITRocks/Framework/User/password'
 				+ SL + $window.data('class').repl(BS, SL)
 				+ SL + $window.data('id')
 				+ SL + $window.data('feature')
 				+ '?as_widget';
-			$('.user.password.window').parent().remove();
+			$('article.user.password').parent().remove();
 			redirect(
 				uri,
 				'#popup',

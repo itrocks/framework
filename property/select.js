@@ -117,8 +117,8 @@ $('document').ready(function()
 					.addClass('property')
 					.css('white-space', 'nowrap')
 					.css('z-index',     ++zindex_counter)
-					.data('class',      $this.closest('.window').data('class'))
-					.data('feature',    $this.closest('.window').data('feature'))
+					.data('class',      $this.closest('article[data-class]').data('class'))
+					.data('feature',    $this.closest('article[data-class]').data('feature'))
 					.data('property',   property_name)
 					.html($this.text());
 			},

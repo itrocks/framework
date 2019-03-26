@@ -11,9 +11,9 @@ $(document).ready(function() {
 	};
 
 	//-------------------------------------------------------------- form.window input ordering build
-	$('form.window').build(function() {
+	$('article > form').build(function() {
 		var $this = this;
-		if (!$this.closest('form.window').length) return;
+		if (!$this.closest('article > form').length) return;
 
 		var selector = 'input.customized.integer[name*="[ordering]"]:not([type])';
 		var $ordering = $this.find(selector);

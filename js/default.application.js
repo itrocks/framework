@@ -10,12 +10,12 @@ $('document').ready(function()
 
 		this.xtarget({
 			auto_empty:      {'#main': '#messages'},
-			draggable_blank: '.window>h2',
+			draggable_blank: 'article>header>h2',
 			url_append:      'as_widget',
 			success:         function() { $(this).autofocus(); },
 			history: {
-				condition:        '.window>h2',
-				title:            '.window>h2',
+				condition:        'article>header>h2',
+				title:            'article>header>h2',
 				without_get_vars: ['.*/list\\?.*']
 			}
 		});

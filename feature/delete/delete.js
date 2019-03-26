@@ -25,7 +25,7 @@ $('document').ready(function()
 		}
 
 		// close popup windows
-		$('.closeable-popup > .window' + selector).remove();
+		$('.closeable-popup > article' + selector).remove();
 	};
 
 	$('.confirmed.delete.message').build(function()

@@ -1,13 +1,13 @@
 @import 'colors.scss';
 @import 'margins.scss';
 
-section.list.window {
+article.list {
 
 	> ul.actions, > form > ul.footer {
 		margin: $list-horizontal-margin 0;
 	}
 
-	> details {
+	> .summary > details {
 
 		&.error {
 			border: 1px solid $error-border-color;
@@ -71,7 +71,6 @@ section.list.window {
 		}
 
 		> ul.list {
-			border: $thin-border;
 			display: table;
 			width: 100%;
 
@@ -126,7 +125,6 @@ section.list.window {
 					text-align: center;
 
 					> ol > li {
-						padding: $list-margin;
 						vertical-align: middle;
 
 						&.column_select {
@@ -143,6 +141,10 @@ section.list.window {
 								width: 100%;
 							}
 						}
+
+						&:not(.column_select) {
+							padding: $list-margin;
+						}
 					}
 				}
 
@@ -151,6 +153,10 @@ section.list.window {
 
 					> li {
 						display: table-cell;
+
+						&:not(:first-child) {
+							border-left: 1px solid white;
+						}
 
 						&.value {
 							padding: $list-margin;
