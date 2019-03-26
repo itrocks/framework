@@ -94,15 +94,13 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------- .model.window .editor .designer documentDesigner
-	$('article.model').build(function()
+	$('article.model .editor').build({ priority: 500, callback: function()
 	{
-		var $model_window = this.inside('article.model:has(.editor)');
-		var $editor       = $model_window.find('.editor');
-		if (!$editor.length) return;
-
-		var $designer  = $editor.find('.designer');
-		var $free_text = $model_window.find('#free-text');
-		var $size      = $model_window.find('#size');
+		var $editor       = this;
+		var $model_window = this.closest('article.model');
+		var $designer     = $editor.find('.designer');
+		var $free_text    = $model_window.find('#free-text');
+		var $size         = $model_window.find('#size');
 
 		setTimeout(function() { $designer.each(function() {
 			var $page  = $(this);
@@ -112,7 +110,7 @@ $(document).ready(function()
 				drag:    dragCallback,
 				drop:    dropCallback,
 				fields:  {
-					element: '.property_tree .property, .editor .tool, .toolbox .add.tools li>span',
+					element:   '.property_tree .property, .editor .tool, .toolbox .add.tools li>span',
 					name_data: 'property'
 				},
 				register:     register,
@@ -204,10 +202,11 @@ $(document).ready(function()
 			$active.addClass('active');
 		});
 
-	}, 500);
+	}});
 
 });
 
+//----------------------------------------------------------------------------------- window scroll
 $(window).scroll(function()
 {
 
@@ -234,7 +233,9 @@ $(window).scroll(function()
 		);
 		$toolbox.css('top', Math.max(
 			$fieldset.offset().top - window.scrollbar.top(),
-			$stay_top.height() + parseInt($stay_top.css('top')) + parseInt($stay_top.css('border-bottom-width'))
+			$stay_top.height()
+				+ parseInt($stay_top.css('top'))
+				+ parseInt($stay_top.css('border-bottom-width'))
 		));
 	}
 

@@ -1,23 +1,21 @@
 $('document').ready(function()
 {
 
-	$('body').build(function()
+	// sort and decoration
+	$('ul.property_tree').sortContent('.separator');
+	$('.property_select').build(function() {
+		this.prepend($('<span>').addClass('joint'));
+	});
+
+	//--------------------------------------------------- .property_select > input[name=search] keyup
+	// search
+	$('.property_select > input[name=search]').build(function()
 	{
-		if (!this.length) return;
-
-		// sort and decoration
-		this.inside('ul.property_tree').sortContent('.separator');
-		this.inside('.property_select').prepend($('<span>').addClass('joint'));
-
-		//------------------------------------------------- .property_select > input[name=search] keyup
-		// search
-		this.inside('.property_select > input[name=search]').each(function()
-		{
+		this.each(function () {
 			var last_search = '';
 			var search_step = 0;
 
-			$(this).keyup(function(event)
-			{
+			$(this).keyup(function(event) {
 				var $this = $(this);
 				if (event.keyCode === $.ui.keyCode.ESCAPE) {
 					$this.closest('#column_select.popup').fadeOut(200);
@@ -30,21 +28,20 @@ $('document').ready(function()
 
 						$.ajax(
 							window.app.uri_base + '/ITRocks/Framework/Property/search'
-								+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
-								+ '?search=' + encodeURI(new_search)
-								+ '&as_widget' + window.app.andSID(),
+							+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
+							+ '?search=' + encodeURI(new_search)
+							+ '&as_widget' + window.app.andSID(),
 							{
-								success: function(data) {
+								success: function (data) {
 									var $property_tree = $this.parent().children('.property_tree');
-									search_step        = 2;
+									search_step = 2;
 									$property_tree.html(data);
 									$property_tree.build();
 								}
 							}
 						);
 
-						var retry = function()
-						{
+						var retry = function () {
 							if (search_step === 1) {
 								setTimeout(retry, 200);
 							}
@@ -61,13 +58,16 @@ $('document').ready(function()
 				}
 			});
 		});
+	});
 
-		//------------------------------------------------------------- ul.property_tree > li > a click
-		// create tree
-		this.inside('ul.property_tree > li > a').click(function(event)
+	//--------------------------------------------------------------- ul.property_tree > li > a click
+	// create tree
+	$('ul.property_tree > li > a').build(function()
+	{
+		this.click(function(event)
 		{
 			var $this = $(this);
-			var $li   = $this.closest('li');
+			var $li   = $this.parent();
 			if ($li.children('section').length) {
 				if ($li.children('section:visible').length) {
 					$this.removeClass('expanded');
@@ -84,16 +84,18 @@ $('document').ready(function()
 				$this.addClass('expanded');
 			}
 		});
+	});
 
-		//-------------------------------------------- .property, .fieldset > div[id] > label draggable
-		// draggable items
-		this.inside('.property, fieldset > div[id] > label').draggable(
-		{
+	//---------------------------------------------- .property, .fieldset > div[id] > label draggable
+	// draggable items
+	$('.property, fieldset > div[id] > label').build(function()
+	{
+		this.draggable({
 			appendTo: 'body',
 			cursorAt: { left: 10, top: 10 },
 			scroll:   false,
 
-			//---------------------------------------------------------------------------- draggable drag
+			//------------------------------------------------------------------------------ draggable drag
 			drag: function(event, ui)
 			{
 				var $this      = $(this);
@@ -105,7 +107,7 @@ $('document').ready(function()
 				}
 			},
 
-			//-------------------------------------------------------------------------- draggable helper
+			//---------------------------------------------------------------------------- draggable helper
 			helper: function()
 			{
 				var $this = $(this);
@@ -123,7 +125,7 @@ $('document').ready(function()
 					.html($this.text());
 			},
 
-			//--------------------------------------------------------------------------- draggable start
+			//----------------------------------------------------------------------------- draggable start
 			start: function()
 			{
 				var $this = $(this);
@@ -133,7 +135,7 @@ $('document').ready(function()
 				}
 			},
 
-			//---------------------------------------------------------------------------- draggable stop
+			//------------------------------------------------------------------------------ draggable stop
 			stop: function()
 			{
 				var $this = $(this);
@@ -144,7 +146,6 @@ $('document').ready(function()
 			}
 
 		});
-
 	});
 
 	//-------------------------------------------------------------------------------- document click

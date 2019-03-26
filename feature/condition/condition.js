@@ -1,51 +1,51 @@
 $('document').ready(function()
 {
-	$('.condition.editor').build(function()
+
+	//---------------------------------------------------------------------------- appendEmptyOperand
+	/**
+	 * Appends an empty operand if the current one is empty and is not followed by any other empty
+	 *
+	 * @param $this jQuery
+	 */
+	var appendEmptyOperand = function($this)
 	{
-		if (!this.length || !this.closest('.condition.editor').length) return;
-		var $editor = this;
+		var is_empty  = $this.hasClass('empty');
+		if (is_empty && !$this.next().length) {
+			var $empty = $('<div class="empty operand">');
+			$this.after($empty);
+			$empty.build();
+		}
+	};
 
-		//-------------------------------------------------------------------------- appendEmptyOperand
-		/**
-		 * Appends an empty operand if the current one is empty and is not followed by any other empty
-		 *
-		 * @param $this jQuery
-		 */
-		var appendEmptyOperand = function($this)
-		{
-			var is_empty  = $this.hasClass('empty');
-			if (is_empty && !$this.next().length) {
-				var $empty = $('<div class="empty operand">');
-				$this.after($empty);
-				$empty.build();
-			}
-		};
+	//------------------------------------------------------------------------------ dropFunctionInto
+	var dropFunctionInto = function($function, $into)
+	{
+		// TODO drop function
+	};
 
-		//---------------------------------------------------------------------------- dropFunctionInto
-		var dropFunctionInto = function($function, $into)
-		{
-			// TODO drop function
-		};
+	//------------------------------------------------------------------------------ dropPropertyInto
+	var dropPropertyInto = function($property, $into)
+	{
+		var $operand = $('<div>')
+			.addClass('property operand')
+			.attr('data-property', $property.data('property'))
+			.text($property.text());
+		$into.replaceWith($operand);
+		$operand.build();
+	};
 
-		//---------------------------------------------------------------------------- dropPropertyInto
-		var dropPropertyInto = function($property, $into)
-		{
-			var $operand = $('<div>')
-				.addClass('property operand')
-				.attr('data-property', $property.data('property'))
-				.text($property.text());
-			$into.replaceWith($operand);
-			$operand.build();
-		};
+	//-------------------------------------------------------------------- .condition.editor .operand
+	$('.condition.editor .operand').build(function()
+	{
 
-		//-------------------------------------------------------------------------- .operand droppable
-		$editor.inside('.operand').droppable(
+		//-------------------------------------------------------- .condition.editor .operand droppable
+		this.droppable(
 		{
 			accept:    '.function, .property, .value',
 			greedy:    true,
 			tolerance: 'pointer',
 
-			//------------------------------------------------------------------- .operand droppable drop
+			//------------------------------------------------- .condition.editor .operand droppable drop
 			drop: function(event, ui)
 			{
 				var $draggable = ui.draggable;
@@ -57,13 +57,13 @@ $('document').ready(function()
 					: dropFunctionInto($draggable, $this);
 			},
 
-			//-------------------------------------------------------------------- .operand droppable out
+			//-------------------------------------------------- .condition.editor .operand droppable out
 			out: function()
 			{
 				$(this).removeClass('replace');
 			},
 
-			//------------------------------------------------------------------- .operand droppable over
+			//------------------------------------------------- .condition.editor .operand droppable over
 			over: function()
 			{
 				$(this).addClass('replace');
@@ -75,7 +75,7 @@ $('document').ready(function()
 		/**
 		 * Translated 'and' and 'or' css content
 		 */
-		if (!$('header > style[data-condition]').length) {
+		if (!$('head > style[data-condition]').length) {
 			$('<style>')
 				.attr('data-condition', 'condition')
 				.attr('type', 'text/css')
@@ -87,7 +87,7 @@ $('document').ready(function()
 						content: ' + Q + tr('|or|', 'ITRocks\\Framework\\Feature\\Condition') + Q + ';\
 					}\
 				')
-				.appendTo('header');
+				.appendTo('head');
 		}
 
 	});

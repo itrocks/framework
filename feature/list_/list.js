@@ -5,39 +5,128 @@ $('document').ready(function()
 	var select_all         = [];
 	var selection          = [];
 
+	//----------------------------------------------------------------------------------- addProperty
+	var addProperty = function($object, property_name, before_after, before_after_property_name)
+	{
+		var $window    = $object.closest('article.list');
+		var app        = window.app;
+		var class_name = $window.data('class').repl(BS, SL);
+		var uri        = app.uri_base + SL + class_name + SL + 'listSetting'
+			+ '?add_property=' + property_name;
+		if (before_after_property_name !== undefined) {
+			uri += '&' + before_after + '=' + before_after_property_name;
+		}
+		uri += '&as_widget' + app.andSID();
+		$.ajax({ url: uri, success: function()
+		{
+			var class_name   = $window.data('class').repl(BS, SL);
+			var feature_name = $window.data('feature');
+			var url          = app.uri_base + SL + class_name + SL + feature_name
+				+ '?as_widget' + window.app.andSID();
+			$.ajax({ url: url, success: function(data)
+			{
+				var $container = $window.parent();
+				$container.html(data);
+				$container.children().build();
+			}});
+		}});
+	};
+
+	//------------------------------------------------------------------------------------- className
+	var className = function($this)
+	{
+		return $this.closest('article.list').data('class');
+	};
+
+	//------------------------------------------------------------------------------------------ drag
+	/**
+	 * when a property is dragged over the droppable object
+	 */
+	var drag = function(event, ui)
+	{
+		var $droppable     = $(this);
+		var draggable_left = ui.offset.left + (ui.helper.width() / 2);
+		var count          = 0;
+		var found          = 0;
+		$droppable.find('ol > li:not(:first)').each(function() {
+			count ++;
+			var $this = $(this);
+			var $prev = $this.prev('li');
+			var left  = $prev.offset().left + $prev.width();
+			var right = $this.offset().left + $this.width();
+			if ((draggable_left > left) && (draggable_left <= right)) {
+				found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
+				var old = $droppable.data('insert-after');
+				if (found !== old) {
+					if (old !== undefined) {
+						$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
+					}
+					if (found > 1) {
+						$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
+						$droppable.data('insert-after', found);
+					}
+				}
+				return false;
+			}
+		});
+	};
+
+	//------------------------------------------------------------------------------------------- out
+	/**
+	 * when a property is not longer between two columns
+	 */
+	var out = function($this, event, ui)
+	{
+		$this.find('.insert-right').removeClass('insert-right');
+		$this.removeData('insert-after');
+		$this.removeData('drag-callback');
+		ui.draggable.removeData('over-droppable');
+	};
+
+	//---------------------------------------------------------------------------------- propertyPath
+	var propertyPath = function($this)
+	{
+		return $this.closest('li').data('property');
+	};
+
+	//-------------------------------------------------------------------------------- resetSelection
+	var resetSelection = function()
+	{
+		excluded_selection = [];
+		select_all         = [];
+		selection          = [];
+	};
+
+	//----------------------------------------------------------------------------------- updateCount
+	var updateCount = function($article_list, $selector)
+	{
+		var count_elements, select_all_content, selection_content, selection_exclude_content, text;
+		if (select_all[$article_list.id]) {
+			select_all_content        = 1;
+			selection_content         = '';
+			selection_exclude_content = excluded_selection[$article_list.id].join();
+			count_elements  = $selector.find('> ul > li.select_all').data('count');
+			count_elements -= excluded_selection[$article_list.id].length;
+			text            = 'x' + count_elements;
+		}
+		else {
+			selection_content         = selection[$article_list.id].join();
+			select_all_content        = 0;
+			selection_exclude_content = '';
+			text                      = 'x' + selection[$article_list.id].length;
+		}
+		$selector.children('a').html(text);
+		$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
+		$selector.children('input[name=select_all]')        .val(select_all_content);
+		$selector.children('input[name=selection]')         .val(selection_content);
+	};
+
+	//---------------------------------------------------------------------------------- article.list
 	$('article.list').build(function()
 	{
-		if (!this.length) return;
 
-		//--------------------------------------------------------------------------------- addProperty
-		var addProperty = function($object, property_name, before_after, before_after_property_name)
-		{
-			var $window    = $object.closest('article.list');
-			var app        = window.app;
-			var class_name = $window.data('class').repl(BS, SL);
-			var uri        = app.uri_base + SL + class_name + SL + 'listSetting'
-				+ '?add_property=' + property_name;
-			if (before_after_property_name !== undefined) {
-				uri += '&' + before_after + '=' + before_after_property_name;
-			}
-			uri += '&as_widget' + app.andSID();
-			$.ajax({ url: uri, success: function()
-			{
-				var class_name   = $window.data('class').repl(BS, SL);
-				var feature_name = $window.data('feature');
-				var url          = app.uri_base + SL + class_name + SL + feature_name
-					+ '?as_widget' + window.app.andSID();
-				$.ajax({ url: url, success: function(data)
-				{
-					var $container = $window.parent();
-					$container.html(data);
-					$container.children().build();
-				}});
-			}});
-		};
-
-		//---------------------------------------------------------- .column_select li.basic.property
-		if (this.closest('article.list .column_select').length) {
+		//------------------------------------------------------------ .column_select li.basic.property
+		if (this.find('.column_select').length) {
 			this.find('li.basic.property').click(function()
 			{
 				var $this = $(this);
@@ -45,45 +134,13 @@ $('document').ready(function()
 			});
 		}
 
-		this.inside('article.list').each(function()
+		this.each(function()
 		{
 			var $this     = $(this);
 			var $list     = $this.find('ul.list');
 			var $search   = $list.children('.search');
 			var $selector = $this.find('ul.footer > .selector');
 			$this.id = $this.attr('id');
-
-			//--------------------------------------------------------------- article.list resetSelection
-			var resetSelection = function()
-			{
-				excluded_selection = [];
-				select_all         = [];
-				selection          = [];
-			};
-
-			//------------------------------------------------------------------ article.list updateCount
-			var updateCount = function()
-			{
-				var count_elements, select_all_content, selection_content, selection_exclude_content, text;
-				if (select_all[$this.id]) {
-					select_all_content        = 1;
-					selection_content         = '';
-					selection_exclude_content = excluded_selection[$this.id].join();
-					count_elements  = $selector.find('> ul > li.select_all').data('count');
-					count_elements -= excluded_selection[$this.id].length;
-					text            = 'x' + count_elements;
-				}
-				else {
-					selection_content         = selection[$this.id].join();
-					select_all_content        = 0;
-					selection_exclude_content = '';
-					text                      = 'x' + selection[$this.id].length;
-				}
-				$selector.children('a').html(text);
-				$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
-				$selector.children('input[name=select_all]')        .val(select_all_content);
-				$selector.children('input[name=selection]')         .val(selection_content);
-			};
 
 			//------------------------------------------------------------ .column_select > a.popup click
 			// column select popup
@@ -124,47 +181,6 @@ $('document').ready(function()
 			//------------------------------------------------------------- .search .reset.search a click
 			$search.find('.reset > a').click(resetSelection);
 
-			//-------------------------------------------------------------------------------------- drag
-			// when a property is dragged over the droppable object
-			var drag = function(event, ui)
-			{
-				var $droppable     = $(this);
-				var draggable_left = ui.offset.left + (ui.helper.width() / 2);
-				var count          = 0;
-				var found          = 0;
-				$droppable.find('ol > li:not(:first)').each(function() {
-					count ++;
-					var $this = $(this);
-					var $prev = $this.prev('li');
-					var left  = $prev.offset().left + $prev.width();
-					var right = $this.offset().left + $this.width();
-					if ((draggable_left > left) && (draggable_left <= right)) {
-						found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
-						var old = $droppable.data('insert-after');
-						if (found !== old) {
-							if (old !== undefined) {
-								$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
-							}
-							if (found > 1) {
-								$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
-								$droppable.data('insert-after', found);
-							}
-						}
-						return false;
-					}
-				});
-			};
-
-			//--------------------------------------------------------------------------------------- out
-			// when a property is not longer between two columns
-			var out = function($this, event, ui)
-			{
-				$this.find('.insert-right').removeClass('insert-right');
-				$this.removeData('insert-after');
-				$this.removeData('drag-callback');
-				ui.draggable.removeData('over-droppable');
-			};
-
 			//--------------------------------------------------------------------------- .list droppable
 			$list.droppable({
 				accept:    '.property',
@@ -199,17 +215,6 @@ $('document').ready(function()
 
 			});
 
-			//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
-			// modifiable list and columns titles
-			var className = function($this)
-			{
-				return $this.closest('article.list').data('class');
-			};
-			var propertyPath = function($this)
-			{
-				return $this.closest('li').data('property');
-			};
-
 			var callback_uri = window.app.uri_base + '/{className}/listSetting?as_widget'
 				+ window.app.andSID();
 
@@ -217,6 +222,7 @@ $('document').ready(function()
 				+ '/ITRocks/Framework/Feature/List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
 				+ window.app.andSID();
 
+			//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
 			// list title (class name) double-click
 			$this.find('> h2').modifiable({
 				ajax:    callback_uri + '&title={value}',
@@ -282,10 +288,10 @@ $('document').ready(function()
 					$this.find(checkboxes_select + '[value=' + this.value + ']')
 						.attr('checked', this.checked);
 				}
-				updateCount();
+				updateCount($this, $selector);
 			});
 
-			updateCount();
+			updateCount($this, $selector);
 
 			//------------------------------------------------------------------------------ selectAction
 			/**

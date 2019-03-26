@@ -1,8 +1,8 @@
 $('document').ready(function()
 {
-	$('body').build(function()
+	$('.quill-standard').build(function()
 	{
-		this.inside('.quill-standard').each(function() {
+		this.each(function() {
 			var $this  = $(this);
 			var $quill = $('<div>');
 			if ($this.hasClass('auto_height')) {

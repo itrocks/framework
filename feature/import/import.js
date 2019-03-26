@@ -1,16 +1,18 @@
 $('document').ready(function()
 {
 
+	//------------------------------------------------------------------------ article.import.preview
 	$('article.import.preview').build(function()
 	{
-		if (!this.length) return;
 
-		this.inside('article.import.preview').each(function()
+		this.each(function()
 		{
 			var $this = $(this);
 
-			//----------------------------------------------------- li.draggable(), .properties.droppable()
-			// drag and drop property names inside imported class settings
+			//------------------------------------------------------- li.draggable, .properties.droppable
+			/**
+			 * drag and drop property names inside imported class settings
+			 */
 			$this.find('fieldset.class').each(function()
 			{
 				var $this = $(this);

@@ -1,9 +1,12 @@
 $('document').ready(function()
 {
+
+	//-------------------------------------------------------------------------------- img.zoom click
 	$('img.zoom').build(function()
 	{
-		this.inside('img.zoom').click(function() {
+		this.click(function() {
 			$(this).parent().remove();
 		});
 	});
+
 });

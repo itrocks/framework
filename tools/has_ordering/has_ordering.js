@@ -10,14 +10,10 @@ $(document).ready(function() {
 			});
 	};
 
-	//-------------------------------------------------------------- form.window input ordering build
-	$('article > form').build(function() {
-		var $this = this;
-		if (!$this.closest('article > form').length) return;
-
-		var selector = 'input.customized.integer[name*="[ordering]"]:not([type])';
-		var $ordering = $this.find(selector);
-		$ordering.each(function()
+	//----------------------- article > form input.customized.integer[name*="[ordering]"]:not([type])
+	$('article > form input.customized.integer[name*="[ordering]"]:not([type])').build(function()
+	{
+		this.each(function()
 		{
 			var $input  = $(this);
 			var $parent = $input.parent();
@@ -30,21 +26,20 @@ $(document).ready(function() {
 			}
 		});
 
-		var $tbody = $ordering.parent().filter('td').closest('tbody');
-
+		var $tbody = this.parent().filter('td').closest('tbody');
 		$tbody.sortable({
 			handle: 'td.ordering',
 			stop:   function() { refreshOrdering.call(this); }
 		});
 	});
 
-	//----------------------------------------------------------------------- tr.new refresh ordering
-	$('tr.new').build(function() {
-		var $tr = $(this).closest('tr.new');
-		if (!$tr.length) return;
-		$tr.each(function() {
-			if ($(this).children('td.ordering').length) {
-				refreshOrdering.call($(this).closest('tbody'));
+	//------------------------------------------------------------------------ tr.new refreshOrdering
+	$('tr.new').build(function()
+	{
+		this.each(function() {
+			var $tr = $(this);
+			if ($tr.children('td.ordering').length) {
+				refreshOrdering.call($tr.closest('tbody'));
 			}
 		});
 	});

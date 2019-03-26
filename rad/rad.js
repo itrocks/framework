@@ -2,6 +2,8 @@ $('document').ready(function()
 {
 	window.zindex_counter = 0;
 
+	var rad_mode = false;
+
 	//----------------------------------------------------------------------------------------- enter
 	/**
 	 * Call this on a jQuery object you want to highlight and enable inserting elements between
@@ -145,14 +147,9 @@ $('document').ready(function()
 	};
 
 	//----------------------------------------------------------------------------- body.build (MAIN)
-	$('body').build(function ()
+	$('.rad.enter a').build(function()
 	{
-		if (!this.length) return;
-
-		var rad_mode = false;
-
-		// rad enter
-		this.inside('.rad.enter a').click(function(event)
+		this.click(function(event)
 		{
 			event.preventDefault();
 			event.stopImmediatePropagation();
@@ -186,7 +183,6 @@ $('document').ready(function()
 			$trashcan.data('accept', accept);
 			$trashcan.droppable({ accept: accept });
 		});
-
 	});
 
 });

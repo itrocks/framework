@@ -1,11 +1,8 @@
 $(document).ready(function()
 {
-	$('article[data-class]').build(function()
+	$('article input[data-sensitive], article textarea[data-sensitive]').build(function()
 	{
-		var $sensitive_data = this.inside('input[data-sensitive], textarea[data-sensitive]');
-
-		//---------------------------------------------------------------------- [data-sensitive] click
-		$sensitive_data.dblclick(function()
+		this.dblclick(function()
 		{
 			var $this   = $(this);
 			var $window = $this.closest('article[data-class]');
@@ -14,7 +11,9 @@ $(document).ready(function()
 				+ SL + $window.data('id')
 				+ SL + $window.data('feature')
 				+ '?as_widget';
+
 			$('article.user.password').parent().remove();
+
 			redirect(
 				uri,
 				'#popup',
@@ -24,11 +23,12 @@ $(document).ready(function()
 					$target.draggable({
 						handle: 'h2',
 						stop: function() {
-							$(this).find('h2>span').data('stop-click', true);
+							$(this).find('h2').data('stop-click', true);
 						}
 					});
 				}
 			);
+
 		});
 
 	});

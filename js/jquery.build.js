@@ -8,6 +8,100 @@
 	 */
 	window.jquery_build_callback = {};
 
+	//-------------------------------------------------------------------------------------- Callback
+	/**
+	 * Callback class constructor
+	 *
+	 * @constructor
+	 * @param selector string
+	 * @param callback function
+	 * @param priority number
+	 * @param always   boolean
+	 */
+	var Callback = function(selector, callback, priority, always)
+	{
+		this.callback  = callback;
+		this.priority  = priority;
+		this.selectors = {};
+
+		var object = this;
+		$.each(selector.split(','), function() {
+			object.selectors[always ? '@always' : selector.replace(' ', '>').split('>').pop()] = selector;
+		});
+	};
+
+	//------------------------------------------------------------------------------- Callback.callIt
+	/**
+	 * @param $context jQuery
+	 */
+	Callback.prototype.callIt = function($context)
+	{
+		var $elements = this.matchSelector($context);
+		if ($elements.length) {
+			$elements.inside = inside;
+			this.callback.call($elements);
+			delete $elements.inside;
+		}
+	};
+
+	//------------------------------------------------------------------------ Callback.matchSelector
+	/**
+	 * @param $context jQuery context to test elements into
+	 * @return jQuery the elements that match the selector (or an empty jQuery set object, length = 0)
+	 */
+	Callback.prototype.matchSelector = function($context)
+	{
+		var $result = $();
+		$.each(this.selectors, function(end_selector, selector) {
+			if (end_selector === '@always') {
+				if ((selector === 'body') || $context.closest(selector).length) {
+					$result = $result.add($context);
+				}
+			}
+			else {
+				var $elements = $context.find(end_selector);
+				if ($context.is(end_selector)) {
+					$elements = $context.add($elements);
+				}
+				$elements = $elements.closest(selector);
+				if ($elements.length) {
+					$result = $result.add($elements);
+				}
+			}
+		});
+		return $result;
+	};
+
+	//---------------------------------------------------------------------------------------- inside
+	var inside = function(selector, nop)
+	{
+		// accepts '.a_class, .another' : take each of them
+		var i = selector.indexOf(',');
+		if (i > -1) {
+			var selectors = selector.split(',');
+			var result    = $();
+			var obj       = this;
+			$.each(selectors, function(index, value) {
+				result = result.add(obj.inside(value.trim()));
+			});
+			return result;
+		}
+		// accepts '.my_class .sub_elements' selectors : .my_class for this working
+		if (nop === undefined) {
+			nop = true;
+			i   = selector.indexOf(' ');
+			var i2 = selector.indexOf('>');
+			if ((i2 > -1) && ((i === -1) || i2 < i)) {
+				i = i2;
+			}
+			if (i > -1) {
+				return this.inside(selector.substr(0, i), nop).find(selector.substr(i));
+			}
+		}
+		// filtered object itself, added to find into it's children
+		return this.filter(selector).add(this.find(selector));
+	};
+
 	//----------------------------------------------------------------------------------- keySortPush
 	/**
 	 * This function allow to push an element into an array, with real-time sort by key
@@ -40,64 +134,46 @@
 
 	//----------------------------------------------------------------------------------------- build
 	/**
-	 * Call build(callback) what callback functions you want to be called for future added dom elements
-	 * call this.build() after you add dom elements (ie dynamic javascript add, ajax calls) to apply the same changes
+	 * Declare a new callback function to be called when DOM elements are added
+	 * Then call build() on the head newly added DOM element, each time you add some, to call them
 	 *
-	 * @param callback function the callback function
-	 * @param priority boolean|integer optional : if boolean, set priority to 1000. default is true
-	 * @return jQuery
+	 * @param callback function|object the callback function or { always, callback, priority }
+	 * @return jQuery this
 	 */
-	$.fn.build = function (callback, priority)
+	$.fn.build = function(callback)
 	{
-		// use this.inside(selector) in callback to build the elements
-		this.inside = function(selector, nop)
-		{
-			// accepts '.aclass, .another' : take each of them
-			var i = selector.indexOf(',');
-			if (i > -1) {
-				var selectors = selector.split(',');
-				var result = $();
-				var obj = this;
-				$.each(selectors, function(index, value) { result = result.add(obj.inside(value.trim())); });
-				return result;
-			}
-			// accepts '.myclass .subelems' selectors : .myclass for this working
-			if (nop === undefined) {
-				nop = true;
-				i = selector.indexOf(' ');
-				var i2 = selector.indexOf('>');
-				if ((i2 > -1) && ((i === -1) || i2 < i)) {
-					i = i2;
-				}
-				if (i > -1) {
-					return this.inside(selector.substr(0, i), nop).find(selector.substr(i));
-				}
-			}
-			// filtered object itself, added to find into it's children
-			return this.filter(selector).add(this.find(selector));
-		};
+		var $context = this;
 
 		// add a callback function (sorted by priority)
 		if (callback !== undefined) {
+			var always   = (callback.always   === undefined) ? false     : callback.always;
+			var priority = (callback.priority === undefined) ? undefined : callback.priority;
+			if (callback.callback !== undefined) {
+				callback = callback.callback;
+			}
+			var call_it = false;
 			if ((priority === undefined) || priority) {
-				callback.call(this);
+				call_it = true;
 			}
 			if ((priority === undefined) || (priority === false) || (priority === true)) {
 				priority = 1000;
 			}
 			priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
+			callback = new Callback($context.selector, callback, priority, always);
 			window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
-		}
-
-		// execute all callback functions
-		else {
-			var callbacks = window.jquery_build_callback;
-			for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
-				callbacks[key].call(this);
+			if (call_it && $context.length) {
+				callback.callIt($context);
 			}
 		}
 
-		delete this.inside;
+		// execute all callback functions
+		else if ($context.length) {
+			var callbacks = window.jquery_build_callback;
+			for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
+				callbacks[key].callIt($context);
+			}
+		}
+
 		return this;
 	};
 

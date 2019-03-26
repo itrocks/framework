@@ -1,53 +1,53 @@
 $('document').ready(function()
 {
-	$('article').build(function()
+	var $article_header = $('article[data-class] > header');
+
+	//------------------------------------------------------------- article[data-class] > header > h2
+	$article_header.children('h2').build(function()
 	{
-		if (!this.length) return;
-
-		var $input = this.inside('input.custom.name');
-		$input.autoWidth();
-
-		//------------------------------------------------------------------------------- h2 span click
-		this.inside('h2>span').click(function()
-		{
+		this.click(function() {
 			var $this = $(this);
 			if ($this.data('stop-click')) {
 				$this.data('stop-click', '');
 				return;
 			}
-			var $ul_custom_selection = $this.parent().find('ul.custom.selection');
-			if ($ul_custom_selection.is(':visible')) {
+			var $select = $this.parent().find('> ul.select');
+			if ($select.is(':visible')) {
 				$('body').click();
 			}
 			else {
-				$ul_custom_selection.fadeIn(200, function () {
+				$select.fadeIn(200, function () {
 					var click_event = function () {
 						$('body').off('click', click_event);
-						$ul_custom_selection.fadeOut(200);
+						$select.fadeOut(200);
 					};
 					$('body').on('click', click_event);
 				});
 			}
 		});
+	});
 
-		//---------------------------------------------------------------------- input.custom.name blur
-		// Loose focus more than 100 ms (without coming back) : cancel
-		$input.blur(function()
+	//------------------------------------------------ article[data-class] > header input#custom_name
+	$article_header.find('input#custom_name').build(function()
+	{
+		this.autoWidth();
+
+		// Loose focus more than 200 ms (without coming back) : cancel
+		this.blur(function()
 		{
 			var input = this;
 			input.is_inside = false;
-			setTimeout(function() { if (!input.is_inside) input.close(); }, 100);
+			setTimeout(function() { if (!input.is_inside) input.close(); }, 200);
 		});
 
-		//--------------------------------------------------------------------- input.custom.name focus
-		$input.focus(function()
+		// Came back inside (cancel blur)
+		this.focus(function()
 		{
 			this.is_inside = true;
 		});
 
-		//------------------------------------------------------------------- input.custom.name keydown
 		// Press ENTER : save, press ESCAPE : cancel
-		$input.keydown(function(event)
+		this.keydown(function(event)
 		{
 			var $this = $(this);
 			if (event.keyCode === $.ui.keyCode.ENTER) {
@@ -64,22 +64,20 @@ $('document').ready(function()
 				this.close();
 			}
 		});
+	});
 
-		//------------------------------------------------------------------- [a].custom_save[>a] click
+	//------------------------ article[data-class] > header > .custom > .actions > li.custom_save > a
+	$article_header.find('> .custom > .actions > li.custom_save > a').build(function()
+	{
 		// click on save button opens the save form between calling save
-		this.inside('a.custom_save, .custom_save>a').click(function(event)
+		this.click(function(event)
 		{
 			var $this  = $(this);
-			var $h2    = $this.closest('h2');
-			var $input = $h2.children('input.custom.name');
+			var $input = $this.closest('.custom').find('input#custom_name');
 			if (!$input.filter(':visible').length) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				$input
-					.attr('name', 'save_name')
-					.fadeIn(200)
-					.keyup()
-					.focus();
+				$input.attr('name', 'save_name').fadeIn(200).keyup().focus();
 				$input.get(0).close = function()
 				{
 					var $this = $(this);
@@ -90,9 +88,9 @@ $('document').ready(function()
 			else if (!$input.val()) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				alert('Veuillez saisir un nom puis valider, ou tapez echap pour annuler');
+				alert(tr('Please input a name then valid, or enter escape to cancel'));
 			}
 		});
-
 	});
+
 });

@@ -2,10 +2,9 @@
 function radOutput()
 {
 
-	$('article.edit, article.output').build(function()
+	$('article.edit > fieldset, article.output > fieldset').build(function()
 	{
-		if (!this.length) return;
-		this.inside('article.edit > fieldset, article.output > fieldset').each(function()
+		this.each(function()
 		{
 			var $this = $(this);
 

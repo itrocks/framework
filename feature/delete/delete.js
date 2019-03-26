@@ -3,7 +3,7 @@ $('document').ready(function()
 
 	var closeWindows = function(class_name, identifier)
 	{
-		var selector = '[data-class=' + class_name.repl(BS, BS + BS) + ']';
+		var selector = 'article[data-class=' + class_name.repl(BS, BS + BS) + ']';
 		if (identifier !== undefined) {
 			selector += '[data-id=' + identifier + ']';
 		}
@@ -25,18 +25,13 @@ $('document').ready(function()
 		}
 
 		// close popup windows
-		$('.closeable-popup > article' + selector).remove();
+		$('.closeable-popup > ' + selector).remove();
 	};
 
+	//--------------------------------------------------------------------- .confirmed.delete.message
 	$('.confirmed.delete.message').build(function()
 	{
-		var $message = this.inside('.confirmed.delete.message');
-		$message = $message.length ? $message : this;
-		if (!$message.closest('.confirmed.delete.message').length) {
-			return;
-		}
-		$message = $message.closest('.confirmed.delete.message');
-
+		var $message       = $(this);
 		var class_name     = $message.data('class');
 		var identifier     = $message.data('id');
 		var set_class_name = $message.data('set-class');

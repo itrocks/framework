@@ -561,7 +561,7 @@ $('document').ready(function()
 						$target.draggable({
 							handle: 'h2',
 							stop: function() {
-								$(this).find('h2>span').data('stop-click', true);
+								$(this).find('h2').data('stop-click', true);
 							}
 						});
 					}

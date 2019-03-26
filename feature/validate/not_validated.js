@@ -2,7 +2,7 @@ $('document').ready(function()
 {
 	$('.invalid_properties').build(function()
 	{
-		this.inside('.invalid_properties').each(function()
+		this.each(function()
 		{
 			var $this = $(this);
 
