@@ -961,16 +961,20 @@ class Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$loop           = new Loop();
-		$loop->use_end  = strpos($content, '<!--end-->', $j);
-		$loop->var_name = substr($content, $i, $j - $i);
-		$length         = strlen($loop->var_name);
-		$length_end     = $this->parseLoopVarName($loop, $content, $j);
-		$i             += $length + 3;
-		$loop->content  = substr($content, $i, $j - $i);
+		$end_j              = $j;
+		$loop               = new Loop();
+		$loop->use_end      = strpos($content, '<!--end-->', $j);
+		$loop->var_name     = substr($content, $i, $j - $i);
+		$length             = strlen($loop->var_name);
+		$length_end         = $this->parseLoopVarName($loop, $content, $else_j, $end_j);
+		$i                 += $length + 3;
+		$loop->content      = substr($content, $i, $else_j - $i);
+		$loop->else_content = ($else_j === $end_j)
+			? ''
+			: substr($content, $else_j + 11, $end_j - $else_j - 11);
 		$this->parseLoopContentSections($loop);
 		$elements = $this->parseValue($loop->var_name, false);
-		if (!$loop->force_condition) {
+		if (($elements || !is_array($elements)) && !$loop->force_condition) {
 			$this->unshift(is_object($elements) ? get_class($elements) : '', $elements);
 		}
 		if ($loop->from && !is_numeric($loop->from)) {
@@ -986,7 +990,9 @@ class Template
 			$loop_insert = $this->parseLoopArray($loop, $elements);
 		}
 		elseif (is_array($elements)) {
-			$loop_insert = empty($elements) ? '' : $this->parseVars($loop->content);
+			$loop_insert = ($elements || ($else_j === $end_j))
+				? ($elements ? $this->parseVars($loop->content) : '')
+				: $this->parseVars($loop->else_content);
 		}
 		elseif (is_object($elements)) {
 			$loop_insert = $this->parseVars($loop->content);
@@ -995,13 +1001,13 @@ class Template
 			$loop_insert = $this->parseVars($loop->content);
 		}
 		else {
-			$loop_insert = '';
+			$loop_insert = ($else_j === $end_j) ? '' : $this->parseVars($loop->else_content);
 		}
-		if (!$loop->force_condition) {
+		if (($elements || !is_array($elements)) && !$loop->force_condition) {
 			$this->shift();
 		}
-		$i       = $i - $length     - 7;
-		$j       = $j + $length_end + 7;
+		$i       = $i - $length - 7;
+		$j       = $end_j + $length_end + 7;
 		$content = substr($content, 0, $i) . $loop_insert . substr($content, $j);
 		$i      += strlen($loop_insert);
 		return $i;
@@ -1022,6 +1028,9 @@ class Template
 			if (is_null($parsed_element)) break;
 			$loop_insert .= $parsed_element;
 		}
+		if (!$elements && strlen($loop->else_content)) {
+			$loop_insert = $this->parseLoopElement($loop, true);
+		}
 		$this->propertyPrefix();
 		if (isset($loop->to) && ($loop->counter < $loop->to)) {
 			$loop_insert .= $this->parseLoopEmptyElements($loop);
@@ -1037,15 +1046,17 @@ class Template
 	{
 		$this->removeSample($loop);
 		$this->parseLoopId($loop);
+		$this->parseLoopId($loop);
 		$loop->separator = $this->parseSeparator($loop);
 	}
 
 	//------------------------------------------------------------------------------ parseLoopElement
 	/**
 	 * @param $loop Loop
+	 * @param $else boolean
 	 * @return string|null
 	 */
-	protected function parseLoopElement(Loop $loop)
+	protected function parseLoopElement(Loop $loop, $else = false)
 	{
 		$this->propertyPrefix($loop->element);
 		$loop->counter ++;
@@ -1054,15 +1065,19 @@ class Template
 			$loop_insert = null;
 		}
 		elseif ($loop->counter >= $loop->from) {
-			$this->unshift($loop->key, $loop->element);
+			if (!$else) {
+				$this->unshift($loop->key, $loop->element);
+			}
 			if ($loop->first) {
 				$loop->first = false;
 			}
 			elseif ($loop->separator) {
 				$loop_insert = $this->parseVars($loop->separator);
 			}
-			$loop_insert .= $this->parseVars($loop->content);
-			$this->shift();
+			$loop_insert .= $this->parseVars($else ? $loop->else_content : $loop->content);
+			if (!$else) {
+				$this->shift();
+			}
 		}
 		$this->propertyPrefix();
 		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
@@ -1106,13 +1121,15 @@ class Template
 	 */
 	protected function parseLoopId(Loop $loop)
 	{
-		if (
-			(($i = strrpos($loop->content, '<!--id-->')) !== false)
-			// patched : only if odd count if <!--id-->. If not, it is a real loop and not a 'has_id'
-			&& (substr_count($loop->content, '<!--id-->') % 2)
-		) {
-			$loop->content = substr($loop->content, 0, $i) . substr($loop->content, $i + 9);
-			$loop->has_id  = true;
+		foreach (['content', 'else_content'] as $property) {
+			if (
+				(($i = strrpos($loop->$property, '<!--id-->')) !== false)
+				// patched : only if odd count if <!--id-->. If not, it is a real loop and not a 'has_id'
+				&& (substr_count($loop->$property, '<!--id-->') % 2)
+			) {
+				$loop->$property = substr($loop->$property, 0, $i) . substr($loop->$property, $i + 9);
+				$loop->has_id    = true;
+			}
 		}
 	}
 
@@ -1123,7 +1140,7 @@ class Template
 	 *
 	 * @param $content  string The content of the template
 	 * @param $position integer The position of the '-->' of the start of the current loop
-	 * @return integer the position of the '<!--end-->' of the current loop
+	 * @return integer [] the position of the '<!--else-->' then of '<!--end-->' of the current loop
 	 */
 	protected function parseLoopSearchEnd($content, $position)
 	{
@@ -1135,7 +1152,16 @@ class Template
 					$recurse --;
 				}
 				else {
-					return $position - 4;
+					$end_position = $position - 4;
+					if (!isset($else_position)) {
+						$else_position = $end_position;
+					}
+					return [$else_position, $end_position];
+				}
+			}
+			elseif (substr($content, $position, 7) === 'else-->') {
+				if (!$recurse) {
+					$else_position = $position - 4;
 				}
 			}
 			elseif (
@@ -1148,17 +1174,22 @@ class Template
 			}
 		}
 		trigger_error('Missing <!--end--> into template', E_USER_WARNING);
-		return strlen($content);
+		$end_position = strlen($content);
+		if (!isset($else_position)) {
+			$else_position = $position;
+		}
+		return [$else_position, $end_position];
 	}
 
 	//------------------------------------------------------------------------------ parseLoopVarName
 	/**
 	 * @param $loop    Loop
 	 * @param $content string
-	 * @param $j       integer
+	 * @param $else_j  integer the position of <!--else-->
+	 * @param $end_j   integer the position of <!--end-->
 	 * @return integer the length of the end tag var name
 	 */
-	protected function parseLoopVarName(Loop $loop, &$content, &$j)
+	protected function parseLoopVarName(Loop $loop, &$content, &$else_j, &$end_j)
 	{
 		$search_var_name = $loop->var_name;
 		if (substr($loop->var_name, -1) == '>') {
@@ -1201,13 +1232,13 @@ class Template
 
 		if ($loop->use_end) {
 			$length2 = 3;
-			$j       = $this->parseLoopSearchEnd($content, $j);
+			list($else_j, $end_j) = $this->parseLoopSearchEnd($content, $end_j);
 		}
 		else {
-			$length2 = strlen($search_var_name);
-			$j       = isset($end_last)
-				? strrpos($content, '<!--' . $search_var_name . '-->', $j + 3)
-				: strpos($content, '<!--' . $search_var_name . '-->', $j + 3);
+			$length2         = strlen($search_var_name);
+			$else_j = $end_j = isset($end_last)
+				? strrpos($content, '<!--' . $search_var_name . '-->', $end_j + 3)
+				: strpos($content, '<!--' . $search_var_name . '-->', $end_j + 3);
 		}
 
 		return $length2;
@@ -1919,10 +1950,12 @@ class Template
 	 */
 	protected function removeSample(Loop $loop)
 	{
-		$i = strrpos($loop->content, '<!--sample-->');
-		if ($i !== false) {
-			if (strpos($loop->content, '<!--', $i + 1) === false) {
-				$loop->content = substr($loop->content, 0, $i);
+		foreach (['content', 'else_content'] as $property) {
+			$i = strrpos($loop->$property, '<!--sample-->');
+			if ($i !== false) {
+				if (strpos($loop->$property, '<!--', $i + 1) === false) {
+					$loop->$property = substr($loop->$property, 0, $i);
+				}
 			}
 		}
 	}
