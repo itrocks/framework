@@ -989,8 +989,11 @@ class Functions
 	/**
 	 * Returns object's properties, and their display and value, but only if they are not already into a tab
 	 *
+	 * Stored into a [['content' => Reflection_Property_Value[]]] structure for compatibility with
+	 * properties.html
+	 *
 	 * @param $template Template
-	 * @return Reflection_Property_Value[]
+	 * @return array [['content' => Reflection_Property_Value[]]]
 	 */
 	public function getPropertiesOutOfTabs(Template $template)
 	{
@@ -1000,7 +1003,7 @@ class Functions
 				$properties[$property_name] = $property;
 			}
 		}
-		return $properties;
+		return [['content' => $properties]];
 	}
 
 	//----------------------------------------------------------------------------------- getProperty

@@ -10,6 +10,7 @@ li.action,
 li.actions > ul > li,
 ul.actions > li {
 	display: inline-block;
+	margin: $list-horizontal-margin 0;
 	position: relative;
 	vertical-align: top;
 	white-space: nowrap;

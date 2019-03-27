@@ -1,4 +1,6 @@
-.connected.user > a > .disconnect {
+section.connected.user > h3 {
   display: none; }
-.connected.user > .user {
+section.connected.user > a > .disconnect {
+  display: none; }
+section.connected.user > .user {
   display: none; }

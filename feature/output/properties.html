@@ -1,16 +1,25 @@
-<!--@filterProperties-->
-<!--@endWithMultiple-->
-<!--@expand-->
-	<!--@startingBlocks--><fieldset class="{.} block" {?data}><legend>|{.}|</legend><!--end-->
-	<!--getAnnotations('before')--><div class="before-{..name}">|{value}|</div><!--end-->
-	<!--@isVisible?-->
-	<div class="{name} {?getType.isMultiple} {?isHidden}" id="{path}">
-		<label title="{?pathIfDifferent.display.@loc}">{display}</label>
-		<div class="{getType.asString.short.lower} {?getType.isClassHtml}" title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
-	</div>
+<ul class="properties">
+<!--content--><!--@filterProperties--><!--@endWithMultiple--><!--@expand-->
+
+	<!--@startingBlocks-->
+	<li class="{.} block" {?data}>
+		<label>|{.}|</label>
+		<ul class="properties">
 	<!--end-->
-	<!--getAnnotations('after')--><div class="after-{..name}">|{value}|</div><!--end-->
-	<!--@stoppingBlocks--></fieldset><!--end-->
-<!--end-->
-<!--end-->
-<!--end-->
+
+	<!--getAnnotations('before')--><li class="before {name}">|{value}|</li><!--end-->
+	<li class="{name} {getType.asString.short.lower} {?getType.isClassHtml} {?getType.isMultiple} {?isHidden}" id="{path}">
+		<!--@isVisible?-->
+		<label title="{?pathIfDifferent.display.@loc}">{display}</label>
+		<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
+		<!--end-->
+	</li>
+	<!--getAnnotations('after')--><li class="after {name}">|{value}|</li><!--end-->
+
+	<!--@stoppingBlocks-->
+		</ul>
+	</li>
+	<!--end-->
+
+<!--end--><!--end--><!--end--><!--end-->
+</ul>

@@ -11,14 +11,15 @@
 <body>
 <!--BEGIN-->
 
-	<section class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{id}">
-		<h2><span>{§title}</span> {?.}</h2>
-		{/setting/custom.html}
-
+	<article class="{@class.short.lower} {@feature.lower} window" data-class="{@class}" data-feature="{@feature}" data-id="{id}">
+		<header>
+			<h2>{§title} {?.}</h2>
+			{/setting/custom.html}
+		</header>
 		{/component/button/general_buttons.html}
 
 		{/feature/output/object.html}
-	</section>
+	</article>
 
 <!--END-->
 </body>

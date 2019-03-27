@@ -1,7 +1,9 @@
-article.list > ul.actions, article.list > form > ul.footer {
+article.list > form > ul.footer > li.visible.lines > ul > li.display {
   margin: 0.5em 0; }
-article.list > .summary > details.error {
+article.list > section.summary > details.error {
   border: 1px solid darkred; }
+article.list > section.summary > h3 {
+  display: none; }
 article.list > form {
   display: inline-block;
   min-width: 480px; }
@@ -47,16 +49,7 @@ article.list > form {
       article.list > form > ul.list > li:nth-child(n+3):hover {
         background-color: #dff; }
       article.list > form > ul.list > li.search input {
-        background-color: transparent;
-        border: none;
-        min-width: 100%;
-        padding: 0.3em; }
-        article.list > form > ul.list > li.search input:focus {
-          background-color: #ddd;
-          color: #444; }
-        article.list > form > ul.list > li.search input:hover {
-          background-color: #00b39c;
-          color: #efe; }
+        min-width: 100%; }
       article.list > form > ul.list > li.title {
         background-color: #444;
         color: white;

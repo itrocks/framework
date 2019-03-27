@@ -3,14 +3,18 @@
 
 article.list {
 
-	> ul.actions, > form > ul.footer {
+	> form > ul.footer > li.visible.lines > ul > li.display {
 		margin: $list-horizontal-margin 0;
 	}
 
-	> .summary > details {
+	> section.summary {
 
-		&.error {
+		> details.error {
 			border: 1px solid $error-border-color;
+		}
+
+		> h3 {
+			display: none;
 		}
 	}
 
@@ -100,23 +104,8 @@ article.list {
 					}
 				}
 
-				&.search {
-
-					input {
-						background-color: transparent;
-						border: none;
-						min-width: 100%;
-						padding: $list-margin;
-
-						&:focus {
-							background-color: $edit-focus-background;
-							color: $edit-focus-color;
-						}
-						&:hover {
-							background-color: $action-focus-background;
-							color: $action-focus-color;
-						}
-					}
+				&.search input {
+					min-width: 100%;
 				}
 
 				&.title {

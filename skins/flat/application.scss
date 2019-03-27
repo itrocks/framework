@@ -92,6 +92,10 @@ body {
 	}
 }
 
+summary {
+	cursor: pointer;
+}
+
 div.popup {
 	background-color: $background;
 	color: $color;
@@ -100,8 +104,3 @@ div.popup {
 	text-align: left;
 	z-index: 1;
 }
-
-summary {
-	cursor: pointer;
-}
-

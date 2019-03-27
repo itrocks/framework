@@ -55,6 +55,9 @@ body {
   body > main {
     width: 100%; }
 
+summary {
+  cursor: pointer; }
+
 div.popup {
   background-color: white;
   color: #444;
@@ -62,6 +65,3 @@ div.popup {
   position: absolute;
   text-align: left;
   z-index: 1; }
-
-summary {
-  cursor: pointer; }

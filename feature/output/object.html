@@ -9,25 +9,26 @@
 	<title>|{@class.ucfirst}|</title>
 </head>
 <body>
+<article class="output">
 <!--BEGIN-->
 
-	<fieldset>
+	<ul class="data">
 		<!--tabs._top-->
-		<fieldset class="top">
-			<!--content-->{/feature/output/properties.html}<!--end-->
-		</fieldset>
+		<li class="top">
+			{/feature/output/properties.html}
+		</li>
 		<!--end-->
 
 		<!--tabs.included?-->
-		<div class="tabber">
+		<li class="tabber">
 			<ul>
 				<!--tabs.included-->
 				<li class="{getClass}"><a href="dyn://#tab_(id)">|{title}|</a></li>
 				<!--end-->
 			</ul>
 			<!--tabs.included-->
-			<fieldset class="{getClass}" id="tab_(id)">
-				<legend>|{title}|</legend>
+			<section class="{getClass}" id="tab_(id)">
+				<h3>|{title}|</h3>
 				<!--included?-->
 				<div class="tabber">
 					<ul>
@@ -36,56 +37,60 @@
 						<!--end-->
 					</ul>
 					<!--included-->
-					<fieldset class="{?getClass}" id="tab_{id}">
-						<legend>|{title}|</legend>
+					<section class="{?getClass}" id="tab_{id}">
+						<h4>|{title}|</h4>
 						<!--columns?-->
-						<div class="{getClass?} columns">
+						<ul class="{getClass?} columns">
 							<!--columns-->
-							<fieldset class="column">
-								<!--content-->{/feature/output/properties.html}<!--end-->
-							</fieldset>
+							<li>
+								{/feature/output/properties.html}
+							</li>
 							<!--end-->
-						</div>
+						</ul>
 						<!--end-->
-						<!--content-->{/feature/output/properties.html}<!--end-->
-					</fieldset>
+						{/feature/output/properties.html}
+					</section>
 					<!--end-->
 				</div>
 				<!--end-->
 				<!--columns?-->
-				<div class="{getClass?} columns">
+				<ul class="{getClass?} columns">
 					<!--columns-->
-					<fieldset class="column">
-						<!--content-->{/feature/output/properties.html}<!--end-->
-					</fieldset>
+					<li>
+						{/feature/output/properties.html}
+					</li>
 					<!--end-->
-				</div>
+				</ul>
 				<!--end-->
-				<!--content-->{/feature/output/properties.html}<!--end-->
-			</fieldset>
+				{/feature/output/properties.html}
+			</section>
 			<!--end-->
-		</div>
+		</li>
 		<!--end-->
 
-		<!--@propertiesOutOfTabs?-->
-		<fieldset class="outoftabs">
-			<!--@propertiesOutOfTabs-->{/feature/output/properties.html}<!--end-->
-		</fieldset>
+		<!--@propertiesOutOfTabs-->
+		<!--content?-->
+		<li class="out_of_tabs">
+			{/feature/output/properties.html}
+		</li>
+		<!--end-->
 		<!--end-->
 
 		<!--tabs._middle-->
-		<fieldset class="middle">
-			<!--content-->{/feature/output/properties.html}<!--end-->
-		</fieldset>
+		<li class="middle">
+			{/feature/output/properties.html}
+		</li>
 		<!--end-->
 
 		<!--tabs._bottom-->
-		<fieldset class="bottom">
-			<!--content-->{/feature/output/properties.html}<!--end-->
-		</fieldset>
+		<li class="bottom">
+			{/feature/output/properties.html}
+		</li>
 		<!--end-->
-	</fieldset>
+	</ul>
 
 <!--END-->
+</article>
 </body>
 </html>
+{

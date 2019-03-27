@@ -23,11 +23,6 @@ $('document').ready(function()
 	{
 		if (!this.length) return;
 
-		//------------------------------------------------------------------- .auto_height, .auto_width
-		this.inside('.auto_height').autoHeight();
-		this.inside('.auto_width').autoWidth();
-		this.inside('input:visible, textarea').changeState();
-
 		//--------------------------------------------------------------------------------- close popup
 		if (this.is('.popup') || this.closest('.popup').length) {
 			var $popup = this.is('.popup') ? this : this.closest('.popup');

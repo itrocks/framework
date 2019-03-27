@@ -62,4 +62,9 @@ $('document').ready(function()
 		this.minimize({ absolute_next: true });
 	});
 
+	//------------------------------------------------------------ autoHeight, autoWidth, changeState
+	$('.auto_height').autoHeight();
+	$('.auto_width').autoWidth();
+	$('input:visible, textarea').changeState();
+
 });

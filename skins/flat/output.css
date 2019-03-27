@@ -1,0 +1,91 @@
+article.edit > ul.data, article.output > ul.data {
+  display: inline-block; }
+  article.edit > ul.data ul.properties, article.output > ul.data ul.properties {
+    padding: 0.5em; }
+    article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple), article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) {
+      display: table-row; }
+      article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label, article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > div, article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label, article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > div {
+        display: table-cell; }
+      article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > div, article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > div {
+        vertical-align: middle; }
+      article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label, article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label {
+        padding: 0.3em 0;
+        vertical-align: top;
+        white-space: nowrap; }
+        article.edit > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label:after, article.output > ul.data ul.properties > li:not(.after):not(.before):not(.block):not(.multiple) > label:after {
+          content: ' :';
+          margin-right: .5em; }
+    article.edit > ul.data ul.properties > li.after,
+    article.edit > ul.data ul.properties > li.before,
+    article.edit > ul.data ul.properties > li.block,
+    article.edit > ul.data ul.properties > li.multiple, article.output > ul.data ul.properties > li.after,
+    article.output > ul.data ul.properties > li.before,
+    article.output > ul.data ul.properties > li.block,
+    article.output > ul.data ul.properties > li.multiple {
+      display: block; }
+      article.edit > ul.data ul.properties > li.after.block, article.edit > ul.data ul.properties > li.after.multiple,
+      article.edit > ul.data ul.properties > li.before.block,
+      article.edit > ul.data ul.properties > li.before.multiple,
+      article.edit > ul.data ul.properties > li.block.block,
+      article.edit > ul.data ul.properties > li.block.multiple,
+      article.edit > ul.data ul.properties > li.multiple.block,
+      article.edit > ul.data ul.properties > li.multiple.multiple, article.output > ul.data ul.properties > li.after.block, article.output > ul.data ul.properties > li.after.multiple,
+      article.output > ul.data ul.properties > li.before.block,
+      article.output > ul.data ul.properties > li.before.multiple,
+      article.output > ul.data ul.properties > li.block.block,
+      article.output > ul.data ul.properties > li.block.multiple,
+      article.output > ul.data ul.properties > li.multiple.block,
+      article.output > ul.data ul.properties > li.multiple.multiple {
+        border: 1px solid lightgray;
+        margin-top: -1px; }
+      article.edit > ul.data ul.properties > li.after > label,
+      article.edit > ul.data ul.properties > li.before > label,
+      article.edit > ul.data ul.properties > li.block > label,
+      article.edit > ul.data ul.properties > li.multiple > label, article.output > ul.data ul.properties > li.after > label,
+      article.output > ul.data ul.properties > li.before > label,
+      article.output > ul.data ul.properties > li.block > label,
+      article.output > ul.data ul.properties > li.multiple > label {
+        background-color: #eee;
+        display: block;
+        padding: 0.3em 0.5em; }
+      article.edit > ul.data ul.properties > li.after > div > ul.collection,
+      article.edit > ul.data ul.properties > li.before > div > ul.collection,
+      article.edit > ul.data ul.properties > li.block > div > ul.collection,
+      article.edit > ul.data ul.properties > li.multiple > div > ul.collection, article.output > ul.data ul.properties > li.after > div > ul.collection,
+      article.output > ul.data ul.properties > li.before > div > ul.collection,
+      article.output > ul.data ul.properties > li.block > div > ul.collection,
+      article.output > ul.data ul.properties > li.multiple > div > ul.collection {
+        display: table; }
+        article.edit > ul.data ul.properties > li.after > div > ul.collection > li,
+        article.edit > ul.data ul.properties > li.before > div > ul.collection > li,
+        article.edit > ul.data ul.properties > li.block > div > ul.collection > li,
+        article.edit > ul.data ul.properties > li.multiple > div > ul.collection > li, article.output > ul.data ul.properties > li.after > div > ul.collection > li,
+        article.output > ul.data ul.properties > li.before > div > ul.collection > li,
+        article.output > ul.data ul.properties > li.block > div > ul.collection > li,
+        article.output > ul.data ul.properties > li.multiple > div > ul.collection > li {
+          display: table-row-group; }
+          article.edit > ul.data ul.properties > li.after > div > ul.collection > li:first-child > ol > li,
+          article.edit > ul.data ul.properties > li.before > div > ul.collection > li:first-child > ol > li,
+          article.edit > ul.data ul.properties > li.block > div > ul.collection > li:first-child > ol > li,
+          article.edit > ul.data ul.properties > li.multiple > div > ul.collection > li:first-child > ol > li, article.output > ul.data ul.properties > li.after > div > ul.collection > li:first-child > ol > li,
+          article.output > ul.data ul.properties > li.before > div > ul.collection > li:first-child > ol > li,
+          article.output > ul.data ul.properties > li.block > div > ul.collection > li:first-child > ol > li,
+          article.output > ul.data ul.properties > li.multiple > div > ul.collection > li:first-child > ol > li {
+            padding: 0.3em 0.5em;
+            text-align: center; }
+          article.edit > ul.data ul.properties > li.after > div > ul.collection > li > ol,
+          article.edit > ul.data ul.properties > li.before > div > ul.collection > li > ol,
+          article.edit > ul.data ul.properties > li.block > div > ul.collection > li > ol,
+          article.edit > ul.data ul.properties > li.multiple > div > ul.collection > li > ol, article.output > ul.data ul.properties > li.after > div > ul.collection > li > ol,
+          article.output > ul.data ul.properties > li.before > div > ul.collection > li > ol,
+          article.output > ul.data ul.properties > li.block > div > ul.collection > li > ol,
+          article.output > ul.data ul.properties > li.multiple > div > ul.collection > li > ol {
+            display: table-row; }
+            article.edit > ul.data ul.properties > li.after > div > ul.collection > li > ol > li,
+            article.edit > ul.data ul.properties > li.before > div > ul.collection > li > ol > li,
+            article.edit > ul.data ul.properties > li.block > div > ul.collection > li > ol > li,
+            article.edit > ul.data ul.properties > li.multiple > div > ul.collection > li > ol > li, article.output > ul.data ul.properties > li.after > div > ul.collection > li > ol > li,
+            article.output > ul.data ul.properties > li.before > div > ul.collection > li > ol > li,
+            article.output > ul.data ul.properties > li.block > div > ul.collection > li > ol > li,
+            article.output > ul.data ul.properties > li.multiple > div > ul.collection > li > ol > li {
+              display: table-cell; }
