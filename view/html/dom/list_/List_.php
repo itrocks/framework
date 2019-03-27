@@ -44,10 +44,8 @@ abstract class List_ extends Element
 	{
 		$content = parent::getContent();
 		if (!isset($content)) {
-			$items = $this->items;
-			asort($items);
 			$content = '';
-			foreach ($items as $item) {
+			foreach ($this->items as $item) {
 				$content .= $item;
 			}
 			$this->setContent($content);
