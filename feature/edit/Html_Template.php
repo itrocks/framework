@@ -131,9 +131,10 @@ class Html_Template extends Template
 	//------------------------------------------------------------------------------ parseLoopElement
 	/**
 	 * @param $loop Loop
+	 * @param $else boolean
 	 * @return string
 	 */
-	protected function parseLoopElement(Loop $loop)
+	protected function parseLoopElement(Loop $loop, $else = false)
 	{
 		if ($loop->has_id && $loop->counter) {
 			if (
@@ -151,7 +152,7 @@ class Html_Template extends Template
 				}
 			}
 		}
-		return parent::parseLoopElement($loop);
+		return parent::parseLoopElement($loop, $else);
 	}
 
 	//------------------------------------------------------------------------------ parseSingleValue
