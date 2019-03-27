@@ -5,22 +5,22 @@ input, select, textarea {
 	border: none;
 	font-size: 1em;
 
-	&:focus {
-		background-color: $edit-focus-background;
-		color: $edit-focus-color;
-	}
-
-	&:hover {
-		background-color: $action-focus-background;
-		color: $action-focus-color;
-	}
-
 	&:not([readonly]) {
 		border-bottom: $thin-border;
+
+		&:focus {
+			background-color: $edit-focus-background;
+			color: $edit-focus-color;
+		}
+
+		&:hover {
+			background-color: $action-focus-background;
+			color: $action-focus-color;
+		}
 	}
 }
 
-ul.properties {
+ol.properties {
 	border-top: $thin-border;
 
 	> li > div > ul > li > ol > li {

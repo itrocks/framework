@@ -4,7 +4,7 @@
 article.edit > ul.data, article.output > ul.data {
 	display: inline-block;
 
-	ul.properties {
+	ol.properties {
 		padding: $window-padding;
 
 		> li:not(.after):not(.before):not(.block):not(.multiple) {

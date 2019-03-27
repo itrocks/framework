@@ -2,18 +2,18 @@ input, select, textarea {
   background-color: white;
   border: none;
   font-size: 1em; }
-  input:focus, select:focus, textarea:focus {
-    background-color: #ddd;
-    color: #444; }
-  input:hover, select:hover, textarea:hover {
-    background-color: #00b39c;
-    color: #efe; }
   input:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
     border-bottom: 1px solid lightgray; }
+    input:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
+      background-color: #ddd;
+      color: #444; }
+    input:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
+      background-color: #00b39c;
+      color: #efe; }
 
-ul.properties {
+ol.properties {
   border-top: 1px solid lightgray; }
-  ul.properties > li > div > ul > li > ol > li > input, ul.properties > li > div > ul > li > ol > li > textarea {
+  ol.properties > li > div > ul > li > ol > li > input, ol.properties > li > div > ul > li > ol > li > textarea {
     width: 100%; }
 
 li.class {
