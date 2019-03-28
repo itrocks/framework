@@ -98,6 +98,8 @@ summary {
 
 div.popup {
 	background-color: $background;
+	border: 1px solid $action-focus-background;
+	padding: $window-padding;
 	color: $color;
 	left: 0;
 	position: absolute;

@@ -60,6 +60,8 @@ summary {
 
 div.popup {
   background-color: white;
+  border: 1px solid #00b39c;
+  padding: 0.5em;
   color: #444;
   left: 0;
   position: absolute;
