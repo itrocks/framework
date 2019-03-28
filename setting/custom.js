@@ -30,8 +30,6 @@ $('document').ready(function()
 	//------------------------------------------------ article[data-class] > header input#custom_name
 	$article_header.find('input#custom_name').build(function()
 	{
-		this.autoWidth();
-
 		// Loose focus more than 200 ms (without coming back) : cancel
 		this.blur(function()
 		{

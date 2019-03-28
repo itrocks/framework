@@ -25,8 +25,10 @@
 		this.selectors = {};
 
 		var object = this;
-		$.each(selector.split(','), function() {
-			object.selectors[always ? '@always' : selector.replace(' ', '>').split('>').pop()] = selector;
+		$.each(selector.split(','), function(key, part) {
+			part = part.trim();
+			var part_end = (always ? '@always' : part.replace(' ', '>').split('>').pop().trim());
+			object.selectors[part_end] = part;
 		});
 	};
 
@@ -39,6 +41,7 @@
 		var $elements = this.matchSelector($context);
 		if ($elements.length) {
 			$elements.inside = inside;
+			console.log('CALL', this.callback, $elements);
 			this.callback.call($elements);
 			delete $elements.inside;
 		}
@@ -51,24 +54,30 @@
 	 */
 	Callback.prototype.matchSelector = function($context)
 	{
+		console.log('MATCHSELECTOR', $context, this.selectors);
 		var $result = $();
 		$.each(this.selectors, function(end_selector, selector) {
 			if (end_selector === '@always') {
 				if ((selector === 'body') || $context.closest(selector).length) {
+					console.log('match :', end_selector, selector, $context);
 					$result = $result.add($context);
 				}
 			}
 			else {
-				var $elements = $context.find(end_selector);
-				if ($context.is(end_selector)) {
-					$elements = $context.add($elements);
-				}
-				$elements = $elements.closest(selector);
+				var $elements = $context.find(end_selector).filter(selector);
 				if ($elements.length) {
 					$result = $result.add($elements);
 				}
+				$context = $context.filter(selector);
+				if ($context.length) {
+					$result = $result.add($context);
+				}
+
 			}
 		});
+		if ($result.length) {
+			console.log('=>', this.selectors, $result);
+		}
 		return $result;
 	};
 

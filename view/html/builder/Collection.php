@@ -70,6 +70,7 @@ class Collection
 	{
 		(new Mapper\Collection($this->collection))->sort();
 		$list = new Unordered();
+		$list->addClass('auto_width');
 		$list->addClass('collection');
 		$list->addItem($this->buildHead());
 		foreach ($this->buildBody() as $line) {

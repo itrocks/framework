@@ -23,49 +23,103 @@
 		return text.join("\n");
 	};
 
+	//----------------------------------------------------------------------------------- blockColumn
+	/**
+	 * @param settings       object
+	 * @param $block         jQuery
+	 * @param $cell          jQuery
+	 * @param cell_position  integer
+	 * @param input_position integer
+	 * @returns jQuery
+	 */
+	var blockColumn = function(settings, $block, $cell, cell_position, input_position)
+	{
+		var table = $block.is('table');
+		// the element was the widest element : grow or shorten
+		var $input = $block.find(
+			(table ? 'tr > td' : '> li:not(:first-child) > ol > li') + ':nth-child(' + cell_position + ')'
+		).find(
+			'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
+		);
+		var width = Math.max(
+			getTextWidth(settings, $block.find(
+				(table ? 'tr > th' : '> li:first-child > ol > li') + ':nth-child(' + cell_position + ')'
+			)),
+			getTextWidth(settings, $input)
+		);
+		blockColumnWidth(settings, $cell, width);
+		return this;
+	};
+
+	//------------------------------------------------------------------------------ blockColumnWidth
+	/**
+	 * @param settings object
+	 * @param $cell    jQuery
+	 * @param width    number
+	 */
+	var blockColumnWidth = function(settings, $cell, width)
+	{
+		if ($cell.hasClass('no-autowidth')) return;
+		$cell.data('max-width', width);
+		var calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'));
+		width    = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);
+		$cell.css({ 'max-width': width + 'px', 'min-width': width + 'px', 'width': width + 'px'	});
+	};
+
 	//-------------------------------------------------------------------------------- calculateEvent
 	/**
 	 * This method calculates automatically the width of a DOM element
 	 * This must be fired by an event
+	 *
+	 * @param now boolean
 	 */
-	var calculateEvent = function()
+	var calculateEvent = function(now)
 	{
+		if (now === undefined) {
+			now = false;
+		}
 		var $element = $(this);
 		var settings = $element.data('settings');
-			// patched with setTimeout to allow moved controls on right of the input to be clicked
-		// eg combo's down arrow won't work sometimes if I do not do that.
-		setTimeout(function() {
+		var calculate = function()
+		{
 			var previous_width = parseInt($element.data('text-width'));
 			var new_width      = getTextWidth(settings, $element, false);
 			if (new_width !== previous_width) {
 				$element.data('text-width', new_width);
-				var tag_name = $element.parent().prop('tagName').toLowerCase();
-				var $table   = (tag_name === 'td') ? $element.closest('table') : undefined;
-				if (!$table) {
-					$table = (tag_name === 'li') ? $element.closest('ul') : undefined;
-				}
+				var $block = $element.parent().closest('.auto_width');
 				// single element
-				if ($table === undefined) {
+				if (!$block.length) {
 					$element.width(
 						Math.min(Math.max(settings.simple.minimum, new_width), settings.simple.maximum)
 					);
 				}
-				// element into a collection / map
+				// element into an autowidth block
 				else {
-					// calculate th's previous max width
-					var position           = $element.parent().prevAll('li, td').length;
-					var $td                = $(firstRowCells(firstColGroup($table))[position]);
-					var previous_max_width = $td.data('max-width');
-					if ((new_width > previous_max_width) || (previous_max_width === undefined)) {
+					// calculate first cell of the column previous max width
+					var position           = $element.closest('td, li').prevAll('td, li').length;
+					var $cell              = $(firstRowCells(firstRowsGroup($block))[position]);
+					var previous_max_width = $cell.data('max-width');
+					if (previous_max_width === undefined) {
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
+					}
+					if (new_width > previous_max_width) {
 						// the element became wider than the widest element
-						tableColumnWidth(settings, $td, new_width);
+						blockColumnWidth(settings, $cell, new_width);
 					}
 					else if (previous_width === previous_max_width) {
-						tableColumn(settings, $table, $td, position + 1, $element.prevAll().length + 1);
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
 					}
 				}
 			}
-		}, 50);
+		};
+		// patched with setTimeout to allow moved controls on right of the input to be clicked
+		// eg combo's down arrow won't work sometimes if I do not do that.
+		if (now) {
+			calculate();
+		}
+		else {
+			setTimeout(calculate, 100);
+		}
 	};
 
 	//------------------------------------------------------------------------------- calculateMargin
@@ -112,34 +166,34 @@
 		return $from;
 	};
 
-	//--------------------------------------------------------------------------------- firstColGroup
+	//--------------------------------------------------------------------------------- firstRowCells
+	/**
+	 * Gets the cells of the first row of a <thead>, <tbody>, <colgroup>, <ul>
+	 *
+	 * @param $group jQuery a jquery groups object : matches <thead>, <tbody> or <colgroup>
+	 * @return object[] a set of jquery <td> / <th> objects
+	 */
+	var firstRowCells = function($group)
+	{
+		return $group.is('ul')
+			? $group.find('> li:first > ol > li')
+			: $group.find('tr:first th, tr:first td');
+	};
+
+	//-------------------------------------------------------------------------------- firstRowsGroup
 	/**
 	 * Gets the first group object of a <table>
 	 * If there is no group object, returns the <table>
 	 *
-	 * @param $table jQuery a jquery <table> object
+	 * @param $block jQuery a jquery .auto_width block object
 	 * @returns object the first <thead>, <tbody>, <colgroup> object into the table, or the <table>
 	 */
-	var firstColGroup = function($table)
+	var firstRowsGroup = function($block)
 	{
-		var $col_group = $table.is('table')
-			? $table.find('thead:not(:empty), tbody:not(:empty), colgroup:not(:empty)').first()
-			: $table;
-		return $col_group.length ? $col_group : $table;
-	};
-
-	//--------------------------------------------------------------------------------- firstRowCells
-	/**
-	 * Gets the cells of the first line of a <thead>, <tbody> or <colgroup>
-	 *
-	 * @param $table_group jQuery a jquery groups object : matches <thead>, <tbody> or <colgroup>
-	 * @return object[] a set of jquery <td> / <th> objects
-	 */
-	var firstRowCells = function($table_group)
-	{
-		return $table_group.is('ul')
-			? $table_group.find('> li:first > ol > li')
-			: $table_group.find('tr:first th, tr:first td');
+		var $group = $block.is('table')
+			? $block.find('thead:not(:empty), tbody:not(:empty), colgroup:not(:empty)').first()
+			: $block;
+		return $group.length ? $group : $block;
 	};
 
 	//---------------------------------------------------------------------------------- getTextWidth
@@ -189,79 +243,6 @@
 		return max_width;
 	};
 
-	//---------------------------------------------------------------------------------- lastColGroup
-	/**
-	 * Gets the last group object of a <table>
-	 * If there is no group object, returns the <table>
-	 *
-	 * @param $table jQuery a jquery <table> object
-	 * @returns object the last <thead>, <tbody>, <colgroup> object into the table, or the <table>
-	 */
-	var lastColGroup = function($table)
-	{
-		var $col_group = $table.is('table')
-			? $table.find('thead:not(:empty), tbody:not(:empty), colgroup:not(:empty)').last()
-			: $table;
-		return $col_group.length ? $col_group : $table;
-	};
-
-	//---------------------------------------------------------------------------------- lastRowCells
-	/**
-	 * Gets the cells of the first line of a <thead>, <tbody> or <colgroup>
-	 *
-	 * @param $table_group jQuery a jquery groups object : matches <thead>, <tbody> or <colgroup>
-	 * @return object[] a set of jquery <td> / <th> objects
-	 */
-	var lastRowCells = function($table_group)
-	{
-		return $table_group.is('ul')
-			? $table_group.find('> li:last > ol > li')
-			: $table_group.find('tr:last th, tr:last td');
-	};
-
-	//----------------------------------------------------------------------------------- tableColumn
-	/**
-	 * @param settings       object
-	 * @param $table         jQuery
-	 * @param $td            jQuery
-	 * @param td_position    integer
-	 * @param input_position integer
-	 * @returns jQuery
-	 */
-	var tableColumn = function(settings, $table, $td, td_position, input_position)
-	{
-		var table = $table.is('table');
-		// the element was the widest element : grow or shorten
-		var $input = $table.find(
-			(table ? 'tr > td' : '> li:not(:first-child) > ol > li') + ':nth-child(' + td_position + ')'
-		).find(
-			'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
-		);
-		var width = Math.max(
-			getTextWidth(settings, $table.find(
-				(table ? 'tr > th' : '> li:first-child > ol > li') + ':nth-child(' + td_position + ')'
-			)),
-			getTextWidth(settings, $input)
-		);
-		tableColumnWidth(settings, $td, width);
-		return this;
-	};
-
-	//------------------------------------------------------------------------------ tableColumnWidth
-	/**
-	 * @param settings object
-	 * @param $td      jQuery
-	 * @param width    number
-	 */
-	var tableColumnWidth = function(settings, $td, width)
-	{
-		if ($td.hasClass('no-autowidth')) return;
-		$td.data('max-width', width);
-		var calc = width + parseInt($td.css('padding-left')) + parseInt($td.css('padding-right'));
-		width    = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);
-		$td.width(width).css({ 'max-width': width + 'px', 'min-width': width + 'px' });
-	};
-
 	//------------------------------------------------------------------------------------- autoWidth
 	$.fn.autoWidth = function(options)
 	{
@@ -291,31 +272,12 @@
 		this.focus(calculateEvent);
 		this.keyup(calculateEvent);
 
-		var list_selector = 'li > input, li > textarea, td > input, td > textarea';
-
 		//------------------------------------------------------------------------------ autoWidth init
-		this.not(list_selector).each(function() {
-			calculateEvent.call(this);
-		});
-
-		this.filter(list_selector).closest('table, ul').each(function() {
-			var $table       = $(this);
-			var $first_cells = firstRowCells(firstColGroup($table));
-			var $last_cells  = lastRowCells(lastColGroup($table));
-			for (var position = 0; position < $first_cells.length; position ++) {
-				var $input = $($last_cells[position]).children(
-					'input:not([type=checkbox]):visible:first, textarea:visible:first'
-				);
-				if ($input.length) {
-					var inputs = $input.prevAll().length + 1;
-					tableColumn(settings, $table, $($first_cells[position]), position + 1, inputs);
-				}
-			}
+		this.each(function() {
+			calculateEvent.call(this, true);
 		});
 
 		return this;
 	};
-
-	$.fn.autowidth = $.fn.autoWidth;
 
 })( jQuery );

@@ -4,54 +4,85 @@ $('document').ready(function()
 
 	CKEDITOR.disableAutoInline = true;
 
-	$form.build(function()
+	//--------------------------------------------------------- a, button, input[type=submit] disable
+	/**
+	 * Disable click on .disabled links
+	 */
+	$('a, button, input[type=submit]').build({ priority: 10, callback: function()
 	{
-		if (!this.length) return;
-
-		//------------------------------------------------------------------------- a with target click
-		this.inside('a, button, input[type=submit]').click(function(event)
+		this.click(function(event)
 		{
 			if ($(this).hasClass('disabled')) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
 			}
 		});
+	}});
 
-	}, 10);
+	//------------------------------------------------------------------------------- div.popup close
+	/**
+	 * Set popup windows close action to javascript remove popup instead of calling a link
+	 */
+	$('div.popup .general.actions').build(function()
+	{
+		this.find('.close > a').click(function()
+		{
+			var $this = $(this);
+			$this.removeAttr('href').removeAttr('target');
+			setTimeout(function() { $this.closest('.popup').remove(); });
+		});
+		this.find('a[href]:not([href*="close="])').each(function()
+		{
+			var $this = $(this);
+			var href  = $this.attr('href');
+			if (!href.beginsWith('#')) {
+				var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
+				$this.attr('href', close_link);
+			}
+		});
+	});
+
+	//------------------------------------------------------------------------ section#messages close
+	/**
+	 * #messages close action empties #messages instead of calling a link
+	 */
+	$('section#messages .actions .close').build(function()
+	{
+		this.find('a').click(function()
+		{
+			$(this).closest('#messages').empty();
+			event.stopImmediatePropagation();
+			event.preventDefault();
+		});
+	});
+
+	//-------------------------------------------------------------------- li.multiple li.minus click
+	/**
+	 * Remove a line
+	 */
+	$('li.multiple li.minus').build(function()
+	{
+		this.click(function()
+		{
+			var $this = $(this);
+			// setTimeout allows other click events to .minus to execute before the row is removed
+			setTimeout(function() {
+				if ($this.closest('tbody, ul').children().length > 1) {
+					$this.closest('tr, ul > li').remove();
+				}
+				else {
+					var $table   = $this.closest('table, ul');
+					var $new_row = $table.data('itrocks_add').clone();
+					$this.closest('tr, ul > li').replaceWith($new_row);
+					$new_row.build();
+					$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
+				}
+			});
+		});
+	});
 
 	$form.build(function()
 	{
-		if (!this.length) return;
-
-		//--------------------------------------------------------------------------------- close popup
-		if (this.is('.popup') || this.closest('.popup').length) {
-			var $popup = this.is('.popup') ? this : this.closest('.popup');
-			$popup.find('.general.actions .close a').click(function() {
-				var $this = $(this);
-				$this.removeAttr('href').removeAttr('target');
-				setTimeout(function() { $this.closest('.popup').remove(); });
-			});
-			$popup.find('a[href]:not([href*="close="])').each(function() {
-				var $this = $(this);
-				var href  = $this.attr('href');
-				if (!href.beginsWith('#')) {
-					var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
-					$this.attr('href', close_link);
-				}
-			});
-		}
-
-		//------------------------------------------------------------------------------- close message
-		if (this.closest('#messages').length) {
-			var $close = this.inside('.actions .close a');
-			if ($close.length) {
-				$close.click(function(event) {
-					$(this).closest('#messages').empty();
-					event.stopImmediatePropagation();
-					event.preventDefault();
-				})
-			}
-		}
 
 		//-------------------------------------------------------------------------------- .minus click
 		this.inside('.minus').click(function()

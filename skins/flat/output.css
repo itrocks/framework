@@ -72,7 +72,8 @@ article.edit > ul.data, article.output > ul.data {
           article.output > ul.data ol.properties > li.block > div > ul.collection > li:first-child > ol > li,
           article.output > ul.data ol.properties > li.multiple > div > ul.collection > li:first-child > ol > li {
             padding: 0.3em 0.5em;
-            text-align: center; }
+            text-align: center;
+            white-space: nowrap; }
           article.edit > ul.data ol.properties > li.after > div > ul.collection > li > ol,
           article.edit > ul.data ol.properties > li.before > div > ul.collection > li > ol,
           article.edit > ul.data ol.properties > li.block > div > ul.collection > li > ol,

@@ -116,7 +116,7 @@ class Html_Builder_Collection extends Collection
 		$body = parent::buildBody();
 		if (!$this->readOnly() && !$this->noAdd()) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$row = $this->buildRow(Builder::create($this->class_name));
+			$row = new Item($this->buildRow(Builder::create($this->class_name)));
 			$row->addClass('new');
 			$body[] = $row;
 		}

@@ -57,6 +57,7 @@ article.edit > ul.data, article.output > ul.data {
 					&:first-child > ol > li {
 						padding: $list-margin $list-horizontal-margin;
 						text-align: center;
+						white-space: nowrap;
 					}
 
 					> ol {

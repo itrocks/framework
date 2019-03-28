@@ -77,6 +77,7 @@ class Map
 	{
 		(new Mapper\Map($this->map))->sort();
 		$table = new Unordered();
+		$table->addClass('auto_width');
 		$table->addClass('map');
 		foreach ($this->buildBody() as $row) {
 			$table->addItem($row);

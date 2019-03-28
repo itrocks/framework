@@ -40,12 +40,6 @@ $('document').ready(function()
 		});
 	});
 
-	//----------------------------------------------------------------------- .list-filter listFilter
-	$('.list-filter').build($.fn.listFilter);
-
-	//-------------------------------------------------------------------------------- .tabber tabber
-	$('.tabber').build($.fn.tabber);
-
 	//----------------------------------------------------------------------- .ui-draggable mousedown
 	/**
 	 * draggable objects brought to front on mousedown
@@ -62,9 +56,11 @@ $('document').ready(function()
 		this.minimize({ absolute_next: true });
 	});
 
-	//------------------------------------------------------------ autoHeight, autoWidth, changeState
-	$('.auto_height').autoHeight();
-	$('.auto_width').autoWidth();
-	$('input:visible, textarea').changeState();
+	//--------------------------------------------------------------------- build simple plugin calls
+	$('.auto_height').build($.fn.autoHeight);
+	$('.auto_width:not(table):not(ul)').build($.fn.autoWidth);
+	$('input:visible, textarea:visible').build($.fn.changeState);
+	$('.list-filter').build($.fn.listFilter);
+	$('.tabber').build($.fn.tabber);
 
 });

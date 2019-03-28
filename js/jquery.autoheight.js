@@ -50,6 +50,4 @@
 		return this;
 	};
 
-	$.fn.autoheight = $.fn.autoHeight;
-
 })( jQuery );

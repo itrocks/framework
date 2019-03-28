@@ -61,7 +61,7 @@ window.modifiable_waiting  = false;
 				var $popup;
 				$this.data('old', $input.val());
 				$this.html($input);
-				$input.autoWidth();
+				$input.build();
 
 				//----------------------------------------------------------------------------- $input done
 				var done = function()
