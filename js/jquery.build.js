@@ -41,7 +41,6 @@
 		var $elements = this.matchSelector($context);
 		if ($elements.length) {
 			$elements.inside = inside;
-			console.log('CALL', this.callback, $elements);
 			this.callback.call($elements);
 			delete $elements.inside;
 		}
@@ -54,12 +53,10 @@
 	 */
 	Callback.prototype.matchSelector = function($context)
 	{
-		console.log('MATCHSELECTOR', $context, this.selectors);
 		var $result = $();
 		$.each(this.selectors, function(end_selector, selector) {
 			if (end_selector === '@always') {
 				if ((selector === 'body') || $context.closest(selector).length) {
-					console.log('match :', end_selector, selector, $context);
 					$result = $result.add($context);
 				}
 			}
@@ -75,9 +72,6 @@
 
 			}
 		});
-		if ($result.length) {
-			console.log('=>', this.selectors, $result);
-		}
 		return $result;
 	};
 
