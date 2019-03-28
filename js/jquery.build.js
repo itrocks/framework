@@ -13,22 +13,24 @@
 	 * Callback class constructor
 	 *
 	 * @constructor
-	 * @param selector string
+	 * @param $context jQuery
 	 * @param callback function
 	 * @param priority number
 	 * @param always   boolean
 	 */
-	var Callback = function(selector, callback, priority, always)
+	var Callback = function($context, callback, priority, always)
 	{
 		this.callback  = callback;
 		this.priority  = priority;
 		this.selectors = {};
 
-		var object = this;
-		$.each(selector.split(','), function(key, part) {
+		var object    = this;
+		var selectors = contextSelectors($context);
+		$.each(selectors, function(key, part) {
 			part = part.trim();
-			var part_end = (always ? '@always' : part.replace(' ', '>').split('>').pop().trim());
-			object.selectors[part_end] = part;
+			object.selectors[part] = always
+				? '@always'
+				: part.replace(' ', '>').split('>').pop().trim();
 		});
 	};
 
@@ -54,7 +56,7 @@
 	Callback.prototype.matchSelector = function($context)
 	{
 		var $result = $();
-		$.each(this.selectors, function(end_selector, selector) {
+		$.each(this.selectors, function(selector, end_selector) {
 			if (end_selector === '@always') {
 				if ((selector === 'body') || $context.closest(selector).length) {
 					$result = $result.add($context);
@@ -65,14 +67,47 @@
 				if ($elements.length) {
 					$result = $result.add($elements);
 				}
-				$context = $context.filter(selector);
-				if ($context.length) {
-					$result = $result.add($context);
+				$elements = $context.filter(selector);
+				if ($elements.length) {
+					$result = $result.add($elements);
 				}
 
 			}
 		});
 		return $result;
+	};
+
+	//------------------------------------------------------------------------------- contextSelector
+	/**
+	 * The jQuery.selector property contains a bad value when it has prevObjects : we must rebuild
+	 * it correctly.
+	 *
+	 * @param $context jQuery
+	 * @return array
+	 */
+	var contextSelectors = function($context)
+	{
+		var parts = [''];
+
+		do {
+			var new_parts = [];
+			var selector  = $context.selector;
+			if ($context.prevObject) {
+				selector = selector.substr($context.prevObject.selector.length);
+			}
+			var selectors = selector.split(',');
+			for (var part in selectors) if (selectors.hasOwnProperty(part)) {
+				part = selectors[part];
+				for (var child_part in parts) if (parts.hasOwnProperty(child_part)) {
+					child_part = parts[child_part];
+					new_parts.push(part + child_part);
+				}
+			}
+			parts    = new_parts;
+			$context = $context.prevObject;
+		} while ($context);
+
+		return parts;
 	};
 
 	//---------------------------------------------------------------------------------------- inside
@@ -162,7 +197,8 @@
 				priority = 1000;
 			}
 			priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
-			callback = new Callback($context.selector, callback, priority, always);
+			console.log($context);
+			callback = new Callback($context, callback, priority, always);
 			window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
 			if (call_it && $context.length) {
 				callback.callIt($context);
