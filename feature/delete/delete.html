@@ -11,11 +11,15 @@
 <body>
 <!--BEGIN-->
 
-	<div class="confirmed delete message" data-class="{@class}" data-id="{?id}" data-set-class="{?set_class}">
-		<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
-		<!--deleted--><div>|¦{@class.display.ucfirst}¦ !{.}! has been deleted|</div><!--end-->
-		<!--!deleted--><div>|Unable to delete ¦{@class.display.ucfirst}¦ !{.}!|</div><!--end-->
-	</div>
+	<article class="confirmed delete message" data-class="{@class}" data-id="{?id}" data-set-class="{?set_class}">
+		<header>
+			<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
+		</header>
+		<p>
+		<!--deleted-->|¦{@class.display.ucfirst}¦ !{.}! has been deleted|<!--end-->
+		<!--!deleted-->|Unable to delete ¦{@class.display.ucfirst}¦ !{.}!|<!--end-->
+		</p>
+	</article>
 
 <!--END-->
 </body>

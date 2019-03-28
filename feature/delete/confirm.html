@@ -11,10 +11,12 @@
 <body>
 <!--BEGIN-->
 
-	<div class="delete message">
-		<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
-		<div class="question">|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?</div>
-		<div class="warning">|All data will be lost|</div>
+	<article class="delete message">
+		<header>
+			<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
+		</header>
+		<p class="question">|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?</p>
+		<p class="warning">|All data will be lost|.</p>
 		<ul class="actions">
 			<li class="delete">
 				<a data-post="{?data_post}" href="app://(delete_link)" target="#messages">|Delete|</a>
@@ -23,7 +25,7 @@
 				<a href="app://(close_link)" target="#main">|Cancel|</a>
 			</li>
 		</ul>
-	</div>
+	</article>
 
 <!--END-->
 </body>

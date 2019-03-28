@@ -40,11 +40,11 @@ $('document').ready(function()
 	/**
 	 * #messages close action empties #messages instead of calling a link
 	 */
-	$('section#messages .actions .close a').build('click', function()
+	$('div#messages .actions .close a').build('click', function(event)
 	{
-		$(this).closest('#messages').empty();
-		event.stopImmediatePropagation();
+		$(this).closest('div#messages').empty();
 		event.preventDefault();
+		event.stopImmediatePropagation();
 	});
 
 	//-------------------------------------------------------------------- li.multiple li.minus click
@@ -590,7 +590,8 @@ $('document').ready(function()
 
 	//------------------------------------------------------------------------ input[data-conditions]
 	var will_change = {};
-	$('form').find('input, select, textarea').filter('[data-conditions]').build('each', function()
+	var selector    = 'input[data-conditions], select[data-conditions], textarea[data-conditions]';
+	$(selector).build('each', function()
 	{
 		var $this      = $(this);
 		var conditions = $this.data('conditions').replace(/\(.*\)/g);
@@ -795,7 +796,8 @@ $('document').ready(function()
 	};
 
 	//----------------------------------------------------------------- input[data-on-change] .change
-	$('input, select, textarea').filter('[data-on-change]').build('change', function()
+	selector = 'input[data-on-change], select[data-on-change], textarea[data-on-change]';
+	$(selector).build('change', function()
 	{
 		onEvent.call(this, 'on-change');
 	});

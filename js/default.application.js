@@ -15,22 +15,22 @@ $('document').ready(function()
 
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
-			auto_empty: {'main': 'section#messages'},
+			auto_empty:      {'main': 'div#messages'},
 			draggable_blank: 'article > header > h2',
-			url_append: 'as_widget',
+			url_append:      'as_widget',
 			success: function () {
 				$(this).autofocus();
 			},
 			history: {
-				condition: 'article > header > h2',
-				title: 'article > header > h2',
+				condition:        'article > header > h2',
+				title:            'article > header > h2',
 				without_get_vars: ['.*/list\\?.*']
 			}
 		});
 	}});
 
-	//------------------------------------------------------------ section#messages draggable & click
-	$('section#messages').build(function()
+	//---------------------------------------------------------------- div#messages draggable & click
+	$('div#messages').build(function()
 	{
 		this.draggable().click(function(event)
 		{

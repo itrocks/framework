@@ -4,3 +4,5 @@ article > header > h2 {
   padding: 0.5em; }
 article > header > .custom {
   display: none; }
+article > p {
+  margin: 0.5em 0; }

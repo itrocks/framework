@@ -15,4 +15,8 @@ article {
 			display: none;
 		}
 	}
+
+	> p {
+		margin: $window-padding 0;
+	}
 }
