@@ -11,12 +11,10 @@ input, select, textarea {
       background-color: #00b39c;
       color: #efe; }
 
-ol.properties {
-  border-top: 1px solid lightgray; }
-  ol.properties > li > div > ul > li > ol > li.minus {
-    cursor: pointer; }
-  ol.properties > li > div > ul > li > ol > li > input, ol.properties > li > div > ul > li > ol > li > textarea {
-    width: 100%; }
+ol.properties > li > div > ul > li > ol > li.minus {
+  cursor: pointer; }
+ol.properties > li > div > ul > li > ol > li > input, ol.properties > li > div > ul > li > ol > li > textarea {
+  width: 100%; }
 
 li.class {
   position: relative; }

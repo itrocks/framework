@@ -1,13 +1,13 @@
 @import "colors.scss";
 @import "margins.scss";
 
-article.edit > ul.data, article.output > ul.data {
-	display: inline-block;
+article.edit > form, article.output {
 
-	ol.properties {
+	> ul.data ol.properties {
+		display: inline-block;
 		padding: $window-padding;
 
-		> li:not(.after):not(.before):not(.block):not(.multiple) {
+		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
 			display: table-row;
 
 			> label, > div {
@@ -70,6 +70,13 @@ article.edit > ul.data, article.output > ul.data {
 				}
 			}
 		}
+
+		> li.hidden {
+			display: none;
+		}
 	}
 
+	> ul.general.actions {
+		border-bottom: $thin-border;
+	}
 }

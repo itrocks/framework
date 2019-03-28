@@ -20,18 +20,14 @@ input, select, textarea {
 	}
 }
 
-ol.properties {
-	border-top: $thin-border;
+ol.properties > li > div > ul > li > ol > li {
 
-	> li > div > ul > li > ol > li {
+	&.minus {
+		cursor: pointer;
+	}
 
-		&.minus {
-			cursor: pointer;
-		}
-
-		> input, > textarea {
-			width: 100%;
-		}
+	> input, > textarea {
+		width: 100%;
 	}
 }
 

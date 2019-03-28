@@ -248,31 +248,31 @@ class Html_Template extends Template
 	{
 		$parser   = new Parser($content);
 		$position = 0;
-		while (($outside_i = $parser->tagPos('section', $position)) !== false) {
+		while (($outside_i = $parser->tagPos('article', $position)) !== false) {
 			$inside_i = strpos($content, '>', $outside_i) + 1;
 			$inside   = substr($content, $outside_i, $inside_i - $outside_i);
 			$position = $outside_i + 1;
 			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
 				$classes = array_flip(explode(SP, mParse($inside, 'class=' . DQ, DQ)));
-				if (isset($classes['edit']) && isset($classes['window'])) {
+				if (isset($classes['edit'])) {
 					$identifier    = Dao::getObjectIdentifier(reset($this->objects));
-					$inside_j      = $parser->closingTag('section', $inside_i, Parser::BEFORE);
-					$outside_j     = $inside_j + 10;
+					$inside_j      = $parser->closingTag('article', $inside_i, Parser::BEFORE);
 					$class_name    = get_class(reset($this->objects));
-					/** @noinspection PhpUnhandledExceptionInspection $class_name comes from get_class */
-					$action     = $this->replaceLink(SL . Names::classToUri($class_name)
+					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
 						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
-					$attributes = substr($content, $outside_i + 8, $inside_i - $outside_i - 9);
 					$attributes = ' action=' . DQ . $action . DQ
-						. $attributes
 						. ' enctype="multipart/form-data"'
 						. ' method="post"'
 						. ' name=' . DQ . $this->getFormId() . DQ
 						. ' target="#messages"';
-					$form       = '<form' . $attributes . '>'
+					$after_header = strpos($content, '</header>', $inside_i);
+					if (($after_header !== false) && ($after_header < $inside_j)) {
+						$inside_i = $after_header + 9;
+					}
+					$form = LF . '<form' . $attributes . '>'
 						. substr($content, $inside_i, $inside_j - $inside_i)
-						. '</form>';
-					$content        = substr($content, 0, $outside_i) . $form . substr($content, $outside_j);
+						. '</form>' . LF;
+					$content        = substr($content, 0, $inside_i) . $form . substr($content, $inside_j);
 					$position       = $outside_i + strlen($form);
 					$parser->buffer = $content;
 				}
