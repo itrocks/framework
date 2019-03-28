@@ -26,7 +26,7 @@
 		var settings = $.extend({
 			auto_empty:      {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
 			auto_redirect:   '.auto-redirect',
-			closeable_popup: 'closeable-popup',
+			closeable_popup: 'popup',
 			draggable_blank: undefined,
 			error:           undefined,
 			history:         false, // { condition, popup, post, title }

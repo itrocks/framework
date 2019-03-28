@@ -149,7 +149,7 @@ redirect = function(uri, target, after, callback, history)
 			window.zindex_counter ++;
 			var $after = (after && (typeof after === 'object')) ? after : $(after);
 			$target    = $('<div>')
-				.addClass('closeable-popup')
+				.addClass('popup')
 				.attr('id', 'window' + window.zindex_counter)
 				.css('left',     $after.length ? ($after.offset().left + 3) : 10)
 				.css('position', 'absolute')
@@ -160,7 +160,7 @@ redirect = function(uri, target, after, callback, history)
 			{
 				event.preventDefault();
 				event.stopImmediatePropagation();
-				$(this).closest('.closeable-popup').remove();
+				$(this).closest('div.popup').remove();
 				if (uri.indexOf('fill_combo=') > -1) {
 					var fill_combo = uri.rParse('fill_combo=').lParse('&');
 					$('[name=' + DQ + fill_combo + DQ + ']').next().focus();
