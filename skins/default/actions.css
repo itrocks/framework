@@ -1,63 +1,41 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-.action, ul.actions > li > a, ul.actions > li > button, ul.actions > li > input {
-  background: url("img/buttons/17/background.gif");
-  border: 1px solid #98989a;
-  border-radius: 4px 2px 2px 4px;
-  box-shadow: 0 1px 0 0 rgba(0, 0, 0, 0.2);
-  color: #1c2e6c;
-  cursor: pointer;
-  display: inline-block;
-  font: inherit;
-  font-weight: bold;
-  height: 15px;
-  line-height: 15px;
-  margin: 0 2px;
-  padding: 0 4px;
-  text-decoration: none; }
-  .action:hover, ul.actions > li > a:hover, ul.actions > li > button:hover, ul.actions > li > input:hover {
-    color: #2d8f8d; }
-
-.deactivated-action, ul.actions > li > a.deactivated, ul.actions > li > button.deactivated, ul.actions > li > input.deactivated, ul.actions > li > a.deactivated:hover {
-  color: lightgrey;
-  cursor: default; }
-
-input.action, ul.actions > li > input {
-  height: 17px; }
-
-.ifedit {
-  display: none; }
-
+li.actions > ul,
 ul.actions {
-  display: block;
-  height: 19px; }
-  ul.actions:not(:last-child) {
-    margin-bottom: 6px; }
-  ul.actions:not(:first-child) {
-    margin-top: 6px; }
-  ul.actions > li {
+  display: block; }
+
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+  display: inline-block;
+  margin: .3em 0;
+  position: relative;
+  vertical-align: top;
+  white-space: nowrap; }
+  li.action > a,
+  li.actions > ul > li > a,
+  ul.actions > li > a {
+    display: inline-block; }
+  li.action > ul,
+  li.actions > ul > li > ul,
+  ul.actions > li > ul {
+    display: none; }
+  li.action:hover > ul,
+  li.actions > ul > li:hover > ul,
+  ul.actions > li:hover > ul {
+    background-color: #fff;
+    border: 1px solid #98989a;
     display: inline-block;
-    margin: 0;
-    position: relative; }
-    ul.actions > li > ul {
-      background-color: white;
-      border: 1px solid #333;
-      border-top-color: #ddd;
-      display: none;
-      left: 3px;
-      position: absolute;
-      z-index: 1; }
-      ul.actions > li > ul > li {
-        display: block;
-        margin: 0; }
-        ul.actions > li > ul > li > a {
-          color: black;
-          display: block;
-          padding: 4px;
-          text-decoration: none;
-          white-space: nowrap; }
-          ul.actions > li > ul > li > a:hover {
-            background-color: #aedc5f; }
-    ul.actions > li:hover > ul {
+    left: 0;
+    position: absolute;
+    top: 1.3em;
+    z-index: 1; }
+    li.action:hover > ul > li,
+    li.actions > ul > li:hover > ul > li,
+    ul.actions > li:hover > ul > li {
       display: block; }
+      li.action:hover > ul > li > a,
+      li.actions > ul > li:hover > ul > li > a,
+      ul.actions > li:hover > ul > li > a {
+        display: block; }

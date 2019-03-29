@@ -1,19 +1,19 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-.list.window {
+article.list {
   /* search summary */
   /* table */ }
-  .list.window .search_summary {
+  article.list .section.summary {
     color: #333;
     font-weight: bold;
     text-align: left; }
-    .list.window .search_summary:empty {
+    article.list .section.summary:empty {
       display: none; }
-    .list.window .search_summary .error {
+    article.list .section.summary .errors {
       font-size: 100%;
       padding: 1px 3px; }
-  .list.window > table {
+  article.list > form > ul.list {
     clear: both;
     font-family: arial, helvetica, sans-serif;
     font-size: 12px;
@@ -21,117 +21,125 @@
     /* columns */
     /* head */
     /* lines */ }
-    .list.window > table > colgroup > col:not(:last-child) {
+    article.list > form > ul.list > li > ol > li {
+      display: table-cell; }
+    article.list > form > ul.list > li.title > ol > li:not(:last-child) {
       min-width: 16px; }
-    .list.window > table > colgroup > col:first-child, .list.window > table > colgroup > col:nth-child(2) {
+    article.list > form > ul.list > li.title > ol > li:first-child, article.list > form > ul.list > li.title > ol > li:nth-child(2) {
       max-width: 16px;
       width: 16px; }
-    .list.window > table > tbody,
-    .list.window > table > thead {
+    article.list > form > ul.list > li {
       border-bottom: 1px solid lightgray;
       border-left: 1px solid lightgray;
       border-right: 1px solid lightgray; }
-    .list.window > table > thead > tr {
+    article.list > form > ul.list > li.title {
+      display: block;
       height: 17px; }
-      .list.window > table > thead > tr > th {
+      article.list > form > ul.list > li.title > ol > li {
         background: url("img/list_head_left.png") left 3px no-repeat, url("img/list_head_right.png") right 3px no-repeat, url("img/list_head_background.png") left 0 #aaa repeat-x;
         vertical-align: bottom;
         white-space: nowrap;
         /* column select */
         /* head anchor */
         /* sorting */ }
-        .list.window > table > thead > tr > th.column_select {
+        article.list > form > ul.list > li.title > ol > li.column_select {
           background: url("img/list_head_right.png") right 3px no-repeat, url("img/column_select.png") center 5px no-repeat, url("img/list_head_background.png") #aaa repeat-x;
           position: relative; }
-          .list.window > table > thead > tr > th.column_select > a {
+          article.list > form > ul.list > li.title > ol > li.column_select > a {
             color: transparent;
             display: block;
             font-size: 1px;
             height: 17px; }
-          .list.window > table > thead > tr > th.column_select > section.popup {
+          article.list > form > ul.list > li.title > ol > li.column_select > section.popup {
             left: 0;
             position: absolute; }
-          .list.window > table > thead > tr > th.column_select .property_select {
+          article.list > form > ul.list > li.title > ol > li.column_select .property_select {
             position: absolute; }
-        .list.window > table > thead > tr > th > a {
+        article.list > form > ul.list > li.title > ol > li > a {
           background: padding-box right 5px no-repeat;
           border-right: 4px solid transparent;
           color: black;
           display: block;
           text-decoration: none;
           line-height: 17px; }
-        .list.window > table > thead > tr > th.property > a {
+        article.list > form > ul.list > li.title > ol > li.property > a {
           padding: 0 14px 0 4px; }
-        .list.window > table > thead > tr > th.sort1:not(.reverse) > a {
+        article.list > form > ul.list > li.title > ol > li.sort1:not(.reverse) > a {
           background-image: url("img/arrow_black_up.gif"); }
-        .list.window > table > thead > tr > th.sort1.reverse > a {
+        article.list > form > ul.list > li.title > ol > li.sort1.reverse > a {
           background-image: url("img/arrow_black_down.gif"); }
-        .list.window > table > thead > tr > th.sort2:not(.reverse) > a {
+        article.list > form > ul.list > li.title > ol > li.sort2:not(.reverse) > a {
           background-image: url("img/arrow_gray_up.gif"); }
-        .list.window > table > thead > tr > th.sort2.reverse > a {
+        article.list > form > ul.list > li.title > ol > li.sort2.reverse > a {
           background-image: url("img/arrow_gray_down.gif"); }
-      .list.window > table > thead > tr > td {
+      article.list > form > ul.list > li.title > ol > li {
         padding: 0 7px 0 0; }
-        .list.window > table > thead > tr > td.reset.search {
+        article.list > form > ul.list > li.title > ol > li.reset.search {
           text-align: center; }
-          .list.window > table > thead > tr > td.reset.search > a {
+          article.list > form > ul.list > li.title > ol > li.reset.search > a {
             color: black; }
-            .list.window > table > thead > tr > td.reset.search > a:not(:hover) {
+            article.list > form > ul.list > li.title > ol > li.reset.search > a:not(:hover) {
               text-decoration: none; }
-        .list.window > table > thead > tr > td > input, .list.window > table > thead > tr > td > select, .list.window > table > thead > tr > td > textarea {
+        article.list > form > ul.list > li.title > ol > li > input, article.list > form > ul.list > li.title > ol > li > select, article.list > form > ul.list > li.title > ol > li > textarea {
           width: 100%; }
-    .list.window > table > tbody > tr {
+    article.list > form > ul.list > li:not(.title) {
+      display: table-row-group;
       height: 21px; }
-      .list.window > table > tbody > tr:nth-child(even) {
+      article.list > form > ul.list > li:not(.title) > ol {
+        display: table-row; }
+      article.list > form > ul.list > li:not(.title):nth-child(even) {
         background-color: #ececed; }
-      .list.window > table > tbody > tr:nth-child(odd) {
+      article.list > form > ul.list > li:not(.title):nth-child(odd) {
         background-color: white; }
-      .list.window > table > tbody > tr:hover {
+      article.list > form > ul.list > li:not(.title):hover {
         background-color: #aedc5f !important; }
-      .list.window > table > tbody > tr > td {
+      article.list > form > ul.list > li:not(.title) > ol > li {
         border-right: 1px dotted lightgray;
         padding: 5px 3px 0;
         vertical-align: top;
         white-space: nowrap; }
-        .list.window > table > tbody > tr > td.vertical.scrollbar {
+        article.list > form > ul.list > li:not(.title) > ol > li.vertical.scrollbar {
           padding: 0; }
-          .list.window > table > tbody > tr > td.vertical.scrollbar > a {
+          article.list > form > ul.list > li:not(.title) > ol > li.vertical.scrollbar > a {
             margin: 0; }
-        .list.window > table > tbody > tr > td > a {
+        article.list > form > ul.list > li:not(.title) > ol > li > a {
           color: black;
           display: block;
           height: 16px;
           margin: -5px 0 0 0;
           padding: 5px 0 0 0;
           text-decoration: none; }
-        .list.window > table > tbody > tr > td > input[type=checkbox] {
+        article.list > form > ul.list > li:not(.title) > ol > li > input[type=checkbox] {
           margin: -2px 3px 0; }
 
-ul.actions > li.growth > a {
-  color: transparent;
-  font-size: 1px;
-  line-height: 17px;
-  padding: 0;
-  text-decoration: none;
-  width: 21px; }
-ul.actions > li.growth.less.twenty > a {
-  background: url("img/bullet_arrow_top.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-  ul.actions > li.growth.less.twenty > a:hover {
-    background: url("img/lighter50.png"), url("img/bullet_arrow_top.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-ul.actions > li.growth.more.hundred > a {
-  background: url("img/bullet_arrow_down.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-  ul.actions > li.growth.more.hundred > a:hover {
-    background: url("img/lighter50.png"), url("img/bullet_arrow_down.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-ul.actions > li.growth.more.thousand > a {
-  background: url("img/bullet_arrow_bottom.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-  ul.actions > li.growth.more.thousand > a:hover {
-    background: url("img/lighter50.png"), url("img/bullet_arrow_bottom.png") 3px 1px no-repeat, url("img/buttons/17/background.gif"); }
-ul.actions > li.rows_count {
-  color: #333;
-  float: right;
-  text-align: right; }
-ul.actions > li.select_count:not(.selected) {
-  display: none; }
+article.list > form > ul.footer {
+  position: relative; }
+  article.list > form > ul.footer > li {
+    display: inline-block; }
+    article.list > form > ul.footer > li.selector:after {
+      content: '>'; }
+    article.list > form > ul.footer > li.visible.lines {
+      position: absolute;
+      right: 0; }
+      article.list > form > ul.footer > li.visible.lines > ul > li {
+        display: inline-block;
+        padding: .3em; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
+          font-size: 0;
+          text-decoration: none; }
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
+            color: initial;
+            font-size: initial;
+            padding: .3em; }
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:hover:before {
+            background-color: white;
+            color: black; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.twenty.less > a:before {
+          content: '[-]'; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.hundred.more > a:before {
+          content: '[+]'; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
+          content: '[#]'; }
 
 .popup .property.edit.window fieldset > div > div {
   white-space: inherit; }

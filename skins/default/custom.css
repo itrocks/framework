@@ -1,11 +1,11 @@
 /* components */
 /* features colors and action left button part */
 /* modules */
-.window > h2 {
+article > header {
   position: relative; }
-  .window > h2 > .custom {
+  article > header > .custom {
     display: none; }
-  .window > h2 > input {
+  article > header > input {
     background: white;
     border-style: none;
     display: none;
@@ -14,15 +14,15 @@
     padding: 1px 2px;
     position: absolute;
     z-index: 1; }
-  .window > h2 > span {
+  article > header > span {
     cursor: pointer; }
-  .window > h2 > ul.custom.actions {
+  article > header > ul.custom.actions {
     margin: 0;
     padding-left: .5em; }
-    .window > h2 > ul.custom.actions > li {
+    article > header > ul.custom.actions > li {
       box-shadow: none;
       line-height: 19px; }
-      .window > h2 > ul.custom.actions > li > a {
+      article > header > ul.custom.actions > li > a {
         border-style: none;
         box-shadow: none;
         color: transparent;
@@ -31,33 +31,33 @@
         padding: 1px;
         vertical-align: top;
         width: 16px; }
-        .window > h2 > ul.custom.actions > li > a:hover:before {
+        article > header > ul.custom.actions > li > a:hover:before {
           opacity: .66; }
-      .window > h2 > ul.custom.actions > li.custom_save > a {
+      article > header > ul.custom.actions > li.custom_save > a {
         background: url("img/floppy.png") center no-repeat; }
-        .window > h2 > ul.custom.actions > li.custom_save > a:hover {
+        article > header > ul.custom.actions > li.custom_save > a:hover {
           background: none; }
-        .window > h2 > ul.custom.actions > li.custom_save > a:hover:before {
+        article > header > ul.custom.actions > li.custom_save > a:hover:before {
           content: url("img/floppy.png"); }
-  .window > h2:hover > ul.custom.actions {
+  article > header:hover > ul.custom.actions {
     display: inline-block; }
-  .window > h2 ul.custom.selection {
+  article > header ul.custom.selection {
     border: 1px solid #333;
     border-radius: 3px;
     background: white;
     padding-bottom: .3em;
     position: absolute;
     z-index: 1; }
-    .window > h2 ul.custom.selection > li {
+    article > header ul.custom.selection > li {
       list-style: none;
       margin: 0; }
-      .window > h2 ul.custom.selection > li:first-child > a {
+      article > header ul.custom.selection > li:first-child > a {
         font-weight: bold; }
-      .window > h2 ul.custom.selection > li.selected {
+      article > header ul.custom.selection > li.selected {
         background: #cef37f; }
-      .window > h2 ul.custom.selection > li:hover {
+      article > header ul.custom.selection > li:hover {
         background: #aedc5f; }
-      .window > h2 ul.custom.selection > li > a {
+      article > header ul.custom.selection > li > a {
         color: #222;
         display: block;
         font-weight: normal;

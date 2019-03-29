@@ -1,10 +1,10 @@
 @import "colors.scss";
 
-.list.window {
+article.list {
 
 	/* search summary */
 
-	.search_summary {
+	.section.summary {
 		color: #333;
 		font-weight: bold;
 		text-align: left;
@@ -13,7 +13,7 @@
 			display: none;
 		}
 
-		.error {
+		.errors {
 			font-size: 100%;
 			padding: 1px 3px;
 		}
@@ -21,7 +21,7 @@
 
 	/* table */
 
-	> table {
+	> form > ul.list {
 		clear: both;
 		font-family: arial, helvetica, sans-serif;
 		font-size: 12px;
@@ -29,7 +29,11 @@
 
 		/* columns */
 
-		> colgroup > col {
+		> li > ol > li {
+			display: table-cell;
+		}
+
+		> li.title > ol > li {
 
 			&:not(:last-child) {
 				min-width: 16px;
@@ -44,17 +48,17 @@
 
 		/* head */
 
-		> tbody,
-		> thead {
+		> li {
 			border-bottom: 1px solid lightgray;
 			border-left: 1px solid lightgray;
 			border-right: 1px solid lightgray;
 		}
 
-		> thead > tr {
+		> li.title {
+			display: block;
 			height: 17px;
 
-			> th {
+			> ol > li {
 				background: url("img/list_head_left.png") left 3px no-repeat,
 				url("img/list_head_right.png") right 3px no-repeat,
 				url("img/list_head_background.png") left 0 #aaa repeat-x;
@@ -119,7 +123,7 @@
 				}
 			}
 
-			> td {
+			> ol > li {
 				padding: 0 7px 0 0;
 
 				&.reset.search {
@@ -141,8 +145,13 @@
 		}
 
 		/* lines */
-		> tbody > tr {
+		> li:not(.title) {
+			display: table-row-group;
 			height: 21px;
+
+			> ol {
+				display: table-row;
+			}
 
 			&:nth-child(even) {
 				background-color: $table_even_line;
@@ -156,7 +165,7 @@
 				background-color: $hover!important;
 			}
 
-			> td {
+			> ol > li {
 				border-right: 1px dotted lightgray;
 				padding: 5px 3px 0;
 				vertical-align: top;
@@ -187,54 +196,56 @@
 	}
 }
 
-ul.actions {
+article.list > form > ul.footer {
+	position: relative;
 
-	> li.growth {
+	> li {
+		display: inline-block;
 
-		> a {
-			color: transparent;
-			font-size: 1px;
-			line-height: 17px;
-			padding: 0;
-			text-decoration: none;
-			width: 21px;
+		&.selector:after {
+			content: '>';
 		}
 
-		@mixin background($arrow) {
-			background:
-				url("img/bullet_arrow_" + $arrow + ".png") 3px 1px no-repeat,
-				url("img/buttons/17/background.gif");
+		&.visible.lines {
+			position: absolute;
+			right: 0;
 
-			&:hover {
-				background:
-					url("img/lighter50.png"),
-					url("img/bullet_arrow_" + $arrow + ".png") 3px 1px no-repeat,
-					url("img/buttons/17/background.gif");
+			> ul > li {
+				display: inline-block;
+				padding: .3em;
+
+				&.actions > ul > li {
+
+					> a {
+						font-size: 0;
+						text-decoration: none;
+
+						&:before {
+							color: initial;
+							font-size: initial;
+							padding: .3em;
+						}
+
+						&:hover:before {
+							background-color: white;
+							color: black;
+						}
+					}
+
+					&.twenty.less > a:before {
+						content: '[-]';
+					}
+
+					&.hundred.more > a:before {
+						content: '[+]';
+					}
+
+					&.thousand.more > a:before {
+						content: '[#]';
+					}
+				}
 			}
 		}
-
-		&.less.twenty > a {
-			@include background("top");
-		}
-
-		&.more.hundred > a {
-			@include background("down");
-		}
-
-		&.more.thousand > a {
-			@include background("bottom");
-		}
-
-	}
-
-	> li.rows_count {
-		color: #333;
-		float: right;
-		text-align: right;
-	}
-
-	> li.select_count:not(.selected) {
-		display: none;
 	}
 }
 

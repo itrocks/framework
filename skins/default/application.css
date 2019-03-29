@@ -12,79 +12,28 @@ body {
     background-color: lightgrey;
     border-bottom: solid darkgrey 1px;
     height: 52px; }
-    body > header > .connect {
+    body > header > .connected {
       background: url("img/disconnect-left.png") no-repeat left -2px;
       display: inline-block;
       float: left;
       padding: 2px 0; }
-      body > header > .connect > a {
+      body > header > .connected > a {
         color: transparent;
         display: inline-block;
         font-size: 1px;
         height: 24px;
         padding-left: 28px;
         width: 24px; }
-        body > header > .connect > a > .login {
+        body > header > .connected > a > .login {
           color: #404040;
           font-size: 14px;
           font-style: italic;
           font-weight: bold; }
-      body > header > .connect:hover {
+      body > header > .connected:hover {
         background-image: url("img/disconnect-left-animate.gif"); }
-        body > header > .connect:hover > a > .login {
+        body > header > .connected:hover > a > .login {
           color: #800000;
           text-decoration: underline; }
-    body > header > ul.links {
-      margin: 0 4px;
-      position: fixed;
-      right: 0;
-      top: 0;
-      z-index: 1000000000; }
-      body > header > ul.links > li {
-        list-style: none; }
-      body > header > ul.links > li > a {
-        display: inline-block; }
-      body > header > ul.links > li.provider {
-        background: 20px 5px no-repeat white;
-        border: #9ab3b7 solid;
-        border-radius: 0 0 10px 10px;
-        border-width: 0 1px 1px;
-        box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.2); }
-        body > header > ul.links > li.provider > a {
-          color: transparent;
-          height: 46px; }
-        body > header > ul.links > li.provider.bappli {
-          background-image: url("img/bappli-studio-36.png"); }
-          body > header > ul.links > li.provider.bappli > a {
-            width: 182px; }
-        body > header > ul.links > li.provider.itrocks {
-          background-image: url("img/itrocks-36.png"); }
-          body > header > ul.links > li.provider.itrocks > a {
-            width: 130px; }
-      body > header > ul.links > li:not(.provider) {
-        background: url("img/tab_background.png");
-        border-color: #d6dadc #9ab3b7 #9ab3b7;
-        border-radius: 0 0 10px 10px;
-        border-style: solid;
-        border-width: 1px;
-        display: none;
-        float: right;
-        margin: 5px 0 0 10px;
-        position: relative;
-        z-index: 999999999; }
-        body > header > ul.links > li:not(.provider) > a {
-          color: #222;
-          font-size: 16px;
-          font-weight: bold;
-          height: 25px;
-          line-height: 25px;
-          padding: 0 10px;
-          text-decoration: none;
-          white-space: nowrap; }
-          body > header > ul.links > li:not(.provider) > a:hover {
-            color: #2d8f8d; }
-      body > header > ul.links:hover > li:not(.provider) {
-        display: inline-block; }
 
 div p:not(:first-child) {
   margin-top: 1em; }
@@ -95,7 +44,7 @@ em {
   font-style: italic; }
 
 h1 {
-  font-size: 1.6em; }
+  display: none; }
 
 h2 {
   font-size: 1.4em; }
@@ -212,13 +161,13 @@ thead > tr > th {
   margin: -3px;
   padding: 3px; }
 
-#main {
-  height: 100%;
+main {
+  display: inline-block;
   white-space: nowrap; }
-  #main > * {
+  main > * {
     white-space: normal; }
 
-#messages {
+div#messages {
   background-color: white;
   border: 1px solid lightgray;
   border-radius: 3px;
@@ -230,7 +179,7 @@ thead > tr > th {
   position: fixed !important;
   top: 4px;
   z-index: 1000000000 !important; }
-  #messages:after {
+  div#messages:after {
     content: 'X';
     cursor: pointer;
     position: absolute;
@@ -238,7 +187,7 @@ thead > tr > th {
     text-align: center;
     top: -3px;
     width: 1.5em; }
-  #messages:before {
+  div#messages:before {
     background-color: lightblue;
     content: ' ';
     cursor: move;
@@ -247,7 +196,7 @@ thead > tr > th {
     position: absolute;
     top: 0;
     width: 100%; }
-  #messages:empty {
+  div#messages:empty {
     display: none; }
 
 table.worksheet > tbody > tr > td > input {

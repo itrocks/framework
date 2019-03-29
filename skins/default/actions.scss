@@ -1,97 +1,42 @@
 @import 'colors.scss';
 
-.action {
-	background: url('img/buttons/17/background.gif');
-	border: 1px solid $button_border;
-	border-radius: 4px 2px 2px 4px;
-	box-shadow: 0 1px 0 0 rgba(0, 0, 0, .2);
-	color: $button_color;
-	cursor: pointer;
-	display: inline-block;
-	font: inherit;
-	font-weight: bold;
-	height: 15px;
-	line-height: 15px;
-	margin: 0 2px;
-	padding: 0 4px;
-	text-decoration: none;
-
-	&:hover {
-		color: $button_hover;
-	}
-}
-
-.deactivated-action {
-	color: lightgrey;
-	cursor: default;
-}
-
-input.action {
-	height: 17px;
-}
-
-.ifedit {
-	display: none;
-}
-
+li.actions > ul,
 ul.actions {
 	display: block;
-	height: 19px;
+}
 
-	&:not(:last-child) {
-		margin-bottom: 6px;
-	}
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+	display: inline-block;
+	margin: .3em 0;
+	position: relative;
+	vertical-align: top;
+	white-space: nowrap;
 
-	&:not(:first-child) {
-		margin-top: 6px;
-	}
-
-	>li {
+	> a {
 		display: inline-block;
-		margin: 0;
-		position: relative;
+	}
 
-		>a, >button, >input {
-			@extend .action;
-		}
+	> ul {
+		display: none;
+	}
 
-		>a.deactivated, >button.deactivated, >input.deactivated, >a.deactivated:hover {
-			@extend .deactivated-action;
-		}
+	&:hover > ul {
+		background-color: #fff;
+		border: 1px solid $button_border;
+		display: inline-block;
+		left: 0;
+		position: absolute;
+		top: 1.3em;
+		z-index: 1;
 
-		>input {
-			@extend input.action;
-		}
-
-		>ul {
-			background-color: white;
-			border: 1px solid #333;
-			border-top-color: #ddd;
-			display: none;
-			left: 3px;
-			position: absolute;
-			z-index: 1;
-
-			>li {
-				display: block;
-				margin: 0;
-
-				>a {
-					color: black;
-					display: block;
-					padding: 4px;
-					text-decoration: none;
-					white-space: nowrap;
-
-					&:hover {
-						background-color: $hover;
-					}
-				}
-			}
-		}
-
-		&:hover>ul {
+		> li {
 			display: block;
+
+			> a {
+				display: block;
+			}
 		}
 	}
 }

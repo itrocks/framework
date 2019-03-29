@@ -1,4 +1,4 @@
-.menu.output {
+nav#menu {
   background: white;
   border: 1px solid darkgray;
   border-radius: 3px;
@@ -8,42 +8,42 @@
   margin: -30px 4px 4px;
   padding-bottom: 10px;
   position: relative; }
-  .menu.output li {
+  nav#menu li {
     margin: 0; }
-  .menu.output > h2 {
+  nav#menu > h2 {
     border-bottom: 1px solid #c0c0c0;
     margin: 0 0 4px;
     text-align: center; }
-    .menu.output > h2 > a {
+    nav#menu > h2 > a {
       color: black;
       display: block;
       padding: 6px 6px 4px;
       text-decoration: none; }
-  .menu.output > ul {
+  nav#menu > ul {
     list-style: none;
     margin: 0;
     padding: 0; }
-    .menu.output > ul > li {
+    nav#menu > ul > li {
       background: 3px 3px no-repeat; }
-      .menu.output > ul > li > h3 {
+      nav#menu > ul > li > h3 {
         background-color: lightgrey;
         color: black;
         font: bold 12px arial;
         margin: 0;
         padding: 0 6px 0 6px;
         white-space: nowrap; }
-      .menu.output > ul > li > ul {
+      nav#menu > ul > li > ul {
         background-color: white;
         list-style: none;
         margin: 0 0 0 6px;
         padding: 2px 0 8px; }
-        .menu.output > ul > li > ul > li > a {
+        nav#menu > ul > li > ul > li > a {
           color: black;
           display: block;
           font: 11px arial;
           height: 14px;
           padding: 0 4px;
           text-decoration: none; }
-        .menu.output > ul > li > ul > li > a:hover {
+        nav#menu > ul > li > ul > li > a:hover {
           color: darkred;
           text-decoration: underline; }

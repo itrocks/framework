@@ -1,4 +1,4 @@
-.menu.output {
+nav#menu {
 
 	background: white;
 	border: 1px solid darkgray;
@@ -14,12 +14,12 @@
 		margin: 0;
 	}
 
-	>h2 {
+	> h2 {
 		border-bottom: 1px solid #c0c0c0;
 		margin: 0 0 4px;
 		text-align: center;
 
-		>a {
+		> a {
 			color: black;
 			display: block;
 			padding: 6px 6px 4px;
@@ -27,15 +27,15 @@
 		}
 	}
 
-	>ul {
+	> ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
 
-		>li {
+		> li {
 			background: 3px 3px no-repeat;
 
-			>h3 {
+			> h3 {
 				background-color: lightgrey;
 				color: black;
 				font: bold 12px arial;
@@ -44,14 +44,15 @@
 				white-space: nowrap;
 			}
 
-			>ul {
+			> ul {
 				background-color: white;
 				list-style: none;
 				margin: 0 0 0 6px;
 				padding: 2px 0 8px;
 
-				>li {
-					>a {
+				> li {
+
+					> a {
 						color: black;
 						display: block;
 						font: 11px arial;
@@ -59,7 +60,8 @@
 						padding: 0 4px;
 						text-decoration: none;
 					}
-					>a:hover {
+
+					> a:hover {
 						color: darkred;
 						text-decoration: underline;
 					}
