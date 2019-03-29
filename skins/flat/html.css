@@ -12,7 +12,7 @@ input, select, textarea {
   input:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
     border-bottom: 1px solid lightgray; }
     input:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
-      background-color: #ddd;
+      background-color: #eee;
       color: #444; }
     input:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
       background-color: #00b39c;

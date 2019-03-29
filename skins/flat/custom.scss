@@ -1,3 +1,4 @@
+@import 'colors.scss';
 @import 'sizes.scss';
 
 article > header {
@@ -7,6 +8,7 @@ article > header {
 		position: absolute;
 		top: 0;
 		width: 100%;
+		z-index: 1;
 
 		> :not(.actions) {
 			display: none;
@@ -28,6 +30,32 @@ article > header {
 					font-size: 0;
 					height: $article-head-height - 2px;
 					width: $article-head-height - 2px;
+				}
+			}
+		}
+
+		> .name {
+			position: absolute;
+			right: $article-head-height + 3px;
+			top: 3px;
+		}
+
+		> .select {
+			background: $background;
+			color: $color;
+			border: $thin-border;
+			margin: ($article-head-padding - $action-vertical-padding) ($article-head-padding - $action-horizontal-padding);
+
+			> li {
+				display: block;
+
+				&.default {
+					font-weight: bold;
+				}
+
+				> a {
+					display: block;
+					padding: $action-vertical-padding $action-horizontal-padding;
 				}
 			}
 		}
