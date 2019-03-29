@@ -3,7 +3,7 @@ $(document).ready(function()
 	var $article_header = $('article[data-class] > header');
 
 	//------------------------------------------------------------- article[data-class] > header > h2
-	$article_header.children('h2').build('click', function()
+	$article_header.find('> h2').build('click', function()
 	{
 		var $this = $(this);
 		if ($this.data('stop-click')) {
