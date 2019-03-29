@@ -64,7 +64,7 @@
 				$tabs.first().addClass('active');
 				$pages.addClass('ui-tabber-page');
 				$pages.first().addClass('active');
-				$pages.each(function () { $(this).children(':first').css('display', 'none'); });
+				$pages.each(function() { $(this).children(':first').css('display', 'none'); });
 
 				var click_handler;
 				$tabs.children('a').click(click_handler = function(event)

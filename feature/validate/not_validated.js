@@ -10,10 +10,10 @@ $(document).ready(function()
 			$('.bad').removeClass('bad');
 
 			// highlight inputs with validation errors
-			$this.find('.property').each(function () {
+			$this.find('.property').each(function() {
 				var property_name = $(this).data('property');
 				var $property = $('#' + property_name);
-				$property.find('label + div').each(function () {
+				$property.find('label + div').each(function() {
 					$(this).find('input:not(:checkbox), select, textarea').filter(':visible').addClass(
 						'bad'
 					);
@@ -24,7 +24,7 @@ $(document).ready(function()
 			});
 
 			// in case of validation warning, the 'cancel' button closes the message box
-			$('.invalid_properties_warning .cancel a').click(function (event)
+			$('.invalid_properties_warning .cancel a').click(function(event)
 			{
 				$('#messages').empty();
 				event.preventDefault();

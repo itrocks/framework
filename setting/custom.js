@@ -15,8 +15,8 @@ $(document).ready(function()
 			$('body').click();
 		}
 		else {
-			$select.fadeIn(200, function () {
-				var clickEvent = function () {
+			$select.fadeIn(200, function() {
+				var clickEvent = function() {
 					$('body').off('click', clickEvent);
 					$select.fadeOut(200);
 				};

@@ -11,7 +11,7 @@ $(document).ready(function()
 	// search
 	$('.property_select > input[name=search]').build(function()
 	{
-		this.each(function () {
+		this.each(function() {
 			var last_search = '';
 			var search_step = 0;
 
@@ -32,7 +32,7 @@ $(document).ready(function()
 							+ '?search=' + encodeURI(new_search)
 							+ '&as_widget' + window.app.andSID(),
 							{
-								success: function (data) {
+								success: function(data) {
 									var $property_tree = $this.parent().children('.property_tree');
 									search_step = 2;
 									$property_tree.html(data);
@@ -41,7 +41,7 @@ $(document).ready(function()
 							}
 						);
 
-						var retry = function () {
+						var retry = function() {
 							if (search_step === 1) {
 								setTimeout(retry, 200);
 							}

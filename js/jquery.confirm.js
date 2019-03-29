@@ -7,7 +7,7 @@
 	 * - Works with <a> tags.
 	 * - Initialise this feature with a single $('body').confirm(); call.
 	 */
-	$.fn.confirm = function ()
+	$.fn.confirm = function()
 	{
 
 		//----------------------------------------------------------------------------------- buildButton
@@ -62,7 +62,7 @@
 		{
 			// Set default value of cancellation callback if not set.
 			if ((typeof ko_callback === 'undefined') || (ko_callback === null)) {
-				ko_callback = function () {
+				ko_callback = function() {
 					closeDialog();
 				};
 			}

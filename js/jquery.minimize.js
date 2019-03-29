@@ -86,7 +86,7 @@
 				);
 				if (settings.absolute_next) {
 					setTimeout(
-						function () {
+						function() {
 							var $next = $this.next();
 							$this.data('next_position_backup', $next.css('position'));
 							$next.css('position', 'absolute');

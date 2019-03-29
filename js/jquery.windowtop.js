@@ -101,7 +101,7 @@ $(document).ready(function()
 	};
 
 	//------------------------------------------------------------------------------------- windowTop
-	var windowTop = function ()
+	var windowTop = function()
 	{
 		$('article > header > h2:first-child').each(function()
 		{

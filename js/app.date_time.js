@@ -25,7 +25,7 @@ $(document).ready(function()
 	};
 
 	//------------------------------------------------------------------------------------- checkDate
-	var checkDate = function ($datetime)
+	var checkDate = function($datetime)
 	{
 		var format_date = $.datepicker.formatDate(
 			$datetime.datepicker('option', 'dateFormat'),

@@ -60,7 +60,7 @@ $(document).ready(function()
 				if (call.indexOf('{feature') > -1) {
 					call = call.replace('{feature}', $this.closest('[data-feature]').data('feature'));
 				}
-				call = call.replace(/{(\w+)->(\w+)}/g, function (text, selector, attribute) {
+				call = call.replace(/{(\w+)->(\w+)}/g, function(text, selector, attribute) {
 					var value = $this.closest(selector).attr(attribute);
 					if (attribute === 'class') {
 						value = value.repl(SP, DOT);
@@ -68,7 +68,7 @@ $(document).ready(function()
 					return value;
 				});
 				call = window.app.uri_base + call + '?as_widget' + window.app.andSID();
-				$.ajax({ url: call, success: function (data) {
+				$.ajax({ url: call, success: function(data) {
 					var $popup = $(data).addClass('rad popup');
 					$popup.css('position', 'absolute');
 					$popup.offset({

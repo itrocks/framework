@@ -7,7 +7,7 @@
 	 * - Works with <a> tags.
 	 * - Initialise this feature with a single $('body').confirm(); call.
 	 */
-	$.fn.fileUpload = function (options)
+	$.fn.fileUpload = function(options)
 	{
 		var $drop_zone = this;
 
@@ -62,8 +62,8 @@
 				// @see https://codepen.io/Shiyou/pen/JNLwVO
 				var file_reader = new FileReader();
 				file_reader.onload = function() {
-					PDFJS.getDocument(new Uint8Array(this.result)).then(function (pdf) {
-						pdf.getPage(1).then(function (page) {
+					PDFJS.getDocument(new Uint8Array(this.result)).then(function(pdf) {
+						pdf.getPage(1).then(function(page) {
 							var viewport = page.getViewport(4.235);
 							var $canvas  = $('<canvas>')
 								.attr('height', $drop_zone.height() * 3)
@@ -73,7 +73,7 @@
 							page
 								.render({canvasContext: context, viewport: viewport})
 								.promise
-								.then(function () {
+								.then(function() {
 									$drop_zone.css('background-image', 'url("' + canvas.toDataURL() + '")');
 									$canvas.remove();
 								});

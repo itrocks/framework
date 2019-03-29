@@ -10,7 +10,7 @@ function radOutput()
 
 			//------------------------------------------------------------------------------------- out
 			// when a property is no longer highlighting columns / blocks separators
-			var out = function ($this, event, ui)
+			var out = function($this, event, ui)
 			{
 				$this.find('.insert-bottom').removeClass('insert-bottom');
 				$this.find('.insert-top').removeClass('insert-top');
@@ -19,7 +19,7 @@ function radOutput()
 			};
 
 			//------------------------------------------------------------------------------------ drag
-			var drag = function (event, ui)
+			var drag = function(event, ui)
 			{
 				var $droppable = $(this);
 				var draggable_top = ui.offset.top + (ui.helper.height() / 2);
@@ -49,7 +49,7 @@ function radOutput()
 				accept:    '.property',
 				tolerance: 'touch',
 
-				drop: function (event, ui)
+				drop: function(event, ui)
 				{
 					var $this          = $(this);
 					var $insert_top    = $this.find('.insert-top').closest('div[class][id]');
@@ -93,7 +93,7 @@ function radOutput()
 								var feature_name = $window.data('feature');
 								var url = app.uri_base + SL + class_name + SL + data_id + SL + feature_name
 									+ '?as_widget' + window.app.andSID();
-								$.ajax({ url: url, success: function (data) {
+								$.ajax({ url: url, success: function(data) {
 									var $container = $window.parent();
 									$container.html(data);
 									$container.children().build();
@@ -105,12 +105,12 @@ function radOutput()
 					out($this, event, ui);
 				},
 
-				out: function (event, ui)
+				out: function(event, ui)
 				{
 					out($(this), event, ui);
 				},
 
-				over: function (event, ui)
+				over: function(event, ui)
 				{
 					var $this = $(this);
 					$this.data('drag-callback', drag);
@@ -156,10 +156,10 @@ function radOutput()
 				aliases:   {className: className, featureName: featureName},
 				popup:     output_edit_uri,
 				target:    '#messages',
-				start: function () {
+				start: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', 'none');
 				},
-				stop: function () {
+				stop: function() {
 					$(this).closest('h2').children('.custom.actions').css('display', '');
 				}
 			});

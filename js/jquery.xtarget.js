@@ -151,7 +151,7 @@
 						}
 					}
 				}
-				setTimeout(function () {
+				setTimeout(function() {
 					var offset  = $target.offset();
 					var $window = $(window);
 					if ((offset.left + $target.outerWidth()) > $window.outerWidth()) {
@@ -246,7 +246,7 @@
 		 *
 		 * @return boolean
 		 */
-		var hasFormCheckValidity = function ()
+		var hasFormCheckValidity = function()
 		{
 			return (typeof document.createElement('form').checkValidity) === 'function';
 		};
@@ -257,7 +257,7 @@
 		 *
 		 * @return boolean
 		 */
-		var hasFormReportValidity = function ()
+		var hasFormReportValidity = function()
 		{
 			return (typeof document.createElement('form').reportValidity) === 'function';
 		};
@@ -269,7 +269,7 @@
 		 * @param form HTMLFormElement
 		 * @return boolean
 		 */
-		var reportValidity = function (form)
+		var reportValidity = function(form)
 		{
 			if (hasFormReportValidity()) {
 				return form.reportValidity();
@@ -293,7 +293,7 @@
 		 * @param search string the '?var=value&var2=value2' part of the url, if set
 		 * @return string
 		 */
-		var urlAppend = function (url, search)
+		var urlAppend = function(url, search)
 		{
 			if (settings.url_append) {
 				url = url.lParse('#')

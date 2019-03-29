@@ -65,7 +65,7 @@ $(document).ready(function()
 						var data_class = $window.data('class');
 						if (data_class !== undefined) {
 							$(event.target).data(
-								'on-success', function () {
+								'on-success', function() {
 									if (
 										($window.data('feature') !== 'output')
 										&& ($window.data('feature') !== 'edit')
@@ -73,7 +73,7 @@ $(document).ready(function()
 										var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
 										$.ajax({
 											url:     app.uri_base + uri + '?as_widget' + app.andSID(),
-											success: function (data) {
+											success: function(data) {
 												var $parent = $window.parent();
 												$parent.html(data);
 												$parent.children().build();
