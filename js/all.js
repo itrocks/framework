@@ -30,13 +30,29 @@ $.getScript(path + 'itrocks/framework/js/itrocks.app.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.fullheight.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.functions.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
-$.getScript(path + 'itrocks/framework/js/tr.js');
+
+$.getScript(path + 'itrocks/framework/js/app.a_disable.js');
+$.getScript(path + 'itrocks/framework/js/app.checkbox.js');
+$.getScript(path + 'itrocks/framework/js/app.ckeditor.js');
+$.getScript(path + 'itrocks/framework/js/app.close_actions.js');
+$.getScript(path + 'itrocks/framework/js/app.combo.js');
+$.getScript(path + 'itrocks/framework/js/app.condition.js');
+$.getScript(path + 'itrocks/framework/js/app.date_time.js');
+$.getScript(path + 'itrocks/framework/js/app.multiple.js');
+$.getScript(path + 'itrocks/framework/js/app.on_change_remove.js');
+$.getScript(path + 'itrocks/framework/js/app.previous_value.js');
+$.getScript(path + 'itrocks/framework/js/app.quill.js');
+$.getScript(path + 'itrocks/framework/js/app.required.js');
+$.getScript(path + 'itrocks/framework/js/app.select_sort.js');
+$.getScript(path + 'itrocks/framework/js/app.tr.js');
+$.getScript(path + 'itrocks/framework/js/app.translate.js');
 
 $.getScript(path + 'itrocks/framework/debug/debug.js');
 $.getScript(path + 'itrocks/framework/dao/file/session_file/image.js');
 $.getScript(path + 'itrocks/framework/feature/condition/condition.js');
-$.getScript(path + 'itrocks/framework/feature/list_/list.js');
-$.getScript(path + 'itrocks/framework/feature/edit/edit.js');
+$.getScript(path + 'itrocks/framework/feature/list_/modifiable.js');
+$.getScript(path + 'itrocks/framework/feature/list_/properties.js');
+$.getScript(path + 'itrocks/framework/feature/list_/selection.js');
 $.getScript(path + 'itrocks/framework/feature/import/import.js');
 $.getScript(path + 'itrocks/framework/component/trashcan/trashcan.js');
 $.getScript(path + 'itrocks/framework/feature/validate/not_validated.js');
@@ -47,4 +63,4 @@ $.getScript(path + 'itrocks/framework/settings/custom.js');
 $.getScript(path + 'itrocks/framework/tools/has_ordering/has_ordering.js');
 $.getScript(path + 'itrocks/framework/view/logger/html_logger.js');
 
-$.getScript(path + 'itrocks/framework/js/default.application.js');
+$.getScript(path + 'itrocks/framework/js/app.js');

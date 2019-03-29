@@ -1,16 +1,11 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	window.zindex_counter = 0;
 
 	$('body').build({ always: true, callback: function()
 	{
-		// auto-focus on first focusable input / select / textarea sub-element
 		this.autofocus();
-
-		// confirm dialog
 		this.confirm();
-
-		// change all titles attributes to tooltips
 		this.tooltip();
 
 		// change all a / form target="#target" to ajax calls
@@ -59,5 +54,6 @@ $('document').ready(function()
 	$('input:visible, textarea:visible').build($.fn.changeState);
 	$('.list-filter').build($.fn.listFilter);
 	$('.tabber').build($.fn.tabber);
+	$('.vertical.scrollbar').build($.fn.verticalscrollbar);
 
 });

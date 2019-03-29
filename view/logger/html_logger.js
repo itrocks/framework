@@ -1,4 +1,4 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 
 	$('fieldset #output>div').find('a[href]').click(function(event)

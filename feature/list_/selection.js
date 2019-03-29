@@ -1,93 +1,9 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	// Only if we have select_all, we can exclude a part of elements
 	var excluded_selection = [];
 	var select_all         = [];
 	var selection          = [];
-
-	//----------------------------------------------------------------------------------- addProperty
-	var addProperty = function($object, property_name, before_after, before_after_property_name)
-	{
-		var $window    = $object.closest('article.list');
-		var app        = window.app;
-		var class_name = $window.data('class').repl(BS, SL);
-		var uri        = app.uri_base + SL + class_name + SL + 'listSetting'
-			+ '?add_property=' + property_name;
-		if (before_after_property_name !== undefined) {
-			uri += '&' + before_after + '=' + before_after_property_name;
-		}
-		uri += '&as_widget' + app.andSID();
-		$.ajax({ url: uri, success: function()
-		{
-			var class_name   = $window.data('class').repl(BS, SL);
-			var feature_name = $window.data('feature');
-			var url          = app.uri_base + SL + class_name + SL + feature_name
-				+ '?as_widget' + window.app.andSID();
-			$.ajax({ url: url, success: function(data)
-			{
-				var $container = $window.parent();
-				$container.html(data);
-				$container.children().build();
-			}});
-		}});
-	};
-
-	//------------------------------------------------------------------------------------- className
-	var className = function($this)
-	{
-		return $this.closest('article.list').data('class');
-	};
-
-	//------------------------------------------------------------------------------------------ drag
-	/**
-	 * when a property is dragged over the droppable object
-	 */
-	var drag = function(event, ui)
-	{
-		var $droppable     = $(this);
-		var draggable_left = ui.offset.left + (ui.helper.width() / 2);
-		var count          = 0;
-		var found          = 0;
-		$droppable.find('ol > li:not(:first)').each(function() {
-			count ++;
-			var $this = $(this);
-			var $prev = $this.prev('li');
-			var left  = $prev.offset().left + $prev.width();
-			var right = $this.offset().left + $this.width();
-			if ((draggable_left > left) && (draggable_left <= right)) {
-				found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
-				var old = $droppable.data('insert-after');
-				if (found !== old) {
-					if (old !== undefined) {
-						$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
-					}
-					if (found > 1) {
-						$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
-						$droppable.data('insert-after', found);
-					}
-				}
-				return false;
-			}
-		});
-	};
-
-	//------------------------------------------------------------------------------------------- out
-	/**
-	 * when a property is not longer between two columns
-	 */
-	var out = function($this, event, ui)
-	{
-		$this.find('.insert-right').removeClass('insert-right');
-		$this.removeData('insert-after');
-		$this.removeData('drag-callback');
-		ui.draggable.removeData('over-droppable');
-	};
-
-	//---------------------------------------------------------------------------------- propertyPath
-	var propertyPath = function($this)
-	{
-		return $this.closest('li').data('property');
-	};
 
 	//-------------------------------------------------------------------------------- resetSelection
 	var resetSelection = function()
@@ -125,15 +41,6 @@ $('document').ready(function()
 	$('article.list').build(function()
 	{
 
-		//------------------------------------------------------------ .column_select li.basic.property
-		if (this.find('.column_select').length) {
-			this.find('li.basic.property').click(function()
-			{
-				var $this = $(this);
-				addProperty($this, $this.data('property'), 'before');
-			});
-		}
-
 		this.each(function()
 		{
 			var $this     = $(this);
@@ -141,25 +48,6 @@ $('document').ready(function()
 			var $search   = $list.children('.search');
 			var $selector = $this.find('ul.footer > .selector');
 			$this.id = $this.attr('id');
-
-			//------------------------------------------------------------ .column_select > a.popup click
-			// column select popup
-			$this.find('.column_select > a.popup').click(function(event)
-			{
-				var $this = $(this);
-				var $div  = $this.closest('.column_select').find('#column_select');
-				if ($div.length) {
-					if ($div.is(':visible')) {
-						$div.hide();
-					}
-					else {
-						$div.show();
-						$div.find('input').first().focus();
-					}
-					event.preventDefault();
-					event.stopImmediatePropagation();
-				}
-			});
 
 			//------------------------------------------------------------ .search input|textarea keydown
 			// reload list when #13 pressed into a search input
@@ -181,75 +69,11 @@ $('document').ready(function()
 			//------------------------------------------------------------- .search .reset.search a click
 			$search.find('.reset > a').click(resetSelection);
 
-			//--------------------------------------------------------------------------- .list droppable
-			$list.droppable({
-				accept:    '.property',
-				tolerance: 'touch',
-
-				drop: function(event, ui)
-				{
-					var $this        = $(this);
-					var insert_after = $this.data('insert-after');
-					if (insert_after !== undefined) {
-						var insert_before = insert_after + 1;
-						var $th = $this.find('ol:first > li:nth-child(' + insert_before + ')');
-						var $draggable           = ui.draggable;
-						var before_property_name = $th.data('property');
-						var property_name        = $draggable.data('property');
-						addProperty($this, property_name, 'before', before_property_name);
-					}
-					out($this, event, ui);
-				},
-
-				out: function(event, ui)
-				{
-					out($(this), event, ui);
-				},
-
-				over: function(event, ui)
-				{
-					var $this = $(this);
-					$this.data('drag-callback', drag);
-					ui.draggable.data('over-droppable', $this);
-				}
-
-			});
-
-			var callback_uri = window.app.uri_base + '/{className}/listSetting?as_widget'
-				+ window.app.andSID();
-
-			var list_property_uri = window.app.uri_base
-				+ '/ITRocks/Framework/Feature/List_Setting/Property/edit/{className}/{propertyPath}?as_widget'
-				+ window.app.andSID();
-
-			//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
-			// list title (class name) double-click
-			$this.find('> h2').modifiable({
-				ajax:    callback_uri + '&title={value}',
-				aliases: { 'className': className },
-				target:  '#messages',
-				start: function() {
-					$(this).closest('article.list').find('> div.custom > ul.actions').css('display', 'none');
-				},
-				stop: function() {
-					$(this).closest('article.list').find('> div.custom > ul.actions').css('display', '');
-				}
-			});
-
-			// list column header (property path) double-click
-			$this.find('> form > ul.list > li:first > ol > li.property > a').modifiable({
-				ajax:      callback_uri + '&property_path={propertyPath}&property_title={value}',
-				ajax_form: 'form',
-				aliases:   { 'className': className, 'propertyPath': propertyPath },
-				popup:     list_property_uri,
-				target:    '#messages'
-			});
-
 			//--------------------------------------------------------------- input[type=checkbox] change
 			var checkboxes_select = 'input[type=checkbox]';
-			var checkboxes        = $this.find(checkboxes_select);
+			var $checkboxes       = $this.find(checkboxes_select);
 			if ($this.id in selection) {
-				checkboxes.each(function() {
+				$checkboxes.each(function() {
 					if (
 						(select_all[$this.id] && ($.inArray(this.value, excluded_selection[$this.id]) === -1))
 						|| $.inArray(this.value, selection[$this.id]) !== -1
@@ -264,7 +88,7 @@ $('document').ready(function()
 				selection[$this.id]          = [];
 			}
 
-			checkboxes.change(function()
+			$checkboxes.change(function()
 			{
 				if (select_all[$this.id]) {
 					if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) === -1)) {
@@ -373,8 +197,7 @@ $('document').ready(function()
 				document.body.removeChild(form);
 				return false;
 			});
-
 		});
-
 	});
+
 });

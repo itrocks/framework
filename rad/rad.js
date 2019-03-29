@@ -1,4 +1,4 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	window.zindex_counter = 0;
 
@@ -192,8 +192,8 @@ $('document').ready(function()
  //enter('.actions>li>ul', '>li', 'Insérer une action secondaire', 'vertical');
  //enter('fieldset', '>div:not(.tabber, .columns)', 'Insérer un champ', 'vertical','add_property');
 
- $('document').radAddOutput();
- //$('document').radAddButton();
+ $(document).radAddOutput();
+ //$(document).radAddButton();
  //$('.menu>ul').radAdd('>li', 'Insérer un bloc de menu', 'vertical');
  //$('.menu>ul>li>ul').radAdd('>li', 'Insérer un lien dans le menu', 'vertical');
  //$('.actions>li>ul').radAdd('>li', 'Insérer une action secondaire', 'vertical');

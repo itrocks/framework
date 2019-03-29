@@ -1,4 +1,4 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	$('.invalid_properties').build(function()
 	{

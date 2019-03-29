@@ -1,4 +1,4 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	var $article_header = $('article[data-class] > header');
 

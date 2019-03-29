@@ -1,4 +1,4 @@
-$('document').ready(function()
+$(document).ready(function()
 {
 	var elements_selector = 'form input[name$="]"], form select[name$="]"], '
 		+ 'form textarea[name$="]"], form input[data-name$="]"], form select[data-name$="]"], '
