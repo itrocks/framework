@@ -537,7 +537,7 @@ $('document').ready(function()
 							return;
 						}
 						$target.draggable({
-							handle: 'h2',
+							handle: 'header',
 							stop: function() {
 								$(this).find('h2').data('stop-click', true);
 							}

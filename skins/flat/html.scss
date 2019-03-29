@@ -39,11 +39,8 @@ div.popup {
 	z-index: 1;
 
 	> article > header {
+		cursor: pointer;
 		margin: -1px;
-
-		> h2 {
-			cursor: pointer;
-		}
 	}
 }
 

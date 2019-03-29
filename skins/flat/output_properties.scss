@@ -1,6 +1,21 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
+article > ul.data > li ol.properties > li > div {
+	padding: $property-label-vertical-padding 0;
+	vertical-align: top;
+
+	> span {
+		padding: 0 $property-label-horizontal-padding;
+	}
+}
+
+article > form > ul.data > li ol.properties > li > div > span {
+	padding: $property-label-vertical-padding $property-label-horizontal-padding;
+	position: absolute;
+	vertical-align: top;
+}
+
 article > form, article {
 
 	> ul.data > li {
@@ -17,14 +32,8 @@ article > form, article {
 					display: table-cell;
 				}
 
-				> div {
-
-					> span {
-						padding: $property-label-vertical-padding $property-label-horizontal-padding;
-						position: absolute;
-						vertical-align: top;
-						white-space: nowrap;
-					}
+				> div > span {
+					white-space: nowrap;
 				}
 
 				> label {

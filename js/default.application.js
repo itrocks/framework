@@ -16,7 +16,7 @@ $('document').ready(function()
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
 			auto_empty:      {'main': 'div#messages'},
-			draggable_blank: 'h2',
+			draggable_blank: 'header',
 			history: {
 				condition:        'h2',
 				title:            'h2',

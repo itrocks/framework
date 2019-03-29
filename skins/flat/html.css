@@ -25,9 +25,8 @@ div.popup {
   position: fixed;
   z-index: 1; }
   div.popup > article > header {
+    cursor: pointer;
     margin: -1px; }
-    div.popup > article > header > h2 {
-      cursor: pointer; }
 
 .hidden {
   display: none; }

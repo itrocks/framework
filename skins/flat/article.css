@@ -1,7 +1,10 @@
-article > header > h2 {
+article > header {
   background-color: #00b39c;
-  color: #eef;
-  padding: 0.5em; }
+  color: #eef; }
+  article > header > h2 {
+    cursor: pointer;
+    display: inline-block;
+    padding: 0.5em; }
 article > p {
   margin: 0.5em 0; }
 article:not(.list) > ul.general.actions,

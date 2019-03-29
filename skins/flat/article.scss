@@ -6,11 +6,13 @@
 article {
 
 	> header {
+		background-color: $window-head-background;
+		color: $window-head-color;
 
 		> h2 {
-			background-color: $window-head-background;
-			color: $window-head-color;
-			padding: $window-padding;
+			cursor: pointer;
+			display: inline-block;
+			padding: $article-head-padding;
 		}
 	}
 

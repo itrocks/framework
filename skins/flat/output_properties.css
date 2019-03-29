@@ -1,3 +1,14 @@
+article > ul.data > li ol.properties > li > div {
+  padding: 0.3em 0;
+  vertical-align: top; }
+  article > ul.data > li ol.properties > li > div > span {
+    padding: 0 0.5em; }
+
+article > form > ul.data > li ol.properties > li > div > span {
+  padding: 0.3em 0.5em;
+  position: absolute;
+  vertical-align: top; }
+
 article > form > ul.data > li, article > ul.data > li {
   display: block; }
   article > form > ul.data > li ol.properties, article > ul.data > li ol.properties {
@@ -8,9 +19,6 @@ article > form > ul.data > li, article > ul.data > li {
       article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
         display: table-cell; }
       article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
-        padding: 0.3em 0.5em;
-        position: absolute;
-        vertical-align: top;
         white-space: nowrap; }
       article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
         padding: 0.3em 0.5em;
