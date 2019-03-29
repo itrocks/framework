@@ -1,4 +1,10 @@
+@import 'sizes.scss';
+
 section.connected.user {
+
+	> a {
+		padding: $action-vertical-padding $action-horizontal-padding;
+	}
 
 	> a > .disconnect,
 	> h3,
