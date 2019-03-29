@@ -123,8 +123,9 @@ $(document).ready(function()
 			 *
 			 * @param select boolean true to select, false to deselect
 			 * @param type   string  @values all, matching, visible
+			 * @param event  Event
 			 */
-			var selectAction = function(select, type)
+			var selectAction = function(select, type, event)
 			{
 				if (type === 'all') {
 					// Re-initialize selection
@@ -134,40 +135,40 @@ $(document).ready(function()
 					$this.find('input[type=checkbox]').prop('checked', select);
 				}
 				else {
-					$this.find('input[type=checkbox]').each(function () {
+					$this.find('input[type=checkbox]').each(function() {
 						var checkbox = $(this);
 						checkbox.prop('checked', select);
 						checkbox.change();
 					});
 				}
-				updateCount();
-				return false;
+				updateCount($this, $selector);
+				event.preventDefault();
 			};
 
 			//------------------------------------------------------------------- .select_count ... click
-			$selector.find('> a.objects').click(function ()
+			$selector.find('> a.objects').click(function(event)
 			{
-				return false;
+				event.preventDefault();
 			});
 
-			$selector.find('li.deselect_all > a').click(function ()
+			$selector.find('li.deselect_all > a').click(function(event)
 			{
-				return selectAction(false, 'all');
+				selectAction(false, 'all', event);
 			});
 
-			$selector.find('li.deselect_visible > a').click(function ()
+			$selector.find('li.deselect_visible > a').click(function(event)
 			{
-				return selectAction(false);
+				selectAction(false, null, event);
 			});
 
-			$selector.find('li.select_all > a').click(function ()
+			$selector.find('li.select_all > a').click(function(event)
 			{
-				return selectAction(true, 'all');
+				selectAction(true, 'all', event);
 			});
 
-			$selector.find('li.select_visible > a').click(function ()
+			$selector.find('li.select_visible > a').click(function(event)
 			{
-				return selectAction(true);
+				selectAction(true, null, event);
 			});
 
 			$this.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
@@ -183,7 +184,7 @@ $(document).ready(function()
 				form.action = event.target;
 				form.method = 'post';
 				form.target = target;
-				for (var key in data) {
+				for (var key in data) if (data.hasOwnProperty(key)) {
 					var input   = document.createElement('input');
 					input.name  = key;
 					input.type  = 'hidden';
