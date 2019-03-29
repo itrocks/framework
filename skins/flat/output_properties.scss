@@ -18,7 +18,13 @@ article > form, article {
 				}
 
 				> div {
-					vertical-align: middle;
+
+					> span {
+						padding: $property-label-vertical-padding $property-label-horizontal-padding;
+						position: absolute;
+						vertical-align: top;
+						white-space: nowrap;
+					}
 				}
 
 				> label {
@@ -50,6 +56,13 @@ article > form, article {
 					display: block;
 					padding: $list-vertical-padding $list-horizontal-padding;
 				}
+			}
+
+			> li.float > div,
+			> li.integer > div,
+			> li.float > div > input,
+			> li.integer > div > input {
+				text-align: right;
 			}
 		}
 	}
