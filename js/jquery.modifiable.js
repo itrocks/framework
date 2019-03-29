@@ -56,7 +56,7 @@ window.modifiable_waiting  = false;
 			var $this = $(this);
 
 			//------------------------------------------------------------------------------------ $input
-			var $input = $('<input>').val($this.html().trim());
+			var $input = $('<input>').addClass('auto_width').val($this.html().trim());
 			if ($this.data('old') === undefined) {
 				var $popup;
 				$this.data('old', $input.val());
