@@ -26,6 +26,13 @@ article > form, article {
 
 						> li {
 							display: table-cell;
+
+							&.float,
+							&.integer,
+							> input.float,
+							> input.integer {
+								text-align: right;
+							}
 						}
 					}
 				}

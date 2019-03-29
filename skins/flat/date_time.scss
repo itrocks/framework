@@ -1,0 +1,10 @@
+@import 'sizes.scss';
+
+li.date_time.class button {
+	background-image: url('../default/img/input_datetime.png');
+}
+
+.ui-datepicker td.ui-datepicker-week-col {
+	padding-right: $list-horizontal-padding;
+	text-align: right;
+}

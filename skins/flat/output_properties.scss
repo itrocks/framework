@@ -3,49 +3,53 @@
 
 article > form, article {
 
-	> ul.data ol.properties {
-		display: inline-block;
-		padding: $window-padding;
+	> ul.data > li {
+		display: block;
 
-		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-			display: table-row;
+		ol.properties {
+			display: inline-block;
+			padding: $window-padding;
 
-			> label, > div {
-				display: table-cell;
-			}
+			> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+				display: table-row;
 
-			> div {
-				vertical-align: middle;
-			}
+				> label, > div {
+					display: table-cell;
+				}
 
-			> label {
-				padding: $property-label-vertical-padding $property-label-horizontal-padding;
-				vertical-align: top;
-				white-space: nowrap;
+				> div {
+					vertical-align: middle;
+				}
 
-				&:after {
-					content: ' :';
-					margin-right: .5em;
+				> label {
+					padding: $property-label-vertical-padding $property-label-horizontal-padding;
+					vertical-align: top;
+					white-space: nowrap;
+
+					&:after {
+						content: ' :';
+						margin-right: .5em;
+					}
 				}
 			}
-		}
 
-		> li.after,
-		> li.before,
-		> li.block,
-		> li.multiple {
-			display: block;
-
-			&.block,
-			&.multiple {
-				border: $thin-border;
-				margin-top: -1px;
-			}
-
-			> label {
-				background-color: #eee;
+			> li.after,
+			> li.before,
+			> li.block,
+			> li.multiple {
 				display: block;
-				padding: $list-vertical-padding $list-horizontal-padding;
+
+				&.block,
+				&.multiple {
+					border: $thin-border;
+					margin-top: -1px;
+				}
+
+				> label {
+					background-color: #eee;
+					display: block;
+					padding: $list-vertical-padding $list-horizontal-padding;
+				}
 			}
 		}
 	}

@@ -16,16 +16,13 @@ $('document').ready(function()
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
 			auto_empty:      {'main': 'div#messages'},
-			draggable_blank: 'article > header > h2',
-			url_append:      'as_widget',
-			success: function () {
-				$(this).autofocus();
-			},
+			draggable_blank: 'h2',
 			history: {
-				condition:        'article > header > h2',
-				title:            'article > header > h2',
+				condition:        'h2',
+				title:            'h2',
 				without_get_vars: ['.*/list\\?.*']
-			}
+			},
+			url_append: 'as_widget'
 		});
 	}});
 

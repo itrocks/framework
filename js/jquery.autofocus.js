@@ -1,11 +1,22 @@
 (function($)
 {
 
+	var enabled = true;
+
 	/**
 	 * Autofocus the first modifiable child element
+	 *
+	 * @param enable boolean if set, allow to disable / re-enable autofocus management
 	 */
-	$.fn.autofocus = function()
+	$.fn.autofocus = function(enable)
 	{
+		if (enable !== undefined) {
+			enabled = enable;
+			return;
+		}
+		if (!enabled) {
+			return;
+		}
 		var $this = $(this);
 		var controls = $this
 			.find('input[autocomplete], input[name], select[name], textarea[name], input.dtp--date')

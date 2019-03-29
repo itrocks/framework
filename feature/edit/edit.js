@@ -172,7 +172,9 @@ $('document').ready(function()
 					$body = $block;
 				}
 				$body.append($new_row);
+				$new_row.autofocus(false);
 				$new_row.build();
+				$new_row.autofocus(true);
 			}
 		}
 	};
@@ -531,7 +533,6 @@ $('document').ready(function()
 					target,
 					$this,
 					function($target) {
-						$target.autofocus();
 						if (target_exists) {
 							return;
 						}

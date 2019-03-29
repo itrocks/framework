@@ -4,8 +4,6 @@ article > header {
 	position: relative;
 
 	> div.custom {
-		display: block;
-		height: 36px;
 		position: absolute;
 		top: 0;
 		width: 100%;
@@ -28,8 +26,8 @@ article > header {
 
 				&.custom_save > a {
 					font-size: 0;
-					height: $article-head-height;
-					width: $article-head-height;
+					height: $article-head-height - 2px;
+					width: $article-head-height - 2px;
 				}
 			}
 		}

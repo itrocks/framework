@@ -34,10 +34,17 @@ input, select, textarea {
 div.popup {
 	background-color: $background;
 	border: 1px solid $action-focus-background;
-	padding: $window-padding;
 	color: $color;
 	position: fixed;
 	z-index: 1;
+
+	> article > header {
+		margin: -1px;
+
+		> h2 {
+			cursor: pointer;
+		}
+	}
 }
 
 .hidden {

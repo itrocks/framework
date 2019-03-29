@@ -19,7 +19,6 @@ $(document).ready(function()
 				'#popup',
 				$this,
 				function($target) {
-					$target.autofocus();
 					$target.draggable({
 						handle: 'h2',
 						stop: function() {

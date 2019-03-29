@@ -1,7 +1,7 @@
 li.class {
   position: relative; }
-  li.class button.more {
-    background: url("img/input-combo.png") center no-repeat;
+  li.class button {
+    background: transparent center no-repeat;
     background-size: 66%;
     border: none;
     cursor: pointer;
@@ -10,3 +10,5 @@ li.class {
     margin-left: -27px !important;
     position: absolute;
     width: 27px; }
+  li.class:not(.date_time) button {
+    background-image: url("img/input-combo.png"); }

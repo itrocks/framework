@@ -1,9 +1,17 @@
 @import 'colors.scss';
+@import 'sizes.scss';
 
 form ol.properties > li > div > ul > li > ol > li {
 
 	&.minus {
 		cursor: pointer;
+		text-align: center;
+		width: $font-size;
+
+		&:hover {
+			background: $action-focus-background;
+			color: $action-focus-color;
+		}
 	}
 
 	> input, > select, > textarea {

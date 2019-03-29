@@ -1,49 +1,51 @@
-article > form > ul.data ol.properties, article > ul.data ol.properties {
-  display: inline-block;
-  padding: 0.5em; }
-  article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple), article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-    display: table-row; }
-    article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
-      display: table-cell; }
-    article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
-      vertical-align: middle; }
-    article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
-      padding: 0.3em 0.5em;
-      vertical-align: top;
-      white-space: nowrap; }
-      article > form > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article > ul.data ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
-        content: ' :';
-        margin-right: .5em; }
-  article > form > ul.data ol.properties > li.after,
-  article > form > ul.data ol.properties > li.before,
-  article > form > ul.data ol.properties > li.block,
-  article > form > ul.data ol.properties > li.multiple, article > ul.data ol.properties > li.after,
-  article > ul.data ol.properties > li.before,
-  article > ul.data ol.properties > li.block,
-  article > ul.data ol.properties > li.multiple {
-    display: block; }
-    article > form > ul.data ol.properties > li.after.block, article > form > ul.data ol.properties > li.after.multiple,
-    article > form > ul.data ol.properties > li.before.block,
-    article > form > ul.data ol.properties > li.before.multiple,
-    article > form > ul.data ol.properties > li.block.block,
-    article > form > ul.data ol.properties > li.block.multiple,
-    article > form > ul.data ol.properties > li.multiple.block,
-    article > form > ul.data ol.properties > li.multiple.multiple, article > ul.data ol.properties > li.after.block, article > ul.data ol.properties > li.after.multiple,
-    article > ul.data ol.properties > li.before.block,
-    article > ul.data ol.properties > li.before.multiple,
-    article > ul.data ol.properties > li.block.block,
-    article > ul.data ol.properties > li.block.multiple,
-    article > ul.data ol.properties > li.multiple.block,
-    article > ul.data ol.properties > li.multiple.multiple {
-      border: 1px solid lightgray;
-      margin-top: -1px; }
-    article > form > ul.data ol.properties > li.after > label,
-    article > form > ul.data ol.properties > li.before > label,
-    article > form > ul.data ol.properties > li.block > label,
-    article > form > ul.data ol.properties > li.multiple > label, article > ul.data ol.properties > li.after > label,
-    article > ul.data ol.properties > li.before > label,
-    article > ul.data ol.properties > li.block > label,
-    article > ul.data ol.properties > li.multiple > label {
-      background-color: #eee;
-      display: block;
-      padding: 0.3em 0.5em; }
+article > form > ul.data > li, article > ul.data > li {
+  display: block; }
+  article > form > ul.data > li ol.properties, article > ul.data > li ol.properties {
+    display: inline-block;
+    padding: 0.5em; }
+    article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple), article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+      display: table-row; }
+      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+        display: table-cell; }
+      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+        vertical-align: middle; }
+      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
+        padding: 0.3em 0.5em;
+        vertical-align: top;
+        white-space: nowrap; }
+        article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
+          content: ' :';
+          margin-right: .5em; }
+    article > form > ul.data > li ol.properties > li.after,
+    article > form > ul.data > li ol.properties > li.before,
+    article > form > ul.data > li ol.properties > li.block,
+    article > form > ul.data > li ol.properties > li.multiple, article > ul.data > li ol.properties > li.after,
+    article > ul.data > li ol.properties > li.before,
+    article > ul.data > li ol.properties > li.block,
+    article > ul.data > li ol.properties > li.multiple {
+      display: block; }
+      article > form > ul.data > li ol.properties > li.after.block, article > form > ul.data > li ol.properties > li.after.multiple,
+      article > form > ul.data > li ol.properties > li.before.block,
+      article > form > ul.data > li ol.properties > li.before.multiple,
+      article > form > ul.data > li ol.properties > li.block.block,
+      article > form > ul.data > li ol.properties > li.block.multiple,
+      article > form > ul.data > li ol.properties > li.multiple.block,
+      article > form > ul.data > li ol.properties > li.multiple.multiple, article > ul.data > li ol.properties > li.after.block, article > ul.data > li ol.properties > li.after.multiple,
+      article > ul.data > li ol.properties > li.before.block,
+      article > ul.data > li ol.properties > li.before.multiple,
+      article > ul.data > li ol.properties > li.block.block,
+      article > ul.data > li ol.properties > li.block.multiple,
+      article > ul.data > li ol.properties > li.multiple.block,
+      article > ul.data > li ol.properties > li.multiple.multiple {
+        border: 1px solid lightgray;
+        margin-top: -1px; }
+      article > form > ul.data > li ol.properties > li.after > label,
+      article > form > ul.data > li ol.properties > li.before > label,
+      article > form > ul.data > li ol.properties > li.block > label,
+      article > form > ul.data > li ol.properties > li.multiple > label, article > ul.data > li ol.properties > li.after > label,
+      article > ul.data > li ol.properties > li.before > label,
+      article > ul.data > li ol.properties > li.block > label,
+      article > ul.data > li ol.properties > li.multiple > label {
+        background-color: #eee;
+        display: block;
+        padding: 0.3em 0.5em; }
