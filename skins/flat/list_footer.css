@@ -29,4 +29,5 @@ article.list > form > ul.footer {
         article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
           content: '[#]'; }
         article.list > form > ul.footer > li.visible.lines > ul > li.display {
-          padding: 0.3em 0; }
+          margin: 0.3em 0;
+          vertical-align: top; }

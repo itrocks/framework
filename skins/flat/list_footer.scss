@@ -57,7 +57,8 @@ article.list > form > ul.footer {
 				}
 
 				&.display {
-					padding: $action-vertical-padding 0;
+					margin: $action-vertical-padding 0;
+					vertical-align: top;
 				}
 			}
 		}
