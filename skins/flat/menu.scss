@@ -1,5 +1,5 @@
 @import 'colors.scss';
-@import 'margins.scss';
+@import 'sizes.scss';
 @import 'responsive.scss';
 
 @media screen and (max-width: $phone-max-width) {
@@ -36,7 +36,7 @@ nav#menu {
 
 			> h3 {
 				background-color: #888;
-				padding: $list-margin;
+				padding: $menu-head-vertical-padding $menu-head-horizontal-padding;
 			}
 
 			> ul {
@@ -50,6 +50,7 @@ nav#menu {
 
 					> a {
 						display: block;
+						padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
 					}
 				}
 			}

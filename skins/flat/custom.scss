@@ -1,0 +1,46 @@
+@import 'sizes.scss';
+
+article > header {
+	position: relative;
+
+	> div.custom {
+		display: block;
+		height: 36px;
+		position: absolute;
+		top: 0;
+		width: 100%;
+
+		> :not(.actions) {
+			display: none;
+
+			&.name > label {
+				display: none;
+			}
+		}
+
+		> .actions {
+			display: inline-block;
+			position: absolute;
+			right: 0;
+
+			> li {
+				margin: 1px;
+
+				&.custom_save > a {
+					font-size: 0;
+					height: $article-head-height;
+					width: $article-head-height;
+				}
+			}
+		}
+	}
+
+	&:hover > div.custom > .actions > li.custom_save > a {
+		background: url('../default/img/floppy.png') center no-repeat;
+
+		&:hover {
+			background-color: white;
+		}
+	}
+
+}

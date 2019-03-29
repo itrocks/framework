@@ -1,5 +1,5 @@
-@import "colors.scss";
-@import "margins.scss";
+@import 'colors.scss';
+@import 'sizes.scss';
 
 div#messages {
 	background-color: $background;
@@ -10,10 +10,6 @@ div#messages {
 	z-index: 1;
 
 	&:empty {
-		display: none;
-	}
-
-	> h3 {
 		display: none;
 	}
 }

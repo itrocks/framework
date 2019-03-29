@@ -1,0 +1,26 @@
+article > header {
+  position: relative; }
+  article > header > div.custom {
+    display: block;
+    height: 36px;
+    position: absolute;
+    top: 0;
+    width: 100%; }
+    article > header > div.custom > :not(.actions) {
+      display: none; }
+      article > header > div.custom > :not(.actions).name > label {
+        display: none; }
+    article > header > div.custom > .actions {
+      display: inline-block;
+      position: absolute;
+      right: 0; }
+      article > header > div.custom > .actions > li {
+        margin: 1px; }
+        article > header > div.custom > .actions > li.custom_save > a {
+          font-size: 0;
+          height: 36px;
+          width: 36px; }
+  article > header:hover > div.custom > .actions > li.custom_save > a {
+    background: url("../default/img/floppy.png") center no-repeat; }
+    article > header:hover > div.custom > .actions > li.custom_save > a:hover {
+      background-color: white; }

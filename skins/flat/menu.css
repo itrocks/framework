@@ -19,11 +19,12 @@ nav#menu {
     display: none; }
   nav#menu > ul > li > h3 {
     background-color: #888;
-    padding: 0.3em; }
+    padding: 0.3em 0.5em; }
   nav#menu > ul > li > ul > li {
     background-color: #777;
     color: white; }
     nav#menu > ul > li > ul > li:not(:first-child) {
       margin-top: 1px; }
     nav#menu > ul > li > ul > li > a {
-      display: block; }
+      display: block;
+      padding: 0.3em 0.5em; }

@@ -1,86 +1,9 @@
-article.list > form > ul.footer > li.visible.lines > ul > li.display {
-  margin: 0.5em 0; }
-article.list > section.summary > details.error {
-  border: 1px solid darkred; }
-article.list > section.summary > h3 {
-  display: none; }
+article.list > section.summary {
+  cursor: pointer; }
+  article.list > section.summary > details.error {
+    border: 1px solid darkred; }
+  article.list > section.summary > h3 {
+    display: none; }
 article.list > form {
   display: inline-block;
   min-width: 480px; }
-  article.list > form > ul.footer {
-    position: relative; }
-    article.list > form > ul.footer > li {
-      display: inline-block; }
-      article.list > form > ul.footer > li.selector:after {
-        content: '>'; }
-      article.list > form > ul.footer > li.visible.lines {
-        position: absolute;
-        right: 0; }
-        article.list > form > ul.footer > li.visible.lines > ul > li {
-          display: inline-block;
-          padding: 0.3em 0.5em; }
-          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
-            font-size: 0; }
-            article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
-              color: initial;
-              font-size: initial;
-              padding: 0.3em 0.5em; }
-            article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:hover:before {
-              background-color: #00b39c;
-              color: #efe; }
-          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.twenty.less > a:before {
-            content: '[-]'; }
-          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.hundred.more > a:before {
-            content: '[+]'; }
-          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
-            content: '[#]'; }
-  article.list > form > ul.list {
-    display: table;
-    width: 100%; }
-    article.list > form > ul.list > li {
-      display: table-row-group;
-      position: relative; }
-      article.list > form > ul.list > li:not(:first-child) > ol > li:first-child > a {
-        display: none; }
-      article.list > form > ul.list > li:nth-child(n+3):nth-child(even) {
-        background-color: #ececec; }
-      article.list > form > ul.list > li:nth-child(n+3):nth-child(odd) {
-        background-color: #dedede; }
-      article.list > form > ul.list > li:nth-child(n+3):hover {
-        background-color: #dff; }
-      article.list > form > ul.list > li.search input {
-        min-width: 100%; }
-      article.list > form > ul.list > li.title {
-        background-color: #444;
-        color: white;
-        text-align: center; }
-        article.list > form > ul.list > li.title > ol > li {
-          vertical-align: middle; }
-          article.list > form > ul.list > li.title > ol > li.column_select {
-            position: relative; }
-            article.list > form > ul.list > li.title > ol > li.column_select > a {
-              background-image: url("img/column-select-white.png");
-              background-position: center;
-              background-repeat: no-repeat;
-              font-size: 0;
-              height: 100%;
-              position: absolute;
-              top: 0;
-              width: 100%; }
-          article.list > form > ul.list > li.title > ol > li:not(.column_select) {
-            padding: 0.3em; }
-      article.list > form > ul.list > li > ol {
-        display: table-row; }
-        article.list > form > ul.list > li > ol > li {
-          display: table-cell; }
-          article.list > form > ul.list > li > ol > li:not(:first-child) {
-            border-left: 1px solid white; }
-          article.list > form > ul.list > li > ol > li.value {
-            padding: 0.3em; }
-            article.list > form > ul.list > li > ol > li.value.date_time {
-              text-align: center; }
-            article.list > form > ul.list > li > ol > li.value.float, article.list > form > ul.list > li > ol > li.value.integer {
-              text-align: right; }
-          article.list > form > ul.list > li > ol > li > a {
-            display: block;
-            margin: -0.3em; }

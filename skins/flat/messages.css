@@ -7,5 +7,3 @@ div#messages {
   z-index: 1; }
   div#messages:empty {
     display: none; }
-  div#messages > h3 {
-    display: none; }

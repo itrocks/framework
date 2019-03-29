@@ -1,13 +1,7 @@
 section.connected.user {
 
-	> h3 {
-		display: none;
-	}
-
-	> a > .disconnect {
-		display: none;
-	}
-
+	> a > .disconnect,
+	> h3,
 	> .user {
 		display: none;
 	}

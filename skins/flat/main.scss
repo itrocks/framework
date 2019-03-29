@@ -1,0 +1,78 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+@import 'responsive.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	body > header .logo {
+		display: none !important;
+	}
+}
+
+@media screen and (min-width: $tab-min-width) {
+
+	body {
+		white-space: nowrap;
+
+		> :not(nav) {
+			white-space: initial;
+		}
+	}
+}
+
+body {
+	background-color: $background;
+	color: $color;
+	font-size: $font-size;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+
+	> h1 {
+		display: none;
+	}
+
+	> header {
+		background: $head-background url('img/header-background.png') bottom right;
+		color: $head-color;
+		display: table-row;
+		height: $head-height;
+		position: relative;
+
+		.logo {
+			background: transparent center no-repeat;
+			background-size: contain;
+			font-size: 0;
+			height: $head-height;
+		}
+
+		> .logo {
+			background-color: $background;
+			background-image: url('img/bappli-studio-logo.png');
+			display: table-cell;
+		}
+
+		> .top.bar {
+			display: table-cell;
+			vertical-align: middle;
+
+			> .logo {
+				background-image: url('img/bappli-studio-logo-for-dark.png');
+				display: inline-block;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: $head-height / 3 * 11.75;
+			}
+		}
+	}
+
+	> main {
+		width: 100%;
+	}
+
+	> main, > nav {
+		display: table-cell;
+		vertical-align: top;
+	}
+}

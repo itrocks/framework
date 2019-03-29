@@ -1,0 +1,35 @@
+@import 'sizes.scss';
+
+article > form, article {
+
+	> ul.data ol.properties {
+
+		> li.after,
+		> li.before,
+		> li.block,
+		> li.multiple {
+
+			> div > ul.collection {
+				display: table;
+
+				> li {
+					display: table-row-group;
+
+					&:first-child > ol > li {
+						padding: $list-vertical-padding $list-horizontal-padding;
+						text-align: center;
+						white-space: nowrap;
+					}
+
+					> ol {
+						display: table-row;
+
+						> li {
+							display: table-cell;
+						}
+					}
+				}
+			}
+		}
+	}
+}

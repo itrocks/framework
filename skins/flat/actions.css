@@ -6,14 +6,15 @@ li.action,
 li.actions > ul > li,
 ul.actions > li {
   display: inline-block;
-  margin: 0.5em 0;
+  margin: 0.3em 0;
   position: relative;
   vertical-align: top;
   white-space: nowrap; }
   li.action > a,
   li.actions > ul > li > a,
   ul.actions > li > a {
-    display: inline-block; }
+    display: block;
+    padding: 0.3em 0.5em; }
   li.action > ul,
   li.actions > ul > li > ul,
   ul.actions > li > ul {
@@ -21,12 +22,12 @@ ul.actions > li {
   li.action:hover > ul,
   li.actions > ul > li:hover > ul,
   ul.actions > li:hover > ul {
-    background-color: #fff;
+    background-color: white;
     border: 1px solid lightgray;
     display: inline-block;
     left: 0;
     position: absolute;
-    top: 1.3em;
+    top: 1.6em;
     z-index: 1; }
     li.action:hover > ul > li,
     li.actions > ul > li:hover > ul > li,
@@ -35,4 +36,5 @@ ul.actions > li {
       li.action:hover > ul > li > a,
       li.actions > ul > li:hover > ul > li > a,
       ul.actions > li:hover > ul > li > a {
-        display: block; }
+        display: block;
+        padding: 0.3em 0.5em; }

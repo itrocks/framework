@@ -1,5 +1,5 @@
 @import 'colors.scss';
-@import 'margins.scss';
+@import 'sizes.scss';
 
 .func_select,
 .property_select {
@@ -62,7 +62,7 @@
 	background: rgba(255, 255, 255, .6);
 	border: $thin-border;
 	font-weight: bold;
-	padding: $list-margin;
+	padding: $action-horizontal-padding;
 }
 
 .insert-bottom {

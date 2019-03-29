@@ -1,31 +1,4 @@
-input, select, textarea {
-  background-color: white;
-  border: none;
-  font-size: 1em; }
-  input:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
-    border-bottom: 1px solid lightgray; }
-    input:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
-      background-color: #ddd;
-      color: #444; }
-    input:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
-      background-color: #00b39c;
-      color: #efe; }
-
-ol.properties > li > div > ul > li > ol > li.minus {
+form ol.properties > li > div > ul > li > ol > li.minus {
   cursor: pointer; }
-ol.properties > li > div > ul > li > ol > li > input, ol.properties > li > div > ul > li > ol > li > textarea {
+form ol.properties > li > div > ul > li > ol > li > input, form ol.properties > li > div > ul > li > ol > li > select, form ol.properties > li > div > ul > li > ol > li > textarea {
   width: 100%; }
-
-li.class {
-  position: relative; }
-  li.class button.more {
-    background: url("img/input-combo.png") center no-repeat;
-    background-size: 66%;
-    border: none;
-    color: transparent;
-    cursor: pointer;
-    font-size: 1px;
-    height: 28px;
-    margin-left: -28px !important;
-    position: absolute;
-    width: 28px; }

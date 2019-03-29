@@ -1,5 +1,7 @@
 @import 'colors.scss';
-@import 'margins.scss';
+@import 'sizes.scss';
+
+@import 'colors.scss';
 
 article {
 
@@ -10,13 +12,17 @@ article {
 			color: $window-head-color;
 			padding: $window-padding;
 		}
-
-		> .custom {
-			display: none;
-		}
 	}
 
 	> p {
 		margin: $window-padding 0;
+	}
+
+	&:not(.list),
+	> form {
+
+		> ul.general.actions {
+			border-bottom: $thin-border;
+		}
 	}
 }

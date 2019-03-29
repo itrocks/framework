@@ -1,0 +1,32 @@
+article.list > form > ul.footer {
+  position: relative;
+  white-space: nowrap; }
+  article.list > form > ul.footer > li {
+    display: inline-block; }
+    article.list > form > ul.footer > li.selector:after {
+      content: '>'; }
+    article.list > form > ul.footer > li.selector > a {
+      display: inline-block; }
+    article.list > form > ul.footer > li.visible.lines {
+      position: absolute;
+      right: 0; }
+      article.list > form > ul.footer > li.visible.lines > ul > li {
+        display: inline-block;
+        padding: 0.3em 0.5em; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a {
+          font-size: 0; }
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:before {
+            color: initial;
+            font-size: initial;
+            padding: 0.3em 0.5em; }
+          article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li > a:hover:before {
+            background-color: #00b39c;
+            color: #efe; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.twenty.less > a:before {
+          content: '[-]'; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.hundred.more > a:before {
+          content: '[+]'; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.actions > ul > li.thousand.more > a:before {
+          content: '[#]'; }
+        article.list > form > ul.footer > li.visible.lines > ul > li.display {
+          padding: 0.3em 0; }

@@ -2,7 +2,8 @@ article > header > h2 {
   background-color: #00b39c;
   color: #eef;
   padding: 0.5em; }
-article > header > .custom {
-  display: none; }
 article > p {
   margin: 0.5em 0; }
+article:not(.list) > ul.general.actions,
+article > form > ul.general.actions {
+  border-bottom: 1px solid lightgray; }

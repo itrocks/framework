@@ -1,0 +1,47 @@
+@media screen and (max-width: 479px) {
+  body > header .logo {
+    display: none !important; } }
+@media screen and (min-width: 480px) {
+  body {
+    white-space: nowrap; }
+    body > :not(nav) {
+      white-space: initial; } }
+body {
+  background-color: white;
+  color: #444;
+  font-size: 18px;
+  height: 100%;
+  position: absolute;
+  width: 100%; }
+  body > h1 {
+    display: none; }
+  body > header {
+    background: #444 url("img/header-background.png") bottom right;
+    color: white;
+    display: table-row;
+    height: 54px;
+    position: relative; }
+    body > header .logo {
+      background: transparent center no-repeat;
+      background-size: contain;
+      font-size: 0;
+      height: 54px; }
+    body > header > .logo {
+      background-color: white;
+      background-image: url("img/bappli-studio-logo.png");
+      display: table-cell; }
+    body > header > .top.bar {
+      display: table-cell;
+      vertical-align: middle; }
+      body > header > .top.bar > .logo {
+        background-image: url("img/bappli-studio-logo-for-dark.png");
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 211.5px; }
+  body > main {
+    width: 100%; }
+  body > main, body > nav {
+    display: table-cell;
+    vertical-align: top; }

@@ -1,0 +1,12 @@
+li.class {
+  position: relative; }
+  li.class button.more {
+    background: url("img/input-combo.png") center no-repeat;
+    background-size: 66%;
+    border: none;
+    cursor: pointer;
+    font-size: 0;
+    height: 27px;
+    margin-left: -27px !important;
+    position: absolute;
+    width: 27px; }

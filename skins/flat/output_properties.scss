@@ -1,0 +1,52 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
+article > form, article {
+
+	> ul.data ol.properties {
+		display: inline-block;
+		padding: $window-padding;
+
+		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+			display: table-row;
+
+			> label, > div {
+				display: table-cell;
+			}
+
+			> div {
+				vertical-align: middle;
+			}
+
+			> label {
+				padding: $property-label-vertical-padding $property-label-horizontal-padding;
+				vertical-align: top;
+				white-space: nowrap;
+
+				&:after {
+					content: ' :';
+					margin-right: .5em;
+				}
+			}
+		}
+
+		> li.after,
+		> li.before,
+		> li.block,
+		> li.multiple {
+			display: block;
+
+			&.block,
+			&.multiple {
+				border: $thin-border;
+				margin-top: -1px;
+			}
+
+			> label {
+				background-color: #eee;
+				display: block;
+				padding: $list-vertical-padding $list-horizontal-padding;
+			}
+		}
+	}
+}

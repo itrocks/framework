@@ -1,49 +1,12 @@
 @import 'colors.scss';
 
-input, select, textarea {
-	background-color: white;
-	border: none;
-	font-size: 1em;
-
-	&:not([readonly]) {
-		border-bottom: $thin-border;
-
-		&:focus {
-			background-color: $edit-focus-background;
-			color: $edit-focus-color;
-		}
-
-		&:hover {
-			background-color: $action-focus-background;
-			color: $action-focus-color;
-		}
-	}
-}
-
-ol.properties > li > div > ul > li > ol > li {
+form ol.properties > li > div > ul > li > ol > li {
 
 	&.minus {
 		cursor: pointer;
 	}
 
-	> input, > textarea {
+	> input, > select, > textarea {
 		width: 100%;
-	}
-}
-
-li.class {
-	position: relative;
-
-	button.more {
-		background: url("img/input-combo.png") center no-repeat;
-		background-size: 66%;
-		border: none;
-		color: transparent;
-		cursor: pointer;
-		font-size: 1px;
-		height: 28px;
-		margin-left: -28px !important;
-		position: absolute;
-		width: 28px;
 	}
 }

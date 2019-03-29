@@ -1,5 +1,5 @@
 @import 'colors.scss';
-@import 'margins.scss';
+@import 'sizes.scss';
 
 li.actions > ul,
 ul.actions {
@@ -10,13 +10,14 @@ li.action,
 li.actions > ul > li,
 ul.actions > li {
 	display: inline-block;
-	margin: $list-horizontal-margin 0;
+	margin: $actions-vertical-margin $actions-horizontal-margin;
 	position: relative;
 	vertical-align: top;
 	white-space: nowrap;
 
 	> a {
-		display: inline-block;
+		display: block;
+		padding: $action-vertical-padding $action-horizontal-padding;
 	}
 
 	> ul {
@@ -24,12 +25,12 @@ ul.actions > li {
 	}
 
 	&:hover > ul {
-		background-color: #fff;
+		background-color: $background;
 		border: $thin-border;
 		display: inline-block;
 		left: 0;
 		position: absolute;
-		top: 1.3em;
+		top: 1em + ($action-vertical-padding * 2);
 		z-index: 1;
 
 		> li {
@@ -37,6 +38,7 @@ ul.actions > li {
 
 			> a {
 				display: block;
+				padding: $action-vertical-padding $action-horizontal-padding;
 			}
 		}
 	}
