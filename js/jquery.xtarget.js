@@ -25,7 +25,6 @@
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			auto_empty:      {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
-			auto_redirect:   '.auto-redirect',
 			closeable_popup: 'popup',
 			draggable_blank: undefined,
 			error:           undefined,
@@ -377,8 +376,7 @@
 					return false;
 				}
 			}
-		})
-			.filter(settings.auto_redirect).click();
+		});
 
 		//---------------------------------------------------------------- $('form[target^='#']').click
 		/**
@@ -416,8 +414,7 @@
 				xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
 			};
 			executeClick();
-		})
-			.filter(settings.auto_redirect).submit();
+		});
 
 		//--------------------------------------------------------------------------- window onpopstate
 		if ((settings.history !== undefined) && (settings.history.condition !== undefined)) {

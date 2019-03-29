@@ -42,7 +42,7 @@ $(document).ready(function()
 			count ++;
 			var $this = $(this);
 			var $prev = $this.prev('li');
-			var left  = $prev.offset().left + $prev.width();
+			var left  = $prev.offset() ? ($prev.offset().left + $prev.width()) : 0;
 			var right = $this.offset().left + $this.width();
 			if ((draggable_left > left) && (draggable_left <= right)) {
 				found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
@@ -129,6 +129,7 @@ $(document).ready(function()
 						addProperty($this, property_name, 'before', before_property_name);
 					}
 					out($this, event, ui);
+					ui.helper.data('dropped', true);
 				},
 
 				out: function(event, ui)

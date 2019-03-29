@@ -32,6 +32,7 @@ $.getScript(path + 'itrocks/framework/js/itrocks.functions.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
 
 $.getScript(path + 'itrocks/framework/js/app.a_disable.js');
+$.getScript(path + 'itrocks/framework/js/app.auto_redirect.js');
 $.getScript(path + 'itrocks/framework/js/app.checkbox.js');
 $.getScript(path + 'itrocks/framework/js/app.ckeditor.js');
 $.getScript(path + 'itrocks/framework/js/app.close_actions.js');

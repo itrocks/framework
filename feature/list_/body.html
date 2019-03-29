@@ -11,6 +11,7 @@
 <body>
 <!--BEGIN-->
 <!--use ITRocks\Framework\Html\Engine-->
+<!--use ITRocks\Framework\Tools\Paths-->
 
 	<ul class="list">
 		<li class="title">
@@ -22,7 +23,7 @@
 					<!--end-->
 				</li>
 				<!--properties-->
-				<li class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-property="{path}">
+				<li class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-drop-out-href="/{..@class.path}/listSetting?remove_property={path}" data-property="{path}">
 					<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
 				</li>
 				<!--sample-->

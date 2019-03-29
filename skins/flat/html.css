@@ -28,5 +28,8 @@ div.popup {
     cursor: pointer;
     margin: -1px; }
 
+.auto-redirect {
+  display: none; }
+
 .hidden {
   display: none; }

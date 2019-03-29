@@ -13,6 +13,9 @@ use ITRocks\Framework\View;
 class Controller implements Default_Feature_Controller
 {
 
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = 'listSetting';
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -36,7 +39,9 @@ class Controller implements Default_Feature_Controller
 		if (!is_null($did_change)) {
 			$list_settings->save();
 		}
-		return View::run($parameters, $form, $files, $class_name, 'listSetting');
+
+		$parameters['redirect'] = View::link($class_name);
+		return View::run($parameters, $form, $files, $class_name, static::FEATURE);
 	}
 
 }

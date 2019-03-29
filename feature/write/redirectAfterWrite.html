@@ -28,15 +28,13 @@
 	<!--end-->
 
 	<!--then?-->
-	<script>
-		redirect('{then}', '#main');
-	</script>
+	<a class="auto-redirect" href="app://(then)" target="#main">{then}</a>
 	<!--end-->
 
 	<!--!close?--><!--!then?-->
 	<script>
 		(function() {
-			var $window = $('#main .window');
+			var $window = $('main > article');
 			if (
 				($window.data('class') === '{@class.escape}')
 				&& (

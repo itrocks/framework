@@ -136,12 +136,22 @@ $(document).ready(function()
 			},
 
 			//------------------------------------------------------------------------------ draggable stop
-			stop: function()
+			stop: function(event, ui)
 			{
 				var $this = $(this);
 				if ($this.data('will-remove-property')) {
 					$this.removeClass('property');
 					$this.removeData('remove-property-class');
+				}
+				if (!ui.helper.data('dropped')) {
+					var drop_out_href = $this.data('drop-out-href');
+					if (drop_out_href !== undefined) {
+						var drop_out_target = $this.data('drop-out-target');
+						if (drop_out_target === undefined) {
+							drop_out_target = '#messages';
+						}
+						redirectLight(drop_out_href, drop_out_target);
+					}
 				}
 			}
 

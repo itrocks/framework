@@ -11,13 +11,10 @@
 <body>
 <!--BEGIN-->
 
-	<div class="user disconnect window">
+	<article class="user disconnect">
 		<p>|You have been disconnected|.</p>
-	</div>
-
-	<script>
-		setTimeout(function() { redirect('/') } , 1500);
-	</script>
+		<a class="auto-redirect" data-delay="1500" href="/">|go to login page|</a>
+	</article>
 
 <!--END-->
 </body>

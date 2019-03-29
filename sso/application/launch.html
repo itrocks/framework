@@ -11,18 +11,15 @@
 <body>
 <!--BEGIN-->
 
-	<div class="sso application launch window">
-		<form action="app://(third_party_application_uri)" id="goToAppForm" method="post">
+	<article class="sso application launch">
+		<form action="app://(third_party_application_uri)" class="auto-submit" id="goToAppForm" method="post">
 			<input type="hidden" name="login"  value="{login}">
 			<input type="hidden" name="path"   value="{path}">
 			<input type="hidden" name="server" value="{server}">
 			<input type="hidden" name="token"  value="{token}">
 			<input type="submit" value="|Go to ¦Application¦|">
 		</form>
-	</div>
-	<script>
-		$('#goToAppForm').submit();
-	</script>
+	</article>
 
 <!--END-->
 </body>
