@@ -3,8 +3,7 @@ $(document).ready(function()
 
 	//------------------------------------------------------------------------ input[data-conditions]
 	var will_change = {};
-	var selector    = 'input[data-conditions], select[data-conditions], textarea[data-conditions]';
-	$(selector).build('each', function()
+	$('[data-conditions]').build('each', function()
 	{
 		var $this      = $(this);
 		var conditions = $this.data('conditions').replace(/\(.*\)/g);
@@ -15,12 +14,13 @@ $(document).ready(function()
 				$condition = will_change[condition[0]];
 			}
 			else {
-				$condition = $this.closest('form').find('[name="id_' + condition[0] + DQ + ']');
+				var $form = $this.closest('form');
+				$condition = $form.find('[name="id_' + condition[0] + DQ + ']');
 				if ($condition.length) {
 					$condition = $condition.next();
 				}
 				else {
-					$condition = $this.closest('form').find('[name=' + DQ + condition[0] + DQ + ']');
+					$condition = $form.find('[name=' + DQ + condition[0] + DQ + ']');
 				}
 				will_change[condition[0]] = $condition;
 			}
