@@ -14,26 +14,26 @@
 	<section class="property_select">
 		<div class="search">
 			<label for="property_search">|property search|</label>
-			<input id="property_search" name="search">
+			<input class="auto_width" id="property_search" name="search">
 		</div>
 		<!--BEGIN:subtree-->
 		<!--use ITRocks\Framework\Tools\Names-->
 		<ul class="tree">
 		<!--BEGIN:inside_tree-->
 		<!--properties-->
-			<!--!.?-->
-			<li class="separator"></li>
-			<!--end-->
 			<!--.?-->
-			<li class="property {?isBasicHtml} {?isStringableHtml}" data-is-class="{?isExpandable}" data-property="{link_path}" <!--link_path?-->title="|{link_path.path}|"<!--end-->>
+			<li class="property {?isBasicHtml} {?isStringableHtml} {?classHtml}" data-property="{link_path}" <!--link_path?-->title="|{link_path.path}|"<!--end-->>
 				<!--isExpandable?-->
-				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{link_path.uri}" title="|{link_path.path}|">
+				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{expandId}" title="|{link_path.path}|">
 				<!--end-->
-					{display}
+				{display}
 				<!--isExpandable?-->
 				</a>
+				<div id="tree-{expandId}"></div>
 				<!--end-->
 			</li>
+			<!--else-->
+			<li class="separator"></li>
 			<!--end-->
 		<!--sample-->
 			<li class="basic property" data-property="property_1" title="property 1">property 1</li>

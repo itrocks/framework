@@ -6,24 +6,35 @@
 	border: $thin-border;
 	display: inline-block;
 	top: 1.5em;
+	white-space: nowrap;
 
-	> input {
-		width: 100%;
-	}
+	> .search {
 
-	> label {
-		display: none;
+		> input {
+			min-width: 100%;
+		}
+
+		> label {
+			display: none;
+		}
 	}
 
 	ul {
 
 		> li {
 			display: block;
-			padding: .3em .3em .3em 1.2em;
 
-			&:not([data-is-class]):hover {
-				background-color: $action-focus-background;
-				color: $action-focus-color;
+			&.class {
+				padding-left: 1em;
+			}
+
+			&:not(.class) {
+				padding: .2em 0 .2em 1em;
+
+				&:hover {
+					background-color: $action-focus-background;
+					color: $action-focus-color;
+				}
 			}
 
 			&.separator {
@@ -35,18 +46,19 @@
 			}
 
 			> a {
-				background-image: url('img/tree/plus.png');
-				background-position-x: .3em;
-				background-position-y: center;
+				background-position: .3em center;
 				background-repeat: no-repeat;
 				display: block;
 				font-weight: bold;
-				margin: -.3em -.3em -.3em -1.2em;
-				padding-left: 1.2em;
-				white-space: nowrap;
+				margin-left: -1em;
+				padding: .2em 0 .2em 1em;
 
 				&.expanded {
-					background-image: url('img/tree/minus.png');
+					background-image: url('../default/img/tree/minus.png');
+				}
+
+				&:not(.expanded) {
+					background-image: url('../default/img/tree/plus.png');
 				}
 			}
 		}

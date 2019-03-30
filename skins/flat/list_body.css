@@ -31,6 +31,8 @@ article.list > form > ul.list {
             position: absolute;
             top: 0;
             width: 100%; }
+          article.list > form > ul.list > li.title > ol > li.column_select > .popup {
+            text-align: left; }
     article.list > form > ul.list > li > ol {
       display: table-row; }
       article.list > form > ul.list > li > ol > li {

@@ -2,21 +2,27 @@
 .property_select {
   border: 1px solid lightgray;
   display: inline-block;
-  top: 1.5em; }
-  .func_select > input,
-  .property_select > input {
-    width: 100%; }
-  .func_select > label,
-  .property_select > label {
+  top: 1.5em;
+  white-space: nowrap; }
+  .func_select > .search > input,
+  .property_select > .search > input {
+    min-width: 100%; }
+  .func_select > .search > label,
+  .property_select > .search > label {
     display: none; }
   .func_select ul > li,
   .property_select ul > li {
-    display: block;
-    padding: .3em .3em .3em 1.2em; }
-    .func_select ul > li:not([data-is-class]):hover,
-    .property_select ul > li:not([data-is-class]):hover {
-      background-color: #00b39c;
-      color: #efe; }
+    display: block; }
+    .func_select ul > li.class,
+    .property_select ul > li.class {
+      padding-left: 1em; }
+    .func_select ul > li:not(.class),
+    .property_select ul > li:not(.class) {
+      padding: .2em 0 .2em 1em; }
+      .func_select ul > li:not(.class):hover,
+      .property_select ul > li:not(.class):hover {
+        background-color: #00b39c;
+        color: #efe; }
     .func_select ul > li.separator,
     .property_select ul > li.separator {
       border-top: 1px solid lightgray; }
@@ -25,18 +31,18 @@
       cursor: grab; }
     .func_select ul > li > a,
     .property_select ul > li > a {
-      background-image: url("img/tree/plus.png");
-      background-position-x: .3em;
-      background-position-y: center;
+      background-position: .3em center;
       background-repeat: no-repeat;
       display: block;
       font-weight: bold;
-      margin: -.3em -.3em -.3em -1.2em;
-      padding-left: 1.2em;
-      white-space: nowrap; }
+      margin-left: -1em;
+      padding: .2em 0 .2em 1em; }
       .func_select ul > li > a.expanded,
       .property_select ul > li > a.expanded {
-        background-image: url("img/tree/minus.png"); }
+        background-image: url("../default/img/tree/minus.png"); }
+      .func_select ul > li > a:not(.expanded),
+      .property_select ul > li > a:not(.expanded) {
+        background-image: url("../default/img/tree/plus.png"); }
   .func_select > ul,
   .property_select > ul {
     border-top: 1px solid lightgray; }

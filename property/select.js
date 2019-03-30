@@ -9,81 +9,76 @@ $(document).ready(function()
 
 	//--------------------------------------------------- .property_select > input[name=search] keyup
 	// search
-	$('.property_select > input[name=search]').build(function()
+	$('.property_select > .search > input').build('each', function()
 	{
-		this.each(function() {
-			var last_search = '';
-			var search_step = 0;
+		var last_search = '';
+		var search_step = 0;
 
-			$(this).keyup(function(event) {
-				var $this = $(this);
-				if (event.keyCode === $.ui.keyCode.ESCAPE) {
-					$this.closest('#column_select.popup').fadeOut(200);
+		$(this).keyup(function(event)
+		{
+			var $this = $(this);
+			if (event.keyCode === $.ui.keyCode.ESCAPE) {
+				$this.closest('#column_select.popup').fadeOut(200);
+			}
+			else {
+				var new_search = $this.val();
+				if ((last_search !== new_search) && !search_step) {
+					last_search = new_search;
+					search_step = 1;
+
+					$.ajax(
+						window.app.uri_base + '/ITRocks/Framework/Property/search'
+						+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
+						+ '?search=' + encodeURI(new_search)
+						+ '&as_widget' + window.app.andSID(),
+						{
+							success: function(data) {
+								var $property_tree = $this.closest('section').find('> .tree');
+								search_step = 2;
+								$property_tree.html(data);
+								$property_tree.build();
+							}
+						}
+					);
+
+					var retry = function() {
+						if (search_step === 1) {
+							setTimeout(retry, 200);
+						}
+						else {
+							search_step = 0;
+							if ($this.val() !== last_search) {
+								$this.keyup();
+							}
+						}
+					};
+
+					setTimeout(retry, 500);
 				}
-				else {
-					var new_search = $this.val();
-					if ((last_search !== new_search) && !search_step) {
-						last_search = new_search;
-						search_step = 1;
-
-						$.ajax(
-							window.app.uri_base + '/ITRocks/Framework/Property/search'
-							+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
-							+ '?search=' + encodeURI(new_search)
-							+ '&as_widget' + window.app.andSID(),
-							{
-								success: function(data) {
-									var $property_tree = $this.parent().children('.property_tree');
-									search_step = 2;
-									$property_tree.html(data);
-									$property_tree.build();
-								}
-							}
-						);
-
-						var retry = function() {
-							if (search_step === 1) {
-								setTimeout(retry, 200);
-							}
-							else {
-								search_step = 0;
-								if ($this.val() !== last_search) {
-									$this.keyup();
-								}
-							}
-						};
-
-						setTimeout(retry, 500);
-					}
-				}
-			});
+			}
 		});
 	});
 
 	//--------------------------------------------------------------- ul.property_tree > li > a click
 	// create tree
-	$('ul.property_tree > li > a').build(function()
+	var tree_selector = 'section.property_select ul.tree > li.class > a';
+	$(tree_selector).build('click', function(event)
 	{
-		this.click(function(event)
-		{
-			var $this = $(this);
-			var $li   = $this.parent();
-			if ($li.children('section').length) {
-				if ($li.children('section:visible').length) {
-					$this.removeClass('expanded');
-					$li.children('section:visible').hide();
-				}
-				else {
-					$this.addClass('expanded');
-					$li.children('section:not(:visible)').show();
-				}
+		var $anchor = $(this);
+		var $li     = $anchor.parent();
+		var $div    = $li.children('div');
+		if ($anchor.hasClass('expanded')) {
+			$anchor.removeClass('expanded');
+			$div.hide();
+		}
+		else {
+			$anchor.addClass('expanded');
+			$div.show();
+			if ($div.children().length) {
 				event.preventDefault();
 				event.stopImmediatePropagation();
 			}
-			else {
-				$this.addClass('expanded');
-			}
-		});
+		}
 	});
 
 	//---------------------------------------------- .property, .fieldset > div[id] > label draggable
@@ -160,7 +155,7 @@ $(document).ready(function()
 
 	//-------------------------------------------------------------------------------- document click
 	// hide popup select box when clicking outside of it
-	$(document).click(function(event)
+	$(this).click(function(event)
 	{
 		//noinspection JSJQueryEfficiency well, why ?
 		var $column_select = $('#column_select.popup > .property_select');
