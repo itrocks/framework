@@ -75,6 +75,9 @@ class Search_Controller extends Select_Controller
 		$properties       = [];
 		$more_properties  = [];
 		foreach ($all_properties as $property) {
+			if (!$property) {
+				break;
+			}
 			if (!isset($exclude_properties[$property->name])) {
 
 				$property_path = $prefix . $property->name;

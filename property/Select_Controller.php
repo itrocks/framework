@@ -95,7 +95,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $class                Reflection_Class
 	 * @param $composite_class_name string
 	 * @param $display_full_path    boolean
-	 * @return Reflection_Property[]
+*	 * @return Reflection_Property[]|null[]
 	 */
 	protected function getProperties(
 		Reflection_Class $class, $composite_class_name = null, $display_full_path = false
