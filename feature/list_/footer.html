@@ -73,15 +73,14 @@
 						<!--end-->
 					</ul>
 				</li>
-				<!--!displayed_lines_count-->
-				<li class="display" title="|!{rows_count}! ¦lines¦ match your search|">
-					|!{rows_count}! lines|
-				</li>
-				<!--end-->
 				<!--displayed_lines_count-->
 				<li class="display" title="|!{rows_count}! ¦lines¦ match your search|
 |!{displayed_lines_count}! ¦lines¦ starting from !{display_start}! displayed|">
 					|lines !{display_start}! - !{displayed_lines_count}! / !{rows_count}!|
+				</li>
+				<!--else-->
+				<li class="display" title="|!{rows_count}! ¦lines¦ match your search|">
+					|!{rows_count}! lines|
 				</li>
 				<!--end-->
 			</ul>

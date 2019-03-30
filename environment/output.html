@@ -15,14 +15,13 @@
 	<ul id="environment">
 	<!--end-->
 	<!--@properties-->
-		<!--!value?-->
-		<li class="empty {name}">
-			<a href="app://(@rootClass.path)/select/(name)" target="#environments">|all {name}s|</a>
-		</li>
-		<!--end-->
 		<!--value?-->
 		<li class="{value.__toString.uri} {name}">
 			<a href="app://(@rootClass.path)/select/(name)" target="#environments">{value}</a>
+		</li>
+		<!--else-->
+		<li class="empty {name}">
+			<a href="app://(@rootClass.path)/select/(name)" target="#environments">|all {name}s|</a>
 		</li>
 		<!--end-->
 	<!--end-->
