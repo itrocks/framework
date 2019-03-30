@@ -19,7 +19,7 @@ nav#menu {
     display: none; }
   nav#menu > ul > li > h3 {
     background-color: #888;
-    padding: 0.3em 0.5em; }
+    padding: 0.3em 0.25em; }
   nav#menu > ul > li > ul > li {
     background-color: #777;
     color: white; }
@@ -27,4 +27,4 @@ nav#menu {
       margin-top: 1px; }
     nav#menu > ul > li > ul > li > a {
       display: block;
-      padding: 0.3em 0.5em; }
+      padding: 0.3em 0.25em; }

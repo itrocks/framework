@@ -21,7 +21,7 @@ article > ul.data ol.properties > li.multiple > div > ul.collection {
     article > ul.data ol.properties > li.before > div > ul.collection > li:first-child > ol > li,
     article > ul.data ol.properties > li.block > div > ul.collection > li:first-child > ol > li,
     article > ul.data ol.properties > li.multiple > div > ul.collection > li:first-child > ol > li {
-      padding: 0.3em 0.5em;
+      padding: 0.3em 0.25em;
       text-align: center;
       white-space: nowrap; }
     article > form > ul.data ol.properties > li.after > div > ul.collection > li > ol,

@@ -2,10 +2,10 @@ article > ul.data > li ol.properties > li > div {
   padding: 0.3em 0;
   vertical-align: top; }
   article > ul.data > li ol.properties > li > div > span {
-    padding: 0 0.5em; }
+    padding: 0 0.25em; }
 
 article > form > ul.data > li ol.properties > li > div > span {
-  padding: 0.3em 0.5em;
+  padding: 0.3em 0.25em;
   position: absolute;
   vertical-align: top; }
 
@@ -21,7 +21,7 @@ article > form > ul.data > li, article > ul.data > li {
       article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
         white-space: nowrap; }
       article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
-        padding: 0.3em 0.5em;
+        padding: 0.3em 0.25em;
         vertical-align: top;
         white-space: nowrap; }
         article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
@@ -59,7 +59,7 @@ article > form > ul.data > li, article > ul.data > li {
       article > ul.data > li ol.properties > li.multiple > label {
         background-color: #eee;
         display: block;
-        padding: 0.3em 0.5em; }
+        padding: 0.3em 0.25em; }
     article > form > ul.data > li ol.properties > li.float > div,
     article > form > ul.data > li ol.properties > li.integer > div,
     article > form > ul.data > li ol.properties > li.float > div > input,

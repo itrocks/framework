@@ -13,11 +13,11 @@ ul.actions > li {
 	margin: $actions-vertical-margin $actions-horizontal-margin;
 	position: relative;
 	vertical-align: top;
-	white-space: nowrap;
 
-	> a {
+	a {
 		display: block;
 		padding: $action-vertical-padding $action-horizontal-padding;
+		white-space: nowrap;
 	}
 
 	> ul {
@@ -35,11 +35,6 @@ ul.actions > li {
 
 		> li {
 			display: block;
-
-			> a {
-				display: block;
-				padding: $action-vertical-padding $action-horizontal-padding;
-			}
 		}
 	}
 }
