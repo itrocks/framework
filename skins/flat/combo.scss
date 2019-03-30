@@ -1,3 +1,4 @@
+@import 'colors.scss';
 @import 'sizes.scss';
 
 li.class {
@@ -18,4 +19,9 @@ li.class {
 	&:not(.date_time) button {
 		background-image: url('img/input-combo.png');
 	}
+}
+
+.ui-state-active {
+	background: $action-focus-background !important;
+	color: $action-focus-color !important;
 }
