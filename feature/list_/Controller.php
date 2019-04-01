@@ -742,13 +742,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$options[] = $group_by;
 			$this->groupConcat($properties_path, $group_by);
 		}
-		$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
+		$data = $this->readDataSelectSearch($class_name, $properties_path, $search, $options);
 		if (isset($limit) && isset($count)) {
 			if (($data->length() < $limit->count) && ($limit->from > 1)) {
 				$limit->from = max(1, $count->count - $limit->count + 1);
 				$list_settings->start_display_line_number = $limit->from;
 				$list_settings->save();
-				$data = $this->readDataSelect($class_name, $properties_path, $search, $options);
+				$data = $this->readDataSelectSearch($class_name, $properties_path, $search, $options);
 			}
 		}
 		if (isset($limit)) {
@@ -778,20 +778,38 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
+	 * @param $search          object|array source object for filter, set properties will be used for
+	 *                         search. Can be an array associating properties names to matching
+	 *                         search value too.
+	 * @param $options         Option[] some options for advanced search
+	 * @return List_Data A list of read records. Each record values (may be objects) are
+	 *         stored in the same order than columns.
+	 */
+	public function readDataSelect($class_name, array $properties_path, $search, array $options)
+	{
+		return Dao::select($class_name, $properties_path, $search, $options);
+	}
+
+	//-------------------------------------------------------------------------- readDataSelectSearch
+	/**
+	 * @param $class_name      string Class name for the read object
+	 * @param $properties_path string[] the list of the columns names : only those properties
+	 *                         will be read. There are 'column.sub_column' to get values from linked
+	 *                         objects from the same data source
 	 * @param $search          array Search array for filter, associating properties names to
 	 *                         matching search value too.
 	 * @param $options         Option[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 */
-	public function readDataSelect(
+	public function readDataSelectSearch(
 		$class_name, array $properties_path, array $search, array $options
 	) {
 		$search = $this->searchObjectsToRepresentative($class_name, $search);
 		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
 		}
-		return Dao::select($class_name, $properties_path, $search, $options);
+		return $this->readDataSelect($class_name, $properties_path, $search, $options);
 	}
 
 	//----------------------------------------------------------------------------------- readObjects
