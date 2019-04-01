@@ -47,11 +47,16 @@ class Exhaustive
 	public function addBlock(Block $block)
 	{
 		// get menu blocks
-		$blocks = [];
+		$blocks     = [];
+		$title_menu = null;
 		foreach ($this->menu->blocks as $menu_block) {
-			$blocks[$menu_block->title] = $menu_block;
+			if ($menu_block->title === 'Menu::TITLE') {
+				$title_menu = $menu_block;
+			}
+			else {
+				$blocks[$menu_block->title] = $menu_block;
+			}
 		}
-		$title_menu = (is_string(reset($blocks)) ? array_shift($blocks) : null);
 		// exhaustive list of block titles
 		$lists = [];
 		foreach ($this->exhaustiveMenus() as $list) {
