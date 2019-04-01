@@ -4,11 +4,14 @@ namespace ITRocks\Framework\Reflection;
 use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Mapper\Empty_Object;
+use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Property\Path;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -524,30 +527,23 @@ class Reflection_Property extends ReflectionProperty
 	public function getValue($object = null, $with_default = false)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
-			$path = explode(DOT, $this->path);
-			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
-			$property = new Reflection_Property($this->root_class, array_shift($path));
+			$class = $this->root_class;
+			$path  = explode(DOT, $this->path);
 			foreach ($path as $property_name) {
-				$object = $property->getValue($object, $with_default);
-				while (is_array($object)) {
-					$object = reset($object);
+				/** @var $property Reflection_Property */
+				if (isset($property)) {
+					$class = Builder::className($property->getType()->getElementTypeAsString());
 				}
-				/** @noinspection PhpUnhandledExceptionInspection $this->path is valid at this time */
-				$property = new Reflection_Property(
-					$property->getType()->getElementTypeAsString(), $property_name
-				);
+				/** @noinspection PhpUnhandledExceptionInspection $class is valid */
+				$property = new Reflection_Property($class, $property_name);
+				$object   = is_array($object)
+					? $property->getValues($object, $with_default)
+					: $property->getValue($object, $with_default);
 				if ($with_default && !$object && !is_array($object)) {
 					$object = $property->getFinalClass()->newInstance();
 				}
 			}
-			while (is_array($object)) {
-				$object = reset($object);
-			}
-			return $object ? $property->getValue($object, $with_default) : null;
-		}
-		// TODO HIGHER $object may never be an array here ?!? This while() is probably dead-code, remove
-		while (is_array($object)) {
-			$object = reset($object);
+			return $object;
 		}
 		// TODO Remove this patch, done because PHP 7.1 sometimes crash with no valid reason for this
 		//return $object ? parent::getValue($object) : null;
@@ -568,6 +564,39 @@ class Reflection_Property extends ReflectionProperty
 			}
 		}
 		return null;
+	}
+
+	//------------------------------------------------------------------------------------- getValues
+	/**
+	 * Get values from each object of an array
+	 *
+	 * @param $object       object[]
+	 * @param $with_default boolean
+	 * @return object[]
+	 * @throws ReflectionException
+	 */
+	protected function getValues(array $object, $with_default)
+	{
+		// stored object
+		$objects = $object;
+		if (
+			$this->getType()->isClass()
+			&& Link_Annotation::of($this)->value
+			&& !Store_Annotation::of($this)->value
+		) {
+			$sub_objects = new Map();
+			foreach ($objects as $object) {
+				$sub_objects->add($this->getValue($object, $with_default));
+			}
+			return $sub_objects->objects;
+		}
+		// final value
+		$sub_objects = [];
+		foreach ($objects as $key => $object) {
+			$value           = $this->getValue($object, $with_default);
+			$sub_objects[$value] = $value;
+		}
+		return $sub_objects;
 	}
 
 	//---------------------------------------------------------------------------- isEquivalentObject
