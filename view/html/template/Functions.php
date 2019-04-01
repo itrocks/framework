@@ -1250,6 +1250,21 @@ class Functions
 		return $template->getObject();
 	}
 
+	//----------------------------------------------------------------------------------------- getTr
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getTr(Template $template)
+	{
+		$value      = array_shift($template->objects);
+		$var_name   = array_shift($template->var_names);
+		$class_name = $this->getClass($template);
+		array_unshift($template->objects, $value);
+		array_unshift($template->var_names, $var_name);
+		return Loc::tr($value, $class_name);
+	}
+
 	//------------------------------------------------------------------------------------ getTypeCss
 	/**
 	 * @param $template Template

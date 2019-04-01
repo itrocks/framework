@@ -6,97 +6,105 @@
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
 	<style> @import "../../skins/default/all.css"; </style>
-	<title>|Import ¦{class_name.display}¦|</title>
+	<title>|¦{class_name.display}¦ import|</title>
 </head>
 <body>
+<article class="import preview window" id="/Class/Path/import/preview">
 <!--BEGIN-->
 
-	<form action="app://(class_name.path)/import/preview" class="{class_name.short.lower} import preview window" id="/{class_name.path}/import/preview" method="post" target="#main">
+	<header>
 		<h2>|Import preview|</h2>
+	</header>
+	<form action="app://(class_name.path)/import/preview" method="post" target="#main">
 
+		<ul class="worksheets">
 		<!--worksheets-->
-		<fieldset class="worksheet">
-			<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
-			<input type="hidden" name="worksheets[{name}][file]" value="{file.name}">
+			<li>
+				<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
+				<input type="hidden" name="worksheets[{name}][file]" value="{file.name}">
 
-			<!--errors?-->
-			<div class="errors">
-				<h3>|There were errors into your file : some data could not be imported|</h3>
-				<ul>
-					<!--errors-->
-					<li>{.}</li>
-					<!--end-->
-				</ul>
-			</div>
-			<!--end-->
-
-			<!--settings.classes-->
-			<fieldset class="{name} class">
-				<h3>
-					|{..settings.getClassName.short}|
-					<!--property_path?-->:<!--end-->
-					<!--property_path--><span class="property">|{.}|</span><!--end-->
-				</h3>
-				<fieldset class="constants">
-					<!--constants-->
-					<div>
-						<label>{@propertySelect("worksheets[{....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][name]")}</label>
-						<div>{@edit("worksheets[....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][value]")}</div>
-						<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
-							|Remove constant|
-						</a>
-					</div>
-					<!--end-->
-					<a class="constant add submit action" href="app://ITRocks/Framework/Feature/Import/preview?constant_add=(#)" target="#main">
-						|Add a constant|
-					</a>
-				</fieldset>
-				<fieldset class="identify properties">
-					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
-					Identifie chaque <span>|{name}|</span> par
-					<ul><!--identify_properties--><li class="{name}">|{name}|</li><!--end--></ul>
-					(doit être unique).
-				</fieldset>
-				<fieldset class="none">
-					Si aucun <span>|{name}|</span> ne correspond,
-					{object_not_found_behaviour.@edit("worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
-				</fieldset>
-				<fieldset class="write properties">
-					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
-					Met à jour la valeur de
-					<ul><!--write_properties--><li class="{name}">|{name}|</li><!--end--></ul>.
-				</fieldset>
-				<fieldset class="ignore properties">
-					<input type="hidden" name="worksheets[..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
-					Ignore la valeur de
-					<ul><!--ignore_properties--><li class="{name}">|{name}|</li><!--end--></ul>
-				</fieldset>
-			</fieldset>
-			<!--end-->
-
-			<!--preview-->
-			<table class="preview">
-				<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--end--></tr>
-				<!--data:{first_row}-{last_row}-->
-				<tr><!--.:-{..last_column}--><td>{.}</td><!--end--></tr>
+				<!--errors?-->
+				<details class="errors">
+					<summary>|There were errors into your file| : |some data could not be imported|</summary>
+					<ul>
+						<!--errors-->
+						<li>{.}</li>
+						<!--end-->
+					</ul>
+				</details>
 				<!--end-->
-			</table>
-			<!--end-->
 
-		</fieldset>
+				<ol class="{name} classes properties">
+				<!--settings.classes-->
+					<li class="block">
+						<label>
+							|{..settings.getClassName.short}|
+							<!--property_path--><span class="property">|{.}|</span><!--end-->
+						</label>
+						<ol class="constants">
+							<!--constants-->
+							<li>
+								<label>
+									{@propertySelect("worksheets[{....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][name]")}
+								</label>
+								<div>
+									{@edit("worksheets[....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][value]")}
+								</div>
+								<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
+									|Remove constant|
+								</a>
+							</li>
+							<!--end-->
+							<li class="add action">
+								<a class="submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_add=(#)" target="#main">
+									|Add a constant|
+								</a>
+							</li>
+						</ol>
+						<section class="identify properties">
+							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
+							|Identify each !<span>{name.@tr}</span>! by !<ul data-empty="|always create a new record|"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|
+							(|must be unique|).
+						</section>
+						<section class="none">
+							|If no !<span>{name.@tr}</span>! match|,
+							{object_not_found_behaviour.@edit("worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
+						</section>
+						<section class="write properties">
+							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
+							|Update the value of !<ul data-empty="|no value to write|"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
+						</section>
+						<section class="ignore properties">
+							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
+							|Ignore the value of !<ul data-empty="|no value is ignored|"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
+						</section>
+					</li>
+				<!--end-->
+				</ol>
+
+				<!--preview-->
+				<table class="preview">
+					<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--end--></tr>
+					<!--data:{first_row}-{last_row}-->
+					<tr><!--.:-{..last_column}--><td>{.}</td><!--end--></tr>
+					<!--end-->
+				</table>
+				<!--end-->
+
+			</li>
 		<!--end-->
+		</ul>
 
 		<p class="warning">
-			<span>Une fois vérifiés les réglages ci-dessus, vous pouvez</span>
-			<a class="import execute action submit" href="app://(class_name.path)/import/execute" target="#import_execute">|Execute import|</a>
+			|Once you have verified above settings|, |you can|
+			<a class="import execute action submit" href="app://(class_name.path)/import/execute" target="#{class_name.path.idTag}-import-execute">
+				|Execute import|
+			</a>
 		</p>
 
 	</form>
 
-	<section id="import_execute">
-		<h2>|Execute import|</h2>
-	</section>
-
 <!--END-->
+</article>
 </body>
 </html>

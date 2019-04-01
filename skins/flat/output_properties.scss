@@ -20,59 +20,59 @@ article > form, article {
 
 	> ul.data > li {
 		display: block;
+	}
 
-		ol.properties {
-			display: inline-block;
-			padding: $window-padding;
+	ol.properties {
+		display: inline-block;
+		padding: $window-padding;
 
-			> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-				display: table-row;
+		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+			display: table-row;
 
-				> label, > div {
-					display: table-cell;
-				}
-
-				> div > span {
-					white-space: nowrap;
-				}
-
-				> label {
-					padding: $property-label-vertical-padding $property-label-horizontal-padding;
-					vertical-align: top;
-					white-space: nowrap;
-
-					&:after {
-						content: ' :';
-						margin-right: .5em;
-					}
-				}
+			> label, > div {
+				display: table-cell;
 			}
 
-			> li.after,
-			> li.before,
-			> li.block,
-			> li.multiple {
+			> div > span {
+				white-space: nowrap;
+			}
+
+			> label {
+				padding: $property-label-vertical-padding $property-label-horizontal-padding;
+				vertical-align: top;
+				white-space: nowrap;
+
+				&:after {
+					content: ' :';
+					margin-right: .5em;
+				}
+			}
+		}
+
+		> li.after,
+		> li.before,
+		> li.block,
+		> li.multiple {
+			display: block;
+
+			&.block,
+			&.multiple {
+				border: $thin-border;
+				margin-top: -1px;
+			}
+
+			> label {
+				background-color: #eee;
 				display: block;
-
-				&.block,
-				&.multiple {
-					border: $thin-border;
-					margin-top: -1px;
-				}
-
-				> label {
-					background-color: #eee;
-					display: block;
-					padding: $list-vertical-padding $list-horizontal-padding;
-				}
+				padding: $list-vertical-padding $list-horizontal-padding;
 			}
+		}
 
-			> li.float > div,
-			> li.integer > div,
-			> li.float > div > input,
-			> li.integer > div > input {
-				text-align: right;
-			}
+		> li.float > div,
+		> li.integer > div,
+		> li.float > div > input,
+		> li.integer > div > input {
+			text-align: right;
 		}
 	}
 }

@@ -2,59 +2,46 @@ $(document).ready(function()
 {
 
 	//------------------------------------------------------------------------ article.import.preview
-	$('article.import.preview').build(function()
+	$('article.import.preview li.block').build('each', function()
 	{
+		var $this = $(this);
+		var $section = $this.find('> section:has(ul)');
+		var $li      = $section.find('> ul > li');
 
-		this.each(function()
+		//------------------------------------------------------- li.draggable, .properties.droppable
+		/**
+		 * drag and drop property names inside imported class settings
+		 */
+		$li.draggable({
+			containment: $this
+		});
+		$section.droppable({
+			accept: $li,
+
+			drop: function(event, ui)
+			{
+				// drop
+				var $draggable = ui.draggable;
+				var $droppable = $(this);
+				$draggable.removeAttr('style').appendTo($droppable.find('ul'));
+				// old section value
+				var $input        = $draggable.closest('section').find('input');
+				var property_name = $draggable.attr('class').lParse(SP);
+				var new_val       = (',' + $input.val() + ',').replace(',' + property_name + ',', ',');
+				$input.val((new_val === ',') ? '' : new_val.substr(1, new_val.length - 2));
+				// new section value
+				$input = $($droppable.closest('section').find('input'));
+				$input.val($input.val() + ($input.val() ? ',' : '') + property_name);
+			}
+		});
+
+		//----------------------------------------------------------------------------- select.change()
+		// change color of 'if no value found'
+		$this.find('select').change(function()
 		{
 			var $this = $(this);
+			$this.attr('class', $this.find(':selected').attr('value'));
+		}).change();
 
-			//------------------------------------------------------- li.draggable, .properties.droppable
-			/**
-			 * drag and drop property names inside imported class settings
-			 */
-			$this.find('fieldset.class').each(function()
-			{
-				var $this = $(this);
-				$this.find('li').draggable({
-					containment: $this,
-					opacity:     .7,
-					revert:      function() { $(this).css({ left: 0, top: 0 }); }
-				});
-				$this.find('fieldset.properties').droppable({
-					accept: $this.find('li'),
-					drop: function(event, ui)
-					{
-						var $draggable    = ui.draggable;
-						var $droppable    = $(this);
-						var $input        = $draggable.closest('fieldset').find('input');
-						var property_name = $draggable.attr('class').split(' ')[0];
-						$droppable.css({ background: 'none', border: 'none' });
-						var niouk = (',' + $input.val() + ',').replace(',' + property_name + ',', ',');
-						$input.val((niouk === ',') ? '' : niouk.substr(1, niouk.length - 2));
-						$draggable.appendTo($droppable.find('ul'));
-						$input = $($draggable.closest('fieldset').find('input'));
-						$input.val($input.val() + ($input.val() ? ',' : '') + property_name);
-					},
-					over: function()
-					{
-						$(this).css({ 'background': '#E0E0E0', 'border': '1px solid darkgrey' });
-					},
-					out: function()
-					{
-						$(this).css({ 'background': 'white', 'border': '1px solid white' });
-					}
-				});
-			});
-
-			//----------------------------------------------------------------------------- select.change()
-			// change color of 'if no value found'
-			$this.find('fieldset.class select').change(function()
-			{
-				var $this = $(this);
-				$this.attr('class', $this.find(':selected').attr('value'));
-			}).change();
-
-		});
 	});
 });

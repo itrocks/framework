@@ -11,7 +11,7 @@ a {
 	}
 }
 
-input, select, textarea {
+input:not[type=submit], select, textarea {
 	background-color: $background;
 	border: none;
 	font-size: 1em;
@@ -26,6 +26,31 @@ input, select, textarea {
 
 		&:hover {
 			background-color: $action-focus-background;
+			color: $action-focus-color;
+		}
+	}
+}
+
+table {
+	margin: .5em 0;
+
+	tr {
+
+		&:nth-child(even) {
+			background: #ececec;
+		}
+
+		&:nth-child(odd) {
+			background: #dedede;
+		}
+
+		td, th {
+			border: 1px solid white;
+			padding: $list-vertical-padding $list-horizontal-padding;
+		}
+
+		th {
+			background: $action-focus-background;
 			color: $action-focus-color;
 		}
 	}

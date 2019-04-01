@@ -1,0 +1,5 @@
+@import 'sizes.scss';
+
+article.import.form > form > ul.actions {
+	padding-left: $window-padding;
+}

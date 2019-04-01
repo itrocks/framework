@@ -48,17 +48,6 @@ class Reflection_Property extends Reflection\Reflection_Property
 		return $this->isExpandable() ? 'class' : '';
 	}
 
-	//-------------------------------------------------------------------------------------- expandId
-	/**
-	 * An unique identifier for the expand target zone
-	 *
-	 * @return string
-	 */
-	public function expandId()
-	{
-		return str_replace(DOT, '-', strUri($this->link_path));
-	}
-
 	//----------------------------------------------------------------------------------- isBasicHtml
 	/**
 	 * Tells if the property type is a basic type or not, with an HTML result if yes

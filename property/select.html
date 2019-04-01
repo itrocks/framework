@@ -24,12 +24,12 @@
 			<!--.?-->
 			<li class="property {?isBasicHtml} {?isStringableHtml} {?classHtml}" data-property="{link_path}" <!--link_path?-->title="|{link_path.path}|"<!--end-->>
 				<!--isExpandable?-->
-				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{expandId}" title="|{link_path.path}|">
+				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{link_path.idTag}" title="|{link_path.path}|">
 				<!--end-->
 				{display}
 				<!--isExpandable?-->
 				</a>
-				<div id="tree-{expandId}"></div>
+				<div id="tree-{link_path.idTag}"></div>
 				<!--end-->
 			</li>
 			<!--else-->

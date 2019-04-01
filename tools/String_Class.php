@@ -111,13 +111,24 @@ class String_Class
 		return new String_Class(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
 	}
 
+	//----------------------------------------------------------------------------------------- idTag
+	/**
+	 * Format the value so that it can be used into an id="" HTML tag
+	 *
+	 * @return string
+	 */
+	public function idTag()
+	{
+		return str_replace([DOT, SL], '-', $this->uri());
+	}
+
 	//---------------------------------------------------------------------------------------- isWord
 	/**
 	 * Test is the string like a word
 	 *
 	 * @return integer 0 if it's not a word.
 	 */
-	function isWord()
+	public function isWord()
 	{
 		return preg_match('#[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]#', $this->value);
 	}

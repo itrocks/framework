@@ -11,60 +11,60 @@ article > form > ul.data > li ol.properties > li > div > span {
 
 article > form > ul.data > li, article > ul.data > li {
   display: block; }
-  article > form > ul.data > li ol.properties, article > ul.data > li ol.properties {
-    display: inline-block;
-    padding: 0.5em; }
-    article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple), article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-      display: table-row; }
-      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
-        display: table-cell; }
-      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
-        white-space: nowrap; }
-      article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
-        padding: 0.3em 0.25em;
-        vertical-align: top;
-        white-space: nowrap; }
-        article > form > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article > ul.data > li ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
-          content: ' :';
-          margin-right: .5em; }
-    article > form > ul.data > li ol.properties > li.after,
-    article > form > ul.data > li ol.properties > li.before,
-    article > form > ul.data > li ol.properties > li.block,
-    article > form > ul.data > li ol.properties > li.multiple, article > ul.data > li ol.properties > li.after,
-    article > ul.data > li ol.properties > li.before,
-    article > ul.data > li ol.properties > li.block,
-    article > ul.data > li ol.properties > li.multiple {
-      display: block; }
-      article > form > ul.data > li ol.properties > li.after.block, article > form > ul.data > li ol.properties > li.after.multiple,
-      article > form > ul.data > li ol.properties > li.before.block,
-      article > form > ul.data > li ol.properties > li.before.multiple,
-      article > form > ul.data > li ol.properties > li.block.block,
-      article > form > ul.data > li ol.properties > li.block.multiple,
-      article > form > ul.data > li ol.properties > li.multiple.block,
-      article > form > ul.data > li ol.properties > li.multiple.multiple, article > ul.data > li ol.properties > li.after.block, article > ul.data > li ol.properties > li.after.multiple,
-      article > ul.data > li ol.properties > li.before.block,
-      article > ul.data > li ol.properties > li.before.multiple,
-      article > ul.data > li ol.properties > li.block.block,
-      article > ul.data > li ol.properties > li.block.multiple,
-      article > ul.data > li ol.properties > li.multiple.block,
-      article > ul.data > li ol.properties > li.multiple.multiple {
-        border: 1px solid lightgray;
-        margin-top: -1px; }
-      article > form > ul.data > li ol.properties > li.after > label,
-      article > form > ul.data > li ol.properties > li.before > label,
-      article > form > ul.data > li ol.properties > li.block > label,
-      article > form > ul.data > li ol.properties > li.multiple > label, article > ul.data > li ol.properties > li.after > label,
-      article > ul.data > li ol.properties > li.before > label,
-      article > ul.data > li ol.properties > li.block > label,
-      article > ul.data > li ol.properties > li.multiple > label {
-        background-color: #eee;
-        display: block;
-        padding: 0.3em 0.25em; }
-    article > form > ul.data > li ol.properties > li.float > div,
-    article > form > ul.data > li ol.properties > li.integer > div,
-    article > form > ul.data > li ol.properties > li.float > div > input,
-    article > form > ul.data > li ol.properties > li.integer > div > input, article > ul.data > li ol.properties > li.float > div,
-    article > ul.data > li ol.properties > li.integer > div,
-    article > ul.data > li ol.properties > li.float > div > input,
-    article > ul.data > li ol.properties > li.integer > div > input {
-      text-align: right; }
+article > form ol.properties, article ol.properties {
+  display: inline-block;
+  padding: 0.5em; }
+  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple), article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+    display: table-row; }
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+      display: table-cell; }
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
+      white-space: nowrap; }
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
+      padding: 0.3em 0.25em;
+      vertical-align: top;
+      white-space: nowrap; }
+      article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
+        content: ' :';
+        margin-right: .5em; }
+  article > form ol.properties > li.after,
+  article > form ol.properties > li.before,
+  article > form ol.properties > li.block,
+  article > form ol.properties > li.multiple, article ol.properties > li.after,
+  article ol.properties > li.before,
+  article ol.properties > li.block,
+  article ol.properties > li.multiple {
+    display: block; }
+    article > form ol.properties > li.after.block, article > form ol.properties > li.after.multiple,
+    article > form ol.properties > li.before.block,
+    article > form ol.properties > li.before.multiple,
+    article > form ol.properties > li.block.block,
+    article > form ol.properties > li.block.multiple,
+    article > form ol.properties > li.multiple.block,
+    article > form ol.properties > li.multiple.multiple, article ol.properties > li.after.block, article ol.properties > li.after.multiple,
+    article ol.properties > li.before.block,
+    article ol.properties > li.before.multiple,
+    article ol.properties > li.block.block,
+    article ol.properties > li.block.multiple,
+    article ol.properties > li.multiple.block,
+    article ol.properties > li.multiple.multiple {
+      border: 1px solid lightgray;
+      margin-top: -1px; }
+    article > form ol.properties > li.after > label,
+    article > form ol.properties > li.before > label,
+    article > form ol.properties > li.block > label,
+    article > form ol.properties > li.multiple > label, article ol.properties > li.after > label,
+    article ol.properties > li.before > label,
+    article ol.properties > li.block > label,
+    article ol.properties > li.multiple > label {
+      background-color: #eee;
+      display: block;
+      padding: 0.3em 0.25em; }
+  article > form ol.properties > li.float > div,
+  article > form ol.properties > li.integer > div,
+  article > form ol.properties > li.float > div > input,
+  article > form ol.properties > li.integer > div > input, article ol.properties > li.float > div,
+  article ol.properties > li.integer > div,
+  article ol.properties > li.float > div > input,
+  article ol.properties > li.integer > div > input {
+    text-align: right; }

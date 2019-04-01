@@ -1,0 +1,60 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
+article.import.preview {
+
+	li.block {
+
+		> .constants {
+			display: none;
+		}
+
+		> section {
+
+			&.ui-droppable-hover {
+				background: $action-focus-background;
+				color: $action-focus-color;
+			}
+
+			> ul {
+				display: inline-block;
+
+				&[data-empty]:empty:after {
+					content: "(" attr(data-empty) ")";
+					font-style: italic;
+				}
+
+				> li {
+					cursor: pointer;
+					display: inline-block;
+
+					&:not(:last-child):after {
+						content: ",";
+						margin-right: .25em;
+					}
+				}
+			}
+
+			&.identify li {
+				background-color: green;
+				color: white;
+			}
+
+			&.ignore li {
+				background-color: #eee;
+				color: red;
+			}
+
+			&.write li {
+				background-color: blue;
+				color: white;
+			}
+		}
+	}
+
+	p.warning,
+	table.preview {
+		margin-left: $window-padding;
+	}
+
+}

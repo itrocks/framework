@@ -5,18 +5,31 @@ a {
     background-color: #00b39c;
     color: #efe; }
 
-input, select, textarea {
+input:not[type=submit], select, textarea {
   background-color: white;
   border: none;
   font-size: 1em; }
-  input:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
+  input:not[type=submit]:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
     border-bottom: 1px solid lightgray; }
-    input:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
+    input:not[type=submit]:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
       background-color: #eee;
       color: #444; }
-    input:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
+    input:not[type=submit]:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
       background-color: #00b39c;
       color: #efe; }
+
+table {
+  margin: .5em 0; }
+  table tr:nth-child(even) {
+    background: #ececec; }
+  table tr:nth-child(odd) {
+    background: #dedede; }
+  table tr td, table tr th {
+    border: 1px solid white;
+    padding: 0.3em 0.25em; }
+  table tr th {
+    background: #00b39c;
+    color: #efe; }
 
 div.popup {
   background-color: white;
