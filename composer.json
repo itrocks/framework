@@ -14,7 +14,7 @@
 		"apache-incubator/echarts":              "1.4.1",
 		"bappli/document-designer":              "dev-master",
 		"components/flag-icon-css":              "3.*",
-		"components/jquery":                     "2.*",
+		"components/jquery":                     "3.*",
 		"components/jqueryui":                   "1.*",
 		"composer/installers":                   "~1.0",
 		"ckeditor/ckeditor":                     "4.*",
