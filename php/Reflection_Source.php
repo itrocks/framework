@@ -502,30 +502,28 @@ class Reflection_Source
 						}
 					}
 
-					// dependency @compatibility
+					// dependencies @compatibility / @feature_bridge
 					preg_match_all(
-						'%\*\s+@compatibility\s+([A-Z].*)%',
+						'%\*\s+@(bridge_feature|compatibility)\s+([A-Z].*)%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 					);
 					foreach ($matches as $match) {
-						foreach ($match[1] as $key => $compatibility_value) {
-							list($compatibility_value, $pos) = $match[1];
-							$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
-							$compatibility_annotation    = new List_Annotation($compatibility_value);
-							foreach ($compatibility_annotation->values() as $compatibility_class_name) {
-								$compatibility_class_name = $this->fullClassName($compatibility_class_name);
-								$dependency = new Dependency();
-								$dependency->class_name      = $class->name;
-								$dependency->dependency_name = $compatibility_class_name;
-								$dependency->file_name       = $this->file_name;
-								$dependency->line            = $line;
-								$dependency->type            = Dependency::T_COMPATIBILITY;
-								$this->dependencies[] = $dependency;
-								if (!$class->name) {
-									$missing_class_name[] = $dependency;
-								}
+						list($compatibility_value, $pos) = $match[2];
+						$line       = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+						$annotation = new List_Annotation($compatibility_value);
+						foreach ($annotation->values() as $compatibility_class_name) {
+							$compatibility_class_name = $this->fullClassName($compatibility_class_name);
+							$dependency = new Dependency();
+							$dependency->class_name      = $class->name;
+							$dependency->dependency_name = $compatibility_class_name;
+							$dependency->file_name       = $this->file_name;
+							$dependency->line            = $line;
+							$dependency->type            = $match[1][0];
+							$this->dependencies[] = $dependency;
+							if (!$class->name) {
+								$missing_class_name[] = $dependency;
 							}
 						}
 					}

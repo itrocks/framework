@@ -14,6 +14,7 @@ use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
+use ITRocks\Framework\RAD\Feature\Bridge;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
@@ -186,6 +187,8 @@ class Installer
 			$feature->status = Status::INSTALLED;
 			Dao::write($feature, Dao::only('status'));
 		}
+
+		(new Bridge($this))->automaticInstallFor($plugin_class_name);
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 	}
@@ -379,6 +382,8 @@ class Installer
 			$feature->status = Status::AVAILABLE;
 			Dao::write($feature, Dao::only('status'));
 		}
+
+		(new Bridge($this))->automaticUninstallFor($plugin_class_name);
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 	}

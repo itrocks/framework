@@ -43,7 +43,8 @@ class Maintainer implements Registerable, Updatable
 	 */
 	protected function featureAnnotationsToFeatures()
 	{
-		$dependencies = Dao::search(['type' => Dependency::T_FEATURE], Dependency::class);
+		$types        = [Dependency::T_BRIDGE_FEATURE, Dependency::T_FEATURE];
+		$dependencies = Dao::search(['type' => $types], Dependency::class, Dao::groupBy('class_name'));
 		$features     = [];
 		foreach ($dependencies as $dependency) {
 			/** @noinspection PhpUnhandledExceptionInspection valid dependency */

@@ -14,21 +14,22 @@ class Dependency
 	use Tools;
 
 	//---------------------------------------------------------------------------------- $type values
-	const T_CLASS         = 'class';
-	const T_COMPATIBILITY = 'compatibility';
-	const T_DECLARATION   = 'declaration';
-	const T_EXTENDS       = 'extends';
-	const T_FEATURE       = 'feature';
-	const T_IMPLEMENTS    = 'implements';
-	const T_NAMESPACE_USE = 'namespace_use';
-	const T_NEW           = 'new';
-	const T_PARAM         = 'param';
-	const T_RETURN        = 'return';
-	const T_SET           = 'set';
-	const T_STATIC        = 'static';
-	const T_STORE         = 'store';
-	const T_USE           = 'use'; // class' use <trait>
-	const T_VAR           = 'var';
+	const T_BRIDGE_FEATURE = 'bridge_feature';
+	const T_CLASS          = 'class';
+	const T_COMPATIBILITY  = 'compatibility';
+	const T_DECLARATION    = 'declaration';
+	const T_EXTENDS        = 'extends';
+	const T_FEATURE        = 'feature';
+	const T_IMPLEMENTS     = 'implements';
+	const T_NAMESPACE_USE  = 'namespace_use';
+	const T_NEW            = 'new';
+	const T_PARAM          = 'param';
+	const T_RETURN         = 'return';
+	const T_SET            = 'set';
+	const T_STATIC         = 'static';
+	const T_STORE          = 'store';
+	const T_USE            = 'use'; // class' use <trait>
+	const T_VAR            = 'var';
 
 	//--------------------------------------------------------------------------- $declaration values
 	const T_CLASS_DECLARATION     = 'class';
@@ -90,8 +91,8 @@ class Dependency
 	 * - 'use' for a 'use Dependency_Name' into the class
 	 * - 'var' for a '@var ...' into the source code (property doc comment)
 	 *
-	 * @values class, compatibility, declaration, extends, feature, implements, namespace_use, new,
-	 *         param, return, set, static, store, use, var
+	 * @values bridge_feature, class, compatibility, declaration, extends, feature, implements,
+	 *         namespace_use, new, param, return, set, static, store, use, var
 	 * @var string
 	 */
 	public $type;
