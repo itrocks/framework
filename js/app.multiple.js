@@ -73,11 +73,11 @@ $(document).ready(function()
 		var $new  = $this.find(table ? '> tbody > tr.new' : '> li.new');
 		$this.data('itrocks_add', $new.clone());
 		// itrocks_add_index : the value of the index to be replaced into the model for new rows
-		var index = $this.find(table ? '> tbody > tr' : '> li').length - 1;
+		var index = $this.find(table ? '> tbody > tr' : '> li').length - (table ? 1 : 2);
 		$this.data('itrocks_add_index', index);
 		// itrocks_last_index : the last used index (lines count - 1)
 		$this.data('itrocks_last_index', Math.max(0, $this.data('itrocks_add_index') - 1));
-		if ($this.data('itrocks_add_index')) {
+		if ($this.data('itrocks_add_index') > 0) {
 			if ($new.find('input:not([class=file]):not([type=hidden]), select, textarea').length) {
 				$new.remove();
 			}
