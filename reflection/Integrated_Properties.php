@@ -238,7 +238,7 @@ class Integrated_Properties
 			$integrated_simple
 				? (
 					$integrated_alias
-					? $sub_property->getAnnotation(Alias_Annotation::ANNOTATION)->value
+					? Alias_Annotation::of($sub_property)->value
 					: rLastParse($sub_property_path, DOT, 1, true)
 				)
 				: $display

@@ -123,7 +123,7 @@ class Collection
 		$cell->setData(
 			'name',
 			Loc::tr(
-				Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
+				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
 				$this->class_name
 			)
 		);
@@ -144,7 +144,7 @@ class Collection
 			) {
 				$cell = new Item(
 					Loc::tr(
-						Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
+						Names::propertyToDisplay(Alias_Annotation::of($property)->value),
 						$this->class_name
 					)
 				);

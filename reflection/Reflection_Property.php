@@ -131,7 +131,7 @@ class Reflection_Property extends ReflectionProperty
 		}
 		$this->final_class = $class_name;
 		parent::__construct($class_name, $property_name);
-		$this->alias        = $this->getAnnotation(Alias_Annotation::ANNOTATION)->value;
+		$this->alias        = Alias_Annotation::of($this)->value;
 		$this->aliased_path = $aliases ? implode(DOT, $aliases) . DOT . $this->alias : $this->alias;
 	}
 

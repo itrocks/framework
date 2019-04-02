@@ -181,7 +181,7 @@ class Html_Builder_Collection extends Collection
 		$cell->setData(
 			'name',
 			Loc::tr(
-				Names::propertyToDisplay($property->getAnnotation(Alias_Annotation::ANNOTATION)->value),
+				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
 				$this->class_name
 			)
 		);
