@@ -14,7 +14,7 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------------------- article.list
-	$('article.list').build('each', function()
+	$('body').build('each', 'article.list', function()
 	{
 		var $this = $(this);
 

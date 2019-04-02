@@ -29,7 +29,7 @@ $(document).ready(function()
 	};
 
 	//--------------------------------------------------------------------- .confirmed.delete.message
-	$('.confirmed.delete.message').build(function()
+	$('body').build('call', '.confirmed.delete.message', function()
 	{
 		var $message       = $(this);
 		var class_name     = $message.data('class');

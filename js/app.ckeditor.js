@@ -23,8 +23,7 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------- setEditorConfig
 	var setEditorConfig = function(context, type)
 	{
-		var $ckeditor = $('.ckeditor-' + type);
-		$ckeditor.build(function() {
+		$('body').build('call', '.ckeditor-' + type, function() {
 			this.ckeditor(getEditorConfig(type));
 		});
 	};

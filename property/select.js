@@ -1,15 +1,21 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	// sort and decoration
-	$('ul.property_tree').sortContent('.separator');
-	$('.property_select').build(function() {
+	$body.build('call', 'ul.property_tree', function()
+	{
+		this.sortContent('.separator');
+	});
+
+	$body.build('call', 'ul.property_tree .property_select', function()
+	{
 		this.prepend($('<span>').addClass('joint'));
 	});
 
 	//--------------------------------------------------- .property_select > input[name=search] keyup
 	// search
-	$('.property_select > .search > input').build('each', function()
+	$body.build('each', '.property_select > .search > input', function()
 	{
 		var last_search = '';
 		var search_step = 0;
@@ -61,8 +67,7 @@ $(document).ready(function()
 
 	//--------------------------------------------------------------- ul.property_tree > li > a click
 	// create tree
-	var tree_selector = 'section.property_select ul.tree > li.class > a';
-	$(tree_selector).build('click', function(event)
+	$body.build('click', 'section.property_select ul.tree > li.class > a', function(event)
 	{
 		var $anchor = $(this);
 		var $li     = $anchor.parent();
@@ -83,7 +88,7 @@ $(document).ready(function()
 
 	//---------------------------------------------- .property, .fieldset > div[id] > label draggable
 	// draggable items
-	$('.property, fieldset > div[id] > label').build(function()
+	$body.build('call', '.property, fieldset > div[id] > label', function()
 	{
 		this.draggable({
 			appendTo: 'body',
@@ -155,7 +160,7 @@ $(document).ready(function()
 
 	//-------------------------------------------------------------------------------- document click
 	// hide popup select box when clicking outside of it
-	$(this).click(function(event)
+	$(document).click(function(event)
 	{
 		//noinspection JSJQueryEfficiency well, why ?
 		var $column_select = $('#column_select.popup > .property_select');

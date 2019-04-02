@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//--------------------------------------------------------------------------------------- onEvent
 	var on_event_pool = [];
@@ -95,13 +96,13 @@ $(document).ready(function()
 
 	//----------------------------------------------------------------- input[data-on-change] .change
 	var selector = 'input[data-on-change], select[data-on-change], textarea[data-on-change]';
-	$(selector).build('change', function()
+	$body.build('change', selector, function()
 	{
 		onEvent.call(this, 'on-change');
 	});
 
 	//--------------------------------------------------------- table[data-on-remove] td.minus .click
-	$('li.multiple li.minus').build('click', function()
+	$body.build('click', 'li.multiple li.minus', function()
 	{
 		var $this    = $(this);
 		var selector = 'table[data-on-remove], ul[data-on-remove]';

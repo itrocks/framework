@@ -2,11 +2,9 @@ $(document).ready(function()
 {
 
 	//-------------------------------------------------------------------------------- img.zoom click
-	$('img.zoom').build(function()
+	$('body').build('click', 'img.zoom', function()
 	{
-		this.click(function() {
-			$(this).parent().remove();
-		});
+		$(this).parent().remove();
 	});
 
 });

@@ -35,7 +35,7 @@ $(document).ready(function()
 	};
 
 	//-------------------------------------------------------------------- .condition.editor .operand
-	$('.condition.editor .operand').build(function()
+	$('body').build('call', '.condition.editor .operand', function()
 	{
 
 		//-------------------------------------------------------- .condition.editor .operand droppable

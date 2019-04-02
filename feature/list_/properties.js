@@ -74,7 +74,7 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------------------- article.list
-	$('article.list').build(function()
+	$('body').build('call', 'article.list', function()
 	{
 
 		//------------------------------------------------------------ .column_select li.basic.property

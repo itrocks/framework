@@ -1,4 +1,6 @@
-$(document).ready(function() {
+$(document).ready(function()
+{
+	var $body = $('body');
 
 	//------------------------------------------------------------------------------- refreshOrdering
 	var refreshOrdering = function()
@@ -11,37 +13,38 @@ $(document).ready(function() {
 	};
 
 	//----------------------- article > form input.customized.integer[name*="[ordering]"]:not([type])
-	$('article > form input.customized.integer[name*="[ordering]"]:not([type])').build(function()
-	{
-		this.each(function()
+	$body.build(
+		'call', 'article > form input.customized.integer[name*="[ordering]"]:not([type])',
+		function()
 		{
-			var $input  = $(this);
-			var $parent = $input.parent();
-			if ($parent.is('td')) {
-				var position = $parent.prevAll().length + 1;
-				$input.closest('table').find('>thead>tr>th:nth-child(' + position + ')')
-					.addClass('no-autowidth');
-				$parent.addClass('ordering');
-				$input.attr('type', 'hidden');
-			}
-		});
+			this.each(function()
+			{
+				var $input  = $(this);
+				var $parent = $input.parent();
+				if ($parent.is('td')) {
+					var position = $parent.prevAll().length + 1;
+					$input.closest('table').find('>thead>tr>th:nth-child(' + position + ')')
+						.addClass('no-autowidth');
+					$parent.addClass('ordering');
+					$input.attr('type', 'hidden');
+				}
+			});
 
-		var $tbody = this.parent().filter('td').closest('tbody');
-		$tbody.sortable({
-			handle: 'td.ordering',
-			stop:   function() { refreshOrdering.call(this); }
-		});
-	});
+			var $tbody = this.parent().filter('td').closest('tbody');
+			$tbody.sortable({
+				handle: 'td.ordering',
+				stop:   function() { refreshOrdering.call(this); }
+			});
+		}
+	);
 
 	//------------------------------------------------------------------------ tr.new refreshOrdering
-	$('tr.new').build(function()
+	$body.build('each', 'tr.new', function()
 	{
-		this.each(function() {
-			var $tr = $(this);
-			if ($tr.children('td.ordering').length) {
-				refreshOrdering.call($tr.closest('tbody'));
-			}
-		});
+		var $tr = $(this);
+		if ($tr.children('td.ordering').length) {
+			refreshOrdering.call($tr.closest('tbody'));
+		}
 	});
 
 });

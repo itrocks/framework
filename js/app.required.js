@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 	var elements_selector = 'form input[name$="]"], form select[name$="]"], '
 		+ 'form textarea[name$="]"], form input[data-name$="]"], form select[data-name$="]"], '
 		+ 'form textarea[data-name$="]"]';
@@ -215,13 +216,10 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------------- form applyRequired
-	$('form').build(function()
-	{
-		applyRequired.call(this);
-	});
+	$body.build('call', 'form', applyRequired);
 
 	//----------------------------------------------------------------------------------- form inputs
-	$(elements_selector).build(function()
+	$body.build('call', elements_selector, function()
 	{
 		var $register_elements = this;
 		$register_elements = $register_elements.add($register_elements.next(next_elements_selector));

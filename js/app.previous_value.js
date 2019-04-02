@@ -5,7 +5,7 @@ $(document).ready(function()
 	/**
 	 * TODO isn't it dead code ? previous-value is not used anywhere
 	 */
-	$('input[class~=id][name]').build('each', function()
+	$('body').build('each', 'input[class~=id][name]', function()
 	{
 		var $this = $(this);
 		var $next = $this.next('input');

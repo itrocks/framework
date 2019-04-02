@@ -36,7 +36,7 @@ $(document).ready(function()
 
 	//--------------------------------------------------------------- input.datetime datepicker/keyup
 	$.datepicker.setDefaults($.datepicker.regional[window.app.language]);
-	$('input.datetime').build(function()
+	$('body').build('call', 'input.datetime', function()
 	{
 		this.datepicker({
 			constrainInput: false,

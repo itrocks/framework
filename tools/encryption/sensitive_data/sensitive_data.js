@@ -1,8 +1,8 @@
 $(document).ready(function()
 {
-	$('article input[data-sensitive], article textarea[data-sensitive]').build(function()
-	{
-		this.dblclick(function()
+	$('body').build(
+		'dblclick', 'article input[data-sensitive], article textarea[data-sensitive]',
+		function()
 		{
 			var $this   = $(this);
 			var $window = $this.closest('article[data-class]');
@@ -27,8 +27,6 @@ $(document).ready(function()
 					});
 				}
 			);
-
-		});
-
-	});
+		}
+	);
 });

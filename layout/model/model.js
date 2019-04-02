@@ -94,7 +94,7 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------- .model.window .editor .designer documentDesigner
-	$('article.model .editor').build({ priority: 500, callback: function()
+	$('body').build({ priority: 500, selector: 'article.model .editor', callback: function()
 	{
 		var $editor       = this;
 		var $model_window = this.closest('article.model');

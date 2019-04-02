@@ -147,42 +147,39 @@ $(document).ready(function()
 	};
 
 	//----------------------------------------------------------------------------- body.build (MAIN)
-	$('.rad.enter a').build(function()
+	$('body').build('click', '.rad.enter a', function(event)
 	{
-		this.click(function(event)
-		{
-			event.preventDefault();
-			event.stopImmediatePropagation();
+		event.preventDefault();
+		event.stopImmediatePropagation();
 
-			// what will the trashcan accept
-			//noinspection JSJQueryEfficiency well, why ?
-			var $trashcan = $('#trashcan a');
-			var accept;
-			var trashcan_accept = ', .action, .property';
+		// what will the trashcan accept
+		//noinspection JSJQueryEfficiency well, why ?
+		var $trashcan = $('#trashcan a');
+		var accept;
+		var trashcan_accept = ', .action, .property';
 
-			//-------------------------------------------------------------------------------------- exit
-			if (rad_mode) {
-				rad_mode = false;
+		//-------------------------------------------------------------------------------------- exit
+		if (rad_mode) {
+			rad_mode = false;
 
-				accept = $trashcan.data('accept').repl(trashcan_accept, '');
+			accept = $trashcan.data('accept').repl(trashcan_accept, '');
 
-				//history.go(0);
-			}
+			//history.go(0);
+		}
 
-			//------------------------------------------------------------------------------------- enter
-			else {
-				rad_mode = true;
-				radOutput();
+		//------------------------------------------------------------------------------------- enter
+		else {
+			rad_mode = true;
+			radOutput();
 
-				// properties can be dropped into trashcan only when in "RAD" mode
-				accept = $trashcan.data('accept') + trashcan_accept;
+			// properties can be dropped into trashcan only when in "RAD" mode
+			accept = $trashcan.data('accept') + trashcan_accept;
 
-			}
+		}
 
-			// common code for enter / exit
-			$trashcan.data('accept', accept);
-			$trashcan.droppable({ accept: accept });
-		});
+		// common code for enter / exit
+		$trashcan.data('accept', accept);
+		$trashcan.droppable({ accept: accept });
 	});
 
 });

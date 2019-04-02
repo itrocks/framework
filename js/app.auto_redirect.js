@@ -1,7 +1,8 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
-	$('a.auto-redirect').build('each', function()
+	$body.build('each', 'a.auto-redirect', function()
 	{
 		var $a    = $(this);
 		var delay = $a.data('delay');
@@ -12,7 +13,7 @@ $(document).ready(function()
 		setTimeout(function() { $a.click(); }, delay);
 	});
 
-	$('form.auto-submit').build('each', function()
+	$body.build('each', 'form.auto-submit', function()
 	{
 		var $form = $(this);
 		var delay = $form.data('delay');

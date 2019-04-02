@@ -1,8 +1,9 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//------------------------------------------------------------------- input[type=checkbox] change
-	$('input[type=checkbox]').build('change', function()
+	$body.build('change', 'input[type=checkbox]', function()
 	{
 		var $checkbox = $(this);
 		var $input    = $checkbox.prev().filter('input[type=hidden]');
@@ -21,11 +22,11 @@ $(document).ready(function()
 	});
 
 	//---------------------------------------------------------- input[type=checkbox][readonly] click
-	$('input[type=checkbox][readonly]').build('click', function(event)
+	$body.build('click', 'input[type=checkbox][readonly]', function(event)
 	{
 		event.preventDefault();
 	});
 
-	$('select:not([data-ordered=true])').build($.fn.sortContent);
+	$body.build('call', 'select:not([data-ordered=true])', $.fn.sortContent);
 
 });

@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//------------------------------------------------------------------------ input.combo comboForce
 	var comboForce = function($element)
@@ -109,7 +110,7 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------- input.combo autocomplete
-	$('input.combo').build(function()
+	$body.build('call', 'input.combo', function()
 	{
 		this.autocomplete(
 			{
@@ -282,7 +283,7 @@ $(document).ready(function()
 	});
 
 	//----------------------------------------------------------------------- input.combo~.more click
-	$('input.combo~.more').build('click', function(event)
+	$body.build('click', 'input.combo~.more', function(event)
 	{
 		event.preventDefault();
 		var $this = $(this).prevAll('input.combo');

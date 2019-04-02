@@ -1,6 +1,6 @@
 $(document).ready(function()
 {
 
-	$('select:not([data-ordered=true])').build($.fn.sortContent);
+	$('body').build('call', 'select:not([data-ordered=true])', $.fn.sortContent);
 
 });

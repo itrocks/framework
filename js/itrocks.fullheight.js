@@ -1,4 +1,4 @@
-$(window).load(function() {
+$(window).on('load', function() {
 
 	//------------------------------------------------------------------------------ $(window).resize
 	$(window).resize(function()

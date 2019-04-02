@@ -1,9 +1,10 @@
 $(document).ready(function()
 {
-	var $article_header = $('article[data-class] > header');
+	var $body = $('body');
+	var article_header = 'article[data-class] > header';
 
 	//------------------------------------------------------------- article[data-class] > header > h2
-	$article_header.find('> h2').build('click', function()
+	$body.build('click', [article_header, '> h2'], function()
 	{
 		var $this = $(this);
 		if ($this.data('stop-click')) {
@@ -26,7 +27,7 @@ $(document).ready(function()
 	});
 
 	//------------------------------------------------ article[data-class] > header input#custom_name
-	$article_header.find('input#custom_name').build(function()
+	$body.build('call', [article_header, 'input#custom_name'], function()
 	{
 		// Loose focus more than 200 ms (without coming back) : cancel
 		this.blur(function()
@@ -66,28 +67,31 @@ $(document).ready(function()
 	/**
 	 * Click on save button opens the save form between calling save
 	 */
-	$article_header.find('> .custom > .actions > li.custom_save > a').build('click', function(event)
-	{
-		var $this  = $(this);
-		var $input = $this.closest('.custom').find('> .name > input#custom_name');
-		if (!$input.filter(':visible').length) {
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			$input.attr('name', 'save_name');
-			$input.closest('.name').fadeIn(200);
-			setTimeout(function() { $input.keyup().focus(); }, 200);
-			$input.get(0).close = function()
-			{
-				var $this = $(this);
-				$this.closest('.name').fadeOut(200);
-				$this.removeAttr('name');
-			};
+	$body.build(
+		'click', [article_header, '> .custom > .actions > li.custom_save > a'],
+		function(event)
+		{
+			var $this  = $(this);
+			var $input = $this.closest('.custom').find('> .name > input#custom_name');
+			if (!$input.filter(':visible').length) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				$input.attr('name', 'save_name');
+				$input.closest('.name').fadeIn(200);
+				setTimeout(function() { $input.keyup().focus(); }, 200);
+				$input.get(0).close = function()
+				{
+					var $this = $(this);
+					$this.closest('.name').fadeOut(200);
+					$this.removeAttr('name');
+				};
+			}
+			else if (!$input.val()) {
+				event.preventDefault();
+				event.stopImmediatePropagation();
+				alert(tr('Please input a name then valid, or enter escape to cancel'));
+			}
 		}
-		else if (!$input.val()) {
-			event.preventDefault();
-			event.stopImmediatePropagation();
-			alert(tr('Please input a name then valid, or enter escape to cancel'));
-		}
-	});
+	);
 
 });

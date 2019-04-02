@@ -1,8 +1,9 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 	window.zindex_counter = 0;
 
-	$('body').build({ always: true, callback: function()
+	$body.build('call', 'always', function()
 	{
 		this.autofocus();
 		this.confirm();
@@ -19,10 +20,10 @@ $(document).ready(function()
 			},
 			url_append: 'as_widget'
 		});
-	}});
+	});
 
 	//---------------------------------------------------------------- div#messages draggable & click
-	$('div#messages').build(function()
+	$body.build('call', 'div#messages', function()
 	{
 		this.draggable().click(function(event)
 		{
@@ -36,24 +37,26 @@ $(document).ready(function()
 	/**
 	 * draggable objects brought to front on mousedown
 	 */
-	$('.ui-draggable').build(function() {
+	$body.build('call', 'div.popup > article > header', function()
+	{
 		this.mousedown(function()
 		{
-			$(this).css('z-index', ++window.zindex_counter);
+			$(this).closest('div.popup').css('z-index', ++window.zindex_counter);
 		});
 	});
 
 	//----------------------------------------------------------------------------- nav#menu minimize
-	$('nav#menu').build(function() {
+	$body.build('call', 'nav#menu', function()
+	{
 		this.minimize({ absolute_next: true });
 	});
 
 	//--------------------------------------------------------------------- build simple plugin calls
-	$('.auto_height').build($.fn.autoHeight);
-	$('.auto_width:not(table):not(ul)').build($.fn.autoWidth);
-	$('input:visible, textarea:visible').build($.fn.changeState);
-	$('.list-filter').build($.fn.listFilter);
-	$('.tabber').build($.fn.tabber);
-	$('.vertical.scrollbar').build($.fn.verticalscrollbar);
+	$body.build('call', '.auto_height',                    $.fn.autoHeight);
+	$body.build('call', '.auto_width:not(table):not(ul)',  $.fn.autoWidth);
+	$body.build('call', 'input:visible, textarea:visible', $.fn.changeState);
+	$body.build('call', '.list-filter',                    $.fn.listFilter);
+	$body.build('call', '.tabber',                         $.fn.tabber);
+	$body.build('call', '.vertical.scrollbar',             $.fn.verticalscrollbar);
 
 });

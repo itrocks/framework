@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//----------------------------------------------------------------------------------- autoAddLine
 	var autoAddLine = function()
@@ -64,7 +65,7 @@ $(document).ready(function()
 
 	//-------------------------------------------- table.collection, table.map, ul.collection, ul.map
 	var block_selector = 'table.collection, table.map, ul.collection, ul.map';
-	$(block_selector).build('each', function()
+	$body.build('each', block_selector, function()
 	{
 		var $this = $(this);
 		var table = $this.is('table');
@@ -84,7 +85,7 @@ $(document).ready(function()
 	});
 
 	//---------------------------------------------------- input, select, textarea change/focus/keyup
-	$(block_selector).find('input, select, textarea').build(function()
+	$body.build('call', [block_selector, 'input, select, textarea'], function()
 	{
 		this.change(autoAddLine).focus(autoAddLine).keyup(autoAddLine);
 	});
@@ -93,7 +94,7 @@ $(document).ready(function()
 	/**
 	 * Remove a line
 	 */
-	$('li.multiple li.minus').build('click', function()
+	$body.build('click', 'li.multiple li.minus', function()
 	{
 		var $this = $(this);
 		// setTimeout allows other click events to .minus to execute before the row is removed

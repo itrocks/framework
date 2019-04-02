@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 
 	//--------------------------------------------------------- input[data-translate=data] ctrl+click
-	$('input[data-translate=data]').build('click', function(event)
+	$('body').build('click', 'input[data-translate=data]', function(event)
 	{
 		if (event.ctrlKey || event.metaKey) {
 			var $this         = $(this);
