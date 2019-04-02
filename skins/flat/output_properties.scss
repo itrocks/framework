@@ -68,10 +68,16 @@ article > form, article {
 			}
 		}
 
-		> li.float > div,
-		> li.integer > div,
 		> li.float > div > input,
 		> li.integer > div > input {
+			text-align: right;
+		}
+	}
+
+	.multiple ol.properties {
+
+		> li.float > div,
+		> li.integer > div {
 			text-align: right;
 		}
 	}

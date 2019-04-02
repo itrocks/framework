@@ -60,11 +60,11 @@ article > form ol.properties, article ol.properties {
       background-color: #eee;
       display: block;
       padding: 0.3em 0.25em; }
-  article > form ol.properties > li.float > div,
-  article > form ol.properties > li.integer > div,
   article > form ol.properties > li.float > div > input,
-  article > form ol.properties > li.integer > div > input, article ol.properties > li.float > div,
-  article ol.properties > li.integer > div,
-  article ol.properties > li.float > div > input,
+  article > form ol.properties > li.integer > div > input, article ol.properties > li.float > div > input,
   article ol.properties > li.integer > div > input {
     text-align: right; }
+article > form .multiple ol.properties > li.float > div,
+article > form .multiple ol.properties > li.integer > div, article .multiple ol.properties > li.float > div,
+article .multiple ol.properties > li.integer > div {
+  text-align: right; }
