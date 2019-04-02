@@ -5,16 +5,16 @@ a {
     background-color: #00b39c;
     color: #efe; }
 
-input:not[type=submit], select, textarea {
+input:not([type=submit]), select, textarea {
   background-color: white;
   border: none;
   font-size: 1em; }
-  input:not[type=submit]:not([readonly]), select:not([readonly]), textarea:not([readonly]) {
+  input:not([type=submit]):not([readonly]), select:not([readonly]), textarea:not([readonly]) {
     border-bottom: 1px solid lightgray; }
-    input:not[type=submit]:not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
+    input:not([type=submit]):not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
       background-color: #eee;
       color: #444; }
-    input:not[type=submit]:not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
+    input:not([type=submit]):not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
       background-color: #00b39c;
       color: #efe; }
 
