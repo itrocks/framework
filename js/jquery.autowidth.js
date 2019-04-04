@@ -71,19 +71,23 @@
 	 * This method calculates automatically the width of a DOM element
 	 * This must be fired by an event
 	 *
-	 * @param now boolean
+	 * @param now             boolean
+	 * @param additional_text string
 	 */
-	var calculateEvent = function(now)
+	var calculateEvent = function(now, additional_text)
 	{
+		if (additional_text === undefined) {
+			additional_text = '';
+		}
 		if (now === undefined) {
-			now = false;
+			now = true;
 		}
 		var $element = $(this);
 		var settings = $element.data('settings');
 		var calculate = function()
 		{
 			var previous_width = parseInt($element.data('text-width'));
-			var new_width      = getTextWidth(settings, $element, false);
+			var new_width      = getTextWidth(settings, $element, false, true, additional_text);
 			if (new_width !== previous_width) {
 				$element.data('text-width', new_width);
 				var $block = $element.parent().closest('.auto_width');
@@ -134,11 +138,19 @@
 	 */
 	var calculateMargin = function($element, margins)
 	{
-		var margin = 0;
+		if ($.isNumeric(margins)) {
+			return margins;
+		}
+		var found_margin = false;
+		var margin       = 0;
 		for (var selector in margins) if (margins.hasOwnProperty(selector)) {
 			if ((typeof margins[selector] !== 'string') && $element.is(selector)) {
 				margin += margins[selector];
+				found_margin = true;
 			}
+		}
+		if ((margins.default !== undefined) && !found_margin) {
+			margin = margins.default;
 		}
 		return margin;
 	};
@@ -200,14 +212,18 @@
 	/**
 	 * Calculates the width for the widest of a set of jquery objects
 	 *
-	 * @param settings      object
-	 * @param $elements     jQuery
-	 * @param [read_cache]  boolean default = true
-	 * @param [write_cache] boolean default = true
+	 * @param settings         object
+	 * @param $elements        jQuery
+	 * @param [read_cache]     boolean default = true
+	 * @param [write_cache]    boolean default = true
+	 * @param additional_text string
 	 * @returns number
 	 */
-	var getTextWidth = function(settings, $elements, read_cache, write_cache)
+	var getTextWidth = function(settings, $elements, read_cache, write_cache, additional_text)
 	{
+		if (additional_text === undefined) {
+			additional_text = '';
+		}
 		read_cache  = (read_cache  === undefined) || read_cache;
 		write_cache = (write_cache === undefined) || write_cache;
 		var max_width = 0;
@@ -228,15 +244,15 @@
 						val = '';
 					}
 				}
-				$span.text(addMargin($element, val, settings.margin_right));
+				$span.text(addMargin($element, val + additional_text, settings.margin_right));
 				width = $span.width();
 				if (write_cache) {
 					$element.data('text-width', width);
 				}
 			}
 			if (width !== 'auto') {
-				width     += calculateMargin($element, settings.margin_right);
-				max_width  = Math.max(max_width, Number(width));
+				width    += calculateMargin($element, settings.margin_right);
+				max_width = Math.max(max_width, width);
 			}
 		});
 		$span.remove();
@@ -250,10 +266,9 @@
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			margin_right: {
-				textarea:       20,
-				':focus':       'WW',
-				'.combo':       10,
-				'.combo:focus': -10
+				'input':    0,
+				'textarea': 16,
+				'.combo':   24
 			},
 			multiple: {
 				maximum: 300,
@@ -266,11 +281,18 @@
 		}, options);
 		this.data('settings', settings);
 
-		//----------------------------------------------------------------------------- autoWidth keyup
+		//------------------------------------------------------------------------- autoWidth on events
 		this.blur(calculateEvent);
 		this.change(calculateEvent);
 		this.focus(calculateEvent);
 		this.keyup(calculateEvent);
+
+		this.keypress(function(event)
+		{
+			if (event.keyCode >= 32) {
+				calculateEvent.call(this, true, String.fromCharCode(event.charCode));
+			}
+		});
 
 		//------------------------------------------------------------------------------ autoWidth init
 		this.each(function() {

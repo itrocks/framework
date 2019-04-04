@@ -10,11 +10,14 @@
 		}, options);
 
 		//---------------------------------------------------------------------------------- autoHeight
-		var autoHeight = function()
+		var autoHeight = function(additional_text)
 		{
+			if (additional_text === undefined) {
+				additional_text = '';
+			}
 			var $this           = $(this);
 			var previous_height = parseInt($this.data('ui-text-height'));
-			var new_height      = Math.min(getInputTextHeight($this), settings.maximum);
+			var new_height      = Math.min(getInputTextHeight($this, additional_text), settings.maximum);
 
 			var line_height = function($element)
 			{
@@ -41,11 +44,17 @@
 		}
 		this.data('plugins.autoHeight', true);
 
-		//---------------------------------------------------------------------------- autoHeight keyup
-		this.keyup(autoHeight);
+		//------------------------------------------------------------------------- autoHeight keypress
+		this.keypress(function(event)
+		{
+			if ((event.keyCode >= 32) || (event.keyCode === 13)) {
+				var additional_text = (event.keyCode === 13) ? "\n" : String.fromCharCode(event.charCode);
+				autoHeight.call(this, additional_text);
+			}
+		});
 
 		//----------------------------------------------------------------------------- autoHeight init
-		$(this).keyup();
+		autoHeight.call(this);
 
 		return this;
 	};

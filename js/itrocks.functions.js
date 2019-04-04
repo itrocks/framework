@@ -38,30 +38,42 @@ dateFormatToDatepicker = function(text)
 };
 
 //------------------------------------------------------------------------------ getInputTextHeight
-getInputTextHeight = function(context)
+getInputTextHeight = function($context, additional_text)
 {
-	return getTextHeight(context);
+	if (additional_text === undefined) {
+		additional_text = '';
+	}
+	return getTextHeight($context, 0, additional_text);
 };
 
 //------------------------------------------------------------------------------- getInputTextWidth
-// TODO limit cache size as it could grow too much !
-getInputTextWidth = function(context)
+getInputTextWidth = function($context, additional_text)
 {
-	return Math.max(40, getTextWidth(context, 16));
+	if (additional_text === undefined) {
+		additional_text = '';
+	}
+	return Math.max(40, getTextWidth($context, 0, additional_text));
 };
 
-getTextContentAsArray = function($context)
+//--------------------------------------------------------------------------- getTextContentAsArray
+getTextContentAsArray = function($context, additional_text)
 {
+	if (additional_text === undefined) {
+		additional_text = '';
+	}
 	var text = $context.is('div')
 		? $context.html().replace('<br>', "\n").replace('<p>', "\n\n")
-		: $context.val();
+		: ($context.val() + additional_text);
 	return text.replace('<', '&lt;').replace('>', '&gt;').split("\n");
 };
 
 //----------------------------------------------------------------------------------- getTextHeight
-getTextHeight = function($context, extra_height)
+getTextHeight = function($context, extra_height, additional_text)
 {
-	var content = getTextContentAsArray($context);
+	if (additional_text === undefined) {
+		additional_text = '';
+	}
+	var content = getTextContentAsArray($context, additional_text);
 	// If the last element is empty, need put a character to prevent the browser ignores the character
 	var $last_index = content.length -1;
 	if (!content[$last_index]) {
@@ -71,7 +83,7 @@ getTextHeight = function($context, extra_height)
 	$height.append(content.join('<br>')).appendTo($context.parent());
 	copyCssPropertyTo($context, $height);
 	$height.css('position', 'absolute');
-	var $width = getInputTextWidth($context);
+	var $width = getInputTextWidth($context, additional_text);
 	$height.width($width);
 	var height = $height.height();
 	if (extra_height !== undefined) {
@@ -82,15 +94,21 @@ getTextHeight = function($context, extra_height)
 };
 
 //------------------------------------------------------------------------------------ getTextWidth
-get_text_width_cache = [];
-getTextWidth = function($context, extra_width)
+var get_text_width_cache = [];
+getTextWidth = function($context, extra_width, additional_text)
 {
-	var width = get_text_width_cache[$context.val()];
+	if (additional_text === undefined) {
+		additional_text = '';
+	}
+	if (get_text_width_cache.length > 1000) {
+		get_text_width_cache = [];
+	}
+	var width = get_text_width_cache[$context.val() + additional_text];
 	if (width !== undefined) {
 		return width;
 	}
 	else {
-		var content = getTextContentAsArray($context);
+		var content = getTextContentAsArray($context, additional_text);
 		var $width  = $('<span>');
 		$width.append(content.join('<br>')).appendTo('body');
 		copyCssPropertyTo($context, $width);
@@ -111,7 +129,7 @@ getTextWidth = function($context, extra_width)
 			width = width - (ending_right_parent - ending_right);
 		}
 		$width.remove();
-		get_text_width_cache[$context.val()] = width;
+		get_text_width_cache[$context.val() + additional_text] = width;
 		return width;
 	}
 };
@@ -142,7 +160,7 @@ redirect = function(uri, target, after, callback, history)
 	else {
 		var close_function;
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
-		if (target.endsWith('main') && !$target.length) {
+		if (target && target.endsWith('main') && !$target.length) {
 			$target = $(target.beginsWith('#') ? 'main' : '#main');
 		}
 		if (!$target.length) {
@@ -225,7 +243,7 @@ redirectLight = function(uri, target, condition)
 	}
 	if (more) {
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
-		if (target.endsWith('main') && !$target.length) {
+		if (target && target.endsWith('main') && !$target.length) {
 			$target = $(target.beginsWith('#') ? 'main' : '#main');
 		}
 		$.ajax({
