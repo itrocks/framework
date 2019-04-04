@@ -77,10 +77,10 @@ getTextHeight = function($context, extra_height, additional_text)
 	// If the last element is empty, need put a character to prevent the browser ignores the character
 	var $last_index = content.length -1;
 	if (!content[$last_index]) {
-		content[$last_index] = '_';
+		content[$last_index] = 'X';
 	}
-	var $height = $('<div>');
-	$height.append(content.join('<br>')).appendTo($context.parent());
+	var $height = $('<div class="hidden">').html(content.join('<br>'));
+	$height.appendTo($context.parent());
 	copyCssPropertyTo($context, $height);
 	$height.css('position', 'absolute');
 	var $width = getInputTextWidth($context, additional_text);
