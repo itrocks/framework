@@ -735,6 +735,11 @@ class Template
 	 */
 	protected function parseContainer($content)
 	{
+		$i = 0;
+		while (($i = strpos($content, '<!--DEV-->', $i)) !== false) {
+			$j       = strpos($content, '<!--END-->', $i) + 10;
+			$content = substr($content, 0, $i) . substr($content, $j);
+		}
 		if (isset($this->parameters[Parameter::CONTAINER])) {
 			$container_begin = 'BEGIN:' . $this->parameters[Parameter::CONTAINER];
 			$container_end   = 'END:' . $this->parameters[Parameter::CONTAINER];
