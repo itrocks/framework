@@ -1860,6 +1860,7 @@ class Template
 	 */
 	public function parseContent($content)
 	{
+		$content = $this->removeAppAttributes($content);
 		$content = $this->prepareW3Links($content);
 		$content = $this->parseVars($content);
 		$content = $this->removeAppLinks($content);
@@ -1963,6 +1964,24 @@ class Template
 				}
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------- removeAppAttributes
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function removeAppAttributes($content)
+	{
+		$i = 0;
+		while (($i = strpos($content, 'data-attributes=' . DQ, $i)) !== false) {
+			$i      += 17;
+			$j       = strpos($content, DQ, $i);
+			$content = substr($content, 0, $i - 17)
+				. substr($content, $i, $j - $i)
+				. substr($content, $j + 1);
+		}
+		return $content;
 	}
 
 	//-------------------------------------------------------------------------------- removeAppLinks
