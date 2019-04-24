@@ -182,12 +182,12 @@ $(document).ready(function()
 			$(this).change();
 		});
 
-		//----------------------------------------- $model_window > .general_actions > .write > a click
+		//----------------------------------- article.model .editor .general.actions > .write > a click
 		/**
 		 * Save layout model : build the standardized data before saving the form,
 		 * as no data is stored into inputs
 		 */
-		this.inside('.general.actions > .write > a').click(function()
+		this.find('.general.actions > .write > a').click(function()
 		{
 			var $designer = $(this).closest('article.model').find('.editor .designer');
 			var $active   = $designer.closest('.active.page');

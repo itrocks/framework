@@ -29,12 +29,14 @@ class Translator_Test extends Test
 
 	//---------------------------------------------------------------------------- setTranslatorCache
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $translator Translator
 	 * @param $cache      array
 	 */
-	public static function setTranslatorCache($translator, $cache)
+	public static function setTranslatorCache(Translator $translator, $cache)
 	{
 		$reflection_translator = new ReflectionObject($translator);
+		/** @noinspection PhpUnhandledExceptionInspection valid property */
 		$cache_property        = $reflection_translator->getProperty('cache');
 		$cache_property->setAccessible(true);
 		$cache_property->setValue($translator, $cache);

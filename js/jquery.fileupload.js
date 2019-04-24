@@ -25,7 +25,7 @@
 		});
 
 		//------------------------------------------------------------------------------ this dragleave
-		$drop_zone.on('dragleave', function()
+		$drop_zone.on('dragleave', function(event)
 		{
 			event.preventDefault();
 			event.stopPropagation();

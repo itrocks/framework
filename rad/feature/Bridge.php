@@ -151,7 +151,6 @@ class Bridge
 	//------------------------------------------------------------------------------------- uninstall
 	/**
 	 * @param $feature_name string
-	 * @return boolean
 	 */
 	protected function uninstall($feature_name)
 	{

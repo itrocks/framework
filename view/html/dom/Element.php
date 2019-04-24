@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Dom;
 
-use ITRocks\Framework\View\Html\Dom\Lists\Unordered_List;
+use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * A DOM element class
@@ -158,11 +158,11 @@ abstract class Element
 
 	//------------------------------------------------------------------------------ getContentAsList
 	/**
-	 * @return Unordered_List
+	 * @return Unordered
 	 */
 	private function getContentAsList()
 	{
-		$list = new Unordered_List();
+		$list = new Unordered();
 		foreach ($this->content as $item) {
 			$list->addItem($item);
 		}

@@ -1884,7 +1884,7 @@ class Template
 	 * @param $content string
 	 * @return string updated content
 	 */
-	protected function parseVars($content)
+	public function parseVars($content)
 	{
 		$content = $this->parseLoops($content);
 		$i       = 0;

@@ -18,7 +18,7 @@ class Virtual_Parameter
 
 	//------------------------------------------------------------------------------------- $function
 	/**
-	 * @var string|\string[]
+	 * @var string|string[]
 	 */
 	private $function;
 
