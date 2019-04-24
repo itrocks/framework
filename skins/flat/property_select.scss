@@ -8,6 +8,10 @@
 	top: 1.5em;
 	white-space: nowrap;
 
+	> h3 {
+		display: none;
+	}
+
 	> .search {
 
 		> input {

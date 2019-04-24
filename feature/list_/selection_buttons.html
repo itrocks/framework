@@ -5,7 +5,7 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>{title}</title>
 </head>
 <body>
@@ -29,6 +29,27 @@
 				<!--end-->
 			</ul>
 			<!--end-->
+		</li>
+		<!--sample-->
+		<li class="export">
+			<a class="submit" href="app://ITRocks/Framework/Users/export">Export</a>
+		</li>
+		<li class="print">
+			<a class="submit" href="app://ITRocks/Framework/Users/print">Print</a>
+			<ul>
+				<li class="add">
+					<a class="submit" href="app://ITRocks/Framework/Layout/Model/add/class_name/ITRocks/Framework/User" target="#main">New print model</a>
+				</li>
+				<li>
+					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#messages">Standard model</a>
+				</li>
+				<li>
+					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#messages">Secondary model</a>
+				</li>
+			</ul>
+		</li>
+		<li class="delete">
+			<a class="submit" href="app://ITRocks/Framework/Users/delete" target="#messages">Delete</a>
 		</li>
 		<!--end-->
 	</ul>

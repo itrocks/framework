@@ -5,7 +5,7 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>|General buttons|</title>
 </head>
 <body>
@@ -28,9 +28,29 @@
 		</li>
 		<!--sample-->
 		<li class="write">
-			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://abook/ITRocks/ABook/Contact/1/write" target="#messages" title="Write this">
+			<a class="submit" data-confirm-cancel="Cancel" data-confirm-message="Confirm write" data-confirm-ok="Confirmed" href="app://abook/ITRocks/ABook/Contact/1/write" target="#messages" title="Write this">
 				Write
 			</a>
+		</li>
+		<li class="import">
+			<a class="submit" href="app://ITRocks/Framework/Users/export">Export</a>
+		</li>
+		<li class="print">
+			<a class="submit" href="app://ITRocks/Framework/Users/print">Print</a>
+			<ul>
+				<li class="add">
+					<a class="submit" href="app://ITRocks/Framework/Layout/Model/add/class_name/ITRocks/Framework/User" target="#main">New print model</a>
+				</li>
+				<li>
+					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#messages">Standard model</a>
+				</li>
+				<li>
+					<a class="submit" href="app://ITRocks/Framework/Users/print" target="#messages">Secondary model</a>
+				</li>
+			</ul>
+		</li>
+		<li class="delete">
+			<a class="submit" href="app://ITRocks/Framework/Users/delete" target="#messages">Delete</a>
 		</li>
 		<!--end-->
 	</ul>

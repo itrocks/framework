@@ -1,25 +1,47 @@
-<ol class="properties">
-<!--content--><!--@filterProperties--><!--@endWithMultiple--><!--@expand-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/flat/all.css"; </style>
+	<title>|{@class.ucfirst}|</title>
+</head>
+<body>
+<article class="output">
+<header><h2>Output</h2></header>
+<ul class="data"><li>
+<!--BEGIN-->
 
-	<!--@startingBlocks-->
-	<li class="{.} block" {?data}>
-		<label>|{.}|</label>
-		<ol class="properties">
-	<!--end-->
+	<ol class="properties">
+	<!--content--><!--@filterProperties--><!--@endWithMultiple--><!--@expand-->
 
-	<!--getAnnotations('before')--><li class="before {name}">|{value}|</li><!--end-->
-	<li class="{name} {getType.asString.short.lower} {?getType.isClassHtml} {?getType.isMultiple} {?isHidden}" id="{path}">
-		<!--@isVisible?-->
-		<label title="{?pathIfDifferent.display.@loc}">{display}</label>
-		<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
+		<!--@startingBlocks-->
+		<li class="{.} block" data-attributes="{?data}">
+			<label>|{.}|</label>
+			<ol class="properties">
 		<!--end-->
-	</li>
-	<!--getAnnotations('after')--><li class="after {name}">|{value}|</li><!--end-->
 
-	<!--@stoppingBlocks-->
-		</ol>
-	</li>
-	<!--end-->
+		<!--getAnnotations('before')--><li class="before {name}">|{value}|</li><!--end-->
+		<li class="{name} {getType.asString.short.lower} {?getType.isClassHtml} {?getType.isMultiple} {?isHidden}" id="{path}">
+			<!--@isVisible?-->
+			<label title="{?pathIfDifferent.display.@loc}">{display}</label>
+			<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
+			<!--end-->
+		</li>
+		<!--getAnnotations('after')--><li class="after {name}">|{value}|</li><!--end-->
 
-<!--end--><!--end--><!--end--><!--end-->
-</ol>
+		<!--@stoppingBlocks-->
+			</ol>
+		</li>
+		<!--end-->
+
+	<!--end--><!--end--><!--end--><!--end-->
+	</ol>
+
+<!--END-->
+</li></ul>
+</article>
+</body>
+</html>

@@ -5,7 +5,7 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>|Custom property editor|</title>
 </head>
 <body>
@@ -17,7 +17,7 @@
 				<label for="property.group_by">|group by|</label>
 				<div>
 					<input data-origin="{group_by}" name="property_group_by" type="hidden" value="{group_by}">
-					<input {?htmlGroupBy} id="property.group_by" type="checkbox" value="1">
+					<input data-attributes="{?htmlGroupBy}" id="property.group_by" type="checkbox" value="1">
 				</div>
 			</div>
 		</fieldset>

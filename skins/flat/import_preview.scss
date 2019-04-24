@@ -16,6 +16,10 @@ article.import.preview {
 				color: $action-focus-color;
 			}
 
+			> h3 {
+				display: none;
+			}
+
 			> ul {
 				display: inline-block;
 

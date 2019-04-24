@@ -3,6 +3,8 @@ article.import.preview li.block > .constants {
 article.import.preview li.block > section.ui-droppable-hover {
   background: #00b39c;
   color: #efe; }
+article.import.preview li.block > section > h3 {
+  display: none; }
 article.import.preview li.block > section > ul {
   display: inline-block; }
   article.import.preview li.block > section > ul[data-empty]:empty:after {

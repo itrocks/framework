@@ -5,7 +5,7 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>|¦{class_name.display}¦ import|</title>
 </head>
 <body>
@@ -62,19 +62,23 @@
 							</li>
 						</ol>
 						<section class="identify properties">
+							<h3>|Identify|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
 							|Identify each !<span>{name.@tr}</span>! by !<ul data-empty="|always create a new record|"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|
 							(|must be unique|).
 						</section>
 						<section class="none">
+							<h3>|No match|</h3>
 							|If no !<span>{name.@tr}</span>! match|,
 							{object_not_found_behaviour.@edit("worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
 						</section>
 						<section class="write properties">
+							<h3>|Write|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
 							|Update the value of !<ul data-empty="|no value to write|"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
 						</section>
 						<section class="ignore properties">
+							<h3>|Ignore|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
 							|Ignore the value of !<ul data-empty="|no value is ignored|"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
 						</section>
@@ -84,9 +88,29 @@
 
 				<!--preview-->
 				<table class="preview">
-					<tr><!--properties--><th title="{?aliases_property.{.}}">{.}</th><!--end--></tr>
+					<tr>
+						<!--properties-->
+						<th title="{?aliases_property.{.}}">{.}</th>
+						<!--sample-->
+						<th>login</th>
+						<th>email</th>
+						<!--end-->
+					</tr>
 					<!--data:{first_row}-{last_row}-->
-					<tr><!--.:-{..last_column}--><td>{.}</td><!--end--></tr>
+					<tr>
+						<!--.:-{..last_column}-->
+						<td>{.}</td>
+						<!--sample-->
+						<td>baptiste.pillot</td>
+						<td>baptiste@pillot.fr</td>
+						<!--end-->
+					</tr>
+					<!--sample-->
+					<tr>
+						<td>line 2</td>
+						<td>jon.snow</td>
+						<td>jon@snow.re</td>
+					</tr>
 					<!--end-->
 				</table>
 				<!--end-->

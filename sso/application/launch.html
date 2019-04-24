@@ -5,13 +5,14 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>|User authenticated|</title>
 </head>
 <body>
 <!--BEGIN-->
 
 	<article class="sso application launch">
+		<h2>|SSO application launch|</h2>
 		<form action="app://(third_party_application_uri)" class="auto-submit" id="goToAppForm" method="post">
 			<input type="hidden" name="login"  value="{login}">
 			<input type="hidden" name="path"   value="{path}">

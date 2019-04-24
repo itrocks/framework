@@ -5,7 +5,7 @@
 	<script src="../../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
-	<style> @import "../../skins/default/all.css"; </style>
+	<style> @import "../../skins/flat/all.css"; </style>
 	<title>|Register user|</title>
 </head>
 <body>
@@ -13,14 +13,16 @@
 
 	<div class="user register window">
 		<h2>|User register|</h2>
-		<form name="user_login" action="/ITRocks/Framework/User/Register/register" method="post" target="#main">
+		<form name="user_login" action="app://ITRocks/Framework/User/Register/register" method="post" target="#main">
 			<div class="fieldset">
-				<!--User_Authentication.getRegisterInputs-->
 				<div class="field">
-					<div class="label">|{label}|</div>
-					<div class="value"><input name="{name}" type="{type}" value="{?value}"></div>
+					<div class="label">|Login|</div>
+					<div class="value"><input name="login" value="{?login.value}"></div>
 				</div>
-				<!--end-->
+				<div class="field">
+					<div class="label">|Password|</div>
+					<div class="value"><input name="password" type="password" value="{?password.value}"></div>
+				</div>
 			</div>
 			<input type="submit" value="|Register|">
 		</form>

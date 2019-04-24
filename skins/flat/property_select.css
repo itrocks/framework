@@ -4,6 +4,9 @@
   display: inline-block;
   top: 1.5em;
   white-space: nowrap; }
+  .func_select > h3,
+  .property_select > h3 {
+    display: none; }
   .func_select > .search > input,
   .property_select > .search > input {
     min-width: 100%; }

@@ -1,2 +1,5 @@
 article.import.form > form > ul.actions {
   padding-left: 0.5em; }
+
+article.import > h2:only-child {
+  display: none; }

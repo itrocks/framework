@@ -5,13 +5,14 @@
 	<script src="../../../vendor/components/jquery/jquery.js"></script>
 	<script> path = "../../../"; </script>
 	<script src="../js/all.js"></script>
-	<style> @import "../skins/default/all.css"; </style>
+	<style> @import "../skins/flat/all.css"; </style>
 	<title>|Select a ¦property¦|</title>
 </head>
 <body>
 <!--BEGIN-->
 
 	<section class="property_select">
+		<h3>|Property select|</h3>
 		<div class="search">
 			<label for="property_search">|property search|</label>
 			<input class="auto_width" id="property_search" name="search">
@@ -22,7 +23,7 @@
 		<!--BEGIN:inside_tree-->
 		<!--properties-->
 			<!--.?-->
-			<li class="property {?isBasicHtml} {?isStringableHtml} {?classHtml}" data-property="{link_path}" <!--link_path?-->title="|{link_path.path}|"<!--end-->>
+			<li class="property {?isBasicHtml} {?isStringableHtml} {?classHtml}" data-property="{link_path}" data-begin="link_path?" title="|{link_path.path}|" data-end>
 				<!--isExpandable?-->
 				<a href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{link_path.idTag}" title="|{link_path.path}|">
 				<!--end-->
