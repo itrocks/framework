@@ -1981,6 +1981,21 @@ class Template
 				. substr($content, $i, $j - $i)
 				. substr($content, $j + 1);
 		}
+
+		$i            = 0;
+		$replacements = false;
+		while (($i = strpos($content, 'data-begin=' . DQ, $i)) !== false) {
+			$i      += 12;
+			$j       = strpos($content, DQ, $i);
+			$content = substr($content, 0, $i - 12)
+				. '<!--' . substr($content, $i, $j - $i) . '-->'
+				. substr($content, $j + (($content[$j + 1] === SP) ? 2 : 1));
+			$replacements = true;
+		}
+		if ($replacements) {
+			$content = str_replace('data-end', '<!--end-->', $content);
+		}
+
 		return $content;
 	}
 
