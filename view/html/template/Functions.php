@@ -815,7 +815,10 @@ class Functions
 	public function getLink(Template $template, $feature = null)
 	{
 		foreach ($template->objects as $object) {
-			if (is_object($object)) {
+			if (is_string($object)) {
+				$feature = $object;
+			}
+			elseif (is_object($object)) {
 				return View::link($object, $feature);
 			}
 		}
