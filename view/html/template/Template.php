@@ -1001,6 +1001,9 @@ class Template
 		}
 		elseif (is_object($elements)) {
 			$loop_insert = $this->parseVars($loop->content);
+			if (!strlen(trim($loop_insert)) && ($else_j !== $end_j)) {
+				$loop_insert = $this->parseVars($loop->else_content);
+			}
 		}
 		elseif (!empty($elements)) {
 			$loop_insert = $this->parseVars($loop->content);
