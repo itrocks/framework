@@ -11,22 +11,24 @@
 <body>
 <!--BEGIN-->
 
-	<form action="app://ITRocks/Framework/User/authenticate" class="user login window" method="post" name="user_login" target="#main">
+	<article class="user login" data-class="{@class}" data-feature="{@feature}">
 		<h2>|User login|</h2>
-		<fieldset>
-			<div class="login">
-				<label for="login">|Login|</label>
-				<input id="login" name="login" value="{?login}">
-			</div>
-			<div class="password">
-				<label for="password">|Password|</label>
-				<input id="password" name="password" type="password" value="{?password}">
-			</div>
-		</fieldset>
-		<ul class="actions">
-			<li><input type="submit" value="|Connection|"></li>
-		</ul>
-	</form>
+		<form action="app://('authenticate'.@link)" method="post" name="user_login" target="#main">
+			<ol class="properties">
+				<li class="login">
+					<label for="login">|Login|</label>
+					<input id="login" name="login" value="{?login}">
+				</li>
+				<li class="password">
+					<label for="password">|Password|</label>
+					<input id="password" name="password" type="password" value="{?password}">
+				</li>
+			</ol>
+			<ul class="actions">
+				<li class="connect"><input type="submit" value="|Connection|"></li>
+			</ul>
+		</form>
+	</article>
 
 <!--END-->
 </body>

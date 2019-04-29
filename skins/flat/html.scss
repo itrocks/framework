@@ -11,6 +11,22 @@ a {
 	}
 }
 
+button,
+input[type=submit] {
+	background: none;
+	border: none;
+	cursor: pointer;
+	font-size: inherit;
+	margin: $actions-vertical-margin $actions-horizontal-margin !important;
+	padding: $action-vertical-padding $action-horizontal-padding !important;
+	white-space: nowrap;
+
+	&:hover {
+		background-color: $action-focus-background;
+		color: $action-focus-color;
+	}
+}
+
 input:not([type=submit]), select, textarea {
 	background-color: $background;
 	border: none;

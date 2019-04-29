@@ -5,14 +5,17 @@
 
 article {
 
-	> header {
+	> h2, > header > h2 {
+		padding: $article-head-padding;
+	}
+
+	> h2, > header {
 		background-color: $window-head-background;
 		color: $window-head-color;
 
-		> h2 {
+		&header > h2 {
 			cursor: pointer;
 			display: inline-block;
-			padding: $article-head-padding;
 		}
 	}
 

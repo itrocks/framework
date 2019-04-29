@@ -1,5 +1,9 @@
 @import 'sizes.scss';
 
+article.user.login > form > ul.actions {
+	text-align: right;
+}
+
 section.connected.user {
 
 	> a {
