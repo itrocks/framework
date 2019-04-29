@@ -1678,7 +1678,7 @@ class Template
 				ctype_upper($c)
 				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
-			|| (strpos('#@§/.-+?!|="', $c) !== false);
+			|| (strpos('#@§/.-+?!|="' . Q, $c) !== false);
 	}
 
 	//-------------------------------------------------------------------------------------- parseUse
