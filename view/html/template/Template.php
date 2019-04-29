@@ -350,7 +350,7 @@ class Template
 		static $css_path = [];
 		$path = isset($css_path[$css]) ? $css_path[$css] : null;
 		if (!isset($path)) {
-			$path = str_replace(BS, SL, stream_resolve_include_path($css . '/application.css'));
+			$path = str_replace(BS, SL, stream_resolve_include_path($css . '/html.css'));
 			if ($i = strrpos($path, SL)) {
 				$path = substr($path, 0, $i);
 			}
