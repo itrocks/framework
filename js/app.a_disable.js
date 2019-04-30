@@ -6,7 +6,9 @@ $(document).ready(function()
 	 * Disable click on .disabled links
 	 */
 	$('body').build({
-		event: 'click', priority: 10, selector: 'a, button, input[type=submit]',
+		event:    'click',
+		priority: 10,
+		selector: 'a, button, input[type=submit]',
 		callback: function(event)
 		{
 			if ($(this).hasClass('disabled')) {

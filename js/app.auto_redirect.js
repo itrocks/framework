@@ -10,7 +10,7 @@ $(document).ready(function()
 		if (delay === undefined) {
 			delay = 0;
 		}
-		setTimeout(function() { $a.click(); }, delay);
+		setTimeout(function() { $.data($a[0], 'events') ? $a.click() : $a[0].click(); }, delay);
 	});
 
 	$body.build('each', 'form.auto-submit', function()
