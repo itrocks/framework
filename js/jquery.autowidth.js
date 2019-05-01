@@ -266,9 +266,10 @@
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
 			margin_right: {
-				'input':    0,
-				'textarea': 16,
-				'.combo':   24
+				'input':     0,
+				'textarea':  16,
+				'.combo':    26,
+				'.datetime': 26
 			},
 			multiple: {
 				maximum: 300,
