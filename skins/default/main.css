@@ -1,203 +1,48 @@
-html, body {
-  height: 100%; }
-
-a.auto-redirect {
-  display: none; }
-
+@media screen and (max-width: 479px) {
+  body > header .logo {
+    display: none !important; } }
+@media screen and (min-width: 480px) {
+  body {
+    white-space: nowrap; }
+    body > :not(nav) {
+      white-space: initial; } }
 body {
   background-color: white;
-  font-family: arial, helvetica, sans-serif;
-  font-size: 12px; }
-  body > header {
-    background-color: lightgrey;
-    border-bottom: solid darkgrey 1px;
-    height: 52px; }
-    body > header > .connected {
-      background: url("img/disconnect-left.png") no-repeat left -2px;
-      display: inline-block;
-      float: left;
-      padding: 2px 0; }
-      body > header > .connected > a {
-        color: transparent;
-        display: inline-block;
-        font-size: 1px;
-        height: 24px;
-        padding-left: 28px;
-        width: 24px; }
-        body > header > .connected > a > .login {
-          color: #404040;
-          font-size: 14px;
-          font-style: italic;
-          font-weight: bold; }
-      body > header > .connected:hover {
-        background-image: url("img/disconnect-left-animate.gif"); }
-        body > header > .connected:hover > a > .login {
-          color: #800000;
-          text-decoration: underline; }
-
-div p:not(:first-child) {
-  margin-top: 1em; }
-div p:not(:last-child) {
-  margin-bottom: 1em; }
-
-em {
-  font-style: italic; }
-
-h1 {
-  display: none; }
-
-h2 {
-  font-size: 1.4em; }
-
-h3 {
-  font-size: 1.2em; }
-
-hr {
-  border: 1px solid darkgray;
-  height: 0;
-  margin: .5em; }
-
-li {
-  list-style-position: inside;
-  margin-left: 1em; }
-
-strong {
-  font-weight: bold; }
-
-sub {
-  font-size: smaller;
-  line-height: normal;
-  vertical-align: sub; }
-
-sup {
-  font-size: smaller;
-  line-height: normal;
-  vertical-align: super; }
-
-table, tbody, thead, tr, td, th {
-  border-spacing: 0;
-  padding: 0 2px; }
-
-tbody > tr > th {
-  text-align: left; }
-
-thead > tr > th {
-  text-align: center; }
-
-.candrop {
-  box-shadow: 0 0 3px 3px red; }
-
-.dragging {
-  border: 1px solid lightgray;
-  border-radius: 2px;
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-  cursor: move;
-  padding: 0 4px; }
-
-.empty {
-  color: #777;
-  font-style: italic; }
-
-.error {
-  background-color: red;
-  border-radius: 3px;
-  color: white;
-  font-size: 1.5em;
-  margin: -3px;
-  padding: 3px; }
-  .error .technical {
-    display: none; }
-
-.hidden {
-  visibility: hidden; }
-
-.logger.query {
-  background-color: lightcyan;
-  border: 1px solid lightblue;
-  color: darkblue;
-  margin: 4px;
-  padding: 4px; }
-.logger.error {
-  background-color: darkred;
-  border: 1px solid red;
-  color: white;
-  margin: 4px;
-  padding: 4px; }
-  .logger.error:before {
-    content: "ERREUR : "; }
-
-.minimize {
-  background: url("img/arrow_black_up.gif") center no-repeat;
-  color: transparent;
-  cursor: pointer;
-  float: left;
-  font-size: 1px;
-  height: 24px;
-  left: 0;
+  color: #444;
+  font-size: 18px;
+  height: 100%;
   position: absolute;
-  top: 0;
-  width: 24px;
-  z-index: 1; }
-  .minimize + h2 {
-    padding-left: 24px !important; }
-
-.minimized {
-  float: none;
-  position: absolute; }
-  .minimized > .minimize {
-    background: url("img/arrow_black_down.gif") center no-repeat; }
-
-.ui-draggable > h2 {
-  cursor: move; }
-
-.visible {
-  display: inline-block; }
-
-.warning {
-  background-color: orange;
-  border-radius: 3px;
-  color: white;
-  font-size: 1.3em;
-  margin: -3px;
-  padding: 3px; }
-
-main {
-  display: inline-block;
-  white-space: nowrap; }
-  main > * {
-    white-space: normal; }
-
-div#messages {
-  background-color: white;
-  border: 1px solid lightgray;
-  border-radius: 3px;
-  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  left: 4px;
-  max-width: 80%;
-  padding: 16px 3px 3px 3px;
-  position: fixed !important;
-  top: 4px;
-  z-index: 1000000000 !important; }
-  div#messages:after {
-    content: 'X';
-    cursor: pointer;
-    position: absolute;
-    right: -1px;
-    text-align: center;
-    top: -3px;
-    width: 1.5em; }
-  div#messages:before {
-    background-color: lightblue;
-    content: ' ';
-    cursor: move;
-    height: 13px;
-    left: 0;
-    position: absolute;
-    top: 0;
-    width: 100%; }
-  div#messages:empty {
+  width: 100%; }
+  body > h1 {
     display: none; }
-
-table.worksheet > tbody > tr > td > input {
-  margin: 0 -3px -1px -2px; }
+  body > header {
+    background: lightgrey url("img/header-background.png") bottom right;
+    color: #444;
+    display: table-row;
+    height: 54px;
+    position: relative; }
+    body > header .logo {
+      background: transparent center no-repeat;
+      background-size: contain;
+      font-size: 0;
+      height: 54px; }
+    body > header > .logo {
+      background-color: white;
+      background-image: url("img/bappli-studio-logo.png");
+      border-right: 1px solid lightgray;
+      display: table-cell; }
+    body > header > .top.bar {
+      display: table-cell;
+      vertical-align: middle; }
+      body > header > .top.bar > .logo {
+        background-image: url("img/bappli-studio-logo-for-dark.png");
+        display: inline-block;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 211.5px; }
+  body > main {
+    width: 100%; }
+  body > main, body > nav {
+    display: table-cell;
+    vertical-align: top; }

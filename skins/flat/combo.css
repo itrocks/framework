@@ -1,17 +1,5 @@
-li.class {
-  position: relative; }
-  li.class button {
-    background: transparent center no-repeat;
-    background-size: 66%;
-    border: none;
-    cursor: pointer;
-    font-size: 0;
-    height: 27px;
-    margin-left: -27px !important;
-    position: absolute;
-    width: 27px; }
-  li.class:not(.date_time) button {
-    background-image: url("img/input-combo.png"); }
+button.more {
+  background-image: url("img/input-combo.png"); }
 
 .ui-state-active {
   background: #00b39c !important;

@@ -1,0 +1,6 @@
+button.more {
+  background-image: url("img/input-combo.png"); }
+
+.ui-state-active {
+  background: #aedc5f !important;
+  color: white !important; }

@@ -7,3 +7,6 @@ article.list > section.summary {
 article.list > form {
   display: inline-block;
   min-width: 500px; }
+  article.list > form input {
+    background: transparent;
+    border: none; }

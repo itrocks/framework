@@ -1,20 +1,40 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-form ol.properties > li > div > ul > li > ol > li {
+form {
 
-	&.minus {
-		cursor: pointer;
-		text-align: center;
-		width: $font-size;
-
-		&:hover {
-			background: $action-focus-background;
-			color: $action-focus-color;
-		}
+	li.class {
+		position: relative;
 	}
 
-	> input, > select, > textarea {
-		width: 100%;
+	ol.properties > li > div > ul > li {
+
+		&:not(:last-child) > ol > li {
+			border-bottom: $thin-border;
+		}
+
+		> ol > li {
+
+			&:not(:last-child) {
+				border-right: $thin-border;
+			}
+
+			&.minus {
+				cursor: pointer;
+				text-align: center;
+				width: $font-size;
+
+				&:hover {
+					background: $action-focus-background;
+					color: $action-focus-color;
+				}
+			}
+
+			> input, > select, > textarea {
+				background: transparent;
+				border: none !important;
+				width: 100%;
+			}
+		}
 	}
 }

@@ -1,6 +1,0 @@
-body > header > #environment {
-  display: inline-block;
-  float: left;
-  margin-left: 120px;
-  position: absolute;
-  z-index: 999999999; }

@@ -1,254 +1,26 @@
-@import "colors.scss";
+@import 'colors.scss';
 
 article.list {
 
-	/* search summary */
+	> section.summary {
+		cursor: pointer;
 
-	.section.summary {
-		color: #333;
-		font-weight: bold;
-		text-align: left;
+		> details.error {
+			border: 1px solid $error-border-color;
+		}
 
-		&:empty {
+		> h3 {
 			display: none;
 		}
-
-		.errors {
-			font-size: 100%;
-			padding: 1px 3px;
-		}
 	}
 
-	/* table */
-
-	> form > ul.list {
-		clear: both;
-		font-family: arial, helvetica, sans-serif;
-		font-size: 12px;
-		width: 100%;
-
-		/* columns */
-
-		> li > ol > li {
-			display: table-cell;
-		}
-
-		> li.title > ol > li {
-
-			&:not(:last-child) {
-				min-width: 16px;
-			}
-
-			&:first-child, &:nth-child(2) {
-				max-width: 16px;
-				width: 16px;
-			}
-
-		}
-
-		/* head */
-
-		> li {
-			border-bottom: 1px solid lightgray;
-			border-left: 1px solid lightgray;
-			border-right: 1px solid lightgray;
-		}
-
-		> li.title {
-			display: block;
-			height: 17px;
-
-			> ol > li {
-				background: url("img/list_head_left.png") left 3px no-repeat,
-				url("img/list_head_right.png") right 3px no-repeat,
-				url("img/list_head_background.png") left 0 #aaa repeat-x;
-				vertical-align: bottom;
-				white-space: nowrap;
-
-				/* column select */
-
-				&.column_select {
-					background: url("img/list_head_right.png") right 3px no-repeat,
-					url("img/column_select.png") center 5px no-repeat,
-					url("img/list_head_background.png") #aaa repeat-x;
-					position: relative;
-
-					> a {
-						color: transparent;
-						display: block;
-						font-size: 1px;
-						height: 17px;
-					}
-
-					> section.popup {
-						left: 0;
-						position: absolute;
-					}
-
-					.property_select {
-						position: absolute;
-					}
-				}
-
-				/* head anchor */
-				> a {
-					background: padding-box right 5px no-repeat;
-					border-right: 4px solid transparent;
-					color: black;
-					display: block;
-					text-decoration: none;
-					line-height: 17px;
-				}
-
-				&.property > a {
-					padding: 0 14px 0 4px;
-				}
-
-				/* sorting */
-
-				&.sort1:not(.reverse) > a {
-					background-image: url("img/arrow_black_up.gif");
-				}
-
-				&.sort1.reverse > a {
-					background-image: url("img/arrow_black_down.gif");
-				}
-
-				&.sort2:not(.reverse) > a {
-					background-image: url("img/arrow_gray_up.gif");
-				}
-
-				&.sort2.reverse > a {
-					background-image: url("img/arrow_gray_down.gif");
-				}
-			}
-
-			> ol > li {
-				padding: 0 7px 0 0;
-
-				&.reset.search {
-					text-align: center;
-
-					> a {
-						color: black;
-
-						&:not(:hover) {
-							text-decoration: none;
-						}
-					}
-				}
-
-				> input, > select, > textarea {
-					width: 100%;
-				}
-			}
-		}
-
-		/* lines */
-		> li:not(.title) {
-			display: table-row-group;
-			height: 21px;
-
-			> ol {
-				display: table-row;
-			}
-
-			&:nth-child(even) {
-				background-color: $table_even_line;
-			}
-
-			&:nth-child(odd) {
-				background-color: $table_odd_line;
-			}
-
-			&:hover {
-				background-color: $hover!important;
-			}
-
-			> ol > li {
-				border-right: 1px dotted lightgray;
-				padding: 5px 3px 0;
-				vertical-align: top;
-				white-space: nowrap;
-
-				&.vertical.scrollbar {
-					padding: 0;
-					> a {
-						margin: 0;
-					}
-				}
-
-				> a {
-					color: black;
-					display: block;
-					height: 16px;
-					margin: -5px 0 0 0;
-					padding: 5px 0 0 0;
-					text-decoration: none;
-				}
-
-				> input[type=checkbox] {
-					margin: -2px 3px 0;
-				}
-			}
-		}
-
-	}
-}
-
-article.list > form > ul.footer {
-	position: relative;
-
-	> li {
+	> form {
 		display: inline-block;
+		min-width: 500px;
 
-		&.selector:after {
-			content: '>';
-		}
-
-		&.visible.lines {
-			position: absolute;
-			right: 0;
-
-			> ul > li {
-				display: inline-block;
-				padding: .3em;
-
-				&.actions > ul > li {
-
-					> a {
-						font-size: 0;
-						text-decoration: none;
-
-						&:before {
-							color: initial;
-							font-size: initial;
-							padding: .3em;
-						}
-
-						&:hover:before {
-							background-color: white;
-							color: black;
-						}
-					}
-
-					&.twenty.less > a:before {
-						content: '[-]';
-					}
-
-					&.hundred.more > a:before {
-						content: '[+]';
-					}
-
-					&.thousand.more > a:before {
-						content: '[#]';
-					}
-				}
-			}
+		input {
+			background: transparent;
+			border: none;
 		}
 	}
-}
-
-.popup .property.edit.window fieldset > div > div {
-	white-space: inherit;
 }

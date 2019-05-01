@@ -1,105 +1,72 @@
 @import 'colors.scss';
+@import 'sizes.scss';
 
 article > header {
 	position: relative;
 
-	> .custom {
-		display: none;
-	}
-
-	> input {
-		background: white;
-		border-style: none;
-		display: none;
-		height: 20px;
-		margin-left: .5em;
-		padding: 1px 2px;
+	> div.custom {
 		position: absolute;
+		top: 0;
+		width: 100%;
 		z-index: 1;
-	}
 
-	> span {
-		cursor: pointer;
-	}
+		> :not(.actions) {
+			display: none;
 
-	> ul.custom.actions {
-		margin: 0;
-		padding-left: .5em;
-
-		> li {
-			box-shadow: none;
-			line-height: 19px;
-
-			> a {
-				border-style: none;
-				box-shadow: none;
-				color: transparent;
-				font-size: 1px;
-				height: 16px;
-				padding: 1px;
-				vertical-align: top;
-				width: 16px;
-
-				&:hover:before {
-					opacity: .66;
-				}
+			&.name > label {
+				display: none;
 			}
+		}
 
-			&.custom_save > a {
-				background: url('img/floppy.png') center no-repeat;
+		> .actions {
+			display: inline-block;
+			position: absolute;
+			right: 0;
 
-				&:hover {
-					background: none;
-				}
+			> li {
+				margin: 1px;
 
-				&:hover:before {
-					content: url('img/floppy.png');
+				&.custom_save > a {
+					font-size: 0;
+					height: $article-head-height - 2px;
+					width: $article-head-height - 2px;
 				}
 			}
 		}
-	}
 
-	&:hover > ul.custom.actions {
-		display: inline-block;
-	}
+		> .name {
+			position: absolute;
+			right: $article-head-height + 3px;
+			top: 3px;
+		}
 
-	ul.custom.selection {
-		border: 1px solid $border_color;
-		border-radius: 3px;
-		background: white;
-		padding-bottom: .3em;
-		position: absolute;
-		z-index: 1;
+		> .select {
+			background: $background;
+			color: $color;
+			border: $thin-border;
+			margin: ($article-head-padding - $action-vertical-padding) ($article-head-padding - $action-horizontal-padding);
 
-		> li {
-			list-style: none;
-			margin: 0;
-
-			&:first-child > a {
-				font-weight: bold;
-			}
-
-			&.selected {
-				background: $selected;
-			}
-
-			&:hover {
-				background: $hover;
-			}
-
-			> a {
-				color: $black;
+			> li {
 				display: block;
-				font-weight: normal;
-				padding: 0 .5em;
-				text-decoration: none;
+
+				&.default {
+					font-weight: bold;
+				}
+
+				> a {
+					display: block;
+					padding: $action-vertical-padding $action-horizontal-padding;
+				}
 			}
 		}
 	}
-}
 
-.window label > a {
-	color: inherit;
-	font-weight: inherit;
-	text-decoration: none;
+	&:hover > div.custom > .actions > li.custom_save > a {
+		background: url('../default/img/floppy.png') center no-repeat;
+
+		&:hover {
+			background-color: white;
+		}
+	}
+
 }

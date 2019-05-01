@@ -1,22 +1,2 @@
 #trashcan {
-  border-radius: 2px;
-  display: inline-block;
-  bottom: 8px;
-  position: fixed;
-  right: 8px; }
-  #trashcan > a {
-    background: url("img/trashcan.png");
-    color: transparent;
-    display: inline-block;
-    float: right;
-    height: 32px;
-    width: 32px; }
-  #trashcan h2 {
-    display: none; }
-  #trashcan .delete.message,
-  #trashcan .remove.message {
-    background: #fa4 url("img/talk_down.png") bottom right no-repeat;
-    padding: 4px 4px 7px; }
-
-.object > h3 {
-  cursor: pointer; }
+  display: none; }

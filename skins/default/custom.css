@@ -1,70 +1,41 @@
-/* components */
-/* features colors and action left button part */
-/* modules */
 article > header {
   position: relative; }
-  article > header > .custom {
-    display: none; }
-  article > header > input {
-    background: white;
-    border-style: none;
-    display: none;
-    height: 20px;
-    margin-left: .5em;
-    padding: 1px 2px;
+  article > header > div.custom {
     position: absolute;
+    top: 0;
+    width: 100%;
     z-index: 1; }
-  article > header > span {
-    cursor: pointer; }
-  article > header > ul.custom.actions {
-    margin: 0;
-    padding-left: .5em; }
-    article > header > ul.custom.actions > li {
-      box-shadow: none;
-      line-height: 19px; }
-      article > header > ul.custom.actions > li > a {
-        border-style: none;
-        box-shadow: none;
-        color: transparent;
-        font-size: 1px;
-        height: 16px;
-        padding: 1px;
-        vertical-align: top;
-        width: 16px; }
-        article > header > ul.custom.actions > li > a:hover:before {
-          opacity: .66; }
-      article > header > ul.custom.actions > li.custom_save > a {
-        background: url("img/floppy.png") center no-repeat; }
-        article > header > ul.custom.actions > li.custom_save > a:hover {
-          background: none; }
-        article > header > ul.custom.actions > li.custom_save > a:hover:before {
-          content: url("img/floppy.png"); }
-  article > header:hover > ul.custom.actions {
-    display: inline-block; }
-  article > header ul.custom.selection {
-    border: 1px solid #333;
-    border-radius: 3px;
-    background: white;
-    padding-bottom: .3em;
-    position: absolute;
-    z-index: 1; }
-    article > header ul.custom.selection > li {
-      list-style: none;
-      margin: 0; }
-      article > header ul.custom.selection > li:first-child > a {
-        font-weight: bold; }
-      article > header ul.custom.selection > li.selected {
-        background: #cef37f; }
-      article > header ul.custom.selection > li:hover {
-        background: #aedc5f; }
-      article > header ul.custom.selection > li > a {
-        color: #222;
-        display: block;
-        font-weight: normal;
-        padding: 0 .5em;
-        text-decoration: none; }
-
-.window label > a {
-  color: inherit;
-  font-weight: inherit;
-  text-decoration: none; }
+    article > header > div.custom > :not(.actions) {
+      display: none; }
+      article > header > div.custom > :not(.actions).name > label {
+        display: none; }
+    article > header > div.custom > .actions {
+      display: inline-block;
+      position: absolute;
+      right: 0; }
+      article > header > div.custom > .actions > li {
+        margin: 1px; }
+        article > header > div.custom > .actions > li.custom_save > a {
+          font-size: 0;
+          height: 34px;
+          width: 34px; }
+    article > header > div.custom > .name {
+      position: absolute;
+      right: 39px;
+      top: 3px; }
+    article > header > div.custom > .select {
+      background: white;
+      color: #444;
+      border: 1px solid lightgray;
+      margin: 0.2em 0.25em; }
+      article > header > div.custom > .select > li {
+        display: block; }
+        article > header > div.custom > .select > li.default {
+          font-weight: bold; }
+        article > header > div.custom > .select > li > a {
+          display: block;
+          padding: 0.3em 0.25em; }
+  article > header:hover > div.custom > .actions > li.custom_save > a {
+    background: url("../default/img/floppy.png") center no-repeat; }
+    article > header:hover > div.custom > .actions > li.custom_save > a:hover {
+      background-color: white; }

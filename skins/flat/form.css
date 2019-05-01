@@ -1,3 +1,9 @@
+form li.class {
+  position: relative; }
+form ol.properties > li > div > ul > li:not(:last-child) > ol > li {
+  border-bottom: 1px solid lightgray; }
+form ol.properties > li > div > ul > li > ol > li:not(:last-child) {
+  border-right: 1px solid lightgray; }
 form ol.properties > li > div > ul > li > ol > li.minus {
   cursor: pointer;
   text-align: center;
@@ -6,4 +12,6 @@ form ol.properties > li > div > ul > li > ol > li.minus {
     background: #00b39c;
     color: #efe; }
 form ol.properties > li > div > ul > li > ol > li > input, form ol.properties > li > div > ul > li > ol > li > select, form ol.properties > li > div > ul > li > ol > li > textarea {
+  background: transparent;
+  border: none !important;
   width: 100%; }

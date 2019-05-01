@@ -1,0 +1,51 @@
+article.list > form > ul.list {
+  border: 1px solid darkgrey;
+  display: table;
+  width: 100%; }
+  article.list > form > ul.list > li {
+    display: table-row-group;
+    position: relative; }
+    article.list > form > ul.list > li:not(.title) > ol > li:first-child > a {
+      display: none; }
+    article.list > form > ul.list > li:nth-child(n+3):nth-child(even) {
+      background-color: white; }
+    article.list > form > ul.list > li:nth-child(n+3):nth-child(odd) {
+      background-color: #def; }
+    article.list > form > ul.list > li:nth-child(n+3):hover {
+      background-color: #dff; }
+    article.list > form > ul.list > li.search input {
+      min-width: 100%; }
+    article.list > form > ul.list > li.title {
+      background-color: lightgrey;
+      color: #444;
+      text-align: center; }
+      article.list > form > ul.list > li.title > ol > li {
+        vertical-align: middle; }
+        article.list > form > ul.list > li.title > ol > li.column_select {
+          position: relative; }
+          article.list > form > ul.list > li.title > ol > li.column_select > a {
+            background-image: url("img/column-select-white.png");
+            background-position: center;
+            background-repeat: no-repeat;
+            font-size: 0;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            width: 100%; }
+          article.list > form > ul.list > li.title > ol > li.column_select > .popup {
+            text-align: left; }
+    article.list > form > ul.list > li > ol {
+      display: table-row; }
+      article.list > form > ul.list > li > ol > li {
+        display: table-cell; }
+        article.list > form > ul.list > li > ol > li:not(:last-child) {
+          border-right: 1px solid darkgrey; }
+        article.list > form > ul.list > li > ol > li.value {
+          padding: 0.3em 0.25em; }
+          article.list > form > ul.list > li > ol > li.value.float, article.list > form > ul.list > li > ol > li.value.integer {
+            text-align: right; }
+          article.list > form > ul.list > li > ol > li.value > a {
+            margin: -0.3em -0.25em; }
+        article.list > form > ul.list > li > ol > li > a {
+          display: block;
+          padding: 0.3em 0.25em; }

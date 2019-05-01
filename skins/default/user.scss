@@ -1,9 +1,22 @@
-body > header > .connect > .user {
-	display: none;
+@import 'sizes.scss';
+
+article.user.login > form > ul.actions {
+	text-align: right;
 }
 
-.user.login.window {
-	.actions {
-		text-align: center;
+section.connected.user {
+
+	> a {
+		padding: $action-vertical-padding $action-horizontal-padding;
 	}
+
+	> a > .disconnect,
+	> h3,
+	> .user {
+		display: none;
+	}
+}
+
+.user.disconnect > h2 {
+	display: none;
 }

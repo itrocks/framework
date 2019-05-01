@@ -1,24 +1,8 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-li.class {
-	position: relative;
-
-	button {
-		background: transparent center no-repeat;
-		background-size: 66%;
-		border: none;
-		cursor: pointer;
-		font-size: 0;
-		height: $font-size * 1.5;
-		margin-left: -($font-size * 1.5) !important;
-		position: absolute;
-		width: $font-size * 1.5;
-	}
-
-	&:not(.date_time) button {
-		background-image: url('img/input-combo.png');
-	}
+button.more {
+	background-image: url('img/input-combo.png');
 }
 
 .ui-state-active {

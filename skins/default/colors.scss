@@ -1,36 +1,27 @@
-/* components */
+$background: white;
+$color: #444;
 
-$border_color: #333;
+$action-focus-background: #aedc5f;
+$action-focus-color: white;
 
-$button_border: #98989a;
-$button_color: #1c2e6c;
-$button_hover: #2d8f8d;
+$action-zone-background: #dff;
 
-$field_hover: #defdaf;
+$edit-focus-background: #eee;
+$edit-focus-color: $color;
 
-$hover: #aedc5f;
-$selected: #cef37f;
+$error-border-color: darkred;
 
-$table_even_line: #ececed;
-$table_odd_line: white;
+$head-background: lightgrey;
+$head-color: $color;
 
-/* features colors and action left button part */
+$line-even: white;
+$line-odd: #def; // #eef;
 
-$black: #222;
-$blue: #5184d2;
-$gray: #a0a0a0;
-$green: #93c437;
-$magenta: #b2a5ec;
+$list-border: 1px solid darkgrey;
 
-$blue_action:    url("img/buttons/17/left_blue.gif") -1px no-repeat, url("img/buttons/17/background.gif");
-$close_action:   url("img/buttons/17/left_close.gif") -1px no-repeat, url("img/buttons/17/background.gif");
-$green_action:   url("img/buttons/17/left_green.gif") -1px no-repeat, url("img/buttons/17/background.gif");
-$magenta_action: url("img/buttons/17/left_magenta.gif") -1px no-repeat, url("img/buttons/17/background.gif");
-$orange_action:  url("img/buttons/17/left_orange.gif") -1px no-repeat, url("img/buttons/17/background.gif");
-$red_action:     url("img/buttons/17/left_red.gif") -1px no-repeat, url("img/buttons/17/background.gif");
+$separator-color: #ddd;
 
-/* modules */
+$thin-border: 1px solid lightgray;
 
-$catalog:   $blue;
-$purchases: $blue;
-$sales:     $green;
+$window-head-background: darkgrey;
+$window-head-color: white;

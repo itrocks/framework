@@ -1,0 +1,62 @@
+a {
+  color: inherit;
+  text-decoration: inherit; }
+  a:hover {
+    background-color: #aedc5f;
+    color: white; }
+
+button,
+input[type=submit] {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: inherit;
+  margin: 0.3em 0 !important;
+  padding: 0.3em 0.25em !important;
+  white-space: nowrap; }
+  button:hover,
+  input[type=submit]:hover {
+    background-color: #aedc5f;
+    color: white; }
+
+input:not([type=submit]), select, textarea {
+  background-color: white;
+  border: none;
+  font-size: 1em; }
+  input:not([type=submit]):not([readonly]), select:not([readonly]), textarea:not([readonly]) {
+    border-bottom: 1px solid lightgray; }
+    input:not([type=submit]):not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
+      background-color: #eee;
+      color: #444; }
+    input:not([type=submit]):not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
+      background-color: #aedc5f;
+      color: white; }
+
+table {
+  margin: .5em 0; }
+  table tr:nth-child(even) {
+    background: #ececec; }
+  table tr:nth-child(odd) {
+    background: #dedede; }
+  table tr td, table tr th {
+    border: 1px solid white;
+    padding: 0.3em 0.25em; }
+  table tr th {
+    background: #aedc5f;
+    color: white; }
+
+div.popup {
+  background-color: white;
+  border: 1px solid #aedc5f;
+  color: #444;
+  position: fixed;
+  z-index: 1; }
+  div.popup > article > header {
+    cursor: pointer;
+    margin: -1px; }
+
+.auto-redirect {
+  display: none; }
+
+.hidden {
+  display: none; }

@@ -1,71 +1,49 @@
-nav#menu {
+@import 'colors.scss';
+@import 'sizes.scss';
+@import 'responsive.scss';
 
-	background: white;
-	border: 1px solid darkgray;
-	border-radius: 3px;
-	box-shadow: 0 0 2px 2px rgba(0, 0, 0, .1);
-	display: inline-block;
-	float: left;
-	margin: -30px 4px 4px;
-	padding-bottom: 10px;
+@media screen and (max-width: $phone-max-width) {
+
+	nav#menu {
+		display: none;
+	}
+}
+
+nav#menu {
+	background-color: white;
+	border-right: $thin-border;
+	color: $head-color;
 	position: relative;
 
-	li {
-		margin: 0;
+	> .minimize {
+		background: $head-background url('img/menu-button-white.png');
+		background-size: contain;
+		cursor: pointer;
+		display: inline-block;
+		font-size: 0;
+		height: 2em;
+		margin-top: -2.2em;
+		position: absolute;
+		width: 2em;
 	}
 
 	> h2 {
-		border-bottom: 1px solid #c0c0c0;
-		margin: 0 0 4px;
-		text-align: center;
-
-		> a {
-			color: black;
-			display: block;
-			padding: 6px 6px 4px;
-			text-decoration: none;
-		}
+		display: none;
 	}
 
 	> ul {
-		list-style: none;
-		margin: 0;
-		padding: 0;
 
 		> li {
-			background: 3px 3px no-repeat;
 
 			> h3 {
-				background-color: lightgrey;
-				color: black;
-				font: bold 12px arial;
-				margin: 0;
-				padding: 0 6px 0 6px;
-				white-space: nowrap;
+				background-color: $window-head-background;
+				color: white;
+				padding: $menu-head-vertical-padding $menu-head-horizontal-padding;
 			}
 
-			> ul {
-				background-color: white;
-				list-style: none;
-				margin: 0 0 0 6px;
-				padding: 2px 0 8px;
-
-				> li {
-
-					> a {
-						color: black;
-						display: block;
-						font: 11px arial;
-						height: 14px;
-						padding: 0 4px;
-						text-decoration: none;
-					}
-
-					> a:hover {
-						color: darkred;
-						text-decoration: underline;
-					}
-				}
+			> ul > li > a {
+				display: block;
+				padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
 			}
 		}
 	}

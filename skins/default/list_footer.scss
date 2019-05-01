@@ -1,0 +1,66 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
+article.list > form > ul.footer {
+	position: relative;
+	white-space: nowrap;
+
+	> li {
+		display: inline-block;
+
+		&.selector {
+			&:after {
+				content: '>';
+			}
+
+			> a {
+				display: inline-block;
+			}
+		}
+
+		&.visible.lines {
+			position: absolute;
+			right: 0;
+
+			> ul > li {
+				display: inline-block;
+				padding: $action-vertical-padding $action-horizontal-padding;
+
+				&.actions > ul > li {
+
+					> a {
+						font-size: 0;
+
+						&:before {
+							color: initial;
+							font-size: initial;
+							padding: $action-vertical-padding $action-horizontal-padding;
+						}
+
+						&:hover:before {
+							background-color: $action-focus-background;
+							color: $action-focus-color;
+						}
+					}
+
+					&.twenty.less > a:before {
+						content: '[-]';
+					}
+
+					&.hundred.more > a:before {
+						content: '[+]';
+					}
+
+					&.thousand.more > a:before {
+						content: '[#]';
+					}
+				}
+
+				&.display {
+					margin: $action-vertical-padding 0;
+					vertical-align: top;
+				}
+			}
+		}
+	}
+}

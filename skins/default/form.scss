@@ -1,314 +1,40 @@
-@import "colors.scss";
+@import 'colors.scss';
+@import 'sizes.scss';
 
-input:not([type=button]):not([type=checkbox]):not([type=hidden]):not([type=file]):not([type=submit]):not(.customized),
-select,
-textarea {
-	background-color: white;
-	border: 1px solid #a3a3a3;
-	border-radius: 2px;
-	font-size: 12px;
-	line-height: 14px;
-	margin: 2px 0;
+form {
 
-	& select {
-		height: 22px;
-	}
-
-	&:not(select) {
-		height: 18px;
-		padding: 1px 2px;
-	}
-
-	&[readonly] {
-		background: none;
-		border: none;
-		overflow: visible !important;
-		resize: none;
-	}
-}
-
-input[type=checkbox] {
-	margin-left: 0;
-}
-
-/* datetime input */
-
-div.date_time,
-td.date_time {
-	position: relative;
-
-	input:not([type=checkbox][type=radio]) {
-		width: 140px;
-	}
-
-	.ui-datepicker-trigger {
-		background: url("img/input_datetime.png") center no-repeat;
-		border: none;
-		color: transparent;
-		cursor: pointer;
-		font-size: 1px;
-		height: 21px;
-		margin-left: -22px !important;
-		position: absolute;
-		top: 2px;
-		width: 22px;
-	}
-
-}
-
-td.date_time .ui-datepicker-trigger {
-	height: 20px;
-	top: 0;
-}
-
-/* combo list TODO confirm */
-
-.ui-state-active {
-	background: $selected !important;
-}
-
-.ui-autocomplete {
-	max-height: 230px;
-	overflow-y: scroll;
-}
-
-/* float / integer input / display */
-
-.float,
-.integer {
-
-	> input {
-		text-align: right;
-	}
-}
-
-/* combo input */
-
-div.class,
-td.class {
-	position: relative;
-
-	> input.combo {
-
-		& ~ .ui-helper-hidden-accessible {
-			display: none;
-		}
-
-		& ~ a,
-		& ~ button {
-			color: transparent;
-			height: 24px;
-			font-size: 1px;
-			width: 22px;
-
-			&.more {
-				background: url("img/input_combo.png") center no-repeat;
-				border: none;
-				cursor: pointer;
-				height: 22px;
-				margin-left: -14px !important;
-				position: absolute;
-				top: 2px;
-				width: 14px;
-			}
-		}
-	}
-}
-
-td.class > input.combo {
-	& ~ a.more,
-	& ~ button.more {
-		height: 20px;
-		right: 0;
-		top: 0;
-	}
-}
-
-/* fieldset */
-
-fieldset {
-
-	> div.hidden {
-		display: none;
-	}
-
-	> div:not(.hidden):not(.tabber):not([class*=before-]) {
-		display: table-row;
-
-		> div,
-		> label {
-			display: table-cell;
-			white-space: pre-line;
-
-			> :not(pre):not(textarea) {
-				white-space: initial;
-			}
-
-			> span.unit {
-				height: 18px;
-				margin-left: .3em;
-				vertical-align: middle;
-			}
-		}
-
-		/* standard field */
-		&:not(.multiple) {
-
-			&:hover {
-				background-color: $field_hover;
-			}
-
-			> label {
-				font-weight: bold;
-				height: 24px;
-				vertical-align: middle;
-				white-space: nowrap;
-
-				&:after {
-					content: " :";
-					margin-right: .5em;
-				}
-			}
-
-			> div {
-				height: 24px;
-				vertical-align: middle;
-			}
-		}
-
-		/* columns */
-		&.columns {
-			display: block;
-			width: 100%;
-
-			> .column {
-				vertical-align: top;
-
-				&:not(:first-child) {
-					margin-left: 4px;
-				}
-
-				&:not(:last-child) {
-					float: left;
-				}
-
-				&:last-child {
-					float: right;
-
-					fieldset {
-						display: inline-block;
-					}
-				}
-			}
-		}
-
-		/* multiple field */
-		&.multiple {
-			border: lightgrey 1px solid;
-			caption-side: bottom;
-			display: block;
-
-			> * {
-				display: block;
-				padding: 3px;
-			}
-
-			> label {
-				background-color: #e9ede7;
-				height: 14px;
-				font-weight: bold;
-				white-space: nowrap;
-			}
-
-			table.collection, table.map {
-
-				> thead > tr > th {
-					padding: 1px 2px;
-					white-space: nowrap;
-				}
-
-				> tbody > tr {
-
-					&:hover {
-						background-color: $field_hover;
-					}
-
-					> td {
-						padding: 1px 5px 0 0;
-						white-space: nowrap;
-
-						> a {
-							color: black;
-							text-decoration: none;
-						}
-
-						> input:not([type=file]),
-						> textarea {
-							height: 18px;
-							margin-top: -2px;
-							vertical-align: top;
-							width: 100%;
-						}
-
-						> select {
-							height: 22px;
-							margin: -2px -6px -2px 0;
-							vertical-align: top;
-						}
-
-						> textarea {
-							height: 15px;
-							padding-top: 4px;
-						}
-
-						&.minus {
-							background: url("img/remove_row.png") right 3px no-repeat;
-							color: transparent;
-							cursor: pointer;
-							max-width: 16px;
-							min-width: 16px;
-							width: 16px;
-						}
-
-						&.multiple > ul {
-							margin-left: .5em;
-							padding-left: 1em;
-						}
-					}
-				}
-			}
-		}
-
-	}
-
-	/* block fieldset */
-	&.block {
-		border: 1px solid lightgray;
-		padding: 0 .25em;
+	li.class {
 		position: relative;
-
-		> legend {
-			background-color: #e9ede7;
-			border: 1px solid lightgray;
-			border-bottom: none;
-			display: block;
-			font-weight: bold;
-			margin: 0 0 0 -4px;
-			padding: 3px 3px 5px;
-			white-space: nowrap;
-			width: 100%;
-		}
 	}
 
-}
+	ol.properties > li > div > ul > li {
 
-form fieldset div span.unit {
-	padding-top: 1px;
-}
+		&:not(:last-child) > ol > li {
+			border-bottom: $thin-border;
+		}
 
-/* main tabber */
+		> ol > li {
 
-form > fieldset:not(:last-child) > .tabber {
-	border-bottom: 1px solid #575757;
-	padding-bottom: 2px;
+			&:not(:last-child) {
+				border-right: $thin-border;
+			}
+
+			&.minus {
+				cursor: pointer;
+				text-align: center;
+				width: $font-size;
+
+				&:hover {
+					background: $action-focus-background;
+					color: $action-focus-color;
+				}
+			}
+
+			> input, > select, > textarea {
+				background: transparent;
+				border: none !important;
+				width: 100%;
+			}
+		}
+	}
 }

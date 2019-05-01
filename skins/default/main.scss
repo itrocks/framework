@@ -1,271 +1,79 @@
-html, body {
-	height: 100%;
+@import 'colors.scss';
+@import 'sizes.scss';
+@import 'responsive.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	body > header .logo {
+		display: none !important;
+	}
 }
 
-a.auto-redirect {
-	display: none;
+@media screen and (min-width: $tab-min-width) {
+
+	body {
+		white-space: nowrap;
+
+		> :not(nav) {
+			white-space: initial;
+		}
+	}
 }
 
 body {
-	background-color: white;
-	font-family: arial, helvetica, sans-serif;
-	font-size: 12px;
+	background-color: $background;
+	color: $color;
+	font-size: $font-size;
+	height: 100%;
+	position: absolute;
+	width: 100%;
+
+	> h1 {
+		display: none;
+	}
 
 	> header {
-		background-color: lightgrey;
-		border-bottom: solid darkgrey 1px;
-		height: 52px;
+		background: $head-background url('img/header-background.png') bottom right;
+		color: $head-color;
+		display: table-row;
+		height: $head-height;
+		position: relative;
 
-		> .connected {
-			background: url('img/disconnect-left.png') no-repeat left -2px;
-			display: inline-block;
-			float: left;
-			padding: 2px 0;
+		.logo {
+			background: transparent center no-repeat;
+			background-size: contain;
+			font-size: 0;
+			height: $head-height;
+		}
 
-			> a {
-				color: transparent;
-				display: inline-block;
-				font-size: 1px;
-				height: 24px;
-				padding-left: 28px;
-				width: 24px;
-
-				> .login {
-					color: #404040;
-					font-size: 14px;
-					font-style: italic;
-					font-weight: bold;
-				}
-			}
-
-			&:hover {
-				background-image: url('img/disconnect-left-animate.gif');
-
-				> a > .login {
-					color: #800000;
-					text-decoration: underline;
-				}
-			}
+		> .logo {
+			background-color: $background;
+			background-image: url('img/bappli-studio-logo.png');
+			border-right: $thin-border;
+			display: table-cell;
 		}
 
 		> .top.bar {
+			display: table-cell;
+			vertical-align: middle;
+
+			> .logo {
+				background-image: url('img/bappli-studio-logo-for-dark.png');
+				display: inline-block;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: $head-height / 3 * 11.75;
+			}
 		}
 	}
-}
 
-div p {
-	&:not(:first-child) {
-		margin-top: 1em;
-	}
-	&:not(:last-child) {
-		margin-bottom: 1em;
-	}
-}
-
-em {
-	font-style: italic;
-}
-
-h1 {
-	display: none;
-}
-
-h2 {
-	font-size: 1.4em;
-}
-
-h3 {
-	font-size: 1.2em;
-}
-
-hr {
-	border: 1px solid darkgray;
-	height: 0;
-	margin: .5em;
-}
-
-li {
-	list-style-position: inside;
-	margin-left: 1em;
-}
-
-strong {
-	font-weight: bold;
-}
-
-sub {
-	font-size: smaller;
-	line-height: normal;
-	vertical-align: sub;
-}
-
-sup {
-	font-size: smaller;
-	line-height: normal;
-	vertical-align: super;
-}
-
-table, tbody, thead, tr, td, th {
-	border-spacing: 0;
-	padding: 0 2px;
-}
-
-tbody > tr > th {
-	text-align: left;
-}
-
-thead > tr > th {
-	text-align: center;
-}
-
-.candrop {
-	box-shadow: 0 0 3px 3px red;
-}
-
-.dragging {
-	border: 1px solid lightgray;
-	border-radius: 2px;
-	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-	cursor: move;
-	padding: 0 4px;
-}
-
-.empty {
-	color: #777;
-	font-style: italic;
-}
-
-.error {
-	background-color: red;
-	border-radius: 3px;
-	color: white;
-	font-size: 1.5em;
-	margin: -3px;
-	padding: 3px;
-
-	.technical {
-		display: none;
-	}
-}
-
-.hidden {
-	visibility: hidden;
-}
-
-.logger {
-
-	&.query {
-		background-color: lightcyan;
-		border: 1px solid lightblue;
-		color: darkblue;
-		margin: 4px;
-		padding: 4px;
-	}
-
-	&.error {
-		background-color: darkred;
-		border: 1px solid red;
-		color: white;
-		margin: 4px;
-		padding: 4px;
-		&:before {
-			content: "ERREUR : ";
-		}
-	}
-}
-
-.minimize {
-	background: url("img/arrow_black_up.gif") center no-repeat;
-	color: transparent;
-	cursor: pointer;
-	float: left;
-	font-size: 1px;
-	height: 24px;
-	left: 0;
-	position: absolute;
-	top: 0;
-	width: 24px;
-	z-index: 1;
-
-	+ h2 {
-		padding-left: 24px !important;
-	}
-}
-
-.minimized {
-	float: none;
-	position: absolute;
-
-	> .minimize {
-		background: url("img/arrow_black_down.gif") center no-repeat;
-	}
-}
-
-.ui-draggable > h2 {
-	cursor: move;
-}
-
-.visible {
-	display: inline-block;
-}
-
-.warning {
-	background-color: orange;
-	border-radius: 3px;
-	color: white;
-	font-size: 1.3em;
-	margin: -3px;
-	padding: 3px;
-}
-
-main {
-	display: inline-block;
-	white-space: nowrap;
-	> * {
-		white-space: normal;
-	}
-}
-
-div#messages {
-	background-color: white;
-	border: 1px solid lightgray;
-	border-radius: 3px;
-	box-shadow: 0 0 1px 1px rgba(0, 0, 0, .1);
-	display: inline-block;
-	left: 4px;
-	max-width: 80%;
-	padding: 16px 3px 3px 3px;
-	position: fixed !important;
-	top: 4px;
-	z-index: 1000000000 !important;
-
-	&:after {
-		content: 'X';
-		cursor: pointer;
-		position: absolute;
-		right: -1px;
-		text-align: center;
-		top: -3px;
-		width: 1.5em;
-	}
-
-	&:before {
-		background-color: lightblue;
-		content: ' ';
-		cursor: move;
-		height: 13px;
-		left: 0;
-		position: absolute;
-		top: 0;
+	> main {
 		width: 100%;
 	}
 
-	&:empty {
-		display: none;
+	> main, > nav {
+		display: table-cell;
+		vertical-align: top;
 	}
 }
-
-table.worksheet > tbody > tr > td > input {
-	margin: 0 -3px -1px -2px;
-}
-

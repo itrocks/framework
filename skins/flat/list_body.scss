@@ -2,6 +2,7 @@
 @import 'sizes.scss';
 
 article.list > form > ul.list {
+	border: $list-border;
 	display: table;
 	width: 100%;
 
@@ -70,16 +71,12 @@ article.list > form > ul.list {
 			> li {
 				display: table-cell;
 
-				&:not(:first-child) {
-					border-left: $list-border;
+				&:not(:last-child) {
+					border-right: $list-border;
 				}
 
 				&.value {
 					padding: $list-vertical-padding $list-horizontal-padding;
-
-					&.date_time {
-						text-align: center;
-					}
 
 					&.float, &.integer {
 						text-align: right;

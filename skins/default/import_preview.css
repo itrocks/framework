@@ -1,130 +1,30 @@
-@charset "UTF-8";
-.import.error.window {
-  background-color: red;
-  color: white;
-  white-space: pre; }
-
-.import.preview.window.media > ul {
-  display: block;
-  overflow: hidden; }
-  .import.preview.window.media > ul > li {
-    border: 1px solid #333;
-    border-radius: 3px;
-    box-shadow: 2px 2px rgba(0, 0, 0, 0.1);
-    float: left;
-    list-style: none;
-    margin: 4px;
-    text-align: center; }
-    .import.preview.window.media > ul > li > img {
-      background: url("img/loading.gif") center no-repeat;
-      display: block;
-      height: 140px;
-      margin: 2px 2px 0;
-      width: 140px; }
-    .import.preview.window.media > ul > li > input {
-      border: none !important;
-      width: 140px; }
-.import.preview.window div.errors {
-  border: 2px solid red; }
-  .import.preview.window div.errors > h3 {
-    background-color: red;
-    color: white;
-    font-size: 1.4em;
-    padding: 2px; }
-  .import.preview.window div.errors > ul > li {
-    margin-left: 1.4em; }
-.import.preview.window fieldset.constants > div > label {
-  padding: 0; }
-  .import.preview.window fieldset.constants > div > label:after {
-    content: " = "; }
-.import.preview.window fieldset.constants a.constant.add {
-  display: table-caption;
-  text-align: left;
-  white-space: nowrap; }
-.import.preview.window fieldset.constants a.constant.remove {
-  background: url("img/delete.png") center no-repeat;
-  color: transparent;
-  display: table-cell;
-  height: 18px;
-  font-size: 1px;
-  vertical-align: top;
-  white-space: nowrap;
-  width: 20px; }
-.import.preview.window fieldset.properties {
-  border: 1px solid white; }
-  .import.preview.window fieldset.properties > ul {
+article.import.preview li.block > .constants {
+  display: none; }
+article.import.preview li.block > section.ui-droppable-hover {
+  background: #aedc5f;
+  color: white; }
+article.import.preview li.block > section > h3 {
+  display: none; }
+article.import.preview li.block > section > ul {
+  display: inline-block; }
+  article.import.preview li.block > section > ul[data-empty]:empty:after {
+    content: "(" attr(data-empty) ")";
+    font-style: italic; }
+  article.import.preview li.block > section > ul > li {
+    cursor: pointer;
     display: inline-block; }
-    .import.preview.window fieldset.properties > ul > li {
-      border: 1px solid;
-      color: white;
-      cursor: pointer;
-      display: inline-block;
-      font-weight: bold;
-      margin: 0 2px;
-      padding: .25em; }
-      .import.preview.window fieldset.properties > ul > li:not(:last-child):after {
-        content: ", "; }
-  .import.preview.window fieldset.properties.identify li {
-    background-color: green;
-    border-color: darkgreen; }
-  .import.preview.window fieldset.properties.identify ul:empty:after {
-    content: "(crée systématiquement un nouvel enregistrement)";
-    font-style: italic; }
-  .import.preview.window fieldset.properties.ignore li {
-    background-color: #eee;
-    border-color: #ccc;
-    color: #333; }
-  .import.preview.window fieldset.properties.ignore ul:empty:after {
-    content: "(aucune valeur n'est ignorée)";
-    font-style: italic; }
-  .import.preview.window fieldset.properties.write li {
-    background-color: blue;
-    border-color: darkblue; }
-  .import.preview.window fieldset.properties.write ul:empty:after {
-    content: "(aucune valeur à écrire)";
-    font-style: italic; }
-.import.preview.window fieldset > h3 {
-  font-size: 1.4em;
-  font-weight: normal;
-  text-decoration: underline;
-  margin-bottom: .25em; }
-  .import.preview.window fieldset > h3 > span.property:not(:last-child):after {
-    content: "."; }
-.import.preview.window fieldset option {
-  background-color: white;
-  color: black; }
-.import.preview.window fieldset option[value="create_new_value"], .import.preview.window fieldset select.create_new_value {
+    article.import.preview li.block > section > ul > li:not(:last-child):after {
+      content: ",";
+      margin-right: .25em; }
+article.import.preview li.block > section.identify li {
+  background-color: green;
+  color: white; }
+article.import.preview li.block > section.ignore li {
+  background-color: #eee;
+  color: red; }
+article.import.preview li.block > section.write li {
   background-color: blue;
   color: white; }
-.import.preview.window fieldset option[value="tell_it_and_stop_import"], .import.preview.window fieldset select.tell_it_and_stop_import {
-  background-color: red;
-  color: white; }
-.import.preview.window fieldset div span {
-  font-weight: bold; }
-.import.preview.window > .worksheet:not(:last-child) {
-  border-bottom: 2px solid black;
-  padding-bottom: 6px;
-  margin-bottom: 1em; }
-  .import.preview.window > .worksheet:not(:last-child) > .class:not(:first-of-type) {
-    border-top: 1px solid darkgray;
-    padding-top: 4px;
-    margin-top: 4px; }
-  .import.preview.window > .worksheet:not(:last-child) > .class > .constants {
-    display: none; }
-.import.preview.window > .check {
-  padding: 0 1.5em; }
-.import.preview.window table.preview {
-  margin-top: .5em;
-  width: 100%; }
-  .import.preview.window table.preview td, .import.preview.window table.preview th {
-    border: 1px solid darkgray;
-    padding: 3px;
-    white-space: nowrap; }
-  .import.preview.window table.preview th {
-    background: #606060;
-    color: white; }
-.import.preview.window h3.preview {
-  background: #606060;
-  color: white;
-  margin-top: 1em;
-  padding: 4px; }
+article.import.preview p.warning,
+article.import.preview table.preview {
+  margin-left: 0.5em; }

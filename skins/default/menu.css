@@ -1,49 +1,27 @@
+@media screen and (max-width: 479px) {
+  nav#menu {
+    display: none; } }
 nav#menu {
-  background: white;
-  border: 1px solid darkgray;
-  border-radius: 3px;
-  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
-  display: inline-block;
-  float: left;
-  margin: -30px 4px 4px;
-  padding-bottom: 10px;
+  background-color: white;
+  border-right: 1px solid lightgray;
+  color: #444;
   position: relative; }
-  nav#menu li {
-    margin: 0; }
+  nav#menu > .minimize {
+    background: lightgrey url("img/menu-button-white.png");
+    background-size: contain;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 0;
+    height: 2em;
+    margin-top: -2.2em;
+    position: absolute;
+    width: 2em; }
   nav#menu > h2 {
-    border-bottom: 1px solid #c0c0c0;
-    margin: 0 0 4px;
-    text-align: center; }
-    nav#menu > h2 > a {
-      color: black;
-      display: block;
-      padding: 6px 6px 4px;
-      text-decoration: none; }
-  nav#menu > ul {
-    list-style: none;
-    margin: 0;
-    padding: 0; }
-    nav#menu > ul > li {
-      background: 3px 3px no-repeat; }
-      nav#menu > ul > li > h3 {
-        background-color: lightgrey;
-        color: black;
-        font: bold 12px arial;
-        margin: 0;
-        padding: 0 6px 0 6px;
-        white-space: nowrap; }
-      nav#menu > ul > li > ul {
-        background-color: white;
-        list-style: none;
-        margin: 0 0 0 6px;
-        padding: 2px 0 8px; }
-        nav#menu > ul > li > ul > li > a {
-          color: black;
-          display: block;
-          font: 11px arial;
-          height: 14px;
-          padding: 0 4px;
-          text-decoration: none; }
-        nav#menu > ul > li > ul > li > a:hover {
-          color: darkred;
-          text-decoration: underline; }
+    display: none; }
+  nav#menu > ul > li > h3 {
+    background-color: darkgrey;
+    color: white;
+    padding: 0.3em 0.25em; }
+  nav#menu > ul > li > ul > li > a {
+    display: block;
+    padding: 0.3em 0.25em; }

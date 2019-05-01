@@ -1,99 +1,74 @@
-/* components */
-/* features colors and action left button part */
-/* modules */
 .func_select,
 .property_select {
-  background-color: #DCDCDD;
-  border: solid 1px #606060;
-  border-radius: 0 2px 2px;
+  border: 1px solid lightgray;
   display: inline-block;
-  padding: 2px 8px 2px 2px;
-  text-align: left;
-  z-index: 1; }
-  .func_select .joint,
-  .property_select .joint {
-    background-color: #DCDCDD;
-    display: inline-block;
-    height: 1px;
-    left: 1px;
-    position: absolute;
-    top: -1px;
-    width: 22px; }
-  .func_select > input,
-  .property_select > input {
-    margin: 0 0 3px;
-    width: 100%; }
-  .func_select > label,
-  .property_select > label {
+  top: 1.5em;
+  white-space: nowrap; }
+  .func_select > h3,
+  .property_select > h3 {
     display: none; }
-  .func_select ul,
-  .property_select ul {
-    background-color: white;
-    border-radius: 2px;
-    list-style: none; }
-    .func_select ul > li,
-    .property_select ul > li {
-      background: url("img/tree/string-right.png") 8px -2px no-repeat;
-      cursor: default;
-      font-weight: normal;
-      line-height: 1em;
-      margin: 0 0 2px;
-      padding-left: 18px; }
-      .func_select ul > li:last-child,
-      .property_select ul > li:last-child {
-        background: url("img/tree/string-last.png") 8px -2px no-repeat; }
-      .func_select ul > li:hover,
-      .property_select ul > li:hover {
-        background-color: #aedc5f; }
-      .func_select ul > li.separator,
-      .property_select ul > li.separator {
-        border-top: 1px solid darkgray;
-        margin: 2px 0; }
-      .func_select ul > li.ui-draggable-handle,
-      .property_select ul > li.ui-draggable-handle {
-        cursor: grab; }
-      .func_select ul > li > a,
-      .property_select ul > li > a {
-        background: url("img/tree/plus.png") 4px 2px no-repeat;
-        color: black;
-        cursor: pointer;
-        display: block;
-        font-weight: bold;
-        margin-left: -18px;
-        padding-left: 18px;
-        text-decoration: none;
-        white-space: nowrap; }
-        .func_select ul > li > a.expanded,
-        .property_select ul > li > a.expanded {
-          background: url("img/tree/minus.png") 4px 2px no-repeat; }
-      .func_select ul > li span,
-      .property_select ul > li span {
-        display: block; }
-        .func_select ul > li span:hover,
-        .property_select ul > li span:hover {
-          background-color: #aedc5f; }
-      .func_select ul > li > section > ul,
-      .property_select ul > li > section > ul {
-        margin-left: -18px;
-        padding-left: 18px; }
+  .func_select > .search > input,
+  .property_select > .search > input {
+    min-width: 100%; }
+  .func_select > .search > label,
+  .property_select > .search > label {
+    display: none; }
+  .func_select ul > li,
+  .property_select ul > li {
+    display: block; }
+    .func_select ul > li.class,
+    .property_select ul > li.class {
+      padding-left: 1em; }
+    .func_select ul > li:not(.class),
+    .property_select ul > li:not(.class) {
+      padding: .2em 0 .2em 1em; }
+      .func_select ul > li:not(.class):hover,
+      .property_select ul > li:not(.class):hover {
+        background-color: #aedc5f;
+        color: white; }
+    .func_select ul > li.separator,
+    .property_select ul > li.separator {
+      border-top: 1px solid lightgray; }
+    .func_select ul > li.ui-draggable-handle,
+    .property_select ul > li.ui-draggable-handle {
+      cursor: grab; }
+    .func_select ul > li > a,
+    .property_select ul > li > a {
+      background-position: .3em center;
+      background-repeat: no-repeat;
+      display: block;
+      font-weight: bold;
+      margin-left: -1em;
+      padding: .2em 0 .2em 1em; }
+      .func_select ul > li > a.expanded,
+      .property_select ul > li > a.expanded {
+        background-image: url("../default/img/tree/minus.png"); }
+      .func_select ul > li > a:not(.expanded),
+      .property_select ul > li > a:not(.expanded) {
+        background-image: url("../default/img/tree/plus.png"); }
+  .func_select > ul,
+  .property_select > ul {
+    border-top: 1px solid lightgray; }
 
 .object.ui-draggable-dragging,
-:not(.model.edit.window .editor) .property.ui-draggable-dragging {
+:not(article.model.edit .editor) .property.ui-draggable-dragging {
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid grey;
-  border-radius: 3px;
-  color: black;
+  border: 1px solid lightgray;
   font-weight: bold;
-  padding: 4px; }
+  padding: 0.25em; }
 
 .insert-bottom {
-  border-bottom: 3px solid #aedc5f; }
+  border-bottom: 3px solid #aedc5f;
+  margin-bottom: -3px; }
 
 .insert-left {
-  border-left: 3px solid #aedc5f; }
+  border-left: 3px solid #aedc5f;
+  margin-left: -3px; }
 
 .insert-right {
-  border-right: 3px solid #aedc5f; }
+  border-right: 3px solid #aedc5f;
+  margin-right: -3px; }
 
 .insert-top {
-  border-top: 3px solid #aedc5f; }
+  border-top: 3px solid #aedc5f;
+  margin-top: -3px; }

@@ -17,5 +17,10 @@ article.list {
 	> form {
 		display: inline-block;
 		min-width: 500px;
+
+		input {
+			background: transparent;
+			border: none;
+		}
 	}
 }
