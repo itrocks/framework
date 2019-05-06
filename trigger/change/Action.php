@@ -24,7 +24,7 @@ class Action extends Trigger\Action
 	 * @param $action string
 	 * @param $next   Date_Time|null
 	 */
-	public function __construct($action, Date_Time $next = null)
+	public function __construct($action = null, Date_Time $next = null)
 	{
 		parent::__construct($action, $next);
 		if (($this->status === status::PENDING) || !isset($this->status)) {
