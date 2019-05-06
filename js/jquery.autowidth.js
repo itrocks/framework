@@ -25,11 +25,11 @@
 
 	//----------------------------------------------------------------------------------- blockColumn
 	/**
-	 * @param settings       object
-	 * @param $block         jQuery
-	 * @param $cell          jQuery
-	 * @param cell_position  integer
-	 * @param input_position integer
+	 * @param settings       object  autoWidth settings
+	 * @param $block         jQuery  the block element : table.auto_width, ul.auto_width
+	 * @param $cell          jQuery  the header cell for the column
+	 * @param cell_position  integer the position of the column cell
+	 * @param input_position integer the position of the input element into each data cell
 	 * @returns jQuery
 	 */
 	var blockColumn = function(settings, $block, $cell, cell_position, input_position)
@@ -38,15 +38,12 @@
 		var child   = (cell_position || table) ? ':nth-child(' + cell_position + ')' : '';
 		var descend = (cell_position && !table) ? ' > ol > li' : '';
 		// the element was the widest element : grow or shorten
-		var $input = $block.find((table ? 'tr > td' : '> li:not(:first-child)') + descend + child)
+		var $input = $block.find((table ? 'tr > td' : '> li:not(.header)') + descend + child)
 			.find(
 				'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
 			);
 		var width = Math.max(
-			getTextWidth(
-				settings,
-				$block.find((table ? 'tr > th' : '> li:first-child') + descend + child)
-			),
+			getTextWidth(settings, $block.find((table ? 'tr > th' : '> li.header') + descend + child)),
 			getTextWidth(settings, $input)
 		);
 		blockColumnWidth(settings, $cell, width);
@@ -55,9 +52,9 @@
 
 	//------------------------------------------------------------------------------ blockColumnWidth
 	/**
-	 * @param settings object
-	 * @param $cell    jQuery
-	 * @param width    number
+	 * @param settings object autoWidth settings
+	 * @param $cell    jQuery the header cell for the column
+	 * @param width    number the size to set
 	 */
 	var blockColumnWidth = function(settings, $cell, width)
 	{
@@ -105,9 +102,9 @@
 					// calculate first cell of the column previous max width
 					var $cell;
 					var position;
-					if ($element.closest('td, li').parent().hasClass('auto_width')) {
+					if ($element.closest('td, li').parent().is('ul.auto_width')) {
 						position = -1;
-						$cell    = $element.closest('li').prevAll('li').first();
+						$cell    = $element.closest('ul').children().first();
 					}
 					else {
 						position = $element.closest('td, li').prevAll('td, li').length;
@@ -193,9 +190,13 @@
 	 */
 	var firstRowCells = function($group)
 	{
-		return $group.is('ul')
-			? $group.find('> li:first > ol > li')
+		var $row_cells = $group.is('ul')
+			? $group.find('> li.header > ol > li')
 			: $group.find('tr:first th, tr:first td');
+		if (!$row_cells.length && $group.is('ul')) {
+			$row_cells = $group.children().first();
+		}
+		return $row_cells;
 	};
 
 	//-------------------------------------------------------------------------------- firstRowsGroup
