@@ -16,6 +16,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Dom\Input;
+use ITRocks\Framework\View\Html\Dom\List_;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 use ITRocks\Framework\View\Html\Dom\List_\Ordered;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
@@ -109,7 +110,7 @@ class Html_Builder_Collection extends Collection
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Item[]
+	 * @return Item[]|List_[][]
 	 */
 	protected function buildBody()
 	{
@@ -185,18 +186,18 @@ class Html_Builder_Collection extends Collection
 		return $cell;
 	}
 
-	//------------------------------------------------------------------------------------- buildHead
+	//----------------------------------------------------------------------------------- buildHeader
 	/**
 	 * @return Ordered
 	 */
-	protected function buildHead()
+	protected function buildHeader()
 	{
-		$head = parent::buildHead();
-		$head->addItem(new Item());
+		$header = parent::buildHeader();
+		$header->addItem(new Item());
 		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
-			$head->setAttribute('title', $tooltip);
+			$header->setAttribute('title', $tooltip);
 		}
-		return $head;
+		return $header;
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow

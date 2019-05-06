@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View\Html\Dom\List_;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 use ITRocks\Framework\View\Html\Dom\List_\Ordered;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
@@ -71,8 +72,17 @@ class Collection
 		(new Mapper\Collection($this->collection))->sort();
 		$list = new Unordered();
 		$list->addClass('auto_width');
-		$list->addItem($this->buildHead());
+		$header = $this->buildHeader();
+		if (!($header instanceof Item)) {
+			$header = new Item($header);
+		}
+		$header->addClass('header');
+		$list->addItem($header);
 		foreach ($this->buildBody() as $line) {
+			if (!($line instanceof Item)) {
+				$line = new Item($line);
+			}
+			$line->addClass('data');
 			$list->addItem($line);
 		}
 		return $list;
@@ -80,7 +90,7 @@ class Collection
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
-	 * @return Item[]
+	 * @return Item[]|List_[][]
 	 */
 	protected function buildBody()
 	{
@@ -126,13 +136,13 @@ class Collection
 		return $cell;
 	}
 
-	//------------------------------------------------------------------------------------- buildHead
+	//----------------------------------------------------------------------------------- buildHeader
 	/**
 	 * @return Ordered
 	 */
-	protected function buildHead()
+	protected function buildHeader()
 	{
-		$head = new Ordered();
+		$header = new Ordered();
 		foreach ($this->properties as $property) {
 			if (
 				!$property->getType()->isMultiple()
@@ -148,10 +158,10 @@ class Collection
 					$cell->addClass('hidden');
 					$cell->setStyle('display', 'none');
 				}
-				$head->addItem($cell);
+				$header->addItem($cell);
 			}
 		}
-		return $head;
+		return $header;
 	}
 
 	//-------------------------------------------------------------------------------------- buildRow
