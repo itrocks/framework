@@ -8,6 +8,7 @@ use ITRocks\Framework\Configuration\File\Builder;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
 use ITRocks\Framework\Configuration\File\Source;
+use ITRocks\Framework\Configuration\File\Source\Class_Use;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Namespaces;
@@ -157,7 +158,10 @@ class Exhaustive_Class
 				$components = [$assembly->replacement];
 			}
 			elseif ($assembly instanceof Source) {
-				$components = $assembly->class_use;
+				$components = array_map(
+					function(Class_Use $class_use) { return $class_use->trait_name; },
+					$assembly->class_use
+				);
 				if ($parent_class_name = $this->parentClassName($assembly->class_extends)) {
 					array_unshift($components, $parent_class_name);
 				}
