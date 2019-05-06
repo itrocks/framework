@@ -34,17 +34,19 @@
 	 */
 	var blockColumn = function(settings, $block, $cell, cell_position, input_position)
 	{
-		var table = $block.is('table');
+		var table   = $block.is('table');
+		var child   = (cell_position || table) ? ':nth-child(' + cell_position + ')' : '';
+		var descend = (cell_position && !table) ? ' > ol > li' : '';
 		// the element was the widest element : grow or shorten
-		var $input = $block.find(
-			(table ? 'tr > td' : '> li:not(:first-child) > ol > li') + ':nth-child(' + cell_position + ')'
-		).find(
-			'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
-		);
+		var $input = $block.find((table ? 'tr > td' : '> li:not(:first-child)') + descend + child)
+			.find(
+				'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
+			);
 		var width = Math.max(
-			getTextWidth(settings, $block.find(
-				(table ? 'tr > th' : '> li:first-child > ol > li') + ':nth-child(' + cell_position + ')'
-			)),
+			getTextWidth(
+				settings,
+				$block.find((table ? 'tr > th' : '> li:first-child') + descend + child)
+			),
 			getTextWidth(settings, $input)
 		);
 		blockColumnWidth(settings, $cell, width);
@@ -62,7 +64,8 @@
 		if ($cell.hasClass('no-autowidth')) return;
 		$cell.data('max-width', width);
 		var calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'));
-		width    = Math.min(Math.max(settings.multiple.minimum, calc), settings.multiple.maximum);
+		var setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple';
+		width = Math.min(Math.max(settings[setting].minimum, calc), settings[setting].maximum);
 		$cell.css({ 'max-width': width + 'px', 'min-width': width + 'px', 'width': width + 'px'	});
 	};
 
@@ -100,8 +103,16 @@
 				// element into an autowidth block
 				else {
 					// calculate first cell of the column previous max width
-					var position           = $element.closest('td, li').prevAll('td, li').length;
-					var $cell              = $(firstRowCells(firstRowsGroup($block))[position]);
+					var $cell;
+					var position;
+					if ($element.closest('td, li').parent().hasClass('auto_width')) {
+						position = -1;
+						$cell    = $element.closest('li').prevAll('li').first();
+					}
+					else {
+						position = $element.closest('td, li').prevAll('td, li').length;
+						$cell    = $(firstRowCells(firstRowsGroup($block))[position]);
+					}
 					var previous_max_width = $cell.data('max-width');
 					if (previous_max_width === undefined) {
 						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
@@ -118,12 +129,7 @@
 		};
 		// patched with setTimeout to allow moved controls on right of the input to be clicked
 		// eg combo's down arrow won't work sometimes if I do not do that.
-		if (now) {
-			calculate();
-		}
-		else {
-			setTimeout(calculate, 100);
-		}
+		now ? calculate() : setTimeout(calculate, 100);
 	};
 
 	//------------------------------------------------------------------------------- calculateMargin

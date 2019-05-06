@@ -1,38 +1,42 @@
+@import 'colors.scss';
 @import 'sizes.scss';
 
 article ol.properties {
 
 	> li.after,
-	> li.before,
-	> li.block,
-	> li.multiple {
+	> li.before {
 
 		> div {
+			display: block;
+		}
+	}
 
-			> ul.collection, > ul.map {
-				display: table;
+	> li.block,
+	> li.component-objects {
 
-				> li {
-					display: table-row-group;
+		> div > ul {
+			display: table;
 
-					&:first-child > ol > li {
-						padding: $list-vertical-padding $list-horizontal-padding;
-						text-align: center;
-						white-space: nowrap;
-					}
+			> li {
+				display: table-row-group;
 
-					> ol {
-						display: table-row;
+				&:first-child > ol > li {
+					padding: $list-vertical-padding $list-horizontal-padding;
+					text-align: center;
+					white-space: nowrap;
+				}
 
-						> li {
-							display: table-cell;
+				> ol {
+					display: table-row;
 
-							&.float,
-							&.integer,
-							> input.float,
-							> input.integer {
-								text-align: right;
-							}
+					> li {
+						display: table-cell;
+
+						&.float,
+						&.integer,
+						> input.float,
+						> input.integer {
+							text-align: right;
 						}
 					}
 				}

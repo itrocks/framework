@@ -1,0 +1,11 @@
+.component-objects > div > ul > li:not(:last-child) > ol > li {
+  border-bottom: 1px solid lightgray; }
+.component-objects > div > ul > li > ol > li:not(:last-child) {
+  border-right: 1px solid lightgray; }
+.component-objects > div > ul > li > ol > li > input, .component-objects > div > ul > li > ol > li > select, .component-objects > div > ul > li > ol > li > textarea {
+  background: transparent;
+  border: none !important;
+  color: black;
+  width: 100%; }
+.component-objects > div > ul > li > ol > li.float, .component-objects > div > ul > li > ol > li.float > div > input, .component-objects > div > ul > li > ol > li.integer, .component-objects > div > ul > li > ol > li.integer > div > input {
+  text-align: right; }

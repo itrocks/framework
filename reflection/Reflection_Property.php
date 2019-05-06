@@ -599,6 +599,27 @@ class Reflection_Property extends ReflectionProperty
 		return $sub_objects;
 	}
 
+	//------------------------------------------------------------------------- isComponentObjectHtml
+	/**
+	 * An helper that returns information about the property containing a component, objects, etc.
+	 *
+	 * @return string @values component-object, component-objects, object, objects
+	 */
+	public function isComponentObjectHtml()
+	{
+		$type = $this->getType();
+
+		if (!$type->isClass()) {
+			return '';
+		}
+
+		$html = $type->isMultiple() ? 'objects' : 'object';
+		if ($this->getAnnotation('component')->value || Link_Annotation::of($this)->isCollection()) {
+			$html = 'component-' . $html;
+		}
+		return $html;
+	}
+
 	//---------------------------------------------------------------------------- isEquivalentObject
 	/**
 	 * Return true if the both objects match.

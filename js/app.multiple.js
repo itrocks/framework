@@ -8,12 +8,12 @@ $(document).ready(function()
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
 		if ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length) {
-			var $block = $row.closest('.collection, .map');
+			var $block = $row.closest('ul.auto_width');
 			if ($block.length) {
 				// calculate depth in order to increment the right index
 				var depth   = 0;
 				var $parent = $block;
-				while (($parent = $parent.parent().closest('.collection, .map')).length) {
+				while (($parent = $parent.parent().closest('ul.auto_width')).length) {
 					depth ++;
 				}
 				// calculate new row and indexes
@@ -63,8 +63,8 @@ $(document).ready(function()
 		}
 	};
 
-	//-------------------------------------------- table.collection, table.map, ul.collection, ul.map
-	var block_selector = 'table.collection, table.map, ul.collection, ul.map';
+	//--------------------------------------------------------------- table.auto_width, ul.auto_width
+	var block_selector = 'table.auto_width, ul.auto_width';
 	$body.build('each', block_selector, function()
 	{
 		var $this = $(this);
@@ -94,7 +94,7 @@ $(document).ready(function()
 	/**
 	 * Remove a line
 	 */
-	$body.build('click', 'li.multiple li.minus', function()
+	$body.build('click', 'ul.auto_width li.minus', function()
 	{
 		var $this = $(this);
 		// setTimeout allows other click events to .minus to execute before the row is removed

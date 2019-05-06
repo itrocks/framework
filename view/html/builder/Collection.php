@@ -71,7 +71,6 @@ class Collection
 		(new Mapper\Collection($this->collection))->sort();
 		$list = new Unordered();
 		$list->addClass('auto_width');
-		$list->addClass('collection');
 		$list->addItem($this->buildHead());
 		foreach ($this->buildBody() as $line) {
 			$list->addItem($line);
@@ -112,9 +111,6 @@ class Collection
 		}
 		$cell = new Item(($value instanceof Dao\File) ? (new File($value))->build() : $value);
 		$type = $property->getType();
-		if ($type->isMultiple()) {
-			$cell->addClass('multiple');
-		}
 		if (!$property->isVisible()) {
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');

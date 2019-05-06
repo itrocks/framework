@@ -171,9 +171,6 @@ class Html_Builder_Collection extends Collection
 		$cell = new Item($input);
 		$type = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
-		if ($class = $type->isClassHtml()) {
-			$cell->addClass($class);
-		}
 		if(!$property->isVisible()){
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');

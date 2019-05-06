@@ -26,7 +26,7 @@ article > form, article {
 		display: inline-block;
 		padding: $window-padding;
 
-		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 			display: table-row;
 
 			> label, > div {
@@ -52,33 +52,30 @@ article > form, article {
 		> li.after,
 		> li.before,
 		> li.block,
-		> li.multiple {
+		> li.component-objects {
 			display: block;
+		}
 
-			&.block,
-			&.multiple {
+		> li.block {
+			border: $thin-border;
+			margin-top: -1px;
+		}
+
+		> li.block,
+		> li.component-objects {
+
+			> div {
 				border: $thin-border;
-				margin-top: -1px;
 			}
 
 			> label {
 				background-color: #eee;
+				border-left: $thin-border;
+				border-right: $thin-border;
+				border-top: $thin-border;
 				display: block;
 				padding: $list-vertical-padding $list-horizontal-padding;
 			}
-		}
-
-		> li.float > div > input,
-		> li.integer > div > input {
-			text-align: right;
-		}
-	}
-
-	.multiple ol.properties {
-
-		> li.float > div,
-		> li.integer > div {
-			text-align: right;
 		}
 	}
 }

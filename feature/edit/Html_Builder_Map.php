@@ -2,16 +2,14 @@
 namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
+use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
-use ITRocks\Framework\View\Html\Dom\List_\Ordered;
-use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * Takes a map of objects and build a HTML edit subform containing their data
@@ -69,16 +67,6 @@ class Html_Builder_Map extends Map
 		$this->preprop = $preprop;
 	}
 
-	//----------------------------------------------------------------------------------------- build
-	/**
-	 * @return Unordered
-	 */
-	public function build()
-	{
-		$table = parent::build();
-		return $table;
-	}
-
 	//------------------------------------------------------------------------------------- buildBody
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -91,7 +79,7 @@ class Html_Builder_Map extends Map
 			$is_abstract = (new Type($this->class_name))->isAbstractClass();
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 			$object = $is_abstract ? new String_Class : Builder::create($this->class_name);
-			$row    = $this->buildRow($object);
+			$row    = $this->buildCell($object);
 			$row->addClass('new');
 			$body[] = $row;
 		}
@@ -114,44 +102,13 @@ class Html_Builder_Map extends Map
 		$builder->readonly    = $this->readOnly();
 
 		$input = $builder->setTemplate($this->template)->build();
-		$cell  = new Item($input);
+		$minus = new Button('-');
+		$minus->addClass('minus');
+		$minus->setAttribute('tabindex', -1);
+		$cell  = new Item($input . $minus);
 		$type  = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
-		if ($class = $type->isClassHtml()) {
-			$cell->addClass($class);
-		}
 		return $cell;
-	}
-
-	//------------------------------------------------------------------------------------- buildHead
-	/**
-	 * @return Ordered
-	 */
-	protected function buildHead()
-	{
-		$head = parent::buildHead();
-		$head->addItem(new Item());
-		if ($tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property)) {
-			$head->setAttribute('title', $tooltip);
-		}
-		return $head;
-	}
-
-	//-------------------------------------------------------------------------------------- buildRow
-	/**
-	 * @param $object object
-	 * @return Ordered
-	 */
-	protected function buildRow($object)
-	{
-		$row = parent::buildRow($object);
-		if (!$this->readOnly() && !$this->noDelete()) {
-			$cell = new Item('-');
-			$cell->setAttribute('title', '|remove line|');
-			$cell->addClass('minus');
-			$row->addItem($cell);
-		}
-		return $row;
 	}
 
 	//----------------------------------------------------------------------------------------- noAdd

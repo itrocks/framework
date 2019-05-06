@@ -1,0 +1,15 @@
+@import 'colors.scss';
+
+.minus {
+	cursor: pointer;
+	height: 27px;
+	margin: 0 !important;
+	padding: 0 !important;
+	text-align: center;
+	width: 27px;
+
+	&:hover {
+		background: $action-focus-background;
+		color: $action-focus-color;
+	}
+}

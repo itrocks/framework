@@ -2,17 +2,13 @@
 namespace ITRocks\Framework\View\Html\Builder;
 
 use ITRocks\Framework\Controller\Target;
-use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Dom\Anchor;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
-use ITRocks\Framework\View\Html\Dom\List_\Ordered;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
@@ -76,13 +72,12 @@ class Map
 	public function build()
 	{
 		(new Mapper\Map($this->map))->sort();
-		$table = new Unordered();
-		$table->addClass('auto_width');
-		$table->addClass('map');
-		foreach ($this->buildBody() as $row) {
-			$table->addItem($row);
+		$list = new Unordered();
+		$list->addClass('auto_width');
+		foreach ($this->buildBody() as $line) {
+			$list->addItem($line);
 		}
-		return $table;
+		return $list;
 	}
 
 	//------------------------------------------------------------------------------------- buildBody
@@ -93,7 +88,7 @@ class Map
 	{
 		$body = [];
 		foreach ($this->map as $object) {
-			$body[] = $this->buildRow($object);
+			$body[] = $this->buildCell($object);
 		}
 		return $body;
 	}
@@ -108,35 +103,6 @@ class Map
 		$anchor = new Anchor(View::link($object), strval($object));
 		$anchor->setAttribute('target', Target::MAIN);
 		return new Item($anchor);
-	}
-
-	//------------------------------------------------------------------------------------- buildHead
-	/**
-	 * @return Ordered
-	 */
-	protected function buildHead()
-	{
-		$head = new Ordered();
-		foreach ($this->properties as $property) {
-			$cell = new Item(Loc::tr(
-				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
-				$this->class_name
-			));
-			$head->addItem($cell);
-		}
-		return $head;
-	}
-
-	//-------------------------------------------------------------------------------------- buildRow
-	/**
-	 * @param $object object
-	 * @return Ordered
-	 */
-	protected function buildRow($object)
-	{
-		$row = new Ordered();
-		$row->addItem($this->buildCell($object));
-		return $row;
 	}
 
 }

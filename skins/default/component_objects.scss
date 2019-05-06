@@ -1,0 +1,29 @@
+@import 'colors.scss';
+
+.component-objects > div > ul > li {
+
+	&:not(:last-child) > ol > li {
+		border-bottom: $thin-border;
+	}
+
+	> ol > li {
+
+		&:not(:last-child) {
+			border-right: $thin-border;
+		}
+
+		> input, > select, > textarea {
+			background: transparent;
+			border: none !important;
+			color: black;
+			width: 100%;
+		}
+
+		&.float,
+		&.float > div > input,
+		&.integer,
+		&.integer > div > input {
+			text-align: right;
+		}
+	}
+}

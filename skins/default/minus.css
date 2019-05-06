@@ -1,0 +1,10 @@
+.minus {
+  cursor: pointer;
+  height: 27px;
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center;
+  width: 27px; }
+  .minus:hover {
+    background: #aedc5f;
+    color: white; }

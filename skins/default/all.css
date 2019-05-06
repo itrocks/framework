@@ -18,11 +18,11 @@
 @import 'article.css';
 @import 'checklist.css';
 @import 'combo.css';
+@import 'component_objects.css';
 @import 'condition.css';
 @import 'custom.css';
 @import 'date_time.css';
 @import 'environment.css';
-@import 'form.css';
 @import 'has_ordering.css';
 @import 'html_logger.css';
 @import 'import_execute.css';
@@ -35,7 +35,9 @@
 @import 'list_footer.css';
 @import 'menu.css';
 @import 'messages.css';
+@import 'minus.css';
 @import 'modules.css';
+@import 'objects.css';
 @import 'output.css';
 @import 'output_object.css';
 @import 'output_properties.css';
