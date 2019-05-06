@@ -1,12 +1,17 @@
 @import 'colors.scss';
+@import 'sizes.scss';
 
 .minus {
 	cursor: pointer;
-	height: 27px;
+	height: $font-size * 1.5;
 	margin: 0 !important;
 	padding: 0 !important;
 	text-align: center;
-	width: 27px;
+	width: $font-size * 1.5;
+
+	&button {
+		position: absolute;
+	}
 
 	&:hover {
 		background: $action-focus-background;

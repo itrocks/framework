@@ -5,6 +5,8 @@
   padding: 0 !important;
   text-align: center;
   width: 27px; }
+  .minusbutton {
+    position: absolute; }
   .minus:hover {
     background: #aedc5f;
     color: white; }

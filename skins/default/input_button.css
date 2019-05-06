@@ -1,10 +1,10 @@
 input + button {
   background: transparent center no-repeat;
   background-size: 66%;
-  border: none;
   cursor: pointer;
   font-size: 0;
   height: 27px;
   margin-left: -27px !important;
+  margin-top: 1px !important;
   position: absolute;
   width: 27px; }
