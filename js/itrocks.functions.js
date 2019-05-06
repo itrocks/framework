@@ -261,13 +261,13 @@ redirectLight = function(uri, target, condition)
 /**
  * Refresh a window embedding data-class, and optionally data-feature and/or data-id
  *
- * @example refresh('#main'); refresh('#messages');
- * @param target string
+ * @example refresh('main'); refresh('#main'); refresh('#messages'); refresh($('main');
+ * @param target string|jQuery
  */
 refresh = function(target)
 {
 	var $target = $(target);
-	if (target.endsWith('main') && !$target.length) {
+	if (((typeof target) === 'string') && target.endsWith('main') && !$target.length) {
 		$target = $(target.beginsWith('#') ? 'main' : '#main');
 	}
 	$target.each(function() {
