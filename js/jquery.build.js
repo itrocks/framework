@@ -159,10 +159,12 @@
 		var $context = this;
 
 		// execute all callback functions
-		if ((event === undefined) && $context.length) {
-			var callbacks = window.jquery_build_callback;
-			for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
-				callbacks[key].callIt($context);
+		if (event === undefined) {
+			if ($context.length) {
+				var callbacks = window.jquery_build_callback;
+				for (var key in callbacks) if (callbacks.hasOwnProperty(key)) {
+					callbacks[key].callIt($context);
+				}
 			}
 			return this;
 		}
@@ -171,7 +173,6 @@
 		var always   = false;
 		var priority = 1000;
 		if (callback === undefined) {
-			callback = event.callback;
 			if (event.selector !== undefined) {
 				selector = event.selector;
 			}
