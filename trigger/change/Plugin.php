@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Trigger\Change;
 
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link\Write;
 use ITRocks\Framework\Dao\Func;
@@ -130,9 +129,13 @@ class Plugin implements Registerable
 	 */
 	protected function changeTriggers($object)
 	{
-		$class_name = Builder::current()->sourceClassName(get_class($object));
+		$class_name = get_class($object);
 		if (!isset($this->no_change_cache[$class_name])) {
-			$change_triggers = Dao::search(['class_name' => $class_name], Change::class);
+			do {
+				$class_names[$class_name] = $class_name;
+			}
+			while ($class_name = get_parent_class($class_name));
+			$change_triggers = Dao::search(['class_name' => array_values($class_names)], Change::class);
 			$this->no_change_cache[$class_name] = $change_triggers;
 		}
 		return $this->no_change_cache[$class_name];
@@ -155,10 +158,12 @@ class Plugin implements Registerable
 	 */
 	public function resetCache($class_name)
 	{
-		$class_name = Builder::current()->sourceClassName($class_name);
-		if (isset($this->no_change_cache[$class_name])) {
-			unset($this->no_change_cache[$class_name]);
+		do {
+			if (isset($this->no_change_cache[$class_name])) {
+				unset($this->no_change_cache[$class_name]);
+			}
 		}
+		while ($class_name = get_parent_class($class_name));
 	}
 
 }
