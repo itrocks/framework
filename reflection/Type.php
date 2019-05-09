@@ -304,7 +304,9 @@ class Type
 	 */
 	public function isAbstractClass()
 	{
-		return beginsWith($this->type, static::OBJECT) || $this->asReflectionClass()->isAbstract();
+		return beginsWith($this->type, static::MIXED)
+			|| beginsWith($this->type, static::OBJECT)
+			|| $this->asReflectionClass()->isAbstract();
 	}
 
 	//--------------------------------------------------------------------------------------- isArray
