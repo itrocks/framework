@@ -159,9 +159,13 @@ class Main
 	//--------------------------------------------------------------------------------- createSession
 	/**
 	 * Create session
+	 *
+	 * @param $get  array
+	 * @param $post array
 	 */
-	private function createSession()
-	{
+	private function createSession(
+		/** @noinspection PhpUnusedParameterInspection */ array &$get, array &$post
+	) {
 		$this->resetSession(Session::current(new Session()));
 	}
 
@@ -498,9 +502,13 @@ class Main
 	//--------------------------------------------------------------------------------- resumeSession
 	/**
 	 * Resume the session
+	 *
+	 * @param $get  array
+	 * @param $post array
 	 */
-	private function resumeSession()
-	{
+	private function resumeSession(
+		/** @noinspection PhpUnusedParameterInspection */ array &$get, array &$post
+	) {
 		$plugins = Session::current()->plugins;
 		$plugins->addPlugins('top_core', $this->top_core_plugins);
 		$plugins->activatePlugins('core');
@@ -597,10 +605,10 @@ class Main
 		}
 		$this->setIncludePath($_SESSION, Application::class);
 		if (isset($_SESSION['session']) && isset($_SESSION['session']->plugins)) {
-			$this->resumeSession();
+			$this->resumeSession($get, $post);
 		}
 		else {
-			$this->createSession();
+			$this->createSession($get, $post);
 		}
 		ini_set(
 			'display_errors',
@@ -608,7 +616,7 @@ class Main
 		);
 		if (!Application::current()) {
 			$_SESSION = [];
-			$this->createSession();
+			$this->createSession($get, $post);
 		}
 		unset($get[session_name()]);
 		unset($post[session_name()]);

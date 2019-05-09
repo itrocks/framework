@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Tools\Asynchronous;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\User\Authenticate\By_Token;
 
 /**
  * Trigger asynchronous execution server
@@ -54,10 +55,15 @@ class Server
 		Dao::write($action, Dao::only('status'));
 		$action->next($last, true);
 		Dao::commit();
+		$uri = $action->action;
+		if ($action->as_user) {
+			$token = (new By_Token)->newToken($action->as_user);
+			$uri  .= (strpos($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token;
+		}
 		/** @var $callback callable */
 		$callback       = [$this, 'afterAction'];
 		$callback[]     = Dao::getObjectIdentifier($action) ? $action : null;
-		$process        = $this->asynchronous->call($action->action, $callback, false, true);
+		$process        = $this->asynchronous->call($uri, $callback, false, true);
 		$action->status = ($process->identifier && $process->unique_identifier)
 			? Action\Status::LAUNCHED
 			: Action\Status::LAUNCH_ERROR;
