@@ -70,12 +70,13 @@ class Integrated_Properties
 	 * @return Reflection_Property_Value[] added properties list (empty if none applies)
 	 *         keys are 'property.sub_property'
 	 */
-	public function expandUsingProperty(array &$properties_list, $property, $object = null)
-	{
+	public function expandUsingProperty(
+		array &$properties_list, Reflection_Property $property, $object = null
+	) {
 		if (isset($object)) {
 			$this->object = $object;
 		}
-		return self::expandUsingPropertyInternal($properties_list, $property);
+		return $this->expandUsingPropertyInternal($properties_list, $property);
 	}
 
 	//------------------------------------------------------------------- expandUsingPropertyInternal
@@ -88,18 +89,17 @@ class Integrated_Properties
 	 *         keys are 'property.sub_property'
 	 */
 	protected function expandUsingPropertyInternal(
-		array &$properties_list, $property, $display_prefix = '', array $blocks = []
+		array &$properties_list, Reflection_Property $property, $display_prefix = '', array $blocks = []
 	) {
-		$expanded      = [];
-		$integrated    = Integrated_Annotation::of($property);
-		$property_path = $property->path ?: $property->name;
+		$expanded   = [];
+		$integrated = Integrated_Annotation::of($property);
 		if (
 			$integrated->value
 			&& !$property->isStatic()
-			&& (!$integrated->has(Integrated_Annotation::FINAL_) || !strpos($property_path, DOT))
+			&& (!$integrated->has(Integrated_Annotation::FINAL_) || !strpos($property->path, DOT))
 		) {
 			if ($integrated->has(Integrated_Annotation::BLOCK)) {
-				$blocks[$property_path] = $property_path;
+				$blocks[$property->path] = $property->path;
 			}
 			$expand_properties = $integrated->properties
 				? $this->getExplicitIntegratedProperties($property, $integrated)
@@ -107,7 +107,7 @@ class Integrated_Properties
 			$this->startFromRootClass($expand_properties, $property);
 			$this->defaultValue($property);
 			$expanded = $this->prepareExpandedProperties(
-				$properties_list, $display_prefix, $blocks, $expand_properties, $property_path, $integrated
+				$properties_list, $display_prefix, $blocks, $expand_properties, $property, $integrated
 			);
 		}
 
@@ -124,21 +124,25 @@ class Integrated_Properties
 	protected function getExplicitIntegratedProperties(
 		Reflection_Property $property, Integrated_Annotation $integrated
 	) {
-		$expand_properties    = [];
-		$property_path        = $property->path ?: $property->name;
-		$sub_properties_class = $property->getType()->asReflectionClass();
+		$expand_properties = [];
+		$type              = $property->getType();
+		/** @noinspection PhpUnhandledExceptionInspection never call this with an abstract class and without property value */
+		$sub_properties_class
+			= ($type->isAbstractClass() && ($property instanceof Reflection_Property_Value))
+			? new Reflection_Class($property->value())
+			: $property->getType()->asReflectionClass();
 		foreach ($integrated->properties as $integrated_property_path) {
 			// 'all but' mode
 			if (substr($integrated_property_path, 0, 1) === '-') {
 				if (!$expand_properties) {
 					$expand_properties = $this->getImplicitIntegratedProperties($property);
 				}
-				unset($expand_properties[$property_path . DOT . substr($integrated_property_path, 1)]);
+				unset($expand_properties[$property->path . DOT . substr($integrated_property_path, 1)]);
 			}
 			// add mode
 			else {
 				/** @noinspection PhpUnhandledExceptionInspection $sub_properties_class->name is valid */
-				$expand_properties[$property_path . DOT . $integrated_property_path]
+				$expand_properties[$property->path . DOT . $integrated_property_path]
 					= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
 			}
 		}
@@ -155,7 +159,6 @@ class Integrated_Properties
 	protected function getImplicitIntegratedProperties(Reflection_Property $property)
 	{
 		$expand_properties    = [];
-		$property_path        = $property->path ?: $property->name;
 		$sub_properties_class = $property->getType()->asReflectionClass();
 		foreach (
 			$sub_properties_class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT])
@@ -168,7 +171,7 @@ class Integrated_Properties
 					|| !$sub_property->getAnnotation('composite')->value
 				)
 			) {
-				$expand_properties[$property_path . DOT . $sub_property_name] = $sub_property;
+				$expand_properties[$property->path . DOT . $sub_property_name] = $sub_property;
 			}
 		}
 		return $expand_properties;
@@ -180,24 +183,24 @@ class Integrated_Properties
 	 * @param $display_prefix    string
 	 * @param $blocks            string[]
 	 * @param $expand_properties Reflection_Property[]
-	 * @param $property_path     string
+	 * @param $property          Reflection_Property
 	 * @param $integrated        Integrated_Annotation
 	 * @return Reflection_Property_Value[]
 	 */
 	protected function prepareExpandedProperties(
-		array &$properties_list, $display_prefix, array $blocks, $expand_properties, $property_path,
-		Integrated_Annotation $integrated
+		array &$properties_list, $display_prefix, array $blocks, array $expand_properties,
+		Reflection_Property $property, Integrated_Annotation $integrated
 	) {
 		$expanded          = [];
 		$integrated_alias  = $integrated->has(Integrated_Annotation::ALIAS);
 		$integrated_simple = $integrated->has(Integrated_Annotation::SIMPLE);
 		foreach ($expand_properties as $sub_property_path => $sub_property) {
 			// prefixed display, sub-prefix
-			$display = $display_prefix . ($display_prefix ? DOT : '') . $property_path
+			$display = $display_prefix . ($display_prefix ? DOT : '') . $property->path
 				. DOT . $sub_property_path;
 			$sub_prefix = $integrated_simple ? $display_prefix : $display;
 			// recurse
-			if ($more_expanded = self::expandUsingPropertyInternal(
+			if ($more_expanded = $this->expandUsingPropertyInternal(
 				$properties_list, $sub_property, $sub_prefix, $blocks
 			)) {
 				$expanded = array_merge($expanded, $more_expanded);
@@ -205,8 +208,7 @@ class Integrated_Properties
 			// if no recurse : prepare and add expanded property
 			else {
 				$sub_property = $this->prepareExpandedProperty(
-					$blocks, $integrated_alias, $integrated_simple, $sub_property, $sub_property_path,
-					$display
+					$blocks, $integrated_alias, $integrated_simple, $sub_property, $display
 				);
 				$properties_list[$sub_property_path] = $sub_property;
 				$expanded[$sub_property_path]        = $sub_property;
@@ -222,24 +224,23 @@ class Integrated_Properties
 	 * @param $integrated_alias  boolean
 	 * @param $integrated_simple boolean
 	 * @param $sub_property      Reflection_Property
-	 * @param $sub_property_path string
 	 * @param $display           string
 	 * @return Reflection_Property_Value
 	 */
 	protected function prepareExpandedProperty(
-		array $blocks, $integrated_alias, $integrated_simple, $sub_property,
-		$sub_property_path, $display
+		array $blocks, $integrated_alias, $integrated_simple, Reflection_Property $sub_property,
+		$display
 	) {
 		/** @noinspection PhpUnhandledExceptionInspection root class and sub property path must valid */
 		$sub_property = new Reflection_Property_Value(
-			$sub_property->root_class, $sub_property_path, $this->object, false, true
+			$this->object, $sub_property->path, $this->object, false, true
 		);
 		$sub_property->display = Loc::tr(
 			$integrated_simple
 				? (
 					$integrated_alias
 					? Alias_Annotation::of($sub_property)->value
-					: rLastParse($sub_property_path, DOT, 1, true)
+					: rLastParse($sub_property->path, DOT, 1, true)
 				)
 				: $display
 		);

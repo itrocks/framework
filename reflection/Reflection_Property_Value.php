@@ -276,7 +276,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function pathAsField($class_with_id = false)
 	{
-		$path = Names::propertyPathToField($this->view_path ?: $this->path ?: $this->name);
+		$path = Names::propertyPathToField($this->view_path ?: $this->path);
 		if ($class_with_id && $this->getType()->isClass()) {
 			if (strpos($path, DOT)) {
 				$path .= '[id]';
@@ -330,7 +330,13 @@ class Reflection_Property_Value extends Reflection_Property
 		if ($this->user && !$this->final_value) {
 			$user_getter = $this->getAnnotation('user_getter')->value;
 			if ($user_getter) {
-				$callable = new Contextual_Callable($user_getter, $this->object);
+				$object = $this->object;
+				if (strpos($this->path, DOT)) {
+					foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
+						$object = $object->$property_name;
+					}
+				}
+				$callable = new Contextual_Callable($user_getter, $object);
 				return $callable->call();
 			}
 		}

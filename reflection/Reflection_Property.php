@@ -110,6 +110,7 @@ class Reflection_Property extends ReflectionProperty
 	public function __construct($class_name, $property_name)
 	{
 		if (is_object($class_name)) {
+			$object     = $class_name;
 			$class_name = get_class($class_name);
 		}
 		if (strpos($property_name, ')')) {
@@ -122,9 +123,16 @@ class Reflection_Property extends ReflectionProperty
 		$aliases          = [];
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
 			$property   = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
-			$class_name = $property->getType()->getElementTypeAsString();
-			$aliases[]  = $property->alias;
-			$i          = $j + 1;
+			$type       = $property->getType();
+			$class_name = $type->getElementTypeAsString();
+			if (isset($object)) {
+				$object = $object->{$property->name};
+				if ($object && in_array($class_name, ['mixed', 'object'])) {
+					$class_name = get_class($object);
+				}
+			}
+			$aliases[] = $property->alias;
+			$i         = $j + 1;
 		}
 		if ($i) {
 			$property_name = substr($property_name, $i);
@@ -532,7 +540,10 @@ class Reflection_Property extends ReflectionProperty
 			foreach ($path as $property_name) {
 				/** @var $property Reflection_Property */
 				if (isset($property)) {
-					$class = Builder::className($property->getType()->getElementTypeAsString());
+					$type_name = $property->getType()->getElementTypeAsString();
+					$class     = in_array($type_name, ['mixed', 'object'])
+						? get_class($object)
+						: Builder::className($type_name);
 				}
 				/** @noinspection PhpUnhandledExceptionInspection $class is valid */
 				$property = new Reflection_Property($class, $property_name);
@@ -701,7 +712,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function pathAsField($class_with_id = false)
 	{
-		$path = Names::propertyPathToField($this->path ?: $this->name);
+		$path = Names::propertyPathToField($this->path);
 		if ($class_with_id && $this->getType()->isClass()) {
 			if (strpos($path, DOT)) {
 				$path .= '[id]';
