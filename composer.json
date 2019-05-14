@@ -21,6 +21,7 @@
 		"csl/reset5":                            "1.*",
 		"doctrine/instantiator":                 "1.0.*",
 		"easybook/geshi":                        "1.*",
+		"ext-ctype":                             "*",
 		"ext-curl":                              "*",
 		"ext-dom":                               "*",
 		"ext-fileinfo":                          "*",

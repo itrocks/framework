@@ -29,6 +29,7 @@ class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
+	const HIDE_PAGE_FRAME    = 'hide_page_frame';
 	const PROPAGATE          = true;
 	const TEMPLATE           = 'template';
 	const TEMPLATE_CLASS     = 'template_class';

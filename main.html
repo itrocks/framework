@@ -27,6 +27,7 @@
 
 <body>
 
+	<!--!hide_page_frame?-->
 	<!--!inside-->
 	<header>
 		<div class="{@application.lower} logo">{@application.ucwords}</div>
@@ -45,16 +46,19 @@
 	{/ITRocks/Framework/Component/Menu/output.html}
 	<!--end-->
 	<!--end-->
+	<!--end-->
 
 	<main>
 		{@content}
 	</main>
 
+	<!--!hide_page_frame?-->
 	<div id="trashcan">
 		<h2>|Trashcan|</h2>
 		<div></div>
 		<a href="app://ITRocks/Framework/Component/Trashcan" target="#trashcan>div">|bin|</a>
 	</div>
+	<!--end-->
 
 </body>
 </html>
