@@ -53,11 +53,6 @@ class Xdebug implements Registerable
 		if (isset($this->key)) {
 			$uri = $this->append($uri, self::KEY, $this->key);
 		}
-		// TODO Something, I guess. Empty test ?
-		/*
-		if (isset($_COOKIE[self::SESSION])) {
-		}
-		*/
 		return $uri;
 	}
 

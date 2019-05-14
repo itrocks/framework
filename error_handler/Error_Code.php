@@ -15,8 +15,8 @@ class Error_Code
 	/**
 	 * Captions constants
 	 *
-	 * @todo move this to functions when full-php-7.1-compliant
-	 * @var string
+	 * @todo move this to functions / constant (?) when full-php-7.1-compliant
+	 * @var string[]
 	 */
 	private static $CAPTIONS = [
 		E_ALL               => 'all',
