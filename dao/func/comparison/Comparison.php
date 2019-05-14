@@ -199,8 +199,11 @@ class Comparison implements Negate, Where
 				$this->than_value->toSql($builder, $property_path, $prefix)
 			);
 		}
-		if (is_object($this->than_value) && Dao::getObjectIdentifier($this->than_value)) {
-			return $column . SP . $this->sign . SP . Dao::getObjectIdentifier($this->than_value);
+		if (
+			is_object($this->than_value)
+			&& ($identifier = Dao::getObjectIdentifier($this->than_value, 'id'))
+		) {
+			return $column . SP . $this->sign . SP . $identifier;
 		}
 		return $column . SP . $this->sign
 			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
