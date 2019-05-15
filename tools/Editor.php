@@ -53,12 +53,12 @@ class Editor implements Configurable
 			$build_name    = trim(lLastParse($version, SP));
 			$build_version = trim(rLastParse($version, SP));
 		}
+		// Always keep default config value if no parameters in parameter tags
 		else {
-			$build_name = $build_version = null;
+			$build_name    = $settings['name'];
+			$build_version = $settings['default_version'];
 		}
-		$name    = $build_name ?: $settings['name'];
-		$version = $build_version ?: $version ?: $settings['default_version'];
-		return $name . '-' . $version;
+		return $build_name . '-' . $build_version;
 	}
 
 }
