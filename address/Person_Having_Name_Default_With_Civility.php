@@ -13,7 +13,7 @@ class Person_Having_Name_Default_With_Civility implements Registerable
 
 	//------------------------------------------------------------------------------- prependCivility
 	/**
-	 * @param $object Person_Having_Name|Has_Name
+	 * @param $object Person_Having_Name|Has_Civility|Has_Name
 	 */
 	public static function prependCivility($object)
 	{

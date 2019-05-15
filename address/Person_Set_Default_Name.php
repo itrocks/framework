@@ -36,7 +36,7 @@ trait Person_Set_Default_Name
 
 	//------------------------------------------------------------------------- setDefaultNameIfEmpty
 	/**
-	 * Sets the name to "$civility $first_name $last_name" if empty
+	 * Sets the name to "[$civility] $first_name $last_name" if empty
 	 */
 	public function setDefaultNameIfEmpty()
 	{

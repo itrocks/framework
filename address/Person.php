@@ -10,13 +10,6 @@ namespace ITRocks\Framework\Address;
 trait Person
 {
 
-	//------------------------------------------------------------------------------------- $civility
-	/**
-	 * @link Object
-	 * @var Civility
-	 */
-	public $civility;
-
 	//----------------------------------------------------------------------------------- $first_name
 	/**
 	 * @var string
@@ -37,7 +30,7 @@ trait Person
 	{
 		$result = trim($this->first_name . SP . $this->last_name);
 		if (empty($result) && method_exists(get_parent_class($this), '__toString')) {
-			/** @noinspection PhpUndefinedClassInspection all possible parents have __toString() */
+			/** @noinspection PhpUndefinedClassInspection all method_exists */
 			$result = parent::__toString();
 		}
 		return $result;
