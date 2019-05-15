@@ -547,9 +547,11 @@ class Reflection_Property extends ReflectionProperty
 				}
 				/** @noinspection PhpUnhandledExceptionInspection $class is valid */
 				$property = new Reflection_Property($class, $property_name);
-				$object   = is_array($object)
-					? $property->getValues($object, $with_default)
-					: $property->getValue($object, $with_default);
+				if (is_array($object) || (is_a($object, $property->getFinalClassName(), true))) {
+					$object = is_array($object)
+						? $property->getValues($object, $with_default)
+						: $property->getValue($object, $with_default);
+				}
 				if ($with_default && !$object && !is_array($object)) {
 					$object = $property->getFinalClass()->newInstance();
 				}
