@@ -334,7 +334,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 					&& !strpos($property->getDocComment(), '@setter')
 				) {
 					$expr = '%@override\s+' . $match['property_name'] . '\s+.*(@getter|@link|@setter)%';
-					preg_match($expr, $property->class->getDocComment(), $match2);
+					preg_match($expr, $property->class->getDocComment([]), $match2);
 					if ($match2) {
 						$properties[$match['property_name']]['override'] = true;
 					}

@@ -37,7 +37,7 @@ trait Scanners
 				$properties[$property->name]['default'] = $advice;
 			}
 		}
-		foreach ($this->scanForOverrides($class->getDocComment(), ['default']) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment([]), ['default']) as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				$match['method_name']
@@ -69,7 +69,7 @@ trait Scanners
 				$properties[$property->name][] = [Handler::READ, $advice];
 			}
 		}
-		$overrides = $this->scanForOverrides($class->getDocComment(), ['getter']);
+		$overrides = $this->scanForOverrides($class->getDocComment([]), ['getter']);
 		foreach ($overrides as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
@@ -119,7 +119,7 @@ trait Scanners
 			}
 		}
 		$annotations = [Link_Annotation::ANNOTATION];
-		foreach ($this->scanForOverrides($class->getDocComment(), $annotations, $disable) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment([]), $annotations, $disable) as $match) {
 			$advice = [Getter::class, 'get' . $match['method_name']];
 			$properties[$match['property_name']][] = [Handler::READ, $advice];
 		}
@@ -206,7 +206,7 @@ trait Scanners
 				}
 			}
 		}
-		foreach ($this->scanForOverrides($class->getDocComment(), ['replaces']) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment([]), ['replaces']) as $match) {
 			$properties[$match['method_name']]['replaced'] = $match['property_name'];
 		}
 		// copy-paste getters and setters from replaced to replacement properties
@@ -252,7 +252,7 @@ trait Scanners
 				$properties[$property->name][] = [Handler::WRITE, $advice];
 			}
 		}
-		foreach ($this->scanForOverrides($class->getDocComment(), ['setter']) as $match) {
+		foreach ($this->scanForOverrides($class->getDocComment([]), ['setter']) as $match) {
 			$advice = [
 				empty($match['class_name']) ? '$this' : $match['class_name'],
 				empty($match['method_name'])
