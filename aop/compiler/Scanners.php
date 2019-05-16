@@ -148,8 +148,8 @@ trait Scanners
 				. '(?:'                      // begin annotations loop
 				. '(?:@.*?\s+)?'             // others overridden annotations
 				. '@annotation'              // overridden annotation
-				. '(?:\s+(?:([\\\\\w]+)::)?' // 1 : class name
-				. '(\w+)?)?'                 // 2 : method or function name
+				. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+				. '(\w*)?)?'                 // 3 : method or function name, or empty value
 				. ')+'                       // end annotations loop
 				. '%';
 			foreach ($annotations as $annotation) {
@@ -162,15 +162,22 @@ trait Scanners
 							if ($annotation === Getter_Annotation::ANNOTATION) {
 								$disable[$match] = true;
 							}
-							$type = ($annotation === 'setter') ? Handler::WRITE : Handler::READ;
-							if ($matches[2][$i] && $matches[3][$i]) {
-								$overrides[] = [
-									'class_name'    => $matches[2][$i],
-									'method_name'   => $matches[3][$i],
-									'property_name' => $matches[1][$i],
-									'type'          => $type
-								];
+							$type     = ($annotation === 'setter') ? Handler::WRITE : Handler::READ;
+							$override = [
+								'class_name'    => $matches[2][$i],
+								'method_name'   => $matches[3][$i],
+								'property_name' => $matches[1][$i],
+								'type'          => $type
+							];
+							if (!$override['class_name']) {
+								$override['class_name'] = 'static';
 							}
+							if (!$override['method_name']) {
+								$override['method_name'] = ($annotation === 'setter')
+									? Names::propertyToMethod('set' . '_' . $override['property_name'])
+									: Names::propertyToMethod('get' . '_' . $override['property_name']);
+							}
+							$overrides[] = $override;
 						}
 					}
 				}

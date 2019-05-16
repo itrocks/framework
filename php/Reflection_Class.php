@@ -356,9 +356,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [], array &$already = [])
+	public function getDocComment(array $flags = null, array &$already = [])
 	{
-		if ($flags === true) {
+		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
 		}
 		if (!isset($this->doc_comment)) {
@@ -406,12 +406,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	public function getDocExtends()
 	{
 		$extends = [];
-		$expr = '%'
+		$expr    = '%'
 			. '\n\s+\*\s+'     // each line beginning by '* '
 			. '@extends'       // extends annotation
 			. '\s+([\\\\\w]+)' // 1 : class name
 			. '%';
-		if (preg_match_all($expr, $this->getDocComment(), $matches)) {
+		if (preg_match_all($expr, $this->getDocComment([]), $matches)) {
 			foreach ($matches[1] as $match) {
 				$extends[] = Reflection_Class::of($this->fullClassName($match));
 			}
@@ -702,7 +702,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			. '@set'           // set annotation
 			. '\s+([\\\\\w]+)' // 1 : class name
 			. '%';
-		preg_match($expr, $this->getDocComment(), $match);
+		preg_match($expr, $this->getDocComment([]), $match);
 		return $match
 			? Namespaces::defaultFullClassName($match[1], $this->name)
 			: Names::singleToSet($this->name);
