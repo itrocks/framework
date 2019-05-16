@@ -468,6 +468,14 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@show_seconds' => Boolean_Annotation::class,
 
 	/**
+	 * @show_time
+	 * Tells that for a Date_Time how we must show time to the user.
+	 * default / false is the same as 'auto' : time will be shown if not 00:00:00.
+	 * Others values are 'always' and 'never', 'auto' can also be set.
+	 */
+	Parser::T_PROPERTY . '@show_time' => Annotation::class,
+
+	/**
 	 * @signed
 	 * Tells that the numeric value can be negative.
 	 */

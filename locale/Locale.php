@@ -150,6 +150,7 @@ class Locale implements Configurable
 		}
 		elseif ($value instanceof Date_Time) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
+			$this->date_format->show_time    = $property->getAnnotation('show_time')->value;
 		}
 		elseif ($type->isFloat()) {
 			$decimals = explode(

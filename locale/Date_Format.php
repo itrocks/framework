@@ -196,10 +196,10 @@ class Date_Format
 			}
 			else {
 				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
-				if ($this->show_time == self::TIME_NEVER) {
+				if ($this->show_time === self::TIME_NEVER) {
 					$time = '';
 				}
-				elseif ($this->show_time != self::TIME_ALWAYS) {
+				elseif ($this->show_time !== self::TIME_ALWAYS) {
 					if ($time === '00:00:00') {
 						$time = '';
 					}
