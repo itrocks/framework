@@ -312,13 +312,17 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 			$properties[$match['property_name']]['implements'][$match['type']] = true;
 			if (!isset($implemented_properties[$match['property_name']])) {
 				$class_properties = $class->getProperties([T_EXTENDS]);
-				$extends = $class;
+				$extends          = $class;
 				while (!isset($class_properties[$match['property_name']])) {
-					// TODO try the error to have a class with @representative and property names that do not exist. That will crash here but the error message is incomprehensible
-					$extends = $extends->source->getOutsideClass(
-						$extends->getListAnnotation('extends')->values()[0]
-					);
+					$extends_values = $extends->getListAnnotation('extends')->values();
+					if (!$extends_values) {
+						break;
+					}
+					$extends          = $extends->source->getOutsideClass(reset($extends_values));
 					$class_properties = $extends->getProperties([T_EXTENDS]);
+				}
+				if (!isset($class_properties[$match['property_name']])) {
+					continue;
 				}
 				$property = $class_properties[$match['property_name']];
 				if (isset($extends)) {
