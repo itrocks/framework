@@ -163,9 +163,16 @@ class Date_Format
 		}
 		elseif (strpos($date, SP)) {
 			list($date, $time) = explode(SP, $date);
-			while (strlen($time) < 8) {
-				$time .= $joker ? (':' . $joker . $joker) : ($max ? ':59' : ':00');
+			$time = explode(':', $time);
+			foreach ($time as &$t) {
+				if (strlen($t) < 2) {
+					$t = '0' . $t;
+				}
 			}
+			while (count($time) < 3) {
+				$time[] = $joker ? ($joker . $joker) : ($max ? '59' : '00');
+			}
+			$time = join(':', $time);
 			$datetime = DateTime::createFromFormat($this->format, $date);
 			return trim($datetime ? ($datetime->format('Y-m-d') . SP . $time) : $date . SP . $time);
 		}
