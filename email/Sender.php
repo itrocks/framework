@@ -19,22 +19,12 @@ class Sender implements Configurable, Sender_Interface
 {
 	use Has_Get;
 
-	//------------------------------------------------------------------------------------------- BCC
+	//----------------------------------------------------------------------- Configuration constants
 	const BCC      = 'bcc';
-
-	//------------------------------------------------------------------------------------------ HOST
 	const HOST     = 'host';
-
-	//----------------------------------------------------------------------------------------- LOGIN
 	const LOGIN    = 'login';
-
-	//-------------------------------------------------------------------------------------- PASSWORD
 	const PASSWORD = 'password';
-
-	//------------------------------------------------------------------------------------------ PORT
 	const PORT     = 'port';
-
-	//-------------------------------------------------------------------------------------------- TO
 	const TO       = 'to';
 
 	//------------------------------------------------------------------------------------------ $bcc
@@ -42,7 +32,7 @@ class Sender implements Configurable, Sender_Interface
 	 * Configuration of blind-carbon-copy email address enable to send every email sent by this
 	 * feature to a given addresses list.
 	 *
-	 * @var string[]
+	 * @var string|string[]
 	 */
 	public $bcc;
 
@@ -58,7 +48,7 @@ class Sender implements Configurable, Sender_Interface
 	 * Configuration of this property is recommended in development environment to avoid sending
 	 * emails to production recipients when you test your application.
 	 *
-	 * @var string[]
+	 * @var string|string[]
 	 */
 	public $to;
 
@@ -151,11 +141,17 @@ class Sender implements Configurable, Sender_Interface
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];
 			$email->to            = [];
-			foreach ($this->to as $to) {
-				array_push($email->to, new Recipient($to));
+			if (!is_array($this->to)) {
+				$this->to = [$this->to];
+			}
+			foreach ($this->to as $to_name => $to_email) {
+				array_push($email->to, new Recipient($to_email, is_numeric($to_name) ? null : $to_name));
 			}
 		}
 		if (isset($this->bcc)) {
+			if (!is_array($this->bcc)) {
+				$this->bcc = [$this->bcc];
+			}
 			foreach ($this->bcc as $bcc) {
 				array_push($email->blind_copy_to, new Recipient($bcc));
 			}

@@ -165,6 +165,16 @@ class Email
 		$this->uniqueRecipients();
 	}
 
+	//---------------------------------------------------------------------------------- encodeHeader
+	/**
+	 * @param $text string
+	 * @return string
+	 */
+	protected function encodeHeader($text)
+	{
+		return mb_encode_mimeheader(strval($text), 'utf-8', 'Q');
+	}
+
 	//--------------------------------------------------------------------------- getHeadersAsStrings
 	/**
 	 * @return string[]
@@ -172,28 +182,28 @@ class Email
 	public function getHeadersAsStrings()
 	{
 		if ($this->blind_copy_to) {
-			$this->headers['Bcc'] = join(',', $this->blind_copy_to);
+			$this->headers['Bcc'] = $this->encodeHeader(join(',', $this->blind_copy_to));
 		}
 		if ($this->copy_to) {
-			$this->headers['Cc'] = join(',', $this->copy_to);
+			$this->headers['Cc'] = $this->encodeHeader(join(',', $this->copy_to));
 		}
 		if ($this->from) {
-			$this->headers['From'] = strval($this->from);
+			$this->headers['From'] = $this->encodeHeader($this->from);
 		}
 		if ($this->reply_to) {
-			$this->headers['Reply-To'] = strval($this->reply_to);
+			$this->headers['Reply-To'] = $this->encodeHeader($this->reply_to);
 		}
 		if ($this->return_path) {
-			$this->headers['Return-Path'] = strval($this->return_path);
+			$this->headers['Return-Path'] = $this->encodeHeader($this->return_path);
 		}
 		if ($this->subject) {
-			$this->headers['Subject'] = $this->subject;
+			$this->headers['Subject'] = $this->encodeHeader($this->subject);
 		}
 		if ($this->to) {
-			$this->headers['To'] = join(',', $this->to);
+			$this->headers['To'] = $this->encodeHeader(join(',', $this->to));
 		}
 		if (!isset($this->headers['Content-Type'])) {
-			$this->headers['Content-Type'] = 'text/html; charset=UTF-8';
+			$this->headers['Content-Type'] = 'text/html; charset=utf-8';
 		}
 		return $this->headers;
 	}

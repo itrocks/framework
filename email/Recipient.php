@@ -8,6 +8,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * An email recipient (or sender, this object can be used for both)
  *
  * @business
+ * @override name @mandatory false
  * @representative name, email
  * @sort name, email
  */
@@ -35,7 +36,7 @@ class Recipient
 	{
 		return sprintf(
 			$this->name ? '%s <%s>' : '%s%s',
-			str_replace('<', '>', $this->name),
+			str_replace(['<', '>'], '', $this->name),
 			$this->email
 		);
 	}
