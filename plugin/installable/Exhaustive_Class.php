@@ -130,6 +130,7 @@ class Exhaustive_Class
 		if (isset($this->class_components[$class_name])) {
 			return $this->class_components[$class_name];
 		}
+		$this->class_components[$class_name] = [];
 		if (isset($this->assembly[$class_name])) {
 			$assembly   = $this->assembly[$class_name];
 			if (Class_Builder::isBuilt($class_name)) {
