@@ -277,18 +277,14 @@ class Application
 	 */
 	public function getNamespaces()
 	{
-		if (!isset($this->namespaces)) {
-			$applications_classes = array_merge([get_class($this)], array_keys($this->applications));
-			$namespaces = [];
-			foreach ($applications_classes as $application_class) {
-				while ($application_class) {
-					$namespaces[] = substr($application_class, 0, strrpos($application_class, BS));
-					$application_class = get_parent_class($application_class);
-				}
-			}
-			$this->namespaces = $namespaces;
+		if ($this->namespaces) {
+			return $this->namespaces;
 		}
-		return $this->namespaces;
+		$namespaces = [];
+		foreach ($this->getClassesTree(true) as $application_class) {
+			$namespaces[] = substr($application_class, 0, strrpos($application_class, BS));
+		}
+		return $this->namespaces = $namespaces;
 	}
 
 	//------------------------------------------------------------------------------ getParentClasses
