@@ -72,6 +72,7 @@ class Collection
 		(new Mapper\Collection($this->collection))->sort();
 		$list = new Unordered();
 		$list->addClass('auto_width');
+		$list->addClass('collection');
 		$header = $this->buildHeader();
 		if (!($header instanceof Item)) {
 			$header = new Item($header);

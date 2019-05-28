@@ -74,6 +74,7 @@ class Map
 		(new Mapper\Map($this->map))->sort();
 		$list = new Unordered();
 		$list->addClass('auto_width');
+		$list->addClass('map');
 		foreach ($this->buildBody() as $line) {
 			$list->addItem($line);
 		}
