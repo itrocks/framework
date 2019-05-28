@@ -71,10 +71,11 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		$objects = $parameters->getSelectedObjects($form);
-
-		/** @noinspection PhpUnhandledExceptionInspection Object should always be found */
+		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$layout_model = $parameters->getObject(Model::class);
+		$parameters->remove(Model::class);
+
+		$objects = $parameters->getSelectedObjects($form);
 
 		return $layout_model
 			? $this->printUsingLayoutModel($objects, $layout_model)
