@@ -106,7 +106,7 @@ class Dispatch_Iterations_On_Pages
 			}
 		}
 		$this->structure->pages = $this->pages
-			?: [1 => $this->structure->page(1)->cloneWithNumber(1)];
+			?: ($this->structure->pages ? [1 => $this->structure->page(1)->cloneWithNumber(1)] : []);
 	}
 
 }

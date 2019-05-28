@@ -113,6 +113,7 @@ class Generator
 	 */
 	protected function modelToStructure()
 	{
+		$this->structure->pages = [];
 		foreach ($this->model->pages as $page) {
 			$structure_page = (new From_Json)->build($page->layout);
 			if (!$structure_page->isEmpty()) {
