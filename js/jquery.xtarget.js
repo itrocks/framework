@@ -125,7 +125,7 @@
 					$where = $($('body').children(':last-child'));
 				}
 				if (id === '_blank') {
-					id = 'window' + ++window.zindex_counter;
+					id = 'window' + ++window.id_index;
 				}
 				var $target = $('<' + settings.popup_element + '>')
 					.addClass(settings.closeable_popup)
@@ -140,7 +140,7 @@
 					$target.css('left',     left);
 					$target.css('position', 'absolute');
 					$target.css('top',      top);
-					$target.css('z-index',  window.zindex_counter);
+					$target.css('z-index',  zIndex());
 					if (settings.draggable_blank !== undefined) {
 						if (settings.draggable_blank === true) {
 							$target.draggable();

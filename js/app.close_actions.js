@@ -17,7 +17,7 @@ $(document).ready(function()
 		var $this = $(this);
 		var href  = $this.attr('href');
 		if (!href.beginsWith('#')) {
-			var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
+			var close_link = app.askAnd(href, 'close=window' + window.id_index);
 			$this.attr('href', close_link);
 		}
 	});

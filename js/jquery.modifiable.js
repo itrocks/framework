@@ -156,7 +156,7 @@ window.modifiable_waiting  = false;
 						left:      left,
 						position:  'absolute',
 						top:       top,
-						'z-index': ++window.zindex_counter
+						'z-index': zIndexInc()
 					});
 					$.ajax({
 						url: popup,

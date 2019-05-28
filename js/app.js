@@ -1,7 +1,8 @@
 $(document).ready(function()
 {
 	var $body = $('body');
-	window.zindex_counter = 0;
+
+	window.id_index = 0;
 
 	$body.build('call', 'always', function()
 	{
@@ -41,7 +42,7 @@ $(document).ready(function()
 	{
 		this.mousedown(function()
 		{
-			$(this).closest('div.popup').css('z-index', ++window.zindex_counter);
+			$(this).closest('div.popup').css('z-index', zIndexInc());
 		});
 	});
 

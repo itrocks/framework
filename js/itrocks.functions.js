@@ -164,15 +164,15 @@ redirect = function(uri, target, after, callback, history)
 			$target = $(target.beginsWith('#') ? 'main' : '#main');
 		}
 		if (!$target.length) {
-			window.zindex_counter ++;
-			var $after = (after && (typeof after === 'object')) ? after : $(after);
-			$target    = $('<div>')
+			var z_index = zIndexInc();
+			var $after  = (after && (typeof after === 'object')) ? after : $(after);
+			$target     = $('<div>')
 				.addClass('popup')
-				.attr('id', 'window' + window.zindex_counter)
+				.attr('id', 'window' + ++window.id_index)
 				.css('left',     $after.length ? ($after.offset().left + 3) : 10)
 				.css('position', 'absolute')
 				.css('top',      $after.length ? ($after.offset().top + $after.height() + 2) : 10)
-				.css('z-index',  window.zindex_counter)
+				.css('z-index',  z_index)
 				.appendTo('body');
 			close_function = function(event)
 			{
@@ -196,7 +196,7 @@ redirect = function(uri, target, after, callback, history)
 						var $this = $(this);
 						var href = $this.attr('href');
 						if (!href.beginsWith('#')) {
-							var close_link = app.askAnd(href, 'close=window' + window.zindex_counter);
+							var close_link = app.askAnd(href, 'close=window' + window.id_index);
 							$this.attr('href', close_link);
 						}
 					});

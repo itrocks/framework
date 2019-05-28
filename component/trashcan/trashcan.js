@@ -36,7 +36,7 @@ $(document).ready(function()
 					.attr('data-id', id)
 					.attr('data-throw', data_throw)
 					.html(text)
-					.css('z-index', ++zindex_counter);
+					.css('z-index', zIndexInc());
 			}
 
 		});
