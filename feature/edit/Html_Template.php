@@ -266,8 +266,11 @@ class Html_Template extends Template
 						. ' name=' . DQ . $this->getFormId() . DQ
 						. ' target="#messages"';
 					$after_header = strpos($content, '</header>', $inside_i);
+					if ($after_header === false) {
+						$after_header = strpos($content, '</h2>', $inside_i);
+					}
 					if (($after_header !== false) && ($after_header < $inside_j)) {
-						$inside_i = $after_header + 9;
+						$inside_i = strpos($content, '>', $after_header) + 1;
 					}
 					$form = LF . '<form' . $attributes . '>'
 						. substr($content, $inside_i, $inside_j - $inside_i)
