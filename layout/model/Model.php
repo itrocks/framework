@@ -13,7 +13,6 @@ use ReflectionException;
  * A print model gives the way to print an object of a given class
  *
  * @business
- * @display layer model
  * @representative class_name, name
  */
 abstract class Model
