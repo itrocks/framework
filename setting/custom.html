@@ -18,14 +18,14 @@
 		</div>
 
 		<ul class="select">
-			<li class="default {?class}">
-				<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(?id)/(@feature)?load_name=" target="#main">
+			<li class="default">
+				<a href="app://(@class.path)/(?~id)/(@feature)?load_name=" target="#main">
 					|{default_title}|
 				</a>
 			</li>
 			<!--customized_lists-->
-			<li class="object {?selectedClass} {?class}" data-class="{setting.@class}" data-id="{id}">
-				<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(--@class.path)/(?--id)/(@feature)?load_name=(#)" target="#main">
+			<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
+				<a href="app://(--@class.path)/(?--~id)/(@feature)?load_name=(#)" target="#main">
 					{#}
 				</a>
 			</li>
@@ -36,7 +36,7 @@
 		<ul class="actions">
 			<!--custom_buttons-->
 			<li class="{?class} {feature.lower}">
-				<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(link)" target="{?target}" title="|{?hint}|">
+				<a href="app://(link)" target="{?target}" title="|{?hint}|">
 					|{caption}|
 				</a>
 			</li>

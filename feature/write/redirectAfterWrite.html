@@ -11,7 +11,7 @@
 <body>
 <!--BEGIN-->
 
-	<!--fill_combo?-->
+	<!--~fill_combo?-->
 	<script>
 		var $fill_combo = $('[name="{fill_combo}"]');
 		if ($fill_combo.length) {
@@ -21,17 +21,17 @@
 	</script>
 	<!--end-->
 
-	<!--close?-->
+	<!--~close?-->
 	<script>
 		$('#{close}').remove();
 	</script>
 	<!--end-->
 
-	<!--then?-->
-	<a class="auto-redirect" href="app://(then)" target="#main">{then}</a>
+	<!--~then?-->
+	<a class="NO-auto-redirect" href="app://(then)" target="#main">{then}</a>
 	<!--end-->
 
-	<!--!close?--><!--!then?-->
+	<!--!~close?--><!--!~then?-->
 	<script>
 		(function() {
 			var $window = $('main > article');

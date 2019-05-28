@@ -20,27 +20,27 @@
 			<input type="hidden" name="excluded_selection">
 			<input type="hidden" name="select_all" value="0">
 			<input type="hidden" name="selection">
-			<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?view=selection">
-				x{selected_lines_count}
+			<a href="app://(@class.path)/(@feature)?view=selection">
+				x?
 			</a>
 			<ul>
-				<li class="select_visible {?class}">
-					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=visible">
+				<li class="select_visible">
+					<a href="app://(@class.path)/(@feature)?select=visible">
 						|select the !{displayed_lines_count}! visible lines|
 					</a>
 				</li>
-				<li class="deselect_visible {?class}">
-					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?deselect=visible">
+				<li class="deselect_visible">
+					<a href="app://(@class.path)/(@feature)?deselect=visible">
 						|deselect the !{displayed_lines_count}! visible lines|
 					</a>
 				</li>
-				<li class="select_all {?class}" data-count='{rows_count}'>
-					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=all">
+				<li class="select_all" data-count='{rows_count}'>
+					<a href="app://(@class.path)/(@feature)?select=all">
 						|select all !{rows_count}! matching lines|
 					</a>
 				</li>
-				<li class="deselect_all {?class}">
-					<a data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?select=none">
+				<li class="deselect_all">
+					<a href="app://(@class.path)/(@feature)?select=none">
 						|deselect all lines|
 					</a>
 				</li>
@@ -55,21 +55,21 @@
 					<ul>
 						<!--less_twenty?-->
 						<li class="less twenty">
-							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?less=20" target="#main" title="|Display the standard lines count|">
+							<a href="app://(@class.path)/(@feature)?less=20" target="#main" title="|Display the standard lines count|">
 								|Less lines|
 							</a>
 						</li>
 						<!--end-->
 						<!--more_hundred?-->
 						<li class="more hundred">
-							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=100" target="#main" title="|Display more lines|">
+							<a href="app://(@class.path)/(@feature)?more=100" target="#main" title="|Display more lines|">
 								|More lines|
 							</a>
 						</li>
 						<!--end-->
 						<!--more_thousand?-->
 						<li class="more thousand">
-							<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(@class.path)/(@feature)?more=1000" target="#main" title="|Display the maximal lines count|">
+							<a href="app://(@class.path)/(@feature)?more=1000" target="#main" title="|Display the maximal lines count|">
 								|Max lines|
 							</a>
 						</li>

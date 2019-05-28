@@ -538,13 +538,11 @@ class Template
 	 */
 	protected function htmlEntities($value)
 	{
-		return (is_array($value) || is_object($value) || is_resource($value) || !isset($value))
-			? $value
-			: str_replace(
-				['{'     , '}'     , '<!--'   , '-->'   ],
-				['&#123;', '&#125;', '&lt;!--', '--&gt;'],
-				$value
-			);
+		return str_ireplace(
+			['{'     , '}'     , '<!--'   , '-->'   , '<script',    '</script'],
+			['&#123;', '&#125;', '&lt;!--', '--&gt;', '&lt;script', '&lt;/script'],
+			strval($value)
+		);
 	}
 
 	//-------------------------------------------------------------------------------- isInBlackZones
@@ -605,7 +603,7 @@ class Template
 	 */
 	protected function parseArrayElement(array $array, $index)
 	{
-		return $this->htmlEntities(isset($array[$index]) ? $array[$index] : null);
+		return isset($array[$index]) ? $array[$index] : null;
 	}
 
 	//-------------------------------------------------------------------------------- parseClassName
@@ -655,7 +653,7 @@ class Template
 		$i = strpos($property_name, '?');
 		if ($i !== false) {
 			$condition_path = substr($property_name, 0, $i);
-			$condition      = $this->parseValue($condition_path, true);
+			$condition      = $this->parseValue($condition_path);
 			$j              = strrpos($property_name, ':');
 			if ($condition) {
 				if ($j === false) {
@@ -699,7 +697,7 @@ class Template
 			$value = $this->parseConstSpec($object, $const_name);
 		}
 
-		return $this->htmlEntities($value);
+		return $value;
 	}
 
 	//-------------------------------------------------------------------------------- parseConstSpec
@@ -822,7 +820,7 @@ class Template
 		$func_name = ($p = strpos($func_name, '('))
 			? (Names::propertyToMethod(substr($func_name, 0, $p), 'get') . substr($func_name, $p))
 			: Names::propertyToMethod($func_name, 'get');
-		return $this->htmlEntities($this->callFunc($this->functions, $func_name));
+		return $this->callFunc($this->functions, $func_name);
 	}
 
 	//------------------------------------------------------------------------------- parseFuncParams
@@ -979,15 +977,15 @@ class Template
 			? ''
 			: substr($content, $else_j + 11, $end_j - $else_j - 11);
 		$this->parseLoopContentSections($loop);
-		$elements = $this->parseValue($loop->var_name, false);
+		$elements = $this->parseValue($loop->var_name);
 		if (($elements || !is_array($elements)) && !$loop->force_condition) {
 			$this->unshift(is_object($elements) ? get_class($elements) : '', $elements);
 		}
 		if ($loop->from && !is_numeric($loop->from)) {
-			$loop->from = $this->parseValue($loop->from);
+			$loop->from = $this->parseValue($loop->from, true);
 		}
 		if ($loop->to && !is_numeric($loop->to)) {
-			$loop->to = $this->parseValue($loop->to);
+			$loop->to = $this->parseValue($loop->to, true);
 		}
 		if ($loop->force_equality) {
 			$loop_insert = $elements;
@@ -1310,11 +1308,9 @@ class Template
 			$i ++;
 			$j      = strpos($property_name, ')', $i);
 			$params = $this->parseFuncParams(substr($property_name, $i, $j - $i));
-			return $this->htmlEntities(call_user_func_array([$object, $method_name], $params));
+			return call_user_func_array([$object, $method_name], $params);
 		}
-		else {
-			return $this->htmlEntities($object->$property_name());
-		}
+		return $object->$property_name();
 	}
 
 	//--------------------------------------------------------------------------------- parseNavigate
@@ -1348,7 +1344,7 @@ class Template
 	 */
 	protected function parseNot($property_name)
 	{
-		return !$this->parseValue(substr($property_name, 1), false);
+		return !$this->parseValue(substr($property_name, 1));
 	}
 
 	//--------------------------------------------------------------------------- parseObjectToString
@@ -1364,7 +1360,7 @@ class Template
 		if ($object instanceof No_Escape) {
 			return strval($object);
 		}
-		return method_exists($object, '__toString') ? $this->htmlEntities($object) : '';
+		return method_exists($object, '__toString') ? strval($object) : '';
 	}
 
 	//-------------------------------------------------------------------------------- parseParameter
@@ -1377,9 +1373,7 @@ class Template
 		/** @noinspection PhpUnusedParameterInspection */
 		$object, $parameter_name
 	) {
-		return $this->htmlEntities(
-			isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : ''
-		);
+		return isset($this->parameters[$parameter_name]) ? $this->parameters[$parameter_name] : '';
 	}
 
 	//----------------------------------------------------------------------------------- parseParent
@@ -1428,11 +1422,12 @@ class Template
 	//--------------------------------------------------------------------------------- parseProperty
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection property exists
-	 * @param $object        object
-	 * @param $property_name string
+	 * @param $object                  object
+	 * @param $property_name           string
+	 * @param $ignore_unknown_property boolean
 	 * @return string
 	 */
-	protected function parseProperty($object, $property_name)
+	protected function parseProperty($object, $property_name, $ignore_unknown_property = false)
 	{
 		$class_name = get_class($object);
 		if (property_exists($class_name, $property_name)) {
@@ -1445,7 +1440,7 @@ class Template
 			}
 		}
 		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		return $this->htmlEntities(@($object->$property_name));
+		return $ignore_unknown_property ? @$object->$property_name : $object->$property_name;
 	}
 
 	//-------------------------------------------------------------------------------- parseSeparator
@@ -1485,6 +1480,13 @@ class Template
 	protected function parseSingleValue($property_name, $format_value = true)
 	{
 		$source_object = $object = reset($this->objects);
+		if (substr($property_name, 0, 1) === '~') {
+			$ignore_undefined_property = true;
+			$property_name             = substr($property_name, 1);
+		}
+		else {
+			$ignore_undefined_property = false;
+		}
 		if (!strlen($property_name)) {
 			$object = $this->parseParent();
 		}
@@ -1589,7 +1591,7 @@ class Template
 			$object = $this->parseParameter($object, $property_name);
 		}
 		else {
-			$object = $this->parseProperty($object, $property_name);
+			$object = $this->parseProperty($object, $property_name, $ignore_undefined_property);
 		}
 		if (
 			$format_value
@@ -1609,7 +1611,7 @@ class Template
 	 */
 	protected function parseStaticMethod($class_name, $method_name)
 	{
-		return $this->htmlEntities($class_name::$method_name());
+		return $class_name::$method_name();
 	}
 
 	//--------------------------------------------------------------------------- parseStaticProperty
@@ -1620,7 +1622,7 @@ class Template
 	 */
 	protected function parseStaticProperty($class_name, $property_name)
 	{
-		return $this->htmlEntities($class_name::$$property_name);
+		return $class_name::$$property_name;
 	}
 
 	//----------------------------------------------------------------------------------- parseString
@@ -1652,7 +1654,7 @@ class Template
 	 */
 	protected function parseStringMethod($object, $method_name)
 	{
-		return $this->htmlEntities($object->$method_name());
+		return $object->$method_name();
 	}
 
 	//--------------------------------------------------------------------------- parseStringProperty
@@ -1663,7 +1665,7 @@ class Template
 	 */
 	protected function parseStringProperty($object, $property_name)
 	{
-		return $this->htmlEntities(isset($object->$property_name) ? $object->$property_name : null);
+		return isset($object->$property_name) ? $object->$property_name : null;
 	}
 
 	//------------------------------------------------------------------------------------- parseThis
@@ -1682,7 +1684,7 @@ class Template
 				ctype_upper($c)
 				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
-			|| (strpos('#@§/.-+?!|="' . Q, $c) !== false);
+			|| (strpos('#@§/.-+?!~|="' . Q, $c) !== false);
 	}
 
 	//-------------------------------------------------------------------------------------- parseUse
@@ -1706,7 +1708,7 @@ class Template
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string|object var value after reading value / executing specs
 	 */
-	protected function parseValue($var_name, $as_string = true)
+	protected function parseValue($var_name, $as_string = false)
 	{
 		if ($var_name === DOT) {
 			return reset($this->objects);
@@ -1780,12 +1782,13 @@ class Template
 
 	//-------------------------------------------------------------------------------------- parseVar
 	/**
-	 * @param $content string
-	 * @param $i       integer
-	 * @param $j       integer
+	 * @param $content       string
+	 * @param $i             integer
+	 * @param $j             integer
+	 * @param $html_entities boolean
 	 * @return mixed
 	 */
-	protected function parseVar(&$content, $i, $j)
+	protected function parseVar(&$content, $i, $j, $html_entities = false)
 	{
 		$var_name = substr($content, $i, $j - $i);
 		while (($k = strpos($var_name, '{')) !== false) {
@@ -1811,6 +1814,9 @@ class Template
 		}
 		if ($auto_remove && !strlen($value)) {
 			$this->parseVarRemove($content, $i, $j);
+		}
+		if ($html_entities && ($var_name[0] !== SL)) {
+			$value = $this->htmlEntities($value);
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
 		$i      += strlen($value);
@@ -1896,7 +1902,7 @@ class Template
 			$i ++;
 			if ($this->parseThis($content, $i)) {
 				$j = strpos($content, '}', $i);
-				$i = $this->parseVar($content, $i, $j);
+				$i = $this->parseVar($content, $i, $j, true);
 			}
 		}
 		return $content;
