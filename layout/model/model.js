@@ -38,7 +38,7 @@ $(document).ready(function()
 	 */
 	var pageLayoutInput = function($page)
 	{
-		return $page.parent().children('input[name^="pages[layout]["][name$="]"]');
+		return $page.children('input[name^="pages[layout]["][name$="]"]');
 	};
 
 	//------------------------------------------------------------------------------------ register
@@ -103,12 +103,12 @@ $(document).ready(function()
 		var $size         = $model_window.find('#size');
 
 		setTimeout(function() { $designer.each(function() {
-			var $page  = $(this);
-			var $input = pageLayoutInput($page);
-			var fields = '.model.edit .editor .toolbox .add.tools li > span,'
+			var $designer = $(this);
+			var $input    = pageLayoutInput($designer.closest('.page'));
+			var fields    = '.model.edit .editor .toolbox .add.tools li > span,'
 				+ ' .model.edit .editor .toolbox .property_select > .tree .property,'
 				+ ' .model.edit .editor .pages .tool';
-			$page.documentDesigner({
+			$designer.documentDesigner({
 				default: { align: 'left', size: 4 },
 				drag:    dragCallback,
 				drop:    dropCallback,
@@ -126,9 +126,9 @@ $(document).ready(function()
 			if ($input.val()) {
 				var json_data = $('<textarea>').html($input.val()).text();
 				var data      = JSON.parse(json_data.toString());
-				$page.documentDesigner('setData', data);
+				$designer.documentDesigner('setData', data);
 			}
-			$page.fileUpload();
+			$designer.fileUpload();
 		})});
 
 		//------------------------------------------------------------------ $editor .field:contains(#)
@@ -185,21 +185,21 @@ $(document).ready(function()
 			$(this).change();
 		});
 
-		//----------------------------------- article.model .editor .general.actions > .write > a click
+		//--------------------------------------- article.model .editor .general.actions > .write click
 		/**
 		 * Save layout model : build the standardized data before saving the form,
 		 * as no data is stored into inputs
 		 */
-		this.find('.general.actions > .write > a').click(function()
+		$model_window.find('.general.actions > .write').click(function()
 		{
 			var $designer = $(this).closest('article.model').find('.editor .designer');
 			var $active   = $designer.closest('.active.page');
 			var $pages    = $designer.closest('.page');
 			$pages.addClass('active');
 			$designer.each(function() {
-				var $page  = $(this);
-				var $input = pageLayoutInput($page);
-				$input.val(JSON.stringify($page.documentDesigner('getData').fields));
+				var $designer = $(this);
+				var $input    = pageLayoutInput($designer.closest('.page'));
+				$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
 			});
 			$pages.removeClass('active');
 			$active.addClass('active');

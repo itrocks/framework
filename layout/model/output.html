@@ -13,7 +13,7 @@
 <!--use ITRocks\Framework\Tools\Paths-->
 
 	<article class="{@class.short.lower} {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
-		<form action="app://(@class.path)/write" enctype="multipart/form-data" method="post" name="{@template.getFormId}" target="#messages">
+		<form action="app://(@class.path)/write" enctype="multipart/form-data" method="post" name="{?@template.~getFormId}" target="#messages">
 			<h2>|{@class.display.ucfirst}|</h2>
 			{/component/button/general_buttons.html}
 			<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
