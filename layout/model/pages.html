@@ -11,19 +11,20 @@
 <body>
 <!--BEGIN-->
 
-	<div class="tabber">
+	<section class="pages tabber">
+		<h4>|Pages|</h4>
 		<ul>
 			<!--pages-->
 			<li><a href="dyn://#page-(orderingCaption)">|{orderingCaption}|</a></li>
 			<!--end-->
 		</ul>
 		<!--pages-->
-		<fieldset class="page" id="page-{orderingCaption}">
-			<legend>|{orderingCaption}|</legend>
+		<section class="page" id="page-{orderingCaption}">
+			<h5>|{orderingCaption}|</h5>
 			{/output.html}
-		</fieldset>
+		</section>
 		<!--end-->
-	</div>
+	</section>
 
 <!--END-->
 </body>

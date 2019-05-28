@@ -62,11 +62,7 @@ class Buttons_Generator
 
 		$buttons[] = new Button(
 			'New layout model',
-			View::link(
-				Model::class,
-				Feature::F_ADD,
-				['class_name' => Names::classToPath($this->class_name)]
-			),
+			View::link(Model::class, Feature::F_ADD, ['class_name' => $this->class_name]),
 			Feature::F_ADD
 		);
 

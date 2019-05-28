@@ -1,0 +1,171 @@
+
+article.model {
+
+	&.output {
+		.snap.line,
+		.toolbox {
+			display: none;
+		}
+	}
+
+	> form > .editor {
+
+		> h3 {
+			visibility: hidden;
+		}
+
+		> :not(h3) {
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		> .pages {
+			margin-top: 0;
+
+			> h4 {
+				display: none;
+			}
+
+			> .page {
+				border: 1px solid darkgray;
+				height: 1190px;
+				position: relative;
+				width: 842px;
+
+				> h5 {
+					visibility: hidden;
+				}
+			}
+		}
+
+		.designer {
+			background-repeat: no-repeat;
+			background-size: 840px 1190px;
+			left: 11px;
+			position: absolute;
+			top: 11px;
+
+			.field {
+				white-space: pre-line;
+
+				&.line > .handle {
+					cursor: pointer;
+				}
+			}
+		}
+
+		.tool {
+
+			&.snap.line {
+				color: transparent;
+				font-size: 1px;
+				position: absolute;
+
+				&.horizontal {
+					border-top: 1px dashed darkgray;
+					height: 0;
+					left: 11px;
+					top: 5px;
+					width: 840px;
+
+					> .handle {
+						cursor: ns-resize;
+						height: 18px;
+						width: 840px;
+						top: -9px;
+					}
+				}
+
+				&.vertical {
+					border-left: 1px dashed darkgray;
+					height: 1188px;
+					left: 5px;
+					top: 11px;
+					width: 0;
+
+					> .handle {
+						cursor: ew-resize;
+						left: -9px;
+						top: 0;
+						height: 1188px;
+						width: 18px;
+					}
+				}
+
+				> .handle {
+					position: absolute;
+				}
+			}
+		}
+
+		.toolbox {
+
+			> h4 {
+				display: none;
+			}
+
+			> .property_select {
+				display: block;
+			}
+
+			> .pages, > .selected.tools {
+				display: none;
+			}
+
+			> .add.tools {
+				span {
+					cursor: pointer;
+					padding: 2px 0;
+				}
+			}
+
+			> .pages, > .tools {
+
+				h5 {
+					font-weight: normal;
+				}
+
+				li {
+					list-style: none;
+					margin: 0;
+				}
+
+				ul {
+					background-color: #dcdcdd;
+					border: solid 1px #606060;
+					border-radius: 0 2px 2px;
+					padding: 2px 8px 2px 2px;
+					margin-bottom: 1em;
+
+					> li {
+						display: table-row;
+
+						> * {
+							display: table-cell;
+						}
+
+						> label {
+							padding-right: .5ch;
+							vertical-align: middle;
+						}
+
+						> input, textarea {
+							max-width: 200px;
+						}
+					}
+				}
+			}
+
+			> .pages {
+
+				label[for^="background"] {
+					display: none;
+				}
+
+				input[id^="background"] {
+					column-span: all;
+				}
+			}
+		}
+	}
+}

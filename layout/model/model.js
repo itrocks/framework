@@ -84,7 +84,7 @@ $(document).ready(function()
 			$free_text.val('');
 		}
 		// title
-		var $title = $tools.children('h3');
+		var $title = $tools.children('h5');
 		var title  = $selected.text();
 		if (title.length > 30) {
 			title = '...' + title.substr(title.length - 30);
@@ -105,12 +105,15 @@ $(document).ready(function()
 		setTimeout(function() { $designer.each(function() {
 			var $page  = $(this);
 			var $input = pageLayoutInput($page);
+			var fields = '.model.edit .editor .toolbox .add.tools li > span,'
+				+ ' .model.edit .editor .toolbox .property_select > .tree .property,'
+				+ ' .model.edit .editor .pages .tool';
 			$page.documentDesigner({
 				default: { align: 'left', size: 4 },
 				drag:    dragCallback,
 				drop:    dropCallback,
 				fields:  {
-					element:   '.property_tree .property, .editor .tool, .toolbox .add.tools li>span',
+					element:   fields,
 					name_data: 'property'
 				},
 				register:     register,
@@ -210,13 +213,13 @@ $(document).ready(function()
 $(window).scroll(function()
 {
 
-	var $toolbox = $('article.model.edit > .editor > .toolbox');
+	var $toolbox = $('article.model.edit > form > .editor > .toolbox');
 	if (!$toolbox.length) return;
-	var $fieldset = $toolbox.next('fieldset');
-	var $stay_top = $('article.model.edit > .fixed.stay-top');
+	var $pages = $toolbox.next('.pages');
+	var $stay_top = $('article.model.edit > form > .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
-		$fieldset.attr('style', '');
+		$pages.attr('style', '');
 		$toolbox.attr('style', '');
 		$toolbox.removeClass('fixed stay-top');
 	}
@@ -224,7 +227,7 @@ $(window).scroll(function()
 	if ($stay_top.length) {
 		var $parent = $toolbox.parent();
 		if (!$toolbox.hasClass('stay-top')) {
-			$fieldset.css('margin-left', $fieldset.offset().left - $fieldset.parent().offset().left);
+			$pages.css('margin-left', $pages.offset().left - $pages.parent().offset().left);
 			$toolbox.addClass('fixed stay-top');
 			$toolbox.css('position', 'fixed');
 		}
@@ -232,7 +235,7 @@ $(window).scroll(function()
 			$parent.offset().left + parseInt($parent.css('padding-left')) - window.scrollbar.left()
 		);
 		$toolbox.css('top', Math.max(
-			$fieldset.offset().top - window.scrollbar.top(),
+			$pages.offset().top - window.scrollbar.top(),
 			$stay_top.height()
 				+ parseInt($stay_top.css('top'))
 				+ parseInt($stay_top.css('border-bottom-width'))
