@@ -1,9 +1,9 @@
 <?php
-namespace ITRocks\Framework\Layout\Model;
+namespace ITRocks\Framework\Layout\Print_Model;
 
-use Exception;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Feature\Add;
+use ITRocks\Framework\Layout\Print_Model;
 
 /**
  * Layout model add controller : initialises pages
@@ -13,25 +13,23 @@ class Add_Controller extends Add\Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
 	 * @return mixed
-	 * @throws Exception
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection add */
+		/** @var $model Print_Model */
 		$model = $parameters->getMainObject();
 		if (!$model->pages) {
 			$model->pages = [
-				new Page(Page::UNIQUE),
-				new Page(Page::FIRST),
-				new Page(Page::MIDDLE),
-				new Page(Page::LAST),
-				new Page(Page::ALL)
+				$model->newPage(Page::UNIQUE),
+				$model->newPage(Page::FIRST),
+				$model->newPage(Page::MIDDLE),
+				$model->newPage(Page::LAST),
+				$model->newPage(Page::ALL)
 			];
 		}
 

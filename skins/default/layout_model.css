@@ -1,91 +1,91 @@
-article.model.output .snap.line,
-article.model.output .toolbox {
+article.print_model.output .snap.line,
+article.print_model.output .toolbox {
   display: none; }
-article.model > form > .editor > h3 {
+article.print_model > form > .editor > h3 {
   visibility: hidden; }
-article.model > form > .editor > :not(h3) {
+article.print_model > form > .editor > :not(h3) {
   display: inline-block;
   vertical-align: top; }
-article.model > form > .editor > .pages {
+article.print_model > form > .editor > .pages {
   margin-top: 0; }
-  article.model > form > .editor > .pages > h4 {
+  article.print_model > form > .editor > .pages > h4 {
     display: none; }
-  article.model > form > .editor > .pages > .page {
+  article.print_model > form > .editor > .pages > .page {
     border: 1px solid darkgray;
     height: 1190px;
     position: relative;
     width: 842px; }
-    article.model > form > .editor > .pages > .page > h5 {
+    article.print_model > form > .editor > .pages > .page > h5 {
       visibility: hidden; }
-article.model > form > .editor .designer {
+article.print_model > form > .editor .designer {
   background-repeat: no-repeat;
   background-size: 840px 1190px;
   left: 11px;
   position: absolute;
   top: 11px; }
-  article.model > form > .editor .designer .field {
+  article.print_model > form > .editor .designer .field {
     white-space: pre-line; }
-    article.model > form > .editor .designer .field.line > .handle {
+    article.print_model > form > .editor .designer .field.line > .handle {
       cursor: pointer; }
-article.model > form > .editor .tool.snap.line {
+article.print_model > form > .editor .tool.snap.line {
   color: transparent;
   font-size: 1px;
   position: absolute; }
-  article.model > form > .editor .tool.snap.line.horizontal {
+  article.print_model > form > .editor .tool.snap.line.horizontal {
     border-top: 1px dashed darkgray;
     height: 0;
     left: 11px;
     top: 5px;
     width: 840px; }
-    article.model > form > .editor .tool.snap.line.horizontal > .handle {
+    article.print_model > form > .editor .tool.snap.line.horizontal > .handle {
       cursor: ns-resize;
       height: 18px;
       width: 840px;
       top: -9px; }
-  article.model > form > .editor .tool.snap.line.vertical {
+  article.print_model > form > .editor .tool.snap.line.vertical {
     border-left: 1px dashed darkgray;
     height: 1188px;
     left: 5px;
     top: 11px;
     width: 0; }
-    article.model > form > .editor .tool.snap.line.vertical > .handle {
+    article.print_model > form > .editor .tool.snap.line.vertical > .handle {
       cursor: ew-resize;
       left: -9px;
       top: 0;
       height: 1188px;
       width: 18px; }
-  article.model > form > .editor .tool.snap.line > .handle {
+  article.print_model > form > .editor .tool.snap.line > .handle {
     position: absolute; }
-article.model > form > .editor .toolbox > h4 {
+article.print_model > form > .editor .toolbox > h4 {
   display: none; }
-article.model > form > .editor .toolbox > .property_select {
+article.print_model > form > .editor .toolbox > .property_select {
   display: block; }
-article.model > form > .editor .toolbox > .pages, article.model > form > .editor .toolbox > .selected.tools {
+article.print_model > form > .editor .toolbox > .pages, article.print_model > form > .editor .toolbox > .selected.tools {
   display: none; }
-article.model > form > .editor .toolbox > .add.tools span {
+article.print_model > form > .editor .toolbox > .add.tools span {
   cursor: pointer;
   padding: 2px 0; }
-article.model > form > .editor .toolbox > .pages h5, article.model > form > .editor .toolbox > .tools h5 {
+article.print_model > form > .editor .toolbox > .pages h5, article.print_model > form > .editor .toolbox > .tools h5 {
   font-weight: normal; }
-article.model > form > .editor .toolbox > .pages li, article.model > form > .editor .toolbox > .tools li {
+article.print_model > form > .editor .toolbox > .pages li, article.print_model > form > .editor .toolbox > .tools li {
   list-style: none;
   margin: 0; }
-article.model > form > .editor .toolbox > .pages ul, article.model > form > .editor .toolbox > .tools ul {
+article.print_model > form > .editor .toolbox > .pages ul, article.print_model > form > .editor .toolbox > .tools ul {
   background-color: #dcdcdd;
   border: solid 1px #606060;
   border-radius: 0 2px 2px;
   padding: 2px 8px 2px 2px;
   margin-bottom: 1em; }
-  article.model > form > .editor .toolbox > .pages ul > li, article.model > form > .editor .toolbox > .tools ul > li {
+  article.print_model > form > .editor .toolbox > .pages ul > li, article.print_model > form > .editor .toolbox > .tools ul > li {
     display: table-row; }
-    article.model > form > .editor .toolbox > .pages ul > li > *, article.model > form > .editor .toolbox > .tools ul > li > * {
+    article.print_model > form > .editor .toolbox > .pages ul > li > *, article.print_model > form > .editor .toolbox > .tools ul > li > * {
       display: table-cell; }
-    article.model > form > .editor .toolbox > .pages ul > li > label, article.model > form > .editor .toolbox > .tools ul > li > label {
+    article.print_model > form > .editor .toolbox > .pages ul > li > label, article.print_model > form > .editor .toolbox > .tools ul > li > label {
       padding-right: .5ch;
       vertical-align: middle; }
-    article.model > form > .editor .toolbox > .pages ul > li > input, article.model > form > .editor .toolbox > .pages ul > li textarea, article.model > form > .editor .toolbox > .tools ul > li > input, article.model > form > .editor .toolbox > .tools ul > li textarea {
+    article.print_model > form > .editor .toolbox > .pages ul > li > input, article.print_model > form > .editor .toolbox > .pages ul > li textarea, article.print_model > form > .editor .toolbox > .tools ul > li > input, article.print_model > form > .editor .toolbox > .tools ul > li textarea {
       max-width: 200px; }
-article.model > form > .editor .toolbox > .pages label[for^="background"] {
+article.print_model > form > .editor .toolbox > .pages label[for^="background"] {
   display: none; }
-article.model > form > .editor .toolbox > .pages input[id^="background"] {
+article.print_model > form > .editor .toolbox > .pages input[id^="background"] {
   column-span: all; }

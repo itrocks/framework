@@ -1,14 +1,14 @@
 <?php
-namespace ITRocks\Framework\Layout\Model;
+namespace ITRocks\Framework\Print_Model;
 
 use ITRocks\Framework\Controller\Feature;
-use ITRocks\Framework\Layout\Model;
+use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\View;
 
 /**
- * Layout models
+ * Print models
  */
 class Plugin implements Installable
 {
@@ -19,7 +19,7 @@ class Plugin implements Installable
 	 */
 	public function __toString()
 	{
-		return 'Layout models';
+		return 'Print models';
 	}
 
 	//--------------------------------------------------------------------------------------- install
@@ -31,7 +31,7 @@ class Plugin implements Installable
 	{
 		/** @noinspection PhpUnhandledExceptionInspection ::class is known */
 		$installer->addMenu(
-			['Administration' => [View::link(Model::class, Feature::F_LIST) => 'Print models']]
+			['Administration' => [View::link(Print_Model::class, Feature::F_LIST) => 'Print models']]
 		);
 	}
 

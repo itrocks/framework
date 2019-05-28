@@ -162,7 +162,7 @@ class Exporter implements Output
 	 * @param $size  float  the font size, in millimeters
 	 * @return float
 	 */
-	public function textWidth($text, $font = '', $style = '', $size = .0)
+	public function textWidth($text, $font = '', $style = null, $size = null)
 	{
 		$pdf = $this->pdf;
 		if ($size && ($this->current_font_size !== $size)) {

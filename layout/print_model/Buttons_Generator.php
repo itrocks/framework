@@ -1,13 +1,12 @@
 <?php
-namespace ITRocks\Framework\Layout\Model;
+namespace ITRocks\Framework\Layout\Print_Model;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Layout\Model;
-use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\View;
 
 /**
@@ -50,7 +49,7 @@ class Buttons_Generator
 	 */
 	public function getButtons()
 	{
-		$models = Dao::search(['class_name' => $this->class_name], Model::class, Dao::sort());
+		$models = Dao::search(['class_name' => $this->class_name], Print_Model::class, Dao::sort());
 		foreach ($models as $model) {
 			$buttons[] = new Button(
 				$model->name,
@@ -61,8 +60,8 @@ class Buttons_Generator
 		}
 
 		$buttons[] = new Button(
-			'New layout model',
-			View::link(Model::class, Feature::F_ADD, ['class_name' => $this->class_name]),
+			'New print model',
+			View::link(Print_Model::class, Feature::F_ADD, ['class_name' => $this->class_name]),
 			Feature::F_ADD
 		);
 

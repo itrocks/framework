@@ -23,7 +23,7 @@ use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\History;
-use ITRocks\Framework\Layout\Model\Buttons_Generator;
+use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;

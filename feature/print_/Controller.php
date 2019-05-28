@@ -7,8 +7,8 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Feature\Export\PDF;
 use ITRocks\Framework\Layout\Generator;
-use ITRocks\Framework\Layout\Model;
 use ITRocks\Framework\Layout\PDF\Exporter;
+use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Tools\Names;
 use TCPDF;
 
@@ -32,15 +32,15 @@ class Controller implements Default_Feature_Controller
 		);
 	}
 
-	//------------------------------------------------------------------------- printUsingLayoutModel
+	//------------------------------------------------------------------------------- printUsingModel
 	/**
 	 * Print objects using a layout model
 	 *
-	 * @param $objects      object[]
-	 * @param $layout_model Model
+	 * @param $objects     object[]
+	 * @param $print_model Print_Model
 	 * @return mixed
 	 */
-	protected function printUsingLayoutModel(array $objects, Model $layout_model)
+	protected function printUsingModel(array $objects, Print_Model $print_model)
 	{
 		/** @var $pdf PDF|TCPDF */
 		$pdf = new PDF();
@@ -50,13 +50,13 @@ class Controller implements Default_Feature_Controller
 		foreach ($objects as $object) {
 			$exporter            = new Exporter();
 			$exporter->pdf       = $pdf;
-			$generator           = new Generator($layout_model, $exporter);
+			$generator           = new Generator($print_model, $exporter);
 			$structure           = $generator->generate($object);
 			$exporter->structure = $structure;
 			$exporter->appendToPdf();
 		}
 
-		$file_name = Names::classToDisplay($layout_model->class_name) . '.pdf';
+		$file_name = Names::classToDisplay($print_model->class_name) . '.pdf';
 		return $pdf->Output($file_name, PDF\Output::INLINE);
 	}
 
@@ -72,13 +72,13 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
-		$layout_model = $parameters->getObject(Model::class);
-		$parameters->remove(Model::class);
+		$layout_model = $parameters->getObject(Print_Model::class);
+		$parameters->remove(Print_Model::class);
 
 		$objects = $parameters->getSelectedObjects($form);
 
 		return $layout_model
-			? $this->printUsingLayoutModel($objects, $layout_model)
+			? $this->printUsingModel($objects, $layout_model)
 			: $this->newLayoutModel($class_name);
 	}
 

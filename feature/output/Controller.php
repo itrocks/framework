@@ -14,7 +14,7 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Duplicate;
 use ITRocks\Framework\Feature\Output_Setting;
-use ITRocks\Framework\Layout\Model\Buttons_Generator;
+use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;

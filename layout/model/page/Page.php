@@ -18,9 +18,8 @@ use ITRocks\Framework\View;
  *
  * @override ordering @max_length 2 @var string
  * @property string ordering
- * @store_name layout_model_pages
  */
-class Page
+abstract class Page
 {
 	use Component;
 	use Has_Ordering;

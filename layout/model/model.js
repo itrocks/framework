@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//-------------------------------------------------------------------------------- dragCallback
 	var dragCallback = function()
@@ -93,11 +94,11 @@ $(document).ready(function()
 		$title.attr('title', $selected.attr('title'));
 	};
 
-	//---------------------------------------------- .model.window .editor .designer documentDesigner
-	$('body').build({ priority: 500, selector: 'article.model .editor', callback: function()
+	//--------------------------------------- article.layout_model .editor .designer documentDesigner
+	$body.build({ priority: 500, selector: 'article.layout_model .editor', callback: function()
 	{
 		var $editor       = this;
-		var $model_window = this.closest('article.model');
+		var $model_window = this.closest('article.layout_model');
 		var $designer     = $editor.find('.designer');
 		var $free_text    = $model_window.find('#free-text');
 		var $size         = $model_window.find('#size');
@@ -105,9 +106,9 @@ $(document).ready(function()
 		setTimeout(function() { $designer.each(function() {
 			var $designer = $(this);
 			var $input    = pageLayoutInput($designer.closest('.page'));
-			var fields    = '.model.edit .editor .toolbox .add.tools li > span,'
-				+ ' .model.edit .editor .toolbox .property_select > .tree .property,'
-				+ ' .model.edit .editor .pages .tool';
+			var fields    = 'article.layout_model.edit .editor .toolbox .add.tools li > span,'
+				+ ' article.layout_model.edit .editor .toolbox .property_select > .tree .property,'
+				+ ' article.layout_model.edit .editor .pages .tool';
 			$designer.documentDesigner({
 				default: { align: 'left', size: 4 },
 				drag:    dragCallback,
@@ -185,26 +186,30 @@ $(document).ready(function()
 			$(this).change();
 		});
 
-		//--------------------------------------- article.model .editor .general.actions > .write click
-		/**
-		 * Save layout model : build the standardized data before saving the form,
-		 * as no data is stored into inputs
-		 */
-		$model_window.find('.general.actions > .write').click(function()
-		{
-			var $designer = $(this).closest('article.model').find('.editor .designer');
-			var $active   = $designer.closest('.active.page');
-			var $pages    = $designer.closest('.page');
-			$pages.addClass('active');
-			$designer.each(function() {
-				var $designer = $(this);
-				var $input    = pageLayoutInput($designer.closest('.page'));
-				$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
-			});
-			$pages.removeClass('active');
-			$active.addClass('active');
-		});
+	}});
 
+	//-------------------------------- article.layout_model .editor .general.actions > .write click
+	/**
+	 * Save layout model : build the standardized data before saving the form,
+	 * as no data is stored into inputs
+	 */
+	$body.build({
+		event:    'click',
+		priority: 10,
+		selector: 'article.layout_model .general.actions > .write > a',
+		callback: function()
+	{
+		var $designer = $(this).closest('article.layout_model').find('.editor .designer');
+		var $active   = $designer.closest('.active.page');
+		var $pages    = $designer.closest('.page');
+		$pages.addClass('active');
+		$designer.each(function() {
+			var $designer = $(this);
+			var $input    = pageLayoutInput($designer.closest('.page'));
+			$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
+		});
+		$pages.removeClass('active');
+		$active.addClass('active');
 	}});
 
 });
@@ -213,10 +218,10 @@ $(document).ready(function()
 $(window).scroll(function()
 {
 
-	var $toolbox = $('article.model.edit > form > .editor > .toolbox');
+	var $toolbox = $('article.layout_model.edit > form > .editor > .toolbox');
 	if (!$toolbox.length) return;
 	var $pages = $toolbox.next('.pages');
-	var $stay_top = $('article.model.edit > form > .fixed.stay-top');
+	var $stay_top = $('article.layout_model.edit > form > .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
 		$pages.attr('style', '');

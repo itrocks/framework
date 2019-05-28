@@ -12,7 +12,7 @@
 <!--BEGIN-->
 <!--use ITRocks\Framework\Tools\Paths-->
 
-	<article class="{@class.short.lower} {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
+	<article class="{@class.short.lower} layout_model {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
 		<form action="app://(@class.path)/write" enctype="multipart/form-data" method="post" name="{?@template.~getFormId}" target="#messages">
 			<h2>|{@class.display.ucfirst}|</h2>
 			{/component/button/general_buttons.html}

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Property\Reflection_Property;
@@ -14,9 +15,8 @@ use ReflectionException;
  * @business
  * @display layer model
  * @representative class_name, name
- * @store_name layout_models
  */
-class Model
+abstract class Model
 {
 	use Has_Name;
 
@@ -32,6 +32,7 @@ class Model
 	/**
 	 * @getter
 	 * @link Collection
+	 * @mandatory
 	 * @user hide_edit, hide_output
 	 * @var Page[]
 	 */
@@ -71,6 +72,21 @@ class Model
 		/** @noinspection PhpUnhandledExceptionInspection Valid class used */
 		$this->pages = Page::sort(Getter::getCollection($this->pages, $page_class, $this));
 		return $this->pages;
+	}
+
+	//--------------------------------------------------------------------------------------- newPage
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $position string @values Page::const
+	 * @return Page
+	 */
+	public function newPage($position)
+	{
+		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
+		$property    = new Reflection_Property($this, 'pages');
+		$pages_class = $property->getType()->getElementTypeAsString();
+		/** @noinspection PhpIncompatibleReturnTypeInspection pages class type must be valid */
+		return Builder::create($pages_class, [$position]);
 	}
 
 }
