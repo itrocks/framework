@@ -173,16 +173,19 @@
 		var always   = false;
 		var priority = 1000;
 		if (callback === undefined) {
-			if (event.selector !== undefined) {
-				selector = event.selector;
-			}
 			if (event.always !== undefined) {
 				always = event.always;
+			}
+			if (event.callback !== undefined) {
+				callback = event.callback;
 			}
 			if (
 				(event.priority !== undefined) && (event.priority !== false) && (event.priority !== true)
 			) {
 				priority = event.priority;
+			}
+			if (event.selector !== undefined) {
+				selector = event.selector;
 			}
 			event = (event.event === undefined) ? 'call' : event.event;
 		}
