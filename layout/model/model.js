@@ -105,25 +105,43 @@ $(document).ready(function()
 
 		setTimeout(function() { $designer.each(function() {
 			var $designer = $(this);
-			var $input    = pageLayoutInput($designer.closest('.page'));
+			var $page     = $designer.closest('.page');
+			var $input    = pageLayoutInput($page);
 			var fields    = 'article.layout_model.edit .editor .toolbox .add.tools li > span,'
 				+ ' article.layout_model.edit .editor .toolbox .property_select > .tree .property,'
 				+ ' article.layout_model.edit .editor .pages .tool';
+
+			var $elements = $page.find('[data-style]');
+			if ($page.data('style')) {
+				$elements = $elements.add($page);
+			}
+			$elements.each(function() {
+				var $element = $(this);
+				var style    = $element.attr('style');
+				style = (style === undefined) ? '' : (style + SP);
+				$element.attr('style', style + $element.data('style'));
+				$element.removeAttr('data-style');
+				$element.removeData('style');
+			});
+			var css_height = $designer.css('height').repl('px', '');
+			var css_width  = $designer.css('width').repl('px', '');
+			var height = $designer.data('height') ? $designer.data('height') : css_height;
+			var size   = $designer.data('size')   ? $designer.data('size')   : 10;
+			var width  = $designer.data('width')  ? $designer.data('width')  : css_width;
+
 			$designer.documentDesigner({
-				default: { align: 'left', size: 4 },
-				drag:    dragCallback,
-				drop:    dropCallback,
-				fields:  {
-					element:   fields,
-					name_data: 'property'
-				},
+				default:      { align: 'left', size: size },
+				drag:         dragCallback,
+				drop:         dropCallback,
+				fields:       { element: fields, name_data: 'property' },
+				ratio:        { height: height, width: width },
 				register:     register,
 				remove_class: 'tool',
 				select:       selectCallback,
 				tool_handle:  '.handle',
 				tools:        '.selected.tools'
 			})
-				.width(840);
+				.width(css_width);
 			if ($input.val()) {
 				var json_data = $('<textarea>').html($input.val()).text();
 				var data      = JSON.parse(json_data.toString());

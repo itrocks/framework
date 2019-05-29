@@ -91,7 +91,7 @@ class Exporter implements Output
 					$this->current_font_size = $element->font_size;
 				}
 				$pdf->SetXY($element->left, $position);
-				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align, false, '', 0, false, 'T', 'M');
+				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
 				$position += $element->font_size;
 			}
 		}

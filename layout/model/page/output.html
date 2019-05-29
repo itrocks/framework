@@ -11,12 +11,15 @@
 <body>
 <!--BEGIN-->
 
-	<input type="hidden" name="pages[id][{ordering}]"       value="{?id}">
-	<input type="hidden" name="pages[layout][{ordering}]"   value="{layout.htmlEntities}">
-	<input type="hidden" name="pages[ordering][{ordering}]" value="{ordering}">
-	<div class="horizontal snap line tool" title="|horizontal snap line|">|horizontal snap line|<div class="handle"></div></div>
-	<div class="vertical snap line tool" title="|vertical snap line|">|vertical snap line|<div class="handle"></div></div>
-	<div class="designer" data-file-input="background{ordering}" style="background-image: url('http://{backgroundImageUrl}');"></div>
+	<section class="page" data-style="height: {view_height}px; width: {view_width}px;" id="page-{orderingCaption}">
+		<h5>|{orderingCaption}|</h5>
+		<input type="hidden" name="pages[id][{ordering}]"       value="{?id}">
+		<input type="hidden" name="pages[layout][{ordering}]"   value="{layout.htmlEntities}">
+		<input type="hidden" name="pages[ordering][{ordering}]" value="{ordering}">
+		<div class="horizontal snap line tool" data-style="width: {view_width}px;" title="|horizontal snap line|">|horizontal snap line|<div class="handle" data-style="width: {view_width}px;"></div></div>
+		<div class="vertical snap line tool" data-style="height: {view_height}px;" title="|vertical snap line|">|vertical snap line|<div class="handle" data-style="height: {view_height}px;"></div></div>
+		<div class="designer" data-file-input="background{ordering}" data-height="{ratio_height}" data-size="{font_size}" data-style="background-size: {view_width}px {view_height}px; height: {view_height}px; width: {view_width}px;" data-width="{ratio_width}" style="background-image: url('http://{backgroundImageUrl}');"></div>
+	</section>
 
 <!--END-->
 </body>

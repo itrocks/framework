@@ -1,91 +1,85 @@
-article.print_model.output .snap.line,
-article.print_model.output .toolbox {
+article.layout_model.output .snap.line,
+article.layout_model.output .toolbox {
   display: none; }
-article.print_model .editor > h3 {
+article.layout_model .editor > h3 {
   visibility: hidden; }
-article.print_model .editor > :not(h3) {
+article.layout_model .editor > :not(h3) {
   display: inline-block;
   vertical-align: top; }
-article.print_model .editor > .pages {
+article.layout_model .editor > .pages {
   margin-top: 0; }
-  article.print_model .editor > .pages > h4 {
+  article.layout_model .editor > .pages > h4 {
     display: none; }
-  article.print_model .editor > .pages > .page {
+  article.layout_model .editor > .pages > .page {
     border: 1px solid darkgray;
-    height: 1190px;
-    position: relative;
-    width: 842px; }
-    article.print_model .editor > .pages > .page > h5 {
+    padding: 8px;
+    position: relative; }
+    article.layout_model .editor > .pages > .page > h5 {
       visibility: hidden; }
-article.print_model .editor .designer {
+article.layout_model .editor .designer {
   background-repeat: no-repeat;
-  background-size: 840px 1190px;
   left: 11px;
   position: absolute;
   top: 11px; }
-  article.print_model .editor .designer .field {
+  article.layout_model .editor .designer .field {
     white-space: pre-line; }
-    article.print_model .editor .designer .field.line > .handle {
+    article.layout_model .editor .designer .field.line > .handle {
       cursor: pointer; }
-article.print_model .editor .tool.snap.line {
+article.layout_model .editor .tool.snap.line {
   color: transparent;
   font-size: 1px;
   position: absolute; }
-  article.print_model .editor .tool.snap.line.horizontal {
+  article.layout_model .editor .tool.snap.line.horizontal {
     border-top: 1px dashed darkgray;
     height: 0;
     left: 11px;
-    top: 5px;
-    width: 840px; }
-    article.print_model .editor .tool.snap.line.horizontal > .handle {
+    top: 5px; }
+    article.layout_model .editor .tool.snap.line.horizontal > .handle {
       cursor: ns-resize;
       height: 18px;
-      width: 840px;
       top: -9px; }
-  article.print_model .editor .tool.snap.line.vertical {
+  article.layout_model .editor .tool.snap.line.vertical {
     border-left: 1px dashed darkgray;
-    height: 1188px;
     left: 5px;
     top: 11px;
     width: 0; }
-    article.print_model .editor .tool.snap.line.vertical > .handle {
+    article.layout_model .editor .tool.snap.line.vertical > .handle {
       cursor: ew-resize;
       left: -9px;
       top: 0;
-      height: 1188px;
       width: 18px; }
-  article.print_model .editor .tool.snap.line > .handle {
+  article.layout_model .editor .tool.snap.line > .handle {
     position: absolute; }
-article.print_model .editor .toolbox > h4 {
+article.layout_model .editor .toolbox > h4 {
   display: none; }
-article.print_model .editor .toolbox > .property_select {
+article.layout_model .editor .toolbox > .property_select {
   display: block; }
-article.print_model .editor .toolbox > .pages, article.print_model .editor .toolbox > .selected.tools {
+article.layout_model .editor .toolbox > .pages, article.layout_model .editor .toolbox > .selected.tools {
   display: none; }
-article.print_model .editor .toolbox > .add.tools span {
+article.layout_model .editor .toolbox > .add.tools span {
   cursor: pointer;
   padding: 2px 0; }
-article.print_model .editor .toolbox > .pages h5, article.print_model .editor .toolbox > .tools h5 {
+article.layout_model .editor .toolbox > .pages h5, article.layout_model .editor .toolbox > .tools h5 {
   font-weight: normal; }
-article.print_model .editor .toolbox > .pages li, article.print_model .editor .toolbox > .tools li {
+article.layout_model .editor .toolbox > .pages li, article.layout_model .editor .toolbox > .tools li {
   list-style: none;
   margin: 0; }
-article.print_model .editor .toolbox > .pages ul, article.print_model .editor .toolbox > .tools ul {
+article.layout_model .editor .toolbox > .pages ul, article.layout_model .editor .toolbox > .tools ul {
   background-color: #dcdcdd;
   border: solid 1px #606060;
   border-radius: 0 2px 2px;
   padding: 2px 8px 2px 2px;
   margin-bottom: 1em; }
-  article.print_model .editor .toolbox > .pages ul > li, article.print_model .editor .toolbox > .tools ul > li {
+  article.layout_model .editor .toolbox > .pages ul > li, article.layout_model .editor .toolbox > .tools ul > li {
     display: table-row; }
-    article.print_model .editor .toolbox > .pages ul > li > *, article.print_model .editor .toolbox > .tools ul > li > * {
+    article.layout_model .editor .toolbox > .pages ul > li > *, article.layout_model .editor .toolbox > .tools ul > li > * {
       display: table-cell; }
-    article.print_model .editor .toolbox > .pages ul > li > label, article.print_model .editor .toolbox > .tools ul > li > label {
+    article.layout_model .editor .toolbox > .pages ul > li > label, article.layout_model .editor .toolbox > .tools ul > li > label {
       padding-right: .5ch;
       vertical-align: middle; }
-    article.print_model .editor .toolbox > .pages ul > li > input, article.print_model .editor .toolbox > .pages ul > li textarea, article.print_model .editor .toolbox > .tools ul > li > input, article.print_model .editor .toolbox > .tools ul > li textarea {
+    article.layout_model .editor .toolbox > .pages ul > li > input, article.layout_model .editor .toolbox > .pages ul > li textarea, article.layout_model .editor .toolbox > .tools ul > li > input, article.layout_model .editor .toolbox > .tools ul > li textarea {
       max-width: 200px; }
-article.print_model .editor .toolbox > .pages label[for^="background"] {
+article.layout_model .editor .toolbox > .pages label[for^="background"] {
   display: none; }
-article.print_model .editor .toolbox > .pages input[id^="background"] {
+article.layout_model .editor .toolbox > .pages input[id^="background"] {
   column-span: all; }

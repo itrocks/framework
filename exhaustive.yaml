@@ -1,6 +1,8 @@
 ITRocks\Framework\Component\Menu:
   Administration:
     - /ITRocks/Framework/Users
-    - /ITRocks/Framework/Layout/Print_Models
-    - /ITRocks/Framework/RAD/Features
     - /ITRocks/Framework/Logger/Entries
+    - /ITRocks/Framework/Layout/Print_Models
+    - /ITRocks/Framework/Layout/Display_Models
+    - /ITRocks/Framework/Locale/Translations
+    - /ITRocks/Framework/RAD/Features

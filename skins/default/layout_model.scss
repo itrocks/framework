@@ -1,5 +1,5 @@
 
-article.print_model {
+article.layout_model {
 
 	&.output {
 		.snap.line,
@@ -28,9 +28,8 @@ article.print_model {
 
 			> .page {
 				border: 1px solid darkgray;
-				height: 1190px;
+				padding: 8px;
 				position: relative;
-				width: 842px;
 
 				> h5 {
 					visibility: hidden;
@@ -40,7 +39,6 @@ article.print_model {
 
 		.designer {
 			background-repeat: no-repeat;
-			background-size: 840px 1190px;
 			left: 11px;
 			position: absolute;
 			top: 11px;
@@ -66,19 +64,16 @@ article.print_model {
 					height: 0;
 					left: 11px;
 					top: 5px;
-					width: 840px;
 
 					> .handle {
 						cursor: ns-resize;
 						height: 18px;
-						width: 840px;
 						top: -9px;
 					}
 				}
 
 				&.vertical {
 					border-left: 1px dashed darkgray;
-					height: 1188px;
 					left: 5px;
 					top: 11px;
 					width: 0;
@@ -87,7 +82,6 @@ article.print_model {
 						cursor: ew-resize;
 						left: -9px;
 						top: 0;
-						height: 1188px;
 						width: 18px;
 					}
 				}

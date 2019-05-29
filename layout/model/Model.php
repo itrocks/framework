@@ -76,7 +76,7 @@ abstract class Model
 	//--------------------------------------------------------------------------------------- newPage
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $position string @values Page::const
+	 * @param $position string @values $pages::const
 	 * @return Page
 	 */
 	public function newPage($position)
