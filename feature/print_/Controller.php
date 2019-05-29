@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Print_;
 
 use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
@@ -10,6 +11,7 @@ use ITRocks\Framework\Layout\Generator;
 use ITRocks\Framework\Layout\PDF\Exporter;
 use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\View;
 use TCPDF;
 
 /**
@@ -27,7 +29,11 @@ class Controller implements Default_Feature_Controller
 	protected function newLayoutModel($class_name)
 	{
 		Main::$current->redirect(
-			'/ITRocks/Framework/Layout/Model/add/class_name/' . Names::classToUri($class_name),
+			View::link(
+				Print_Model::class,
+				Feature::F_ADD,
+				['class_name' => Names::classToUri($class_name)]
+			),
 			Target::MAIN
 		);
 	}
