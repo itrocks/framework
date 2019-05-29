@@ -107,9 +107,10 @@ $(document).ready(function()
 			var $designer = $(this);
 			var $page     = $designer.closest('.page');
 			var $input    = pageLayoutInput($page);
-			var fields    = 'article.layout_model.edit .editor .toolbox .add.tools li > span,'
-				+ ' article.layout_model.edit .editor .toolbox .property_select > .tree .property,'
-				+ ' article.layout_model.edit .editor .pages .tool';
+			var fields    = [
+				'article.layout_model.edit .editor',
+				'.toolbox .add.tools li > span, .toolbox .property_select > .tree .property, .pages .tool'
+			];
 
 			var $elements = $page.find('[data-style]');
 			if ($page.data('style')) {
