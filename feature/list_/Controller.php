@@ -98,7 +98,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	{
 		$properties             = $data->getProperties();
 		$properties_with_getter = [];
-		foreach ($properties as $property) {
+		foreach ($properties as $property_path => $property) {
 			$link_annotation = ($property instanceof Reflection_Property)
 				? Link_Annotation::of($property)
 				: null;
@@ -113,7 +113,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					|| ($user_getter = $property->getAnnotation('user_getter')->value)
 				)
 			) {
-				$properties_with_getter[] = [$property, $user_getter];
+				$properties_with_getter[$property_path] = [$property, $user_getter];
 			}
 		}
 		if ($properties_with_getter) {
@@ -124,7 +124,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					/** @noinspection PhpUnhandledExceptionInspection valid */
 					$object = Getter::getObject($object, $row->getClassName());
 				}
-				foreach ($properties_with_getter as list($property, $user_getter)) {
+				foreach ($properties_with_getter as $property_path => [$property, $user_getter]) {
 					/** @noinspection PhpUnhandledExceptionInspection valid $object */
 					/** @var $property Reflection_Property */
 					$value = $user_getter
@@ -133,7 +133,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					if (is_object($value)){
 						$value = strval($value);
 					}
-					$row->setValue($property->path, $value);
+					$row->setValue($property_path, $value);
 				}
 			}
 		}
