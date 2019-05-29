@@ -62,7 +62,7 @@ class From_Json
 			if (is_object($raw_element)) {
 				$raw_element = get_object_vars($raw_element);
 			}
-			$classes = explode(SP, $raw_element['class']);
+			$classes = isset($raw_element['class']) ? explode(SP, $raw_element['class']) : [];
 			$element = null;
 			foreach ($this->builder as $element_class_name => $builder) {
 				$found = false;
