@@ -1,0 +1,17 @@
+.ql-editor {
+	// white-space: initial; // this allows text-align: justify but removes spaces during typing
+}
+
+.ql-toolbar {
+	.ql-code > svg {
+		background-color: #f0f0f0;
+	}
+
+	.ql-code-block > svg {
+		background-color: #23241f;
+
+		line, polyline {
+			stroke: #f0f0f0;
+		}
+	}
+}

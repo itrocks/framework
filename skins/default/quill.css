@@ -1,0 +1,6 @@
+.ql-toolbar .ql-code > svg {
+  background-color: #f0f0f0; }
+.ql-toolbar .ql-code-block > svg {
+  background-color: #23241f; }
+  .ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
+    stroke: #f0f0f0; }

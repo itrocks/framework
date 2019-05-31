@@ -36,6 +36,7 @@
 		"html2text/html2text":                   "4.*",
 		"intelogie/pdf.js":                      "dev-master",
 		"jquery-form/form":                      "3.*",
+		"kensnyder/quill-image-resize-module":   "dev-master",
 		"knplabs/gaufrette":                     "^0.3.1",
 		"wikimedia/composer-merge-plugin":       "1.4.*",
 		"netcarver/textile":                     "3.*",
@@ -46,7 +47,7 @@
 		"pear/net_smtp":                         "1.*",
 		"php":                                   "5.6.* || 7.1.*",
 		"phpunit/phpunit": 											 "5.*",
-		"quilljs/quill":                         "1.3.6",
+		"quilljs/quill":                         "1.3.*",
 		"setasign/fpdi-tcpdf":                   "1.*",
 		"tecnickcom/tcpdf":                      "6.*"
 	},

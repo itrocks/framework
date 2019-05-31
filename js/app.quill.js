@@ -4,9 +4,6 @@ $(document).ready(function()
 	{
 		var $this  = $(this);
 		var $quill = $('<div>');
-		if ($this.hasClass('auto_height')) {
-			$quill.addClass('auto_height');
-		}
 		$this.before($quill);
 		$this.hide();
 
@@ -15,7 +12,22 @@ $(document).ready(function()
 			$this.text($quill.find('.ql-editor').html());
 		});
 
-		var quill = new Quill($quill.get(0), { theme: 'snow' });
+		var options = {
+			modules: {
+				toolbar: [
+					[{ header: [1, 2, 3, 4, 5, false]}, { align: []}],
+					[
+						{ list: 'bullet' }, { list: 'ordered' }, { list: 'check' },
+						{ indent: '-1' }, { indent: '+1' }
+					],
+					[ 'bold', 'italic', 'underline', 'strike' ],
+					[{ color: []}, {background: []}],
+					[ 'link', 'image', 'video', 'code', 'code-block' ]
+				]
+			},
+			theme: 'snow'
+		};
+		var quill = new Quill($quill.get(0), options);
 		if ($this.text().beginsWith('{')) {
 			quill.setContents(JSON.parse($this.text()));
 		}
