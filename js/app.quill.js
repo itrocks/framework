@@ -14,6 +14,7 @@ $(document).ready(function()
 
 		var options = {
 			modules: {
+				imageResize: { modules: ['Resize', 'Toolbar'] },
 				toolbar: [
 					[{ header: [1, 2, 3, 4, 5, false]}, { align: []}],
 					[
