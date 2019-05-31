@@ -36,7 +36,7 @@
 		"html2text/html2text":                   "4.*",
 		"intelogie/pdf.js":                      "dev-master",
 		"jquery-form/form":                      "3.*",
-		"kensnyder/quill-image-resize-module":   "dev-master",
+		"kensnyder/quill-image-resize-module":   "1.0.0",
 		"knplabs/gaufrette":                     "^0.3.1",
 		"wikimedia/composer-merge-plugin":       "1.4.*",
 		"netcarver/textile":                     "3.*",
