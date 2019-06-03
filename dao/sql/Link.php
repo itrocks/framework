@@ -367,7 +367,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	{
 		$properties = [];
 		foreach ($columns as $key => $column) {
-			$property_path              = is_object($column) ? $key : $column;
+			$property_path = is_object($column) ? $key : $column;
 			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 			$properties[$property_path] = ($column instanceof Dao_Function)
 				? $column
