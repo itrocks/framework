@@ -319,6 +319,16 @@ class Functions
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- getDump
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getDump(Template $template)
+	{
+		return print_r(reset($template->objects), true);
+	}
+
 	//--------------------------------------------------------------------------------------- getEdit
 	/**
 	 * Returns an HTML edit widget for current property or List_Data property
