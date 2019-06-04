@@ -6,8 +6,8 @@ article > h2, article > header {
   article > h2header > h2, article > headerheader > h2 {
     cursor: pointer;
     display: inline-block; }
-article > p {
-  margin: 0.5em 0; }
+article > p, article > section {
+  margin: 0.5em; }
 article:not(.list) > ul.general.actions,
 article > form > ul.general.actions {
   border-bottom: 1px solid lightgray; }

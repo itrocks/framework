@@ -19,8 +19,8 @@ article {
 		}
 	}
 
-	> p {
-		margin: $window-padding 0;
+	> p, > section {
+		margin: $window-padding;
 	}
 
 	&:not(.list),
