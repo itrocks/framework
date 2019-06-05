@@ -653,6 +653,15 @@ class Reflection_Property extends ReflectionProperty
 		return ($object1 == $object2);
 	}
 
+	//----------------------------------------------------------------------------------- isMultiline
+	/**
+	 * @return boolean|string
+	 */
+	public function isMultiline()
+	{
+		return $this->getAnnotation('multiline')->value ? 'multiline' : '';
+	}
+
 	//---------------------------------------------------------------------------------- isValueEmpty
 	/**
 	 * Returns true if property is empty

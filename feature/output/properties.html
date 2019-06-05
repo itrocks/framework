@@ -24,7 +24,7 @@
 		<!--end-->
 
 		<!--getAnnotations('before')--><li class="before {name}">|{value}|</li><!--end-->
-		<li class="{name} {getType.asString.short.lower} {?isComponentObjectHtml} {?isHidden}" id="{path}">
+		<li class="{name} {getType.asString.short.lower} {?isComponentObjectHtml} {?isHidden} {?isMultiline}" id="{path}">
 			<!--@isVisible?-->
 			<label title="{?pathIfDifferent.display.@loc}">{display}</label>
 			<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>

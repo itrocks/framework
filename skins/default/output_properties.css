@@ -51,3 +51,5 @@ article > form ol.properties, article ol.properties {
     border-top: 1px solid lightgray;
     display: block;
     padding: 0.3em 0.25em; }
+  article > form ol.properties > li.multiline > div, article ol.properties > li.multiline > div {
+    white-space: pre-line; }
