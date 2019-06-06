@@ -49,12 +49,11 @@ body {
 		> .logo {
 			background-color: $background;
 			background-image: url('img/bappli-studio-logo.png');
-			border-right: $thin-border;
 			display: table-cell;
 		}
 
 		> .top.bar {
-			display: table-cell;
+			display: none;
 			vertical-align: middle;
 
 			> .logo {
@@ -75,5 +74,14 @@ body {
 	> main, > nav {
 		display: table-cell;
 		vertical-align: top;
+	}
+
+	&[class] > header {
+		> .logo {
+			border-right: $thin-border;
+		}
+		> .top.bar {
+			display: table-cell;
+		}
 	}
 }

@@ -23,6 +23,14 @@ $(document).ready(function()
 		});
 	});
 
+	//----------------------------------------------------------- body[class] = main > article[class]
+	$body.build('call', 'main > article', function()
+	{
+		var classes = this.attr('class');
+		var $body   = $('body');
+		classes ? $body.attr('class', classes) : $body.removeAttr('class');
+	});
+
 	//---------------------------------------------------------------- div#messages draggable & click
 	$body.build('call', 'div#messages', function()
 	{

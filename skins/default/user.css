@@ -1,3 +1,6 @@
+body.user.login > header > .top.bar {
+  display: none !important; }
+
 article.user.login > form > ul.actions {
   text-align: right; }
 

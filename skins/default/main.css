@@ -29,10 +29,9 @@ body {
     body > header > .logo {
       background-color: white;
       background-image: url("img/bappli-studio-logo.png");
-      border-right: 1px solid lightgray;
       display: table-cell; }
     body > header > .top.bar {
-      display: table-cell;
+      display: none;
       vertical-align: middle; }
       body > header > .top.bar > .logo {
         background-image: url("img/bappli-studio-logo-for-dark.png");
@@ -46,3 +45,7 @@ body {
   body > main, body > nav {
     display: table-cell;
     vertical-align: top; }
+  body[class] > header > .logo {
+    border-right: 1px solid lightgray; }
+  body[class] > header > .top.bar {
+    display: table-cell; }
