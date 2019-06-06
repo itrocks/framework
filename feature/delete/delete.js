@@ -31,7 +31,7 @@ $(document).ready(function()
 	//--------------------------------------------------------------------- .confirmed.delete.message
 	$('body').build('call', '.confirmed.delete.message', function()
 	{
-		var $message       = $(this);
+		var $message       = this;
 		var class_name     = $message.data('class');
 		var identifier     = $message.data('id');
 		var set_class_name = $message.data('set-class');
@@ -44,6 +44,12 @@ $(document).ready(function()
 		if (set_class_name) {
 			closeWindows(set_class_name);
 		}
+
+		// unselect
+		$message.find('ul.deleted > li[data-id]').each(function() {
+			var id = $(this).data('id');
+			unselectFromList(class_name, id);
+		});
 	});
 
 });

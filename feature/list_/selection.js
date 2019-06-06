@@ -5,12 +5,28 @@ $(document).ready(function()
 	var select_all         = [];
 	var selection          = [];
 
-	//-------------------------------------------------------------------------------- resetSelection
-	var resetSelection = function()
+	//------------------------------------------------------------------------------ unselectFromList
+	window.unselectFromList = function(class_name, object_id)
 	{
-		excluded_selection = [];
-		select_all         = [];
-		selection          = [];
+		var selection_id;
+		for (selection_id in excluded_selection) if (excluded_selection.hasOwnProperty(selection_id)) {
+			if (selection_id.startsWith(class_name + DOT)) {
+				excluded_selection[selection_id] = excluded_selection[selection_id].withoutValue(object_id);
+			}
+		}
+		for (selection_id in selection) if (selection.hasOwnProperty(selection_id)) {
+			if (selection_id.startsWith(class_name + DOT)) {
+				selection[selection_id] = selection[selection_id].withoutValue(object_id);
+			}
+		}
+	};
+
+	//-------------------------------------------------------------------------------- resetSelection
+	var resetSelection = function(id)
+	{
+		excluded_selection[id] = [];
+		select_all[id]         = false;
+		selection[id]          = [];
 	};
 
 	//----------------------------------------------------------------------------------- updateCount
@@ -51,20 +67,25 @@ $(document).ready(function()
 		$search.find('input, textarea').keydown(function(event)
 		{
 			if (event.keyCode === 13) {
-				resetSelection();
-				$(this).closest('form').submit();
+				var $this = $(this);
+				resetSelection($this.closest('article.list').attr('id'));
+				$this.closest('form').submit();
 			}
 		});
 
 		//--------------------------------------------------------------------- .search select change
 		$search.find('select').change(function()
 		{
-			resetSelection();
-			$(this).closest('form').submit();
+			var $this = $(this);
+			resetSelection($this.closest('article.list').attr('id'));
+			$this.closest('form').submit();
 		});
 
 		//------------------------------------------------------------- .search .reset.search a click
-		$search.find('.reset > a').click(resetSelection);
+		$search.find('.reset > a').click(function()
+		{
+			resetSelection($(this).closest('article.list').attr('id'));
+		});
 
 		//--------------------------------------------------------------- input[type=checkbox] change
 		var checkboxes_select = 'input[type=checkbox]';

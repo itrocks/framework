@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -21,7 +22,7 @@ class Controller implements Default_Feature_Controller
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
-	 * Objects to delete
+	 * Objects to delete. Key is the object identifier
 	 *
 	 * @var object[]
 	 */
@@ -81,6 +82,8 @@ class Controller implements Default_Feature_Controller
 			);
 		}
 
+		$parameters['message'] = $this->message($deleted_objects, $class_name);
+
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
 
@@ -91,8 +94,8 @@ class Controller implements Default_Feature_Controller
 	 * If at least one object could not delete, none of the objects will be deleted
 	 * The deleted objects list will be returned as empty if deletion is cancelled
 	 *
-	 * @param $deleted_objects object[]
-	 * @return object[]
+	 * @param $deleted_objects object[] key is the identifier of the object
+	 * @return object[] key is the identifier of the object
 	 */
 	protected function deleteObjects(array $deleted_objects)
 	{
@@ -107,6 +110,51 @@ class Controller implements Default_Feature_Controller
 		return $deleted_objects;
 	}
 
+	//--------------------------------------------------------------------------------------- message
+	/**
+	 * @param $deleted_objects object[]
+	 * @param $class_name      string
+	 * @return string
+	 */
+	protected function message(array $deleted_objects, $class_name)
+	{
+		$count = count($deleted_objects);
+		$class = Loc::tr(
+			($count > 1) ? Names::classToDisplays($class_name) : Names::classToDisplay($class_name)
+		);
+		$object = ($count === 1) ? strval(reset($deleted_objects)) : null;
+		if ($deleted_objects) {
+			if ($count > 1) {
+				$message = Loc::tr(
+					':count :classes have been deleted',
+					Loc::replace(['classes' => $class, 'count' => $count])
+				);
+			}
+			else {
+				$message = Loc::tr(
+					':class :object has been deleted',
+					Loc::replace(['class' => $class, 'object' => $object])
+				);
+			}
+		}
+		else {
+			$count = count($this->objects);
+			if ($count > 1) {
+				$message = Loc::tr(
+					'unable to delete :count :classes',
+					Loc::replace(['classes' => $class, 'count' => $count])
+				);
+			}
+			else {
+				$message = Loc::tr(
+					'unable to delete :class :object',
+					Loc::replace(['class' => $class, 'object' => $object])
+				);
+			}
+		}
+		return $message;
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param $parameters Parameters
@@ -119,7 +167,7 @@ class Controller implements Default_Feature_Controller
 	{
 		$this->objects = $parameters->getSelectedObjects($form);
 		return $parameters->has(static::CONFIRM, true)
-			? $this->delete($parameters, $form, $files, $class_name)
+			? $this->delete($parameters,  $form, $files, $class_name)
 			: $this->confirm($parameters, $form, $files, $class_name);
 	}
 
