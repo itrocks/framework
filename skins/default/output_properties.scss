@@ -2,7 +2,6 @@
 @import 'sizes.scss';
 
 article > ul.data > li ol.properties > li > div {
-	padding: $property-label-vertical-padding 0;
 	vertical-align: top;
 
 	> span {
