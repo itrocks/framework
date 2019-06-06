@@ -17,7 +17,8 @@ article ol.properties > li.component-objects ul.collection {
       display: table-row; }
       article ol.properties > li.block ul.collection > li > ol > li,
       article ol.properties > li.component-objects ul.collection > li > ol > li {
-        display: table-cell; }
+        display: table-cell;
+        vertical-align: top; }
         article ol.properties > li.block ul.collection > li > ol > li.float, article ol.properties > li.block ul.collection > li > ol > li.integer,
         article ol.properties > li.block ul.collection > li > ol > li > input.float,
         article ol.properties > li.block ul.collection > li > ol > li > input.integer,
@@ -26,3 +27,6 @@ article ol.properties > li.component-objects ul.collection {
         article ol.properties > li.component-objects ul.collection > li > ol > li > input.float,
         article ol.properties > li.component-objects ul.collection > li > ol > li > input.integer {
           text-align: right; }
+        article ol.properties > li.block ul.collection > li > ol > li > textarea,
+        article ol.properties > li.component-objects ul.collection > li > ol > li > textarea {
+          margin: 0; }

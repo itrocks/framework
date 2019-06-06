@@ -31,12 +31,17 @@ article ol.properties {
 
 					> li {
 						display: table-cell;
+						vertical-align: top;
 
 						&.float,
 						&.integer,
 						> input.float,
 						> input.integer {
 							text-align: right;
+						}
+
+						> textarea {
+							margin: 0;
 						}
 					}
 				}

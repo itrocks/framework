@@ -35,6 +35,9 @@
 			$this.data('ui-text-height', new_height);
 			if (new_height !== previous_height) {
 				$this.height(new_height);
+				if ($this.parent().is('li') && $this.height() < $this.parent().height()) {
+					$this.height($this.parent().height());
+				}
 			}
 		};
 
