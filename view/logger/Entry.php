@@ -28,33 +28,43 @@ trait Entry
 	 * @param $output string
 	 * @return string
 	 */
-	private function deactivateScripts($output)
+	protected function deactivateScripts($output)
 	{
 		return str_ireplace(
-			[
-				'<script', '</script>',
-				'<link',   '</link>',
-				'<head',   '</head>'
-			],
-			[
-				'&lt;script',    '&lt/script>',
-				'&lt;link',      '&lt/link&gt;',
-				'<pre>&lt;head', '&lt;/head></pre>'
-			],
-			$output
-		);
+				[
+					'<script', '</script>',
+					'<link',   '</link>',
+					'<head>',  '</head>'
+				],
+				[
+					'&lt;script',        '&lt/script>',
+					'&lt;link',          '&lt/link&gt;',
+					'<pre>&lt;head&gt;', '&lt;/head></pre>'
+				],
+				$output
+			);
 	}
 
 	//------------------------------------------------------------------------------------- getOutput
 	/**
 	 * @return string
 	 */
-	private function getOutput()
+	protected function getOutput()
 	{
 		/** @var $logger Logger */
 		$logger = Session::current()->plugins->get(Logger::class);
 		/** @var $this Framework\Logger\Entry|Entry */
 		return $logger ? $logger->readFileContent($this) : '';
+	}
+
+	//---------------------------------------------------------------------------------------- iFrame
+	/**
+	 * @param $output string
+	 * @return string
+	 */
+	protected function iFrame($output)
+	{
+		return '<iframe data-from="entry-output"></iframe><div id="entry-output">' . $output . '</div>';
 	}
 
 	//--------------------------------------------------------------------------------- userGetOutput
@@ -63,7 +73,10 @@ trait Entry
 	 */
 	public function userGetOutput()
 	{
-		return new No_Escape($this->deactivateScripts($this->getOutput()), No_Escape::TYPE_STRING);
+		return new No_Escape(
+			$this->iFrame($this->deactivateScripts($this->getOutput())),
+			No_Escape::TYPE_STRING
+		);
 	}
 
 }

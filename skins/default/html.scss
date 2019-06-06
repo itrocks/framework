@@ -27,6 +27,11 @@ input[type=submit] {
 	}
 }
 
+iframe {
+	height: 300px;
+	width: 100%;
+}
+
 input, select, textarea {
 	font-family: inherit;
 	padding: 2px;

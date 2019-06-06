@@ -19,6 +19,10 @@ input[type=submit] {
     background-color: #aedc5f;
     color: white; }
 
+iframe {
+  height: 300px;
+  width: 100%; }
+
 input, select, textarea {
   font-family: inherit;
   padding: 2px; }
