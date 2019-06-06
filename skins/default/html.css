@@ -19,6 +19,9 @@ input[type=submit] {
     background-color: #aedc5f;
     color: white; }
 
+input, select, textarea {
+  padding: 2px; }
+
 input:not([type=submit]), select, textarea {
   background-color: white;
   border: none;

@@ -27,6 +27,10 @@ input[type=submit] {
 	}
 }
 
+input, select, textarea {
+	padding: 2px;
+}
+
 input:not([type=submit]), select, textarea {
 	background-color: $background;
 	border: none;

@@ -1,7 +1,8 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-article > ul.data > li ol.properties > li > div {
+article > ul.data > li ol.properties > li:not(.component-objects) > div {
+	padding-top: $property-label-vertical-padding;
 	vertical-align: top;
 
 	> span {

@@ -30,3 +30,6 @@ article ol.properties > li.component-objects ul.collection {
         article ol.properties > li.block ul.collection > li > ol > li > textarea,
         article ol.properties > li.component-objects ul.collection > li > ol > li > textarea {
           margin: 0; }
+
+article > ul.data ul.collection > li > ol > li {
+  padding: .25em; }
