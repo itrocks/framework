@@ -6,6 +6,7 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
+			minimum: 21,
 			maximum: 280
 		}, options);
 
@@ -31,7 +32,10 @@
 				}
 			}($this);
 
-			new_height = Math.round(new_height / line_height) * line_height + 1;
+			new_height = Math.max(
+				Math.round(new_height / line_height) * line_height + 1, settings.minimum
+			);
+
 			$this.data('ui-text-height', new_height);
 			if (new_height !== previous_height) {
 				$this.height(new_height);

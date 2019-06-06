@@ -20,6 +20,7 @@ input[type=submit] {
     color: white; }
 
 input, select, textarea {
+  font-family: inherit;
   padding: 2px; }
 
 input:not([type=submit]), select, textarea {
