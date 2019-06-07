@@ -61,7 +61,7 @@
 		});
 
 		//----------------------------------------------------------------------------- autoHeight init
-		autoHeight.call(this);
+		this.each(autoHeight);
 
 		return this;
 	};
