@@ -72,9 +72,9 @@ $(document).ready(function()
 			$free_text.val($selected.text());
 			$free_text.autoHeight();
 			if (
-				// if changed from a $selected to another (approximatively) : keep the focus
+				// if changed from a $selected to another (approximately) : keep the focus
 				(old_text !== $selected.text())
-				// if clicked the same $selectded : switch between focused / not focused
+				// if clicked the same $selected : switch between focused / not focused
 				|| (!$free_text.is(':focus') && !$free_text.data('focus'))
 			) {
 				$free_text.focus();
@@ -217,19 +217,20 @@ $(document).ready(function()
 		priority: 10,
 		selector: 'article.layout_model .general.actions > .write > a',
 		callback: function()
-	{
-		var $designer = $(this).closest('article.layout_model').find('.editor .designer');
-		var $active   = $designer.closest('.active.page');
-		var $pages    = $designer.closest('.page');
-		$pages.addClass('active');
-		$designer.each(function() {
-			var $designer = $(this);
-			var $input    = pageLayoutInput($designer.closest('.page'));
-			$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
-		});
-		$pages.removeClass('active');
-		$active.addClass('active');
-	}});
+		{
+			var $designer = $(this).closest('article.layout_model').find('.editor .designer');
+			var $active   = $designer.closest('.active.page');
+			var $pages    = $designer.closest('.page');
+			$pages.addClass('active');
+			$designer.each(function() {
+				var $designer = $(this);
+				var $input    = pageLayoutInput($designer.closest('.page'));
+				$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
+			});
+			$pages.removeClass('active');
+			$active.addClass('active');
+		}
+	});
 
 });
 
