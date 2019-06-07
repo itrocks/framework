@@ -10,7 +10,15 @@ $(document).ready(function()
 		if (delay === undefined) {
 			delay = 0;
 		}
-		setTimeout(function() { $.data($a[0], 'events') ? $a.click() : $a[0].click(); }, delay);
+
+		var condition = true;
+		var data_if   = $a.data('if');
+		if (data_if) {
+			condition = $(data_if).length;
+		}
+		if (condition) {
+			setTimeout(function () { $.data($a[0], 'events') ? $a.click() : $a[0].click(); }, delay);
+		}
 	});
 
 	$body.build('each', 'form.auto-submit', function()
