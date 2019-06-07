@@ -63,14 +63,19 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = Feature::F_LIST;
 
-	//---------------------------------------------------------------------- $default_displayed_lines
-	public $default_displayed_lines = 20;
-
 	//---------------------------------------------------------------------------------- $class_names
 	/**
 	 * @var string The set class name (can be virtual if only the element class name exists)
 	 */
 	private $class_names;
+
+	//---------------------------------------------------------------------- $default_displayed_lines
+	/**
+	 * Allow to change the default number of displayed lines
+	 *
+	 * @var integer
+	 */
+	public $default_displayed_lines = 20;
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
@@ -590,8 +595,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'search_summary'        => $this->getSearchSummary(
 					$class_name, $list_settings_before_read, $search
 				),
-				'settings'              => $list_settings,
+				// Allow to enable/disable 'select all' menu
+				'select_all_is_allowed' => true,
 				'selected'              => 'selected',
+				'settings'              => $list_settings,
 				'title'                 => $list_settings->title()
 			]
 		);
