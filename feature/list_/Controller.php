@@ -173,7 +173,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 			else {
 				$list_settings->maximum_displayed_lines_count = max(
-					20, $list_settings->maximum_displayed_lines_count - $parameters['less']
+					$this->default_displayed_lines, $list_settings->maximum_displayed_lines_count - $parameters['less']
 				);
 			}
 		}
