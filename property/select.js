@@ -3,12 +3,12 @@ $(document).ready(function()
 	var $body = $('body');
 
 	// sort and decoration
-	$body.build('call', 'ul.property_tree', function()
+	$body.build('call', '.property_select ul.tree', function()
 	{
 		this.sortContent('.separator');
 	});
 
-	$body.build('call', 'ul.property_tree .property_select', function()
+	$body.build('call', '.property_select ul.tree .property_select', function()
 	{
 		this.prepend($('<span>').addClass('joint'));
 	});
@@ -67,7 +67,7 @@ $(document).ready(function()
 
 	//--------------------------------------------------------------- ul.property_tree > li > a click
 	// create tree
-	$body.build('click', 'section.property_select ul.tree > li.class > a', function(event)
+	$body.build('click', '.property_select > ul.tree > li.class > a', function(event)
 	{
 		var $anchor = $(this);
 		var $li     = $anchor.parent();
