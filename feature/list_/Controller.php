@@ -63,9 +63,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = Feature::F_LIST;
 
-	//---------------------------------------------------------------------- $default_displayed_lines
-	public $default_displayed_lines = 20;
-
 	//---------------------------------------------------------------------------------- $class_names
 	/**
 	 * @var string The set class name (can be virtual if only the element class name exists)
