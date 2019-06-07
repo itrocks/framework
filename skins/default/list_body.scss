@@ -33,7 +33,7 @@ article.list > form > ul.list {
 		}
 
 		&.search input {
-			min-width: 100%;
+			min-width: calc(100% - 4px);
 		}
 
 		&.title {

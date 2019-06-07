@@ -14,7 +14,7 @@ article.list > form > ul.list {
     article.list > form > ul.list > li:nth-child(n+3):hover {
       background-color: #dff; }
     article.list > form > ul.list > li.search input {
-      min-width: 100%; }
+      min-width: calc(100% - 4px); }
     article.list > form > ul.list > li.title {
       background-color: lightgrey;
       color: #444;
