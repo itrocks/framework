@@ -121,6 +121,9 @@
 					else if (previous_width === previous_max_width) {
 						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
 					}
+					else {
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
+					}
 				}
 			}
 		};
