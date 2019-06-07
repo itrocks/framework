@@ -257,7 +257,11 @@ class Access_Control implements Configurable, Registerable
 			$get ? parse_str($get, $get) : ($get = []);
 		}
 		$uri = new Uri($uri, $get);
-		return View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name);
+		return substr(
+			View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name, ['full']),
+			0,
+			-5
+		);
 	}
 
 	//----------------------------------------------------------------------------------- hasAccessTo
