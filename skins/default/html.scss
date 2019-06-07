@@ -12,6 +12,7 @@ a {
 }
 
 button,
+input[type=button],
 input[type=submit] {
 	background: none;
 	border: none;
@@ -37,7 +38,7 @@ input, select, textarea {
 	padding: 2px;
 }
 
-input:not([type=submit]), select, textarea {
+input:not([type=button]):not([type=submit]), select, textarea {
 	background-color: $background;
 	border: none;
 	font-size: 1em;

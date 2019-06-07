@@ -6,6 +6,7 @@ a {
     color: white; }
 
 button,
+input[type=button],
 input[type=submit] {
   background: none;
   border: none;
@@ -15,6 +16,7 @@ input[type=submit] {
   padding: 0.3em 0.25em !important;
   white-space: nowrap; }
   button:hover,
+  input[type=button]:hover,
   input[type=submit]:hover {
     background-color: #aedc5f;
     color: white; }
@@ -27,16 +29,16 @@ input, select, textarea {
   font-family: inherit;
   padding: 2px; }
 
-input:not([type=submit]), select, textarea {
+input:not([type=button]):not([type=submit]), select, textarea {
   background-color: white;
   border: none;
   font-size: 1em; }
-  input:not([type=submit]):not([readonly]), select:not([readonly]), textarea:not([readonly]) {
+  input:not([type=button]):not([type=submit]):not([readonly]), select:not([readonly]), textarea:not([readonly]) {
     border-bottom: 1px solid lightgray; }
-    input:not([type=submit]):not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
+    input:not([type=button]):not([type=submit]):not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
       background-color: #eee;
       color: #444; }
-    input:not([type=submit]):not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
+    input:not([type=button]):not([type=submit]):not([readonly]):hover, select:not([readonly]):hover, textarea:not([readonly]):hover {
       background-color: #aedc5f;
       color: white; }
 
