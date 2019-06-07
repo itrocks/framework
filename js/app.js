@@ -61,8 +61,9 @@ $(document).ready(function()
 	});
 
 	//--------------------------------------------------------------------- build simple plugin calls
-	$body.build('call', '.auto_height',                    $.fn.autoHeight);
+	// must declare autoWidth before autoHeight to avoid height bugs
 	$body.build('call', '.auto_width:not(table):not(ul)',  $.fn.autoWidth);
+	$body.build('call', '.auto_height',                    $.fn.autoHeight);
 	$body.build('call', 'input:visible, textarea:visible', $.fn.changeState);
 	$body.build('call', '.list-filter',                    $.fn.listFilter);
 	$body.build('call', '.tabber',                         $.fn.tabber);
