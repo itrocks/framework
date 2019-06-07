@@ -1585,7 +1585,7 @@ class Template
 			}
 		}
 		elseif (isset($object->$property_name)) {
-			$object = $this->parseProperty($object, $property_name);
+			$object = $this->parseProperty($object, $property_name, $ignore_undefined_property);
 		}
 		elseif (isset($this->parameters[$property_name])) {
 			$object = $this->parseParameter($object, $property_name);

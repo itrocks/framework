@@ -24,24 +24,24 @@
 		<li class="tabber">
 			<ul>
 				<!--tabs.included-->
-				<li class="{getClass}"><a href="dyn://#tab_(id)">|{title}|</a></li>
+				<li class="{getName}"><a href="dyn://#tab_(id)">|{title}|</a></li>
 				<!--end-->
 			</ul>
 			<!--tabs.included-->
-			<section class="{getClass}" id="tab_(id)">
+			<section class="{getName}" id="tab_(id)">
 				<h3>|{title}|</h3>
 				<!--included?-->
 				<div class="tabber">
 					<ul>
 						<!--included-->
-						<li class="{getClass}"><a href="dyn://#tab_(id)">|{title}|</a></li>
+						<li class="{getName}"><a href="dyn://#tab_(id)">|{title}|</a></li>
 						<!--end-->
 					</ul>
 					<!--included-->
-					<section class="{?getClass}" id="tab_{id}">
+					<section class="{?getName}" id="tab_{id}">
 						<h4>|{title}|</h4>
 						<!--columns?-->
-						<ul class="{getClass?} columns">
+						<ul class="columns">
 							<!--columns-->
 							<li>
 								{/feature/output/properties.html}
@@ -55,7 +55,7 @@
 				</div>
 				<!--end-->
 				<!--columns?-->
-				<ul class="{getClass?} columns">
+				<ul class="columns">
 					<!--columns-->
 					<li>
 						{/feature/output/properties.html}
