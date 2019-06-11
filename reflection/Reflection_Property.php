@@ -16,6 +16,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
+use ITRocks\Framework\Tools\Date_Interval;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -638,6 +640,7 @@ class Reflection_Property extends ReflectionProperty
 	 * Return true if the both objects match.
 	 * If one is an object and the other is an integer, compare $objectX->id with $objectY
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object1 object|integer
 	 * @param $object2 object|integer
 	 * @return boolean
@@ -649,6 +652,22 @@ class Reflection_Property extends ReflectionProperty
 		}
 		if (is_object($object2) && isset($object2->id)) {
 			$object2 = $object2->id;
+		}
+		// two Date_Time which differ of 1 hour or less are equivalent
+		if (($object1 instanceof Date_Time) || ($object2 instanceof Date_Time)) {
+			if ($object1 && !($object1 instanceof Date_Time)) {
+				$object1 = new Date_Time($object1);
+			}
+			if ($object2 && !($object2 instanceof Date_Time)) {
+				$object2 = new Date_Time($object2);
+			}
+		}
+		if (
+			($object1 instanceof Date_Time)
+			&& ($object2 instanceof Date_Time)
+			&& (Date_Interval::toHours($object1->diff($object2, true)) <= 1)
+		) {
+			return true;
 		}
 		return ($object1 == $object2);
 	}
