@@ -82,21 +82,17 @@
 }
 
 .insert-bottom {
-	border-bottom: 3px solid $action-focus-background;
-	margin-bottom: -3px;
+	border-bottom: 3px solid $action-focus-background !important;
 }
 
 .insert-left {
-	border-left: 3px solid $action-focus-background;
-	margin-left: -3px;
+	border-left: 3px solid $action-focus-background !important;
 }
 
 .insert-right {
-	border-right: 3px solid $action-focus-background;
-	margin-right: -3px;
+	border-right: 3px solid $action-focus-background !important;
 }
 
 .insert-top {
-	border-top: 3px solid $action-focus-background;
-	margin-top: -3px;
+	border-top: 3px solid $action-focus-background !important;
 }

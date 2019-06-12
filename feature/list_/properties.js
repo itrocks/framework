@@ -51,10 +51,8 @@ $(document).ready(function()
 					if (old !== undefined) {
 						$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
 					}
-					if (found > 1) {
-						$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
-						$droppable.data('insert-after', found);
-					}
+					$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
+					$droppable.data('insert-after', found);
 				}
 				return false;
 			}
