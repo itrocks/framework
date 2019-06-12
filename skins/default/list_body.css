@@ -38,6 +38,10 @@ article.list > form > ul.list {
       display: table-row; }
       article.list > form > ul.list > li > ol > li {
         display: table-cell; }
+        article.list > form > ul.list > li > ol > li:first-child {
+          text-align: center;
+          vertical-align: middle;
+          width: 1.5em; }
         article.list > form > ul.list > li > ol > li:not(:last-child) {
           border-right: 1px solid darkgrey; }
         article.list > form > ul.list > li > ol > li.value {

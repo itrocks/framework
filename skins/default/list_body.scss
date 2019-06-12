@@ -71,6 +71,12 @@ article.list > form > ul.list {
 			> li {
 				display: table-cell;
 
+				&:first-child {
+					text-align: center;
+					vertical-align: middle;
+					width: 1.5em;
+				}
+
 				&:not(:last-child) {
 					border-right: $list-border;
 				}
