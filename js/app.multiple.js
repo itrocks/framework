@@ -105,13 +105,13 @@ $(document).ready(function()
 	/**
 	 * Remove a line
 	 */
-	$body.build('click', ['.auto_width', 'button.minus, li.minus'], function()
+	$body.build('click', ['.auto_width', 'button.minus, li.minus'], function(event)
 	{
 		var $this = $(this);
 		// setTimeout allows other click events to .minus to execute before the row is removed
 		setTimeout(function() {
 			var $body = $this.closest('tbody, ul');
-			if ($body.children().length > ($body.is('ul') ? 2 : 1)) {
+			if ($body.children().length > ($body.is('ul:not(.map)') ? 2 : 1)) {
 				$this.closest('tr, ul > li').remove();
 			}
 			else {
@@ -122,6 +122,7 @@ $(document).ready(function()
 				$table.data('itrocks_last_index', $table.data('itrocks_last_index') + 1);
 			}
 		});
+		event.preventDefault();
 	});
 
 });
