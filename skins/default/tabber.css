@@ -3,17 +3,17 @@
   padding: 0; }
   .ui-tabber > .ui-tabber-tabs {
     border-bottom: 1px solid #575757;
+    font-size: 0;
     margin-bottom: 6px; }
     .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab {
       background-color: #f3f4f4;
       border: 1px solid #B9BBBD;
       border-bottom: none;
-      border-top-left-radius: 4px;
-      border-top-right-radius: 4px;
       color: #1c2e6c;
       cursor: pointer;
       display: inline-block;
-      margin: 0; }
+      font-size: 18px;
+      margin: 0 0 0 -1px; }
       .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab > a {
         color: #1c2e6c;
         display: block;
@@ -23,7 +23,7 @@
         padding: 5px 10px;
         text-decoration: none; }
       .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active, .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab:hover {
-        background: url("img/tab_background.png") -10px;
+        background: white;
         margin-bottom: -1px;
         padding-bottom: 1px; }
       .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active > a {
