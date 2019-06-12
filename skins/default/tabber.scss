@@ -1,30 +1,25 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
 .ui-tabber {
-	margin: 8px 0 2px;
-	padding: 0;
 
 	> .ui-tabber-tabs {
 		border-bottom: 1px solid #575757;
 		font-size: 0;
-		margin-bottom: 6px;
 
 		> .ui-tabber-tab {
-			background-color: #f3f4f4;
-			border: 1px solid #B9BBBD;
-			border-bottom: none;
-			color: #1c2e6c;
+			background-color: #eee;
+			border-left: $thin-border;
+			border-right: $thin-border;
+			border-top: $thin-border;
 			cursor: pointer;
 			display: inline-block;
-			font-size: 18px;
 			margin: 0 0 0 -1px;
 
 			> a {
-				color: #1c2e6c;
 				display: block;
-				font-size: 11px;
-				font-weight: bold;
-				height: auto;
-				padding: 5px 10px;
-				text-decoration: none;
+				font-size: $font-size;
+				padding: .3em .6em;
 			}
 
 			&.active,
@@ -32,10 +27,6 @@
 				background: white;
 				margin-bottom: -1px;
 				padding-bottom: 1px;
-			}
-
-			&.active > a {
-				color: black;
 			}
 		}
 	}

@@ -1,34 +1,23 @@
-.ui-tabber {
-  margin: 8px 0 2px;
-  padding: 0; }
-  .ui-tabber > .ui-tabber-tabs {
-    border-bottom: 1px solid #575757;
-    font-size: 0;
-    margin-bottom: 6px; }
-    .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab {
-      background-color: #f3f4f4;
-      border: 1px solid #B9BBBD;
-      border-bottom: none;
-      color: #1c2e6c;
-      cursor: pointer;
-      display: inline-block;
+.ui-tabber > .ui-tabber-tabs {
+  border-bottom: 1px solid #575757;
+  font-size: 0; }
+  .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab {
+    background-color: #eee;
+    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
+    border-top: 1px solid lightgray;
+    cursor: pointer;
+    display: inline-block;
+    margin: 0 0 0 -1px; }
+    .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab > a {
+      display: block;
       font-size: 18px;
-      margin: 0 0 0 -1px; }
-      .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab > a {
-        color: #1c2e6c;
-        display: block;
-        font-size: 11px;
-        font-weight: bold;
-        height: auto;
-        padding: 5px 10px;
-        text-decoration: none; }
-      .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active, .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab:hover {
-        background: white;
-        margin-bottom: -1px;
-        padding-bottom: 1px; }
-      .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active > a {
-        color: black; }
-  .ui-tabber > .ui-tabber-page {
-    display: none; }
-    .ui-tabber > .ui-tabber-page.active {
-      display: block; }
+      padding: .3em .6em; }
+    .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active, .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab:hover {
+      background: white;
+      margin-bottom: -1px;
+      padding-bottom: 1px; }
+.ui-tabber > .ui-tabber-page {
+  display: none; }
+  .ui-tabber > .ui-tabber-page.active {
+    display: block; }
