@@ -39,3 +39,5 @@ article > header {
     background: url("../default/img/floppy.png") center no-repeat; }
     article > header:hover > div.custom > .actions > li.custom_save > a:hover {
       background-color: white; }
+  article > header > h2 {
+    cursor: pointer; }
