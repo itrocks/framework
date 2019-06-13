@@ -132,6 +132,11 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@business' => Boolean_Annotation::class,
 
 	/**
+	 * @data_access_control dataAccessControl
+	 */
+	Parser::T_CLASS . '@data_access_control' => Method_Annotation::class,
+
+	/**
 	 * @default_class_feature add
 	 */
 	Parser::T_CLASS . '@default_class_feature' => Annotation::class,

@@ -404,9 +404,9 @@ class Access_Control implements Configurable, Registerable
 	 * @param $post    array
 	 * @param $files   array[]
 	 */
-	private function setUri($new_uri, &$uri, array &$get, array &$post, array &$files)
+	public function setUri($new_uri, &$uri, array &$get, array &$post, array &$files)
 	{
-		$uri = $new_uri;
+		$uri  = $new_uri;
 		$_get = [];
 		if (isset($get[Parameter::AS_WIDGET]))   $_get[Parameter::AS_WIDGET]   = true;
 		if (isset($get[Parameter::IS_INCLUDED])) $_get[Parameter::IS_INCLUDED] = true;
