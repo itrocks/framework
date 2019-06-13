@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
-	$body.build('call', '.object', function()
+	$body.build('call', '.object[data-class][data-id]', function()
 	{
 		this.draggable(
 		{
