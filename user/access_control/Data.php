@@ -37,10 +37,13 @@ class Data implements Registerable
 			return;
 		}
 		$uri_object = new Uri($uri);
+		$class_name = Builder::className(Names::setToClass($uri_object->controller_name));
+		// in some rare cases, controllers may exist without a real class (eg Mysql/maintain)
+		if (!class_exists($class_name)) {
+			return;
+		}
 		/** @noinspection PhpUnhandledExceptionInspection Must be a valid class name */
-		$class = new Reflection_Class(Builder::className(Names::setToClass(
-			$uri_object->controller_name
-		)));
+		$class = new Reflection_Class($class_name);
 		/** @var $data_access_control Method_Annotation */
 		$data_access_control = $class->getAnnotation('data_access_control');
 		if ($data_access_control->value) {
