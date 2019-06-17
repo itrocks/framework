@@ -11,6 +11,7 @@ use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -205,9 +206,18 @@ class Access_Control implements Configurable, Registerable
 				$accessible = false;
 			}
 			elseif (!pregMatchArray($this->exceptions, $uri)) {
-				$this->setUri(
-					View::link(Access_Control::class, Controller\Feature::F_DENIED), $uri, $get, $post, $files
-				);
+				$uri_object = new Uri($uri);
+				if (
+					($uri_object->feature_name === Controller\Feature::F_EDIT)
+					&& Dao::getObjectIdentifier($object = $uri_object->parameters->getMainObject())
+				) {
+					$new_uri = View::link($object, Controller\Feature::F_OUTPUT, ['full']);
+					$this->checkFeatures($new_uri, $get, $post, $files);
+				}
+				else {
+					$new_uri = View::link(Access_Control::class, Controller\Feature::F_DENIED);
+				}
+				$this->setUri($new_uri, $uri, $get, $post, $files);
 				$accessible = false;
 			}
 		}
