@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Print_Model;
+namespace ITRocks\Framework\Layout\Print_Model;
 
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Layout\Print_Model;
