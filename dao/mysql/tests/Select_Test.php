@@ -97,29 +97,31 @@ class Select_Test extends Test
 		/** @var $properties Reflection_Property[] */
 		$properties = Replaces_Annotations::removeReplacedProperties($properties);
 		foreach ($properties as $property) {
-			$type  = $property->getType();
-			$class = ($type->isClass() & !in_array($type->getElementTypeAsString(), ['object', 'static']))
+			$type        = $property->getType();
+			$type_string = $type->getElementTypeAsString();
+			$class       = ($type->isClass() && !in_array($type_string, ['object', 'static']))
 				? $type->asReflectionClass()
 				: null;
 			if (
 				$property->isStatic()
-				|| (
-					$property->getAnnotation(Store_Annotation::ANNOTATION)->value === Store_Annotation::FALSE
-				)
-				|| ($class && ($class->isAbstract() || ($class->name === 'object')))
+				|| ($type_string === 'object')
+				|| ($class && $class->isAbstract())
+				|| Store_Annotation::of($property)->isFalse()
 			) {
 				unset($properties[$property->name]);
 			}
 		}
 		if ($depth) {
 			foreach ($properties as $property) {
-				$type = $property->getType();
+				$type        = $property->getType();
+				$type_string = $type->getElementTypeAsString();
 				if (
 					$type->isClass()
+					&& ($type_string !== 'object')
 					&& Link_Annotation::of($property)->value
 					&& !$property->getAnnotation(Store_Annotation::ANNOTATION)->value
 				) {
-					$sub_class = new Reflection_Class($type->getElementTypeAsString());
+					$sub_class = new Reflection_Class($type_string);
 					foreach ($this->propertyNames($sub_class, $depth - 1) as $sub_property_name) {
 						$properties[$property->name . DOT . $sub_property_name] = true;
 					}
