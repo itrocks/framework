@@ -19,7 +19,6 @@
 		"composer/installers":                   "~1.0",
 		"ckeditor/ckeditor":                     "4.*",
 		"csl/reset5":                            "1.*",
-		"doctrine/instantiator":                 "1.0.*",
 		"easybook/geshi":                        "1.*",
 		"ext-ctype":                             "*",
 		"ext-curl":                              "*",
@@ -46,7 +45,7 @@
 		"pear/net_pop3":                         "1.*",
 		"pear/net_smtp":                         "1.*",
 		"php":                                   "5.6.* || 7.1.*",
-		"phpunit/phpunit": 											 "5.*",
+		"phpunit/phpunit": 											 "7.*",
 		"quilljs/quill":                         "1.3.*",
 		"setasign/fpdi-tcpdf":                   "1.*",
 		"tecnickcom/tcpdf":                      "6.*"

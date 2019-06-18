@@ -23,7 +23,7 @@ use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\View\Html\Template;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 $STATIC_METHOD_TYPES = [
 	mysqli_result::fetch_object('') => [
@@ -71,15 +71,6 @@ $STATIC_METHOD_TYPES = [
 	Parameters::getObject('') => [
 		'' == '@'
 	],
-	PHPUnit_Framework_TestCase::createMock('') => [
-		'' == '@',
-	],
-	PHPUnit_Framework_TestCase::getMock('') => [
-		'' == '@',
-	],
-	PHPUnit_Framework_TestCase::getMockBuilder('') => [
-		'' == '@'
-	],
 	Plugin\Installable\Installer::openFile('') => [
 		'' == '@'
 	],
@@ -96,6 +87,15 @@ $STATIC_METHOD_TYPES = [
 		'' == '@'
 	],
 	Template::getParentObject('') => [
+		'' == '@'
+	],
+	TestCase::createMock('') => [
+		'' == '@',
+	],
+	TestCase::getMock('') => [
+		'' == '@',
+	],
+	TestCase::getMockBuilder('') => [
 		'' == '@'
 	],
 ];

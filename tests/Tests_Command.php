@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Logger\Text_Output;
-use PHPUnit_TextUI_Command;
+use PHPUnit\TextUI\Command;
 use ReflectionClass;
 
 /**
  * The tests class enables running of unit test
  */
-class Tests_Command extends PHPUnit_TextUI_Command
+class Tests_Command extends Command
 {
 
 	//--------------------------------------------------------------------------------- $configurator

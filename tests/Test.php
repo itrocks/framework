@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
-use PHPUnit_Framework_Error_Notice;
+use PHPUnit\Framework\Error\Notice;
 
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
@@ -43,7 +43,7 @@ abstract class Test extends Testable
 			// Functional testing
 
 			// There will be notice when modifying/creating table
-			PHPUnit_Framework_Error_Notice::$enabled = FALSE;
+			Notice::$enabled = false;
 			Dao::begin();
 		}
 		else {

@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Tests;
 
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Base methods to use in a unit test class
  */
-abstract class Testable extends PHPUnit_Framework_TestCase
+abstract class Testable extends TestCase
 {
 
 	//------------------------------------------------------------------------------------------- ALL

@@ -83,7 +83,7 @@ class Translator_Test extends Test
 
 	//----------------------------------------------------------------------- testTranslateWithPlural
 	/**
-	 * @dataProvider testTranslateWithPluralProvider
+	 * @dataProvider translateWithPluralProvider
 	 * @param $expected string
 	 * @param $context  array
 	 */
@@ -108,12 +108,12 @@ class Translator_Test extends Test
 		static::assertEquals($expected, $this->translator->translate($text, $context));
 	}
 
-	//--------------------------------------------------------------- testTranslateWithPluralProvider
+	//------------------------------------------------------------------- translateWithPluralProvider
 	/**
 	 * @see testTranslateWithPlural
 	 * return array
 	 */
-	public function testTranslateWithPluralProvider()
+	public function translateWithPluralProvider()
 	{
 		return [
 			'no-context'          => ['the default text', ''],

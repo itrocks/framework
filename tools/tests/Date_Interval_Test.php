@@ -12,10 +12,41 @@ use ITRocks\Framework\Tools\Date_Interval_Exception;
 class Date_Interval_Test extends Test
 {
 
+	//-------------------------------------------------------------------------------- adjustProvider
+	/**
+	 * @return array
+	 * @see Date_Interval_Test::testAdjust()
+	 */
+	public function adjustProvider()
+	{
+		return [
+			'25 hours'           => [25,  0, 'P0Y0M1DT1H0M0S', 0],
+			'25 hours inverted'  => [25,  1, 'P0Y0M1DT1H0M0S', 1],
+			'-25 hours'          => [-25, 0, 'P0Y0M1DT1H0M0S', 1],
+			'-25 hours inverted' => [-25, 1, 'P0Y0M1DT1H0M0S', 0],
+		];
+	}
+
+	//------------------------------------------------------------------------------ fromDurationData
+	/**
+	 * Provider for Date_Interval_Test::testDays
+	 *
+	 * @return array
+	 */
+	public function fromDurationData()
+	{
+		return [
+			'Zero'                         => [0, 'P0Y0M0DT0H0M0S', 0],
+			'One day and 10 seconds'       => [86400 + 10, 'P0Y0M1DT0H0M10S', 0],
+			'Minus one day and 10 seconds' => [-(86400 + 10), 'P0Y0M1DT0H0M10S', 1],
+			'2000 years 1 hour 25 seconds' => [2000 * 365 * 86400 + 3600 + 25, 'P0Y0M730000DT1H0M25S', 0]
+		];
+	}
+
 	//------------------------------------------------------------------------------------ testAdjust
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @dataProvider testAdjustProvider
+	 * @dataProvider adjustProvider
 	 * @param $hour            string
 	 * @param $invert          integer
 	 * @param $expected_format string
@@ -35,24 +66,9 @@ class Date_Interval_Test extends Test
 		static::assertEquals($expected_invert, $interval->invert);
 	}
 
-	//---------------------------------------------------------------------------- testAdjustProvider
-	/**
-	 * @return array
-	 * @see Date_Interval_Test::testAdjust()
-	 */
-	public function testAdjustProvider()
-	{
-		return [
-			'25 hours'           => [25,  0, 'P0Y0M1DT1H0M0S', 0],
-			'25 hours inverted'  => [25,  1, 'P0Y0M1DT1H0M0S', 1],
-			'-25 hours'          => [-25, 0, 'P0Y0M1DT1H0M0S', 1],
-			'-25 hours inverted' => [-25, 1, 'P0Y0M1DT1H0M0S', 0],
-		];
-	}
-
 	//------------------------------------------------------------------------------ testFromDuration
 	/**
-	 * @dataProvider testFromDurationData
+	 * @dataProvider fromDurationData
 	 * @param $duration        integer
 	 * @param $expected_format string
 	 * @param $expected_invert integer
@@ -65,25 +81,9 @@ class Date_Interval_Test extends Test
 		static::assertEquals($expected_invert, $interval->invert);
 	}
 
-	//-------------------------------------------------------------------------- testFromDurationData
-	/**
-	 * Provider for Date_Interval_Test::testDays
-	 *
-	 * @return array
-	 */
-	public function testFromDurationData()
-	{
-		return [
-			'Zero'                         => [0, 'P0Y0M0DT0H0M0S', 0],
-			'One day and 10 seconds'       => [86400 + 10, 'P0Y0M1DT0H0M10S', 0],
-			'Minus one day and 10 seconds' => [-(86400 + 10), 'P0Y0M1DT0H0M10S', 1],
-			'2000 years 1 hour 25 seconds' => [2000 * 365 * 86400 + 3600 + 25, 'P0Y0M730000DT1H0M25S', 0]
-		];
-	}
-
 	//------------------------------------------------------------------------------------ testToDays
 	/**
-	 * @dataProvider testToDaysProvider
+	 * @dataProvider toDaysProvider
 	 * @param $duration integer
 	 * @param $expected integer
 	 * @param $round    string
@@ -109,31 +109,6 @@ class Date_Interval_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$interval = new DateInterval('P1Y');
 		Date_Interval::toDays($interval);
-	}
-
-	//---------------------------------------------------------------------------- testToDaysProvider
-	/**
-	 * @return array
-	 * @see Date_Interval_Test::testToDays()
-	 */
-	public function testToDaysProvider()
-	{
-		return [
-			[  86400,  1, PHP_CEIL ],
-			[  86400,  1, PHP_FLOOR],
-			[  86400,  1, null     ],
-			[ -86400, -1, PHP_CEIL ],
-			[ -86400, -1, PHP_FLOOR],
-			[ -86400, -1, null     ],
-			[  86401,  2, PHP_CEIL ],
-			[  86401,  1, PHP_FLOOR],
-			[  86401,  1, null     ],
-			[ 129601,  2, null     ],
-			[ -86401, -1, PHP_CEIL ],
-			[ -86401, -2, PHP_FLOOR],
-			[ -86401, -1, null     ],
-			[-129601, -2, null     ]
-		];
 	}
 
 	//----------------------------------------------------------------------------------- testToHours
@@ -194,6 +169,31 @@ class Date_Interval_Test extends Test
 		static::assertEquals(
 			1, Date_Interval::toWeeks(Date_Interval::fromDuration(86400 * 7 + 1), PHP_FLOOR)
 		);
+	}
+
+	//-------------------------------------------------------------------------------- toDaysProvider
+	/**
+	 * @return array
+	 * @see Date_Interval_Test::testToDays()
+	 */
+	public function toDaysProvider()
+	{
+		return [
+			[  86400,  1, PHP_CEIL ],
+			[  86400,  1, PHP_FLOOR],
+			[  86400,  1, null     ],
+			[ -86400, -1, PHP_CEIL ],
+			[ -86400, -1, PHP_FLOOR],
+			[ -86400, -1, null     ],
+			[  86401,  2, PHP_CEIL ],
+			[  86401,  1, PHP_FLOOR],
+			[  86401,  1, null     ],
+			[ 129601,  2, null     ],
+			[ -86401, -1, PHP_CEIL ],
+			[ -86401, -2, PHP_FLOOR],
+			[ -86401, -1, null     ],
+			[-129601, -2, null     ]
+		];
 	}
 
 }

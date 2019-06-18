@@ -11,6 +11,33 @@ use ITRocks\Framework\Tools\Period;
 class Period_Test extends Test
 {
 
+	//-------------------------------------------------------------------------------- formatProvider
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return array [[Period, string|null $format, string $expected_result]]
+	 */
+	public function formatProvider()
+	{
+		/** @noinspection PhpUnhandledExceptionInspection valid constants */
+		return [
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				null,
+				'398 days 1 hour 2 minutes 3 seconds'
+			],
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				'',
+				'398 days 1 hour 2 minutes 3 seconds'
+			],
+			[
+				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
+				'%ad %H:%I:%S',
+				'398d 01:02:03'
+			]
+		];
+	}
+
 	//--------------------------------------------------------------------------------- testConstruct
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -72,7 +99,7 @@ class Period_Test extends Test
 
 	//------------------------------------------------------------------------------------ testFormat
 	/**
-	 * @dataProvider testFormatProvider
+	 * @dataProvider formatProvider
 	 * @param $period          Period
 	 * @param $format          string
 	 * @param $expected_result string
@@ -80,33 +107,6 @@ class Period_Test extends Test
 	public function testFormat($period, $format, $expected_result)
 	{
 		static::assertEquals($expected_result, $period->format($format));
-	}
-
-	//---------------------------------------------------------------------------- testFormatProvider
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return array [[Period, string|null $format, string $expected_result]]
-	 */
-	public function testFormatProvider()
-	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constants */
-		return [
-			[
-				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
-				null,
-				'398 days 1 hour 2 minutes 3 seconds'
-			],
-			[
-				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
-				'',
-				'398 days 1 hour 2 minutes 3 seconds'
-			],
-			[
-				new Period(new Date_Time('2017-01-01 00:00:00'), new Date_Time('2018-02-03 01:02:03')),
-				'%ad %H:%I:%S',
-				'398d 01:02:03'
-			]
-		];
 	}
 
 	//---------------------------------------------------------------------------------------- testIn
