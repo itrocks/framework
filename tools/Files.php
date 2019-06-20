@@ -71,7 +71,10 @@ abstract class Files
 			$result     = true;
 			$list_files = scandir($path);
 			foreach ($list_files as $entry) {
-				if (is_dir($path . $entry) && ($entry != DOT) && ($entry != DD)) {
+				if (($entry == DOT) || ($entry == DD)) {
+					continue;
+				}
+				if (is_dir($path . $entry)) {
 					$result = self::delete($path . $entry) && $result;
 				}
 				else {
