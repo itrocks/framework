@@ -6,8 +6,11 @@ article > ul.data > li ol.properties > li:not(.component-objects) > div {
 
 article > form > ul.data > li ol.properties > li > div > span {
   padding: 0.3em 0.25em;
-  position: absolute;
   vertical-align: top; }
+  article > form > ul.data > li ol.properties > li > div > span.set {
+    display: inline-block; }
+  article > form > ul.data > li ol.properties > li > div > span:not(.set) {
+    position: absolute; }
 
 article > form > ul.data > li, article > ul.data > li {
   display: block; }
