@@ -2,11 +2,11 @@ $(document).ready(function()
 {
 
 	//------------------------------------------------------------------------ input[data-conditions]
-	var will_change = {};
 	$('body').build('each', '[data-conditions]', function()
 	{
-		var $this      = $(this);
-		var conditions = $this.data('conditions').replace(/\(.*\)/g);
+		var $this       = $(this);
+		var conditions  = $this.data('conditions').replace(/\(.*\)/g);
+		var will_change = {};
 
 		$.each(conditions.split(';'), function(condition_key, condition) {
 			condition = condition.split('=');
