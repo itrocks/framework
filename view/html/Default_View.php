@@ -4,6 +4,7 @@ namespace ITRocks\Framework\View\Html;
 use ITRocks\Framework;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View\IView;
 
 /**
@@ -35,16 +36,26 @@ class Default_View implements IView
 		else {
 			$template_class = Template::class;
 		}
+
+		// TODO LOW better call an 'error 500' page
+		$set = reset($parameters);
+		if (($set instanceof Set) && !class_exists($set->element_class_name)) {
+			$parameters[Template::HIDE_PAGE_FRAME] = true;
+			$template_file = __DIR__ . '/../../feature/blank/blank.html';
+		}
+
 		/** @var $template Template */
 		/** @noinspection PhpUnhandledExceptionInspection $template_class must be valid */
 		$template = Builder::create(
 			$template_class, [reset($parameters), $template_file, $feature_name]
 		);
+
 		$template->setParameters($parameters);
 		$current = Framework\View::current();
 		if (($current instanceof Engine) && ($css = $current->getCss())) {
 			$template->setCss($css);
 		}
+
 		return $template->parse();
 	}
 
