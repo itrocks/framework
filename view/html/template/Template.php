@@ -1534,6 +1534,9 @@ class Template
 				)
 			) {
 				$this->parse_class_name = $this->parseClassName($property_name);
+				if (!class_exists($this->parse_class_name)) {
+					trigger_error("Unknown class $this->parse_class_name", E_USER_WARNING);
+				}
 			}
 			else {
 				$object = $this->parseConst($object, $property_name);
