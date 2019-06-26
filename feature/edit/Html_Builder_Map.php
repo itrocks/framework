@@ -9,6 +9,7 @@ use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\View\Html\Builder\Map;
 use ITRocks\Framework\View\Html\Dom\Button;
+use ITRocks\Framework\View\Html\Dom\Div;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 
 /**
@@ -101,7 +102,7 @@ class Html_Builder_Map extends Map
 		$builder->is_abstract = $this->is_abstract;
 		$builder->readonly    = $this->readOnly();
 
-		$input = $builder->setTemplate($this->template)->build();
+		$input = new Div($builder->setTemplate($this->template)->build());
 		$minus = new Button('-');
 		$minus->addClass('minus');
 		$minus->setAttribute('tabindex', -1);

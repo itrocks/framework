@@ -35,12 +35,12 @@ article ol.properties {
 
 						&.float,
 						&.integer,
-						> input.float,
-						> input.integer {
+						input.float,
+						input.integer {
 							text-align: right;
 						}
 
-						> textarea {
+						textarea {
 							margin: 0;
 						}
 					}
@@ -52,4 +52,16 @@ article ol.properties {
 
 article > ul.data ul.collection > li > ol > li {
 	padding: .25em;
+}
+
+article ul.data ul.map {
+	display: table;
+
+	> li {
+		display: table-row;
+
+		> * {
+			display: table-cell;
+		}
+	}
 }
