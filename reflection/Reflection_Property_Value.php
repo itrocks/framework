@@ -214,6 +214,19 @@ class Reflection_Property_Value extends Reflection_Property
 		return $object;
 	}
 
+	//------------------------------------------------------------------------ getWidgetClassesString
+	/**
+	 * @return string
+	 */
+	public function getWidgetClassesString()
+	{
+		$widget_classes = [];
+		foreach ($this->getListAnnotations('widget_class') as $annotation) {
+			$widget_classes = array_merge($widget_classes, $annotation->values());
+		}
+		return JOIN(SP, $widget_classes);
+	}
+
 	//-------------------------------------------------------------------------------------- isHidden
 	/**
 	 * @return string|boolean 'hidden' if user annotation has 'hidden', else false

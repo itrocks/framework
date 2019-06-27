@@ -526,4 +526,9 @@ Parser::$default_annotations = [
 	 */
 	Parser::T_PROPERTY . '@user_getter' => Annotation::class,
 
+	/**
+	 * @widget_class class_name[, ...]
+	 */
+	Parser::T_PROPERTY . '@widget_class' => List_Annotation::class,
+
 ];
