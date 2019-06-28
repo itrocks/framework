@@ -32,8 +32,9 @@ class Files implements Serializable
 	 */
 	public function addAndGetLink(File $file)
 	{
-		$this->files[$file->name] = $file;
-		return str_replace(BS, SL, Session_File::class) . SL . Feature::F_OUTPUT . SL . $file->name;
+		$name_hash               = $file->nameHash();
+		$this->files[$name_hash] = $file;
+		return str_replace(BS, SL, Session_File::class) . SL . Feature::F_OUTPUT . SL . $name_hash;
 	}
 
 	//------------------------------------------------------------------------------------- serialize
@@ -44,7 +45,7 @@ class Files implements Serializable
 	{
 		$serialized = [];
 		foreach ($this->files as $file) {
-			$serialized[$file->name] = $file->temporary_file_name;
+			$serialized[$file->nameHash()] = [$file->name, $file->temporary_file_name];
 		}
 		return serialize($serialized);
 	}
@@ -58,12 +59,12 @@ class Files implements Serializable
 	public function unserialize($serialized)
 	{
 		$this->files = [];
-		foreach (unserialize($serialized) as $file_name => $temporary_file_name) {
+		foreach (unserialize($serialized) as $file_hash => $serialized_file) {
 			/** @noinspection PhpUnhandledExceptionInspection constant */
 			$file                      = Builder::create(File::class);
-			$this->files[$file_name]   = $file;
-			$file->name                = $file_name;
-			$file->temporary_file_name = $temporary_file_name;
+			$this->files[$file_hash]   = $file;
+			$file->name                = reset($serialized_file);
+			$file->temporary_file_name = end($serialized_file);
 		}
 	}
 

@@ -58,18 +58,15 @@ class File
 	 */
 	protected function buildFileAnchor(Dao\File $file)
 	{
-		/** @var $session_files Files */
-		$session_files          = Session::current()->get(Files::class, true);
-		$session_files->files[] = $file;
-		$image                  = ($file->getType()->is('image'))
-			? new Image(View::link(Session_File::class, Feature::F_OUTPUT, [$file->name, 22]))
+		$image = $file->getType()->is('image')
+			? new Image($file->link(Feature::F_OUTPUT, 22))
 			: '';
+		if ($image) {
+			$image->setAttribute('height', 22);
+		}
 		$feature = $image ? 'image' : Feature::F_OUTPUT;
 
-		$anchor = new Anchor(
-			View::link(Session_File::class, $feature, [$file->name]),
-			$image . new Span($file->name)
-		);
+		$anchor = new Anchor($file->link($feature), $image . new Span($file->name));
 
 		if ($image) {
 			$anchor->setAttribute('target', Target::BLANK);
@@ -106,7 +103,9 @@ class File
 				$image_arguments['height'] = $height;
 			}
 		}
-		$image = new Image(View::link(Session_File::class, Feature::F_OUTPUT, $image_parameters, $image_arguments));
+		$image = new Image(View::link(
+			Session_File::class, Feature::F_OUTPUT, $image_parameters, $image_arguments
+		));
 		return $image;
 	}
 
