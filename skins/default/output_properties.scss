@@ -12,14 +12,10 @@ article > ul.data > li ol.properties > li:not(.component-objects) > div {
 
 article > form > ul.data > li ol.properties > li > div > span {
 	padding: $property-label-vertical-padding $property-label-horizontal-padding;
-	vertical-align: top;
 
 	&.set {
 		display: inline-block;
-	}
-
-	&:not(.set) {
-		position: absolute;
+		vertical-align: top;
 	}
 }
 
