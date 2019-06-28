@@ -1,5 +1,5 @@
 /**
- * this is less performant than <link rel=...>
+ * this is less performing than <link rel=...>
  * but offers every css needed by the application in only one css !
  * and for a full-ajax application, the slowdown risk will only be on the first page loading
  */
@@ -23,6 +23,7 @@
 @import 'custom.css';
 @import 'date_time.css';
 @import 'environment.css';
+@import 'file_input.css';
 @import 'has_ordering.css';
 @import 'html_logger.css';
 @import 'import_execute.css';

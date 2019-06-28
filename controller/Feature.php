@@ -7,6 +7,11 @@ namespace ITRocks\Framework\Controller;
 abstract class Feature
 {
 
+	//------------------------------------------------------------------------------------------ EDIT
+	const EDIT = [
+		self::F_ADD, self::F_ADMIN, self::F_EDIT
+	];
+
 	//---------------------------------------------------------------------------- features constants
 	const F_ADD           = 'add';
 	const F_ADMIN         = 'admin';

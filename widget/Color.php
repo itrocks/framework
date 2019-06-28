@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
-use ITRocks\Framework\View\Html;
+use ITRocks\Framework\View\Html\Builder\Property;
 
 /**
  * The standard widget for a Color
  */
-class Color extends Html\Builder\Property
+class Color extends Property
 {
 
 	//------------------------------------------------------------------------------------- buildHtml

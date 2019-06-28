@@ -1,0 +1,10 @@
+article.edit > form > ul.data li.file.object > div {
+	background: url('img/upload.svg') left top no-repeat;
+	background-size: 22px;
+	cursor: pointer;
+	padding-left: 26px;
+
+	> input[type=file] {
+		display: none;
+	}
+}
