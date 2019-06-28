@@ -54,6 +54,7 @@ class Output_Controller implements Feature_Controller
 		}
 		// output
 		if (isset($file)) {
+			header('Content-Disposition: inline; filename=' . DQ . $file->name . DQ);
 			header('Content-Type: ' . $file->getType());
 			$height = isset($raw_parameters['height']) ? $raw_parameters['height'] : null;
 			$rotate = isset($raw_parameters['rotate']) ? $raw_parameters['rotate'] : null;
@@ -72,7 +73,7 @@ class Output_Controller implements Feature_Controller
 				$size = isset($raw_parameters['size'])
 					? $raw_parameters['size']
 					: array_shift($raw_parameters);
-				if ($size) {
+				if ($size && !$file->getType()->is('svg')) {
 					$image = Image::createFromString($file->content);
 					$image->resize($size, $size)->display();
 				}

@@ -127,6 +127,7 @@ class Type
 				'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
 				'pdf'  => 'application/pdf',
 				'png'  => 'image/png',
+				'svg'  => 'image/svg+xml',
 				'tif'  => 'image/tiff',
 				'tiff' => 'image/tiff',       // default extension. So last ordered for same value
 				'txt'  => 'text/plain',
