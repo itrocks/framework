@@ -167,11 +167,22 @@ class Controller implements Default_Class_Controller
 			}
 		}
 		foreach ($write_objects as $write_object) {
-			if (!Dao::write($write_object->object, $write_object->write_options)) {
+			if (!$this->writeObject($write_object->object, $write_object->write_options)) {
 				return true;
 			}
 		}
 		return false;
+	}
+
+	//----------------------------------------------------------------------------------- writeObject
+	/**
+	 * @param $object        object
+	 * @param $write_options array
+	 * @return object $object if write was ok
+	 */
+	protected function writeObject($object, array $write_options)
+	{
+		return Dao::write($object, $write_options);
 	}
 
 }
