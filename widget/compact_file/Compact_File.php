@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Compact (single icon) widget for File
@@ -17,16 +18,17 @@ class Compact_File extends Property
 	 */
 	public function buildHtml()
 	{
-		$parameters = array_merge($this->parameters, ['property' => $this->template->getObject()]);
+		$parameters = array_merge($this->parameters, ['property' => $this->property]);
 
 		$feature       = $this->template->getFeature();
 		$template_file = __DIR__ . SL . $feature . '.html';
-		$template      = Builder::create(
+		/** @var $template Template */
+		$template = Builder::create(
 			get_class($this->template),
 			[$this->value, $template_file, $feature]
 		);
 
-		$template->properties_prefix = explode(DOT, reset($this->template->var_names));
+		$template->properties_prefix = $this->template->properties_prefix;
 		$template->setParameters($parameters);
 		return $template->parse();
 	}
