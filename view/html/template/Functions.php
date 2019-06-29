@@ -11,7 +11,6 @@ use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Feature\Condition;
 use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
-use ITRocks\Framework\Feature\Import\Settings\Import_Settings_Builder;
 use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
@@ -433,18 +432,7 @@ class Functions
 	) {
 		$property_value = $property->toReflectionPropertyValue($object, true);
 		if ($template->properties_prefix && !$name) {
-			$prefix = isset($prefix)
-				? ($prefix . '[' . reset($template->properties_prefix) . ']')
-				: reset($template->properties_prefix);
-			while ($next = next($template->properties_prefix)) {
-				if ((strpos($next, BS) !== false) && class_exists($next)) {
-					$next = Names::classToDisplay($next);
-				}
-				else {
-					$next = $this->escapeName($next);
-				}
-				$prefix .= '[' . $next . ']';
-			}
+			$prefix        = $this->getPropertyPrefix($template);
 			$property_edit = new Html_Builder_Property($property_value, null, $prefix);
 		}
 		else {
@@ -942,6 +930,20 @@ class Functions
 		);
 	}
 
+	//------------------------------------------------------------------------------------- getPrefix
+	/**
+	 * Prefix the property name with current property prefix string
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getPrefix(Template $template)
+	{
+		$name            = strval(reset($template->objects));
+		$property_prefix = $this->getPropertyPrefix($template);
+		return $property_prefix ? ($property_prefix . '[' . $name . ']') : $name;
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * Returns object's properties, and their display and value
@@ -1057,6 +1059,36 @@ class Functions
 			$blocks[$block] = new Block($block);
 		}
 		return $blocks;
+	}
+
+	//----------------------------------------------------------------------------- getPropertyPrefix
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getPropertyPrefix(Template $template)
+	{
+		$prefix = reset($template->properties_prefix);
+		while ($next = next($template->properties_prefix)) {
+			$next = ((strpos($next, BS) !== false) && class_exists($next))
+				? Names::classToDisplay($next)
+				: $this->escapeName($next);
+			// reverse : name.num => num[name], needed by standard form structure
+			if (is_numeric($next)) {
+				$next_element = $next;
+			}
+			else {
+				$prefix .= '[' . $next . ']';
+				if (isset($next_element)) {
+					$prefix .= '[' . $next_element . ']';
+					$next_element = null;
+				}
+			}
+		}
+		if (isset($next_element)) {
+			$prefix .= '[' . $next_element . ']';
+		}
+		return $prefix;
 	}
 
 	//----------------------------------------------------------------------------- getPropertySelect

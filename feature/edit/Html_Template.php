@@ -226,8 +226,9 @@ class Html_Template extends Template
 				) {
 					$id_value = '';
 				}
-				$value = $id_value
-					. (new Html_Builder_Property($property, $value))->setTemplate($this)->build();
+				$prefix = $this->properties_prefix ? $this->functions->getPropertyPrefix($this) : null;
+				$value  = $id_value
+					. (new Html_Builder_Property($property, $value, $prefix))->setTemplate($this)->build();
 			}
 		}
 		else {

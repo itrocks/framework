@@ -89,7 +89,7 @@ class Template
 	/**
 	 * @var Functions
 	 */
-	private $functions;
+	protected $functions;
 
 	//--------------------------------------------------------------------------------- $group_values
 	/**
@@ -1029,7 +1029,10 @@ class Template
 	protected function parseLoopArray(Loop $loop, array $elements)
 	{
 		$loop_insert = '';
-		$this->propertyPrefix($loop->var_name);
+		$property = reset($this->objects);
+		if ($property instanceof Reflection_Property) {
+			$this->properties_prefix[] = $property->path;
+		}
 		if (is_array($elements)) foreach ($elements as $loop->key => $loop->element) {
 			$parsed_element = $this->parseLoopElement($loop);
 			if (is_null($parsed_element)) break;
@@ -1038,7 +1041,9 @@ class Template
 		if (!$elements && strlen($loop->else_content)) {
 			$loop_insert = $this->parseLoopElement($loop, true);
 		}
-		$this->propertyPrefix();
+		if ($property instanceof Reflection_Property) {
+			array_pop($this->properties_prefix);
+		}
 		if (isset($loop->to) && ($loop->counter < $loop->to)) {
 			$loop_insert .= $this->parseLoopEmptyElements($loop);
 		}
@@ -1065,7 +1070,9 @@ class Template
 	 */
 	protected function parseLoopElement(Loop $loop, $else = false)
 	{
-		$this->propertyPrefix($loop->element);
+		if (is_numeric($loop->key)) {
+			array_push($this->properties_prefix, $loop->key);
+		}
 		$loop->counter ++;
 		$loop_insert   = '';
 		if (isset($loop->to) && ($loop->counter > $loop->to)) {
@@ -1086,7 +1093,9 @@ class Template
 				$this->shift();
 			}
 		}
-		$this->propertyPrefix();
+		if (is_numeric($loop->key)) {
+			array_pop($this->properties_prefix);
+		}
 		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
 			$loop_insert = substr($loop_insert, 1);
 		}
@@ -1936,29 +1945,6 @@ class Template
 			}
 		}
 		return $content;
-	}
-
-	//-------------------------------------------------------------------------------- propertyPrefix
-	/**
-	 * @param $property_prefix object|string
-	 */
-	protected function propertyPrefix($property_prefix = null)
-	{
-		if (isset($property_prefix)) {
-			array_push(
-				$this->properties_prefix,
-				is_string($property_prefix)
-					? (
-						($i = strrpos($property_prefix, DOT))
-							? substr($property_prefix, $i + 1)
-							: $property_prefix
-						)
-					: $property_prefix
-			);
-		}
-		else {
-			array_pop($this->properties_prefix);
-		}
 	}
 
 	//---------------------------------------------------------------------------------- removeSample
