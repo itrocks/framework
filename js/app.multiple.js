@@ -38,13 +38,15 @@ $(document).ready(function()
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
 		if ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length) {
-			var $block = $row.closest('.auto_width');
+			var $block = $row.closest('.auto_width, ul.data');
 			if ($block.length) {
 				// calculate depth in order to increment the right index
-				var depth   = 0;
+				var depth   = -1;
 				var $parent = $block;
-				while (($parent = $parent.parent().closest('.auto_width')).length) {
-					depth ++;
+				while (($parent = $parent.parent()).length) {
+					if ($parent.is('.auto_width, ul.data')) {
+						depth ++;
+					}
 				}
 				// calculate new row and indexes
 				var $new_row = $block.data('itrocks_add').clone();
