@@ -10,7 +10,7 @@ article > form > ul.data > li ol.properties > li > div > span {
     display: inline-block;
     vertical-align: top; }
 
-article > form > ul.data > li, article > ul.data > li {
+article > form ul.data > li, article ul.data > li {
   display: block; }
 article > form ol.properties, article ol.properties {
   display: inline-block;
