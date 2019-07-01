@@ -199,9 +199,21 @@ class Html_Template extends Template
 				) {
 					$this->cache[self::PARSED_ID][$this->getFormId()][$prefix] = true;
 					if ($property instanceof Reflection_Property_Value) {
-						$parent_object     = $property->getObject();
-						$id                = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
-						$html_builder_type = new Html_Builder_Type('id', null, $id, $prefix);
+						$parent_object   = $property->getObject();
+						$id              = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
+						$property_prefix = $this->properties_prefix
+							? $this->functions->getPropertyPrefix($this)
+							: '';
+						$property_prefix = ($property_prefix && $prefix)
+							? (
+								$property_prefix . (
+									strpos($prefix, '[')
+										? ('[' . lParse($prefix, '[') . '][' . rParse($prefix, '['))
+										: ('[' . $prefix . ']')
+								)
+							)
+							: $prefix;
+						$html_builder_type = new Html_Builder_Type('id', null, $id, $property_prefix);
 						$parent_property   = $property->getParentProperty();
 						if ($parent_property) {
 							// TODO HIGHER properties via widgets must transmit their context (property path)
