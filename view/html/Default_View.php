@@ -15,7 +15,6 @@ class Default_View implements IView
 
 	//------------------------------------------------------------------------------- executeTemplate
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template_file string
 	 * @param $parameters    array
 	 * @param $feature_name  string
@@ -44,6 +43,21 @@ class Default_View implements IView
 			$template_file = __DIR__ . '/../../feature/blank/blank.html';
 		}
 
+		$template = $this->newTemplate($template_class, $parameters, $template_file, $feature_name);
+		return $template->parse();
+	}
+
+	//----------------------------------------------------------------------------------- newTemplate
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $template_class string
+	 * @param $parameters     array
+	 * @param $template_file  string
+	 * @param $feature_name   string
+	 * @return Template
+	 */
+	protected function newTemplate($template_class, array $parameters, $template_file, $feature_name)
+	{
 		/** @var $template Template */
 		/** @noinspection PhpUnhandledExceptionInspection $template_class must be valid */
 		$template = Builder::create(
@@ -55,8 +69,7 @@ class Default_View implements IView
 		if (($current instanceof Engine) && ($css = $current->getCss())) {
 			$template->setCss($css);
 		}
-
-		return $template->parse();
+		return $template;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -79,7 +92,7 @@ class Default_View implements IView
 			$feature_names,
 			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null
 		);
-		return self::executeTemplate($template_file, $parameters, $feature_name);
+		return $this->executeTemplate($template_file, $parameters, $feature_name);
 	}
 
 }
