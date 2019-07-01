@@ -85,10 +85,13 @@ class View implements Configurable
 		$view_engine_name = Namespaces::shortClassName(Namespaces::of($view_engine_name));
 
 		if (isset($template)) {
+			$search = strpos($template, '_')
+				? Names::propertyToClass($template)
+				: Names::methodToClass($template);
 			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
 				foreach ($feature_names as $feature_name) {
 					list($class, $method) = Getter::get(
-						$view_name, $feature_name, Names::methodToClass($template) . '_' . $suffix, 'php'
+						$view_name, $feature_name, $search . '_' . $suffix, 'php'
 					);
 					if (isset($class)) break 2;
 				}
