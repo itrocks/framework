@@ -1568,7 +1568,7 @@ class Template
 				$object = $this->callFunc(reset($this->objects), $property_name);
 			}
 		}
-		elseif (is_array($object)) {
+		elseif (is_array($object) && isset($object[$property_name])) {
 			$object = $this->parseArrayElement($object, $property_name);
 		}
 		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
