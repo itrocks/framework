@@ -2,6 +2,9 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
+	var block_selector  = 'ul.collection, ul.map';
+	var parent_selector = block_selector + ', ul.data';
+
 	//---------------------------------------------------------------------------------- depthReplace
 	/**
 	 * increment indexes in new row html code
@@ -38,13 +41,13 @@ $(document).ready(function()
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
 		if ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length) {
-			var $block = $row.closest('.auto_width, ul.data');
+			var $block = $row.closest(parent_selector);
 			if ($block.length) {
 				// calculate depth in order to increment the right index
 				var depth   = -1;
 				var $parent = $block;
 				while (($parent = $parent.parent()).length) {
-					if ($parent.is('.auto_width, ul.data')) {
+					if ($parent.is(parent_selector)) {
 						depth ++;
 					}
 				}
@@ -75,7 +78,6 @@ $(document).ready(function()
 	};
 
 	//--------------------------------------------------------------- table.auto_width, ul.auto_width
-	var block_selector = 'table.auto_width, ul.auto_width';
 	$body.build('each', block_selector, function()
 	{
 		var $this   = $(this);
@@ -107,7 +109,7 @@ $(document).ready(function()
 	/**
 	 * Remove a line
 	 */
-	$body.build('click', ['.auto_width', 'button.minus, li.minus'], function(event)
+	$body.build('click', [block_selector, 'button.minus, li.minus'], function(event)
 	{
 		var $this = $(this);
 		// setTimeout allows other click events to .minus to execute before the row is removed
