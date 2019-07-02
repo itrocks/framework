@@ -122,7 +122,11 @@ class Html_Builder_Property extends Html_Builder_Type
 			if (strpos($name, '[')) {
 				$prefix2 = lLastParse($name, '[');
 				$prefix  = $prefix
-					? ($prefix . '[' . lParse($prefix2, '[') . ']' . rParse($prefix2, ']'))
+					? (
+						strpos($prefix2, '[')
+						? ($prefix . '[' . lParse($prefix2, '[') . '][' . rParse($prefix2, '['))
+						: ($prefix . '[' . $prefix2 . ']')
+					)
 					: $prefix2;
 				$name = lParse(rLastParse($name, '['), ']');
 			}
