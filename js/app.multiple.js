@@ -48,52 +48,56 @@ $(document).ready(function()
 			|| ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length)
 		) {
 			var $block = $row.closest(parent_selector);
-			if ($block.length && $block.data('itrocks_add')) {
-				// calculate depth in order to increment the right index
-				var depth   = -1;
-				var $parent = $block;
-				while (($parent = $parent.parent()).length) {
-					if ($parent.is(parent_selector)) {
-						depth ++;
-					}
-				}
-				// calculate new row and indexes
-				var $new_row = $block.data('itrocks_add').clone();
-				$block.data('itrocks_last_index', $block.data('itrocks_last_index') + 1);
-				var new_index = $block.data('itrocks_last_index');
-				var old_index = $block.data('itrocks_add_index');
-				var html      = $new_row.html();
-				if (html.indexOf('[') > -1) {
-					html = depthReplace(html, old_index, new_index, '[', ']', depth);
-				}
-				if (html.indexOf('%5B') > 1) {
-					html = depthReplace(html, old_index, new_index, '%5B', '%5D', depth);
-				}
-				$new_row.html(html);
-				// append and build new row
-				var $body = $block.children('tbody');
-				if (!$body.length) {
-					$body = $block;
-				}
-				$body.append($new_row);
-				$new_row.autofocus(false);
-				$new_row.build();
-				$new_row.autofocus(true);
+			if (!$block.data('itrocks_add')) {
+				return;
 			}
+			// calculate depth in order to increment the right index
+			var depth   = -1;
+			var $parent = $block;
+			while (($parent = $parent.parent()).length) {
+				if ($parent.is(parent_selector)) {
+					depth ++;
+				}
+			}
+			// calculate new row and indexes
+			var $new_row = $block.data('itrocks_add').clone();
+			$block.data('itrocks_last_index', $block.data('itrocks_last_index') + 1);
+			var new_index = $block.data('itrocks_last_index');
+			var old_index = $block.data('itrocks_add_index');
+			var html      = $new_row.html();
+			if (html.indexOf('[') > -1) {
+				html = depthReplace(html, old_index, new_index, '[', ']', depth);
+			}
+			if (html.indexOf('%5B') > 1) {
+				html = depthReplace(html, old_index, new_index, '%5B', '%5D', depth);
+			}
+			$new_row.html(html);
+			// append and build new row
+			var $body = $block.children('tbody');
+			if (!$body.length) {
+				$body = $block;
+			}
+			$body.append($new_row);
+			$new_row.autofocus(false);
+			$new_row.build();
+			$new_row.autofocus(true);
 		}
 	};
 
 	//--------------------------------------------------------------- table.auto_width, ul.auto_width
 	$body.build('each', block_selector, function()
 	{
-		var $this   = $(this);
-		var table   = $this.is('table');
-		var objects = !table && !$this.children('li.header').length;
+		var $this = $(this);
+		var table = $this.is('table');
 		// prepare new row
-		var $new  = $this.find(table ? '> tbody > tr.new' : '> li.new');
+		var $new = $this.find(table ? '> tbody > tr.new' : '> li.new');
+		if (!$new.length) {
+			return;
+		}
 		$new.removeClass('new');
 		$this.data('itrocks_add', $new.clone());
 		// itrocks_add_index : the value of the index to be replaced into the model for new rows
+		var objects = !table && !$this.children('li.header').length;
 		var index = $this.find(table ? '> tbody > tr' : '> li').length - ((objects || table) ? 1 : 2);
 		$this.data('itrocks_add_index', index);
 		// itrocks_last_index : the last used index (lines count - 1)
