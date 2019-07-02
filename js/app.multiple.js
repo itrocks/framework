@@ -36,13 +36,19 @@ $(document).ready(function()
 	};
 
 	//----------------------------------------------------------------------------------- autoAddLine
-	var autoAddLine = function()
+	/**
+	 * @param force boolean @default false
+	 */
+	var autoAddLine = function(force)
 	{
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
-		if ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length) {
+		if (
+			((force !== undefined) && force)
+			|| ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length)
+		) {
 			var $block = $row.closest(parent_selector);
-			if ($block.length) {
+			if ($block.length && $block.data('itrocks_add')) {
 				// calculate depth in order to increment the right index
 				var depth   = -1;
 				var $parent = $block;
@@ -100,9 +106,25 @@ $(document).ready(function()
 	});
 
 	//---------------------------------------------------- input, select, textarea change/focus/keyup
+	/**
+	 * Automatically add a line
+	 */
 	$body.build('call', [block_selector, 'input, select, textarea'], function()
 	{
 		this.change(autoAddLine).focus(autoAddLine).keyup(autoAddLine);
+	});
+
+	//------------------- article > form > ul.data ol.properties > li.component-objects > label click
+	/**
+	 * Manually add a line
+	 */
+	var add_selector = 'article > form > ul.data ol.properties > li.component-objects > label';
+	$body.build('click', add_selector, function()
+	{
+		var $input = $(this).parent().find('input, select, textarea').filter(':visible').last();
+		if ($input.length) {
+			autoAddLine.call($input, true);
+		}
 	});
 
 	//-------------------------------------------------------------------- li.multiple li.minus click

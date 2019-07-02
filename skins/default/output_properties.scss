@@ -1,7 +1,7 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-article > ul.data > li ol.properties > li:not(.component-objects) > div {
+article > ul.data ol.properties > li:not(.component-objects) > div {
 	padding-top: $property-label-vertical-padding;
 	vertical-align: top;
 
@@ -10,12 +10,21 @@ article > ul.data > li ol.properties > li:not(.component-objects) > div {
 	}
 }
 
-article > form > ul.data > li ol.properties > li > div > span {
+article > form > ul.data ol.properties > li > div > span {
 	padding: $property-label-vertical-padding $property-label-horizontal-padding;
 
 	&.set {
 		display: inline-block;
 		vertical-align: top;
+	}
+}
+
+article > form > ul.data ol.properties > li.component-objects > label {
+	cursor: pointer;
+
+	&:before {
+		content: '+';
+		padding-right: .5em;
 	}
 }
 

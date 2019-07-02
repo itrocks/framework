@@ -1,14 +1,20 @@
-article > ul.data > li ol.properties > li:not(.component-objects) > div {
+article > ul.data ol.properties > li:not(.component-objects) > div {
   padding-top: 0.3em;
   vertical-align: top; }
-  article > ul.data > li ol.properties > li:not(.component-objects) > div > span {
+  article > ul.data ol.properties > li:not(.component-objects) > div > span {
     padding: 0 0.25em; }
 
-article > form > ul.data > li ol.properties > li > div > span {
+article > form > ul.data ol.properties > li > div > span {
   padding: 0.3em 0.25em; }
-  article > form > ul.data > li ol.properties > li > div > span.set {
+  article > form > ul.data ol.properties > li > div > span.set {
     display: inline-block;
     vertical-align: top; }
+
+article > form > ul.data ol.properties > li.component-objects > label {
+  cursor: pointer; }
+  article > form > ul.data ol.properties > li.component-objects > label:before {
+    content: '+';
+    padding-right: .5em; }
 
 article > form ul.data > li, article ul.data > li {
   display: block; }
