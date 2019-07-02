@@ -1,20 +1,20 @@
 <?php
 namespace ITRocks\Framework\User;
 
-use ITRocks\Framework\AOP\Joinpoint\Method_Joinpoint;
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Uri;
-use ITRocks\Framework\Feature\Add;
-use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\Output;
-use ITRocks\Framework\Feature\Write;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\User;
+use ITRocks\Framework\View;
 
 /**
  * Write access control plugin
@@ -22,27 +22,50 @@ use ITRocks\Framework\User;
 class Write_Access_Control implements Registerable
 {
 
-	//-------------------------------------------------------------------------------- WRITE_FEATURES
-	const WRITE_FEATURES = [
-		Feature::F_ADD,
-		Feature::F_API,
-		Feature::F_DELETE,
-		Feature::F_DUPLICATE,
-		Feature::F_EDIT,
-		Feature::F_IMPORT,
-		Feature::F_TRANSFORM,
-		Feature::F_VALIDATE,
-		Feature::F_WRITE
-	];
+	//--------------------------------------------------------------------------------- READ_FEATURES
+	const READ_FEATURES = Feature::READ;
 
-	//--------------------------------------------------------------------------------- accessControl
+	//-------------------------------------------------------------------------------------- blankUri
 	/**
-	 * @param $joinpoint Method_Joinpoint
+	 * @return string
 	 */
-	public function accessControl(Method_Joinpoint $joinpoint)
+	protected function blankUri()
 	{
-		if (!User::current()) {
-			$joinpoint->stop = true;
+		return View::link(Application::class, Feature::F_BLANK);
+	}
+
+	//----------------------------------------------------------------------------------- checkAccess
+	/**
+	 * @param $uri   string
+	 * @param $get   array
+	 * @param $post  array
+	 * @param $files array[]
+	 */
+	public function checkAccess(&$uri, array &$get = [], array &$post = [], array &$files = [])
+	{
+		if (User::current()) {
+			return;
+		}
+		$uri_object = new Uri(lParse($uri, '?'));
+		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+			$uri = $this->blankUri();
+			$get = $post = $files = [];
+			$get[Parameter::AS_WIDGET] = true;
+		}
+	}
+
+	//----------------------------------------------------------------------------- checkAccessToLink
+	/**
+	 * @param $result string The link (result of View::link())
+	 */
+	public function checkAccessToLink(&$result)
+	{
+		if (User::current()) {
+			return;
+		}
+		$uri_object = new Uri(lParse($result, '?'));
+		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+			$result = $this->blankUri();
 		}
 	}
 
@@ -52,14 +75,12 @@ class Write_Access_Control implements Registerable
 	 */
 	public function checkAccessToMenuItem(Item &$result)
 	{
-		if (isset($result)) {
-			$user = User::current();
-			if (!$user) {
-				$uri = new Uri($result->link);
-				if (in_array($uri->feature_name, self::WRITE_FEATURES)) {
-					$result = null;
-				}
-			}
+		if (User::current() || !isset($result)) {
+			return;
+		}
+		$uri_object = new Uri(lParse($result->link, '?'));
+		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+			$result = null;
 		}
 	}
 
@@ -70,24 +91,12 @@ class Write_Access_Control implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->beforeMethod(
-			[Add\Controller::class, 'run'],                  [$this, 'accessControl']
-		);
-		$aop->beforeMethod(
-			[Edit\Controller::class, 'run'],                 [$this, 'accessControl']
-		);
-		$aop->afterMethod(
-			[List_\Controller::class, 'getGeneralButtons'],  [$this, 'removeButtons']
-		);
-		$aop->afterMethod(
-			[Menu::class, 'constructItem'],                  [$this, 'checkAccessToMenuItem']
-		);
-		$aop->afterMethod(
-			[Output\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']
-		);
-		$aop->beforeMethod(
-			[Write\Controller::class, 'run'],                [$this, 'accessControl']
-		);
+		$aop->afterMethod([List_\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']);
+		$aop->afterMethod([List_\Controller::class, 'getSelectionButtons'], [$this, 'removeButtons']);
+		$aop->afterMethod([Menu::class, 'constructItem'], [$this, 'checkAccessToMenuItem']);
+		$aop->afterMethod([Output\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']);
+		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
+		$aop->beforeMethod([Main::class, 'doRunInnerController'], [$this, 'checkAccess']);
 	}
 
 	//--------------------------------------------------------------------------------- removeButtons
@@ -96,11 +105,13 @@ class Write_Access_Control implements Registerable
 	 */
 	public function removeButtons(array &$result)
 	{
-		if (!User::current()) {
-			foreach (self::WRITE_FEATURES as $feature) {
-				if (isset($result[$feature])) {
-					unset($result[$feature]);
-				}
+		if (User::current()) {
+			return;
+		}
+		$buttons =& $result;
+		foreach ($buttons as $button_key => $button) {
+			if (!in_array($button->feature, static::READ_FEATURES)) {
+				unset($buttons[$button_key]);
 			}
 		}
 	}

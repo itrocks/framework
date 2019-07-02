@@ -51,6 +51,13 @@ abstract class Feature
 	//---------------------------------------------------------------------------------------- ON_SET
 	const ON_SET = [self::F_CARDS, self::F_LIST];
 
+	//------------------------------------------------------------------------------------------ READ
+	const READ = [
+		self::F_BLANK, self::F_CANCEL, self::F_CLOSE, self::F_DEFAULT, self::F_DENIED, self::F_EXPORT,
+		self::F_JSON, self::F_LIST, self::F_LOGIN, self::F_MODELS, self::F_OUTPUT, self::F_PRINT,
+		self::F_SELECT
+	];
+
 	//------------------------------------------------------------------------------------- READ_ONLY
 	const READ_ONLY = [
 		self::F_ADD, self::F_ADMIN, self::F_BLANK, self::F_CANCEL, self::F_CLOSE, self::F_DEFAULT,
