@@ -22,9 +22,11 @@ article > form > ul.data ol.properties > li > div > span {
 article > form > ul.data ol.properties > li.component-objects > label {
 	cursor: pointer;
 
-	&:before {
+	&:after {
 		content: '+';
 		padding-right: .5em;
+		position: absolute;
+		right: 0;
 	}
 }
 

@@ -12,9 +12,11 @@ article > form > ul.data ol.properties > li > div > span {
 
 article > form > ul.data ol.properties > li.component-objects > label {
   cursor: pointer; }
-  article > form > ul.data ol.properties > li.component-objects > label:before {
+  article > form > ul.data ol.properties > li.component-objects > label:after {
     content: '+';
-    padding-right: .5em; }
+    padding-right: .5em;
+    position: absolute;
+    right: 0; }
 
 article > form ul.data > li, article ul.data > li {
   display: block; }
