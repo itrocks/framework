@@ -4,9 +4,9 @@
 div#messages {
 	background-color: $background;
 	color: $color;
+	display: inline-block;
 	border: solid 1px $action-focus-background;
 	padding: $window-padding;
-	position: fixed;
 	z-index: 1;
 
 	&:empty {
