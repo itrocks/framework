@@ -58,11 +58,30 @@ class Integrated_Properties
 		return $value;
 	}
 
+	//-------------------------------------------------------------------------- expandUsingClassName
+	/**
+	 * Expand all integrated properties and sub-properties starting from the current object class
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return Reflection_Property[] all properties of the object class, and integrated sub-objects
+	 */
+	public function expandUsingClassName()
+	{
+		$expanded   = [];
+		$properties = (new Reflection_Class(get_class($this->object)))->getProperties();
+		foreach ($properties as $property) {
+			$expand = $this->expandUsingPropertyInternal($properties, $property)
+				?: [$property->name => $property];
+			$expanded = array_merge($expanded, $expand);
+		}
+		return $expanded;
+	}
+
 	//--------------------------------------------------------------------------- expandUsingProperty
 	/**
 	 * Expands a list of properties using a property
 	 *
-	 * Only properties with an @integrated annotation will be used for extend
+	 * Only properties with an integrated annotation will be used for extend
 	 *
 	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
 	 * @param $property        Reflection_Property
