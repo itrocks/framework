@@ -37,9 +37,10 @@ $(document).ready(function()
 
 	//----------------------------------------------------------------------------------- autoAddLine
 	/**
+	 * @param event object jQuery event
 	 * @param force boolean @default false
 	 */
-	var autoAddLine = function(force)
+	var autoAddLine = function(event, force)
 	{
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
@@ -123,11 +124,11 @@ $(document).ready(function()
 	 * Manually add a line
 	 */
 	var add_selector = 'article > form > ul.data ol.properties > li.component-objects > label';
-	$body.build('click', add_selector, function()
+	$body.build('click', add_selector, function(event)
 	{
 		var $input = $(this).parent().find('input, select, textarea').filter(':visible').last();
 		if ($input.length) {
-			autoAddLine.call($input, true);
+			autoAddLine.call($input, event, true);
 		}
 	});
 
