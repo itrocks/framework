@@ -19,7 +19,7 @@ article > form > ul.data ol.properties > li.component-objects > label {
 article > form ul.data > li, article ul.data > li {
   display: block; }
 article > form ol.properties, article ol.properties {
-  display: inline-block;
+  display: block;
   padding: 0.5em; }
   article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects), article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
     display: table-row; }
@@ -60,3 +60,5 @@ article > form ol.properties, article ol.properties {
     padding: 0.3em 0.25em; }
   article > form ol.properties > li.multiline > div, article ol.properties > li.multiline > div {
     white-space: pre-line; }
+article > form ul, article ul {
+  overflow: hidden; }

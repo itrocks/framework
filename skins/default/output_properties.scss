@@ -35,7 +35,7 @@ article > form, article {
 	}
 
 	ol.properties {
-		display: inline-block;
+		display: block;
 		padding: $window-padding;
 
 		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
@@ -93,5 +93,10 @@ article > form, article {
 		> li.multiline > div {
 			white-space: pre-line;
 		}
+	}
+
+	ul {
+		// allow li with float and clear
+		overflow: hidden;
 	}
 }
