@@ -1927,7 +1927,7 @@ class Template
 	 */
 	protected function prepareW3Links($content)
 	{
-		foreach (['app', 'dyn'] as $protocol) {
+		foreach (['app', 'rel'] as $protocol) {
 			$i = 0;
 			while ($i = strpos($content, $protocol . '://', $i)) {
 				$delimiter = $content[$i - 1];
@@ -2006,7 +2006,7 @@ class Template
 	protected function removeAppLinks($content)
 	{
 		$content = str_replace(['app:///', 'app://'], SL, $content);
-		$content = str_replace(['dyn:///', 'dyn://'], '', $content);
+		$content = str_replace(['rel:///', 'rel://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
 		return $content;
 	}
