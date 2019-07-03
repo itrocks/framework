@@ -2006,7 +2006,7 @@ class Template
 	protected function removeAppLinks($content)
 	{
 		$content = str_replace(['app:///', 'app://'], SL, $content);
-		$content = str_replace(['dyn:///', 'dyn://'], SL, $content);
+		$content = str_replace(['dyn:///', 'dyn://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
 		return $content;
 	}
