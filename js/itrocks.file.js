@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 
 	var anti_recurse = false;
-	$('body').build('click', 'article.edit > form > ul.data li.file.object > div', function()
+	$('body').build('click', 'article > form > ul.data li.file.object > div', function()
 	{
 		var $div = $(this);
 		if (

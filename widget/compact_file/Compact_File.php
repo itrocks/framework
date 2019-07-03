@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Widget;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\View\Html\Builder\Property;
 use ITRocks\Framework\View\Html\Template;
 
@@ -20,7 +21,9 @@ class Compact_File extends Property
 	{
 		$parameters = array_merge($this->parameters, ['property' => $this->property]);
 
-		$feature       = $this->template->getFeature();
+		$feature = ($this->template->getFeature() === Feature::F_OUTPUT)
+			? Feature::F_OUTPUT
+			: Feature::F_EDIT;
 		$template_file = __DIR__ . SL . $feature . '.html';
 		/** @var $template Template */
 		$template = Builder::create(
