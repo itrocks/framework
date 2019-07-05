@@ -153,8 +153,7 @@ abstract class Authentication
 		)->encrypted();
 
 		/** @var $user User */
-		$user = Dao::searchOne($search);
-
+		$user = ($search->login && $search->password) ? Dao::searchOne($search) : null;
 		return $user;
 	}
 
