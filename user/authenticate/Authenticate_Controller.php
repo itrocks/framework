@@ -22,7 +22,10 @@ class Authenticate_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		if (isset($form['login']) && isset($form['password'])) {
+		if (
+			isset($form['login']) && is_string($form['login'])
+			&& isset($form['password']) && is_string($form['password'])
+		) {
 			$current = User::current();
 			if ($current) {
 				Authentication::disconnect(User::current());

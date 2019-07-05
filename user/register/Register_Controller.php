@@ -52,7 +52,10 @@ class Register_Controller implements Feature_Controller
 			Authentication::disconnect(User::current());
 		}
 		$parameters = $this->getViewParameters($parameters, $form, User::class);
-		if (isset($form['login']) && isset($form['password'])) {
+		if (
+			isset($form['login']) && is_string($form['login'])
+			&& isset($form['password']) && is_string($form['password'])
+		) {
 			$user = null;
 			$errors_messages = Authentication::controlRegisterFormParameters($form);
 			if (!$errors_messages && empty($errors_messages)) {

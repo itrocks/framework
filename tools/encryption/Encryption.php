@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use InvalidArgumentException;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 
@@ -34,9 +35,13 @@ abstract class Encryption
 	 * @param $algorithm string an Encryption::XXX constant
 	 * @param $property  Reflection_Property
 	 * @return string the encrypted data
+	 * @throws InvalidArgumentException
 	 */
 	public static function encrypt($data, $algorithm, Reflection_Property $property = null)
 	{
+		if (!is_string($data)) {
+			throw new InvalidArgumentException('data must be a string string');
+		}
 		switch ($algorithm) {
 			case Encryption::BASE64:         return base64_encode($data);
 			case Encryption::CRYPT:          return crypt($data);

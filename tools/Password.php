@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use InvalidArgumentException;
+
 /**
  * Used for common 'password-like' data encryption
  */
@@ -59,6 +61,7 @@ class Password
 	 * Returns the password encrypted using the actual algorithm
 	 *
 	 * @return string
+	 * @throws InvalidArgumentException
 	 */
 	public function encrypted()
 	{
