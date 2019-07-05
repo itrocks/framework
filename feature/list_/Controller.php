@@ -69,13 +69,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	private $class_names;
 
-	//---------------------------------------------------------------------- $default_displayed_lines
+	//---------------------------------------------------------------- $default_displayed_lines_count
 	/**
 	 * Allow to change the default number of displayed lines
 	 *
 	 * @var integer
 	 */
-	public $default_displayed_lines = 20;
+	public $default_displayed_lines_count = 20;
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
@@ -173,12 +173,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			);
 		}
 		elseif (isset($parameters['less'])) {
-			if ($parameters['less'] == $this->default_displayed_lines) {
-				$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines;
+			if ($parameters['less'] == $this->default_displayed_lines_count) {
+				$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines_count;
 			}
 			else {
 				$list_settings->maximum_displayed_lines_count = max(
-					$this->default_displayed_lines, $list_settings->maximum_displayed_lines_count - $parameters['less']
+					$this->default_displayed_lines_count,
+					$list_settings->maximum_displayed_lines_count - $parameters['less']
 				);
 			}
 		}
@@ -526,8 +527,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$parameters    = $parameters->getObjects();
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->cleanup();
-		$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines;
-		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
+		$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines_count;
+		$did_change                                   = $this->applyParametersToListSettings(
+			$list_settings, $parameters, $form
+		);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count                    = new Count();
 		$options                  = [
@@ -572,7 +575,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
-		$less_twenty   = $displayed_lines_count > $this->default_displayed_lines;
+		$less_twenty   = $displayed_lines_count > $this->default_displayed_lines_count;
 		$lock_columns  = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
 		$more_hundred  = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
 		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
@@ -596,7 +599,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					$class_name, $list_settings_before_read, $search
 				),
 				// Allow to enable/disable 'select all' menu
-				'select_all_is_allowed' => true,
+				'allow_select_all'      => true,
 				'selected'              => 'selected',
 				'settings'              => $list_settings,
 				'title'                 => $list_settings->title()
