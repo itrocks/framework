@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\SSO;
 
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\User;
 
@@ -15,7 +16,7 @@ class Authentication
 {
 
 	//----------------------------------------------------------------------------- Actions constants
-	const AUTHENTICATE = 'authenticate';
+	const AUTHENTICATE = Feature::F_AUTHENTICATE;
 	const DISCONNECT   = 'disconnect';
 
 	//--------------------------------------------------------------------------------------- $action

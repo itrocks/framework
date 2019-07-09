@@ -16,6 +16,7 @@ abstract class Feature
 	const F_ADD           = 'add';
 	const F_ADMIN         = 'admin';
 	const F_API           = 'api';
+	const F_AUTHENTICATE  = 'authenticate';
 	const F_BLANK         = 'blank';
 	const F_CANCEL        = 'cancel';
 	const F_CARDS         = 'cards';
@@ -53,9 +54,9 @@ abstract class Feature
 
 	//------------------------------------------------------------------------------------------ READ
 	const READ = [
-		self::F_BLANK, self::F_CANCEL, self::F_CLOSE, self::F_DEFAULT, self::F_DENIED, self::F_EXPORT,
-		self::F_JSON, self::F_LIST, self::F_LOGIN, self::F_MODELS, self::F_OUTPUT, self::F_PRINT,
-		self::F_SELECT
+		self::F_AUTHENTICATE, self::F_BLANK, self::F_CANCEL, self::F_CLOSE, self::F_DEFAULT,
+		self::F_DENIED, self::F_EXPORT, self::F_JSON, self::F_LIST, self::F_LOGIN, self::F_MODELS,
+		self::F_OUTPUT, self::F_PRINT, self::F_SELECT
 	];
 
 	//------------------------------------------------------------------------------------- READ_ONLY

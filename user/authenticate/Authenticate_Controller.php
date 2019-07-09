@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\User\Authenticate;
 
 use ITRocks\Framework\Controller\Default_Controller;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
@@ -35,7 +36,7 @@ class Authenticate_Controller implements Feature_Controller
 				Authentication::authenticate($user);
 				$parameters->set('uri', Uri::previous());
 				return (new Default_Controller)->run(
-					$parameters, $form, $files, get_class($user), 'authenticate'
+					$parameters, $form, $files, get_class($user), Feature::F_AUTHENTICATE
 				);
 			}
 		}
