@@ -45,6 +45,7 @@ input:not([type=button]):not([type=submit]), select, textarea {
 
 	&:not([readonly]) {
 		border-bottom: $thin-border;
+		border-top: $thin-border-top;
 
 		&:focus {
 			background-color: $edit-focus-background;

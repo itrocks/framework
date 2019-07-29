@@ -34,7 +34,8 @@ input:not([type=button]):not([type=submit]), select, textarea {
   border: none;
   font-size: 1em; }
   input:not([type=button]):not([type=submit]):not([readonly]), select:not([readonly]), textarea:not([readonly]) {
-    border-bottom: 1px solid lightgray; }
+    border-bottom: 1px solid lightgray;
+    border-top: 1px solid transparent; }
     input:not([type=button]):not([type=submit]):not([readonly]):focus, select:not([readonly]):focus, textarea:not([readonly]):focus {
       background-color: #eee;
       color: #444; }
