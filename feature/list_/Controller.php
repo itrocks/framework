@@ -165,7 +165,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 		if (Select_All::get() &&
 			!Select_All::get()->selectAllIsAllowed($this) &&
-			$parameters['select'] == 'all'
+			(isset($parameters['select']) && $parameters['select'] == 'all')
 		) {
 			// FIXME Send an Invalid_Argument_Exception when #97933 will be validated
 			/** @noinspection PhpUnhandledExceptionInspection */
