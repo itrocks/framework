@@ -205,21 +205,30 @@ class Properties
 		$this->_[' . Q . $property_name . Q . '] = true;';
 			}
 		}
-		// todo this check only getters, links and setters. This should check AOP links too.
-		if (($parent = $this->class->getParentClass()) && ($parent->type === T_CLASS)) {
-			foreach ($parent->getProperties([T_EXTENDS, T_USE]) as $property) {
-				$expr = '%'
-					. '\n\s+\*\s+'               // each line beginning by '* '
-					. '@(getter|link|setter)'    // 1 : AOP annotation
-					. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
-					. '(\w+)?)?'                 // 3 : method or function name
-					. '%';
-				preg_match($expr, $property->getDocComment(), $match);
-				if ($match) {
-					$parent_code = '
+		// TODO  not all cases are threat by this first easy code without the patch next : found why
+		if ($parent_class = $this->class->getParentClass()) {
+			if (isset($parent_class->getMethods([T_EXTENDS])['__aop'])) {
+				$parent_code = '
 
 		parent::__aop(false);';
-					break;
+			}
+			// kept this for patch of Built class that inherit a class with __aop,
+			// and classes that inherit a Built class (or they will not call parent::__aop)
+			else {
+				// TODO this check only getters, links and setters. This should check AOP links too.
+				foreach ($parent_class->getProperties([T_EXTENDS, T_USE]) as $property) {
+					$expr = '%'
+						. '\n\s+\*\s+'               // each line beginning by '* '
+						. '@(getter|link|setter)'    // 1 : AOP annotation
+						. '(?:\s+(?:([\\\\\w]+)::)?' // 2 : class name
+						. '(\w+)?)?'                 // 3 : method or function name
+						. '%';
+					preg_match($expr, $property->getDocComment(), $match);
+					if ($match) {
+						$parent_code = '
+
+		parent::__aop(false);';
+					}
 				}
 			}
 		}
