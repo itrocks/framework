@@ -151,6 +151,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Apply parameters to list settings
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $list_settings    List_Setting\Set
 	 * @param $parameters       array
 	 * @param $form             array
@@ -162,6 +163,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
+		if (Select_All::get() &&
+			!Select_All::get()->selectAllIsAllowed($this) &&
+			$parameters['select'] == 'all'
+		) {
+			// FIXME Send an Invalid_Argument_Exception when #97933 will be validated
+			/** @noinspection PhpUnhandledExceptionInspection */
+			throw new Exception(null, Loc::tr('you are not allowed to select all data'));
+		}
+
 		$did_change = true;
 		if (isset($parameters['add_property'])) {
 			$list_settings->addProperty(
