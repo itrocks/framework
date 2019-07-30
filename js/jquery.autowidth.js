@@ -62,7 +62,11 @@
 		$cell.data('max-width', width);
 		var calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'));
 		var setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple';
-		width = Math.min(Math.max(settings[setting].minimum, calc), settings[setting].maximum);
+		if (!$cell.hasData('max-width') || !$cell.hasData('min-width')) {
+			$cell.data('max-width', $cell.css('max-width'));
+			$cell.data('min-width', $cell.css('min-width'));
+		}
+		width = limitWidth($cell, calc, settings, setting);
 		$cell.css({ 'max-width': width + 'px', 'min-width': width + 'px', 'width': width + 'px'	});
 	};
 
@@ -93,9 +97,7 @@
 				var $block = $element.parent().closest('.auto_width');
 				// single element
 				if (!$block.length) {
-					$element.width(
-						Math.min(Math.max(settings.simple.minimum, new_width), settings.simple.maximum)
-					);
+					$element.width(limitWidth($element, new_width, settings, 'simple'));
 				}
 				// element into an autowidth block
 				else {
@@ -269,6 +271,52 @@
 		return max_width;
 	};
 
+	//------------------------------------------------------------------------------------ limitWidth
+	/**
+	 * Read max-width and min-width from $element's data (if set) or css
+	 * If defined, replace the max-width / min-width coming from the settings by the css / data value
+	 *
+	 * @var $element jQuery
+	 * @var width    number
+	 * @var settings array
+	 * @var context  string @values multiple, simple
+	 * @return number
+	 */
+	var limitWidth = function($element, width, settings, context)
+	{
+		var max_width = settings[context].maximum;
+		var min_width = settings[context].minimum;
+		if (settings[context].use_max_width) {
+			max_width = limitWidthRead($element, 'max-width', max_width);
+		}
+		if (settings[context].use_min_width) {
+			min_width = limitWidthRead($element, 'min-width', min_width);
+		}
+		return Math.min(Math.max(min_width, width), max_width);
+	};
+
+	//-------------------------------------------------------------------------------- limitWidthRead
+	/**
+	 * Read max-width/min-width from $element's data (if set) or css
+	 * If defined, replace the max-width / min-width coming from the settings by the css / data value
+	 *
+	 * @param $element       jQuery
+	 * @param css_width_name string @values max-width, min-width
+	 * @param width          number
+	 * @returns number
+	 */
+	var limitWidthRead = function($element, css_width_name, width)
+	{
+		var css_width = parseInt($element.data(css_width_name));
+		if (!css_width) {
+			css_width = parseInt($element.css(css_width_name));
+		}
+		if (css_width) {
+			width = css_width;
+		}
+		return width;
+	};
+
 	//------------------------------------------------------------------------------------- autoWidth
 	$.fn.autoWidth = function(options)
 	{
@@ -283,11 +331,15 @@
 			},
 			multiple: {
 				maximum: 300,
-				minimum: 40
+				minimum: 40,
+				use_max_width: true,
+				use_min_width: true
 			},
 			simple: {
 				maximum: 1000,
-				minimum: 100
+				minimum: 100,
+				use_max_width: true,
+				use_min_width: true
 			}
 		}, options);
 		this.data('settings', settings);
