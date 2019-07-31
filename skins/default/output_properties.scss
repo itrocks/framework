@@ -47,7 +47,8 @@ article > form, article {
 				display: table-cell;
 			}
 
-			> div > span {
+			> div > span.unit {
+				vertical-align: middle;
 				white-space: nowrap;
 			}
 

@@ -27,7 +27,8 @@ article > form ol.properties, article ol.properties {
     display: table-row; }
     article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
       display: table-cell; }
-    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span {
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
+      vertical-align: middle;
       white-space: nowrap; }
     article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
       padding: 0.3em 0.25em;
