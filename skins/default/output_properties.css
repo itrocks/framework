@@ -1,8 +1,11 @@
 article > ul.data ol.properties > li:not(.component-objects) > div {
-  padding-top: 0.3em;
+  padding: 0.3em 0;
   vertical-align: top; }
   article > ul.data ol.properties > li:not(.component-objects) > div > span {
     padding: 0 0.25em; }
+article > ul.data ol.properties > li:not(.component-objects) > label {
+  padding-bottom: 0.3em;
+  padding-top: 0.3em; }
 
 article > form > ul.data ol.properties > li > div > span {
   padding: 0.3em 0.25em; }

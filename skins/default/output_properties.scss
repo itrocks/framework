@@ -1,12 +1,20 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-article > ul.data ol.properties > li:not(.component-objects) > div {
-	padding-top: $property-label-vertical-padding;
-	vertical-align: top;
+article > ul.data ol.properties > li:not(.component-objects) {
 
-	> span {
-		padding: 0 $property-label-horizontal-padding;
+	> div {
+		padding: $property-label-vertical-padding 0;
+		vertical-align: top;
+
+		> span {
+			padding: 0 $property-label-horizontal-padding;
+		}
+	}
+
+	> label {
+		padding-bottom: $property-label-vertical-padding;
+		padding-top: $property-label-vertical-padding;
 	}
 }
 
