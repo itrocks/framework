@@ -9,6 +9,7 @@ use ITRocks\Framework\Dao\Event;
 use ITRocks\Framework\Dao\Event\Property_Add;
 use ITRocks\Framework\Dao\Event\Property_Remove;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\History\Has_History;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Null_Object;
@@ -170,7 +171,10 @@ class Write extends Data_Link\Write
 			$new_object ? self::BEFORE_CREATE : self::BEFORE_UPDATE
 		)) {
 			$this->link->begin();
-			if (Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])) {
+			if (
+				Null_Object::isNull($this->object, [Store_Annotation::class, 'storedPropertiesOnly'])
+				&& !($this->object instanceof Has_History)
+			) {
 				$this->link->disconnect($this->object);
 			}
 			/** @noinspection PhpUnhandledExceptionInspection object */
@@ -528,7 +532,14 @@ class Write extends Data_Link\Write
 			}
 		}
 		// delete
-		if (($component_object && Empty_Object::isEmpty($component_object)) || !$component_object) {
+		if (
+			(
+				$component_object
+				&& Empty_Object::isEmpty($component_object)
+				&& !($component_object instanceof Has_History)
+			)
+			|| !$component_object
+		) {
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
 			$components            = $this->link->search(
 				[$foreign_property_name => $this->object],

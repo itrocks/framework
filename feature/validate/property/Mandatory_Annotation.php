@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Feature\Validate\Result;
+use ITRocks\Framework\History\Has_History;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -45,7 +46,7 @@ class Mandatory_Annotation extends Boolean_Annotation implements Property_Contex
 		if ($this->property instanceof Reflection_Property) {
 			/** @noinspection PhpUnhandledExceptionInspection $object of class containing $property */
 			$value = $this->property->getValue($object);
-			return $this->property->isValueEmpty($value);
+			return $this->property->isValueEmpty($value) && !($value instanceof Has_History);
 		}
 		else {
 			return false;
