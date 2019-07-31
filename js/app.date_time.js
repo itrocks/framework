@@ -38,6 +38,15 @@ $(document).ready(function()
 	$.datepicker.setDefaults($.datepicker.regional[window.app.language]);
 	$('body').build('call', 'input.datetime', function()
 	{
+		// if comes from a cloned datepicker, reinitialize it to avoid bugs and id mismatches
+		if (this.hasClass('hasDatepicker')) {
+			this.nextAll('button.ui-datepicker-trigger[type=button]').remove();
+			this.removeClass('hasDatepicker');
+			this.removeData();
+			this.removeAttr('data-kpxc-id');
+			this.removeAttr('id');
+		}
+
 		this.datepicker({
 			constrainInput: false,
 			dateFormat: dateFormatToDatepicker(window.app.date_format),
