@@ -62,7 +62,7 @@
 		$cell.data('max-width', width);
 		var calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'));
 		var setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple';
-		if (!$cell.hasData('max-width') || !$cell.hasData('min-width')) {
+		if (!$cell.data('max-width') || !$cell.data('min-width')) {
 			$cell.data('max-width', $cell.css('max-width'));
 			$cell.data('min-width', $cell.css('min-width'));
 		}
