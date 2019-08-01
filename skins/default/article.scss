@@ -7,6 +7,10 @@ article {
 
 	> h2, > header > h2 {
 		padding: $article-head-padding;
+
+		&:first-letter {
+			text-transform: uppercase;
+		}
 	}
 
 	> h2, > header {

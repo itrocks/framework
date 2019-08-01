@@ -1,5 +1,7 @@
 article > h2, article > header > h2 {
   padding: 0.5em; }
+  article > h2:first-letter, article > header > h2:first-letter {
+    text-transform: uppercase; }
 article > h2, article > header {
   background-color: darkgrey;
   color: white; }
