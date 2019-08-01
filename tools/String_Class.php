@@ -150,6 +150,15 @@ class String_Class
 		return new String_Class($this->value);
 	}
 
+	//---------------------------------------------------------------------------------------- length
+	/**
+	 * @return integer
+	 */
+	public function length()
+	{
+		return strlen($this->value);
+	}
+
 	//----------------------------------------------------------------------------------------- lower
 	/**
 	 * @return String_Class
