@@ -99,4 +99,40 @@ abstract class History
 		return empty($this->date) ? '' : Loc::dateToLocale($this->date);
 	}
 
+	//----------------------------------------------------------------------------------- hasNewValue
+	/**
+	 * @return boolean
+	 */
+	public function hasNewValue()
+	{
+		return strlen($this->new_value);
+	}
+
+	//----------------------------------------------------------------------------------- hasOldValue
+	/**
+	 * @return boolean
+	 */
+	public function hasOldValue()
+	{
+		return strlen($this->old_value);
+	}
+
+	//-------------------------------------------------------------------------------------- newClass
+	/**
+	 * @return string
+	 */
+	public function newClass()
+	{
+		return $this->hasOldValue() ? 'change' : 'add';
+	}
+
+	//-------------------------------------------------------------------------------------- oldClass
+	/**
+	 * @return string
+	 */
+	public function oldClass()
+	{
+		return $this->hasNewValue() ? 'change' : 'remove';
+	}
+
 }

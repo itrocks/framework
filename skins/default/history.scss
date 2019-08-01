@@ -1,0 +1,41 @@
+.history {
+
+	ul.users {
+		margin: 0 .3em;
+	}
+
+	li {
+		line-height: 1.3em;
+		list-style: none;
+	}
+
+	ul.history {
+
+		span.value {
+
+			> span:not(.text) {
+				border: 1px solid;
+			}
+
+			> span.add.new {
+				background-color: #f1fff3;
+				border-color: #6ca69d;
+			}
+
+			> span.change.new {
+				background-color: #ebf7fd;
+				border-color: #6793a2;
+			}
+
+			> span.change.old {
+				background-color: #dbe7ed;
+				border-color: #578392;
+			}
+
+			> span.old.remove {
+				background-color: #fff3f3;
+				border-color: #a94442;
+			}
+		}
+	}
+}
