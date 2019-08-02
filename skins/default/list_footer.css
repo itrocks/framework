@@ -1,3 +1,6 @@
+@media screen and (max-width: 469px) {
+  article.list > form > ul.footer {
+    display: none; } }
 article.list > form > ul.footer {
   position: relative;
   white-space: nowrap; }

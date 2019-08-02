@@ -1,14 +1,48 @@
 @import 'colors.scss';
+@import 'responsive.scss';
 @import 'sizes.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	article.list > form > ul.list {
+
+		> li {
+
+			> ol {
+
+				> li.column_select, li.select {
+					display: none;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (min-width: $tab-min-width) {
+
+	article.list > form > ul.list {
+		display: table;
+		width: 100%;
+
+		> li {
+			display: table-row-group;
+			position: relative;
+
+			> ol {
+				display: table-row;
+
+				> li {
+					display: table-cell;
+				}
+			}
+		}
+	}
+}
 
 article.list > form > ul.list {
 	border: $list-border;
-	display: table;
-	width: 100%;
 
 	> li {
-		display: table-row-group;
-		position: relative;
 
 		&:not(.title) > ol > li {
 
@@ -66,10 +100,8 @@ article.list > form > ul.list {
 		}
 
 		> ol {
-			display: table-row;
 
 			> li {
-				display: table-cell;
 
 				&:first-child {
 					text-align: center;

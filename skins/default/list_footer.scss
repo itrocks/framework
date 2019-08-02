@@ -1,5 +1,13 @@
 @import 'colors.scss';
+@import 'responsive.scss';
 @import 'sizes.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	article.list > form > ul.footer {
+		display: none;
+	}
+}
 
 article.list > form > ul.footer {
 	position: relative;

@@ -1,4 +1,19 @@
 @import 'colors.scss';
+@import 'responsive.scss';
+
+@media screen and (max-width: $tab-max-width) {
+
+	article.list > form {
+		min-width: 100%;
+	}
+}
+
+@media screen and (min-width: $tab-min-width) {
+
+	article.list > form {
+		min-width: 500px;
+	}
+}
 
 article.list {
 
@@ -16,7 +31,6 @@ article.list {
 
 	> form {
 		display: inline-block;
-		min-width: 500px;
 
 		input {
 			background: transparent;
