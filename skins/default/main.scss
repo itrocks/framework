@@ -2,10 +2,19 @@
 @import 'sizes.scss';
 @import 'responsive.scss';
 
-@media screen and (max-width: $phone-max-width) {
+@media screen and (max-width: $tab-max-width) {
 
 	body > header .logo {
-		display: none !important;
+		display: none;
+	}
+
+	body[class] > header > .top.bar {
+		display: table-row;
+
+		> * {
+			display: table-cell;
+			vertical-align: middle;
+		}
 	}
 }
 
@@ -16,6 +25,36 @@
 
 		> :not(nav) {
 			white-space: initial;
+		}
+	}
+}
+
+@media screen and (min-width: $pc-min-width) {
+
+	body {
+
+		> header {
+			display: table-row;
+
+			> .logo {
+				display: table-cell;
+			}
+
+			> .top.bar > .logo {
+				display: inline-block;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: $head-height / 3 * 11.75;
+			}
+		}
+
+		> main, > nav {
+			display: table-cell;
+		}
+
+		&[class] > header > .top.bar {
+			display: table-cell;
 		}
 	}
 }
@@ -35,7 +74,6 @@ body {
 	> header {
 		background: $head-background url('img/header-background.png') bottom right;
 		color: $head-color;
-		display: table-row;
 		height: $head-height;
 		position: relative;
 
@@ -49,7 +87,6 @@ body {
 		> .logo {
 			background-color: $background;
 			background-image: url('img/bappli-studio-logo.png');
-			display: table-cell;
 		}
 
 		> .top.bar {
@@ -58,11 +95,6 @@ body {
 
 			> .logo {
 				background-image: url('img/bappli-studio-logo-for-dark.png');
-				display: inline-block;
-				position: absolute;
-				right: 0;
-				top: 0;
-				width: $head-height / 3 * 11.75;
 			}
 		}
 	}
@@ -72,16 +104,12 @@ body {
 	}
 
 	> main, > nav {
-		display: table-cell;
 		vertical-align: top;
 	}
 
 	&[class] > header {
 		> .logo {
 			border-right: $thin-border;
-		}
-		> .top.bar {
-			display: table-cell;
 		}
 	}
 }

@@ -1,11 +1,32 @@
-@media screen and (max-width: 469px) {
+@media screen and (max-width: 1013px) {
   body > header .logo {
-    display: none !important; } }
+    display: none; }
+
+  body[class] > header > .top.bar {
+    display: table-row; }
+    body[class] > header > .top.bar > * {
+      display: table-cell;
+      vertical-align: middle; } }
 @media screen and (min-width: 470px) {
   body {
     white-space: nowrap; }
     body > :not(nav) {
       white-space: initial; } }
+@media screen and (min-width: 1014px) {
+  body > header {
+    display: table-row; }
+    body > header > .logo {
+      display: table-cell; }
+    body > header > .top.bar > .logo {
+      display: inline-block;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 211.5px; }
+  body > main, body > nav {
+    display: table-cell; }
+  body[class] > header > .top.bar {
+    display: table-cell; } }
 body {
   background-color: white;
   color: #444;
@@ -18,7 +39,6 @@ body {
   body > header {
     background: lightgrey url("img/header-background.png") bottom right;
     color: #444;
-    display: table-row;
     height: 54px;
     position: relative; }
     body > header .logo {
@@ -28,24 +48,15 @@ body {
       height: 54px; }
     body > header > .logo {
       background-color: white;
-      background-image: url("img/bappli-studio-logo.png");
-      display: table-cell; }
+      background-image: url("img/bappli-studio-logo.png"); }
     body > header > .top.bar {
       display: none;
       vertical-align: middle; }
       body > header > .top.bar > .logo {
-        background-image: url("img/bappli-studio-logo-for-dark.png");
-        display: inline-block;
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 211.5px; }
+        background-image: url("img/bappli-studio-logo-for-dark.png"); }
   body > main {
     width: 100%; }
   body > main, body > nav {
-    display: table-cell;
     vertical-align: top; }
   body[class] > header > .logo {
     border-right: 1px solid lightgray; }
-  body[class] > header > .top.bar {
-    display: table-cell; }

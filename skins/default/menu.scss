@@ -2,9 +2,24 @@
 @import 'sizes.scss';
 @import 'responsive.scss';
 
-@media screen and (max-width: $phone-max-width) {
+@media screen and (max-width: $tab-max-width) {
+
+	header > .top.bar > button.menu {
+		background: url('img/menu-button-white.png') no-repeat center;
+		background-size: 32px;
+		font-size: 0;
+		height: $head-height;
+		width: $head-height;
+	}
 
 	nav#menu {
+		display: none;
+	}
+}
+
+@media screen and (min-width: $pc-min-width) {
+
+	header > .top.bar > button.menu {
 		display: none;
 	}
 }
