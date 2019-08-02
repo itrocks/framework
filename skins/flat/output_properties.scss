@@ -4,7 +4,7 @@
 
 @media screen and (min-width: $tab-min-width) {
 
-	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
 
 		> label, > div {
@@ -38,7 +38,7 @@ article > form, article {
 		display: inline-block;
 		padding: $window-padding;
 
-		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 
 			> div > span {
 				white-space: nowrap;
@@ -59,7 +59,7 @@ article > form, article {
 		> li.after,
 		> li.before,
 		> li.block,
-		> li.multiple {
+		> li.component-objects {
 			display: block;
 
 			&.block,
@@ -81,7 +81,7 @@ article > form, article {
 		}
 	}
 
-	.multiple ol.properties {
+	.component-objects ol.properties {
 
 		> li.float > div,
 		> li.integer > div {

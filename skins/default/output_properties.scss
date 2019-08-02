@@ -4,7 +4,7 @@
 
 @media screen and (max-width: $phone-max-width) {
 
-	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		padding: $property-label-vertical-padding 0;
 
 		> div {
@@ -15,7 +15,7 @@
 
 @media screen and (min-width: $tab-min-width) {
 
-	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
 
 		> div {

@@ -1,14 +1,14 @@
 @media screen and (max-width: 469px) {
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
     padding: 0.3em 0; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
       padding: 0.3em 0.25em; } }
 @media screen and (min-width: 470px) {
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
     display: table-row; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
       padding: 0.3em 0; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
       display: table-cell; } }
 article > ul.data ol.properties > li:not(.component-objects) > div {
   vertical-align: top; }

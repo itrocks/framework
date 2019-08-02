@@ -1,7 +1,7 @@
 @media screen and (min-width: 480px) {
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
     display: table-row; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
       display: table-cell; } }
 article > ul.data > li ol.properties > li > div {
   padding: 0.3em 0;
@@ -19,45 +19,45 @@ article > form > ul.data > li, article > ul.data > li {
 article > form ol.properties, article ol.properties {
   display: inline-block;
   padding: 0.5em; }
-  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
+  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span {
     white-space: nowrap; }
-  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
+  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
     padding: 0.3em 0.25em;
     vertical-align: top;
     white-space: nowrap; }
-    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label:after {
       content: ' :';
       margin-right: .5em; }
   article > form ol.properties > li.after,
   article > form ol.properties > li.before,
   article > form ol.properties > li.block,
-  article > form ol.properties > li.multiple, article ol.properties > li.after,
+  article > form ol.properties > li.component-objects, article ol.properties > li.after,
   article ol.properties > li.before,
   article ol.properties > li.block,
-  article ol.properties > li.multiple {
+  article ol.properties > li.component-objects {
     display: block; }
     article > form ol.properties > li.after.block, article > form ol.properties > li.after.multiple,
     article > form ol.properties > li.before.block,
     article > form ol.properties > li.before.multiple,
     article > form ol.properties > li.block.block,
     article > form ol.properties > li.block.multiple,
-    article > form ol.properties > li.multiple.block,
-    article > form ol.properties > li.multiple.multiple, article ol.properties > li.after.block, article ol.properties > li.after.multiple,
+    article > form ol.properties > li.component-objects.block,
+    article > form ol.properties > li.component-objects.multiple, article ol.properties > li.after.block, article ol.properties > li.after.multiple,
     article ol.properties > li.before.block,
     article ol.properties > li.before.multiple,
     article ol.properties > li.block.block,
     article ol.properties > li.block.multiple,
-    article ol.properties > li.multiple.block,
-    article ol.properties > li.multiple.multiple {
+    article ol.properties > li.component-objects.block,
+    article ol.properties > li.component-objects.multiple {
       border: 1px solid lightgray;
       margin-top: -1px; }
     article > form ol.properties > li.after > label,
     article > form ol.properties > li.before > label,
     article > form ol.properties > li.block > label,
-    article > form ol.properties > li.multiple > label, article ol.properties > li.after > label,
+    article > form ol.properties > li.component-objects > label, article ol.properties > li.after > label,
     article ol.properties > li.before > label,
     article ol.properties > li.block > label,
-    article ol.properties > li.multiple > label {
+    article ol.properties > li.component-objects > label {
       background-color: #eee;
       display: block;
       padding: 0.3em 0.25em; }
@@ -65,7 +65,7 @@ article > form ol.properties, article ol.properties {
   article > form ol.properties > li.integer > div > input, article ol.properties > li.float > div > input,
   article ol.properties > li.integer > div > input {
     text-align: right; }
-article > form .multiple ol.properties > li.float > div,
-article > form .multiple ol.properties > li.integer > div, article .multiple ol.properties > li.float > div,
-article .multiple ol.properties > li.integer > div {
+article > form .component-objects ol.properties > li.float > div,
+article > form .component-objects ol.properties > li.integer > div, article .component-objects ol.properties > li.float > div,
+article .component-objects ol.properties > li.integer > div {
   text-align: right; }
