@@ -1,5 +1,17 @@
 @import 'colors.scss';
+@import 'responsive.scss';
 @import 'sizes.scss';
+
+@media screen and (min-width: $tab-min-width) {
+
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+		display: table-row;
+
+		> label, > div {
+			display: table-cell;
+		}
+	}
+}
 
 article > ul.data > li ol.properties > li > div {
 	padding: $property-label-vertical-padding 0;
@@ -27,11 +39,6 @@ article > form, article {
 		padding: $window-padding;
 
 		> li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-			display: table-row;
-
-			> label, > div {
-				display: table-cell;
-			}
 
 			> div > span {
 				white-space: nowrap;

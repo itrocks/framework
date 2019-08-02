@@ -1,10 +1,36 @@
 @import 'colors.scss';
+@import 'responsive.scss';
 @import 'sizes.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+		padding: $property-label-vertical-padding 0;
+
+		> div {
+			padding: $property-label-vertical-padding $property-label-horizontal-padding;
+		}
+	}
+}
+
+@media screen and (min-width: $tab-min-width) {
+
+	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+		display: table-row;
+
+		> div {
+			padding: $property-label-vertical-padding 0;
+		}
+
+		> label, > div {
+			display: table-cell;
+		}
+	}
+}
 
 article > ul.data ol.properties > li:not(.component-objects) {
 
 	> div {
-		padding: $property-label-vertical-padding 0;
 		vertical-align: top;
 
 		> span {
@@ -49,11 +75,6 @@ article > form, article {
 		padding: $window-padding;
 
 		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-			display: table-row;
-
-			> label, > div {
-				display: table-cell;
-			}
 
 			> div > span.unit {
 				vertical-align: middle;

@@ -1,3 +1,8 @@
+@media screen and (min-width: 480px) {
+  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
+    display: table-row; }
+    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
+      display: table-cell; } }
 article > ul.data > li ol.properties > li > div {
   padding: 0.3em 0;
   vertical-align: top; }
@@ -14,19 +19,15 @@ article > form > ul.data > li, article > ul.data > li {
 article > form ol.properties, article ol.properties {
   display: inline-block;
   padding: 0.5em; }
-  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple), article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) {
-    display: table-row; }
-    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div {
-      display: table-cell; }
-    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
-      white-space: nowrap; }
-    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
-      padding: 0.3em 0.25em;
-      vertical-align: top;
-      white-space: nowrap; }
-      article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
-        content: ' :';
-        margin-right: .5em; }
+  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > div > span {
+    white-space: nowrap; }
+  article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label {
+    padding: 0.3em 0.25em;
+    vertical-align: top;
+    white-space: nowrap; }
+    article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.multiple) > label:after {
+      content: ' :';
+      margin-right: .5em; }
   article > form ol.properties > li.after,
   article > form ol.properties > li.before,
   article > form ol.properties > li.block,
