@@ -483,3 +483,20 @@ function ucfirsta($string)
 		return ucfirst($string);
 	}
 }
+
+//------------------------------------------------------------------------------------------- words
+/**
+ * @param $string string
+ * @return string[]
+ */
+function words($string)
+{
+	/** @noinspection SpellCheckingInspection this is not text */
+	static $word_separators = '²&~"#\'{([-|`_\\^@°)]+=}$£¤%*µ<>,?;.:/!§';
+	$words     = array_unique(explode(SP, str_replace(str_split($word_separators), SP, $string)));
+	$empty_key = array_search('', $words, true);
+	if ($empty_key !== false) {
+		unset($words[$empty_key]);
+	}
+	return $words;
+}
