@@ -17,11 +17,11 @@ class Select_All implements Configurable
 	//------------------------------------------------------------------------- MAXIMUM_LINES_TO_SHOW
 	const MAXIMUM_LINES_TO_SHOW = 30;
 
-	//--------------------------------------------------------------------- $default_allow_select_all
+	//--------------------------------------------------------------------------- $allowed_by_default
 	/**
 	 * @var boolean
 	 */
-	private $default_allow_select_all = true;
+	private $allowed_by_default = true;
 
 	//--------------------------------------------------------------------------- $features_exception
 	/**
@@ -48,9 +48,9 @@ class Select_All implements Configurable
 	public function __construct($configuration)
 	{
 		if (isset($configuration)) {
-			$this->default_allow_select_all = $configuration['default_allow_select_all'];
-			$this->features_exception       = $configuration['features_exception'];
-			$this->lines_to_display         = (isset($configuration['lines_to_display'])
+			$this->allowed_by_default = $configuration['allowed_by_default'];
+			$this->features_exception = $configuration['features_exception'];
+			$this->lines_to_display   = (isset($configuration['lines_to_display'])
 				? $configuration['lines_to_display']
 				: self::LINES_TO_DISPLAY
 			);
@@ -80,9 +80,9 @@ class Select_All implements Configurable
 	public function selectAllIsAllowed($class = null)
 	{
 		if ($class && (in_array(get_class($class), $this->features_exception))) {
-			return !$this->default_allow_select_all;
+			return !$this->allowed_by_default;
 		}
-		return $this->default_allow_select_all;
+		return $this->allowed_by_default;
 	}
 
 }
