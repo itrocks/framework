@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Logger\File_Logger;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Tools\Call_Stack;
 
 /**
  * This plugin logs all view outputs sent to users.
@@ -29,6 +30,9 @@ class Logger extends File_Logger implements Registerable
 	 */
 	public function onMainController($result)
 	{
+		if ((new Call_Stack)->methodCount([Main::class, 'run']) > 1) {
+			return;
+		}
 		if ($file = $this->file()) {
 			$buffer = '#' . lParse(rLastParse($this->fileName(), SL), DOT) . LF . '<P>' . LF;
 			gzputs($file, $buffer);

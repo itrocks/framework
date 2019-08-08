@@ -183,14 +183,7 @@ class Call_Stack
 	public function getMethod(array $method)
 	{
 		foreach ($this->stack as $stack) {
-			if (
-				isset($stack['args'])
-				&& isset($stack['function']) && ($stack['function'] === $method[1])
-				&& isset($stack['object']) && (
-					(is_object($method[0]) && ($stack['object'] === $method[0]))
-					|| (is_string($method[0]) && isA($stack['object'], $method[0]))
-				)
-			) {
+			if ($this->methodMatches($stack, $method)) {
 				return Line::fromDebugBackTraceArray($stack);
 			}
 		}
@@ -208,14 +201,7 @@ class Call_Stack
 	public function getMethodArgument(array $method, $argument_number = 0)
 	{
 		foreach ($this->stack as $stack) {
-			if (
-				isset($stack['args'])
-				&& isset($stack['function']) && ($stack['function'] === $method[1])
-				&& isset($stack['object']) && (
-					(is_object($method[0]) && ($stack['object'] === $method[0]))
-					|| (is_string($method[0]) && isA($stack['object'], $method[0]))
-				)
-			) {
+			if ($this->methodMatches($stack, $method)) {
 				return $stack['args'][$argument_number];
 			}
 		}
@@ -271,6 +257,40 @@ class Call_Stack
 			$lines[] = Line::fromDebugBackTraceArray($line);
 		}
 		return $lines;
+	}
+
+	//----------------------------------------------------------------------------------- methodCount
+	/**
+	 * Get method call count
+	 *
+	 * @param $method callable|array if object, must be exactly the same instance
+	 * @return integer
+	 */
+	public function methodCount(array $method)
+	{
+		$method_count = 0;
+		foreach ($this->stack as $stack) {
+			if ($this->methodMatches($stack, $method)) {
+				$method_count ++;
+			}
+		}
+		return $method_count;
+	}
+
+	//--------------------------------------------------------------------------------- methodMatches
+	/**
+	 * @param $stack  array Call stack entry
+	 * @param $method array|callable
+	 * @return boolean
+	 */
+	protected function methodMatches(array $stack, array $method)
+	{
+		return isset($stack['args'])
+			&& isset($stack['function']) && ($stack['function'] === $method[1])
+			&& isset($stack['object']) && (
+				(is_object($method[0]) && ($stack['object'] === $method[0]))
+				|| (is_string($method[0]) && isA($stack['object'], $method[0]))
+			);
 	}
 
 	//------------------------------------------------------------------------------- searchFunctions
