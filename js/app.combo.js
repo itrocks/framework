@@ -11,7 +11,7 @@ $(document).ready(function()
 			var request = $.param(comboRequest($element, { term: $element.val(), first: true }));
 			$.getJSON(comboUri($element), request)
 				.done(function(data) {
-					comboValue($element, data.id, data.value);
+					comboValue($element, data.id, data.value, data.class_name);
 				})
 				.always(function() {
 					window.running_combo = undefined;
@@ -87,14 +87,18 @@ $(document).ready(function()
 	/**
 	 * Sets the value of the element
 	 *
-	 * @param $element jQuery
-	 * @param id       integer
-	 * @param value    string
+	 * @param $element   jQuery
+	 * @param id         integer
+	 * @param value      string
+	 * @param class_name string
 	 */
-	var comboValue = function($element, id, value)
+	var comboValue = function($element, id, value, class_name)
 	{
+		if (id && (class_name !== undefined)) {
+			id = class_name + ':' + id;
+		}
 		if (id) {
-			$element.data('combo-value', id);
+			$element.data('combo-value', value);
 		}
 		else {
 			$element.removeData('combo-value');
@@ -112,72 +116,71 @@ $(document).ready(function()
 	//---------------------------------------------------------------------- input.combo autocomplete
 	$body.build('call', 'input.combo', function()
 	{
-		this.autocomplete(
+		this.autocomplete({
+			autoFocus: true,
+			delay:     100,
+			minLength: 1,
+
+			close: function()
 			{
-				autoFocus: true,
-				delay:     100,
-				minLength: 1,
+				var $this = $(this);
+				setTimeout(function() { $this.removeData('visible'); }, 100);
+			},
 
-				close: function()
-				{
-					var $this = $(this);
-					setTimeout(function() { $this.removeData('visible'); }, 100);
-				},
+			open: function()
+			{
+				var $this = $(this);
+				$this.data('visible', true);
+			},
 
-				open: function()
-				{
-					var $this = $(this);
-					$this.data('visible', true);
-				},
+			source: function(request, response)
+			{
+				var $element = this.element;
+				window.running_combo = true;
+				// set data to lower case for /MAJ combo in term
+				var data = $.param(comboRequest($element, request)).toLocaleLowerCase();
+				$.getJSON(comboUri($element), data)
+					.done(response)
+					.always(function() {
+						window.running_combo = undefined;
+					});
+			},
 
-				source: function(request, response)
-				{
-					var $element = this.element;
-					window.running_combo = true;
-					// set data to lower case for /MAJ combo in term
-					var data = $.param(comboRequest($element, request)).toLocaleLowerCase();
-					$.getJSON(comboUri($element), data)
-						.done(response)
-						.always(function() {
-							window.running_combo = undefined;
-						});
-				},
-
-				select: function(event, ui)
-				{
-					var $caption = $(this);
-					var $value   = $caption.prev().filter('input[type=hidden]');
-					var has_id   = true;
-					if (!$value.length) {
-						has_id = false;
-						$value = $caption;
-					}
-
-					var previous_caption = $caption.val();
-					var previous_value   = $value.val();
-					if (has_id) {
-						var val = ui.item.id;
-						if (ui.item.class_name !== undefined) {
-							val = ui.item.class_name + ':' + val;
-						}
-						$value.val(val);
-					}
-					// mouse click : copy the full value to the input
-					if (!event.keyCode) {
-						$caption.val(ui.item.value);
-					}
-					$caption.data('combo-value', ui.item.value);
-					if (!comboMatches($caption)) {
-						comboForce($caption);
-					}
-					if (previous_caption !== $caption.val()) {
-						$caption.change();
-					}
-					if (previous_value !== $value.val()) {
-						$value.change();
-					}
+			select: function(event, ui)
+			{
+				var $value = $(this);
+				var $id    = $value.prev().filter('input[type=hidden]');
+				var has_id = true;
+				if (!$id.length) {
+					has_id = false;
+					$id    = $value;
 				}
-			});
+
+				var previous_id    = $id.val();
+				var previous_value = $value.val();
+				if (has_id) {
+					var id = ui.item.id;
+					if (ui.item.class_name !== undefined) {
+						id = ui.item.class_name + ':' + id;
+					}
+					$id.val(id);
+				}
+				// mouse click : copy the full value to the input
+				if (!event.keyCode) {
+					$value.val(ui.item.value);
+				}
+				$value.data('combo-value', ui.item.value);
+				if (!comboMatches($value)) {
+					comboForce($value);
+				}
+				if (previous_value !== $value.val()) {
+					$value.change();
+				}
+				if (previous_id !== $id.val()) {
+					$id.change();
+				}
+			}
+		});
 
 		//--------------------------------------------------------------------------- input.combo focus
 		this.focus(function()
