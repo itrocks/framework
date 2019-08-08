@@ -486,14 +486,21 @@ function ucfirsta($string)
 
 //------------------------------------------------------------------------------------------- words
 /**
- * @param $string string
+ * @param $string    string
+ * @param $lowercase boolean lowercase all words eg to get an unique version of 'Word' and 'word'
  * @return string[]
  */
-function words($string)
+function words($string, $lowercase = false)
 {
 	/** @noinspection SpellCheckingInspection this is not text */
 	static $word_separators = '²&~"#\'{([-|`_\\^@°)]+=}$£¤%*µ<>,?;.:/!§';
-	$words     = array_unique(explode(SP, str_replace(str_split($word_separators), SP, $string)));
+	$words = explode(SP, str_replace(str_split($word_separators), SP, $string));
+	if ($lowercase) {
+		foreach ($words as &$word) {
+			$word = strtolower($word);
+		}
+	}
+	$words     = array_unique($words);
 	$empty_key = array_search('', $words, true);
 	if ($empty_key !== false) {
 		unset($words[$empty_key]);
