@@ -284,10 +284,10 @@ class Dao implements Configurable
 
 	//--------------------------------------------------------------------------------------- groupBy
 	/**
-	 * @param $properties string[]|string
+	 * @param $properties string[]|string|null
 	 * @return Option\Group_By
 	 */
-	public static function groupBy($properties)
+	public static function groupBy($properties = null)
 	{
 		return new Option\Group_By($properties);
 	}

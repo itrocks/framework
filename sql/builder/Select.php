@@ -118,7 +118,7 @@ class Select
 				$this->select[30] = SP . 'DISTINCT';
 			}
 			elseif ($option instanceof Option\Group_By) {
-				$columns = new Columns($this->class_name, $option->properties, $this->joins);
+				$columns = new Columns($this->class_name, $option->properties ?: ['id'], $this->joins);
 				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
 				$group_by                 = $columns->build();

@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao\Option;
  */
 class Group_By implements Option
 {
+	use Has_In;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -23,6 +24,9 @@ class Group_By implements Option
 	{
 		if (isset($properties)) {
 			$this->properties = is_array($properties) ? $properties : [$properties];
+		}
+		elseif (!$this->properties) {
+			$this->properties = [];
 		}
 	}
 
