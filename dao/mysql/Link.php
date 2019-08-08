@@ -98,7 +98,9 @@ class Link extends Dao\Sql\Link
 		if (isset($parameters[self::COLLATION])) {
 			$this->collation = $parameters[self::COLLATION];
 		}
-		$this->connect($parameters);
+		if ($parameters) {
+			$this->connect($parameters);
+		}
 	}
 
 	//----------------------------------------------------------------------------------------- begin

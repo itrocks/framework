@@ -46,7 +46,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	/**
 	 * @param $parameters array
 	 */
-	public function __construct(array $parameters = [])
+	public function __construct(array $parameters = null)
 	{
 		$this->tables = isset($parameters[self::TABLES]) ? $parameters[self::TABLES] : [];
 	}
