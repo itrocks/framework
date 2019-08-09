@@ -772,11 +772,6 @@ class Template
 				$this->replaceHeadLinks($content, $links);
 			}
 		}
-		$i = 0;
-		while (($i = strpos($content, '<!--DEV-->', $i)) !== false) {
-			$j       = strpos($content, '<!--END-->', $i) + 10;
-			$content = substr($content, 0, $i) . substr($content, $j);
-		}
 		return $content;
 	}
 
@@ -940,7 +935,7 @@ class Template
 				$included = file_get_contents($file_name);
 				if (($i = strpos($included, '<!--BEGIN-->')) !== false) {
 					$i += 12;
-					$j = strpos($included, '<!--END-->');
+					$j = strrpos($included, '<!--END-->');
 					$this->included[$include_uri][$class_name] = substr($included, $i, $j - $i);
 				}
 				else {
@@ -1973,6 +1968,11 @@ class Template
 	protected function removeAppAttributes($content)
 	{
 		$i = 0;
+		while (($i = strpos($content, 'data-attribute-', $i)) !== false) {
+			$content = substr($content, 0, $i) . substr($content, $i + 15);
+		}
+
+		$i = 0;
 		while (($i = strpos($content, 'data-attributes=' . DQ, $i)) !== false) {
 			$i      += 17;
 			$j       = strpos($content, DQ, $i);
@@ -1993,6 +1993,12 @@ class Template
 		}
 		if ($replacements) {
 			$content = str_replace('data-end', '<!--end-->', $content);
+		}
+
+		$i = 0;
+		while (($i = strpos($content, '<!--DEV-->', $i)) !== false) {
+			$j       = strpos($content, '<!--END-->', $i) + 10;
+			$content = substr($content, 0, $i) . substr($content, $j);
 		}
 
 		return $content;
