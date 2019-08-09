@@ -693,6 +693,16 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			? '' : $format;
 	}
 
+	//-------------------------------------------------------------------------------------- toISODay
+	/**
+	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
+	 * @return string
+	 */
+	public function toISODay($empty_min_max = true)
+	{
+		return substr($this->toISO($empty_min_max), 0, 10);
+	}
+
 	//--------------------------------------------------------------------------------------- toMonth
 	/**
 	 * Returns a Date_Time for the month (goes to the beginning of the month)
