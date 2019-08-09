@@ -215,7 +215,7 @@ abstract class Link extends Identifier_Map implements Transactional
 				$object_class, $properties, $filter_object, $options
 			);
 			if (!$new_filter_object) {
-				return new Default_List_Data($object_class, $properties);
+				return $list;
 			}
 			$filter_object = $filter_object
 				? Func::andOp([$filter_object, Func::orOp($new_filter_object)])
@@ -365,15 +365,15 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	private function selectList($object_class, array $columns)
 	{
+		$functions  = [];
 		$properties = [];
 		foreach ($columns as $key => $column) {
 			$property_path = is_object($column) ? $key : $column;
 			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
-			$properties[$property_path] = ($column instanceof Dao_Function)
-				? $column
-				: new Reflection_Property($object_class, $property_path);
+			$properties[$property_path] = new Reflection_Property($object_class, $property_path);
+			$functions[$property_path]  = ($column instanceof Dao_Function) ? $column : null;
 		}
-		return new Default_List_Data($object_class, $properties);
+		return new Default_List_Data($object_class, $properties, $functions);
 	}
 
 	//--------------------------------------------------------------------------------- selectOptions

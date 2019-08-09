@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
-use ITRocks\Framework\Dao\Func\Column;
+use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -11,21 +11,28 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 class Default_List_Data extends Set implements List_Data
 {
 
+	//------------------------------------------------------------------------------------ $functions
+	/**
+	 * @var Dao_Function[]
+	 */
+	private $functions;
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var Column[]|Reflection_Property[] The key is the the path of the property
+	 * @var Reflection_Property[] The key is the the path of the property
 	 */
 	private $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $element_class_name string the reference class name
-	 * @param $properties         Column[]|Reflection_Property[] the key must be the path of the
-	 *                            property
+	 * @param $properties         Reflection_Property[] the key must be the path of the property
+	 * @param $functions          Dao_Function[]
 	 */
-	public function __construct($element_class_name, array $properties)
+	public function __construct($element_class_name, array $properties, array $functions = [])
 	{
 		parent::__construct($element_class_name);
+		$this->functions  = $functions;
 		$this->properties = $properties;
 	}
 
@@ -57,6 +64,15 @@ class Default_List_Data extends Set implements List_Data
 		return $this->elementClass();
 	}
 
+	//---------------------------------------------------------------------------------- getFunctions
+	/**
+	 * @return Dao_Function[]
+	 */
+	public function getFunctions()
+	{
+		return $this->functions;
+	}
+
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * @param $row_index integer
@@ -71,7 +87,7 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * Gets properties names list
 	 *
-	 * @return Column[]|Reflection_Property[]
+	 * @return Reflection_Property[]
 	 */
 	public function getProperties()
 	{
@@ -121,7 +137,7 @@ class Default_List_Data extends Set implements List_Data
 	 */
 	public function newRow($class_name, $object, $row)
 	{
-		return new Default_List_Row($class_name, $object, $row);
+		return new Default_List_Row($class_name, $object, $row, $this);
 	}
 
 }

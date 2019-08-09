@@ -19,6 +19,12 @@ class Default_List_Row implements List_Row
 	 */
 	public $class_name;
 
+	//----------------------------------------------------------------------------------------- $list
+	/**
+	 * @var List_Data
+	 */
+	private $list;
+
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object|mixed Object or object identifier
@@ -36,10 +42,12 @@ class Default_List_Row implements List_Row
 	 * @param $class_name string
 	 * @param $object     object|mixed
 	 * @param $values     string[]
+	 * @param $list       List_Data
 	 */
-	public function __construct($class_name, $object, array $values)
+	public function __construct($class_name, $object, array $values, List_Data $list)
 	{
 		$this->class_name = $class_name;
+		$this->list       = $list;
 		$this->object     = $object;
 		$this->values     = $values;
 	}
@@ -88,11 +96,13 @@ class Default_List_Row implements List_Row
 	 */
 	public function formatValuesEx()
 	{
-		$values = $this->formatValues();
+		$properties = $this->list->getProperties();
+		$values     = $this->formatValues();
 		foreach ($values as $property_path => $value) {
 			$values[$property_path] = [
-				'path' => $property_path,
-				'value' => $value,
+				'path'     => $property_path,
+				'property' => $properties[$property_path],
+				'value'    => $value,
 			];
 		}
 		return $values;
