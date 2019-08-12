@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Dao\File\Type;
+
 /**
  * Utility methods for directories and files
  */
@@ -100,6 +102,9 @@ abstract class Files
 	public static function downloadOutput($name, $type, $size = null)
 	{
 		header('Content-Disposition: attachment; filename=' . DQ . $name . DQ);
+		if (!strpos($type, SL)) {
+			$type = Type::typeStringToFileExtension($type) ?: $type;
+		}
 		header('Content-Type: ' . $type);
 		if (isset($size)) {
 			header('Content-Length: ' . $size);

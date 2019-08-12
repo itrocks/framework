@@ -246,4 +246,13 @@ class File
 		$this->updated_on = new Date_Time();
 	}
 
+	//------------------------------------------------------------------------------------------ size
+	/**
+	 * @return integer
+	 */
+	public function size()
+	{
+		return filesize($this->temporary_file_name);
+	}
+
 }

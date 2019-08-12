@@ -68,7 +68,6 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -77,7 +76,6 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$layout_model = $parameters->getObject(Print_Model::class);
 		$parameters->remove(Print_Model::class);
 
