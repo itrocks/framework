@@ -93,7 +93,7 @@ class Validator implements Registerable
 	public function afterWriteControllerWrite($write_objects)
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
-			throw new View_Exception($this->notValidated(reset($write_objects)));
+			throw new View_Exception($this->notValidated(reset($write_objects)->object));
 		}
 	}
 
@@ -122,7 +122,7 @@ class Validator implements Registerable
 			/** @noinspection PhpUnhandledExceptionInspection property is of object and accessible */
 			$options = $property->getValue($joinpoint->object);
 			if (!Null_Object::isNull($object)) {
-				$this->beforeWrite($object, $options);
+				$this->beforeWrite($object, $options, null);
 			}
 		}
 	}
@@ -132,12 +132,16 @@ class Validator implements Registerable
 	 * The validator hook is called before each Data_Link::write() call to validate the object
 	 * before writing it.
 	 *
-	 * @param  $object  object
-	 * @param  $options Option[]
+	 * @param  $object                  object
+	 * @param  $options                 Option[]
+	 * @param  $before_write_annotation string
 	 * @throws View_Exception
 	 */
-	public function beforeWrite($object, array $options)
+	public function beforeWrite($object, array $options, $before_write_annotation)
 	{
+		if ($before_write_annotation === 'before_writes') {
+			return;
+		}
 		if ($this->validator_on) {
 			$exclude = [];
 			$only    = [];
