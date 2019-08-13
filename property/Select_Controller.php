@@ -95,7 +95,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $class                Reflection_Class
 	 * @param $composite_class_name string
 	 * @param $display_full_path    boolean
-*	 * @return Reflection_Property[]|null[]
+	 * @return Reflection_Property[]|null[]
 	 */
 	protected function getProperties(
 		Reflection_Class $class, $composite_class_name = null, $display_full_path = false
@@ -163,6 +163,7 @@ class Select_Controller implements Feature_Controller
 				|| $property->getAnnotation('composite')->value
 				// TODO this consideration is only on some cases (here : lists can't deal with @store false)
 				|| Store_Annotation::of($property)->isFalse()
+				|| !$property_class->getAnnotation('business')->value
 			) {
 				unset($properties[$property_path]);
 				continue;
