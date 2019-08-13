@@ -33,7 +33,7 @@ class Delete_And_Replace
 	{
 		if (Dao::getObjectIdentifier($replaced) && Dao::getObjectIdentifier($replacement)) {
 			return
-				$this->deleteComponents($replaced)
+				$this->deleteComponents($replaced, $replacement)
 				&& $this->replace($replaced, $replacement)
 				&& $this->delete($replaced);
 		}
@@ -46,9 +46,10 @@ class Delete_And_Replace
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $replaced object
+	 * @param $replacement object
 	 * @return boolean true if component objects have all been purged
 	 */
-	protected function deleteComponents($replaced)
+	protected function deleteComponents($replaced, $replacement)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($replaced))->getProperties() as $property) {
@@ -58,7 +59,13 @@ class Delete_And_Replace
 				&& !$property->getType()->isMultiple()
 				&& ($component = $property->getValue($replaced))
 			) {
-				if (!Dao::delete($component)) {
+				/** @noinspection PhpUnhandledExceptionInspection */
+				$replacement_component = $property->getValue($replacement);
+				if (
+					$replacement_component
+						? !$this->deleteAndReplace($component, $replacement_component)
+						: !Dao::delete($component)
+				) {
 					return false;
 				}
 			}
