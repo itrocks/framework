@@ -2,6 +2,7 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
+	//------------------------------------------------------------------------------- a.auto-redirect
 	$body.build('each', 'a.auto-redirect', function()
 	{
 		var $a    = $(this);
@@ -21,6 +22,15 @@ $(document).ready(function()
 		}
 	});
 
+	//--------------------------------------------------------------------------- button.auto-refresh
+	$body.build('each', 'button.auto-refresh', function()
+	{
+		var $button = $(this);
+		var target  = $button.data('target');
+		refresh(target ? target : '#main');
+	});
+
+	//------------------------------------------------------------------------------ form.auto-submit
 	$body.build('each', 'form.auto-submit', function()
 	{
 		var $form = $(this);

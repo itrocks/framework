@@ -66,7 +66,7 @@ div.popup {
     cursor: pointer;
     margin: -1px; }
 
-.auto-redirect {
+a.auto-redirect, button.auto-refresh {
   display: none; }
 
 .hidden {
