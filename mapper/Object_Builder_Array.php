@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Mapper;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Combo\Fast_Add;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_;
@@ -374,15 +375,18 @@ class Object_Builder_Array
 	//--------------------------------------------------------------------------------- buildProperty
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object        object
-	 * @param $property      Reflection_Property
-	 * @param $value         string
-	 * @param $null_if_empty boolean
+	 * @param $build    Object_Builder_Array_Tool
+	 * @param $property Reflection_Property
+	 * @param $value    string
 	 * @return boolean true if property value is null
 	 */
-	private function buildProperty($object, Reflection_Property $property, $value, $null_if_empty)
+	private function buildProperty(Object_Builder_Array_Tool $build, Reflection_Property $property, $value)
 	{
-		$is_null = $null_if_empty;
+		$null_if_empty = $build->null_if_empty;
+		$object        = $build->object;
+		$is_null       = $null_if_empty;
+		$property_name = $property->name;
+		$type          = $property->getType();
 		// use widget
 		if (
 			$this->from_form
@@ -399,7 +403,6 @@ class Object_Builder_Array
 			}
 		}
 		if (!isset($done)) {
-			$type = $property->getType();
 			if ($type->isBasic(false)) {
 				// password
 				if ($encryption = (
@@ -422,7 +425,7 @@ class Object_Builder_Array
 				$link = Link_Annotation::of($property);
 				// object
 				if ($link->isObject()) {
-					$class_name       = $property->getType()->asString();
+					$class_name       = $type->asString();
 					$composite_object = $property->getAnnotation('component')->value ? $object : null;
 					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 					$value = $this->buildObjectValue(
@@ -431,21 +434,34 @@ class Object_Builder_Array
 				}
 				// collection
 				elseif ($link->isCollection()) {
-					$class_name = $property->getType()->getElementTypeAsString();
+					$class_name = $type->getElementTypeAsString();
 					$value      = $this->buildCollection($class_name, $value, $null_if_empty, $object);
 				}
 				// map or not-linked array of objects
-				elseif ($property->getType()->isClass()) {
-					$value = $this->buildMap($value, $property->getType()->getElementTypeAsString());
+				elseif ($type->isClass()) {
+					$value = $this->buildMap($value, $type->getElementTypeAsString());
 				}
 			}
+			// Fast_Add with id
+			elseif (
+				is_a($type->asString(), Fast_Add::class, true)
+				&& isset($build->array[$id_property_name = ('id_' . $property_name)])
+				&& $build->array[$id_property_name]
+			) {
+				$value = '';
+			}
 			// @output string
-			elseif (isset($value) && ($property->getAnnotation('output')->value == 'string')) {
-				$value = call_user_func([$property->getType()->asString(), 'fromString'], trim($value));
+			elseif (
+				isset($value)
+				&& (
+					($property->getAnnotation('output')->value === 'string')
+					|| (strlen(trim($value)) && is_a($type->asString(), Fast_Add::class, true))
+				)
+			) {
+				$value = call_user_func([$type->asString(), 'fromString'], trim($value));
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty
-		$property_name = $property->name;
 		if (($value !== '') || !$property->getType()->isClass()) {
 			if (!isset($object->$property_name) || ($value != $object->$property_name)) {
 				$object->$property_name = $value;
@@ -493,9 +509,7 @@ class Object_Builder_Array
 				);
 			}
 		}
-		elseif (!(
-			$property && $this->buildProperty($build->object, $property, $value, $build->null_if_empty)
-		)) {
+		elseif (!($property && $this->buildProperty($build, $property, $value))) {
 			if (!$property || $property->getAnnotation('empty_check')->value) {
 				$build->is_null = false;
 			}

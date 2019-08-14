@@ -431,6 +431,17 @@ class Type
 		return ((substr($this->type, -2) === '[]') || $this->isArray()) ? self::MULTIPLE : false;
 	}
 
+	//------------------------------------------------------------------------------- isMultipleClass
+	/**
+	 * Returns true if type is a multiple class
+	 *
+	 * @return boolean
+	 */
+	public function isMultipleClass()
+	{
+		return $this->isMultiple() && $this->isClass();
+	}
+
 	//------------------------------------------------------------------------------ isMultipleString
 	/**
 	 * @return boolean
@@ -458,6 +469,17 @@ class Type
 	public function isNumeric()
 	{
 		return in_array($this->type, self::$numeric_types);
+	}
+
+	//--------------------------------------------------------------------------------- isSingleClass
+	/**
+	 * Returns true if type is a single class
+	 *
+	 * @return boolean
+	 */
+	public function isSingleClass()
+	{
+		return !($this->isMultiple()) && $this->isClass();
 	}
 
 	//------------------------------------------------------------------------------- isStrictlyBasic

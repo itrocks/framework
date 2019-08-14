@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Edit;
 
 use DateTime;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Combo\Fast_Add;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
@@ -354,7 +355,13 @@ class Html_Builder_Type
 		$class_name        = $this->type->asString();
 		$source_class_name = Builder::current()->sourceClassName($class_name);
 		// visible input ?
-		$input_id = $as_string ? $this->getFieldName() : null;
+		$input_id = (
+			$as_string
+			|| is_a($class_name, Fast_Add::class, true)
+			|| is_a(Builder::className($source_class_name), Fast_Add::class, true)
+		)
+			? $this->getFieldName()
+			: null;
 		$input    = new Input($input_id, strval($this->value));
 		$input->addClass('auto_width');
 		$input->setAttribute('autocomplete', 'off');

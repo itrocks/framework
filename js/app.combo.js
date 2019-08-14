@@ -11,7 +11,12 @@ $(document).ready(function()
 			var request = $.param(comboRequest($element, { term: $element.val(), first: true }));
 			$.getJSON(comboUri($element), request)
 				.done(function(data) {
-					comboValue($element, data.id, data.value, data.class_name);
+					comboValue(
+						$element,
+						data.id,
+						data.value ? data.value : ($element.attr('name') ? $element.val() : ''),
+						data.class_name
+					);
 				})
 				.always(function() {
 					window.running_combo = undefined;
