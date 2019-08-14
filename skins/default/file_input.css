@@ -3,5 +3,7 @@ article > form > ul.data li.file.object > div {
   background-size: 22px;
   cursor: pointer;
   padding-left: 26px; }
+  article > form > ul.data li.file.object > div > a {
+    margin-left: 2em; }
   article > form > ul.data li.file.object > div > input[type=file] {
     display: none; }

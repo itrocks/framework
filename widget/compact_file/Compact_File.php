@@ -25,6 +25,7 @@ class Compact_File extends Property
 			? Feature::F_OUTPUT
 			: Feature::F_EDIT;
 		$template_file = __DIR__ . SL . $feature . '.html';
+		/** @noinspection PhpUnhandledExceptionInspection object class */
 		/** @var $template Template */
 		$template = Builder::create(
 			get_class($this->template),

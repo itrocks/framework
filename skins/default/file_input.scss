@@ -4,6 +4,10 @@ article > form > ul.data li.file.object > div {
 	cursor: pointer;
 	padding-left: 26px;
 
+	> a {
+		margin-left: 2em;
+	}
+
 	> input[type=file] {
 		display: none;
 	}
