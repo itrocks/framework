@@ -365,4 +365,10 @@
 		return this;
 	};
 
+	//------------------------------------------------------------------------------ $(window).resize
+	$(window).resize(function()
+	{
+		$('.auto_width').each(function() { $(this).keyup(); });
+	});
+
 })( jQuery );
