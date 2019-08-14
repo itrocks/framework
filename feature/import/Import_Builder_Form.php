@@ -21,6 +21,9 @@ abstract class Import_Builder_Form
 	{
 		$import = new Import();
 		if (isset($form['worksheets'])) {
+			foreach ($files as $file) {
+				$files[$file->name] = $file;
+			}
 			foreach ($form['worksheets'] as $worksheet_name => $worksheet) {
 				if (isset($files[$worksheet['file']])) {
 					$settings = Import_Settings_Builder::buildForm($worksheet);
