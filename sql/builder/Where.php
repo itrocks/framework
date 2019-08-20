@@ -429,32 +429,9 @@ class Where implements With_Build_Column
 	 */
 	public function restrict($where_array)
 	{
-		if (!$this->where_array) {
-			$this->where_array = $where_array;
-		}
-		elseif (is_array($this->where_array)) {
-			reset($this->where_array);
-			if (is_numeric(key($this->where_array))) {
-				$this->where_array = Func::andOp([Func::orOp($this->where_array), $where_array]);
-			}
-			elseif (is_array($where_array)) {
-				$this->where_array = array_merge($this->where_array, $where_array);
-			}
-			else {
-				$this->where_array[] = $where_array;
-			}
-		}
-		elseif (($this->where_array instanceof Logical) && $this->where_array->isAnd()) {
-			if (is_array($where_array)) {
-				$this->where_array->arguments = array_merge($this->where_array->arguments, $where_array);
-			}
-			else {
-				$this->where_array->arguments[] = $where_array;
-			}
-		}
-		else {
-			$this->where_array = Func::andOp([$this->where_array, $where_array]);
-		}
+		$this->where_array = $this->where_array
+			? ['AND' => array_merge($where_array, [$this->where_array])]
+			: $where_array;
 	}
 
 }
