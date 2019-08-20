@@ -113,7 +113,8 @@ $(document).ready(function()
 								if ($this.data('value')) {
 									$this.val($this.data('value'));
 								}
-								$this.data('value', '');
+								$this.removeData('hidden');
+								$this.removeData('value');
 							});
 							$field.show();
 						}
@@ -122,7 +123,10 @@ $(document).ready(function()
 							// when hidden, reset value to empty
 							$input_parent.find('input, select, textarea').each(function() {
 								var $this = $(this);
-								$this.data('value', $this.val());
+								if (!$this.data('hidden')) {
+									$this.data('hidden', true);
+									$this.data('value', $this.val());
+								}
 								// never empty values on required fields TODO should be managed in validator
 								if (!$this.attr('required') && !$this.data('required')) {
 									$this.val('');
