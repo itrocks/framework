@@ -274,6 +274,9 @@ refresh = function(target)
 		var $target = $(this);
 		var $window = $target.children('[data-class]');
 		if (!$window.length) {
+			$window = $target.filter('[data-class]');
+		}
+		if (!$window.length) {
 			return;
 		}
 		var feature = $window.data('feature');
