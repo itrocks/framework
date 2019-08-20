@@ -102,7 +102,7 @@ class Where implements With_Build_Column
 		$sql = ($this->where_array === false)
 			? 'FALSE'
 			: (
-			is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
+				is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
 			);
 		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
 	}
@@ -421,6 +421,40 @@ class Where implements With_Build_Column
 	public function getWhereArray()
 	{
 		return $this->where_array;
+	}
+
+	//-------------------------------------------------------------------------------------- restrict
+	/**
+	 * @param $where_array array|object
+	 */
+	public function restrict($where_array)
+	{
+		if (!$this->where_array) {
+			$this->where_array = $where_array;
+		}
+		elseif (is_array($this->where_array)) {
+			reset($this->where_array);
+			if (is_numeric(key($this->where_array))) {
+				$this->where_array = Func::andOp([Func::orOp($this->where_array), $where_array]);
+			}
+			elseif (is_array($where_array)) {
+				$this->where_array = array_merge($this->where_array, $where_array);
+			}
+			else {
+				$this->where_array[] = $where_array;
+			}
+		}
+		elseif (($this->where_array instanceof Logical) && $this->where_array->isAnd()) {
+			if (is_array($where_array)) {
+				$this->where_array->arguments = array_merge($this->where_array->arguments, $where_array);
+			}
+			else {
+				$this->where_array->arguments[] = $where_array;
+			}
+		}
+		else {
+			$this->where_array = Func::andOp([$this->where_array, $where_array]);
+		}
 	}
 
 }

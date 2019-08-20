@@ -256,4 +256,13 @@ class Select
 		return $this->where_builder->getWhereArray();
 	}
 
+	//-------------------------------------------------------------------------------------- restrict
+	/**
+	 * @param $where_array array|object
+	 */
+	public function restrict($where_array)
+	{
+		$this->where_builder->restrict($where_array);
+	}
+
 }
