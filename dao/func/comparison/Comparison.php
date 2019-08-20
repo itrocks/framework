@@ -5,10 +5,8 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_\Summary_Builder;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
-use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Value;
-use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Lesser than is a condition used to get the record where the column has a value lesser than the
@@ -159,39 +157,9 @@ class Comparison implements Negate, Where
 	{
 		$column = $builder->buildWhereColumn($property_path, $prefix);
 		if (is_null($this->than_value)) {
-			if (in_array($this->sign, [self::EQUAL, self::NOT_EQUAL, self::LIKE, self::NOT_LIKE])) {
-				$close_parenthesis = '';
-				switch ($this->sign) {
-					case self::NOT_EQUAL:
-					case self::NOT_LIKE:
-						$sign    = self::NOT_EQUAL;
-						$logical = 'AND';
-						$operand = 'IS NOT NULL';
-						break;
-					default: /*case self::EQUAL: case self::LIKE:*/
-						$sign    = self::EQUAL;
-						$logical = 'OR';
-						$operand = 'IS NULL';
-						break;
-				}
-				$sql = '';
-				// in case of Date_Time is null we want to check for '0000-00-00 00:00:00' too
-				// property may be null if reverse path : Class\Name->foreign_property_name
-				$property    = $builder->getProperty($property_path);
-				$type_string = $property ? $property->getType()->asString() : null;
-				if ($type_string == Date_Time::class) {
-					$close_parenthesis = ')';
-					$sql .= '(' . $column . SP . $sign . SP
-						. DQ . '0000-00-00 00:00:00' . DQ . SP . $logical . SP;
-				}
-				// in case of numeric is null we want to check for 0 too
-				elseif (in_array($type_string, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER])) {
-					$close_parenthesis = ')';
-					$sql .= '(' . $column . SP . $sign . SP . '0' . SP . $logical . SP;
-				}
-				$sql .= $column . SP . $operand . $close_parenthesis;
-				return $sql;
-			}
+			$operand = in_array($this->sign, [self::EQUAL, self::LIKE]) ? 'IS NULL' : 'IS NOT NULL';
+			$sql     = $column . SP . $operand;
+			return $sql;
 		}
 		if ($this->than_value instanceof Where) {
 			return $this->whereSql(
