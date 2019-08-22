@@ -53,7 +53,20 @@ abstract class Search_Object extends Null_Object
 		if ($deactivate_aop) {
 			AOP::propertiesOff($object);
 		}
+		$object->_search_object = true;
 		return $object;
+	}
+
+	//-------------------------------------------------------------------------------------------- is
+	/**
+	 * Returns true if the object was created using Search_Object::create()
+	 *
+	 * @param $object object
+	 * @return boolean
+	 */
+	public static function is($object)
+	{
+		return isset($object->_search_object) && $object->_search_object;
 	}
 
 }
