@@ -17,7 +17,7 @@ $(document).ready(function()
 			history: {
 				condition:        'h2',
 				title:            'h2',
-				without_get_vars: ['.*/list\\?.*']
+				without_get_vars: ['.*/list\\?.*', '.*/output\\?.*']
 			},
 			url_append: 'as_widget'
 		});
