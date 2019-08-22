@@ -37,7 +37,7 @@ trait Is_Immutable
 			return;
 		}
 
-		$search = Search_Object::create(get_class($this));
+		$search = Search_Object::create(get_class($this), true);
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $this and accessible */
