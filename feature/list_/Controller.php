@@ -175,6 +175,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 
 		$did_change = true;
+		if (Setting\Custom\Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
+			$did_custom_change = true;
+		}
 		if (isset($parameters['add_property'])) {
 			$list_settings->addProperty(
 				$parameters['add_property'],
@@ -239,15 +242,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		elseif (isset($parameters['title'])) {
 			$list_settings->title = $parameters['title'];
 		}
-		else {
+		elseif (!isset($did_custom_change)) {
 			$did_change = false;
 		}
 		if ($list_settings->start_display_line_number < 1) {
 			$list_settings->start_display_line_number = 1;
 			$did_change                               = true;
-		}
-		if (Setting\Custom\Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
-			$did_change = true;
 		}
 		if (!$list_settings->name) {
 			$list_settings->name = $list_settings->title;
