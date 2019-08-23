@@ -25,6 +25,7 @@ use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -545,6 +546,7 @@ class Validator implements Registerable
 				&& (!$only_properties || isset($only_properties[$property->name]))
 				&& !isset($exclude_properties[$property->name])
 				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
+				&& !$property->getAnnotation('calculated')->value
 				&& !$property->getAnnotation('composite')->value
 				&& !$property->getAnnotation('link_composite')->value
 			) {
@@ -576,7 +578,13 @@ class Validator implements Registerable
 						$result = Result::andResult($result, $this->validateAnnotations(
 							$object, $property->getAnnotations()
 						));
-						if ($property->getAnnotation('component')->value) {
+						if (
+							$property->getAnnotation('component')->value
+							|| (
+								Integrated_Annotation::of($property)->value
+								&& Mandatory_Annotation::of($property)->value
+							)
+						) {
 							$result = Result::andResult($result, $this->validateComponent(
 								$object, $only_properties, $exclude_properties, $property
 							));
