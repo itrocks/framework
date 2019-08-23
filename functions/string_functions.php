@@ -48,6 +48,22 @@ function beginsWith($haystack, $needle)
 		&& (substr($haystack, 0, $needle_length) === $needle);
 }
 
+//------------------------------------------------------------------------------------- cleanSpaces
+/**
+ * trim spaces, remove double-spaces, replace tabs by spaces
+ *
+ * @param $string string
+ * @return string
+ */
+function cleanSpaces($string)
+{
+	$string = str_replace(TAB, SP, trim($string));
+	while (strpos($string, SP . SP)) {
+		$string = str_replace(SP . SP, SP, $string);
+	}
+	return $string;
+}
+
 //---------------------------------------------------------------------------------------- contains
 /**
  * Return true if $string contains $substring_to_search, false otherwise
