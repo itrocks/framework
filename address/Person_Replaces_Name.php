@@ -10,7 +10,7 @@ namespace ITRocks\Framework\Address;
  * @override civility   @impacts name @setter setNameComponent
  * @override first_name @impacts name @setter setNameComponent
  * @override last_name  @impacts name @setter setNameComponent
- * @override name       @user hide_edit, hide_output
+ * @override name       @calculated @user hide_edit, hide_output
  */
 trait Person_Replaces_Name
 {
