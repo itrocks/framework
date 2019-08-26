@@ -44,6 +44,12 @@ class Html_Template extends Template
 	 */
 	protected $form_id;
 
+	//--------------------------------------------------------------------------------- $link_objects
+	/**
+	 * @var boolean
+	 */
+	public  $link_objects = false;
+
 	//------------------------------------------------------------------------------------- getFormId
 	/**
 	 * @return string

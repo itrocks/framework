@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
@@ -15,6 +16,9 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Stringable;
+use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Dom\Anchor;
 use ITRocks\Framework\View\Html\Dom\List_;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 use ITRocks\Framework\View\Html\Dom\List_\Ordered;
@@ -104,13 +108,30 @@ class Collection
 
 	//------------------------------------------------------------------------------------- buildCell
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object   object
 	 * @param $property Reflection_Property
 	 * @return Item
 	 */
 	protected function buildCell($object, Reflection_Property $property)
 	{
-		$value = (new Reflection_Property_View($property))->getFormattedValue($object);
+		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
+		$value = $property->getValue($object);
+		$type  = $property->getType();
+		if (
+			is_object($value)
+			&& !($value instanceof Stringable)
+			&& $type->isSingleClass()
+			&& $type->asReflectionClass()->getAnnotation('business')->value
+			&& Dao::getObjectIdentifier($value)
+		) {
+			$anchor = new Anchor(View::link($value), strval($value));
+			$anchor->setAttribute('target', Target::MAIN);
+			$value = strval($anchor);
+		}
+		else {
+			$value = (new Reflection_Property_View($property))->getFormattedValue($object);
+		}
 		if (is_array($value)) {
 			$link_annotation = Annotation\Property\Link_Annotation::of($property);
 			if ($link_annotation->isCollection()) {

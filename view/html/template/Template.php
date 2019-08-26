@@ -6,6 +6,8 @@ use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
@@ -18,7 +20,9 @@ use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\Tools\No_Escape;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\String_Class;
+use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\View\Html;
+use ITRocks\Framework\View\Html\Dom\Anchor;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\View\Html\Template\Loop;
 
@@ -108,6 +112,12 @@ class Template
 	 * @var array string $prepared_content[string $include_path][string $class_name]
 	 */
 	protected $included = [];
+
+	//--------------------------------------------------------------------------------- $link_objects
+	/**
+	 * @var boolean
+	 */
+	public  $link_objects = true;
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**
@@ -1573,9 +1583,10 @@ class Template
 			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
 			&& method_exists($object, $property_name)
 		) {
+			/** @var $object Reflection_Property|mixed */
+			$is_property_value = ($property_name === 'value') && ($object instanceof Reflection_Property);
 			if (
-				($property_name == 'value')
-				&& ($object instanceof Reflection_Property)
+				$is_property_value
 				&& ($builder = Widget_Annotation::of($object)->value)
 				&& is_a($builder, Html\Builder\Property::class, true)
 			) {
@@ -1586,6 +1597,22 @@ class Template
 				);
 				$object       = $builder->buildHtml();
 				$format_value = false;
+			}
+			elseif ($is_property_value && $this->link_objects) {
+				$property = $object;
+				$object   = $this->parseMethod($object, $property_name);
+				$type     = $property->getType();
+				if (
+					is_object($object)
+					&& !($object instanceof Stringable)
+					&& $type->isSingleClass()
+					&& $type->asReflectionClass()->getAnnotation('business')->value
+					&& Dao::getObjectIdentifier($object)
+				) {
+					$anchor = new Anchor(Framework\View::link($object), strval($object));
+					$anchor->setAttribute('target', Target::MAIN);
+					$object = strval($anchor);
+				}
 			}
 			else {
 				$object = $this->parseMethod($object, $property_name);
