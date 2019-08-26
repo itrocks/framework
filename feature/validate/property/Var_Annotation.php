@@ -91,7 +91,6 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 		switch ($type->asString()) {
 			case Type::INTEGER: return isStrictNumeric($value, false); break;
 			case Type::FLOAT:   return isStrictNumeric($value);        break;
-			case Type::STRING:  return is_string($value);              break;
 		}
 		// object|object[]
 		if ($type->isClass()) {
