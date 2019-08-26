@@ -92,20 +92,23 @@ abstract class Writer
 		foreach ($class->accessProperties() as $property) {
 			$type = $property->getType();
 			if (
-				(!$type->isClass() || !isA($type->getElementTypeAsString(), History::class))
-				&& (
-					$property->getAnnotation(Store_Annotation::ANNOTATION)->value !== Store_Annotation::FALSE
-				)
+				!($type->isSingleClass() && $property->getAnnotation('component')->value)
+				&& !Store_Annotation::of($property)->isFalse()
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
-				$old_value = $property->getValue($before);
-				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 				$new_value = $property->getValue($after);
+				/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
+				$old_value = $property->getValue($before);
+				if (is_array($new_value)) {
+					$new_value = join(', ', $new_value);
+				}
 				if (is_array($old_value)) {
 					$old_value = join(', ', $old_value);
 				}
-				if (is_array($new_value)) {
-					$new_value = join(', ', $new_value);
+				// TODO To be removed on PHP 7.4 : useless with hard typing
+				if ($type->isBoolean() && !$type->isMultiple()) {
+					$new_value = boolval($new_value);
+					$old_value = boolval($old_value);
 				}
 				if (
 					(
@@ -117,11 +120,11 @@ abstract class Writer
 							)
 							|| (
 								($old_value instanceof Stringable) && ($new_value instanceof Stringable)
-								&& strval($old_value) != strval($new_value)
+								&& strval($old_value) !== strval($new_value)
 							)
 						)
 					)
-					|| (strval($old_value) != strval($new_value))
+					|| (strval($old_value) !== strval($new_value))
 				) {
 					/** @noinspection PhpUnhandledExceptionInspection valid history class name */
 					$history[] = Builder::create(
