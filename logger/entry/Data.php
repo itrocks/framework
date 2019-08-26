@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Logger\Entry;
 
+use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Mapper\Component;
 
@@ -10,7 +11,7 @@ use ITRocks\Framework\Mapper\Component;
  * @business
  * @set Logs_Data
  */
-class Data
+class Data implements Validate\Exception
 {
 	use Component;
 

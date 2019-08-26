@@ -140,7 +140,7 @@ class Validator implements Registerable
 	 */
 	public function beforeWrite($object, array $options, $before_write_annotation)
 	{
-		if ($before_write_annotation === 'before_writes') {
+		if (($before_write_annotation === 'before_writes') || ($object instanceof Exception)) {
 			return;
 		}
 		if ($this->validator_on) {
@@ -376,7 +376,7 @@ class Validator implements Registerable
 			'signed'     => Property\Signed_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
 			'values'     => Property\Values_Annotation::class,
-			//'var'        => Property\Var_Annotation::class,
+			'var'        => Property\Var_Annotation::class,
 			'warning'    => Property\Warning_Annotation::class,
 		]);
 	}

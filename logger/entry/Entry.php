@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Logger;
 use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
+use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Logger\Entry\Data;
 use ITRocks\Framework\Tools\Date_Time;
@@ -20,7 +21,7 @@ use ITRocks\Framework\User;
  * @sort -start, uri
  * @store_name logs
  */
-class Entry
+class Entry implements Validate\Exception
 {
 
 	//---------------------------------------------------------------------------------- CONSOLE_USER

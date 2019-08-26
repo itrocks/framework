@@ -70,54 +70,62 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	 */
 	public function validate($object)
 	{
-		if ($this->property instanceof Reflection_Property) {
-			/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
-			$value = $this->property->getValue($object);
-			// allowed null
-			if (is_null($value) && Null_Annotation::of($this->property)->value) {
-				return true;
-			}
-			$type = $this->property->getType();
-			// []
-			if ($type->isMultiple() && !is_array($value)) return false;
-			// simple
-			// TODO NORMAL Remove 'is_null()' patch.
-			switch ($type->asString()) {
-				case Type::INTEGER: return is_null($value) || isStrictNumeric($value, false); break;
-				case Type::FLOAT:   return is_null($value) || isStrictNumeric($value);        break;
-				case Type::STRING:  return is_null($value) || is_string($value);              break;
-			}
-			// object|object[]
-			if ($type->isClass()) {
-				$class_name = $type->getElementTypeAsString();
-				// object[]
-				if ($type->isMultiple()) {
-					foreach ($value as $object) {
-						if (!is_a($object, $class_name, true)) return false;
-					}
-					return true;
-				}
-				// object
-				else {
-					return
-						// - accepts null if not mandatory
-						(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
-						// - accepts a string if @store allows a string
-						|| (is_string($value) && Store_Annotation::of($this->property)->isString())
-						// - accepts an object if is an instance of the class
-						|| is_a($value, $class_name, true);
-				}
-			}
-			// string[]
-			elseif ($type->isMultipleString()) {
-				foreach ($value as $string) {
-					if (!is_string($string)) return false;
-				}
-			}
-			// other cases are not tested : validate is the default
+		if (
+			!($this->property instanceof Reflection_Property)
+			|| !$this->property->isPublic()
+			|| $this->property->isStatic()
+			|| Store_Annotation::of($this->property)->isFalse()
+		) {
+			return null;
+		}
+		/** @noinspection PhpUnhandledExceptionInspection $property is always valid for $object */
+		$value = $this->property->getValue($object);
+		// allowed null
+		if (is_null($value) && Null_Annotation::of($this->property)->value) {
 			return true;
 		}
-		return null;
+		$type = $this->property->getType();
+		// []
+		if ($type->isMultiple() && !is_array($value)) return false;
+		// simple
+		switch ($type->asString()) {
+			case Type::INTEGER: return isStrictNumeric($value, false); break;
+			case Type::FLOAT:   return isStrictNumeric($value);        break;
+			case Type::STRING:  return is_string($value);              break;
+		}
+		// object|object[]
+		if ($type->isClass()) {
+			$class_name = $type->getElementTypeAsString();
+			// object[]
+			if ($type->isMultiple()) {
+				foreach ($value as $object) {
+					if (!is_a($object, $class_name)) {
+						return false;
+					}
+				}
+				return true;
+			}
+			// object
+			else {
+				return
+					// - accepts null if not mandatory
+					(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
+					// - accepts a string if @store allows a string
+					|| (is_string($value) && Store_Annotation::of($this->property)->isString())
+					// - accepts an object if is an instance of the class
+					|| is_a($value, $class_name);
+			}
+		}
+		// string[]
+		elseif ($type->isMultipleString()) {
+			foreach ($value as $string) {
+				if (!is_string($string)) {
+					return false;
+				}
+			}
+		}
+		// other cases are not tested : valid is the default
+		return true;
 	}
 
 }

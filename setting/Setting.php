@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework;
 
+use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting\Custom;
@@ -9,7 +10,7 @@ use ITRocks\Framework\Tools\Names;
 /**
  * An application setting
  */
-class Setting
+class Setting implements Validate\Exception
 {
 
 	//----------------------------------------------------------------------------------------- $code

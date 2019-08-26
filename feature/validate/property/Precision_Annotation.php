@@ -36,9 +36,8 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
-				case Result::INFORMATION: return 'precision is respected';
-				case Result::WARNING:     return 'precision overflow';
-				case Result::ERROR:       return 'precision overflow';
+				case Result::ERROR: case Result::WARNING: return 'precision overflow';
+				case Result::INFORMATION:                 return 'precision is respected';
 			}
 		}
 		return '';
