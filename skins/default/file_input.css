@@ -1,9 +1,10 @@
 article > form > ul.data li.file.object > div {
-  background: url("img/upload.svg") left top no-repeat;
+  background: url("img/upload.svg") left center no-repeat;
   background-size: 22px;
   cursor: pointer;
+  min-width: 26px;
   padding-left: 26px; }
   article > form > ul.data li.file.object > div > a {
-    margin-left: 2em; }
+    margin-left: 28px; }
   article > form > ul.data li.file.object > div > input[type=file] {
     display: none; }
