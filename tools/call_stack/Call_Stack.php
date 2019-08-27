@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use Exception;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Reflection_Function;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Call_Stack\Line;
@@ -99,6 +100,50 @@ class Call_Stack
 				. LF;
 		}
 		return $result;
+	}
+
+	//------------------------------------------------------------------------- calledMethodArguments
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $method    callable|array
+	 * @param $arguments mixed[] key is the argument number or name (slower)
+	 * @return Line|null
+	 */
+	public function calledMethodArguments(array $method, array $arguments)
+	{
+		foreach ($arguments as $argument_name => $argument) {
+			if (is_string($argument_name)) {
+				if (!isset($reflection_method)) {
+					/** @noinspection PhpUnhandledExceptionInspection must be a valid method*/
+					$reflection_method = new Reflection_Method(reset($method), end($method));
+				}
+				$parameter       = $reflection_method->getParameters()[$argument_name];
+				$argument_number = $parameter->getPosition();
+				unset($arguments[$argument_name]);
+				$arguments[$argument_number] = $argument;
+			}
+		}
+		foreach ($this->stack as $stack) {
+			if ($this->methodMatches($stack, $method)) {
+				$found = true;
+				foreach ($arguments as $argument_number => $argument) {
+					if (is_object($argument) && ($identifier = Dao::getObjectIdentifier($argument))) {
+						if (!Dao::is($argument, $stack['args'][$argument_number])) {
+							$found = false;
+							break;
+						}
+					}
+					elseif ($argument !== $stack['args'][$argument_number]) {
+						$found = false;
+						break;
+					}
+				}
+				if ($found) {
+					return Line::fromDebugBackTraceArray($stack);
+				}
+			}
+		}
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------- containsClass
