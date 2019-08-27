@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -42,7 +43,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	{
 		return ($this->property->getType()->isDateTime() && Locale::current())
 			? Locale::current()->date_format->format
-			: parent::__toString();
+			: Loc::tr(parent::__toString());
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage

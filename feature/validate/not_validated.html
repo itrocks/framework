@@ -22,8 +22,8 @@
 				<!--~property?-->
 				<span class="property" data-property="{property.name}">|{property.aliased_path}|</span>
 				<span class="value">{?getPropertyValue}</span>&nbsp;:
-				<span class="message">|{reportMessage}|</span>
-				- <span class="expected">|expected !{.}!|</span>
+				<!--reportMessage--><span class="message">|{.}|</span> -<!--end-->
+				<span class="expected">|expected !{.}!|</span>
 				<!--else-->
 				<span class="message">{reportMessage}</span>
 				<!--end-->
