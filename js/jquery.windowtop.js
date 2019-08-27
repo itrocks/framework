@@ -42,7 +42,7 @@ $(document).ready(function()
 			position:        'fixed',
 			top:             $top.height(),
 			width:           $top.width(),
-			'border-bottom': '1px solid darkgray',
+			'border-bottom': '1px solid darkgrey',
 			'z-index':       zIndex() + 1000
 		}).data('stay-top', $top.height()));
 		$element.after($('<div>').addClass('stay-top').css({ height: top + margin_top }));

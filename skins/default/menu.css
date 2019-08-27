@@ -13,7 +13,7 @@
     display: none; } }
 nav#menu {
   background-color: white;
-  border-right: 1px solid lightgray;
+  border-right: 1px solid lightgrey;
   color: #444;
   position: relative; }
   nav#menu > .minimize {

@@ -11,7 +11,7 @@ article.layout_model .editor > .pages {
   article.layout_model .editor > .pages > h4 {
     display: none; }
   article.layout_model .editor > .pages > .page {
-    border: 1px solid darkgray;
+    border: 1px solid darkgrey;
     padding: 8px;
     position: relative; }
     article.layout_model .editor > .pages > .page > h5 {
@@ -30,7 +30,7 @@ article.layout_model .editor .tool.snap.line {
   font-size: 1px;
   position: absolute; }
   article.layout_model .editor .tool.snap.line.horizontal {
-    border-top: 1px dashed darkgray;
+    border-top: 1px dashed darkgrey;
     height: 0;
     left: 11px;
     top: 5px; }
@@ -39,7 +39,7 @@ article.layout_model .editor .tool.snap.line {
       height: 18px;
       top: -9px; }
   article.layout_model .editor .tool.snap.line.vertical {
-    border-left: 1px dashed darkgray;
+    border-left: 1px dashed darkgrey;
     left: 5px;
     top: 11px;
     width: 0; }

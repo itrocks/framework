@@ -10,4 +10,4 @@ article > p {
   margin: 0.5em 0; }
 article:not(.list) > ul.general.actions,
 article > form > ul.general.actions {
-  border-bottom: 1px solid lightgray; }
+  border-bottom: 1px solid lightgrey; }

@@ -26,7 +26,7 @@ article > header {
     article > header > div.custom > .select {
       background: white;
       color: #444;
-      border: 1px solid lightgray;
+      border: 1px solid lightgrey;
       margin: 0.2em 0.25em; }
       article > header > div.custom > .select > li {
         display: block; }

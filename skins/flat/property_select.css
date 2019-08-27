@@ -1,6 +1,6 @@
 .func_select,
 .property_select {
-  border: 1px solid lightgray;
+  border: 1px solid lightgrey;
   display: inline-block;
   top: 1.5em;
   white-space: nowrap; }
@@ -28,7 +28,7 @@
         color: #efe; }
     .func_select ul > li.separator,
     .property_select ul > li.separator {
-      border-top: 1px solid lightgray; }
+      border-top: 1px solid lightgrey; }
     .func_select ul > li.ui-draggable-handle,
     .property_select ul > li.ui-draggable-handle {
       cursor: grab; }
@@ -48,12 +48,12 @@
         background-image: url("../default/img/tree/plus.png"); }
   .func_select > ul,
   .property_select > ul {
-    border-top: 1px solid lightgray; }
+    border-top: 1px solid lightgrey; }
 
 .object.ui-draggable-dragging,
 :not(article.model.edit .editor) .property.ui-draggable-dragging {
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid lightgray;
+  border: 1px solid lightgrey;
   font-weight: bold;
   padding: 0.25em; }
 

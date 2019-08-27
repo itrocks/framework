@@ -49,7 +49,7 @@ article > form ol.properties, article ol.properties {
     article ol.properties > li.block.multiple,
     article ol.properties > li.component-objects.block,
     article ol.properties > li.component-objects.multiple {
-      border: 1px solid lightgray;
+      border: 1px solid lightgrey;
       margin-top: -1px; }
     article > form ol.properties > li.after > label,
     article > form ol.properties > li.before > label,

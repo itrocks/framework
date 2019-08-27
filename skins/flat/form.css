@@ -1,9 +1,9 @@
 form li.class {
   position: relative; }
 form ol.properties > li > div > ul > li:not(:last-child) > ol > li {
-  border-bottom: 1px solid lightgray; }
+  border-bottom: 1px solid lightgrey; }
 form ol.properties > li > div > ul > li > ol > li:not(:last-child) {
-  border-right: 1px solid lightgray; }
+  border-right: 1px solid lightgrey; }
 form ol.properties > li > div > ul > li > ol > li.minus {
   cursor: pointer;
   text-align: center;

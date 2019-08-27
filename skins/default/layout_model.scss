@@ -27,7 +27,7 @@ article.layout_model {
 			}
 
 			> .page {
-				border: 1px solid darkgray;
+				border: 1px solid darkgrey;
 				padding: 8px;
 				position: relative;
 
@@ -60,7 +60,7 @@ article.layout_model {
 				position: absolute;
 
 				&.horizontal {
-					border-top: 1px dashed darkgray;
+					border-top: 1px dashed darkgrey;
 					height: 0;
 					left: 11px;
 					top: 5px;
@@ -73,7 +73,7 @@ article.layout_model {
 				}
 
 				&.vertical {
-					border-left: 1px dashed darkgray;
+					border-left: 1px dashed darkgrey;
 					left: 5px;
 					top: 11px;
 					width: 0;

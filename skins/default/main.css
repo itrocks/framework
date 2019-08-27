@@ -59,4 +59,4 @@ body {
   body > main, body > nav {
     vertical-align: top; }
   body[class] > header > .logo {
-    border-right: 1px solid lightgray; }
+    border-right: 1px solid lightgrey; }

@@ -56,19 +56,19 @@ article > form ol.properties, article ol.properties {
   article ol.properties > li.component-objects {
     display: block; }
   article > form ol.properties > li.block, article ol.properties > li.block {
-    border: 1px solid lightgray;
+    border: 1px solid lightgrey;
     margin-top: -1px; }
   article > form ol.properties > li.block > div,
   article > form ol.properties > li.component-objects > div, article ol.properties > li.block > div,
   article ol.properties > li.component-objects > div {
-    border: 1px solid lightgray; }
+    border: 1px solid lightgrey; }
   article > form ol.properties > li.block > label,
   article > form ol.properties > li.component-objects > label, article ol.properties > li.block > label,
   article ol.properties > li.component-objects > label {
     background-color: #eee;
-    border-left: 1px solid lightgray;
-    border-right: 1px solid lightgray;
-    border-top: 1px solid lightgray;
+    border-left: 1px solid lightgrey;
+    border-right: 1px solid lightgrey;
+    border-top: 1px solid lightgrey;
     display: block;
     padding: 0.3em 0.25em; }
   article > form ol.properties > li.multiline > div, article ol.properties > li.multiline > div {
