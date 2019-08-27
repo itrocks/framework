@@ -23,13 +23,14 @@ use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection;
-use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
@@ -394,7 +395,9 @@ class Validator implements Registerable
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class      = new Link_Class($object);
 		$properties = Replaces_Annotations::removeReplacedProperties(
-			Link_Annotation::of($class)->value ? $class->getLinkProperties() : $class->accessProperties()
+			Reflection\Annotation\Class_\Link_Annotation::of($class)->value
+				? $class->getLinkProperties()
+				: $class->accessProperties()
 		);
 
 		$this->valid = Result::andResult(
@@ -541,24 +544,29 @@ class Validator implements Registerable
 		$exclude_properties = array_flip($exclude_properties);
 		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			if (
-				!$property->isStatic()
-				&& (!$only_properties || isset($only_properties[$property->name]))
-				&& !isset($exclude_properties[$property->name])
-				//&& (isset($object->{$property->name}) || !Link_Annotation::of($property)->value)
-				&& !$property->getAnnotation('calculated')->value
-				&& !$property->getAnnotation('composite')->value
-				&& !$property->getAnnotation('link_composite')->value
+				(
+					!$property->isStatic()
+					&& (!$only_properties || isset($only_properties[$property->name]))
+					&& !isset($exclude_properties[$property->name])
+					&& !$property->getAnnotation('calculated')->value
+					&& !$property->getAnnotation('composite')->value
+					&& !$property->getAnnotation('link_composite')->value
+				)
+				|| (
+					$property->getAnnotation('force_validate')->value
+					&& !(new Call_Stack)->calledMethodArguments(
+						[static::class, 'validate'], ['object' => $property->getValue($object)]
+					)
+				)
 			) {
 				$type = $property->getType();
 				// we could do this control for all, but this may run getters and useless data reads
 				// this control was added for date-time format control, and nothing else
 				$var_is_valid = true;
 				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
-				if (
-					$type->isDateTime()
-					&& ($property->getValue($object) instanceof Date_Time_Error)
-				) {
+				if ($type->isDateTime() && ($property->getValue($object) instanceof Date_Time_Error)) {
 					$var_annotation = new Var_Annotation($type->asString(), $property);
 					$var_annotation->reportMessage(Loc::tr('bad format'));
 					$var_annotation->valid = Result::ERROR;
@@ -568,7 +576,10 @@ class Validator implements Registerable
 				}
 				if ($var_is_valid) {
 					// if value is not set and is a link (component or not), then we validate only mandatory
-					if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
+					if (
+						!isset($object->{$property->name})
+						&& Reflection\Annotation\Class_\Link_Annotation::of($property)->value
+					) {
 						$result = Result::andResult($result, $this->validateAnnotations(
 							$object, [Mandatory_Annotation::of($property)]
 						));
@@ -580,6 +591,7 @@ class Validator implements Registerable
 						));
 						if (
 							$property->getAnnotation('component')->value
+							|| Link_Annotation::of($property)->isCollection()
 							|| (
 								Integrated_Annotation::of($property)->value
 								&& Mandatory_Annotation::of($property)->value

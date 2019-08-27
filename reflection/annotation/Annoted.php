@@ -93,7 +93,7 @@ trait Annoted
 			// save cached annotations
 			$cached_annotations = $this->getCachedAnnotations();
 			// parse phpdoc annotations
-			$annotations        = Parser::allAnnotations($this);
+			$annotations = Parser::allAnnotations($this);
 			// merge cached annotations in parsed annotations
 			foreach ($cached_annotations as $annotation_name => $cached_annotation) {
 				$annotation = $cached_annotation[0];
