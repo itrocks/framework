@@ -163,6 +163,18 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this->isBefore($date) ? -1 : ($this->isAfter($date) ? 1 : 0);
 	}
 
+	//---------------------------------------------------------------------------------- compareEmpty
+	/**
+	 * Compare if one date is empty and the other not
+	 *
+	 * @param $date Date_Time
+	 * @return boolean true if different, false if both dates are empty or if both dates are set
+	 */
+	public function compareEmpty(Date_Time $date)
+	{
+		return ($this->isEmpty() && !$date->isEmpty()) || ($date->isEmpty() && !$this->isEmpty());
+	}
+
 	//------------------------------------------------------------------------------ createFromFormat
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -292,6 +304,18 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			}
 		}
 		return $earliest;
+	}
+
+	//----------------------------------------------------------------------------------------- empty
+	/**
+	 * Returns an arbitrary empty date
+	 * Alias for Date_Time::min()
+	 *
+	 * @return static
+	 */
+	public static function empty()
+	{
+		return static::min();
 	}
 
 	//---------------------------------------------------------------------------------------- format
