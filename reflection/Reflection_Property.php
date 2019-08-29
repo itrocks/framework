@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection;
 
 use Exception;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Property\Path;
@@ -644,6 +645,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object1 object|integer
 	 * @param $object2 object|integer
 	 * @return boolean
+	 * @throws Exception You compare a Date_Time with stuff that could not be converted to a Date_Time
 	 */
 	private function isEquivalentObject($object1, $object2)
 	{
@@ -662,6 +664,7 @@ class Reflection_Property extends ReflectionProperty
 				$object2 = new Date_Time($object2);
 			}
 		}
+		/** @noinspection PhpUnhandledExceptionInspection Date_Time type tested */
 		if (
 			($object1 instanceof Date_Time)
 			&& ($object2 instanceof Date_Time)
@@ -670,6 +673,15 @@ class Reflection_Property extends ReflectionProperty
 			return true;
 		}
 		return ($object1 == $object2);
+	}
+
+	//----------------------------------------------------------------------------------- isMandatory
+	/**
+	 * @return boolean|string
+	 */
+	public function isMandatory()
+	{
+		return Mandatory_Annotation::of($this)->value ? 'mandatory' : '';
 	}
 
 	//----------------------------------------------------------------------------------- isMultiline
@@ -705,11 +717,13 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * Date_Time properties are null if '0000-00-00' or empty date
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value mixed
 	 * @return boolean
 	 */
 	public function isValueEmptyOrDefault($value)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection same type : if one is Date_Time, the other too */
 		return $this->isValueEmpty($value)
 			|| $this->isEquivalentObject($value, $this->getDefaultValue());
 	}
