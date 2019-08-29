@@ -44,8 +44,8 @@ class Around_Method extends Method_Joinpoint
 		$class_name = is_string($this->pointcut[0]) ? $this->pointcut[0] : get_class($this->pointcut[0]);
 
 		if (
-			($this->class_name        == $class_name)
-			&& ($this->process_method == $this->pointcut[1])
+			($this->class_name        === $class_name)
+			&& ($this->process_method === $this->pointcut[1])
 		) {
 			/** @noinspection PhpUnhandledExceptionInspection class and method must be valid */
 			$method = (new ReflectionMethod(get_parent_class($this->class_name), $this->process_method));
@@ -70,7 +70,7 @@ class Around_Method extends Method_Joinpoint
 		}
 		elseif ($this->parameters) {
 			$parameters = array_slice($this->parameters, 0, count($this->parameters) / 2);
-			$result = $method->invokeArgs($object, $parameters);
+			$result     = $method->invokeArgs($object, $parameters);
 		}
 		else {
 			$result = $method->invoke($object);
