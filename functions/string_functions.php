@@ -298,6 +298,19 @@ function rParse($string, $separator, $count = 1, $complete_if_not = false)
 		: substr($string, $i + strlen($separator));
 }
 
+//-------------------------------------------------------------------------------------- strFlexCmp
+/**
+ * Compare two strings, replace accents by the equivalent non-accentuated character
+ *
+ * @param $string1 string
+ * @param $string2 string
+ * @return boolean
+ */
+function strFlexCmp($string1, $string2)
+{
+	return strcasecmp(removeAccents($string1), removeAccents($string2));
+}
+
 //-------------------------------------------------------------------------------------- strFromUri
 /**
  * Returns a default text matching the given URI
