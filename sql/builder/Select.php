@@ -256,6 +256,15 @@ class Select
 		return $this->where_builder->getWhereArray();
 	}
 
+	//------------------------------------------------------------------------------- getWhereBuilder
+	/**
+	 * @return Where
+	 */
+	public function getWhereBuilder()
+	{
+		return $this->where_builder;
+	}
+
 	//-------------------------------------------------------------------------------------- restrict
 	/**
 	 * @param $where_array array|object
