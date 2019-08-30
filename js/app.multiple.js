@@ -43,8 +43,14 @@ $(document).ready(function()
 	var autoAddLine = function(event, force)
 	{
 		var $this = $(this);
-		var $row  = $this.closest('tr, ul > li');
-		if ($row.data('itrocks-no-add') || $this.data('itrocks-no-add')) {
+		if (
+			($this.val().length && ($this.val() === $this.data('default-value')))
+			|| $this.data('itrocks-no-add')
+		) {
+			return;
+		}
+		var $row = $this.closest('tr, ul > li');
+		if ($row.data('itrocks-no-add')) {
 			return;
 		}
 		if (
@@ -119,7 +125,9 @@ $(document).ready(function()
 	 */
 	$body.build('call', [block_selector, 'input, select, textarea'], function()
 	{
-		this.change(autoAddLine).focus(autoAddLine).keyup(autoAddLine);
+		this.change(function() { if (!$(this).data('itrocks-no-add-change')) autoAddLine.call(this); });
+		this.focus(function() {  if (!$(this).data('itrocks-no-add-focus'))  autoAddLine.call(this); });
+		this.keyup(function() {  if (!$(this).data('itrocks-no-add-keyup'))  autoAddLine.call(this); });
 	});
 
 	//------------------- article > form > ul.data ol.properties > li.component-objects > label click
@@ -131,7 +139,9 @@ $(document).ready(function()
 	{
 		var $input = $(this).parent().find('input, select, textarea').filter(':visible').last();
 		if ($input.length) {
-			autoAddLine.call($input, event, true);
+			if (!$input.data('itrocks-no-add-click')) {
+				autoAddLine.call($input, event, true);
+			}
 		}
 	});
 

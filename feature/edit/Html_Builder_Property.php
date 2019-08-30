@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
@@ -78,6 +79,12 @@ class Html_Builder_Property extends Html_Builder_Type
 							: $property->getDefaultValue(true, $object);
 					}
 				}
+			}
+			$default_value = $user_default_annotation->value
+				? $user_default_annotation->call($this->object)
+				: $property->getDefaultValue(true, $this->object);
+			if (strlen($default_value)) {
+				$this->data['default-value'] = Loc::propertyToLocale($property, $default_value);
 			}
 
 			// 1st, get read_only from @user readonly
