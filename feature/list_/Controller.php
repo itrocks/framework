@@ -71,11 +71,19 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//---------------------------------------------------------------- $default_displayed_lines_count
 	/**
-	 * Allow to change the default number of displayed lines
+	 * The default displayed lines count
 	 *
 	 * @var integer
 	 */
 	public $default_displayed_lines_count = 20;
+
+	//-------------------------------------------------------------------- $displayed_lines_count_gap
+	/**
+	 * The number of added / removed lines when you click on more / less
+	 *
+	 * @var integer
+	 */
+	public $displayed_lines_count_gap = 100;
 
 	//--------------------------------------------------------------------------------------- $errors
 	/**
@@ -84,6 +92,14 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @var \Exception[]
 	 */
 	private $errors = [];
+
+	//---------------------------------------------------------------- $maximum_displayed_lines_count
+	/**
+	 * The maximum displayed lines count, when we click on 'more'
+	 *
+	 * @var integer
+	 */
+	public $maximum_displayed_lines_count = 1000;
 
 	//----------------------------------------------------------------------------------- $time_limit
 	/**
@@ -151,7 +167,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Apply parameters to list settings
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $list_settings    List_Setting\Set
 	 * @param $parameters       array
 	 * @param $form             array
@@ -163,17 +178,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		if (
-			isset($parameters['select'])
-			&& ($parameters['select'] === 'all')
-			&& ($select_all = Select_All::get())
-			&& $select_all->selectAllIsAllowed($this)
-		) {
-			// FIXME Send an Invalid_Argument_Exception when #97933 will be validated
-			/** @noinspection PhpUnhandledExceptionInspection */
-			throw new Exception(null, Loc::tr('you are not allowed to select all data'));
-		}
-
 		$did_change = true;
 		if (Setting\Custom\Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
 			$did_custom_change = true;
@@ -200,8 +204,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 		elseif (isset($parameters['more'])) {
 			$list_settings->maximum_displayed_lines_count = round(min(
-				1000, $list_settings->maximum_displayed_lines_count + $parameters['more']
-			) / 100) * 100;
+				$this->maximum_displayed_lines_count,
+				$list_settings->maximum_displayed_lines_count + $parameters['more']
+			) / $this->displayed_lines_count_gap) * $this->displayed_lines_count_gap;
 		}
 		elseif (isset($parameters['move'])) {
 			if ($parameters['move'] == 'down') {
@@ -539,7 +544,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$parameters    = $parameters->getObjects();
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->cleanup();
-		$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines_count;
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
 		$customized_list_settings = $list_settings->getCustomSettings();
 		$count                    = new Count();
@@ -585,33 +589,36 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 		}
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
-		$less_twenty   = $displayed_lines_count > $this->default_displayed_lines_count;
-		$lock_columns  = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
-		$more_hundred  = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
-		$more_thousand = ($displayed_lines_count < 1000) && ($displayed_lines_count < $count->count);
-		$parameters    = array_merge(
+		$less_twenty    = $displayed_lines_count > $this->default_displayed_lines_count;
+		$lock_columns   = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
+		$more_hundred   = ($displayed_lines_count < $this->maximum_displayed_lines_count)
+			&& ($displayed_lines_count < $count->count);
+		$more_thousand  = ($displayed_lines_count < $this->maximum_displayed_lines_count)
+			&& ($displayed_lines_count < $count->count);
+		$search_summary = $this->getSearchSummary($class_name, $list_settings_before_read, $search);
+		$parameters     = array_merge(
 			[$class_name => $data],
 			$parameters,
 			[
-				'allow_select_all'      => true,
-				'column_select'         => $lock_columns ? '' : 'column_select',
-				'customized_lists'      => $customized_list_settings,
-				'default_title'         => ucfirst(Names::classToDisplay($this->class_names)),
-				'display_start'         => $list_settings->start_display_line_number,
-				'displayed_lines_count' => $displayed_lines_count,
-				'errors_summary'        => $this->getErrorsSummary(),
-				'less_twenty'           => $less_twenty,
-				'lock_columns'          => $lock_columns,
-				'more_hundred'          => $more_hundred,
-				'more_thousand'         => $more_thousand,
-				'properties'            => $this->getProperties($list_settings_before_read),
-				'rows_count'            => (int)$count->count,
-				'search_summary'        => $this->getSearchSummary(
-					$class_name, $list_settings_before_read, $search
-				),
-				'selected'              => 'selected',
-				'settings'              => $list_settings,
-				'title'                 => $list_settings->title()
+				'allow_select_all'              => true,
+				'column_select'                 => $lock_columns ? '' : 'column_select',
+				'customized_lists'              => $customized_list_settings,
+				'default_title'                 => ucfirst(Names::classToDisplay($this->class_names)),
+				'display_start'                 => $list_settings->start_display_line_number,
+				'displayed_lines_count'         => $displayed_lines_count,
+				'displayed_lines_count_gap'     => $this->displayed_lines_count_gap,
+				'errors_summary'                => $this->getErrorsSummary(),
+				'less_twenty'                   => $less_twenty,
+				'lock_columns'                  => $lock_columns,
+				'maximum_displayed_lines_count' => $this->maximum_displayed_lines_count,
+				'more_hundred'                  => $more_hundred,
+				'more_thousand'                 => $more_thousand,
+				'properties'                    => $this->getProperties($list_settings_before_read),
+				'rows_count'                    => (int)$count->count,
+				'search_summary'                => $search_summary,
+				'selected'                      => 'selected',
+				'settings'                      => $list_settings,
+				'title'                         => $list_settings->title()
 			]
 		);
 		// buttons

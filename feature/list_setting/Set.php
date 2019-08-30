@@ -17,7 +17,7 @@ class Set extends Setting\Custom\Set
 
 	//---------------------------------------------------------------- $maximum_displayed_lines_count
 	/**
-	 * Maximum displayed lines count
+	 * Maximum displayed lines count is the number of displayed lines on lists
 	 *
 	 * @var integer
 	 */
