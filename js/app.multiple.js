@@ -44,6 +44,9 @@ $(document).ready(function()
 	{
 		var $this = $(this);
 		var $row  = $this.closest('tr, ul > li');
+		if ($row.data('itrocks-no-add') || $this.data('itrocks-no-add')) {
+			return;
+		}
 		if (
 			((force !== undefined) && force)
 			|| ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length)
