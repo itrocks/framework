@@ -46,6 +46,7 @@ $(document).ready(function()
 		if (
 			($this.val().length && ($this.val() === $this.data('default-value')))
 			|| $this.data('itrocks-no-add')
+			|| $this.data('no-empty-check')
 		) {
 			return;
 		}
