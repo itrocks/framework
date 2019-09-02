@@ -32,14 +32,12 @@ $(document).ready(function()
 		$('ul.list').each(function() {
 			var $list    = $(this);
 			var $titles  = $list.find('> li.title > ol > li');
-			console.log($titles);
 			var position = -1;
 			$list.find('> li.search > ol > li').each(function() {
 				position ++;
 				var $input = $(this).find('input');
 				if (!$input.length) return;
 				var $title = $($titles.get(position));
-				console.log(position, ':', $(this), '|', $title);
 				$input.attr('placeholder', $title.text().trim())
 			});
 		});
