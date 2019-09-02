@@ -301,6 +301,13 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@composite' => Boolean_Annotation::class,
 
 	/**
+	 * @constraint initial|set_null
+	 * set_null : Force foreign key constraint to 'ON DELETE SET NULL ON UPDATE UPDATE'
+	 * initial : cancels any parent forced constraint using this annotation
+	 */
+	Parser::T_PROPERTY . '@constraint' => Annotation::class,
+
+	/**
 	 * @dao ITRocks\Framework\Dao\Mysql\Link
 	 * This annotation stores the name of the Dao that should always used for a linked object,
 	 * map or collection property. Use it in conjunction with @link and @var annotations.
@@ -313,6 +320,13 @@ Parser::$default_annotations = [
 	 * The Property will be sent as an argument to this callable
 	 */
 	Parser::T_PROPERTY . '@default' => Method_Annotation::class,
+
+	/**
+	 * @delete_constraint cascade|initial|restrict|set_null
+	 * Force foreign key constraint on delete
+	 * initial : cancels any parent forced delete constraint using this annotation
+	 */
+	Parser::T_PROPERTY . '@delete_constraint' => Annotation::class,
 
 	/**
 	 * @deprecated [false]
@@ -505,6 +519,13 @@ Parser::$default_annotations = [
 	 * This tells that the property should be rendered using textile parsing
 	 */
 	Parser::T_PROPERTY . '@unit' => Constant_Or_Method_Annotation::class,
+
+	/**
+	 * @update_constraint cascade|initial|restrict|set_null
+	 * Force foreign key constraint on update
+	 * initial : cancels any parent forced update constraint using this annotation
+	 */
+	Parser::T_PROPERTY . '@update_constraint' => Annotation::class,
 
 	/**
 	 * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]

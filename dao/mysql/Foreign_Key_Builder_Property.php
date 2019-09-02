@@ -48,6 +48,13 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnDeleteToMysql(Reflection_Property $property)
 	{
+		$constraint = $property->getAnnotation('delete_constraint')->value;
+		if ($constraint && ($constraint !== 'initial')) {
+			return strtoupper(str_replace('_', SP, $constraint));
+		}
+		if ($property->getAnnotation('constraint')->value === 'set_null') {
+			return Foreign_Key::SET_NULL;
+		}
 		return (
 			$property->getAnnotation('composite')->value
 			|| $property->getAnnotation('link_composite')->value
@@ -63,7 +70,19 @@ trait Foreign_Key_Builder_Property
 	 */
 	private static function propertyOnUpdateToMysql(Reflection_Property $property)
 	{
-		return static::propertyOnDeleteToMysql($property);
+		$constraint = $property->getAnnotation('update_constraint')->value;
+		if ($constraint && ($constraint === 'initial')) {
+			return strtoupper(str_replace('_', SP, $constraint));
+		}
+		if ($property->getAnnotation('constraint')->value === 'set_null') {
+			return Foreign_Key::CASCADE;
+		}
+		return (
+			$property->getAnnotation('composite')->value
+			|| $property->getAnnotation('link_composite')->value
+		)
+			? Foreign_Key::CASCADE
+			: Foreign_Key::RESTRICT;
 	}
 
 	//---------------------------------------------------------------- propertyReferenceFieldsToMysql
