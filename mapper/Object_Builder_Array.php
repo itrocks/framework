@@ -284,7 +284,10 @@ class Object_Builder_Array
 		if (!isset($object->$property_name) || ($value != $object->$property_name)) {
 			$object->$property_name = $value;
 		}
-		if (!$property->isValueEmptyOrDefault($value)) {
+		if (
+			!$property->isValueEmptyOrDefault($value)
+			&& $property->getAnnotation('empty_check')->value
+		) {
 			$is_null = false;
 		}
 		return $is_null;
