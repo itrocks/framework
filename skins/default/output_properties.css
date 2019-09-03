@@ -73,5 +73,5 @@ article > form ol.properties, article ol.properties {
     padding: 0.3em 0.25em; }
   article > form ol.properties > li.multiline > div, article ol.properties > li.multiline > div {
     white-space: pre-line; }
-article > form ul.data, article ul.data {
+article > form ul.data ul.data, article ul.data ul.data {
   overflow: hidden; }
