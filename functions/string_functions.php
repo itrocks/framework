@@ -490,6 +490,17 @@ function strUri($string, $joker = null)
 	return $uri;
 }
 
+//----------------------------------------------------------------------------------- strUriElement
+/**
+ * @param $string string
+ * @param $joker  string
+ * @return string
+ */
+function strUriElement($string, $joker = null)
+{
+	return str_replace(SL, '-', strUri($string, $joker));
+}
+
 //---------------------------------------------------------------------------------------- ucfirsta
 /**
  * Uppercase the first character, even if this is an accented character

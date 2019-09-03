@@ -136,4 +136,13 @@ class Displayable extends String_Class
 		return strUri($this->value);
 	}
 
+	//------------------------------------------------------------------------------------ uriElement
+	/**
+	 * @return string
+	 */
+	public function uriElement()
+	{
+		return strUriElement($this->value);
+	}
+
 }

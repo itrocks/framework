@@ -328,4 +328,13 @@ class String_Class
 		return new String_Class(strUri($this->value));
 	}
 
+	//------------------------------------------------------------------------------------ uriElement
+	/**
+	 * @return String_Class
+	 */
+	public function uriElement()
+	{
+		return new String_Class(strUriElement($this->value));
+	}
+
 }

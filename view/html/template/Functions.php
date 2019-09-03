@@ -1255,6 +1255,16 @@ class Functions
 		return [];
 	}
 
+	//------------------------------------------------------------------------------------- getString
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getString(Template $template)
+	{
+		return strval(reset($template->objects));
+	}
+
 	//----------------------------------------------------------------------------------- getTemplate
 	/**
 	 * Allow to navigate through the template object
