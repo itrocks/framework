@@ -177,7 +177,7 @@
 			success: function(data, status, xhr)
 			{
 				var target       = xhr.from.target;
-				var focus        = xhr.from.href.rParse('#');
+				var focus        = (xhr.from.href ? xhr.from.href : xhr.from.action).rParse('#');
 				var $from        = $(xhr.from);
 				var $target      = $(target);
 				var build_target = false;
