@@ -177,6 +177,7 @@
 			success: function(data, status, xhr)
 			{
 				var target       = xhr.from.target;
+				var focus        = xhr.from.href.rParse('#');
 				var $from        = $(xhr.from);
 				var $target      = $(target);
 				var build_target = false;
@@ -205,8 +206,26 @@
 						}
 					}
 				}
+				// track window position to focus, if set
+				var $focus = focus.length ? $('#' + focus) : null;
+				if ($focus && $focus.length) {
+					if (
+						($focus.offset().left < window.scrollbar.left())
+						|| ($focus.offset().left > (window.scrollbar.left() + window.innerWidth))
+					) {
+						window.scrollbar.left($focus.offset().left);
+					}
+					if (
+						($focus.offset().top < window.scrollbar.top())
+						|| ($focus.offset().top > (window.scrollbar.top() + window.innerHeight))
+					) {
+						window.scrollbar.top($focus.offset().top);
+					}
+				}
 				// track window position to target
-				if (settings.track && xhr.from.target.beginsWith('#') && (window.scrollbar !== undefined)) {
+				else if (
+					settings.track && xhr.from.target.beginsWith('#') && (window.scrollbar !== undefined)
+				) {
 					if ($target.offset().left < window.scrollbar.left()) {
 						window.scrollbar.left($target.offset().left);
 					}
