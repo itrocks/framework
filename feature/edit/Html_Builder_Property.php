@@ -302,7 +302,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		if ($placeholder = Placeholder_Annotation::of($this->property)->callProperty($this->property)) {
 			$this->attributes['placeholder'] = $placeholder;
 		}
-		$this->required    = Mandatory_Annotation::of($this->property)->value;
+		$this->required = Mandatory_Annotation::of($this->property)->value;
 		if (!isset($this->tooltip)) {
 			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
 		}

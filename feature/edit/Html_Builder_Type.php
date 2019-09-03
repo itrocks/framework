@@ -390,6 +390,9 @@ class Html_Builder_Type
 			$id_input = new Input($this->getFieldName('id_'), $identifier);
 			$id_input->addClass('id');
 			$id_input->setAttribute('type', 'hidden');
+			if (isset($this->data['no-empty-check'])) {
+				$id_input->setData('no-empty-check', $this->data['no-empty-check']);
+			}
 		}
 		if ($this->readonly) {
 			if (isset($id_input)) {
