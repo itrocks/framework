@@ -365,6 +365,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@filters' => List_Annotation::class,
 
 	/**
+	 * @force_validate [false]
+	 * Force validation of a linked sub-object when the object is validated
+	 */
+	Parser::T_PROPERTY . '@force_validate' => Boolean_Annotation::class,
+
+	/**
 	 * @length 5
 	 * Tells what is the wished count of characters for the value of the property
 	 */
