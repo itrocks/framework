@@ -44,9 +44,12 @@ $(document).ready(function()
 	{
 		var $this = $(this);
 		if (
-			($this.val().length && ($this.val() === $this.data('default-value')))
-			|| $this.data('itrocks-no-add')
-			|| $this.data('no-empty-check')
+			!force
+			&& (
+				($this.val().length && ($this.val() === $this.data('default-value')))
+				|| $this.data('itrocks-no-add')
+				|| $this.data('no-empty-check')
+			)
 		) {
 			return;
 		}
