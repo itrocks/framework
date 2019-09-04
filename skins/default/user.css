@@ -7,14 +7,16 @@ article.user.login > form {
   display: inline-block; }
   article.user.login > form > ul.actions {
     text-align: right; }
-article.user.login section.connected.user {
+
+section.connected.user {
   display: inline-block; }
-  article.user.login section.connected.user > a {
+  section.connected.user > a {
     color: #eee;
     padding: 0.3em 0.25em; }
-  article.user.login section.connected.user > a > .disconnect,
-  article.user.login section.connected.user > h3,
-  article.user.login section.connected.user > .user {
+  section.connected.user > a > .disconnect,
+  section.connected.user > h3,
+  section.connected.user > .user {
     display: none; }
-article.user.login .user.disconnect > h2 {
+
+.user.disconnect > h2 {
   display: none; }

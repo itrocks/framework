@@ -17,23 +17,23 @@ article.user.login {
 			text-align: right;
 		}
 	}
+}
 
-	section.connected.user {
-		display: inline-block;
+section.connected.user {
+	display: inline-block;
 
-		> a {
-			color: #eee;
-			padding: $action-vertical-padding $action-horizontal-padding;
-		}
-
-		> a > .disconnect,
-		> h3,
-		> .user {
-			display: none;
-		}
+	> a {
+		color: #eee;
+		padding: $action-vertical-padding $action-horizontal-padding;
 	}
 
-	.user.disconnect > h2 {
+	> a > .disconnect,
+	> h3,
+	> .user {
 		display: none;
 	}
+}
+
+.user.disconnect > h2 {
+	display: none;
 }
