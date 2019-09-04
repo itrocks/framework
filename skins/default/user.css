@@ -1,18 +1,20 @@
-body.user.login > header > .top.bar {
-  display: none !important; }
+body.user.login > header {
+  display: block; }
+  body.user.login > header > .top.bar {
+    display: none !important; }
 
-article.user.login > form > ul.actions {
-  text-align: right; }
-
-section.connected.user {
+article.user.login > form {
   display: inline-block; }
-  section.connected.user > a {
+  article.user.login > form > ul.actions {
+    text-align: right; }
+article.user.login section.connected.user {
+  display: inline-block; }
+  article.user.login section.connected.user > a {
     color: #eee;
     padding: 0.3em 0.25em; }
-  section.connected.user > a > .disconnect,
-  section.connected.user > h3,
-  section.connected.user > .user {
+  article.user.login section.connected.user > a > .disconnect,
+  article.user.login section.connected.user > h3,
+  article.user.login section.connected.user > .user {
     display: none; }
-
-.user.disconnect > h2 {
+article.user.login .user.disconnect > h2 {
   display: none; }
