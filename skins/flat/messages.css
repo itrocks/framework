@@ -1,9 +1,0 @@
-div#messages {
-  background-color: white;
-  color: #444;
-  border: solid 1px #00b39c;
-  padding: 0.5em;
-  position: fixed;
-  z-index: 1; }
-  div#messages:empty {
-    display: none; }
