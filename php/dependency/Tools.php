@@ -78,6 +78,50 @@ trait Tools
 		return $class_names;
 	}
 
+	//--------------------------------------------------------------------------------------- getType
+	/**
+	 * Get a dependency which index and type match
+	 * Use caching to avoid several identical queries to be executed
+	 *
+	 * @param $what string[] need keys type with allowed value, and allowed index
+	 * @return static
+	 * @see Dependency\Cache::INDEXES
+	 * @see Dependency\Cache::TYPES
+	 */
+	public static function getType($what)
+	{
+		$search = [];
+		$type   = $what['type'];
+		// get dependency (can be null) from cache
+		foreach (Dependency\Cache::INDEXES as $index) {
+			if (isset($what[$index])) {
+				$key = $what[$index];
+				if (isset(Dependency\Cache::$$index[$key])) {
+					$dependencies = Dependency\Cache::$$index[$key];
+					return isset($dependencies[$type]) ? $dependencies[$type] : null;
+				}
+				$search[$index] = Dao\Func::equal($key);
+			}
+		}
+		$search['type'] = Dependency\Cache::TYPES;
+		$dependencies   = Dao::search($search, static::class, Dao::key('type'));
+		// store found dependencies into all caches
+		if ($dependencies) {
+			$dependency = reset($dependencies);
+			foreach (Dependency\Cache::INDEXES as $index) {
+				Dependency\Cache::$$index[$dependency->$index] = $dependencies;
+			}
+			return isset($dependencies[$type]) ? $dependencies[$type] : null;
+		}
+		// store null result into matching cache
+		foreach (Dependency\Cache::INDEXES as $index) {
+			if (isset($what[$index])) {
+				Dependency\Cache::$$index[$what[$index]] = [];
+			}
+		}
+		return null;
+	}
+
 	//-------------------------------------------------------------------------- propertiesUsingClass
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
