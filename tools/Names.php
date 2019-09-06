@@ -407,6 +407,7 @@ abstract class Names
 			Dependency::class
 		);
 		if ($dependency) {
+			self::$sets[$class_name] = $class_name;
 			return $class_name;
 		}
 		// explicitely declared as 'plural of ...' : return the matching class name
