@@ -256,7 +256,6 @@ class Html_Builder_Type
 			$this->getFieldName(),
 			$format ? Loc::dateToLocale($this->value) : $this->value
 		);
-		$input->setAttribute('autocomplete', 'off');
 		if (!$this->readonly) {
 			$input->addClass('datetime');
 		}
@@ -364,7 +363,6 @@ class Html_Builder_Type
 			: null;
 		$input    = new Input($input_id, strval($this->value));
 		$input->addClass('auto_width');
-		$input->setAttribute('autocomplete', 'off');
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$input->setData('combo-class', $source_class_name);
 		$input->setData(
@@ -590,7 +588,6 @@ class Html_Builder_Type
 		}
 		else {
 			$input = new Input($this->getFieldName(), $value);
-			$input->setAttribute('autocomplete', 'off');
 		}
 		$input->addClass('auto_width');
 		return $input;

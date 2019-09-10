@@ -280,6 +280,7 @@ class Html_Template extends Template
 					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
 						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
 					$attributes = ' action=' . DQ . $action . DQ
+						. 'autocomplete="off"'
 						. ' enctype="multipart/form-data"'
 						. ' method="post"'
 						. ' name=' . DQ . $this->getFormId() . DQ
