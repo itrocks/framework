@@ -1,0 +1,23 @@
+div.main > .notifications {
+  height: 64px;
+  position: relative; }
+  div.main > .notifications h2 {
+    display: none; }
+  div.main > .notifications > #responses {
+    overflow-y: auto; }
+  div.main > .notifications > #notifications {
+    display: none; }
+  div.main > .notifications > .user.mini {
+    display: inline-flex;
+    height: 100%;
+    position: absolute;
+    right: 20px; }
+    div.main > .notifications > .user.mini > h3 {
+      display: none; }
+    div.main > .notifications > .user.mini > .user {
+      background: url("img/user-24.svg") center no-repeat;
+      display: inline-block;
+      font-size: 0;
+      height: 24px;
+      margin: auto;
+      width: 24px; }

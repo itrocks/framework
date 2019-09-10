@@ -79,7 +79,7 @@ article.layout_model .editor .toolbox > .pages ul, article.layout_model .editor 
       vertical-align: middle; }
     article.layout_model .editor .toolbox > .pages ul > li > input, article.layout_model .editor .toolbox > .pages ul > li textarea, article.layout_model .editor .toolbox > .tools ul > li > input, article.layout_model .editor .toolbox > .tools ul > li textarea {
       max-width: 200px; }
-article.layout_model .editor .toolbox > .pages label[for^="background"] {
+article.layout_model .editor .toolbox > .pages label[for^='background'] {
   display: none; }
-article.layout_model .editor .toolbox > .pages input[id^="background"] {
+article.layout_model .editor .toolbox > .pages input[id^='background'] {
   column-span: all; }

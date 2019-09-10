@@ -1,0 +1,21 @@
+article.list > form > table > thead {
+  background: #efefef; }
+  article.list > form > table > thead > tr.title {
+    padding: 0 .75em 0 .5em; }
+    article.list > form > table > thead > tr.title > th {
+      color: #333;
+      font-weight: 500;
+      padding: 0 .75em 0 .5em;
+      text-align: left; }
+      article.list > form > table > thead > tr.title > th.column_select {
+        font-size: 0; }
+  article.list > form > table > thead > tr.search > td {
+    position: relative;
+    vertical-align: top; }
+    article.list > form > table > thead > tr.search > td > input {
+      background: #efefef;
+      border: none;
+      display: block;
+      height: 12px;
+      padding: 10px .75em 10px .5em;
+      width: calc(100% - 1.25em); }

@@ -1,4 +1,5 @@
-
-@mixin module-color($class, $path, $color) {
-
+@mixin vertical-align($position: relative) {
+	position: $position;
+	top: 50%;
+	transform: perspective(1px) translateY(-50%);
 }

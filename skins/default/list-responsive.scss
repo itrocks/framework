@@ -1,0 +1,16 @@
+@import 'responsive.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	article.list {
+
+		table, tbody, td, th, thead, tr {
+			display: block;
+		}
+
+		.column_select {
+			display: none;
+		}
+	}
+
+}

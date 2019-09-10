@@ -1,0 +1,60 @@
+@media screen and (min-width: 470px) {
+  body {
+    background: #d8d8d8d8;
+    color: #444444;
+    font-family: Roboto, sans-serif;
+    font-size: 0;
+    overflow: hidden; }
+    body > * {
+      background: white;
+      display: inline-block;
+      font-size: 12px;
+      height: 100%;
+      position: relative;
+      vertical-align: top; }
+    body > .menu {
+      border-right: 2px solid #d8d8d8d8;
+      width: 254px; }
+      body > .menu:after {
+        border-right: 2px solid #d8d8d8d8;
+        border-top: 2px solid #d8d8d8d8;
+        border-left: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+        content: '';
+        height: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0; }
+      body > .menu > .company.logo {
+        border-bottom: 2px solid #d8d8d8d8;
+        height: 64px; }
+        body > .menu > .company.logo > a {
+          background: url("img/b-appli.svg") 12px center no-repeat;
+          display: block;
+          font-size: 0;
+          height: 100%; }
+      body > .menu > h1 {
+        display: none; }
+      body > .menu > #short-menu {
+        display: none;
+        border-top: 2px solid #d8d8d8d8;
+        bottom: 0;
+        position: absolute;
+        width: 100%; }
+    body > .main {
+      width: calc(100% - 256px); }
+      body > .main main {
+        border-top: 1px solid #cecece;
+        box-shadow: 0 -1px rgba(0, 0, 0, 0.033);
+        height: calc(100% - 64px - 28px);
+        margin-top: -1px;
+        position: relative; }
+        body > .main main > article {
+          height: 100%; }
+    body > .contextual {
+      display: none;
+      border-left: 2px solid #d8d8d8d8;
+      position: absolute;
+      right: 0;
+      width: 254px; } }

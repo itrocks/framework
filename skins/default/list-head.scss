@@ -1,0 +1,39 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
+article.list > form > table > thead {
+	background: #efefef;
+
+	> tr {
+
+		&.title {
+			padding: 0 .75em 0 .5em;
+
+			> th {
+				color: #333;
+				font-weight: 500;
+				padding: 0 .75em 0 .5em;
+				text-align: left;
+
+				&.column_select {
+					font-size: 0;
+				}
+			}
+		}
+
+		&.search > td {
+			position: relative;
+			vertical-align: top;
+
+			> input {
+				background: #efefef;
+				border: none;
+				display: block;
+				height: 12px;
+				padding: 10px .75em 10px .5em;
+				width: calc(100% - 1.25em);
+			}
+		}
+	}
+
+}

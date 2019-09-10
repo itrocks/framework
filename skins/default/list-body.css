@@ -1,0 +1,13 @@
+article.list > form > table > tbody > tr:nth-child(odd) > td {
+  background: white; }
+article.list > form > table > tbody > tr:nth-child(odd) > th {
+  background: #efefef; }
+article.list > form > table > tbody > tr:nth-child(even) > td {
+  background: #f8f8f8; }
+article.list > form > table > tbody > tr:nth-child(even) > th {
+  background: #e8e8e8; }
+article.list > form > table > tbody > tr td {
+  color: #444;
+  padding: 0 .75em 0 .5em; }
+article.list > form > table > tbody > tr th {
+  padding: 0 .83em 0 .75em; }

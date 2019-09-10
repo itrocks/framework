@@ -1,0 +1,20 @@
+li.action.add,
+li.actions > ul > li.add,
+ul.actions > li.add {
+  background-image: url("img/add-24.svg"); }
+li.action.delete,
+li.actions > ul > li.delete,
+ul.actions > li.delete {
+  background-image: url("img/delete-24.svg"); }
+li.action.export,
+li.actions > ul > li.export,
+ul.actions > li.export {
+  background-image: url("img/export-24.svg"); }
+li.action.import,
+li.actions > ul > li.import,
+ul.actions > li.import {
+  background-image: url("img/import-24.svg"); }
+li.action.print,
+li.actions > ul > li.print,
+ul.actions > li.print {
+  background-image: url("img/print-24.svg"); }

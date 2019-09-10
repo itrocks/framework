@@ -1,0 +1,6 @@
+input:not([type=button]):not([type=submit]), select, textarea {
+  background: white;
+  border: 1px solid #d8d8d8;
+  border-radius: 2px;
+  height: 10px;
+  padding: 10px 0 10px 10px; }

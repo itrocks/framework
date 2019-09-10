@@ -54,12 +54,6 @@ $(document).ready(function()
 		});
 	});
 
-	//----------------------------------------------------------------------------- nav#menu minimize
-	$body.build('call', 'nav#menu', function()
-	{
-		this.minimize({ absolute_next: true });
-	});
-
 	//--------------------------------------------------------------------- build simple plugin calls
 	// must declare autoWidth before autoHeight to avoid height bugs
 	$body.build('call', '.auto_width:not(table):not(ul)',  $.fn.autoWidth);

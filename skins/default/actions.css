@@ -1,19 +1,27 @@
 li.actions > ul,
 ul.actions {
-  display: block; }
+  display: block;
+  font-size: 0; }
 
 li.action,
 li.actions > ul > li,
 ul.actions > li {
-  display: inline-block;
-  margin: 0.3em 0;
-  position: relative;
-  vertical-align: top; }
+  background-color: #f8f8f8;
+  background-position: 1px center;
+  background-repeat: no-repeat;
+  border: 1px solid #d0d0d0;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px #ececec, inset 0 0 0 1px #f5f5f5;
+  display: inline-flex;
+  height: 26px;
+  margin: 5px 6px 5px 4px; }
   li.action a,
   li.actions > ul > li a,
   ul.actions > li a {
     display: block;
-    padding: 0.3em 0.25em;
+    font-size: 12px;
+    margin: auto;
+    padding: 7px 5px 7px 26px;
     white-space: nowrap; }
   li.action > ul,
   li.actions > ul > li > ul,

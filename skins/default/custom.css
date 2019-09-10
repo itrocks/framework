@@ -17,15 +17,15 @@ article > header {
         margin: 1px; }
         article > header > div.custom > .actions > li.custom_save > a {
           font-size: 0;
-          height: 34px;
-          width: 34px; }
+          height: 22px;
+          width: 22px; }
     article > header > div.custom > .name {
       position: absolute;
-      right: 39px;
+      right: 27px;
       top: 3px; }
     article > header > div.custom > .select {
       background: white;
-      color: #444;
+      color: #444444;
       border: 1px solid lightgrey;
       margin: 0.2em 0.25em; }
       article > header > div.custom > .select > li {
@@ -35,6 +35,8 @@ article > header {
         article > header > div.custom > .select > li > a {
           display: block;
           padding: 0.3em 0.25em; }
+  article > header:not(:hover) > div.custom {
+    display: none; }
   article > header:hover > div.custom > .actions > li.custom_save > a {
     background: url("../default/img/floppy.png") center no-repeat; }
     article > header:hover > div.custom > .actions > li.custom_save > a:hover {

@@ -28,31 +28,82 @@
 
 	<!--!~hide_page_frame?-->
 	<!--!~inside-->
-	<header>
-		<a class="{@application.lower} logo" href="/" target="#main" title="|Go to home|">
-			{@application.ucwords}
-		</a>
-		<div class="top bar">
-			<button class="menu">|menu|</button>
-			<!--Access_Control.get-->
+
+	<div class="menu">
+		<header class="company logo" data-application="{@application.ucwords}">
+			<a href="/" target="#main">|Go home|</a>
+		</header>
+		<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
+		<!--Menu.get-->{/ITRocks/Framework/Component/Menu/output.html}<!--end-->
+		<nav id="short-menu">
+			<ul>
+				<li>|sample feature|</li>
+			</ul>
+		</nav>
+	</div>
+
+	<!--end-->
+	<!--end-->
+
+	<div class="main">
+		<header class="notifications">
+			<section id="responses">
+				<h2>|responses|</h2>
+				<ul></ul>
+			</section>
+			<section id="notifications">
+				<h2>|notifications|</h2>
+				<ul></ul>
+			</section>
+			<section class="mini user">
+				<h3>|Connected user|</h3>
+				<a class="user" href="app://ITRocks/Framework/User/disconnect">
+					{ITRocks\Framework\User.current}
+				</a>
+			</section>
+		</header>
+		<section class="favorites">
+			<h2>|favorites|</h2>
+			<ul>
+				<li class="add"><a href="#" title="|add current display to favorites|">|add|</a></li>
+			</ul>
+		</section>
+		<main>
+			{@content}
+		</main>
+	</div>
+
+	<div class="contextual">
+		<header>
 			{/ITRocks/Framework/User/miniDisplay.html}
-			<!--end-->
-			<div id="messages"></div>
-			<a class="bappli logo" href="https://www.bappli.com">|B-APPLI Studio|</a>
-		</div>
-	</header>
-
-	<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
-
-	<!--Menu.get-->
-	{/ITRocks/Framework/Component/Menu/output.html}
-	<!--end-->
-	<!--end-->
-	<!--end-->
-
-	<main>
-		{@content}
-	</main>
+			<button class="minimize" data-level="2" data-side="right">|minimize|</button>
+		</header>
+		<section class="main">
+			<h2>|contextual information|</h2>
+			<nav class="summary">
+				<ul>
+					<li class="history">
+						<a href="#history">|history|</a>
+					</li>
+					<li class="progress">
+						<a href="#progress">|progress|</a>
+					</li>
+					<li class="notes">
+						<a href="#notes">|notes|</a>
+					</li>
+				</ul>
+			</nav>
+			<section id="history">
+				<h3>|history|</h3>
+			</section>
+			<section id="progress">
+				<h3>|progress|</h3>
+			</section>
+			<section id="notes">
+				<h3>|notes|</h3>
+			</section>
+		</section>
+	</div>
 
 	<!--!~hide_page_frame?-->
 	<div id="trashcan">

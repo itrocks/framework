@@ -24,7 +24,7 @@ article.import.preview {
 				display: inline-block;
 
 				&[data-empty]:empty:after {
-					content: "(" attr(data-empty) ")";
+					content: '(' attr(data-empty) ')';
 					font-style: italic;
 				}
 
@@ -33,7 +33,7 @@ article.import.preview {
 					display: inline-block;
 
 					&:not(:last-child):after {
-						content: ",";
+						content: ',';
 						margin-right: .25em;
 					}
 				}

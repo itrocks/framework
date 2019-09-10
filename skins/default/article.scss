@@ -1,35 +1,36 @@
 @import 'colors.scss';
 @import 'sizes.scss';
+@import 'tabs.scss';
 
 article {
+	background: #f8f8f8;
 
-	> h2, > header > h2 {
-		padding: $article-head-padding;
+	> header {
+		background: #efefef;
+		border-bottom: 1px solid #ececec;
+		box-shadow: 0 1px #d0d0d0, 0 0 0 1px inset #ececec;
+		color: #333333;
+		height: 36px;
 
-		&:first-letter {
-			text-transform: uppercase;
-		}
-	}
-
-	> h2, > header {
-		background-color: $window-head-background;
-		color: $window-head-color;
-
-		&header > h2 {
+		> h2 {
+			@include tab(#efefef);
+			background: #f8f8f8;
 			cursor: pointer;
 			display: inline-block;
+			font-weight: normal;
+			height: 24px;
+			margin: 4px 1px -1px;
+			padding: 10px 18px 0;
+
+			&:first-letter {
+				text-transform: uppercase;
+			}
 		}
 	}
 
-	> p, > section {
-		margin: $window-padding;
-	}
-
-	&:not(.list),
-	> form {
-
-		> ul.general.actions {
-			border-bottom: $thin-border;
-		}
+	> ul.general.actions {
+		position: absolute;
+		right: 0;
+		top: 0;
 	}
 }

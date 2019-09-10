@@ -1,0 +1,41 @@
+@import 'tabs.scss';
+
+div.main > .favorites {
+	background: #fefefe;
+
+	> h2 {
+		display: none;
+	}
+
+	> ul {
+		height: 27px;
+		position: relative;
+
+		> li {
+			@include tab(#fefefe);
+			display: inline-block;
+			background: #d8d8d8;
+
+			&:not(:first-child) {
+				margin-left: 1px;
+			}
+
+			> a {
+				display: inline-block;
+				height: 27px;
+			}
+
+			&.add {
+				background: #d8d8d8 url('img/favorite-24.svg') center no-repeat;
+				font-size: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+
+				> a {
+					width: 28px;
+				}
+			}
+		}
+	}
+}

@@ -14,7 +14,7 @@ article.import.preview li.block > section > ul {
     cursor: pointer;
     display: inline-block; }
     article.import.preview li.block > section > ul > li:not(:last-child):after {
-      content: ",";
+      content: ',';
       margin-right: .25em; }
 article.import.preview li.block > section.identify li {
   background-color: green;

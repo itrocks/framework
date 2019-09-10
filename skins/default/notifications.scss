@@ -1,0 +1,39 @@
+@import 'mixins.scss';
+
+div.main > .notifications {
+	height: 64px;
+	position: relative;
+
+	h2 {
+		display: none;
+	}
+
+	> #responses {
+		overflow-y: auto;
+	}
+
+	> #notifications {
+		display: none;
+	}
+
+	> .user.mini {
+		display: inline-flex;
+		height: 100%;
+		position: absolute;
+		right: 20px;
+
+		> h3 {
+			display: none;
+		}
+
+		> .user {
+			background: url('img/user-24.svg') center no-repeat;
+			display: inline-block;
+			font-size: 0;
+			height: 24px;
+			margin: auto;
+			width: 24px;
+		}
+	}
+
+}

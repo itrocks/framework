@@ -61,6 +61,10 @@ article > header {
 		}
 	}
 
+	&:not(:hover) > div.custom {
+		display: none;
+	}
+
 	&:hover > div.custom > .actions > li.custom_save > a {
 		background: url('../default/img/floppy.png') center no-repeat;
 

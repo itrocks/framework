@@ -1,0 +1,46 @@
+div.main > .favorites {
+  background: #fefefe; }
+  div.main > .favorites > h2 {
+    display: none; }
+  div.main > .favorites > ul {
+    height: 27px;
+    position: relative; }
+    div.main > .favorites > ul > li {
+      position: relative;
+      display: inline-block;
+      background: #d8d8d8; }
+      div.main > .favorites > ul > li:after {
+        border-right: 3px solid #fefefe;
+        border-top: 3px solid #fefefe;
+        border-left: 3px solid transparent;
+        border-bottom: 3px solid transparent;
+        content: '';
+        height: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0; }
+      div.main > .favorites > ul > li:before {
+        border-right: 2px solid transparent;
+        border-top: 2px solid #fefefe;
+        border-left: 2px solid #fefefe;
+        border-bottom: 2px solid transparent;
+        content: '';
+        height: 0;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 0; }
+      div.main > .favorites > ul > li:not(:first-child) {
+        margin-left: 1px; }
+      div.main > .favorites > ul > li > a {
+        display: inline-block;
+        height: 27px; }
+      div.main > .favorites > ul > li.add {
+        background: #d8d8d8 url("img/favorite-24.svg") center no-repeat;
+        font-size: 0;
+        position: absolute;
+        right: 0;
+        top: 0; }
+        div.main > .favorites > ul > li.add > a {
+          width: 28px; }

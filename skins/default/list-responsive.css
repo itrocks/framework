@@ -1,0 +1,5 @@
+@media screen and (max-width: 469px) {
+  article.list table, article.list tbody, article.list td, article.list th, article.list thead, article.list tr {
+    display: block; }
+  article.list .column_select {
+    display: none; } }

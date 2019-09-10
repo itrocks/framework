@@ -152,11 +152,11 @@ article.layout_model {
 
 			> .pages {
 
-				label[for^="background"] {
+				label[for^='background'] {
 					display: none;
 				}
 
-				input[id^="background"] {
+				input[id^='background'] {
 					column-span: all;
 				}
 			}

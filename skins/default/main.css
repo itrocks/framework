@@ -22,15 +22,15 @@
       position: absolute;
       right: 0;
       top: 0;
-      width: 211.5px; }
+      width: 141px; }
   body > main, body > nav {
     display: table-cell; }
   body[class] > header > .top.bar {
     display: table-cell; } }
 body {
   background-color: white;
-  color: #444;
-  font-size: 18px;
+  color: #444444;
+  font-size: 12px;
   height: 100%;
   position: absolute;
   width: 100%; }
@@ -38,14 +38,14 @@ body {
     display: none; }
   body > header {
     background: lightgrey url("img/header-background.png") bottom right;
-    color: #444;
-    height: 54px;
+    color: #444444;
+    height: 36px;
     position: relative; }
     body > header .logo {
       background: transparent center no-repeat;
       background-size: contain;
       font-size: 0;
-      height: 54px; }
+      height: 36px; }
     body > header > .logo {
       background-color: white;
       background-image: url("img/bappli-studio-logo.png"); }

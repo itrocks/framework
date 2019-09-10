@@ -1,0 +1,29 @@
+@mixin tab($back-element-color) {
+	position: relative;
+
+	&:after {
+		border-right: 3px solid $back-element-color;
+		border-top: 3px solid $back-element-color;
+		border-left: 3px solid transparent;
+		border-bottom: 3px solid transparent;
+		content: '';
+		height: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+		width: 0;
+	}
+
+	&:before {
+		border-right: 2px solid transparent;
+		border-top: 2px solid $back-element-color;
+		border-left: 2px solid $back-element-color;
+		border-bottom: 2px solid transparent;
+		content: '';
+		height: 0;
+		left: 0;
+		position: absolute;
+		top: 0;
+		width: 0;
+	}
+}

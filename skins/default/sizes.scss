@@ -1,4 +1,15 @@
-$font-size: 18px;
+$font-size: 12px;
+
+$section-border-size: 2px;
+$menu-section-width: 256px - $section-border-size;
+$contextual-section-width: 256px - $section-border-size;
+
+$input-border-radius: 2px;
+$input-border-size: 1px;
+$input-height: 30px;
+$input-padding: 10px;
+
+//-------------------------------------------------------------------------------------------------
 
 $action-horizontal-padding: .25em;
 $action-vertical-padding: .3em;

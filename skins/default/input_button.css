@@ -3,8 +3,8 @@ input + button {
   background-size: 66%;
   cursor: pointer;
   font-size: 0;
-  height: 27px;
-  margin-left: -27px !important;
+  height: 18px;
+  margin-left: -18px !important;
   margin-top: 1px !important;
   position: absolute;
-  width: 27px; }
+  width: 18px; }

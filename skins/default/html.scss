@@ -17,71 +17,12 @@ input[type=submit] {
 	background: none;
 	border: none;
 	cursor: pointer;
-	font-size: inherit;
-	margin: $actions-vertical-margin $actions-horizontal-margin !important;
-	padding: $action-vertical-padding $action-horizontal-padding !important;
 	white-space: nowrap;
-
-	&:hover {
-		background-color: $action-focus-background;
-		color: $action-focus-color;
-	}
 }
 
 iframe {
 	height: 300px;
 	width: 100%;
-}
-
-input, select, textarea {
-	font-family: inherit;
-	padding: 2px;
-}
-
-input:not([type=button]):not([type=submit]), select, textarea {
-	background-color: $background;
-	border: none;
-	font-size: 1em;
-
-	&:not([readonly]) {
-		border-bottom: $thin-border;
-		border-top: $thin-border-top;
-
-		&:focus {
-			background-color: $edit-focus-background;
-			color: $edit-focus-color;
-		}
-
-		&:hover {
-			background-color: $action-focus-background;
-			color: $action-focus-color;
-		}
-	}
-}
-
-table {
-	margin: .5em 0;
-
-	tr {
-
-		&:nth-child(even) {
-			background: #ececec;
-		}
-
-		&:nth-child(odd) {
-			background: #dedede;
-		}
-
-		td, th {
-			border: 1px solid white;
-			padding: $list-vertical-padding $list-horizontal-padding;
-		}
-
-		th {
-			background: $action-focus-background;
-			color: $action-focus-color;
-		}
-	}
 }
 
 div.popup {

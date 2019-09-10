@@ -3,8 +3,8 @@
     background: url("img/menu-button-white.png") no-repeat center;
     background-size: 32px;
     font-size: 0;
-    height: 54px;
-    width: 54px; }
+    height: 36px;
+    width: 36px; }
 
   nav#menu {
     display: none; } }
@@ -12,26 +12,44 @@
   header > .top.bar > button.menu {
     display: none; } }
 nav#menu {
-  background-color: white;
-  border-right: 1px solid lightgrey;
-  color: #444;
   position: relative; }
-  nav#menu > .minimize {
-    background: lightgrey url("img/menu-button-white.png");
-    background-size: contain;
-    cursor: pointer;
-    display: inline-block;
+  nav#menu > .actions {
+    display: table;
     font-size: 0;
-    height: 2em;
-    margin-top: -2.2em;
-    position: absolute;
-    width: 2em; }
+    height: 64px;
+    width: 100%; }
+    nav#menu > .actions > * {
+      display: table-cell;
+      vertical-align: middle; }
+    nav#menu > .actions > .minimize {
+      background: url("img/menu-24.svg") center no-repeat;
+      font-size: 0;
+      height: 64px;
+      width: 44px; }
+    nav#menu > .actions > .filter {
+      width: 100%; }
+      nav#menu > .actions > .filter > label {
+        display: none; }
+      nav#menu > .actions > .filter > input {
+        width: calc(100% - 30px); }
   nav#menu > h2 {
     display: none; }
   nav#menu > ul > li > h3 {
-    background-color: darkgrey;
-    color: white;
-    padding: 0.3em 0.25em; }
-  nav#menu > ul > li > ul > li > a {
-    display: block;
-    padding: 0.3em 0.25em; }
+    background: #f8f8f8;
+    display: table;
+    font-size: 14px;
+    font-weight: normal;
+    height: 41px;
+    width: 100%; }
+    nav#menu > ul > li > h3 > a {
+      display: table-cell;
+      padding-left: 42px;
+      vertical-align: middle; }
+  nav#menu > ul > li > ul > li {
+    display: table;
+    height: 29px;
+    width: 100%; }
+    nav#menu > ul > li > ul > li > a {
+      display: table-cell;
+      padding-left: 54px;
+      vertical-align: middle; }

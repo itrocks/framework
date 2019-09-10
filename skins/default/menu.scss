@@ -15,6 +15,7 @@
 	nav#menu {
 		display: none;
 	}
+
 }
 
 @media screen and (min-width: $pc-min-width) {
@@ -22,24 +23,41 @@
 	header > .top.bar > button.menu {
 		display: none;
 	}
+
 }
 
 nav#menu {
-	background-color: white;
-	border-right: $thin-border;
-	color: $head-color;
 	position: relative;
 
-	> .minimize {
-		background: $head-background url('img/menu-button-white.png');
-		background-size: contain;
-		cursor: pointer;
-		display: inline-block;
+	> .actions {
+		display: table;
 		font-size: 0;
-		height: 2em;
-		margin-top: -2.2em;
-		position: absolute;
-		width: 2em;
+		height: 64px;
+		width: 100%;
+
+		> * {
+			display: table-cell;
+			vertical-align: middle;
+		}
+
+		> .minimize {
+			background: url('img/menu-24.svg') center no-repeat;
+			font-size: 0;
+			height: 64px;
+			width: 44px;
+		}
+
+		> .filter {
+			width: 100%;
+
+			> label {
+				display: none;
+			}
+
+			> input {
+				width: calc(100% - 30px);
+			}
+		}
 	}
 
 	> h2 {
@@ -51,14 +69,30 @@ nav#menu {
 		> li {
 
 			> h3 {
-				background-color: $window-head-background;
-				color: white;
-				padding: $menu-head-vertical-padding $menu-head-horizontal-padding;
+				background: $menu-module-background;
+				display: table;
+				font-size: 14px;
+				font-weight: normal;
+				height: 41px;
+				width: 100%;
+
+				> a {
+					display: table-cell;
+					padding-left: 42px;
+					vertical-align: middle;
+				}
 			}
 
-			> ul > li > a {
-				display: block;
-				padding: $menu-item-vertical-padding $menu-item-horizontal-padding;
+			> ul > li {
+				display: table;
+				height: 29px;
+				width: 100%;
+
+				> a {
+					display: table-cell;
+					padding-left: 54px;
+					vertical-align: middle;
+				}
 			}
 		}
 	}

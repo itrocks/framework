@@ -1,0 +1,26 @@
+
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+
+	&.add {
+		background-image: url('img/add-24.svg');
+	}
+
+	&.delete {
+		background-image: url('img/delete-24.svg');
+	}
+
+	&.export {
+		background-image: url('img/export-24.svg');
+	}
+
+	&.import {
+		background-image: url('img/import-24.svg');
+	}
+
+	&.print {
+		background-image: url('img/print-24.svg');
+	}
+
+}
