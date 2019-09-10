@@ -19,7 +19,7 @@
 		}
 		var $this = $(this);
 		var controls = $this
-			.find('input[autocomplete], input[name], select[name], textarea[name], input.dtp--date')
+			.find('input, select, textarea')
 			.filter(':visible:not([readonly])');
 		var position = 0;
 		var length   = controls.length;

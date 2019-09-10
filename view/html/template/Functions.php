@@ -366,7 +366,7 @@ class Functions
 			);
 		}
 		if ($object instanceof Reflection_Property) {
-			return $this->getEditReflectionProperty($object, $name, $ignore_user);
+			return $this->getEditReflectionProperty($object, $name, $ignore_user, $can_always_be_null);
 		}
 		if (is_object($object) && isset($property_name) && is_string($property_name)) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
@@ -1150,6 +1150,23 @@ class Functions
 			}
 		}
 		return $object;
+	}
+
+	//--------------------------------------------------------------------------------- getSearchEdit
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getSearchEdit(Template $template)
+	{
+		/** @var $reflection_property Reflection_Property */
+		$reflection_property = reset($template->objects);
+		$html = str_replace(
+			'class="auto_width"',
+			'',
+			$this->getEdit($template, 'search[' . $reflection_property->path . ']', true, true)
+		);
+		return $html;
 	}
 
 	//--------------------------------------------------------------------------------------- getSort
