@@ -4,6 +4,7 @@
 $.getScript(path + 'itrocks/framework/js/itrocks.constants.js');
 $.getScript(path + 'vendor/components/jqueryui/jquery-ui.js');
 $.getScript(path + 'vendor/components/jqueryui/ui/i18n/datepicker-fr.js');
+$.getScript(path + 'vendor/jquery/jquery-mousewheel/jquery.mousewheel.min.js');
 $.getScript(path + 'itrocks/framework/js/jquery.confirm.js');
 $.getScript(path + 'itrocks/framework/js/jquery.xtarget.js');
 
@@ -16,6 +17,7 @@ $.getScript(path + 'itrocks/framework/js/jquery.autoheight.js');
 $.getScript(path + 'itrocks/framework/js/jquery.autowidth.js');
 $.getScript(path + 'itrocks/framework/js/jquery.build.js');
 $.getScript(path + 'itrocks/framework/js/jquery.classvar.js');
+$.getScript(path + 'itrocks/framework/js/jquery.fixedheaders.js');
 $.getScript(path + 'itrocks/framework/js/jquery.listfilter.js');
 $.getScript(path + 'itrocks/framework/js/jquery.modifiable.js');
 $.getScript(path + 'itrocks/framework/js/jquery.mouse.js');
