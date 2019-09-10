@@ -18,13 +18,22 @@
 				{ITRocks\Framework\Application.current.name}
 			</a>
 		</h2>
+		<div class="actions">
+			<button class="minimize" data-level="2">|minimize|</button>
+			<div class="filter">
+				<label for="menu-filter">|menu filter|</label>
+				<input id="menu-filter">
+			</div>
+		</div>
 		<ul>
 			<!--blocks-->
 			<li class="{module}">
 				<!--title?-->
-				<h3>|{title}|</h3>
+				<h3>
+					<a href="#{title.uriElement}">|{title}|</a>
+				</h3>
 				<!--end-->
-				<ul>
+				<ul id="{title.uriElement}">
 					<!--items-->
 					<li>
 						<a class="{?class}" data-confirm-cancel="{?cancel_label}" data-confirm-message="{?confirm_message}" data-confirm-ok="{?confirm_label}" href="app://(link)" target="#main">
