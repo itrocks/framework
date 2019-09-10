@@ -13,11 +13,14 @@
 
 	<!--use ITRocks\Framework\Html\Engine-->
 	<article class="{@class.short.lower} list" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
+
 		<header>
 			<h2>{title}</h2>
 			{/setting/custom.html}
 		</header>
+
 		{/component/button/general_buttons.html}
+
 		<section class="summary">
 			<h3>|Summary|</h3>
 			<!--search_summary?-->
@@ -33,10 +36,19 @@
 			</details>
 			<!--end-->
 		</section>
-		<form action="app://(@class.path)/(@feature)" method="post" target="#main">
-			{/feature/list_/body.html}
+
+		<form action="app://(@class.path)/(@feature)" autocomplete="off" method="post" target="#main">
+			<table>
+				<thead>
+					{/feature/list_/head.html}
+				</thead>
+				<tbody>
+					{/feature/list_/body.html}
+				</tbody>
+			</table>
 			{/feature/list_/footer.html}
 		</form>
+
 	</article>
 
 <!--END-->

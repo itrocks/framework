@@ -1,16 +1,13 @@
 $(document).ready(function()
 {
 
+	var $body = $('body');
 	var phone_max_width = 469;
 
 	//-------------------------------------------------------------------------- hideListPlaceHolders
 	var hideListPlaceHolders = function()
 	{
-		$('ul.list > li.search > ol > li').each(function() {
-			var $input = $(this).find('input');
-			if (!$input.length) return;
-			$input.removeAttr('placeholder');
-		});
+		$('article.list tr.search input').removeAttr('placeholder');
 	};
 
 	//-------------------------------------------------------------------------------- responsiveList
@@ -29,11 +26,11 @@ $(document).ready(function()
 	//-------------------------------------------------------------------------- showListPlaceHolders
 	var showListPlaceHolders = function()
 	{
-		$('ul.list').each(function() {
+		$('article.list > form > table > thead').each(function() {
 			var $list    = $(this);
-			var $titles  = $list.find('> li.title > ol > li');
+			var $titles  = $list.find('> tr.title > th');
 			var position = -1;
-			$list.find('> li.search > ol > li').each(function() {
+			$list.find('> tr.search > td').each(function() {
 				position ++;
 				var $input = $(this).find('input');
 				if (!$input.length) return;
@@ -47,7 +44,10 @@ $(document).ready(function()
 	/**
 	 * Every time a list is loaded, apply placeholder if needed
 	 */
-	$('body').build('each', 'ul.list', responsiveList);
+	$body.build('each', 'article.list', responsiveList);
+
+	//----------------------------------------------------------------------- article.list form table
+	$body.build('call', 'article.list > form > table', $.fn.fixedHeaders);
 
 	//--------------------------------------------------------------------------------- window.resize
 	/**

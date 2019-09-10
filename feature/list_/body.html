@@ -12,100 +12,56 @@
 <article class="list">
 <header><h2>List</h2></header>
 <form>
+<table>
+<tbody>
 <!--BEGIN-->
 <!--use ITRocks\Framework\Html\Engine-->
 <!--use ITRocks\Framework\Tools\Paths-->
 
-	<ul class="list">
-		<li class="title">
-			<ol>
-				<li class="column_select">
-					<!--!lock_columns?-->
-					<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
-					<!--end-->
-				</li>
-				<!--properties-->
-				<li class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-drop-out-href="/{..@class.path}/listSetting?remove_property={path}" data-property="{path}">
-					<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
-				</li>
-				<!--sample-->
-				<li class="column_name_2 sort reverse float property" data-property="path.column_name_2">
-					<a href="app://Class/feature?sort=column_name_2" target="#main">column2</a>
-				</li>
-				<li class="column_name_3 sort reverse float property" data-property="path.column_name_3">
-					<a href="app://Class/feature?sort=column_name_3" target="#main">column3</a>
-				</li>
-				<!--end-->
-			</ol>
-		</li>
-
-		<li class="search">
-			<ol>
-				<li class="reset">
-					<!--search_summary?-->
-					<a href="app://(@class.path)/(@feature)?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
-					<!--end-->
-				</li>
-				<!--properties-->
-				<li class="{path.@cssClass} {type.@typeCss}">{search.@edit('search[{path.@escapeName}]','true','true')}</li>
-				<!--sample-->
-				<li class="column_name_2 float"><input autocomplete="off" class="auto_width" name="search[path][column_name_2]"></li>
-				<li class="column_name_3 float"><input autocomplete="off" class="auto_width" name="search[path][column_name_3]"></li>
-				<!--end-->
-			</ol>
-		</li>
-
-		<!--elements:-{displayed_lines_count}-->
-		<li class="line">
-			<ol>
-				<li class="select">
-					<!--selection_buttons?-->
-					<input type="checkbox" value="{id}">
-					<!--end-->
-				</li>
-				<!--formatValuesEx:1-->
-				<li class="{path.@cssClass} {property.getType.@typeCss} value">
-					<!--..class_name?-->
-					<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
-					<!--end-->
-				</li>
-				<!--end-->
-				<!--formatValuesEx:2-...count-->
-				<li class="{path.@cssClass} {property.getType.@typeCss} value">{value}</li>
-				<!--sample-->
-				<li class="column3 string value">value 3</li>
-				<!--end-->
-			</ol>
-		</li>
-		<!--sample-->
-		<li class="line">
-			<ol>
-				<li class="select"><input type="checkbox"></li>
-				<li class="column1 string value"><a href="app://Class/2">code2</a></li>
-				<li class="column2 float value">3,18</li>
-				<li class="column3 string value">pending</li>
-			</ol>
-		</li>
-		<li class="line">
-			<ol>
-				<li class="select"><input type="checkbox"></li>
-				<li class="column1 string value"><a href="app://Class/3">code3</a></li>
-				<li class="column2 float value">2,29</li>
-				<li class="column3 string value">done</li>
-			</ol>
-		</li>
-		<li class="line">
-			<ol>
-				<li class="select"><input type="checkbox"></li>
-				<li class="column1 string value"><a href="app://Class/4">code4</a></li>
-				<li class="column2 float value">12,39</li>
-				<li class="column3 string value">pending</li>
-			</ol>
-		</li>
+	<!--elements:-{displayed_lines_count}-->
+	<tr>
+		<th>
+			<!--selection_buttons?-->
+			<input type="checkbox" value="{id}">
+			<!--end-->
+		</th>
+		<!--formatValuesEx:1-->
+		<td class="{path.@cssClass} {property.getType.@typeCss}">
+			<!--..class_name?-->
+			<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
+			<!--end-->
+		</td>
 		<!--end-->
-	</ul>
+		<!--formatValuesEx:2-...count-->
+		<td class="{path.@cssClass} {property.getType.@typeCss}">{value}</td>
+		<!--sample-->
+		<td class="column3 string">value 3</td>
+		<!--end-->
+	</tr>
+	<!--sample-->
+	<tr>
+		<th><input type="checkbox"></th>
+		<td class="column1 string"><a href="app://Class/2">code2</a></td>
+		<td class="column2 float">3,18</td>
+		<td class="column3 string">pending</td>
+	</tr>
+	<tr>
+		<th><input type="checkbox"></th>
+		<td class="column1 string"><a href="app://Class/3">code3</a></td>
+		<td class="column2 float">2,29</td>
+		<td class="column3 string">done</td>
+	</tr>
+	<tr>
+		<th><input type="checkbox"></th>
+		<td class="column1 string"><a href="app://Class/4">code4</a></td>
+		<td class="column2 float">12,39</td>
+		<td class="column3 string">pending</td>
+	</tr>
+	<!--end-->
 
 <!--END-->
+</tbody>
+</table>
 </form>
 </article>
 </body>
