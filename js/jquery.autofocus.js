@@ -20,7 +20,7 @@
 		var $this = $(this);
 		var controls = $this
 			.find('input, select, textarea')
-			.filter(':visible:not([readonly])');
+			.filter(':visible:not([readonly]):not([data-no-autofocus])');
 		var position = 0;
 		var length   = controls.length;
 		while (
