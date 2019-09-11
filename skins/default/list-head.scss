@@ -6,14 +6,26 @@ article.list > form > table > thead {
 
 	> tr {
 
+		> :first-child {
+			background: #efefef;
+			z-index: 1;
+		}
+
 		&.title {
 			padding: 0 .75em 0 .5em;
 
 			> th {
 				color: #333;
 				font-weight: 500;
-				padding: 0 .75em 0 .5em;
 				text-align: left;
+
+				&:first-child {
+					padding: 0 .83em 0 .75em;
+				}
+
+				&:not(:first-child) {
+					padding: 0 .75em 0 .5em;
+				}
 
 				&.column_select {
 					font-size: 0;
@@ -21,17 +33,33 @@ article.list > form > table > thead {
 			}
 		}
 
-		&.search > td {
-			position: relative;
-			vertical-align: top;
+		&.search {
 
-			> input {
-				background: #efefef;
-				border: none;
-				display: block;
-				height: 12px;
-				padding: 10px .75em 10px .5em;
-				width: calc(100% - 1.25em);
+			> .reset {
+				font-size: 0;
+				text-align: center;
+				vertical-align: middle;
+
+				> a {
+					background: url('img/filter-24.svg') center no-repeat;
+					display: inline-block;
+					height: 28px;
+					width: 28px;
+				}
+			}
+
+			> td {
+				position: relative;
+				vertical-align: top;
+
+				> input {
+					background: #efefef;
+					border: none;
+					display: block;
+					height: 12px;
+					padding: 10px .75em 10px .5em;
+					width: calc(100% - 1.25em);
+				}
 			}
 		}
 	}

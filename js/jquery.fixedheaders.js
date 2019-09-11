@@ -21,6 +21,16 @@
 		}
 	};
 
+	$(document).keydown(function(event)
+	{
+		if ((event.keyCode < 33) || (event.keyCode > 40)) {
+			return;
+		}
+		for (var table in tables) if (tables.hasOwnProperty(table)) {
+			tables[table].$table.mousedown().mouseup();
+		}
+	});
+
 	//--------------------------------------------------------------------------------- window.resize
 	$(window).resize(function()
 	{
@@ -43,7 +53,7 @@
 
 			// TODO this timing is not really reliable, but more reliable than without it
 			on_resize ++;
-			setTimeout(function() { $table.mousewheel(); on_resize --; }, 25);
+			setTimeout(function() { $table.mousedown().mouseup(); on_resize --; }, 25);
 		}
 	});
 
@@ -188,10 +198,10 @@
 		//--------------------------------------------------------------------------- $table.mousewheel
 		$table.mousewheel(function()
 		{
-			$table.mousedown().mouseup();
+			$(this).mousedown().mouseup();
 		});
 
-		$table.mousewheel();
+		$table.mousedown().mouseup();
 		$(window).resize();
 
 	};

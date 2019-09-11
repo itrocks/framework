@@ -1,12 +1,3 @@
-article.list > section.summary {
-  background: inherit;
-  cursor: pointer;
-  height: 34px;
-  overflow: auto; }
-  article.list > section.summary > details.error {
-    border: 1px solid darkred; }
-  article.list > section.summary > h3 {
-    display: none; }
 article.list > form {
   height: calc(100% - 110px); }
   article.list > form > table {

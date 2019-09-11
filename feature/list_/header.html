@@ -10,21 +10,23 @@
 </head>
 <body>
 <article class="list">
-<header><h2>List</h2></header>
-<form>
 <!--BEGIN-->
-<!--use ITRocks\Framework\Html\Engine-->
 
-	<ul class="footer">
-		<!--selection_buttons?-->
-		<li class="selection actions">
-			{/feature/list_/selection_buttons.html}
-		</li>
-		<!--end-->
-	</ul>
+	<header>
+		<h2>{title}</h2>
+		{/setting/custom.html}
+	</header>
+
+	{/component/button/general_buttons.html}
+
+	<section class="summary">
+		<h3>|Summary|</h3>
+		<p class="lines">
+			|<strong>!?!</strong> selected lines out of <strong>!{rows_count}!</strong> lines|
+		</p>
+	</section>
 
 <!--END-->
-</form>
 </article>
 </body>
 </html>

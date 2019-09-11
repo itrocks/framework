@@ -12,9 +12,12 @@
 		overflow: hidden;
 
 		> * {
+			font-size: $font-size !important;
+		}
+
+		> .contextual, > .main, > .menu {
 			background: $background;
 			display: inline-block;
-			font-size: $font-size;
 			height: 100%;
 			position: relative;
 			vertical-align: top;

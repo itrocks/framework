@@ -1,14 +1,29 @@
 article.list > form > table > thead {
   background: #efefef; }
+  article.list > form > table > thead > tr > :first-child {
+    background: #efefef;
+    z-index: 1; }
   article.list > form > table > thead > tr.title {
     padding: 0 .75em 0 .5em; }
     article.list > form > table > thead > tr.title > th {
       color: #333;
       font-weight: 500;
-      padding: 0 .75em 0 .5em;
       text-align: left; }
+      article.list > form > table > thead > tr.title > th:first-child {
+        padding: 0 .83em 0 .75em; }
+      article.list > form > table > thead > tr.title > th:not(:first-child) {
+        padding: 0 .75em 0 .5em; }
       article.list > form > table > thead > tr.title > th.column_select {
         font-size: 0; }
+  article.list > form > table > thead > tr.search > .reset {
+    font-size: 0;
+    text-align: center;
+    vertical-align: middle; }
+    article.list > form > table > thead > tr.search > .reset > a {
+      background: url("img/filter-24.svg") center no-repeat;
+      display: inline-block;
+      height: 28px;
+      width: 28px; }
   article.list > form > table > thead > tr.search > td {
     position: relative;
     vertical-align: top; }

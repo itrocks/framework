@@ -1,0 +1,18 @@
+@import 'colors.scss';
+@import 'mixins.scss';
+
+article.list > .summary {
+	height: 34px;
+	position: relative;
+
+	> h3 {
+		display: none;
+	}
+
+	> p.lines {
+		@include vertical-align(absolute);
+		padding: 0 10px 0;
+		right: 0;
+	}
+}
+

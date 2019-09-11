@@ -1,21 +1,5 @@
-@import 'colors.scss';
 
 article.list {
-
-	> section.summary {
-		background: inherit;
-		cursor: pointer;
-		height: 34px;
-		overflow: auto;
-
-		> details.error {
-			border: 1px solid $error-border-color;
-		}
-
-		> h3 {
-			display: none;
-		}
-	}
 
 	> form {
 		height: calc(100% - 110px);

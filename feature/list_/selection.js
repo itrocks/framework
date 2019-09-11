@@ -30,24 +30,24 @@ $(document).ready(function()
 	};
 
 	//----------------------------------------------------------------------------------- updateCount
-	var updateCount = function($article_list, $selector)
+	var updateCount = function($article_list, $selector, $summary)
 	{
 		var count_elements, select_all_content, selection_content, selection_exclude_content, text;
 		if (select_all[$article_list.id]) {
 			select_all_content        = 1;
 			selection_content         = '';
 			selection_exclude_content = excluded_selection[$article_list.id].join();
-			count_elements  = $selector.find('> ul > li.select_all').data('count');
+			count_elements  = $selector.children('input[name=select_all').data('count');
 			count_elements -= excluded_selection[$article_list.id].length;
-			text            = 'x' + count_elements;
+			text            = count_elements;
 		}
 		else {
 			selection_content         = selection[$article_list.id].join();
 			select_all_content        = 0;
 			selection_exclude_content = '';
-			text                      = 'x' + selection[$article_list.id].length;
+			text                      = selection[$article_list.id].length;
 		}
-		$selector.children('a').html(text);
+		$summary.html($summary.data('text').replace('?', text));
 		$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
 		$selector.children('input[name=select_all]')        .val(select_all_content);
 		$selector.children('input[name=selection]')         .val(selection_content);
@@ -56,11 +56,13 @@ $(document).ready(function()
 	//---------------------------------------------------------------------------------- article.list
 	$('body').build('each', 'article.list', function()
 	{
-		var $this     = $(this);
-		var $list     = $this.find('ul.list');
-		var $search   = $list.children('.search');
-		var $selector = $this.find('ul.footer > .selector');
-		$this.id = $this.attr('id');
+		var $article  = $(this);
+		var $table    = $article.find('> form > table');
+		var $search   = $table.find('> thead > .search');
+		var $selector = $table.find('> thead > .title > .visible.lines');
+		var $summary  = $article.find('.summary .lines');
+		$article.id   = $article.attr('id');
+		$summary.data('text', $summary.html());
 
 		//------------------------------------------------------------ .search input|textarea keydown
 		// reload list when #13 pressed into a search input
@@ -89,51 +91,51 @@ $(document).ready(function()
 
 		//--------------------------------------------------------------- input[type=checkbox] change
 		var checkboxes_select = 'input[type=checkbox]';
-		var $checkboxes       = $this.find(checkboxes_select);
-		if ($this.id in selection) {
+		var $checkboxes       = $article.find(checkboxes_select);
+		if ($article.id in selection) {
 			$checkboxes.each(function() {
 				if (
-					(select_all[$this.id] && ($.inArray(this.value, excluded_selection[$this.id]) === -1))
-					|| $.inArray(this.value, selection[$this.id]) !== -1
+					(select_all[$article.id] && ($.inArray(this.value, excluded_selection[$article.id]) === -1))
+					|| $.inArray(this.value, selection[$article.id]) !== -1
 				) {
 					$(this).prop('checked', true);
 				}
 			});
 		}
 		else {
-			excluded_selection[$this.id] = [];
-			select_all[$this.id]         = false;
-			selection[$this.id]          = [];
+			excluded_selection[$article.id] = [];
+			select_all[$article.id]         = false;
+			selection[$article.id]          = [];
 		}
 
 		$checkboxes.change(function()
 		{
-			if (select_all[$this.id]) {
-				if (!this.checked && (excluded_selection[$this.id].indexOf(this.value) === -1)) {
-					excluded_selection[$this.id].push(this.value);
+			if (select_all[$article.id]) {
+				if (!this.checked && (excluded_selection[$article.id].indexOf(this.value) === -1)) {
+					excluded_selection[$article.id].push(this.value);
 				}
-				if (this.checked && (excluded_selection[$this.id].indexOf(this.value) > -1)) {
-					excluded_selection[$this.id]
-						.splice(excluded_selection[$this.id].indexOf(this.value), 1);
+				if (this.checked && (excluded_selection[$article.id].indexOf(this.value) > -1)) {
+					excluded_selection[$article.id]
+						.splice(excluded_selection[$article.id].indexOf(this.value), 1);
 				}
-				$this.find(checkboxes_select + '[value=' + this.value + ']')
+				$article.find(checkboxes_select + '[value=' + this.value + ']')
 					.attr('checked', this.checked);
 			}
 			else {
-				if (this.checked && (selection[$this.id].indexOf(this.value) === -1)) {
-					selection[$this.id].push(this.value);
+				if (this.checked && (selection[$article.id].indexOf(this.value) === -1)) {
+					selection[$article.id].push(this.value);
 				}
-				if (!this.checked && (selection[$this.id].indexOf(this.value) > -1)) {
-					selection[$this.id].splice(selection[$this.id].indexOf(this.value), 1);
+				if (!this.checked && (selection[$article.id].indexOf(this.value) > -1)) {
+					selection[$article.id].splice(selection[$article.id].indexOf(this.value), 1);
 				}
 				// Repercussion if with have multiple lines
-				$this.find(checkboxes_select + '[value=' + this.value + ']')
+				$article.find(checkboxes_select + '[value=' + this.value + ']')
 					.attr('checked', this.checked);
 			}
-			updateCount($this, $selector);
+			updateCount($article, $selector, $summary);
 		});
 
-		updateCount($this, $selector);
+		updateCount($article, $selector, $summary);
 
 		//------------------------------------------------------------------------------ selectAction
 		/**
@@ -147,19 +149,19 @@ $(document).ready(function()
 		{
 			if (type === 'all') {
 				// Re-initialize selection
-				excluded_selection[$this.id] = [];
-				select_all[$this.id]         = select;
-				selection[$this.id]          = [];
-				$this.find('input[type=checkbox]').prop('checked', select);
+				excluded_selection[$article.id] = [];
+				select_all[$article.id]         = select;
+				selection[$article.id]          = [];
+				$article.find('input[type=checkbox]').prop('checked', select);
 			}
 			else {
-				$this.find('input[type=checkbox]').each(function() {
+				$article.find('input[type=checkbox]').each(function() {
 					var checkbox = $(this);
 					checkbox.prop('checked', select);
 					checkbox.change();
 				});
 			}
-			updateCount($this, $selector);
+			updateCount($article, $selector, $summary);
 			event.preventDefault();
 		};
 
@@ -189,7 +191,7 @@ $(document).ready(function()
 			selectAction(true, null, event);
 		});
 
-		$this.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
+		$article.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
 		{
 			var data = {
 				excluded_selection: $selector.children('input[name=excluded_selection]').val(),

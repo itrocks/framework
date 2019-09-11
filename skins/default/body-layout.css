@@ -6,9 +6,10 @@
     font-size: 0;
     overflow: hidden; }
     body > * {
+      font-size: 12px !important; }
+    body > .contextual, body > .main, body > .menu {
       background: white;
       display: inline-block;
-      font-size: 12px;
       height: 100%;
       position: relative;
       vertical-align: top; }

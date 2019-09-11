@@ -17,10 +17,11 @@
 <!--BEGIN-->
 
 	<tr class="title">
-		<th class="column_select">
-			<!--!lock_columns?-->
-			<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
-			<!--end-->
+		<th class="visible lines">
+			<input data-no-autofocus type="checkbox" title="|check to select all !{rows_count}! lines|">
+			<input name="excluded_selection" type="hidden">
+			<input data-count="{rows_count}" name="select_all" type="hidden" value="0">
+			<input name="selection" type="hidden">
 		</th>
 		<!--properties-->
 		<th class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-drop-out-href="/{..@class.path}/listSetting?remove_property={path}" data-property="{path}">
@@ -34,6 +35,11 @@
 			<a href="app://Class/feature?sort=column_name_3" target="#main">column3</a>
 		</th>
 		<!--end-->
+		<th class="column_select">
+			<!--!lock_columns?-->
+			<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
+			<!--end-->
+		</th>
 	</tr>
 	<tr class="search">
 		<td class="reset">
