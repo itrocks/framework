@@ -1,5 +1,9 @@
 article.list > .summary {
-  height: 34px;
+  background: #efefef;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+  box-sizing: border-box;
+  height: 39px;
   position: relative; }
   article.list > .summary > h3 {
     display: none; }
@@ -9,3 +13,6 @@ article.list > .summary {
     transform: perspective(1px) translateY(-50%);
     padding: 0 10px 0;
     right: 0; }
+
+article.list > .general.actions {
+  z-index: 1; }

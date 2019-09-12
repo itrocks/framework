@@ -6,38 +6,49 @@ ul.actions {
 li.action,
 li.actions > ul > li,
 ul.actions > li {
-  background-color: #f8f8f8;
-  background-position: 1px center;
-  background-repeat: no-repeat;
   border: 1px solid #d0d0d0;
   border-radius: 2px;
   box-shadow: 0 0 0 1px #ececec, inset 0 0 0 1px #f5f5f5;
-  display: inline-flex;
+  display: inline-block;
   height: 26px;
-  margin: 5px 6px 5px 4px; }
+  margin: 5px 6px 5px 4px;
+  position: relative; }
   li.action a,
   li.actions > ul > li a,
   ul.actions > li a {
+    background: #f8f8f8 1px center no-repeat;
     display: block;
     font-size: 12px;
-    margin: auto;
     padding: 7px 5px 7px 26px;
     white-space: nowrap; }
-  li.action > ul,
-  li.actions > ul > li > ul,
-  ul.actions > li > ul {
+    li.action a:focus, li.action a:hover,
+    li.actions > ul > li a:focus,
+    li.actions > ul > li a:hover,
+    ul.actions > li a:focus,
+    ul.actions > li a:hover {
+      background-color: #efefef;
+      color: #444; }
+  li.action:not(:hover) > ul,
+  li.actions > ul > li:not(:hover) > ul,
+  ul.actions > li:not(:hover) > ul {
     display: none; }
   li.action:hover > ul,
   li.actions > ul > li:hover > ul,
   ul.actions > li:hover > ul {
     background-color: white;
-    border: 1px solid lightgrey;
+    border: 2px solid #d8d8d8;
+    box-shadow: 0 0 3px 3px rgba(216, 216, 216, 0.4);
     display: inline-block;
-    left: 0;
+    left: -1px;
     position: absolute;
-    top: 1.6em;
-    z-index: 1; }
+    z-index: 2; }
     li.action:hover > ul > li,
     li.actions > ul > li:hover > ul > li,
     ul.actions > li:hover > ul > li {
       display: block; }
+
+ul.actions:not(.selection) > li > ul {
+  top: 25px; }
+
+ul.selection.actions > li > ul {
+  bottom: 25px; }

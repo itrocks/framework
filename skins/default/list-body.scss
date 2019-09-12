@@ -7,7 +7,6 @@ article.list > form > table > tbody > tr {
 		> td {
 			background: white;
 		}
-
 		> th {
 			background: #efefef;
 		}
@@ -17,15 +16,38 @@ article.list > form > table > tbody > tr {
 		> td {
 			background: #f8f8f8;
 		}
-
 		> th {
 			background: #e8e8e8;
+		}
+	}
+
+	&:hover:nth-child(odd) {
+		> td {
+			background: #fcf7f1;
+		}
+		> th {
+			background: #ccc;
+		}
+	}
+
+	&:hover:nth-child(even) {
+		> td {
+			background: #f9f1e6;
+		}
+		> th {
+			background: #bbb;
 		}
 	}
 
 	td {
 		color: #444;
 		padding: 0 .75em 0 .5em;
+
+		> a {
+			display: block;
+			height: 22px;
+			padding-top: 10px;
+		}
 	}
 
 	th {

@@ -1,16 +1,3 @@
-@media screen and (max-width: 1013px) {
-  header > .top.bar > button.menu {
-    background: url("img/menu-button-white.png") no-repeat center;
-    background-size: 32px;
-    font-size: 0;
-    height: 36px;
-    width: 36px; }
-
-  nav#menu {
-    display: none; } }
-@media screen and (min-width: 1014px) {
-  header > .top.bar > button.menu {
-    display: none; } }
 nav#menu {
   position: relative; }
   nav#menu > .actions {
@@ -45,6 +32,8 @@ nav#menu {
       display: table-cell;
       padding-left: 42px;
       vertical-align: middle; }
+      nav#menu > ul > li > h3 > a:focus, nav#menu > ul > li > h3 > a:hover {
+        background: #efefef; }
   nav#menu > ul > li > ul > li {
     display: table;
     height: 29px;
@@ -53,3 +42,5 @@ nav#menu {
       display: table-cell;
       padding-left: 54px;
       vertical-align: middle; }
+      nav#menu > ul > li > ul > li > a:focus, nav#menu > ul > li > ul > li > a:hover {
+        background: #cdf0ea; }

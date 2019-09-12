@@ -1,8 +1,5 @@
 article.import.preview li.block > .constants {
   display: none; }
-article.import.preview li.block > section.ui-droppable-hover {
-  background: #aedc5f;
-  color: white; }
 article.import.preview li.block > section > h3 {
   display: none; }
 article.import.preview li.block > section > ul {
@@ -25,6 +22,3 @@ article.import.preview li.block > section.ignore li {
 article.import.preview li.block > section.write li {
   background-color: blue;
   color: white; }
-article.import.preview p.warning,
-article.import.preview table.preview {
-  margin-left: 0.5em; }

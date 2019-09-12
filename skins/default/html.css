@@ -1,9 +1,6 @@
 a {
   color: inherit;
   text-decoration: inherit; }
-  a:hover {
-    background-color: #aedc5f;
-    color: white; }
 
 button,
 input[type=button],
@@ -19,8 +16,7 @@ iframe {
 
 div.popup {
   background-color: white;
-  border: 1px solid #aedc5f;
-  color: #444444;
+  color: #444;
   position: fixed;
   z-index: 1; }
   div.popup > article > header {

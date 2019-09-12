@@ -1,28 +1,9 @@
-@media screen and (max-width: 469px) {
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-    padding: 0.3em 0; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
-      padding: 0.3em 0.25em; } }
-@media screen and (min-width: 470px) {
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-    display: table-row; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
-      padding: 0.3em 0; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div {
-      display: table-cell; } }
 article > ul.data ol.properties > li:not(.component-objects) > div {
   vertical-align: top; }
-  article > ul.data ol.properties > li:not(.component-objects) > div > span {
-    padding: 0 0.25em; }
-article > ul.data ol.properties > li:not(.component-objects) > label {
-  padding-bottom: 0.3em;
-  padding-top: 0.3em; }
 
-article > form > ul.data ol.properties > li > div > span {
-  padding: 0.3em 0.25em; }
-  article > form > ul.data ol.properties > li > div > span.set {
-    display: inline-block;
-    vertical-align: top; }
+article > form > ul.data ol.properties > li > div > span.set {
+  display: inline-block;
+  vertical-align: top; }
 
 article > form > ul.data ol.properties > li.component-objects > label {
   cursor: pointer; }
@@ -35,13 +16,11 @@ article > form > ul.data ol.properties > li.component-objects > label {
 article > form ul.data > li, article ul.data > li {
   display: block; }
 article > form ol.properties, article ol.properties {
-  display: block;
-  padding: 0.5em; }
+  display: block; }
   article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
     vertical-align: middle;
     white-space: nowrap; }
   article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
-    padding: 0.3em 0.25em;
     vertical-align: top;
     white-space: nowrap; }
     article > form ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label:after, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label:after {
@@ -56,21 +35,12 @@ article > form ol.properties, article ol.properties {
   article ol.properties > li.component-objects {
     display: block; }
   article > form ol.properties > li.block, article ol.properties > li.block {
-    border: 1px solid lightgrey;
     margin-top: -1px; }
-  article > form ol.properties > li.block > div,
-  article > form ol.properties > li.component-objects > div, article ol.properties > li.block > div,
-  article ol.properties > li.component-objects > div {
-    border: 1px solid lightgrey; }
   article > form ol.properties > li.block > label,
   article > form ol.properties > li.component-objects > label, article ol.properties > li.block > label,
   article ol.properties > li.component-objects > label {
     background-color: #eee;
-    border-left: 1px solid lightgrey;
-    border-right: 1px solid lightgrey;
-    border-top: 1px solid lightgrey;
-    display: block;
-    padding: 0.3em 0.25em; }
+    display: block; }
   article > form ol.properties > li.multiline > div, article ol.properties > li.multiline > div {
     white-space: pre-line; }
 article > form ul.data ul.data, article ul.data ul.data {

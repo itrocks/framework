@@ -1,37 +1,34 @@
-$font-size: 12px;
 
-$section-border-size: 2px;
-$menu-section-width: 256px - $section-border-size;
-$contextual-section-width: 256px - $section-border-size;
+// html components
+
+$font-size: 12px;
 
 $input-border-radius: 2px;
 $input-border-size: 1px;
 $input-height: 30px;
 $input-padding: 10px;
 
-//-------------------------------------------------------------------------------------------------
+// actions
 
-$action-horizontal-padding: .25em;
-$action-vertical-padding: .3em;
+$actions-height: 40px;
 
-$actions-horizontal-margin: 0;
-$actions-vertical-margin: .3em;
+// sections
 
-$article-head-height: $font-size * 2;
-$article-head-padding: .5em;
+$section-border-size: 2px;
 
-$head-height: $font-size * 3;
+$menu-width: 206px;
+$main-width: calc(100% - #{$menu-width});
+$contextual-width: $menu-width - $section-border-size;
 
-$list-horizontal-padding: $action-horizontal-padding;
-$list-vertical-padding: $action-vertical-padding;
+// main section
 
-$menu-head-horizontal-padding: $action-horizontal-padding;
-$menu-head-vertical-padding: $action-vertical-padding;
+$header-height: 64px;
+$favorites-height: 0px;
+$main-height: calc(100% - #{$header-height} - #{$favorites-height});
+$article-header-height: 38px;
 
-$menu-item-horizontal-padding: $action-horizontal-padding;
-$menu-item-vertical-padding: $action-vertical-padding;
+// list
 
-$property-label-horizontal-padding: $action-horizontal-padding;
-$property-label-vertical-padding: $action-vertical-padding;
-
-$window-padding: .5em;
+$list-footer-height: $actions-height - 1px;
+$list-form-height: calc(100% - #{$article-header-height} - #{$actions-height} - #{$list-footer-height});
+$list-table-height: 100%;

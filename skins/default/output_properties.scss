@@ -2,50 +2,14 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-@media screen and (max-width: $phone-max-width) {
-
-	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-		padding: $property-label-vertical-padding 0;
-
-		> div {
-			padding: $property-label-vertical-padding $property-label-horizontal-padding;
-		}
-	}
-}
-
-@media screen and (min-width: $tab-min-width) {
-
-	article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-		display: table-row;
-
-		> div {
-			padding: $property-label-vertical-padding 0;
-		}
-
-		> label, > div {
-			display: table-cell;
-		}
-	}
-}
-
 article > ul.data ol.properties > li:not(.component-objects) {
 
 	> div {
 		vertical-align: top;
-
-		> span {
-			padding: 0 $property-label-horizontal-padding;
-		}
-	}
-
-	> label {
-		padding-bottom: $property-label-vertical-padding;
-		padding-top: $property-label-vertical-padding;
 	}
 }
 
 article > form > ul.data ol.properties > li > div > span {
-	padding: $property-label-vertical-padding $property-label-horizontal-padding;
 
 	&.set {
 		display: inline-block;
@@ -72,7 +36,6 @@ article > form, article {
 
 	ol.properties {
 		display: block;
-		padding: $window-padding;
 
 		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 
@@ -82,7 +45,6 @@ article > form, article {
 			}
 
 			> label {
-				padding: $property-label-vertical-padding $property-label-horizontal-padding;
 				vertical-align: top;
 				white-space: nowrap;
 
@@ -101,24 +63,15 @@ article > form, article {
 		}
 
 		> li.block {
-			border: $thin-border;
 			margin-top: -1px;
 		}
 
 		> li.block,
 		> li.component-objects {
 
-			> div {
-				border: $thin-border;
-			}
-
 			> label {
 				background-color: #eee;
-				border-left: $thin-border;
-				border-right: $thin-border;
-				border-top: $thin-border;
 				display: block;
-				padding: $list-vertical-padding $list-horizontal-padding;
 			}
 		}
 

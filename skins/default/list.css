@@ -1,5 +1,6 @@
 article.list > form {
-  height: calc(100% - 110px); }
+  height: calc(100% - 38px - 40px - 39px);
+  position: relative; }
   article.list > form > table {
     height: 100%;
     white-space: nowrap;

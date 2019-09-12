@@ -1,6 +1,5 @@
 .func_select,
 .property_select {
-  border: 1px solid lightgrey;
   display: inline-block;
   top: 1.5em;
   white-space: nowrap; }
@@ -22,13 +21,6 @@
     .func_select ul > li:not(.class),
     .property_select ul > li:not(.class) {
       padding: .2em 0 .2em 1em; }
-      .func_select ul > li:not(.class):hover,
-      .property_select ul > li:not(.class):hover {
-        background-color: #aedc5f;
-        color: white; }
-    .func_select ul > li.separator,
-    .property_select ul > li.separator {
-      border-top: 1px solid lightgrey; }
     .func_select ul > li.ui-draggable-handle,
     .property_select ul > li.ui-draggable-handle {
       cursor: grab; }
@@ -46,25 +38,8 @@
       .func_select ul > li > a:not(.expanded),
       .property_select ul > li > a:not(.expanded) {
         background-image: url("../default/img/tree/plus.png"); }
-  .func_select > ul,
-  .property_select > ul {
-    border-top: 1px solid lightgrey; }
 
 .object.ui-draggable-dragging,
 :not(article.model.edit .editor) .property.ui-draggable-dragging {
   background: rgba(255, 255, 255, 0.6);
-  border: 1px solid lightgrey;
-  font-weight: bold;
-  padding: 0.25em; }
-
-.insert-bottom {
-  border-bottom: 3px solid #aedc5f !important; }
-
-.insert-left {
-  border-left: 3px solid #aedc5f !important; }
-
-.insert-right {
-  border-right: 3px solid #aedc5f !important; }
-
-.insert-top {
-  border-top: 3px solid #aedc5f !important; }
+  font-weight: bold; }

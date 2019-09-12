@@ -11,11 +11,6 @@ article.import.preview {
 
 		> section {
 
-			&.ui-droppable-hover {
-				background: $action-focus-background;
-				color: $action-focus-color;
-			}
-
 			> h3 {
 				display: none;
 			}
@@ -54,11 +49,6 @@ article.import.preview {
 				color: white;
 			}
 		}
-	}
-
-	p.warning,
-	table.preview {
-		margin-left: $window-padding;
 	}
 
 }

@@ -1,7 +1,6 @@
 div.main > .favorites {
-  background: #fefefe; }
-  div.main > .favorites > h2 {
-    display: none; }
+  background: #fefefe;
+  display: none; }
   div.main > .favorites > ul {
     height: 27px;
     position: relative; }

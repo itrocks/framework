@@ -1,3 +1,17 @@
+@mixin module-color($data-class, $path, $color) {
+
+	article[data-class^='#{$data-class}'] > header > h2 {
+		background-color: $color;
+	}
+
+	nav#menu a[href*='#{$path}'] {
+		&:focus, &:hover {
+			background-color: $color;
+		}
+	}
+
+}
+
 @mixin vertical-align($position: relative) {
 	position: $position;
 	top: 50%;

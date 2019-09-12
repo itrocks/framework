@@ -12,11 +12,10 @@
 @import '../../../../vendor/quilljs/quill/quill.snow.css';
 
 @import 'html.css';
-@import 'main.css';
 
 @import 'actions.css';
 @import 'article.css';
-@import 'body-layout.css';
+@import 'body.css';
 @import 'combo.css';
 @import 'component_objects.css';
 @import 'custom.css';

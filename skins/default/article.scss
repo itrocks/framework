@@ -7,20 +7,18 @@ article {
 
 	> header {
 		background: #efefef;
-		border-bottom: 1px solid #ececec;
-		box-shadow: 0 1px #d0d0d0, 0 0 0 1px inset #ececec;
 		color: #333333;
-		height: 36px;
+		display: table;
+		height: $article-header-height;
+		width: 100%;
 
 		> h2 {
-			@include tab(#efefef);
-			background: #f8f8f8;
 			cursor: pointer;
-			display: inline-block;
-			font-weight: normal;
-			height: 24px;
-			margin: 4px 1px -1px;
-			padding: 10px 18px 0;
+			display: table-cell;
+			font-size: 14px;
+			font-weight: 500;
+			padding-left: .8em;
+			vertical-align: middle;
 
 			&:first-letter {
 				text-transform: uppercase;
@@ -28,9 +26,8 @@ article {
 		}
 	}
 
-	> ul.general.actions {
+	ul.actions {
 		position: absolute;
-		right: 0;
-		top: 0;
+		left: 0;
 	}
 }

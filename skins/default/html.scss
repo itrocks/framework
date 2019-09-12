@@ -4,11 +4,6 @@
 a {
 	color: inherit;
 	text-decoration: inherit;
-
-	&:hover {
-		background-color: $action-focus-background;
-		color: $action-focus-color;
-	}
 }
 
 button,
@@ -27,7 +22,6 @@ iframe {
 
 div.popup {
 	background-color: $background;
-	border: 1px solid $action-focus-background;
 	color: $color;
 	position: fixed;
 	z-index: 1;

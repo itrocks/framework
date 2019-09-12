@@ -1,8 +1,13 @@
 @import 'colors.scss';
 @import 'mixins.scss';
+@import 'sizes.scss';
 
 article.list > .summary {
-	height: 34px;
+	background: #efefef;
+	border-bottom: 1px solid #ccc;
+	border-top: 1px solid #ccc;
+	box-sizing: border-box;
+	height: $actions-height - 1px;
 	position: relative;
 
 	> h3 {
@@ -16,3 +21,6 @@ article.list > .summary {
 	}
 }
 
+article.list > .general.actions {
+	z-index: 1;
+}

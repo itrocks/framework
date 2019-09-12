@@ -2,30 +2,6 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-@media screen and (max-width: $tab-max-width) {
-
-	header > .top.bar > button.menu {
-		background: url('img/menu-button-white.png') no-repeat center;
-		background-size: 32px;
-		font-size: 0;
-		height: $head-height;
-		width: $head-height;
-	}
-
-	nav#menu {
-		display: none;
-	}
-
-}
-
-@media screen and (min-width: $pc-min-width) {
-
-	header > .top.bar > button.menu {
-		display: none;
-	}
-
-}
-
 nav#menu {
 	position: relative;
 
@@ -80,6 +56,10 @@ nav#menu {
 					display: table-cell;
 					padding-left: 42px;
 					vertical-align: middle;
+
+					&:focus, &:hover {
+						background: #efefef;
+					}
 				}
 			}
 
@@ -92,6 +72,10 @@ nav#menu {
 					display: table-cell;
 					padding-left: 54px;
 					vertical-align: middle;
+
+					&:focus, &:hover {
+						background: #cdf0ea;
+					}
 				}
 			}
 		}

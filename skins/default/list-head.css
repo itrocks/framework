@@ -32,5 +32,4 @@ article.list > form > table > thead {
       border: none;
       display: block;
       height: 12px;
-      padding: 10px .75em 10px .5em;
-      width: calc(100% - 1.25em); }
+      padding: 10px .75em 10px .5em; }

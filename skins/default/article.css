@@ -2,44 +2,19 @@ article {
   background: #f8f8f8; }
   article > header {
     background: #efefef;
-    border-bottom: 1px solid #ececec;
-    box-shadow: 0 1px #d0d0d0, 0 0 0 1px inset #ececec;
     color: #333333;
-    height: 36px; }
+    display: table;
+    height: 38px;
+    width: 100%; }
     article > header > h2 {
-      position: relative;
-      background: #f8f8f8;
       cursor: pointer;
-      display: inline-block;
-      font-weight: normal;
-      height: 24px;
-      margin: 4px 1px -1px;
-      padding: 10px 18px 0; }
-      article > header > h2:after {
-        border-right: 3px solid #efefef;
-        border-top: 3px solid #efefef;
-        border-left: 3px solid transparent;
-        border-bottom: 3px solid transparent;
-        content: '';
-        height: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 0; }
-      article > header > h2:before {
-        border-right: 2px solid transparent;
-        border-top: 2px solid #efefef;
-        border-left: 2px solid #efefef;
-        border-bottom: 2px solid transparent;
-        content: '';
-        height: 0;
-        left: 0;
-        position: absolute;
-        top: 0;
-        width: 0; }
+      display: table-cell;
+      font-size: 14px;
+      font-weight: 500;
+      padding-left: .8em;
+      vertical-align: middle; }
       article > header > h2:first-letter {
         text-transform: uppercase; }
-  article > ul.general.actions {
+  article ul.actions {
     position: absolute;
-    right: 0;
-    top: 0; }
+    left: 0; }

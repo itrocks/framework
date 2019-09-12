@@ -11,8 +11,7 @@ article.user.login > form {
 section.connected.user {
   display: inline-block; }
   section.connected.user > a {
-    color: #eee;
-    padding: 0.3em 0.25em; }
+    color: #eee; }
   section.connected.user > a > .disconnect,
   section.connected.user > h3,
   section.connected.user > .user {

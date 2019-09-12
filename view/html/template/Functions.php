@@ -1161,12 +1161,7 @@ class Functions
 	{
 		/** @var $reflection_property Reflection_Property */
 		$reflection_property = reset($template->objects);
-		$html = str_replace(
-			'class="auto_width"',
-			'',
-			$this->getEdit($template, 'search[' . $reflection_property->path . ']', true, true)
-		);
-		return $html;
+		return $this->getEdit($template, 'search[' . $reflection_property->path . ']', true, true);
 	}
 
 	//--------------------------------------------------------------------------------------- getSort

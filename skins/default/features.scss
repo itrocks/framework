@@ -3,23 +3,23 @@ li.action,
 li.actions > ul > li,
 ul.actions > li {
 
-	&.add {
+	&.add > a {
 		background-image: url('img/add-24.svg');
 	}
 
-	&.delete {
+	&.delete > a {
 		background-image: url('img/delete-24.svg');
 	}
 
-	&.export {
+	&.export > a {
 		background-image: url('img/export-24.svg');
 	}
 
-	&.import {
+	&.import > a {
 		background-image: url('img/import-24.svg');
 	}
 
-	&.print {
+	&.print > a {
 		background-image: url('img/print-24.svg');
 	}
 

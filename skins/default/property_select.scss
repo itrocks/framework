@@ -3,7 +3,6 @@
 
 .func_select,
 .property_select {
-	border: $thin-border;
 	display: inline-block;
 	top: 1.5em;
 	white-space: nowrap;
@@ -34,15 +33,6 @@
 
 			&:not(.class) {
 				padding: .2em 0 .2em 1em;
-
-				&:hover {
-					background-color: $action-focus-background;
-					color: $action-focus-color;
-				}
-			}
-
-			&.separator {
-				border-top: $thin-border;
 			}
 
 			&.ui-draggable-handle {
@@ -67,32 +57,10 @@
 			}
 		}
 	}
-
-	> ul {
-		border-top: $thin-border;
-	}
 }
 
 .object.ui-draggable-dragging,
 :not(article.model.edit .editor) .property.ui-draggable-dragging {
 	background: rgba(255, 255, 255, .6);
-	border: $thin-border;
 	font-weight: bold;
-	padding: $action-horizontal-padding;
-}
-
-.insert-bottom {
-	border-bottom: 3px solid $action-focus-background !important;
-}
-
-.insert-left {
-	border-left: 3px solid $action-focus-background !important;
-}
-
-.insert-right {
-	border-right: 3px solid $action-focus-background !important;
-}
-
-.insert-top {
-	border-top: 3px solid $action-focus-background !important;
 }

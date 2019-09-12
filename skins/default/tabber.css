@@ -3,9 +3,6 @@
   font-size: 0; }
   .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab {
     background-color: #eee;
-    border-left: 1px solid lightgrey;
-    border-right: 1px solid lightgrey;
-    border-top: 1px solid lightgrey;
     cursor: pointer;
     display: inline-block;
     margin: 0 0 0 -1px; }

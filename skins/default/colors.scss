@@ -1,41 +1,19 @@
 @import 'sizes.scss';
 
+// html components
+
 $background: white;
-$color: #444444;
+$color: #444;
 
 $input-background: white;
 $input-border-color: #d8d8d8;
 $input-border: $input_border_size solid $input-border-color;
 
-$menu-module-background: #f8f8f8;
+// sections
 
 $section-border-color: #d8d8d8d8;
 $section-border: $section-border-size solid $section-border-color;
 
-//-------------------------------------------------------------------------------------------------
+// menu section
 
-$action-focus-background: #aedc5f;
-$action-focus-color: white;
-
-$action-zone-background: #dff;
-
-$edit-focus-background: #eee;
-$edit-focus-color: $color;
-
-$error-border-color: darkred;
-
-$head-background: lightgrey;
-$head-color: $color;
-
-$line-even: white;
-$line-odd: #def; // #eef;
-
-$list-border: 1px solid darkgrey;
-
-$separator-color: #ddd;
-
-$thin-border: 1px solid lightgrey;
-$thin-border-top: 1px solid transparent;
-
-$window-head-background: darkgrey;
-$window-head-color: white;
+$menu-module-background: #f8f8f8;

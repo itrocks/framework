@@ -1,11 +1,13 @@
+@import 'sizes.scss';
 
 article.list {
 
 	> form {
-		height: calc(100% - 110px);
+		height: $list-form-height;
+		position: relative;
 
 		> table {
-			height: 100%;
+			height: $list-table-height;
 			white-space: nowrap;
 			width: 100%;
 

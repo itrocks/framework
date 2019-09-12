@@ -9,7 +9,6 @@ article ol.properties > li.component-objects ul.collection {
     display: table-row-group; }
     article ol.properties > li.block ul.collection > li:first-child > ol > li,
     article ol.properties > li.component-objects ul.collection > li:first-child > ol > li {
-      padding: 0.3em 0.25em;
       text-align: center;
       white-space: nowrap; }
     article ol.properties > li.block ul.collection > li > ol,
