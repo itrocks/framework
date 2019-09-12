@@ -166,6 +166,9 @@ class Controller implements Default_Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$this->objects = $parameters->getSelectedObjects($form);
+		if (!$this->objects) {
+			return Loc::tr('You must select at least one element');
+		}
 		return $parameters->has(static::CONFIRM, true)
 			? $this->delete($parameters,  $form, $files, $class_name)
 			: $this->confirm($parameters, $form, $files, $class_name);
