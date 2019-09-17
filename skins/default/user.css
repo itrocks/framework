@@ -1,21 +1,62 @@
-body.user.login > header {
-  display: block; }
-  body.user.login > header > .top.bar {
-    display: none !important; }
+article.user.login {
+  text-align: center; }
+  article.user.login > h2 {
+    border-bottom: 1px solid #d8d8d8;
+    box-sizing: border-box;
+    font-size: 16px;
+    height: 64px;
+    padding: 24px 10px 0 10px;
+    text-align: left; }
+  article.user.login > form {
+    display: inline-block;
+    padding-top: 64px;
+    position: relative;
+    width: 256px; }
+    article.user.login > form > * {
+      display: block; }
+      article.user.login > form > * > li {
+        display: block;
+        margin: 0;
+        position: relative; }
+    article.user.login > form > ol.properties > li {
+      text-align: left; }
+      article.user.login > form > ol.properties > li:not(:first-child) {
+        margin-top: 14px; }
+      article.user.login > form > ol.properties > li > input, article.user.login > form > ol.properties > li > label {
+        display: block;
+        width: calc(100% - 12px); }
+      article.user.login > form > ol.properties > li > label {
+        color: #666;
+        font-weight: 500;
+        padding-bottom: 4px; }
+        article.user.login > form > ol.properties > li > label:after {
+          display: none; }
+    article.user.login > form > ul.actions {
+      position: relative; }
+      article.user.login > form > ul.actions > li {
+        margin-top: 24px; }
+        article.user.login > form > ul.actions > li > a {
+          padding-left: 0;
+          padding-right: 0; }
+        article.user.login > form > ul.actions > li.connect {
+          border-color: #009def; }
+          article.user.login > form > ul.actions > li.connect > a {
+            background: #009def;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            padding-top: 6px;
+            padding-bottom: 6px; }
+          article.user.login > form > ul.actions > li.connect:hover {
+            border-color: #00aeff; }
+            article.user.login > form > ul.actions > li.connect:hover > a {
+              background: #00aeff; }
 
-article.user.login > form {
-  display: inline-block; }
-  article.user.login > form > ul.actions {
-    text-align: right; }
-
-section.connected.user {
-  display: inline-block; }
-  section.connected.user > a {
-    color: #eee; }
-  section.connected.user > a > .disconnect,
-  section.connected.user > h3,
-  section.connected.user > .user {
+body.user.login > .menu {
+  border-right: none; }
+  body.user.login > .menu:after {
     display: none; }
-
-.user.disconnect > h2 {
+  body.user.login > .menu > .company.logo {
+    border-bottom: none; }
+body.user.login > .main > .notifications {
   display: none; }

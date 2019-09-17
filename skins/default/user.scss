@@ -1,38 +1,109 @@
-@import 'sizes.scss';
-
-body.user.login > header {
-	display: block;
-
-	> .top.bar {
-		display: none !important;
-	}
-}
+@import 'colors.scss';
+@import 'mixins.scss';
 
 article.user.login {
+	text-align: center;
+
+	> h2 {
+		border-bottom: 1px solid #d8d8d8;
+		box-sizing: border-box;
+		font-size: 16px;
+		height: 64px;
+		padding: 24px 10px 0 10px;
+		text-align: left;
+	}
 
 	> form {
 		display: inline-block;
+		padding-top: 64px;
+		position: relative;
+		width: 256px;
+
+		> * {
+			display: block;
+
+			> li {
+				display: block;
+				margin: 0;
+				position: relative;
+			}
+		}
+
+		> ol.properties > li {
+			text-align: left;
+
+			&:not(:first-child) {
+				margin-top: 14px;
+			}
+
+			> input, > label {
+				display: block;
+				width: calc(100% - 12px);
+			}
+
+			> label {
+				color: #666;
+				font-weight: $medium;
+				padding-bottom: 4px;
+
+				&:after {
+					display: none;
+				}
+			}
+		}
 
 		> ul.actions {
-			text-align: right;
+			position: relative;
+
+			> li {
+				margin-top: 24px;
+
+				> a {
+					padding-left: 0;
+					padding-right: 0;
+				}
+
+				&.connect {
+					border-color: #009def;
+
+					> a {
+						background: #009def;
+						color: white;
+						font-size: 14px;
+						font-weight: $medium;
+						padding-top: 6px;
+						padding-bottom: 6px;
+					}
+
+					&:hover {
+						border-color: #00aeff;
+
+						> a {
+							background: #00aeff;
+						}
+					}
+				}
+			}
 		}
 	}
 }
 
-section.connected.user {
-	display: inline-block;
+body.user.login  {
 
-	> a {
-		color: #eee;
+	> .menu {
+		border-right: none;
+
+		&:after {
+			display: none;
+		}
+
+		> .company.logo {
+			border-bottom: none;
+		}
 	}
 
-	> a > .disconnect,
-	> h3,
-	> .user {
+	> .main > .notifications {
 		display: none;
 	}
-}
 
-.user.disconnect > h2 {
-	display: none;
 }
