@@ -35,21 +35,24 @@ article.user.login {
       position: relative; }
       article.user.login > form > ul.actions > li {
         margin-top: 24px; }
-        article.user.login > form > ul.actions > li > a {
+        article.user.login > form > ul.actions > li > a, article.user.login > form > ul.actions > li > input {
           padding-left: 0;
           padding-right: 0; }
         article.user.login > form > ul.actions > li.connect {
           border-color: #009def; }
-          article.user.login > form > ul.actions > li.connect > a {
+          article.user.login > form > ul.actions > li.connect > input {
             background: #009def;
             color: white;
+            display: block;
             font-size: 14px;
             font-weight: 500;
+            height: 100%;
             padding-top: 6px;
-            padding-bottom: 6px; }
+            padding-bottom: 6px;
+            width: 100%; }
           article.user.login > form > ul.actions > li.connect:hover {
             border-color: #00aeff; }
-            article.user.login > form > ul.actions > li.connect:hover > a {
+            article.user.login > form > ul.actions > li.connect:hover > input {
               background: #00aeff; }
 
 body.user.login > .menu {

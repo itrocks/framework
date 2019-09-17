@@ -58,7 +58,7 @@ article.user.login {
 			> li {
 				margin-top: 24px;
 
-				> a {
+				> a, > input {
 					padding-left: 0;
 					padding-right: 0;
 				}
@@ -66,19 +66,22 @@ article.user.login {
 				&.connect {
 					border-color: #009def;
 
-					> a {
+					> input {
 						background: #009def;
 						color: white;
+						display: block;
 						font-size: 14px;
 						font-weight: $medium;
+						height: 100%;
 						padding-top: 6px;
 						padding-bottom: 6px;
+						width: 100%;
 					}
 
 					&:hover {
 						border-color: #00aeff;
 
-						> a {
+						> input {
 							background: #00aeff;
 						}
 					}
