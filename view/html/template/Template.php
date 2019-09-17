@@ -216,6 +216,33 @@ class Template
 		}
 	}
 
+	//---------------------------------------------------------------------------- articleClassToBody
+	/**
+	 * @param $content string
+	 */
+	protected function articleClassToBody(&$content)
+	{
+		if (
+			!($position = strpos($content, '<main'))
+			|| !($position     = strpos($content, '<article', $position))
+			|| !($end_position = strpos($content, '>', $position))
+			|| !($position     = strpos($content, 'class=', $position))
+			|| ($position > $end_position)
+			|| !($end_position = strpos($content, DQ, $position += 7))
+		) {
+			return;
+		}
+		$classes = substr($content, $position, $end_position - $position);
+		if (
+			!($position = strpos($content, '<body'))
+			|| !(strpos($content, '>', $position += 5))
+		) {
+			return;
+		}
+		$add_classes = ' class=' . DQ . $classes . DQ;
+		$content     = substr($content, 0, $position) . $add_classes . substr($content, $position);
+	}
+
 	//--------------------------------------------------------------------------------- backupContext
 	/**
 	 * @return array [string[], array, string[]] [$var_names, $objects, $translation_contexts]
@@ -777,9 +804,10 @@ class Template
 					$container
 				);
 
-				$this->replaceHeadTitle($content, $title);
-				$this->replaceHeadMetas($content, $metas);
+				$this->articleClassToBody($content);
 				$this->replaceHeadLinks($content, $links);
+				$this->replaceHeadMetas($content, $metas);
+				$this->replaceHeadTitle($content, $title);
 			}
 		}
 		return $content;
