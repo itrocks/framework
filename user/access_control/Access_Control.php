@@ -53,8 +53,9 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public $all_users = [
 		'/',
-		'/.*/.*/Menu/output',
-		'/.*/.*/User/disconnect'
+		'/ITRocks/Framework/Locale/translate',
+		'/ITRocks/Framework/Menu/output',
+		'/ITRocks/Framework/User/disconnect'
 	];
 
 	//---------------------------------------------------------------------------------------- $blank
@@ -64,8 +65,8 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $blank = [
-		'/.*/.*/Environment/output',
-		'/.*/.*/Menu/output'
+		'/ITRocks/Framework/Environment/output',
+		'/ITRocks/Framework/Menu/output'
 	];
 
 	//----------------------------------------------------------------------------------- $exceptions
@@ -76,10 +77,11 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $exceptions = [
-		'/.*/.*/Tests/run',
-		'/.*/.*/User/authenticate',
-		'/.*/.*/User/login',
-		'/.*/.*/Webservice/authenticate'
+		'/ITRocks/Framework/Tests/run',
+		'/ITRocks/Framework/User/authenticate',
+		'/ITRocks/Framework/User/Password/reset',
+		'/ITRocks/Framework/User/login',
+		'/ITRocks/Framework/Webservice/authenticate'
 	];
 
 	//-------------------------------------------------------------------------------------- $protect
