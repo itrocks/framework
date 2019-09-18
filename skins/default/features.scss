@@ -7,8 +7,16 @@ ul.actions > li {
 		background-image: url('img/add-24.svg');
 	}
 
+	&.close > a {
+		background-image: url('img/close-24.svg');
+	}
+
 	&.delete > a {
 		background-image: url('img/delete-24.svg');
+	}
+
+	&.edit > a {
+		background-image: url('img/edit-24.svg');
 	}
 
 	&.export > a {
@@ -23,4 +31,7 @@ ul.actions > li {
 		background-image: url('img/print-24.svg');
 	}
 
+	&.write > a {
+		background-image: url('img/write-24.svg');
+	}
 }

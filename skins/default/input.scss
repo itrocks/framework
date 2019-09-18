@@ -6,5 +6,5 @@ input:not([type=button]):not([type=submit]), select, textarea {
 	border: $input-border;
 	border-radius: $input-border-radius;
 	height: $input-height - ($input-padding * 2);
-	padding: $input-padding 0 $input-padding $input-padding;
+	padding: $input-padding;
 }

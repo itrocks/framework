@@ -2,10 +2,18 @@ li.action.add > a,
 li.actions > ul > li.add > a,
 ul.actions > li.add > a {
   background-image: url("img/add-24.svg"); }
+li.action.close > a,
+li.actions > ul > li.close > a,
+ul.actions > li.close > a {
+  background-image: url("img/close-24.svg"); }
 li.action.delete > a,
 li.actions > ul > li.delete > a,
 ul.actions > li.delete > a {
   background-image: url("img/delete-24.svg"); }
+li.action.edit > a,
+li.actions > ul > li.edit > a,
+ul.actions > li.edit > a {
+  background-image: url("img/edit-24.svg"); }
 li.action.export > a,
 li.actions > ul > li.export > a,
 ul.actions > li.export > a {
@@ -18,3 +26,7 @@ li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {
   background-image: url("img/print-24.svg"); }
+li.action.write > a,
+li.actions > ul > li.write > a,
+ul.actions > li.write > a {
+  background-image: url("img/write-24.svg"); }
