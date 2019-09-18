@@ -5,6 +5,9 @@ $(document).ready(function()
 	var select_all         = [];
 	var selection          = [];
 
+	var selector_checkbox = 'th > input.selector[type=checkbox]';
+	var checkboxes_select = 'th > input[type=checkbox]:not(.selector)';
+
 	//------------------------------------------------------------------------------ unselectFromList
 	window.unselectFromList = function(class_name, object_id)
 	{
@@ -33,24 +36,34 @@ $(document).ready(function()
 	var updateCount = function($article_list, $selector, $summary)
 	{
 		var count_elements, select_all_content, selection_content, selection_exclude_content, text;
+		var $selection_checkbox = $article_list.find(selector_checkbox);
+		var selection_checkbox  = $selection_checkbox[0];
+		var title;
+		var total = $selector.children('input[name=select_all]').data('count');
 		if (select_all[$article_list.id]) {
-			select_all_content        = 1;
-			selection_content         = '';
-			selection_exclude_content = excluded_selection[$article_list.id].join();
-			count_elements  = $selector.children('input[name=select_all').data('count');
-			count_elements -= excluded_selection[$article_list.id].length;
-			text            = count_elements;
+			select_all_content         = 1;
+			selection_content          = '';
+			selection_exclude_content  = excluded_selection[$article_list.id].join();
+			count_elements             = total;
+			count_elements            -= excluded_selection[$article_list.id].length;
+			text                       = count_elements;
+			selection_checkbox.checked = true;
+			title = tr('uncheck to deselect all lines');
 		}
 		else {
-			selection_content         = selection[$article_list.id].join();
-			select_all_content        = 0;
-			selection_exclude_content = '';
-			text                      = selection[$article_list.id].length;
+			selection_content          = selection[$article_list.id].join();
+			select_all_content         = 0;
+			selection_exclude_content  = '';
+			text                       = selection[$article_list.id].length;
+			selection_checkbox.checked = false;
+			title = tr('check to select all $!1 lines').repl('$!1', total);
 		}
 		$summary.html($summary.data('text').replace('?', text));
 		$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
 		$selector.children('input[name=select_all]')        .val(select_all_content);
 		$selector.children('input[name=selection]')         .val(selection_content);
+		selection_checkbox.indeterminate = (selection_exclude_content || selection_content);
+		$selection_checkbox.parent().attr('title', title);
 	};
 
 	//---------------------------------------------------------------------------------- article.list
@@ -64,7 +77,7 @@ $(document).ready(function()
 		$article.id   = $article.attr('id');
 		$summary.data('text', $summary.html());
 
-		//------------------------------------------------------------ .search input|textarea keydown
+		//-------------------------------------------------------------- .search input|textarea keydown
 		// reload list when #13 pressed into a search input
 		$search.find('input, textarea').keydown(function(event)
 		{
@@ -75,7 +88,7 @@ $(document).ready(function()
 			}
 		});
 
-		//--------------------------------------------------------------------- .search select change
+		//----------------------------------------------------------------------- .search select change
 		$search.find('select').change(function()
 		{
 			var $this = $(this);
@@ -83,15 +96,14 @@ $(document).ready(function()
 			$this.closest('form').submit();
 		});
 
-		//------------------------------------------------------------- .search .reset.search a click
+		//--------------------------------------------------------------- .search .reset.search a click
 		$search.find('.reset > a').click(function()
 		{
 			resetSelection($(this).closest('article.list').attr('id'));
 		});
 
-		//--------------------------------------------------------------- input[type=checkbox] change
-		var checkboxes_select = 'input[type=checkbox]';
-		var $checkboxes       = $article.find(checkboxes_select);
+		//------------------------------------------------------------------ input[type=checkbox] check
+		var $checkboxes = $article.find(checkboxes_select);
 		if ($article.id in selection) {
 			$checkboxes.each(function() {
 				if (
@@ -108,6 +120,25 @@ $(document).ready(function()
 			selection[$article.id]          = [];
 		}
 
+		//-------------------------------------------------------- input.selector[type=checkbox] change
+		$article.find(selector_checkbox).change(function(event)
+		{
+			if (this.indeterminate) {
+				this.indeterminate = false;
+			}
+			selectAction(this.checked, 'all', event);
+		});
+
+		//---------------------------------------------------------------------------- tbody > th click
+		$article.find('th > input[type=checkbox]').parent().click(function(event)
+		{
+			if ($(event.target).is('input[type=checkbox]')) {
+				return;
+			}
+			$(this).children('input[type=checkbox]').click();
+		});
+
+		//----------------------------------------------------------------- input[type=checkbox] change
 		$checkboxes.change(function()
 		{
 			if (select_all[$article.id]) {
@@ -137,7 +168,7 @@ $(document).ready(function()
 
 		updateCount($article, $selector, $summary);
 
-		//------------------------------------------------------------------------------ selectAction
+		//-------------------------------------------------------------------------------- selectAction
 		/**
 		 * Select / deselect buttons
 		 *
@@ -165,32 +196,7 @@ $(document).ready(function()
 			event.preventDefault();
 		};
 
-		//------------------------------------------------------------------- .select_count ... click
-		$selector.find('> a.objects').click(function(event)
-		{
-			event.preventDefault();
-		});
-
-		$selector.find('li.deselect_all > a').click(function(event)
-		{
-			selectAction(false, 'all', event);
-		});
-
-		$selector.find('li.deselect_visible > a').click(function(event)
-		{
-			selectAction(false, null, event);
-		});
-
-		$selector.find('li.select_all > a').click(function(event)
-		{
-			selectAction(true, 'all', event);
-		});
-
-		$selector.find('li.select_visible > a').click(function(event)
-		{
-			selectAction(true, null, event);
-		});
-
+		//----------------------------------------------------------- .selection.actions a.submit click
 		$article.find('.selection.actions a.submit:not([target^="#"])').click(function(event)
 		{
 			var data = {
