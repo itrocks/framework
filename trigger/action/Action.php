@@ -225,6 +225,7 @@ class Action
 
 		$calculate = new Next_Calculation();
 		$next      = Date_Time::max();
+		/** @var $schedules Schedule[] */
 		$schedules = Dao::search(['actions' => $this], Schedule::class);
 		foreach ($schedules as $schedule) {
 			$next = $next->earliest($calculate->next($schedule, $last));
