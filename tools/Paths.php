@@ -189,7 +189,7 @@ abstract class Paths
 	 */
 	public static function server()
 	{
-		return $_SERVER['SERVER_NAME'];
+		return $_SERVER['SERVER_NAME'] ?? 'itrocks.org';
 	}
 
 }
