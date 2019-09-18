@@ -187,8 +187,17 @@ class Email
 		if ($this->copy_to) {
 			$this->headers['Cc'] = $this->encodeHeader(join(',', $this->copy_to));
 		}
+		if (!isset($this->headers['Date'])) {
+			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s p');
+		}
 		if ($this->from) {
 			$this->headers['From'] = $this->encodeHeader($this->from);
+		}
+		if (!isset($this->headers['Message-ID']) && Dao::getObjectIdentifier($this)) {
+			$project = strtolower(mParse(get_class(Application::current()), BS, BS));
+			$this->headers['Message-ID'] = '<'
+				. Dao::getObjectIdentifier($this) . '-' . $project . '@' . Session::current()->domain
+				. '>';
 		}
 		if ($this->reply_to) {
 			$this->headers['Reply-To'] = $this->encodeHeader($this->reply_to);
@@ -206,6 +215,19 @@ class Email
 			$this->headers['Content-Type'] = 'text/html; charset=utf-8';
 		}
 		return $this->headers;
+	}
+
+	//------------------------------------------------------------------------------ getHeadersString
+	/**
+	 * @return string
+	 */
+	public function getHeadersString()
+	{
+		$headers = [];
+		foreach ($this->getHeadersAsStrings() as $key => $value) {
+			$headers[] = $key . ': ' . $value;
+		}
+		return join(LF, $headers);
 	}
 
 	//------------------------------------------------------------------------ getRecipientsAsStrings
