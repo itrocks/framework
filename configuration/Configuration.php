@@ -18,6 +18,9 @@ class Configuration
 	//------------------------------------------------------------------------------------ CLASS_NAME
 	const CLASS_NAME = 'class';
 
+	//---------------------------------------------------------------------------------------- DOMAIN
+	const DOMAIN = 'domain';
+
 	//----------------------------------------------------------------------------------- ENVIRONMENT
 	const ENVIRONMENT = 'environment';
 
@@ -40,6 +43,14 @@ class Configuration
 	 * @var string
 	 */
 	private $author;
+
+	//--------------------------------------------------------------------------------------- $domain
+	/**
+	 * Domain name (optional) eg for applications that generate dynamic URL or generic emails
+	 *
+	 * @var string
+	 */
+	public $domain;
 
 	//---------------------------------------------------------------------------------- $environment
 	/**
@@ -89,7 +100,10 @@ class Configuration
 	{
 		$this->application_class = $configuration[self::APP];
 		$this->author            = $configuration[self::AUTHOR];
-		$this->environment       = isset($configuration[self::ENVIRONMENT])
+		$this->domain            = isset($configuration[self::DOMAIN])
+			? $configuration[self::DOMAIN]
+			: 'itrocks.org';
+		$this->environment = isset($configuration[self::ENVIRONMENT])
 			? $configuration[self::ENVIRONMENT]
 			: Environment::DEVELOPMENT;
 		$this->name = $name;
@@ -98,6 +112,7 @@ class Configuration
 			: null;
 		unset($configuration[self::APP]);
 		unset($configuration[self::AUTHOR]);
+		unset($configuration[self::DOMAIN]);
 		unset($configuration[self::ENVIRONMENT]);
 		unset($configuration[self::TEMPORARY_DIRECTORY]);
 		$this->plugins = $configuration;

@@ -481,6 +481,7 @@ class Main
 
 		unset($_SESSION['include_path']);
 		$session->configuration_file_name = $configuration->file_name;
+		$session->domain                  = $configuration->domain;
 		$session->environment             = $configuration->environment;
 		$session->temporary_directory     = $configuration->temporary_directory;
 		$this->setIncludePath($_SESSION, $configuration->getApplicationClassName());

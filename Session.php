@@ -32,8 +32,18 @@ class Session implements Serializable
 	 */
 	private $current;
 
+	//--------------------------------------------------------------------------------------- $domain
+	/**
+	 * Same as Configuration::$domain
+	 *
+	 * @var string
+	 */
+	public $domain;
+
 	//---------------------------------------------------------------------------------- $environment
 	/**
+	 * Same as Configuration::$environment
+	 *
 	 * @values development, production, test
 	 * @var string
 	 */
@@ -222,6 +232,7 @@ class Session implements Serializable
 			self::CONFIGURATION_FILE_NAME      => $this->configuration_file_name,
 			self::CURRENT                      => [],
 			self::PLUGINS                      => $this->plugins,
+			Configuration::DOMAIN              => $this->domain,
 			Configuration::ENVIRONMENT         => $this->environment,
 			Configuration::TEMPORARY_DIRECTORY => $this->temporary_directory
 		];
@@ -292,6 +303,7 @@ class Session implements Serializable
 		$data = unserialize($serialized);
 		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
 		$this->current                 = $data[self::CURRENT];
+		$this->domain                  = $data[Configuration::DOMAIN] ?? null;
 		$this->environment             = $data[Configuration::ENVIRONMENT];
 		$this->plugins                 = $data[self::PLUGINS];
 		$this->temporary_directory     = $data[Configuration::TEMPORARY_DIRECTORY];
