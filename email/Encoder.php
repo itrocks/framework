@@ -82,6 +82,15 @@ class Encoder
 		return $this->email->content;
 	}
 
+	//--------------------------------------------------------------------------------- encodeHeaders
+	/**
+	 * @return string
+	 */
+	public function encodeHeaders()
+	{
+		return $this->email->getHeadersString();
+	}
+
 	//----------------------------------------------------------------------------------- parseImages
 	/**
 	 * @param $mail   Mime
