@@ -73,6 +73,9 @@ class Data implements Validate\Exception
 			if (isset($form['password'])) {
 				$form['password'] = '***';
 			}
+			if (isset($form['password2'])) {
+				$form['password2'] = '***';
+			}
 			$this->form = $this->serialize($form);
 		}
 		if (isset($request_identifier)) {

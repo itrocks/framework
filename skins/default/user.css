@@ -1,5 +1,7 @@
+article.password.reset,
 article.user.login {
   text-align: center; }
+  article.password.reset > h2,
   article.user.login > h2 {
     border-bottom: 1px solid #d8d8d8;
     box-sizing: border-box;
@@ -7,40 +9,63 @@ article.user.login {
     height: 64px;
     padding: 24px 10px 0 10px;
     text-align: left; }
+  article.password.reset > form,
   article.user.login > form {
     display: inline-block;
     padding-top: 64px;
     position: relative;
     width: 256px; }
+    article.password.reset > form > *,
     article.user.login > form > * {
       display: block; }
+      article.password.reset > form > * > li,
       article.user.login > form > * > li {
         display: block;
         margin: 0;
         position: relative; }
+    article.password.reset > form > ol.properties > li,
     article.user.login > form > ol.properties > li {
       text-align: left; }
+      article.password.reset > form > ol.properties > li:not(:first-child),
       article.user.login > form > ol.properties > li:not(:first-child) {
         margin-top: 14px; }
-      article.user.login > form > ol.properties > li > input, article.user.login > form > ol.properties > li > label {
+      article.password.reset > form > ol.properties > li > input,
+      article.password.reset > form > ol.properties > li > label,
+      article.user.login > form > ol.properties > li > input,
+      article.user.login > form > ol.properties > li > label {
         display: block;
         width: calc(100% - 12px); }
+      article.password.reset > form > ol.properties > li > label,
       article.user.login > form > ol.properties > li > label {
         color: #666;
         font-weight: 500;
         padding-bottom: 4px; }
+        article.password.reset > form > ol.properties > li > label:after,
         article.user.login > form > ol.properties > li > label:after {
           display: none; }
+    article.password.reset > form > p,
+    article.user.login > form > p {
+      line-height: 1.2em;
+      margin-top: 1em;
+      text-align: justify; }
+    article.password.reset > form > ul.actions,
     article.user.login > form > ul.actions {
       position: relative; }
+      article.password.reset > form > ul.actions > li,
       article.user.login > form > ul.actions > li {
         margin-top: 24px; }
-        article.user.login > form > ul.actions > li > a, article.user.login > form > ul.actions > li > input {
+        article.password.reset > form > ul.actions > li > a, article.password.reset > form > ul.actions > li > input,
+        article.user.login > form > ul.actions > li > a,
+        article.user.login > form > ul.actions > li > input {
           padding-left: 0;
           padding-right: 0; }
-        article.user.login > form > ul.actions > li.connect {
+        article.password.reset > form > ul.actions > li.connect, article.password.reset > form > ul.actions > li.reset,
+        article.user.login > form > ul.actions > li.connect,
+        article.user.login > form > ul.actions > li.reset {
           border-color: #009def; }
-          article.user.login > form > ul.actions > li.connect > input {
+          article.password.reset > form > ul.actions > li.connect > input, article.password.reset > form > ul.actions > li.reset > input,
+          article.user.login > form > ul.actions > li.connect > input,
+          article.user.login > form > ul.actions > li.reset > input {
             background: #009def;
             color: white;
             display: block;
@@ -50,16 +75,24 @@ article.user.login {
             padding-top: 6px;
             padding-bottom: 6px;
             width: 100%; }
-          article.user.login > form > ul.actions > li.connect:hover {
+          article.password.reset > form > ul.actions > li.connect:hover, article.password.reset > form > ul.actions > li.reset:hover,
+          article.user.login > form > ul.actions > li.connect:hover,
+          article.user.login > form > ul.actions > li.reset:hover {
             border-color: #00aeff; }
-            article.user.login > form > ul.actions > li.connect:hover > input {
+            article.password.reset > form > ul.actions > li.connect:hover > input, article.password.reset > form > ul.actions > li.reset:hover > input,
+            article.user.login > form > ul.actions > li.connect:hover > input,
+            article.user.login > form > ul.actions > li.reset:hover > input {
               background: #00aeff; }
 
+body.password.reset > .menu,
 body.user.login > .menu {
   border-right: none; }
+  body.password.reset > .menu:after,
   body.user.login > .menu:after {
     display: none; }
+  body.password.reset > .menu > .company.logo,
   body.user.login > .menu > .company.logo {
     border-bottom: none; }
+body.password.reset > .main > .notifications,
 body.user.login > .main > .notifications {
   display: none; }

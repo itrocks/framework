@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../../"; </script>
+	<script src="../../../js/all.js"></script>
+	<style> @import "../../../skins/default/all.css"; </style>
+	<title>|Password reset email sent|</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<article class="password reset" data-class="{@class}" data-feature="{@feature}">
+		<h2>|Your password reset validation email has been sent|</h2>
+		<form action="app://ITRocks/Framework/User/Password/reset" method="post" target="#main">
+			<p>
+				|If you have an account that matches your login or email <strong>!{login}!</strong>|,
+				|a validation email has been sent to your email address|.
+				|Your new password will be applicable only when you have validated your email address by clicking the link contained in this email|.
+			</p>
+			<ul class="actions">
+				<li class="remember"><a href="app://" target="#main">|Return to the login form|</a></li>
+			</ul>
+		</form>
+	</article>
+
+<!--END-->
+</body>
+</html>

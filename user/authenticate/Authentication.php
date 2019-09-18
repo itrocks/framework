@@ -156,7 +156,7 @@ abstract class Authentication
 		$password = (new Password($password, Password_Annotation::of($property)->value))->encrypted();
 
 		/** @var $users User[] */
-		$users = (strpos($login, '@') ? Dao::search(['email' => $login], User::class) : null)
+		$users = (strpos($login, AT) ? Dao::search(['email' => $login], User::class) : null)
 			?: Dao::search(['login' => $login], User::class);
 		foreach ($users as $user) {
 			if ($user->password === $password) {

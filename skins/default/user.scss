@@ -1,6 +1,7 @@
 @import 'colors.scss';
 @import 'mixins.scss';
 
+article.password.reset,
 article.user.login {
 	text-align: center;
 
@@ -36,7 +37,8 @@ article.user.login {
 				margin-top: 14px;
 			}
 
-			> input, > label {
+			> input,
+			> label {
 				display: block;
 				width: calc(100% - 12px);
 			}
@@ -52,6 +54,12 @@ article.user.login {
 			}
 		}
 
+		> p {
+			line-height: 1.2em;
+			margin-top: 1em;
+			text-align: justify;
+		}
+
 		> ul.actions {
 			position: relative;
 
@@ -63,7 +71,8 @@ article.user.login {
 					padding-right: 0;
 				}
 
-				&.connect {
+				&.connect,
+				&.reset {
 					border-color: #009def;
 
 					> input {
@@ -91,7 +100,8 @@ article.user.login {
 	}
 }
 
-body.user.login  {
+body.password.reset,
+body.user.login {
 
 	> .menu {
 		border-right: none;
