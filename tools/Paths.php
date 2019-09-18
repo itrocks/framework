@@ -68,6 +68,16 @@ abstract class Paths
 	 */
 	public static $uri_root;
 
+	//---------------------------------------------------------------------------------- absoluteBase
+	/**
+	 * @example https://itrocks.org/wiki
+	 * @return string
+	 */
+	public static function absoluteBase()
+	{
+		return static::protocolServer() . static::$uri_base;
+	}
+
 	//--------------------------------------------------------------------------- getRelativeFileName
 	/**
 	 * Normalize the file name :
@@ -112,8 +122,8 @@ abstract class Paths
 	 */
 	public static function getUrl($object = null, $server_name = null)
 	{
-		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http') . '://'
-			. ($server_name ?: $_SERVER['SERVER_NAME'])
+		return static::protocol() . '://'
+			. ($server_name ?: static::server())
 			. Paths::$uri_base
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
 	}
@@ -135,6 +145,26 @@ abstract class Paths
 		$_SERVER['PHP_SELF']        = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
 	}
 
+	//-------------------------------------------------------------------------------------- protocol
+	/**
+	 * @example https
+	 * @return string
+	 */
+	public static function protocol()
+	{
+		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http');
+	}
+
+	//-------------------------------------------------------------------------------- protocolServer
+	/**
+	 * @example https://itrocks.org
+	 * @return string
+	 */
+	public static function protocolServer()
+	{
+		return static::protocol() . '://' . static::server();
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
@@ -150,6 +180,16 @@ abstract class Paths
 		self::$script_name  = substr($_SERVER['SCRIPT_NAME'], $slash, $dot_php - $slash);
 		self::$uri_root     = substr($_SERVER['SCRIPT_NAME'], 0, $slash);
 		self::$uri_base     = self::$uri_root . self::$script_name;
+	}
+
+	//---------------------------------------------------------------------------------------- server
+	/**
+	 * @example itrocks.org
+	 * @return string
+	 */
+	public static function server()
+	{
+		return $_SERVER['SERVER_NAME'];
 	}
 
 }
