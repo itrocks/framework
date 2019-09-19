@@ -4,12 +4,17 @@
 
 article.list header {
 
-	> .summary {
-		display: inline-block;
-		padding: 12px 10px;
+	> .actions {
+		border: none;
 		position: absolute;
-		right: 0;
 		top: 34px;
+	}
+
+	> .summary {
+		background: #f8f8f8;
+		border-top: 1px solid #ccc;
+		padding: 13px 10px 12px;
+		text-align: right;
 		white-space: nowrap;
 
 		> h3, > .filters {

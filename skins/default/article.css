@@ -17,7 +17,6 @@ article {
       article header > h2:first-letter {
         text-transform: uppercase; }
     article header > .actions {
-      background: #f8f8f8;
       border-top: 1px solid #ccc;
       box-sizing: border-box; }
     article header > .favorites {

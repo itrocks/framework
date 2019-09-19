@@ -29,7 +29,7 @@ $main-height: calc(100% - #{$header-height} - #{$favorites-height});
 // article
 
 $article-favorites-height: 34px;
-$article-header-height: #{$favorites-height} + #{$actions-height} - #{$header-height};
+$article-header-height: $favorites-height + $actions-height;
 
 // list
 
