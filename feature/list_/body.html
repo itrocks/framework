@@ -10,57 +10,54 @@
 </head>
 <body>
 <article class="list">
-<header><h2>List</h2></header>
 <form>
 <table>
-<tbody>
 <!--BEGIN-->
-<!--use ITRocks\Framework\Html\Engine-->
-<!--use ITRocks\Framework\Tools\Paths-->
 
-	<!--elements:-{displayed_lines_count}-->
-	<tr>
-		<th>
-			<!--selection_buttons?-->
-			<input type="checkbox" value="{id}">
+	<tbody>
+		<!--elements:-{displayed_lines_count}-->
+		<tr>
+			<th>
+				<!--selection_buttons?-->
+				<input type="checkbox" value="{id}">
+				<!--end-->
+			</th>
+			<!--formatValuesEx:1-->
+			<td class="{path.@cssClass} {property.getType.@typeCss}">
+				<!--..class_name?-->
+				<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
+				<!--end-->
+			</td>
 			<!--end-->
-		</th>
-		<!--formatValuesEx:1-->
-		<td class="{path.@cssClass} {property.getType.@typeCss}">
-			<!--..class_name?-->
-			<a class="object" data-class="{..class_name.source}" data-id="{..id}" href="app://(..getOutputLink)" target="#main">{value.nbsp}</a>
+			<!--formatValuesEx:2-...count-->
+			<td class="{path.@cssClass} {property.getType.@typeCss}">{value}</td>
+			<!--sample-->
+			<td class="column3 string">value 3</td>
 			<!--end-->
-		</td>
-		<!--end-->
-		<!--formatValuesEx:2-...count-->
-		<td class="{path.@cssClass} {property.getType.@typeCss}">{value}</td>
+		</tr>
 		<!--sample-->
-		<td class="column3 string">value 3</td>
+		<tr>
+			<th><input type="checkbox"></th>
+			<td class="column1 string"><a href="app://Class/2">code2</a></td>
+			<td class="column2 float">3,18</td>
+			<td class="column3 string">pending</td>
+		</tr>
+		<tr>
+			<th><input type="checkbox"></th>
+			<td class="column1 string"><a href="app://Class/3">code3</a></td>
+			<td class="column2 float">2,29</td>
+			<td class="column3 string">done</td>
+		</tr>
+		<tr>
+			<th><input type="checkbox"></th>
+			<td class="column1 string"><a href="app://Class/4">code4</a></td>
+			<td class="column2 float">12,39</td>
+			<td class="column3 string">pending</td>
+		</tr>
 		<!--end-->
-	</tr>
-	<!--sample-->
-	<tr>
-		<th><input type="checkbox"></th>
-		<td class="column1 string"><a href="app://Class/2">code2</a></td>
-		<td class="column2 float">3,18</td>
-		<td class="column3 string">pending</td>
-	</tr>
-	<tr>
-		<th><input type="checkbox"></th>
-		<td class="column1 string"><a href="app://Class/3">code3</a></td>
-		<td class="column2 float">2,29</td>
-		<td class="column3 string">done</td>
-	</tr>
-	<tr>
-		<th><input type="checkbox"></th>
-		<td class="column1 string"><a href="app://Class/4">code4</a></td>
-		<td class="column2 float">12,39</td>
-		<td class="column3 string">pending</td>
-	</tr>
-	<!--end-->
+	</tbody>
 
 <!--END-->
-</tbody>
 </table>
 </form>
 </article>

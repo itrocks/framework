@@ -10,22 +10,33 @@
 </head>
 <body>
 <article class="list">
+<form>
 <!--BEGIN-->
 
 	<header>
+		<ol class="breadcrumb">
+			<!--module?--><li><a href="#">|{module}|</a></li><!--end-->
+			<li><a href="#">{title}</a></li>
+		</ol>
 		<h2>{title}</h2>
+		<ul class="favorites">
+			<li class="current"><a href="#">|Documents|</a></li>
+			<li><a href="#">|Lines|</a></li>
+		</ul>
+		{/component/button/general_buttons.html}
+		<section class="summary">
+			<h3>|Summary|</h3>
+			<p class="filters">
+				here come the summary of active filters
+			</p>
+			<p class="lines">
+				|<strong>!?!</strong> selected lines out of <strong>!{rows_count}!</strong> lines|
+			</p>
+		</section>
 	</header>
 
-	{/component/button/general_buttons.html}
-
-	<section class="summary">
-		<h3>|Summary|</h3>
-		<p class="lines">
-			|<strong>!?!</strong> selected lines out of <strong>!{rows_count}!</strong> lines|
-		</p>
-	</section>
-
 <!--END-->
+</form>
 </article>
 </body>
 </html>

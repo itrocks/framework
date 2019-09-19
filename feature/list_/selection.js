@@ -107,7 +107,9 @@ $(document).ready(function()
 					(select_all[$article.id] && ($.inArray(this.value, excluded_selection[$article.id]) === -1))
 					|| $.inArray(this.value, selection[$article.id]) !== -1
 				) {
-					$(this).prop('checked', true);
+					var $checkbox = $(this);
+					$checkbox.prop('checked', true);
+					$checkbox.closest('tr').addClass('selected');
 				}
 			});
 		}
@@ -138,6 +140,10 @@ $(document).ready(function()
 		//----------------------------------------------------------------- input[type=checkbox] change
 		$checkboxes.change(function()
 		{
+			var $checkbox = $(this);
+			this.checked
+				? $checkbox.closest('tr').addClass('selected')
+				: $checkbox.closest('tr').removeClass('selected');
 			if (select_all[$article.id]) {
 				if (!this.checked && (excluded_selection[$article.id].indexOf(this.value) === -1)) {
 					excluded_selection[$article.id].push(this.value);
@@ -180,7 +186,11 @@ $(document).ready(function()
 				excluded_selection[$article.id] = [];
 				select_all[$article.id]         = select;
 				selection[$article.id]          = [];
-				$article.find('input[type=checkbox]').prop('checked', select);
+				var $checkboxes = $article.find('input[type=checkbox]');
+				$checkboxes.prop('checked', select);
+				select
+					? $checkboxes.closest('tr').addClass('selected')
+					: $checkboxes.closest('tr').removeClass('selected');
 			}
 			else {
 				$article.find('input[type=checkbox]').each(function() {

@@ -1,4 +1,4 @@
-article[data-class^='ITRocks\\Framework\\'] > header > h2 {
+article[data-class^='ITRocks\\Framework\\']:not(.list) > header > h2 {
   background-color: lightgrey; }
 
 nav#menu a[href*='/ITRocks/Framework/']:focus, nav#menu a[href*='/ITRocks/Framework/']:hover {

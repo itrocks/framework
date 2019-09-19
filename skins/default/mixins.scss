@@ -1,6 +1,6 @@
 @mixin module-color($data-class, $path, $color) {
 
-	article[data-class^='#{$data-class}'] > header > h2 {
+	article[data-class^='#{$data-class}']:not(.list) > header > h2 {
 		background-color: $color;
 	}
 

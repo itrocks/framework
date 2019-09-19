@@ -10,53 +10,52 @@
 </head>
 <body>
 <article class="list">
-<header><h2>List</h2></header>
 <form>
 <table>
-<thead>
 <!--BEGIN-->
 
-	<tr class="title">
-		<th class="visible lines" title="|check to select all !{rows_count}! lines|">
-			<input class="selector" data-no-autofocus type="checkbox">
-			<input name="excluded_selection" type="hidden">
-			<input data-count="{rows_count}" name="select_all" type="hidden" value="0">
-			<input name="selection" type="hidden">
-		</th>
-		<!--properties-->
-		<th class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-drop-out-href="/{..@class.path}/listSetting?remove_property={path}" data-property="{path}">
-			<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
-		</th>
-		<!--sample-->
-		<th class="column_name_2 sort reverse float property" data-property="path.column_name_2">
-			<a href="app://Class/feature?sort=column_name_2" target="#main">column2</a>
-		</th>
-		<th class="column_name_3 sort reverse float property" data-property="path.column_name_3">
-			<a href="app://Class/feature?sort=column_name_3" target="#main">column3</a>
-		</th>
-		<!--end-->
-		<th class="column_select">
-			<!--!lock_columns?-->
-			<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
+	<thead>
+		<tr class="title">
+			<th class="visible lines" title="|check to select all !{rows_count}! lines|">
+				<input class="selector" data-no-autofocus type="checkbox">
+				<input name="excluded_selection" type="hidden">
+				<input data-count="{rows_count}" name="select_all" type="hidden" value="0">
+				<input name="selection" type="hidden">
+			</th>
+			<!--properties-->
+			<th class="{path.@cssClass} sort{sort} {?htmlReverse} {type.@typeCss} property" data-drop-out-href="/{..@class.path}/listSetting?remove_property={path}" data-property="{path}">
+				<a href="app://(..@class.path)/(@feature)?(htmlSortLink)=(path)" target="#main" title="{title}">{shortTitle}</a>
+			</th>
+			<!--sample-->
+			<th class="column_name_2 sort reverse float property" data-property="path.column_name_2">
+				<a href="app://Class/feature?sort=column_name_2" target="#main">column2</a>
+			</th>
+			<th class="column_name_3 sort reverse float property" data-property="path.column_name_3">
+				<a href="app://Class/feature?sort=column_name_3" target="#main">column3</a>
+			</th>
 			<!--end-->
-		</th>
-	</tr>
-	<tr class="search">
-		<td class="reset">
-			<!--search_summary?-->
-			<a href="app://(@class.path)/(@feature)?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
+			<th class="column_select">
+				<!--!lock_columns?-->
+				<a class="popup" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
+				<!--end-->
+			</th>
+		</tr>
+		<tr class="search">
+			<td class="reset">
+				<!--search_summary?-->
+				<a href="app://(@class.path)/(@feature)?reset_search" target="#main" title="|Reset search criteria|">|RTZ|</a>
+				<!--end-->
+			</td>
+			<!--properties-->
+			<td class="{path.@cssClass} {type.@typeCss}">{search.@searchEdit}</td>
+			<!--sample-->
+			<td class="column_name_2 float"><input name="search[path][column_name_2]"></td>
+			<td class="column_name_3 float"><input name="search[path][column_name_3]"></td>
 			<!--end-->
-		</td>
-		<!--properties-->
-		<td class="{path.@cssClass} {type.@typeCss}">{search.@searchEdit}</td>
-		<!--sample-->
-		<td class="column_name_2 float"><input name="search[path][column_name_2]"></td>
-		<td class="column_name_3 float"><input name="search[path][column_name_3]"></td>
-		<!--end-->
-	</tr>
+		</tr>
+	</thead>
 
 <!--END-->
-</thead>
 </table>
 </form>
 </article>

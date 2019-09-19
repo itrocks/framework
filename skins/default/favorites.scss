@@ -1,37 +1,52 @@
+@import 'sizes.scss';
 @import 'tabs.scss';
 
 div.main > .favorites {
 	background: #fefefe;
-	display: none;
+	font-size: 0;
+	white-space: nowrap;
 
 	> ul {
-		height: 27px;
-		position: relative;
 
 		> li {
-			@include tab(#fefefe);
-			display: inline-block;
-			background: #d8d8d8;
-
-			&:not(:first-child) {
-				margin-left: 1px;
-			}
+			border-bottom: 1px solid #ccc;
+			margin-right: 1px;
 
 			> a {
 				display: inline-block;
-				height: 27px;
+			}
+
+			&:not(.add) {
+				@include tab(#fefefe, #04b497);
+				background: #d8d8d8;
+				font-size: $font-size;
+
+				> a {
+					padding: 8px 12px 7px;
+				}
 			}
 
 			&.add {
+				@include tab(#fefefe);
 				background: #d8d8d8 url('img/favorite-24.svg') center no-repeat;
-				font-size: 0;
 				position: absolute;
 				right: 0;
-				top: 0;
 
 				> a {
-					width: 28px;
+					box-sizing: border-box;
+					height: 27px;
+					width: 27px;
 				}
+			}
+
+			&.current {
+				background: #04b497;
+				border-bottom: 1px solid #68d2c1;
+				color: white;
+			}
+
+			&.recent {
+				background: #efefef;
 			}
 		}
 	}

@@ -34,7 +34,7 @@
 	//--------------------------------------------------------------------------------- window.resize
 	$(window).resize(function()
 	{
-		for(var table in tables) if (tables.hasOwnProperty(table)) {
+		for(var table in tables) if (tables.hasOwnProperty(table)) (function() {
 			table = tables[table];
 
 			var $table        = table.$table;
@@ -42,10 +42,12 @@
 			var parent_height = $parent.height();
 			var parent_width  = $parent.width();
 
-			var new_height = table.css_height.replace(/\d+%/g, function(percent) {
+			$parent.children().not($table).each(function() { parent_height -= $(this).height(); });
+
+			var new_height = table.css_height.replace(/\d+%/g, function (percent) {
 				return Math.round(parent_height * parseFloat(percent) / 100) + 'px';
 			});
-			var new_width = table.css_width.replace(/\d+%/g, function(percent) {
+			var new_width = table.css_width.replace(/\d+%/g, function (percent) {
 				return Math.round(parent_width * parseFloat(percent) / 100) + 'px';
 			});
 
@@ -53,8 +55,8 @@
 
 			// TODO this timing is not really reliable, but more reliable than without it
 			on_resize ++;
-			setTimeout(function() { $table.mousedown().mouseup(); on_resize --; }, 25);
-		}
+			setTimeout(function () { $table.mousedown().mouseup(); on_resize--; }, 25);
+		})();
 	});
 
 	//---------------------------------------------------------------------------------- fixedHeaders
@@ -113,6 +115,9 @@
 				right_count ++;
 			}
 		});
+
+		var cell_selector = ':nth-last-child(' + (right_count + 1) + ')';
+		$table.find('tr').children(cell_selector).after($('<td class="trailing" style="width: 100%">'));
 
 		// get left and right fixed cells
 		var $left_th;

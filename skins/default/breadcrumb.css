@@ -1,0 +1,10 @@
+article header > ol.breadcrumb {
+  display: inline-block; }
+  article header > ol.breadcrumb > li:not(:last-child) {
+    display: inline-block; }
+    article header > ol.breadcrumb > li:not(:last-child):after {
+      content: '>'; }
+    article header > ol.breadcrumb > li:not(:last-child) > a {
+      display: inline-block; }
+  article header > ol.breadcrumb > li:last-child {
+    display: none; }

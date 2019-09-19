@@ -1,18 +1,9 @@
-article.list > .summary {
-  background: #f8f8f8;
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-  box-sizing: border-box;
-  height: 39px;
-  position: relative; }
-  article.list > .summary > h3 {
+article.list header > .summary {
+  display: inline-block;
+  padding: 12px 10px;
+  position: absolute;
+  right: 0;
+  top: 34px;
+  white-space: nowrap; }
+  article.list header > .summary > h3, article.list header > .summary > .filters {
     display: none; }
-  article.list > .summary > p.lines {
-    position: absolute;
-    top: 50%;
-    transform: perspective(1px) translateY(-50%);
-    padding: 0 10px 0;
-    right: 0; }
-
-article.list > .general.actions {
-  z-index: 1; }

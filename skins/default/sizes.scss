@@ -23,12 +23,15 @@ $contextual-width: $menu-width - $section-border-size;
 // main section
 
 $header-height: 64px;
-$favorites-height: 0px;
+$favorites-height: 28px;
 $main-height: calc(100% - #{$header-height} - #{$favorites-height});
-$article-header-height: 38px;
+
+// article
+
+$article-favorites-height: 34px;
+$article-header-height: #{$favorites-height} + #{$actions-height} - #{$header-height};
 
 // list
 
 $list-footer-height: $actions-height - 1px;
-$list-form-height: calc(100% - #{$article-header-height} - #{$actions-height} - #{$list-footer-height});
-$list-table-height: 100%;
+$list-form-height: 100%;

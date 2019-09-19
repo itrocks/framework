@@ -2,25 +2,18 @@
 @import 'mixins.scss';
 @import 'sizes.scss';
 
-article.list > .summary {
-	background: #f8f8f8;
-	border-bottom: 1px solid #ccc;
-	border-top: 1px solid #ccc;
-	box-sizing: border-box;
-	height: $actions-height - 1px;
-	position: relative;
+article.list header {
 
-	> h3 {
-		display: none;
-	}
-
-	> p.lines {
-		@include vertical-align(absolute);
-		padding: 0 10px 0;
+	> .summary {
+		display: inline-block;
+		padding: 12px 10px;
+		position: absolute;
 		right: 0;
-	}
-}
+		top: 34px;
+		white-space: nowrap;
 
-article.list > .general.actions {
-	z-index: 1;
+		> h3, > .filters {
+			display: none;
+		}
+	}
 }

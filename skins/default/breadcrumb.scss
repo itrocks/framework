@@ -1,0 +1,19 @@
+article header > ol.breadcrumb {
+	display: inline-block;
+
+	> li:not(:last-child) {
+		display: inline-block;
+
+		&:after {
+			content: '>';
+		}
+
+		> a {
+			display: inline-block;
+		}
+	}
+
+	> li:last-child {
+		display: none;
+	}
+}

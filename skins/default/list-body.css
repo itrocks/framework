@@ -6,14 +6,22 @@ article.list > form > table > tbody > tr:nth-child(even) > td {
   background: #f8f8f8; }
 article.list > form > table > tbody > tr:nth-child(even) > th {
   background: #e8e8e8; }
-article.list > form > table > tbody > tr:hover:nth-child(odd) > td {
+article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > td {
   background: #fcf7f1; }
-article.list > form > table > tbody > tr:hover:nth-child(odd) > th {
+article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > th:not(:hover) {
   background: #ccc; }
-article.list > form > table > tbody > tr:hover:nth-child(even) > td {
+article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > td {
   background: #f9f1e6; }
-article.list > form > table > tbody > tr:hover:nth-child(even) > th {
+article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > th:not(:hover) {
   background: #bbb; }
+article.list > form > table > tbody > tr.selected > td {
+  background: #a8e9f4; }
+article.list > form > table > tbody > tr.selected > th {
+  background: #009def; }
+article.list > form > table > tbody > tr.selected:hover > td {
+  background: #98d9e4; }
+article.list > form > table > tbody > tr.selected:hover > th {
+  background: #008ddf; }
 article.list > form > table > tbody > tr td {
   color: #444;
   padding: 0 .75em 0 .5em; }

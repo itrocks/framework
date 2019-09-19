@@ -13,17 +13,11 @@
 
 	<!--use ITRocks\Framework\Html\Engine-->
 	<article class="{@class.short.lower} list" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
-
-		{/feature/list_/header.html}
-
 		<form action="app://(@class.path)/(@feature)" autocomplete="off" method="post" target="#main">
+			{/feature/list_/header.html}
 			<table>
-				<thead>
-					{/feature/list_/head.html}
-				</thead>
-				<tbody>
-					{/feature/list_/body.html}
-				</tbody>
+				{/feature/list_/head.html}
+				{/feature/list_/body.html}
 			</table>
 			{/feature/list_/footer.html}
 		</form>

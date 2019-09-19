@@ -48,7 +48,7 @@ body {
   body > .main {
     width: calc(100% - 206px); }
     body > .main main {
-      height: calc(100% - 64px - 0px);
+      height: calc(100% - 64px - 28px);
       position: relative; }
       body > .main main > article {
         height: 100%; }

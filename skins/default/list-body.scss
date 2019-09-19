@@ -21,21 +21,39 @@ article.list > form > table > tbody > tr {
 		}
 	}
 
-	&:hover:nth-child(odd) {
+	&:hover:nth-child(odd):not(.selected) {
 		> td {
 			background: #fcf7f1;
 		}
-		> th {
+		> th:not(:hover) {
 			background: #ccc;
 		}
 	}
 
-	&:hover:nth-child(even) {
+	&:hover:nth-child(even):not(.selected) {
 		> td {
 			background: #f9f1e6;
 		}
-		> th {
+		> th:not(:hover) {
 			background: #bbb;
+		}
+	}
+
+	&.selected {
+		> td {
+			background: #a8e9f4;
+		}
+		> th {
+			background: #009def;
+		}
+	}
+
+	&.selected:hover {
+		> td {
+			background: #98d9e4;
+		}
+		> th {
+			background: #008ddf;
 		}
 	}
 
