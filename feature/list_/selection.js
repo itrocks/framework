@@ -35,35 +35,32 @@ $(document).ready(function()
 	//----------------------------------------------------------------------------------- updateCount
 	var updateCount = function($article_list, $selector, $summary)
 	{
-		var count_elements, select_all_content, selection_content, selection_exclude_content, text;
+		var count_elements, select_all_content, selection_content, selection_exclude_content, title;
 		var $selection_checkbox = $article_list.find(selector_checkbox);
 		var selection_checkbox  = $selection_checkbox[0];
-		var title;
-		var total = $selector.children('input[name=select_all]').data('count');
+		var total               = $selector.children('input[name=select_all]').data('count');
 		if (select_all[$article_list.id]) {
+			count_elements             = (total - excluded_selection[$article_list.id].length);
 			select_all_content         = 1;
+			selection_checkbox.checked = !!count_elements;
 			selection_content          = '';
 			selection_exclude_content  = excluded_selection[$article_list.id].join();
-			count_elements             = total;
-			count_elements            -= excluded_selection[$article_list.id].length;
-			text                       = count_elements;
-			selection_checkbox.checked = true;
-			title = tr('uncheck to deselect all lines');
+			title                      = tr('uncheck to deselect all lines');
 		}
 		else {
-			selection_content          = selection[$article_list.id].join();
+			count_elements             = selection[$article_list.id].length;
 			select_all_content         = 0;
+			selection_content          = selection[$article_list.id].join();
 			selection_exclude_content  = '';
-			text                       = selection[$article_list.id].length;
-			selection_checkbox.checked = false;
-			title = tr('check to select all $!1 lines').repl('$!1', total);
+			selection_checkbox.checked = (count_elements && (count_elements === total));
+			title                      = tr('check to select all $!1 lines').repl('$!1', total);
 		}
-		$summary.html($summary.data('text').replace('?', text));
+		$summary.html($summary.data('text').replace('?', count_elements));
 		$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
 		$selector.children('input[name=select_all]')        .val(select_all_content);
 		$selector.children('input[name=selection]')         .val(selection_content);
-		selection_checkbox.indeterminate = (selection_exclude_content || selection_content);
 		$selection_checkbox.parent().attr('title', title);
+		selection_checkbox.indeterminate = count_elements && (count_elements < total);
 	};
 
 	//---------------------------------------------------------------------------------- article.list
