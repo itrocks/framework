@@ -93,6 +93,8 @@ body.user.login > .menu {
   body.password.reset > .menu > .company.logo,
   body.user.login > .menu > .company.logo {
     border-bottom: none; }
+body.password.reset > .main > .favorites,
 body.password.reset > .main > .notifications,
+body.user.login > .main > .favorites,
 body.user.login > .main > .notifications {
   display: none; }
