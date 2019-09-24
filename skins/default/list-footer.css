@@ -1,10 +1,3 @@
 @media screen and (max-width: 469px) {
   article.list footer {
     display: none; } }
-article.list footer > .actions {
-  background: #efefef;
-  box-sizing: border-box;
-  border-top: 1px solid #ccc;
-  display: block;
-  height: 39px;
-  white-space: nowrap; }

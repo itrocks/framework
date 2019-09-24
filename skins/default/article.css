@@ -1,5 +1,6 @@
 article {
-  background: #f8f8f8; }
+  background: #f8f8f8;
+  position: relative; }
   article header {
     background: #efefef;
     color: #333333;
@@ -55,3 +56,7 @@ article {
           padding-bottom: 11px; }
         article header > .favorites > li:not(.current) > a {
           box-shadow: inset 0 -2px 2px -2px rgba(0, 0, 0, 0.1); }
+  article footer {
+    bottom: 0;
+    position: absolute;
+    width: 100%; }

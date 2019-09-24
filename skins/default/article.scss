@@ -4,6 +4,7 @@
 
 article {
 	background: #f8f8f8;
+	position: relative;
 
 	header {
 		background: #efefef;
@@ -67,5 +68,11 @@ article {
 				}
 			}
 		}
+	}
+
+	footer {
+		bottom: 0;
+		position: absolute;
+		width: 100%;
 	}
 }

@@ -50,14 +50,25 @@ ul.actions > li {
   ul.actions > li:not(:hover) > ul {
     display: none; }
 
-header > ul.actions > li > ul {
-  border-bottom: 2px solid #d8d8d8;
-  border-top: 1px solid #d8d8d8;
-  box-shadow: 0 5px 5px -3px rgba(216, 216, 216, 0.4);
-  top: 38px; }
+header > ul.actions {
+  border: none;
+  position: absolute;
+  top: 34px; }
+  header > ul.actions > li > ul {
+    border-bottom: 2px solid #d8d8d8;
+    border-top: 1px solid #d8d8d8;
+    box-shadow: 0 5px 5px -3px rgba(216, 216, 216, 0.4);
+    top: 38px; }
 
-footer > ul.actions > li > ul {
-  border-bottom: 1px solid #d8d8d8;
-  border-top: 2px solid #d8d8d8;
-  bottom: 32px;
-  box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, 0.4); }
+footer > ul.actions {
+  background: #efefef;
+  box-sizing: border-box;
+  border-top: 1px solid #ccc;
+  display: block;
+  height: 39px;
+  white-space: nowrap; }
+  footer > ul.actions > li > ul {
+    border-bottom: 1px solid #d8d8d8;
+    border-top: 2px solid #d8d8d8;
+    bottom: 32px;
+    box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, 0.4); }

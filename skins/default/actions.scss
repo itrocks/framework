@@ -54,16 +54,31 @@ ul.actions > li {
 	}
 }
 
-header > ul.actions > li > ul {
-	border-bottom: 2px solid #d8d8d8;
-	border-top: 1px solid #d8d8d8;
-	box-shadow: 0 5px 5px -3px rgba(216, 216, 216, .4);
-	top: 38px;
+header > ul.actions {
+	border: none;
+	position: absolute;
+	top: 34px;
+
+	> li > ul {
+		border-bottom: 2px solid #d8d8d8;
+		border-top: 1px solid #d8d8d8;
+		box-shadow: 0 5px 5px -3px rgba(216, 216, 216, .4);
+		top: 38px;
+	}
 }
 
-footer > ul.actions > li > ul {
-	border-bottom: 1px solid #d8d8d8;
-	border-top: 2px solid #d8d8d8;
-	bottom: 32px;
-	box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, .4);
+footer > ul.actions {
+	background: #efefef;
+	box-sizing: border-box;
+	border-top: 1px solid #ccc;
+	display: block;
+	height: $list-footer-height;
+	white-space: nowrap;
+
+	> li > ul {
+		border-bottom: 1px solid #d8d8d8;
+		border-top: 2px solid #d8d8d8;
+		bottom: 32px;
+		box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, .4);
+	}
 }
