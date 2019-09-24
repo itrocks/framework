@@ -20,8 +20,10 @@
 		</ol>
 		<h2>{title}</h2>
 		<ul class="favorites">
-			<li class="current"><a href="#">|Documents|</a></li>
-			<li><a href="#">|Lines|</a></li>
+			<!--~favorites-->
+			<li class="{?current}"><a href="app://(link)">|{name}|</a></li>
+			<!--end-->
+			<li class="add"><a href="#">|Add|</a></li>
 		</ul>
 		{/component/button/general_buttons.html}
 		<section class="summary">

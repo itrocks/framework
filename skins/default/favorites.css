@@ -2,18 +2,18 @@ div.main > .favorites {
   background: #fefefe;
   font-size: 0;
   white-space: nowrap; }
-  div.main > .favorites > ul > li {
+  div.main > .favorites > li {
     border-bottom: 1px solid #ccc;
     margin-right: 1px; }
-    div.main > .favorites > ul > li > a {
+    div.main > .favorites > li > a {
       display: inline-block; }
-    div.main > .favorites > ul > li:not(.add) {
+    div.main > .favorites > li:not(.add) {
       border-top-left-radius: 4px;
       display: inline-block;
       position: relative;
       background: #d8d8d8;
       font-size: 12px; }
-      div.main > .favorites > ul > li:not(.add):after {
+      div.main > .favorites > li:not(.add):after {
         border-right: 3px solid #fefefe;
         border-top: 3px solid #fefefe;
         border-left: 4px solid #04b497;
@@ -24,16 +24,16 @@ div.main > .favorites {
         right: 0;
         top: 0;
         width: 0; }
-      div.main > .favorites > ul > li:not(.add) > a {
+      div.main > .favorites > li:not(.add) > a {
         padding: 8px 12px 7px; }
-    div.main > .favorites > ul > li.add {
+    div.main > .favorites > li.add {
       border-top-left-radius: 4px;
       display: inline-block;
       position: relative;
       background: #d8d8d8 url("img/favorite-24.svg") center no-repeat;
       position: absolute;
       right: 0; }
-      div.main > .favorites > ul > li.add:after {
+      div.main > .favorites > li.add:after {
         border-right: 3px solid #fefefe;
         border-top: 3px solid #fefefe;
         border-left: 4px solid transparent;
@@ -44,13 +44,16 @@ div.main > .favorites {
         right: 0;
         top: 0;
         width: 0; }
-      div.main > .favorites > ul > li.add > a {
+      div.main > .favorites > li.add > a {
         box-sizing: border-box;
         height: 27px;
         width: 27px; }
-    div.main > .favorites > ul > li.current {
+    div.main > .favorites > li.current {
       background: #04b497;
       border-bottom: 1px solid #68d2c1;
       color: white; }
-    div.main > .favorites > ul > li.recent {
+    div.main > .favorites > li.recent {
       background: #efefef; }
+
+ul.favorites > li.add {
+  display: none !important; }
