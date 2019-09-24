@@ -1,15 +1,40 @@
-@mixin module-color($data-class, $path, $color) {
+@import 'colors.scss';
+
+@mixin module-color($data-class, $module, $color1, $color2, $image) {
 
 	article[data-class^='#{$data-class}']:not(.list) > header > h2 {
-		background-color: $color;
+		background-color: $color2;
 	}
 
-	nav#menu a[href*='#{$path}'] {
-		&:focus, &:hover {
-			background-color: $color;
+	nav#menu > ul > li.#{$module} {
+
+		> h3 {
+
+			> a {
+				background: url('img/#{$image}-24.svg') 10px center no-repeat,
+					url('img/expand-more-24.svg') right center no-repeat;
+			}
+
+			&:focus, &:hover, &.selected {
+
+				> a {
+					background: url('img/#{$image}-24-hilight.svg') 10px center no-repeat,
+						url('img/#{$image}-expand-more-24.svg') right center no-repeat;
+				}
+
+				&:before {
+					background-color: $color1;
+				}
+			}
+		}
+
+		> ul > li > a {
+
+			&:focus, &:hover, &.selected {
+				background: $color2;
+			}
 		}
 	}
-
 }
 
 @mixin vertical-align($position: relative) {

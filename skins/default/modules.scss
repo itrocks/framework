@@ -1,3 +1,3 @@
 @import 'mixins.scss';
 
-@include module-color(ITRocks\\Framework\\, '/ITRocks/Framework/', lightgrey);
+@include module-color(ITRocks\\Framework\\, 'administration', #a3a3a3, #d3d3d3, 'administration');

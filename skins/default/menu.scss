@@ -45,7 +45,7 @@ nav#menu {
 		> li {
 
 			> h3 {
-				background: $menu-module-background;
+				background-color: $menu-module-background;
 				display: table;
 				font-size: 14px;
 				font-weight: normal;
@@ -56,9 +56,18 @@ nav#menu {
 					display: table-cell;
 					padding-left: 42px;
 					vertical-align: middle;
+				}
 
-					&:focus, &:hover {
-						background: #efefef;
+				&:focus, &:hover, &.selected {
+					background: #efefef;
+					position: relative;
+
+					&:before {
+						content: '';
+						display: inline-block;
+						height: 100%;
+						position: absolute;
+						width: 4px;
 					}
 				}
 			}

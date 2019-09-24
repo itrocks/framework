@@ -22,7 +22,7 @@ nav#menu {
   nav#menu > h2 {
     display: none; }
   nav#menu > ul > li > h3 {
-    background: #f8f8f8;
+    background-color: #f8f8f8;
     display: table;
     font-size: 14px;
     font-weight: normal;
@@ -32,8 +32,15 @@ nav#menu {
       display: table-cell;
       padding-left: 42px;
       vertical-align: middle; }
-      nav#menu > ul > li > h3 > a:focus, nav#menu > ul > li > h3 > a:hover {
-        background: #efefef; }
+    nav#menu > ul > li > h3:focus, nav#menu > ul > li > h3:hover, nav#menu > ul > li > h3.selected {
+      background: #efefef;
+      position: relative; }
+      nav#menu > ul > li > h3:focus:before, nav#menu > ul > li > h3:hover:before, nav#menu > ul > li > h3.selected:before {
+        content: '';
+        display: inline-block;
+        height: 100%;
+        position: absolute;
+        width: 4px; }
   nav#menu > ul > li > ul > li {
     display: table;
     height: 29px;
