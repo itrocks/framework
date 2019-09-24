@@ -1,0 +1,19 @@
+article > form > ul.data ol.properties > li > div > span {
+
+	&.set {
+		display: inline-block;
+		vertical-align: top;
+	}
+}
+
+article > form > ul.data ol.properties > li.component-objects > label {
+	cursor: pointer;
+
+	&:after {
+		content: '+';
+		padding-right: .5em;
+		position: absolute;
+		right: 0;
+	}
+}
+

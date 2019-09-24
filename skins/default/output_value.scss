@@ -3,44 +3,40 @@
 
 article ol.properties {
 
-	> li.after,
-	> li.before {
-
-		> div {
-			display: block;
-		}
-	}
-
 	> li.block,
 	> li.component-objects {
 
-		ul.collection {
-			display: table;
+		> div {
+			padding: 0;
 
-			> li {
-				display: table-row-group;
+			ul.collection {
+				border-collapse: collapse;
+				display: table;
 
-				&:first-child > ol > li {
-					text-align: center;
-					white-space: nowrap;
-				}
+				> li {
+					display: table-row-group;
 
-				> ol {
-					display: table-row;
+					&:first-child > ol > li {
+						white-space: nowrap;
+					}
 
-					> li {
-						display: table-cell;
-						vertical-align: top;
+					> ol {
+						display: table-row;
 
-						&.float,
-						&.integer,
-						input.float,
-						input.integer {
-							text-align: right;
-						}
+						> li {
+							display: table-cell;
+							vertical-align: top;
 
-						textarea {
-							margin: 0;
+							&.float,
+							&.integer,
+							input.float,
+							input.integer {
+								text-align: right;
+							}
+
+							textarea {
+								margin: 0;
+							}
 						}
 					}
 				}
@@ -63,4 +59,13 @@ article ul.data ul.map {
 			display: table-cell;
 		}
 	}
+}
+
+article ul.data > li {
+	display: block;
+}
+
+article ul.data ul.data {
+	// allow li with float and clear
+	overflow: hidden;
 }

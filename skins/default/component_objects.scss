@@ -2,6 +2,16 @@
 
 .component-objects > div > ul > li {
 
+	&.header > ol {
+		border-bottom: 1px solid #d8d8d8;
+		width: 100%;
+
+		> li {
+			color: #333;
+			font-weight: $medium;
+		}
+	}
+
 	> ol > li {
 
 		> input, > select, > textarea {

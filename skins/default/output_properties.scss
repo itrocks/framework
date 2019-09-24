@@ -9,79 +9,86 @@ article > ul.data ol.properties > li:not(.component-objects) {
 	}
 }
 
-article > form > ul.data ol.properties > li > div > span {
+article ol.properties {
+	background-color: white;
+	border-collapse: separate;
+	border-spacing: 10px;
+	display: block;
 
-	&.set {
-		display: inline-block;
-		vertical-align: top;
-	}
-}
+	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+		display: table-row;
+		position: relative;
 
-article > form > ul.data ol.properties > li.component-objects > label {
-	cursor: pointer;
-
-	&:after {
-		content: '+';
-		padding-right: .5em;
-		position: absolute;
-		right: 0;
-	}
-}
-
-article > form, article {
-
-	ul.data > li {
-		display: block;
-	}
-
-	ol.properties {
-		display: block;
-
-		> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
-
-			> div > span.unit {
-				vertical-align: middle;
-				white-space: nowrap;
-			}
-
-			> label {
-				vertical-align: top;
-				white-space: nowrap;
-
-				&:after {
-					content: ' :';
-					margin-right: .5em;
-				}
-			}
+		> div > span.unit {
+			vertical-align: middle;
+			white-space: nowrap;
 		}
 
-		> li.after,
-		> li.before,
-		> li.block,
-		> li.component-objects {
+		> label {
+			font-weight: $medium;
+			padding: 9px 10px;
+			text-align: right;
+			vertical-align: top;
+			white-space: nowrap;
+		}
+
+		> div, > label {
+			box-sizing: border-box;
+			display: table-cell;
+			height: 32px;
+		}
+	}
+
+	> li.after,
+	> li.before,
+	> li.block,
+	> li.component-objects {
+		display: block;
+	}
+
+	> li.after,
+	> li.before {
+		> div {
 			display: block;
 		}
+	}
 
-		> li.block {
-			margin-top: -1px;
-		}
+	> li.block {
+		margin-top: -1px;
+	}
 
-		> li.block,
-		> li.component-objects {
+	> li.block,
+	> li.component-objects {
 
-			> label {
-				background-color: #eee;
-				display: block;
+		> label {
+			background-color: #f8f8f8;
+			box-sizing: border-box;
+			color: #04b497;
+			display: block;
+			font-size: 14px;
+			font-weight: bold;
+			height: 24px;
+			padding: 4px 10px;
+
+			&:first-letter {
+				text-transform: uppercase;
 			}
-		}
-
-		> li.multiline > div {
-			white-space: pre-line;
 		}
 	}
 
-	ul.data ul.data {
-		// allow li with float and clear
-		overflow: hidden;
+	> li.multiline > div {
+		white-space: pre-line;
+	}
+}
+
+article > ul.data ol.properties {
+
+	> li > div {
+		background: #efefef;
+	}
+
+	> li:not(.component-objects) > div {
+		border-radius: 2px;
+		padding: 9px 10px;
 	}
 }

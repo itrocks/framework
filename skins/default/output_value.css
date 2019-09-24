@@ -1,34 +1,34 @@
-article ol.properties > li.after > div,
-article ol.properties > li.before > div {
-  display: block; }
-article ol.properties > li.block ul.collection,
-article ol.properties > li.component-objects ul.collection {
-  display: table; }
-  article ol.properties > li.block ul.collection > li,
-  article ol.properties > li.component-objects ul.collection > li {
-    display: table-row-group; }
-    article ol.properties > li.block ul.collection > li:first-child > ol > li,
-    article ol.properties > li.component-objects ul.collection > li:first-child > ol > li {
-      text-align: center;
-      white-space: nowrap; }
-    article ol.properties > li.block ul.collection > li > ol,
-    article ol.properties > li.component-objects ul.collection > li > ol {
-      display: table-row; }
-      article ol.properties > li.block ul.collection > li > ol > li,
-      article ol.properties > li.component-objects ul.collection > li > ol > li {
-        display: table-cell;
-        vertical-align: top; }
-        article ol.properties > li.block ul.collection > li > ol > li.float, article ol.properties > li.block ul.collection > li > ol > li.integer,
-        article ol.properties > li.block ul.collection > li > ol > li input.float,
-        article ol.properties > li.block ul.collection > li > ol > li input.integer,
-        article ol.properties > li.component-objects ul.collection > li > ol > li.float,
-        article ol.properties > li.component-objects ul.collection > li > ol > li.integer,
-        article ol.properties > li.component-objects ul.collection > li > ol > li input.float,
-        article ol.properties > li.component-objects ul.collection > li > ol > li input.integer {
-          text-align: right; }
-        article ol.properties > li.block ul.collection > li > ol > li textarea,
-        article ol.properties > li.component-objects ul.collection > li > ol > li textarea {
-          margin: 0; }
+article ol.properties > li.block > div,
+article ol.properties > li.component-objects > div {
+  padding: 0; }
+  article ol.properties > li.block > div ul.collection,
+  article ol.properties > li.component-objects > div ul.collection {
+    border-collapse: collapse;
+    display: table; }
+    article ol.properties > li.block > div ul.collection > li,
+    article ol.properties > li.component-objects > div ul.collection > li {
+      display: table-row-group; }
+      article ol.properties > li.block > div ul.collection > li:first-child > ol > li,
+      article ol.properties > li.component-objects > div ul.collection > li:first-child > ol > li {
+        white-space: nowrap; }
+      article ol.properties > li.block > div ul.collection > li > ol,
+      article ol.properties > li.component-objects > div ul.collection > li > ol {
+        display: table-row; }
+        article ol.properties > li.block > div ul.collection > li > ol > li,
+        article ol.properties > li.component-objects > div ul.collection > li > ol > li {
+          display: table-cell;
+          vertical-align: top; }
+          article ol.properties > li.block > div ul.collection > li > ol > li.float, article ol.properties > li.block > div ul.collection > li > ol > li.integer,
+          article ol.properties > li.block > div ul.collection > li > ol > li input.float,
+          article ol.properties > li.block > div ul.collection > li > ol > li input.integer,
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li.float,
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li.integer,
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li input.float,
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li input.integer {
+            text-align: right; }
+          article ol.properties > li.block > div ul.collection > li > ol > li textarea,
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li textarea {
+            margin: 0; }
 
 article > ul.data ul.collection > li > ol > li {
   padding: .25em; }
@@ -39,3 +39,9 @@ article ul.data ul.map {
     display: table-row; }
     article ul.data ul.map > li > * {
       display: table-cell; }
+
+article ul.data > li {
+  display: block; }
+
+article ul.data ul.data {
+  overflow: hidden; }
