@@ -16,7 +16,7 @@ article.user.login {
 
 	> form {
 		display: inline-block;
-		padding-top: 64px;
+		padding-top: 82px;
 		position: relative;
 		width: 256px;
 
@@ -55,9 +55,26 @@ article.user.login {
 		}
 
 		> p {
-			line-height: 1.2em;
+			line-height: 1.33;
 			margin-top: 1em;
-			text-align: justify;
+			text-align: left;
+
+			&.error.message {
+				font-weight: $medium;
+				position: absolute;
+				text-align: left;
+				top: 4px;
+
+				&:before {
+					background: url('img/warning-32.svg') center no-repeat;
+					content: '';
+					display: inline-block;
+					position: absolute;
+					height: 32px;
+					left: -40px;
+					width: 32px;
+				}
+			}
 		}
 
 		> ul.actions {
@@ -111,23 +128,63 @@ article.user.login {
 
 article.password.reset form {
 
-	li.password2:after {
+	span.message {
 		background-size: 32px;
-		content: '';
 		display: inline-block;
 		height: 24px;
+		left: 260px;
+		overflow: hidden;
+		padding: 10px 0 0 28px;
 		position: absolute;
-		right: -24px;
-		top: 20px;
-		width: 24px;
+		top: 16px;
+		white-space: nowrap;
+
+		&.error {
+			background: url('img/error-24.svg') left center no-repeat;
+		}
+
+		&.valid {
+			background: url('img/valid-24-green.svg') left center no-repeat;
+		}
 	}
 
-	&.disabled li.password2:after {
-		background: url('img/invalid-24.svg');
-	}
+	li.password,
+	li.password2 {
 
-	&:not(.disabled) li.password2:after {
-		background: url('img/valid-24.svg');
+		&.error {
+
+			input  {
+				border-color: red;
+			}
+
+			label {
+				color: red;
+				font-weight: $medium;
+			}
+
+			span.valid.message {
+				display: none;
+			}
+		}
+
+		&:not(.error) .error.message {
+			display: none;
+		}
+	}
+}
+
+article.user.login form.error {
+
+	li.password {
+
+		input {
+			border-color: red;
+		}
+
+		label {
+			color: red;
+			font-weight: $medium;
+		}
 	}
 }
 

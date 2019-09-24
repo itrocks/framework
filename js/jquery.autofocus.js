@@ -17,10 +17,14 @@
 		if (!enabled) {
 			return;
 		}
-		var $this = $(this);
-		var controls = $this
-			.find('input, select, textarea')
-			.filter(':visible:not([readonly]):not([data-no-autofocus])');
+		var $this   = $(this);
+		var $inputs = $this.find('input, select, textarea');
+		var $focus  = $inputs.filter('[data-focus]');
+		if ($focus.length) {
+			setTimeout(function() { $focus.focus(); });
+			return true;
+		}
+		var controls = $inputs.filter(':visible:not([readonly]):not([data-no-autofocus])');
 		var position = 0;
 		var length   = controls.length;
 		while (
@@ -36,7 +40,7 @@
 		}
 		if (length) {
 			var control = controls.eq(position);
-			setTimeout(function() { control.focus(); }, 0);
+			setTimeout(function() { control.focus(); });
 		}
 
 		return true;

@@ -13,15 +13,20 @@
 
 	<article class="user login" data-class="{@class}" data-feature="{@feature}">
 		<h2>|Please login|</h2>
-		<form action="app://ITRocks/Framework/User/authenticate" method="post" target="#main">
+		<form action="app://ITRocks/Framework/User/authenticate" class="{?~error}" method="post" target="#main">
+			<!--~error?-->
+			<p class="error message">
+				|The password does not match the entered login|.
+			</p>
+			<!--end-->
 			<ol class="properties">
 				<li class="login">
 					<label for="login">|Your ¦login¦|</label>
-					<input id="login" name="login" placeholder="|Enter your login or email address|">
+					<input id="login" name="login" placeholder="|Enter your login or email address|" value="{?~login}">
 				</li>
 				<li class="password">
 					<label for="password">|Your ¦password¦|</label>
-					<input id="password" name="password" type="password">
+					<input data-focus="{?~focus}" id="password" name="password" type="password">
 				</li>
 			</ol>
 			<ul class="actions">
@@ -29,7 +34,9 @@
 					<input type="submit" value="|Log in|">
 				</li>
 				<li class="forgotten-password">
-					<a href="app://ITRocks/Framework/User/Password/reset" target="#main">|I forgot my password|</a>
+					<a class="submit" href="app://ITRocks/Framework/User/Password/reset" target="#main">
+						|I forgot my password|
+					</a>
 				</li>
 			</ul>
 		</form>

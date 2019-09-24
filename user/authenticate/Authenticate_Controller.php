@@ -40,9 +40,11 @@ class Authenticate_Controller implements Feature_Controller
 				);
 			}
 		}
-		return (new Default_Controller)->run(
-			$parameters, $form, $files, User::class, 'authenticateError'
-		);
+		$login = $form['login'] ?? '';
+		$parameters->set('login', trim($login));
+		$parameters->set('focus', boolval(strlen(trim($login))));
+		$parameters->set('error', 'error');
+		return (new Default_Controller)->run($parameters, $form, $files, User::class, 'login');
 	}
 
 }

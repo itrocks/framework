@@ -12,26 +12,33 @@
 <!--BEGIN-->
 
 	<article class="password reset" data-class="{@class}" data-feature="{@feature}">
-		<h2>|Please reset your password|</h2>
+		<h2>|Please choose a new password|</h2>
 		<form action="app://ITRocks/Framework/User/Password/reset" class="disabled" method="post" target="#main">
+			<p class="password error message">
+				|The password must contain at least 10 characters|,
+				|including at least 1 special character and 1 digit|.
+			</p>
 			<ol class="properties">
 				<li class="login">
 					<label for="login">|Your ¦login¦|</label>
-					<input id="login" name="login" placeholder="|Enter your login or email address|">
+					<input id="login" name="login" placeholder="|Enter your login or email address|" value="{?login}">
 				</li>
-				<li class="password">
-					<label for="password">|Your new ¦password¦|</label>
-					<input autocomplete="off" id="password" name="password" type="password">
+				<li class="error password">
+					<label for="password">|Enter your new ¦password¦|</label>
+					<input autocomplete="off" data-focus="{?focus}" id="password" name="password" type="password">
+					<span class="error message">|Non-compliant|</span>
+					<span class="valid message">|Compliant|</span>
 				</li>
-				<li class="password2">
-					<label for="password2">|Please type your new ¦password¦ again|</label>
+				<li class="error password2">
+					<label for="password2">|Confirm your new ¦password¦|</label>
 					<input autocomplete="off" id="password2" name="password2" type="password">
+					<span class="error message">|Does not match|</span>
+					<span class="valid message">|Identical|</span>
 				</li>
 			</ol>
 			<p>
-				|As soon as you have validated this password reset form|,
-				|a validation email will be sent to your email address|.
-				|Your new password will be applicable only when you have validated your email address by clicking the link contained in this email|.
+				|An email will be sent to you|.
+				|Your new password will be applicable after you validated it|.
 			</p>
 			<ul class="actions">
 				<li class="disabled reset"><input disabled type="submit" value="|Reset my password|"></li>
