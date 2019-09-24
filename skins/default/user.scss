@@ -171,6 +171,10 @@ article.password.reset form {
 			display: none;
 		}
 	}
+
+	&:not(.disabled) p.error.message:before {
+		background-image: url('img/beware-32.svg');
+	}
 }
 
 article.user.login form.error {

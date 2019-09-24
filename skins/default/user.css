@@ -135,6 +135,8 @@ article.password.reset form li.password2.error span.valid.message {
 article.password.reset form li.password:not(.error) .error.message,
 article.password.reset form li.password2:not(.error) .error.message {
   display: none; }
+article.password.reset form:not(.disabled) p.error.message:before {
+  background-image: url("img/beware-32.svg"); }
 
 article.user.login form.error li.password input {
   border-color: red; }
