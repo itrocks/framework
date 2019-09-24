@@ -2,11 +2,14 @@
 
 @mixin module-color($data-class, $module, $color1, $color2, $image) {
 
-	article[data-class^='#{$data-class}']:not(.list) > header > h2 {
+	article[data-class^='#{$data-class}'] > form > header,
+	article[data-class^='#{$data-class}'] > header {
 		background-color: $color2;
 	}
 
 	nav#menu > ul > li.#{$module} {
+		--dark-color: $color1;
+		--light-color: $color2;
 
 		> h3 {
 

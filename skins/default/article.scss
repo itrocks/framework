@@ -8,17 +8,18 @@ article {
 
 	header {
 		background: #efefef;
+		border-top: 1px solid #ccc;
 		color: #333333;
 		position: relative;
 		width: 100%;
 
 		> .breadcrumb {
-			height: 34px;
+			height: 32px;
 			white-space: nowrap;
 
 			> li > a {
 				height: 10px;
-				padding: 12px .5em;
+				padding: 11px .5em;
 			}
 		}
 
@@ -33,12 +34,12 @@ article {
 
 		> .actions {
 			border-top: 1px solid #ccc;
-			box-sizing: border-box;
 		}
 
 		> .favorites {
 			display: inline-block;
 			font-size: 0;
+			height: 32px;
 			position: absolute;
 			right: 0;
 			top: 0;
@@ -74,5 +75,9 @@ article {
 		bottom: 0;
 		position: absolute;
 		width: 100%;
+	}
+
+	> form > ul.data, > ul.data {
+		border-top: 1px solid #ccc;
 	}
 }

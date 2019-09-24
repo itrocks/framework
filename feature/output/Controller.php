@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Code;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
+use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Component\Tab\Tabs_Builder_Object;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
@@ -230,6 +231,56 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		return $buttons;
 	}
 
+	//------------------------------------------------------------------------------------- getModule
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	protected function getModule($class_name)
+	{
+		$class_names = Names::classToSet($class_name);
+		$module = '';
+		if (!($menu = Menu::get())) {
+			return $module;
+		}
+		foreach ([$class_names, $class_name] as $link_class_name) {
+			foreach ($menu->blocks as $block) {
+				foreach ($block->items as $item) {
+					if (beginsWith($item->link, View::link($link_class_name))) {
+						$module = new Button($block->title, $block->title_link);
+						break;
+					}
+				}
+			}
+		}
+		return $module;
+	}
+
+	//------------------------------------------------------------------------------------- getParent
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	protected function getParent($class_name)
+	{
+		$class_names = Names::classToSet($class_name);
+		$module = '';
+		if (!($menu = Menu::get())) {
+			return $module;
+		}
+		foreach ([$class_names, $class_name] as $link_class_name) {
+			foreach ($menu->blocks as $block) {
+				foreach ($block->items as $item) {
+					if (beginsWith($item->link, View::link($link_class_name))) {
+						$module = new Button($item->caption, $item->link);
+						break;
+					}
+				}
+			}
+		}
+		return $module;
+	}
+
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
 	 * @param $class_name string
@@ -324,6 +375,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$parameters[Parameter::PROPERTIES_FILTER]  = array_keys($output_settings->properties);
 		$parameters[Parameter::PROPERTIES_TITLE]   = $output_settings->propertiesParameter('display');
 		$parameters[Parameter::PROPERTIES_TOOLTIP] = $output_settings->propertiesParameter('tooltip');
+		$parameters['module']                      = $this->getModule($class_name);
+		$parameters['parent']                      = $this->getParent($class_name);
 		$parameters['settings']                    = $output_settings;
 		$parameters['tabs']                        = $this->getTab($object, $output_settings);
 		$parameters['title']                       = $output_settings->title();

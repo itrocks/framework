@@ -3,26 +3,27 @@ article {
   position: relative; }
   article header {
     background: #efefef;
+    border-top: 1px solid #ccc;
     color: #333333;
     position: relative;
     width: 100%; }
     article header > .breadcrumb {
-      height: 34px;
+      height: 32px;
       white-space: nowrap; }
       article header > .breadcrumb > li > a {
         height: 10px;
-        padding: 12px .5em; }
+        padding: 11px .5em; }
     article header > h2 {
       display: inline-block;
       font-weight: 500; }
       article header > h2:first-letter {
         text-transform: uppercase; }
     article header > .actions {
-      border-top: 1px solid #ccc;
-      box-sizing: border-box; }
+      border-top: 1px solid #ccc; }
     article header > .favorites {
       display: inline-block;
       font-size: 0;
+      height: 32px;
       position: absolute;
       right: 0;
       top: 0;
@@ -60,3 +61,5 @@ article {
     bottom: 0;
     position: absolute;
     width: 100%; }
+  article > form > ul.data, article > ul.data {
+    border-top: 1px solid #ccc; }

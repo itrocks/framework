@@ -15,7 +15,7 @@ div.main > .favorites {
 		}
 
 		&:not(.add) {
-			@include tab(#fefefe, #04b497);
+			@include tab(#fefefe);
 			background: #d8d8d8;
 			font-size: $font-size;
 
@@ -38,9 +38,9 @@ div.main > .favorites {
 		}
 
 		&.current {
-			background: #04b497;
-			border-bottom: 1px solid #68d2c1;
 			color: white;
+			margin-bottom: -1px;
+			z-index: 1;
 		}
 
 		&.recent {

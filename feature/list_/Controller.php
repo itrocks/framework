@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
-use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
@@ -417,26 +416,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		];
 	}
 
-	//------------------------------------------------------------------------------------- getModule
-	/**
-	 * @return string
-	 */
-	protected function getModule()
-	{
-		$module = '';
-		if (!($menu = Menu::get())) {
-			return $module;
-		}
-		foreach ($menu->blocks as $block) {
-			foreach ($block->items as $item) {
-				if (beginsWith($item->link, View::link($this->class_names))) {
-					$module = $block->title;
-				}
-			}
-		}
-		return $module;
-	}
-
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -612,7 +591,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty    = $displayed_lines_count > $this->default_displayed_lines_count;
 		$lock_columns   = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
-		$module         = $this->getModule();
 		$more_hundred   = ($displayed_lines_count < $this->maximum_displayed_lines_count)
 			&& ($displayed_lines_count < $count->count);
 		$more_thousand  = ($displayed_lines_count < $this->maximum_displayed_lines_count)
@@ -633,7 +611,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'less_twenty'                   => $less_twenty,
 				'lock_columns'                  => $lock_columns,
 				'maximum_displayed_lines_count' => $this->maximum_displayed_lines_count,
-				'module'                        => $module,
+				'module'                        => $this->getModule($class_name),
 				'more_hundred'                  => $more_hundred,
 				'more_thousand'                 => $more_thousand,
 				'properties'                    => $this->getProperties($list_settings_before_read),
