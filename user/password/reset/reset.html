@@ -13,7 +13,7 @@
 
 	<article class="password reset" data-class="{@class}" data-feature="{@feature}">
 		<h2>|Please reset your password|</h2>
-		<form action="app://ITRocks/Framework/User/Password/reset" method="post" target="#main">
+		<form action="app://ITRocks/Framework/User/Password/reset" class="disabled" method="post" target="#main">
 			<ol class="properties">
 				<li class="login">
 					<label for="login">|Your ¦login¦|</label>
@@ -34,7 +34,7 @@
 				|Your new password will be applicable only when you have validated your email address by clicking the link contained in this email|.
 			</p>
 			<ul class="actions">
-				<li class="reset"><input type="submit" value="|Reset my password|"></li>
+				<li class="disabled reset"><input disabled type="submit" value="|Reset my password|"></li>
 				<li class="return"><a href="app://" target="#main">|Return to the login form|</a></li>
 			</ul>
 		</form>

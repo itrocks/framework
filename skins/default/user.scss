@@ -87,7 +87,16 @@ article.user.login {
 						width: 100%;
 					}
 
-					&:hover {
+					&.disabled {
+						border-color: #a8e8ff;
+
+						> input {
+							cursor: default;
+							background: #a0deff;
+						}
+					}
+
+					&:not(.disabled):hover {
 						border-color: #00aeff;
 
 						> input {
@@ -97,6 +106,28 @@ article.user.login {
 				}
 			}
 		}
+	}
+}
+
+article.password.reset form {
+
+	li.password2:after {
+		background-size: 32px;
+		content: '';
+		display: inline-block;
+		height: 24px;
+		position: absolute;
+		right: -24px;
+		top: 20px;
+		width: 24px;
+	}
+
+	&.disabled li.password2:after {
+		background: url('img/invalid-24.svg');
+	}
+
+	&:not(.disabled) li.password2:after {
+		background: url('img/valid-24.svg');
 	}
 }
 

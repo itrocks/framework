@@ -75,14 +75,37 @@ article.user.login {
             padding-top: 6px;
             padding-bottom: 6px;
             width: 100%; }
-          article.password.reset > form > ul.actions > li.connect:hover, article.password.reset > form > ul.actions > li.reset:hover,
-          article.user.login > form > ul.actions > li.connect:hover,
-          article.user.login > form > ul.actions > li.reset:hover {
+          article.password.reset > form > ul.actions > li.connect.disabled, article.password.reset > form > ul.actions > li.reset.disabled,
+          article.user.login > form > ul.actions > li.connect.disabled,
+          article.user.login > form > ul.actions > li.reset.disabled {
+            border-color: #a8e8ff; }
+            article.password.reset > form > ul.actions > li.connect.disabled > input, article.password.reset > form > ul.actions > li.reset.disabled > input,
+            article.user.login > form > ul.actions > li.connect.disabled > input,
+            article.user.login > form > ul.actions > li.reset.disabled > input {
+              cursor: default;
+              background: #a0deff; }
+          article.password.reset > form > ul.actions > li.connect:not(.disabled):hover, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover,
+          article.user.login > form > ul.actions > li.connect:not(.disabled):hover,
+          article.user.login > form > ul.actions > li.reset:not(.disabled):hover {
             border-color: #00aeff; }
-            article.password.reset > form > ul.actions > li.connect:hover > input, article.password.reset > form > ul.actions > li.reset:hover > input,
-            article.user.login > form > ul.actions > li.connect:hover > input,
-            article.user.login > form > ul.actions > li.reset:hover > input {
+            article.password.reset > form > ul.actions > li.connect:not(.disabled):hover > input, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover > input,
+            article.user.login > form > ul.actions > li.connect:not(.disabled):hover > input,
+            article.user.login > form > ul.actions > li.reset:not(.disabled):hover > input {
               background: #00aeff; }
+
+article.password.reset form li.password2:after {
+  background-size: 32px;
+  content: '';
+  display: inline-block;
+  height: 24px;
+  position: absolute;
+  right: -24px;
+  top: 20px;
+  width: 24px; }
+article.password.reset form.disabled li.password2:after {
+  background: url("img/invalid-24.svg"); }
+article.password.reset form:not(.disabled) li.password2:after {
+  background: url("img/valid-24.svg"); }
 
 body.password.reset > .menu,
 body.user.login > .menu {
