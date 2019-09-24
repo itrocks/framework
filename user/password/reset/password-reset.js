@@ -4,9 +4,10 @@ $(document).ready(function() {
 	var complyError = function(password)
 	{
 		var contains_digit   = password.replace(/\D/g, '').length;
+		var contains_letter  = password.replace(/[^a-zA-Z]/g, '').length;
 		var contains_special = password.replace(/([0-9]|[A-Z]|[a-z]|[àáâãäåçèéêëìíîïðòóôõöùúûüýÿÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ])/g, '').length;
 		var long_enough      = (password.length >= 10);
-		return !(contains_digit && contains_special && long_enough);
+		return !(contains_digit && contains_letter && contains_special && long_enough);
 	};
 
 	//------------------------------------------------------------------- input[name^=password] keyup
@@ -14,6 +15,7 @@ $(document).ready(function() {
 	{
 		var $form        = $(this).closest('form');
 		var $login       = $form.find('li.login');
+		var $message     = $form.children('p.message');
 		var $password    = $form.find('li.password');
 		var $password2   = $form.find('li.password2');
 		var $submit      = $form.find('.actions > .reset');
@@ -24,6 +26,7 @@ $(document).ready(function() {
 		var login_error  = !login.length;
 		var match_error  = (password !== password2);
 
+		comply_error ? $message.addClass('error')   : $message.removeClass('error');
 		comply_error ? $password.addClass('error')  : $password.removeClass('error');
 		match_error  ? $password2.addClass('error') : $password2.removeClass('error');
 

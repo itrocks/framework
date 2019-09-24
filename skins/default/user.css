@@ -48,21 +48,26 @@ article.user.login {
       line-height: 1.33;
       margin-top: 1em;
       text-align: left; }
-      article.password.reset > form > p.error.message,
-      article.user.login > form > p.error.message {
+      article.password.reset > form > p.message,
+      article.user.login > form > p.message {
         font-weight: 500;
         position: absolute;
         text-align: left;
         top: 4px; }
-        article.password.reset > form > p.error.message:before,
-        article.user.login > form > p.error.message:before {
-          background: url("img/warning-32.svg") center no-repeat;
+        article.password.reset > form > p.message:before,
+        article.user.login > form > p.message:before {
           content: '';
           display: inline-block;
           position: absolute;
           height: 32px;
           left: -40px;
           width: 32px; }
+      article.password.reset > form > p.error.message:before,
+      article.user.login > form > p.error.message:before {
+        background: url("img/warning-32.svg") center no-repeat; }
+      article.password.reset > form > p.message:not(.error):before,
+      article.user.login > form > p.message:not(.error):before {
+        background: url("img/beware-32.svg") center no-repeat; }
     article.password.reset > form > ul.actions,
     article.user.login > form > ul.actions {
       position: relative; }
@@ -135,8 +140,6 @@ article.password.reset form li.password2.error span.valid.message {
 article.password.reset form li.password:not(.error) .error.message,
 article.password.reset form li.password2:not(.error) .error.message {
   display: none; }
-article.password.reset form:not(.disabled) p.error.message:before {
-  background-image: url("img/beware-32.svg"); }
 
 article.user.login form.error li.password input {
   border-color: red; }

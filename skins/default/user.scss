@@ -59,14 +59,13 @@ article.user.login {
 			margin-top: 1em;
 			text-align: left;
 
-			&.error.message {
+			&.message {
 				font-weight: $medium;
 				position: absolute;
 				text-align: left;
 				top: 4px;
 
 				&:before {
-					background: url('img/warning-32.svg') center no-repeat;
 					content: '';
 					display: inline-block;
 					position: absolute;
@@ -74,6 +73,14 @@ article.user.login {
 					left: -40px;
 					width: 32px;
 				}
+			}
+
+			&.error.message:before {
+				background: url('img/warning-32.svg') center no-repeat;
+			}
+
+			&.message:not(.error):before {
+				background: url('img/beware-32.svg') center no-repeat;
 			}
 		}
 
@@ -170,10 +177,6 @@ article.password.reset form {
 		&:not(.error) .error.message {
 			display: none;
 		}
-	}
-
-	&:not(.disabled) p.error.message:before {
-		background-image: url('img/beware-32.svg');
 	}
 }
 
