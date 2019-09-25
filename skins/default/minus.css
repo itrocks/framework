@@ -1,9 +1,12 @@
 .minus {
+  color: #04b497;
   cursor: pointer;
+  font-weight: bold;
   height: 18px;
   margin: 0 !important;
   padding: 0 !important;
   text-align: center;
+  vertical-align: middle;
   width: 18px; }
   .minusbutton {
     position: absolute; }

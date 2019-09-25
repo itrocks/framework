@@ -2,11 +2,14 @@
 @import 'sizes.scss';
 
 .minus {
+	color: #04b497;
 	cursor: pointer;
+	font-weight: bold;
 	height: $font-size * 1.5;
 	margin: 0 !important;
 	padding: 0 !important;
 	text-align: center;
+	vertical-align: middle;
 	width: $font-size * 1.5;
 
 	&button {

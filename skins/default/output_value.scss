@@ -5,13 +5,14 @@ article ol.properties {
 
 	> li.block,
 	> li.component-objects {
+		background-color: #f8f8f8;
+		padding: 0 10px 10px;
 
 		> div {
 			padding: 0;
 
 			ul.collection {
 				border-collapse: collapse;
-				display: table;
 
 				> li {
 					display: table-row-group;
@@ -25,7 +26,10 @@ article ol.properties {
 
 						> li {
 							display: table-cell;
-							vertical-align: top;
+
+							&:not(.minus) {
+								vertical-align: top;
+							}
 
 							&.float,
 							&.integer,
@@ -46,7 +50,7 @@ article ol.properties {
 }
 
 article > ul.data ul.collection > li > ol > li {
-	padding: .25em;
+	padding: 8px;
 }
 
 article ul.data ul.map {

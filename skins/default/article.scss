@@ -81,3 +81,13 @@ article {
 		border-top: 1px solid #ccc;
 	}
 }
+
+article:not(.list) {
+	background-color: white;
+
+	> form > ul.data,
+	> ul.data {
+		height: calc(100% - 39px - 34px);
+		overflow: auto;
+	}
+}

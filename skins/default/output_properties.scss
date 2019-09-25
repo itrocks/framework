@@ -10,10 +10,13 @@ article > ul.data ol.properties > li:not(.component-objects) {
 }
 
 article ol.properties:not(.tiny) {
-	background-color: white;
 	border-collapse: separate;
 	border-spacing: 10px;
 	display: block;
+
+	li {
+		position: relative;
+	}
 
 	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
@@ -60,6 +63,10 @@ article ol.properties:not(.tiny) {
 	> li.block,
 	> li.component-objects {
 
+		> div {
+			background: #efefef;
+		}
+
 		> label {
 			background-color: #f8f8f8;
 			box-sizing: border-box;
@@ -68,7 +75,8 @@ article ol.properties:not(.tiny) {
 			font-size: 14px;
 			font-weight: bold;
 			height: 24px;
-			padding: 4px 10px;
+			padding: 4px 0;
+			width: 100%;
 
 			&:first-letter {
 				text-transform: uppercase;
@@ -82,10 +90,6 @@ article ol.properties:not(.tiny) {
 }
 
 article > ul.data ol.properties {
-
-	> li > div {
-		background: #efefef;
-	}
 
 	> li:not(.component-objects) > div {
 		border-radius: 2px;

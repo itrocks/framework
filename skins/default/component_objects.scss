@@ -1,14 +1,33 @@
 @import 'colors.scss';
 
 .component-objects > div > ul > li {
+	border-bottom: 1px solid #d8d8d8;
+	display: block;
 
-	&.header > ol {
-		border-bottom: 1px solid #d8d8d8;
-		width: 100%;
+	&.header {
+		background-color: #e8e8e8;
 
-		> li {
-			color: #333;
-			font-weight: $medium;
+		> ol {
+			border-bottom: 1px solid #d8d8d8;
+			width: 100%;
+
+			> li {
+				color: #333;
+				font-weight: $medium;
+				padding: 4px 10px;
+			}
+		}
+	}
+
+	&:not(.header):nth-child(even) {
+		background-color: #efefef;
+	}
+
+	&:not(.header):nth-child(odd) {
+		background-color: #e8e8e8;
+
+		input, select, textarea {
+			background-color: #f8f8f8;
 		}
 	}
 
@@ -18,7 +37,7 @@
 			background: transparent;
 			border: none !important;
 			color: black;
-			width: calc(100% - 4px);
+			width: calc(100% - 20px);
 		}
 
 		&.float,

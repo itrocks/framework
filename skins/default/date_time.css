@@ -1,5 +1,6 @@
 button.ui-datepicker-trigger {
-  background-image: url("../default/img/input_datetime.png"); }
+  background-image: url("../default/img/input_datetime.png");
+  top: 5px; }
 
 .ui-datepicker td.ui-datepicker-week-col {
   text-align: center; }

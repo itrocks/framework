@@ -1,5 +1,6 @@
 button.more {
-  background-image: url("img/input-combo.png"); }
+  background-image: url("img/input-combo.png");
+  top: 5px; }
 
 .ui-state-active {
   background: black !important;

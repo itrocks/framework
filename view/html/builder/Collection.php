@@ -176,10 +176,12 @@ class Collection
 						$this->class_name
 					)
 				);
+				$type = $property->getType();
 				if (!$property->isVisible()) {
 					$cell->addClass('hidden');
 					$cell->setStyle('display', 'none');
 				}
+				$cell->addClass($type->asString());
 				$header->addItem($cell);
 			}
 		}

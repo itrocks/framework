@@ -91,7 +91,8 @@
 		var calculate = function()
 		{
 			var previous_width = parseInt($element.data('text-width'));
-			var new_width      = getTextWidth(settings, $element, false, true, additional_text);
+			var new_width      = getTextWidth(settings, $element, false, true, additional_text)
+				+ parseInt($element.css('padding-left')) + parseInt($element.css('padding-right'));
 			if (new_width !== previous_width) {
 				$element.data('text-width', new_width);
 				var $block = $element.parent().closest('.auto_width');

@@ -63,3 +63,10 @@ article {
     width: 100%; }
   article > form > ul.data, article > ul.data {
     border-top: 1px solid #ccc; }
+
+article:not(.list) {
+  background-color: white; }
+  article:not(.list) > form > ul.data,
+  article:not(.list) > ul.data {
+    height: calc(100% - 39px - 34px);
+    overflow: auto; }
