@@ -1,3 +1,4 @@
+@import 'colors.scss';
 
 ul.custom.select {
 	background: white;
@@ -8,7 +9,7 @@ ul.custom.select {
 	display: none;
 	left: -1px;
 	position: absolute;
-	z-index: 1;
+	z-index: calc(var(--z-index) + 2);
 
 	> li {
 		display: block;
@@ -20,6 +21,10 @@ ul.custom.select {
 			&:hover {
 				background: var(--light-color);
 			}
+		}
+
+		&.default {
+			font-weight: $medium;
 		}
 	}
 }

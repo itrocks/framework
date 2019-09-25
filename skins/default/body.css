@@ -1,6 +1,7 @@
 body {
   --dark-color: #d8d8d8;
   --light-color: #efefef;
+  --z-index: 0;
   color: #444;
   font-family: Roboto, sans-serif;
   font-size: 0;

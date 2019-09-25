@@ -18,7 +18,7 @@ div.popup {
   background-color: white;
   color: #444;
   position: fixed;
-  z-index: 1; }
+  z-index: calc(var(--z-index) + 5); }
   div.popup > article > header {
     cursor: pointer;
     margin: -1px; }

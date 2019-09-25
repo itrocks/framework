@@ -6,7 +6,7 @@ ul.custom.select {
   display: none;
   left: -1px;
   position: absolute;
-  z-index: 1; }
+  z-index: calc(var(--z-index) + 2); }
   ul.custom.select > li {
     display: block; }
     ul.custom.select > li > a {
@@ -14,3 +14,5 @@ ul.custom.select {
       padding: 10px; }
       ul.custom.select > li > a:hover {
         background: var(--light-color); }
+    ul.custom.select > li.default {
+      font-weight: 500; }

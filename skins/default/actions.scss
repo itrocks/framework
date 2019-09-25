@@ -42,7 +42,7 @@ ul.actions > li {
 		display: inline-block;
 		left: -1px;
 		position: absolute;
-		z-index: 2;
+		z-index: calc(var(--z-index) + 1);
 
 		> li {
 			display: block;

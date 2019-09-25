@@ -40,7 +40,7 @@ div.main > .favorites {
 		&.current {
 			color: white;
 			margin-bottom: -1px;
-			z-index: 1;
+			z-index: calc(var(--z-index) + 1);
 		}
 
 		&.recent {

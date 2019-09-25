@@ -24,7 +24,7 @@ div.popup {
 	background-color: $background;
 	color: $color;
 	position: fixed;
-	z-index: 1;
+	z-index: calc(var(--z-index) + 5);
 
 	> article > header {
 		cursor: pointer;

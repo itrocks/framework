@@ -125,12 +125,15 @@ window.modifiable_waiting  = false;
 				//------------------------------------------------------------------ $input keydown=ESC/RET
 				$input.keydown(function(event)
 				{
+					var $input = $(this);
 					if (event.keyCode === 13) {
+						if ($input.data('callback')) {
+							$input.data('callback').call($input);
+						}
 						done();
 					}
 					if (event.keyCode === 27) {
-						var $this = $(this);
-						$this.val($this.parent().data('old'));
+						$input.val($input.parent().data('old'));
 						done();
 					}
 				});
@@ -140,6 +143,9 @@ window.modifiable_waiting  = false;
 				{
 					setTimeout(function() {
 						if (($popup === undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
+							if ($input.data('callback')) {
+								$input.data('callback').call($input);
+							}
 							done();
 						}
 					}, 100);

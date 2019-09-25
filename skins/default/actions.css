@@ -40,7 +40,7 @@ ul.actions > li {
     display: inline-block;
     left: -1px;
     position: absolute;
-    z-index: 2; }
+    z-index: calc(var(--z-index) + 1); }
     li.action > ul > li,
     li.actions > ul > li > ul > li,
     ul.actions > li > ul > li {
