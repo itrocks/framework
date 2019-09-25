@@ -1,4 +1,5 @@
 article.list > form {
+  background: white;
   height: 100%;
   position: relative; }
   article.list > form > table {
