@@ -11,8 +11,9 @@ article ol.properties:not(.tiny) {
     display: table-row;
     position: relative; }
     article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
-      vertical-align: middle;
       white-space: nowrap; }
+      article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit:before {
+        content: ' '; }
     article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
       font-weight: 500;
       padding: 9px 10px;

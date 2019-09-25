@@ -23,8 +23,11 @@ article ol.properties:not(.tiny) {
 		position: relative;
 
 		> div > span.unit {
-			vertical-align: middle;
 			white-space: nowrap;
+
+			&:before {
+				content: ' ';
+			}
 		}
 
 		> label {
