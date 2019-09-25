@@ -11,7 +11,6 @@ use ITRocks\Framework\Feature\Lock\Lockable;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\View;
 
 /**
@@ -74,7 +73,7 @@ class Lock implements Registerable
 						'Lock',
 						View::link($object, Controller::FEATURE),
 						Controller::FEATURE,
-						[new Color(Color::GREEN), Target::MESSAGES]
+						Target::RESPONSES
 					);
 				}
 			}

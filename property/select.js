@@ -148,7 +148,7 @@ $(document).ready(function()
 					if (drop_out_href !== undefined) {
 						var drop_out_target = $this.data('drop-out-target');
 						if (drop_out_target === undefined) {
-							drop_out_target = '#messages';
+							drop_out_target = '#responses';
 						}
 						redirectLight(drop_out_href, drop_out_target);
 					}

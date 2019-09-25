@@ -6,7 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 
 /**
- * a target selector can be used to define where the result is loaded (#messages as default)
+ * a target selector can be used to define where the result is loaded (#responses as default)
  *
  * @example @annotation [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
  */

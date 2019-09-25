@@ -34,7 +34,7 @@
 		 */
 		var closeDialog = function()
 		{
-			$('#messages').html('');
+			$('#responses').html('');
 		};
 
 		//--------------------------------------------------------------------------------------- display
@@ -45,7 +45,7 @@
 		 */
 		var display = function(markup)
 		{
-			$('#messages').html(markup);
+			$('#responses').html(markup);
 		};
 
 		//------------------------------------------------------------------------------------ openDialog

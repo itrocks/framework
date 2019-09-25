@@ -196,7 +196,7 @@ class Engine implements Configurable, Framework\View\Engine
 		if (!is_array($options)) {
 			$options = [$options];
 		}
-		$target = Target::MESSAGES;
+		$target = Target::RESPONSES;
 		foreach ($options as $option) {
 			if (substr($option, 0, 1) == '#') {
 				$target = $option;

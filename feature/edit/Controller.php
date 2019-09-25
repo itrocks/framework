@@ -10,7 +10,6 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\Setting;
-use ITRocks\Framework\Tools\Color;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
@@ -53,13 +52,13 @@ class Controller extends Output\Controller
 					'Close',
 					$close_link,
 					Feature::F_CLOSE,
-					[new Color(Feature::F_CLOSE), Target::MAIN]
+					Target::MAIN
 				),
 				Feature::F_WRITE => new Button(
 					'Write',
 					View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
 					Feature::F_WRITE,
-					[new Color(Color::GREEN), Target::MESSAGES, Tag::SUBMIT]
+					[Target::RESPONSES, Tag::SUBMIT]
 				)
 			];
 		if (Dao::getObjectIdentifier($object) && !isset($buttons[Feature::F_DELETE])) {
@@ -67,7 +66,7 @@ class Controller extends Output\Controller
 				'Delete',
 				View::link($object, Feature::F_DELETE, null, $follows),
 				Feature::F_DELETE,
-				[Target::MESSAGES]
+				Target::RESPONSES
 			);
 		}
 		return $buttons;

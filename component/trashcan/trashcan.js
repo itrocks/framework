@@ -110,7 +110,7 @@ $(document).ready(function()
 						href += '/ITRocks/Framework/Rad/' + ui.helper.data('action');
 					}
 					href += event.target.search + event.target.hash;
-					redirectLight(href, '#messages');
+					redirectLight(href, '#responses');
 				}
 			});
 

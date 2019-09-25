@@ -30,7 +30,7 @@ $(document).ready(function()
 		$this.find('> header > h2').modifiable({
 			ajax:    callback_uri + '&title={value}',
 			aliases: { 'className': className },
-			target:  '#messages',
+			target:  '#responses',
 			start: function() {
 				$(this).closest('article.list').find('> div.custom > ul.actions').css('display', 'none');
 			},
@@ -45,7 +45,7 @@ $(document).ready(function()
 			ajax_form: 'form',
 			aliases:   { 'className': className, 'propertyPath': propertyPath },
 			popup:     list_property_uri,
-			target:    '#messages'
+			target:    '#responses'
 		});
 	});
 

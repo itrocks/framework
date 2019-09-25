@@ -153,7 +153,7 @@ function radOutput()
 			ajax_form: 'form',
 			aliases:   {className: className, featureName: featureName},
 			popup:     output_edit_uri,
-			target:    '#messages',
+			target:    '#responses',
 			start: function() {
 				$(this).closest('h2').children('.custom.actions').css('display', 'none');
 			},
@@ -169,7 +169,7 @@ function radOutput()
 			ajax_form: 'form',
 			aliases:   { className: className, featureName: featureName, propertyPath: propertyPath },
 			popup:     output_property_uri,
-			target:    '#messages'
+			target:    '#responses'
 		});
 
 	});

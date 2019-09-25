@@ -22,13 +22,13 @@ $(document).ready(function()
 		}
 	});
 
-	//------------------------------------------------------------------------ section#messages close
+	//------------------------------------------------------------------------ section#responses close
 	/**
-	 * #messages close action empties #messages instead of calling a link
+	 * #responses close action empties #responses instead of calling a link
 	 */
-	$body.build('click', 'div#messages .actions .close a', function(event)
+	$body.build('click', 'div#responses .actions .close a', function(event)
 	{
-		$(this).closest('div#messages').empty();
+		$(this).closest('div#responses').empty();
 		event.preventDefault();
 		event.stopImmediatePropagation();
 	});

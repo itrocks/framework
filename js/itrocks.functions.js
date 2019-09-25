@@ -261,7 +261,7 @@ redirectLight = function(uri, target, condition)
 /**
  * Refresh a window embedding data-class, and optionally data-feature and/or data-id
  *
- * @example refresh('main'); refresh('#main'); refresh('#messages'); refresh($('main');
+ * @example refresh('main'); refresh('#main'); refresh('#responses'); refresh($('main');
  * @param target string|jQuery
  */
 refresh = function(target)

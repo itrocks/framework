@@ -12,7 +12,7 @@ $(document).ready(function()
 
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
-			auto_empty:      {'main': 'div#messages'},
+			auto_empty:      {'main': 'section#responses'},
 			draggable_blank: 'header',
 			history: {
 				condition:        'h2',
@@ -29,17 +29,6 @@ $(document).ready(function()
 		var classes = this.attr('class');
 		var $body   = $('body');
 		classes ? $body.attr('class', classes) : $body.removeAttr('class');
-	});
-
-	//---------------------------------------------------------------- div#messages draggable & click
-	$body.build('call', 'div#messages', function()
-	{
-		this.draggable().click(function(event)
-		{
-			if (event.offsetX > (this.clientWidth - 10) && (event.offsetY < 10)) {
-				$(this).empty();
-			}
-		});
 	});
 
 	//----------------------------------------------------------------------- .ui-draggable mousedown

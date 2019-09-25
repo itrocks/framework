@@ -28,7 +28,7 @@ class Output_Controller extends Controller
 			'Generate',
 			View::link($object, Generate_Controller::FEATURE),
 			Generate_Controller::FEATURE,
-			Target::MESSAGES
+			Target::RESPONSES
 		);
 		return $buttons;
 	}

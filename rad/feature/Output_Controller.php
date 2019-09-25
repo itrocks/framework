@@ -33,7 +33,7 @@ class Output_Controller extends Output\Controller
 				'Install',
 				View::link($object, Install_Controller::FEATURE),
 				Install_Controller::FEATURE,
-				Target::MESSAGES
+				Target::RESPONSES
 			);
 		}
 
@@ -42,7 +42,7 @@ class Output_Controller extends Output\Controller
 				'Uninstall',
 				View::link($object, Uninstall_Controller::FEATURE),
 				Uninstall_Controller::FEATURE,
-				Target::MESSAGES
+				Target::RESPONSES
 			);
 		}
 

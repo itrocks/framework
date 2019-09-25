@@ -75,7 +75,7 @@ class Edit_Controller extends Edit\Controller
 			$button->feature = $parameters->getRawParameter(1);
 			if ($button->feature == Feature::F_EDIT) {
 				$button->feature = Feature::F_WRITE;
-				$button->target  = Target::MESSAGES;
+				$button->target  = Target::RESPONSES;
 			}
 		}
 

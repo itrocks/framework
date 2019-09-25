@@ -217,7 +217,7 @@ Parser::$default_annotations = [
 	 * @user_remove [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
 	 * Associates a feature controller to call each time a sub / linked object is removed by the final
 	 * user to an input form (target of a @link Collection or link @Map).
-	 * a target selector can be used to define where the result is loaded (#messages as default)
+	 * a target selector can be used to define where the result is loaded (#responses as default)
 	 */
 	Parser::T_CLASS . '@user_remove' => Method_Target_Annotation::class,
 
@@ -537,7 +537,7 @@ Parser::$default_annotations = [
 	 * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
 	 * Associates a feature controller to call each time a property value is changed by the final user
 	 * to an input form.
-	 * a target selector can be used to define where the result is loaded (#messages as default)
+	 * a target selector can be used to define where the result is loaded (#responses as default)
 	 */
 	Parser::T_PROPERTY . '@user_change' => Method_Target_Annotation::class,
 

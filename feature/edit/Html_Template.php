@@ -284,7 +284,7 @@ class Html_Template extends Template
 						. ' enctype="multipart/form-data"'
 						. ' method="post"'
 						. ' name=' . DQ . $this->getFormId() . DQ
-						. ' target="#messages"';
+						. ' target="#responses"';
 					$after_header = strpos($content, '</header>', $inside_i);
 					if ($after_header === false) {
 						$after_header = strpos($content, '</h2>', $inside_i);

@@ -24,7 +24,7 @@ $(document).ready(function()
 		// in case of validation warning, the 'cancel' button closes the message box
 		$('.invalid_properties_warning .cancel a').click(function(event)
 		{
-			$('#messages').empty();
+			$('#responses').empty();
 			event.preventDefault();
 			event.stopImmediatePropagation();
 		});

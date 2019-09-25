@@ -203,7 +203,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 				'Delete',
 				View::link($object, Feature::F_DELETE, null, $follows),
 				Feature::F_DELETE,
-				[Target::MESSAGES]
+				Target::RESPONSES
 			);
 		}
 
@@ -382,7 +382,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$parameters['title']                       = $output_settings->title();
 		// buttons
 		$parameters['custom_buttons'] = (new Setting\Buttons)->getButtons(
-			'custom ' . $feature, $object, $feature //, Target::MESSAGES TODO back but dont display output
+			'custom ' . $feature, $object, $feature //, Target::RESPONSES TODO back but dont display output
 		);
 		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$object, $parameters, $output_settings

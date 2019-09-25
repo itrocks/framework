@@ -8,7 +8,7 @@ $(document).ready(function()
 	{
 		var $this  = $(this);
 		var $form  = $this.closest('form');
-		var target = '#messages';
+		var target = '#responses';
 		var uri    = $this.data(event);
 		$.each(uri.split(','), function(key, uri) {
 			if (uri.indexOf(SP) > -1) {

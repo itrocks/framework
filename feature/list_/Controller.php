@@ -522,7 +522,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'Delete',
 				View::link($class_name, Feature::F_DELETE),
 				Feature::F_DELETE,
-				Target::MESSAGES
+				Target::RESPONSES
 			)
 		];
 
