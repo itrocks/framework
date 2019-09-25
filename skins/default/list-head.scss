@@ -45,7 +45,9 @@ article.list > form > table > thead {
 					}
 				}
 
-				&.sort1 > a, &.sort2 > a {
+				&.sort1 > a,
+				&.sort2 > a,
+				&.sort3 > a {
 					padding-right: 24px;
 				}
 
@@ -63,6 +65,14 @@ article.list > form > table > thead {
 
 				&.sort2.reverse {
 					background: url('img/sort-2-reverse-24.svg') right center no-repeat;
+				}
+
+				&.sort3:not(.reverse) {
+					background: url('img/sort-3-24.svg') right center no-repeat;
+				}
+
+				&.sort3.reverse {
+					background: url('img/sort-3-reverse-24.svg') right center no-repeat;
 				}
 			}
 		}
