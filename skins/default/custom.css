@@ -16,3 +16,18 @@ ul.custom.select {
         background: var(--light-color); }
     ul.custom.select > li.default {
       font-weight: 500; }
+
+.custom.helper.select {
+  background: white;
+  border: 1px solid #d0d0d0;
+  box-shadow: 0 0 3px 3px rgba(216, 216, 216, 0.4);
+  padding: 10px;
+  position: relative; }
+  .custom.helper.select.outside:before {
+    background: url("img/delete-24-red.svg") center no-repeat;
+    content: '';
+    height: 32px;
+    left: -32px;
+    position: absolute;
+    top: 0;
+    width: 32px; }
