@@ -54,5 +54,6 @@ article ol.properties:not(.tiny) {
     white-space: pre-line; }
 
 article > ul.data ol.properties > li:not(.component-objects) > div {
+  background: #efefef;
   border-radius: 2px;
   padding: 9px 10px; }
