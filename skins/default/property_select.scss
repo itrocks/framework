@@ -1,10 +1,18 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
+div#column_select.popup {
+	bottom: 0;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
 .func_select,
 .property_select {
-	display: inline-block;
-	top: 1.5em;
+	border-left: 1px solid #d0d0d0;
+	box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, .4);
+	box-sizing: border-box;
+	height: 100%;
 	white-space: nowrap;
 
 	> h3 {
@@ -14,7 +22,9 @@
 	> .search {
 
 		> input {
-			min-width: 100%;
+			background: white;
+			box-sizing: border-box;
+			width: 100%;
 		}
 
 		> label {

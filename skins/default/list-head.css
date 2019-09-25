@@ -14,7 +14,16 @@ article.list > form > table > thead {
       article.list > form > table > thead > tr.title > th:not(:first-child) {
         padding: 0 .75em 0 .5em; }
       article.list > form > table > thead > tr.title > th.column_select {
-        font-size: 0; }
+        background: #efefef url("img/add-column-16.svg") right 4px center no-repeat;
+        padding: 0;
+        position: relative;
+        z-index: calc(var(--z-index) + 1); }
+        article.list > form > table > thead > tr.title > th.column_select > a {
+          display: block;
+          font-size: 0;
+          height: 24px;
+          min-width: 24px;
+          width: 100%; }
   article.list > form > table > thead > tr.search > .reset {
     font-size: 0;
     text-align: center;

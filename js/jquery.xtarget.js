@@ -118,11 +118,12 @@
 			 */
 			popup: function($where, id)
 			{
+				var $body = $('body');
 				var $from = $where;
 				var left  = $where.offset().left + 3;
 				var top   = $where.offset().top + $where.height() + 2;
 				if (id.substr(0, 1) === '_') {
-					$where = $($('body').children(':last-child'));
+					$where = $($body.children(':last-child'));
 				}
 				if (id === '_blank') {
 					id = 'window' + ++window.id_index;
@@ -134,10 +135,15 @@
 					$target.addClass(settings.keep);
 				}
 				$target.data(settings.xtarget_from, $from);
-				$target.insertAfter($where);
-				if ($where !== $from) {
+				$target.insertAfter($where.hasClass('popup') ? $body : $where);
+				if (($where !== $from) || $where.hasClass('popup')) {
 					$target.addClass('popup');
-					$target.css('left',     left);
+					if ($where.hasClass('right')) {
+						$target.css('right', $(window).width() - (left + $where.width()));
+					}
+					else {
+						$target.css('left', left);
+					}
 					$target.css('position', 'absolute');
 					$target.css('top',      top);
 					$target.css('z-index',  zIndex());
@@ -155,7 +161,7 @@
 					var $window = $(window);
 					if ((offset.left + $target.outerWidth()) > $window.outerWidth()) {
 						offset.left = Math.max(0, $window.outerWidth() - $target.outerWidth());
-						$target.css('left', offset.left);
+						$target.css({ left: '', right: 0 });
 					}
 					if ((offset.top + $target.outerHeight()) > $window.outerHeight()) {
 						offset.top = Math.max(0, $window.outerHeight() - $target.outerHeight());
@@ -163,7 +169,7 @@
 					}
 					if (window.scrollbar !== undefined) {
 						if (offset.left < window.scrollbar.left()) {
-							$target.css('left', window.scrollbar.left());
+							$target.css({ left: window.scrollbar.left(), right: '' });
 						}
 						if (offset.top < window.scrollbar.top()) {
 							$target.css('top', window.scrollbar.top());

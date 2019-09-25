@@ -1,14 +1,23 @@
+div#column_select.popup {
+  bottom: 0;
+  overflow-x: hidden;
+  overflow-y: auto; }
+
 .func_select,
 .property_select {
-  display: inline-block;
-  top: 1.5em;
+  border-left: 1px solid #d0d0d0;
+  box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, 0.4);
+  box-sizing: border-box;
+  height: 100%;
   white-space: nowrap; }
   .func_select > h3,
   .property_select > h3 {
     display: none; }
   .func_select > .search > input,
   .property_select > .search > input {
-    min-width: 100%; }
+    background: white;
+    box-sizing: border-box;
+    width: 100%; }
   .func_select > .search > label,
   .property_select > .search > label {
     display: none; }

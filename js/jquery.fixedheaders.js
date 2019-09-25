@@ -120,7 +120,18 @@
 		}
 
 		var cell_selector = ':nth-last-child(' + (right_count + 1) + ')';
-		$table.find('tr').children(cell_selector).after($('<td class="trailing" style="width: 100%">'));
+		$table.find('tr').each(function() {
+			var $tr       = $(this);
+			var $trailing = $tr.find('.trailing');
+			if ($trailing.length) {
+				$trailing.css('min-width', $trailing.width().toString() + 'px');
+				$trailing.css('width', '100%');
+				return;
+			}
+			$tr.children(cell_selector).after($('<td class="trailing" style="width: 100%">'));
+		});
+
+		right_count = Math.max(right_count, $table.find('> thead > tr:first > .fixed').length);
 
 		// get left and right fixed cells
 		var $left_th;

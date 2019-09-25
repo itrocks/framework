@@ -1,7 +1,7 @@
 (function()
 {
 
-	var z_index_counter = 0;
+	var z_index_counter = 10;
 
 	//-------------------------------------------------------------------------------- zIndexOptimize
 	/**
@@ -26,7 +26,7 @@
 		});
 		indexes.sort();
 		z_index_counter = 0;
-		for (var index in indexes) {
+		for (var index in indexes) if (indexes.hasOwnProperty(index)) {
 			index = indexes[index];
 			z_index_counter ++;
 			if (index === z_index_counter) {
