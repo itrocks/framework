@@ -115,6 +115,9 @@
 				right_count ++;
 			}
 		});
+		if (right_count === undefined) {
+			right_count = 0;
+		}
 
 		var cell_selector = ':nth-last-child(' + (right_count + 1) + ')';
 		$table.find('tr').children(cell_selector).after($('<td class="trailing" style="width: 100%">'));
