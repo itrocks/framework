@@ -1,5 +1,6 @@
 article.password.reset,
 article.user.login {
+  background: #efefef;
   text-align: center; }
   article.password.reset > h2,
   article.user.login > h2 {
@@ -147,6 +148,14 @@ article.user.login form.error li.password label {
   color: red;
   font-weight: 500; }
 
+body.password.reset > .main,
+body.user.login > .main {
+  background: #efefef; }
+  body.password.reset > .main > .favorites,
+  body.password.reset > .main > .notifications,
+  body.user.login > .main > .favorites,
+  body.user.login > .main > .notifications {
+    display: none; }
 body.password.reset > .menu,
 body.user.login > .menu {
   border-right: none; }
@@ -156,8 +165,3 @@ body.user.login > .menu {
   body.password.reset > .menu > .company.logo,
   body.user.login > .menu > .company.logo {
     border-bottom: none; }
-body.password.reset > .main > .favorites,
-body.password.reset > .main > .notifications,
-body.user.login > .main > .favorites,
-body.user.login > .main > .notifications {
-  display: none; }
