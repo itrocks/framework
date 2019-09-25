@@ -9,7 +9,7 @@ article > ul.data ol.properties > li:not(.component-objects) {
 	}
 }
 
-article ol.properties {
+article ol.properties:not(.tiny) {
 	background-color: white;
 	border-collapse: separate;
 	border-spacing: 10px;

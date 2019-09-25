@@ -1,39 +1,39 @@
 article > ul.data ol.properties > li:not(.component-objects) > div {
   vertical-align: top; }
 
-article ol.properties {
+article ol.properties:not(.tiny) {
   background-color: white;
   border-collapse: separate;
   border-spacing: 10px;
   display: block; }
-  article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+  article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
     display: table-row;
     position: relative; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
       vertical-align: middle;
       white-space: nowrap; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
       font-weight: 500;
       padding: 9px 10px;
       text-align: right;
       vertical-align: top;
       white-space: nowrap; }
-    article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div, article ol.properties > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div, article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
       box-sizing: border-box;
       display: table-cell;
       height: 32px; }
-  article ol.properties > li.after,
-  article ol.properties > li.before,
-  article ol.properties > li.block,
-  article ol.properties > li.component-objects {
+  article ol.properties:not(.tiny) > li.after,
+  article ol.properties:not(.tiny) > li.before,
+  article ol.properties:not(.tiny) > li.block,
+  article ol.properties:not(.tiny) > li.component-objects {
     display: block; }
-  article ol.properties > li.after > div,
-  article ol.properties > li.before > div {
+  article ol.properties:not(.tiny) > li.after > div,
+  article ol.properties:not(.tiny) > li.before > div {
     display: block; }
-  article ol.properties > li.block {
+  article ol.properties:not(.tiny) > li.block {
     margin-top: -1px; }
-  article ol.properties > li.block > label,
-  article ol.properties > li.component-objects > label {
+  article ol.properties:not(.tiny) > li.block > label,
+  article ol.properties:not(.tiny) > li.component-objects > label {
     background-color: #f8f8f8;
     box-sizing: border-box;
     color: #04b497;
@@ -42,10 +42,10 @@ article ol.properties {
     font-weight: bold;
     height: 24px;
     padding: 4px 10px; }
-    article ol.properties > li.block > label:first-letter,
-    article ol.properties > li.component-objects > label:first-letter {
+    article ol.properties:not(.tiny) > li.block > label:first-letter,
+    article ol.properties:not(.tiny) > li.component-objects > label:first-letter {
       text-transform: uppercase; }
-  article ol.properties > li.multiline > div {
+  article ol.properties:not(.tiny) > li.multiline > div {
     white-space: pre-line; }
 
 article > ul.data ol.properties > li > div {
