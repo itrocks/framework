@@ -38,20 +38,25 @@ $(document).ready(function()
 		var draggable_left = ui.offset.left + (ui.helper.width() / 2);
 		var count          = 0;
 		var found          = 0;
-		$droppable.find('ol > li:not(:first)').each(function() {
+		var is_table       = $droppable.is('table');
+		var $columns       = $droppable.find((is_table ? 'tr > *' : 'ol > li') + ':not(:first)');
+		$columns.each(function() {
 			count ++;
 			var $this = $(this);
-			var $prev = $this.prev('li');
+			var $prev = $this.prev(is_table ? 'td, th' : 'li');
 			var left  = $prev.offset() ? ($prev.offset().left + $prev.width()) : 0;
 			var right = $this.offset().left + $this.width();
 			if ((draggable_left > left) && (draggable_left <= right)) {
 				found   = (draggable_left <= ((left + right) / 2)) ? count : (count + 1);
 				var old = $droppable.data('insert-after');
 				if (found !== old) {
+					var select;
 					if (old !== undefined) {
-						$droppable.find('ol > li:nth-child(' + old + ')').removeClass('insert-right');
+						select = (is_table ? 'tr > *' : 'ol > li') + ':nth-child(' + old + ')';
+						$droppable.find(select).removeClass('insert-right');
 					}
-					$droppable.find('ol > li:nth-child(' + found + ')').addClass('insert-right');
+					select = (is_table ? 'tr > *' : 'ol > li') + ':nth-child(' + found + ')';
+					$droppable.find(select).addClass('insert-right');
 					$droppable.data('insert-after', found);
 				}
 				return false;
@@ -87,7 +92,7 @@ $(document).ready(function()
 		this.each(function()
 		{
 			var $this = $(this);
-			var $list = $this.find('ul.list');
+			var $list = $this.find('table.list, ul.list');
 
 			//------------------------------------------------------------ .column_select > a.popup click
 			// column select popup
@@ -118,9 +123,12 @@ $(document).ready(function()
 				{
 					var $this        = $(this);
 					var insert_after = $this.data('insert-after');
+					var is_table     = $this.is('table');
 					if (insert_after !== undefined) {
 						var insert_before = insert_after + 1;
-						var $th = $this.find('ol:first > li:nth-child(' + insert_before + ')');
+						var $th = $this.find(
+							(is_table ? 'tr:first > th' : 'ol:first > li') + ':nth-child(' + insert_before + ')'
+						);
 						var $draggable           = ui.draggable;
 						var before_property_name = $th.data('property');
 						var property_name        = $draggable.data('property');

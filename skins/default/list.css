@@ -13,3 +13,5 @@ article.list > form {
         vertical-align: middle; }
         article.list > form > table tr > td:first-child:hover, article.list > form > table tr > th:first-child:hover {
           background: #d2f1f9; }
+        article.list > form > table tr > td.insert-right, article.list > form > table tr > th.insert-right {
+          box-shadow: inset -1px 0 0 0 black, inset 0 -1px #d8d8d8; }

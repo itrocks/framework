@@ -28,7 +28,7 @@ article.list > form > table > thead {
     position: relative;
     vertical-align: top; }
     article.list > form > table > thead > tr.search > td > input {
-      background: #efefef;
+      background: transparent;
       border: none;
       display: block;
       height: 12px;
