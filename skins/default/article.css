@@ -2,22 +2,33 @@ article {
   background: #f8f8f8;
   position: relative; }
   article header {
-    background: #efefef;
+    background: var(--light-color);
     border-top: 1px solid #ccc;
     color: #333333;
     position: relative;
     width: 100%; }
+    article header > * {
+      vertical-align: top; }
     article header > .breadcrumb {
       height: 32px;
+      padding-left: 6px;
       white-space: nowrap; }
       article header > .breadcrumb > li > a {
-        height: 10px;
-        padding: 11px .5em; }
+        box-sizing: border-box;
+        height: 32px;
+        padding: 10px 4px 0; }
     article header > h2 {
+      box-sizing: border-box;
+      cursor: pointer;
       display: inline-block;
-      font-weight: 500; }
+      font-weight: 500;
+      height: 32px; }
       article header > h2:first-letter {
         text-transform: uppercase; }
+      article header > h2:not(.editing) {
+        padding: 10px 3px 0; }
+      article header > h2 > input {
+        position: absolute; }
     article header > .actions {
       border-top: 1px solid #ccc; }
     article header > .favorites {

@@ -27,7 +27,7 @@ $(document).ready(function()
 
 		//--------------------------------------- (article.list h2, ul.list li.property a) modifiable
 		// list title (class name) double-click
-		$this.find('> header > h2').modifiable({
+		$this.find('> form > header > h2').modifiable({
 			ajax:    callback_uri + '&title={value}',
 			aliases: { 'className': className },
 			target:  '#responses',

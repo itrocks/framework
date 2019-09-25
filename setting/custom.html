@@ -11,39 +11,20 @@
 <body>
 <!--BEGIN-->
 
-	<div class="custom">
-		<div class="name">
-			<label for="custom_name">|Custom name|</label>
-			<input class="auto_width" id="custom_name" value="{?settings.name}">
-		</div>
-
-		<ul class="select">
-			<li class="default">
-				<a href="app://(@class.path)/(?~id)/(@feature)?load_name=" target="#main">
-					|{default_title}|
-				</a>
-			</li>
-			<!--customized_lists-->
-			<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
-				<a href="app://(--@class.path)/(?--~id)/(@feature)?load_name=(#)" target="#main">
-					{#}
-				</a>
-			</li>
-			<!--end-->
-		</ul>
-
-		<!--custom_buttons?-->
-		<ul class="actions">
-			<!--custom_buttons-->
-			<li class="{?class} {feature.lower}">
-				<a href="app://(link)" target="{?target}" title="|{?hint}|">
-					|{caption}|
-				</a>
-			</li>
-			<!--end-->
-		</ul>
+	<ul class="custom select">
+		<li class="default">
+			<a href="app://(@class.path)/(?~id)/(@feature)?load_name=" target="#main">
+				|{default_title}|
+			</a>
+		</li>
+		<!--customized_lists-->
+		<li class="object {?selectedClass}" data-class="{setting.@class}" data-id="{id}">
+			<a href="app://(--@class.path)/(?--~id)/(@feature)?load_name=(#)" target="#main">
+				{#}
+			</a>
+		</li>
 		<!--end-->
-	</div>
+	</ul>
 
 <!--END-->
 </body>

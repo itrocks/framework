@@ -1,7 +1,7 @@
 $(document).ready(function()
 {
 	var $body = $('body');
-	var article_header = 'article[data-class] > header';
+	var article_header = 'article[data-class] > form > header';
 
 	//------------------------------------------------------------- article[data-class] > header > h2
 	$body.build('click', [article_header, '> h2'], function()
@@ -22,7 +22,7 @@ $(document).ready(function()
 					$select.fadeOut(200);
 				};
 				$('body').on('click', clickEvent);
-			}).css('display', 'inline-block');
+			}).css('display', 'block');
 		}
 	});
 

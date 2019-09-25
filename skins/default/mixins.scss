@@ -2,9 +2,9 @@
 
 @mixin module-color($data-class, $module, $color1, $color2, $image) {
 
-	article[data-class^='#{$data-class}'] > form > header,
-	article[data-class^='#{$data-class}'] > header {
-		background-color: $color2;
+	article[data-class^='#{$data-class}'] {
+		--dark-color: $color1;
+		--light-color: $color2;
 	}
 
 	nav#menu > ul > li.#{$module} {
@@ -24,17 +24,6 @@
 					background: url('img/#{$image}-24-hilight.svg') 10px center no-repeat,
 						url('img/#{$image}-expand-more-24.svg') right center no-repeat;
 				}
-
-				&:before {
-					background-color: $color1;
-				}
-			}
-		}
-
-		> ul > li > a {
-
-			&:focus, &:hover, &.selected {
-				background: $color2;
 			}
 		}
 	}

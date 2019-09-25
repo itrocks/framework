@@ -2,6 +2,9 @@
 @import 'sizes.scss';
 
 body {
+	--dark-color: #d8d8d8;
+	--light-color: #efefef;
+
 	color: $color;
 	font-family: Roboto, sans-serif;
 	font-size: 0;

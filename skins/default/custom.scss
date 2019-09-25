@@ -1,0 +1,25 @@
+
+ul.custom.select {
+	background: white;
+	border: solid #d0d0d0;
+	border-width: 1px 2px 2px 1px;
+	box-shadow: 5px 0 5px -3px rgba(216, 216, 216, .4),
+		0 5px 5px -3px rgba(216, 216, 216, .4);
+	display: none;
+	left: -1px;
+	position: absolute;
+	z-index: 1;
+
+	> li {
+		display: block;
+
+		> a {
+			display: block;
+			padding: 10px;
+
+			&:hover {
+				background: var(--light-color);
+			}
+		}
+	}
+}

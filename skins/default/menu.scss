@@ -63,6 +63,7 @@ nav#menu {
 					position: relative;
 
 					&:before {
+						background: var(--dark-color);
 						content: '';
 						display: inline-block;
 						height: 100%;
@@ -82,8 +83,8 @@ nav#menu {
 					padding-left: 54px;
 					vertical-align: middle;
 
-					&:focus, &:hover {
-						background: #efefef;
+					&:focus, &:hover, .selected {
+						background: var(--light-color);
 					}
 				}
 			}

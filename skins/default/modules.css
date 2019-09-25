@@ -1,6 +1,6 @@
-article[data-class^='ITRocks\\Framework\\'] > form > header,
-article[data-class^='ITRocks\\Framework\\'] > header {
-  background-color: #d3d3d3; }
+article[data-class^='ITRocks\\Framework\\'] {
+  --dark-color: #a3a3a3;
+  --light-color: #d3d3d3; }
 
 nav#menu > ul > li.administration {
   --dark-color: #a3a3a3;
@@ -9,7 +9,3 @@ nav#menu > ul > li.administration {
     background: url("img/administration-24.svg") 10px center no-repeat, url("img/expand-more-24.svg") right center no-repeat; }
   nav#menu > ul > li.administration > h3:focus > a, nav#menu > ul > li.administration > h3:hover > a, nav#menu > ul > li.administration > h3.selected > a {
     background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/administration-expand-more-24.svg") right center no-repeat; }
-  nav#menu > ul > li.administration > h3:focus:before, nav#menu > ul > li.administration > h3:hover:before, nav#menu > ul > li.administration > h3.selected:before {
-    background-color: #a3a3a3; }
-  nav#menu > ul > li.administration > ul > li > a:focus, nav#menu > ul > li.administration > ul > li > a:hover, nav#menu > ul > li.administration > ul > li > a.selected {
-    background: #d3d3d3; }

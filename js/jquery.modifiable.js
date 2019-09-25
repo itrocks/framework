@@ -13,6 +13,7 @@ window.modifiable_waiting  = false;
 			ajax:      undefined,
 			ajax_form: undefined,
 			aliases:   {},
+			class:     'editing',
 			popup:     undefined,
 			start:     undefined,
 			stop:      undefined,
@@ -54,6 +55,7 @@ window.modifiable_waiting  = false;
 			event.preventDefault();
 			event.stopImmediatePropagation();
 			var $this = $(this);
+			$this.addClass(settings.class);
 
 			//------------------------------------------------------------------------------------ $input
 			var $input = $('<input>').addClass('auto_width').val($this.html().trim());
@@ -61,7 +63,10 @@ window.modifiable_waiting  = false;
 				var $popup;
 				$this.data('old', $input.val());
 				$this.html($input);
-				$input.build();
+				$input.build().click(function(event) {
+					event.preventDefault();
+					event.stopImmediatePropagation();
+				});
 
 				//----------------------------------------------------------------------------- $input done
 				var done = function()
@@ -113,7 +118,7 @@ window.modifiable_waiting  = false;
 					if ($popup) {
 						$popup.fadeOut(100, function() { $(this).remove(); });
 					}
-					$input.parent().html($input.val());
+					$input.parent().html($input.val()).removeClass(settings.class);
 					$this.removeData('old');
 				};
 

@@ -7,28 +7,45 @@ article {
 	position: relative;
 
 	header {
-		background: #efefef;
+		background: var(--light-color);
 		border-top: 1px solid #ccc;
 		color: #333333;
 		position: relative;
 		width: 100%;
 
+		> * {
+			vertical-align: top;
+		}
+
 		> .breadcrumb {
 			height: 32px;
+			padding-left: 6px;
 			white-space: nowrap;
 
 			> li > a {
-				height: 10px;
-				padding: 11px .5em;
+				box-sizing: border-box;
+				height: 32px;
+				padding: 10px 4px 0;
 			}
 		}
 
 		> h2 {
+			box-sizing: border-box;
+			cursor: pointer;
 			display: inline-block;
 			font-weight: $medium;
+			height: 32px;
 
 			&:first-letter {
 				text-transform: uppercase;
+			}
+
+			&:not(.editing) {
+				padding: 10px 3px 0;
+			}
+
+			> input {
+				position: absolute;
 			}
 		}
 
