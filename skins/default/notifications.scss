@@ -8,12 +8,9 @@ div.main > .notifications {
 		display: none;
 	}
 
+	> #query,
 	> #responses {
 		overflow-y: auto;
-	}
-
-	> #notifications {
-		display: none;
 	}
 
 	> .user.mini {

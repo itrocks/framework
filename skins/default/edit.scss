@@ -2,22 +2,30 @@ article > form {
 	background-color: #efefef;
 }
 
-article > form > ul.data ol.properties > li > div > span {
+article > form > ul.data ol.properties > li {
 
-	&.set {
-		display: inline-block;
-		vertical-align: top;
+	> div > span {
+
+		&.set {
+			display: inline-block;
+			vertical-align: top;
+		}
 	}
-}
 
-article > form > ul.data ol.properties > li.component-objects > label {
-	cursor: pointer;
-
-	&:after {
-		content: '+';
-		padding-right: .5em;
+	&.required > label:after {
+		content: '*';
+		padding-left: 2px;
 		position: absolute;
-		right: 0;
+	}
+
+	&.component-objects > label {
+		cursor: pointer;
+
+		&:after {
+			content: '+';
+			padding-right: .5em;
+			position: absolute;
+			right: 0;
+		}
 	}
 }
-

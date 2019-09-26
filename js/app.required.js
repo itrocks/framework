@@ -1,9 +1,8 @@
 $(document).ready(function()
 {
-	var $body = $('body');
-	var elements_selector = 'form input[name$="]"], form select[name$="]"], '
-		+ 'form textarea[name$="]"], form input[data-name$="]"], form select[data-name$="]"], '
-		+ 'form textarea[data-name$="]"]';
+
+	var elements_selector = 'input[name$="]"], select[name$="]"], textarea[name$="]"],'
+		+ 'input[data-name$="]"], select[data-name$="]"], textarea[data-name$="]"]';
 	var next_elements_selector = 'input:not([data-name], [name])';
 
 	//--------------------------------------------------------------------------------- applyRequired
@@ -33,8 +32,7 @@ $(document).ready(function()
 			return count1 - count2;
 		});
 
-		$elements.next(next_elements_selector).removeAttr('required');
-		$elements.removeAttr('required');
+		require($elements, false);
 		$form.find('li.bad').removeClass('bad');
 
 		// calculate require
@@ -47,11 +45,7 @@ $(document).ready(function()
 				(elementRequired($element) && (!parent || required_parents[parent]))
 				|| haveChildrenValues(name, $elements)
 			) {
-				$element.attr('required', true);
-				$element.next(next_elements_selector).attr('required', true);
-				if ($element.is(':visible') && !$element.val().length) {
-					requireTab($element);
-				}
+				require($element);
 				required_parents[name] = true;
 			}
 			else {
@@ -90,12 +84,11 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------- elementRequired
 	/**
 	 * @param $element jQuery
-	 * @return string
+	 * @return boolean
 	 */
 	var elementRequired = function($element)
 	{
-		return $element.data('required')
-			|| $element.next(next_elements_selector).data('required');
+		return $element.data('required') || $element.next(next_elements_selector).data('required');
 	};
 
 	//---------------------------------------------------------------------------------- elementValue
@@ -196,6 +189,34 @@ $(document).ready(function()
 		return parent_name;
 	};
 
+	//--------------------------------------------------------------------------------------- require
+	/**
+	 * Set an element as required, or not
+	 *
+	 * @param $element jQuery
+	 * @param require  boolean default is true
+	 */
+	var require = function($element, require)
+	{
+		if (require === undefined) {
+			require = true;
+		}
+		var $next = $element.next(next_elements_selector);
+
+		if (require) {
+			$element.attr('required', true).closest('.mandatory').addClass('required');
+			$next.attr('required', true);
+			if ($element.is(':visible') && !$element.val().length) {
+				requireTab($element);
+			}
+		}
+
+		else {
+			$element.removeAttr('required').closest('.mandatory').removeClass('required');
+			$next.removeAttr('required');
+		}
+	};
+
 	//------------------------------------------------------------------------------------ requireTab
 	/**
 	 * Add a data-required attribute to all tabs header matching the pages of $element
@@ -215,17 +236,18 @@ $(document).ready(function()
 		}
 	};
 
-	//---------------------------------------------------------------------------- form applyRequired
-	$body.build('call', 'form', applyRequired);
-
-	//----------------------------------------------------------------------------------- form inputs
-	$body.build('call', elements_selector, function()
+	//--------------------------------------------------------- form applyRequired & registerElements
+	$('body').build('call', 'form', function()
 	{
-		var $register_elements = this;
+		this.find('input[required], select[required], textarea[required]')
+			.closest('li.mandatory').addClass('required');
+		applyRequired.call(this);
+		var $register_elements = this.find(elements_selector);
 		$register_elements = $register_elements.add($register_elements.next(next_elements_selector));
 		$register_elements.add(next_elements_selector)
 			.change(applyRequired)
 			.focus(function() { $(this).closest('form').data('before_length', $(this).val().length); })
 			.keyup(delayedApplyRequired);
 	});
+
 });

@@ -8,3 +8,7 @@ input:not([type=button]):not([type=submit]), select, textarea {
 	height: $input-height - ($input-padding * 2);
 	padding: $input-padding;
 }
+
+textarea {
+	line-height: 1.5em;
+}
