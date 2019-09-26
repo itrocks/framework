@@ -7,6 +7,10 @@ input:not([type=button]):not([type=submit]), select, textarea {
 	border-radius: $input-border-radius;
 	height: $input-height - ($input-padding * 2);
 	padding: $input-padding;
+
+	&[readonly] {
+		background: transparent;
+	}
 }
 
 textarea {
