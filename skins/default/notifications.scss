@@ -8,16 +8,58 @@ div.main > .notifications {
 		display: none;
 	}
 
+	> * {
+		display: inline-block;
+	}
+
 	> #query,
 	> #responses {
+		background: white;
+		box-sizing: border-box;
+		height: calc(100% - 20px);
+		margin: 10px 0;
 		overflow-y: auto;
+		padding: 0 10px 0 52px;
+		width: calc(50% - 22px);
+
+		> li {
+			border-radius: 2px;
+			display: block;
+			font-size: 11px;
+			line-height: 1.5em;
+			padding: 3px 8px;
+			background: #e8e8e8;
+		}
+	}
+
+	> #query {
+
+		&:not(:empty) {
+			background: url('img/warning-32.svg') 10px top no-repeat;
+		}
+
+		> div {
+			background: #f9d4d4;
+		}
+	}
+
+	> #responses {
+		box-shadow: -1px 0 #d8d8d8, inset 1px 0 #d8d8d8;
+
+		&:not(:empty) {
+			background: url('img/information-32.svg') 10px top no-repeat;
+		}
+
+		> div {
+			background: #e8e8e8;
+		}
 	}
 
 	> .user.mini {
 		display: inline-flex;
 		height: 100%;
 		position: absolute;
-		right: 20px;
+		right: 10px;
 
 		> h3 {
 			display: none;

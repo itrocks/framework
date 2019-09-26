@@ -3,14 +3,40 @@ div.main > .notifications {
   position: relative; }
   div.main > .notifications h2 {
     display: none; }
+  div.main > .notifications > * {
+    display: inline-block; }
   div.main > .notifications > #query,
   div.main > .notifications > #responses {
-    overflow-y: auto; }
+    background: white;
+    box-sizing: border-box;
+    height: calc(100% - 20px);
+    margin: 10px 0;
+    overflow-y: auto;
+    padding: 0 10px 0 52px;
+    width: calc(50% - 22px); }
+    div.main > .notifications > #query > li,
+    div.main > .notifications > #responses > li {
+      border-radius: 2px;
+      display: block;
+      font-size: 11px;
+      line-height: 1.5em;
+      padding: 3px 8px;
+      background: #e8e8e8; }
+  div.main > .notifications > #query:not(:empty) {
+    background: url("img/warning-32.svg") 10px top no-repeat; }
+  div.main > .notifications > #query > div {
+    background: #f9d4d4; }
+  div.main > .notifications > #responses {
+    box-shadow: -1px 0 #d8d8d8, inset 1px 0 #d8d8d8; }
+    div.main > .notifications > #responses:not(:empty) {
+      background: url("img/information-32.svg") 10px top no-repeat; }
+    div.main > .notifications > #responses > div {
+      background: #e8e8e8; }
   div.main > .notifications > .user.mini {
     display: inline-flex;
     height: 100%;
     position: absolute;
-    right: 20px; }
+    right: 10px; }
     div.main > .notifications > .user.mini > h3 {
       display: none; }
     div.main > .notifications > .user.mini > .user {
