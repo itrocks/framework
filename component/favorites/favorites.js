@@ -1,7 +1,24 @@
 $(document).ready(function()
 {
 
-	$('body').build('each', 'main > article', function()
+	var $body = $('body');
+
+	//------------------------------------------------------------ .favorites > li:not(.add) showHide
+	/**
+	 * When there is no text into a tab, hide it
+	 */
+	var showHide = function()
+	{
+		var $this = $(this);
+		$this.css('display', $this.text().trim() ? 'inline-block' : 'none');
+	};
+	$body.build('each', '.favorites > li:not(.add)', showHide);
+
+	//-------------------------------------------------------------------------------- main > article
+	/**
+	 * Apply the colors from the newly added article, seeked into the nav#menu, to the current tab
+	 */
+	$body.build('each', 'main > article', function()
 	{
 		var $article = $(this);
 		var $current = $('body > .main > .favorites .current');
@@ -19,6 +36,7 @@ $(document).ready(function()
 			var id      = $article.data('id');
 			var path    = $article.data('class').replace('\\', '/');
 			$anchor[0].href = app.uri_base + SL + path + (id ? (SL + id) : '') + (feature ? (SL + feature) : '');
+			showHide.call($anchor.parent());
 		}
 	});
 

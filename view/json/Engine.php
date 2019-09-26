@@ -138,4 +138,17 @@ class Engine implements Registerable, View\Engine
 		$aop->beforeMethod([View::class, 'run'], [$this, 'beforeRun']);
 	}
 
+	//----------------------------------------------------------------------------------- setLocation
+	/**
+	 * Generate code for the current view to set the current location without redirecting to it
+	 *
+	 * @param $uri   string
+	 * @param $title string
+	 * @return string
+	 */
+	public function setLocation($uri, $title)
+	{
+		return null;
+	}
+
 }

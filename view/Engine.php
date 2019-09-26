@@ -30,4 +30,14 @@ interface Engine
 	 */
 	public function redirect($link, $options);
 
+	//----------------------------------------------------------------------------------- setLocation
+	/**
+	 * Generate code for the current view to set the current location without redirecting to it
+	 *
+	 * @param $uri   string
+	 * @param $title string
+	 * @return string
+	 */
+	public function setLocation($uri, $title);
+
 }

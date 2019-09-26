@@ -13,7 +13,7 @@
 
 	<article class="user login" data-class="{@class}" data-feature="{@feature}">
 		<h2>|Please login|</h2>
-		<form action="app://ITRocks/Framework/User/authenticate" class="{?~error}" method="post" target="#main">
+		<form action="app://ITRocks/Framework/User/authenticate" class="{?~error}" method="post">
 			<!--~error?-->
 			<p class="error message">
 				|The password does not match the entered login|.
@@ -39,6 +39,9 @@
 					</a>
 				</li>
 			</ul>
+			<!--~url-->
+			<input type="hidden" name="url" value="{.}">
+			<!--end-->
 		</form>
 	</article>
 

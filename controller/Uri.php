@@ -82,6 +82,17 @@ class Uri
 		return SL . join(SL, $array);
 	}
 
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * @return string current URI string
+	 */
+	public static function current()
+	{
+		return isset($_SERVER['REQUEST_URI']) ?
+			rParse($_SERVER['REQUEST_URI'], Paths::$uri_base)
+			: null;
+	}
+
 	//----------------------------------------------------------------------------------- isClassName
 	/**
 	 * Returns true if the parameter is the name of a class

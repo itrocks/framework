@@ -172,4 +172,17 @@ class View implements Configurable
 		);
 	}
 
+	//----------------------------------------------------------------------------------- setLocation
+	/**
+	 * Generate code for the current view to set the current location without redirecting to it
+	 *
+	 * @param $uri   string
+	 * @param $title string
+	 * @return string
+	 */
+	public static function setLocation($uri, $title)
+	{
+		return self::current()->setLocation($uri, $title);
+	}
+
 }

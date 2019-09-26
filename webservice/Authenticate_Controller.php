@@ -35,7 +35,7 @@ class Authenticate_Controller implements Default_Feature_Controller
 		) {
 			$current = User::current();
 			if ($current) {
-				Authentication::disconnect(User::current());
+				Authentication::disconnect();
 			}
 			$user = Authentication::login($form['login'], $form['password']);
 			if (isset($user)) {

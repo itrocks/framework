@@ -163,7 +163,7 @@ class Main
 	 * @param $get  array
 	 * @param $post array
 	 */
-	private function createSession(
+	public function createSession(
 		/** @noinspection PhpUnusedParameterInspection */ array &$get, array &$post
 	) {
 		$this->resetSession(Session::current(new Session()));
@@ -409,7 +409,7 @@ class Main
 	 */
 	public function redirect($uri, $target = null, $data = null)
 	{
-		if ($target) {
+		if (isset($target)) {
 			$this->redirects[$target] = $data ? [$uri, $data] : $uri;
 		}
 		else {
@@ -538,11 +538,13 @@ class Main
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
+				$get  = [];
+				$post = [];
 				if (($query_position = strpos($uri, '?')) !== false) {
 					list($uri, $query) = explode('?', $uri, 2);
 					parse_str(str_replace('&amp;', '&', $query), $get);
 				}
-				$result = $this->run($uri, $get, $post, $files);
+				$result = $this->run($uri, $get, $post, $files) . View::setLocation($uri, $result);
 			}
 			foreach ($this->redirects as $target => $redirection) {
 				$result .= View::redirect($redirection, $target);

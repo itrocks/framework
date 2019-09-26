@@ -89,4 +89,13 @@ trait Current
 		return static::$current;
 	}
 
+	//---------------------------------------------------------------------------------- unsetCurrent
+	/**
+	 * Unset the current value
+	 */
+	public static function unsetCurrent()
+	{
+		static::$current = null;
+	}
+
 }

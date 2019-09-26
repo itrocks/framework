@@ -49,7 +49,7 @@ class Register_Controller implements Feature_Controller
 	{
 		$current = User::current();
 		if ($current) {
-			Authentication::disconnect(User::current());
+			Authentication::disconnect();
 		}
 		$parameters = $this->getViewParameters($parameters, $form, User::class);
 		if (

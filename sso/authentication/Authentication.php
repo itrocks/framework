@@ -17,7 +17,7 @@ class Authentication
 
 	//----------------------------------------------------------------------------- Actions constants
 	const AUTHENTICATE = Feature::F_AUTHENTICATE;
-	const DISCONNECT   = 'disconnect';
+	const DISCONNECT   = Feature::F_DISCONNECT;
 
 	//--------------------------------------------------------------------------------------- $action
 	/**

@@ -98,11 +98,10 @@ abstract class Authentication
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user User
 	 */
-	public static function disconnect(User $user)
+	public static function disconnect()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection class */
-		User::current(Builder::create(User::class));
-		Session::current()->removeAny(get_class($user));
+		User::unsetCurrent();
+		Session::current()->removeAny(Builder::className(User::class));
 	}
 
 	//-------------------------------------------------------------------------------- getLoginInputs
@@ -171,7 +170,7 @@ abstract class Authentication
 	 * Register with current environment using login and password
 	 *
 	 * @param $form array The content of the form
-	 * @return User user
+	 * @return User
 	 */
 	public static function register(array $form)
 	{

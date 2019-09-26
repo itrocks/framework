@@ -198,7 +198,7 @@ class Engine implements Configurable, Framework\View\Engine
 		}
 		$target = Target::RESPONSES;
 		foreach ($options as $option) {
-			if (substr($option, 0, 1) == '#') {
+			if (substr($option, 0, 1) === '#') {
 				$target = $option;
 			}
 		}
@@ -211,6 +211,26 @@ class Engine implements Configurable, Framework\View\Engine
 			$element->setAttribute('target', $target);
 		}
 		return strval($element);
+	}
+
+	//----------------------------------------------------------------------------------- setLocation
+	/**
+	 * Generate code for the current view to set the current location without redirecting to it
+	 *
+	 * @param $uri   string
+	 * @param $title string
+	 * @return string
+	 */
+	public function setLocation($uri, $title)
+	{
+		if (strpos($title, '<') !== false) {
+			$title = (new Template)->getHeadTitle($title);
+		}
+		if (strpos($title, '<') !== false) {
+			$title = trim(mParse($title, '>', '<'));
+		}
+		$uri = Paths::$uri_base . $uri;
+		return "<script> window.history.pushState({reload: true}, '$title', '$uri'); </script>";
 	}
 
 }

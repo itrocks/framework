@@ -444,15 +444,13 @@ class Template
 	 * @param $content string
 	 * @return string
 	 */
-	protected function getHeadTitle($content)
+	public function getHeadTitle($content)
 	{
-		if (($i = strpos($content, '<title')) !== false) {
-			$j = strpos($content, '</title>', $i) + 8;
-			return substr($content, $i, $j - $i);
-		}
-		else {
+		if (($i = strpos($content, '<title')) === false) {
 			return null;
 		}
+		$j = strpos($content, '</title>', $i) + 8;
+		return substr($content, $i, $j - $i);
 	}
 
 	//--------------------------------------------------------------------------- getMainTemplateFile

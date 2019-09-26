@@ -27,6 +27,7 @@ abstract class Feature
 	const F_DEFAULT       = 'default';
 	const F_DELETE        = 'delete';
 	const F_DENIED        = 'denied';
+	const F_DISCONNECT    = 'disconnect';
 	const F_DUPLICATE     = 'duplicate';
 	const F_EDIT          = 'edit';
 	const F_EXPORT        = 'export';
