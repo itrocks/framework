@@ -1008,7 +1008,13 @@ class Template
 			? ''
 			: substr($content, $else_j + 11, $end_j - $else_j - 11);
 		$this->parseLoopContentSections($loop);
-		$elements = $this->parseValue($loop->var_name);
+		if ($is_target = (substr($loop->var_name, 0, 7) === 'target ')) {
+			$elements              = reset($this->objects);
+			$loop->force_condition = true;
+		}
+		else {
+			$elements = $this->parseValue($loop->var_name);
+		}
 		if (($elements || !is_array($elements)) && !$loop->force_condition) {
 			$this->unshift(is_object($elements) ? get_class($elements) : '', $elements);
 		}
@@ -1043,6 +1049,9 @@ class Template
 		}
 		if (($elements || !is_array($elements)) && !$loop->force_condition) {
 			$this->shift();
+		}
+		if ($is_target) {
+			$loop_insert = '<!--' . $loop->var_name . '-->' . $loop_insert . '<!--end-->';
 		}
 		$i       = $i - $length - 7;
 		$j       = $end_j + $length_end + 7;
@@ -1313,7 +1322,7 @@ class Template
 			}
 			elseif ($this->parseThis($content, $i)) {
 				$j = strpos($content, '-->', $i);
-				$this->parseLoop($content, $i, $j);
+				$i_content = $this->parseLoop($content, $i, $j);
 			}
 			else {
 				$i_content = strpos($content, '-->', $i) + 3;

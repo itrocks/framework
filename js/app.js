@@ -26,6 +26,8 @@ $(document).ready(function()
 	//----------------------------------------------------------- body[class] = main > article[class]
 	$body.build('call', 'main > article', function()
 	{
+		$('ul#query').empty();
+
 		var classes = this.attr('class');
 		var $body   = $('body');
 		classes ? $body.attr('class', classes) : $body.removeAttr('class');

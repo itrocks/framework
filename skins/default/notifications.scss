@@ -28,7 +28,6 @@ div.main > .notifications {
 			font-size: 11px;
 			line-height: 1.5em;
 			padding: 3px 8px;
-			background: #e8e8e8;
 		}
 	}
 
@@ -38,8 +37,13 @@ div.main > .notifications {
 			background: url('img/warning-32.svg') 10px top no-repeat;
 		}
 
-		> div {
+		> li {
 			background: #f9d4d4;
+
+			li {
+				list-style: disc;
+				margin-left: 1em;
+			}
 		}
 	}
 
@@ -50,7 +54,7 @@ div.main > .notifications {
 			background: url('img/information-32.svg') 10px top no-repeat;
 		}
 
-		> div {
+		> li {
 			background: #e8e8e8;
 		}
 	}

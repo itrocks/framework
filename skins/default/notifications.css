@@ -20,17 +20,19 @@ div.main > .notifications {
       display: block;
       font-size: 11px;
       line-height: 1.5em;
-      padding: 3px 8px;
-      background: #e8e8e8; }
+      padding: 3px 8px; }
   div.main > .notifications > #query:not(:empty) {
     background: url("img/warning-32.svg") 10px top no-repeat; }
-  div.main > .notifications > #query > div {
+  div.main > .notifications > #query > li {
     background: #f9d4d4; }
+    div.main > .notifications > #query > li li {
+      list-style: disc;
+      margin-left: 1em; }
   div.main > .notifications > #responses {
     box-shadow: -1px 0 #d8d8d8, inset 1px 0 #d8d8d8; }
     div.main > .notifications > #responses:not(:empty) {
       background: url("img/information-32.svg") 10px top no-repeat; }
-    div.main > .notifications > #responses > div {
+    div.main > .notifications > #responses > li {
       background: #e8e8e8; }
   div.main > .notifications > .user.mini {
     display: inline-flex;

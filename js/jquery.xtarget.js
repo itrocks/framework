@@ -1,6 +1,45 @@
 (function($)
 {
 
+	//------------------------------------------------------------------------------------- writeHtml
+	/**
+	 * Write multi-target HTML data into multiple targets
+	 *
+	 * @example
+	 *   writeHtml('Some text <!--target #another-id-->and other<!--end--> continues', $('#main'))
+	 * equiv :
+	 *   $('#another-id').html('and other');
+	 *   $('#main').html('Some text  continues');
+	 * @example
+	 *   writeHtml('<!--target #another-id-->and other<!--end-->', $('#main'))
+	 * equiv :
+	 *   $('#another-id').html('and other');
+	 *   $('#main').html('');
+	 * @param data         string
+	 * @param $main_target jQuery
+	 * @return jQuery[] targets
+	 */
+	var writeHtml = function(data, $main_target)
+	{
+		var $targets = $main_target;
+		var target_position = 0;
+		while ((target_position = data.indexOf('<!--target ', target_position)) > -1) {
+			var target_data_position = target_position + 11;
+			var target_end_position  = data.indexOf('-->', target_data_position);
+			var target               = data.substring(target_data_position, target_end_position);
+			var $target              = $(target);
+			target_data_position     = target_end_position + 3;
+			target_end_position      = data.indexOf('<!--end-->', target_data_position);
+			var target_data          = data.substring(target_data_position, target_end_position);
+			target_end_position     += 10;
+			$target.html(target_data);
+			data = (data.substr(0, target_position) + data.substr(target_end_position)).trim();
+			$targets.add($target);
+		}
+		$main_target.html(data);
+		return $targets.add($main_target);
+	};
+
 	/**
 	 * Allow your pages to contain implicit ajax calls, using the power of selector targets
 	 *
@@ -199,15 +238,14 @@
 					$target      = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
 				}
-				// write result into destination element, and build jquery active contents
-				$target.html(data);
-				if (settings.show && $target.is(':not(:visible)')) {
-					$target.show();
+				$target = writeHtml(data, $target);
+				if (settings.show && $target.filter(':not(:visible)').length) {
+					$target.filter(':not(:visible)').show();
 				}
 				// auto empty
 				if (settings.auto_empty !== undefined) {
 					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
-						if ($target.is(key) || $(target).is(key)) {
+						if ($target.filter(key).length || $(target).is(key)) {
 							$(settings.auto_empty[key]).empty();
 						}
 					}
@@ -232,12 +270,15 @@
 				else if (
 					settings.track && xhr.from.target.beginsWith('#') && (window.scrollbar !== undefined)
 				) {
-					if ($target.offset().left < window.scrollbar.left()) {
-						window.scrollbar.left($target.offset().left);
-					}
-					if ($target.offset().top < window.scrollbar.top()) {
-						window.scrollbar.top($target.offset().top);
-					}
+					$target.each(function() {
+						var $target = $(this);
+						if ($target.offset().left < window.scrollbar.left()) {
+							window.scrollbar.left($target.offset().left);
+						}
+						if ($target.offset().top < window.scrollbar.top()) {
+							window.scrollbar.top($target.offset().top);
+						}
+					});
 				}
 				// change browser's URL and title, push URL into history
 				if (settings.history !== undefined) {
@@ -253,7 +294,7 @@
 					}
 				}
 				// on success callbacks
-				target = $target.get()[0];
+				target = $target.last()[0];
 				if (settings.success !== undefined) {
 					settings.success.call(target, data, status, xhr);
 				}
