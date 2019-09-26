@@ -39,6 +39,7 @@ div.main > .favorites {
 
 		&.current {
 			color: white;
+			display: none;
 			margin-bottom: -1px;
 			z-index: calc(var(--z-index) + 1);
 		}

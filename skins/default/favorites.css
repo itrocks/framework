@@ -50,6 +50,7 @@ div.main > .favorites {
         width: 27px; }
     div.main > .favorites > li.current {
       color: white;
+      display: none;
       margin-bottom: -1px;
       z-index: calc(var(--z-index) + 1); }
     div.main > .favorites > li.recent {
