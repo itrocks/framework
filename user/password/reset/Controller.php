@@ -32,6 +32,7 @@ class Controller implements Feature_Controller
 			$parameters->set(Template::TEMPLATE, $template);
 		}
 		else {
+			unset($form['url']);
 			(new Object_Builder_Array(Password::class))->build($form, $password);
 			if ($password->login && $password->password && $password->password2) {
 				$password->reset();
