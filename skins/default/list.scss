@@ -1,33 +1,43 @@
 @import 'sizes.scss';
 
-article.list {
+//------------------------------------------------------------------------------------------- Style
 
-	> form {
-		background: white;
-		height: $list-form-height;
-		position: relative;
+article.list > form {
+	background: white;
 
-		> table {
-			height: 100%;
-			white-space: nowrap;
-			width: 100%;
+	> table {
+		border-bottom: 1px solid #ccc;
+		border-top: 1px solid #ccc;
+		white-space: nowrap;
 
-			tr {
-				height: 33px;
+		tr {
+			height: 33px;
 
-				> td, > th {
-					box-shadow: inset 0 -1px #d8d8d8;
-					vertical-align: middle;
+			> td, > th {
+				box-shadow: inset 0 -1px #d8d8d8;
+				vertical-align: middle;
 
-					&:first-child:hover {
-						background: #d2f1f9;
-					}
+				&:first-child:hover {
+					background: #d2f1f9;
+				}
 
-					&.insert-right {
-						box-shadow: inset -1px 0 0 0 black, inset 0 -1px #d8d8d8;
-					}
+				&.insert-right {
+					box-shadow: inset -1px 0 0 0 black, inset 0 -1px #d8d8d8;
 				}
 			}
 		}
+	}
+}
+
+//------------------------------------------------------------------------------------------ Layout
+
+article.list > form {
+	position: relative;
+
+	> .general.actions {
+		background: #f8f8f8;
+		grid-area: header;
+		position: absolute;
+		top: 34px;
 	}
 }

@@ -1,0 +1,11 @@
+@import 'colors.scss';
+
+.company.logo {
+	background: url('img/b-appli.svg') 12px center no-repeat;
+	min-width: 200px;
+
+	> a {
+		font-size: 0;
+	}
+}
+

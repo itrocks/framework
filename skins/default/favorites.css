@@ -1,60 +1,45 @@
-div.main > .favorites {
+#favorites {
   background: #fefefe;
-  font-size: 0;
+  display: flex;
+  height: 28px;
   white-space: nowrap; }
-  div.main > .favorites > li {
-    border-bottom: 1px solid #ccc;
-    margin-right: 1px; }
-    div.main > .favorites > li > a {
-      display: inline-block; }
-    div.main > .favorites > li:not(.add) {
-      border-top-left-radius: 4px;
-      display: inline-block;
-      position: relative;
-      background: #d8d8d8;
-      font-size: 12px; }
-      div.main > .favorites > li:not(.add):after {
-        border-right: 3px solid #fefefe;
-        border-top: 3px solid #fefefe;
-        border-left: 4px solid transparent;
-        border-bottom: 4px solid transparent;
-        content: '';
-        height: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 0; }
-      div.main > .favorites > li:not(.add) > a {
-        padding: 8px 12px 7px; }
-    div.main > .favorites > li.add {
-      border-top-left-radius: 4px;
-      display: inline-block;
-      position: relative;
-      background: #d8d8d8 url("img/favorite-24.svg") center no-repeat;
+  #favorites > li {
+    border-top-left-radius: 4px;
+    background-color: #d8d8d8;
+    margin-right: 1px;
+    position: relative; }
+    #favorites > li:after {
+      border-right: 3px solid #fefefe;
+      border-top: 3px solid #fefefe;
+      border-left: 4px solid transparent;
+      border-bottom: 4px solid transparent;
+      content: '';
+      height: 0;
       position: absolute;
-      right: 0; }
-      div.main > .favorites > li.add:after {
-        border-right: 3px solid #fefefe;
-        border-top: 3px solid #fefefe;
-        border-left: 4px solid transparent;
-        border-bottom: 4px solid transparent;
-        content: '';
-        height: 0;
-        position: absolute;
-        right: 0;
-        top: 0;
-        width: 0; }
-      div.main > .favorites > li.add > a {
-        box-sizing: border-box;
-        height: 27px;
-        width: 27px; }
-    div.main > .favorites > li.current {
-      color: white;
+      right: 0;
+      top: 0;
+      width: 0; }
+    #favorites > li > a {
+      display: block;
+      height: 100%;
+      padding: 8px 12px 0; }
+    #favorites > li.add {
+      background: #d8d8d8 url("img/favorite-24.svg") center no-repeat;
       display: none;
+      font-size: 0;
+      margin-left: auto;
+      width: 28px; }
+      #favorites > li.add > a {
+        box-sizing: border-box;
+        height: 100%;
+        width: 100%; }
+    #favorites > li.current {
+      background: var(--dark-color);
+      color: white;
       margin-bottom: -1px;
       z-index: calc(var(--z-index) + 1); }
-    div.main > .favorites > li.recent {
+    #favorites > li.recent {
       background: #efefef; }
 
-ul.favorites > li.add {
+article .favorites > .add {
   display: none !important; }

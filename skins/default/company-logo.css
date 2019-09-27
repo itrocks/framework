@@ -1,0 +1,5 @@
+.company.logo {
+  background: url("img/b-appli.svg") 12px center no-repeat;
+  min-width: 200px; }
+  .company.logo > a {
+    font-size: 0; }

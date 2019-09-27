@@ -1,0 +1,36 @@
+.scrollbar {
+  background: #d8d8d8;
+  border: 1px solid #f8f8f8; }
+  .scrollbar .bar {
+    background: #999; }
+
+.scrollbar, .scrollbar * {
+  position: absolute; }
+.scrollbar.horizontal {
+  bottom: 0;
+  height: 12px;
+  width: 100%; }
+  .scrollbar.horizontal * {
+    height: 100%; }
+  .scrollbar.horizontal > .next, .scrollbar.horizontal > .previous {
+    width: 12px; }
+  .scrollbar.horizontal > .next {
+    right: 0; }
+  .scrollbar.horizontal > .previous {
+    left: 0; }
+  .scrollbar.horizontal > .scroll {
+    width: calc(100% - 24px); }
+.scrollbar.vertical {
+  height: 100%;
+  right: 0;
+  width: 12px; }
+  .scrollbar.vertical * {
+    width: 100%; }
+  .scrollbar.vertical > .next, .scrollbar.vertical > .previous {
+    height: 12px; }
+  .scrollbar.vertical > .next {
+    bottom: 0; }
+  .scrollbar.vertical > .previous {
+    top: 0; }
+  .scrollbar.vertical > .scroll {
+    height: calc(100% - 24px); }

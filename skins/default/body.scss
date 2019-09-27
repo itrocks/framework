@@ -1,35 +1,20 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
+//------------------------------------------------------------------------------------------- Style
+
 body {
 	--dark-color: #d8d8d8;
 	--light-color: #efefef;
-	--z-index: 0;
-
+	background: $background;
 	color: $color;
 	font-family: Roboto, sans-serif;
-	font-size: 0;
-	height: 100%;
-	overflow: hidden;
-	position: absolute;
-	width: 100%;
+	font-size: $font-size;
 
-	> * {
-		font-size: $font-size !important;
-	}
-
-	> .contextual, > .main, > .menu {
-		background: $background;
-		box-sizing: border-box;
-		display: inline-block;
-		height: 100%;
-		position: relative;
-		vertical-align: top;
-	}
-
-	> .menu {
+	> .company.logo {
+		border-bottom: $section-border;
 		border-right: $section-border;
-		width: $menu-width;
+		position: relative;
 
 		&:after {
 			border-right: 2px solid $section-border-color;
@@ -43,50 +28,66 @@ body {
 			top: 0;
 			width: 0;
 		}
+	}
 
-		> .company.logo {
-			border-bottom: $section-border;
-			height: 64px;
+	> #menu {
+		border-right: $section_border;
+	}
+}
 
-			> a {
-				background: url('img/b-appli.svg') 12px center no-repeat;
-				display: block;
-				font-size: 0;
-				height: 100%;
-			}
-		}
+//------------------------------------------------------------------------------------------ Layout
 
-		> h1 {
-			display: none;
-		}
+body {
+	--z-index: 0;
+	display: grid;
+	grid-template-areas:
+		"title notifications side"
+		"menu  favorites     side"
+		"menu  main          side";
+	grid-template-columns: auto 1fr auto;
+	grid-template-rows: 64px auto 1fr;
+	height: 100vh;
 
-		> #short-menu {
-			display: none;
-			border-top: $section-border;
-			bottom: 0;
-			position: absolute;
-			width: 100%;
+	> .company.logo {
+		grid-area: title;
+
+		> a {
+			display: block;
+			height: 100%;
 		}
 	}
 
-	> .main {
-		width: $main-width;
-
-		main {
-			height: $main-height;
-			position: relative;
-
-			> article {
-				height: 100%;
-			}
-		}
-	}
-
-	> .contextual {
+	> h1 {
 		display: none;
-		border-left: $section-border;
-		position: absolute;
-		right: 0;
-		width: $contextual-width;
+	}
+
+	> #menu {
+		grid-area: menu;
+	}
+
+	> #short-menu {
+		display: none;
+	}
+
+	> #notifications {
+		grid-area: notifications;
+	}
+
+	> #favorites {
+		grid-area: favorites;
+	}
+
+	> main {
+		grid-area: main;
+		overflow: hidden;
+	}
+
+	> aside {
+		display: none;
+		grid-area: side;
+	}
+
+	> .trashcan {
+		display: none;
 	}
 }

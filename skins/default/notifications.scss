@@ -1,26 +1,14 @@
 @import 'mixins.scss';
 
-div.main > .notifications {
-	height: 64px;
-	position: relative;
+//------------------------------------------------------------------------------------------- Style
 
-	h2 {
-		display: none;
-	}
-
-	> * {
-		display: inline-block;
-	}
+#notifications {
 
 	> #query,
 	> #responses {
-		background: white;
-		box-sizing: border-box;
-		height: calc(100% - 20px);
 		margin: 10px 0;
 		overflow-y: auto;
 		padding: 0 10px 0 52px;
-		width: calc(50% - 22px);
 
 		> li {
 			border-radius: 2px;
@@ -32,6 +20,7 @@ div.main > .notifications {
 	}
 
 	> #query {
+		box-shadow: inset -1px 0 #d8d8d8;
 
 		&:not(:empty) {
 			background: url('img/warning-32.svg') 10px top no-repeat;
@@ -48,7 +37,7 @@ div.main > .notifications {
 	}
 
 	> #responses {
-		box-shadow: -1px 0 #d8d8d8, inset 1px 0 #d8d8d8;
+		box-shadow: inset 1px 0 #d8d8d8;
 
 		&:not(:empty) {
 			background: url('img/information-32.svg') 10px top no-repeat;
@@ -60,23 +49,40 @@ div.main > .notifications {
 	}
 
 	> .user.mini {
-		display: inline-flex;
-		height: 100%;
-		position: absolute;
-		right: 10px;
+
+		> a {
+			background: url('img/user-24.svg') center no-repeat;
+			display: block;
+			font-size: 0;
+			height: 100%;
+		}
+	}
+}
+
+//------------------------------------------------------------------------------------------ Layout
+
+#notifications {
+	display: grid;
+	grid-template-areas: "query responses user";
+	grid-template-columns: .5fr .5fr 32px;
+
+	> h2 {
+		display: none;
+	}
+
+	> #query {
+		grid-area: query;
+	}
+
+	> #responses {
+		grid-area: responses;
+	}
+
+	> .user {
+		grid-area: user;
 
 		> h3 {
 			display: none;
 		}
-
-		> .user {
-			background: url('img/user-24.svg') center no-repeat;
-			display: inline-block;
-			font-size: 0;
-			height: 24px;
-			margin: auto;
-			width: 24px;
-		}
 	}
-
 }

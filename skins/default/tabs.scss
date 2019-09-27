@@ -1,7 +1,5 @@
 @mixin tab($back-element-color, $color: transparent) {
 	border-top-left-radius: 4px;
-	display: inline-block;
-	position: relative;
 
 	&:after {
 		border-right: 3px solid $back-element-color;

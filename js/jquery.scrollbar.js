@@ -1,6 +1,8 @@
 
+//---------------------------------------------------------------------- window.scrollbar shortcuts
 window.scrollbar = {
 
+	//------------------------------------------------------------------------- window.scrollbar.left
 	left: function(set_left)
 	{
 		var $body = $('body');
@@ -13,6 +15,7 @@ window.scrollbar = {
 			: $body.scrollLeft();
 	},
 
+	//-------------------------------------------------------------------------- window.scrollbar.top
 	top: function(set_top)
 	{
 		var $body = $('body');
@@ -26,3 +29,39 @@ window.scrollbar = {
 	}
 
 };
+
+//-------------------------------------------------------------------------------- jQuery.scrollbar
+(function($)
+{
+
+	//--------------------------------------------------------------- horizontal / vertical scrollbar
+	var scrollbar = function(settings)
+	{
+		var $element   = this;
+		var $scrollbar = $(
+			'<div class="' + (settings.arrows ? 'arrows ' : '') + settings.direction + ' scrollbar">'
+			+ (settings.arrows ? '<div class="previous"/><div class="scroll">' : '')
+			+ '<div class="bar"/>'
+			+ (settings.arrows ? '</div><div class="next"/>' : '')
+			+ '</div>'
+		);
+	};
+
+	//------------------------------------------------- both / horizontal / vertical scrollbar plugin
+	$.fn.scrollbar = function (settings)
+	{
+		settings = $.extend({
+			arrows:    false, // false, true
+			direction: 'both' // both, horizontal, vertical
+		}, settings);
+
+		var directions = (settings.direction === 'both')
+			? ['horizontal', 'vertical']
+			: [settings.direction];
+
+		for (var direction in directions) if (directions.hasOwnProperty(direction)) {
+			settings.direction = directions[direction];
+			scrollbar.call(this, settings);
+		}
+	};
+})( jQuery );

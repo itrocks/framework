@@ -75,14 +75,13 @@
 		var $tfoot      = $table.children('tfoot');
 		var $thead      = $table.children('thead');
 		var calculate   = false;
-		var interval    = null;
 		var click       = 0;
+		var interval    = null;
 		var left_count  = 0;
 		var right_count = undefined;
 		var scroll      = { left: -1, top: -1 };
-		var tbody       = $tbody.get(0);
-
-		var origin = tbody.getBoundingClientRect();
+		var table       = $table[0];
+		var tbody       = $tbody[0];
 		var height;
 		var width;
 
@@ -155,8 +154,10 @@
 		//---------------------------------------------------------------------------- intervalFunction
 		var intervalFunction = function()
 		{
-			var rect = tbody.getBoundingClientRect();
-			var move = {
+			var origin  = $table.offset();
+			origin.top += $thead.height();
+			var rect    = tbody.getBoundingClientRect();
+			var move    = {
 				left: origin.left - rect.left,
 				top:  origin.top  - rect.top
 			};
@@ -166,8 +167,8 @@
 				calculate = true;
 			}
 			if (calculate) {
-				height = $thead.height() + $tbody.height() + $tfoot.height() - $table.get(0).clientHeight;
-				width  = $thead.width() - $table.get(0).clientWidth;
+				height = $thead.height() + $tbody.height() + $tfoot.height() - table.clientHeight;
+				width  = $thead.width() - table.clientWidth;
 			}
 			if (move_horiz || calculate) {
 				scroll.left = move.left;

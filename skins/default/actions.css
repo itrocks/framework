@@ -1,29 +1,19 @@
-li.actions > ul,
-ul.actions {
-  display: block;
-  font-size: 0;
-  white-space: nowrap; }
-  li.actions > ul > li > ul,
-  ul.actions > li > ul {
-    box-shadow: 5px 0 5px -3px rgba(216, 216, 216, 0.4), -5px 0 5px -3px rgba(216, 216, 216, 0.4); }
-
 li.action,
 li.actions > ul > li,
 ul.actions > li {
   border: 1px solid #d0d0d0;
   border-radius: 2px;
-  display: inline-block;
-  height: 26px;
+  height: 25px;
   margin: 5px 6px 5px 4px;
-  position: relative;
   white-space: nowrap; }
   li.action a,
   li.actions > ul > li a,
   ul.actions > li a {
     background: #f8f8f8 1px center no-repeat;
+    box-sizing: border-box;
     display: block;
-    font-size: 12px;
-    padding: 7px 5px 7px 26px; }
+    height: 100%;
+    padding: 7px 5px 0 26px; }
     li.action a:focus, li.action a:hover,
     li.actions > ul > li a:focus,
     li.actions > ul > li a:hover,
@@ -35,12 +25,32 @@ ul.actions > li {
   li.actions > ul > li > ul,
   ul.actions > li > ul {
     background-color: white;
-    border-left: 2px solid #d8d8d8;
-    border-right: 2px solid #d8d8d8;
+    border: 1px solid #d8d8d8; }
+
+article.list ul.general.actions > li > ul {
+  top: 38px; }
+
+article:not(.list) ul.general.actions > li > ul,
+ul.selection.actions > li > ul {
+  bottom: 32px; }
+
+li.actions > ul,
+ul.actions {
+  background: #efefef;
+  display: flex; }
+
+li.action,
+li.actions > ul > li,
+ul.actions > li {
+  display: inline-block;
+  position: relative; }
+  li.action > ul,
+  li.actions > ul > li > ul,
+  ul.actions > li > ul {
     display: inline-block;
     left: -1px;
     position: absolute;
-    z-index: calc(var(--z-index) + 1); }
+    z-index: 1; }
     li.action > ul > li,
     li.actions > ul > li > ul > li,
     ul.actions > li > ul > li {
@@ -49,26 +59,3 @@ ul.actions > li {
   li.actions > ul > li:not(:hover) > ul,
   ul.actions > li:not(:hover) > ul {
     display: none; }
-
-header > ul.actions {
-  border: none;
-  position: absolute;
-  top: 32px; }
-  header > ul.actions > li > ul {
-    border-bottom: 2px solid #d8d8d8;
-    border-top: 1px solid #d8d8d8;
-    box-shadow: 0 5px 5px -3px rgba(216, 216, 216, 0.4);
-    top: 38px; }
-
-footer > ul.actions {
-  background: #efefef;
-  box-sizing: border-box;
-  border-top: 1px solid #ccc;
-  display: block;
-  height: 39px;
-  white-space: nowrap; }
-  footer > ul.actions > li > ul {
-    border-bottom: 1px solid #d8d8d8;
-    border-top: 2px solid #d8d8d8;
-    bottom: 32px;
-    box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, 0.4); }

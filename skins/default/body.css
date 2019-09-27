@@ -1,27 +1,15 @@
 body {
   --dark-color: #d8d8d8;
   --light-color: #efefef;
-  --z-index: 0;
+  background: white;
   color: #444;
   font-family: Roboto, sans-serif;
-  font-size: 0;
-  height: 100%;
-  overflow: hidden;
-  position: absolute;
-  width: 100%; }
-  body > * {
-    font-size: 12px !important; }
-  body > .contextual, body > .main, body > .menu {
-    background: white;
-    box-sizing: border-box;
-    display: inline-block;
-    height: 100%;
-    position: relative;
-    vertical-align: top; }
-  body > .menu {
+  font-size: 12px; }
+  body > .company.logo {
+    border-bottom: 2px solid #d8d8d8d8;
     border-right: 2px solid #d8d8d8d8;
-    width: 206px; }
-    body > .menu:after {
+    position: relative; }
+    body > .company.logo:after {
       border-right: 2px solid #d8d8d8d8;
       border-top: 2px solid #d8d8d8d8;
       border-left: 2px solid transparent;
@@ -32,32 +20,36 @@ body {
       right: 0;
       top: 0;
       width: 0; }
-    body > .menu > .company.logo {
-      border-bottom: 2px solid #d8d8d8d8;
-      height: 64px; }
-      body > .menu > .company.logo > a {
-        background: url("img/b-appli.svg") 12px center no-repeat;
-        display: block;
-        font-size: 0;
-        height: 100%; }
-    body > .menu > h1 {
-      display: none; }
-    body > .menu > #short-menu {
-      display: none;
-      border-top: 2px solid #d8d8d8d8;
-      bottom: 0;
-      position: absolute;
-      width: 100%; }
-  body > .main {
-    width: calc(100% - 206px); }
-    body > .main main {
-      height: calc(100% - 64px - 28px);
-      position: relative; }
-      body > .main main > article {
-        height: 100%; }
-  body > .contextual {
+  body > #menu {
+    border-right: 2px solid #d8d8d8d8; }
+
+body {
+  --z-index: 0;
+  display: grid;
+  grid-template-areas: "title notifications side" "menu  favorites     side" "menu  main          side";
+  grid-template-columns: auto 1fr auto;
+  grid-template-rows: 64px auto 1fr;
+  height: 100vh; }
+  body > .company.logo {
+    grid-area: title; }
+    body > .company.logo > a {
+      display: block;
+      height: 100%; }
+  body > h1 {
+    display: none; }
+  body > #menu {
+    grid-area: menu; }
+  body > #short-menu {
+    display: none; }
+  body > #notifications {
+    grid-area: notifications; }
+  body > #favorites {
+    grid-area: favorites; }
+  body > main {
+    grid-area: main;
+    overflow: hidden; }
+  body > aside {
     display: none;
-    border-left: 2px solid #d8d8d8d8;
-    position: absolute;
-    right: 0;
-    width: 204px; }
+    grid-area: side; }
+  body > .trashcan {
+    display: none; }

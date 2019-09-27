@@ -28,81 +28,77 @@
 
 	<!--!~hide_page_frame?-->
 	<!--!~inside-->
-
-	<div class="menu">
-		<header class="company logo" data-application="{@application.ucwords}">
-			<a href="/" target="#main">|Go home|</a>
-		</header>
-		<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
-		<!--Menu.get-->{/ITRocks/Framework/Component/Menu/output.html}<!--end-->
-		<nav id="short-menu">
-			<ul>
-				<li>|sample feature|</li>
-			</ul>
-		</nav>
+	<div class="company logo" data-application="{@application.ucwords}">
+		<a href="/" target="#main">|Go home|</a>
 	</div>
-
-	<!--end-->
-	<!--end-->
-
-	<div class="main">
-		<header class="notifications">
-			<ul id="query"></ul>
-			<ul id="responses"><li>|Welcome to your software|.</li></ul>
-			<section class="mini user">
-				<h3>|Connected user|</h3>
-				<a class="user" href="app://ITRocks/Framework/User/disconnect">
-					{ITRocks\Framework\User.current}
-				</a>
-			</section>
-		</header>
-		<ul class="favorites">
-			<li class="current"><a>{~title}</a></li>
-			<li class="add"><a href="#" title="|add current display to favorites|">|add|</a></li>
+	<h1>|{@application.ucwords}| - |¦{@class.ucfirst}¦ {@feature.display}|</h1>
+	<!--Menu.get-->{/ITRocks/Framework/Component/Menu/output.html}<!--end-->
+	<nav id="short-menu">
+		<ul>
+			<li>|sample feature|</li>
 		</ul>
-		<main>
-			{@content}
-		</main>
-	</div>
+	</nav>
+	<!--end-->
+	<!--end-->
 
-	<div class="contextual">
+	<section id="notifications">
+		<h2>|Notifications|</h2>
+		<ul id="query"></ul>
+		<ul id="responses"><li>|Welcome to your software|.</li></ul>
+		<section class="mini user">
+			<h3>|Connected user|</h3>
+			<a class="user" href="app://ITRocks/Framework/User/disconnect">
+				{ITRocks\Framework\User.current}
+			</a>
+		</section>
+	</section>
+
+	<ul id="favorites">
+		<li class="current"><a>{~title}</a></li>
+		<li class="add"><a href="#" title="|add current display to favorites|">|add|</a></li>
+	</ul>
+
+	<main>
+		{@content}
+	</main>
+
+	<aside>
 		<header>
 			{/ITRocks/Framework/User/miniDisplay.html}
 			<button class="minimize" data-level="2" data-side="right">|minimize|</button>
 		</header>
-		<section class="main">
-			<h2>|contextual information|</h2>
-			<nav class="summary">
-				<ul>
-					<li class="history">
-						<a href="#history">|history|</a>
-					</li>
-					<li class="progress">
-						<a href="#progress">|progress|</a>
-					</li>
-					<li class="notes">
-						<a href="#notes">|notes|</a>
-					</li>
-				</ul>
-			</nav>
-			<section id="history">
-				<h3>|history|</h3>
-			</section>
-			<section id="progress">
-				<h3>|progress|</h3>
-			</section>
-			<section id="notes">
-				<h3>|notes|</h3>
-			</section>
+		<nav>
+			<ul>
+				<li class="history">
+					<a href="#history">|history|</a>
+				</li>
+				<li class="progress">
+					<a href="#progress">|progress|</a>
+				</li>
+				<li class="notes">
+					<a href="#notes">|notes|</a>
+				</li>
+			</ul>
+		</nav>
+		<section id="history">
+			<h3>|history|</h3>
 		</section>
-	</div>
+		<section id="progress">
+			<h3>|progress|</h3>
+		</section>
+		<section id="notes">
+			<h3>|notes|</h3>
+		</section>
+		<section id="documentation">
+			<h3>|documentation|</h3>
+		</section>
+	</aside>
 
 	<!--!~hide_page_frame?-->
-	<div class="trashcan">
+	<section class="trashcan">
 		<h2>|Trashcan|</h2>
-		<div></div>
 		<a href="app://ITRocks/Framework/Component/Trashcan" target="#trashcan>div">|bin|</a>
-	</div>
+	</section>
 	<!--end-->
 
 </body>

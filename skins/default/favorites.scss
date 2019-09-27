@@ -1,45 +1,41 @@
 @import 'sizes.scss';
 @import 'tabs.scss';
 
-div.main > .favorites {
+#favorites {
 	background: #fefefe;
-	font-size: 0;
+	display: flex;
+	height: 28px;
 	white-space: nowrap;
 
 	> li {
-		border-bottom: 1px solid #ccc;
+		@include tab(#fefefe);
+		background-color: #d8d8d8;
 		margin-right: 1px;
+		position: relative;
 
 		> a {
-			display: inline-block;
-		}
-
-		&:not(.add) {
-			@include tab(#fefefe);
-			background: #d8d8d8;
-			font-size: $font-size;
-
-			> a {
-				padding: 8px 12px 7px;
-			}
+			display: block;
+			height: 100%;
+			padding: 8px 12px 0;
 		}
 
 		&.add {
-			@include tab(#fefefe);
 			background: #d8d8d8 url('img/favorite-24.svg') center no-repeat;
-			position: absolute;
-			right: 0;
+			display: none;
+			font-size: 0;
+			margin-left: auto;
+			width: 28px;
 
 			> a {
 				box-sizing: border-box;
-				height: 27px;
-				width: 27px;
+				height: 100%;
+				width: 100%;
 			}
 		}
 
 		&.current {
+			background: var(--dark-color);
 			color: white;
-			display: none;
 			margin-bottom: -1px;
 			z-index: calc(var(--z-index) + 1);
 		}
@@ -50,6 +46,6 @@ div.main > .favorites {
 	}
 }
 
-ul.favorites > li.add {
+article .favorites > .add {
 	display: none !important;
 }
