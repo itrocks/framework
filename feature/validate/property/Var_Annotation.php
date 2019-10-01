@@ -42,8 +42,22 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	public function __toString()
 	{
 		return ($this->property->getType()->isDateTime() && Locale::current())
-			? Locale::current()->date_format->format
+			? $this->dateFormat()
 			: Loc::tr(parent::__toString());
+	}
+
+	//------------------------------------------------------------------------------------ dateFormat
+	/**
+	 * @return string
+	 */
+	public function dateFormat()
+	{
+		$format = Locale::current()->date_format->format;
+		$format .= ' H:i' . ($this->property->getAnnotation('show_seconds')->value ? ':s' : '');
+		$format = strReplace(
+			['Y' => '2019', 'm' => '11', 'd' => '25', 'H' => '12', 'i' => '35', 's' => '45'], $format
+		);
+		return $format;
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
