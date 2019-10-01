@@ -19,6 +19,7 @@ use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\Date_Interval;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\Tools\Field;
 use ITRocks\Framework\Tools\Names;
 use ReflectionException;
@@ -658,10 +659,20 @@ class Reflection_Property extends ReflectionProperty
 		// two Date_Time which differ of 1 hour or less are equivalent
 		if (($object1 instanceof Date_Time) || ($object2 instanceof Date_Time)) {
 			if ($object1 && !($object1 instanceof Date_Time)) {
-				$object1 = new Date_Time($object1);
+				try {
+					$object1 = new Date_Time($object1);
+				}
+				catch (Exception $exception) {
+					$object1 = Date_Time_Error::fromError($object1);
+				}
 			}
 			if ($object2 && !($object2 instanceof Date_Time)) {
-				$object2 = new Date_Time($object2);
+				try {
+					$object2 = new Date_Time($object2);
+				}
+				catch (Exception $exception) {
+					$object2 = Date_Time_Error::fromError($object2);
+				}
 			}
 		}
 		/** @noinspection PhpUnhandledExceptionInspection Date_Time type tested */
