@@ -14,6 +14,9 @@ use ITRocks\Framework\User\Authenticate\By_Token;
 class Server
 {
 
+	//------------------------------------------------------------------------------------- FLAG_FILE
+	const FLAG_FILE = '/home/tmp/ITRocks_Framework_Trigger_Server_run';
+
 	//------------------------------------------------------------------------------------------ STOP
 	/**
 	 * The specific command STOP can be set as an action to stop the trigger server
@@ -143,6 +146,7 @@ class Server
 				usleep($sleep_duration);
 			}
 			$this->asynchronous->flush();
+			$this->wakeFlagUp();
 		}
 		$this->asynchronous->wait();
 	}
@@ -158,6 +162,19 @@ class Server
 		$action->last   = $last;
 		$action->status = Action\Status::DONE;
 		Dao::write($action, Dao::only('last', 'status'));
+	}
+
+	//------------------------------------------------------------------------------------ wakeFlagUp
+	protected function wakeFlagUp()
+	{
+		static $next;
+		if (
+			((microtime(true) > $next) || !isset($next))
+			&& is_file(static::FLAG_FILE)
+		) {
+			$next = floor(microtime(true)) + 60;
+			touch(static::FLAG_FILE);
+		}
 	}
 
 }
