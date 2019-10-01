@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\User;
@@ -17,6 +18,7 @@ class Widget_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -30,7 +32,8 @@ class Widget_Controller implements Feature_Controller
 			return View::run($parameters, $form, $files, get_class($user), 'display');
 		}
 		else {
-			$user = new User();
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$user = Builder::create(User::class);
 			array_unshift($parameters, $user);
 			return View::run($parameters, $form, $files, get_class($user), 'login');
 		}

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Input;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper\Search_Object;
@@ -94,11 +95,13 @@ abstract class Authentication
 	 *
 	 * Call this to disconnect user
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user User
 	 */
 	public static function disconnect(User $user)
 	{
-		User::current(new User);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		User::current(Builder::create(User::class));
 		Session::current()->removeAny(get_class($user));
 	}
 
