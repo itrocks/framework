@@ -73,10 +73,9 @@ article, article > form {
   height: 100%; }
   article > header, article > form > header {
     grid-area: header; }
-  article > .data, article table, article > form > .data, article > form table {
+  article > .data, article > table, article > form > .data, article > form > table {
     display: block;
-    grid-area: content;
-    overflow: auto; }
+    grid-area: content; }
   article > .actions, article > form > .actions {
     grid-area: footer; }
 

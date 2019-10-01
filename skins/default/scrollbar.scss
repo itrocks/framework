@@ -1,11 +1,16 @@
 
 // Style
 
+$border: 1px;
 $weight: 12px;
 
 .scrollbar {
 	background: #d8d8d8;
-	border: 1px solid #f8f8f8;
+	border: $border solid #f2f2f2;
+
+	&.angle {
+		background: #f2f2f2;
+	}
 
 	.bar {
 		background: #999;
@@ -16,15 +21,21 @@ $weight: 12px;
 // - The container must have position: relative;
 
 .scrollbar {
+	--weight: #{$weight + ($border * 2)};
+	height: 100%;
+	width: 100%;
+	position: relative;
 
 	&, * {
 		position: absolute;
 	}
 
+	&.angle {
+		grid-area: angle;
+	}
+
 	&.horizontal {
-		bottom: 0;
-		height: $weight;
-		width: 100%;
+		grid-area: horizontal;
 
 		* {
 			height: 100%;
@@ -48,9 +59,7 @@ $weight: 12px;
 	}
 
 	&.vertical {
-		height: 100%;
-		right: 0;
-		width: $weight;
+		grid-area: vertical;
 
 		* {
 			width: 100%;

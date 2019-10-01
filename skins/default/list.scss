@@ -8,6 +8,7 @@ article.list > form {
 	> table {
 		border-bottom: 1px solid #ccc;
 		border-top: 1px solid #ccc;
+		overflow: hidden;
 		white-space: nowrap;
 
 		tr {
@@ -15,6 +16,7 @@ article.list > form {
 
 			> td, > th {
 				box-shadow: inset 0 -1px #d8d8d8;
+				box-sizing: border-box;
 				vertical-align: middle;
 
 				&:first-child:hover {

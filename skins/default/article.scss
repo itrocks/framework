@@ -103,10 +103,9 @@ article, article > form {
 		grid-area: header;
 	}
 
-	> .data, table {
+	> .data, > table {
 		display: block;
 		grid-area: content;
-		overflow: auto;
 	}
 
 	> .actions {

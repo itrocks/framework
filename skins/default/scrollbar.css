@@ -1,36 +1,41 @@
 .scrollbar {
   background: #d8d8d8;
-  border: 1px solid #f8f8f8; }
+  border: 1px solid #f2f2f2; }
+  .scrollbar.angle {
+    background: #f2f2f2; }
   .scrollbar .bar {
     background: #999; }
 
-.scrollbar, .scrollbar * {
-  position: absolute; }
-.scrollbar.horizontal {
-  bottom: 0;
-  height: 12px;
-  width: 100%; }
-  .scrollbar.horizontal * {
-    height: 100%; }
-  .scrollbar.horizontal > .next, .scrollbar.horizontal > .previous {
-    width: 12px; }
-  .scrollbar.horizontal > .next {
-    right: 0; }
-  .scrollbar.horizontal > .previous {
-    left: 0; }
-  .scrollbar.horizontal > .scroll {
-    width: calc(100% - 24px); }
-.scrollbar.vertical {
+.scrollbar {
+  --weight: 14px;
   height: 100%;
-  right: 0;
-  width: 12px; }
-  .scrollbar.vertical * {
-    width: 100%; }
-  .scrollbar.vertical > .next, .scrollbar.vertical > .previous {
-    height: 12px; }
-  .scrollbar.vertical > .next {
-    bottom: 0; }
-  .scrollbar.vertical > .previous {
-    top: 0; }
-  .scrollbar.vertical > .scroll {
-    height: calc(100% - 24px); }
+  width: 100%;
+  position: relative; }
+  .scrollbar, .scrollbar * {
+    position: absolute; }
+  .scrollbar.angle {
+    grid-area: angle; }
+  .scrollbar.horizontal {
+    grid-area: horizontal; }
+    .scrollbar.horizontal * {
+      height: 100%; }
+    .scrollbar.horizontal > .next, .scrollbar.horizontal > .previous {
+      width: 12px; }
+    .scrollbar.horizontal > .next {
+      right: 0; }
+    .scrollbar.horizontal > .previous {
+      left: 0; }
+    .scrollbar.horizontal > .scroll {
+      width: calc(100% - 24px); }
+  .scrollbar.vertical {
+    grid-area: vertical; }
+    .scrollbar.vertical * {
+      width: 100%; }
+    .scrollbar.vertical > .next, .scrollbar.vertical > .previous {
+      height: 12px; }
+    .scrollbar.vertical > .next {
+      bottom: 0; }
+    .scrollbar.vertical > .previous {
+      top: 0; }
+    .scrollbar.vertical > .scroll {
+      height: calc(100% - 24px); }

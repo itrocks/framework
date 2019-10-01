@@ -16,7 +16,7 @@
 
 	<thead>
 		<tr class="title">
-			<th class="visible lines" title="|check to select all !{rows_count}! lines|">
+			<th class="fix visible lines" title="|check to select all !{rows_count}! lines|">
 				<input class="selector" data-no-autofocus type="checkbox">
 				<input name="excluded_selection" type="hidden">
 				<input data-count="{rows_count}" name="select_all" type="hidden" value="0">
@@ -34,7 +34,7 @@
 				<a href="app://Class/feature?sort=column_name_3" target="#main">column3</a>
 			</th>
 			<!--end-->
-			<th class="column_select fixed trailing">
+			<th class="column_select fix">
 				<!--!lock_columns?-->
 				<a class="popup right" href="app://ITRocks/Framework/Property/select/(@class.path)" target="#column_select">|select columns|</a>
 				<!--end-->

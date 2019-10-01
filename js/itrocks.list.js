@@ -47,7 +47,8 @@ $(document).ready(function()
 	$body.build('each', 'article.list', responsiveList);
 
 	//----------------------------------------------------------------------- article.list form table
-	$body.build('call', 'article.list > form > table', $.fn.fixedHeaders);
+	//$body.build('call', 'article.list > form > table', $.fn.fixedHeaders);
+	$body.build('call', 'article.list > form > table', $.fn.scrollBar);
 
 	//--------------------------------------------------------------------------------- window.resize
 	/**

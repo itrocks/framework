@@ -3,11 +3,13 @@ article.list > form {
   article.list > form > table {
     border-bottom: 1px solid #ccc;
     border-top: 1px solid #ccc;
+    overflow: hidden;
     white-space: nowrap; }
     article.list > form > table tr {
       height: 33px; }
       article.list > form > table tr > td, article.list > form > table tr > th {
         box-shadow: inset 0 -1px #d8d8d8;
+        box-sizing: border-box;
         vertical-align: middle; }
         article.list > form > table tr > td:first-child:hover, article.list > form > table tr > th:first-child:hover {
           background: #d2f1f9; }

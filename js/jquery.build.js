@@ -13,18 +13,22 @@
 	 * Callback class constructor
 	 *
 	 * @constructor
-	 * @param event    string
-	 * @param selector string|string[]
-	 * @param callback function
-	 * @param priority number
-	 * @param always   boolean
+	 * @param event      string
+	 * @param selector   string|string[]
+	 * @param callback   function
+	 * @param priority   number
+	 * @param always     boolean
+	 * @param parameters array|mixed
 	 */
-	var Callback = function(event, selector, callback, priority, always)
+	var Callback = function(event, selector, callback, priority, always, parameters)
 	{
-		this.callback  = callback;
-		this.event     = event;
-		this.priority  = priority;
-		this.selectors = {};
+		this.callback   = callback;
+		this.event      = event;
+		this.parameters = (parameters === undefined)
+			? null
+			: (((typeof parameters) === 'array') ? parameters : [parameters]);
+		this.priority   = priority;
+		this.selectors  = {};
 
 		var object    = this;
 		var selectors = contextSelectors(selector);
@@ -45,7 +49,7 @@
 		var $elements = this.matchSelector($context);
 		if ($elements.length) {
 			if (this.event === 'call') {
-				this.callback.call($elements);
+				this.callback.apply($elements, this.parameters);
 			}
 			else if (this.event === 'each') {
 				$elements.each(this.callback);
@@ -148,13 +152,14 @@
 	 * Declare a new callback function to be called when DOM elements are added
 	 * Then call build() on the head newly added DOM element, each time you add some, to call them
 	 *
-	 * @param event    string event name : jQuery event and 'call', 'each' special events
-	 *                 or : an object with {event:, priority:, selector:, callback: }
-	 * @param selector string|string[]
-	 * @param callback function
+	 * @param event      string event name : jQuery event and 'call', 'each' special events
+	 *                   or : an object with {event:, priority:, selector:, callback: }
+	 * @param selector   string|string[]
+	 * @param callback   function
+	 * @param parameters object
 	 * @return jQuery this
 	 */
-	$.fn.build = function(event, selector, callback)
+	$.fn.build = function(event, selector, callback, parameters)
 	{
 		var $context = this;
 
@@ -193,7 +198,7 @@
 			selector = 'always';
 		}
 		priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
-		callback = new Callback(event, selector, callback, priority, always);
+		callback = new Callback(event, selector, callback, priority, always, parameters);
 		window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
 		if ($context.length) {
 			callback.callIt($context);
