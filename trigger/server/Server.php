@@ -134,6 +134,7 @@ class Server
 	 */
 	public function run()
 	{
+		set_time_limit(0);
 		$this->asynchronous = new Asynchronous();
 		while (!$this->stop) {
 			$next_execution = floatval(floor(microtime(true) + 1));
