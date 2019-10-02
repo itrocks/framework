@@ -48,7 +48,9 @@ $(document).ready(function()
 
 	//----------------------------------------------------------------------- article.list form table
 	//$body.build('call', 'article.list > form > table', $.fn.fixedHeaders);
-	$body.build('call', 'article.list > form > table', $.fn.scrollBar);
+	$body.build(
+		'call', 'article.list > form > table', $.fn.scrollBar, { vertical_scrollbar_near: 'foot' }
+	);
 
 	//--------------------------------------------------------------------------------- window.resize
 	/**

@@ -2,7 +2,7 @@
 // Style
 
 $border: 1px;
-$weight: 12px;
+$weight: 18px;
 
 .scrollbar {
 	background: #d8d8d8;
@@ -13,13 +13,13 @@ $weight: 12px;
 	}
 
 	&.horizontal {
-		border-bottom-width: 5px;
-		border-top-width: 5px;
+		border-bottom-width: 8px;
+		border-top-width: 8px;
 	}
 
 	&.vertical {
-		border-left-width: 5px;
-		border-right-width: 5px;
+		border-left-width: 8px;
+		border-right-width: 8px;
 	}
 
 	.bar {

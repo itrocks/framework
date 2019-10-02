@@ -86,6 +86,24 @@ window.scrollbar = {
 			var element_max_x = $thead[0].scrollWidth - $thead.width();
 			var element_x     = Math.round(element_max_x * new_x / max_x);
 			($table ? $children : $element).scrollLeft(element_x);
+			// translate vertical headers
+			var $columns = $table.data('scrollbar').$columns;
+			var previous = 0;
+			var left     = element_x;
+			var right    = element_x + $thead.width() - $thead[0].scrollWidth;
+			for (var index in $columns) if ($columns.hasOwnProperty(index)) {
+				var $column = $columns[index];
+				// left
+				if (parseInt(index) === ++previous) {
+					$column.css('transform', 'translateX(' + left + 'px)');
+					left += $column.width();
+				}
+				// right
+				else {
+					$column.css('transform', 'translateX(' + right + 'px');
+					right -= $column.width();
+				}
+			}
 		}
 		// vertical
 		if ($scrollbar.is('.vertical')) {
@@ -127,7 +145,7 @@ window.scrollbar = {
 		);
 		$scrollbar.appendTo($element);
 		if ($element.is('table')) {
-			scrollTable($element, $scrollbar);
+			scrollTable($element, $scrollbar, settings);
 		}
 		scrollDraw($element, $scrollbar);
 		$scrollbar.mousedown(mousedown);
@@ -152,8 +170,12 @@ window.scrollbar = {
 	};
 
 	//--------------------------------------------------------------------------- scrollbar for table
-	var scrollTable = function($table, $scrollbar)
+	var scrollTable = function($table, $scrollbar, settings)
 	{
+		if ($table.data('scrollbar')) {
+			return;
+		}
+
 		var $tbody      = $table.children('tbody');
 		var $tfoot      = $table.children('tfoot');
 		var $thead      = $table.children('thead');
@@ -167,55 +189,74 @@ window.scrollbar = {
 		var weight      = parseInt($scrollbar.css('--weight'));
 		var widths = [];
 
-		if (!$table.data('widths')) {
-			$table.data('widths', widths);
+		// align thead / tbody / tfoot columns
 
-			$tr.children().each(function() {
-				widths.push($(this).width());
+		$tr.children().each(function() {
+			widths.push($(this).width());
+		});
+		for (var tr in trs) if (trs.hasOwnProperty(tr)) {
+			var key = 0;
+			trs[tr].children().each(function() {
+				$(this).css('min-width', widths[key++]);
 			});
-			for (var tr in trs) if (trs.hasOwnProperty(tr)) {
-				var key = 0;
-				trs[tr].children().each(function() {
-					$(this).css('min-width', widths[key++]);
-				});
-			}
-
-			var grid_template = [
-				'head       head',
-				'body       vertical',
-				'foot       vertical',
-				'horizontal angle'
-			];
-			var grid_template_columns = ['1fr', weight.toString() + 'px'];
-			var grid_template_rows    = [
-				head_height.toString() + 'px',
-				'1fr',
-				foot_height.toString() + 'px',
-				weight.toString() + 'px'
-			];
-			$table.css({
-				'display':               'grid',
-				'grid-template':         Q + grid_template.join(Q + SP + Q) + Q,
-				'grid-template-columns': grid_template_columns.join(SP),
-				'grid-template-rows':    grid_template_rows.join(SP),
-				'position':              'relative'
-			});
-			$table.children().css({ display: 'block', overflow: 'hidden' });
-			$tbody.css({ 'grid-area': 'body' });
-			$tfoot.css({ 'grid-area': 'foot' });
-			$thead.css({ 'grid-area': 'head' });
 		}
+
+		// grid layout template
+
+		var near = settings.vertical_scrollbar_near;
+		near = (near === 'both') ? ['foot', 'head'] : [near];
+		var near_foot = (near.indexOf('foot') > -1) ? 'vertical' : 'foot';
+		var near_head = (near.indexOf('head') > -1) ? 'vertical' : 'head';
+
+		var grid_template = [
+			'head ' + near_head,
+			'body vertical',
+			'foot ' + near_foot,
+			'horizontal angle'
+		];
+		var grid_template_columns = ['1fr', weight.toString() + 'px'];
+		var grid_template_rows    = [
+			head_height.toString() + 'px',
+			'1fr',
+			foot_height.toString() + 'px',
+			weight.toString() + 'px'
+		];
+		$table.css({
+			'display':               'grid',
+			'grid-template':         Q + grid_template.join(Q + SP + Q) + Q,
+			'grid-template-columns': grid_template_columns.join(SP),
+			'grid-template-rows':    grid_template_rows.join(SP),
+			'position':              'relative'
+		});
+
+		$table.children().css({ display: 'block', overflow: 'hidden' });
+		$tbody.css('grid-area', 'body');
+		$tfoot.css('grid-area', 'foot');
+		$thead.css('grid-area', 'head');
+
+		// count vertical fixed columns
+		var $columns = {};
+		if (settings.fixed_columns) {
+			$table.find(settings.fixed_columns).each(function() {
+				var $fixed = $(this);
+				var index  = $fixed.prevAll().length + 1;
+				if ($columns[index] === undefined) {
+					$columns[index] = $table.find('tr > :nth-child(' + index + ')');
+				}
+			});
+		}
+
+		$table.data('scrollbar', { $columns: $columns });
 	};
 
 	//------------------------------------------------- both / horizontal / vertical scrollbar plugin
 	$.fn.scrollBar = function(settings)
 	{
 		settings = $.extend({
-			arrows:    false,  // false, true
-			direction: 'both', // both, horizontal, vertical
-			table: {
-				fix: '.fix' // selector for fixed columns
-			}
+			arrows:                  false,  // false, true
+			direction:               'both', // both, horizontal, vertical
+			fixed_columns:           '.fix', // jQuery selector for fixed columns
+			vertical_scrollbar_near: 'both'  // both, foot, head
 		}, settings);
 
 		var directions = (settings.direction === 'both')

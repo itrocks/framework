@@ -36,12 +36,12 @@ article.list > form > table > thead {
 				}
 
 				&.column_select {
-					background: #efefef url('img/add-column-16.svg') right 4px center no-repeat;
+					background: #efefef url('img/add-column-16.svg') center no-repeat;
 					z-index: calc(var(--z-index) + 1);
 
 					> a {
 						font-size: 0;
-						min-width: 24px;
+						min-width: 20px;
 					}
 				}
 
