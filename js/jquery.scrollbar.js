@@ -33,13 +33,91 @@ window.scrollbar = {
 //-------------------------------------------------------------------------------- jQuery.scrollbar
 (function($)
 {
+	var $move_scrollbar = null;
+	var initial_mouse   = {};
+
+	//-------------------------------------------------------------------------- $scrollbar mousedown
+	var mousedown = function(event)
+	{
+		if ($move_scrollbar) {
+			return;
+		}
+		$move_scrollbar = $(this);
+		initial_mouse   = { x: event.pageX, y: event.pageY };
+		$(document).mousemove(mousemove).mouseup(mouseup);
+		event.preventDefault();
+	};
+
+	//---------------------------------------------------------------------------- document mousemove
+	var mousemove = function(event)
+	{
+		var $scrollbar = $move_scrollbar;
+		if (!event.which) {
+			$scrollbar.mouseup(event);
+			return;
+		}
+		// moving scrollbar
+		var $bar = $scrollbar.find('.bar');
+		var $in  = $bar.parent();
+		// moving element
+		var $element = $scrollbar.parent();
+		var $table   = $element.is('table') ? $element : null;
+		var $children;
+		var $thead;
+		if ($table) {
+			$children = $table.children('tbody, tfoot, thead');
+			$element  = $children.filter('tbody');
+			$thead    = $children.filter('thead');
+			if (!$thead.length) {
+				$thead = $element;
+			}
+		}
+		// horizontal
+		if ($scrollbar.is('.horizontal')) {
+			// move scrollbar
+			var dx           = event.pageX - initial_mouse.x;
+			var left_border  = parseInt(window.getComputedStyle($in[0]).borderLeftWidth);
+			var max_x        = $in.width() - $bar.width();
+			var old_x        = $bar.offset().left - $in.offset().left - left_border;
+			var new_x        = Math.max(0, Math.min(max_x, old_x + dx));
+			initial_mouse.x += dx;
+			$bar.css('left', new_x);
+			// move element
+			var element_max_x = $thead[0].scrollWidth - $thead.width();
+			var element_x     = Math.round(element_max_x * new_x / max_x);
+			($table ? $children : $element).scrollLeft(element_x);
+		}
+		// vertical
+		if ($scrollbar.is('.vertical')) {
+			// move scrollbar
+			var dy           = event.pageY - initial_mouse.y;
+			var top_border   = parseInt(window.getComputedStyle($in[0]).borderTopWidth);
+			var max_y        = $in.height() - $bar.height();
+			var old_y        = $bar.offset().top - $in.offset().top - top_border;
+			var new_y        = Math.max(0, Math.min(max_y, old_y + dy));
+			initial_mouse.y += dy;
+			$bar.css('top', new_y);
+			// move element
+			var element_max_y = $element[0].scrollHeight - $element.height();
+			var element_y     = Math.round(element_max_y * new_y / max_y);
+			$element.scrollTop(element_y);
+		}
+	};
+
+	//------------------------------------------------------------------------------ document mouseup
+	var mouseup = function(event)
+	{
+		if (!$move_scrollbar) {
+			return;
+		}
+		$(document).off('mousemove', mousemove).off('mouseup', mouseup);
+		$move_scrollbar = null;
+	};
 
 	//--------------------------------------------------------------- horizontal / vertical scrollbar
 	var scrollBar = function(settings)
 	{
-		var is_table = this.is('table');
 		var $element = this;
-
 		var $scrollbar = $(
 			'<div class="' + (settings.arrows ? 'arrows ' : '') + settings.direction + ' scrollbar">'
 			+ (settings.arrows ? '<div class="previous"/><div class="scroll">' : '')
@@ -48,12 +126,11 @@ window.scrollbar = {
 			+ '</div>'
 		);
 		$scrollbar.appendTo($element);
-
-		if (is_table) {
+		if ($element.is('table')) {
 			scrollTable($element, $scrollbar);
 		}
-
 		scrollDraw($element, $scrollbar);
+		$scrollbar.mousedown(mousedown);
 	};
 
 	//------------------------------------------------------------------------------------ scrollDraw
