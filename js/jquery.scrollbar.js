@@ -40,13 +40,13 @@
 	//------------------------------------------------------------------------ drawFixedColumnHeaders
 	/**
 	 * @param $table jQuery
-	 * @param left   integer
 	 */
-	var drawFixedColumnHeaders = function($table, left)
+	var drawFixedColumnHeaders = function($table)
 	{
 		var scrollbar = $table.data('scrollbar');
 		var $thead    = scrollbar.$head;
 		var columns   = scrollbar.columns;
+		var left      = scrollbar.$body.scrollLeft();
 		var previous  = 0;
 		var right     = left + $thead.width() - $thead[0].scrollWidth;
 		for (var index in columns) if (columns.hasOwnProperty(index)) {
@@ -89,9 +89,9 @@
 			var body_max_left = $body[0].scrollWidth - $body.width();
 			var body_left     = Math.round(body_max_left * new_left / max_left);
 			scrollbar.$content.scrollLeft(body_left);
-			if (scrollbar.is_table) {
-				drawFixedColumnHeaders($element, body_left);
-			}
+		}
+		if (scrollbar.is_table) {
+			drawFixedColumnHeaders($element);
 		}
 	};
 
