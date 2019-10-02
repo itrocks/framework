@@ -33,6 +33,7 @@ $weight: 18px;
 .scrollbar {
 	--weight: #{$weight + ($border * 2)};
 	box-sizing: border-box;
+	display: none;
 	height: 100%;
 	width: 100%;
 	position: relative;

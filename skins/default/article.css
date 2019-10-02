@@ -61,7 +61,8 @@ article {
     grid-area: footer; }
   article > form > ul.data, article > ul.data {
     border-bottom: 1px solid #ccc;
-    border-top: 1px solid #ccc; }
+    border-top: 1px solid #ccc;
+    overflow: auto; }
 
 article:not(.list) {
   background-color: white; }
