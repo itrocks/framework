@@ -111,6 +111,9 @@ abstract class Identifier_Map extends Data_Link
 	 */
 	public function is($object1, $object2, $strict = false)
 	{
+		if (!isset($object1) && !isset($object2)) {
+			return true;
+		}
 		$result = $this->getObjectIdentifier($object1)
 			&& (
 				strval($this->getObjectIdentifier($object1, $strict ? null : 'id'))
