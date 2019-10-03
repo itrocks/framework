@@ -199,26 +199,24 @@ article.user.login form.error {
 
 body.password.reset,
 body.user.login {
+	grid-template-areas: "title main side" "menu main side";
+	grid-template-rows: 64px 1fr;
 
-	> .main {
-		background: #efefef;
-
-		> .favorites,
-		> .notifications {
-			display: none;
-		}
-	}
-
-	> .menu {
-		border-right: none;
+	> .company.logo {
+		border: none;
 
 		&:after {
 			display: none;
 		}
+	}
 
-		> .company.logo {
-			border-bottom: none;
-		}
+	> #favorites,
+	> #notifications {
+		display: none;
+	}
+
+	> #menu {
+		border-right: none;
 	}
 
 }

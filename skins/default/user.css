@@ -149,20 +149,21 @@ article.user.login form.error li.password label {
   color: red;
   font-weight: 500; }
 
-body.password.reset > .main,
-body.user.login > .main {
-  background: #efefef; }
-  body.password.reset > .main > .favorites,
-  body.password.reset > .main > .notifications,
-  body.user.login > .main > .favorites,
-  body.user.login > .main > .notifications {
+body.password.reset,
+body.user.login {
+  grid-template-areas: "title main side" "menu main side";
+  grid-template-rows: 64px 1fr; }
+  body.password.reset > .company.logo,
+  body.user.login > .company.logo {
+    border: none; }
+    body.password.reset > .company.logo:after,
+    body.user.login > .company.logo:after {
+      display: none; }
+  body.password.reset > #favorites,
+  body.password.reset > #notifications,
+  body.user.login > #favorites,
+  body.user.login > #notifications {
     display: none; }
-body.password.reset > .menu,
-body.user.login > .menu {
-  border-right: none; }
-  body.password.reset > .menu:after,
-  body.user.login > .menu:after {
-    display: none; }
-  body.password.reset > .menu > .company.logo,
-  body.user.login > .menu > .company.logo {
-    border-bottom: none; }
+  body.password.reset > #menu,
+  body.user.login > #menu {
+    border-right: none; }
