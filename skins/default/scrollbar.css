@@ -11,6 +11,10 @@
     border-right-width: 8px; }
   .scrollbar .bar {
     background: #999; }
+    .scrollbar .bar.hover {
+      background: #666; }
+    .scrollbar .bar.moving {
+      background: #2a76c6; }
 
 .scrollbar {
   --weight: 20px;

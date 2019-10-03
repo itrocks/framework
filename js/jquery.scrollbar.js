@@ -29,7 +29,7 @@
 	//---------------------------------------------------------------------------------- createEvents
 	var createEvents = function($scrollbar)
 	{
-		return $scrollbar.mousedown(mouseDown)
+		return $scrollbar.mousedown(mouseDown).mouseout(mouseOutStyle).mousemove(mouseMoveStyle);
 	};
 
 	//------------------------------------------------------------------------------------------ draw
@@ -417,7 +417,10 @@
 			return;
 		}
 		var $scrollbar = $(this);
+		var $bar       = $scrollbar.find('.bar');
+		$bar.addClass('moving');
 		if (mouseClickMove(event, $scrollbar)) {
+			setTimeout(function() { $bar.removeClass('moving'); }, 100);
 			return;
 		}
 		moving = {
@@ -443,6 +446,45 @@
 		draw(moving.$element);
 	};
 
+	//-------------------------------------------------------------------------------- mouseMoveStyle
+	/**
+	 * @param event object
+	 */
+	var mouseMoveStyle = function(event)
+	{
+		var $scrollbar = $(this);
+		var $bar       = $scrollbar.find('.bar');
+		var mouse, start, stop;
+		if ($scrollbar.is('.horizontal')) {
+			mouse = event.pageX;
+			start = $bar.offset().left;
+			stop  = start + $bar.width() - 1;
+		}
+		else {
+			mouse = event.pageY;
+			start = $bar.offset().top;
+			stop  = start + $bar.height() - 1;
+		}
+		if ((mouse < start) || (mouse > stop)) {
+			mouseOutStyle.call($scrollbar, event);
+			return;
+		}
+		if (moving) {
+			return;
+		}
+		$bar.addClass('hover');
+	};
+
+	//--------------------------------------------------------------------------------- mouseOutStyle
+	var mouseOutStyle = function()
+	{
+		var $scrollbar = $(this);
+		if (moving) {
+			return;
+		}
+		$scrollbar.find('.bar').removeClass('hover');
+	};
+
 	//--------------------------------------------------------------------------------------- mouseUp
 	var mouseUp = function()
 	{
@@ -450,6 +492,7 @@
 			return;
 		}
 		$(document).off('mousemove', mouseMove).off('mouseup', mouseUp);
+		moving.$scrollbar.find('.bar').removeClass('moving');
 		moving = null;
 	};
 
