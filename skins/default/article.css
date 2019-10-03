@@ -67,17 +67,22 @@ article {
 article:not(.list) {
   background-color: white; }
 
-article, article > form {
+article,
+article > form {
   display: grid;
   grid-template-areas: "header" "content" "footer";
   grid-template-rows: auto 1fr auto;
   height: 100%; }
-  article > header, article > form > header {
+  article > header,
+  article > form > header {
     grid-area: header; }
-  article > .data, article > table, article > form > .data, article > form > table {
+  article > .data, article > table,
+  article > form > .data,
+  article > form > table {
     display: block;
     grid-area: content; }
-  article > .actions, article > form > .actions {
+  article > .actions,
+  article > form > .actions {
     grid-area: footer; }
 
 article > form {

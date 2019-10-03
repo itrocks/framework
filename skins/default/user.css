@@ -1,6 +1,7 @@
 article.password.reset,
 article.user.login {
   background: #efefef;
+  display: block;
   text-align: center; }
   article.password.reset > h2,
   article.user.login > h2 {

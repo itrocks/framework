@@ -94,7 +94,8 @@ article:not(.list) {
 
 //------------------------------------------------------------------------------------------ Layout
 
-article, article > form {
+article,
+article > form {
 	display: grid;
 	grid-template-areas: "header" "content" "footer";
 	grid-template-rows: auto 1fr auto;
