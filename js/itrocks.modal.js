@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 
 	//----------------------------------------------------------------------- #modal .actions a click
-	$('body').build('call', '#modal .actions', function(event)
+	$('body').build('call', '#modal .actions', function()
 	{
 		var $actions = $(this);
 
