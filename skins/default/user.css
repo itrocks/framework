@@ -14,6 +14,7 @@ article.user.login {
   article.password.reset > form,
   article.user.login > form {
     display: inline-block;
+    overflow: initial;
     padding-top: 82px;
     position: relative;
     width: 256px; }
