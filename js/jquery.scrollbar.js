@@ -38,6 +38,9 @@
 		if (drawBar(scrollbar, 'horizontal', 'left', 'width') && scrollbar.is_table) {
 			drawFixedColumnHeaders($element);
 		}
+		if (scrollbar.settings.draw) {
+			scrollbar.settings.draw.call($element);
+		}
 	};
 
 	//--------------------------------------------------------------------------------------- drawBar
@@ -405,6 +408,10 @@
 			drawFixedColumnHeaders($element);
 		}
 
+		if (scrollbar.settings.draw) {
+			scrollbar.settings.draw.call($element);
+		}
+
 		return true;
 	};
 
@@ -585,6 +592,7 @@
 	{
 		settings = $.extend({
 			arrows:                  false,  // false, true
+			draw:                    null,   // event called after redraw
 			direction:               'both', // both, horizontal, vertical
 			fixed_columns:           '.fix', // jQuery selector for fixed columns
 			vertical_scrollbar_near: 'both'  // both, foot, head

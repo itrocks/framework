@@ -47,10 +47,31 @@ $(document).ready(function()
 	$body.build('each', 'article.list', responsiveList);
 
 	//----------------------------------------------------------------------- article.list form table
-	//$body.build('call', 'article.list > form > table', $.fn.fixedHeaders);
-	$body.build(
-		'call', 'article.list > form > table', $.fn.scrollBar, { vertical_scrollbar_near: 'foot' }
-	);
+	$body.build('each', 'article.list > form > table', function()
+	{
+		var $table = $(this);
+		var onDraw = function()
+		{
+			var $element    = $(this);
+			var $body       = $element.find('tbody');
+			var $trailing   = $body.find('.trailing');
+			var was_visible = $trailing.is(':visible');
+			var is_visible  = !$element.find('.horizontal.scrollbar').is(':visible');
+			if (is_visible) {
+				if (!was_visible) {
+					$trailing.show();
+				}
+			}
+			else if (was_visible) {
+				$trailing.hide();
+			}
+		};
+		$table.scrollBar({ draw: onDraw, vertical_scrollbar_near: 'foot' });
+
+		var $trailing = $table.find('> thead > tr > :last-child');
+		$trailing.css({ 'min-width': $trailing.width().toString() + 'px', 'width': '100%' });
+		$table.find('> tbody > tr > :last-child').after($('<td class="trailing" style="width: 100%">'));
+	});
 
 	//--------------------------------------------------------------------------------- window.resize
 	/**

@@ -36,7 +36,7 @@ article.list > form > table > thead {
 				}
 
 				&.column_select {
-					background: #efefef url('img/add-column-16.svg') center no-repeat;
+					background: #efefef url('img/add-column-16.svg') right 3px center no-repeat;
 					z-index: calc(var(--z-index) + 1);
 
 					> a {
