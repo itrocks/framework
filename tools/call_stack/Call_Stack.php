@@ -338,6 +338,16 @@ class Call_Stack
 			);
 	}
 
+	//------------------------------------------------------------------------------------------- pop
+	/**
+	 * @return $this
+	 */
+	public function pop()
+	{
+		array_shift($this->stack);
+		return $this;
+	}
+
 	//------------------------------------------------------------------------------- searchFunctions
 	/**
 	 * Returns true if the call stack contains any of the given functions
