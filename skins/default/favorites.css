@@ -37,7 +37,7 @@
       background: var(--dark-color);
       color: white;
       margin-bottom: -1px;
-      z-index: calc(var(--z-index) + 1); }
+      z-index: 1; }
     #favorites > li.recent {
       background: #efefef; }
 

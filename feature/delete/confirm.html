@@ -10,13 +10,16 @@
 </head>
 <body>
 <!--BEGIN-->
+<!--target #modal-->
 
 	<article class="delete message">
 		<header>
 			<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
 		</header>
-		<p class="question">|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?</p>
-		<p class="warning">|All data will be lost|.</p>
+		<div>
+			<p class="question">|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?</p>
+			<p class="warning">|All data will be lost|.</p>
+		</div>
 		<ul class="actions">
 			<li class="delete">
 				<a data-post="{?data_post}" href="app://(delete_link)" target="#responses">|Delete|</a>
@@ -27,6 +30,7 @@
 		</ul>
 	</article>
 
+<!--end-->
 <!--END-->
 </body>
 </html>

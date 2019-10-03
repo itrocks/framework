@@ -1,8 +1,7 @@
 article.list > form > table > thead {
   background: #efefef; }
   article.list > form > table > thead > tr > :first-child {
-    background: #efefef;
-    z-index: calc(var(--z-index) + 1); }
+    background: #efefef; }
   article.list > form > table > thead > tr.title > th {
     color: #333;
     position: relative;
@@ -19,8 +18,7 @@ article.list > form > table > thead {
       padding: 10px .75em 0 .5em;
       text-align: left; }
     article.list > form > table > thead > tr.title > th.column_select {
-      background: #efefef url("img/add-column-16.svg") right 3px center no-repeat;
-      z-index: calc(var(--z-index) + 1); }
+      background: #efefef url("img/add-column-16.svg") right 3px center no-repeat; }
       article.list > form > table > thead > tr.title > th.column_select > a {
         font-size: 0;
         min-width: 20px; }

@@ -1,0 +1,47 @@
+#modal {
+	background-color: rgba(0, 0, 0, .5);
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	top: 0;
+	z-index: 999999;
+
+	&:empty {
+		display: none;
+	}
+
+	> article {
+		--light-color: white;
+		border: 1px solid #d6d6d6;
+		border-radius: 3px;
+		left: calc(50% - 150px);
+		position: absolute;
+		right: 100px;
+		top: calc(50% - 75px);
+		height: 150px;
+		width: 300px;
+
+		> .actions {
+			background: var(--light-color);
+			border-top: 1px solid #eaeaea;
+			text-align: center;
+
+			> li {
+				flex: 100%;
+			}
+		}
+
+		> div {
+
+			> p {
+				padding: 10px;
+			}
+		}
+
+		> header {
+			border: none;
+			border-bottom: 1px solid #eaeaea;
+		}
+	}
+}
