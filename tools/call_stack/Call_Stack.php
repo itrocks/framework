@@ -340,7 +340,7 @@ class Call_Stack
 
 	//------------------------------------------------------------------------------------------- pop
 	/**
-	 * @return $this
+	 * @return static
 	 */
 	public function pop()
 	{
