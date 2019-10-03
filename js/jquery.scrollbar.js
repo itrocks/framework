@@ -16,14 +16,20 @@
 			? $('<div class="scrollbar angle"/>').appendTo($element)
 			: null;
 		scrollbar.$horizontal = (['both', 'horizontal'].indexOf(direction) > -1)
-			? scrollBar('horizontal', arrows).appendTo($element).mousedown(mouseDown)
+			? createEvents(scrollBar('horizontal', arrows).appendTo($element))
 			: null;
 		scrollbar.$vertical = (['both', 'vertical'].indexOf(direction) > -1)
-			? scrollBar('vertical', arrows).appendTo($element).mousedown(mouseDown)
+			? createEvents(scrollBar('vertical', arrows).appendTo($element))
 			: null;
 		scrollbar.$scrollbars = (direction === 'both')
 			? scrollbar.$horizontal.add(scrollbar.$vertical)
 			: ((direction === 'horizontal') ? scrollbar.$horizontal : scrollbar.$vertical);
+	};
+
+	//---------------------------------------------------------------------------------- createEvents
+	var createEvents = function($scrollbar)
+	{
+		return $scrollbar.mousedown(mouseDown)
 	};
 
 	//------------------------------------------------------------------------------------------ draw
@@ -361,12 +367,10 @@
 	 */
 	var mouseClickMove = function(event, $scrollbar)
 	{
-		var $element = $scrollbar.parent();
-		var $bar     = $scrollbar.find('.bar');
-		var offset    = $bar.offset();
+		var $element  = $scrollbar.parent();
 		var scrollbar = $element.data('scrollbar');
 
-		var direction, fixed_columns_size, mouse_position, position, size;
+		var direction,  fixed_columns_size, mouse_position, position, size;
 		if ($scrollbar.is('.horizontal')) {
 			direction          = 'horizontal';
 			fixed_columns_size = fixedColumnsWidth(scrollbar.columns);
@@ -382,35 +386,23 @@
 			size               = 'height';
 		}
 
+		var $bar     = $scrollbar.find('.bar');
 		var bar_size = $bar[size].call($bar);
+		var offset   = $bar.offset();
 		var start    = offset[position];
 		var stop     = start + bar_size - 1;
 		if ((mouse_position >= start) && (mouse_position <= stop)) {
 			return false;
 		}
 
-		var $body            = scrollbar.$body;
-		var $content         = scrollbar.$content;
-		var body_position    = $body[0]['scroll' + position.ucfirst()];
-		var body_scroll_size = $body[0]['scroll' + size.ucfirst()];
-		var body_size        = $body[size].call($body);
-		var body_move        = body_size - fixed_columns_size;
-		var scrollPosition   = $body['scroll' + position.ucfirst()];
+		var $body     = scrollbar.$body;
+		var body_size = $body[size].call($body);
+		var body_move = body_size - fixed_columns_size;
 
-		body_position  = (mouse_position < start)
-			? Math.max(body_position - body_move, 0)
-			: Math.min(body_position + body_move, body_scroll_size - body_size);
-		var bar_left = Math.round(body_position * bar_size / body_size);
-		scrollPosition.call($content, body_position);
-		$bar.css(position, bar_left.toString() + 'px');
-
-		if (scrollbar.is_table && (direction === 'horizontal')) {
-			drawFixedColumnHeaders($element);
+		if (mouse_position < start) {
+			body_move = -body_move;
 		}
-
-		if (scrollbar.settings.draw) {
-			scrollbar.settings.draw.call($element);
-		}
+		scroll($element, direction, body_move);
 
 		return true;
 	};
@@ -461,6 +453,32 @@
 		moving = null;
 	};
 
+	//------------------------------------------------------------------------------------ mouseWheel
+	var mouseWheel = function(event)
+	{
+		var $element = $(this);
+		// noinspection JSUnresolvedVariable deltaFactor exists
+		var until = Math.abs(event.deltaFactor * (event.deltaY ? event.deltaY : event.deltaX));
+		var speed = Math.round(until / 12);
+		event.deltaX /= -Math.abs(event.deltaX);
+		event.deltaY /= -Math.abs(event.deltaY);
+		var animate  = function()
+		{
+			speed = Math.min(speed, until);
+			if (event.deltaX) {
+				scroll($element, 'horizontal', speed * event.deltaX);
+			}
+			if (event.deltaY) {
+				scroll($element, 'vertical', speed * event.deltaY);
+			}
+			until -= speed;
+			if (until > 0) {
+				setTimeout(animate, 10);
+			}
+		};
+		animate();
+	};
+
 	//---------------------------------------------------------------------------------------- remove
 	var remove = function()
 	{
@@ -479,6 +497,53 @@
 	{
 		for(var index in elements) if (elements.hasOwnProperty(index)) {
 			draw(elements[index]);
+		}
+	};
+
+	//---------------------------------------------------------------------------------------- scroll
+	/**
+	 * Scroll content
+	 *
+	 * @param $element  jQuery
+	 * @param direction string @values horizontal, vertical
+	 * @param distance  integer
+	 */
+	var scroll = function($element, direction, distance)
+	{
+		var position, size;
+		if (direction === 'horizontal') {
+			position = 'left';
+			size     = 'width';
+		}
+		else {
+			position = 'top';
+			size     = 'height';
+		}
+
+		var scrollbar        = $element.data('scrollbar');
+		var $scrollbar       = scrollbar['$' + direction];
+		var $bar             = $scrollbar.find('.bar');
+		var $body            = scrollbar.$body;
+		var $content         = scrollbar.$content;
+		var bar_size         = $bar[size].call($bar);
+		var body_position    = $body[0]['scroll' + position.ucfirst()];
+		var body_size        = $body[size].call($body);
+		var body_scroll_size = $body[0]['scroll' + size.ucfirst()];
+		var scrollPosition   = $body['scroll' + position.ucfirst()];
+
+		body_position  = (distance < 0)
+			? Math.max(body_position + distance, 0)
+			: Math.min(body_position + distance, body_scroll_size - body_size);
+		var bar_left = Math.round(body_position * bar_size / body_size);
+		scrollPosition.call($content, body_position);
+		$bar.css(position, bar_left.toString() + 'px');
+
+		if (scrollbar.is_table && (direction === 'horizontal')) {
+			drawFixedColumnHeaders($element);
+		}
+
+		if (scrollbar.settings.draw) {
+			scrollbar.settings.draw.call($element);
 		}
 	};
 
@@ -622,7 +687,7 @@
 		scrollbar.initialized = true;
 
 		elements[scrollbar.identifier.toString()] = this;
-		this.on('remove', remove);
+		this.mousewheel(mouseWheel).on('remove', remove);
 
 		return this;
 	};
