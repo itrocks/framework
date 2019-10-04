@@ -619,7 +619,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'search_summary'                => $search_summary,
 				'selected'                      => 'selected',
 				'settings'                      => $list_settings,
-				'title'                         => $list_settings->title()
+				'title'                         => $list_settings->name ?: $list_settings->title()
 			]
 		);
 		// buttons
