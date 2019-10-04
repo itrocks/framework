@@ -10,6 +10,10 @@ article.list > form > table > thead {
 			background: #efefef;
 		}
 
+		> .hover {
+			background-color: #f5e6d1 !important;
+		}
+
 		&.title {
 
 			> th {
@@ -90,15 +94,22 @@ article.list > form > table > thead {
 			}
 
 			> td {
-				position: relative;
+				background: #f8f8f8;
+				padding: 0 1px;
 				vertical-align: top;
+
+				&:not(:last-child) {
+					box-shadow: inset 1px 0 #d8d8d8, inset 0 -1px #d8d8d8;
+				}
 
 				> input {
 					background: transparent;
 					border: none;
+					box-shadow: inset 0 0 1px 1px #fbfaf9;
 					display: block;
 					height: 12px;
-					padding: 10px .75em 10px .5em;
+					padding: 10px 5px;
+					width: calc(100% - 10px) !important;
 				}
 			}
 		}

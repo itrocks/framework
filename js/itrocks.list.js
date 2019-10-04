@@ -50,6 +50,52 @@ $(document).ready(function()
 	$body.build('each', 'article.list > form > table', function()
 	{
 		var $table = $(this);
+
+		// highlight column
+
+		var $children = $table.children('tbody, tfoot, thead');
+
+		$children.mousemove(function(event)
+		{
+			var hover_column    = 0;
+			var selected_column = 0;
+			var column          = 0;
+			var $columns        = $table.find('> thead > tr.search > *').slice(1, -1);
+			$columns.each(function() {
+				column ++;
+				var $td   = $(this);
+				if (!hover_column && $td.hasClass('hover')) {
+					hover_column = column;
+				}
+				if (!selected_column) {
+					var left  = $td.offset().left;
+					var right = left + $td.width() - 1;
+					if ((event.pageX >= left) && (event.pageX <= right)) {
+						selected_column = column;
+					}
+				}
+				if (hover_column && selected_column) {
+					return false;
+				}
+			});
+			if (hover_column !== selected_column) {
+				if (hover_column) {
+					$table.find('.hover').removeClass('hover');
+				}
+				if (selected_column) {
+					selected_column ++;
+					$table.find('tr > :nth-child(' + selected_column + ')').addClass('hover');
+				}
+			}
+		});
+
+		$children.mouseout(function()
+		{
+			$(this).parent().find('.hover').removeClass('hover');
+		});
+
+		// scrollbar trailing column for full-width row
+
 		var onDraw = function()
 		{
 			var $element    = $(this);
@@ -71,6 +117,7 @@ $(document).ready(function()
 		var $trailing = $table.find('> thead > tr > :last-child');
 		$trailing.css({ 'min-width': $trailing.width().toString() + 'px', 'width': '100%' });
 		$table.find('> tbody > tr > :last-child').after($('<td class="trailing" style="width: 100%">'));
+
 	});
 
 	//--------------------------------------------------------------------------------- window.resize

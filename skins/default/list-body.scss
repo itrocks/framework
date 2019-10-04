@@ -3,6 +3,15 @@
 
 article.list > form > table > tbody > tr {
 
+	&:nth-child(even) {
+		> td {
+			background: #f8f8f8;
+		}
+		> th {
+			background: #e8e8e8;
+		}
+	}
+
 	&:nth-child(odd) {
 		> td {
 			background: white;
@@ -12,12 +21,12 @@ article.list > form > table > tbody > tr {
 		}
 	}
 
-	&:nth-child(even) {
+	&:hover:nth-child(even):not(.selected){
 		> td {
-			background: #f8f8f8;
+			background: #f9f1e6;
 		}
-		> th {
-			background: #e8e8e8;
+		> th:not(:hover) {
+			background: #bbb;
 		}
 	}
 
@@ -30,13 +39,12 @@ article.list > form > table > tbody > tr {
 		}
 	}
 
-	&:hover:nth-child(even):not(.selected) {
-		> td {
-			background: #f9f1e6;
-		}
-		> th:not(:hover) {
-			background: #bbb;
-		}
+	&:nth-child(even):not(.selected) > .hover {
+		background: #f9f1e6;
+	}
+
+	&:nth-child(odd):not(.selected) > .hover {
+		background: #fcf7f1;
 	}
 
 	&.selected {

@@ -1,19 +1,23 @@
-article.list > form > table > tbody > tr:nth-child(odd) > td {
-  background: white; }
-article.list > form > table > tbody > tr:nth-child(odd) > th {
-  background: #efefef; }
 article.list > form > table > tbody > tr:nth-child(even) > td {
   background: #f8f8f8; }
 article.list > form > table > tbody > tr:nth-child(even) > th {
   background: #e8e8e8; }
-article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > td {
-  background: #fcf7f1; }
-article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > th:not(:hover) {
-  background: #ccc; }
+article.list > form > table > tbody > tr:nth-child(odd) > td {
+  background: white; }
+article.list > form > table > tbody > tr:nth-child(odd) > th {
+  background: #efefef; }
 article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > td {
   background: #f9f1e6; }
 article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > th:not(:hover) {
   background: #bbb; }
+article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > td {
+  background: #fcf7f1; }
+article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > th:not(:hover) {
+  background: #ccc; }
+article.list > form > table > tbody > tr:nth-child(even):not(.selected) > .hover {
+  background: #f9f1e6; }
+article.list > form > table > tbody > tr:nth-child(odd):not(.selected) > .hover {
+  background: #fcf7f1; }
 article.list > form > table > tbody > tr.selected > td {
   background: #a8e9f4; }
 article.list > form > table > tbody > tr.selected > th {
