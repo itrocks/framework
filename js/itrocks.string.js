@@ -34,6 +34,20 @@ if (!String.prototype.endsWith) {
 	};
 }
 
+//----------------------------------------------------------------------------------------- flexCmp
+/**
+ * Compare two strings without taking care of trailing spaces, case or accents
+ *
+ * @param text string
+ * @return number|integer -1, 0 or 1
+ */
+String.prototype.flexCmp = function(text)
+{
+	var text1 = this.simple();
+	var text2 = text.simple();
+	return (text1 === text2) ? 0 : ((text1 < text2) ? -1 : 1);
+};
+
 //-------------------------------------------------------------------------------------- lLastParse
 String.prototype.lLastParse = function(sep, cnt, complete_if_not)
 {
@@ -123,6 +137,18 @@ String.prototype.rParse = function(sep, cnt, complete_if_not)
 	}
 };
 
+//------------------------------------------------------------------------------------------ simple
+/**
+ * Calculates a simplified version of the text : trim, lowercase,
+ * replace accents with non-accentuated characters
+ *
+ * @return string
+ */
+String.prototype.simple = function()
+{
+	return this.trim().toLowerCase().withoutAccents();
+};
+
 //-------------------------------------------------------------------------------------- startsWith
 if (!String.prototype.startsWith) {
 	String.prototype.startsWith = function(search, position)
@@ -136,4 +162,38 @@ if (!String.prototype.startsWith) {
 String.prototype.ucfirst = function()
 {
 	return this.charAt(0).toUpperCase() + this.slice(1);
+};
+
+//---------------------------------------------------------------------------------- withoutAccents
+/**
+ * Replace accents by the closest char
+ *
+ * @return string
+ */
+String.prototype.withoutAccents = function()
+{
+	var str_simplify = {
+		'À': 'A', 'Á': 'A', 'Â': 'A', 'Ã': 'A', 'Ä': 'A', 'Å': 'A',
+		'Ç': 'C',
+		'È': 'E', 'É': 'E', 'Ê': 'E', 'Ë': 'E',
+		'Ì': 'I', 'Í': 'I', 'Î': 'I', 'Ï': 'I',
+		'Ò': 'O', 'Ó': 'O', 'Ô': 'O', 'Õ': 'O', 'Ö': 'O',
+		'Ù': 'U', 'Ú': 'U', 'Û': 'U', 'Ü': 'U',
+		'Ý': 'Y', 'Ÿ': 'Y',
+		'à': 'a', 'á': 'a', 'â': 'a', 'ã': 'a', 'ä': 'a', 'å': 'a',
+		'ç': 'c',
+		'è': 'e', 'é': 'e', 'ê': 'e', 'ë': 'e',
+		'ì': 'i', 'í': 'i', 'î': 'i', 'ï': 'i',
+		'ð': 'o', 'ò': 'o', 'ó': 'o', 'ô': 'o', 'õ': 'o', 'ö': 'o',
+		'ù': 'u', 'ú': 'u', 'û': 'u', 'ü': 'u',
+		'ý': 'y', 'ÿ': 'y',
+		'&': 'and'
+	};
+	var length = this.length;
+	var result = '';
+	for (var i = 0; i < length; i++) {
+		var char = str_simplify[this[i]];
+		result += (char === undefined) ? this[i] : char;
+	}
+	return result;
 };
