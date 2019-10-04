@@ -170,7 +170,9 @@ class Controller implements Default_Feature_Controller
 	{
 		$this->objects = $parameters->getSelectedObjects($form);
 		if (!$this->objects) {
-			return Loc::tr('You must select at least one element');
+			return '<!--target #query--><li>'
+				. Loc::tr('You must select at least one element')
+				. '</li><!--end-->';
 		}
 		return $parameters->has(static::CONFIRM, true)
 			? $this->delete($parameters,  $form, $files, $class_name)

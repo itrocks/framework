@@ -244,8 +244,12 @@
 				// auto empty
 				if (settings.auto_empty !== undefined) {
 					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
-						if ($target.filter(key).length || $(target).is(key)) {
-							$(settings.auto_empty[key]).empty();
+						var empty_target = settings.auto_empty[key];
+						if (
+							($target.filter(key).length || $(target).is(key))
+							&& !$target.filter(empty_target).length
+						) {
+							$(empty_target).empty();
 						}
 					}
 				}

@@ -12,7 +12,7 @@ $(document).ready(function()
 
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
-			auto_empty:      {'main': 'ul#responses'},
+			auto_empty:      {'main': '#query, #responses', '#modal': 'ul#query', '#responses': '#query'},
 			draggable_blank: 'header',
 			history: {
 				condition:        'h2',
