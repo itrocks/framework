@@ -4,7 +4,6 @@ article.list > form > table > thead {
     background: #efefef; }
   article.list > form > table > thead > tr.title > th {
     color: #333;
-    position: relative;
     font-weight: 500; }
     article.list > form > table > thead > tr.title > th > a {
       box-sizing: border-box;
