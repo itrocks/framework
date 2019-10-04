@@ -44,7 +44,7 @@ body {
 		"title notifications side"
 		"menu  favorites     side"
 		"menu  main          side";
-	grid-template-columns: auto 1fr auto;
+	grid-template-columns: min-content 1fr min-content;
 	grid-template-rows: 64px auto 1fr;
 	height: 100vh;
 	overflow: hidden;

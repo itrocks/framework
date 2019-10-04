@@ -12,7 +12,7 @@
 <!--BEGIN-->
 
 	<!--use ITRocks\Framework\Html\Engine-->
-	<article class="{@class.short.lower} list" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
+	<article class="form {@class.short.lower} list" data-class="{@class}" data-feature="{@feature}" id="{settings.setting.code}.{settings.setting.id}">
 		<form action="app://(@class.path)/(@feature)" autocomplete="off" method="post" target="#main">
 			{/feature/list_/header.html}
 			<table class="list">

@@ -190,7 +190,7 @@
 			}
 		}
 		$element.css({
-			'grid-template':         Q + template.join(Q + SP + Q) + Q,
+			'grid-template-areas':   Q + template.join(Q + SP + Q) + Q,
 			'grid-template-columns': columns.join(SP),
 			'grid-template-rows':    rows.join(SP)
 		});

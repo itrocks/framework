@@ -94,12 +94,17 @@ article:not(.list) {
 
 //------------------------------------------------------------------------------------------ Layout
 
-article,
+main > article,
+article > form {
+	height: 100%;
+}
+
+article:not(.form),
 article > form {
 	display: grid;
 	grid-template-areas: "header" "content" "footer";
-	grid-template-rows: auto 1fr auto;
-	height: 100%;
+	grid-template-rows: min-content 1fr min-content;
+	overflow: hidden;
 
 	> header {
 		grid-area: header;
@@ -113,9 +118,4 @@ article > form {
 	> .actions {
 		grid-area: footer;
 	}
-}
-
-article > form {
-	grid-area: content;
-	overflow: hidden;
 }

@@ -67,24 +67,24 @@ article {
 article:not(.list) {
   background-color: white; }
 
-article,
+main > article,
+article > form {
+  height: 100%; }
+
+article:not(.form),
 article > form {
   display: grid;
   grid-template-areas: "header" "content" "footer";
-  grid-template-rows: auto 1fr auto;
-  height: 100%; }
-  article > header,
+  grid-template-rows: min-content 1fr min-content;
+  overflow: hidden; }
+  article:not(.form) > header,
   article > form > header {
     grid-area: header; }
-  article > .data, article > table,
+  article:not(.form) > .data, article:not(.form) > table,
   article > form > .data,
   article > form > table {
     display: block;
     grid-area: content; }
-  article > .actions,
+  article:not(.form) > .actions,
   article > form > .actions {
     grid-area: footer; }
-
-article > form {
-  grid-area: content;
-  overflow: hidden; }

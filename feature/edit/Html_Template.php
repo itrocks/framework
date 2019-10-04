@@ -269,6 +269,15 @@ class Html_Template extends Template
 		$position = 0;
 		while (($outside_i = $parser->tagPos('article', $position)) !== false) {
 			$inside_i = strpos($content, '>', $outside_i) + 1;
+
+			$article_class_i = strpos($content, 'class=', $outside_i);
+			if ($article_class_i && ($article_class_i < $inside_i)) {
+				$article_class_i += 7;
+				$content = substr($content, 0, $article_class_i) . 'form' . SP
+					. substr($content, $article_class_i);
+				$inside_i += 5;
+			}
+
 			$inside   = substr($content, $outside_i, $inside_i - $outside_i);
 			$position = $outside_i + 1;
 			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
@@ -293,6 +302,7 @@ class Html_Template extends Template
 					$parser->buffer = $content;
 				}
 			}
+
 		}
 		return $content;
 	}
