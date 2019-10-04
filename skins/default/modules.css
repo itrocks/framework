@@ -2,6 +2,11 @@ article[data-class^='ITRocks\\Framework\\'] {
   --dark-color: #a3a3a3;
   --light-color: #d3d3d3; }
 
+body.min-left > nav#menu > ul > li.administration > h3 > a {
+  background: url("img/administration-24.svg") 10px center no-repeat; }
+body.min-left > nav#menu > ul > li.administration > h3:focus > a, body.min-left > nav#menu > ul > li.administration > h3:hover > a, body.min-left > nav#menu > ul > li.administration > h3.selected > a {
+  background: url("img/administration-24-hilight.svg") 10px center no-repeat; }
+
 nav#menu > ul > li.administration {
   --dark-color: #a3a3a3;
   --light-color: #d3d3d3; }

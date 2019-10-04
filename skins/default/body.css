@@ -1,6 +1,7 @@
 body {
   --dark-color: #d8d8d8;
   --light-color: #efefef;
+  --transition-duration: 50ms;
   background: white;
   color: #444;
   font-family: Roboto, sans-serif;
@@ -27,10 +28,11 @@ body {
   --z-index: 0;
   display: grid;
   grid-template-areas: "title notifications side" "menu  favorites     side" "menu  main          side";
-  grid-template-columns: min-content 1fr min-content;
+  grid-template-columns: 200px 1fr min-content;
   grid-template-rows: 64px auto 1fr;
   height: 100vh;
-  overflow: hidden; }
+  overflow: hidden;
+  transition-duration: var(--transition-duration); }
   body > .company.logo {
     grid-area: title; }
     body > .company.logo > a {
@@ -54,3 +56,5 @@ body {
     grid-area: side; }
   body > .trashcan {
     display: none; }
+  body.min-left {
+    grid-template-columns: 44px 1fr min-content; }

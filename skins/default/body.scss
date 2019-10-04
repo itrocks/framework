@@ -6,6 +6,7 @@
 body {
 	--dark-color: #d8d8d8;
 	--light-color: #efefef;
+	--transition-duration: 50ms;
 	background: $background;
 	color: $color;
 	font-family: Roboto, sans-serif;
@@ -44,10 +45,11 @@ body {
 		"title notifications side"
 		"menu  favorites     side"
 		"menu  main          side";
-	grid-template-columns: min-content 1fr min-content;
+	grid-template-columns: 200px 1fr min-content;
 	grid-template-rows: 64px auto 1fr;
 	height: 100vh;
 	overflow: hidden;
+	transition-duration: var(--transition-duration);
 
 	> .company.logo {
 		grid-area: title;
@@ -90,5 +92,9 @@ body {
 
 	> .trashcan {
 		display: none;
+	}
+
+	&.min-left {
+		grid-template-columns: 44px 1fr min-content;
 	}
 }

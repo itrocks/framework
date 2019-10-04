@@ -7,6 +7,18 @@
 		--light-color: $color2;
 	}
 
+	body.min-left > nav#menu > ul > li.#{$module} > h3 {
+		> a {
+			background: url('img/#{$image}-24.svg') 10px center no-repeat;
+		}
+
+		&:focus, &:hover, &.selected {
+			> a {
+				background: url('img/#{$image}-24-hilight.svg') 10px center no-repeat;
+			}
+		}
+	}
+
 	nav#menu > ul > li.#{$module} {
 		--dark-color: $color1;
 		--light-color: $color2;

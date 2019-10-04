@@ -1,5 +1,10 @@
 .company.logo {
-  background: url("img/b-appli.svg") 12px center no-repeat;
-  min-width: 200px; }
+  background: url("img/b-appli.svg") 12px 16px no-repeat;
+  background-size: auto 32px;
+  transition-duration: var(--transition-duration); }
   .company.logo > a {
     font-size: 0; }
+
+body.min-left .company.logo {
+  background: url("img/b-appli-min.svg") 10px 20px no-repeat;
+  background-size: auto 24px; }

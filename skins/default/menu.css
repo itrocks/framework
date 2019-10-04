@@ -12,6 +12,7 @@ nav#menu {
       background: url("img/menu-24.svg") center no-repeat;
       font-size: 0;
       height: 64px;
+      transition-duration: var(--transition-duration);
       width: 44px; }
     nav#menu > .actions > .filter {
       width: 100%; }
@@ -52,3 +53,10 @@ nav#menu {
       vertical-align: middle; }
       nav#menu > ul > li > ul > li > a:focus, nav#menu > ul > li > ul > li > a:hover, nav#menu > ul > li > ul > li > a .selected {
         background: var(--light-color); }
+
+body.min-left > nav#menu > .actions > .minimize {
+  transform: rotate(90deg); }
+body.min-left > nav#menu h3 > a {
+  font-size: 0; }
+body.min-left > nav#menu li > ul {
+  display: none; }

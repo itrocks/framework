@@ -20,6 +20,7 @@ nav#menu {
 			background: url('img/menu-24.svg') center no-repeat;
 			font-size: 0;
 			height: 64px;
+			transition-duration: var(--transition-duration);
 			width: 44px;
 		}
 
@@ -88,6 +89,24 @@ nav#menu {
 					}
 				}
 			}
+		}
+	}
+}
+
+body.min-left {
+
+	> nav#menu {
+
+		> .actions > .minimize {
+			transform: rotate(90deg);
+		}
+
+		h3 > a {
+			font-size: 0;
+		}
+
+		li > ul {
+			display: none;
 		}
 	}
 }

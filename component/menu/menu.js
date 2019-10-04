@@ -1,7 +1,15 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
-	$('body').build('click', ['nav#menu ul > li', '> a, > h3 > a'], function()
+	$body.build('click', '#menu .minimize',function()
+	{
+		var $body = $('body');
+		$body.hasClass('min-left') ? $body.removeClass('min-left') : $body.addClass('min-left');
+		$(this).blur();
+	});
+
+	$body.build('click', ['#menu ul > li', '> a, > h3 > a'], function()
 	{
 		var $anchor = $(this);
 		var $nav    = $anchor.closest('nav');
