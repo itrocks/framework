@@ -54,6 +54,8 @@ nav#menu {
       nav#menu > ul > li > ul > li > a:focus, nav#menu > ul > li > ul > li > a:hover, nav#menu > ul > li > ul > li > a .selected {
         background: var(--light-color); }
 
+body.min-left > nav#menu > .actions > .filter {
+  display: none; }
 body.min-left > nav#menu > .actions > .minimize {
   transform: rotate(90deg); }
 body.min-left > nav#menu h3 > a {

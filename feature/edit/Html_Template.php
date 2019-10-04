@@ -265,8 +265,9 @@ class Html_Template extends Template
 	 */
 	protected function replaceEditWindowsByForm($content)
 	{
-		$parser   = new Parser($content);
-		$position = 0;
+		$parser         = new Parser();
+		$parser->buffer =& $content;
+		$position       = 0;
 		while (($outside_i = $parser->tagPos('article', $position)) !== false) {
 			$inside_i = strpos($content, '>', $outside_i) + 1;
 

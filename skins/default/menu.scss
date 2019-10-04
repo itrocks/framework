@@ -97,8 +97,15 @@ body.min-left {
 
 	> nav#menu {
 
-		> .actions > .minimize {
-			transform: rotate(90deg);
+		> .actions {
+
+			> .filter {
+				display: none;
+			}
+
+			> .minimize {
+				transform: rotate(90deg);
+			}
 		}
 
 		h3 > a {
