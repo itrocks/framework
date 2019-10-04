@@ -1,32 +1,54 @@
 @import 'colors.scss';
 
-ul.custom.select {
-	background: white;
-	border: solid #d0d0d0;
-	border-width: 1px 2px 2px 1px;
-	box-shadow: 5px 0 5px -3px rgba(216, 216, 216, .4),
-		0 5px 5px -3px rgba(216, 216, 216, .4);
-	display: none;
-	left: -1px;
-	position: absolute;
-	z-index: calc(var(--z-index) + 2);
+article header {
+	font-size: 0;
 
-	> li {
-		display: block;
+	> * {
+		font-size: $font-size;
+	}
 
-		> a {
-			display: block;
-			padding: 10px;
+	> .breadcrumb {
+		vertical-align: top;
+	}
 
-			&:hover {
-				background: var(--light-color);
-			}
-		}
+	> h2.editing {
+		padding: 0;
 
-		&.default {
-			font-weight: $medium;
+		> input {
+			left: 4px;
+			position: relative;
 		}
 	}
+
+	ul.custom.select {
+		background: white;
+		border: solid #d0d0d0;
+		border-width: 1px 2px 2px 1px;
+		box-shadow: 5px 0 5px -3px rgba(216, 216, 216, .4),
+		0 5px 5px -3px rgba(216, 216, 216, .4);
+		display: none;
+		left: -1px;
+		position: absolute;
+		z-index: calc(var(--z-index) + 2);
+
+		> li {
+			display: block;
+
+			> a {
+				display: block;
+				padding: 10px;
+
+				&:hover {
+					background: var(--light-color);
+				}
+			}
+
+			&.default {
+				font-weight: $medium;
+			}
+		}
+	}
+
 }
 
 .custom.helper.select {

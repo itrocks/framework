@@ -31,17 +31,10 @@ article {
 			display: inline-block;
 			font-weight: $medium;
 			height: 32px;
+			padding: 10px 3px 0;
 
 			&:first-letter {
 				text-transform: uppercase;
-			}
-
-			&:not(.editing) {
-				padding: 10px 3px 0;
-			}
-
-			> input {
-				position: absolute;
 			}
 		}
 
