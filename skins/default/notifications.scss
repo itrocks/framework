@@ -6,6 +6,7 @@
 
 	> #query,
 	> #responses {
+		font-size: 11px;
 		margin: 10px 0;
 		overflow: hidden auto;
 		padding: 0 10px 0 52px;
@@ -13,7 +14,6 @@
 		> li {
 			border-radius: 2px;
 			display: block;
-			font-size: 11px;
 			line-height: 1.5em;
 			padding: 3px 8px;
 
@@ -26,10 +26,23 @@
 				margin-left: 1em;
 			}
 		}
+
+		&:empty:after {
+			color: #7c7c7c;
+			content: attr(data-empty);
+			display: block;
+			position: relative;
+			top: calc(50% - #{$font-size / 2});
+			text-align: center;
+		}
 	}
 
 	> #query {
 		box-shadow: inset -1px 0 #d8d8d8;
+
+		&:empty {
+			background: url('img/warning-32-inactive.svg') 10px top no-repeat;
+		}
 
 		&:not(:empty) {
 			background: url('img/warning-32.svg') 10px top no-repeat;
@@ -42,6 +55,10 @@
 
 	> #responses {
 		box-shadow: inset 1px 0 #d8d8d8;
+
+		&:empty {
+			background: url('img/information-32-inactive.svg') 10px top no-repeat;
+		}
 
 		&:not(:empty) {
 			background: url('img/information-32.svg') 10px top no-repeat;
