@@ -2,11 +2,43 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
+	//--------------------------------------------------------------------------------- #menu animate
+	var ignore = false;
+
+	var animate = function(expand)
+	{
+		var $body   = $('body');
+		var $button = $(this);
+		var random  = Math.random().toString(36).substr(2, 9);
+		var side    = (($body.hasClass('min-left') === expand) ? 'expand' : 'reduce');
+		var image   = 'url(' + Q
+			+ app.project_uri + '/itrocks/framework/skins/default/img/menu-24-' + side + '.svg'
+			+ '?' + random
+			+ Q + ')';
+		$button.css('background-image', image);
+	};
+
+	$body.build('call', '#menu .minimize', function()
+	{
+		var $button = $(this);
+
+		$button.mouseenter(function()
+		{
+			ignore ? (ignore = false) : animate.call(this, true);
+		});
+
+		$button.mouseout(function()
+		{
+			ignore ? (ignore = false) : animate.call(this, false);
+		});
+	});
+
 	//------------------------------------------------------------------------------- #menu .minimize
 	$body.build('click', '#menu .minimize',function()
 	{
-		var $body  = $('body');
-		var $input = $(this).parent().find('input');
+		var $button = $(this);
+		var $body   = $('body');
+		var $input  = $button.parent().find('input');
 		if ($body.hasClass('min-left')) {
 			$body.removeClass('min-left');
 			$input.keyup().focus();
@@ -14,8 +46,9 @@ $(document).ready(function()
 		else {
 			$body.addClass('min-left');
 			$input.keyup();
-			$(this).blur();
+			$button.blur();
 		}
+		$button.mouseenter();
 	});
 
 	//------------------------------------------------------------------------------- #menu .selected

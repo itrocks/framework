@@ -12,7 +12,6 @@ nav#menu {
       background: url("img/menu-24.svg") center no-repeat;
       font-size: 0;
       height: 64px;
-      transition-duration: var(--transition-duration);
       width: 44px; }
     nav#menu > .actions > .filter {
       width: 100%; }
@@ -57,7 +56,7 @@ nav#menu {
 body.min-left > nav#menu > .actions > .filter {
   display: none; }
 body.min-left > nav#menu > .actions > .minimize {
-  transform: rotate(90deg); }
+  background: url("img/menu-24-reduce.svg") center no-repeat; }
 body.min-left > nav#menu h3 > a {
   font-size: 0; }
 body.min-left > nav#menu li > ul {

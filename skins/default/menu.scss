@@ -20,7 +20,6 @@ nav#menu {
 			background: url('img/menu-24.svg') center no-repeat;
 			font-size: 0;
 			height: 64px;
-			transition-duration: var(--transition-duration);
 			width: 44px;
 		}
 
@@ -104,7 +103,7 @@ body.min-left {
 			}
 
 			> .minimize {
-				transform: rotate(90deg);
+				background: url('img/menu-24-reduce.svg') center no-repeat;
 			}
 		}
 
