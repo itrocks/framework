@@ -11,11 +11,11 @@ $(document).ready(function()
 		var $button = $(this);
 		var random  = Math.random().toString(36).substr(2, 9);
 		var side    = (($body.hasClass('min-left') === expand) ? 'expand' : 'reduce');
-		var image   = 'url(' + Q
-			+ app.project_uri + '/itrocks/framework/skins/default/img/menu-24-' + side + '.svg'
-			+ '?' + random
-			+ Q + ')';
-		$button.css('background-image', image);
+		var image   = app.project_uri + '/itrocks/framework/skins/default/img/menu-24-' + side + '.svg'
+			+ '?' + random;
+		$('<img src="' + image + '">').on('load', function() {
+			$button.css('background-image', 'url(' + Q + image + Q + ')');
+		});
 	};
 
 	$body.build('call', '#menu .minimize', function()
