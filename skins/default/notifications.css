@@ -1,7 +1,7 @@
 #notifications > #query,
 #notifications > #responses {
   margin: 10px 0;
-  overflow-y: auto;
+  overflow: hidden auto;
   padding: 0 10px 0 52px; }
   #notifications > #query > li,
   #notifications > #responses > li {
@@ -10,15 +10,19 @@
     font-size: 11px;
     line-height: 1.5em;
     padding: 3px 8px; }
+    #notifications > #query > li h3,
+    #notifications > #responses > li h3 {
+      font-weight: 500; }
+    #notifications > #query > li li,
+    #notifications > #responses > li li {
+      list-style: disc;
+      margin-left: 1em; }
 #notifications > #query {
   box-shadow: inset -1px 0 #d8d8d8; }
   #notifications > #query:not(:empty) {
     background: url("img/warning-32.svg") 10px top no-repeat; }
   #notifications > #query > li {
     background: #f9d4d4; }
-    #notifications > #query > li li {
-      list-style: disc;
-      margin-left: 1em; }
 #notifications > #responses {
   box-shadow: inset 1px 0 #d8d8d8; }
   #notifications > #responses:not(:empty) {

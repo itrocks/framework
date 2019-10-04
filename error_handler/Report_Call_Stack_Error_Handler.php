@@ -97,7 +97,12 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	) {
 		return ($_SERVER['REMOTE_ADDR'] === 'console')
 			? static::getUserInformationMessage()
-			: ('<div class="error">' . static::getUserInformationMessage() . '</div>');
+			: (
+				'<!--target #query-->'
+				. '<li class="error">'
+				. static::getUserInformationMessage()
+				. '</li>'
+				. '<!--end-->');
 	}
 
 	//--------------------------------------------------------------------- getUserInformationMessage

@@ -44,7 +44,8 @@ class Setting implements Validate\Exception
 	 */
 	public function __toString()
 	{
-		return Loc::tr(Names::classToDisplay(get_class($this)));
+		return (rLastParse($this->code, DOT) ?: $this->code)
+			?: Loc::tr(Names::classToDisplay(get_class($this)));
 	}
 
 	//-------------------------------------------------------------------------------------- getClass

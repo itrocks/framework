@@ -9,13 +9,11 @@
 	<title>|Deleted ¦{@class.display.ucfirst}¦|</title>
 </head>
 <body>
+<ul>
 <!--BEGIN-->
 
-	<article class="confirmed delete message" data-class="{@class}" data-id="{?id}" data-set-class="{?set_class}">
-		<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
-
-		<p>{message.ucfirst}</p>
-
+	<li class="deleted">
+		<h3>{message.ucfirst}</h3>
 		<!--deleted_objects?-->
 		<ul class="deleted {@class.short.lower}" data-class="{@class}">
 			<!--deleted_objects-->
@@ -23,9 +21,9 @@
 			<!--end-->
 		</ul>
 		<!--end-->
-
-	</article>
+	</li>
 
 <!--END-->
+</ul>
 </body>
 </html>

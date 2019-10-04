@@ -7,7 +7,7 @@
 	> #query,
 	> #responses {
 		margin: 10px 0;
-		overflow-y: auto;
+		overflow: hidden auto;
 		padding: 0 10px 0 52px;
 
 		> li {
@@ -16,6 +16,15 @@
 			font-size: 11px;
 			line-height: 1.5em;
 			padding: 3px 8px;
+
+			h3 {
+				font-weight: $medium;
+			}
+
+			li {
+				list-style: disc;
+				margin-left: 1em;
+			}
 		}
 	}
 
@@ -28,11 +37,6 @@
 
 		> li {
 			background: #f9d4d4;
-
-			li {
-				list-style: disc;
-				margin-left: 1em;
-			}
 		}
 	}
 
