@@ -45,6 +45,7 @@ nav#menu {
   nav#menu > ul > li > ul > li {
     display: table;
     height: 29px;
+    margin: 1px 0;
     width: 100%; }
     nav#menu > ul > li > ul > li > a {
       display: table-cell;
