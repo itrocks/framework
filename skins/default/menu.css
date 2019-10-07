@@ -32,16 +32,16 @@ nav#menu {
       display: table-cell;
       padding-left: 42px;
       vertical-align: middle; }
-    nav#menu > ul > li > h3:focus, nav#menu > ul > li > h3:hover, nav#menu > ul > li > h3.selected {
-      background: #efefef;
-      position: relative; }
-      nav#menu > ul > li > h3:focus:before, nav#menu > ul > li > h3:hover:before, nav#menu > ul > li > h3.selected:before {
-        background: var(--dark-color);
-        content: '';
-        display: inline-block;
-        height: 100%;
-        position: absolute;
-        width: 4px; }
+  nav#menu > ul > li:focus > h3, nav#menu > ul > li:hover > h3, nav#menu > ul > li.selected > h3 {
+    background: #efefef;
+    position: relative; }
+    nav#menu > ul > li:focus > h3:before, nav#menu > ul > li:hover > h3:before, nav#menu > ul > li.selected > h3:before {
+      background: var(--dark-color);
+      content: '';
+      display: inline-block;
+      height: 100%;
+      position: absolute;
+      width: 4px; }
   nav#menu > ul > li > ul > li {
     display: table;
     height: 29px;
@@ -51,8 +51,8 @@ nav#menu {
       display: table-cell;
       padding-left: 54px;
       vertical-align: middle; }
-      nav#menu > ul > li > ul > li > a:focus, nav#menu > ul > li > ul > li > a:hover, nav#menu > ul > li > ul > li > a .selected {
-        background: var(--light-color); }
+    nav#menu > ul > li > ul > li:focus, nav#menu > ul > li > ul > li:hover, nav#menu > ul > li > ul > li.selected {
+      background: var(--light-color); }
 
 body.min-left > nav#menu > .actions > .filter {
   display: none; }

@@ -1,16 +1,21 @@
-article[data-class^='ITRocks\\Framework\\'] {
+article[data-module=administration],
+#favorites > li[data-module=administration],
+#menu > ul > li#administration {
   --dark-color: #a3a3a3;
   --light-color: #d3d3d3; }
 
-body.min-left > nav#menu > ul > li.administration > h3 > a {
-  background: url("img/administration-24.svg") 10px center no-repeat; }
-body.min-left > nav#menu > ul > li.administration > h3:focus > a, body.min-left > nav#menu > ul > li.administration > h3:hover > a, body.min-left > nav#menu > ul > li.administration > h3.selected > a {
+body:not(.min-left)[data-module=administration] > #menu > ul > li#administration > h3 > a,
+body:not(.min-left) > #menu > ul > li#administration:focus > h3 > a,
+body:not(.min-left) > #menu > ul > li#administration:hover > h3 > a {
+  background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/administration-expand-more-24.svg") right no-repeat; }
+
+body:not(.min-left) > #menu > ul > li#administration > h3 > a {
+  background: url("img/administration-24.svg") 10px center no-repeat, url("img/expand-more-24.svg") right no-repeat; }
+
+body.min-left[data-module=administration] > #menu > ul > li#administration > h3 > a,
+body.min-left > #menu > ul > li#administration:focus > h3 > a,
+body.min-left > #menu > ul > li#administration:hover > h3 > a {
   background: url("img/administration-24-hilight.svg") 10px center no-repeat; }
 
-nav#menu > ul > li.administration {
-  --dark-color: #a3a3a3;
-  --light-color: #d3d3d3; }
-  nav#menu > ul > li.administration > h3 > a {
-    background: url("img/administration-24.svg") 10px center no-repeat, url("img/expand-more-24.svg") right center no-repeat; }
-  nav#menu > ul > li.administration > h3:focus > a, nav#menu > ul > li.administration > h3:hover > a, nav#menu > ul > li.administration > h3.selected > a {
-    background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/administration-expand-more-24.svg") right center no-repeat; }
+body.min-left > #menu > ul > li#administration > h3 > a {
+  background: url("img/administration-24.svg") 10px center no-repeat; }

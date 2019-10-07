@@ -239,7 +239,19 @@ class Template
 		) {
 			return;
 		}
-		$add_classes = ' class=' . DQ . $classes . DQ;
+		if (
+			($data_class_position = strpos($content, 'data-class=', $position))
+			&& ($data_class_end_position = strpos($content, DQ, $data_class_position += 12))
+		) {
+			$data_class = substr(
+				$content, $data_class_position, $data_class_end_position - $data_class_position
+			);
+		}
+		else {
+			$data_class = null;
+		}
+		$add_classes = (' class=' . DQ . $classes)
+			. ($data_class ? (DQ . ' data-class=' . DQ . $data_class . DQ) : '');
 		$content     = substr($content, 0, $position) . $add_classes . substr($content, $position);
 	}
 

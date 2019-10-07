@@ -13,7 +13,7 @@ $(document).ready(function()
 		var side    = (($body.hasClass('min-left') === expand) ? 'expand' : 'reduce');
 		var image   = app.project_uri + '/itrocks/framework/skins/default/img/menu-24-' + side + '.svg'
 			+ '?' + random;
-		$('<img src="' + image + '">').on('load', function() {
+		$('<img alt="image" src="' + image + '">').on('load', function() {
 			$button.css('background-image', 'url(' + Q + image + Q + ')');
 		});
 	};
@@ -49,19 +49,6 @@ $(document).ready(function()
 			$button.blur();
 		}
 		$button.mouseenter();
-	});
-
-	//------------------------------------------------------------------------------- #menu .selected
-	$body.build('click', ['#menu ul > li', '> a, > h3 > a'], function()
-	{
-		var $anchor = $(this);
-		var $nav    = $anchor.closest('nav');
-		var $module = $anchor.closest('nav > ul > li');
-		var $h3     = $module.children('h3');
-
-		$nav.find('a, h3').removeClass('selected');
-		$anchor.addClass('selected');
-		$h3.addClass('selected');
 	});
 
 	//---------------------------------------------------------------------------------- #menu-filter

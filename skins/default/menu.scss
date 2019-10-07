@@ -57,19 +57,21 @@ nav#menu {
 					padding-left: 42px;
 					vertical-align: middle;
 				}
+			}
 
-				&:focus, &:hover, &.selected {
-					background: #efefef;
-					position: relative;
+			&:focus > h3,
+			&:hover > h3,
+			&.selected > h3 {
+				background: #efefef;
+				position: relative;
 
-					&:before {
-						background: var(--dark-color);
-						content: '';
-						display: inline-block;
-						height: 100%;
-						position: absolute;
-						width: 4px;
-					}
+				&:before {
+					background: var(--dark-color);
+					content: '';
+					display: inline-block;
+					height: 100%;
+					position: absolute;
+					width: 4px;
 				}
 			}
 
@@ -83,10 +85,12 @@ nav#menu {
 					display: table-cell;
 					padding-left: 54px;
 					vertical-align: middle;
+				}
 
-					&:focus, &:hover, .selected {
-						background: var(--light-color);
-					}
+				&:focus,
+				&:hover,
+				&.selected {
+					background: var(--light-color);
 				}
 			}
 		}
