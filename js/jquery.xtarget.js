@@ -63,19 +63,20 @@
 
 		//------------------------------------------------------------------------------------ settings
 		var settings = $.extend({
-			auto_empty:      {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
-			closeable_popup: 'popup',
-			draggable_blank: undefined,
-			error:           undefined,
-			history:         false, // { condition, popup, post, title }
-			keep:            'popup',
-			popup_element:   'div',
-			show:            undefined,
-			submit:          'submit',
-			success:         undefined,
-			track:           true,
-			url_append:      '',
-			xtarget_from:    'xtarget.from'
+			auto_empty:        {}, // { 'target-selector': 'zone(s)-to-empty-selector' }
+			auto_empty_except: undefined, // string : if set, selector for exception original link
+			closeable_popup:   'popup',
+			draggable_blank:   undefined,
+			error:             undefined,
+			history:           false, // { condition, popup, post, title }
+			keep:              'popup',
+			popup_element:     'div',
+			show:              undefined,
+			submit:            'submit',
+			success:           undefined,
+			track:             true,
+			url_append:        '',
+			xtarget_from:      'xtarget.from'
 		}, options);
 
 		//---------------------------------------------------------------------------------------- ajax
@@ -242,7 +243,7 @@
 					$target.filter(':not(:visible)').show();
 				}
 				// auto empty
-				if (settings.auto_empty !== undefined) {
+				if ((settings.auto_empty !== undefined) && !xhr.auto_empty_except) {
 					for (var key in settings.auto_empty) if (settings.auto_empty.hasOwnProperty(key)) {
 						var empty_target = settings.auto_empty[key];
 						if (
@@ -440,6 +441,8 @@
 					xhr.mouse_x  = (document.mouse === undefined) ? event.pageX : document.mouse.x;
 					xhr.mouse_y  = (document.mouse === undefined) ? event.pageY : document.mouse.y;
 					xhr.time_out = setTimeout(function() { $('body').css({ cursor: 'wait' }); }, 500);
+					xhr.auto_empty_except = (settings.auto_empty_except !== undefined)
+						&& $anchor.is(settings.auto_empty_except);
 				};
 				executeClick();
 				if (is_javascript) {

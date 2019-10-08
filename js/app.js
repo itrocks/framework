@@ -12,11 +12,12 @@ $(document).ready(function()
 
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
-			auto_empty:      {'main': '#query, #responses', '#modal': 'ul#query', '#responses': '#query'},
+			auto_empty: {'main': '#query, #responses', '#modal': 'ul#query', '#responses': '#query'},
+			auto_empty_except: '.auto-redirect',
 			draggable_blank: 'header',
 			history: {
-				condition:        'h2',
-				title:            'h2',
+				condition: 'h2',
+				title:     'h2',
 				without_get_vars: ['.*/list\\?.*', '.*/output\\?.*', '.*\\?save_name=']
 			},
 			url_append: 'as_widget'
