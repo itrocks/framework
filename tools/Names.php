@@ -54,12 +54,13 @@ abstract class Names
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
+	 * @param $annotation boolean if true, will use the value of @display first, if exists
 	 * @return string
 	 */
-	public static function classToDisplay($class_name)
+	public static function classToDisplay($class_name, $annotation = true)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection Should be called with valid class name */
-		$display = class_exists($class_name)
+		$display = ($annotation && class_exists($class_name))
 			? Display_Annotation::of(new Reflection_Class($class_name))->value
 			: null;
 		return $display ?: strtolower(str_replace('_', SP, Namespaces::shortClassName($class_name)));
