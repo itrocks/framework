@@ -51,6 +51,9 @@ class Controller implements Default_Feature_Controller
 				$parameters->unshift(new Multiple($this->objects));
 			}
 		}
+		else {
+			$parameters->set('data_post', null);
+		}
 
 		$parameters = $parameters->getObjects();
 		$parameters[Template::TEMPLATE] = static::CONFIRM;

@@ -1576,7 +1576,7 @@ class Template
 		elseif (is_array($object) && isset($object[$property_name])) {
 			$object = $this->parseArrayElement($object, $property_name);
 		}
-		elseif (!is_object($object) && !isset($this->parameters[$property_name])) {
+		elseif (!is_object($object) && !array_key_exists($property_name, $this->parameters)) {
 			$object = $this->parseString($object, $property_name);
 		}
 		elseif (
@@ -1621,7 +1621,7 @@ class Template
 		elseif (isset($object->$property_name)) {
 			$object = $this->parseProperty($object, $property_name, $ignore_undefined_property);
 		}
-		elseif (isset($this->parameters[$property_name])) {
+		elseif (array_key_exists($property_name, $this->parameters)) {
 			$object = $this->parseParameter($object, $property_name);
 		}
 		else {
