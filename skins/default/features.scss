@@ -27,8 +27,16 @@ ul.actions > li {
 		background-image: url('img/import-24.svg');
 	}
 
+	&.install > a {
+		background-image: url('img/install-24.svg');
+	}
+
 	&.print > a {
 		background-image: url('img/print-24.svg');
+	}
+
+	&.uninstall > a {
+		background-image: url('img/uninstall-24.svg');
 	}
 
 	&.write > a {

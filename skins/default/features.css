@@ -22,10 +22,18 @@ li.action.import > a,
 li.actions > ul > li.import > a,
 ul.actions > li.import > a {
   background-image: url("img/import-24.svg"); }
+li.action.install > a,
+li.actions > ul > li.install > a,
+ul.actions > li.install > a {
+  background-image: url("img/install-24.svg"); }
 li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {
   background-image: url("img/print-24.svg"); }
+li.action.uninstall > a,
+li.actions > ul > li.uninstall > a,
+ul.actions > li.uninstall > a {
+  background-image: url("img/uninstall-24.svg"); }
 li.action.write > a,
 li.actions > ul > li.write > a,
 ul.actions > li.write > a {
