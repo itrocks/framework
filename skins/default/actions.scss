@@ -17,7 +17,7 @@ ul.actions > li {
 		box-sizing: border-box;
 		display: block;
 		height: 100%;
-		padding: 6px 10px 0 26px;
+		padding: 6px 10px 6px 26px;
 
 		&:focus, &:hover {
 			background-color: #efefef;
@@ -37,7 +37,7 @@ article.list ul.general.actions > li > ul {
 
 article:not(.list) ul.general.actions > li > ul,
 ul.selection.actions > li > ul {
-	bottom: 32px;
+	bottom: 31px;
 }
 
 //------------------------------------------------------------------------------------------ Layout

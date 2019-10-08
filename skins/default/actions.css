@@ -13,7 +13,7 @@ ul.actions > li {
     box-sizing: border-box;
     display: block;
     height: 100%;
-    padding: 6px 10px 0 26px; }
+    padding: 6px 10px 6px 26px; }
     li.action a:focus, li.action a:hover,
     li.actions > ul > li a:focus,
     li.actions > ul > li a:hover,
@@ -32,7 +32,7 @@ article.list ul.general.actions > li > ul {
 
 article:not(.list) ul.general.actions > li > ul,
 ul.selection.actions > li > ul {
-  bottom: 32px; }
+  bottom: 31px; }
 
 li.actions > ul,
 ul.actions {
