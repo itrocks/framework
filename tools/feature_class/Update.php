@@ -49,7 +49,10 @@ class Update implements Registerable, Updatable
 				continue;
 			}
 			/** @noinspection PhpUnhandledExceptionInspection class_exists */
-			$class   = new Reflection_Class($class_name);
+			$class = new Reflection_Class($class_name);
+			if ($class->isAbstract()) {
+				continue;
+			}
 			$feature = null;
 			foreach ($class->getAnnotations('feature') as $feature_annotation) {
 				$feature = $feature_annotation->value;
