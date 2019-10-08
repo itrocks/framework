@@ -1,3 +1,14 @@
+article.layout_model:not(.form),
+article.layout_model > form {
+  grid-template-areas: "header" "data" "content" "footer";
+  grid-template-rows: min-content min-content 1fr min-content; }
+  article.layout_model:not(.form) > ul.data,
+  article.layout_model > form > ul.data {
+    grid-area: data; }
+  article.layout_model:not(.form) > section,
+  article.layout_model > form > section {
+    grid-area: content;
+    overflow: auto; }
 article.layout_model.output .snap.line,
 article.layout_model.output .toolbox {
   display: none; }
@@ -26,8 +37,7 @@ article.layout_model .editor .designer {
     article.layout_model .editor .designer .field.line > .handle {
       cursor: pointer; }
 article.layout_model .editor .tool.snap.line {
-  color: transparent;
-  font-size: 1px;
+  font-size: 0;
   position: absolute; }
   article.layout_model .editor .tool.snap.line.horizontal {
     border-top: 1px dashed darkgrey;
@@ -52,8 +62,6 @@ article.layout_model .editor .tool.snap.line {
     position: absolute; }
 article.layout_model .editor .toolbox > h4 {
   display: none; }
-article.layout_model .editor .toolbox > .property_select {
-  display: block; }
 article.layout_model .editor .toolbox > .pages, article.layout_model .editor .toolbox > .selected.tools {
   display: none; }
 article.layout_model .editor .toolbox > .add.tools span {

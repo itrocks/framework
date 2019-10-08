@@ -1,7 +1,23 @@
 
 article.layout_model {
 
+	&:not(.form),
+	> form {
+		grid-template-areas: "header" "data" "content" "footer";
+		grid-template-rows: min-content min-content 1fr min-content;
+
+		> ul.data {
+			grid-area: data;
+		}
+
+		> section {
+			grid-area: content;
+			overflow: auto;
+		}
+	}
+
 	&.output {
+
 		.snap.line,
 		.toolbox {
 			display: none;
@@ -55,8 +71,7 @@ article.layout_model {
 		.tool {
 
 			&.snap.line {
-				color: transparent;
-				font-size: 1px;
+				font-size: 0;
 				position: absolute;
 
 				&.horizontal {
@@ -96,10 +111,6 @@ article.layout_model {
 
 			> h4 {
 				display: none;
-			}
-
-			> .property_select {
-				display: block;
 			}
 
 			> .pages, > .selected.tools {

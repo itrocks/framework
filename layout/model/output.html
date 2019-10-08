@@ -13,10 +13,9 @@
 <!--use ITRocks\Framework\Tools\Paths-->
 
 	<article class="{@class.short.lower} layout_model {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
-		<h2>|{@class.display.ucfirst}|</h2>
+		<header><h2>|{@class.display.ucfirst}|</h2></header>
 		{/component/button/general_buttons.html}
 		<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
-
 		{/feature/output/object.html}
 
 		<section class="editor">
