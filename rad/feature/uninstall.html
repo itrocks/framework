@@ -9,16 +9,20 @@
 	<title>|¦{@class.display.ucfirst}¦ unchanged|</title>
 </head>
 <body>
+<ul>
 <!--BEGIN-->
 
-	<!--uninstalled?-->
-	|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
-	<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
-	<!--else-->
-	|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
-	|This feature is not available for the moment|.
-	<!--end-->
+	<li>
+		<!--uninstalled?-->
+		|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
+		<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
+		<!--else-->
+		|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
+		|This feature is not available for the moment|.
+		<!--end-->
+	</li>
 
 <!--END-->
+</ul>
 </body>
 </html>
