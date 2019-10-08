@@ -13,7 +13,7 @@ $(document).ready(function()
 		// change all a / form target="#target" to ajax calls
 		this.xtarget({
 			auto_empty: {'main': '#query, #responses', '#modal': 'ul#query', '#responses': '#query'},
-			auto_empty_except: '.auto-redirect',
+			auto_empty_except: '.auto-redirect, .keep-response',
 			draggable_blank: 'header',
 			history: {
 				condition: 'h2',

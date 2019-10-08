@@ -14,6 +14,7 @@ $(document).ready(function()
 		if ($main_window.length) {
 			var $close_anchor = $main_window.find('.actions > .close > a');
 			if ($close_anchor.length) {
+				$close_anchor.addClass('keep-response');
 				$close_anchor.click();
 			}
 			else if (identifier !== undefined) {
@@ -29,7 +30,7 @@ $(document).ready(function()
 	};
 
 	//--------------------------------------------------------------------- .confirmed.delete.message
-	$('body').build('call', '.confirmed.delete.message', function()
+	$('body').build('call', '#responses > .deleted[data-class]', function()
 	{
 		var $message       = this;
 		var class_name     = $message.data('class');
