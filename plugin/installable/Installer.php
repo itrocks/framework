@@ -120,6 +120,7 @@ class Installer
 			if (!beginsWith($added_interface_trait, AT)) {
 				(new Installed\Builder($this->plugin_class_name))
 					->add($base_class_name, $added_interface_trait);
+				Post::get()->willInstallProperties($base_class_name, $added_interface_trait);
 			}
 		}
 	}
@@ -130,7 +131,7 @@ class Installer
 	 */
 	public function buildAnnotations()
 	{
-		$exhaustive_class = new Exhaustive_Class($this->files);
+		$exhaustive_class       = new Exhaustive_Class($this->files);
 		$modified_built_classes = $this->modified_built_classes;
 		foreach ($modified_built_classes as $class_name) {
 			/** @noinspection PhpUnhandledExceptionInspection must exist */

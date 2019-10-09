@@ -18,6 +18,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Object_Not_Found_Exception;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Plugin\Activable;
+use ITRocks\Framework\Plugin\Installable\Post;
 use ITRocks\Framework\Plugin\Manager;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Call_Stack;
@@ -122,6 +123,9 @@ class Main
 		$application_updater = Application_Updater::get();
 		if ($application_updater->autoUpdate($this)) {
 			$application_updater->runMaintainer();
+			if ($post = Post::get(false)) {
+				$post->install();
+			}
 		}
 	}
 
