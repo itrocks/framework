@@ -239,10 +239,11 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	protected function getModule($class_name)
 	{
 		$class_names = Names::classToSet($class_name);
-		$module = '';
-		if (!($menu = Menu::get())) {
+		$module      = '';
+		if (!Menu::registered()) {
 			return $module;
 		}
+		$menu = Menu::get();
 		foreach ([$class_names, $class_name] as $link_class_name) {
 			foreach ($menu->blocks as $block) {
 				foreach ($block->items as $item) {
@@ -265,9 +266,10 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	{
 		$class_names = Names::classToSet($class_name);
 		$module = '';
-		if (!($menu = Menu::get())) {
+		if (!Menu::registered()) {
 			return $module;
 		}
+		$menu = Menu::get();
 		foreach ([$class_names, $class_name] as $link_class_name) {
 			foreach ($menu->blocks as $block) {
 				foreach ($block->items as $item) {

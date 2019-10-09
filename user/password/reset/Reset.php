@@ -107,7 +107,7 @@ trait Reset
 	 */
 	protected function sendEmail(Email $email)
 	{
-		if ($sender = Smtp::get() ?: File::get()) {
+		if ($sender = (Smtp::get(false) ?: File::get(false))) {
 			$sender->send($email);
 		}
 	}

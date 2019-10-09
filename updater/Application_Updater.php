@@ -424,4 +424,3 @@ class Application_Updater implements Configurable, Serializable
 	}
 
 }
-

@@ -32,7 +32,7 @@ class List_Annotation_Access_Control implements Registerable
 		Reflection_Class $class, List_Annotation $object
 	) {
 		$class_name = Builder::className($class->getName());
-		if ($access_control = Access_Control::get()) {
+		if ($access_control = Access_Control::get(false)) {
 			if (
 				$object->has(List_Annotation::LOCK)
 				&& $access_control->hasAccessTo([$class_name, 'neverLockColumns'])

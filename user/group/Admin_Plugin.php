@@ -20,8 +20,7 @@ class Admin_Plugin implements Registerable, Updatable
 	 */
 	public function register(Register $register)
 	{
-		$application_updater = Application_Updater::get();
-		$application_updater->addUpdatable($this);
+		Application_Updater::get()->addUpdatable($this);
 	}
 
 	//---------------------------------------------------------------------------------------- update

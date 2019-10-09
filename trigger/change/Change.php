@@ -23,10 +23,10 @@ class Change extends Trigger
 	//------------------------------------------------------------------------------ resetPluginCache
 	public function resetPluginCache()
 	{
-		if (!$this->class_name || !($plugin = Plugin::get())) {
+		if (!$this->class_name || !Plugin::registered()) {
 			return;
 		}
-		$plugin->resetCache($this->class_name);
+		Plugin::get()->resetCache($this->class_name);
 	}
 
 }

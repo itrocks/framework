@@ -23,7 +23,7 @@ class View_Exception_Test extends Test
 	 */
 	public function testCall()
 	{
-		if (Access_Control::get()) {
+		if (Access_Control::registered()) {
 			$exception = SL . Names::classToUri(Tests::class) . SL . '.*';
 			Access_Control::get()->exceptions[] = $exception;
 		}

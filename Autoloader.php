@@ -21,12 +21,6 @@ class Autoloader
 	public function autoload($class_name)
 	{
 		$result = $this->tryToLoad($class_name);
-		// instantiate plugin
-		if ($result && class_exists($class_name, false) && is_a($class_name, Plugin::class, true)) {
-			if (Session::current()) {
-				Session::current()->plugins->get($class_name);
-			}
-		}
 	}
 
 	//----------------------------------------------------------------------------------- getFilePath

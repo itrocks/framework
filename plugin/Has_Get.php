@@ -20,22 +20,23 @@ trait Has_Get
 	/**
 	 * Retrieves static implementation form session
 	 *
-	 * @param $default boolean if true, a default instance of the plugin is created is not set
-	 * @return static
+	 * @param $default boolean if false, will not instantiate a non-registered plugin
+	 * @return static|null null only if default is false and the plugin is not registered
 	 */
-	public static function get($default = false)
+	public static function get($default = true)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection static::class is always valid */
-		/** @var $plugin static */
-		$plugin = Session::current()->plugins->get(Builder::className(static::class));
-		if ($default && !$plugin) {
-			static $default_instance;
-			if (!$default_instance) {
-				$default_instance = new static;
-			}
-			return $default_instance;
-		}
-		return $plugin;
+		return ($default || static::registered())
+			? Session::current()->plugins->get(Builder::className(static::class))
+			: null;
+	}
+
+	//------------------------------------------------------------------------------------ registered
+	/**
+	 * @return boolean
+	 */
+	public static function registered()
+	{
+		return Session::current()->plugins->has(Builder::className(static::class));
 	}
 
 }
