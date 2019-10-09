@@ -20,7 +20,7 @@ class Autoloader
 	 */
 	public function autoload($class_name)
 	{
-		$result = $this->tryToLoad($class_name);
+		$this->tryToLoad($class_name);
 	}
 
 	//----------------------------------------------------------------------------------- getFilePath
