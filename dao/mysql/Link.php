@@ -343,6 +343,13 @@ class Link extends Dao\Sql\Link
 				$this->query(Sql\Builder::buildDelete($class_name, $id));
 				$this->disconnect($object);
 				$this->commit();
+				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
+				foreach ((new Reflection_Class($object))->getAnnotations('after_delete') as $after_delete) {
+					/** @var $after_delete Method_Annotation */
+					if ($after_delete->call($object, [$this]) === false) {
+						break;
+					}
+				}
 				return true;
 			}
 		}

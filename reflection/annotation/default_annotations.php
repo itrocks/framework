@@ -36,6 +36,14 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@after_create' => Method_Annotation::class,
 
 	/**
+	 * @after_delete afterDelete
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object is deleted using a data link
+	 * - These methods may return false to stop calls of others after_delete methods
+	 */
+	Parser::T_CLASS . '@after_delete' => Method_Annotation::class,
+
+	/**
 	 * @after_read afterRead
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is read using a data link
