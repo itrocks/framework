@@ -9,7 +9,6 @@
   #modal:empty {
     display: none; }
   #modal > article {
-    --light-color: white;
     border: 1px solid #d6d6d6;
     border-radius: 3px;
     left: calc(50% - 150px);
@@ -17,11 +16,11 @@
     right: 100px;
     top: calc(50% - 75px);
     width: 360px; }
-    #modal > article > .actions {
-      background: var(--light-color);
+    #modal > article .actions {
+      background: white;
       border-top: 1px solid #eaeaea;
       text-align: center; }
-      #modal > article > .actions > li {
+      #modal > article .actions > li {
         flex: 100%; }
     #modal > article > div > p {
       padding: 10px; }

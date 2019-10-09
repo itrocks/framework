@@ -12,7 +12,6 @@
 	}
 
 	> article {
-		--light-color: white;
 		border: 1px solid #d6d6d6;
 		border-radius: 3px;
 		left: calc(50% - 150px);
@@ -21,8 +20,8 @@
 		top: calc(50% - 75px);
 		width: 360px;
 
-		> .actions {
-			background: var(--light-color);
+		.actions {
+			background: white;
 			border-top: 1px solid #eaeaea;
 			text-align: center;
 
@@ -31,11 +30,8 @@
 			}
 		}
 
-		> div {
-
-			> p {
-				padding: 10px;
-			}
+		> div > p {
+			padding: 10px;
 		}
 
 		> header {
