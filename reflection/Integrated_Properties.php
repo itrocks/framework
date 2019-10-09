@@ -63,12 +63,15 @@ class Integrated_Properties
 	 * Expand all integrated properties and sub-properties starting from the current object class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Reflection_Property[] all properties of the object class, and integrated sub-objects
+	 * @param $class_name string|null
+	 * @return Reflection_Property[]|Reflection_Property_Value[] all properties of the object class,
+	 *         and integrated sub-objects
 	 */
-	public function expandUsingClassName()
+	public function expandUsingClassName($class_name = null)
 	{
 		$expanded   = [];
-		$properties = (new Reflection_Class(get_class($this->object)))->getProperties();
+		/** @noinspection PhpUnhandledExceptionInspection get_class */
+		$properties = (new Reflection_Class($class_name ?: get_class($this->object)))->getProperties();
 		foreach ($properties as $property) {
 			$expand = $this->expandUsingPropertyInternal($properties, $property)
 				?: [$property->name => $property];
@@ -86,8 +89,8 @@ class Integrated_Properties
 	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
 	 * @param $property        Reflection_Property
 	 * @param $object          object if set, replaces the referent root object for all next calls
-	 * @return Reflection_Property_Value[] added properties list (empty if none applies)
-	 *         keys are 'property.sub_property'
+	 * @return Reflection_Property[]|Reflection_Property_Value[] added properties list
+	 *         (empty if none applies) keys are 'property.sub_property'
 	 */
 	public function expandUsingProperty(
 		array &$properties_list, Reflection_Property $property, $object = null
@@ -104,8 +107,8 @@ class Integrated_Properties
 	 * @param $property        Reflection_Property
 	 * @param $display_prefix  string
 	 * @param $blocks          string[]
-	 * @return Reflection_Property_Value[] added properties list (empty if none applies)
-	 *         keys are 'property.sub_property'
+	 * @return Reflection_Property[]|Reflection_Property_Value[] added properties list
+	 *         empty if none applies) keys are 'property.sub_property'
 	 */
 	protected function expandUsingPropertyInternal(
 		array &$properties_list, Reflection_Property $property, $display_prefix = '', array $blocks = []
@@ -204,7 +207,7 @@ class Integrated_Properties
 	 * @param $expand_properties Reflection_Property[]
 	 * @param $property          Reflection_Property
 	 * @param $integrated        Integrated_Annotation
-	 * @return Reflection_Property_Value[]
+	 * @return Reflection_Property[]|Reflection_Property_Value[]
 	 */
 	protected function prepareExpandedProperties(
 		array &$properties_list, $display_prefix, array $blocks, array $expand_properties,
@@ -244,16 +247,16 @@ class Integrated_Properties
 	 * @param $integrated_simple boolean
 	 * @param $sub_property      Reflection_Property
 	 * @param $display           string
-	 * @return Reflection_Property_Value
+	 * @return Reflection_Property|Reflection_Property_Value
 	 */
 	protected function prepareExpandedProperty(
 		array $blocks, $integrated_alias, $integrated_simple, Reflection_Property $sub_property,
 		$display
 	) {
 		/** @noinspection PhpUnhandledExceptionInspection root class and sub property path must valid */
-		$sub_property = new Reflection_Property_Value(
-			$this->object, $sub_property->path, $this->object, false, true
-		);
+		$sub_property = $this->object
+			? new Reflection_Property_Value($this->object, $sub_property->path, $this->object, false, true)
+			: $sub_property;
 		$sub_property->display = Loc::tr(
 			$integrated_simple
 				? (

@@ -1047,7 +1047,7 @@ class Functions
 	protected function getPropertyBlocks(Reflection_Property $property)
 	{
 		$blocks     = [];
-		$integrated = $property->getListAnnotation(Integrated_Annotation::ANNOTATION);
+		$integrated = Integrated_Annotation::of($property);
 		if ($integrated->has(Integrated_Annotation::BLOCK)) {
 			$conditions = Conditions_Annotation::of($property);
 			$data = $conditions->values()

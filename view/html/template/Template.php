@@ -511,7 +511,7 @@ class Template
 	 * Gets the first parent of current (last) object that is an object
 	 *
 	 * @param $instance_of string class name
-	 * @return object
+	 * @return object|null
 	 */
 	public function getParentObject($instance_of = null)
 	{
@@ -524,7 +524,7 @@ class Template
 				!is_object($object) || (isset($instance_of) && !is_a($object, $instance_of))
 			));
 		}
-		return $object;
+		return $object ?: null;
 	}
 
 	//--------------------------------------------------------------------------------- getRootObject

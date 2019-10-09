@@ -9,9 +9,11 @@ use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
@@ -64,7 +66,7 @@ class Collection
 		$this->property   = $property;
 		$this->collection = $collection;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
-		$this->properties = $this->getProperties();
+		$this->properties = $this->expandProperties($this->getProperties());
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -205,6 +207,28 @@ class Collection
 			}
 		}
 		return $row;
+	}
+
+	//------------------------------------------------------------------------------ expandProperties
+	/**
+	 * @param $properties Reflection_Property[]
+	 * @return Reflection_Property[]
+	 */
+	protected function expandProperties(array $properties)
+	{
+		$expand_properties = [];
+		foreach ($properties as $property_name => $property) {
+			if (($integrated = Integrated_Annotation::of($property))->value) {
+				$expand_properties = array_merge(
+					$expand_properties,
+					(new Integrated_Properties())->expandUsingClassName($property->class)
+				);
+			}
+			else {
+				$expand_properties[$property_name] = $property;
+			}
+		}
+		return $expand_properties;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
