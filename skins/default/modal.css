@@ -16,8 +16,7 @@
     position: absolute;
     right: 100px;
     top: calc(50% - 75px);
-    height: 150px;
-    width: 300px; }
+    width: 360px; }
     #modal > article > .actions {
       background: var(--light-color);
       border-top: 1px solid #eaeaea;
