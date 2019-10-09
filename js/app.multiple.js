@@ -138,7 +138,8 @@ $(document).ready(function()
 	/**
 	 * Manually add a line
 	 */
-	var add_selector = 'article > form > ul.data ol.properties > li.component-objects > label';
+	var add_selector = 'article > form > ul.data ol.properties > li.component-objects > label, '
+		+ 'article > form > ul.data ol.properties > li.objects > label';
 	$body.build('click', add_selector, function(event)
 	{
 		var $input = $(this).parent().find('input, select, textarea').filter(':visible').last();

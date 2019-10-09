@@ -2,7 +2,7 @@
 @import 'sizes.scss';
 
 .minus {
-	color: #04b497;
+	color: var(--dark-color);
 	cursor: pointer;
 	font-weight: bold;
 	height: $font-size * 1.5;

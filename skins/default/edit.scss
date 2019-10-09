@@ -19,7 +19,8 @@ article > form > ul.data ol.properties > li {
 		position: absolute;
 	}
 
-	&.component-objects > label {
+	&.component-objects > label,
+	&.objects > label {
 		cursor: pointer;
 
 		&:after {

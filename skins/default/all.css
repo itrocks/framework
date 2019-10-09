@@ -18,7 +18,6 @@
 @import 'body.css';
 @import 'breadcrumb.css';
 @import 'combo.css';
-@import 'component_objects.css';
 @import 'custom.css';
 @import 'date_time.css';
 @import 'favorites.css';
@@ -41,10 +40,10 @@
 @import 'minus.css';
 @import 'modal.css';
 @import 'notifications.css';
-@import 'objects.css';
-@import 'output_properties.css';
-@import 'output_value.css';
-@import 'property_select.css';
+@import 'output-objects.css';
+@import 'output-properties.css';
+@import 'output-value.css';
+@import 'property-select.css';
 @import 'tabber.css';
 @import 'tooltip.css';
 @import 'trashcan.css';

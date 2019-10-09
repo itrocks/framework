@@ -1,15 +1,16 @@
 @import 'colors.scss';
 
-.component-objects > div > ul > li {
+ol.properties > li.component-objects > div > ul.collection > li,
+ol.properties > li.objects > div > ul.collection > li {
+
 	border-bottom: 1px solid #d8d8d8;
 	display: block;
 
 	&.header {
-		background-color: #e8e8e8;
+		background-color: #efefef;
 
 		> ol {
-			border-bottom: 1px solid #d8d8d8;
-			width: 100%;
+			box-shadow: inset 0 -1px #d8d8d8;
 
 			> li {
 				color: #333;
@@ -25,19 +26,22 @@
 
 	&:not(.header):nth-child(odd) {
 		background-color: #e8e8e8;
-
-		input, select, textarea {
-			background-color: #f8f8f8;
-		}
 	}
 
 	> ol > li {
 
 		> input, > select, > textarea {
-			background: transparent;
 			border: none !important;
 			color: black;
 			width: calc(100% - 20px);
+
+			&[readonly] {
+				background: transparent;
+			}
+
+			&:not([readonly]) {
+				background: white;
+			}
 		}
 
 		&.float,

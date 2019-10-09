@@ -1,0 +1,64 @@
+article > ul.data ol.properties > li > div {
+  vertical-align: top; }
+
+article ol.properties:not(.tiny) {
+  border-collapse: separate;
+  border-spacing: 10px;
+  display: block; }
+  article ol.properties:not(.tiny) li {
+    position: relative; }
+  article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
+    display: table-row;
+    position: relative; }
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > div > span.unit {
+      white-space: nowrap; }
+      article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > div > span.unit:before {
+        content: ' '; }
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > label {
+      font-weight: 500;
+      padding: 9px 0;
+      text-align: right;
+      vertical-align: top;
+      white-space: nowrap; }
+    article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > div, article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > label {
+      box-sizing: border-box;
+      display: table-cell;
+      height: 32px; }
+  article ol.properties:not(.tiny) > li.after,
+  article ol.properties:not(.tiny) > li.before,
+  article ol.properties:not(.tiny) > li.block,
+  article ol.properties:not(.tiny) > li.component-objects,
+  article ol.properties:not(.tiny) > li.objects {
+    display: block; }
+  article ol.properties:not(.tiny) > li.after > div,
+  article ol.properties:not(.tiny) > li.before > div {
+    display: block; }
+  article ol.properties:not(.tiny) > li.block {
+    margin-top: -1px; }
+  article ol.properties:not(.tiny) > li.block > div,
+  article ol.properties:not(.tiny) > li.component-objects > div,
+  article ol.properties:not(.tiny) > li.objects > div {
+    background: #efefef; }
+  article ol.properties:not(.tiny) > li.block > label,
+  article ol.properties:not(.tiny) > li.component-objects > label,
+  article ol.properties:not(.tiny) > li.objects > label {
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    color: var(--dark-color);
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    height: 24px;
+    padding: 4px 0;
+    width: 100%; }
+    article ol.properties:not(.tiny) > li.block > label:first-letter,
+    article ol.properties:not(.tiny) > li.component-objects > label:first-letter,
+    article ol.properties:not(.tiny) > li.objects > label:first-letter {
+      text-transform: uppercase; }
+  article ol.properties:not(.tiny) > li.multiline > div {
+    white-space: pre-line; }
+
+article > ul.data ol.properties > li:not(.component-objects):not(.objects) > div {
+  background: #efefef;
+  border-radius: 2px;
+  padding: 9px 10px; }

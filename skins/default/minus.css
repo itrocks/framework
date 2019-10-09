@@ -1,5 +1,5 @@
 .minus {
-  color: #04b497;
+  color: var(--dark-color);
   cursor: pointer;
   font-weight: bold;
   height: 18px;

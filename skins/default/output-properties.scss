@@ -2,11 +2,8 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-article > ul.data ol.properties > li:not(.component-objects) {
-
-	> div {
-		vertical-align: top;
-	}
+article > ul.data ol.properties > li > div {
+	vertical-align: top;
 }
 
 article ol.properties:not(.tiny) {
@@ -18,7 +15,7 @@ article ol.properties:not(.tiny) {
 		position: relative;
 	}
 
-	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
 		display: table-row;
 		position: relative;
 
@@ -48,7 +45,8 @@ article ol.properties:not(.tiny) {
 	> li.after,
 	> li.before,
 	> li.block,
-	> li.component-objects {
+	> li.component-objects,
+	> li.objects {
 		display: block;
 	}
 
@@ -64,7 +62,8 @@ article ol.properties:not(.tiny) {
 	}
 
 	> li.block,
-	> li.component-objects {
+	> li.component-objects,
+	> li.objects {
 
 		> div {
 			background: #efefef;
@@ -73,7 +72,7 @@ article ol.properties:not(.tiny) {
 		> label {
 			background-color: #f8f8f8;
 			box-sizing: border-box;
-			color: #04b497;
+			color: var(--dark-color);
 			display: block;
 			font-size: 14px;
 			font-weight: bold;
@@ -94,7 +93,7 @@ article ol.properties:not(.tiny) {
 
 article > ul.data ol.properties {
 
-	> li:not(.component-objects) > div {
+	> li:not(.component-objects):not(.objects) > div {
 		background: #efefef;
 		border-radius: 2px;
 		padding: 9px 10px;
