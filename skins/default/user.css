@@ -168,3 +168,13 @@ body.user.login {
   body.password.reset > #menu,
   body.user.login > #menu {
     border-right: none; }
+
+.user.mini > a {
+  background: url("img/user-24.svg") center no-repeat;
+  display: block;
+  font-size: 0;
+  height: 100%;
+  min-height: 24px;
+  min-width: 24px; }
+.user.mini > h3 {
+  display: none; }

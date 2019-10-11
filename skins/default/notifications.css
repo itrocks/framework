@@ -41,11 +41,6 @@
     background: url("img/information-32.svg") 10px top no-repeat; }
   #notifications > #responses > li {
     background: #e8e8e8; }
-#notifications > .user.mini > a {
-  background: url("img/user-24.svg") center no-repeat;
-  display: block;
-  font-size: 0;
-  height: 100%; }
 
 #notifications {
   display: grid;
@@ -59,5 +54,3 @@
     grid-area: responses; }
   #notifications > .user {
     grid-area: user; }
-    #notifications > .user > h3 {
-      display: none; }

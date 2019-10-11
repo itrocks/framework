@@ -68,16 +68,6 @@
 			background: #e8e8e8;
 		}
 	}
-
-	> .user.mini {
-
-		> a {
-			background: url('img/user-24.svg') center no-repeat;
-			display: block;
-			font-size: 0;
-			height: 100%;
-		}
-	}
 }
 
 //------------------------------------------------------------------------------------------ Layout
@@ -101,9 +91,5 @@
 
 	> .user {
 		grid-area: user;
-
-		> h3 {
-			display: none;
-		}
 	}
 }
