@@ -33,6 +33,7 @@ article {
         margin-right: 1px; }
         article header > .favorites > li > a {
           border-top-left-radius: 4px;
+          border-top-right-radius: 9px;
           background: #d8d8d8;
           height: 9px;
           margin-top: 5px;
@@ -40,8 +41,8 @@ article {
           article header > .favorites > li > a:after {
             border-right: 3px solid #efefef;
             border-top: 3px solid #efefef;
-            border-left: 4px solid transparent;
-            border-bottom: 4px solid transparent;
+            border-left: 3px solid transparent;
+            border-bottom: 3px solid transparent;
             content: '';
             height: 0;
             position: absolute;

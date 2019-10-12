@@ -1,11 +1,12 @@
 @mixin tab($back-element-color, $color: transparent) {
 	border-top-left-radius: 4px;
+	border-top-right-radius: 9px;
 
 	&:after {
 		border-right: 3px solid $back-element-color;
 		border-top: 3px solid $back-element-color;
-		border-left: 4px solid $color;
-		border-bottom: 4px solid $color;
+		border-left: 3px solid $color;
+		border-bottom: 3px solid $color;
 		content: '';
 		height: 0;
 		position: absolute;

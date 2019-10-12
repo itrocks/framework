@@ -2,17 +2,20 @@ body {
   --dark-color: #d8d8d8;
   --light-color: #efefef;
   --transition-duration: 50ms;
-  background: white;
+  background: #d8d8d8;
   color: #444;
   font-family: Roboto, sans-serif;
   font-size: 12px; }
+  body > * {
+    background: white; }
   body > .company.logo {
-    border-bottom: 2px solid #d8d8d8d8;
-    border-right: 2px solid #d8d8d8d8;
+    border-bottom: 2px solid #d8d8d8;
+    border-right: 2px solid #d8d8d8;
+    border-top-right-radius: 6px;
     position: relative; }
     body > .company.logo:after {
-      border-right: 2px solid #d8d8d8d8;
-      border-top: 2px solid #d8d8d8d8;
+      border-right: 2px solid #d8d8d8;
+      border-top: 2px solid #d8d8d8;
       border-left: 2px solid transparent;
       border-bottom: 2px solid transparent;
       content: '';
@@ -22,7 +25,7 @@ body {
       top: 0;
       width: 0; }
   body > #menu {
-    border-right: 2px solid #d8d8d8d8; }
+    border-right: 2px solid #d8d8d8; }
 
 body {
   --z-index: 0;

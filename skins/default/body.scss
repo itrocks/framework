@@ -7,14 +7,19 @@ body {
 	--dark-color: #d8d8d8;
 	--light-color: #efefef;
 	--transition-duration: 50ms;
-	background: $background;
+	background: #d8d8d8;
 	color: $color;
 	font-family: Roboto, sans-serif;
 	font-size: $font-size;
 
+	> * {
+		background: $background;
+	}
+
 	> .company.logo {
 		border-bottom: $section-border;
 		border-right: $section-border;
+		border-top-right-radius: 6px;
 		position: relative;
 
 		&:after {
