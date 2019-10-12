@@ -13,12 +13,10 @@ nav#menu {
       font-size: 0;
       height: 64px;
       width: 44px; }
-    nav#menu > .actions > .filter {
-      width: 100%; }
-      nav#menu > .actions > .filter > label {
-        display: none; }
-      nav#menu > .actions > .filter > input {
-        width: calc(100% - 30px); }
+    nav#menu > .actions > .filter > label {
+      display: none; }
+    nav#menu > .actions > .filter > input {
+      width: calc(100% - 30px); }
   nav#menu > h2 {
     display: none; }
   nav#menu > ul > li > h3 {
@@ -29,6 +27,7 @@ nav#menu {
     height: 41px;
     width: 100%; }
     nav#menu > ul > li > h3 > a {
+      cursor: default;
       display: table-cell;
       padding-left: 42px;
       vertical-align: middle; }

@@ -24,7 +24,6 @@ nav#menu {
 		}
 
 		> .filter {
-			width: 100%;
 
 			> label {
 				display: none;
@@ -53,6 +52,7 @@ nav#menu {
 				width: 100%;
 
 				> a {
+					cursor: default;
 					display: table-cell;
 					padding-left: 42px;
 					vertical-align: middle;
