@@ -2,7 +2,7 @@ article ol.properties > li.block,
 article ol.properties > li.component-objects,
 article ol.properties > li.objects {
   background-color: #f8f8f8;
-  padding: 0 10px 10px; }
+  padding: 0 10px; }
   article ol.properties > li.block > div,
   article ol.properties > li.component-objects > div,
   article ol.properties > li.objects > div {

@@ -48,8 +48,8 @@ article ol.properties:not(.tiny) {
     display: block;
     font-size: 14px;
     font-weight: bold;
-    height: 24px;
-    padding: 4px 0;
+    height: 34px;
+    padding: 10px 0;
     width: 100%; }
     article ol.properties:not(.tiny) > li.block > label:first-letter,
     article ol.properties:not(.tiny) > li.component-objects > label:first-letter,
