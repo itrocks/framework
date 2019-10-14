@@ -171,10 +171,12 @@ class Search_Parameters_Parser
 			$search       = $this->applyComplexValue($search_value, $property);
 			if ($search instanceof Func\Negate) {
 				$search->negate();
-			} else {
+			}
+			else {
 				$search = Func::notEqual($search);
 			}
-		} else {
+		}
+		else {
 			$search = $this->applyComplexValue($search_value, $property);
 		}
 		return $search;
