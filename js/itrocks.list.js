@@ -116,7 +116,7 @@ $(document).ready(function()
 
 		var $trailing = $table.find('> thead > tr > :last-child');
 		$trailing.css({ 'min-width': $trailing.width().toString() + 'px', 'width': '100%' });
-		$table.find('> tbody > tr > :last-child').after($('<td class="trailing" style="width: 100%">'));
+		$table.find('> tbody > tr:not(.more) > :last-child').after($('<td class="trailing" style="width: 100%">'));
 
 	});
 

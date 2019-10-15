@@ -10,8 +10,9 @@
 	var createScrollBarsDOM = function($element)
 	{
 		var scrollbar = $element.data('scrollbar');
-		var arrows    = scrollbar.settings.arrows;
-		var direction = scrollbar.settings.direction;
+		var settings  = scrollbar.settings;
+		var arrows    = settings.arrows;
+		var direction = settings.direction;
 		scrollbar.$angle = (direction === 'both')
 			? $('<div class="scrollbar angle"/>').appendTo($element)
 			: null;
@@ -336,14 +337,16 @@
 	var initTableFixedColumns = function($table)
 	{
 		var scrollbar     = $table.data('scrollbar');
-		var fixed_columns = scrollbar.settings.fixed_columns;
+		var settings      = scrollbar.settings;
+		var fixed_columns = settings.fixed_columns;
+		var tr_selector   = 'tr' + settings.tr_filter;
 		scrollbar.columns = {};
 		if (fixed_columns) {
 			$table.find(fixed_columns).each(function() {
 				var $fixed = $(this);
 				var index  = $fixed.prevAll().length + 1;
 				if (scrollbar.columns[index] === undefined) {
-					scrollbar.columns[index] = $table.find('tr > :nth-child(' + index + ')');
+					scrollbar.columns[index] = $table.find(tr_selector + ' > :nth-child(' + index + ')');
 				}
 			});
 		}
@@ -703,6 +706,7 @@
 			draw:                    null,   // event called after redraw
 			direction:               'both', // both, horizontal, vertical
 			fixed_columns:           '.fix', // jQuery selector for fixed columns
+			tr_filter:               '',     // can filter body lines to translate position
 			vertical_scrollbar_near: 'both'  // both, foot, head
 		}, settings);
 
