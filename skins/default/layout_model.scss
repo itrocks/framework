@@ -27,7 +27,7 @@ article.layout_model {
 	.editor {
 
 		> h3 {
-			visibility: hidden;
+			display: none;
 		}
 
 		> :not(h3) {
@@ -108,6 +108,7 @@ article.layout_model {
 		}
 
 		.toolbox {
+			width: 200px;
 
 			> h4 {
 				display: none;
@@ -154,8 +155,9 @@ article.layout_model {
 							vertical-align: middle;
 						}
 
-						> input, textarea {
-							max-width: 200px;
+						> input, select, textarea {
+							height: 22px;
+							padding: 0;
 						}
 					}
 				}

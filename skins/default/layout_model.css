@@ -13,7 +13,7 @@ article.layout_model.output .snap.line,
 article.layout_model.output .toolbox {
   display: none; }
 article.layout_model .editor > h3 {
-  visibility: hidden; }
+  display: none; }
 article.layout_model .editor > :not(h3) {
   display: inline-block;
   vertical-align: top; }
@@ -60,34 +60,37 @@ article.layout_model .editor .tool.snap.line {
       width: 18px; }
   article.layout_model .editor .tool.snap.line > .handle {
     position: absolute; }
-article.layout_model .editor .toolbox > h4 {
-  display: none; }
-article.layout_model .editor .toolbox > .pages, article.layout_model .editor .toolbox > .selected.tools {
-  display: none; }
-article.layout_model .editor .toolbox > .add.tools span {
-  cursor: pointer;
-  padding: 2px 0; }
-article.layout_model .editor .toolbox > .pages h5, article.layout_model .editor .toolbox > .tools h5 {
-  font-weight: normal; }
-article.layout_model .editor .toolbox > .pages li, article.layout_model .editor .toolbox > .tools li {
-  list-style: none;
-  margin: 0; }
-article.layout_model .editor .toolbox > .pages ul, article.layout_model .editor .toolbox > .tools ul {
-  background-color: #dcdcdd;
-  border: solid 1px #606060;
-  border-radius: 0 2px 2px;
-  padding: 2px 8px 2px 2px;
-  margin-bottom: 1em; }
-  article.layout_model .editor .toolbox > .pages ul > li, article.layout_model .editor .toolbox > .tools ul > li {
-    display: table-row; }
-    article.layout_model .editor .toolbox > .pages ul > li > *, article.layout_model .editor .toolbox > .tools ul > li > * {
-      display: table-cell; }
-    article.layout_model .editor .toolbox > .pages ul > li > label, article.layout_model .editor .toolbox > .tools ul > li > label {
-      padding-right: .5ch;
-      vertical-align: middle; }
-    article.layout_model .editor .toolbox > .pages ul > li > input, article.layout_model .editor .toolbox > .pages ul > li textarea, article.layout_model .editor .toolbox > .tools ul > li > input, article.layout_model .editor .toolbox > .tools ul > li textarea {
-      max-width: 200px; }
-article.layout_model .editor .toolbox > .pages label[for^='background'] {
-  display: none; }
-article.layout_model .editor .toolbox > .pages input[id^='background'] {
-  column-span: all; }
+article.layout_model .editor .toolbox {
+  width: 200px; }
+  article.layout_model .editor .toolbox > h4 {
+    display: none; }
+  article.layout_model .editor .toolbox > .pages, article.layout_model .editor .toolbox > .selected.tools {
+    display: none; }
+  article.layout_model .editor .toolbox > .add.tools span {
+    cursor: pointer;
+    padding: 2px 0; }
+  article.layout_model .editor .toolbox > .pages h5, article.layout_model .editor .toolbox > .tools h5 {
+    font-weight: normal; }
+  article.layout_model .editor .toolbox > .pages li, article.layout_model .editor .toolbox > .tools li {
+    list-style: none;
+    margin: 0; }
+  article.layout_model .editor .toolbox > .pages ul, article.layout_model .editor .toolbox > .tools ul {
+    background-color: #dcdcdd;
+    border: solid 1px #606060;
+    border-radius: 0 2px 2px;
+    padding: 2px 8px 2px 2px;
+    margin-bottom: 1em; }
+    article.layout_model .editor .toolbox > .pages ul > li, article.layout_model .editor .toolbox > .tools ul > li {
+      display: table-row; }
+      article.layout_model .editor .toolbox > .pages ul > li > *, article.layout_model .editor .toolbox > .tools ul > li > * {
+        display: table-cell; }
+      article.layout_model .editor .toolbox > .pages ul > li > label, article.layout_model .editor .toolbox > .tools ul > li > label {
+        padding-right: .5ch;
+        vertical-align: middle; }
+      article.layout_model .editor .toolbox > .pages ul > li > input, article.layout_model .editor .toolbox > .pages ul > li select, article.layout_model .editor .toolbox > .pages ul > li textarea, article.layout_model .editor .toolbox > .tools ul > li > input, article.layout_model .editor .toolbox > .tools ul > li select, article.layout_model .editor .toolbox > .tools ul > li textarea {
+        height: 22px;
+        padding: 0; }
+  article.layout_model .editor .toolbox > .pages label[for^='background'] {
+    display: none; }
+  article.layout_model .editor .toolbox > .pages input[id^='background'] {
+    column-span: all; }
