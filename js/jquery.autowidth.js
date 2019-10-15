@@ -369,7 +369,7 @@
 	//------------------------------------------------------------------------------ $(window).resize
 	$(window).resize(function()
 	{
-		$('.auto_width').each(function() { $(this).keyup(); });
+		$('.auto_width:visible').each(function() { $(this).keyup(); });
 	});
 
 })( jQuery );
