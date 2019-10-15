@@ -158,10 +158,12 @@ class Translator
 	 * @param $context               string if empty, use the actual context set by enterContext()
 	 * @param $context_property_path string ie 'property_name.sub_property', accepts (and ignore) '*'
 	 * @param $limit_to              string[] if set, limit texts to these results (when wildcards)
+	 * @param $allow_multiple        boolean allow multiple reverse translations for one text
 	 * @return string|string[]
 	 */
 	public function reverse(
-		$translation, $context = '', $context_property_path = '', array $limit_to = null
+		$translation, $context = '', $context_property_path = '', array $limit_to = null,
+		$allow_multiple = false
 	) {
 		if (Wildcard::containsWildcards($translation)) {
 			$translation = str_replace(['?', '*'], ['_', '%'], $translation);
@@ -203,6 +205,17 @@ class Translator
 				[join(', ', $text_parts), $this->language, $context, $translation]
 			);
 		}
+		if ($allow_multiple && isset($text)) {
+			$results = [];
+			foreach ($texts as $text) {
+				if ($text->translation === $translation) {
+					$results[] = strIsCapitals($translation[0]) ? ucfirsta($text->text) : $text->text;
+				}
+			}
+			if (count($results) > 1) {
+				return $results;
+			}
+		}
 		$text = isset($text) ? $text->text : $translation;
 		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
 	}
@@ -241,9 +254,15 @@ class Translator
 			foreach ($translations as $found_translation) {
 				// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
 				if (!Wildcard::containsWildcards($found_translation->translation)) {
-					$texts[] = $this->reverse(
-						$found_translation->translation, $context, $context_property_path
+					$more_texts = $this->reverse(
+						$found_translation->translation, $context, $context_property_path, null, true
 					);
+					if (is_array($more_texts)) {
+						$texts = array_merge($texts, $more_texts);
+					}
+					else {
+						$texts[] = $more_texts;
+					}
 				}
 			}
 		}
