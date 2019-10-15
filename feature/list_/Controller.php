@@ -1034,7 +1034,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$value = Dao::read($value, $property->getType()->asString());
 			}
 			/** @noinspection PhpUnhandledExceptionInspection valid $property */
-			$property = new Reflection_Property_Value($property->class, $property->name, $value, true);
+			$property = new Reflection_Property_Value(
+				$property->root_class, $property->path, $value, true
+			);
 			$this->prepareSearchPropertyComponent($property);
 			$property->value(Loc::propertyToIso($property, $value));
 		}

@@ -188,6 +188,9 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function getObject($with_default = false)
 	{
+		if ($this->final_value) {
+			return null;
+		}
 		$object = $this->object;
 		if (strpos($this->path, DOT)) {
 			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
