@@ -184,7 +184,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			($object instanceof Duplicate) || (new Reflection_Class($object))->getAnnotations('duplicate')
 		) {
-			$buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE] = new Button(
+			$buttons[Feature::F_DUPLICATE] = new Button(
 				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE
 			);
 		}
@@ -193,8 +193,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$buttons[Feature::F_PRINT] = new Button(
 			'Print',
 			View::link($object, Feature::F_PRINT),
-			Feature::F_PRINT,
-			[Button::SUB_BUTTONS => $layout_model_buttons]
+			Feature::F_PRINT
 		);
 		$this->selectPrintButton($buttons[Feature::F_PRINT], $layout_model_buttons);
 
