@@ -783,7 +783,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$count = Count::in($options);
 
 		if ($list_settings->maximum_displayed_lines_count) {
-			echo "<script> console.log('$_SERVER[HTTP_TARGET_HEIGHT]'); </script>";
 			$max_lines = isset($_SERVER['HTTP_TARGET_HEIGHT'])
 				? intval(ceil($_SERVER['HTTP_TARGET_HEIGHT'] / 33))
 				: 20;
