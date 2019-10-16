@@ -624,6 +624,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$parameters,
 			[
 				'allow_select_all'              => true,
+				'class'                         => Builder::current()->sourceClassName($class_name),
 				'column_select'                 => $lock_columns ? '' : 'column_select',
 				'customized_lists'              => $customized_list_settings,
 				'default_title'                 => ucfirst(Names::classToDisplay($this->class_names)),
@@ -643,6 +644,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'rows_count'                    => $count->count,
 				'search_summary'                => $search_summary,
 				'selected'                      => 'selected',
+				'set'                           => Names::classToSet($class_name),
 				'settings'                      => $list_settings,
 				'title'                         => $list_settings->name ?: $list_settings->title()
 			]

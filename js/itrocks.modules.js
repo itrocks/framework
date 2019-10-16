@@ -9,7 +9,7 @@ $(document).ready(function()
 		var $menu       = $('#menu');
 		var found       = '';
 		var found_count = 0;
-		var path        = app.uri_base + SL + $article.data('class').repl(BS, SL);
+		var path        = $article.data('class');
 		// copy the article class and data-class into the body
 		var classes        = $article.attr('class');
 		var data_class     = $article.data('class');
@@ -23,15 +23,21 @@ $(document).ready(function()
 		}
 		// find the link into the menu which path matches the article data-class path best
 		do {
-			$menu.find('li > a[href]').each(function () {
-				var $a    = $(this);
-				var check = $a.attr('href');
+			$menu.find('li[data-class]').each(function () {
+				var $item = $(this);
+				var check = $item.data('class');
 				var check_length;
-				while (check && !path.startsWith(check)) {
-					check = check.lLastParse(SL, 1, false);
+				var check2 = check;
+				while (check2 && !path.startsWith(check2) && !check2.startsWith(path)) {
+					check2 = check2.lLastParse(SL, 1, false);
 				}
+				var path2 = path;
+				while (path2 && !check.startsWith(path2) && !path2.startsWith(check)) {
+					path2 = path2.lLastParse(SL, 1, false);
+				}
+				check = (path2.length < check2.length) ? check2 : path2;
 				if (check && ((check_length = check.split(SL).length) > found_count)) {
-					$found      = $a;
+					$found      = $item;
 					found       = check;
 					found_count = check_length;
 				}
@@ -46,7 +52,7 @@ $(document).ready(function()
 			return;
 		}
 		// set article module
-		var $item   = $found.parent();
+		var $item   = $found;
 		var $module = $item.parent().parent();
 		var module  = $module.attr('id');
 		$article.attr('data-module', module);
