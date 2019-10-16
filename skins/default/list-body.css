@@ -39,3 +39,41 @@ article.list > form > table > tbody > tr td {
     padding-top: 10px; }
 article.list > form > table > tbody > tr th {
   padding: 0 .83em 0 .75em; }
+article.list > form > table > tbody > tr.more {
+  display: block;
+  font-size: 0;
+  text-align: center; }
+  article.list > form > table > tbody > tr.more > td {
+    box-shadow: none;
+    display: block;
+    height: 30px; }
+    article.list > form > table > tbody > tr.more > td > .loading {
+      display: none; }
+
+article.list > form > table.complete > tbody > tr.more {
+  display: none; }
+
+.loading {
+  animation: loading 400ms ease 0ms infinite alternate;
+  background: rgba(0, 0, 0, 0.6);
+  border-radius: 50%;
+  box-sizing: border-box;
+  display: inline-block;
+  font-size: 0;
+  height: 10px;
+  margin: 10px 5px;
+  opacity: 1;
+  transform: scale(0);
+  width: 10px; }
+  .loading.two {
+    animation: loading 400ms ease 200ms infinite alternate; }
+  .loading.three {
+    animation: loading 400ms ease 400ms infinite alternate; }
+
+@keyframes loading {
+  from {
+    opacity: 1;
+    transform: scale(1); }
+  to {
+    opacity: .25;
+    transform: scale(0.75); } }

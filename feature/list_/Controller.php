@@ -11,6 +11,7 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Group_Concat;
+use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Count;
@@ -75,7 +76,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $default_displayed_lines_count = 20;
+	public $default_displayed_lines_count = 25;
 
 	//-------------------------------------------------------------------- $displayed_lines_count_gap
 	/**
@@ -91,7 +92,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var \Exception[]
 	 */
-	private $errors = [];
+	protected $errors = [];
+
+	//------------------------------------------------------------------------------ $load_more_lines
+	/**
+	 * @var boolean
+	 */
+	protected $load_more_lines = null;
 
 	//---------------------------------------------------------------- $maximum_displayed_lines_count
 	/**
@@ -217,6 +224,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			}
 			elseif (is_numeric($parameters['move'])) {
 				$list_settings->start_display_line_number = $parameters['move'];
+				if (isset($parameters['last_time'])) {
+					$did_change = false;
+				}
 			}
 		}
 		elseif (isset($parameters['remove_property'])) {
@@ -541,7 +551,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{
-		$parameters    = $parameters->getObjects();
+		$load_time             = time();
+		$parameters            = $parameters->getObjects();
+		$this->load_more_lines = isset($parameters['last_time']) && isset($parameters['move']);
 		$list_settings = List_Setting\Set::current($class_name);
 		$list_settings->cleanup();
 		$did_change = $this->applyParametersToListSettings($list_settings, $parameters, $form);
@@ -556,6 +568,17 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		// before to fire readData (that may change $list_settings if error found)
 		// we need to get a copy in order to display summary with original given parameters
 		$list_settings_before_read = clone $list_settings;
+		// if load more lines and table updated : reload all from start
+		if ($this->load_more_lines && (($sql = Dao::current()) instanceof Link)) {
+			/** @var $sql Link */
+			$last_update = $sql->getConnection()->lastUpdate($class_name);
+			if ($last_update && (strtotime($last_update) >= $load_time)) {
+				$list_settings->maximum_displayed_lines_count = $parameters['move']
+					+ $list_settings->maximum_displayed_lines_count;
+				$list_settings->start_display_line_number = 1;
+				$parameters['updated'] = true;
+			}
+		}
 		try {
 			$data = $this->readData($class_name, $list_settings, $search, $options);
 			// SM : Moved from applyParametersToListSettings()
@@ -591,6 +614,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$displayed_lines_count = min($data->length(), $list_settings->maximum_displayed_lines_count);
 		$less_twenty    = $displayed_lines_count > $this->default_displayed_lines_count;
 		$lock_columns   = List_Annotation::of($list_settings->getClass())->has(List_Annotation::LOCK);
+		$more           = ($displayed_lines_count < $count->count);
 		$more_hundred   = ($displayed_lines_count < $this->maximum_displayed_lines_count)
 			&& ($displayed_lines_count < $count->count);
 		$more_thousand  = ($displayed_lines_count < $this->maximum_displayed_lines_count)
@@ -609,13 +633,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'displayed_lines_count_gap'     => $this->displayed_lines_count_gap,
 				'errors_summary'                => $this->getErrorsSummary(),
 				'less_twenty'                   => $less_twenty,
+				'load_time'                     => $load_time,
 				'lock_columns'                  => $lock_columns,
 				'maximum_displayed_lines_count' => $this->maximum_displayed_lines_count,
 				'module'                        => $this->getModule($class_name),
+				'more'                          => $more,
 				'more_hundred'                  => $more_hundred,
 				'more_thousand'                 => $more_thousand,
 				'properties'                    => $this->getProperties($list_settings_before_read),
-				'rows_count'                    => (int)$count->count,
+				'rows_count'                    => $count->count,
 				'search_summary'                => $search_summary,
 				'selected'                      => 'selected',
 				'settings'                      => $list_settings,
@@ -758,8 +784,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$count = Count::in($options);
 
 		if ($list_settings->maximum_displayed_lines_count) {
+			if ($list_settings->maximum_displayed_lines_count < 25) {
+				$list_settings->maximum_displayed_lines_count = 25;
+			}
 			$limit = new Limit(
-				$list_settings->start_display_line_number,
+				$this->load_more_lines ? $list_settings->start_display_line_number : 1,
 				$list_settings->maximum_displayed_lines_count
 			);
 			$options[] = $limit;
@@ -775,7 +804,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 		$data = $this->readDataSelectSearch($class_name, $properties_path, $search, $options);
 		if (isset($limit) && isset($count)) {
-			if (($data->length() < $limit->count) && ($limit->from > 1)) {
+			if (!$this->load_more_lines && ($data->length() < $limit->count) && ($limit->from > 1)) {
 				$limit->from = max(1, $count->count - $limit->count + 1);
 				$list_settings->start_display_line_number = $limit->from;
 				$list_settings->save();

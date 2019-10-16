@@ -701,6 +701,13 @@
 	 */
 	$.fn.scrollBar = function(settings)
 	{
+		if (settings === 'draw') {
+			draw(this);
+			scroll(this, 'horizontal', 0);
+			scroll(this, 'vertical',   0);
+			return this;
+		}
+
 		settings = $.extend({
 			arrows:                  false,  // false, true
 			draw:                    null,   // event called after redraw
