@@ -76,7 +76,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 *
 	 * @var integer
 	 */
-	public $default_displayed_lines_count = 25;
+	public $default_displayed_lines_count = 20;
 
 	//-------------------------------------------------------------------- $displayed_lines_count_gap
 	/**
@@ -783,8 +783,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$count = Count::in($options);
 
 		if ($list_settings->maximum_displayed_lines_count) {
-			if ($list_settings->maximum_displayed_lines_count < 25) {
-				$list_settings->maximum_displayed_lines_count = 25;
+			echo "<script> console.log('$_SERVER[HTTP_TARGET_HEIGHT]'); </script>";
+			$max_lines = isset($_SERVER['HTTP_TARGET_HEIGHT'])
+				? intval(ceil($_SERVER['HTTP_TARGET_HEIGHT'] / 33))
+				: 20;
+			if ($list_settings->maximum_displayed_lines_count < $max_lines) {
+				$list_settings->maximum_displayed_lines_count = $max_lines;
 			}
 			$limit = new Limit(
 				$this->load_more_lines ? $list_settings->start_display_line_number : 1,

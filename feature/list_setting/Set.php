@@ -21,7 +21,7 @@ class Set extends Setting\Custom\Set
 	 *
 	 * @var integer
 	 */
-	public $maximum_displayed_lines_count = 25;
+	public $maximum_displayed_lines_count = 20;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
