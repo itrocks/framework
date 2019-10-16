@@ -15,6 +15,10 @@ ul.actions > li {
 		background-image: url('img/delete-24.svg');
 	}
 
+	&.duplicate > a {
+		background-image: url('img/duplicate-24.svg');
+	}
+
 	&.edit > a {
 		background-image: url('img/edit-24.svg');
 	}

@@ -10,6 +10,10 @@ li.action.delete > a,
 li.actions > ul > li.delete > a,
 ul.actions > li.delete > a {
   background-image: url("img/delete-24.svg"); }
+li.action.duplicate > a,
+li.actions > ul > li.duplicate > a,
+ul.actions > li.duplicate > a {
+  background-image: url("img/duplicate-24.svg"); }
 li.action.edit > a,
 li.actions > ul > li.edit > a,
 ul.actions > li.edit > a {
