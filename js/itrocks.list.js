@@ -124,7 +124,10 @@ $(document).ready(function()
 				}
 			}, 500);
 			// ask server for more lines
+			more_request_headers['target-height'] = $tbody.height();
+			more_request_headers['target-width']  = $tbody.width();
 			$.ajax({
+				beforeSend: requestHeaders,
 				url:     app.askAnd(uri, 'last_time=' + time + '&move=' + move + '&as_widget'),
 				success: function(data)
 				{

@@ -1,3 +1,24 @@
+
+var more_request_headers = {};
+
+//---------------------------------------------------------------------------------- requestHeaders
+/**
+ * Add 'beforeSend: requestHeaders' to your ajax calls to add information about the client
+ *
+ * @param request
+ */
+var requestHeaders = function(request)
+{
+	request.setRequestHeader('screen-height', screen.height);
+	request.setRequestHeader('screen-width',  screen.width);
+	request.setRequestHeader('window-height', $(window).height());
+	request.setRequestHeader('window-width',  $(window).width());
+	for (var header in more_request_headers) if (more_request_headers.hasOwnProperty(header)) {
+		request.setRequestHeader(header, more_request_headers[header]);
+	}
+	more_request_headers = {};
+};
+
 (function($)
 {
 
@@ -396,8 +417,17 @@
 						return;
 					}
 					var $anchor = $(anchor);
-					var xhr     = undefined;
 					var jax;
+					var target = $anchor.attr('target');
+					var xhr    = undefined;
+					if (target.beginsWith('#')) {
+						var $target;
+						if ((target === '#main') && !($target = $(target)).length) {
+							$target = $('main');
+						}
+						more_request_headers['target-height'] = $target.height();
+						more_request_headers['target-width']  = $target.width();
+					}
 					if ($anchor.hasClass(settings.submit)) {
 						var $parent_form = $anchor.closest('form');
 						if ($parent_form.length) {
@@ -416,6 +446,7 @@
 							}
 							else {
 								xhr = $.ajax(jax = $.extend(ajax, {
+									beforeSend: requestHeaders,
 									data: $parent_form.serialize(),
 									type: $parent_form.attr('method'),
 									url:  urlAppend(anchor.href, anchor.search)
@@ -426,6 +457,7 @@
 					}
 					else if ($anchor.data('post')) {
 						xhr = $.ajax(jax = $.extend(ajax, {
+							beforeSend: requestHeaders,
 							data: $anchor.data('post'),
 							type: 'post',
 							url:  urlAppend(anchor.href, anchor.search)
@@ -433,6 +465,7 @@
 					}
 					if (!xhr) {
 						xhr = $.ajax(jax = $.extend(ajax, {
+							beforeSend: requestHeaders,
 							url: urlAppend(anchor.href, anchor.search)
 						}));
 					}
@@ -477,6 +510,7 @@
 				}
 				else {
 					xhr = $.ajax(jax = $.extend(ajax, {
+						beforeSend: requestHeaders,
 						data: $form.serialize(),
 						type: $form.attr('method'),
 						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
