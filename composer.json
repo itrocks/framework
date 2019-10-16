@@ -10,7 +10,7 @@
 	"name":         "itrocks/framework",
 	"repositories": [{ "type": "composer", "url": "https://hub.itrocks.org" }],
 	"require": {
-		"alvaro-prieto/colResizable":            "1.6.*",
+		"alvaro-prieto/colresizable":            "1.6.*",
 		"apache/incubator-echarts":              "4.2.*",
 		"bappli/document-designer":              "dev-master",
 		"components/flag-icon-css":              "3.*",
