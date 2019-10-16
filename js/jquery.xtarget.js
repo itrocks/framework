@@ -421,12 +421,14 @@ var requestHeaders = function(request)
 					var target = $anchor.attr('target');
 					var xhr    = undefined;
 					if (target.beginsWith('#')) {
-						var $target;
-						if ((target === '#main') && !($target = $(target)).length) {
+						var $target = $(target);
+						if ((target === '#main') && !$target.length) {
 							$target = $('main');
 						}
-						more_request_headers['target-height'] = $target.height();
-						more_request_headers['target-width']  = $target.width();
+						if ($target.length) {
+							more_request_headers['target-height'] = $target.height();
+							more_request_headers['target-width']  = $target.width();
+						}
 					}
 					if ($anchor.hasClass(settings.submit)) {
 						var $parent_form = $anchor.closest('form');
