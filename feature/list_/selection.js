@@ -1,5 +1,7 @@
 $(document).ready(function()
 {
+	var $body = $('body');
+
 	// Only if we have select_all, we can exclude a part of elements
 	var excluded_selection = [];
 	var select_all         = [];
@@ -37,20 +39,21 @@ $(document).ready(function()
 	{
 		var count_elements, select_all_content, selection_content, selection_exclude_content, title;
 		var $selection_checkbox = $article_list.find(selector_checkbox);
+		var article_id          = $article_list.data('selection-id');
 		var selection_checkbox  = $selection_checkbox[0];
 		var total               = $selector.children('input[name=select_all]').data('count');
-		if (select_all[$article_list.id]) {
-			count_elements             = (total - excluded_selection[$article_list.id].length);
+		if (select_all[article_id]) {
+			count_elements             = (total - excluded_selection[article_id].length);
 			select_all_content         = 1;
 			selection_checkbox.checked = !!count_elements;
 			selection_content          = '';
-			selection_exclude_content  = excluded_selection[$article_list.id].join();
+			selection_exclude_content  = excluded_selection[article_id].join();
 			title                      = tr('uncheck to deselect all lines');
 		}
 		else {
-			count_elements             = selection[$article_list.id].length;
+			count_elements             = selection[article_id].length;
 			select_all_content         = 0;
-			selection_content          = selection[$article_list.id].join();
+			selection_content          = selection[article_id].join();
 			selection_exclude_content  = '';
 			selection_checkbox.checked = (count_elements && (count_elements === total));
 			title                      = tr('check to select all $!1 lines').repl('$!1', total);
@@ -64,15 +67,16 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------------------- article.list
-	$('body').build('each', 'article.list', function()
+	$body.build('each', 'article.list', function()
 	{
-		var $article  = $(this);
-		var $table    = $article.find('> form > table');
-		var $search   = $table.find('> thead > .search');
-		var $selector = $table.find('> thead > .title > .visible.lines');
-		var $summary  = $article.find('.summary .lines');
-		$article.id   = $article.attr('id');
-		$summary.data('text', $summary.html());
+		var $article   = $(this);
+		var $table     = $article.find('> form > table');
+		var $search    = $table.find('> thead > .search');
+		var $selector  = $table.find('> thead > .title > .visible.lines');
+		var $summary   = $article.find('.summary .lines');
+		var article_id = $article.attr('id');
+		$article.data('selection-id', article_id);
+		$summary.data('text',         $summary.html());
 
 		//-------------------------------------------------------------- .search input|textarea keydown
 		// reload list when #13 pressed into a search input
@@ -100,23 +104,10 @@ $(document).ready(function()
 		});
 
 		//------------------------------------------------------------------ input[type=checkbox] check
-		var $checkboxes = $article.find(checkboxes_select);
-		if ($article.id in selection) {
-			$checkboxes.each(function() {
-				if (
-					(select_all[$article.id] && ($.inArray(this.value, excluded_selection[$article.id]) === -1))
-					|| $.inArray(this.value, selection[$article.id]) !== -1
-				) {
-					var $checkbox = $(this);
-					$checkbox.prop('checked', true);
-					$checkbox.closest('tr').addClass('selected');
-				}
-			});
-		}
-		else {
-			excluded_selection[$article.id] = [];
-			select_all[$article.id]         = false;
-			selection[$article.id]          = [];
+		if (!(article_id in selection)) {
+			excluded_selection[article_id] = [];
+			select_all[article_id]         = false;
+			selection[article_id]          = [];
 		}
 
 		//-------------------------------------------------------- input.selector[type=checkbox] change
@@ -126,47 +117,6 @@ $(document).ready(function()
 				this.indeterminate = false;
 			}
 			selectAction(this.checked, 'all', event);
-		});
-
-		//---------------------------------------------------------------------------- tbody > th click
-		$article.find('th > input[type=checkbox]').parent().click(function(event)
-		{
-			if ($(event.target).is('input[type=checkbox]')) {
-				return;
-			}
-			$(this).children('input[type=checkbox]').click();
-		});
-
-		//----------------------------------------------------------------- input[type=checkbox] change
-		$checkboxes.change(function()
-		{
-			var $checkbox = $(this);
-			this.checked
-				? $checkbox.closest('tr').addClass('selected')
-				: $checkbox.closest('tr').removeClass('selected');
-			if (select_all[$article.id]) {
-				if (!this.checked && (excluded_selection[$article.id].indexOf(this.value) === -1)) {
-					excluded_selection[$article.id].push(this.value);
-				}
-				if (this.checked && (excluded_selection[$article.id].indexOf(this.value) > -1)) {
-					excluded_selection[$article.id]
-						.splice(excluded_selection[$article.id].indexOf(this.value), 1);
-				}
-				$article.find(checkboxes_select + '[value=' + this.value + ']')
-					.attr('checked', this.checked);
-			}
-			else {
-				if (this.checked && (selection[$article.id].indexOf(this.value) === -1)) {
-					selection[$article.id].push(this.value);
-				}
-				if (!this.checked && (selection[$article.id].indexOf(this.value) > -1)) {
-					selection[$article.id].splice(selection[$article.id].indexOf(this.value), 1);
-				}
-				// Repercussion if with have multiple lines
-				$article.find(checkboxes_select + '[value=' + this.value + ']')
-					.attr('checked', this.checked);
-			}
-			updateCount($article, $selector, $summary);
 		});
 
 		updateCount($article, $selector, $summary);
@@ -183,9 +133,9 @@ $(document).ready(function()
 		{
 			if (type === 'all') {
 				// Re-initialize selection
-				excluded_selection[$article.id] = [];
-				select_all[$article.id]         = select;
-				selection[$article.id]          = [];
+				excluded_selection[article_id] = [];
+				select_all[article_id]         = select;
+				selection[article_id]          = [];
 				var $checkboxes = $article.find('input[type=checkbox]');
 				$checkboxes.prop('checked', select);
 				select
@@ -230,6 +180,75 @@ $(document).ready(function()
 			// clean html dom
 			document.body.removeChild(form);
 			return false;
+		});
+
+	});
+
+	//------------------------------------------------------------------------------ tbody > th click
+	$body.build('call', 'article.list th > input[type=checkbox]', function()
+	{
+		this.parent().click(function(event) {
+			if ($(event.target).is('input[type=checkbox]')) {
+				return;
+			}
+			$(this).children('input[type=checkbox]').click();
+		});
+	});
+
+	//------------------------------------------------------------------- input[type=checkbox] change
+	$body.build('change', 'article.list ' + checkboxes_select, function()
+	{
+		var $checkbox  = $(this);
+		var $article   = $checkbox.closest('article.list');
+		var $selector  = $article.find('table > thead > .title > .visible.lines');
+		var $summary   = $article.find('.summary .lines');
+		var article_id = $article.data('selection-id');
+			this.checked
+			? $checkbox.closest('tr').addClass('selected')
+			: $checkbox.closest('tr').removeClass('selected');
+		if (select_all[article_id]) {
+			if (!this.checked && (excluded_selection[article_id].indexOf(this.value) === -1)) {
+				excluded_selection[article_id].push(this.value);
+			}
+			if (this.checked && (excluded_selection[article_id].indexOf(this.value) > -1)) {
+				excluded_selection[article_id]
+					.splice(excluded_selection[article_id].indexOf(this.value), 1);
+			}
+			$article.find(checkboxes_select + '[value=' + this.value + ']')
+				.attr('checked', this.checked);
+		}
+		else {
+			if (this.checked && (selection[article_id].indexOf(this.value) === -1)) {
+				selection[article_id].push(this.value);
+			}
+			if (!this.checked && (selection[article_id].indexOf(this.value) > -1)) {
+				selection[article_id].splice(selection[article_id].indexOf(this.value), 1);
+			}
+			// Repercussion if with have multiple lines
+			$article.find(checkboxes_select + '[value=' + this.value + ']')
+				.attr('checked', this.checked);
+		}
+		updateCount($article, $selector, $summary);
+	});
+
+	//------------------------------------ article.list th > input[type=checkbox]:not(.selector) call
+	$body.build('call', 'article.list ' + checkboxes_select, function()
+	{
+		var $checkboxes = this;
+		var $article    = $checkboxes.closest('article');
+		var article_id  = $article.data('selection-id');
+		if (!(article_id in selection)) {
+			return;
+		}
+		$checkboxes.each(function() {
+			if (
+				(select_all[article_id] && ($.inArray(this.value, excluded_selection[article_id]) === -1))
+				|| $.inArray(this.value, selection[article_id]) !== -1
+			) {
+				var $checkbox = $(this);
+				$checkbox.prop('checked', true);
+				$checkbox.closest('tr').addClass('selected');
+			}
 		});
 	});
 
