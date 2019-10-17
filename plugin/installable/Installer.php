@@ -19,6 +19,7 @@ use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -169,6 +170,13 @@ class Installer
 		}
 		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
 			$this->install(Builder::current()->sourceClassName($feature_include->value));
+		}
+		foreach ($plugin_class->getAnnotations('feature_install') as $feature_install) {
+			/** @noinspection PhpUnhandledExceptionInspection valid class */
+			/** @var $feature_install Method_Annotation */
+			$feature_install->call(
+				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance()
+			);
 		}
 		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
 		$menu_items = [];
