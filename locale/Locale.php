@@ -138,7 +138,7 @@ class Locale implements Configurable
 		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
 			$value = $property->value();
 		}
-		$type = $property->getType();
+		$type = $property->getUserType();
 		if (is_null($value) && Null_Annotation::of($property)->value) {
 			return null;
 		}

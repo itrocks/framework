@@ -14,6 +14,8 @@ use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
@@ -518,13 +520,22 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getType()
 	{
-		$type = new Type($this->getAnnotation('var')->value);
+		$type = new Type(Var_Annotation::of($this)->value);
 		if ($type->isNull()) {
 			trigger_error(
 				$this->class . '::$' . $this->name . ' type not set using @var annotation', E_USER_ERROR
 			);
 		}
 		return $type;
+	}
+
+	//----------------------------------------------------------------------------------- getUserType
+	/**
+	 * @return Type
+	 */
+	public function getUserType()
+	{
+		return new Type(User_Var_Annotation::of($this)->value);
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
