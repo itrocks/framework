@@ -12,6 +12,7 @@ body {
     border-bottom: 2px solid #d8d8d8;
     border-right: 2px solid #d8d8d8;
     border-top-right-radius: 6px;
+    box-sizing: border-box;
     position: relative; }
     body > .company.logo:after {
       border-right: 2px solid #d8d8d8;
@@ -50,9 +51,11 @@ body {
   body > #notifications {
     grid-area: notifications; }
   body > #favorites {
+    display: none;
     grid-area: favorites; }
   body > main {
     grid-area: main;
+    margin-top: -1px;
     overflow: hidden; }
   body > aside {
     display: none;

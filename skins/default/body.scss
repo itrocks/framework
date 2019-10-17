@@ -20,6 +20,7 @@ body {
 		border-bottom: $section-border;
 		border-right: $section-border;
 		border-top-right-radius: 6px;
+		box-sizing: border-box;
 		position: relative;
 
 		&:after {
@@ -82,11 +83,13 @@ body {
 	}
 
 	> #favorites {
+		display: none;
 		grid-area: favorites;
 	}
 
 	> main {
 		grid-area: main;
+		margin-top: -1px;
 		overflow: hidden;
 	}
 
