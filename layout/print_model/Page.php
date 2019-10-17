@@ -7,6 +7,7 @@ use ITRocks\Framework\Layout\Print_Model;
 /**
  * Print model page
  *
+ * @override layout @getter
  * @override model @var Print_Model
  * @override ordering @max_length 2
  * @property Print_Model model
@@ -39,6 +40,23 @@ class Page extends Model\Page
 		$this->view_height  = 1188;
 		$this->view_width   = 840;
 		parent::__construct($ordering, $layout);
+	}
+
+	//------------------------------------------------------------------------------------- getLayout
+	/**
+	 * @returns string
+	 */
+	protected function getLayout()
+	{
+		if (($this->layout === '[]') || !$this->layout) {
+			$this->layout = json_encode([
+				['class' => 'horizontal snap line', 'top'  => 10 ],
+				['class' => 'horizontal snap line', 'top'  => 287],
+				['class' => 'vertical snap line',   'left' => 10 ],
+				['class' => 'vertical snap line',   'left' => 200]
+			]);
+		}
+		return $this->layout;
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption
