@@ -4,6 +4,9 @@ namespace ITRocks\Framework\Objects;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\View\Html\Template;
 
@@ -13,6 +16,9 @@ use ITRocks\Framework\View\Html\Template;
  * It deals with application-side locking in order that the next number has no jumps nor replicates
  *
  * @business
+ * @display_order identifier, last_update, last_value, format
+ * @feature Expert incremental counters configuration
+ * @feature_menu Administration
  * @list identifier, last_value, last_update, format
  * @representative identifier
  */
@@ -25,12 +31,13 @@ class Counter
 	 * @mandatory
 	 * @var string
 	 */
-	public $format = '{YEAR}%04s';
+	public $format = '{YEAR}%04d';
 
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @mandatory
 	 * @user readonly
+	 * @user_getter showIdentifier
 	 * @var string
 	 */
 	public $identifier;
@@ -45,7 +52,12 @@ class Counter
 
 	//----------------------------------------------------------------------------------- $last_value
 	/**
+	 * TODO output for the edit form, user_var for the list and the output... But isn't it the same ?
+	 *
+	 * @output string
 	 * @user readonly
+	 * @user_getter formatLastValue
+	 * @user_var string
 	 * @var integer
 	 */
 	public $last_value = 0;
@@ -70,7 +82,31 @@ class Counter
 	 */
 	public function __toString()
 	{
-		return strval($this->identifier);
+		return $this->showIdentifier();
+	}
+
+	//------------------------------------------------------------------------------- formatLastValue
+	/**
+	 * Returns the last counter value, formatted
+	 *
+	 * @param $object object|null
+	 * @return string
+	 */
+	public function formatLastValue($object = null)
+	{
+		$format = $this->format;
+		if (strpos($format, '{') !== false) {
+			$format = str_replace(
+				['{YEAR4}', '{YEAR}', '{MONTH}', '{DAY}', '{HOUR}', '{MINUTE}', '{SECOND}'],
+				[date('Y'), date('y'), date('m'), date('d'), date('H'), date('i'), date('s')],
+				$format
+			);
+			if (is_object($object) && (strpos($format, '{') !== false)) {
+				$format = (new Template($object))->parseVars($format);
+			}
+		}
+		$this->last_update = Date_Time::now();
+		return sprintf($format, $this->last_value);
 	}
 
 	//------------------------------------------------------------------------------------- increment
@@ -118,23 +154,11 @@ class Counter
 	 */
 	public function next($object = null)
 	{
-		$next_value = ++$this->last_value;
-		$format     = $this->format;
-		if (strpos($format, '{') !== false) {
-			if ($this->resetValue()) {
-				$next_value = $this->last_value = 1;
-			}
-			$format = str_replace(
-				['{YEAR4}', '{YEAR}', '{MONTH}', '{DAY}', '{HOUR}', '{MINUTE}', '{SECOND}'],
-				[date('Y'), date('y'), date('m'), date('d'), date('H'), date('i'), date('s')],
-				$format
-			);
-			if ($object && (strpos($format, '{') !== false)) {
-				$format = (new Template($object))->parseVars($format);
-			}
+		$this->last_value ++;
+		if ($this->resetValue()) {
+			$this->last_value = 1;
 		}
-		$this->last_update = Date_Time::now();
-		return sprintf($format, $next_value);
+		return $this->formatLastValue($object);
 	}
 
 	//------------------------------------------------------------------------------------ resetValue
@@ -155,6 +179,20 @@ class Counter
 			((strpos($format, '{DAY}') !== false) && ($date > $last->format('Y-m-d')))
 			|| ((strpos($format, '{MONTH}') !== false) && (substr($date, 0, 7) > $last->format('Y-m')))
 			|| ((strpos($format, '{YEAR') !== false) && (substr($date, 0, 4) > $last->format('Y')));
+	}
+
+	//-------------------------------------------------------------------------------- showIdentifier
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string
+	 */
+	public function showIdentifier()
+	{
+		if (class_exists($this->identifier)) {
+			/** @noinspection PhpUnhandledExceptionInspection class_exists */
+			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->identifier))->value);
+		}
+		return Loc::tr($this->identifier);
 	}
 
 }

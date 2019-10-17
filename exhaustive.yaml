@@ -3,6 +3,8 @@ ITRocks\Framework\Component\Menu:
     - /ITRocks/Framework/Users
     - /ITRocks/Framework/Logger/Entries
     - /ITRocks/Framework/Layout/Print_Models
+    - /ITRocks/Framework/Objects/Counters/Simple
+    - /ITRocks/Framework/Objects/Counters
     - /ITRocks/Framework/Layout/Display_Models
     - /ITRocks/Framework/Locale/Translations
     - /ITRocks/Framework/RAD/Features

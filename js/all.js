@@ -61,6 +61,7 @@ $.getScript(path + 'itrocks/framework/feature/list_/selection.js');
 $.getScript(path + 'itrocks/framework/feature/import/import.js');
 $.getScript(path + 'itrocks/framework/component/trashcan/trashcan.js');
 $.getScript(path + 'itrocks/framework/feature/validate/not_validated.js');
+$.getScript(path + 'itrocks/framework/objects/counter/assistant-configuration.js');
 $.getScript(path + 'itrocks/framework/property/select.js');
 $.getScript(path + 'itrocks/framework/rad/output.js');
 $.getScript(path + 'itrocks/framework/rad/rad.js');
