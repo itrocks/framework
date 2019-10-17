@@ -535,7 +535,8 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getUserType()
 	{
-		return new Type(User_Var_Annotation::of($this)->value);
+		$type = new Type(User_Var_Annotation::of($this)->value);
+		return $type->isNull() ? $this->getType() : $type;
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
