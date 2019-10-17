@@ -3,9 +3,12 @@ namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Model\Page;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ReflectionException;
 
@@ -21,8 +24,10 @@ abstract class Model
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
+	 * @alias document
 	 * @mandatory
 	 * @user readonly
+	 * @user_getter userGetClassName
 	 * @var string
 	 */
 	public $class_name;
@@ -44,6 +49,15 @@ abstract class Model
 	public function __toString()
 	{
 		return trim($this->class_name . SP . $this->name);
+	}
+
+	//--------------------------------------------------------------------------------- classNamePath
+	/**
+	 * @return string
+	 */
+	public function classNamePath()
+	{
+		return (new String_Class($this->class_name))->path();
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
@@ -85,7 +99,22 @@ abstract class Model
 		$property    = new Reflection_Property($this, 'pages');
 		$pages_class = $property->getType()->getElementTypeAsString();
 		/** @noinspection PhpIncompatibleReturnTypeInspection pages class type must be valid */
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		return Builder::create($pages_class, [$position]);
+	}
+
+	//------------------------------------------------------------------------------ userGetClassName
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string
+	 */
+	public function userGetClassName()
+	{
+		if ($this->class_name && class_exists($this->class_name)) {
+			/** @noinspection PhpUnhandledExceptionInspection class_exists */
+			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->class_name))->value);
+		}
+		return $this->class_name;
 	}
 
 }
