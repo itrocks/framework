@@ -95,12 +95,9 @@ article.list > form > table > thead {
 
 			> td {
 				background: #f8f8f8;
+				box-shadow: inset 1px 0 #d8d8d8, inset 0 -1px #d8d8d8;
 				padding: 0 1px;
 				vertical-align: top;
-
-				&:not(:last-child) {
-					box-shadow: inset 1px 0 #d8d8d8, inset 0 -1px #d8d8d8;
-				}
 
 				> input {
 					background: transparent;
