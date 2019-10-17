@@ -19,6 +19,22 @@ var requestHeaders = function(request)
 	more_request_headers = {};
 };
 
+//---------------------------------------------------------------------------- requestTargetHeaders
+var requestTargetHeaders = function($element)
+{
+	var target = $element.attr('target');
+	if (target.beginsWith('#')) {
+		var $target = $(target);
+		if ((target === '#main') && !$target.length) {
+			$target = $('main');
+		}
+		if ($target.length) {
+			more_request_headers['target-height'] = $target.height();
+			more_request_headers['target-width']  = $target.width();
+		}
+	}
+};
+
 (function($)
 {
 
@@ -418,18 +434,8 @@ var requestHeaders = function(request)
 					}
 					var $anchor = $(anchor);
 					var jax;
-					var target = $anchor.attr('target');
-					var xhr    = undefined;
-					if (target.beginsWith('#')) {
-						var $target = $(target);
-						if ((target === '#main') && !$target.length) {
-							$target = $('main');
-						}
-						if ($target.length) {
-							more_request_headers['target-height'] = $target.height();
-							more_request_headers['target-width']  = $target.width();
-						}
-					}
+					var xhr = undefined;
+					requestTargetHeaders($anchor);
 					if ($anchor.hasClass(settings.submit)) {
 						var $parent_form = $anchor.closest('form');
 						if ($parent_form.length) {
@@ -441,17 +447,18 @@ var requestHeaders = function(request)
 							*/
 							if ($parent_form.ajaxSubmit !== undefined) {
 								$parent_form.ajaxSubmit(jax = $.extend(ajax, {
-									type: $parent_form.attr('type'),
-									url:  urlAppend(anchor.href, anchor.search)
+									beforeSend: requestHeaders,
+									type:       $parent_form.attr('type'),
+									url:        urlAppend(anchor.href, anchor.search)
 								}));
 								xhr = $parent_form.data('jqxhr');
 							}
 							else {
 								xhr = $.ajax(jax = $.extend(ajax, {
 									beforeSend: requestHeaders,
-									data: $parent_form.serialize(),
-									type: $parent_form.attr('method'),
-									url:  urlAppend(anchor.href, anchor.search)
+									data:       $parent_form.serialize(),
+									type:       $parent_form.attr('method'),
+									url:        urlAppend(anchor.href, anchor.search)
 								}));
 							}
 							xhr.call_type = $parent_form.attr('method');
@@ -460,15 +467,15 @@ var requestHeaders = function(request)
 					else if ($anchor.data('post')) {
 						xhr = $.ajax(jax = $.extend(ajax, {
 							beforeSend: requestHeaders,
-							data: $anchor.data('post'),
-							type: 'post',
-							url:  urlAppend(anchor.href, anchor.search)
+							data:       $anchor.data('post'),
+							type:       'post',
+							url:        urlAppend(anchor.href, anchor.search)
 						}));
 					}
 					if (!xhr) {
 						xhr = $.ajax(jax = $.extend(ajax, {
 							beforeSend: requestHeaders,
-							url: urlAppend(anchor.href, anchor.search)
+							url:        urlAppend(anchor.href, anchor.search)
 						}));
 					}
 					xhr.ajax     = jax;
@@ -503,19 +510,21 @@ var requestHeaders = function(request)
 					setTimeout(executeClick);
 					return;
 				}
+				requestTargetHeaders($form);
 				if ($form.ajaxSubmit !== undefined) {
 					$form.ajaxSubmit(jax = $.extend(ajax, {
-						type: $form.attr('type'),
-						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
+						beforeSend: requestHeaders,
+						type:       $form.attr('type'),
+						url:        urlAppend(form.action, form.action.indexOf('?') > -1)
 					}));
 					xhr = $form.data('jqxhr');
 				}
 				else {
 					xhr = $.ajax(jax = $.extend(ajax, {
 						beforeSend: requestHeaders,
-						data: $form.serialize(),
-						type: $form.attr('method'),
-						url:  urlAppend(form.action, form.action.indexOf('?') > -1)
+						data:       $form.serialize(),
+						type:       $form.attr('method'),
+						url:        urlAppend(form.action, form.action.indexOf('?') > -1)
 					}));
 				}
 				xhr.ajax     = jax;
