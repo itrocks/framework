@@ -41,7 +41,10 @@ $(document).ready(function()
 						});
 					}
 					else {
-						$(target).html(data).build();
+						var $target = $(target);
+						$target.is('input, select')
+							? $target.val(data)
+							: $target.html(data).build();
 					}
 				}
 				setTimeout(function() { on_event_pool.splice(on_event_pool_index, 1); });
@@ -98,7 +101,20 @@ $(document).ready(function()
 	var selector = 'input[data-on-change], select[data-on-change], textarea[data-on-change]';
 	$body.build('change', selector, function()
 	{
-		onEvent.call(this, 'on-change');
+		var $this = $(this);
+		if (($this.attr('type') === 'checkbox') || !$this.data('realtime-change')) {
+			onEvent.call(this, 'on-change');
+		}
+	});
+
+	//---------------------------------------------------------------- input[realtime-change] .change
+	selector = 'input[data-realtime-change], select[data-realtime-change],'
+		+ ' textarea[data-realtime-change]';
+	$body.build('keyup', selector, function()
+	{
+		if ($(this).data('on-change')) {
+			onEvent.call(this, 'on-change');
+		}
 	});
 
 	//--------------------------------------------------------- table[data-on-remove] td.minus .click

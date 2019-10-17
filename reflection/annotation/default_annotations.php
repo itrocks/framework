@@ -187,6 +187,13 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@feature' => Annotation::class,
 
 	/**
+	 * @feature_install installFeature
+	 *
+	 * This method (installFeature is the default value if empty) will be called each time a feature
+	 * is installed
+	 */
+	Parser::T_CLASS . '@feature_install' => Method_Annotation::class,
+	/**
 	 * @groups_order Group1, Group2, ...
 	 * This is a Multiple_Annotation
 	 *
@@ -544,10 +551,16 @@ Parser::$default_annotations = [
 	/**
 	 * @user_change [[\Vendor\Module\]Class_Name::]featureName] [target_selector]
 	 * Associates a feature controller to call each time a property value is changed by the final user
-	 * to an input form.
+	 * into an input form.
 	 * a target selector can be used to define where the result is loaded (#responses as default)
 	 */
 	Parser::T_PROPERTY . '@user_change' => Method_Target_Annotation::class,
+
+	/**
+	 * @user_change_realtime true
+	 * user_change annotation event is called each time the user presses a key, not only on blur
+	 */
+	Parser::T_PROPERTY . '@user_change_realtime' => Boolean_Annotation::class,
 
 	/**
 	 * @user_default [[\Class\Namespace\]Class_Name::]methodName

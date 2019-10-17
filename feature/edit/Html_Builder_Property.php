@@ -295,6 +295,9 @@ class Html_Builder_Property extends Html_Builder_Type
 				}
 				$this->on_change[] = $user_change->asHtmlData($object);
 			}
+			if ($this->on_change) {
+				$this->realtime_change = $this->property->getAnnotation('user_change_realtime');
+			}
 		}
 		if (!$this->property->getAnnotation('empty_check')->value) {
 			$this->data['no-empty-check'] = true;

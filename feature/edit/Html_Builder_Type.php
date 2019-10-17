@@ -104,6 +104,12 @@ class Html_Builder_Type
 	 */
 	public $readonly = false;
 
+	//------------------------------------------------------------------------------ $realtime_change
+	/**
+	 * @var boolean
+	 */
+	public $realtime_change = false;
+
 	//------------------------------------------------------------------------------------- $required
 	/**
 	 * Required / mandatory field
@@ -635,6 +641,9 @@ class Html_Builder_Type
 		if ($this->on_change) {
 			$on_change = join(',', $this->on_change);
 			$element->setData('on-change', $on_change);
+			if ($this->realtime_change) {
+				$element->setData('realtime-change');
+			}
 		}
 	}
 
