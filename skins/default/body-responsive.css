@@ -1,0 +1,38 @@
+@media screen and (max-width: 469px) {
+  body {
+    display: flex;
+    flex-direction: column; }
+
+  .company.logo {
+    background-position: 32px 2px !important;
+    height: 38px; }
+
+  #menu {
+    position: initial !important; }
+    #menu > .actions {
+      height: auto !important; }
+      #menu > .actions .filter {
+        display: none !important; }
+      #menu > .actions .minimize {
+        height: 38px !important;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 32px !important; }
+
+  body.min-left > #menu > ul {
+    display: none; }
+
+  #notifications {
+    border-top: 1px solid #d8d8d8;
+    display: block !important; }
+    #notifications > * {
+      margin: 0 !important;
+      min-height: 32px !important;
+      padding: 2px 0 0 48px !important; }
+    #notifications > :empty {
+      display: none; }
+    #notifications > .mini.user {
+      position: absolute;
+      right: 10px;
+      top: 4px; } }
