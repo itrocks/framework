@@ -10,12 +10,13 @@ use ITRocks\Framework\Objects\Counter;
  * @before_write simpleToFormat
  * @business false
  * @display_order identifier, last_update, last_value, format, prefix, yearly_reset,
- *                year_with_4_characters, monthly_reset, complete_with_zeros, documents_count,
- *                suffix
+ *                year_with_4_characters, complete_with_zeros, documents_count
  * @feature Easy incremental counters configuration
  * @feature_menu Administration > Simple counters
- * @override format     @user readonly
- * @override last_value @alias example @store false
+ * @override format      @user  invisible
+ * @override identifier  @alias document
+ * @override last_update @user  invisible
+ * @override last_value  @alias example @store false
  * @store_name counters
  */
 class Simple extends Counter
@@ -35,18 +36,11 @@ class Simple extends Counter
 	 * @mandatory
 	 * @realtime_change
 	 * @store false
+	 * @unit per year
 	 * @user_change applySimpleForm
 	 * @var integer
 	 */
 	public $documents_count = 9999;
-
-	//-------------------------------------------------------------------------------- $monthly_reset
-	/**
-	 * @store false
-	 * @user_change applySimpleForm
-	 * @var boolean
-	 */
-	public $monthly_reset = false;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
@@ -56,15 +50,6 @@ class Simple extends Counter
 	 * @var string
 	 */
 	public $prefix = '';
-
-	//--------------------------------------------------------------------------------------- $suffix
-	/**
-	 * @store false
-	 * @user_change applySimpleForm
-	 * @user_change_realtime
-	 * @var string
-	 */
-	public $suffix = '';
 
 	//----------------------------------------------------------------------- $year_with_4_characters
 	/**
@@ -105,10 +90,10 @@ class Simple extends Counter
 		$this->prefix                 = lParse(lParse($this->format, '%'), '{');
 		$this->yearly_reset           = (strpos($this->format, '{YEAR') !== false);
 		$this->year_with_4_characters = (strpos($this->format, '{YEAR4}') !== false);
-		$this->monthly_reset          = (strpos($this->format, '{MONTH}') !== false);
 		$this->complete_with_zeros    = (strpos($this->format, '%0') !== false);
-		$this->documents_count        = max(1, intval(mParse($this->format, '%', 'd')));
-		$this->suffix                 = rLastParse($this->format, 'd');
+		$this->documents_count        = '1' . sprintf(
+			'%0' . (intval(mParse($this->format, '%', 'd')) - 1) . 's', 0
+		);
 	}
 
 	//-------------------------------------------------------------------------------- simpleToFormat
@@ -121,12 +106,8 @@ class Simple extends Counter
 		if ($this->yearly_reset) {
 			$format .= '{YEAR' . ($this->year_with_4_characters ? '4' : '') . '}';
 		}
-		if ($this->monthly_reset) {
-			$format .= '{MONTH}';
-		}
 		$length  = max(strlen($this->documents_count), 1);
 		$format .= '%' . ($this->complete_with_zeros ? ('0' . $length) : '') . 'd';
-		$format .= $this->suffix;
 		$this->format = $format;
 	}
 
