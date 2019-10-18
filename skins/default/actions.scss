@@ -46,6 +46,7 @@ li.actions > ul,
 ul.actions {
 	background: #efefef;
 	display: flex;
+	flex-direction: row-reverse;
 }
 
 li.action,
