@@ -52,6 +52,10 @@ article ol.properties:not(.tiny) {
 
 	> li.after,
 	> li.before {
+		line-height: 1.5em;
+		padding: 0 10px;
+		white-space: pre-line;
+
 		> div {
 			display: block;
 		}

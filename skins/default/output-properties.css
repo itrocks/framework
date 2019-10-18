@@ -30,9 +30,14 @@ article ol.properties:not(.tiny) {
   article ol.properties:not(.tiny) > li.component-objects,
   article ol.properties:not(.tiny) > li.objects {
     display: block; }
-  article ol.properties:not(.tiny) > li.after > div,
-  article ol.properties:not(.tiny) > li.before > div {
-    display: block; }
+  article ol.properties:not(.tiny) > li.after,
+  article ol.properties:not(.tiny) > li.before {
+    line-height: 1.5em;
+    padding: 0 10px;
+    white-space: pre-line; }
+    article ol.properties:not(.tiny) > li.after > div,
+    article ol.properties:not(.tiny) > li.before > div {
+      display: block; }
   article ol.properties:not(.tiny) > li.block {
     margin-top: -1px; }
   article ol.properties:not(.tiny) > li.block > div,

@@ -23,14 +23,14 @@
 			<ol class="properties">
 		<!--end-->
 
-		<!--getAnnotations('before')--><li class="before {name}">|{value}|</li><!--end-->
+		<!--getAnnotations('before')--><li class="before {..name}">|{value}|</li><!--end-->
 		<li class="{name} {getType.asString.short.lower} {?getWidgetClassesString} {?isComponentObjectHtml} {?isHidden} {?isMandatory} {?isMultiline}" id="{path}">
 			<!--@isVisible?-->
 			<label title="{?pathIfDifferent.display.@tr}">{display}</label>
 			<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
 			<!--end-->
 		</li>
-		<!--getAnnotations('after')--><li class="after {name}">|{value}|</li><!--end-->
+		<!--getAnnotations('after')--><li class="after {..name}">|{value}|</li><!--end-->
 
 		<!--@stoppingBlocks-->
 			</ol>
