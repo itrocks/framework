@@ -10,7 +10,7 @@ use ITRocks\Framework\RAD\Feature\Status;
  * Final user installable feature
  *
  * @business
- * @display_order title, description, tags, status
+ * @display_order title, description, status, tags
  * @list title, status
  * @representative title
  * @store_name rad_features
