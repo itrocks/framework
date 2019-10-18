@@ -64,6 +64,9 @@ class Data implements Validate\Exception
 			if (isset($arguments['as_widget'])) {
 				unset($arguments['as_widget']);
 			}
+			if (isset($arguments['user_password'])) {
+				$arguments['user_password'] = '***';
+			}
 			$this->arguments = $this->serialize($arguments);
 		}
 		if (isset($files) && !isset($this->files)) {
@@ -75,6 +78,9 @@ class Data implements Validate\Exception
 			}
 			if (isset($form['password2'])) {
 				$form['password2'] = '***';
+			}
+			if (isset($form['user_password'])) {
+				$form['user_password'] = '***';
 			}
 			$this->form = $this->serialize($form);
 		}
