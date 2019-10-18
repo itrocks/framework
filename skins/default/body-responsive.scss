@@ -1,0 +1,60 @@
+@import 'responsive.scss';
+
+@media screen and (max-width: $phone-max-width) {
+
+	body {
+		display: flex;
+		flex-direction: column;
+	}
+
+	.company.logo {
+		background-position: 32px 2px !important;
+		height: 38px;
+	}
+
+	#menu {
+		position: initial !important;
+
+		> .actions {
+			height: auto !important;
+
+			.filter {
+				display: none !important;
+			}
+
+			.minimize {
+				height: 38px !important;
+				left: 0;
+				position: absolute;
+				top: 0;
+				width: 32px !important;
+			}
+		}
+	}
+
+	body.min-left > #menu > ul {
+		display: none;
+	}
+
+	#notifications {
+		border-top: 1px solid #d8d8d8;
+		display: block !important;
+
+		> * {
+			margin: 0 !important;
+			min-height: 32px !important;
+			padding: 2px 0 0 48px !important;
+		}
+
+		> :empty {
+			display: none;
+		}
+
+		> .mini.user {
+			position: absolute;
+			right: 10px;
+			top: 4px;
+		}
+	}
+
+}

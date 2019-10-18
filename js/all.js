@@ -33,6 +33,7 @@ $.getScript(path + 'itrocks/framework/js/itrocks.fullheight.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.functions.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.modal.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.modules.js');
+$.getScript(path + 'itrocks/framework/js/itrocks.responsive.js');
 $.getScript(path + 'itrocks/framework/js/itrocks.string.js');
 
 $.getScript(path + 'itrocks/framework/js/app.a_disable.js');

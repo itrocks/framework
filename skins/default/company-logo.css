@@ -5,6 +5,7 @@
   .company.logo > a {
     font-size: 0; }
 
-body.min-left .company.logo {
-  background: white url("img/b-appli-24.svg") 10px 20px no-repeat;
-  background-size: auto 24px; }
+@media screen and (min-width: 470px) {
+  body.min-left .company.logo {
+    background: white url("img/b-appli-24.svg") 10px 20px no-repeat;
+    background-size: auto 24px; } }

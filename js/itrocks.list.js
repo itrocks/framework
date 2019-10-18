@@ -1,8 +1,6 @@
 $(document).ready(function()
 {
-
 	var $body = $('body');
-	var phone_max_width = 469;
 
 	//-------------------------------------------------------------------------- hideListPlaceHolders
 	var hideListPlaceHolders = function()
@@ -13,14 +11,9 @@ $(document).ready(function()
 	//-------------------------------------------------------------------------------- responsiveList
 	var responsiveList = function()
 	{
-		var width = document.body.clientWidth;
-
-		if (width > phone_max_width) {
-			hideListPlaceHolders();
-		}
-		else {
-			showListPlaceHolders();
-		}
+		isPhone()
+			? showListPlaceHolders()
+			: hideListPlaceHolders();
 	};
 
 	//-------------------------------------------------------------------------- showListPlaceHolders
