@@ -2,43 +2,6 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
-	//-------------------------------------------------------------------------- hideListPlaceHolders
-	var hideListPlaceHolders = function()
-	{
-		$('article.list tr.search input').removeAttr('placeholder');
-	};
-
-	//-------------------------------------------------------------------------------- responsiveList
-	var responsiveList = function()
-	{
-		isPhone()
-			? showListPlaceHolders()
-			: hideListPlaceHolders();
-	};
-
-	//-------------------------------------------------------------------------- showListPlaceHolders
-	var showListPlaceHolders = function()
-	{
-		$('article.list > form > table > thead').each(function() {
-			var $list    = $(this);
-			var $titles  = $list.find('> tr.title > th');
-			var position = -1;
-			$list.find('> tr.search > td').each(function() {
-				position ++;
-				var $input = $(this).find('input');
-				if (!$input.length) return;
-				var $title = $($titles.get(position));
-				$input.attr('placeholder', $title.text().trim())
-			});
-		});
-	};
-
-	//----------------------------------------------------------------------- article responsive list
-	/**
-	 * Every time a list is loaded, apply placeholder if needed
-	 */
-	$body.build('each', 'article.list', responsiveList);
-
 	//----------------------------------------------------------------------- article.list form table
 	$body.build('each', 'article.list > form > table', function()
 	{
