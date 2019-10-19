@@ -177,10 +177,5 @@ $(document).ready(function()
 
 	});
 
-	//--------------------------------------------------------------------------------- window.resize
-	/**
-	 * Every time the window is resized, apply or remove placeholder as needed
-	 */
-	$(window).resize(responsiveList);
 
 });
