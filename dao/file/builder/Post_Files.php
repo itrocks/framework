@@ -81,7 +81,10 @@ class Post_Files
 				);
 			}
 			else {
-				$file                      = $this->newFileObject($property_path . DOT . $key);
+				if (!is_numeric($key)) {
+					$property_path .= DOT . $key;
+				}
+				$file                      = $this->newFileObject($property_path);
 				$file->name                = $name_sub_element;
 				$file->temporary_file_name = $tmp_name_element[$key];
 				$form[$key]                = $file;
