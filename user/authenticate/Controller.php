@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\User;
 use ITRocks\Framework\View;
 
@@ -51,7 +52,12 @@ class Controller implements Feature_Controller
 			$user = Authentication::login($form['login'], $form['password']);
 			if (isset($user)) {
 				Authentication::authenticate($user);
-				Main::$current->redirect($this->reserved($form['url'] ?? Uri::previous()));
+				if (isset($form['refresh']) && $form['refresh']) {
+					header('Location: ' . Paths::$uri_base . Uri::previous());
+				}
+				else {
+					Main::$current->redirect($this->reserved($form['url'] ?? Uri::previous()));
+				}
 				return null;
 			}
 		}
