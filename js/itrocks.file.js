@@ -13,7 +13,9 @@ $(document).ready(function()
 	});
 
 	//------------------------------------------------------------------- li.file.object > div .click
-	$body.build('click', 'article > form > ul.data li.file.object > div', function(event)
+	var files_selector = 'article > form > ul.data li.file.object > div, '
+		+ 'article > form > ul.data ul.collection > li.data > ol > .file';
+	$body.build('click', files_selector.join(', ') , function(event)
 	{
 		var $div    = $(this);
 		var $target = $(event.target);

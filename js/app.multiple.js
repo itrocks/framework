@@ -142,7 +142,8 @@ $(document).ready(function()
 		+ 'article > form > ul.data ol.properties > li.objects > label';
 	$body.build('click', add_selector, function(event)
 	{
-		var $input = $(this).parent().find('input, select, textarea').filter(':visible').last();
+		var $input = $(this).parent()
+			.find('input, select, textarea').filter('[type=file], :visible').last();
 		if ($input.length) {
 			if (!$input.data('itrocks-no-add-click')) {
 				autoAddLine.call($input, event, true);

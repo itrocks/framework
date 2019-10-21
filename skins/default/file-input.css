@@ -1,14 +1,20 @@
-article > form > ul.data li.file.object > div {
+article > form > ul.data li.file.object > div,
+article > form > ul.data ul.collection > li.data > ol > .file {
   background: url("img/upload.svg") left center no-repeat;
   background-size: 22px;
   cursor: pointer;
   min-width: 26px;
   padding-left: 26px; }
-  article > form > ul.data li.file.object > div > a, article > form > ul.data li.file.object > div > span {
+  article > form > ul.data li.file.object > div > a, article > form > ul.data li.file.object > div > span,
+  article > form > ul.data ul.collection > li.data > ol > .file > a,
+  article > form > ul.data ul.collection > li.data > ol > .file > span {
     display: inline-block;
     height: 22px;
     padding-top: 8px; }
-    article > form > ul.data li.file.object > div > a > span, article > form > ul.data li.file.object > div > span > span {
+    article > form > ul.data li.file.object > div > a > span, article > form > ul.data li.file.object > div > span > span,
+    article > form > ul.data ul.collection > li.data > ol > .file > a > span,
+    article > form > ul.data ul.collection > li.data > ol > .file > span > span {
       margin-left: .5em; }
-  article > form > ul.data li.file.object > div > input[type=file] {
+  article > form > ul.data li.file.object > div > input[type=file],
+  article > form > ul.data ul.collection > li.data > ol > .file > input[type=file] {
     display: none; }
