@@ -95,8 +95,6 @@ class Router implements
 			$this->exclude = '(' . join('|', $configuration['exclude']) . ')';
 		}
 
-		get_class(Application::current());
-
 		$script_name = substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1, -4);
 		$this->routes_file = getcwd() . SL . $script_name . SL . $script_name . '/cache/routes.php';
 		if (file_exists($this->routes_file)) {
