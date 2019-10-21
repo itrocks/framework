@@ -1,5 +1,5 @@
 .company.logo {
-  background: white url("img/b-appli-32-full.svg") 12px 16px no-repeat;
+  background: white url("img/b-appli-32-full-grey.svg") 12px 16px no-repeat;
   background-size: auto 32px;
   transition-duration: var(--transition-duration); }
   .company.logo > a {
