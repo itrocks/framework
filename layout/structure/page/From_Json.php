@@ -23,6 +23,7 @@ class From_Json
 	 * @var array string[$class_name string][string integer|string]
 	 */
 	public $builder = [
+		Property\Image::class     => ['field', 'format' => 'image'],
 		Property\Resizable::class => ['field', 'format' => 'text-cr'],
 		Property::class           => ['field'],
 		Snap_Line::class          => ['class' => 'snap'],

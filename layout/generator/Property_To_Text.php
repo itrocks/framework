@@ -1,9 +1,13 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Generator\Text_Templating\Parser;
+use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field;
+use ITRocks\Framework\Layout\Structure\Field\Final_Image;
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
+use ITRocks\Framework\Layout\Structure\Field\Image;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
@@ -39,19 +43,19 @@ class Property_To_Text
 
 	//---------------------------------------------------------------------------------------- append
 	/**
-	 * @param $final_text       Final_Text
+	 * @param $final_element    Element|Final_Image|Final_Text
 	 * @param $iteration_number integer
 	 */
-	protected function append(Final_Text $final_text, $iteration_number = null)
+	protected function append(Element $final_element, $iteration_number = null)
 	{
 		// append element to the group iteration / page
-		if ($final_text->group) {
-			$iteration             = $this->iteration($final_text->group, $iteration_number);
-			$final_text->iteration = $iteration;
-			$iteration->elements[] = $final_text;
+		if ($final_element->group) {
+			$iteration                = $this->iteration($final_element->group, $iteration_number);
+			$final_element->iteration = $iteration;
+			$iteration->elements[]    = $final_element;
 		}
 		else {
-			$final_text->page->elements[] = $final_text;
+			$final_element->page->elements[] = $final_element;
 		}
 	}
 
@@ -67,8 +71,8 @@ class Property_To_Text
 			$this->group($sub_group);
 		}
 		foreach ($group->elements as $element) {
-			if ($element instanceof Text) {
-				$this->groupText($element);
+			if (($element instanceof Image) || ($element instanceof Text)) {
+				$this->groupElement($element);
 			}
 		}
 		foreach ($group->properties as $property) {
@@ -76,20 +80,25 @@ class Property_To_Text
 		}
 	}
 
-	//------------------------------------------------------------------------------------- groupText
+	//---------------------------------------------------------------------------------- groupElement
 	/**
-	 * Process a Text element (always and uniquely from a group)
+	 * Process an Image|Text element (always and uniquely from a group)
 	 *
-	 * @param $text Text
+	 * @param $text Element|Image|Text
 	 */
-	protected function groupText(Text $text)
+	protected function groupElement(Element $text)
 	{
 		$property_path = $text->group->property_path;
 		$values        = $this->values($property_path);
 		foreach ($values as $iteration_number => $object) {
-			$parser     = new Parser($object, $this->object, $text->group->property_path);
-			$value      = $parser->elementText($text);
-			$final_text = $this->propertyToFinalText($text, $value);
+			if ($text instanceof Text) {
+				$parser = new Parser($object, $this->object, $text->group->property_path);
+				$value  = $parser->elementText($text);
+			}
+			else {
+				$value = $text->file;
+			}
+			$final_text = $this->propertyToFinal($text, $value);
 			$this->append($final_text, $iteration_number);
 		}
 	}
@@ -210,11 +219,44 @@ class Property_To_Text
 			get_class($this->object), $property->property_path
 		);
 		foreach ($this->values($property->property_path) as $iteration_number => $value) {
-			$final_text = $this->propertyToFinalText(
+			$final_element = $this->propertyToFinal(
 				$property, Loc::propertyToLocale($reflection_property, $value)
 			);
-			$this->append($final_text, $iteration_number);
+			$this->append($final_element, $iteration_number);
 		}
+	}
+
+	//------------------------------------------------------------------------------- propertyToFinal
+	/**
+	 * @param $property Field|Image|Property|Text
+	 * @param $value    string
+	 * @return Element|Final_Image|Final_Text
+	 */
+	protected function propertyToFinal(Field $property, $value)
+	{
+		return ($value instanceof File)
+			? $this->propertyToFinalImage($property, $value)
+			: $this->propertyToFinalText ($property, $value);
+	}
+
+	//-------------------------------------------------------------------------- propertyToFinalImage
+	/**
+	 * @param $property Field
+	 * @param $value    File
+	 * @return Final_Image
+	 */
+	protected function propertyToFinalImage(Field $property, File $value)
+	{
+		// change property to final image
+		$final_image = new Final_Image($property->page);
+		foreach (get_object_vars($property) as $property_name => $property_value) {
+			if (property_exists($final_image, $property_name)) {
+				$final_image->$property_name = $property_value;
+			}
+		}
+		$final_image->file     = $value;
+		$final_image->property = $property;
+		return $final_image;
 	}
 
 	//--------------------------------------------------------------------------- propertyToFinalText

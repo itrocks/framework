@@ -5,10 +5,12 @@ use ITRocks\Framework\Feature\Export\PDF;
 use ITRocks\Framework\Layout\Output;
 use ITRocks\Framework\Layout\Structure\Draw\Rectangle;
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Field\Image;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
+use ITRocks\Framework\Tools;
 use TCPDF;
 
 /**
@@ -82,7 +84,23 @@ class Exporter implements Output
 	protected function element(Element $element)
 	{
 		$pdf = $this->pdf;
-		if ($element instanceof Text) {
+		if ($element instanceof Image) {
+			$file  = $element->file;
+			$image = Tools\Image::createFromString($file->content);
+			[$left, $top, $width, $height] = $image->resizeData($element->width, $element->height);
+			$left += $element->left;
+			$top  += $element->top;
+			if (endsWith(strtolower($file->name), '.eps')) {
+				$pdf->ImageEps($file->temporary_file_name, $left, $top, $width, $height);
+			}
+			elseif (endsWith(strtolower($file->name), '.svg')) {
+				$pdf->ImageSVG($file->temporary_file_name, $left, $top, $width, $height);
+			}
+			else {
+				$pdf->Image($file->temporary_file_name, $left, $top, $width, $height);
+			}
+		}
+		elseif ($element instanceof Text) {
 			$position = $element->top;
 			foreach (explode(LF, $element->text) as $text) {
 				$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
