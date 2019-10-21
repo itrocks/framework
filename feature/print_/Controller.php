@@ -48,8 +48,11 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected function printUsingModel(array $objects, Print_Model $print_model)
 	{
+		// TODO LOW This is for a warning in php 7.3. Remove it when tcpdf is compatible
+		$error_reporting = error_reporting(E_ALL & ~E_WARNING);
 		/** @var $pdf PDF|TCPDF */
 		$pdf = new PDF();
+		error_reporting($error_reporting);
 		$pdf->Open();
 
 		$structure = null;
