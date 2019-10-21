@@ -5,8 +5,14 @@ article > form > ul.data li.file.object > div {
 	min-width: 26px;
 	padding-left: 26px;
 
-	> a {
-		margin-left: 28px;
+	> a, > span {
+		display: inline-block;
+		height: 22px;
+		padding-top: 8px;
+
+		> span {
+			margin-left: .5em;
+		}
 	}
 
 	> input[type=file] {

@@ -1,18 +1,24 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
-	var anti_recurse = false;
-	$('body').build('click', 'article > form > ul.data li.file.object > div', function()
+	//---------------------------------------------------------------------- input[type=file] .change
+	$body.build('change', 'input[type=file]', function()
 	{
-		var $div = $(this);
-		if (
-			(document.mouse.x < ($div.offset().left + 22))
-			&& (document.mouse.y < ($div.offset().top + 22))
-		) {
-			if (anti_recurse) return;
-			anti_recurse = true;
+		var $input   = $(this);
+		var filename = $input.val();
+		filename     = filename.rLastParse(filename.indexOf(BS) ? BS : SL, 1, true);
+		$input.nextAll().remove();
+		$input.after($('<span class="filename">').text(filename));
+	});
+
+	//------------------------------------------------------------------- li.file.object > div .click
+	$body.build('click', 'article > form > ul.data li.file.object > div', function(event)
+	{
+		var $div    = $(this);
+		var $target = $(event.target);
+		if ($target.is($div)) {
 			$div.children('input[type=file]').click();
-			anti_recurse = false;
 		}
 	});
 
