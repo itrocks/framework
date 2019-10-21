@@ -1,6 +1,10 @@
 <?php
 namespace ITRocks\Framework\Tools;
+
 use ITRocks\Framework\Dao\File;
+
+define('IMAGETYPE_EPS', 102);
+define('IMAGETYPE_SVG', 101);
 
 /**
  * Image tools class
@@ -110,8 +114,29 @@ class Image
 	 */
 	public static function createFromString($image)
 	{
-		$size = getimagesizefromstring($image);
-		return new Image($size[0], $size[1], imagecreatefromstring($image), $size[2]);
+		if (strpos($image, '<svg') === false) {
+			$size = getimagesizefromstring($image);
+			return new Image($size[0], $size[1], imagecreatefromstring($image), $size[2]);
+		}
+		$xml = simplexml_load_string($image);
+		$attributes = $xml->attributes();
+		if (isset($attributes->height) && isset($attributes->width)) {
+			$height = intval(strval($attributes->height));
+			$width  = intval(strval($attributes->width));
+		}
+		elseif (
+			isset($attributes->viewBox)
+			&& ($viewbox = explode(SP, preg_replace('/[\s+]/', SP, $attributes->viewBox)))
+			&& (count($viewbox) >= 4)
+		) {
+			$height = $viewbox[3];
+			$width  = $viewbox[2];
+		}
+		else {
+			$height = 150;
+			$width  = 300;
+		}
+		return new Image($width, $height, null, IMAGETYPE_SVG);
 	}
 
 	//--------------------------------------------------------------------------------------- display
@@ -246,6 +271,26 @@ class Image
 	 */
 	public function resize($width = null, $height = null, $keep_ratio = true)
 	{
+		[$dx, $dy, $dw, $dh] = $this->resizeData($width, $height, $keep_ratio);
+		$destination = $this->newImageKeepsAlpha($width, $height);
+		$destination->fillImage();
+		imagecopyresampled(
+			$destination->resource, $this->resource, $dx, $dy, 0, 0, $dw, $dh, $this->width, $this->height
+		);
+		return $destination;
+	}
+
+	//------------------------------------------------------------------------------------ resizeData
+	/**
+	 * Calculate data for resize (without resizing)
+	 *
+	 * @param $width      integer the width of the new image. null for automatic
+	 * @param $height     integer the height of the new image. null for automatic
+	 * @param $keep_ratio boolean keep image ratio (margins are added if image ratio changes)
+	 * @return integer[] [$left, $top, $width, $height]
+	 */
+	public function resizeData($width = null, $height = null, $keep_ratio = true)
+	{
 		$source_ratio = $this->width / $this->height;
 		if (is_null($width) && is_numeric($height)) {
 			$width = round($source_ratio * $height);
@@ -264,20 +309,15 @@ class Image
 			// source is wider than destination : top and bottom margins
 			if ($destination_ratio < $source_ratio) {
 				$dh = round(1 / $source_ratio * $width);
-				$dy = ceil(($height - $dh) / 2);
+				$dy = floor(($height - $dh) / 2);
 			}
 			// destination is wider than source : left and right margins
 			elseif ($destination_ratio > $source_ratio) {
 				$dw = round($source_ratio * $height);
-				$dx = ceil(($width - $dw) / 2);
+				$dx = floor(($width - $dw) / 2);
 			}
 		}
-		$destination = $this->newImageKeepsAlpha($width, $height);
-		$destination->fillImage();
-		imagecopyresampled(
-			$destination->resource, $this->resource, $dx, $dy, 0, 0, $dw, $dh, $this->width, $this->height
-		);
-		return $destination;
+		return [$dx, $dy, $dw, $dh];
 	}
 
 	//---------------------------------------------------------------------------------------- rotate

@@ -31,6 +31,7 @@
 		"ext-mysqli":                            "*",
 		"ext-openssl":                           "*",
 		"ext-posix":                             "*",
+		"ext-simplexml":                         "*",
 		"ext-yaml":                              "*",
 		"ext-zlib":                              "*",
 		"html2text/html2text":                   "4.*",
