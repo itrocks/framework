@@ -237,6 +237,7 @@ class Html_Builder_Type
 			$input->setAttribute('type', 'hidden');
 			$input->setAttribute('value', $value);
 			$checkbox = new Input();
+			$checkbox->setAttribute('id', 'cb-' . uniqid());
 			$checkbox->setAttribute('type', 'checkbox');
 			$checkbox->setAttribute('value', true);
 			if ($this->readonly) {

@@ -1,7 +1,9 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-input:not([type=button]):not([type=submit]), select, textarea {
+input:not([type=button]):not([type=checkbox]):not([type=radio]):not([type=submit]),
+select,
+textarea {
 	background: $input-background;
 	border: $input-border;
 	border-radius: $input-border-radius;
@@ -11,6 +13,10 @@ input:not([type=button]):not([type=submit]), select, textarea {
 	&[readonly] {
 		background: transparent;
 	}
+}
+
+input[type=checkbox], input[type=radio] {
+	margin: 8px 0 0;
 }
 
 textarea {

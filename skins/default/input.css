@@ -1,11 +1,18 @@
-input:not([type=button]):not([type=submit]), select, textarea {
+input:not([type=button]):not([type=checkbox]):not([type=radio]):not([type=submit]),
+select,
+textarea {
   background: white;
   border: 1px solid #d8d8d8;
   border-radius: 2px;
   height: 10px;
   padding: 10px; }
-  input:not([type=button]):not([type=submit])[readonly], select[readonly], textarea[readonly] {
+  input:not([type=button]):not([type=checkbox]):not([type=radio]):not([type=submit])[readonly],
+  select[readonly],
+  textarea[readonly] {
     background: transparent; }
+
+input[type=checkbox], input[type=radio] {
+  margin: 8px 0 0; }
 
 textarea {
   line-height: 1.5em; }
