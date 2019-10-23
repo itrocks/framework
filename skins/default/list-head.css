@@ -13,10 +13,10 @@ article.list > form > table > thead {
       height: 32px;
       vertical-align: top;
       width: 100%; }
-    article.list > form > table > thead > tr.title > th > input {
-      margin: 0; }
-    article.list > form > table > thead > tr.title > th:first-child > a {
+    article.list > form > table > thead > tr.title > th.visible.lines {
       padding: 0 .83em 0 .75em; }
+      article.list > form > table > thead > tr.title > th.visible.lines > input {
+        margin: 0; }
     article.list > form > table > thead > tr.title > th:not(:first-child) > a {
       padding: 10px .75em 0 .5em;
       text-align: left; }

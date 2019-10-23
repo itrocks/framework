@@ -28,12 +28,12 @@ article.list > form > table > thead {
 					width: 100%;
 				}
 
-				> input {
-					margin: 0;
-				}
-
-				&:first-child > a {
+				&.visible.lines {
 					padding: 0 .83em 0 .75em;
+
+					> input {
+						margin: 0;
+					}
 				}
 
 				&:not(:first-child) > a {
