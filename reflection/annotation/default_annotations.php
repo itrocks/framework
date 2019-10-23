@@ -193,6 +193,7 @@ Parser::$default_annotations = [
 	 * is installed
 	 */
 	Parser::T_CLASS . '@feature_install' => Method_Annotation::class,
+
 	/**
 	 * @groups_order Group1, Group2, ...
 	 * This is a Multiple_Annotation
