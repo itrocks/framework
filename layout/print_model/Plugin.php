@@ -8,7 +8,7 @@ use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\View;
 
 /**
- * Print models
+ * Customizable print models
  */
 class Plugin implements Installable
 {
@@ -19,7 +19,7 @@ class Plugin implements Installable
 	 */
 	public function __toString()
 	{
-		return 'Print models';
+		return 'Customizable print models';
 	}
 
 	//--------------------------------------------------------------------------------------- install
