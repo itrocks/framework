@@ -84,8 +84,8 @@ class Bridge
 	{
 		$bridge_features = [];
 		$dependencies = Dao::search(
-		['dependency_name' => $feature_class, 'type' => Dependency::T_BRIDGE_FEATURE],
-		Dependency::class
+			['dependency_name' => $feature_class, 'type' => Dependency::T_BRIDGE_FEATURE],
+			Dependency::class
 		);
 		foreach ($dependencies as $dependency) {
 			$bridge_features[$dependency->class_name] = $dependency->class_name;
@@ -102,8 +102,8 @@ class Bridge
 	{
 		$feature_classes = [];
 		$dependencies = Dao::search(
-		['class_name' => $bridge_feature, 'type' => Dependency::T_BRIDGE_FEATURE],
-		Dependency::class
+			['class_name' => $bridge_feature, 'type' => Dependency::T_BRIDGE_FEATURE],
+			Dependency::class
 		);
 		foreach ($dependencies as $dependency) {
 			$feature_classes[$dependency->line][] = $dependency->dependency_name;

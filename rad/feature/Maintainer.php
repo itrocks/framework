@@ -50,7 +50,9 @@ class Maintainer implements Registerable, Updatable
 			/** @noinspection PhpUnhandledExceptionInspection valid dependency */
 			if (!(new Reflection_Class($dependency->class_name))->getAnnotation('feature_off')->value) {
 				$features[] = $this->pluginClassNameAndTitleToFeature(
-					$dependency->class_name, $dependency->dependency_name
+					$dependency->class_name,
+					$dependency->dependency_name,
+					($dependency->type === Dependency::T_BRIDGE_FEATURE)
 				);
 			}
 		}
@@ -111,13 +113,15 @@ class Maintainer implements Registerable, Updatable
 	/**
 	 * @param $plugin_class_name string
 	 * @param $title             string
+	 * @param $bridge            boolean
 	 * @return Feature
 	 */
-	protected function pluginClassNameAndTitleToFeature($plugin_class_name, $title)
+	protected function pluginClassNameAndTitleToFeature($plugin_class_name, $title, $bridge = false)
 	{
 		$feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)
 			?: new Feature($title);
 		$feature->application_class_name = $this->applicationClassName($plugin_class_name);
+		$feature->bridge                 = $bridge;
 		$feature->plugin_class_name      = $plugin_class_name;
 		return $feature;
 	}

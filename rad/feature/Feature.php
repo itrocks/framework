@@ -25,6 +25,13 @@ class Feature
 	 */
 	public $application_class_name;
 
+	//--------------------------------------------------------------------------------------- $bridge
+	/**
+	 * @user invisible
+	 * @var boolean
+	 */
+	public $bridge;
+
 	//---------------------------------------------------------------------------------- $description
 	/**
 	 * @max_length 64000
