@@ -7,12 +7,19 @@ textarea {
 	background: $input-background;
 	border: $input-border;
 	border-radius: $input-border-radius;
-	height: $input-height - ($input-padding * 2);
-	padding: $input-padding;
+
+	&:not(select) {
+		height: $input-height - ($input-padding * 2);
+		padding: $input-padding;
+	}
 
 	&[readonly] {
 		background: transparent;
 	}
+}
+
+select {
+	height: $input-height;
 }
 
 input[type=checkbox], input[type=radio] {
