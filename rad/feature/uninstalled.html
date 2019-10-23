@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>|¦{@class.display.ucfirst}¦ unchanged|</title>
+</head>
+<body>
+<ul>
+<!--BEGIN-->
+
+	<li>
+		<!--uninstalled?-->
+		|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
+		<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
+		<!--else-->
+		|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
+		|This feature is not available for the moment|.
+		<!--end-->
+	</li>
+
+<!--END-->
+</ul>
+</body>
+</html>

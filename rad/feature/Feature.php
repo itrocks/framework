@@ -121,4 +121,30 @@ class Feature
 		return true;
 	}
 
+	//----------------------------------------------------------------------------------- willInstall
+	/**
+	 * Returns the list of plugins that will be installed if you install this one
+	 *
+	 * @param $recurse boolean
+	 * @return Feature[]
+	 */
+	public function willInstall($recurse = true)
+	{
+		$installer = new Installer();
+		return $installer->willInstall($this->plugin_class_name, $recurse);
+	}
+
+	//--------------------------------------------------------------------------------- willUninstall
+	/**
+	 * Returns the list of plugins that will be uninstalled if you uninstall this one
+	 *
+	 * @param $recurse boolean
+	 * @return Feature[]
+	 */
+	public function willUninstall($recurse = true)
+	{
+		$installer = new Installer();
+		return $installer->willUninstall($this->plugin_class_name, $recurse);
+	}
+
 }

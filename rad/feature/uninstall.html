@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -6,23 +6,40 @@
 	<script> path = "../../../../"; </script>
 	<script src="../../js/all.js"></script>
 	<style> @import "../../skins/default/all.css"; </style>
-	<title>|¦{@class.display.ucfirst}¦ unchanged|</title>
+	<title>|The feature ¦{title}¦ will be installed|</title>
 </head>
 <body>
-<ul>
 <!--BEGIN-->
+<!--target #modal-->
 
-	<li>
-		<!--uninstalled?-->
-		|The feature <strong>¦{title}¦</strong> has been uninstalled|.<br>
-		<a class="auto-redirect" href="app://(@class.path)/(id)" target="#main">/(@class.path)/(id)</a>
-		<!--else-->
-		|The feature <strong>¦{title}¦</strong> could not be uninstalled|.<br>
-		|This feature is not available for the moment|.
+<article class="install feature">
+	<header>
+		<h2>|Uninstall of <strong>¦{title}¦</strong>|</h2>
+	</header>
+	<div>
+		<!--dependents?-->
+		<p>
+			|If you uninstall this feature|, |the following dependent features will be uninstalled too| :
+		</p>
+		<ul>
+			<!--dependents-->
+			<li>{title}</li>
+			<!--end-->
+		</ul>
 		<!--end-->
-	</li>
+		<p>|Please confirm you want to uninstall this feature|.</p>
+	</div>
+	<ul class="actions">
+		<li class="uninstall">
+			<a href="app://(confirm_link)" target="#responses">|Uninstall|</a>
+		</li>
+		<li class="close">
+			<a href="app://(close_link)" target="#main">|Cancel|</a>
+		</li>
+	</ul>
+</article>
 
+<!--end-->
 <!--END-->
-</ul>
 </body>
 </html>

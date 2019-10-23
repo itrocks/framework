@@ -1,5 +1,5 @@
 #modal {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.25);
   position: absolute;
   bottom: 0;
   left: 0;
@@ -23,7 +23,14 @@
       #modal > article .actions > li {
         flex: 100%; }
     #modal > article > div > p {
+      line-height: 1.4em;
       padding: 10px; }
+    #modal > article > div > ul:not(.actions) {
+      padding-left: 10px; }
+      #modal > article > div > ul:not(.actions) > li {
+        display: list-item;
+        line-height: 1.4em;
+        list-style-position: inside; }
     #modal > article > header {
       border: none;
       border-bottom: 1px solid #eaeaea; }

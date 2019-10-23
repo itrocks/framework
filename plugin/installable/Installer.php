@@ -375,15 +375,9 @@ class Installer
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
 
-		$dependency_search = ['dependency.plugin_class_name' => $plugin_class_name];
-
 		// remove all dependencies that need this plugin
-		/** @var $installed_dependents Installed\Dependency[] */
-		$installed_dependents = Dao::search($dependency_search, Installed\Dependency::class);
-		foreach ($installed_dependents as $installed_dependent) {
-			foreach ($installed_dependent->features as $feature) {
-				$this->removeDependent($feature);
-			}
+		foreach ($this->willUninstall($plugin_class_name, false) as $feature) {
+			$this->removeDependent($feature);
 		}
 
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
@@ -429,6 +423,64 @@ class Installer
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 		Dao::commit();
+	}
+
+	//----------------------------------------------------------------------------------- willInstall
+	/**
+	 * Returns the list of plugins that will be installed if you install this one
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $plugin_class_name string
+	 * @param $recurse           boolean
+	 * @return Feature[]
+	 */
+	public function willInstall($plugin_class_name, $recurse = true)
+	{
+		$features = [];
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
+		$includes = Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name));
+		foreach ($includes as $include) {
+			$feature_class_name = Builder::current()->sourceClassName($include->value);
+			$feature = Dao::searchOne(['plugin_class_name' => $feature_class_name], Feature::class);
+			if (isset($features[$feature->plugin_class_name])) {
+				continue;
+			}
+			$features = array_merge(
+				$features,
+				[$feature->plugin_class_name => $feature],
+				$recurse ? $this->willInstall($feature->plugin_class_name) : []
+			);
+		}
+		return $features;
+	}
+
+	//--------------------------------------------------------------------------------- willUninstall
+	/**
+	 * Returns the list of plugins that will be uninstalled if you uninstall this one
+	 *
+	 * @param $plugin_class_name string
+	 * @param $recurse           boolean
+	 * @return Feature[]
+	 */
+	public function willUninstall($plugin_class_name, $recurse = true)
+	{
+		$features = [];
+		$dependency_search = ['dependency.plugin_class_name' => $plugin_class_name];
+		/** @var $dependents Installed\Dependency[] */
+		$dependents = Dao::search($dependency_search, Installed\Dependency::class);
+		foreach ($dependents as $dependent) {
+			foreach ($dependent->features as $feature) {
+				if (isset($features[$feature->plugin_class_name])) {
+					continue;
+				}
+				$features = array_merge(
+					$features,
+					[$feature->plugin_class_name => $feature],
+					$recurse ? $this->willUninstall($feature->plugin_class_name) : []
+				);
+			}
+		}
+		return $features;
 	}
 
 }
