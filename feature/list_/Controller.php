@@ -353,7 +353,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$set = Set::instantiate($this->class_names);
-		$parameters->shift();
+		if (!is_a($object = $parameters->shiftObject(), Names::setToClass($this->class_names))) {
+			$parameters->unshift($object);
+		}
 		$parameters->unshift($set);
 		return $set->element_class_name;
 	}
