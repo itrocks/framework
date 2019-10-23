@@ -39,6 +39,8 @@ article.list > form > table > tbody > tr td {
     padding-top: 10px; }
 article.list > form > table > tbody > tr th {
   padding: 0 .83em 0 .75em; }
+  article.list > form > table > tbody > tr th > input {
+    margin: 0; }
 article.list > form > table > tbody > tr.more {
   display: block;
   font-size: 0;

@@ -93,6 +93,10 @@ article.list > form > table > tbody > tr {
 
 	th {
 		padding: 0 .83em 0 .75em;
+
+		> input {
+			margin: 0;
+		}
 	}
 
 	&.more {

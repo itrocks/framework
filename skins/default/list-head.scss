@@ -28,6 +28,10 @@ article.list > form > table > thead {
 					width: 100%;
 				}
 
+				> input {
+					margin: 0;
+				}
+
 				&:first-child > a {
 					padding: 0 .83em 0 .75em;
 				}
