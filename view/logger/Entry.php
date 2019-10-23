@@ -34,12 +34,16 @@ trait Entry
 				[
 					'<script', '</script>',
 					'<link',   '</link>',
-					'<head>',  '</head>'
+					'<head>',  '</head>',
+					'auto-redirect',
+					'auto-refresh'
 				],
 				[
 					'&lt;script',        '&lt/script>',
 					'&lt;link',          '&lt/link&gt;',
-					'<pre>&lt;head&gt;', '&lt;/head></pre>'
+					'<pre>&lt;head&gt;', '&lt;/head></pre>',
+					'',
+					''
 				],
 				$output
 			);
