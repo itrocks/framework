@@ -21,7 +21,7 @@ class Search_Controller extends Select_Controller
 	/**
 	 * @var integer
 	 */
-	private $max_depth = 5;
+	protected $max_depth = 5;
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -43,6 +43,9 @@ class Search_Controller extends Select_Controller
 		));
 
 		$class_name = Names::setToClass($parameters->shift());
+		if (!$this->root_class) {
+			$this->root_class = new Reflection_Class($class_name);
+		}
 		$properties = $this->searchProperties($class_name, $search);
 
 		$top_property        = new Property();
@@ -114,7 +117,7 @@ class Search_Controller extends Select_Controller
 
 				if (($depth < $this->max_depth) && !$matches) {
 					$type = $property->getType();
-					if ($type->isClass()) {
+					if ($type->isClass() && !$type->isDateTime()) {
 						$property_class         = $type->getElementTypeAsString();
 						$is_component           = isA($property_class, Component::class);
 						$exclude_sub_properties = $is_component
@@ -129,9 +132,12 @@ class Search_Controller extends Select_Controller
 							if (!isset($exclude_properties[$sub_property->name])) {
 								$property_path = $property->name . DOT . $sub_property->path;
 								/** @noinspection PhpUnhandledExceptionInspection generated valid $property */
-								$more_properties[$property_path] = new Reflection_Property(
-									$class_name, $property_path
+								$reflection_property = new Reflection_Property(
+									$class_name, $property_path, 'path'
 								);
+								$reflection_property->link_path  = $property_path;
+								$reflection_property->link_class = $sub_property->link_class;
+								$more_properties[$property_path] = $reflection_property;
 							}
 						}
 					}

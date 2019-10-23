@@ -1,9 +1,12 @@
 <?php
 namespace ITRocks\Framework\Property;
 
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * A Reflection_Property into a select tree has additional methods for filtering
@@ -38,6 +41,25 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 * @var string
 	 */
 	public $link_path = null;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $class_name    string
+	 * @param $property_name string
+	 * @param $display       string @values name, path,
+	 * @throws ReflectionException
+	 */
+	public function __construct($class_name, $property_name, $display = null)
+	{
+		parent::__construct($class_name, $property_name);
+		switch ($display) {
+			case 'name': $this->display = $this->name; break;
+			case 'path': $this->display = $this->path; break;
+		}
+		if ($this->display) {
+			$this->display = Loc::tr(Names::propertyToDisplay($this->display));
+		}
+	}
 
 	//------------------------------------------------------------------------------------- classHtml
 	/**

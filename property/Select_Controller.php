@@ -73,10 +73,9 @@ class Select_Controller implements Feature_Controller
 				&& $source_property->isVisible(false, false)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
-				$property = new Reflection_Property($source_property->class, $source_property->name);
-				$property->display = Loc::tr(Names::propertyToDisplay(
-					$display_full_path ? $source_property->path : $source_property->name
-				));
+				$property = new Reflection_Property(
+					$source_property->class, $source_property->path, $display_full_path ? 'path' : 'name'
+				);
 				$property->final_class      = $source_property->final_class;
 				$property->link_class       = $this->root_class->name;
 				$property->link_path        = $source_property->path;
@@ -247,8 +246,8 @@ class Select_Controller implements Feature_Controller
 			$objects,
 			($top_property_class instanceof Reflection_Property) ? $top_property_class : null
 		);
+		$objects['class_name'] = Builder::current()->sourceClassName($class_name);
 		$objects['properties'] = $properties;
-		$objects['class_name'] = $class_name;
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)
