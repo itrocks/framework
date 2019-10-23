@@ -159,6 +159,7 @@ class Installer
 	 */
 	public function install($plugin)
 	{
+		Dao::begin();
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
@@ -169,7 +170,9 @@ class Installer
 			$this->uninstall(Builder::current()->sourceClassName($feature_exclude->value));
 		}
 		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
-			$this->install(Builder::current()->sourceClassName($feature_include->value));
+			$dependency_class_name = Builder::current()->sourceClassName($feature_include->value);
+			$this->install($dependency_class_name);
+			(new Installed\Dependency($plugin_class_name))->add($dependency_class_name);
 		}
 		foreach ($plugin_class->getAnnotations('feature_install') as $feature_install) {
 			/** @noinspection PhpUnhandledExceptionInspection valid class */
@@ -200,6 +203,7 @@ class Installer
 		(new Bridge($this))->automaticInstallFor($plugin_class_name);
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
+		Dao::commit();
 	}
 
 	//-------------------------------------------------------------------------------------- openFile
@@ -241,6 +245,16 @@ class Installer
 				: Builder::create(Implicit::class, [$plugin]);
 		}
 		return $plugin;
+	}
+
+	//------------------------------------------------------------------------------- removeDependent
+	/**
+	 * @param $feature Feature
+	 */
+	protected function removeDependent(Feature $feature)
+	{
+		$this->uninstall($feature->plugin_class_name);
+		(new Installed\Dependency($feature->plugin_class_name))->remove($this->plugin_class_name);
 	}
 
 	//------------------------------------------------------------------------------- removeFromClass
@@ -357,10 +371,29 @@ class Installer
 	 */
 	public function uninstall($plugin_class_name)
 	{
+		Dao::begin();
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
 
+		$dependency_search = ['dependency.plugin_class_name' => $plugin_class_name];
+
+		// remove all dependencies that need this plugin
+		/** @var $installed_dependents Installed\Dependency[] */
+		$installed_dependents = Dao::search($dependency_search, Installed\Dependency::class);
+		foreach ($installed_dependents as $installed_dependent) {
+			foreach ($installed_dependent->features as $feature) {
+				$this->removeDependent($feature);
+			}
+		}
+
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];
+
+		// unset useless dependencies
+		/** @var $installed_dependencies Installed\Dependency[] */
+		$installed_dependencies = Dao::search($installed_search, Installed\Dependency::class);
+		foreach ($installed_dependencies as $installed_dependency) {
+			Dao::delete($installed_dependency);
+		}
 
 		// remove all plugins installed by this plugin
 		/** @var $installed_plugins Installed\Plugin[] */
@@ -395,6 +428,7 @@ class Installer
 		(new Bridge($this))->automaticUninstallFor($plugin_class_name);
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
+		Dao::commit();
 	}
 
 }

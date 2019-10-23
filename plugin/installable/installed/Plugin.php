@@ -24,7 +24,7 @@ class Plugin extends Installed
 	 */
 	public function add($plugin_class_name)
 	{
-		return static::addProperties(['plugin_class_name' => $plugin_class_name]);
+		return $this->addProperties(['plugin_class_name' => $plugin_class_name]);
 	}
 
 	//---------------------------------------------------------------------------------------- remove
@@ -34,7 +34,7 @@ class Plugin extends Installed
 	 */
 	public function remove($plugin_class_name)
 	{
-		return static::removeProperties(['plugin_class_name' => $plugin_class_name]);
+		return $this->removeProperties(['plugin_class_name' => $plugin_class_name]);
 	}
 
 }
