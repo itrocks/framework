@@ -5,7 +5,12 @@ $(document).ready(function()
 	{
 		var selector = 'article[data-class=' + class_name.repl(BS, BS + BS) + ']';
 		if (identifier !== undefined) {
-			selector += '[data-id=' + identifier + ']';
+			if (parseInt(identifier)) {
+				selector += '[data-id=' + identifier + ']';
+			}
+			else {
+				selector += identifier;
+			}
 		}
 
 		// close main window
@@ -16,6 +21,9 @@ $(document).ready(function()
 			if ($close_anchor.length) {
 				$close_anchor.addClass('keep-response');
 				$close_anchor.click();
+			}
+			else if (!parseInt(identifier)) {
+				refresh($main);
 			}
 			else if (identifier !== undefined) {
 				$main_window.remove();
@@ -35,10 +43,11 @@ $(document).ready(function()
 		var $message       = this;
 		var class_name     = $message.data('class');
 		var identifier     = $message.data('id');
-		var set_class_name = $message.data('set-class');
+		var set_class_name = $message.data('set');
 		if (!class_name) {
 			return;
 		}
+		closeWindows(class_name, '.list');
 		if (identifier) {
 			closeWindows(class_name, identifier);
 		}
