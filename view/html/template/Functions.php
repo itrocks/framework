@@ -684,10 +684,15 @@ class Functions
 	 *                             By default, the current context class is used.
 	 * @return boolean
 	 */
-	public function getHasAccessTo(Template $template, $feature, $class_name = null)
+	public function getHasAccessTo(Template $template, $feature = null, $class_name = null)
 	{
+		reset($template->objects);
+		if (!$feature) {
+			$feature = current($template->objects);
+			next($template->objects);
+		}
 		if (!$class_name) {
-			$class_name = (string)$this->getClass($template);
+			$class_name = $this->displayableClassNameOf(current($template->objects))->value;
 		}
 		return Access_Control::get()->hasAccessTo([$class_name, $feature]);
 	}

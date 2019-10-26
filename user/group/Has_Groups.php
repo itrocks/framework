@@ -37,7 +37,7 @@ trait Has_Groups
 	public function getAccessOptions($uri)
 	{
 		$cache    = Low_Level_Features_Cache::current();
-		$features = $cache->features;
+		$features = $cache ? $cache->features : [];
 		$uri      = new Uri($uri);
 		$class_name = Builder::current()->sourceClassName(
 			Names::setToClass($uri->controller_name, false)

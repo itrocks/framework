@@ -11,22 +11,35 @@
 <body>
 <!--BEGIN-->
 
-	<div class="user register window">
+	<article class="user register" data-class="{@class}" data-feature="{@feature}">
 		<h2>|User register|</h2>
-		<form name="user_login" action="app://ITRocks/Framework/User/Register/register" method="post" target="#main">
-			<div class="fieldset">
-				<div class="field">
-					<div class="label">|Login|</div>
-					<div class="value"><input name="login" value="{?login.value}"></div>
-				</div>
-				<div class="field">
-					<div class="label">|Password|</div>
-					<div class="value"><input name="password" type="password" value="{?password.value}"></div>
-				</div>
-			</div>
-			<input type="submit" value="|Register|">
+		<form action="app://ITRocks/Framework/User/register" method="post" target="#main">
+			<ol class="properties tiny">
+				<li class="email">
+					<label for="email">|Email|</label>
+					<input id="email" name="email" value="{?email.value}">
+				</li>
+				<li class="login">
+					<label for="login">|Login|</label>
+					<input id="login" name="login" value="{?login.value}">
+				</li>
+				<li class="password">
+					<label for="password">|Password|</label>
+					<input id="password" name="password" type="password" value="{?password.value}">
+				</li>
+			</ol>
+			<ul class="actions">
+				<li class="register">
+					<input type="submit" value="|Register|">
+				</li>
+				<li class="forgotten-password">
+					<a class="submit" href="app://ITRocks/Framework/User/login" target="#main">
+						|Cancel|, |go to login page|
+					</a>
+				</li>
+			</ul>
 		</form>
-	</div>
+	</article>
 
 <!--END-->
 </body>

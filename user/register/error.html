@@ -10,18 +10,17 @@
 </head>
 <body>
 <!--BEGIN-->
+<!--target #modal-->
 
-	<div class="window">
-		|Register fail|.
-		<!--errors-->
-		<div class="error">
-			<label class="label">|{name}| : </label>
-			<p>|{message}|</p>
-		</div>
-		<!--end-->
-		<a href="app://ITRocks/Framework/User/register">|Try again|</a>
-	</div>
+	<article class="user register-fail" data-class="{@class}" data-feature="{@feature}">
+		<header><h2>|Register fail|</h2></header>
+		<ul class="actions">
+			<li><a href="app://ITRocks/Framework/User/login">|Go to the login screen|</a></li>
+			<li><a href="app://ITRocks/Framework/User/register">|Register as a new user|</a></li>
+		</ul>
+	</article>
 
+<!--end-->
 <!--END-->
 </body>
 </html>

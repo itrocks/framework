@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
 use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
@@ -18,10 +19,13 @@ use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group\Feature;
 use ITRocks\Framework\User\Group\Has_Groups;
+use ITRocks\Framework\User\Group\Has_Guest;
 use ITRocks\Framework\View;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Very simple user access control plugin :
@@ -107,6 +111,24 @@ class Access_Control implements Configurable, Registerable
 		}
 	}
 
+	//---------------------------------------------------------------------- afterTemplateReplaceLink
+	/**
+	 * @param $result string
+	 */
+	public function afterTemplateReplaceLink(&$result)
+	{
+		if (!beginsWith($result, Paths::$uri_base)) {
+			return;
+		}
+		$position = strlen(Paths::$uri_base);
+		if ((substr($result, $position, 1) !== SL) || !ctype_upper(substr($result, $position + 1, 1))) {
+			return;
+		}
+		$link = substr($result, $position);
+		$this->checkAccess($link);
+		$result = Paths::$uri_base . $link;
+	}
+
 	//-------------------------------------------------------------------------------------- allUsers
 	/**
 	 * Returns true if the uri may be accessed by all users (user-exception)
@@ -183,6 +205,7 @@ class Access_Control implements Configurable, Registerable
 
 	//--------------------------------------------------------------------------------- checkFeatures
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $uri   string must start with '/' @example /ITRocks/Framework/User/add
 	 * @param $get   array
 	 * @param $post  array
@@ -194,7 +217,17 @@ class Access_Control implements Configurable, Registerable
 		$last_protect  = self::$protect;
 		self::$protect = true;
 		$user          = User::current();
-		$accessible    = true;
+		if (!$user) {
+			$group_class_name = Builder::className(Group::class);
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$user = Builder::create(User::class);
+			if (isA($user, Has_Groups::class) && isA($group_class_name, Has_Guest::class)) {
+				/** @see Has_Guest::getGuest */
+				/** @var $user User|Has_Groups */
+				$user->groups[] = [call_user_func([$group_class_name, 'getGuest'])];
+			}
+		}
+		$accessible = true;
 		/** @var $user User|Has_Groups */
 		if (
 			isA($user, Has_Groups::class)
@@ -280,14 +313,14 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * Call this to know if an object|class has access to a feature
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $callable array|callable
 	 * @return boolean
 	 */
 	public function hasAccessTo(array $callable)
 	{
-		if (!($user = User::current())) {
-			return false;
-		}
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$user = User::current() ?: Builder::create(User::class);
 		if (isA($user, Has_Groups::class)) {
 			$uri = View::link($callable[0], [$callable[1]]);
 			return $this->checkFeatures($uri);
@@ -369,6 +402,7 @@ class Access_Control implements Configurable, Registerable
 		$aop->afterMethod(
 			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
 		);
+		$aop->afterMethod([Template::class, 'replaceLink'], [$this, 'afterTemplateReplaceLink']);
 		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
 
 		// TODO HIGH Lower security (see #100520#note-25)

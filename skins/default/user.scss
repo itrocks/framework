@@ -2,7 +2,8 @@
 @import 'mixins.scss';
 
 article.password.reset,
-article.user.login {
+article.user.login,
+article.user.register {
 	background: #efefef;
 	display: block;
 	text-align: center;
@@ -99,6 +100,7 @@ article.user.login {
 				}
 
 				&.connect,
+				&.register,
 				&.reset {
 					border-color: #009def;
 
@@ -199,7 +201,8 @@ article.user.login form.error {
 }
 
 body.password.reset,
-body.user.login {
+body.user.login,
+body.user.register {
 	grid-template-areas: "title main side" "menu main side";
 	grid-template-rows: 64px 1fr;
 

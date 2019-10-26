@@ -10,12 +10,19 @@
 </head>
 <body>
 <!--BEGIN-->
+<!--target #modal-->
 
-	<div class="window">
-		<p>|You have been registered|</p>
-		<a href="app://ITRocks/Framework/User/login">|Go to the login screen|</a>
-	</div>
+	<article class="user registered" data-class="{@class}" data-feature="{@feature}">
+		<header><h2>|You have been registered|</h2></header>
+		<p>
+			|Welcome|, {login}.
+		</p>
+		<ul class="actions">
+			<li><a href="app://ITRocks/Framework/User/login">|Go to the login screen|</a></li>
+		</ul>
+	</article>
 
+<!--end-->
 <!--END-->
 </body>
 </html>

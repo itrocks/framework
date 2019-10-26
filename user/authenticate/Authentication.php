@@ -10,6 +10,9 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\User;
+use ITRocks\Framework\User\Group;
+use ITRocks\Framework\User\Group\Has_Default;
+use ITRocks\Framework\User\Group\Has_Groups;
 
 /**
  * The user authentication class gives direct access to login, register and disconnect user features
@@ -30,6 +33,7 @@ abstract class Authentication
 		$user = Search_Object::create(User::class);
 		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
 		$property       = new Reflection_Property($user, 'password');
+		$user->email    = $array['email'];
 		$user->login    = $array['login'];
 		$user->password = (
 			new Password($array['password'], Password_Annotation::of($property)->value)
@@ -174,7 +178,13 @@ abstract class Authentication
 	 */
 	public static function register(array $form)
 	{
-		$user = static::arrayToUser($form);
+		$group_class_name = Builder::className(Group::class);
+		$user             = static::arrayToUser($form);
+		if (isA($group_class_name, Has_Default::class) && isA($user, Has_Groups::class)) {
+			/** @see Has_Default::getDefault */
+			/** @var $user User|Has_Groups */
+			$user->groups = [call_user_func([$group_class_name, 'getDefault'])];
+		}
 		return Dao::write($user);
 	}
 
