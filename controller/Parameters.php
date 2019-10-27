@@ -1,14 +1,12 @@
 <?php
 namespace ITRocks\Framework\Controller;
 
-use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Mapper\Object_Not_Found_Exception;
-use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Set;
 
 /**
@@ -112,9 +110,6 @@ class Parameters
 			}
 			if ((!$object || !is_object($object)) && !$class_name) {
 				$class_name = $this->uri->controller_name;
-				if (is_a($class_name, Application::class, true) || isA($class_name, Current::class)) {
-					$object = call_user_func([$class_name, 'current']);
-				}
 			}
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
