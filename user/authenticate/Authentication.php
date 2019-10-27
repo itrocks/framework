@@ -13,6 +13,7 @@ use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group;
 use ITRocks\Framework\User\Group\Has_Default;
 use ITRocks\Framework\User\Group\Has_Groups;
+use ITRocks\Framework\User\Group\Low_Level_Features_Cache;
 
 /**
  * The user authentication class gives direct access to login, register and disconnect user features
@@ -52,6 +53,7 @@ abstract class Authentication
 	public static function authenticate(User $user)
 	{
 		User::current($user);
+		Low_Level_Features_Cache::unsetCurrent();
 	}
 
 	//---------------------------------------------------------------------------- controlNameNotUsed
@@ -178,12 +180,10 @@ abstract class Authentication
 	 */
 	public static function register(array $form)
 	{
-		$group_class_name = Builder::className(Group::class);
-		$user             = static::arrayToUser($form);
-		if (isA($group_class_name, Has_Default::class) && isA($user, Has_Groups::class)) {
-			/** @see Has_Default::getDefault */
+		$user = static::arrayToUser($form);
+		if (isA(Builder::className(Group::class), Has_Default::class) && isA($user, Has_Groups::class)) {
 			/** @var $user User|Has_Groups */
-			$user->groups = [call_user_func([$group_class_name, 'getDefault'])];
+			$user->groups = Dao::search(['default' => true], Group::class);
 		}
 		return Dao::write($user);
 	}

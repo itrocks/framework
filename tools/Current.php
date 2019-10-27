@@ -96,6 +96,7 @@ trait Current
 	public static function unsetCurrent()
 	{
 		static::$current = null;
+		Session::current()->remove(Builder::current()->sourceClassName(static::class));
 	}
 
 }

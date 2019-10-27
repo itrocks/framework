@@ -63,7 +63,7 @@ trait Has_Groups
 	public function getLowLevelFeatures()
 	{
 		$features = [];
-		foreach ($this->groups as $group) {
+		if ($this->groups) foreach ($this->groups as $group) {
 			$features = array_merge($features, $group->getLowLevelFeatures());
 		}
 		return $features;
