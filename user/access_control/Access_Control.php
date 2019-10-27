@@ -23,7 +23,6 @@ use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\User;
 use ITRocks\Framework\User\Group\Feature;
 use ITRocks\Framework\User\Group\Has_Groups;
-use ITRocks\Framework\User\Group\Has_Guest;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 
@@ -205,7 +204,6 @@ class Access_Control implements Configurable, Registerable
 
 	//--------------------------------------------------------------------------------- checkFeatures
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $uri   string must start with '/' @example /ITRocks/Framework/User/add
 	 * @param $get   array
 	 * @param $post  array
@@ -217,16 +215,6 @@ class Access_Control implements Configurable, Registerable
 		$last_protect  = self::$protect;
 		self::$protect = true;
 		$user          = User::current();
-		if (!$user) {
-			$group_class_name = Builder::className(Group::class);
-			/** @noinspection PhpUnhandledExceptionInspection class */
-			$user = Builder::create(User::class);
-			if (isA($user, Has_Groups::class) && isA($group_class_name, Has_Guest::class)) {
-				/** @see Has_Guest::getGuest */
-				/** @var $user User|Has_Groups */
-				$user->groups[] = [call_user_func([$group_class_name, 'getGuest'])];
-			}
-		}
 		$accessible = true;
 		/** @var $user User|Has_Groups */
 		if (
@@ -270,17 +258,18 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function checkUser(&$uri, array &$get, array &$post, array &$files)
 	{
-		if (!User::current()) {
-			if ($this->isBlank($uri)) {
-				$this->setUri(
-					View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
-				);
-			}
-			elseif (!pregMatchArray($this->exceptions, $uri)) {
-				$this->setUri(
-					View::link(User::class, Controller\Feature::F_LOGIN), $uri, $get, $post, $files
-				);
-			}
+		if (User::current()) {
+			return;
+		}
+		if ($this->isBlank($uri)) {
+			$this->setUri(
+				View::link(Application::class, Controller\Feature::F_BLANK), $uri, $get, $post, $files
+			);
+		}
+		elseif (!pregMatchArray($this->exceptions, $uri)) {
+			$this->setUri(
+				View::link(User::class, Controller\Feature::F_LOGIN), $uri, $get, $post, $files
+			);
 		}
 	}
 
@@ -398,7 +387,7 @@ class Access_Control implements Configurable, Registerable
 	{
 		$aop = $register->aop;
 
-		$aop->afterMethod ([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
+		$aop->afterMethod([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
 		$aop->afterMethod(
 			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
 		);

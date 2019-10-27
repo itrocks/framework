@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
-use ITRocks\Framework\Traits;
 use ITRocks\Framework\User\Group;
 
 /**
@@ -11,6 +10,11 @@ use ITRocks\Framework\User\Group;
  */
 trait Has_Default
 {
-	use Traits\Has_Default;
+
+	//-------------------------------------------------------------------------------------- $default
+	/**
+	 * @var boolean
+	 */
+	public $default = false;
 
 }
