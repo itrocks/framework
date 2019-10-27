@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Controller;
 
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_\Selection;
@@ -110,6 +111,9 @@ class Parameters
 			}
 			if ((!$object || !is_object($object)) && !$class_name) {
 				$class_name = $this->uri->controller_name;
+				if (is_a($class_name, Application::class, true)) {
+					$object = call_user_func([$class_name, 'current']);
+				}
 			}
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
