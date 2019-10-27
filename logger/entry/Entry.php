@@ -171,6 +171,9 @@ class Entry implements Validate\Exception
 			}
 
 			$this->user = User::current();
+			if (!Dao::getObjectIdentifier($this->user)) {
+				$this->user = null;
+			}
 			if (!$this->user && ($_SERVER['REMOTE_ADDR'] === 'console')) {
 				// check grand-parent process is CRON (parent is a shell process)
 				$process = explode(
