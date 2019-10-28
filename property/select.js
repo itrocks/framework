@@ -2,10 +2,12 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
-	// sort and decoration
-	$body.build('call', '.property_select ul.tree', function()
-	{
-		this.sortContent('.separator');
+	// sort and decoration : top priority, because events should be created after this sort
+	$body.build({
+		callback: function() { this.sortContent('.separator'); },
+		event:    'call',
+		priority: 1,
+		selector: '.property_select ul.tree'
 	});
 
 	$body.build('call', '.property_select ul.tree .property_select', function()
@@ -95,7 +97,7 @@ $(document).ready(function()
 			cursorAt: { left: 10, top: 10 },
 			scroll:   false,
 
-			//------------------------------------------------------------------------------ draggable drag
+			//---------------------------------------------------------------------------- draggable drag
 			drag: function(event, ui)
 			{
 				var $this      = $(this);
@@ -107,7 +109,7 @@ $(document).ready(function()
 				}
 			},
 
-			//---------------------------------------------------------------------------- draggable helper
+			//-------------------------------------------------------------------------- draggable helper
 			helper: function()
 			{
 				var $this = $(this);
@@ -125,7 +127,7 @@ $(document).ready(function()
 					.html($this.text());
 			},
 
-			//----------------------------------------------------------------------------- draggable start
+			//--------------------------------------------------------------------------- draggable start
 			start: function()
 			{
 				var $this = $(this);
@@ -135,7 +137,7 @@ $(document).ready(function()
 				}
 			},
 
-			//------------------------------------------------------------------------------ draggable stop
+			//---------------------------------------------------------------------------- draggable stop
 			stop: function(event, ui)
 			{
 				var $this = $(this);

@@ -43,7 +43,7 @@
 							? 1
 							: -1;
 					});
-					$this.append(elements);
+					$.each(elements, function() { $this.append(this); });
 				});
 				if ($selected && $selected.attr('value')) {
 					$this.val($selected.attr('value'));

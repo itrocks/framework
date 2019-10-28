@@ -41,6 +41,11 @@ $(document).ready(function()
 		event.preventDefault();
 	});
 
-	$body.build('call', 'select:not([data-ordered=true])', $.fn.sortContent);
+	$body.build({
+		callback: $.fn.sortContent,
+		event:    'call',
+		priority: 1,
+		selector: 'select:not([data-ordered=true])'
+	});
 
 });

@@ -211,7 +211,9 @@ var requestTargetHeaders = function($element)
 					$target.addClass(settings.keep);
 				}
 				$target.data(settings.xtarget_from, $from);
-				$target.insertAfter($where.hasClass('popup') ? $body : $where);
+				$where.hasClass('popup')
+					? $body.append($target)
+					: $where.after($target);
 				if (($where !== $from) || $where.hasClass('popup')) {
 					$target.addClass('popup');
 					if ($where.hasClass('right')) {
@@ -327,12 +329,9 @@ var requestTargetHeaders = function($element)
 				}
 				// If build plugin is active : build loaded DOM
 				if ($target.build !== undefined) {
-					if (build_target) {
-						$target.build();
-					}
-					else {
-						$target.children().build();
-					}
+					build_target
+						? $target.build()
+						: $target.children().build();
 				}
 				// on success callbacks
 				target = $target.last()[0];

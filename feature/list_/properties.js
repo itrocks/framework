@@ -1,5 +1,6 @@
 $(document).ready(function()
 {
+	var $body = $('body');
 
 	//----------------------------------------------------------------------------------- addProperty
 	var addProperty = function($object, property_name, before_after, before_after_property_name)
@@ -77,17 +78,8 @@ $(document).ready(function()
 	};
 
 	//---------------------------------------------------------------------------------- article.list
-	$('body').build('call', 'article.list', function()
+	$body.build('call', 'article.list', function()
 	{
-
-		//------------------------------------------------------------ .column_select li.basic.property
-		if (this.find('.column_select').length) {
-			this.find('li.basic.property').click(function()
-			{
-				var $this = $(this);
-				addProperty($this, $this.data('property'), 'before');
-			});
-		}
 
 		this.each(function()
 		{
@@ -153,4 +145,17 @@ $(document).ready(function()
 
 		});
 	});
+
+	//-------------------------------------------------------- #column_select li.basic.property click
+	$body.build('click', '.property_select .tree .basic.property', function()
+	{
+		var $this      = $(this);
+		var data_class = $this.closest('.property_select').data('class');
+		var selector   = 'article.list[data-class=' + data_class.repl(BS, BS + BS) + ']';
+		var $list      = $(selector);
+		if ($list.length) {
+			addProperty($list, $this.data('property'), 'before');
+		}
+	});
+
 });
