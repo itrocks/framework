@@ -134,9 +134,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	public function getDocComment(array $flags = [])
 	{
 		if (!isset($this->doc_comment)) {
-			$this->doc_comment = '';
+			$this->doc_comment =  '';
 			$tokens            =& $this->class->source->getTokens();
-			$token_key         = $this->token_key;
+			$token_key         =  $this->token_key;
 			while (is_array($token = $tokens[--$token_key])) {
 				if ($token[0] === T_DOC_COMMENT) {
 					$this->doc_comment = $token[1] . $this->doc_comment;
@@ -153,8 +153,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	public function getIndent()
 	{
 		if (!isset($this->indent)) {
-			$tokens =& $this->class->source->getTokens();
-			$token_key = $this->token_key;
+			$tokens    =& $this->class->source->getTokens();
+			$token_key =  $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection not really empty (--) */
 			while (is_array($token = $tokens[--$token_key]) && (strpos($token[1], LF) === false));
 			$this->indent = is_array($token) ? $token[1] : '';
@@ -192,9 +192,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		$counter = 0;
 		if (!isset($this->parameters_names)) {
-			$this->parameters_names = [];
+			$this->parameters_names =  [];
 			$tokens                 =& $this->class->source->getTokens();
-			$token_key              = $this->token_key;
+			$token_key              =  $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
 			while (($token = $tokens[++$token_key]) !== '(');
 			while (($token = $tokens[++$token_key]) !== ')') {
@@ -246,8 +246,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		if (!isset($this->prototype_string)) {
 			$this->prototype_string = '';
-			$tokens =& $this->class->source->getTokens();
-			$token_key = $this->token_key;
+			$tokens    =& $this->class->source->getTokens();
+			$token_key =  $this->token_key;
 			while (is_array($token = $tokens[--$token_key])) {
 				if ($token[0] == T_WHITESPACE) {
 					$token[1] = str_replace([CR, LF . LF], ['', LF], $token[1]);
@@ -375,14 +375,15 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 */
 	public static function of($class_name, $method_name, array $flags = [])
 	{
-		$class = Reflection_Class::of($class_name);
+		$class   = Reflection_Class::of($class_name);
 		$methods = $class->getMethods($flags);
 		if (!isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
 			do {
 				$extends = $class->getListAnnotation('extends')->values();
-				$class = $extends ? $class->source->getOutsideClass($extends[0]) : null;
-				$methods = $class ? $class->getMethods($flags) : null;
-			} while ($class && !isset($methods[$method_name]));
+				$class   = $extends ? $class->source->getOutsideClass($extends[0]) : null;
+				$methods = $class   ? $class->getMethods($flags)                   : null;
+			}
+			while ($class && !isset($methods[$method_name]));
 			if (!isset($methods[$method_name])) {
 				trigger_error('Method not found ' . $class_name . '::' . $method_name, E_USER_ERROR);
 			}
@@ -414,18 +415,18 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		$name = isset($method_name) ? $method_name : '\w+';
 		return '%'
-		. '(\n\s*?)'                                // 1 : indent
-		. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 2 : documentation
-		. '(?:\/\*.*\*/\n\s*)?'                     // ignored one-line documentation
-		. '(?:(abstract)\s+)?'                      // 3 : abstract
-		. '(?:(private|protected|public)\s+)?'      // 4 : visibility
-		. '(?:(static)\s+)?'                        // 5 : static
-		. 'function\s+'                             // function keyword
-		. '(\&)?\s*'                                // 6 : reference flag
-		. '(' . $name . ')\s*'                      // 7 : name
-		. '(\((?:.*?\n?)*?\)\s*)'                   // 8 : parameters string
-		. '([\{\;]\s*?\n)'                          // 9 : end of function prototype
-		. '%';
+			. '(\n\s*?)'                                // 1 : indent
+			. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 2 : documentation
+			. '(?:\/\*.*\*/\n\s*)?'                     // ignored one-line documentation
+			. '(?:(abstract)\s+)?'                      // 3 : abstract
+			. '(?:(private|protected|public)\s+)?'      // 4 : visibility
+			. '(?:(static)\s+)?'                        // 5 : static
+			. 'function\s+'                             // function keyword
+			. '(\&)?\s*'                                // 6 : reference flag
+			. '(' . $name . ')\s*'                      // 7 : name
+			. '(\((?:.*?\n?)*?\)\s*)'                   // 8 : parameters string
+			. '([\{\;]\s*?\n)'                          // 9 : end of function prototype
+			. '%';
 	}
 
 	//--------------------------------------------------------------------------------------- returns
@@ -451,8 +452,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	public function returnsReference()
 	{
 		if (!isset($this->returns_reference)) {
-			$tokens =& $this->class->source->getTokens();
-			$token_key = $this->token_key;
+			$tokens    =& $this->class->source->getTokens();
+			$token_key =  $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
 			while (is_array($token = $tokens[++$token_key]));
 			$this->returns_reference = ($token === '&');
@@ -466,8 +467,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		// don't initialise $this->is_abstract here ! this is done by isAbstract()
 		$this->is_final  = false;
 		$this->is_static = false;
-		$tokens =& $this->class->source->getTokens();
-		$token_key = $this->token_key;
+		$tokens    =& $this->class->source->getTokens();
+		$token_key =  $this->token_key;
 		while (is_array($token = $tokens[--$token_key])) {
 			switch ($token[0]) {
 				case T_ABSTRACT: $this->is_abstract = true; break;
