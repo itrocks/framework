@@ -22,12 +22,18 @@
       text-align: center; }
       #modal > article .actions > li {
         flex: 100%; }
-    #modal > article > div > p {
+    #modal > article > div > h3, #modal > article > form > div > h3 {
+      font-weight: 500;
+      margin: 10px 0 10px 10px; }
+      #modal > article > div > h3:after, #modal > article > form > div > h3:after {
+        content: ' :'; }
+    #modal > article > div > p, #modal > article > form > div > p {
       line-height: 1.4em;
       padding: 10px; }
-    #modal > article > div > ul:not(.actions) {
+    #modal > article > div > ul:not(.actions), #modal > article > form > div > ul:not(.actions) {
+      margin: 10px 0;
       padding-left: 10px; }
-      #modal > article > div > ul:not(.actions) > li {
+      #modal > article > div > ul:not(.actions) > li, #modal > article > form > div > ul:not(.actions) > li {
         display: list-item;
         line-height: 1.4em;
         list-style-position: inside; }

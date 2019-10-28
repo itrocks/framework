@@ -1,3 +1,5 @@
+@import 'colors.scss';
+
 #modal {
 	background-color: rgba(0, 0, 0, .25);
 	position: absolute;
@@ -30,7 +32,16 @@
 			}
 		}
 
-		> div {
+		> div, > form > div {
+
+			> h3 {
+				font-weight: $medium;
+				margin: 10px 0 10px 10px;
+
+				&:after {
+					content: ' :';
+				}
+			}
 
 			> p {
 				line-height: 1.4em;
@@ -38,6 +49,7 @@
 			}
 
 			> ul:not(.actions) {
+				margin: 10px 0;
 				padding-left: 10px;
 
 				> li {
