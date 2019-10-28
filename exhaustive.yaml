@@ -1,6 +1,7 @@
 ITRocks\Framework\Component\Menu:
   Administration:
     - /ITRocks/Framework/Users
+    - /ITRocks/Framework/User/Groups
     - /ITRocks/Framework/Logger/Entries
     - /ITRocks/Framework/Layout/Print_Models
     - /ITRocks/Framework/Objects/Counters/Simple

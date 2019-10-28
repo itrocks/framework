@@ -1,18 +1,75 @@
 <?php
 namespace ITRocks\Framework\User\Group;
 
+use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Plugin\Installable;
+use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
+use ITRocks\Framework\User;
+use ITRocks\Framework\User\Group;
 
 /**
- * User group administration plugin TEST
+ * Features user access control
  *
  * Must be enabled if you enable a menu for administrators to configure user groups
  */
-class Admin_Plugin implements Registerable, Updatable
+class Admin_Plugin implements Installable, Registerable, Updatable
 {
+
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return 'Features user access control';
+	}
+
+	//-------------------------------------------------------------------- initializeDefaultUserGroup
+	/**
+	 * Called on feature install
+	 *
+	 * All users set as super-administrator, if they have no group
+	 */
+	public function initializeDefaultUserGroup()
+	{
+		// create the default super-administrator group
+		$group_name = Loc::tr('Super-administrator');
+		$group      = Dao::searchOne(['name' => $group_name], Group::class) ?: new Group();
+		if (!$group->features && !$group->name) {
+			$group->name     = $group_name;
+			$group->features = [
+				Dao::searchOne(['path' => 'ITRocks/Framework/User/superAdministrator'], Feature::class)
+			];
+			Dao::write($group);
+		}
+		// assign all unassigned users to super-administrator
+		foreach (Dao::search(['groups' => Func::isNull()], Groups_User::class) as $user) {
+			$user->groups = [$group];
+			Dao::write($user, Dao::only('groups'));
+		}
+		// reset current user features access list
+		User\Authenticate\Authentication::authenticate(User::current());
+	}
+
+	//--------------------------------------------------------------------------------------- install
+	/**
+	 * @param $installer Installer
+	 */
+	public function install(Installer $installer)
+	{
+		$installer->addPlugin($this);
+		$installer->addToClass(User::class, Has_Groups::class);
+		$installer->addMenu(['Administration' => Menu::configurationOf(Group::class)]);
+		$this->update(0);
+		$this->initializeDefaultUserGroup();
+	}
 
 	//-------------------------------------------------------------------------------------- register
 	/**
