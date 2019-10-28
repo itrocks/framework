@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Application;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
 use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
@@ -218,8 +217,10 @@ class Access_Control implements Configurable, Registerable
 		$accessible = true;
 		/** @var $user User|Has_Groups */
 		if (
-			isA($user, Has_Groups::class)
-			&& !$user->hasAccessTo($this->cleanupUri($uri))
+			(
+				!$user
+				|| (isA($user, Has_Groups::class) && !$user->hasAccessTo($this->cleanupUri($uri)))
+			)
 			&& !$this->allUsers($uri)
 		) {
 			if ($this->isBlank($uri)) {
@@ -302,19 +303,13 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * Call this to know if an object|class has access to a feature
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $callable array|callable
 	 * @return boolean
 	 */
 	public function hasAccessTo(array $callable)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection class */
-		$user = User::current() ?: Builder::create(User::class);
-		if (isA($user, Has_Groups::class)) {
-			$uri = View::link($callable[0], [$callable[1]]);
-			return $this->checkFeatures($uri);
-		}
-		return true;
+		$uri = View::link($callable[0], [$callable[1]]);
+		return $this->checkFeatures($uri);
 	}
 
 	//--------------------------------------------------------------------------------------- isBlank
