@@ -20,6 +20,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -1031,7 +1032,7 @@ class Functions
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $template Template
 	 * @param $name     string
-	 * @return string
+	 * @return Reflection_Property_Value
 	 */
 	public function getProperty(Template $template, $name = null)
 	{
@@ -1350,6 +1351,35 @@ class Functions
 			}
 		}
 		return null;
+	}
+
+	//--------------------------------------------------------------------------------------- getUnit
+	/**
+	 * Get the property unit
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getUnit(Template $template)
+	{
+		$property = reset($template->objects);
+		// find the first next object
+		if (!($property instanceof Reflection_Property)) {
+			$object        = next($template->objects);
+			$property_name = reset($template->var_names);
+			while (($object !== false) && !is_object($object)) {
+				$object        = next($template->objects);
+				$property_name = next($template->var_names);
+			}
+			if (is_object($object) && isset($property_name) && is_string($property_name)) {
+				/** @noinspection PhpUnhandledExceptionInspection object */
+				$property = new Reflection_Property($object, $property_name);
+			}
+		}
+		/** @var $unit_annotation Method_Annotation */
+		$unit_annotation = $property->getAnnotation('unit');
+		return $unit_annotation->call($object ?? $property->getObject());
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
