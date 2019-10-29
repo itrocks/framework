@@ -44,7 +44,7 @@ ul.selection.actions > li > ul {
 
 li.actions > ul,
 ul.actions {
-	background: #efefef;
+	background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
 	display: flex;
 	flex-direction: row-reverse;
 }

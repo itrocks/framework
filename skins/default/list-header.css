@@ -1,5 +1,5 @@
 article.list header > .summary {
-  background: #f8f8f8;
+  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
   border-top: 1px solid #ccc;
   padding: 13px 10px 12px;
   text-align: left;
