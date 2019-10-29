@@ -63,6 +63,15 @@ article ol.properties:not(.tiny) {
   article ol.properties:not(.tiny) > li.multiline > div {
     white-space: pre-line; }
 
+article ol.properties.tiny {
+  padding: 10px; }
+  article ol.properties.tiny > li {
+    display: block; }
+    article ol.properties.tiny > li label {
+      display: block;
+      font-weight: 500;
+      padding: 4px 0; }
+
 article > ul.data ol.properties > li:not(.component-objects):not(.objects) > div {
   background: #efefef;
   border-radius: 2px;
