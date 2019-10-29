@@ -25,42 +25,46 @@ body {
       right: 0;
       top: 0;
       width: 0; }
-  body > #menu {
+  body > #menu,
+  body > #quick-menu {
     border-right: 2px solid #d8d8d8; }
+  body > #quick-menu {
+    border-top: 2px solid #d8d8d8;
+    z-index: 1; }
 
 body {
   --z-index: 0;
   display: grid;
-  grid-template-areas: "title notifications side" "menu  favorites     side" "menu  main          side";
+  grid-template-areas: "title notifications side" "menu  favorites     side" "menu  main          side" "quick main          side";
   grid-template-columns: 200px 1fr min-content;
-  grid-template-rows: 64px auto 1fr;
+  grid-template-rows: 64px auto 1fr min-content;
   height: 100vh;
   overflow: hidden;
   transition-duration: var(--transition-duration); }
+  body.min-left {
+    grid-template-columns: 44px 1fr min-content; }
+  body > aside {
+    display: none;
+    grid-area: side; }
+  body > h1 {
+    display: none; }
+  body > main {
+    grid-area: main;
+    margin-top: -1px;
+    overflow: hidden; }
   body > .company.logo {
     grid-area: title; }
     body > .company.logo > a {
       display: block;
       height: 100%; }
-  body > h1 {
+  body > .trashcan {
     display: none; }
-  body > #menu {
-    grid-area: menu; }
-  body > #short-menu {
-    display: none; }
-  body > #notifications {
-    grid-area: notifications; }
   body > #favorites {
     display: none;
     grid-area: favorites; }
-  body > main {
-    grid-area: main;
-    margin-top: -1px;
-    overflow: hidden; }
-  body > aside {
-    display: none;
-    grid-area: side; }
-  body > .trashcan {
-    display: none; }
-  body.min-left {
-    grid-template-columns: 44px 1fr min-content; }
+  body > #menu {
+    grid-area: menu; }
+  body > #notifications {
+    grid-area: notifications; }
+  body > #quick-menu {
+    grid-area: quick; }

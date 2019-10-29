@@ -6,6 +6,7 @@ use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
 use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
 use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Component\Menu\Construct_Item;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
@@ -382,7 +383,7 @@ class Access_Control implements Configurable, Registerable
 	{
 		$aop = $register->aop;
 
-		$aop->afterMethod([Menu::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
+		$aop->afterMethod([Construct_Item::class, 'constructItem'],  [$this, 'checkAccessToMenuItem']);
 		$aop->afterMethod(
 			[Reflection_Property::class, 'getOverrideDocComment'], [$this, 'overridePropertyDocComment']
 		);

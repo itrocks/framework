@@ -3,7 +3,7 @@ namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Component\Button;
-use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Component\Menu\Construct_Item;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Main;
@@ -93,7 +93,7 @@ class Write_Access_Control implements Registerable
 		$aop = $register->aop;
 		$aop->afterMethod([List_\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']);
 		$aop->afterMethod([List_\Controller::class, 'getSelectionButtons'], [$this, 'removeButtons']);
-		$aop->afterMethod([Menu::class, 'constructItem'], [$this, 'checkAccessToMenuItem']);
+		$aop->afterMethod([Construct_Item::class, 'constructItem'], [$this, 'checkAccessToMenuItem']);
 		$aop->afterMethod([Output\Controller::class, 'getGeneralButtons'], [$this, 'removeButtons']);
 		$aop->afterMethod([View::class, 'link'], [$this, 'checkAccessToLink']);
 		$aop->beforeMethod([Main::class, 'doRunInnerController'], [$this, 'checkAccess']);

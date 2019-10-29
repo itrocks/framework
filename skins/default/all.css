@@ -45,6 +45,8 @@
 @import 'output-properties.css';
 @import 'output-value.css';
 @import 'property-select.css';
+@import 'quick-menu.css';
+@import 'quill.css';
 @import 'tabber.css';
 @import 'tooltip.css';
 @import 'trashcan.css';

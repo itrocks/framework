@@ -120,4 +120,8 @@ body.min-left {
 			display: none;
 		}
 	}
+
+	> nav#quick-menu a {
+		font-size: 0;
+	}
 }

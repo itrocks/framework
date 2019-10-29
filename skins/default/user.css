@@ -209,10 +209,13 @@ body.user.register {
       display: none; }
   body.password.reset > #favorites,
   body.password.reset > #notifications,
+  body.password.reset > #quick-menu,
   body.user.login > #favorites,
   body.user.login > #notifications,
+  body.user.login > #quick-menu,
   body.user.register > #favorites,
-  body.user.register > #notifications {
+  body.user.register > #notifications,
+  body.user.register > #quick-menu {
     display: none; }
   body.password.reset > #menu,
   body.user.login > #menu,

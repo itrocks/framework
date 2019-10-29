@@ -61,3 +61,5 @@ body.min-left > nav#menu h3 > a {
   font-size: 0; }
 body.min-left > nav#menu li > ul {
   display: none; }
+body.min-left > nav#quick-menu a {
+  font-size: 0; }

@@ -1,0 +1,15 @@
+nav#quick-menu {
+  font-size: 14px;
+  box-shadow: 0 -4px 4px -4px rgba(0, 0, 0, 0.2); }
+  nav#quick-menu ul {
+    display: table;
+    width: 100%; }
+    nav#quick-menu ul li {
+      display: table-row;
+      height: 41px; }
+      nav#quick-menu ul li > a {
+        display: table-cell;
+        overflow: hidden;
+        padding-left: 42px;
+        vertical-align: middle;
+        white-space: nowrap; }

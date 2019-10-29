@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Component;
 
 use ITRocks\Framework\Component\Menu\Block;
-use ITRocks\Framework\Component\Menu\Item;
+use ITRocks\Framework\Component\Menu\Construct_Item;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
@@ -17,6 +17,7 @@ use ITRocks\Framework\View;
  */
 class Menu implements Configurable
 {
+	use Construct_Item;
 	use Has_Get;
 
 	//------------------------------------------------------- Menu configuration array keys constants
@@ -131,7 +132,7 @@ class Menu implements Configurable
 	 * @param $items     array
 	 * @return Block
 	 */
-	private function constructBlock($block_key, array $items)
+	protected function constructBlock($block_key, array $items)
 	{
 		$block = new Block();
 
@@ -163,39 +164,11 @@ class Menu implements Configurable
 		return $block;
 	}
 
-	//--------------------------------------------------------------------------------- constructItem
-	/**
-	 * @param $item_key string
-	 * @param $item     string[]|string
-	 * @return Item
-	 */
-	private function constructItem($item_key, $item)
-	{
-		if ($item === static::CLEAR) {
-			return null;
-		}
-		$menu_item = new Item();
-		$menu_item->link = $item_key;
-		if (is_array($item)) {
-			foreach ($item as $property_key => $property) {
-				if (is_numeric($property_key)) {
-					if     (substr($property, 0, 1) == SL)  $menu_item->link        = $property;
-					elseif (substr($property, 0, 1) == '#') $menu_item->link_target = $property;
-					else                                    $menu_item->caption     = $property;
-				}
-			}
-		}
-		else {
-			$menu_item->caption = $item;
-		}
-		return $menu_item;
-	}
-
 	//-------------------------------------------------------------------------------- constructTitle
 	/**
 	 * @param $items string[]
 	 */
-	private function constructTitle(array $items)
+	protected function constructTitle(array $items)
 	{
 		foreach ($items as $item) {
 			switch (substr($item, 0, 1)) {
