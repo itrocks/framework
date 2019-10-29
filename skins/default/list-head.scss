@@ -104,12 +104,12 @@ article.list > form > table > thead {
 				vertical-align: top;
 
 				> input {
-					background: transparent;
-					border: none;
+					background: transparent !important;
+					border: none !important;
 					box-shadow: inset 0 0 1px 1px #fbfaf9;
 					display: block;
-					height: 12px;
-					padding: 10px 5px;
+					height: 12px !important;
+					padding: 10px 5px !important;
 					width: calc(100% - 10px) !important;
 				}
 			}
