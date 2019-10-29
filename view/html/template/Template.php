@@ -226,21 +226,22 @@ class Template
 			!($position = strpos($content, '<main'))
 			|| !($position     = strpos($content, '<article', $position))
 			|| !($end_position = strpos($content, '>', $position))
-			|| !($position     = strpos($content, 'class=', $position))
+			|| !($position     = strpos($content, ' class=', $position))
 			|| ($position > $end_position)
-			|| !($end_position = strpos($content, DQ, $position += 7))
+			|| !($end_position = strpos($content, DQ, $position += 8))
 		) {
 			return;
 		}
 		$classes = substr($content, $position, $end_position - $position);
 		if (
 			!($position = strpos($content, '<body'))
-			|| !(strpos($content, '>', $position += 5))
+			|| !($end_position = strpos($content, '>', $position += 5))
 		) {
 			return;
 		}
 		if (
 			($data_class_position = strpos($content, 'data-class=', $position))
+			&& ($data_class_position < $end_position)
 			&& ($data_class_end_position = strpos($content, DQ, $data_class_position += 12))
 		) {
 			$data_class = substr(
@@ -250,9 +251,9 @@ class Template
 		else {
 			$data_class = null;
 		}
-		$add_classes = (' class=' . DQ . $classes)
+		$add_classes = (' class=' . DQ . $classes . DQ)
 			. ($data_class ? (DQ . ' data-class=' . DQ . $data_class . DQ) : '');
-		$content     = substr($content, 0, $position) . $add_classes . substr($content, $position);
+		$content = substr($content, 0, $position) . $add_classes . substr($content, $position);
 	}
 
 	//--------------------------------------------------------------------------------- backupContext
