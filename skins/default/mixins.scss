@@ -4,16 +4,14 @@
 
 	article[data-module=#{$module}],
 	#favorites > li[data-module=#{$module}],
-	#menu > ul > li##{$module}
-	{
+	#menu > ul > li##{$module} {
 		--dark-color:  $color1;
 		--light-color: $color2;
 	}
 
 	body:not(.min-left)[data-module=#{$module}] > #menu > ul > li##{$module},
 	body:not(.min-left) > #menu > ul > li##{$module}:focus,
-	body:not(.min-left) > #menu > ul > li##{$module}:hover
-	{
+	body:not(.min-left) > #menu > ul > li##{$module}:hover {
 
 		> h3 > a {
 			background: url('img/#{$module}-24-hilight.svg') 10px center no-repeat,
@@ -28,8 +26,7 @@
 
 	body.min-left[data-module=#{$module}] > #menu > ul > li##{$module},
 	body.min-left > #menu > ul > li##{$module}:focus,
-	body.min-left > #menu > ul > li##{$module}:hover
-	{
+	body.min-left > #menu > ul > li##{$module}:hover {
 
 		> h3 > a {
 			background: url('img/#{$module}-24-hilight.svg') 10px center no-repeat;
