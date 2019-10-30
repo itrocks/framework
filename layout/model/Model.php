@@ -2,12 +2,13 @@
 namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Layout\Model\Page;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Property\Reflection_Property;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Tools\Feature_Class;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ReflectionException;
@@ -16,7 +17,8 @@ use ReflectionException;
  * A print model gives the way to print an object of a given class
  *
  * @business
- * @representative class_name, name
+ * @override name @getter
+ * @representative document.name, name
  */
 abstract class Model
 {
@@ -24,13 +26,24 @@ abstract class Model
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
-	 * @alias document
+	 * @getter
 	 * @mandatory
-	 * @user readonly
-	 * @user_getter userGetClassName
+	 * @setter
+	 * @user invisible
 	 * @var string
 	 */
 	public $class_name;
+
+	//------------------------------------------------------------------------------------- $document
+	/**
+	 * @getter
+	 * @link Object
+	 * @mandatory
+	 * @setter
+	 * @user readonly
+	 * @var Feature_Class
+	 */
+	public $document;
 
 	//---------------------------------------------------------------------------------------- $pages
 	/**
@@ -48,7 +61,9 @@ abstract class Model
 	 */
 	public function __toString()
 	{
-		return trim($this->class_name . SP . $this->name);
+		return trim(
+			($this->document ? Loc::tr($this->document->name) : $this->class_name) . SP . $this->name
+		);
 	}
 
 	//--------------------------------------------------------------------------------- classNamePath
@@ -70,6 +85,43 @@ abstract class Model
 		return new Reflection_Class($this->class_name);
 	}
 
+	//---------------------------------------------------------------------------------- getClassName
+	/**
+	 * @return string
+	 */
+	protected function getClassName()
+	{
+		if (!$this->class_name) {
+			$this->class_name = $this->document ? $this->document->class_name : null;
+		}
+		return $this->class_name;
+	}
+
+	//----------------------------------------------------------------------------------- getDocument
+	/**
+	 * @return Feature_Class
+	 */
+	protected function getDocument()
+	{
+		if (!$this->document && $this->class_name) {
+			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class)
+				?: new Feature_Class($this->class_name);
+		}
+		return $this->document;
+	}
+
+	//--------------------------------------------------------------------------------------- getName
+	/**
+	 * @return string
+	 */
+	protected function getName()
+	{
+		if (!$this->name && $this->document) {
+			$this->name = $this->document->name;
+		}
+		return Loc::tr($this->name);
+	}
+
 	//-------------------------------------------------------------------------------------- getPages
 	/**
 	 * Sorted pages getter
@@ -77,7 +129,7 @@ abstract class Model
 	 * @noinspection PhpDocMissingThrowsInspection only valid classes : no exception
 	 * @return Page[]
 	 */
-	public function getPages()
+	protected function getPages()
 	{
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
 		$property   = new Reflection_Property($this, 'pages');
@@ -103,18 +155,28 @@ abstract class Model
 		return Builder::create($pages_class, [$position]);
 	}
 
-	//------------------------------------------------------------------------------ userGetClassName
+	//---------------------------------------------------------------------------------- setClassName
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
+	 * @param $value string
 	 */
-	public function userGetClassName()
+	protected function setClassName($value)
 	{
-		if ($this->class_name && class_exists($this->class_name)) {
-			/** @noinspection PhpUnhandledExceptionInspection class_exists */
-			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->class_name))->value);
+		if ($this->class_name = $value) {
+			$this->document = null;
+			$this->document;
 		}
-		return $this->class_name;
+	}
+
+	//----------------------------------------------------------------------------------- setDocument
+	/**
+	 * @param $value Feature_Class
+	 */
+	protected function setDocument(Feature_Class $value = null)
+	{
+		if ($this->document = $value) {
+			$this->class_name = '';
+			$this->class_name;
+		}
 	}
 
 }

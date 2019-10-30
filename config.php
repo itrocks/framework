@@ -15,6 +15,7 @@ use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Tests\Tests_Configurator;
 use ITRocks\Framework\Tests\Tests_Html_ResultPrinter;
+use ITRocks\Framework\Tools\Feature_Class\Menu_Update;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\View\Html\Cleaner;
 
@@ -99,6 +100,7 @@ $config['ITRocks/Framework'] = [
 				Number_Format::THOUSAND_SEPARATOR    => ',',
 			]
 		],
+		Menu_Update::class,
 		Mysql\Maintainer::class,
 		Template_Compiler::class,
 		Tests_Configurator::class => [
@@ -119,6 +121,8 @@ $config['ITRocks/Framework'] = [
 	Priority::HIGH    => [],
 	Priority::HIGHER  => [],
 	Priority::HIGHEST => [],
+
+	//------------------------------------------------------------------------------ Priority::REMOVE
 	Priority::REMOVE  => []
 
 ];

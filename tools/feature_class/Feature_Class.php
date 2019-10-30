@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
 
 /**
@@ -22,6 +24,7 @@ class Feature_Class
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string the name of the source class
 	 * @param $name       string the displayed name (matches @display of the built class)
 	 */
@@ -32,6 +35,10 @@ class Feature_Class
 		}
 		if (isset($name)) {
 			$this->name = $name;
+		}
+		if ($this->class_name && !$this->name) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+			$this->name = Display_Annotation::of(new Reflection_Class($this->class_name))->value;
 		}
 	}
 

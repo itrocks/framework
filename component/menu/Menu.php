@@ -36,6 +36,14 @@ class Menu implements Configurable
 	 */
 	public $blocks;
 
+	//-------------------------------------------------------------------------- $configuration_items
+	/**
+	 * Linearized list of items, as they are into the original configuration
+	 *
+	 * @var string[]
+	 */
+	public $configuration_items;
+
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
@@ -65,18 +73,21 @@ class Menu implements Configurable
 	public function __construct($configuration = null)
 	{
 		if (isset($configuration)) {
-			$this->blocks = [];
+			$this->blocks              = [];
+			$this->configuration_items = [];
 			foreach ($configuration as $block_key => $items) {
 				if ($block_key == self::TITLE) {
 					$this->constructTitle($items);
 				}
 				else {
-					$block = $this->constructBlock($block_key, $items);
+					$this->configuration_items[] = $items;
+					$block                       = $this->constructBlock($block_key, $items);
 					if ($block) {
 						$this->blocks[] = $block;
 					}
 				}
 			}
+			$this->configuration_items = array_merge(...$this->configuration_items);
 		}
 	}
 

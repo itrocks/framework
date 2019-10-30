@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>|Layout model|</title>
+</head>
+<body>
+<!--BEGIN-->
+<!--use ITRocks\Framework\Tools\Paths-->
+
+	<article class="{@class.short.lower} layout_model {@feature.lower}" data-class="{@class}" data-feature="{@feature}">
+		<header><h2>|{@class.display.ucfirst}|</h2></header>
+		{/component/button/general_buttons.html}
+		{/feature/output/object.html}
+	</article>
+
+<!--END-->
+</body>
+</html>
