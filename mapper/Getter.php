@@ -193,7 +193,10 @@ abstract class Getter
 	 */
 	public static function getDateTime(&$stored)
 	{
-		if (is_string($stored)) {
+		if (is_null($stored)) {
+			$stored = Date_Time::min();
+		}
+		elseif (is_string($stored)) {
 			try {
 				$stored = Date_Time::fromISO($stored);
 			}
