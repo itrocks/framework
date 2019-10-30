@@ -105,6 +105,7 @@ class Update implements Registerable, Updatable
 	 */
 	protected function updateInit()
 	{
+		Dao::createStorage(Keep::class);
 		$feature_classes = Dao::readAll(Keep::class, Dao::key('class_name'));
 		$class_names     = [];
 		$write           = [];
