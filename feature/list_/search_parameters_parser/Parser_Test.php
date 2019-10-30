@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Feature\List_\Search\Implicit_Jokers;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Tests\Objects\Document;
@@ -45,6 +46,9 @@ class Parser_Test extends Test
 	protected function setUp()
 	{
 		parent::setUp();
+		if ($jokers = Implicit_Jokers::get(false)) {
+			$jokers->setEnabled(false);
+		}
 		// TODO Build
 		$this->class_name = Document::class;
 		$this->parser     = new Search_Parameters_Parser($this->class_name);

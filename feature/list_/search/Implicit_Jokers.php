@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Search;
 
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Installable\Installer;
 use ITRocks\Framework\Plugin\Register;
@@ -14,6 +15,13 @@ use ITRocks\Framework\Reflection\Type;
  */
 class Implicit_Jokers implements Installable, Registerable
 {
+	use Has_Get;
+
+	//-------------------------------------------------------------------------------------- $enabled
+	/**
+	 * @var boolean
+	 */
+	private $enabled = true;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -40,6 +48,9 @@ class Implicit_Jokers implements Installable, Registerable
 	 */
 	public function jokersAround(&$search_value, Reflection_Property $property)
 	{
+		if (!$this->enabled) {
+			return;
+		}
 		$type_string = $property->getType()->asString();
 		if (in_array($type_string, [Type::STRING, Type::STRING_ARRAY], true)) {
 			$search_value = beginsWith($search_value, '=')
@@ -57,6 +68,18 @@ class Implicit_Jokers implements Installable, Registerable
 		$register->aop->beforeMethod(
 			[Search_Parameters_Parser::class, 'applySingleValue'], [$this, 'jokersAround']
 		);
+	}
+
+	//------------------------------------------------------------------------------------ setEnabled
+	/**
+	 * @param $enabled boolean
+	 * @return boolean
+	 */
+	public function setEnabled($enabled = true)
+	{
+		$last_enabled = $this->enabled;
+		$this->enabled = $enabled;
+		return $last_enabled;
 	}
 
 }
