@@ -40,6 +40,11 @@ ul.selection.actions > li > ul {
 	bottom: 31px;
 }
 
+ol.properties.tiny + ul.actions {
+	background: transparent;
+	padding: 0 10px 10px;
+}
+
 //------------------------------------------------------------------------------------------ Layout
 
 li.actions > ul,
