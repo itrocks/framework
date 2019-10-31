@@ -12,16 +12,17 @@
 <!--BEGIN-->
 
 	<section class="pages tabber">
-		<h4>|Pages|</h4>
+		<h3>|Pages|</h3>
 		<ul>
 			<!--pages-->
-			<li><a href="rel://#page-(orderingCaption)">|{orderingCaption}|</a></li>
+			<li class="{orderingCaption}-page"><a href="rel://#(orderingCaption)-page">|{orderingCaption}|</a></li>
 			<!--end-->
 		</ul>
-		<!--pages-->
-		{/output.html}
-		<!--end-->
 	</section>
+
+	<!--pages-->
+	{/output.html}
+	<!--end-->
 
 <!--END-->
 </body>

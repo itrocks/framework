@@ -1,178 +1,208 @@
 
-article.layout_model {
+//------------------------------------------------------------------------------------------- Style
+
+article.layout-model {
+
+	h3, h4 {
+		display: none;
+	}
+
+	.buttons.toolbox ul,
+	.pages.tabber ul {
+		background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+		border: none;
+		font-size: 0;
+		padding: 10px;
+		white-space: nowrap;
+
+		> li {
+			border: 1px solid #ddd;
+			cursor: pointer;
+			display: inline-block;
+			font-size: 0;
+			margin-left: -1px;
+			height: 28px;
+			width: 28px;
+
+			&:first-child {
+				border-bottom-left-radius: 2px;
+				border-top-left-radius: 2px;
+			}
+
+			&:last-child {
+				border-bottom-right-radius: 2px;
+				border-top-right-radius: 2px;
+			}
+
+			> * {
+				font-size: 0;
+				height: 28px;
+			}
+		}
+	}
+
+	.buttons.toolbox > .pages {
+		display: none;
+	}
+
+	.buttons.toolbox ul > li {
+
+		&.free-text {
+			background: url('img/free-text-24.svg') center no-repeat;
+		}
+
+		&.horizontal.line {
+			background: url('img/horizontal-line-24.svg') center no-repeat;
+		}
+
+		&.page-number {
+			background: url('img/page-number-24.svg') center no-repeat;
+		}
+
+		&.pages-count {
+			display: none;
+		}
+
+		&.rectangle {
+			background: url('img/rectangle-24.svg') center no-repeat;
+		}
+
+		&.vertical.line {
+			background: url('img/vertical-line-24.svg') center no-repeat;
+		}
+	}
+
+	.data .properties {
+		display: flex;
+	}
+
+	.general.actions {
+		border-top: 1px solid #d8d8d8;
+	}
+
+	.page {
+		border-top: 1px solid #d8d8d8;
+		grid-template-areas: "angle horizontal" "vertical page";
+		grid-template-columns: 15px 1fr;
+		grid-template-rows: 15px 1fr;
+		overflow: hidden;
+
+		&.active {
+			display: grid;
+		}
+
+		> .scrollable {
+			grid-area: page;
+			overflow: auto;
+		}
+
+		> .horizontal {
+			border-top: 1px dashed darkgrey;
+			grid-area: horizontal;
+			top: 7px;
+
+			> .handle {
+				cursor: ns-resize;
+				margin: -7px 0;
+			}
+		}
+
+		> .snap.line.tool {
+			font-size: 0;
+			position: relative;
+
+			> .handle {
+				height: 100%;
+				position: absolute;
+				width: 100%;
+			}
+		}
+
+		> .vertical {
+			border-left: 1px dashed darkgrey;
+			grid-area: vertical;
+			left: 7px;
+
+			> .handle {
+				cursor: ew-resize;
+				margin: 0 -7px;
+			}
+		}
+	}
+
+	.pages.tabber > ul > li {
+
+		&.all-page {
+			background: url('img/all-pages-24.svg') center no-repeat;
+		}
+
+		&.first-page {
+			background: url('img/first-page-24.svg') center no-repeat;
+		}
+
+		&.last-page {
+			background: url('img/last-page-24.svg') center no-repeat;
+		}
+
+		&.middle-page {
+			background: url('img/middle-page-24.svg') center no-repeat;
+		}
+
+		&.unique-page {
+			background: url('img/unique-page-24.svg') center no-repeat;
+		}
+	}
+
+	.property_select {
+		border-right: 2px solid #d8d8d8;
+		overflow: hidden auto;
+
+		input {
+			margin: 10px 8px;
+			padding: 14px 10px !important;
+			width: calc(100% - 16px);
+		}
+	}
+}
+
+//------------------------------------------------------------------------------------------ Layout
+
+article.layout-model {
 
 	&:not(.form),
 	> form {
-		grid-template-areas: "header" "data" "content" "footer";
-		grid-template-rows: min-content min-content 1fr min-content;
+		grid-template-areas:
+			"header     header  header "
+			"content    content content"
+			"properties pages   toolbox"
+			"properties page    page   "
+			"footer     footer  footer ";
+		grid-template-columns: 200px min-content 1fr;
+		grid-template-rows: min-content min-content 48px 1fr min-content;
 
-		> ul.data {
-			grid-area: data;
+		> .buttons.toolbox {
+			grid-area: toolbox;
 		}
 
-		> section {
-			grid-area: content;
-			overflow: auto;
+		> .page {
+			grid-area: page;
+		}
+
+		> .pages {
+			grid-area: pages;
+		}
+
+		> .property_select {
+			grid-area: properties;
 		}
 	}
 
 	&.output {
 
+		.property_select,
 		.snap.line,
 		.toolbox {
 			display: none;
-		}
-	}
-
-	.editor {
-
-		> h3 {
-			display: none;
-		}
-
-		> :not(h3) {
-			display: inline-block;
-			vertical-align: top;
-		}
-
-		> .pages {
-			margin-top: 0;
-
-			> h4 {
-				display: none;
-			}
-
-			> .page {
-				border: 1px solid darkgrey;
-				padding: 8px;
-				position: relative;
-
-				> h5 {
-					visibility: hidden;
-				}
-			}
-		}
-
-		.designer {
-			background-repeat: no-repeat;
-			left: 11px;
-			position: absolute;
-			top: 11px;
-
-			.field {
-				white-space: pre-line;
-
-				&.line > .handle {
-					cursor: pointer;
-				}
-			}
-		}
-
-		.tool {
-
-			&.snap.line {
-				font-size: 0;
-				position: absolute;
-
-				&.horizontal {
-					border-top: 1px dashed darkgrey;
-					height: 0;
-					left: 11px;
-					top: 5px;
-
-					> .handle {
-						cursor: ns-resize;
-						height: 18px;
-						top: -9px;
-					}
-				}
-
-				&.vertical {
-					border-left: 1px dashed darkgrey;
-					left: 5px;
-					top: 11px;
-					width: 0;
-
-					> .handle {
-						cursor: ew-resize;
-						left: -9px;
-						top: 0;
-						width: 18px;
-					}
-				}
-
-				> .handle {
-					position: absolute;
-				}
-			}
-		}
-
-		.toolbox {
-			width: 200px;
-
-			> h4 {
-				display: none;
-			}
-
-			> .pages, > .selected.tools {
-				display: none;
-			}
-
-			> .add.tools {
-				span {
-					cursor: pointer;
-					padding: 2px 0;
-				}
-			}
-
-			> .pages, > .tools {
-
-				h5 {
-					font-weight: normal;
-				}
-
-				li {
-					list-style: none;
-					margin: 0;
-				}
-
-				ul {
-					background-color: #dcdcdd;
-					border: solid 1px #606060;
-					border-radius: 0 2px 2px;
-					padding: 2px 8px 2px 2px;
-					margin-bottom: 1em;
-
-					> li {
-						display: table-row;
-
-						> * {
-							display: table-cell;
-						}
-
-						> label {
-							padding-right: .5ch;
-							vertical-align: middle;
-						}
-
-						> input, select, textarea {
-							height: 22px;
-							padding: 0;
-						}
-					}
-				}
-			}
-
-			> .pages {
-
-				label[for^='background'] {
-					display: none;
-				}
-
-				input[id^='background'] {
-					column-span: all;
-				}
-			}
 		}
 	}
 }

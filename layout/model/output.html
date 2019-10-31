@@ -12,81 +12,77 @@
 <!--BEGIN-->
 <!--use ITRocks\Framework\Tools\Paths-->
 
-	<article class="{@class.short.lower} layout_model {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
+	<article class="{@class.short.lower} layout-model {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{?id}">
 		<header><h2>|{@class.display.ucfirst}|</h2></header>
 		{/component/button/general_buttons.html}
 		<!-- TODO move lines before in above BEGIN and rename this template object.html (but solve it.rocks resolving context problem) -->
 		{/feature/output/object.html}
 
-		<section class="editor">
-			<h3>|Layout editor|</h3>
+		<section class="buttons toolbox" data-class="{class_name}">
+			<h3>|Toolbox|</h3>
 
-			<section class="toolbox" data-class="{class_name}">
-				<h4>|Toolbox|</h4>
-
-				<section class="add tools">
-					<h5>|Add element|</h5>
-					<ul>
-						<li><span class="field" title="|Create a zone where you can type free text|">|Free text|</span></li>
-						<li><span class="field" title="|The current page number|">#page.number</span></li>
-						<li><span class="field" title="|The total pages count|">#pages.count</span></li>
-						<li><span class="rectangle field">|Rectangle|</span></li>
-						<li><span class="horizontal line field">|Horizontal line|</span></li>
-						<li><span class="vertical line field">|Vertical line|</span></li>
-					</ul>
-				</section>
-
-				<section class="selected tools">
-					<h5>|Selected element|</h5>
-					<ul>
-						<li>
-							<label for="free-text">|text|</label>
-							<textarea class="auto_height auto_width" id="free-text"></textarea>
-						</li>
-						<li>
-							<label for="align">|align|</label>
-							<select id="align">
-								<option value="left">|left|</option>
-								<option value="center">|center|</option>
-								<option value="right">|right|</option>
-							</select>
-						</li>
-						<li>
-							<label for="format">|format|</label>
-							<select id="format">
-								<option value="image">|image|</option>
-								<option value="text" selected>|text|</option>
-								<option value="text-cr">|resizable|</option>
-							</select>
-						</li>
-						<li>
-							<label for="size">|size|</label>
-							<input class="auto_width" id="size">
-						</li>
-					</ul>
-				</section>
-
-				<ul class="pages">
-					<!--pages-->
-					<li class="page" data-id="{id}">
-						<h5>|page {ordering}|</h5>
-						<ul>
-							<li>
-								<label for="background{ordering}">|background|</label>
-								<input id="background{ordering}" name="pages[background][{ordering}]" type="file">
-							</li>
-						</ul>
-					</li>
-					<!--end-->
+			<section class="add tools">
+				<h4>|Add element|</h4>
+				<ul>
+					<li class="free-text field" title="|Create a zone where you can type free text|"><a>|Free text|</a></li>
+					<li class="page-number field" title="|The current page number|"><a>#page.number</a></li>
+					<li class="pages-count field" title="|The total pages count|"><a>#pages.count</a></li>
+					<li class="rectangle field"><a>|Rectangle|</a></li>
+					<li class="horizontal line field"><a>|Horizontal line|</a></li>
+					<li class="vertical line field"><a>|Vertical line|</a></li>
 				</ul>
-
-				{/ITRocks/Framework/Property/select/{classNamePath}}
-
 			</section>
 
-			{/pages.html}
+			<section class="selected tools">
+				<h4>|Selected element|</h4>
+				<ul>
+					<li>
+						<label for="free-text">|text|</label>
+						<textarea class="auto_height auto_width" id="free-text"></textarea>
+					</li>
+					<li>
+						<label for="align">|align|</label>
+						<select id="align">
+							<option value="left">|left|</option>
+							<option value="center">|center|</option>
+							<option value="right">|right|</option>
+						</select>
+					</li>
+					<li>
+						<label for="format">|format|</label>
+						<select id="format">
+							<option value="image">|image|</option>
+							<option value="text" selected>|text|</option>
+							<option value="text-cr">|resizable|</option>
+						</select>
+					</li>
+					<li>
+						<label for="size">|size|</label>
+						<input class="auto_width" id="size">
+					</li>
+				</ul>
+			</section>
+
+			<ul class="pages">
+				<!--pages-->
+				<li class="page" data-id="{id}">
+					<h4>|page {ordering}|</h4>
+					<ul>
+						<li>
+							<label for="background{ordering}">|background|</label>
+							<input id="background{ordering}" name="pages[background][{ordering}]" type="file">
+						</li>
+					</ul>
+				</li>
+				<!--end-->
+			</ul>
 
 		</section>
+
+		{/ITRocks/Framework/Property/select/{classNamePath}}
+
+		{/pages.html}
+
 	</article>
 
 <!--END-->

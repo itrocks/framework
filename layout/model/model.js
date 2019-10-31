@@ -57,7 +57,7 @@ $(document).ready(function()
 	var selectCallback = function()
 	{
 		var $selected  = this;
-		var $editor    = $selected.closest('.editor');
+		var $editor    = $selected.closest('.layout-model');
 		var $tools     = $editor.find('.selected.tools');
 		var $free_text = $tools.find('#free-text');
 		var old_text   = $free_text.val();
@@ -94,11 +94,11 @@ $(document).ready(function()
 		$title.attr('title', $selected.attr('title'));
 	};
 
-	//--------------------------------------- article.layout_model .editor .designer documentDesigner
-	$body.build({ priority: 500, selector: 'article.layout_model .editor', callback: function()
+	//--------------------------------------- article.layout-model .editor .designer documentDesigner
+	$body.build({ priority: 500, selector: 'article.layout-model', callback: function()
 	{
 		var $editor       = this;
-		var $model_window = this.closest('article.layout_model');
+		var $model_window = this.closest('article.layout-model');
 		var $designer     = $editor.find('.designer');
 		var $free_text    = $model_window.find('#free-text');
 		var $size         = $model_window.find('#size');
@@ -108,8 +108,8 @@ $(document).ready(function()
 			var $page     = $designer.closest('.page');
 			var $input    = pageLayoutInput($page);
 			var fields    = [
-				'article.layout_model.edit .editor',
-				'.toolbox .add.tools li > span, .toolbox .property_select > .tree .property, .pages .tool'
+				'article.layout-model.edit',
+				'.buttons.toolbox .add.tools li, .property_select > .tree .property, .page > .snap.tool'
 			];
 
 			var $elements = $page.find('[data-style]');
@@ -207,7 +207,7 @@ $(document).ready(function()
 
 	}});
 
-	//-------------------------------- article.layout_model .editor .general.actions > .write click
+	//-------------------------------- article.layout-model .editor .general.actions > .write click
 	/**
 	 * Save layout model : build the standardized data before saving the form,
 	 * as no data is stored into inputs
@@ -215,10 +215,10 @@ $(document).ready(function()
 	$body.build({
 		event:    'click',
 		priority: 10,
-		selector: 'article.layout_model .general.actions > .write > a',
+		selector: 'article.layout-model .general.actions > .write > a',
 		callback: function()
 		{
-			var $designer = $(this).closest('article.layout_model').find('.editor .designer');
+			var $designer = $(this).closest('article.layout-model').find('.editor .designer');
 			var $active   = $designer.closest('.active.page');
 			var $pages    = $designer.closest('.page');
 			$pages.addClass('active');
@@ -238,10 +238,10 @@ $(document).ready(function()
 $(window).scroll(function()
 {
 
-	var $toolbox = $('article.layout_model.edit > form > .editor > .toolbox');
+	var $toolbox = $('article.layout-model.edit > form .toolbox');
 	if (!$toolbox.length) return;
 	var $pages = $toolbox.next('.pages');
-	var $stay_top = $('article.layout_model.edit > form > .fixed.stay-top');
+	var $stay_top = $('article.layout-model.edit > form .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
 		$pages.attr('style', '');

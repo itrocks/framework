@@ -1,96 +1,119 @@
-article.layout_model:not(.form),
-article.layout_model > form {
-  grid-template-areas: "header" "data" "content" "footer";
-  grid-template-rows: min-content min-content 1fr min-content; }
-  article.layout_model:not(.form) > ul.data,
-  article.layout_model > form > ul.data {
-    grid-area: data; }
-  article.layout_model:not(.form) > section,
-  article.layout_model > form > section {
-    grid-area: content;
-    overflow: auto; }
-article.layout_model.output .snap.line,
-article.layout_model.output .toolbox {
+article.layout-model h3, article.layout-model h4 {
   display: none; }
-article.layout_model .editor > h3 {
-  display: none; }
-article.layout_model .editor > :not(h3) {
-  display: inline-block;
-  vertical-align: top; }
-article.layout_model .editor > .pages {
-  margin-top: 0; }
-  article.layout_model .editor > .pages > h4 {
-    display: none; }
-  article.layout_model .editor > .pages > .page {
-    border: 1px solid darkgrey;
-    padding: 8px;
-    position: relative; }
-    article.layout_model .editor > .pages > .page > h5 {
-      visibility: hidden; }
-article.layout_model .editor .designer {
-  background-repeat: no-repeat;
-  left: 11px;
-  position: absolute;
-  top: 11px; }
-  article.layout_model .editor .designer .field {
-    white-space: pre-line; }
-    article.layout_model .editor .designer .field.line > .handle {
-      cursor: pointer; }
-article.layout_model .editor .tool.snap.line {
+article.layout-model .buttons.toolbox ul,
+article.layout-model .pages.tabber ul {
+  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+  border: none;
   font-size: 0;
-  position: absolute; }
-  article.layout_model .editor .tool.snap.line.horizontal {
-    border-top: 1px dashed darkgrey;
-    height: 0;
-    left: 11px;
-    top: 5px; }
-    article.layout_model .editor .tool.snap.line.horizontal > .handle {
-      cursor: ns-resize;
-      height: 18px;
-      top: -9px; }
-  article.layout_model .editor .tool.snap.line.vertical {
-    border-left: 1px dashed darkgrey;
-    left: 5px;
-    top: 11px;
-    width: 0; }
-    article.layout_model .editor .tool.snap.line.vertical > .handle {
-      cursor: ew-resize;
-      left: -9px;
-      top: 0;
-      width: 18px; }
-  article.layout_model .editor .tool.snap.line > .handle {
-    position: absolute; }
-article.layout_model .editor .toolbox {
-  width: 200px; }
-  article.layout_model .editor .toolbox > h4 {
-    display: none; }
-  article.layout_model .editor .toolbox > .pages, article.layout_model .editor .toolbox > .selected.tools {
-    display: none; }
-  article.layout_model .editor .toolbox > .add.tools span {
+  padding: 10px;
+  white-space: nowrap; }
+  article.layout-model .buttons.toolbox ul > li,
+  article.layout-model .pages.tabber ul > li {
+    border: 1px solid #ddd;
     cursor: pointer;
-    padding: 2px 0; }
-  article.layout_model .editor .toolbox > .pages h5, article.layout_model .editor .toolbox > .tools h5 {
-    font-weight: normal; }
-  article.layout_model .editor .toolbox > .pages li, article.layout_model .editor .toolbox > .tools li {
-    list-style: none;
-    margin: 0; }
-  article.layout_model .editor .toolbox > .pages ul, article.layout_model .editor .toolbox > .tools ul {
-    background-color: #dcdcdd;
-    border: solid 1px #606060;
-    border-radius: 0 2px 2px;
-    padding: 2px 8px 2px 2px;
-    margin-bottom: 1em; }
-    article.layout_model .editor .toolbox > .pages ul > li, article.layout_model .editor .toolbox > .tools ul > li {
-      display: table-row; }
-      article.layout_model .editor .toolbox > .pages ul > li > *, article.layout_model .editor .toolbox > .tools ul > li > * {
-        display: table-cell; }
-      article.layout_model .editor .toolbox > .pages ul > li > label, article.layout_model .editor .toolbox > .tools ul > li > label {
-        padding-right: .5ch;
-        vertical-align: middle; }
-      article.layout_model .editor .toolbox > .pages ul > li > input, article.layout_model .editor .toolbox > .pages ul > li select, article.layout_model .editor .toolbox > .pages ul > li textarea, article.layout_model .editor .toolbox > .tools ul > li > input, article.layout_model .editor .toolbox > .tools ul > li select, article.layout_model .editor .toolbox > .tools ul > li textarea {
-        height: 22px;
-        padding: 0; }
-  article.layout_model .editor .toolbox > .pages label[for^='background'] {
-    display: none; }
-  article.layout_model .editor .toolbox > .pages input[id^='background'] {
-    column-span: all; }
+    display: inline-block;
+    font-size: 0;
+    margin-left: -1px;
+    height: 28px;
+    width: 28px; }
+    article.layout-model .buttons.toolbox ul > li:first-child,
+    article.layout-model .pages.tabber ul > li:first-child {
+      border-bottom-left-radius: 2px;
+      border-top-left-radius: 2px; }
+    article.layout-model .buttons.toolbox ul > li:last-child,
+    article.layout-model .pages.tabber ul > li:last-child {
+      border-bottom-right-radius: 2px;
+      border-top-right-radius: 2px; }
+    article.layout-model .buttons.toolbox ul > li > *,
+    article.layout-model .pages.tabber ul > li > * {
+      font-size: 0;
+      height: 28px; }
+article.layout-model .buttons.toolbox > .pages {
+  display: none; }
+article.layout-model .buttons.toolbox ul > li.free-text {
+  background: url("img/free-text-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.horizontal.line {
+  background: url("img/horizontal-line-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.page-number {
+  background: url("img/page-number-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.pages-count {
+  display: none; }
+article.layout-model .buttons.toolbox ul > li.rectangle {
+  background: url("img/rectangle-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.vertical.line {
+  background: url("img/vertical-line-24.svg") center no-repeat; }
+article.layout-model .data .properties {
+  display: flex; }
+article.layout-model .general.actions {
+  border-top: 1px solid #d8d8d8; }
+article.layout-model .page {
+  border-top: 1px solid #d8d8d8;
+  grid-template-areas: "angle horizontal" "vertical page";
+  grid-template-columns: 15px 1fr;
+  grid-template-rows: 15px 1fr;
+  overflow: hidden; }
+  article.layout-model .page.active {
+    display: grid; }
+  article.layout-model .page > .scrollable {
+    grid-area: page;
+    overflow: auto; }
+  article.layout-model .page > .horizontal {
+    border-top: 1px dashed darkgrey;
+    grid-area: horizontal;
+    top: 7px; }
+    article.layout-model .page > .horizontal > .handle {
+      cursor: ns-resize;
+      margin: -7px 0; }
+  article.layout-model .page > .snap.line.tool {
+    font-size: 0;
+    position: relative; }
+    article.layout-model .page > .snap.line.tool > .handle {
+      height: 100%;
+      position: absolute;
+      width: 100%; }
+  article.layout-model .page > .vertical {
+    border-left: 1px dashed darkgrey;
+    grid-area: vertical;
+    left: 7px; }
+    article.layout-model .page > .vertical > .handle {
+      cursor: ew-resize;
+      margin: 0 -7px; }
+article.layout-model .pages.tabber > ul > li.all-page {
+  background: url("img/all-pages-24.svg") center no-repeat; }
+article.layout-model .pages.tabber > ul > li.first-page {
+  background: url("img/first-page-24.svg") center no-repeat; }
+article.layout-model .pages.tabber > ul > li.last-page {
+  background: url("img/last-page-24.svg") center no-repeat; }
+article.layout-model .pages.tabber > ul > li.middle-page {
+  background: url("img/middle-page-24.svg") center no-repeat; }
+article.layout-model .pages.tabber > ul > li.unique-page {
+  background: url("img/unique-page-24.svg") center no-repeat; }
+article.layout-model .property_select {
+  border-right: 2px solid #d8d8d8;
+  overflow: hidden auto; }
+  article.layout-model .property_select input {
+    margin: 10px 8px;
+    padding: 14px 10px !important;
+    width: calc(100% - 16px); }
+
+article.layout-model:not(.form),
+article.layout-model > form {
+  grid-template-areas: "header     header  header " "content    content content" "properties pages   toolbox" "properties page    page   " "footer     footer  footer ";
+  grid-template-columns: 200px min-content 1fr;
+  grid-template-rows: min-content min-content 48px 1fr min-content; }
+  article.layout-model:not(.form) > .buttons.toolbox,
+  article.layout-model > form > .buttons.toolbox {
+    grid-area: toolbox; }
+  article.layout-model:not(.form) > .page,
+  article.layout-model > form > .page {
+    grid-area: page; }
+  article.layout-model:not(.form) > .pages,
+  article.layout-model > form > .pages {
+    grid-area: pages; }
+  article.layout-model:not(.form) > .property_select,
+  article.layout-model > form > .property_select {
+    grid-area: properties; }
+article.layout-model.output .property_select,
+article.layout-model.output .snap.line,
+article.layout-model.output .toolbox {
+  display: none; }
