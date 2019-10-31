@@ -222,20 +222,21 @@ class Controller implements Default_Feature_Controller
 		if (!empty($parameters['filters'])) {
 			$this->applyFiltersToSearch($search, $parameters['filters']);
 		}
-		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_USE)) {
+		$search_options = [];
+		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_USE)) {
 			$search = $search ? Dao\Func::andOp([$filters, $search]) : $filters;
 		}
 
 		// first object only
 		if (!empty($parameters['first'])) {
-			$objects = $this->search($search, $class_name, [Dao::limit(1)]);
+			$search_options[] = Dao::limit(1);
+			$objects          = $this->search($search, $class_name, $search_options);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects ? reset($objects) : Builder::create($class_name);
 			return $this->buildJson($source_object, $class_name);
 		}
 		// all results from search
 		else {
-			$search_options = [];
 			if (isset($parameters['limit'])) {
 				$search_options[] = Dao::limit($parameters['limit']);
 			}

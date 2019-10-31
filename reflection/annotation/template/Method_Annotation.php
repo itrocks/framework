@@ -64,7 +64,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	public function call($object, array $arguments = [])
 	{
 		if ($this->static || is_string($object)) {
-			if (!(reset($arguments) instanceof Event)) {
+			if (($object !== $this->value) && !(reset($arguments) instanceof Event)) {
 				array_unshift($arguments, $object);
 			}
 			return call_user_func_array($this->value, $arguments);

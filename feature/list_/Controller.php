@@ -872,7 +872,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$class_name, array $properties_path, array $search, array $options
 	) {
 		$search = $this->searchObjectsToRepresentative($class_name, $search);
-		if ($filters = Filter_Annotation::apply($class_name, Filter_Annotation::FOR_VIEW)) {
+		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
 		}
 		return $this->readDataSelect($class_name, $properties_path, $search, $options);

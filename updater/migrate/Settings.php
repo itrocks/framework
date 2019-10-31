@@ -24,12 +24,12 @@ trait Settings
 			return;
 		}
 		foreach (['settings', 'user_settings'] as $table) {
-			$result = $link->query("SELECT `id`, `value` FROM `$table`");
+			$result = $link->query("SELECT id, `value` FROM `$table`");
 			while ($record = $result->fetch_row()) {
 				[$id, $value] = $record;
 				if ($this->replaceMultiple($value, $search_replaces)) {
 					$query = "UPDATE `$table` SET `value` = " . DQ . $link->escapeString($value) . DQ
-						. ' WHERE `id` = ' . $id;
+						. ' WHERE id = ' . $id;
 					$link->query($query);
 				}
 			}

@@ -92,12 +92,13 @@ class Filter_Annotation extends Method_Annotation
 	/**
 	 * Apply all filter annotations of the class
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class string|Reflection_Class
-	 * @param $for   string null means 'for any' @values for_use, for_view
+	 * @noinspection   PhpDocMissingThrowsInspection
+	 * @param $class   string|Reflection_Class
+	 * @param $options array search options
+	 * @param $for     string null means 'for any' @values for_use, for_view
 	 * @return object
 	 */
-	public static function apply($class, $for = null)
+	public static function apply($class, array &$options, $for = null)
 	{
 		if (is_string($class)) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -108,7 +109,7 @@ class Filter_Annotation extends Method_Annotation
 			$search = [];
 			foreach ($filters as $filter) {
 				if (!$for || $filter->$for) {
-					$element = $filter->call($filter->value);
+					$element = $filter->call($filter->value, [&$options]);
 					if ($element) {
 						if ($filter->properties) {
 							$elements = [];
