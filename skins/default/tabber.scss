@@ -1,39 +1,39 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-.ui-tabber {
+.ui-tabber-page {
+	display: none;
 
-	> .ui-tabber-tabs {
-		border-bottom: 1px solid #575757;
-		font-size: 0;
-
-		> .ui-tabber-tab {
-			background-color: #eee;
-			cursor: pointer;
-			display: inline-block;
-			margin: 0 0 0 -1px;
-
-			> a {
-				display: block;
-				font-size: $font-size;
-				padding: .3em .6em;
-			}
-
-			&.active,
-			&:hover {
-				background: white;
-				margin-bottom: -1px;
-				padding-bottom: 1px;
-			}
-		}
+	&.active {
+		display: block;
 	}
 
-	> .ui-tabber-page {
+	> h2, > h3, > h4, > h5 {
 		display: none;
-
-		&.active {
-			display: block;
-		}
 	}
 }
 
+.ui-tabber-tab {
+	background-color: #eee;
+	cursor: pointer;
+	display: inline-block;
+	font-size: $font-size;
+	margin: 0 0 0 -1px;
+
+	&.active,
+	&:hover {
+		background: white;
+		margin-bottom: -1px;
+		padding-bottom: 1px;
+	}
+
+	> a {
+		display: block;
+		padding: .3em .6em;
+	}
+}
+
+.ui-tabber-tabs {
+	border-bottom: 1px solid #575757;
+	font-size: 0;
+}

@@ -1,20 +1,24 @@
-.ui-tabber > .ui-tabber-tabs {
+.ui-tabber-page {
+  display: none; }
+  .ui-tabber-page.active {
+    display: block; }
+  .ui-tabber-page > h2, .ui-tabber-page > h3, .ui-tabber-page > h4, .ui-tabber-page > h5 {
+    display: none; }
+
+.ui-tabber-tab {
+  background-color: #eee;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 12px;
+  margin: 0 0 0 -1px; }
+  .ui-tabber-tab.active, .ui-tabber-tab:hover {
+    background: white;
+    margin-bottom: -1px;
+    padding-bottom: 1px; }
+  .ui-tabber-tab > a {
+    display: block;
+    padding: .3em .6em; }
+
+.ui-tabber-tabs {
   border-bottom: 1px solid #575757;
   font-size: 0; }
-  .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab {
-    background-color: #eee;
-    cursor: pointer;
-    display: inline-block;
-    margin: 0 0 0 -1px; }
-    .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab > a {
-      display: block;
-      font-size: 12px;
-      padding: .3em .6em; }
-    .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab.active, .ui-tabber > .ui-tabber-tabs > .ui-tabber-tab:hover {
-      background: white;
-      margin-bottom: -1px;
-      padding-bottom: 1px; }
-.ui-tabber > .ui-tabber-page {
-  display: none; }
-  .ui-tabber > .ui-tabber-page.active {
-    display: block; }
