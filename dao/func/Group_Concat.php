@@ -11,15 +11,6 @@ use ITRocks\Framework\Sql\Value;
 class Group_Concat extends Column
 {
 
-	//--------------------------------------------------------------------------------------- $column
-	/**
-	 * The property path or Func\Column to which the concatenation applies
-	 * Default (if not set) will be the property path associated with the call of this function
-	 *
-	 * @var Column|string
-	 */
-	public $column;
-
 	//------------------------------------------------------------------------------------- $distinct
 	/**
 	 * @var boolean
@@ -44,13 +35,10 @@ class Group_Concat extends Column
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $column    Column|string Property path or Func\Column.
-	 *                   Default will be the associated property path.
 	 * @param $separator string Separator for the concat @default ,
 	 */
-	public function __construct($column = null, $separator = null)
+	public function __construct($separator = null)
 	{
-		$this->column    = $column;
 		$this->separator = $separator;
 	}
 
@@ -64,19 +52,11 @@ class Group_Concat extends Column
 	 */
 	public function toSql(With_Build_Column $builder, $property_path)
 	{
-		$group_concat_property = $property_path;
-
-		if ($this->column) {
-			$group_concat_property = ($this->column instanceof Column)
-				? $this->column->toSql($builder, null)
-				: $this->column;
-		}
-
 		$group_concat_property = Reflection_Property::exists(
-			$builder->getJoins()->getStartingClassName(), $group_concat_property
+			$builder->getJoins()->getStartingClassName(), $property_path
 		)
-			? $builder->buildColumn($group_concat_property, false, true)
-			: $group_concat_property;
+			? $builder->buildColumn($property_path, false, true)
+			: $property_path;
 
 		if (isset($this->order_by)) {
 			$order_by = [];

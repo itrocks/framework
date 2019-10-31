@@ -76,7 +76,9 @@ trait Has_Build_Column
 				$path = '*';
 			}
 			$sql = $force_column ?: (
-				$join ? ($join->foreign_alias . DOT . BQ . $column_name . BQ) : ('t0.' . BQ . $path . BQ)
+				$join
+					? ($join->foreign_alias . DOT . BQ . $column_name . BQ)
+					: ($this->joins->rootAlias() . DOT . BQ . $path . BQ)
 			);
 			$sql
 				.= ($as && ($column_name !== $path) && ($this instanceof Columns) && $this->resolve_aliases)

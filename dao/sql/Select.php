@@ -220,6 +220,7 @@ class Select
 		}
 		$first = true;
 		while ($result = $this->link->fetchRow($this->result_set)) {
+			unset($result['@null']);
 			$row = $this->resultToRow($result, $first);
 			if (!$this->store($row, $data_store)) {
 				$stop = true;
@@ -347,7 +348,12 @@ class Select
 		$classes_index      = [];
 		$j                  = 0;
 		for ($i = 0; $i < $this->column_count; $i++) {
-			$this->column_names[$i] = $column_name = $this->link->getColumnName($this->result_set, $i);
+			$column_name = $this->link->getColumnName($this->result_set, $i);
+			if ($column_name[0] === '@') {
+				$this->column_count --;
+				continue;
+			}
+			$this->column_names[$i] = $column_name;
 			if (strpos($column_name, ':') == false) {
 				$this->i_to_j[$i] = $j++;
 			}
@@ -372,7 +378,7 @@ class Select
 			if (($data_store instanceof List_Data) && (substr($column_name, 0, 3) === 'id_')) {
 				$this->column_names[$i] = $column_name = substr($column_name, 3);
 			}
-			if (!isset($this->columns[$i])) {
+			if (($column_name[0] !== '@') && !isset($this->columns[$i])) {
 				$this->columns[$i] = $column_name;
 			}
 		}

@@ -32,6 +32,14 @@ class Joins
 	 */
 	private $alias_counter;
 
+	//--------------------------------------------------------------------------------- $alias_prefix
+	/**
+	 * Alias prefix for all aliased tables
+	 *
+	 * @var string
+	 */
+	public $alias_prefix = '';
+
 	//-------------------------------------------------------------------------------------- $classes
 	/**
 	 * link property full path to their class name
@@ -184,7 +192,7 @@ class Joins
 		if (!$depth) {
 			$join->type = Join::OBJECT;
 		}
-		$join->foreign_alias = 't' . $this->alias_counter++;
+		$join->foreign_alias = $this->alias_prefix . 't' . $this->alias_counter++;
 		if (!isset($join->foreign_table)) {
 			$join->foreign_class = Builder::className($foreign_class_name);
 			$join->foreign_table = Dao::storeNameOf($join->foreign_class);
@@ -206,7 +214,7 @@ class Joins
 	public function addJoin(Join $join)
 	{
 		if (!isset($join->foreign_alias)) {
-			$join->foreign_alias = 't' . $this->alias_counter++;
+			$join->foreign_alias = $this->alias_prefix . 't' . $this->alias_counter++;
 		}
 		$this->joins[] = $join;
 	}
@@ -231,11 +239,11 @@ class Joins
 		$master_property = $link_same->getCompositeProperty($linked_class_name);
 
 		$join                  = new Join();
-		$join->foreign_alias   = 't' . $this->alias_counter;
+		$join->foreign_alias   = $this->alias_prefix . 't' . $this->alias_counter;
 		$join->foreign_column  = 'id';
 		$join->foreign_class   = Builder::className($linked_class_name);
 		$join->foreign_table   = Dao::storeNameOf($join->foreign_class);
-		$join->master_alias    = 't' . ($this->alias_counter - 1);
+		$join->master_alias    = $this->alias_prefix . 't' . ($this->alias_counter - 1);
 		$join->master_column   = 'id_' . Store_Name_Annotation::of($master_property)->value;
 		$join->master_property = $master_property;
 		$join->mode            = ($join_mode == Join::LEFT) ? Join::LEFT : Join::INNER;
@@ -512,7 +520,9 @@ class Joins
 	 */
 	public function getAlias($path)
 	{
-		return isset($this->joins[$path]) ? $this->joins[$path]->foreign_alias : 't0';
+		return isset($this->joins[$path])
+			? $this->joins[$path]->foreign_alias
+			: ($this->alias_prefix . 't0');
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
@@ -715,6 +725,15 @@ class Joins
 	public static function newInstance($starting_class_name, array $paths = [])
 	{
 		return new Joins($starting_class_name, $paths);
+	}
+
+	//------------------------------------------------------------------------------------- rootAlias
+	/**
+	 * @return string
+	 */
+	public function rootAlias()
+	{
+		return $this->alias_prefix . 't0';
 	}
 
 }

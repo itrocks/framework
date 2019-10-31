@@ -29,6 +29,20 @@ class Where implements With_Build_Column
 {
 	use Has_Build_Column;
 
+	//-------------------------------------------------------------------------------- $built_columns
+	/**
+	 * A list of built columns
+	 *
+	 * @var string[]
+	 */
+	public $built_columns = [];
+
+	//-------------------------------------------------------------------------------------- $keyword
+	/**
+	 * @var string
+	 */
+	public $keyword = 'WHERE';
+
 	//------------------------------------------------------------------------------------- $sql_link
 	/**
 	 * Sql data link used for identifiers
@@ -95,7 +109,7 @@ class Where implements With_Build_Column
 		) {
 			$sql = [];
 			foreach ($where_array->arguments as $property_path => $argument) {
-				$sql[] = LF . 'WHERE ' . $this->buildPath($property_path, $argument, 'AND');
+				$sql[] = LF . $this->keyword . SP . $this->buildPath($property_path, $argument, 'AND');
 			}
 			return $sql;
 		}
@@ -104,7 +118,7 @@ class Where implements With_Build_Column
 			: (
 				is_null($this->where_array) ? '' : $this->buildPath('id', $this->where_array, 'AND', true)
 			);
-		return $sql ? (LF . 'WHERE ' . $sql) : $sql;
+		return $sql ? (LF . $this->keyword . SP . $sql) : $sql;
 	}
 
 	//------------------------------------------------------------------------------------ buildArray
@@ -324,7 +338,7 @@ class Where implements With_Build_Column
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path   string|Expression The property path or Expression
 	 * @param $prefix string A prefix for the name of the column @values '', 'id_'
-	 * @return string The column name, with table alias and back-quotes @example 't0.`id_thing`'
+	 * @return string The column name, with table alias and back-quotes @example 't0.id_thing'
 	 */
 	public function buildWhereColumn($path, $prefix = '')
 	{
@@ -342,7 +356,7 @@ class Where implements With_Build_Column
 		$link_join = $this->joins->getIdLinkJoin($property_path);
 
 		if (isset($link_join)) {
-			$column = $link_join->foreign_alias . '.`id`';
+			$column = $link_join->foreign_alias . '.id';
 		}
 		elseif (isset($join)) {
 			if ($join->type === Join::LINK) {
@@ -364,10 +378,10 @@ class Where implements With_Build_Column
 				while ($class = (new Link_Class($class))->getLinkedClassName()) {
 					$i ++;
 				}
-				$tx = 't' . $i;
+				$tx = $this->joins->alias_prefix . 't' . $i;
 			}
 			else {
-				$tx = 't0';
+				$tx = $this->joins->rootAlias();
 			}
 			$column = ((!$master_path) || ($master_path === 'id'))
 				? ($tx . DOT . BQ . $prefix . $foreign_column . BQ)
@@ -376,6 +390,7 @@ class Where implements With_Build_Column
 		if ($path instanceof Expression) {
 			$column = $path->function->toSql($this, $column);
 		}
+		$this->built_columns[$column] = $column;
 		return $column;
 	}
 

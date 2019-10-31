@@ -77,7 +77,10 @@ class Count
 				}
 				$sql .= $this->finalize($sub_where, $tables);
 			}
-			return 'SELECT COUNT(*)' . LF . 'FROM (' . LF . $sql . LF . ') t0' . LF . 'GROUP BY t0.`id`';
+			$alias = $this->getJoins()->rootAlias();
+			return 'SELECT COUNT(*)' . LF
+				. 'FROM (' . LF . $sql . LF . ') ' . $alias . LF
+				. 'GROUP BY ' . $alias . '.id';
 		}
 		return 'SELECT COUNT(*)' . LF . 'FROM ' . $tables . $where;
 	}

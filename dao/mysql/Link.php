@@ -917,15 +917,9 @@ class Link extends Dao\Sql\Link
 	 */
 	private function queryFetchAsValues(mysqli_result $result)
 	{
-		$column = $result->field_count - 1;
 		$values = [];
-		while ($element = $result->fetch_row()) {
-			if (isset($element['id'])) {
-				$values[$element['id']] = $element[$column];
-			}
-			else {
-				$values[] = $element[$column];
-			}
+		while ($element = $result->fetch_assoc()) {
+			$values[] = $element['id'];
 		}
 		return $values;
 	}
@@ -968,7 +962,7 @@ class Link extends Dao\Sql\Link
 			// it's for optimisation purpose only
 			$query = 'SELECT *' . LF
 				. 'FROM ' . BQ . $this->storeNameOf($class_name) . BQ . LF
-				. 'WHERE `id` = ' . intval($identifier);
+				. 'WHERE id = ' . intval($identifier);
 			$result_set = $this->connection->query($query);
 			$this->prepareFetch($class_name);
 			$object = $this->fetch($result_set, $class_name);

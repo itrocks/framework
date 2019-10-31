@@ -292,6 +292,16 @@ class Dao implements Configurable
 		return new Option\Group_By($properties);
 	}
 
+	//---------------------------------------------------------------------------------------- having
+	/**
+	 * @param $conditions array
+	 * @return Option\Having
+	 */
+	public static function having(array $conditions = [])
+	{
+		return new Option\Having($conditions);
+	}
+
 	//-------------------------------------------------------------------------------------------- is
 	/**
 	 * Returns true if object1 and object2 match the same stored object

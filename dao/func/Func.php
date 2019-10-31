@@ -2,13 +2,13 @@
 namespace ITRocks\Framework\Dao;
 
 use ITRocks\Framework\Dao\Func\Call;
-use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Dao\Func\Day;
 use itrocks\framework\dao\func\Expressions;
 use ITRocks\Framework\Dao\Func\Group_By;
 use ITRocks\Framework\Dao\Func\Group_Concat;
+use ITRocks\Framework\Dao\Func\Have_All;
 use ITRocks\Framework\Dao\Func\In;
 use ITRocks\Framework\Dao\Func\In_Set;
 use ITRocks\Framework\Dao\Func\InSelect;
@@ -141,14 +141,25 @@ class Func
 
 	//----------------------------------------------------------------------------------- groupConcat
 	/**
-	 * @param $column    Column|string Property path or Func\Column.
-	 *                   Default will be the associated property path.
+	 * @param $property_path string If set, will return a key to the instantiated Group_Concat object
 	 * @param $separator string Separator for the concat @default ,
-	 * @return Group_Concat
+	 * @return Group_Concat|string
 	 */
-	public static function groupConcat($column = null, $separator = null)
+	public static function groupConcat($property_path = null, $separator = null)
 	{
-		return new Group_Concat($column, $separator);
+		return $property_path
+			? Expressions::add($property_path, new Group_Concat($separator))
+			: new Group_Concat($separator);
+	}
+
+	//--------------------------------------------------------------------------------------- haveAll
+	/**
+	 * @param $conditions array|Where
+	 * @return Have_All
+	 */
+	public static function haveAll($conditions)
+	{
+		return new Have_All($conditions);
 	}
 
 	//-------------------------------------------------------------------------------------------- in

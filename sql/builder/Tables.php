@@ -38,7 +38,8 @@ class Tables
 	 */
 	public function build()
 	{
-		$tables = BQ . Dao::current()->storeNameOf($this->class_name) . BQ . SP . 't0';
+		$alias  = $this->joins->rootAlias();
+		$tables = BQ . Dao::current()->storeNameOf($this->class_name) . BQ . SP . $alias;
 		foreach ($this->joins->getJoins() as $join) if ($join) {
 			$tables .= $join->toSql();
 		}

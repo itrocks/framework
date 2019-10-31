@@ -39,6 +39,14 @@ class Columns implements With_Build_Column
 	 */
 	public $expand_objects = true;
 
+	//--------------------------------------------------------------------------------- $null_columns
+	/**
+	 * Columns to add to the clause, aliased `null`
+	 *
+	 * @var string[]
+	 */
+	public $null_columns = [];
+
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * Properties paths list
@@ -165,7 +173,7 @@ class Columns implements With_Build_Column
 							&& !Store_Annotation::of($property)->isFalse()
 						) {
 							if (!$sql_columns) {
-								$sql_columns .= $join->foreign_alias . '.`id`, ';
+								$sql_columns .= $join->foreign_alias . '.id, ';
 							}
 							$already[$property->name] = true;
 							$column_name              = $column_names[$property->name];
@@ -184,10 +192,11 @@ class Columns implements With_Build_Column
 				}
 			}
 			// the main table comes last, as fields with the same name must have the main value (ie 'id')
+			$alias = $this->joins->rootAlias();
 			if (isset($has_storage)) {
 				/** @noinspection PhpUnhandledExceptionInspection starting class is always valid */
 				if (!Link_Annotation::of(new Link_Class($this->joins->getStartingClassName()))->value) {
-					$sql_columns .= 't0.`id`, ';
+					$sql_columns .= $alias . '.id, ';
 				}
 
 				foreach ($column_names as $property_name => $column_name) {
@@ -196,7 +205,7 @@ class Columns implements With_Build_Column
 						$already[$property_name] = true;
 						$type                    = $property->getType();
 						$id                      = ($type->isClass() && !$type->isDateTime()) ? 'id_' : '';
-						$sql_columns            .= 't0.' . BQ . $id . $column_name . BQ;
+						$sql_columns            .= $alias . DOT . BQ . $id . $column_name . BQ;
 						if (($column_name !== $property_name) && $this->resolve_aliases) {
 							$sql_columns .= ' AS ' . BQ . $id . $property_name . BQ;
 						}
@@ -206,11 +215,14 @@ class Columns implements With_Build_Column
 				$sql_columns = substr($sql_columns, 0, -2);
 			}
 			else {
-				$sql_columns .= 't0.*';
+				$sql_columns .= $alias . '.*';
 			}
 		}
 		else {
 			$sql_columns = '*';
+		}
+		foreach ($this->null_columns as $null_column) {
+			$sql_columns .= ', ' . $null_column . ' AS `@null`';
 		}
 		return $sql_columns;
 	}
@@ -326,14 +338,14 @@ class Columns implements With_Build_Column
 			}
 			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns  .= $foreign_alias . '.`id`'
+			$sql_columns  .= $foreign_alias . '.id'
 				. (($this->append || !$this->resolve_aliases) ? '' : (' AS ' . BQ . $path . ':id' . BQ));
 		}
 
 		else {
 			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
-			$sql_columns  .= $foreign_alias . '.`id`'
+			$sql_columns  .= $foreign_alias . '.id'
 				. ($this->resolve_aliases ? (' AS ' . BQ . $path . BQ) : '');
 		}
 

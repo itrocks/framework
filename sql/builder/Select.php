@@ -124,6 +124,16 @@ class Select
 				$group_by                 = $columns->build();
 				$options[10] = LF . 'GROUP BY ' . $group_by;
 			}
+			elseif ($option instanceof Option\Having) {
+				$having = new Where(
+					$this->class_name, $option->conditions, $this->getSqlLink(), $this->joins
+				);
+				$having->keyword = 'HAVING';
+				$options[11]     = $having->build();
+				$this->columns_builder->null_columns = array_merge(
+					$this->columns_builder->null_columns, $having->built_columns
+				);
+			}
 			elseif ($option instanceof Option\Limit) {
 				// todo this works only with Mysql so beware, this should be into Mysql or something
 				$options[30] = LF . 'LIMIT '
@@ -210,14 +220,18 @@ class Select
 				}
 				$sql .= $this->finalize($columns, $sub_where, $tables, $options_inside);
 			}
-			return Builder::SELECT . $time_limit_sql . SP . '*' . LF
-				. 'FROM (' . LF . $sql . LF . ') t0'
-				. LF . 'GROUP BY t0.`id`' . join('', $options);
+			$alias = $this->joins->rootAlias();
+			$query = Builder::SELECT . $time_limit_sql . SP . '*' . LF
+				. 'FROM (' . LF . $sql . LF . ') ' . $alias
+				. LF . 'GROUP BY ' . $alias . '.id' . join('', $options);
 		}
-		return Builder::SELECT . join('', $this->select) . SP . $columns
-			. LF . 'FROM' . SP . $tables
-			. $where
-			. join('', $options);
+		else {
+			$query =Builder::SELECT . join('', $this->select) . SP . $columns
+				. LF . 'FROM' . SP . $tables
+				. $where
+				. join('', $options);
+		}
+		return preg_replace('/`id(_\w*)?`/', 'id$1', $query);
 	}
 
 	//---------------------------------------------------------------------------------- getClassName
