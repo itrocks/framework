@@ -36,31 +36,14 @@
 			<section class="selected tools">
 				<h4>|Selected element|</h4>
 				<ul>
-					<li>
-						<label for="free-text">|text|</label>
-						<textarea class="auto_height auto_width" id="free-text"></textarea>
-					</li>
-					<li>
-						<label for="align">|align|</label>
-						<select id="align">
-							<option value="left">|left|</option>
-							<option value="center">|center|</option>
-							<option value="right">|right|</option>
-						</select>
-					</li>
-					<li>
-						<label for="format">|format|</label>
-						<select id="format">
-							<option value="image">|image|</option>
-							<option value="text" selected>|text|</option>
-							<option value="text-cr">|resizable|</option>
-						</select>
-					</li>
-					<li>
-						<label for="size">|size|</label>
-						<input class="auto_width" id="size">
-					</li>
+					<li class="align left"><a>|left align|</a></li>
+					<li class="align center"><a>|center align|</a></li>
+					<li class="align right"><a>|right align|</a></li>
+					<li class="size smaller"><a>|smaller size|</a></li>
+					<li class="size bigger"><a>|bigger size|</a></li>
 				</ul>
+				<input id="align" type="hidden">
+				<input id="size" type="hidden">
 			</section>
 
 			<ul class="pages">

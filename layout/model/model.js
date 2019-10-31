@@ -103,7 +103,8 @@ $(document).ready(function()
 		var $free_text    = $model_window.find('#free-text');
 		var $size         = $model_window.find('#size');
 
-		setTimeout(function() { $designer.each(function() {
+		setTimeout(function() { $designer.each(function()
+		{
 			var $designer = $(this);
 			var $page     = $designer.closest('.page');
 			var $input    = pageLayoutInput($page);
@@ -143,12 +144,14 @@ $(document).ready(function()
 				tools:        '.selected.tools'
 			})
 				.width(css_width);
+
 			if ($input.val()) {
 				var json_data = $('<textarea>').html($input.val()).text();
 				var data      = JSON.parse(json_data.toString());
 				$designer.documentDesigner('setData', data);
 			}
 			$designer.fileUpload();
+
 		})});
 
 		//------------------------------------------------------------------ $editor .field:contains(#)
@@ -230,6 +233,29 @@ $(document).ready(function()
 			$pages.removeClass('active');
 			$active.addClass('active');
 		}
+	});
+
+	//----------------------------------------------------------- article.layout-model li.align click
+	$body.build('click', 'article.layout-model li.align', function()
+	{
+		var $this = $(this);
+		var value = 'left';
+		if      ($this.is('.center')) value = 'center';
+		else if ($this.is('.left'))   value = 'left';
+		else if ($this.is('.right'))  value = 'right';
+		$this.closest('form').find('input#align').val(value).change();
+	});
+
+	//------------------------------------------------------------ article.layout-model li.size click
+	$body.build('click', 'article.layout-model li.size', function()
+	{
+		var $this = $(this);
+		var $size = $this.closest('form').find('input#size');
+		var value = parseFloat($size.val());
+		if      ($this.is('.bigger'))  value += ((value >= 6) ? 1 : .2);
+		else if ($this.is('.smaller')) value -= ((value <= 6) ? .2 : 1);
+		value = (Math.round(Math.max(1, value) * 10) / 10);
+		$size.val(value).change();
 	});
 
 });

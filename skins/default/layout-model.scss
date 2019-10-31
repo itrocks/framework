@@ -7,9 +7,13 @@ article.layout-model {
 		display: none;
 	}
 
+	.buttons.toolbox,
+	.pages.tabber {
+		background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+	}
+
 	.buttons.toolbox ul,
 	.pages.tabber ul {
-		background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
 		border: none;
 		font-size: 0;
 		padding: 10px;
@@ -45,7 +49,28 @@ article.layout-model {
 		display: none;
 	}
 
+	.buttons.toolbox > section {
+		display: inline-block;
+		font-size: 0;
+
+		> ul {
+			display: inline-block;
+		}
+	}
+
 	.buttons.toolbox ul > li {
+
+		&.align.center {
+			background: url('img/align-center-24.svg') center no-repeat;
+		}
+
+		&.align.left {
+			background: url('img/align-left-24.svg') center no-repeat;
+		}
+
+		&.align.right {
+			background: url('img/align-right-24.svg') center no-repeat;
+		}
 
 		&.free-text {
 			background: url('img/free-text-24.svg') center no-repeat;
@@ -65,6 +90,14 @@ article.layout-model {
 
 		&.rectangle {
 			background: url('img/rectangle-24.svg') center no-repeat;
+		}
+
+		&.size.bigger {
+			background: url('img/bigger-font-24.svg') center no-repeat;
+		}
+
+		&.size.smaller {
+			background: url('img/smaller-font-24.svg') center no-repeat;
 		}
 
 		&.vertical.line {

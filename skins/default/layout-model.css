@@ -1,8 +1,10 @@
 article.layout-model h3, article.layout-model h4 {
   display: none; }
+article.layout-model .buttons.toolbox,
+article.layout-model .pages.tabber {
+  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef); }
 article.layout-model .buttons.toolbox ul,
 article.layout-model .pages.tabber ul {
-  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
   border: none;
   font-size: 0;
   padding: 10px;
@@ -30,6 +32,17 @@ article.layout-model .pages.tabber ul {
       height: 28px; }
 article.layout-model .buttons.toolbox > .pages {
   display: none; }
+article.layout-model .buttons.toolbox > section {
+  display: inline-block;
+  font-size: 0; }
+  article.layout-model .buttons.toolbox > section > ul {
+    display: inline-block; }
+article.layout-model .buttons.toolbox ul > li.align.center {
+  background: url("img/align-center-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.align.left {
+  background: url("img/align-left-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.align.right {
+  background: url("img/align-right-24.svg") center no-repeat; }
 article.layout-model .buttons.toolbox ul > li.free-text {
   background: url("img/free-text-24.svg") center no-repeat; }
 article.layout-model .buttons.toolbox ul > li.horizontal.line {
@@ -40,6 +53,10 @@ article.layout-model .buttons.toolbox ul > li.pages-count {
   display: none; }
 article.layout-model .buttons.toolbox ul > li.rectangle {
   background: url("img/rectangle-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.size.bigger {
+  background: url("img/bigger-font-24.svg") center no-repeat; }
+article.layout-model .buttons.toolbox ul > li.size.smaller {
+  background: url("img/smaller-font-24.svg") center no-repeat; }
 article.layout-model .buttons.toolbox ul > li.vertical.line {
   background: url("img/vertical-line-24.svg") center no-repeat; }
 article.layout-model .data .properties {
