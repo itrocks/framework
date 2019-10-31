@@ -3,8 +3,12 @@ namespace ITRocks\Framework\Tools\Feature_Class;
 
 use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Component\Menu\Item;
+use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Layout\Print_Model;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\View;
 
 /**
  * Updatable feature class list, taken from the menu only
@@ -31,7 +35,12 @@ class Menu_Update extends Update
 	public function update($last_time)
 	{
 		[$class_names, $feature_classes, $write] = $this->updateInit();
-		foreach (array_keys(Menu::get()->configuration_items) as $menu_item_link) {
+		$links             = array_keys(Menu::get()->configuration_items);
+		$print_model_links = array_keys(Dao::readAll(Print_Model::class, Dao::key('class_name')));
+		foreach ($print_model_links as $print_model_link) {
+			$links[] = View::link($print_model_link, Feature::F_PRINT);
+		}
+		foreach ($links as $menu_item_link) {
 			$item       = new Item();
 			$item->link = $menu_item_link;
 			$class_name = $item->linkClass();

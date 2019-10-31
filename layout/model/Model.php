@@ -38,7 +38,6 @@ abstract class Model
 	/**
 	 * @getter
 	 * @link Object
-	 * @mandatory
 	 * @setter
 	 * @user readonly
 	 * @var Feature_Class
@@ -104,8 +103,11 @@ abstract class Model
 	protected function getDocument()
 	{
 		if (!$this->document && $this->class_name) {
-			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class)
-				?: new Feature_Class($this->class_name);
+			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
+			if (!$this->document) {
+				$this->document = new Feature_Class($this->class_name);
+				Dao::write($this->document);
+			}
 		}
 		return $this->document;
 	}
