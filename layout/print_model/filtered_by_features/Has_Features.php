@@ -20,6 +20,7 @@ trait Has_Features
 
 	//------------------------------------------------------------------------------------- $features
 	/**
+	 * @feature configureFilters Configure print model filters by feature @user
 	 * @link Map
 	 * @user invisible
 	 * @var Feature[]
