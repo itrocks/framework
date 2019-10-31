@@ -94,7 +94,7 @@ abstract class Builder
 		$sql_delete = self::DELETE . ' FROM ' . BQ . Dao::current()->storeNameOf($class) . BQ . LF
 			. 'WHERE';
 		if (is_numeric($id)) {
-			$sql_delete .= ' `id` = ' . $id;
+			$sql_delete .= ' id = ' . $id;
 		}
 		elseif (is_array($id)) {
 			$first = true;
@@ -152,7 +152,7 @@ abstract class Builder
 		}
 		$sql_update .= LF . 'WHERE';
 		if (is_numeric($id)) {
-			$sql_update .= ' `id` = ' . $id;
+			$sql_update .= ' id = ' . $id;
 		}
 		elseif (is_array($id)) {
 			$first = true;

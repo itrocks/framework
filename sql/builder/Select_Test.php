@@ -48,8 +48,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.id = t1.id_item' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
 			$builder->buildQuery()
 		);
@@ -68,8 +68,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.id = t1.id_item' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
 			$builder->buildQuery()
 		);
@@ -86,8 +86,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.id = t1.id_item' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1"',
 			$builder->buildQuery()
 		);
@@ -107,10 +107,10 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
-			. 'LEFT JOIN `test_items_items` t3 ON t3.`id_item` = t2.`id`' . LF
-			. 'LEFT JOIN `test_items` t4 ON t4.`id` = t3.`id_cross_selling`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.id = t1.id_item' . LF
+			. 'LEFT JOIN `test_items_items` t3 ON t3.id_item = t2.id' . LF
+			. 'LEFT JOIN `test_items` t4 ON t4.id = t3.id_cross_selling' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1" AND t4.`code` = "3"',
 			$builder->buildQuery()
 		);
@@ -130,10 +130,10 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_items` t2 ON t2.`id` = t1.`id_item`' . LF
-			. 'LEFT JOIN `test_items_items` t3 ON t3.`id_item` = t2.`id`' . LF
-			. 'LEFT JOIN `test_items` t4 ON t4.`id` = t3.`id_cross_selling`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_items` t2 ON t2.id = t1.id_item' . LF
+			. 'LEFT JOIN `test_items_items` t3 ON t3.id_item = t2.id' . LF
+			. 'LEFT JOIN `test_items` t4 ON t4.id = t3.id_cross_selling' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2 AND t2.`code` = "1" AND t4.`code` = "3"',
 			$builder->buildQuery()
 		);
@@ -150,7 +150,7 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2',
 			$builder->buildQuery()
 		);
@@ -167,8 +167,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`number`, t0.`quantity`' . LF
 			. 'FROM `test_order_lines` t0' . LF
-			. 'LEFT JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`' . LF
-			. 'WHERE t1.`id` IS NULL',
+			. 'LEFT JOIN `test_clients` t1 ON t1.id = t0.id_client' . LF
+			. 'WHERE t1.id IS NULL',
 			$builder->buildQuery()
 		);
 	}
@@ -184,7 +184,7 @@ class Select_Test extends Test
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `lines.number`, t1.`quantity` AS `lines.quantity`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`',
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id',
 			$builder->buildQuery()
 		);
 	}
@@ -200,8 +200,8 @@ class Select_Test extends Test
 			'SELECT t0.`number`, t1.`number` AS `client.number`, t2.`number` AS `client.client.number`, t1.`name` AS `client.name`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`' . LF
-			. 'LEFT JOIN `test_clients` t2 ON t2.`id` = t1.`id_client`',
+			. 'INNER JOIN `test_clients` t1 ON t1.id = t0.id_client' . LF
+			. 'LEFT JOIN `test_clients` t2 ON t2.id = t1.id_client',
 			$builder->buildQuery()
 		);
 	}
@@ -217,13 +217,13 @@ class Select_Test extends Test
 			'SELECT t0.`number`, t0.`name`,'
 			. ' t2.`date` AS `Order_Line(client).order:date`,'
 			. ' t2.`number` AS `Order_Line(client).order:number`,'
-			. ' t2.`id_client` AS `Order_Line(client).order:client`,'
-			. ' t2.`id_delivery_client` AS `Order_Line(client).order:delivery_client`,'
+			. ' t2.id_client AS `Order_Line(client).order:client`,'
+			. ' t2.id_delivery_client AS `Order_Line(client).order:delivery_client`,'
 			. ' t2.`has_workflow` AS `Order_Line(client).order:has_workflow`,'
-			. ' t2.`id` AS `Order_Line(client).order:id`' . LF
+			. ' t2.id AS `Order_Line(client).order:id`' . LF
 			. 'FROM `test_clients` t0' . LF
-			. 'LEFT JOIN `test_order_lines` t1 ON t1.`id_client` = t0.`id`' . LF
-			. 'LEFT JOIN `test_orders` t2 ON t2.`id` = t1.`id_order`',
+			. 'LEFT JOIN `test_order_lines` t1 ON t1.id_client = t0.id' . LF
+			. 'LEFT JOIN `test_orders` t2 ON t2.id = t1.id_order',
 			$builder->buildQuery()
 		);
 	}
@@ -239,7 +239,7 @@ class Select_Test extends Test
 			'SELECT t1.`date` AS `order.date`, t1.`number` AS `order.number`, t0.`number`, t0.`quantity`'
 			. LF
 			. 'FROM `test_order_lines` t0' . LF
-			. 'INNER JOIN `test_orders` t1 ON t1.`id` = t0.`id_order`',
+			. 'INNER JOIN `test_orders` t1 ON t1.id = t0.id_order',
 			$builder->buildQuery()
 		);
 	}
@@ -254,8 +254,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`, t2.`name` AS `salesmen.name`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'LEFT JOIN `test_orders_salesmen` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`',
+			. 'LEFT JOIN `test_orders_salesmen` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman',
 			$builder->buildQuery()
 		);
 	}
@@ -275,8 +275,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `test_quote_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
-			. 'WHERE t0.`id_quote` = 101 AND t0.`id_salesman` = 102',
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'WHERE t0.id_quote = 101 AND t0.id_salesman = 102',
 			$builder->buildQuery()
 		);
 		$search->quote        = Search_Object::create(Quote::class);
@@ -286,10 +286,10 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `test_quote_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
-			. 'LEFT JOIN `test_quotes` t2 ON t2.`id` = t0.`id_quote`' . LF
-			. 'LEFT JOIN `test_salesmen` t3 ON t3.`id` = t0.`id_salesman`' . LF
-			. 'WHERE t2.`id` = 101 AND t3.`id` = 102',
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'LEFT JOIN `test_quotes` t2 ON t2.id = t0.id_quote' . LF
+			. 'LEFT JOIN `test_salesmen` t3 ON t3.id = t0.id_salesman' . LF
+			. 'WHERE t2.id = 101 AND t3.id = 102',
 			$builder->buildQuery()
 		);
 	}
@@ -305,7 +305,7 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t1.`name`, t0.`percentage`' . LF
 			. 'FROM `test_quote_salesmen` t0' . LF
-			. 'INNER JOIN `test_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
+			. 'INNER JOIN `test_salesmen` t1 ON t1.id = t0.id_salesman' . LF
 			. 'WHERE t1.`name` = "Robert" AND t0.`percentage` = 100',
 			$builder->buildQuery()
 		);
@@ -322,8 +322,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t2.`name`, t1.`percentage`, t0.`additional_text`' . LF
 			. 'FROM `test_quotes_salesmen_additional` t0' . LF
-			. 'INNER JOIN `test_quote_salesmen` t1 ON t1.`id` = t0.`id_salesman`' . LF
-			. 'INNER JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`' . LF
+			. 'INNER JOIN `test_quote_salesmen` t1 ON t1.id = t0.id_salesman' . LF
+			. 'INNER JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman' . LF
 			. 'WHERE t2.`name` = "Robert" AND t1.`percentage` = 100',
 			$builder->buildQuery()
 		);
@@ -340,8 +340,8 @@ class Select_Test extends Test
 			'SELECT t0.`number`, t2.`name` AS `salesmen.name`, t1.`percentage` AS `salesmen.percentage`'
 			. LF
 			. 'FROM `test_quotes` t0' . LF
-			. 'LEFT JOIN `test_quote_salesmen` t1 ON t1.`id_quote` = t0.`id`' . LF
-			. 'LEFT JOIN `test_salesmen` t2 ON t2.`id` = t1.`id_salesman`',
+			. 'LEFT JOIN `test_quote_salesmen` t1 ON t1.id_quote = t0.id' . LF
+			. 'LEFT JOIN `test_salesmen` t2 ON t2.id = t1.id_salesman',
 			$builder->buildQuery()
 		);
 	}
@@ -357,12 +357,12 @@ class Select_Test extends Test
 			'SELECT t0.`number`, t0.`quantity`,'
 			. ' t1.`date` AS `order:date`,'
 			. ' t1.`number` AS `order:number`,'
-			. ' t1.`id_client` AS `order:client`,'
-			. ' t1.`id_delivery_client` AS `order:delivery_client`,'
+			. ' t1.id_client AS `order:client`,'
+			. ' t1.id_delivery_client AS `order:delivery_client`,'
 			. ' t1.`has_workflow` AS `order:has_workflow`,'
-			. ' t1.`id` AS `order:id`' . LF
+			. ' t1.id AS `order:id`' . LF
 			. 'FROM `test_order_lines` t0' . LF
-			. 'INNER JOIN `test_orders` t1 ON t1.`id` = t0.`id_order`',
+			. 'INNER JOIN `test_orders` t1 ON t1.id = t0.id_order',
 			$builder->buildQuery()
 		);
 	}
@@ -381,8 +381,8 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`number`, t0.`quantity`' . LF
 			. 'FROM `test_order_lines` t0' . LF
-			. 'LEFT JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`' . LF
-			. 'WHERE t1.`id` IS NULL AND t0.`quantity` > 1',
+			. 'LEFT JOIN `test_clients` t1 ON t1.id = t0.id_client' . LF
+			. 'WHERE t1.id IS NULL AND t0.`quantity` > 1',
 			$builder->buildQuery()
 		);
 	}
@@ -406,7 +406,7 @@ class Select_Test extends Test
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'LEFT JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`',
+			. 'LEFT JOIN `test_order_lines` t1 ON t1.id_order = t0.id',
 			$builder->buildQuery()
 		);
 	}
@@ -436,11 +436,11 @@ class Select_Test extends Test
 			['OR' => ['lines.client.number' => $client->number, 'number' => 2]]
 		);
 		static::assertEquals(
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`'
+			'SELECT t0.`date`, t0.`number`, t1.id_client AS `lines:client`, t1.id_item AS `lines:item`, t1.`number` AS `lines:number`, t1.id_order AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_clients` t2 ON t2.`id` = t1.`id_client`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_clients` t2 ON t2.id = t1.id_client' . LF
 			. 'WHERE (t2.`number` = "1" OR t0.`number` = "2")',
 			$builder->buildQuery()
 		);
@@ -457,7 +457,7 @@ class Select_Test extends Test
 		static::assertEquals(
 			'SELECT t0.`date`, t0.`number`' . LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
 			. 'WHERE t0.`number` = "1" AND t1.`number` = 2',
 			$builder->buildQuery()
 		);
@@ -475,12 +475,12 @@ class Select_Test extends Test
 			['lines.client' => $client, 'number' => 2]
 		);
 		static::assertEquals(
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`'
+			'SELECT t0.`date`, t0.`number`, t1.id_client AS `lines:client`, t1.id_item AS `lines:item`, t1.`number` AS `lines:number`, t1.id_order AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_clients` t2 ON t2.`id` = t1.`id_client`' . LF
-			. 'WHERE t2.`id` = 12 AND t0.`number` = "2"',
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_clients` t2 ON t2.id = t1.id_client' . LF
+			. 'WHERE t2.id = 12 AND t0.`number` = "2"',
 			$builder->buildQuery()
 		);
 	}
@@ -512,7 +512,7 @@ class Select_Test extends Test
 			'SELECT t0.`date`, t0.`number`, t1.`number` AS `Order_Line->order.number`, t1.`quantity` AS `Order_Line->order.quantity`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'LEFT JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
+			. 'LEFT JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
 			. 'WHERE t1.`number` = 2',
 			$builder->buildQuery()
 		);
@@ -527,10 +527,10 @@ class Select_Test extends Test
 		$properties     = ['number', 'name', 'client'];
 		$builder        = new Select(Client::class, $properties, $client);
 		static::assertEquals(
-			'SELECT t0.`number`, t0.`name`, t1.`id_client` AS `client:client`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.`id` AS `client:id`'
+			'SELECT t0.`number`, t0.`name`, t1.id_client AS `client:client`, t1.`name` AS `client:name`, t1.`number` AS `client:number`, t1.id AS `client:id`'
 			. LF
 			. 'FROM `test_clients` t0' . LF
-			. 'LEFT JOIN `test_clients` t1 ON t1.`id` = t0.`id_client`' . LF
+			. 'LEFT JOIN `test_clients` t1 ON t1.id = t0.id_client' . LF
 			. 'WHERE t0.`name` LIKE "Roger%" AND t0.`number` = "1"',
 			$builder->buildQuery()
 		);
@@ -547,11 +547,11 @@ class Select_Test extends Test
 			['lines.client' => $client, 'number' => 2]
 		);
 		static::assertEquals(
-			'SELECT t0.`date`, t0.`number`, t1.`id_client` AS `lines:client`, t1.`id_item` AS `lines:item`, t1.`number` AS `lines:number`, t1.`id_order` AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.`id` AS `lines:id`'
+			'SELECT t0.`date`, t0.`number`, t1.id_client AS `lines:client`, t1.id_item AS `lines:item`, t1.`number` AS `lines:number`, t1.id_order AS `lines:order`, t1.`quantity` AS `lines:quantity`, t1.id AS `lines:id`'
 			. LF
 			. 'FROM `test_orders` t0' . LF
-			. 'INNER JOIN `test_order_lines` t1 ON t1.`id_order` = t0.`id`' . LF
-			. 'LEFT JOIN `test_clients` t2 ON t2.`id` = t1.`id_client`' . LF
+			. 'INNER JOIN `test_order_lines` t1 ON t1.id_order = t0.id' . LF
+			. 'LEFT JOIN `test_clients` t2 ON t2.id = t1.id_client' . LF
 			. 'WHERE t2.`number` = "1" AND t0.`number` = "2"',
 			$builder->buildQuery()
 		);
