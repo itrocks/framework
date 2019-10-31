@@ -11,6 +11,12 @@ use ITRocks\Framework\Sql\Value;
 class Group_Concat extends Column
 {
 
+	//--------------------------------------------------------------------------------------- $column
+	/**
+	 * @var Column
+	 */
+	public $column = null;
+
 	//------------------------------------------------------------------------------------- $distinct
 	/**
 	 * @var boolean
@@ -36,10 +42,12 @@ class Group_Concat extends Column
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $separator string Separator for the concat @default ,
+	 * @param $column    Column
 	 */
-	public function __construct($separator = null)
+	public function __construct($separator = null, Column $column = null)
 	{
-		$this->separator = $separator;
+		$this->column    = ($separator instanceof Column) ? $separator : $column;
+		$this->separator = ($separator instanceof Column) ? null : $separator;
 	}
 
 	//----------------------------------------------------------------------------------------- toSql
@@ -52,6 +60,11 @@ class Group_Concat extends Column
 	 */
 	public function toSql(With_Build_Column $builder, $property_path)
 	{
+		$alias_property_path = $property_path;
+		if ($this->column instanceof Column) {
+			$property_path = lParse($this->column->toSql($builder, $property_path), ' AS ');
+		}
+
 		$group_concat_property = Reflection_Property::exists(
 			$builder->getJoins()->getStartingClassName(), $property_path
 		)
@@ -78,7 +91,7 @@ class Group_Concat extends Column
 			. ($order_by ? ' ORDER BY ' . join(', ', $order_by) : '')
 			. (isset($separator) ? $separator : '')
 			. ')'
-			. $this->aliasSql($builder, $property_path);
+			. $this->aliasSql($builder, $alias_property_path);
 		return $sql;
 	}
 

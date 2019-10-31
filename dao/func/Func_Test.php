@@ -88,18 +88,15 @@ class Func_Test extends Test
 			Client::class,
 			[
 				'number'                 => new Group_Concat(),
-				'group_concat'           => new Group_Concat('number'),
-				'group_concat_with_sep'  => new Group_Concat('number', ';'),
+				'name'                   => new Group_Concat(';'),
 				'group_concat_with_func' => new Group_Concat(new Concat(['number', 'name'])),
 			]
 		);
 		static::assertEquals(
 			'SELECT GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `number`, '
-				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number`) AS `group_concat`, '
-				. 'GROUP_CONCAT(DISTINCT t0.`number` ORDER BY t0.`number` SEPARATOR ";") '
-				. 'AS `group_concat_with_sep`, '
-				. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`) '
-				. 'ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`' . LF
+				. 'GROUP_CONCAT(DISTINCT t0.`name` ORDER BY t0.`name` SEPARATOR ";") AS `name`, '
+				. 'GROUP_CONCAT(DISTINCT CONCAT(t0.`number`, " ", t0.`name`)'
+				. ' ORDER BY CONCAT(t0.`number`, " ", t0.`name`)) AS `group_concat_with_func`' . LF
 				. 'FROM `test_clients` t0',
 			$builder->buildQuery()
 		);
