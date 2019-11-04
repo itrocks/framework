@@ -202,7 +202,8 @@ body.user.register {
   body.password.reset > .company.logo,
   body.user.login > .company.logo,
   body.user.register > .company.logo {
-    border: none; }
+    border: none;
+    border-top-right-radius: 0; }
     body.password.reset > .company.logo:after,
     body.user.login > .company.logo:after,
     body.user.register > .company.logo:after {

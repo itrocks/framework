@@ -208,6 +208,7 @@ body.user.register {
 
 	> .company.logo {
 		border: none;
+		border-top-right-radius: 0;
 
 		&:after {
 			display: none;
