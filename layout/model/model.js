@@ -94,7 +94,7 @@ $(document).ready(function()
 		$title.attr('title', $selected.attr('title'));
 	};
 
-	//--------------------------------------- article.layout-model .editor .designer documentDesigner
+	//----------------------------------------------- article.layout-model .designer documentDesigner
 	$body.build({ priority: 500, selector: 'article.layout-model', callback: function()
 	{
 		var $editor       = this;
@@ -210,7 +210,7 @@ $(document).ready(function()
 
 	}});
 
-	//-------------------------------- article.layout-model .editor .general.actions > .write click
+	//------------------------------------------ article.layout-model .general.actions > .write click
 	/**
 	 * Save layout model : build the standardized data before saving the form,
 	 * as no data is stored into inputs
@@ -221,7 +221,7 @@ $(document).ready(function()
 		selector: 'article.layout-model .general.actions > .write > a',
 		callback: function()
 		{
-			var $designer = $(this).closest('article.layout-model').find('.editor .designer');
+			var $designer = $(this).closest('article.layout-model').find('.designer');
 			var $active   = $designer.closest('.active.page');
 			var $pages    = $designer.closest('.page');
 			$pages.addClass('active');
