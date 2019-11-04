@@ -42,6 +42,22 @@ class Page extends Model\Page
 		parent::__construct($ordering, $layout);
 	}
 
+	//--------------------------------------------------------------------------------------- caption
+	/**
+	 * @return string
+	 */
+	public function caption()
+	{
+		switch ($this->ordering) {
+			case static::ALL:    return 'all pages';
+			case static::FIRST:  return 'first page';
+			case static::LAST:   return 'last page';
+			case static::MIDDLE: return 'middle pages';
+			case static::UNIQUE: return 'unique page';
+		}
+		return $this->ordering;
+	}
+
 	//------------------------------------------------------------------------------------- getLayout
 	/**
 	 * @returns string

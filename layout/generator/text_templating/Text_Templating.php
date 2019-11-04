@@ -14,6 +14,12 @@ class Text_Templating
 
 	//--------------------------------------------------------------------------- PAGE_PROPERTY_PATHS
 	const PAGE_PROPERTY_PATHS = ['page.number', 'pages.count'];
+	const PAGE_SIMPLE_PATHS   = [
+		'#'    => '{page.number}',
+		'##'   => '{pages.count}',
+		'#/#'  => '{page.number}/{pages.count}',
+		'#/##' => '{page.number}/{pages.count}'
+	];
 
 	//---------------------------------------------------------------------------------- pageProperty
 	/**
@@ -38,14 +44,20 @@ class Text_Templating
 	{
 		foreach ($this->structure->pages as $page) {
 			foreach ($page->elements as $element) {
-				if (($element instanceof Text) && (strpos($element->text, '{') !== false)) {
+				if (
+					($element instanceof Text)
+					&& ((strpos($element->text, '{') !== false) || (substr($element->text, 0, 1) === '#'))
+				) {
 					$this->text($element);
 				}
 			}
 			foreach ($page->groups as $group) {
 				foreach ($group->iterations as $iteration) {
 					foreach ($iteration->elements as $element) {
-						if (($element instanceof Text) && (strpos($element->text, '{') !== false)) {
+						if (
+							($element instanceof Text)
+							&& ((strpos($element->text, '{') !== false) || (substr($element->text, 0, 1) === '#'))
+						) {
 							$this->text($element);
 						}
 					}
@@ -60,6 +72,13 @@ class Text_Templating
 	 */
 	protected function text(Text $element)
 	{
+		if (substr($element->text, 0, 1) === '#') {
+			foreach (static::PAGE_SIMPLE_PATHS as $simple_path => $extended_path) {
+				if ($element->text === $simple_path) {
+					$element->text = $extended_path;
+				}
+			}
+		}
 		foreach (static::PAGE_PROPERTY_PATHS as $property_path) {
 			$search = '{' . Names::propertyToDisplay($property_path) . '}';
 			if (strpos($element->text, $search) !== false) {

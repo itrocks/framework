@@ -160,8 +160,8 @@ $(document).ready(function()
 		 */
 		$editor.find('.field:contains(#)').each(function() {
 			var $field = $(this);
-			if ($field.text().beginsWith('#')) {
-				$field.text('{' + $field.text().substr(1) + '}');
+			if ($field.text().beginsWith('#') && ($field.text().length > 3)) {
+				$field.text($field.text().replace(/#([\.\w]+)/g, '{$1}'));
 			}
 		});
 
@@ -235,6 +235,26 @@ $(document).ready(function()
 		}
 	});
 
+	//------------------------------------------------------- article.layout-model input#align change
+	$body.build('change', 'article.layout-model input#align', function()
+	{
+		var $this  = $(this);
+		var $align = $this.closest('article.layout-model').find('li.align');
+		var value  = $this.val();
+		$align.removeClass('selected');
+		$align.filter(DOT + value).addClass('selected');
+	});
+
+	//------------------------------------------------------ article.layout-model input#format change
+	$body.build('change', 'article.layout-model input#format', function()
+	{
+		var $this  = $(this);
+		var $align = $this.closest('article.layout-model').find('li.format');
+		var value  = $this.val();
+		$align.removeClass('selected');
+		$align.filter(DOT + value).addClass('selected');
+	});
+
 	//----------------------------------------------------------- article.layout-model li.align click
 	$body.build('click', 'article.layout-model li.align', function()
 	{
@@ -244,6 +264,17 @@ $(document).ready(function()
 		else if ($this.is('.left'))   value = 'left';
 		else if ($this.is('.right'))  value = 'right';
 		$this.closest('form').find('input#align').val(value).change();
+	});
+
+	//---------------------------------------------------------- article.layout-model li.format click
+	$body.build('click', 'article.layout-model li.format', function()
+	{
+		var $this = $(this);
+		var value = 'text';
+		if      ($this.is('.image'))   value = 'image';
+		else if ($this.is('.text'))    value = 'text';
+		else if ($this.is('.text-cr')) value = 'text-cr';
+		$this.closest('form').find('input#format').val(value).change();
 	});
 
 	//------------------------------------------------------------ article.layout-model li.size click
