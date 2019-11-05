@@ -3,50 +3,67 @@ div#column_select.popup {
   overflow-x: hidden;
   overflow-y: auto; }
 
-.func_select,
-.property_select {
+.func-select,
+.property-select {
+  background-color: white;
   border-left: 1px solid #d0d0d0;
-  box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, 0.4);
   box-sizing: border-box;
   height: 100%;
   white-space: nowrap; }
-  .func_select > h3,
-  .property_select > h3 {
+  .func-select > h3,
+  .property-select > h3 {
     display: none; }
-  .func_select > .search > input,
-  .property_select > .search > input {
-    background: white;
-    box-sizing: border-box;
-    width: 100%; }
-  .func_select > .search > label,
-  .property_select > .search > label {
-    display: none; }
-  .func_select ul > li,
-  .property_select ul > li {
-    display: block; }
-    .func_select ul > li.class,
-    .property_select ul > li.class {
-      padding-left: 1em; }
-    .func_select ul > li:not(.class),
-    .property_select ul > li:not(.class) {
-      padding: .2em 0 .2em 1em; }
-    .func_select ul > li.ui-draggable-handle,
-    .property_select ul > li.ui-draggable-handle {
-      cursor: grab; }
-    .func_select ul > li > a,
-    .property_select ul > li > a {
-      background-position: .3em center;
-      background-repeat: no-repeat;
+  .func-select > .search,
+  .property-select > .search {
+    background: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+    border-bottom: 1px solid #ccc; }
+    .func-select > .search > input,
+    .property-select > .search > input {
+      background: white;
+      box-sizing: border-box;
+      width: 100%; }
+    .func-select > .search > label,
+    .property-select > .search > label {
+      display: none; }
+  .func-select ul > li,
+  .property-select ul > li {
+    display: block;
+    position: relative; }
+    .func-select ul > li > a,
+    .property-select ul > li > a {
+      box-sizing: border-box;
+      height: 28px;
+      margin: 1px 0; }
+    .func-select ul > li > a.expand,
+    .property-select ul > li > a.expand {
+      display: inline-block;
+      font-size: 0;
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 16px; }
+    .func-select ul > li > a.property,
+    .property-select ul > li > a.property {
+      cursor: grab;
       display: block;
-      font-weight: bold;
-      margin-left: -1em;
-      padding: .2em 0 .2em 1em; }
-      .func_select ul > li > a.expanded,
-      .property_select ul > li > a.expanded {
-        background-image: url("../default/img/tree/minus.png"); }
-      .func_select ul > li > a:not(.expanded),
-      .property_select ul > li > a:not(.expanded) {
-        background-image: url("../default/img/tree/plus.png"); }
+      padding: 8px 10px 0; }
+    .func-select ul > li:not(.expanded) > a.expand,
+    .property-select ul > li:not(.expanded) > a.expand {
+      background: url("../default/img/tree/plus.png") center no-repeat; }
+    .func-select ul > li.expanded,
+    .property-select ul > li.expanded {
+      background-color: #efefef; }
+      .func-select ul > li.expanded > a.expand,
+      .property-select ul > li.expanded > a.expand {
+        background: url("../default/img/tree/minus.png") center no-repeat; }
+      .func-select ul > li.expanded > a.property,
+      .property-select ul > li.expanded > a.property {
+        font-size: 14px;
+        font-style: italic;
+        padding-top: 7px; }
+    .func-select ul > li div,
+    .property-select ul > li div {
+      background-color: white; }
 
 .object.ui-draggable-dragging,
 :not(article.model.edit .editor) .property.ui-draggable-dragging {

@@ -31,7 +31,7 @@
 		this.selectors  = {};
 
 		var object    = this;
-		var selectors = contextSelectors(selector);
+		var selectors = chainedSelectors(selector);
 		$.each(selectors, function(key, part) {
 			part = part.trim();
 			object.selectors[part] = always
@@ -97,7 +97,7 @@
 	 * @param selector string|string[]
 	 * @return array
 	 */
-	var contextSelectors = function(selector)
+	window.chainedSelectors = function(selector)
 	{
 		var selectors = Array.isArray(selector) ? selector : [selector];
 		var parts     = [''];

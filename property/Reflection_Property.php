@@ -93,13 +93,14 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 *
 	 * TODO NORMAL should deal with @store and stringable : we miss them
 	 *
-	 * @return boolean
+	 * @return string can be dealt-with as if it is a boolean @values expandable,
 	 */
 	public function isExpandable()
 	{
 		$annotation = Store_Annotation::of($this);
 		$type       = $this->getType();
-		return !($annotation->isFalse() || $type->isBasic() || $type->isStringable());
+		return ($annotation->isFalse() || $type->isBasic() || $type->isStringable())
+			? '' : 'expandable';
 	}
 
 	//------------------------------------------------------------------------------ isStringableHtml

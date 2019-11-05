@@ -147,10 +147,10 @@ $(document).ready(function()
 	});
 
 	//-------------------------------------------------------- #column_select li.basic.property click
-	$body.build('click', '.property_select .tree .basic.property', function()
+	$body.build('click', '.property-select .property', function()
 	{
 		var $this      = $(this);
-		var data_class = $this.closest('.property_select').data('class');
+		var data_class = $this.closest('.property-select').data('class');
 		var selector   = 'article.list[data-class=' + data_class.repl(BS, BS + BS) + ']';
 		var $list      = $(selector);
 		if ($list.length) {

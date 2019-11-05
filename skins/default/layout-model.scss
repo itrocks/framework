@@ -257,12 +257,12 @@ article.layout-model {
 		}
 	}
 
-	.property_select {
+	.property-select {
 		border-right: 2px solid #d8d8d8;
 		overflow: hidden auto;
 
 		input {
-			margin: 10px 8px;
+			margin: 9px 8px;
 			padding: 14px 10px !important;
 			width: calc(100% - 16px);
 		}
@@ -277,7 +277,7 @@ article.layout-model {
 		grid-template-areas: "header" "content" "pages" "page" "footer";
 		grid-template-columns: 1fr;
 
-		.property_select,
+		.property-select,
 		.snap.line,
 		.toolbox {
 			display: none;
@@ -314,7 +314,7 @@ article.layout-model {
 			grid-area: pages;
 		}
 
-		> .property_select {
+		> .property-select {
 			grid-area: properties;
 		}
 	}

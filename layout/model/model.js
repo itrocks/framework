@@ -110,7 +110,7 @@ $(document).ready(function()
 			var $input    = pageLayoutInput($page);
 			var fields    = [
 				'article.layout-model.edit',
-				'.buttons.toolbox .add.tools li, .property_select > .tree .property, .page > .snap.tool'
+				'.buttons.toolbox .add.tools li, .page > .snap.tool, .property-select .property'
 			];
 
 			var $elements = $page.find('[data-style]');

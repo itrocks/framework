@@ -2,22 +2,14 @@ $(document).ready(function()
 {
 	var $body = $('body');
 
-	// sort and decoration : top priority, because events should be created after this sort
-	$body.build({
-		callback: function() { this.sortContent('.separator'); },
-		event:    'call',
-		priority: 1,
-		selector: '.property_select ul.tree'
-	});
-
-	$body.build('call', '.property_select ul.tree .property_select', function()
+	$body.build('call', '.property-select ul.tree .property-select', function()
 	{
 		this.prepend($('<span>').addClass('joint'));
 	});
 
 	//--------------------------------------------------- .property_select > input[name=search] keyup
 	// search
-	$body.build('each', '.property_select > .search > input', function()
+	$body.build('each', '.property-select > .search > input', function()
 	{
 		var last_search = '';
 		var search_step = 0;
@@ -69,22 +61,67 @@ $(document).ready(function()
 
 	//--------------------------------------------------------------- ul.property_tree > li > a click
 	// create tree
-	$body.build('click', '.property_select > ul.tree > li.class > a', function(event)
+	$body.build('click', '.property-select a.expand', function(event)
 	{
-		var $anchor = $(this);
-		var $li     = $anchor.parent();
-		var $div    = $li.children('div');
-		if ($anchor.hasClass('expanded')) {
-			$anchor.removeClass('expanded');
-			$div.hide();
+		var $anchor      = $(this);
+		var $li          = $anchor.closest('li.expandable');
+		var $div         = $li.children('div');
+		var $move_before = null;
+		var $property    = $li.children('a.property');
+		var title        = $property.attr('title');
+		if ($li.hasClass('expanded')) {
+			// hide
+			$li.removeClass('expanded');
+			$div.slideUp(100);
+			// reduce title
+			if ($property.data('text')) {
+				title = $property.data('text');
+				$property.text(title);
+				$property.removeData('text');
+			}
+			// move
+			$li.siblings('.expandable').each(function() {
+				var $next_li = $(this);
+				if ($next_li.children('a.property').attr('title') > title) {
+					$move_before = $next_li;
+					return false;
+				}
+			});
+			if (!$move_before) {
+				$move_before = $li.siblings('.expanded').first();
+			}
 		}
 		else {
-			$anchor.addClass('expanded');
-			$div.show();
+			// show
+			$li.addClass('expanded');
+			$div.slideDown(100);
 			if ($div.children().length) {
+				// do not load again
 				event.preventDefault();
 				event.stopImmediatePropagation();
 			}
+			// expand title
+			title = title.split(DOT).reverse().join(' < ');
+			$property.data('text', $property.text());
+			$property.text(title);
+			// move
+			$li.siblings('.expanded').each(function() {
+				var $next_li = $(this);
+				if ($next_li.children('a.property').attr('title') > title) {
+					$move_before = $next_li;
+					return false;
+				}
+			});
+			if (!$move_before) {
+				$move_before = {length: 0};
+			}
+		}
+		// effective move
+		if ($move_before.length) {
+			$li.insertBefore($move_before);
+		}
+		else {
+			$li.appendTo($li.parent());
 		}
 	});
 
@@ -165,7 +202,7 @@ $(document).ready(function()
 	$(document).click(function(event)
 	{
 		//noinspection JSJQueryEfficiency well, why ?
-		var $column_select = $('#column_select.popup > .property_select');
+		var $column_select = $('#column_select.popup > .property-select');
 		if ($column_select.length) {
 			var offset = $column_select.offset();
 			if (!(

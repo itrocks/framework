@@ -71,6 +71,7 @@ class Select_Controller implements Feature_Controller
 				)
 				&& $source_property->isPublic()
 				&& $source_property->isVisible(false, false)
+				&& !Store_Annotation::of($source_property)->isFalse()
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$property = new Reflection_Property(
@@ -118,12 +119,16 @@ class Select_Controller implements Feature_Controller
 		else {
 			$properties = $class->getProperties([T_EXTENDS, T_USE]);
 		}
-		$properties         = $this->filterProperties($properties, $display_full_path);
+		$properties = $this->filterProperties($properties, $display_full_path);
+		$this->sortProperties($properties);
+		// TODO LOW reverse properties should come back, well displayed, and conditioned to the activation of an user feature
+		/*
 		$reverse_properties = $this->getReverseProperties($class);
 		if ($reverse_properties) {
 			$properties[] = null;
 			$properties   = array_merge($properties, $reverse_properties);
 		}
+		*/
 		return $properties;
 	}
 
@@ -254,6 +259,22 @@ class Select_Controller implements Feature_Controller
 		 * 'properties' Reflection_Property[] all properties from the reference class
 		 */
 		return View::run($objects, $form, $files, Property::class, 'select');
+	}
+
+	//-------------------------------------------------------------------------------- sortProperties
+	/**
+	 * @param $properties Reflection_Property[]
+	 */
+	protected function sortProperties(array &$properties)
+	{
+		uasort($properties, function(Reflection_Property $p1, Reflection_Property $p2)
+		{
+			$basic_diff = $p2->getType()->isBasic() - $p1->getType()->isBasic();
+			if ($basic_diff) {
+				return $basic_diff;
+			}
+			return strcmp(Loc::tr(Names::propertyToDisplay($p1)), Loc::tr(Names::propertyToDisplay($p2)));
+		});
 	}
 
 }

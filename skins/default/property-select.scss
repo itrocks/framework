@@ -7,10 +7,10 @@ div#column_select.popup {
 	overflow-y: auto;
 }
 
-.func_select,
-.property_select {
+.func-select,
+.property-select {
+	background-color: white;
 	border-left: 1px solid #d0d0d0;
-	box-shadow: 0 -5px 5px -3px rgba(216, 216, 216, .4);
 	box-sizing: border-box;
 	height: 100%;
 	white-space: nowrap;
@@ -20,6 +20,8 @@ div#column_select.popup {
 	}
 
 	> .search {
+		background: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+		border-bottom: 1px solid #ccc;
 
 		> input {
 			background: white;
@@ -36,34 +38,49 @@ div#column_select.popup {
 
 		> li {
 			display: block;
-
-			&.class {
-				padding-left: 1em;
-			}
-
-			&:not(.class) {
-				padding: .2em 0 .2em 1em;
-			}
-
-			&.ui-draggable-handle {
-				cursor: grab;
-			}
+			position: relative;
 
 			> a {
-				background-position: .3em center;
-				background-repeat: no-repeat;
+				box-sizing: border-box;
+				height: 28px;
+				margin: 1px 0;
+			}
+
+			> a.expand {
+				display: inline-block;
+				font-size: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 16px;
+			}
+
+			> a.property {
+				cursor: grab;
 				display: block;
-				font-weight: bold;
-				margin-left: -1em;
-				padding: .2em 0 .2em 1em;
+				padding: 8px 10px 0;
+			}
 
-				&.expanded {
-					background-image: url('../default/img/tree/minus.png');
+			&:not(.expanded) > a.expand {
+				background: url('../default/img/tree/plus.png') center no-repeat;
+			}
+
+			&.expanded {
+				background-color: #efefef;
+
+				> a.expand {
+					background: url('../default/img/tree/minus.png') center no-repeat;
 				}
 
-				&:not(.expanded) {
-					background-image: url('../default/img/tree/plus.png');
+				> a.property {
+					font-size: 14px;
+					font-style: italic;
+					padding-top: 7px;
 				}
+			}
+
+			div {
+				background-color: white;
 			}
 		}
 	}

@@ -146,18 +146,18 @@ article.layout-model .pages.tabber > ul > li {
     width: 28px; }
     article.layout-model .pages.tabber > ul > li.unique-page.active {
       background-image: url("img/unique-page-24-white.svg"); }
-article.layout-model .property_select {
+article.layout-model .property-select {
   border-right: 2px solid #d8d8d8;
   overflow: hidden auto; }
-  article.layout-model .property_select input {
-    margin: 10px 8px;
+  article.layout-model .property-select input {
+    margin: 9px 8px;
     padding: 14px 10px !important;
     width: calc(100% - 16px); }
 
 article.layout-model:not(.form) {
   grid-template-areas: "header" "content" "pages" "page" "footer";
   grid-template-columns: 1fr; }
-  article.layout-model:not(.form) .property_select,
+  article.layout-model:not(.form) .property-select,
   article.layout-model:not(.form) .snap.line,
   article.layout-model:not(.form) .toolbox {
     display: none; }
@@ -178,6 +178,6 @@ article.layout-model > form {
   article.layout-model:not(.form) > .pages,
   article.layout-model > form > .pages {
     grid-area: pages; }
-  article.layout-model:not(.form) > .property_select,
-  article.layout-model > form > .property_select {
+  article.layout-model:not(.form) > .property-select,
+  article.layout-model > form > .property-select {
     grid-area: properties; }
