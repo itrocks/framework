@@ -126,7 +126,7 @@ abstract class Page
 	public function backgroundImageUrl()
 	{
 		$hash = $this->background ? $this->background->hash : null;
-		return Paths::$uri_base . SL . View::link($this, 'background', null, $hash);
+		return Paths::$uri_base . View::link($this, 'background', null, $hash);
 	}
 
 	//------------------------------------------------------------------------------- orderingCaption

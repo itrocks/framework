@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\Dao\File\Builder;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ReflectionException;
 
 /**
  * Parse post files list like $_FILES to get them into objects
@@ -81,8 +81,13 @@ class Post_Files
 				);
 			}
 			else {
-				if (!is_numeric($key)) {
-					$property_path .= DOT . $key;
+				if ($this->for_class_name && !is_numeric($key)) {
+					try {
+						new Reflection_Property($this->for_class_name, $property_path . DOT . $key);
+						$property_path .= DOT . $key;
+					}
+					catch(ReflectionException $exception) {
+					}
 				}
 				$file                      = $this->newFileObject($property_path);
 				$file->name                = $name_sub_element;
@@ -103,25 +108,17 @@ class Post_Files
 	 */
 	protected function newFileObject($property_path)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
-		if (
-			$this->for_class_name
-			&& ($property = new Reflection_Property($this->for_class_name, $property_path))
-		) {
+		if ($this->for_class_name) {
 			try {
-				$type = $property->getType();
+				$property   = new Reflection_Property($this->for_class_name, $property_path);
+				$file_class = $property->getType()->getElementTypeAsString();
 			}
-			catch (Exception $exception) {
-				$type = null;
+			catch (ReflectionException $exception) {
 			}
-			$file_class = $type->getElementTypeAsString();
-		}
-		else {
-			$file_class = File::class;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection file class must be a valid class */
 		/** @var $file File */
-		$file = Builder::create($file_class);
+		$file = Builder::create($file_class ?? File::class);
 		return $file;
 	}
 

@@ -32,14 +32,15 @@ class PDF
 	/**
 	 * Convert PDF file to PNG
 	 *
+	 * @param $resolution integer
 	 * @requires apt install imagetools
 	 * @return string[] png files names (one per converted page)
 	 */
-	public function toPng()
+	public function toPng($resolution = 300)
 	{
 		$file_root    = str_replace(DOT, '-', uniqid('pdf-', true));
 		$output_file  = Application::current()->getTemporaryFilesPath() . SL . $file_root;
-		$options      = ['png', 'r' => 300];
+		$options      = ['png', 'r' => $resolution];
 		$text_options = '';
 		foreach ($options as $option_name => $option_value) {
 			if (is_numeric($option_name)) {

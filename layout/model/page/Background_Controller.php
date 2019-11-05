@@ -26,7 +26,7 @@ class Background_Controller implements Feature_Controller
 		/** @var $page Page */
 		$page = $parameters->getMainObject();
 		if ($page && $page->background) {
-			$file_names = (new PDF($page->background->temporary_file_name))->toPng();
+			$file_names = (new PDF($page->background->temporary_file_name))->toPng(150);
 			$file_name  = reset($file_names);
 			if ($file_name) {
 				header('content-type: image/png');
