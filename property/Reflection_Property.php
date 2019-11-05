@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Property;
 
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection;
+use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
@@ -59,6 +61,24 @@ class Reflection_Property extends Reflection\Reflection_Property
 		if ($this->display) {
 			$this->display = Loc::tr(Names::propertyToDisplay($this->display));
 		}
+	}
+
+	//------------------------------------------------------------------------------------ autoExpand
+	/**
+	 * Check if the property should be automatically expanded
+	 *
+	 * @return string @values auto-expand,
+	 */
+	public function autoExpand()
+	{
+		return (
+			$this->getAnnotation('component')->value
+			|| $this->getAnnotation('expand')->value
+			|| Integrated_Annotation::of($this)->value
+			|| Link_Annotation::of($this)->isCollection()
+		)
+			? 'auto-expand'
+			: '';
 	}
 
 	//------------------------------------------------------------------------------------- classHtml

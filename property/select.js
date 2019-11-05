@@ -69,6 +69,12 @@ $(document).ready(function()
 		var $move_before = null;
 		var $property    = $li.children('a.property');
 		var title        = $property.attr('title');
+
+		if ($div.children().length) {
+			event.preventDefault();
+			event.stopImmediatePropagation();
+		}
+
 		if ($li.hasClass('expanded')) {
 			// hide
 			$li.removeClass('expanded');
@@ -91,15 +97,11 @@ $(document).ready(function()
 				$move_before = $li.siblings('.expanded').first();
 			}
 		}
+
 		else {
 			// show
 			$li.addClass('expanded');
 			$div.slideDown(100);
-			if ($div.children().length) {
-				// do not load again
-				event.preventDefault();
-				event.stopImmediatePropagation();
-			}
 			// expand title
 			title = title.split(DOT).reverse().join(' < ');
 			$property.data('text', $property.text());
@@ -116,6 +118,7 @@ $(document).ready(function()
 				$move_before = {length: 0};
 			}
 		}
+
 		// effective move
 		if ($move_before.length) {
 			$li.insertBefore($move_before);
@@ -125,9 +128,8 @@ $(document).ready(function()
 		}
 	});
 
-	//---------------------------------------------- .property, .fieldset > div[id] > label draggable
-	// draggable items
-	$body.build('call', '.property, fieldset > div[id] > label', function()
+	//--------------------------------------------------------------------------- .property draggable
+	$body.build('call', '.property', function()
 	{
 		this.draggable({
 			appendTo: 'body',
@@ -195,6 +197,13 @@ $(document).ready(function()
 			}
 
 		});
+	});
+
+	//----------------------------------------------------------------- .property-select .auto-expand
+	$body.build('call', '.property-select .auto-expand > a.expand', function()
+	{
+		var $anchors = this;
+		setTimeout(function() { $anchors.click(); });
 	});
 
 	//-------------------------------------------------------------------------------- document click

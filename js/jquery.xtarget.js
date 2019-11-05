@@ -273,13 +273,19 @@ var requestTargetHeaders = function($element)
 					$target.remove();
 					$target = $(xhr.from.target);
 				}
-				if (!$target.length) {
+				if ($target.length) {
+					$target.hide();
+				}
+				else {
 					$target      = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
 				}
 				$target = writeHtml(data, $target);
 				if (settings.show && $target.filter(':not(:visible)').length) {
 					$target.filter(':not(:visible)').show();
+				}
+				else if (!build_target) {
+					$target.slideDown(100);
 				}
 				// auto empty
 				if ((settings.auto_empty !== undefined) && !xhr.auto_empty_except) {
