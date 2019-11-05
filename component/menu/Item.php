@@ -59,7 +59,7 @@ class Item
 	public function linkClass()
 	{
 		$uri = new Uri($this->link);
-		return Names::setToClass($uri->controller_name);
+		return Names::setToClass($uri->controller_name, false);
 	}
 
 }
