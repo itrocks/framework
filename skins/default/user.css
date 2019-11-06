@@ -199,14 +199,14 @@ body.user.login,
 body.user.register {
   grid-template-areas: "title main side" "menu main side";
   grid-template-rows: 64px 1fr; }
-  body.password.reset > .company.logo,
-  body.user.login > .company.logo,
-  body.user.register > .company.logo {
+  body.password.reset > .company.logo > a,
+  body.user.login > .company.logo > a,
+  body.user.register > .company.logo > a {
     border: none;
     border-top-right-radius: 0; }
-    body.password.reset > .company.logo:after,
-    body.user.login > .company.logo:after,
-    body.user.register > .company.logo:after {
+    body.password.reset > .company.logo > a:after,
+    body.user.login > .company.logo > a:after,
+    body.user.register > .company.logo > a:after {
       display: none; }
   body.password.reset > #favorites,
   body.password.reset > #notifications,

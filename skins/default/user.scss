@@ -206,7 +206,7 @@ body.user.register {
 	grid-template-areas: "title main side" "menu main side";
 	grid-template-rows: 64px 1fr;
 
-	> .company.logo {
+	> .company.logo > a {
 		border: none;
 		border-top-right-radius: 0;
 

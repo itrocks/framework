@@ -2,29 +2,29 @@ body {
   --dark-color: #d8d8d8;
   --light-color: #efefef;
   --transition-duration: 50ms;
-  background: #d8d8d8;
   color: #444;
   font-family: Roboto, sans-serif;
   font-size: 12px; }
   body > * {
     background: white; }
   body > .company.logo {
-    border-bottom: 2px solid #d8d8d8;
-    border-right: 2px solid #d8d8d8;
-    border-top-right-radius: 6px;
-    box-sizing: border-box;
-    position: relative; }
-    body > .company.logo:after {
+    background: #d8d8d8; }
+    body > .company.logo > a {
+      border-bottom: 2px solid #d8d8d8;
       border-right: 2px solid #d8d8d8;
-      border-top: 2px solid #d8d8d8;
-      border-left: 2px solid transparent;
-      border-bottom: 2px solid transparent;
-      content: '';
-      height: 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      width: 0; }
+      border-top-right-radius: 6px;
+      box-sizing: border-box; }
+      body > .company.logo > a:after {
+        border-right: 2px solid #d8d8d8;
+        border-top: 2px solid #d8d8d8;
+        border-left: 2px solid transparent;
+        border-bottom: 2px solid transparent;
+        content: '';
+        height: 0;
+        position: absolute;
+        right: 0;
+        top: 0;
+        width: 0; }
   body > #menu,
   body > #quick-menu {
     border-right: 2px solid #d8d8d8; }

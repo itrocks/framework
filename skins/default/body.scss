@@ -7,7 +7,6 @@ body {
 	--dark-color: #d8d8d8;
 	--light-color: #efefef;
 	--transition-duration: 50ms;
-	background: #d8d8d8;
 	color: $color;
 	font-family: Roboto, sans-serif;
 	font-size: $font-size;
@@ -17,23 +16,26 @@ body {
 	}
 
 	> .company.logo {
-		border-bottom: $section-border;
-		border-right: $section-border;
-		border-top-right-radius: 6px;
-		box-sizing: border-box;
-		position: relative;
+		background: #d8d8d8;
 
-		&:after {
-			border-right: 2px solid $section-border-color;
-			border-top: 2px solid $section-border-color;
-			border-left: 2px solid transparent;
-			border-bottom: 2px solid transparent;
-			content: '';
-			height: 0;
-			position: absolute;
-			right: 0;
-			top: 0;
-			width: 0;
+		> a {
+			border-bottom: $section-border;
+			border-right: $section-border;
+			border-top-right-radius: 6px;
+			box-sizing: border-box;
+
+			&:after {
+				border-right: 2px solid $section-border-color;
+				border-top: 2px solid $section-border-color;
+				border-left: 2px solid transparent;
+				border-bottom: 2px solid transparent;
+				content: '';
+				height: 0;
+				position: absolute;
+				right: 0;
+				top: 0;
+				width: 0;
+			}
 		}
 	}
 
