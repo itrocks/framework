@@ -65,11 +65,14 @@ class Locale implements Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = null)
 	{
 		$current = self::current();
 		if (!isset($current)) {
 			self::current($this);
+		}
+		if (!$configuration) {
+			return;
 		}
 		$this->setDateFormat($configuration[self::DATE]);
 		$this->setLanguage($configuration[self::LANGUAGE]);
