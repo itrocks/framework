@@ -210,6 +210,9 @@ $(document).ready(function()
 	// hide popup select box when clicking outside of it
 	$(document).click(function(event)
 	{
+		if (!event.pageX && !event.pageY) {
+			return;
+		}
 		//noinspection JSJQueryEfficiency well, why ?
 		var $column_select = $('#column_select.popup > .property-select');
 		if ($column_select.length) {
