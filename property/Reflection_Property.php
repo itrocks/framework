@@ -119,7 +119,7 @@ class Reflection_Property extends Reflection\Reflection_Property
 	{
 		$annotation = Store_Annotation::of($this);
 		$type       = $this->getType();
-		return ($annotation->isFalse() || $type->isBasic() || $type->isStringable())
+		return ($annotation->isString() || $type->isBasic() || $type->isStringable())
 			? '' : 'expandable';
 	}
 

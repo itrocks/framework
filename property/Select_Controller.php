@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Property;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
@@ -42,6 +43,12 @@ class Select_Controller implements Feature_Controller
 	 */
 	protected $composite_property = null;
 
+	//------------------------------------------------------------------------------------------ $for
+	/**
+	 * @var string @values Feature::const
+	 */
+	protected $for = null;
+
 	//----------------------------------------------------------------------------------- $root_class
 	/**
 	 * @var Reflection_Class
@@ -71,7 +78,7 @@ class Select_Controller implements Feature_Controller
 				)
 				&& $source_property->isPublic()
 				&& $source_property->isVisible(false, false)
-				&& !Store_Annotation::of($source_property)->isFalse()
+				&& (($this->for === Feature::F_PRINT) || !Store_Annotation::of($source_property)->isFalse())
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$property = new Reflection_Property(
@@ -97,7 +104,7 @@ class Select_Controller implements Feature_Controller
 	 * @param $display_full_path    boolean
 	 * @return Reflection_Property[]|null[]
 	 */
-	protected function getProperties(
+	public function getProperties(
 		Reflection_Class $class, $composite_class_name = null, $display_full_path = false
 	) {
 		if (isset($composite_class_name) && isA($class->name, Component::class)) {
@@ -214,6 +221,7 @@ class Select_Controller implements Feature_Controller
 		$class_name = Set::elementClassNameOf(
 			$parameters->getRawParameter('class_name') ?: $parameters->shiftUnnamed()
 		);
+		$this->for = $parameters->getRawParameter('for') ?: $parameters->shiftUnnamed();
 		/** @noinspection PhpUnhandledExceptionInspection $class_name is always valid */
 		$this->root_class = new Reflection_Class($class_name);
 		if (List_Annotation::of($this->root_class)->has(List_Annotation::LOCK)) {
