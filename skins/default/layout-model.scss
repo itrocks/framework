@@ -129,6 +129,14 @@ article.layout-model {
 			background: #f7f7f7 url('img/smaller-font-24.svg') center no-repeat;
 		}
 
+		&.text {
+			background: #f7f7f7 url('img/text-auto-24.svg') center no-repeat;
+		}
+
+		&.text-cr {
+			background: #f7f7f7 url('img/text-manual-24.svg') center no-repeat;
+		}
+
 		&.vertical.line {
 			background: #f7f7f7 url('img/vertical-line-24.svg') center no-repeat;
 		}

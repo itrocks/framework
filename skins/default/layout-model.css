@@ -73,6 +73,10 @@ article.layout-model .buttons.toolbox ul > li {
     background: #f7f7f7 url("img/bigger-font-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.size.smaller {
     background: #f7f7f7 url("img/smaller-font-24.svg") center no-repeat; }
+  article.layout-model .buttons.toolbox ul > li.text {
+    background: #f7f7f7 url("img/text-auto-24.svg") center no-repeat; }
+  article.layout-model .buttons.toolbox ul > li.text-cr {
+    background: #f7f7f7 url("img/text-manual-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.vertical.line {
     background: #f7f7f7 url("img/vertical-line-24.svg") center no-repeat; }
 article.layout-model .data .properties {
