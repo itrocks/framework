@@ -288,7 +288,7 @@ class Html_Template extends Template
 					$inside_j      = $parser->closingTag('article', $inside_i, Parser::BEFORE);
 					$class_name    = get_class(reset($this->objects));
 					$action        = $this->replaceLink(SL . Names::classToUri($class_name)
-						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_WRITE);
+						. ($identifier ? (SL . $identifier) : '') . SL . Feature::F_SAVE);
 					$attributes = ' action=' . DQ . $action . DQ
 						. 'autocomplete="off"'
 						. ' enctype="multipart/form-data"'

@@ -40,12 +40,12 @@ abstract class Feature
 	const F_OUTPUT        = 'output';
 	const F_PRINT         = 'print';
 	const F_REMOVE        = 'remove';
+	const F_SAVE          = 'save';
 	const F_SELECT        = 'select';
 	const F_SUPER         = 'superAdministrator';
 	const F_TRANSFORM     = 'transform';
 	const F_UNINSTALL     = 'uninstall';
 	const F_VALIDATE      = 'validate';
-	const F_WRITE         = 'write';
 
 	//--------------------------------------------------------------------------------------- FEATURE
 	const FEATURE = 'feature';

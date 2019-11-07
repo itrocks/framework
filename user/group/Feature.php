@@ -36,7 +36,7 @@ class Feature
 	const EDIT = [
 		Controller\Feature::F_ADD,
 		Controller\Feature::F_EDIT,
-		Controller\Feature::F_WRITE
+		Controller\Feature::F_SAVE
 	];
 
 	//---------------------------------------------------------------------------------------- EXPORT

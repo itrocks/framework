@@ -5,7 +5,7 @@ use ITRocks\Framework\Component\Button\Code;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Uri;
-use ITRocks\Framework\Feature\Write;
+use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -30,7 +30,7 @@ class Executor implements Registerable
 	 */
 	public function executeNotWrite(Uri $uri)
 	{
-		if ($uri->parameters->has(Code::class) && ($uri->feature_name !== Feature::F_WRITE)) {
+		if ($uri->parameters->has(Code::class) && ($uri->feature_name !== Feature::F_SAVE)) {
 			$code = $uri->parameters->getObject(Code::class);
 			if ($code) {
 				$code->execute($uri);
@@ -50,7 +50,7 @@ class Executor implements Registerable
 	 */
 	public function executeWrite()
 	{
-		if (isset($this->uri) && ($this->uri->feature_name === Feature::F_WRITE)) {
+		if (isset($this->uri) && ($this->uri->feature_name === Feature::F_SAVE)) {
 			$code = $this->uri->parameters->getObject(Code::class);
 			if ($code) {
 				$code->execute($this->uri->parameters->getMainObject());
@@ -66,7 +66,7 @@ class Executor implements Registerable
 	public function register(Register $register)
 	{
 		$register->aop->beforeMethod([Main::class, 'executeController'], [$this, 'executeNotWrite']);
-		$register->aop->beforeMethod([Write\Controller::class, 'write'], [$this, 'executeWrite']);
+		$register->aop->beforeMethod([Save\Controller::class, 'write'],  [$this, 'executeWrite']);
 	}
 
 }

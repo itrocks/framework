@@ -218,7 +218,7 @@ $(document).ready(function()
 	$body.build({
 		event:    'click',
 		priority: 10,
-		selector: 'article.layout-model .general.actions > .write > a',
+		selector: 'article.layout-model .general.actions > .save > a',
 		callback: function()
 		{
 			var $designer = $(this).closest('article.layout-model').find('.designer');

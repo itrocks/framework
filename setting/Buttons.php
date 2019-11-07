@@ -25,7 +25,7 @@ class Buttons
 	{
 		$link = $feature_name ? View::link($object_class, $feature_name) : View::link($object_class);
 		return [
-			Feature::F_WRITE => new Button(
+			Feature::F_SAVE => new Button(
 				'Save',
 				$link,
 				Feature::F_CUSTOM_SAVE,

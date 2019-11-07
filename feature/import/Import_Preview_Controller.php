@@ -40,7 +40,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		$class_name, array $parameters, Setting\Custom\Set $settings = null
 	) {
 		return [
-			Feature::F_WRITE => new Button(
+			Feature::F_SAVE => new Button(
 				'Save', View::link($class_name, Feature::F_IMPORT, 'preview'),
 				Feature::F_CUSTOM_SAVE, [new Color(Color::BLUE), Target::MAIN, Tag::SUBMIT]
 			),

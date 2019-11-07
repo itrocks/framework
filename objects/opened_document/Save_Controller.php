@@ -2,18 +2,18 @@
 namespace ITRocks\Framework\Objects\Opened_Document;
 
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Objects\Opened_Document;
-use ITRocks\Framework\Feature\Write;
 
 /**
- * Opened document write controller
+ * Opened document save controller
  */
-class Write_Controller extends Write\Controller
+class Save_Controller extends Save\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
 	/**
-	 * The opened document write controller updates an already existing record
+	 * The opened document save controller updates an already existing record
 	 *
 	 * @param $parameters Parameters
 	 * @param $form       array

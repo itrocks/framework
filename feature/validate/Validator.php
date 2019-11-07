@@ -11,11 +11,11 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Exclude;
 use ITRocks\Framework\Dao\Option\Link_Class_Only;
 use ITRocks\Framework\Dao\Option\Only;
+use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Feature\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Feature\Validate\Property;
 use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Feature\Validate\Property\Var_Annotation;
-use ITRocks\Framework\Feature\Write;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Null_Object;
@@ -81,18 +81,18 @@ class Validator implements Registerable
 		$this->validator_on = false;
 	}
 
-	//----------------------------------------------------------------------- afterWriteControllerRun
-	public function afterWriteControllerRun()
+	//------------------------------------------------------------------------ afterSaveControllerRun
+	public function afterSaveControllerRun()
 	{
 		$this->warning_on = false;
 	}
 
-	//--------------------------------------------------------------------- afterWriteControllerWrite
+	//---------------------------------------------------------------------- afterSaveControllerWrite
 	/**
 	 * @param $write_objects array
 	 * @throws View_Exception
 	 */
-	public function afterWriteControllerWrite($write_objects)
+	public function afterSaveControllerWrite($write_objects)
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
 			throw new View_Exception($this->notValidated(reset($write_objects)->object));
@@ -126,6 +126,17 @@ class Validator implements Registerable
 			if (!Null_Object::isNull($object)) {
 				$this->beforeWrite($object, $options, null);
 			}
+		}
+	}
+
+	//----------------------------------------------------------------------- beforeSaveControllerRun
+	/**
+	 * @param $parameters Parameters
+	 */
+	public function beforeSaveControllerRun(Parameters $parameters)
+	{
+		if (!$parameters->getRawParameter('confirm')) {
+			$this->warning_on = true;
 		}
 	}
 
@@ -166,17 +177,6 @@ class Validator implements Registerable
 			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
 				throw new View_Exception($this->notValidated($object, $only, $exclude));
 			}
-		}
-	}
-
-	//---------------------------------------------------------------------- beforeWriteControllerRun
-	/**
-	 * @param $parameters Parameters
-	 */
-	public function beforeWriteControllerRun(Parameters $parameters)
-	{
-		if (!$parameters->getRawParameter('confirm')) {
-			$this->warning_on = true;
 		}
 	}
 
@@ -353,13 +353,13 @@ class Validator implements Registerable
 			[Object_To_Write_Array::class, 'propertyStoreString'], [$this, 'beforePropertyStoreString']
 		);
 		$register->aop->afterMethod(
-			[Write\Controller::class, 'run'], [$this, 'afterWriteControllerRun']
+			[Save\Controller::class, 'run'], [$this, 'afterSaveControllerRun']
 		);
 		$register->aop->beforeMethod(
-			[Write\Controller::class, 'run'], [$this, 'beforeWriteControllerRun']
+			[Save\Controller::class, 'run'], [$this, 'beforeSaveControllerRun']
 		);
 		$register->aop->afterMethod(
-			[Write\Controller::class, 'write'], [$this, 'afterWriteControllerWrite']
+			[Save\Controller::class, 'write'], [$this, 'afterSaveControllerWrite']
 		);
 		$register->setAnnotations(Parser::T_CLASS, [
 			'validate'   => Class_\Validate_Annotation::class,

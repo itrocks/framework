@@ -19,6 +19,6 @@ article.import.preview li.block > section.identify li {
 article.import.preview li.block > section.ignore li {
   background-color: #eee;
   color: red; }
-article.import.preview li.block > section.write li {
+article.import.preview li.block > section.save li {
   background-color: blue;
   color: white; }

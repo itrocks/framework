@@ -2,12 +2,12 @@
 namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Feature\Write;
+use ITRocks\Framework\Feature\Save;
 
 /**
- * Layout model write controller
+ * Layout model save controller
  */
-class Write_Controller extends Write\Controller
+class Save_Controller extends Save\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run

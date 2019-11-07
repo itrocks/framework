@@ -659,8 +659,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		);
 		// if an error occurred, we do not display custom save button
 		if (count($this->errors)) {
-			if (isset($parameters['custom_buttons'][Feature::F_WRITE])) {
-				unset($parameters['custom_buttons'][Feature::F_WRITE]);
+			if (isset($parameters['custom_buttons'][Feature::F_SAVE])) {
+				unset($parameters['custom_buttons'][Feature::F_SAVE]);
 			}
 		}
 		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(

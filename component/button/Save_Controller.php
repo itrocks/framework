@@ -13,9 +13,9 @@ use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\View;
 
 /**
- * Button write controller
+ * Button save controller
  */
-class Write_Controller implements Feature_Controller
+class Save_Controller implements Feature_Controller
 {
 
 	//------------------------------------------------------------------- callOutputSettingController

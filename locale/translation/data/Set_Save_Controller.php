@@ -4,16 +4,16 @@ namespace ITRocks\Framework\Locale\Translation\Data;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Feature\Write;
+use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
 
 /**
- * Data translation set write controller
+ * Data translation set save controller
  */
-class Set_Write_Controller extends Write\Controller
+class Set_Save_Controller extends Save\Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
@@ -51,9 +51,9 @@ class Set_Write_Controller extends Write\Controller
 		}
 
 		$parameters                     = $parameters->getObjects();
-		$parameters[Template::TEMPLATE] = self::WRITTEN;
+		$parameters[Template::TEMPLATE] = self::SAVED;
 
-		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
+		return View::run($parameters, $form, $files, $class_name, Feature::F_SAVE);
 	}
 
 }

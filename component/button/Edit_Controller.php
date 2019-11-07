@@ -74,7 +74,7 @@ class Edit_Controller extends Edit\Controller
 			$button->class   = 'submit';
 			$button->feature = $parameters->getRawParameter(1);
 			if ($button->feature == Feature::F_EDIT) {
-				$button->feature = Feature::F_WRITE;
+				$button->feature = Feature::F_SAVE;
 				$button->target  = Target::RESPONSES;
 			}
 		}

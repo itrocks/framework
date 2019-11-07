@@ -30,8 +30,8 @@ class Lock implements Registerable
 			/** @var $object Lockable */
 			// if the object is locked : remove write and delete buttons
 			if ($object->locked) {
-				if (isset($result[Feature::F_WRITE])) {
-					unset($result[Feature::F_WRITE]);
+				if (isset($result[Feature::F_SAVE])) {
+					unset($result[Feature::F_SAVE]);
 				}
 				if (isset($result[Feature::F_DELETE])) {
 					unset($result[Feature::F_DELETE]);

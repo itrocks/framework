@@ -54,10 +54,10 @@ class Controller extends Output\Controller
 					Feature::F_CLOSE,
 					Target::MAIN
 				),
-				Feature::F_WRITE => new Button(
-					'Write',
-					View::link($object, Feature::F_WRITE, null, array_merge($fill_combo, $follows)),
-					Feature::F_WRITE,
+				Feature::F_SAVE => new Button(
+					'Save',
+					View::link($object, Feature::F_SAVE, null, array_merge($fill_combo, $follows)),
+					Feature::F_SAVE,
 					[Target::RESPONSES, Tag::SUBMIT]
 				)
 			];

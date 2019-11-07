@@ -34,11 +34,11 @@ li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {
   background-image: url("img/print-24.svg"); }
+li.action.save > a,
+li.actions > ul > li.save > a,
+ul.actions > li.save > a {
+  background-image: url("img/save-24.svg"); }
 li.action.uninstall > a,
 li.actions > ul > li.uninstall > a,
 ul.actions > li.uninstall > a {
   background-image: url("img/uninstall-24.svg"); }
-li.action.write > a,
-li.actions > ul > li.write > a,
-ul.actions > li.write > a {
-  background-image: url("img/write-24.svg"); }

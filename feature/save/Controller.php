@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Feature\Write;
+namespace ITRocks\Framework\Feature\Save;
 
 use Exception;
 use ITRocks\Framework\Controller\Default_Class_Controller;
@@ -15,16 +15,16 @@ use ITRocks\Framework\View\Html\Template;
 use ITRocks\Framework\View\View_Exception;
 
 /**
- * The default write controller will be called if no other write controller is defined
+ * The default save controller will be called if no other write controller is defined
  */
 class Controller implements Default_Class_Controller
 {
 
-	//-------------------------------------------------------------------- write controller constant
+	//---------------------------------------------------------------------- save controller constant
 	const ERROR      = 'error';
 	const FILL_COMBO = 'fill_combo';
-	const REDIRECT   = 'redirect_after_write';
-	const WRITTEN    = 'written';
+	const REDIRECT   = 'redirect_after_save';
+	const SAVED      = 'saved';
 
 	//---------------------------------------------------------------------------------- buildObjects
 	/**
@@ -61,7 +61,7 @@ class Controller implements Default_Class_Controller
 			$max_size = max(ini_get('post_max_size'), ini_get('upload_max_filesize'));
 			throw new View_Exception(
 				'<div class="error">'
-				. Loc::tr('Unable to write your data : you probably sent too much big files') . BR
+				. Loc::tr('Unable to save your data : you probably sent too much big files') . BR
 				. Loc::tr(
 					'The maximum allowed size for files / sent data is :max_size',
 					Loc::replace(['max_size' => $max_size])
@@ -93,7 +93,7 @@ class Controller implements Default_Class_Controller
 	{
 		$parameters->getMainObject($class_name);
 		$parameters                     = $parameters->getObjects();
-		$parameters[Template::TEMPLATE] = $write_error ? self::ERROR : self::WRITTEN;
+		$parameters[Template::TEMPLATE] = $write_error ? self::ERROR : self::SAVED;
 		return $parameters;
 	}
 
@@ -136,7 +136,7 @@ class Controller implements Default_Class_Controller
 
 		$parameters = $this->getViewParameters($parameters, $class_name, $write_error);
 		$parameters['new_object'] = $new_object;
-		return View::run($parameters, $form, $files, $class_name, Feature::F_WRITE);
+		return View::run($parameters, $form, $files, $class_name, Feature::F_SAVE);
 	}
 
 	//-------------------------------------------------------------------------------- throwException
