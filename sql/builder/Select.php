@@ -110,6 +110,9 @@ class Select
 	{
 		$options      = [];
 		$this->select = [];
+		if ($translate = Option\Translate::in($this->options)) {
+			$this->columns_builder->translate = [];
+		}
 		foreach ($this->options as $option) {
 			if ($option instanceof Option\Count) {
 				$this->select[20] = SP . 'SQL_CALC_FOUND_ROWS';
@@ -147,6 +150,7 @@ class Select
 					$this->joins,
 					['DESC' => $option->reverse]
 				);
+				$columns->translate = $this->columns_builder->translate;
 				$columns->replaceProperties($this->columns_builder);
 				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
@@ -157,9 +161,6 @@ class Select
 			}
 			elseif (($option instanceof Option\Time_Limit) && $option->time_limit) {
 				$this->select[10] = SP . $option->getSql();
-			}
-			elseif ($option instanceof Option\Translate) {
-				$this->columns_builder->translate = [];
 			}
 		}
 
