@@ -3,6 +3,8 @@ namespace ITRocks\Framework\Sql\Builder;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
@@ -13,6 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
 use ITRocks\Framework\Sql\Join\Joins;
+use ReflectionException;
 
 /**
  * SQL columns list expression builder
@@ -60,6 +63,13 @@ class Columns implements With_Build_Column
 	 * @var boolean
 	 */
 	public $resolve_aliases = true;
+
+	//------------------------------------------------------------------------------------ $translate
+	/**
+	 * @var array|null if null, don't translate. If array : will be filled with something looking like
+	 *      ['field'] => ['t1.translation']
+	 */
+	public $translate = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -124,6 +134,7 @@ class Columns implements With_Build_Column
 	public function build()
 	{
 		if (isset($this->properties)) {
+			$class_name     = isset($this->translate) ? $this->joins->getStartingClassName() : null;
 			$first_property = true;
 			$sql_columns    = '';
 			foreach ($this->properties as $key_path => $path) {
@@ -131,6 +142,22 @@ class Columns implements With_Build_Column
 					$sql_columns .= $this->buildDaoSelectFunction($key_path, $path, $first_property);
 				}
 				else {
+					if ($class_name) try {
+						/** @noinspection PhpUnhandledExceptionInspection */
+						$property = new Reflection_Property($class_name, $path);
+						if (
+							($property->getAnnotation('translate')->value === 'common')
+							|| $property->getListAnnotation('values')->value
+						) {
+							$alias = $path;
+							$path  = Translation::class
+								. '(text=' . $path . ',language=' . Q . Loc::language(). Q . ')'
+								. '.translation';
+							$this->translate[$path] = $alias;
+						}
+					}
+					catch(ReflectionException $exception) {
+					}
 					$join = $this->joins->add($path);
 					$sql_columns .= ($join && ($join->type !== Join::LINK))
 						? $this->buildObjectColumns($path, $join, $first_property)

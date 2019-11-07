@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Export;
 
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao\Option\Translate;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -46,7 +47,7 @@ class Export
 	 */
 	public function export()
 	{
-		$data       = $this->selection->readDataSelect();
+		$data       = $this->selection->readDataSelect(null, null, new Translate());
 		$properties = $data->getProperties();
 
 		// create temporary file

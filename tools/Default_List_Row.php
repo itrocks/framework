@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
@@ -97,7 +98,9 @@ class Default_List_Row implements List_Row
 	public function formatValuesEx()
 	{
 		$properties = $this->list->getProperties();
+		$translate  = Loc::formatTranslate(false);
 		$values     = $this->formatValues();
+		Loc::formatTranslate($translate);
 		foreach ($values as $property_path => $value) {
 			$values[$property_path] = [
 				'path'     => $property_path,

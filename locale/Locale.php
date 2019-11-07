@@ -40,6 +40,12 @@ class Locale implements Configurable
 	 */
 	public $date_format;
 
+	//----------------------------------------------------------------------------- $format_translate
+	/**
+	 * @var boolean
+	 */
+	public $format_translate = true;
+
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @impacts translations
@@ -178,8 +184,11 @@ class Locale implements Configurable
 			$result = $value;
 		}
 		elseif (
-			($values = $property->getListAnnotation('values')->value)
-			|| ($property->getAnnotation('translate')->value === 'common')
+			$this->format_translate
+			&& (
+				($values = $property->getListAnnotation('values')->value)
+				|| ($property->getAnnotation('translate')->value === 'common')
+			)
 		) {
 			if ($values && (count($values) === 2) && $type->isBoolean()) {
 				$value = $value ? $values[0] : $values[1];

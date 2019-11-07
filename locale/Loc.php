@@ -214,6 +214,19 @@ class Loc implements Registerable
 		return Locale::current()->number_format->floatToLocale($float);
 	}
 
+	//------------------------------------------------------------------------------- formatTranslate
+	/**
+	 * @param $translate boolean
+	 * @return boolean
+	 */
+	public static function formatTranslate($translate)
+	{
+		$locale                   = Locale::current();
+		$format_translate         = $locale->format_translate;
+		$locale->format_translate = $translate;
+		return $format_translate;
+	}
+
 	//------------------------------------------------------------------------------------ getContext
 	/**
 	 * Returns the current valid context from the contexts stack

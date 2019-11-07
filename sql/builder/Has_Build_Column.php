@@ -80,6 +80,10 @@ trait Has_Build_Column
 					? ($join->foreign_alias . DOT . BQ . $column_name . BQ)
 					: ($this->joins->rootAlias() . DOT . BQ . $path . BQ)
 			);
+			if ($this->resolve_aliases && isset($this->translate[$path])) {
+				$path = $this->translate[$path];
+				$sql  = 'IFNULL(' . $sql . ', ' . $join->masterSql() . ')';
+			}
 			$sql
 				.= ($as && ($column_name !== $path) && ($this instanceof Columns) && $this->resolve_aliases)
 				? (' AS ' . BQ . $path . BQ)

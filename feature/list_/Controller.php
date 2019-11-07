@@ -871,7 +871,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	public function readDataSelectSearch(
 		$class_name, array $properties_path, array $search, array $options
 	) {
-		$search = $this->searchObjectsToRepresentative($class_name, $search);
+		$options[] = Dao::translate();
+		$search    = $this->searchObjectsToRepresentative($class_name, $search);
 		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
 		}

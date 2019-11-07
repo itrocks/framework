@@ -110,6 +110,16 @@ class Join
 	 */
 	public $mode;
 
+	//------------------------------------------------------------------------------------ $secondary
+	/**
+	 * Secondary conditions for the join
+	 *
+	 * Key is the foreign column name, value if 'constant' / "constant" / master column name
+	 *
+	 * @var string[]
+	 */
+	public $secondary = [];
+
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * Join column type (Sql_Join::SIMPLE, OBJECT)
@@ -126,6 +136,24 @@ class Join
 	public function __toString()
 	{
 		return $this->toSql() . ' [' . $this->type . ']';
+	}
+
+	//------------------------------------------------------------------------------------ foreignSql
+	/**
+	 * @return string
+	 */
+	public function foreignSql()
+	{
+		return $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ;
+	}
+
+	//------------------------------------------------------------------------------------- masterSql
+	/**
+	 * @return string
+	 */
+	public function masterSql()
+	{
+		return $this->master_alias . DOT . BQ . $this->master_column . BQ;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
@@ -166,9 +194,15 @@ class Join
 	 */
 	public function toSql()
 	{
-		return LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
-			. ' ON ' . $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ
-			. ' = ' . $this->master_alias . DOT . BQ . $this->master_column . BQ;
+		$sql = LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
+			. ' ON ' . $this->foreignSql() . ' = ' . $this->masterSql();
+		foreach ($this->secondary as $foreign => $master) {
+			$sql .= ' AND ' . $this->foreign_alias . DOT . BQ . $foreign . BQ . ' = ';
+			$sql .= in_array($master[0], [DQ, Q])
+				? $master
+				: ($this->master_alias . DOT . BQ . $master . BQ);
+		}
+		return $sql;
 	}
 
 }

@@ -391,6 +391,13 @@ class Joins
 		$foreign_class_name = Namespaces::defaultFullClassName(
 			Builder::className($foreign_class_name), $master_class_name
 		);
+		if (strpos($foreign_property_name, ',')) {
+			foreach (explode(',', rParse($foreign_property_name, ',')) as $secondary_link) {
+				list($secondary_foreign, $secondary_master) = explode('=', $secondary_link);
+				$join->secondary[$secondary_foreign] = $secondary_master;
+			}
+			$foreign_property_name = lParse($foreign_property_name, ',');
+		}
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
 			/** @noinspection PhpUnhandledExceptionInspection master property must be valid in class */

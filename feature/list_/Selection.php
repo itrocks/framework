@@ -253,7 +253,7 @@ class Selection
 	public function readDataSelect(array $properties_path = null, $search = null, $options = [])
 	{
 		$search  = $this->getSearchFilter($search);
-		$options = $this->getSearchOptions($options);
+		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
 
 		if (empty($properties_path)) {
 			$properties                     = array_keys($this->getListSettings()->properties);
@@ -286,7 +286,7 @@ class Selection
 	public function readObjects($search = null, $options = [])
 	{
 		$search  = $this->getSearchFilter($search);
-		$options = $this->getSearchOptions($options);
+		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
 		return Dao::search($search, $this->class_name, $options);
 	}
 

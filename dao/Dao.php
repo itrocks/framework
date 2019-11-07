@@ -665,6 +665,15 @@ class Dao implements Configurable
 		return new Option\Time_Limit($time_limit);
 	}
 
+	//------------------------------------------------------------------------------------- translate
+	/**
+	 * @return Option\Translate
+	 */
+	public static function translate()
+	{
+		return new Option\Translate();
+	}
+
 	//-------------------------------------------------------------------------------------- truncate
 	/**
 	 * Truncates the data-set storing $class_name objects

@@ -158,6 +158,9 @@ class Select
 			elseif (($option instanceof Option\Time_Limit) && $option->time_limit) {
 				$this->select[10] = SP . $option->getSql();
 			}
+			elseif ($option instanceof Option\Translate) {
+				$this->columns_builder->translate = [];
+			}
 		}
 
 		ksort($this->select);
