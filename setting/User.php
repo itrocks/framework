@@ -14,6 +14,16 @@ class User extends Setting
 {
 	use Component;
 
+	//-------------------------------------------------------------------------------------- $setting
+	/**
+	 * The saved setting that was loaded by the user, if exists
+	 * If null, then the user setting has been build "from scratch" (default setting)
+	 *
+	 * @link Object
+	 * @var Setting
+	 */
+	public $setting;
+
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @composite
@@ -25,12 +35,16 @@ class User extends Setting
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $code  string
-	 * @param $value string
+	 * @param $code    string
+	 * @param $value   string
+	 * @param $setting Setting
 	 */
-	public function __construct($code = null, $value = null)
+	public function __construct($code = null, $value = null, $setting = null)
 	{
 		parent::__construct($code, $value);
+		if (isset($setting)) {
+			$this->setting = $setting;
+		}
 		if (!isset($this->user)) {
 			$this->user = Framework\User::current();
 		}

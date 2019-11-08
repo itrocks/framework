@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
@@ -215,8 +216,9 @@ abstract class Set
 		$custom_settings = isset($setting)
 			? $setting->value
 			: Builder::create(static::class, [$class_name]);
-		$custom_settings->setting        = self::currentUserSetting($class_name, $feature);
-		$custom_settings->setting->value = $custom_settings;
+		$custom_settings->setting          = self::currentUserSetting($class_name, $feature);
+		$custom_settings->setting->setting = $setting;
+		$custom_settings->setting->value   = $custom_settings;
 		return $custom_settings;
 	}
 
@@ -233,16 +235,18 @@ abstract class Set
 			$this->name = $save_name;
 			$setting    = new Setting(
 				$this->getSourceClassName()
-				. DOT . static::customId($this->setting->getFeature())
-				. ($save_name ? (DOT . $save_name) : '')
+					. DOT . static::customId($this->setting->getFeature())
+					. ($save_name ? (DOT . $save_name) : '')
 			);
 			$setting        = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
-			Dao::write($setting);
 		}
-		elseif ($this) {
-			Dao::write($this->setting);
+		else {
+			$setting = $this->setting;
 		}
+		Getter::invalidate($this->setting, 'setting');
+		Getter::invalidate($this->setting, 'user');
+		Dao::write($setting);
 	}
 
 	//-------------------------------------------------------------- selectedSettingsToCustomSettings
