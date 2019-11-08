@@ -239,7 +239,7 @@ class Method
 
 		$this->class->source->setSource(preg_replace(
 			$preg_expr,
-			$indent . '$2' . $indent . '/* $4 */ private $5 function $6 $7_' . $count . '$8$9',
+			'$1$2/* $4 */ private $5function $6$7_' . $count . '$8$9',
 			$buffer
 		), false);
 

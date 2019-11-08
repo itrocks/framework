@@ -415,17 +415,17 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	{
 		$name = isset($method_name) ? $method_name : '\w+';
 		return '%'
-			. '(\n\s*?)'                                // 1 : indent
-			. '(?:(/\*\*\n(?:\s*\*.*\n)*\s*\*/)\n\s*)?' // 2 : documentation
-			. '(?:\/\*.*\*/\n\s*)?'                     // ignored one-line documentation
-			. '(?:(abstract)\s+)?'                      // 3 : abstract
-			. '(?:(private|protected|public)\s+)?'      // 4 : visibility
-			. '(?:(static)\s+)?'                        // 5 : static
-			. 'function\s+'                             // function keyword
-			. '(\&)?\s*'                                // 6 : reference flag
-			. '(' . $name . ')\s*'                      // 7 : name
-			. '(\((?:.*?\n?)*?\)\s*)'                   // 8 : parameters string
-			. '([\{\;]\s*?\n)'                          // 9 : end of function prototype
+			. '(\n\s*)?'                            // 1 : indent
+			. '(/\*\*\n(?:\s*\*.*\n)*\s*\*/\n\s*)?' // 2 : documentation
+			. '(?:\/\*.*\*/\n\s*)?'                 // ignored one-line documentation
+			. '(abstract\s+)?'                      // 3 : abstract
+			. '(?:(private|protected|public)\s+)?'  // 4 : visibility
+			. '(static\s+)?'                        // 5 : static
+			. 'function\s+'                         // function keyword
+			. '(\&\s*)?'                            // 6 : reference flag
+			. '(' . $name . ')\s*'                  // 7 : name
+			. '(\((?:.*?\n?)*?\)\s*)'               // 8 : parameters string
+			. '([\{\;]\s*?\n)'                      // 9 : end of function prototype
 			. '%';
 	}
 

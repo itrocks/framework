@@ -673,7 +673,7 @@ class Properties
 				$regexp = Reflection_Method::regex($method_name);
 				$this->class->source->setSource(preg_replace(
 					$regexp,
-					LF . TAB . '$2' . LF . TAB . '/* $4 */ private $5 function $6$7_0$8$9',
+					'$1$2/* $4 */ private $5function $6$7_0$8$9',
 					$this->class->source->getSource())
 				);
 			}
