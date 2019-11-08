@@ -409,6 +409,28 @@ abstract class Getter
 		return $result;
 	}
 
+	//------------------------------------------------------------------------------------ invalidate
+	/**
+	 * Invalidate a property to force next read to call the getter again
+	 *
+	 * @param $object        object
+	 * @param $property_name string
+	 */
+	public static function invalidate($object, $property_name)
+	{
+		if (!isset($object->$property_name)) {
+			return;
+		}
+		$id_property_name = 'id_' . $property_name;
+		if (isset($object->$id_property_name)) {
+			$id = $object->$id_property_name;
+		}
+		$object->$property_name = null;
+		if (isset($id)) {
+			$object->$id_property_name = $id;
+		}
+	}
+
 	//---------------------------------------------------------------------------------- schemaDecode
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
