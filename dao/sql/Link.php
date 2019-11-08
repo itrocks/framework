@@ -141,6 +141,20 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public abstract function getRowsCount($clause, $options = [], $result_set = null);
 
+	//------------------------------------------------------------------------------------ popContext
+	/**
+	 * Pop context for sql query
+	 */
+	abstract public function popContext();
+
+	//----------------------------------------------------------------------------------- pushContext
+	/**
+	 * Push context for sql query
+	 *
+	 * @param $context_object string|string[] Can be a class name or an array of class names
+	 */
+	abstract public function pushContext($context_object);
+
 	//----------------------------------------------------------------------------------------- query
 	/**
 	 * Executes an SQL query and returns the inserted record identifier (if applicable)
@@ -225,6 +239,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		$select     = new Select($object_class, $properties, $this);
 		$query      = $select->prepareQuery($filter_object, $options);
 		$result_set = $this->query($query);
+		$select->doneQuery();
 		if ($options && !$double_pass) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 		}
@@ -262,6 +277,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		$query             = $select->prepareQuery($filter_object, $options);
 		$result_set        = true;
 		$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
+		$select->doneQuery();
 		if ($options && $result_set) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 			$this->free($result_set);
@@ -408,14 +424,6 @@ abstract class Link extends Identifier_Map implements Transactional
 		return [$double_pass, $list];
 	}
 
-	//------------------------------------------------------------------------------------ setContext
-	/**
-	 * Set context for sql query
-	 *
-	 * @param $context_object string|string[] Can be a class name or an array of class names
-	 */
-	abstract public function setContext($context_object);
-
 	//----------------------------------------------------------------------------------- storeNameOf
 	/**
 	 * @param $class_name string
@@ -439,9 +447,10 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function truncate($class_name)
 	{
-		$this->setContext($class_name);
+		$this->pushContext($class_name);
 		$table_name = $this->storeNameOf($class_name);
 		$this->query('TRUNCATE TABLE ' . BQ . $table_name . BQ);
+		$this->popContext();
 	}
 
 	//--------------------------------------------------------------------------------- writeProperty

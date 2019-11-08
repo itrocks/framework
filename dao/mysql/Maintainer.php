@@ -160,10 +160,10 @@ class Maintainer implements Configurable, Registerable
 					: Column::buildLink($column_name)
 			);
 			if (substr($column_name, 0, 3) === 'id_') {
-				if (($mysqli instanceof Contextual_Mysqli) && is_array($mysqli->context)) {
+				if (($mysqli instanceof Contextual_Mysqli) && is_array($context = end($mysqli->contexts))) {
 					$ids_index->addKey($column_name);
 					$index = Index::buildLink($column_name);
-					foreach ($mysqli->context as $context_class) {
+					foreach ($context as $context_class) {
 						$id_context_property = 'id_' . Names::classToProperty(
 								Names::setToSingle(Dao::storeNameOf($context_class))
 							);
@@ -220,14 +220,13 @@ class Maintainer implements Configurable, Registerable
 		$build   = $builder->build($class_name);
 		foreach ($build as $table) {
 			if (!$mysqli->exists($table->getName())) {
-				$last_context    = $mysqli->context;
-				$queries         = (new Create_Table($table))->build();
-				$mysqli->context = array_merge($builder->dependencies_context, [$class_name]);
+				$queries = (new Create_Table($table))->build();
+				array_push($mysqli->contexts, array_merge($builder->dependencies_context, [$class_name]));
 				foreach ($queries as $query) {
 					$this->updateContextAfterCreate($mysqli, $query, $class_name);
 					$this->query($mysqli, $query);
 				}
-				$mysqli->context = $last_context;
+				array_pop($mysqli->contexts);
 			}
 		}
 	}
@@ -346,13 +345,12 @@ class Maintainer implements Configurable, Registerable
 		$build   = $builder->build($class_name, $mysqli);
 		foreach ($build as $view) {
 			if (!$mysqli->exists($view->getName())) {
-				$last_context    = $mysqli->context;
-				$queries         = (new Create_View($view))->build();
-				$mysqli->context = array_keys($view->select_queries);
+				$queries = (new Create_View($view))->build();
+				array_push($mysqli->contexts, array_keys($view->select_queries));
 				foreach ($queries as $query) {
 					$this->query($mysqli, $query);
 				}
-				$mysqli->context = $last_context;
+				array_pop($mysqli->contexts);
 			}
 		}
 	}
@@ -437,18 +435,20 @@ class Maintainer implements Configurable, Registerable
 			$this->already[$query][$last_error] = 0;
 		}
 		if ($last_errno && ($this->already[$query][$last_error] < $max_retry)) {
+			$pop_context = false;
 			$this->already[$query][$last_error] ++;
-			if (!isset($mysqli->context)) {
-				$mysqli->context = $this->guessContext($query, $mysqli);
+			if (!end($mysqli->contexts)) {
+				$key                    = ($mysqli->contexts ? key($mysqli->contexts) : 0);
+				$pop_context            = ($mysqli->contexts ? true : false);
+				$mysqli->contexts[$key] = $this->guessContext($query, $mysqli);
 			}
 			$retry = false;
 			// errors solving that need a context
-			if (isset($mysqli->context)) {
-				$context            = is_array($mysqli->context) ? $mysqli->context : [$mysqli->context];
+			if (end($mysqli->contexts)) {
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
 				if (in_array($last_errno, [Errors::ER_BAD_FIELD_ERROR, Errors::ER_CANNOT_ADD_FOREIGN])) {
-					$retry = $this->updateContextTables($mysqli, $context);
+					$retry = $this->updateContextTables($mysqli);
 				}
 				elseif (
 					($last_errno == Errors::ER_CANT_CREATE_TABLE) && strpos($last_error, '(errno: 150)')
@@ -456,11 +456,8 @@ class Maintainer implements Configurable, Registerable
 					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
 				elseif ($last_errno == Errors::ER_NO_SUCH_TABLE) {
-					$retry = $this->onNoSuchTableError($mysqli, $query, $context);
+					$retry = $this->onNoSuchTableError($mysqli, $query);
 				}
-
-				// Retrieves context as it may have been overridden
-				$mysqli->context = $context;
 			}
 			// errors solving that do not need a context
 			// ER_DUP_ENTRY : this is to patch a bug into MySQL 5.7
@@ -480,6 +477,9 @@ class Maintainer implements Configurable, Registerable
 				$mysqli->last_error = $last_error;
 			}
 			$this->already[$query][$last_error] --;
+			if ($pop_context) {
+				array_pop($mysqli->contexts);
+			}
 		}
 		if (!$this->already[$query][$last_error]) {
 			unset($this->already[$query][$last_error]);
@@ -491,14 +491,17 @@ class Maintainer implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------- onNoSuchTableError
 	/**
-	 * @param $mysqli  Contextual_Mysqli
-	 * @param $query   string
-	 * @param $context array|string[]
+	 * @param $mysqli Contextual_Mysqli
+	 * @param $query  string
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
-	 * @see Contextual_Mysqli::$context
+	 * @see Contextual_Mysqli::$contexts
 	 */
-	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query, array $context)
+	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query)
 	{
+		$context = end($mysqli->contexts);
+		if (!is_array($context)) {
+			$context = [$context];
+		}
 		$retry             = false;
 		$error_table_names = [$this->parseNameFromError($mysqli->last_error)];
 		if (!reset($error_table_names)) {
@@ -657,7 +660,7 @@ class Maintainer implements Configurable, Registerable
 		Contextual_Mysqli $mysqli, $query = null, $class_name = null
 	) {
 		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
-			if ($mysqli->context) foreach ($mysqli->context as $context_class_name) {
+			if ($context = end($mysqli->contexts)) foreach ($context as $context_class_name) {
 				$same_table = false;
 				if ($context_class_name === $class_name) {
 					$same_table = true;
@@ -679,11 +682,14 @@ class Maintainer implements Configurable, Registerable
 	//--------------------------------------------------------------------------- updateContextTables
 	/**
 	 * @param $mysqli  Contextual_Mysqli
-	 * @param $context string[]
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 */
-	private function updateContextTables(Contextual_Mysqli $mysqli, array $context)
+	private function updateContextTables(Contextual_Mysqli $mysqli)
 	{
+		$context = end($mysqli->contexts);
+		if (!is_array($context)) {
+			$context = [$context];
+		}
 		foreach ($context as $context_class) {
 			if ($this->updateTable($context_class, $mysqli)) {
 				$retry = true;
@@ -739,10 +745,9 @@ class Maintainer implements Configurable, Registerable
 		// do not create empty implicit table if does not already exist
 		// will be automatically created on first needed use
 		if ($this->create_empty_tables || $mysqli->exists($table_name)) {
-			$context         = $mysqli->context;
-			$mysqli->context = [$class_name, $foreign_class_name];
+			array_push($mysqli->contexts, [$class_name, $foreign_class_name]);
 			$this->updateTableStructure($table, new Table_Builder_Class(), $mysqli);
-			$mysqli->context = $context;
+			array_pop($mysqli->contexts);
 		}
 	}
 
@@ -831,13 +836,17 @@ class Maintainer implements Configurable, Registerable
 		// create table
 		if (!$mysql_table) {
 			$queries         = (new Create_Table($class_table))->build();
-			$mysqli->context = $class_name
-				? array_merge($table_builder_class->dependencies_context, [$class_name])
-				: $table_builder_class->dependencies_context;
+			array_push(
+				$mysqli->contexts,
+				$class_name
+					? array_merge($table_builder_class->dependencies_context, [$class_name])
+					: $table_builder_class->dependencies_context
+			);
 			foreach ($queries as $query) {
 				$this->updateContextAfterCreate($mysqli, $query, $class_name);
 				$this->query($mysqli, $query);
 			}
+			array_pop($mysqli->contexts);
 			$result = true;
 		}
 
@@ -929,9 +938,12 @@ class Maintainer implements Configurable, Registerable
 				}
 			}
 			if ($builder->isReady()) {
-				$mysqli->context = $class_name
-					? array_merge($table_builder_class->dependencies_context, [$class_name])
-					: $table_builder_class->dependencies_context;
+				array_push(
+					$mysqli->contexts,
+					$class_name
+						? array_merge($table_builder_class->dependencies_context, [$class_name])
+						: $table_builder_class->dependencies_context
+				);
 				if ($builder->check($mysqli, $this->notice)) {
 					foreach ($builder->build(true, $alter_primary_key) as $query) {
 						$this->query($mysqli, $query);
@@ -948,6 +960,7 @@ class Maintainer implements Configurable, Registerable
 							trigger_error($message, E_USER_WARNING);
 					}
 				}
+				array_pop($mysqli->contexts);
 				$result = true;
 			}
 		}

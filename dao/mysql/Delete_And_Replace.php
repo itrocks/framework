@@ -44,13 +44,13 @@ class Delete_And_Replace implements Registerable
 				$object->last_errno,
 				[Errors::ER_ROW_IS_REFERENCED, Errors::ER_ROW_IS_REFERENCED_2]
 			)
-			&& $object->context
-			&& is_string($object->context)
+			&& ($context = end($object->contexts))
+			&& is_string($context)
 			&& $object->isDelete($query)
 		) {
 			$id = $this->extractId($query);
 			if ($id) {
-				$controller_uri = SL . $object->context . SL . $id . SL . 'deleteAndReplace';
+				$controller_uri = SL . $context . SL . $id . SL . 'deleteAndReplace';
 				echo (new Main())->runController($controller_uri, [Parameter::AS_WIDGET => true]);
 				$joinpoint->stop = true;
 			}

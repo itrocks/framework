@@ -144,8 +144,10 @@ class Select_Test extends Test
 		/** @var $dao Mysql\Link */
 		$dao                      = Dao::current();
 		Maintainer::get()->notice = false;
-		$dao->setContext($builder->getJoins()->getClassNames());
+		$mysqli                   = $dao->getConnection();
+		array_push($mysqli->contexts, $builder->getJoins()->getClassNames());
 		$dao->query($query);
+		array_pop($mysqli->contexts);
 
 		// Failure will be SQL Exception
 		static::assertTrue(true);

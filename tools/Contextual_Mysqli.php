@@ -15,16 +15,16 @@ use mysqli_result;
 class Contextual_Mysqli extends mysqli
 {
 
-	//-------------------------------------------------------------------------------------- $context
+	//------------------------------------------------------------------------------------- $contexts
 	/**
 	 * Query execution context : the class name or list of class names which could be concerned
 	 * by the current executed query (if set)
 	 * Elements can be a table_name[property_names] too
 	 *
 	 * @example [Order::class, Salesman::class, 'orders_salesmen' => ['id_order', 'id_salesman']]
-	 * @var array|string|string[]
+	 * @var array each element is a array|string|string[]
 	 */
-	public $context;
+	public $contexts = [];
 
 	//------------------------------------------------------------------------------------- $database
 	/**

@@ -197,7 +197,7 @@ class Link extends Dao\Sql\Link
 		$class_name = Builder::className($class_name);
 		$builder    = new Count($class_name, $what, $this);
 		$query      = $builder->buildQuery();
-		$this->setContext($builder->getJoins()->getClassNames());
+		array_push($this->connection->contexts, $builder->getJoins()->getClassNames());
 		$result_set = $this->connection->query($query);
 		if ($result_set) {
 			$row = $result_set->fetch_row();
@@ -206,6 +206,7 @@ class Link extends Dao\Sql\Link
 		else {
 			$row = [0];
 		}
+		array_pop($this->connection->contexts);
 		return $row[0];
 	}
 
@@ -324,7 +325,7 @@ class Link extends Dao\Sql\Link
 						}
 					}
 				}
-				$this->setContext($class_name);
+				array_push($this->connection->contexts, $class_name);
 				if ($link->value) {
 					$id = [];
 					foreach ($link->getLinkClass()->getUniqueProperties() as $link_property) {
@@ -343,6 +344,7 @@ class Link extends Dao\Sql\Link
 				$this->query(Sql\Builder::buildDelete($class_name, $id));
 				$this->disconnect($object);
 				$this->commit();
+				array_pop($this->connection->contexts);
 				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 				foreach ((new Reflection_Class($object))->getAnnotations('after_delete') as $after_delete) {
 					/** @var $after_delete Method_Annotation */
@@ -779,6 +781,15 @@ class Link extends Dao\Sql\Link
 		return $lock;
 	}
 
+	//------------------------------------------------------------------------------------ popContext
+	/**
+	 * Pop context for sql query
+	 */
+	public function popContext()
+	{
+		return array_pop($this->connection->contexts);
+	}
+
 	//---------------------------------------------------------------------------------- prepareFetch
 	/**
 	 * Prepare fetch gets annotations values that transform the read object
@@ -802,6 +813,17 @@ class Link extends Dao\Sql\Link
 				$this->prepared_fetch[$property->name][] = self::GZINFLATE;
 			}
 		}
+	}
+
+	//----------------------------------------------------------------------------------- pushContext
+	/**
+	 * Push context for sql query
+	 *
+	 * @param $context_object string|string[] Can be a class name or an array of class names
+	 */
+	public function pushContext($context_object)
+	{
+		array_push($this->connection->contexts, $context_object);
 	}
 
 	//----------------------------------------------------------------------------------------- query
@@ -942,7 +964,7 @@ class Link extends Dao\Sql\Link
 			return null;
 		}
 		$class_name = Builder::className($class_name);
-		$this->setContext($class_name);
+		array_push($this->connection->contexts, $class_name);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		if (Class_\Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$what = [];
@@ -968,6 +990,7 @@ class Link extends Dao\Sql\Link
 			$object = $this->fetch($result_set, $class_name);
 			$this->free($result_set);
 		}
+		array_pop($this->connection->contexts);
 		if ($object) {
 			$this->setObjectIdentifier($object, $identifier);
 			$this->afterRead($object);
@@ -989,13 +1012,14 @@ class Link extends Dao\Sql\Link
 			$options = $options ? [$options] : [];
 		}
 		$class_name = Builder::className($class_name);
-		$this->setContext($class_name);
+		array_push($this->connection->contexts, $class_name);
 		$query      = (new Select($class_name, null, null, null, $options))->buildQuery();
 		$result_set = $this->connection->query($query);
 		if ($options) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 		}
 		$objects = $this->fetchAll($class_name, $options, $result_set);
+		array_pop($this->connection->contexts);
 		$this->afterReadMultiple($objects, $options);
 		return $objects;
 	}
@@ -1081,7 +1105,7 @@ class Link extends Dao\Sql\Link
 			// was not in cache or no cache : prepare and execute query
 			$builder = new Select($class_name, null, $what, $this, $options);
 			$query   = $builder->buildQuery();
-			$this->setContext($builder->getJoins()->getClassNames());
+			array_push($this->connection->contexts, $builder->getJoins()->getClassNames());
 			if (Option\Pre_Load::in($options)) {
 				$objects = [];
 				(new Dao\Sql\Select($class_name, null, $this))->executeQuery($query);
@@ -1093,6 +1117,7 @@ class Link extends Dao\Sql\Link
 				}
 				$objects = $this->fetchAll($class_name, $options, $result_set);
 			}
+			array_pop($this->connection->contexts);
 			// store result in cache
 			if ($cache_result) {
 				$cache_result->cacheResult($what, $class_name, $options, $objects);
@@ -1105,17 +1130,6 @@ class Link extends Dao\Sql\Link
 			$objects = [$created];
 		}
 		return $objects;
-	}
-
-	//------------------------------------------------------------------------------------ setContext
-	/**
-	 * Set context for sql query
-	 *
-	 * @param $context_object string|string[] Can be a class name or an array of class names
-	 */
-	public function setContext($context_object = null)
-	{
-		$this->connection->context = $context_object;
 	}
 
 	//---------------------------------------------------------------------------------------- unlock

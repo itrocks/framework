@@ -354,7 +354,8 @@ class Write extends Data_Link\Write
 			$id = $this->link->getObjectIdentifier($this->object, $this->id_property);
 		}
 		if ($write) {
-			$this->link->setContext($class->name);
+			$mysqli = $this->link->getConnection();
+			array_push($mysqli->contexts, $class->name);
 			if (empty($id) || isset($this->force_add)) {
 				$this->link->disconnect($this->object);
 				if (isset($this->force_add) && !empty($id)) {
@@ -368,6 +369,7 @@ class Write extends Data_Link\Write
 			else {
 				$this->link->query(Sql\Builder::buildUpdate($class->name, $write, $id));
 			}
+			array_pop($mysqli->contexts);
 		}
 	}
 

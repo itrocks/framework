@@ -234,6 +234,15 @@ class Select
 		return $this->callback ? null : $data_store;
 	}
 
+	//------------------------------------------------------------------------------------- doneQuery
+	/**
+	 * You must always call this after having called prepareQuery and executed the query
+	 */
+	public function doneQuery()
+	{
+		$this->link->popContext();
+	}
+
 	//--------------------------------------------------------------------------- executeClassColumns
 	/**
 	 * A simple execute() feature to use it quick with minimal options
@@ -244,7 +253,9 @@ class Select
 	 */
 	public function executeClassColumns($data_store = null, $key = null)
 	{
-		return $this->executeQuery($this->prepareQuery(), $data_store, $key);
+		$result = $this->executeQuery($this->prepareQuery(), $data_store, $key);
+		$this->doneQuery();
+		return $result;
 	}
 
 	//---------------------------------------------------------------------------------- executeQuery
@@ -402,6 +413,10 @@ class Select
 
 	//---------------------------------------------------------------------------------- prepareQuery
 	/**
+	 * Prepare the SQL query
+	 *
+	 * Beware : You must always call doneQuery after having called prepareQuery and executed the query
+	 *
 	 * @param $filter_object object|array|false source object for filter, set properties will be used
 	 *                       for search. Can be an array associating properties names to matching
 	 *                       search value too.
@@ -417,7 +432,7 @@ class Select
 		);
 		$query              = $sql_select_builder->buildQuery();
 		$this->path_classes = $sql_select_builder->getJoins()->getClasses();
-		$this->link->setContext(array_merge(
+		$this->link->pushContext(array_merge(
 			$sql_select_builder->getJoins()->getClassNames(),
 			$sql_select_builder->getJoins()->getLinkedTables()
 		));
