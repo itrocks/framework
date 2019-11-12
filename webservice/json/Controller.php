@@ -223,7 +223,9 @@ class Controller implements Default_Feature_Controller
 			$this->applyFiltersToSearch($search, $parameters['filters']);
 		}
 		$search_options = [];
-		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_USE)) {
+		if (
+			$filters = Filter_Annotation::apply($class_name, $search_options, Filter_Annotation::FOR_USE)
+		) {
 			$search = $search ? Dao\Func::andOp([$filters, $search]) : $filters;
 		}
 
