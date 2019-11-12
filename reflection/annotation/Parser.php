@@ -329,7 +329,7 @@ class Parser
 				}
 			}
 			else {
-				if ($annotation->value[0] === BS) {
+				if ($annotation->value && ($annotation->value[0] === BS)) {
 					$annotation->value = substr($annotation->value, 1);
 				}
 				$annotation->value = Builder::className($annotation->value);

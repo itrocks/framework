@@ -1,12 +1,12 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-// phpcs:ignoreFile -- code ordered constants
 /**
  * Official mysql error codes, stored into constants
  *
  * TODO LOW complete this
  *
+ * phpcs:ignoreFile -- code ordered constants
  * @link https://dev.mysql.com/doc/refman/5.7/en/error-messages-server.html
  */
 class Errors
