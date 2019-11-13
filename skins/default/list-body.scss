@@ -89,6 +89,13 @@ article.list > form > table > tbody > tr {
 			height: 22px;
 			padding-top: 10px;
 		}
+
+		&.float,
+		&.float > a,
+		&.integer,
+		&.integer > a {
+			text-align: right;
+		}
 	}
 
 	th {

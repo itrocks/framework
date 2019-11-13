@@ -20,6 +20,11 @@ article.list > form > table > thead {
 				color: #333;
 				font-weight: 500;
 
+				&.property.float > a,
+				&.property.integer > a {
+					text-align: right;
+				}
+
 				> a {
 					box-sizing: border-box;
 					display: block;
