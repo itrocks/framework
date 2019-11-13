@@ -23,7 +23,8 @@ article ol.properties:not(.tiny) {
     article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > div, article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) > label {
       box-sizing: border-box;
       display: table-cell;
-      height: 32px; }
+      height: 32px;
+      position: relative; }
   article ol.properties:not(.tiny) > li.after,
   article ol.properties:not(.tiny) > li.before,
   article ol.properties:not(.tiny) > li.block,
