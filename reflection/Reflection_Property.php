@@ -120,8 +120,11 @@ class Reflection_Property extends ReflectionProperty
 			$class_name = get_class($class_name);
 		}
 		if (strpos($property_name, ')')) {
-			list($class_name, $property_name)
-				= (new Path($class_name, $property_name))->toPropertyClassName();
+			$class_property = (new Path($class_name, $property_name))->toPropertyClassName();
+			if (count($class_property) === 2) {
+				list($class_name, $property_name) = $class_property;
+			}
+			// else : do nothing here, but it is not sure it this the right thing to do...
 		}
 		$this->path       = $property_name;
 		$this->root_class = $class_name;
