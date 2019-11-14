@@ -1,3 +1,8 @@
+ITRocks\Framework\Address\Person:
+  display_order:
+    - civility
+    - first_name
+    - last_name
 ITRocks\Framework\Component\Menu:
   Administration:
     - /ITRocks/Framework/Users
