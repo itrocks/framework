@@ -13,8 +13,13 @@ article.list > form > table > thead {
       box-sizing: border-box;
       display: block;
       height: 32px;
+      position: relative;
       vertical-align: top;
       width: 100%; }
+      article.list > form > table > thead > tr.title > th > a > input {
+        left: 0;
+        position: absolute;
+        top: -1px; }
     article.list > form > table > thead > tr.title > th.visible.lines {
       padding: 0 .83em 0 .75em; }
       article.list > form > table > thead > tr.title > th.visible.lines > input {

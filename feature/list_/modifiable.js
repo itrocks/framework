@@ -10,7 +10,7 @@ $(document).ready(function()
 	//---------------------------------------------------------------------------------- propertyPath
 	var propertyPath = function($this)
 	{
-		return $this.closest('li').data('property');
+		return $this.closest('[data-property]').data('property');
 	};
 
 	//---------------------------------------------------------------------------------- article.list
@@ -40,7 +40,7 @@ $(document).ready(function()
 		});
 
 		// list column header (property path) double-click
-		$this.find('> form > ul.list > li:first > ol > li.property > a').modifiable({
+		$this.find('> form > table.list > thead > tr.title > th.property > a').modifiable({
 			ajax:      callback_uri + '&property_path={propertyPath}&property_title={value}',
 			ajax_form: 'form',
 			aliases:   { 'className': className, 'propertyPath': propertyPath },

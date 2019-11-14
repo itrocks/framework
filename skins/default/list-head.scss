@@ -29,8 +29,15 @@ article.list > form > table > thead {
 					box-sizing: border-box;
 					display: block;
 					height: 32px;
+					position: relative;
 					vertical-align: top;
 					width: 100%;
+
+					> input {
+						left: 0;
+						position: absolute;
+						top: -1px;
+					}
 				}
 
 				&.visible.lines {
