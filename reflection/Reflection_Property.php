@@ -572,7 +572,10 @@ class Reflection_Property extends ReflectionProperty
 						: $property->getValue($object, $with_default);
 				}
 				if ($with_default && !$object && !is_array($object)) {
-					$object = $property->getFinalClass()->newInstance();
+					$type = $property->getType();
+					if ($type->isClass()) {
+						$object = $property->getType()->asReflectionClass()->newInstance();
+					}
 				}
 			}
 			return $object;
