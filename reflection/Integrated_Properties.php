@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
+use ReflectionException;
 
 /**
  * Integrated properties toolbox, used to expand properties list when @integrated annotation is used
@@ -163,9 +164,13 @@ class Integrated_Properties
 			}
 			// add mode
 			else {
-				/** @noinspection PhpUnhandledExceptionInspection $sub_properties_class->name is valid */
-				$expand_properties[$property->path . DOT . $integrated_property_path]
-					= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
+				try {
+					$expand_properties[$property->path . DOT . $integrated_property_path]
+						= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
+				}
+				catch (ReflectionException $exception) {
+					// nothing : we can reserve room for future properties into @integrated
+				}
 			}
 		}
 		return $expand_properties;
