@@ -434,7 +434,10 @@ class Html_Builder_Type
 			$more->addClass('more');
 			$more->setAttribute('tabindex', -1);
 			if (isset($id_input)) {
-				$this->setOnChangeAttribute($id_input);
+				$this->setOnChangeAttribute($id_input, false);
+				if ($this->realtime_change) {
+					$input->setData('realtime-change');
+				}
 			}
 			else {
 				$this->setOnChangeAttribute($input);
@@ -635,14 +638,15 @@ class Html_Builder_Type
 
 	//-------------------------------------------------------------------------- setOnChangeAttribute
 	/**
-	 * @param $element Element
+	 * @param $element         Element
+	 * @param $realtime_change boolean
 	 */
-	private function setOnChangeAttribute(Element $element)
+	private function setOnChangeAttribute(Element $element, $realtime_change = true)
 	{
 		if ($this->on_change) {
 			$on_change = join(',', $this->on_change);
 			$element->setData('on-change', $on_change);
-			if ($this->realtime_change) {
+			if ($realtime_change && $this->realtime_change) {
 				$element->setData('realtime-change');
 			}
 		}
