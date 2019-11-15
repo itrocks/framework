@@ -91,7 +91,7 @@ $(document).ready(function()
 		if (do_change) {
 			$input.val(value);
 			if ((string_value !== null)) {
-				$input.next().val(string_value);
+				$input.next().val(string_value).change();
 			}
 			$input.change();
 		}
