@@ -266,34 +266,56 @@ redirectLight = function(uri, target, condition)
  */
 refresh = function(target)
 {
+	var uri = refreshLink(target);
+	if (!uri) {
+		return;
+	}
+	$.ajax({
+		url: app.askAnd(uri, 'as_widget'),
+		success: function(data) {
+			refreshTarget(target).html(data).build();
+		}
+	});
+};
+
+//------------------------------------------------------------------------------------- refreshLink
+/**
+ *
+ * @param target
+ * @return string
+ */
+refreshLink = function(target)
+{
+	var $target = refreshTarget(target);
+	var $window = $target.children('[data-class]');
+	if (!$window.length) {
+		$window = $target.filter('[data-class]');
+	}
+	if (!$window.length) {
+		return '';
+	}
+	var feature = $window.data('feature');
+	var id      = $window.data('id');
+	var uri     = SL + $window.data('class').repl(BS, SL);
+	if (id) {
+		uri += SL + id;
+	}
+	if (feature) {
+		uri += SL + feature;
+	}
+	return app.addSID(app.uri_base + uri);
+};
+
+//----------------------------------------------------------------------------------- refreshTarget
+/**
+ * @param target string
+ * @return jQuery
+ */
+refreshTarget = function(target)
+{
 	var $target = $(target);
 	if (((typeof target) === 'string') && target.endsWith('main') && !$target.length) {
 		$target = $(target.beginsWith('#') ? 'main' : '#main');
 	}
-	$target.each(function() {
-		var $target = $(this);
-		var $window = $target.children('[data-class]');
-		if (!$window.length) {
-			$window = $target.filter('[data-class]');
-		}
-		if (!$window.length) {
-			return;
-		}
-		var feature = $window.data('feature');
-		var id      = $window.data('id');
-		var uri     = SL + $window.data('class').repl(BS, SL);
-		if (id) {
-			uri += SL + id;
-		}
-		if (feature) {
-			uri += SL + feature;
-		}
-		uri += '?as_widget';
-		$.ajax({
-			url: app.addSID(app.uri_base + uri),
-			success: function(data) {
-				$target.html(data).build();
-			}
-		});
-	});
+	return $target;
 };

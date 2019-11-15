@@ -22,12 +22,24 @@ $(document).ready(function()
 		}
 	});
 
+	//-------------------------------------------------------------------------------- a.refresh-link
+	$body.build('each', 'a.refresh-link[target]', function()
+	{
+		this.href = refreshLink($(this).attr('target'));
+	});
+
 	//--------------------------------------------------------------------------- button.auto-refresh
 	$body.build('each', 'button.auto-refresh', function()
 	{
 		var $button = $(this);
 		var target  = $button.data('target');
 		refresh(target ? target : '#main');
+	});
+
+	//----------------------------------------------------------------------------- form.refresh-link
+	$body.build('each', 'form.refresh-link[target]', function()
+	{
+		this.action = refreshLink($(this).data('target'));
 	});
 
 	//------------------------------------------------------------------------------ form.auto-submit
