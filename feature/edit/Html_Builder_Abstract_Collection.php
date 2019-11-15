@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Builder\Abstract_Collection;
 use ITRocks\Framework\View\Html\Template;
@@ -14,17 +15,29 @@ use ITRocks\Framework\View\Html\Template;
 class Html_Builder_Abstract_Collection extends Abstract_Collection
 {
 
-	//-------------------------------------------------------------------------------------- $preprop
+	//------------------------------------------------------------------------------------- $pre_path
 	/**
 	 * @var string
 	 */
-	public $preprop = null;
+	public $pre_path;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Html_Template
 	 */
 	private $template = null;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $property   Reflection_Property
+	 * @param $collection array
+	 * @param $pre_path   string
+	 */
+	public function __construct(Reflection_Property $property, array $collection, $pre_path = null)
+	{
+		parent::__construct($property, $collection);
+		$this->pre_path = $pre_path;
+	}
 
 	//----------------------------------------------------------------------------------------- build
 	/**

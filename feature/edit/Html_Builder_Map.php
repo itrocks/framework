@@ -34,13 +34,13 @@ class Html_Builder_Map extends Map
 	 */
 	private $no_delete;
 
-	//-------------------------------------------------------------------------------------- $preprop
+	//------------------------------------------------------------------------------------- $pre_path
 	/**
 	 * Property name prefix
 	 *
 	 * @var string
 	 */
-	public $preprop;
+	public $pre_path;
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
@@ -60,12 +60,12 @@ class Html_Builder_Map extends Map
 	/**
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
-	 * @param $preprop  string
+	 * @param $pre_path  string
 	 */
-	public function __construct(Reflection_Property $property, array $map, $preprop = null)
+	public function __construct(Reflection_Property $property, array $map, $pre_path = null)
 	{
 		parent::__construct($property, $map);
-		$this->preprop = $preprop;
+		$this->pre_path = $pre_path;
 	}
 
 	//------------------------------------------------------------------------------------- buildBody
@@ -94,11 +94,11 @@ class Html_Builder_Map extends Map
 	 */
 	protected function buildCell($object)
 	{
-		$property = $this->property;
-		$value    = $object;
-		$preprop  = $this->preprop ?: $property->name;
+		$property  = $this->property;
+		$pre_path  = $this->pre_path ?: $property->name;
+		$value     = $object;
 
-		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $preprop);
+		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $pre_path);
 		$builder->is_abstract = $this->is_abstract;
 		$builder->readonly    = $this->readOnly();
 

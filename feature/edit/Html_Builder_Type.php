@@ -90,11 +90,11 @@ class Html_Builder_Type
 	 */
 	public $on_change = [];
 
-	//-------------------------------------------------------------------------------------- $preprop
+	//------------------------------------------------------------------------------------- $pre_path
 	/**
 	 * @var string
 	 */
-	public $preprop;
+	public $pre_path;
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
@@ -144,17 +144,17 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name    string
-	 * @param $type    Type
-	 * @param $value   mixed
-	 * @param $preprop string
+	 * @param $name     string
+	 * @param $type     Type
+	 * @param $value    mixed
+	 * @param $pre_path string
 	 */
-	public function __construct($name = null, Type $type = null, $value = null, $preprop = null)
+	public function __construct($name = null, Type $type = null, $value = null, $pre_path = null)
 	{
-		if (isset($name))    $this->name    = $name;
-		if (isset($type))    $this->type    = $type;
-		if (isset($value))   $this->value   = $value;
-		if (isset($preprop)) $this->preprop = $preprop;
+		if (isset($name))     $this->name    = $name;
+		if (isset($type))     $this->type    = $type;
+		if (isset($value))    $this->value   = $value;
+		if (isset($pre_path)) $this->pre_path = $pre_path;
 	}
 
 	//------------------------------------------------------------------------ addConditionsToElement
@@ -519,7 +519,7 @@ class Html_Builder_Type
 		}
 		$this->setInputAsReadOnly($element);
 		if ($this->required) {
-			if ($this->preprop) {
+			if ($this->pre_path) {
 				$element->setData('required', true);
 			}
 			else {
@@ -536,25 +536,25 @@ class Html_Builder_Type
 	 */
 	public function getFieldName($prefix = '', $counter_increment = true)
 	{
-		if (empty($this->name) && $this->preprop) {
+		if (empty($this->name) && $this->pre_path) {
 			$prefix = '';
 		}
-		if (!isset($this->preprop)) {
+		if (!isset($this->pre_path)) {
 			$field_name = $prefix . $this->name;
 		}
-		elseif (substr($this->preprop, -2) == '[]') {
-			$field_name  = substr($this->preprop, 0, -2) . '[' . $prefix . $this->name . ']';
+		elseif (substr($this->pre_path, -2) === '[]') {
+			$field_name  = substr($this->pre_path, 0, -2) . '[' . $prefix . $this->name . ']';
 			$count       = $this->template->nextCounter($field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
 		elseif (strlen($prefix . $this->name)) {
-			$field_name = (strpos($this->preprop, '[]') !== false)
+			$field_name = (strpos($this->pre_path, '[]') !== false)
 				? $this->getRepetitiveFieldName($prefix, $counter_increment)
-				: $this->preprop . '[' . $prefix . $this->name . ']';
+				: $this->pre_path . '[' . $prefix . $this->name . ']';
 		}
 		else {
-			$count      = $this->template->nextCounter($this->preprop, $counter_increment);
-			$field_name = $this->preprop . '[' . $count . ']';
+			$count      = $this->template->nextCounter($this->pre_path, $counter_increment);
+			$field_name = $this->pre_path . '[' . $count . ']';
 		}
 		return $field_name;
 	}
@@ -567,17 +567,17 @@ class Html_Builder_Type
 	 */
 	private function getRepetitiveFieldName($prefix, $counter_increment)
 	{
-		$i                = strpos($this->preprop, '[]');
-		$counter_name     = substr($this->preprop, 0, $i);
+		$i                = strpos($this->pre_path, '[]');
+		$counter_name     = substr($this->pre_path, 0, $i);
 		$field_name_i     = $i + 3;
-		$field_name_j     = strpos($this->preprop, ']', $field_name_i);
-		$super_field_name = substr($this->preprop, $field_name_i, $field_name_j - $field_name_i);
+		$field_name_j     = strpos($this->pre_path, ']', $field_name_i);
+		$super_field_name = substr($this->pre_path, $field_name_i, $field_name_j - $field_name_i);
 		$counter_name    .= '[' . $super_field_name . ']' . '[' . $prefix . $this->name . ']';
 		$count            = $this->template->nextCounter($counter_name, $counter_increment);
-		return substr($this->preprop, 0, $i)
+		return substr($this->pre_path, 0, $i)
 			. '[' . $super_field_name . ']'
 			. '[' . $count . ']'
-			. substr($this->preprop, $field_name_j + 1)
+			. substr($this->pre_path, $field_name_j + 1)
 			. '[' . $prefix . $this->name . ']';
 	}
 
@@ -659,8 +659,8 @@ class Html_Builder_Type
 	{
 		if ($template instanceof Html_Template) {
 			$this->template = $template;
-			if (!$this->preprop) {
-				$this->preprop = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
+			if (!$this->pre_path) {
+				$this->pre_path = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
 			}
 		}
 		return $this;

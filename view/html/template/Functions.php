@@ -406,7 +406,7 @@ class Functions
 		$property_edit             = new Html_Builder_Property($property, $value);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property_path;
-		$property_edit->preprop    = null;
+		$property_edit->pre_path   = null;
 		if ($ignore_user) {
 			$property_edit->readonly = false;
 		}
@@ -466,7 +466,7 @@ class Functions
 		$property_edit             = new Html_Builder_Property($property);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property->path;
-		$property_edit->preprop    = null;
+		$property_edit->pre_path   = null;
 		if ($ignore_user) {
 			$property_edit->readonly = false;
 		}

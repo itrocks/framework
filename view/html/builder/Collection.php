@@ -1,8 +1,11 @@
 <?php
 namespace ITRocks\Framework\View\Html\Builder;
 
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation;
@@ -12,10 +15,12 @@ use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Stringable;
@@ -25,6 +30,7 @@ use ITRocks\Framework\View\Html\Dom\List_;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
 use ITRocks\Framework\View\Html\Dom\List_\Ordered;
 use ITRocks\Framework\View\Html\Dom\List_\Unordered;
+use ITRocks\Framework\View\Html\Template;
 
 /**
  * Takes a collection of objects and build an HTML output containing their data
@@ -55,6 +61,12 @@ class Collection
 	 * @var Reflection_Property
 	 */
 	public $property;
+
+	//------------------------------------------------------------------------------------- $template
+	/**
+	 * @var Template
+	 */
+	protected $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -130,6 +142,25 @@ class Collection
 			$anchor = new Anchor(View::link($value), strval($value));
 			$anchor->setAttribute('target', Target::MAIN);
 			$value = strval($anchor);
+		}
+		elseif (
+			($builder = Widget_Annotation::of($property)->value)
+			&& is_a($builder, Property::class, true)
+		) {
+			/** @noinspection PhpUnhandledExceptionInspection from valid property */
+			$property_value = new Reflection_Property_Value(
+				$property->root_class, $property->path, $value, true
+			);
+			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
+			/** @var $builder Property */
+			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
+			$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
+			$value = $builder->buildHtml();
+			if ($builder instanceof Value_Widget) {
+				$value = (new Html_Builder_Property($property_value, $value))
+					->setTemplate($this->template)
+					->build();
+			}
 		}
 		else {
 			$value = (new Reflection_Property_View($property))->getFormattedValue($object);
@@ -289,6 +320,17 @@ class Collection
 		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
 			&& !$user_annotation->has(User_Annotation::INVISIBLE)
 			&& !$user_annotation->has(User_Annotation::INVISIBLE_OUTPUT);
+	}
+
+	//----------------------------------------------------------------------------------- setTemplate
+	/**
+	 * @param $template Template
+	 * @return static
+	 */
+	public function setTemplate(Template $template)
+	{
+		$this->template = $template;
+		return $this;
 	}
 
 }

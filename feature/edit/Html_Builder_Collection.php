@@ -2,11 +2,13 @@
 namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -15,6 +17,8 @@ use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 use ITRocks\Framework\View\Html\Builder\Collection;
+use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\View\Html\Builder\Value_Widget;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Dom\List_;
 use ITRocks\Framework\View\Html\Dom\List_\Item;
@@ -23,6 +27,9 @@ use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 
 /**
  * Takes a collection of objects and build a HTML edit sub-form containing their data
+ *
+ * @override template @var Html_Template
+ * @property Html_Template template
  */
 class Html_Builder_Collection extends Collection
 {
@@ -33,7 +40,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	private $create_only;
+	protected $create_only;
 
 	//--------------------------------------------------------------------------------------- $no_add
 	/**
@@ -41,7 +48,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	private $no_add;
+	protected $no_add;
 
 	//------------------------------------------------------------------------------------ $no_delete
 	/**
@@ -49,13 +56,13 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	private $no_delete;
+	protected $no_delete;
 
-	//-------------------------------------------------------------------------------------- $preprop
+	//------------------------------------------------------------------------------------- $pre_path
 	/**
 	 * @var string
 	 */
-	public $preprop = null;
+	public $pre_path;
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
@@ -63,13 +70,7 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var boolean
 	 */
-	private $read_only;
-
-	//------------------------------------------------------------------------------------- $template
-	/**
-	 * @var Html_Template
-	 */
-	private $template = null;
+	protected $read_only;
 
 	//----------------------------------------------------------------------------- $user_annotations
 	/**
@@ -77,7 +78,19 @@ class Html_Builder_Collection extends Collection
 	 *
 	 * @var List_Annotation
 	 */
-	private $user_annotations;
+	protected $user_annotations;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $property   Reflection_Property
+	 * @param $collection array
+	 * @param $pre_path   string
+	 */
+	public function __construct(Reflection_Property $property, array $collection, $pre_path = null)
+	{
+		parent::__construct($property, $collection);
+		$this->pre_path = $pre_path;
+	}
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -138,38 +151,64 @@ class Html_Builder_Collection extends Collection
 		}
 		/** @noinspection PhpUnhandledExceptionInspection property must be from object and accessible */
 		$value = $property->getValue($object);
-		if (strpos($this->preprop, '[]')) {
+		if (strpos($this->pre_path, '[]')) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
-			$preprop_to_count = lParse($this->preprop, '[]');
-			$counter = $property_builder->template->nextCounter($preprop_to_count . '[id][]', false);
-			$preprop = $preprop_to_count . '[' . $this->property->name . '][' . $counter . ']';
+			$pre_path_to_count = lParse($this->pre_path, '[]');
+			$counter  = $property_builder->template->nextCounter($pre_path_to_count . '[id][]', false);
+			$pre_path = $pre_path_to_count . '[' . $this->property->name . '][' . $counter . ']';
 		}
 		else {
-			$preprop = $this->preprop
-				? ($this->preprop . '[' . $this->property->name . ']')
+			$pre_path = $this->pre_path
+				? ($this->pre_path . '[' . $this->property->name . ']')
 				: $this->property->name;
 		}
-		$builder         = (new Html_Builder_Property($property, $value, $preprop . '[]'));
-		$builder->object = $object;
-		$input           = $builder->setTemplate($this->template)->build();
-		/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
 		if (
-			($property->name === reset($this->properties)->name)
-			&& !Link_Annotation::of(new Reflection_Class($this->class_name))->value
+			($builder = Widget_Annotation::of($property)->value)
+			&& is_a($builder, Property::class, true)
 		) {
-			$property_builder = new Html_Builder_Property();
-			$property_builder->setTemplate($this->template);
-			$id_input = new Input(
-				$preprop . '[id][' . $property_builder->template->nextCounter($preprop . '[id][]') . ']',
-				isset($object->id) ? $object->id : null
+			/** @noinspection PhpUnhandledExceptionInspection from valid property */
+			$property_value = new Reflection_Property_Value(
+				$property->root_class, $property->path, $value, true
 			);
-			$id_input->setAttribute('type', 'hidden');
-			$property_builder->readonly = $this->readOnly();
-			$property_builder->setInputAsReadOnly($id_input);
-			$input = $id_input . $input;
+			array_push($this->template->properties_prefix, $pre_path);
+			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
+			/** @var $builder Property */
+			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
+			$builder->parameters[Feature::F_EDIT] = Feature::F_EDIT;
+			$builder->pre_path                    = $pre_path . '[]';
+			$value = $builder->buildHtml();
+			if ($builder instanceof Value_Widget) {
+				$value = (new Html_Builder_Property($property_value, $value, $pre_path . '[]'))
+					->setTemplate($this->template)
+					->build();
+			}
+			array_pop($this->template->properties_prefix);
+			$content = $value;
 		}
-		$cell = new Item($input);
+		else {
+			$builder         = (new Html_Builder_Property($property, $value, $pre_path . '[]'));
+			$builder->object = $object;
+			$input           = $builder->setTemplate($this->template)->build();
+			/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
+			if (
+				($property->name === reset($this->properties)->name)
+				&& !Link_Annotation::of(new Reflection_Class($this->class_name))->value
+			) {
+				$property_builder = new Html_Builder_Property();
+				$property_builder->setTemplate($this->template);
+				$id_input = new Input(
+					$pre_path . '[id][' . $property_builder->template->nextCounter($pre_path . '[id][]') . ']',
+					isset($object->id) ? $object->id : null
+				);
+				$id_input->setAttribute('type', 'hidden');
+				$property_builder->readonly = $this->readOnly();
+				$property_builder->setInputAsReadOnly($id_input);
+				$input = $id_input . $input;
+			}
+			$content = $input;
+		}
+		$cell = new Item($content);
 		$type = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
 		if(!$property->isVisible()){
@@ -313,17 +352,6 @@ class Html_Builder_Collection extends Collection
 			$this->read_only = $this->getAnnotations()->has(User_Annotation::READONLY);
 		}
 		return $this->read_only;
-	}
-
-	//----------------------------------------------------------------------------------- setTemplate
-	/**
-	 * @param $template Html_Template
-	 * @return Html_Builder_Collection
-	 */
-	public function setTemplate(Html_Template $template)
-	{
-		$this->template = $template;
-		return $this;
 	}
 
 }
