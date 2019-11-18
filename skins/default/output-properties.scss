@@ -13,13 +13,6 @@ article ol.properties:not(.tiny) {
 
 	li {
 		position: relative;
-
-		&.float > div,
-		&.float > div > input,
-		&.integer > div,
-		&.integer > div > input {
-			text-align: right;
-		}
 	}
 
 	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
@@ -123,5 +116,10 @@ article > ul.data ol.properties {
 		background: #efefef;
 		border-radius: 2px;
 		padding: 9px 10px;
+	}
+
+	> li.float > div,
+	> li.integer > div {
+		text-align: right;
 	}
 }

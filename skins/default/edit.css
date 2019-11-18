@@ -1,6 +1,8 @@
 article > form {
   background-color: #efefef; }
 
+article > form > ul.data ol.properties > li.float > div > input, article > form > ul.data ol.properties > li.integer > div > input {
+  text-align: right; }
 article > form > ul.data ol.properties > li > div > span.set {
   display: inline-block;
   vertical-align: top; }

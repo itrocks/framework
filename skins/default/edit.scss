@@ -5,6 +5,11 @@ article > form {
 
 article > form > ul.data ol.properties > li {
 
+	&.float > div > input,
+	&.integer > div > input {
+		text-align: right;
+	}
+
 	> div > span {
 
 		&.set {

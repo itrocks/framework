@@ -7,8 +7,6 @@ article ol.properties:not(.tiny) {
   display: block; }
   article ol.properties:not(.tiny) li {
     position: relative; }
-    article ol.properties:not(.tiny) li.float > div, article ol.properties:not(.tiny) li.float > div > input, article ol.properties:not(.tiny) li.integer > div, article ol.properties:not(.tiny) li.integer > div > input {
-      text-align: right; }
   article ol.properties:not(.tiny) > li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
     display: table-row;
     position: relative; }
@@ -79,3 +77,6 @@ article > ul.data ol.properties > li:not(.component-objects):not(.objects) > div
   background: #efefef;
   border-radius: 2px;
   padding: 9px 10px; }
+article > ul.data ol.properties > li.float > div,
+article > ul.data ol.properties > li.integer > div {
+  text-align: right; }
