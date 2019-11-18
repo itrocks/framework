@@ -119,8 +119,10 @@ class Linked_Classes_Compiler implements ICompiler
 	protected function compileUse(Reflection_Class $class, $trait_name, $replacement_trait_name)
 	{
 		$buffer           = $class->source->getSource();
-		$short_trait_name = $class->short_trait_names[$trait_name];
-		$buffer           = preg_replace_callback(
+		$short_trait_name = isset($class->short_trait_names[$trait_name])
+			? $class->short_trait_names[$trait_name]
+			: BS . $trait_name;
+		$buffer = preg_replace_callback(
 			'%(\s+use\s+)(' . str_replace(BS, BS . BS, $short_trait_name) . ')([;\s])%',
 			function($match) use ($replacement_trait_name) {
 				return $match[1] . BS . $replacement_trait_name . $match[3];
@@ -138,8 +140,8 @@ class Linked_Classes_Compiler implements ICompiler
 	 */
 	public function moreSourcesToCompile(More_Sources $more_sources)
 	{
-		// we will search all extends dependencies
-		$search = ['type' => Dependency::T_EXTENDS];
+		// we will search all extends and use dependencies
+		$search = ['type' => [Dependency::T_EXTENDS, Dependency::T_USE]];
 		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
 				if (!Class_Builder::isBuilt($class->name)) {

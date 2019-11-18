@@ -1095,10 +1095,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!isset($this->methods)) {
 			$this->scanUntilClassBegins();
 
-			$this->constants  = [];
-			$this->methods    = [];
-			$this->properties = [];
-			$this->traits     = [];
+			$this->constants         = [];
+			$this->methods           = [];
+			$this->properties        = [];
+			$this->short_trait_names = [];
+			$this->traits            = [];
 			unset($this->stop);
 
 			$depth = 0;
