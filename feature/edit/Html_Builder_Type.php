@@ -171,7 +171,8 @@ class Html_Builder_Type
 			foreach ($this->conditions as $condition_name => $condition_value) {
 				$this->name = $condition_name;
 				$name       = $this->getFieldName('', false);
-				$html_conditions[] = $name . '=' . $condition_value;
+				$operator   = (in_array(substr($condition_value, 0, 1), ['<', '>']) ? '' : '=');
+				$html_conditions[] = $name . $operator . $condition_value;
 			}
 			$this->name = $old_name;
 			$element->setAttribute('data-conditions', join(';', $html_conditions));

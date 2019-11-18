@@ -9,7 +9,15 @@ $(document).ready(function()
 		var will_change = {};
 
 		$.each(conditions.split(';'), function(condition_key, condition) {
-			condition = condition.split('=');
+			var index;
+			var operator = '=';
+			if ((index = condition.indexOf('>')) > -1) {
+				operator = ((condition[index + 1] === '=') ? '>=' : '>');
+			}
+			else if ((index = condition.indexOf('<')) > -1) {
+				operator = ((condition[index + 1] === '=') ? '<=' : '<');
+			}
+			condition = condition.split(operator);
 			var $condition;
 			if (will_change.hasOwnProperty(condition[0])) {
 				$condition = will_change[condition[0]];
@@ -36,6 +44,9 @@ $(document).ready(function()
 				$this.data('conditions')[condition_name] = { element: $condition, values: {}};
 			}
 			$.each(condition[1].split(','), function(value_key, value) {
+				if (operator !== '=') {
+					value = (operator + value);
+				}
 				$this.data('conditions')[condition_name].values[value] = value;
 			});
 			var this_name = $this.attr('name');
@@ -75,6 +86,16 @@ $(document).ready(function()
 								}
 								else if (value === '@set') {
 									found = element_value.length;
+								}
+								else if (value.startsWith('>')) {
+									found = value.startsWith('>=')
+										? (parseInt(element_value) >= parseInt(value.substr(2)))
+										: (parseInt(element_value) > parseInt(value.substr(1)));
+								}
+								else if (value.startsWith('<')) {
+									found = value.startsWith('<=')
+										? (parseInt(element_value) <= parseInt(value.substr(2)))
+										: (parseInt(element_value) < parseInt(value.substr(1)));
 								}
 								else {
 									found = (element_value === value);

@@ -34,8 +34,21 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 		if ($this->value) {
 			$conditions = [];
 			foreach ($this->value as $condition) {
-				if (strpos($condition, '=')) {
-					list($property_name, $condition) = explode('=', $condition);
+				if ($position = strpos($condition, '>')) {
+					$operator = (($condition[$position + 1] === '=') ? '>=' : '>');
+				}
+				elseif ($position = strpos($condition, '<')) {
+					$operator = (($condition[$position + 1] === '=') ? '<=' : '<');
+				}
+				elseif (strpos($condition, '=')) {
+					$operator = '=';
+				}
+				else {
+					$operator = '';
+				}
+				if ($operator) {
+					list($property_name, $condition) = explode($operator, $condition);
+					$condition = (($operator === '=') ? '' : $operator) . $condition;
 				}
 				else {
 					$property_name = $condition;
@@ -97,7 +110,8 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	{
 		$html_conditions = [];
 		foreach ($this->value as $condition_name => $condition_value) {
-			$html_conditions[] = $condition_name . '=' . $condition_value;
+			$operator          = (in_array(substr($condition_value, 0, 1), ['<', '>']) ? '' : '=');
+			$html_conditions[] = $condition_name . $operator . $condition_value;
 		}
 		return join(';', $html_conditions);
 	}
