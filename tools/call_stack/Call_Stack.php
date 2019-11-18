@@ -163,6 +163,36 @@ class Call_Stack
 		return false;
 	}
 
+	//-------------------------------------------------------------------------------- containsObject
+	/**
+	 * Returns true if the call stack contains the object, or an instance of a class
+	 *
+	 * containsClass will return the class where the call comes from, not the read class the object
+	 * was declared. containsObject tests the real final class of the object, or allow to search the
+	 * instance itself.
+	 *
+	 * @param $object object|string object or class name
+	 * @return boolean
+	 */
+	public function containsObject($object)
+	{
+		if (is_string($object)) {
+			foreach ($this->stack as $stack) {
+				if (isset($stack['object']) && (isA($stack['object'], $object))) {
+					return true;
+				}
+			}
+		}
+		else {
+			foreach ($this->stack as $stack) {
+				if (isset($stack['object']) && ($stack['object'] === $object)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------ getArgumentValue
 	/**
 	 * Returns the value of a function / method parameter that matches the name
