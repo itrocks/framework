@@ -240,7 +240,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				$class_name         = $this->property->getFinalClassName();
 				foreach ($filters_values as $filter) {
 					if (strpos($filter, '=')) {
-						list($filter, $filter_value_name) = explode('=', $filter);
+						[$filter, $filter_value_name] = explode('=', $filter);
 						$filter            = trim($filter);
 						$filter_value_name = trim($filter_value_name);
 					}
@@ -256,10 +256,18 @@ class Html_Builder_Property extends Html_Builder_Type
 					) {
 						$filters[$filter] = $filter_value_name;
 					}
-					else {
-						/** @noinspection PhpUnhandledExceptionInspection $filter value name must be valid */
+					elseif (property_exists($class_name, $filter_value_name)) {
+						/** @noinspection PhpUnhandledExceptionInspection property_exists */
 						$property         = new Reflection_Property($class_name, $filter_value_name);
 						$filters[$filter] = $property->pathAsField(true);
+					}
+					elseif (method_exists($class_name, $filter_value_name)) {
+						$filters[$filter] = $this->object->$filter_value_name();
+					}
+					else {
+						user_error(
+							'Not a method or property ' . $class_name . '::' . $filter_value_name, E_USER_ERROR
+						);
 					}
 				}
 			}

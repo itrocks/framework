@@ -245,8 +245,11 @@ class Html_Template extends Template
 					$id_value = '';
 				}
 				$prefix = $this->properties_prefix ? $this->functions->getPropertyPrefix($this) : null;
-				$value  = $id_value
-					. (new Html_Builder_Property($property, $value, $prefix))->setTemplate($this)->build();
+				$html_builder_property         = new Html_Builder_Property($property, $value, $prefix);
+				$html_builder_property->object = ($source_object instanceof Reflection_Property_Value)
+					? $source_object->getObject()
+					: $source_object;
+				$value = $id_value . $html_builder_property->setTemplate($this)->build();
 			}
 		}
 		else {
