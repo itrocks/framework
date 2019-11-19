@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency\Tools;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -77,6 +78,7 @@ class View_Builder_Class
 			$sub_class = new Reflection_Class(Builder::className($class_name));
 			if (
 				!$sub_class->isAbstract()
+				&& !Link_Annotation::of($sub_class)->value
 				&& $this->mysqli->exists(Store_Name_Annotation::of($sub_class)->value)
 			) {
 				$source_class_name = Builder::current()->sourceClassName($sub_class->name);
