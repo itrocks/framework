@@ -52,11 +52,11 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	 */
 	public function dateFormat()
 	{
-		$format = Locale::current()->date_format->format;
+		$date    = 'Y-m-d-H-i-s';
+		$date    = array_combine(explode('-', $date), explode('-', date($date)));
+		$format  = Locale::current()->date_format->format;
 		$format .= ' H:i' . ($this->property->getAnnotation('show_seconds')->value ? ':s' : '');
-		$format = strReplace(
-			['Y' => '2019', 'm' => '11', 'd' => '25', 'H' => '12', 'i' => '35', 's' => '45'], $format
-		);
+		$format  = strReplace($date, $format);
 		return $format;
 	}
 
