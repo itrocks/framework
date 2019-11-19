@@ -133,7 +133,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	private function search($what, $class_name, array $options)
+	protected function search($what, $class_name, array $options)
 	{
 		$options[] = Dao::sort();
 		if (
