@@ -17,6 +17,14 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
 Parser::$default_annotations = [
 
 	/**
+	 * @after_build_array afterBuildArray
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object is built from an array representation
+	 * - These methods may accept the built array as reference arguments, if needed
+	 */
+	Parser::T_CLASS . '@after_build_array' => Annotation::class,
+
+	/**
 	 * @after_commit afterCommit
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the written object are committed (transaction end)
@@ -81,7 +89,7 @@ Parser::$default_annotations = [
 	 * @before_build_array beforeBuildArray
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call before the object is built from an array representation
-	 * - These methods may accept an array as first reference argument, if needed
+	 * - These methods may accept the build array as reference argument, if needed
 	 */
 	Parser::T_CLASS . '@before_build_array' => Annotation::class,
 

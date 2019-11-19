@@ -150,6 +150,9 @@ class Object_Builder_Array
 				$object = $this->readObject($object, $build->read_properties);
 			}
 			$this->built_objects[] = new Built_Object($build->object);
+			foreach ($this->class->getAnnotations('after_build_array') as $after) {
+				call_user_func_array([$object, $after->value], [&$array]);
+			}
 			return $object;
 		}
 	}
@@ -731,9 +734,6 @@ class Object_Builder_Array
 				}
 			}
 			if (!(isset($array['id']) && $array['id'])) {
-				foreach ($this->class->getAnnotations('before_build_array') as $before) {
-					call_user_func_array([$this->class->name, $before->value], [&$array]);
-				}
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
 					$object = $this->class->newInstance();
@@ -745,6 +745,9 @@ class Object_Builder_Array
 		}
 		if ($this->composite && isA($object, Component::class)) {
 			$object->setComposite($this->composite);
+		}
+		foreach ($this->class->getAnnotations('before_build_array') as $before) {
+			call_user_func_array([$object, $before->value], [&$array]);
 		}
 		return isset($link_search) ? $link_search : null;
 	}
