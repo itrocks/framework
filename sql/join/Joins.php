@@ -179,6 +179,7 @@ class Joins
 
 	//----------------------------------------------------------------------------------- addFinalize
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $join               Join
 	 * @param $master_path        string
 	 * @param $foreign_class_name string
@@ -202,6 +203,13 @@ class Joins
 		}
 		$this->classes[$foreign_path] = $foreign_class_name;
 		$this->addProperties($foreign_path, $foreign_class_name, $join->mode);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		if (
+			(substr($join->foreign_table, -5) === '_view')
+			&& (new Reflection_Class($join->foreign_class))->isAbstract()
+		) {
+			$join->secondary['class'] = $join->master_column . '_class';
+		}
 		return $join;
 	}
 
