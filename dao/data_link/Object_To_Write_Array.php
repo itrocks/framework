@@ -438,12 +438,18 @@ class Object_To_Write_Array
 			}
 			$id_column_name = 'id_' . $property->name;
 			$storage_name   = 'id_' . $storage_name;
-			$write_value =
-				(Null_Annotation::of($property)->value && !isset($this->object->$id_column_name))
+			$write_value    =
+				(!isset($this->object->$id_column_name) && Null_Annotation::of($property)->value)
 				? null
 				: intval($this->object->$id_column_name);
-			if (is_object($value) && $element_type->isAbstractClass()) {
-				$class_name = Builder::current()->sourceClassName(get_class($value));
+			if ((is_object($value) || is_int($write_value)) && $element_type->isAbstractClass()) {
+				$class_column_name = $id_column_name . '_class';
+				if (isset($this->object->$class_column_name) && $this->object->$class_column_name) {
+					$class_name = $this->object->$class_column_name;
+				}
+				elseif (is_object($value)) {
+					$class_name = Builder::current()->sourceClassName(get_class($value));
+				}
 			}
 		}
 		return [$storage_name, $write_value, $write_property, $class_name];

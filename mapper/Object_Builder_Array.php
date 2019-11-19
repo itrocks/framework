@@ -275,6 +275,10 @@ class Object_Builder_Array
 		)) {
 			$object->$real_property_name = null;
 		}
+		if ($property->getType()->isAbstractClass() && strpos($value, ':')) {
+			$class_property_name = $property_name . '_class';
+			[$object->$class_property_name, $value] = explode(':', $value);
+		}
 		// forces the call to the AOP / setter, if there is one for the property
 		if ($value && (!isset($object->$property_name) || ($value != $object->$property_name))) {
 			/** @noinspection PhpUnhandledExceptionInspection object */
@@ -386,8 +390,9 @@ class Object_Builder_Array
 	 * @param $value    string
 	 * @return boolean true if property value is null
 	 */
-	private function buildProperty(Object_Builder_Array_Tool $build, Reflection_Property $property, $value)
-	{
+	private function buildProperty(
+		Object_Builder_Array_Tool $build, Reflection_Property $property, $value
+	) {
 		$null_if_empty = $build->null_if_empty;
 		$object        = $build->object;
 		$is_null       = $null_if_empty;
