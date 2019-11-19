@@ -144,7 +144,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					|| ($user_getter = $property->getAnnotation('user_getter')->value)
 				)
 			) {
-				$properties_with_getter[$property_path] = [$property, $user_getter];
+				$translate = $property->getAnnotation('translate')->value;
+				$properties_with_getter[$property_path] = [$property, $user_getter, $translate];
 			}
 		}
 		if ($properties_with_getter) {
@@ -155,7 +156,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					/** @noinspection PhpUnhandledExceptionInspection valid */
 					$object = Getter::getObject($object, $row->getClassName());
 				}
-				foreach ($properties_with_getter as $property_path => [$property, $user_getter]) {
+				foreach (
+					$properties_with_getter as $property_path => [$property, $user_getter, $translate]
+				) {
 					/** @noinspection PhpUnhandledExceptionInspection valid $object */
 					/** @var $property Reflection_Property */
 					$value = $user_getter
@@ -163,6 +166,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 						: $property->getValue($object);
 					if (is_object($value)){
 						$value = strval($value);
+					}
+					if ($translate === 'common') {
+						$value = Loc::tr($value);
 					}
 					$row->setValue($property_path, $value);
 				}
