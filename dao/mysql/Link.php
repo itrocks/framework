@@ -473,12 +473,21 @@ class Link extends Dao\Sql\Link
 		$fetch_class_name = ((new Type($class_name))->isAbstractClass())
 			? Abstract_Class::class
 			: $class_name;
+		$real_class_names = [];
 		$this->prepareFetch($fetch_class_name);
 		while ($object = $this->fetch($result_set, $fetch_class_name)) {
 			$this->setObjectIdentifier($object, $object->id);
 			// the most common key is the record id : do it quick
 			if ($keys === 'id') {
-				$search_result[$object->id] = $object;
+				$id = $object->id;
+				if ($fetch_class_name === Abstract_Class::class) {
+					$real_class_name = get_class($object);
+					if (!isset($real_class_names[$real_class_name])) {
+						$real_class_names[$real_class_name] = Builder::className($real_class_name);
+					}
+					$id = $real_class_names[$real_class_name] . ':' . $id;
+				}
+				$search_result[$id] = $object;
 			}
 			// result key can be calculated from a callable (call-back function)
 			elseif ($keys_is_callable || is_callable($keys)) {
