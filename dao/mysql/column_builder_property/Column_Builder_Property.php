@@ -30,7 +30,7 @@ trait Column_Builder_Property
 	private static function propertyDefaultToMysql(
 		Reflection_Property $property, Column $column
 	) {
-		$default = $property->getDefaultValue(false);
+		$default = $property->getDefaultValue('constant');
 		if (isset($default)) {
 			$property_type = $column->getType();
 			if ($property_type->isInteger()) {

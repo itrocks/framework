@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Tools\Can_Be_Empty;
@@ -295,13 +296,23 @@ class Reflection_Property extends ReflectionProperty
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
+	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
+	 *                        Set this to 'constant' to accept @default if @return_constant is set
 	 * @param $default_object object INTERNAL, DO NOT USE ! An empty object for optimization purpose
 	 * @return mixed
 	 */
 	public function getDefaultValue($use_annotation = true, &$default_object = null)
 	{
-		if ($use_annotation && $this->getAnnotation('default')->value) {
+		/** @noinspection PhpUnhandledExceptionInspection default_annotation must be a valid method */
+		/** @var $default_annotation Method_Annotation */
+		if (
+			$use_annotation
+			&& ($default_annotation = $this->getAnnotation('default'))->value
+			&& (
+				($use_annotation !== 'constant')
+				|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
+			)
+		) {
 			$was_accessible = $this->isPublic();
 			if (!$was_accessible) {
 				$this->setAccessible(true);

@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * This annotation template contains a callable method :
@@ -152,6 +153,17 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			$value = $class->getName() . '::' . $value;
 		}
 		return $value;
+	}
+
+	//--------------------------------------------------------------------------- getReflectionMethod
+	/**
+	 * @return Reflection_Method
+	 * @throws ReflectionException
+	 */
+	public function getReflectionMethod()
+	{
+		[$class, $method] = explode('::', $this->value);
+		return new Reflection_Method($class, $method);
 	}
 
 	//---------------------------------------------------------------------- searchIntoDeclaringTrait

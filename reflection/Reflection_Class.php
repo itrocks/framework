@@ -212,7 +212,8 @@ class Reflection_Class extends ReflectionClass
 	 * Private properties defaults are taken only if you set T_EXTENDS to true.
 	 *
 	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
-	 * @param $use_annotation boolean Set this to false to disable interpretation of @default
+	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
+	 *                        Set this to 'constant' to accept @default if @return_constant is set
 	 * @param $property_name  string for optimization purpose : only get defaults for this property
 	 * @return mixed[]
 	 */
@@ -241,7 +242,13 @@ class Reflection_Class extends ReflectionClass
 		if ($use_annotation) {
 			foreach ($defaults as $default_property_name => $value) {
 				$property = $this->getProperty($default_property_name);
-				if ($property->getAnnotation('default')->value) {
+				if (
+					($default_annotation = $this->getAnnotation('default'))->value
+					&& (
+						($use_annotation !== 'constant')
+						|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
+					)
+				) {
 					$defaults[$default_property_name] = $property->getDefaultValue(
 						$use_annotation, $default_object
 					);

@@ -264,6 +264,12 @@ Parser::$default_annotations = [
 	Parser::T_METHOD . '@return' => Documented_Type_Annotation::class,
 
 	/**
+	 * @return_constant [false]
+	 * The result of this function is constant (false to override a parent' true value)
+	 */
+	Parser::T_METHOD . '@return_constant' => Boolean_Annotation::class,
+
+	/**
 	 * @after_add_element afterAddElement
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the Collection/Map property element is added

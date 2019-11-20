@@ -35,6 +35,7 @@ class Default_Simple extends Default_Extended
 	//----------------------------------------------------------------------------------- defaultName
 	/**
 	 * @return string
+	 * @return_constant
 	 */
 	protected function defaultName()
 	{

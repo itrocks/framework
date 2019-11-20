@@ -519,6 +519,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
+	 * @return_constant
 	 */
 	public static function max()
 	{
@@ -532,6 +533,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
+	 * @return_constant
 	 */
 	public static function min()
 	{
