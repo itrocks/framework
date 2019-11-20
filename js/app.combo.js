@@ -109,11 +109,11 @@ $(document).ready(function()
 			$element.removeData('combo-value');
 		}
 		if ($element.prev().val() !== id) {
-			$element.prev().val(id);
+			$element.prev().attr('value', id);
 			$element.prev().change();
 		}
 		if ($element.val() !== value) {
-			$element.val(value);
+			$element.attr('value', value);
 			$element.change();
 		}
 	};
@@ -168,11 +168,11 @@ $(document).ready(function()
 					if (ui.item.class_name !== undefined) {
 						id = ui.item.class_name + ':' + id;
 					}
-					$id.val(id);
+					$id.attr('value', id);
 				}
 				// mouse click : copy the full value to the input
 				if (!event.keyCode) {
-					$value.val(ui.item.value);
+					$value.attr('value', ui.item.value);
 				}
 				$value.data('combo-value', ui.item.value);
 				if (!comboMatches($value)) {
@@ -203,7 +203,7 @@ $(document).ready(function()
 			}
 			else {
 				if (comboMatches($this)) {
-					$this.val($this.data('combo-value'));
+					$this.attr('value', $this.data('combo-value'));
 				}
 				else {
 					comboForce($this);
