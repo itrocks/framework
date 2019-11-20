@@ -30,9 +30,9 @@ $(document).ready(function()
 			$.post(uri, $form.formSerialize(), function(data)
 			{
 				if (data) {
-					if (data.substr(0, 1) === '{') {
+					if (['{', '['].indexOf(data.substr(0, 1)) > -1) {
 						$.each(JSON.parse(data), function(name, value) {
-							if ((name.indexOf('#')) > -1 || (name.indexOf('.') > -1)) {
+							if ((name.indexOf('#') > -1) || (name.indexOf('.') > -1)) {
 								$(name).html(value).build();
 							}
 							else {
@@ -42,9 +42,9 @@ $(document).ready(function()
 					}
 					else {
 						var $target = $(target);
-						$target.is('input, select')
-							? $target.val(data)
-							: $target.html(data).build();
+						$target.is('input')
+							? $target.attr('value', data)
+							: ($target.is('select') ? $target.val(data) : $target.html(data).build());
 					}
 				}
 				setTimeout(function() { on_event_pool.splice(on_event_pool_index, 1); });
@@ -89,9 +89,9 @@ $(document).ready(function()
 		}
 
 		if (do_change) {
-			$input.val(value);
+			$input.attr('value', value);
 			if ((string_value !== null)) {
-				$input.next().val(string_value).change();
+				$input.next().attr('value', string_value).change();
 			}
 			$input.change();
 		}
