@@ -40,7 +40,7 @@ class Update implements Registerable, Updatable
 		[$class_names, $feature_classes, $write] = $this->updateInit();
 		foreach (Dao::search(['type' => Dependency::T_DECLARATION], Dependency::class) as $dependency) {
 			$class_name = Builder::className($dependency->class_name);
-			$this->updateClassName($class_name, $class_names, $feature_clases, $write);
+			$this->updateClassName($class_name, $class_names, $feature_classes, $write);
 		}
 		$this->writeFeatureClasses($feature_classes, $write);
 	}
