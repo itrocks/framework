@@ -71,6 +71,23 @@ $(document).ready(function()
 		var $input       = $form.find(search);
 		var do_change    = true;
 		var string_value = null;
+		if (!$input.length) {
+			$input = $form.find(search.replace('=' + DQ, '="id_'));
+		}
+
+		if (((typeof value) === 'object') && (value[0] === undefined)) {
+			$.each(value, function(attribute, value) {
+				var $what = $input.next('input').attr(attribute) ? $input.next() : $input;
+				if (attribute.beginsWith('data-')) {
+					$what.removeData(attribute.substr(5));
+				}
+				$what.attr(attribute, value);
+				if (attribute === 'value') {
+					$what.change();
+				}
+			});
+			return;
+		}
 
 		// case we receive an array with the value (and id) and its string representation
 		if (Array.isArray(value)) {
