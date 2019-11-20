@@ -34,6 +34,9 @@ class Menu_Update extends Update
 	 */
 	public function update($last_time)
 	{
+		/** @var $class_names     string[] */
+		/** @var $feature_classes Keep[] */
+		/** @var $write           Keep[] */
 		[$class_names, $feature_classes, $write] = $this->updateInit();
 		$links             = array_keys(Menu::get()->configuration_items);
 		$print_model_links = array_keys(Dao::readAll(Print_Model::class, Dao::key('class_name')));

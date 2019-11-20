@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Feature_Class;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\PHP\Dependency;
@@ -37,6 +38,9 @@ class Update implements Registerable, Updatable
 	 */
 	public function update($last_time)
 	{
+		/** @var $class_names     string[] */
+		/** @var $feature_classes Keep[] */
+		/** @var $write           Keep[] */
 		[$class_names, $feature_classes, $write] = $this->updateInit();
 		foreach (Dao::search(['type' => Dependency::T_DECLARATION], Dependency::class) as $dependency) {
 			$class_name = Builder::className($dependency->class_name);
@@ -101,7 +105,7 @@ class Update implements Registerable, Updatable
 
 	//------------------------------------------------------------------------------------ updateInit
 	/**
-	 * @return array
+	 * @return array [$class_names string[], $feature_classes Keep[], $write Keep[]]
 	 */
 	protected function updateInit()
 	{
@@ -114,7 +118,7 @@ class Update implements Registerable, Updatable
 
 	//--------------------------------------------------------------------------- writeFeatureClasses
 	/**
-	 * @param $feature_classes string[]
+	 * @param $feature_classes Keep[]
 	 * @param $write           Keep[]
 	 */
 	protected function writeFeatureClasses(array $feature_classes, array $write)
@@ -122,7 +126,13 @@ class Update implements Registerable, Updatable
 		Dao::begin();
 		foreach ($feature_classes as $feature_class) {
 			if (!$feature_class->keep) {
-				Dao::delete($feature_class);
+				try {
+					Dao::delete($feature_class);
+				}
+				catch (Exception $exception) {
+					// keep feature classes that can't be deleted : it's better than crashing
+					// (eg may be used in print models, subscriptions)
+				}
 			}
 		}
 		foreach ($write as $feature_class) {
