@@ -75,7 +75,7 @@ $(document).ready(function()
 			$input = $form.find(search.replace('=' + DQ, '="id_'));
 		}
 
-		if (((typeof value) === 'object') && (value[0] === undefined)) {
+		if (((typeof value) === 'object') && value && !value.hasOwnProperty('0')) {
 			$.each(value, function(attribute, value) {
 				var $what = $input.next('input').attr(attribute) ? $input.next() : $input;
 				if (attribute.beginsWith('data-')) {
