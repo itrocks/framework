@@ -1,4 +1,6 @@
 nav#menu {
+  display: grid;
+  grid-template-rows: auto 1fr;
   overflow: hidden;
   position: relative; }
   nav#menu > .actions {
@@ -20,39 +22,41 @@ nav#menu {
       width: calc(100% - 30px); }
   nav#menu > h2 {
     display: none; }
-  nav#menu > ul > li > h3 {
-    background-color: #f8f8f8;
-    display: table;
-    font-size: 14px;
-    font-weight: normal;
-    height: 41px;
-    width: 100%; }
-    nav#menu > ul > li > h3 > a {
-      cursor: default;
-      display: table-cell;
-      padding-left: 42px;
-      vertical-align: middle; }
-  nav#menu > ul > li:focus > h3, nav#menu > ul > li:hover > h3, nav#menu > ul > li.selected > h3 {
-    background: #efefef;
-    position: relative; }
-    nav#menu > ul > li:focus > h3:before, nav#menu > ul > li:hover > h3:before, nav#menu > ul > li.selected > h3:before {
-      background: var(--dark-color);
-      content: '';
-      display: inline-block;
-      height: 100%;
-      position: absolute;
-      width: 4px; }
-  nav#menu > ul > li > ul > li {
-    display: table;
-    height: 29px;
-    margin: 1px 0;
-    width: 100%; }
-    nav#menu > ul > li > ul > li > a {
-      display: table-cell;
-      padding-left: 54px;
-      vertical-align: middle; }
-    nav#menu > ul > li > ul > li:focus, nav#menu > ul > li > ul > li:hover, nav#menu > ul > li > ul > li.selected {
-      background: var(--light-color); }
+  nav#menu > ul {
+    overflow: hidden; }
+    nav#menu > ul > li > h3 {
+      background-color: #f8f8f8;
+      display: table;
+      font-size: 14px;
+      font-weight: normal;
+      height: 41px;
+      width: 100%; }
+      nav#menu > ul > li > h3 > a {
+        cursor: default;
+        display: table-cell;
+        padding-left: 42px;
+        vertical-align: middle; }
+    nav#menu > ul > li:focus > h3, nav#menu > ul > li:hover > h3, nav#menu > ul > li.selected > h3 {
+      background: #efefef;
+      position: relative; }
+      nav#menu > ul > li:focus > h3:before, nav#menu > ul > li:hover > h3:before, nav#menu > ul > li.selected > h3:before {
+        background: var(--dark-color);
+        content: '';
+        display: inline-block;
+        height: 100%;
+        position: absolute;
+        width: 4px; }
+    nav#menu > ul > li > ul > li {
+      display: table;
+      height: 29px;
+      margin: 1px 0;
+      width: 100%; }
+      nav#menu > ul > li > ul > li > a {
+        display: table-cell;
+        padding-left: 54px;
+        vertical-align: middle; }
+      nav#menu > ul > li > ul > li:focus, nav#menu > ul > li > ul > li:hover, nav#menu > ul > li > ul > li.selected {
+        background: var(--light-color); }
 
 body.min-left > nav#menu > .actions > .filter {
   display: none; }

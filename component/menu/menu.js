@@ -85,8 +85,8 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------ #menu mousewheel
 	$body.build('mousewheel', '#menu', function(event)
 	{
-		var $menu = $(this);
-		$menu.scrollTop($menu.scrollTop() - (event.deltaFactor * event.deltaY));
+		var $items = $(this).children('ul');
+		$items.scrollTop($items.scrollTop() - (event.deltaFactor * event.deltaY));
 	});
 
 });

@@ -3,6 +3,8 @@
 @import 'sizes.scss';
 
 nav#menu {
+	display: grid;
+	grid-template-rows: auto 1fr;
 	overflow: hidden;
 	position: relative;
 
@@ -41,6 +43,7 @@ nav#menu {
 	}
 
 	> ul {
+		overflow: hidden;
 
 		> li {
 
