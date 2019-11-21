@@ -3,6 +3,7 @@
 @import 'sizes.scss';
 
 nav#menu {
+	overflow: hidden;
 	position: relative;
 
 	> .actions {

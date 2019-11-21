@@ -82,4 +82,11 @@ $(document).ready(function()
 		});
 	});
 
+	//------------------------------------------------------------------------------ #menu mousewheel
+	$body.build('mousewheel', '#menu', function(event)
+	{
+		var $menu = $(this);
+		$menu.scrollTop($menu.scrollTop() - (event.deltaFactor * event.deltaY));
+	});
+
 });
