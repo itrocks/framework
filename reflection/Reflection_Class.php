@@ -143,18 +143,25 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Gets defined constants from a class
 	 *
-	 * TODO Problem with this implementation : if a parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
+	 * TODO Problem with this implementation : if a interface/parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_USE
+	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants(array $flags = [T_EXTENDS, T_USE])
+	public function getConstants(array $flags = [T_EXTENDS, T_IMPLEMENTS, T_USE])
 	{
 		$constants = parent::getConstants();
 		$flags     = array_flip($flags);
 		if (!isset($flags[T_EXTENDS])) {
 			if ($parent = $this->getParentClass()) {
 				foreach (array_keys($parent->getConstants([T_EXTENDS, T_USE])) as $constant_name) {
+					unset($constants[$constant_name]);
+				}
+			}
+		}
+		if (!isset($flags[T_IMPLEMENTS])) {
+			foreach ($this->getInterfaces() as $interface) {
+				foreach (array_keys($interface->getConstants([T_IMPLEMENTS])) as $constant_name) {
 					unset($constants[$constant_name]);
 				}
 			}
