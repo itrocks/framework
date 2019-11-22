@@ -215,12 +215,16 @@ class Object_Builder_Array
 			if ($combine = is_numeric(key($first_row))) {
 				unset($array[key($array)]);
 			}
+			$old_collection_keys = [];
+			foreach ($old_collection as $key => $old_element) if (isset($old_element->id)) {
+				$old_collection_keys[$old_element->id] = $key;
+			}
 			foreach ($array as $key => $element) {
 				if ($combine) {
 					$element = array_combine($first_row, $element);
 				}
-				$object = (isset($element['id']) && isset($old_collection[$element['id']]))
-					? $old_collection[$element['id']]
+				$object = (isset($element['id']) && isset($old_collection_keys[$element['id']]))
+					? $old_collection[$old_collection_keys[$element['id']]]
 					: null;
 				$object = $builder->build(
 					$element, $object, $this->null_if_empty_sub_objects || $null_if_empty
