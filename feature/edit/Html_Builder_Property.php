@@ -60,8 +60,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$this->null     = $property->getAnnotation('null')->value;
 			$this->property = $property;
 
-			/** @var $user_annotation User_Annotation */
-			$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
+			$user_annotation = User_Annotation::of($property);
 
 			/** @var $user_default_annotation Method_Annotation */
 			$user_default_annotation = $property->getAnnotation('user_default');
@@ -88,7 +87,8 @@ class Html_Builder_Property extends Html_Builder_Type
 			}
 
 			// 1st, get read_only from @user readonly
-			$this->readonly = ($user_annotation->has(User_Annotation::READONLY)
+			$this->readonly = (
+				$user_annotation->has(User_Annotation::READONLY)
 				// Create_only annotation and object already exists ? ==> readonly = true
 				|| (
 					$user_annotation->has(User_Annotation::CREATE_ONLY)

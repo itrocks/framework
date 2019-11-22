@@ -191,14 +191,15 @@ class Object_Builder_Array
 	 * $array[$property_name][$object_number] = $value
 	 * $array[0][$column_number] = 'property_name' then $array[$object_number][$column_number] = $value
 	 *
-	 * @param $class_name    string
-	 * @param $array         array
-	 * @param $null_if_empty boolean
-	 * @param $composite     object the composite object, if linked
+	 * @param $class_name     string
+	 * @param $old_collection object[] the value of the collection, read from the object
+	 * @param $array          array
+	 * @param $null_if_empty  boolean
+	 * @param $composite      object the composite object, if linked
 	 * @return object[]
 	 */
 	public function buildCollection(
-		$class_name, array $array, $null_if_empty = false, $composite = null
+		$class_name, $old_collection, array $array, $null_if_empty = false, $composite = null
 	) {
 		$collection = [];
 		if ($array) {
@@ -218,8 +219,11 @@ class Object_Builder_Array
 				if ($combine) {
 					$element = array_combine($first_row, $element);
 				}
+				$object = (isset($element['id']) && isset($old_collection[$element['id']]))
+					? $old_collection[$element['id']]
+					: null;
 				$object = $builder->build(
-					$element, null, $this->null_if_empty_sub_objects || $null_if_empty
+					$element, $object, $this->null_if_empty_sub_objects || $null_if_empty
 				);
 				if (isset($object)) {
 					$collection[$key] = $object;
@@ -446,7 +450,10 @@ class Object_Builder_Array
 				// collection
 				elseif ($link->isCollection()) {
 					$class_name = $type->getElementTypeAsString();
-					$value      = $this->buildCollection($class_name, $value, $null_if_empty, $object);
+					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
+					$value = $this->buildCollection(
+						$class_name, $property->getValue($object), $value, $null_if_empty, $object
+					);
 				}
 				// map or not-linked array of objects
 				elseif ($type->isClass()) {
