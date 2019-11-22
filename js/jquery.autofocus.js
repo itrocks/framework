@@ -14,13 +14,10 @@
 			enabled = enable;
 			return;
 		}
-		if (!enabled) {
+		var $this = $(this);
+		if (!enabled || isPhone() || $this.find('.disable-autofocus').length) {
 			return;
 		}
-		if (isPhone()) {
-			return;
-		}
-		var $this   = $(this);
 		var $inputs = $this.find('input, select, textarea');
 		var $focus  = $inputs.filter('[data-focus]');
 		if ($focus.length) {
