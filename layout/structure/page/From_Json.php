@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Layout\Structure\Page;
 
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
+use ITRocks\Framework\Layout\Structure\Draw;
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 use ITRocks\Framework\Layout\Structure\Field\Property;
@@ -23,12 +23,15 @@ class From_Json
 	 * @var array string[$class_name string][string integer|string]
 	 */
 	public $builder = [
-		Property\Image::class     => ['field', 'format' => 'image'],
-		Property\Resizable::class => ['field', 'format' => 'text-cr'],
-		Property::class           => ['field'],
-		Snap_Line::class          => ['class' => 'snap'],
-		Text\Resizable::class     => ['text', 'format' => 'text-cr'],
-		Text::class               => ['text']
+		Draw\Horizontal_Line::class => ['class' => 'horizontal line field'],
+		Draw\Rectangle::class       => ['class' => 'rectangle field'],
+		Draw\Snap_Line::class       => ['class' => 'snap line'],
+		Draw\Vertical_Line::class   => ['class' => 'vertical line field'],
+		Property\Image::class       => ['field', 'format' => 'image'],
+		Property\Resizable::class   => ['field', 'format' => 'text-cr'],
+		Property::class             => ['field'],
+		Text\Resizable::class       => ['text', 'format' => 'text-cr'],
+		Text::class                 => ['text']
 	];
 
 	//--------------------------------------------------------------------------------------- $ignore

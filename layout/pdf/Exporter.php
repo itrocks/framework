@@ -3,7 +3,7 @@ namespace ITRocks\Framework\Layout\PDF;
 
 use ITRocks\Framework\Feature\Export\PDF;
 use ITRocks\Framework\Layout\Output;
-use ITRocks\Framework\Layout\Structure\Draw\Rectangle;
+use ITRocks\Framework\Layout\Structure\Draw;
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field\Image;
 use ITRocks\Framework\Layout\Structure\Field\Text;
@@ -84,6 +84,7 @@ class Exporter implements Output
 	protected function element(Element $element)
 	{
 		$pdf = $this->pdf;
+
 		if ($element instanceof Image) {
 			$file  = $element->file;
 			$image = Tools\Image::createFromString($file->content);
@@ -100,6 +101,7 @@ class Exporter implements Output
 				$pdf->Image($file->temporary_file_name, $left, $top, $width, $height);
 			}
 		}
+
 		elseif ($element instanceof Text) {
 			$position = $element->top;
 			foreach (explode(LF, $element->text) as $text) {
@@ -113,8 +115,19 @@ class Exporter implements Output
 				$position += $element->font_size;
 			}
 		}
-		elseif ($element instanceof Rectangle) {
+
+		elseif ($element instanceof Draw\Horizontal_Line) {
+			$this->pdf->Line(
+				$element->left, $element->top, $element->left + $element->width, $element->top
+			);
+		}
+		elseif ($element instanceof Draw\Rectangle) {
 			$this->pdf->Rect($element->left, $element->top, $element->width, $element->height);
+		}
+		elseif ($element instanceof Draw\Vertical_Line) {
+			$this->pdf->Line(
+				$element->left, $element->top, $element->left, $element->top + $element->height
+			);
 		}
 	}
 

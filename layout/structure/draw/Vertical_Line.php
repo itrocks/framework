@@ -4,9 +4,9 @@ namespace ITRocks\Framework\Layout\Structure\Draw;
 use ITRocks\Framework\Layout\Structure\Element;
 
 /**
- * A rectangle
+ * A vertical line
  */
-class Rectangle extends Element
+class Vertical_Line extends Element
 {
 
 	//--------------------------------------------------------------------------------------- $height
@@ -17,9 +17,9 @@ class Rectangle extends Element
 	 * @todo remove this default value when height is always set for the rectangle by the designer
 	 * @var float
 	 */
-	public $height = 12.5;
+	public $height = 25;
 
 	//----------------------------------------------------------------------------------- DUMP_SYMBOL
-	const DUMP_SYMBOL = ']';
+	const DUMP_SYMBOL = '|';
 
 }
