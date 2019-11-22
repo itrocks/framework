@@ -35,6 +35,8 @@ article.layout-model .buttons.toolbox > section {
   font-size: 0; }
   article.layout-model .buttons.toolbox > section > ul {
     display: inline-block; }
+  article.layout-model .buttons.toolbox > section > .selected.tools > label {
+    display: none; }
 article.layout-model .buttons.toolbox ul > li {
   border: 1px solid #ddd;
   width: 28px; }

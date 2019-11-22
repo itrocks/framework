@@ -30,6 +30,7 @@ $(document).ready(function()
 		// remove property / tool classes
 		$dropped.removeClass('property');
 		$dropped.removeClass('tool');
+		$dropped.build();
 	};
 
 	//----------------------------------------------------------------------------- pageLayoutInput
@@ -287,6 +288,19 @@ $(document).ready(function()
 		else if ($this.is('.smaller')) value -= ((value <= 6) ? .2 : 1);
 		value = (Math.round(Math.max(1, value) * 10) / 10);
 		$size.val(value).change();
+	});
+
+	//------------------------------------------------------------------------------------ .free-text
+	$body.build('call', 'article.layout-model .designer .free-text.field', function()
+	{
+		this.attr('contenteditable', true);
+		this.css('white-space', 'pre-wrap');
+		this.keydown(function(event) {
+			if (event.keyCode === 13) {
+				document.execCommand('insertHTML', false, '\n');
+				return false;
+			}
+		});
 	});
 
 });

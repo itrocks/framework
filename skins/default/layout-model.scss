@@ -54,6 +54,10 @@ article.layout-model {
 		> ul {
 			display: inline-block;
 		}
+
+		> .selected.tools > label {
+			display: none;
+		}
 	}
 
 	.buttons.toolbox ul > li {
