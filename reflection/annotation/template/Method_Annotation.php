@@ -150,7 +150,9 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			if ($value === true) {
 				$value = Names::propertyToMethod($annotation_name);
 			}
-			$value = $class->getName() . '::' . $value;
+			$value = (substr($value, 0, 1) === SL)
+				? substr($value, 1)
+				: ($class->getName() . '::' . $value);
 		}
 		return $value;
 	}

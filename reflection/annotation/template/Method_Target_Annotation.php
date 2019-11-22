@@ -40,6 +40,9 @@ class Method_Target_Annotation extends Method_Annotation
 	 */
 	public function asHtmlData($object = null)
 	{
+		if (strpos($this->value, SL) && !strpos($this->value, '::')) {
+			return $this->value;
+		}
 		$identifier = $object ? Dao::getObjectIdentifier($object) : null;
 		list($class_name, $method_name) = explode('::', $this->value);
 		$class_name = Builder::current()->sourceClassName($class_name);
