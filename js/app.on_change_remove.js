@@ -119,7 +119,10 @@ $(document).ready(function()
 	$body.build('change', selector, function()
 	{
 		var $this = $(this);
-		if (($this.attr('type') === 'checkbox') || !$this.data('realtime-change')) {
+		if (
+			(($this.attr('type') === 'checkbox') || !$this.data('realtime-change'))
+			&& !$this.is('input:focus, textarea:focus')
+		) {
 			onEvent.call(this, 'on-change');
 		}
 	});
