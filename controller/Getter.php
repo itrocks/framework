@@ -82,7 +82,9 @@ abstract class Getter
 	{
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
-		$_suffix             = $suffix ? ('_' . $suffix) : '';
+		$_suffix = $suffix ? ('_' . $suffix) : '';
+		$is_html = ($extension === 'html');
+		$is_php  = ($extension === 'php');
 
 		$application_classes_filter = (new Application_Class_Tree_Filter($base_class))
 			->prepare()
@@ -117,7 +119,10 @@ abstract class Getter
 				if (isset($GLOBALS['D'])) {
 					static::debug('A1', $path . SL . $feature_what . $_suffix . $ext, 'run', $extension);
 				}
-				if (file_exists($path . SL . $feature_what . $_suffix . $ext)) {
+				if (
+					file_exists($path . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($class_name . BS . $feature_what . $_suffix))
+				) {
 					$class = $class_name . BS . $feature_what . $_suffix;
 					break 2;
 				}
@@ -129,9 +134,10 @@ abstract class Getter
 						$extension
 					);
 				}
-				if (file_exists(
-					$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
-				)) {
+				if (
+					file_exists($path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($class_name . BS . $feature_namespace . BS . $feature_what . $_suffix))
+				) {
 					$class = $class_name . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break 2;
 				}
@@ -140,7 +146,11 @@ abstract class Getter
 						'A3', $path . SL . $feature_directory . SL . $suffix . $ext, 'run', $extension
 					);
 				}
-				if ($suffix && file_exists($path . SL . $feature_directory . SL . $suffix . $ext)) {
+				if (
+					$suffix
+					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
+					&& ($is_html || class_exists($class_name . BS . $feature_namespace . BS . $suffix))
+				) {
 					$class = $class_name . BS . $feature_namespace . BS . $suffix;
 					break 2;
 				}
@@ -152,9 +162,10 @@ abstract class Getter
 						$extension
 					);
 				}
-				if (file_exists(
-					Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext
-				)) {
+				if (
+					file_exists(Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($class_name . '_' . $feature_what . $_suffix))
+				) {
 					$class = $class_name . '_' . $feature_what . $_suffix;
 					break 2;
 				}
@@ -164,9 +175,10 @@ abstract class Getter
 					);
 				}
 				if (
-					$suffix
-					&& ($extension !== 'html')
+					$is_php
+					&& $suffix
 					&& file_exists($path . SL . $suffix . $ext)
+					&& class_exists($class_name . BS . $suffix)
 					&& method_exists($class_name . BS . $suffix, 'run' . ucfirst($feature_name))
 				) {
 					$class  = $class_name . BS . $suffix;
@@ -176,7 +188,12 @@ abstract class Getter
 				if (isset($GLOBALS['D']) && $suffix) {
 					static::debug('A6', $path . SL . $suffix . $ext, 'run', $extension);
 				}
-				if ($suffix && $ext && file_exists($path . SL . $suffix . $ext)) {
+				if (
+					$ext
+					&& $suffix
+					&& file_exists($path . SL . $suffix . $ext)
+					&& ($is_html || class_exists($class_name . BS . $suffix))
+				) {
 					$class = $class_name . BS . $suffix;
 					break 2;
 				}
@@ -218,6 +235,7 @@ abstract class Getter
 					$can_be_project_class
 					&& $suffix
 					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . $feature_namespace . BS . $suffix))
 				) {
 					$class = $namespace . BS . $feature_namespace . BS . $suffix;
 					break;
@@ -232,9 +250,8 @@ abstract class Getter
 				}
 				if (
 					$can_be_project_class
-					&& file_exists(
-						$path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext
-					)
+					&& file_exists($path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . $feature_namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
@@ -245,6 +262,7 @@ abstract class Getter
 				if (
 					$can_be_project_class
 					&& file_exists($path . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . $feature_what . $_suffix;
 					break;
@@ -257,9 +275,11 @@ abstract class Getter
 						$extension
 					);
 				}
-				if ($suffix && file_exists(
-					$path . SL . 'feature' . SL . $feature_directory . SL . $suffix . $ext
-				)) {
+				if (
+					$suffix
+					&& file_exists($path . SL . 'feature' . SL . $feature_directory . SL . $suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix))
+				) {
 					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
@@ -272,12 +292,11 @@ abstract class Getter
 						$extension
 					);
 				}
-				if (file_exists(
-					$path . SL . 'feature' . SL . $feature_directory . SL
-					. $feature_what . $_suffix . $ext
-				)) {
-					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS
-						. $feature_what . $_suffix;
+				if (
+					file_exists($path . SL . 'feature' . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $feature_what . $_suffix))
+				) {
+					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
 				}
 				if (isset($GLOBALS['D']) && $suffix) {
@@ -288,9 +307,11 @@ abstract class Getter
 						$extension
 					);
 				}
-				if ($suffix && file_exists(
-						$path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext
-					)) {
+				if (
+					$suffix
+					&& file_exists($path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix))
+				) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix;
 					break;
 				}
@@ -303,12 +324,11 @@ abstract class Getter
 						$extension
 					);
 				}
-				if (file_exists(
-					$path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what
-					. $_suffix . $ext
-				)) {
-					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what
-						. $_suffix;
+				if (
+					file_exists($path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
+					&& ($is_html || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what . $_suffix))
+				) {
+					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
 				}
 				// next application is the parent one
@@ -335,7 +355,9 @@ abstract class Getter
 				if (isset($GLOBALS['D'])) static::debug('C1', $base_class, $feature_name, $extension);
 				/** @noinspection PhpUnhandledExceptionInspection method_exists */
 				if (
-					method_exists($base_class, $feature_name)
+					$is_php
+					&& class_exists($base_class)
+					&& method_exists($base_class, $feature_name)
 					&& (
 						!($reflection_method = new Reflection_Method($base_class, $feature_name))->getParameters()
 						|| $reflection_method->hasParameter('parameters')
@@ -367,7 +389,10 @@ abstract class Getter
 							'C2', $path . SL . strtolower($sub) . '/Default_' . $suffix . $ext, 'run', $extension
 						);
 					}
-					if (file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)) {
+					if (
+						file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)
+						&& ($is_html || class_exists($namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix))
+					) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
 					}
