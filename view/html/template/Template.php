@@ -1016,13 +1016,18 @@ class Template
 		$length             = strlen($loop->var_name);
 		$length_end         = $this->parseLoopVarName($loop, $content, $else_j, $end_j);
 		$i                 += $length + 3;
+		$is_target          = false;
 		$loop->content      = substr($content, $i, $else_j - $i);
 		$loop->else_content = ($else_j === $end_j)
 			? ''
 			: substr($content, $else_j + 11, $end_j - $else_j - 11);
 		$this->parseLoopContentSections($loop);
-		if ($is_target = (substr($loop->var_name, 0, 7) === 'target ')) {
-			$elements              = reset($this->objects);
+		if (substr($loop->var_name, 0, 7) === 'target ') {
+			$elements = null;
+			if (isset($this->parameters[Parameter::AS_WIDGET])) {
+				$is_target = true;
+				$elements  = reset($this->objects);
+			}
 			$loop->force_condition = true;
 		}
 		else {
