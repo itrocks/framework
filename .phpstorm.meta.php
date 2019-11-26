@@ -38,6 +38,9 @@ $STATIC_METHOD_TYPES = [
 	Call_Stack::getObject('') => [
 		'' == '@'
 	],
+	Call_Stack::getObjectArgument('') => [
+		'' == '@'
+	],
 	Current::current('') => [
 		'' == '@'
 	],
