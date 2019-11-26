@@ -663,16 +663,16 @@ class Template
 	{
 		if (!strpos($class_name, BS)) {
 			if (isset($this->use[$class_name])) {
-				return $this->use[$class_name];
+				$class_name = $this->use[$class_name];
 			}
 			else {
-				return Namespaces::defaultFullClassName(
+				$class_name = Namespaces::defaultFullClassName(
 					$class_name,
 					get_class($this->getRootObject())
 				);
 			}
 		}
-		return $class_name;
+		return Builder::className($class_name);
 	}
 
 	//------------------------------------------------------------------------------- parseCollection
