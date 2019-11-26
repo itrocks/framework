@@ -12,7 +12,7 @@ article {
       article header > .breadcrumb > li > a {
         display: block;
         height: 100%;
-        padding: 10px 4px 0; }
+        padding: 10px 4px; }
     article header > h2 {
       box-sizing: border-box;
       cursor: pointer;
