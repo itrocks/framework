@@ -180,9 +180,17 @@ class Object_To_Write_Array
 				&& !Store_Annotation::of($property)->isFalse()
 			) {
 				$property_name   = $property->name;
-				Getter::$ignore  = true;
-				$is_property_set = isset($this->object->$property_name);
-				Getter::$ignore  = $aop_getter_ignore;
+				if (
+					Link_Annotation::of($property)->isCollection()
+					|| $property->getAnnotation('component')->value
+				) {
+					Getter::$ignore  = true;
+					$is_property_set = isset($this->object->$property_name);
+					Getter::$ignore  = $aop_getter_ignore;
+				}
+				else {
+					$is_property_set = true;
+				}
 				/** @noinspection PhpUnhandledExceptionInspection $property is valid for $object */
 				$value = $is_property_set ? $property->getValue($this->object) : null;
 				if (is_null($value) && !Null_Annotation::of($property)->value) {
