@@ -417,7 +417,7 @@ class Parameters
 	public function shiftUnnamed()
 	{
 		foreach ($this->parameters as $key => $value) {
-			if (is_numeric($key) && !is_object($value)) {
+			if ((is_numeric($key) || ($key === '')) && !is_object($value)) {
 				unset($this->parameters[$key]);
 				return $value;
 			}
