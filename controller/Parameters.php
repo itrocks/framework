@@ -175,7 +175,15 @@ class Parameters
 				&& ($object[0] === SL)
 				&& ctype_upper($object[1])
 			) {
-				$object = new Uri($object);
+				$get = [];
+				if (strpos($object, '?')) {
+					list($object, $get_string) = explode('?', $object, 2);
+					foreach (explode('&', $get_string) as $get_element) {
+						[$key, $val]          = explode('=', $get_element);
+						$get[urldecode($key)] = urldecode($val);
+					}
+				}
+				$object = new Uri($object, $get);
 			}
 			$this->objects[$parameter_name] = $object;
 		}
