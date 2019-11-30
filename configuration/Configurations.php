@@ -54,8 +54,15 @@ class Configurations
 		if (file_exists('composer.json')) {
 			$composer = file_get_contents('composer.json');
 			preg_match(
-				'~\n\s*\"name\":\s*\"(?P<vendor>[\w-]*)/(?P<project>[\w-]*)\"\s*,~', $composer, $match
+				'~\n\s*\"itrocks-config\":\s*\"(?P<vendor>[\w-]*)/(?P<project>[\w-]*)\"\s*,~',
+				$composer,
+				$match
 			);
+			if (!$match) {
+				preg_match(
+					'~\n\s*\"name\":\s*\"(?P<vendor>[\w-]*)/(?P<project>[\w-]*)\"\s*,~', $composer, $match
+				);
+			}
 			if ($match) {
 				if (endsWith($match['project'], '-final')) {
 					$match['project'] = lLastParse($match['project'], '-final');
