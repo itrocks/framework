@@ -81,6 +81,26 @@ class Textile extends Parser
 		return $this->in_code ? $string : parent::encodeHTML($string, $quotes);
 	}
 
+	//---------------------------------------------------------------------------------- fTextileList
+	/**
+	 * Constructs a HTML list from a Textile list structure.
+	 *
+	 * This method is used by Parser::textileLists() to process
+	 * found list structures.
+	 *
+	 * @param  $m array
+	 * @return string HTML list
+	 */
+	protected function fTextileList($m)
+	{
+		// Ignores "Trying to access array offset on value of type bool in /home/baptiste/PhpStorm/itrocks/itrocks-wiki/vendor/netcarver/textile/src/Netcarver/Textile/Parser.php on line 3089"
+		// They test $prev['ml'] but $prev equals false, the first time.
+		$error_reporting = error_reporting(E_ALL & ~ E_NOTICE);
+		$result = parent::fTextileList($m);
+		error_reporting($error_reporting);
+		return $result;
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * @param $text string
