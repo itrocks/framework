@@ -542,7 +542,15 @@ class Main
 			if (isset($this->redirection)) {
 				$uri = $this->redirection;
 				unset($this->redirection);
-				$get  = [];
+				if (isset($get[Parameter::AS_WIDGET])) {
+					$get = [Parameter::AS_WIDGET => $get[Parameter::AS_WIDGET]];
+				}
+				elseif (in_array(Parameter::AS_WIDGET, $get)) {
+					$get = [array_search(Parameter::AS_WIDGET, $get) => Parameter::AS_WIDGET];
+				}
+				else {
+					$get = [];
+				}
 				$post = [];
 				if (($query_position = strpos($uri, '?')) !== false) {
 					list($uri, $query) = explode('?', $uri, 2);
