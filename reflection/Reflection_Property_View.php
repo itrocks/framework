@@ -37,11 +37,15 @@ class Reflection_Property_View
 	{
 		$type = $this->property->getType();
 		if (is_string($value) && $type->isString()) {
-			$value = str_replace(['{', '}', '<', '>'], ['&lbrace;', '&rbrace;', '&lt;', '&gt;'], $value);
+			$value = str_replace(['<', '>'], ['&lt;', '&gt;'], $value);
+			$value = preg_replace('/{(~\s)/', '&lbrace;$1', $value);
+			$value = preg_replace('/(~\s)}/', '$1&rbrace;', $value);
 		}
 		elseif (is_array($value) && $type->isMultipleString()) {
 			foreach ($value as &$val) {
-				$val = str_replace(['{', '}', '<', '>'], ['&lbrace;', '&rbrace;', '&lt;', '&gt;'], $val);
+				$val = str_replace(['<', '>'], ['&lt;', '&gt;'], $val);
+				$val = preg_replace('/{(~\s)/', '&lbrace;$1', $val);
+				$val = preg_replace('/(~\s)}/', '$1&rbrace;', $val);
 			}
 		}
 		return $type->isBasic()
