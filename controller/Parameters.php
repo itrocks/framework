@@ -355,6 +355,9 @@ class Parameters
 	 */
 	public function set($parameter_name, $parameter_value)
 	{
+		if (isset($this->objects[$parameter_name])) {
+			$this->objects[$parameter_name] = $parameter_value;
+		}
 		$this->parameters[$parameter_name] = $parameter_value;
 		return $this;
 	}
@@ -469,6 +472,9 @@ class Parameters
 	{
 		if (is_object($parameter_value)) {
 			$class_name = get_class($parameter_value);
+			if (isset($this->objects[$class_name])) {
+				$this->objects[$class_name] = $parameter_value;
+			}
 			if (isset($this->parameters[$class_name])) {
 				unset($this->parameters[$class_name]);
 			}
