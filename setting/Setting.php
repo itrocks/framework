@@ -94,9 +94,13 @@ class Setting implements Validate\Exception
 				);
 				$class_name->setAccessible(false);
 			}
-			$this->value->setting->code = str_replace('.data_list', '.list', $this->value->setting->code);
+			if (is_object($this->value)) {
+				$this->value->setting->code = str_replace(
+					'.data_list', '.list', $this->value->setting->code
+				);
+			}
 		}
-		if (!isset($this->value->setting)) {
+		if (is_object($this->value) && !isset($this->value->setting)) {
 			$this->value->setting = $this;
 		}
 		return $this->value;
