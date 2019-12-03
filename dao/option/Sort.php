@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
  */
 class Sort implements Option
 {
+	use Has_In;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
