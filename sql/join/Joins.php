@@ -387,7 +387,7 @@ class Joins
 		Join $join, $master_path, $master_property_name, $foreign_path
 	) {
 		// new Class_Name(property_name)
-		if (strpos($master_property_name, '(')) {
+		if (strpos($master_property_name, ')')) {
 			list($foreign_class_name, $foreign_property_name) = explode('(', $master_property_name);
 			$foreign_property_name = substr($foreign_property_name, 0, -1);
 		}
@@ -409,7 +409,16 @@ class Joins
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
 			/** @noinspection PhpUnhandledExceptionInspection master property must be valid in class */
-			$master_property     = new Reflection_Property($master_class_name, $master_property_name);
+			$master_property = new Reflection_Property($master_class_name, $master_property_name);
+			if (strpos($master_property_name, DOT)) {
+				list($sub_master, $master_property_name) = Sql\Builder::splitPropertyPath(
+					$master_property_name
+				);
+				if (!isset($this->joins[$sub_master])) {
+					$sub_join           = $this->add($sub_master);
+					$join->master_alias = $sub_join->foreign_alias;
+				}
+			}
 			$join->master_column = $master_property->getType()->isClass()
 				? ('id_' . $master_property_name)
 				: $master_property_name;

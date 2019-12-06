@@ -143,7 +143,6 @@ class Columns implements With_Build_Column
 				}
 				else {
 					if ($class_name) try {
-						/** @noinspection PhpUnhandledExceptionInspection */
 						$property = new Reflection_Property($class_name, $path);
 						if (
 							($property->getAnnotation('translate')->value === 'common')
@@ -156,7 +155,7 @@ class Columns implements With_Build_Column
 							$this->translate[$path] = $alias;
 						}
 					}
-					catch(ReflectionException $exception) {
+					catch (ReflectionException $exception) {
 					}
 					$join = $this->joins->add($path);
 					$sql_columns .= ($join && ($join->type !== Join::LINK))

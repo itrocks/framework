@@ -215,7 +215,19 @@ abstract class Builder
 	 */
 	public static function splitPropertyPath($path)
 	{
-		$i = strrpos($path, DOT);
+		// deal with "ITRocks\Framework\Locale\Translation(text=document.name,language='fr')"
+		if (($par = strpos($path, '(')) && ($dot = strpos($path, DOT))) {
+			while (($dot !== false) && ($par < $dot)) {
+				$close = strpos($path, ')', $par);
+				$par   = strpos($path, '(', $close) ?: strlen($path);
+				$dot   = strpos($path, DOT, $close);
+			}
+			$i = $dot;
+		}
+		// the easy way
+		else {
+			$i = strrpos($path, DOT);
+		}
 		return ($i === false) ? ['', $path] : [substr($path, 0, $i), substr($path, $i + 1)];
 	}
 
