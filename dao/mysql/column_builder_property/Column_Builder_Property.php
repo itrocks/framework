@@ -34,7 +34,9 @@ trait Column_Builder_Property
 		if (isset($default)) {
 			$property_type = $column->getType();
 			if ($property_type->isInteger()) {
-				$default = intval($default);
+				$default = is_object($default)
+					? (isset($default->id) ? $default->id : 0)
+					: intval($default);
 			}
 			elseif ($property_type->isFloat()) {
 				$default = floatval($default);
