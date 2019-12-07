@@ -95,8 +95,8 @@ article > form {
 article:not(.form),
 article > form {
 	display: grid;
-	grid-template-areas: "header" "content" "footer";
-	grid-template-rows: min-content 1fr min-content;
+	grid-template-areas: "header" "header2" "content" "footer";
+	grid-template-rows: min-content min-content 1fr min-content;
 	overflow: hidden;
 
 	> header {
@@ -108,7 +108,11 @@ article > form {
 		grid-area: content;
 	}
 
-	> .actions {
+	> .general.actions {
+		grid-area: header2;
+	}
+
+	> .selection.actions {
 		grid-area: footer;
 	}
 }

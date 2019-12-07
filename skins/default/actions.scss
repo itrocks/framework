@@ -37,6 +37,7 @@ article.list ul.general.actions > li > ul {
 
 article:not(.list) ul.general.actions > li > ul,
 ul.selection.actions > li > ul {
+	border-top: 1px solid #d8d8d8;
 	bottom: 31px;
 }
 
@@ -51,7 +52,6 @@ li.actions > ul,
 ul.actions {
 	background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
 	display: flex;
-	flex-direction: row-reverse;
 }
 
 li.action,
