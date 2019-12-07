@@ -30,6 +30,14 @@ class Class_Builder
 	 */
 	private static $builds = [];
 
+	//-------------------------------------------------------------------------------------- $sources
+	/**
+	 * Keep built sources, as it may be asked twice for reflection / annotations read during compile
+	 *
+	 * @var array
+	 */
+	private static $sources = [];
+
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param $class_name        string The base class name
@@ -41,90 +49,90 @@ class Class_Builder
 	{
 		$key = join(DOT, $interfaces_traits);
 		if (isset(static::$builds[$class_name][$key])) {
-			return static::$builds[$class_name][$key];
+			return $get_source
+				? [static::$sources[$class_name][$key]]
+				: static::$builds[$class_name][$key];
 		}
-		else {
-			$classes        = [];
-			$traits_before  = [];
-			$traits_extends = [];
-			foreach ($interfaces_traits as $position => $interface_trait) {
-				if (substr($interface_trait, 0, 1) === AT) {
-					continue;
-				}
-				$class                     = Reflection_Class::of($interface_trait);
-				$classes[$interface_trait] = $class;
-				if ($class->isTrait()) {
-					$extends_annotations = Extends_Annotation::allOf($class);
-					foreach ($extends_annotations as $extends_annotation) {
-						foreach ($extends_annotation->values() as $extends) {
-							if (Dao::search(
-								['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
-								Dependency::class
-							)) {
-								$traits_extends[$interface_trait][$extends] = $extends;
-							}
-						}
-					}
-					if (isset($traits_extends[$interface_trait])) {
-						foreach ($traits_extends[$interface_trait] as $extends) {
-							if (in_array($extends, $interfaces_traits) && !isset($traits_before[$extends])) {
-								unset($interfaces_traits[$position]);
-								$interfaces_traits[] = $interface_trait;
-								continue 2;
-							}
-						}
-					}
-					$traits_before[$interface_trait] = true;
-				}
+		$classes        = [];
+		$traits_before  = [];
+		$traits_extends = [];
+		foreach ($interfaces_traits as $position => $interface_trait) {
+			if (substr($interface_trait, 0, 1) === AT) {
+				continue;
 			}
-			$annotations = [];
-			$interfaces  = [];
-			$traits      = [];
-			foreach ($interfaces_traits as $interface_trait) {
-				// @annotation
-				if (substr($interface_trait, 0, 1) === AT) {
-					$annotations[] = $interface_trait;
-					continue;
-				}
-				// Interface\Name::class
-				$class = $classes[$interface_trait];
-				if ($class->isInterface()) {
-					$interfaces[$interface_trait] = $interface_trait;
-					continue;
-				}
-				// Trait\Name::class
-				if ($class->isTrait()) {
-					foreach ($class->getListAnnotation('implements')->values() as $implements) {
-						$interfaces[$implements] = $implements;
+			$class                     = Reflection_Class::of($interface_trait);
+			$classes[$interface_trait] = $class;
+			if ($class->isTrait()) {
+				$extends_annotations = Extends_Annotation::allOf($class);
+				foreach ($extends_annotations as $extends_annotation) {
+					foreach ($extends_annotation->values() as $extends) {
+						if (Dao::search(
+							['class_name' => $extends, 'declaration' => Dependency::T_TRAIT_DECLARATION],
+							Dependency::class
+						)) {
+							$traits_extends[$interface_trait][$extends] = $extends;
+						}
 					}
-					$level = 0;
-					if (isset($traits_extends[$interface_trait])) {
-						foreach ($traits_extends[$interface_trait] as $extends) {
-							foreach ($traits as $trait_level => $trait_names) {
-								if (isset($trait_names[$extends])) {
-									$level = max($level, $trait_level + 1);
-								}
+				}
+				if (isset($traits_extends[$interface_trait])) {
+					foreach ($traits_extends[$interface_trait] as $extends) {
+						if (in_array($extends, $interfaces_traits) && !isset($traits_before[$extends])) {
+							unset($interfaces_traits[$position]);
+							$interfaces_traits[] = $interface_trait;
+							continue 2;
+						}
+					}
+				}
+				$traits_before[$interface_trait] = true;
+			}
+		}
+		$annotations = [];
+		$interfaces  = [];
+		$traits      = [];
+		foreach ($interfaces_traits as $interface_trait) {
+			// @annotation
+			if (substr($interface_trait, 0, 1) === AT) {
+				$annotations[] = $interface_trait;
+				continue;
+			}
+			// Interface\Name::class
+			$class = $classes[$interface_trait];
+			if ($class->isInterface()) {
+				$interfaces[$interface_trait] = $interface_trait;
+				continue;
+			}
+			// Trait\Name::class
+			if ($class->isTrait()) {
+				foreach ($class->getListAnnotation('implements')->values() as $implements) {
+					$interfaces[$implements] = $implements;
+				}
+				$level = 0;
+				if (isset($traits_extends[$interface_trait])) {
+					foreach ($traits_extends[$interface_trait] as $extends) {
+						foreach ($traits as $trait_level => $trait_names) {
+							if (isset($trait_names[$extends])) {
+								$level = max($level, $trait_level + 1);
 							}
 						}
 					}
-					$traits[$level][$interface_trait] = $interface_trait;
-					continue;
 				}
-				// anything else
-				trigger_error(
-					'Unknown interface/trait ' . DQ . $interface_trait . DQ
-					. ' while building ' . $class_name,
-					E_USER_ERROR
-				);
+				$traits[$level][$interface_trait] = $interface_trait;
+				continue;
 			}
-			$built_class = $this->buildClass(
-				$class_name, $interfaces, $traits, $annotations, $get_source
+			// anything else
+			trigger_error(
+				'Unknown interface/trait ' . DQ . $interface_trait . DQ
+				. ' while building ' . $class_name,
+				E_USER_ERROR
 			);
-			if (!$get_source) {
-				static::$builds[$class_name][$key] = $built_class;
-			}
-			return $built_class;
 		}
+		$built_class = $this->buildClass(
+			$class_name, $interfaces, $traits, $annotations, $get_source, $key
+		);
+		if (!$get_source) {
+			static::$builds[$class_name][$key] = $built_class;
+		}
+		return $built_class;
 	}
 
 	//------------------------------------------------------------------------------------ buildClass
@@ -134,10 +142,11 @@ class Class_Builder
 	 * @param $traits      array string[][]
 	 * @param $annotations array string[]
 	 * @param $get_source  boolean if true, get built [$name, $source] instead of $name
+	 * @param $key         string
 	 * @return string|string[] generated class name
 	 */
 	protected function buildClass(
-		$class_name, array $interfaces, array $traits, array $annotations, $get_source
+		$class_name, array $interfaces, array $traits, array $annotations, $get_source, $key
 	) {
 		if (!$traits) {
 			$traits = [0 => []];
@@ -147,6 +156,7 @@ class Class_Builder
 		$short_class      = Namespaces::shortClassName($class_name);
 		$namespace_prefix = Namespaces::of(static::builtClassName($class_name));
 		$namespace        = $built_class = null;
+		$source           = null;
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $namespace (extends last class)
 			$extends   = (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
@@ -203,6 +213,7 @@ class Class_Builder
 				$this->buildClassSource($built_class, $source);
 			}
 		}
+		static::$sources[$class_name][$key] = $source;
 		return $get_source ?: $built_class;
 	}
 
