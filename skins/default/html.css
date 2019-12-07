@@ -26,5 +26,8 @@ div.popup {
 a.auto-redirect, button.auto-refresh {
   display: none; }
 
+b, strong, th {
+  font-weight: 500; }
+
 .hidden {
   display: none; }

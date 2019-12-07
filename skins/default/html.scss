@@ -36,6 +36,10 @@ a.auto-redirect, button.auto-refresh {
 	display: none;
 }
 
+b, strong, th {
+	font-weight: $medium;
+}
+
 .hidden {
 	display: none;
 }
