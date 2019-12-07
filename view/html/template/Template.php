@@ -1658,6 +1658,7 @@ class Template
 				if (
 					is_object($object)
 					&& !($object instanceof Stringable)
+					&& !$type->isObject()
 					&& $type->isSingleClass()
 					&& $type->asReflectionClass()->getAnnotation('business')->value
 					&& Dao::getObjectIdentifier($object)

@@ -389,7 +389,7 @@ class Type
 	public function isInstanceOf($class_name)
 	{
 		if ($this->isClass()) {
-			if ($class_name === 'object') {
+			if ($class_name === static::OBJECT) {
 				return true;
 			}
 			$element_type_string = $this->getElementTypeAsString();
@@ -469,6 +469,15 @@ class Type
 	public function isNumeric()
 	{
 		return in_array($this->type, self::$numeric_types);
+	}
+
+	//-------------------------------------------------------------------------------------- isObject
+	/**
+	 * @return boolean
+	 */
+	public function isObject()
+	{
+		return ($this->type === static::OBJECT);
 	}
 
 	//--------------------------------------------------------------------------------- isSingleClass
