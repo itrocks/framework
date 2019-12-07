@@ -45,7 +45,7 @@ class Executor implements Registerable
 	/**
 	 * Execute some code given into an URI.
 	 *
-	 * Called during default Write_Controller, between the time when object has been modified by the
+	 * Called during default Save_Controller, between the time when object has been modified by the
 	 * form content and the time it is written using Dao.
 	 */
 	public function executeWrite()
