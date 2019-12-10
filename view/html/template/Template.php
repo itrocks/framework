@@ -881,6 +881,7 @@ class Template
 	{
 		$params = explode(',', $params_string);
 		foreach ($params as $key => $param) {
+			$param = trim($param);
 			if (
 				((substr($param, 0, 1) == Q) && (substr($param, -1) == Q))
 				|| ((substr($param, 0, 1) == DQ) && (substr($param, -1) == DQ))
