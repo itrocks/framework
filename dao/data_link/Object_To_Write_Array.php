@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option\Spreadable;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
@@ -179,17 +180,16 @@ class Object_To_Write_Array
 				&& !in_array($property->name, $exclude_properties)
 				&& !Store_Annotation::of($property)->isFalse()
 			) {
-				$property_name   = $property->name;
-				if (
-					Link_Annotation::of($property)->isCollection()
-					|| $property->getAnnotation('component')->value
-				) {
+				$property_name = $property->name;
+				if (Getter_Annotation::of($property)->value) {
+					// call @getter
+					$is_property_set = isset($this->object->$property_name);
+				}
+				else {
+					// do not call @link implicit getters
 					Getter::$ignore  = true;
 					$is_property_set = isset($this->object->$property_name);
 					Getter::$ignore  = $aop_getter_ignore;
-				}
-				else {
-					$is_property_set = true;
 				}
 				/** @noinspection PhpUnhandledExceptionInspection $property is valid for $object */
 				$value = $is_property_set ? $property->getValue($this->object) : null;

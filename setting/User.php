@@ -3,11 +3,13 @@ namespace ITRocks\Framework\Setting;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Mapper\Component;
+use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Setting;
 
 /**
  * User setting
  *
+ * @before_write invalidateObjects
  * @store_name user_settings
  */
 class User extends Setting
@@ -48,6 +50,16 @@ class User extends Setting
 		if (!isset($this->user)) {
 			$this->user = Framework\User::current();
 		}
+	}
+
+	//----------------------------------------------------------------------------- invalidateObjects
+	/**
+	 * @noinspection PhpUnused @before_write
+	 */
+	public function invalidateObjects()
+	{
+		Getter::invalidate($this, 'setting');
+		Getter::invalidate($this, 'user');
 	}
 
 }

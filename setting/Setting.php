@@ -9,6 +9,8 @@ use ITRocks\Framework\Tools\Names;
 
 /**
  * An application setting
+ *
+ * @before_write invalidateValueSetting
  */
 class Setting implements Validate\Exception
 {
@@ -104,6 +106,21 @@ class Setting implements Validate\Exception
 			$this->value->setting = $this;
 		}
 		return $this->value;
+	}
+
+	//------------------------------------------------------------------------ invalidateValueSetting
+	/**
+	 * @noinspection PhpUnused @before_write
+	 */
+	public function invalidateValueSetting()
+	{
+		if (
+			is_object($this->value)
+			&& ($setting = $this->value->setting)
+			&& ($setting instanceof Setting\User)
+		) {
+			$setting->invalidateObjects();
+		}
 	}
 
 }

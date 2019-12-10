@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Setting\Custom;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Setting;
@@ -244,8 +243,6 @@ abstract class Set
 		else {
 			$setting = $this->setting;
 		}
-		Getter::invalidate($this->setting, 'setting');
-		Getter::invalidate($this->setting, 'user');
 		Dao::write($setting);
 	}
 
