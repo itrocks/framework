@@ -824,6 +824,20 @@ class Template
 		return $content;
 	}
 
+	//---------------------------------------------------------------------------------- parseContent
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	public function parseContent($content)
+	{
+		$content = $this->removeAppAttributes($content);
+		$content = $this->prepareW3Links($content);
+		$content = $this->parseVars($content);
+		$content = $this->removeAppLinks($content);
+		return $content;
+	}
+
 	//----------------------------------------------------------------------------- parseFileToString
 	/**
 	 * Parse a property which content is a file object
@@ -1952,20 +1966,6 @@ class Template
 		return false;
 	}
 
-	//---------------------------------------------------------------------------------- parseContent
-	/**
-	 * @param $content string
-	 * @return string
-	 */
-	public function parseContent($content)
-	{
-		$content = $this->removeAppAttributes($content);
-		$content = $this->prepareW3Links($content);
-		$content = $this->parseVars($content);
-		$content = $this->removeAppLinks($content);
-		return $content;
-	}
-
 	//------------------------------------------------------------------------------------- parseVars
 	/**
 	 * Parse all variables from the template
@@ -2024,24 +2024,6 @@ class Template
 		return $content;
 	}
 
-	//---------------------------------------------------------------------------------- removeSample
-	/**
-	 * Remove <!--sample-->(...) code from loop content
-	 *
-	 * @param $loop Loop
-	 */
-	protected function removeSample(Loop $loop)
-	{
-		foreach (['content', 'else_content'] as $property) {
-			$i = strrpos($loop->$property, '<!--sample-->');
-			if ($i !== false) {
-				if (strpos($loop->$property, '<!--', $i + 1) === false) {
-					$loop->$property = substr($loop->$property, 0, $i);
-				}
-			}
-		}
-	}
-
 	//--------------------------------------------------------------------------- removeAppAttributes
 	/**
 	 * @param $content string
@@ -2098,6 +2080,24 @@ class Template
 		$content = str_replace(['rel:///', 'rel://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
 		return $content;
+	}
+
+	//---------------------------------------------------------------------------------- removeSample
+	/**
+	 * Remove <!--sample-->(...) code from loop content
+	 *
+	 * @param $loop Loop
+	 */
+	protected function removeSample(Loop $loop)
+	{
+		foreach (['content', 'else_content'] as $property) {
+			$i = strrpos($loop->$property, '<!--sample-->');
+			if ($i !== false) {
+				if (strpos($loop->$property, '<!--', $i + 1) === false) {
+					$loop->$property = substr($loop->$property, 0, $i);
+				}
+			}
+		}
 	}
 
 	//--------------------------------------------------------------------------- replaceHeadElements
