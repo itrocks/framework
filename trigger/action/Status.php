@@ -12,6 +12,10 @@ namespace ITRocks\Framework\Trigger\Action;
 class Status
 {
 
+	//---------------------------------------------------------------------------- COMPLETE / RUNNING
+	const COMPLETE_STATUSES = [self::DONE, self::ERROR, self::LAUNCH_ERROR];
+	const RUNNING_STATUSES  = [self::LAUNCHED, self::LAUNCHING, self::PENDING, self::RUNNING];
+
 	//------------------------------------------------------------------------------------------ DONE
 	/**
 	 * 5. The action is done and did not return any error

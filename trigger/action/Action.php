@@ -126,12 +126,15 @@ class Action
 			return null;
 		}
 
-		if (is_string($object)) {
+		if (is_object($object)) {
+			$class_name = get_class($object);
+		}
+		elseif (is_string($object)) {
 			$class_name = $object;
 			$object     = null;
 		}
 		else {
-			$class_name = get_class($object);
+			$class_name = null;
 		}
 
 		$this->next = $now;
@@ -147,11 +150,14 @@ class Action
 
 		// the action contains dynamic {class} or {object} or keeps user : execute a clone of the action
 		else {
-			$action = str_replace(
-				['{class}', '{object}', SL . SL],
-				[Names::classToUri($class_name), View::link($object), SL],
-				$this->action
-			);
+			$action = $this->action;
+			if ($class_name) {
+				$action = str_replace(
+					['{class}', '{object}', SL . SL],
+					[Names::classToUri($class_name), View::link($object), SL],
+					$action
+				);
+			}
 			$as_user = $this->keep_user ? User::current() : null;
 			$status  = Status::PENDING;
 			if (Dao::searchOne(

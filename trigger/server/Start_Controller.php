@@ -3,19 +3,20 @@ namespace ITRocks\Framework\Trigger\Server;
 
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Dao;
-use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\Trigger\Action;
+use ITRocks\Framework\Tools\Asynchronous;
 use ITRocks\Framework\Trigger\Server;
+use ITRocks\Framework\View;
 
 /**
- * Trigger server stop controller
+ * Trigger server start controller
+ *
+ * Starts the server, asynchronously, and give the hand back to the launcher
  */
-class Stop_Controller implements Feature_Controller
+class Start_Controller implements Feature_Controller
 {
 
 	//--------------------------------------------------------------------------------------- FEATURE
-	const FEATURE = 'stop';
+	const FEATURE = 'start';
 
 	//------------------------------------------------------------------------------------------- run
 	/**
@@ -28,7 +29,7 @@ class Stop_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		Dao::write(new Action(Server::STOP, Date_Time::now()));
+		(new Asynchronous)->call(View::link(Server::class, Run_Controller::FEATURE), null, false, false);
 		return 'OK';
 	}
 

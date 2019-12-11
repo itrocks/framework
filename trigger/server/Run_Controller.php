@@ -11,6 +11,9 @@ use ITRocks\Framework\Trigger\Server;
 class Run_Controller implements Feature_Controller
 {
 
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = 'run';
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * This will be called for this controller, always.
