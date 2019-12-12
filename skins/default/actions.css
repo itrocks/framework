@@ -30,10 +30,12 @@ ul.actions > li {
 article.list ul.general.actions > li > ul {
   top: 38px; }
 
-article:not(.list) ul.general.actions > li > ul,
-ul.selection.actions > li > ul {
-  border-top: 1px solid #d8d8d8;
-  top: 31px; }
+article:not(.list) ul.general.actions,
+ul.selection.actions {
+  border-top: 1px solid #d8d8d8; }
+  article:not(.list) ul.general.actions > li > ul,
+  ul.selection.actions > li > ul {
+    top: 31px; }
 
 ol.properties.tiny + ul.actions {
   background: transparent;
