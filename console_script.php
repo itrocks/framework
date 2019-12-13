@@ -115,12 +115,13 @@ class Console
 
 	//------------------------------------------------------------------------------------------- end
 	/**
-	 * Called after execution ends : remove running file
+	 * Called after execution ends : remove running file and process info
 	 */
 	public function end()
 	{
 		/** @noinspection PhpUsageOfSilenceOperatorInspection No warning if removed by someone else */
 		@unlink($this->runningFileName());
+		$this->procInfoPurgeProc();
 	}
 
 	//------------------------------------------------------------------------------ isAlreadyRunning
@@ -132,11 +133,16 @@ class Console
 	private function isAlreadyRunning()
 	{
 		$count = 0;
+		$cwd   = getcwd();
 		$this->already_running = [];
 		exec("ps -aux | grep $this->uri | grep -v grep", $outputs);
 		foreach ($outputs as $output) {
 			if (($pos = strpos($output, $this->uri)) && strpos($output, self::PHP_PATH)) {
-				if (in_array(substr($output, $pos + strlen($this->uri), 1), ['', ' ', "\n", "\r", "\t"])) {
+				$pid = intval(trim(substr($output, strpos($output, ' '))));
+				if (
+					in_array(substr($output, $pos + strlen($this->uri), 1), ['', ' ', "\n", "\r", "\t"])
+					&& ($this->procInfoGetCwd($pid) === $cwd)
+				) {
 					$this->already_running[] = $output;
 					$count++;
 				}
@@ -192,6 +198,8 @@ class Console
 	 */
 	public function prepare()
 	{
+		$this->procInfoPurge();
+		$this->procInfoWrite();
 		if ($this->isAlreadyRunning()) {
 			echo $this->alreadyRunningMessage();
 		}
@@ -204,6 +212,7 @@ class Console
 				return true;
 			}
 		}
+		$this->procInfoPurgeProc();
 		return false;
 	}
 
@@ -218,6 +227,85 @@ class Console
 		$_SERVER['REMOTE_ADDR'] = 'console';
 		$_SERVER['REQUEST_URI'] = $this->uri;
 		$_SERVER['SCRIPT_NAME'] = '/console';
+	}
+
+	//-------------------------------------------------------------------------------- procInfoGetCwd
+	/**
+	 * @param $pid integer null for 'current pid'
+	 * @return string null if pid is not running
+	 */
+	private function procInfoGetCwd($pid = null)
+	{
+		if (!$pid) {
+			$pid = getmypid();
+		}
+		$path = $this->procPath();
+		$file = "$path/$pid/cwd";
+		return file_exists($file) ? readlink($file) : null;
+	}
+
+	//--------------------------------------------------------------------------------- procInfoPurge
+	/**
+	 * Purge proc information about pid that are not running anymore
+	 */
+	private function procInfoPurge()
+	{
+		$path = $this->procPath();
+		exec('ps -aux | awk \'{print $2}\'', $running_processes);
+		foreach (scandir($path) as $pid) if ($pid[0] !== '.') {
+			if (!in_array($pid, $running_processes)) {
+				$this->procInfoPurgeProc($pid, $path);
+			}
+		}
+	}
+
+	//----------------------------------------------------------------------------- procInfoPurgeProc
+	/**
+	 * @param $pid  integer
+	 * @param $path string
+	 */
+	private function procInfoPurgeProc($pid = null, $path = null)
+	{
+		if (!$path) {
+			$path = $this->procPath();
+		}
+		if (!$pid) {
+			$pid = getmypid();
+		}
+		foreach (scandir("$path/$pid") as $file) if ($file[0] !== '.') {
+			unlink("$path/$pid/$file");
+		}
+		rmdir("$path/$pid");
+	}
+
+	//--------------------------------------------------------------------------------- procInfoWrite
+	private function procInfoWrite()
+	{
+		$cwd  = getcwd();
+		$path = $this->procPath();
+		$pid  = getmypid();
+		if (!file_exists("$path/$pid")) {
+			mkdir("$path/$pid", 0777);
+		}
+		symlink($cwd, "$path/$pid/cwd");
+	}
+
+	//-------------------------------------------------------------------------------------- procPath
+	/**
+	 * @return string
+	 */
+	private function procPath()
+	{
+		exec('hostname', $hostname);
+		$hostname = reset($hostname);
+		$path     = '../proc';
+		if (!file_exists($path)) {
+			mkdir($path, 0777);
+		}
+		if (!file_exists("$path/$hostname")) {
+			mkdir("$path/$hostname", 0777);
+		}
+		return "$path/$hostname";
 	}
 
 	//------------------------------------------------------------------------------- runningFileName
@@ -269,6 +357,7 @@ class Console
 
 }
 
+chdir(__DIR__ . '/../..');
 Console::$current = new Console(isset($argv) ? $argv : ['/', '-g', 'X']);
 if (Console::$current->prepare()) {
 	include_once __DIR__ . '/index.php';
