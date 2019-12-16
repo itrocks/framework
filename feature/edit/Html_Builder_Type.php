@@ -351,7 +351,6 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filters   string[] the key is the name of the filter, the value is the name of the form
 	 *   element containing its value
 	 * @param $as_string boolean true if the object should be used as a string
@@ -371,7 +370,6 @@ class Html_Builder_Type
 			: null;
 		$input    = new Input($input_id, strval($this->value));
 		$input->addClass('auto_width');
-		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$input->setData('combo-class', $source_class_name);
 		$input->setData(
 			'combo-set-class',
@@ -471,7 +469,7 @@ class Html_Builder_Type
 					}
 					$input = new Select($this->getFieldName(), $values, $this->value);
 					if ($ordered_values) {
-						$input->setData('ordered', 'true');
+						$input->setData('ordered');
 					}
 				}
 			}
@@ -524,10 +522,10 @@ class Html_Builder_Type
 		$this->setInputAsReadOnly($element);
 		if ($this->required) {
 			if ($this->pre_path) {
-				$element->setData('required', true);
+				$element->setData('required');
 			}
 			else {
-				$element->setAttribute('required', true);
+				$element->setAttribute('required');
 			}
 		}
 	}

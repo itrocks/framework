@@ -45,7 +45,7 @@ $(document).ready(function()
 		callback: $.fn.sortContent,
 		event:    'call',
 		priority: 1,
-		selector: 'select:not([data-ordered=true])'
+		selector: 'select:not([data-ordered])'
 	});
 
 });

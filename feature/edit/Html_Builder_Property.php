@@ -287,6 +287,20 @@ class Html_Builder_Property extends Html_Builder_Type
 	 */
 	protected function buildSingle()
 	{
+		foreach ($this->property->getAnnotations('view_data') as $annotation) {
+			if (!$annotation->value) {
+				break;
+			}
+			if (strpos($annotation->value, '=')) {
+				[$data, $value] = explode('=', $annotation->value);
+				$data  = trim($data);
+				$value = trim($value);
+			}
+			else {
+				[$data, $value] = [$annotation->value, true];
+			}
+			$this->data[$data] = $value;
+		}
 		if (
 			!$this->property->getType()->isMultiple()
 			&& ($user_changes = $this->property->getAnnotations('user_change'))
