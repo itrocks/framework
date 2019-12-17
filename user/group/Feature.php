@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\User\Group;
 
 use ITRocks\Framework\Controller;
+use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Feature_Annotation;
@@ -402,24 +403,41 @@ class Feature
 	 */
 	protected function getYaml()
 	{
-		if (!isset($this->yaml)) {
-			// find existing yaml file
-			foreach ($this->getFileNames() as $filename) {
+		if (isset($this->yaml)) {
+			return $this->yaml;
+		}
+		$class_name   = $this->getClassName();
+		$feature_name = $this->getFeatureName();
+		if ($class_name && $feature_name) {
+			// use common algorithm to found yaml feature file everywhere in class tree
+			$filename = Getter::get($class_name, $feature_name, '', 'yaml', false);
+			if ($filename) {
+				$filename = Names::classToPath(reset($filename)) . '.yaml';
 				if (file_exists($filename)) {
 					$yaml = new Yaml($filename);
 					if ($yaml->fileMatches($this->path)) {
 						$this->yaml = $yaml;
-						break;
 					}
 				}
 			}
-			// implicit yaml file content
-			if (!isset($this->yaml)) {
-				if ($this->isImplicit()) {
-					$default_yaml = new Default_Yaml($this->getClassName(), $this->getFeatureName());
-					$this->yaml   = $default_yaml->toYaml();
+		}
+		// use historical algorithm to found class' featureName.yaml or common feature.yaml file
+		if (!isset($this->yaml)) {
+			foreach ($this->getFileNames() as $filename) {
+				if (!file_exists($filename)) {
+					continue;
+				}
+				$yaml = new Yaml($filename);
+				if ($yaml->fileMatches($this->path)) {
+					$this->yaml = $yaml;
+					break;
 				}
 			}
+		}
+		// implicit yaml file content
+		if (!isset($this->yaml) && $this->isImplicit()) {
+			$default_yaml = new Default_Yaml($class_name, $feature_name);
+			$this->yaml   = $default_yaml->toYaml();
 		}
 		return $this->yaml;
 	}

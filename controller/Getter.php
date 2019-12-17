@@ -83,7 +83,6 @@ abstract class Getter
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix = $suffix ? ('_' . $suffix) : '';
-		$is_html = ($extension === 'html');
 		$is_php  = ($extension === 'php');
 
 		$application_classes_filter = (new Application_Class_Tree_Filter($base_class))
@@ -121,7 +120,7 @@ abstract class Getter
 				}
 				if (
 					file_exists($path . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($class_name . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($class_name . BS . $feature_what . $_suffix))
 				) {
 					$class = $class_name . BS . $feature_what . $_suffix;
 					break 2;
@@ -136,7 +135,7 @@ abstract class Getter
 				}
 				if (
 					file_exists($path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($class_name . BS . $feature_namespace . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($class_name . BS . $feature_namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $class_name . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break 2;
@@ -149,7 +148,7 @@ abstract class Getter
 				if (
 					$suffix
 					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
-					&& ($is_html || class_exists($class_name . BS . $feature_namespace . BS . $suffix))
+					&& (!$is_php || class_exists($class_name . BS . $feature_namespace . BS . $suffix))
 				) {
 					$class = $class_name . BS . $feature_namespace . BS . $suffix;
 					break 2;
@@ -164,7 +163,7 @@ abstract class Getter
 				}
 				if (
 					file_exists(Names::classToPath($class_name) . '_' . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($class_name . '_' . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($class_name . '_' . $feature_what . $_suffix))
 				) {
 					$class = $class_name . '_' . $feature_what . $_suffix;
 					break 2;
@@ -192,7 +191,7 @@ abstract class Getter
 					$ext
 					&& $suffix
 					&& file_exists($path . SL . $suffix . $ext)
-					&& ($is_html || class_exists($class_name . BS . $suffix))
+					&& (!$is_php || class_exists($class_name . BS . $suffix))
 				) {
 					$class = $class_name . BS . $suffix;
 					break 2;
@@ -235,7 +234,7 @@ abstract class Getter
 					$can_be_project_class
 					&& $suffix
 					&& file_exists($path . SL . $feature_directory . SL . $suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . $feature_namespace . BS . $suffix))
+					&& (!$is_php || class_exists($namespace . BS . $feature_namespace . BS . $suffix))
 				) {
 					$class = $namespace . BS . $feature_namespace . BS . $suffix;
 					break;
@@ -251,7 +250,7 @@ abstract class Getter
 				if (
 					$can_be_project_class
 					&& file_exists($path . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . $feature_namespace . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($namespace . BS . $feature_namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
@@ -262,7 +261,7 @@ abstract class Getter
 				if (
 					$can_be_project_class
 					&& file_exists($path . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . $feature_what . $_suffix;
 					break;
@@ -278,7 +277,7 @@ abstract class Getter
 				if (
 					$suffix
 					&& file_exists($path . SL . 'feature' . SL . $feature_directory . SL . $suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix))
+					&& (!$is_php || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix))
 				) {
 					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS . $suffix;
 					break;
@@ -294,7 +293,7 @@ abstract class Getter
 				}
 				if (
 					file_exists($path . SL . 'feature' . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($namespace . BS . 'Feature' . BS . $feature_namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . 'Feature' . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
@@ -310,7 +309,7 @@ abstract class Getter
 				if (
 					$suffix
 					&& file_exists($path . SL . 'webservice' . SL . $feature_directory . SL . $suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix))
+					&& (!$is_php || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix))
 				) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $suffix;
 					break;
@@ -326,7 +325,7 @@ abstract class Getter
 				}
 				if (
 					file_exists($path . SL . 'webservice' . SL . $feature_directory . SL . $feature_what . $_suffix . $ext)
-					&& ($is_html || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what . $_suffix))
+					&& (!$is_php || class_exists($namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what . $_suffix))
 				) {
 					$class = $namespace . BS . 'Webservice' . BS . $feature_namespace . BS . $feature_what . $_suffix;
 					break;
@@ -391,7 +390,7 @@ abstract class Getter
 					}
 					if (
 						file_exists($path . SL . strtolower($sub) . '/Default_' . $suffix . $ext)
-						&& ($is_html || class_exists($namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix))
+						&& (!$is_php || class_exists($namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix))
 					) {
 						$class = $namespace . BS . str_replace(SL, BS, $sub) . BS . 'Default_' . $suffix;
 						break;
