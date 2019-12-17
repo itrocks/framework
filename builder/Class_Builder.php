@@ -191,7 +191,7 @@ class Class_Builder
 				? (TAB . 'use ' . BS . join(';' . LF . TAB . 'use ' . BS, $class_traits) . ';' . LF)
 				: '';
 
-			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' {') . LF . LF
+			$source = 'namespace ' . $namespace . ($get_source ? ';' : ' /*BUILT*/{') . LF . LF
 				. '/**' . LF
 				. ' * Built ' . $short_class . ' ' . $type . LF
 				. $annotations_code
@@ -201,7 +201,7 @@ class Class_Builder
 				. LF . '{' . LF
 				. $traits_names
 				. LF . '}' . LF
-				. ($get_source ? '' : (LF . '}' . LF));
+				. ($get_source ? '' : (LF . '}/*BUILT*/' . LF));
 
 			if ($get_source === true) {
 				$get_source = [$built_class => $source];
@@ -212,6 +212,9 @@ class Class_Builder
 			else {
 				$this->buildClassSource($built_class, $source);
 			}
+		}
+		if (!$get_source) {
+			$source = str_replace([' /*BUILT*/{', LF . '}/*BUILT*/' . LF], [';', ''], $source);
 		}
 		static::$sources[$class_name][$key] = $source;
 		return $get_source ?: $built_class;
