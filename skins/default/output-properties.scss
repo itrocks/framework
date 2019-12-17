@@ -13,6 +13,10 @@ article ol.properties:not(.tiny) {
 
 	li {
 		position: relative;
+
+		> div, > label {
+			position: relative;
+		}
 	}
 
 	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
@@ -39,7 +43,6 @@ article ol.properties:not(.tiny) {
 			box-sizing: border-box;
 			display: table-cell;
 			height: 32px;
-			position: relative;
 		}
 	}
 

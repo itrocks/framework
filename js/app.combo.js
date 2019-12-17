@@ -134,6 +134,12 @@ $(document).ready(function()
 			{
 				var $this = $(this);
 				$this.data('visible', true);
+				var $select = $('.ui-autocomplete:visible');
+				var height  = $select.height();
+				var bottom  = $select.offset().top + height;
+				if (bottom > window.innerHeight) {
+					$select.css('top', $this.offset().top - height);
+				}
 			},
 
 			source: function(request, response)

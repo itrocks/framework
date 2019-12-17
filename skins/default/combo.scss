@@ -6,6 +6,12 @@ button.more {
 	top: 5px;
 }
 
+.ui-autocomplete {
+	max-height: 286px;
+	overflow: hidden auto;
+	white-space: nowrap;
+}
+
 .ui-state-active {
 	background: black !important;
 	color: white !important;
