@@ -2296,7 +2296,7 @@ class Template
 				$file_path = null;
 			}
 		}
-		if (!isset($file_path)) {
+		if ($file_name && !isset($file_path)) {
 			$file_path = substr(
 				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
 			);
@@ -2307,7 +2307,7 @@ class Template
 		if (is_file(Paths::$file_root . $file_path)) {
 			$file_path .= '?' . md5_file(Paths::$file_root . $file_path);
 		}
-		return $this->getUriRoot() . $file_path;
+		return $file_path ? ($this->getUriRoot() . $file_path) : null;
 	}
 
 	//----------------------------------------------------------------------------------- replaceUris
