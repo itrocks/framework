@@ -190,10 +190,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		$did_change = true;
-		if (Setting\Custom\Controller::applyParametersToCustomSettings($list_settings, $parameters)) {
-			$did_custom_change = true;
-		}
+		$did_change = Setting\Custom\Controller::applyParametersToCustomSettings(
+			$list_settings, $parameters
+		);
 		if (isset($parameters['add_property'])) {
 			$list_settings->addProperty(
 				$parameters['add_property'],
@@ -202,6 +201,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					? $parameters['before']
 					: (isset($parameters['after']) ? $parameters['after'] : '')
 			);
+			$did_change = true;
 		}
 		if (isset($parameters['less'])) {
 			if ($parameters['less'] == $this->default_displayed_lines_count) {
@@ -213,29 +213,32 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					$list_settings->maximum_displayed_lines_count - $parameters['less']
 				);
 			}
+			$did_change = true;
 		}
 		if (isset($parameters['more'])) {
 			$list_settings->maximum_displayed_lines_count = round(min(
 				$this->maximum_displayed_lines_count,
 				$list_settings->maximum_displayed_lines_count + $parameters['more']
 			) / $this->displayed_lines_count_gap) * $this->displayed_lines_count_gap;
+			$did_change = true;
 		}
 		if (isset($parameters['move'])) {
 			if ($parameters['move'] == 'down') {
 				$list_settings->start_display_line_number += $list_settings->maximum_displayed_lines_count;
+				$did_change = true;
 			}
 			elseif ($parameters['move'] == 'up') {
 				$list_settings->start_display_line_number -= $list_settings->maximum_displayed_lines_count;
+				$did_change = true;
 			}
 			elseif (is_numeric($parameters['move'])) {
 				$list_settings->start_display_line_number = $parameters['move'];
-				if (isset($parameters['last_time'])) {
-					$did_change = false;
-				}
+				$did_change = !isset($parameters['last_time']);
 			}
 		}
 		if (isset($parameters['remove_property'])) {
 			$list_settings->removeProperty($parameters['remove_property']);
+			$did_change = true;
 		}
 		if (isset($parameters['property_path'])) {
 			if (isset($parameters['property_group_by'])) {
@@ -246,28 +249,31 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			if (isset($parameters['property_title'])) {
 				$list_settings->propertyTitle($parameters['property_path'], $parameters['property_title']);
 			}
+			$did_change = true;
 		}
 		if (isset($parameters['reset_search'])) {
 			$list_settings->resetSearch();
+			$did_change = true;
 		}
 		if (isset($parameters['reverse'])) {
 			$list_settings->reverse($parameters['reverse']);
+			$did_change = true;
 		}
 		if (isset($parameters['search'])) {
 			$list_settings->search(self::descapeForm($parameters['search']));
+			$did_change = true;
 		}
 		if (isset($parameters['sort'])) {
 			$list_settings->sort($parameters['sort']);
+			$did_change = true;
 		}
 		if (isset($parameters['title'])) {
 			$list_settings->title = $parameters['title'];
-		}
-		if (!isset($did_custom_change)) {
-			$did_change = false;
+			$did_change = true;
 		}
 		if ($list_settings->start_display_line_number < 1) {
 			$list_settings->start_display_line_number = 1;
-			$did_change                               = true;
+			$did_change = true;
 		}
 		if (!$list_settings->name) {
 			$list_settings->name = $list_settings->title;
