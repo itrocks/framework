@@ -162,6 +162,9 @@ class Application_Class_Tree_Filter
 	protected function prepareCheckpoints()
 	{
 		$class_name = $this->class_name;
+		if (!class_exists($class_name)) {
+			return;
+		}
 		do {
 			// normal case : Vendor\Project\Application
 			$application_class = lParse($class_name, BS, 2) . BS . 'Application';

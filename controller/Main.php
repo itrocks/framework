@@ -333,7 +333,7 @@ class Main
 			);
 		}
 
-		if (!isset($class)) {
+		if (!isset($class) && class_exists($controller_name)) {
 			list($class, $method) = Getter::get($controller_name, $feature_name, 'Controller', 'php');
 		}
 
