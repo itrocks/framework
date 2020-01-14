@@ -691,9 +691,10 @@ class Maintainer implements Configurable, Registerable
 			$context = [$context];
 		}
 		foreach ($context as $context_class) {
-			if ($this->updateTable($context_class, $mysqli)) {
+			if (is_string($context_class) && $this->updateTable($context_class, $mysqli)) {
 				$retry = true;
 			}
+			// TODO is_array($context_class) => updateImplicitTable (but how ? I only have two columns)
 		}
 		return isset($retry);
 	}
