@@ -22,12 +22,12 @@ abstract class Controller
 			$custom_settings->delete();
 			$did_change = true;
 		}
-		elseif (isset($parameters['save_name'])) {
+		if (isset($parameters['save_name'])) {
 			$custom_settings->save($parameters['save_name']);
 			$did_change = true;
 		}
 		// keep it last, as load name could be sent on every calls
-		elseif (isset($parameters['load_name'])) {
+		if (isset($parameters['load_name'])) {
 			$feature = isset($parameters[Feature::FEATURE]) ? $parameters[Feature::FEATURE] : null;
 			/** @see Set::load */
 			$custom_settings = call_user_func_array(
