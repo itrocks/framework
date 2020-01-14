@@ -153,7 +153,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$object = $row->id();
 				// Optimize memory usage : detach object from the List_Row
 				if (!is_object($object)){
-					/** @noinspection PhpUnhandledExceptionInspection valid */
 					$object = Getter::getObject($object, $row->getClassName());
 				}
 				foreach (
@@ -204,7 +203,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					: (isset($parameters['after']) ? $parameters['after'] : '')
 			);
 		}
-		elseif (isset($parameters['less'])) {
+		if (isset($parameters['less'])) {
 			if ($parameters['less'] == $this->default_displayed_lines_count) {
 				$list_settings->maximum_displayed_lines_count = $this->default_displayed_lines_count;
 			}
@@ -215,13 +214,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				);
 			}
 		}
-		elseif (isset($parameters['more'])) {
+		if (isset($parameters['more'])) {
 			$list_settings->maximum_displayed_lines_count = round(min(
 				$this->maximum_displayed_lines_count,
 				$list_settings->maximum_displayed_lines_count + $parameters['more']
 			) / $this->displayed_lines_count_gap) * $this->displayed_lines_count_gap;
 		}
-		elseif (isset($parameters['move'])) {
+		if (isset($parameters['move'])) {
 			if ($parameters['move'] == 'down') {
 				$list_settings->start_display_line_number += $list_settings->maximum_displayed_lines_count;
 			}
@@ -235,10 +234,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				}
 			}
 		}
-		elseif (isset($parameters['remove_property'])) {
+		if (isset($parameters['remove_property'])) {
 			$list_settings->removeProperty($parameters['remove_property']);
 		}
-		elseif (isset($parameters['property_path'])) {
+		if (isset($parameters['property_path'])) {
 			if (isset($parameters['property_group_by'])) {
 				$list_settings->propertyGroupBy(
 					$parameters['property_path'], $parameters['property_group_by']
@@ -248,22 +247,22 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$list_settings->propertyTitle($parameters['property_path'], $parameters['property_title']);
 			}
 		}
-		elseif (isset($parameters['reset_search'])) {
+		if (isset($parameters['reset_search'])) {
 			$list_settings->resetSearch();
 		}
-		elseif (isset($parameters['reverse'])) {
+		if (isset($parameters['reverse'])) {
 			$list_settings->reverse($parameters['reverse']);
 		}
-		elseif (isset($parameters['search'])) {
+		if (isset($parameters['search'])) {
 			$list_settings->search(self::descapeForm($parameters['search']));
 		}
-		elseif (isset($parameters['sort'])) {
+		if (isset($parameters['sort'])) {
 			$list_settings->sort($parameters['sort']);
 		}
-		elseif (isset($parameters['title'])) {
+		if (isset($parameters['title'])) {
 			$list_settings->title = $parameters['title'];
 		}
-		elseif (!isset($did_custom_change)) {
+		if (!isset($did_custom_change)) {
 			$did_change = false;
 		}
 		if ($list_settings->start_display_line_number < 1) {
@@ -351,13 +350,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * Force $parameters' main object to a set of $this->class_names
 	 * Replace the already existing Main_Object ($this->mainObject() must be called before this)
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @return string
 	 */
 	protected function forceSetMainObject(Parameters $parameters)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection */
 		$set = Set::instantiate($this->class_names);
 		if (!is_a($object = $parameters->shiftObject(), Names::setToClass($this->class_names))) {
 			$parameters->unshift($object);
@@ -509,7 +506,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//--------------------------------------------------------------------------- getSelectionButtons
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string class name
 	 * @param $parameters    string[] parameters
 	 * @param $list_settings Setting\Custom\Set|List_Setting\Set
@@ -991,7 +987,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	/**
 	 * Default run method for default 'list-typed' view controller
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -1007,7 +1002,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			: $this->forceSetMainObject($parameters);
 		Loc::enterContext($class_name);
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$view = View::run($parameters, $form, $files, Names::setToClass($class_name), static::FEATURE);
 		Loc::exitContext();
 		return $view;

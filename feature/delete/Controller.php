@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql\Information_Schema\Lock_Information;
 use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Names;
@@ -101,6 +102,7 @@ class Controller implements Default_Feature_Controller
 
 		$parameters['message'] = $this->message($deleted_objects, $class_name, $deleted);
 		if (!$deleted) {
+			$parameters['locked_objects']   = $this->lockedObjects($deleted_objects);
 			$parameters[Template::TEMPLATE] = static::EXCEPTION;
 		}
 
@@ -128,6 +130,27 @@ class Controller implements Default_Feature_Controller
 		}
 		Dao::commit();
 		return $deleted_objects;
+	}
+
+	//--------------------------------------------------------------------------------- lockedObjects
+	/**
+	 * Keeps only locked objects from the list
+	 * Associate each of these locked objects to their locking objects list
+	 *
+	 * @param $objects object[]
+	 * @return array ['object' => $locked_object object, 'lock_objects' => $lock_objects Lock_Objects]
+	 */
+	protected function lockedObjects(array $objects)
+	{
+		$locked_objects = [];
+		foreach ($objects as $object) {
+			$lock_objects = (new Lock_Information)->whoLocks($object);
+			if (!$lock_objects) {
+				continue;
+			}
+			$locked_objects[] = ['object' => $object, 'lock_objects' => $lock_objects];
+		}
+		return $locked_objects;
 	}
 
 	//--------------------------------------------------------------------------------------- message

@@ -36,7 +36,7 @@ class Data implements Registerable
 		if (!$result) {
 			return;
 		}
-		$uri_object = new Uri($uri);
+		$uri_object = new Uri(lParse($uri, '?'));
 		$class_name = Builder::className(Names::setToClass($uri_object->controller_name));
 		// in some rare cases, controllers may exist without a real class (eg Mysql/maintain)
 		if (!class_exists($class_name)) {

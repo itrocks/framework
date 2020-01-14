@@ -3,6 +3,19 @@ namespace ITRocks\Framework\Dao\Mysql\Information_Schema;
 
 /**
  * Information schema : key column usage
+ *
+ * @property $column_name                   string
+ * @property $constraint_catalog            string
+ * @property $constraint_name               string
+ * @property $constraint_schema             string
+ * @property $ordinal_position              integer
+ * @property $position_in_unique_constraint integer
+ * @property $referenced_column_name        string
+ * @property $referenced_table_name         string
+ * @property $referenced_table_schema       string
+ * @property $table_catalog                 string
+ * @property $table_name                    string
+ * @property $table_schema                  string
  */
 class Key_Column_Usage
 {
@@ -97,5 +110,15 @@ class Key_Column_Usage
 	 * @var string
 	 */
 	protected $TABLE_SCHEMA;
+
+	//----------------------------------------------------------------------------------------- __get
+	/**
+	 * @param $property_name string
+	 * @return mixed
+	 */
+	public function __get($property_name)
+	{
+		return $this->{strtoupper($property_name)};
+	}
 
 }
