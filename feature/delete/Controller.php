@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -19,6 +20,9 @@ class Controller implements Default_Feature_Controller
 
 	//--------------------------------------------------------------------------------------- CONFIRM
 	const CONFIRM = 'confirm';
+
+	//------------------------------------------------------------------------------------- EXCEPTION
+	const EXCEPTION = 'exception';
 
 	//-------------------------------------------------------------------------------------- $objects
 	/**
@@ -70,11 +74,19 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected function delete(Parameters $parameters, $form, $files, $class_name)
 	{
-		$parameters      = $parameters->getObjects();
-		$deleted_objects = $this->deleteObjects($this->objects);
+		$parameters = $parameters->getObjects();
 
-		$parameters['deleted']         = $deleted_objects ? true : false;
-		$parameters['deleted_objects'] = $deleted_objects;
+		try {
+			$deleted_objects = $this->deleteObjects($this->objects);
+			$deleted         = ($deleted_objects ? true : false);
+		}
+		/** @noinspection PhpRedundantCatchClauseInspection This may be thrown */
+		catch (Mysql_Error_Exception $exception) {
+			$deleted_objects = $this->objects;
+			$deleted         = false;
+		}
+		$parameters['deleted']         = $deleted;
+		$parameters['deleted_objects'] = $this->objects;
 
 		// avoid side effects between object and parameters
 		if (is_object(reset($parameters))) {
@@ -85,7 +97,12 @@ class Controller implements Default_Feature_Controller
 			);
 		}
 
-		$parameters['message'] = $this->message($deleted_objects, $class_name);
+		$parameters['display_deleted_objects'] = (count($deleted_objects) > 1);
+
+		$parameters['message'] = $this->message($deleted_objects, $class_name, $deleted);
+		if (!$deleted) {
+			$parameters[Template::TEMPLATE] = static::EXCEPTION;
+		}
 
 		return View::run($parameters, $form, $files, $class_name, Feature::F_DELETE);
 	}
@@ -115,18 +132,19 @@ class Controller implements Default_Feature_Controller
 
 	//--------------------------------------------------------------------------------------- message
 	/**
-	 * @param $deleted_objects object[]
-	 * @param $class_name      string
+	 * @param $objects    object[]
+	 * @param $class_name string
+	 * @param $deleted    boolean
 	 * @return string
 	 */
-	protected function message(array $deleted_objects, $class_name)
+	protected function message(array $objects, $class_name, $deleted)
 	{
-		$count = count($deleted_objects);
+		$count = count($objects);
 		$class = Loc::tr(
 			($count > 1) ? Names::classToDisplays($class_name) : Names::classToDisplay($class_name)
 		);
-		$object = ($count === 1) ? strval(reset($deleted_objects)) : null;
-		if ($deleted_objects) {
+		$object = ($count === 1) ? strval(reset($objects)) : null;
+		if ($deleted && $objects) {
 			if ($count > 1) {
 				$message = Loc::tr(
 					':count :classes have been deleted',
