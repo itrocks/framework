@@ -168,7 +168,7 @@ class Uri
 				$default_feature    = $reflection_class->getAnnotation('default_class_feature')->value;
 				$this->feature_name = $default_feature ?: Feature::F_ADD;
 			}
-			elseif (class_exists(Names::setToClass($this->controller_name))) {
+			elseif (class_exists(Names::setToClass($this->controller_name, false))) {
 				/** @noinspection PhpUnhandledExceptionInspection class_exists */
 				$reflection_class   = new Reflection_Class(Names::setToClass($this->controller_name));
 				$default_feature    = $reflection_class->getAnnotation('default_set_feature')->value;

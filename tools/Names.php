@@ -393,6 +393,7 @@ abstract class Names
 	/**
 	 * Changes 'A\Namespace\Class_Names' into 'A\Namespace\Class_Name'
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name  string
 	 * @param $check_class boolean false if you don't want to check for existing classes
 	 * @return string
@@ -436,8 +437,8 @@ abstract class Names
 				$i = false;
 			}
 			if ($i === false) {
+				/** @noinspection PhpUnhandledExceptionInspection Reflection_Class : class exists */
 				if (
-					/** @noinspection PhpUnhandledExceptionInspection Reflection_Class : class exists */
 					(class_exists($set_class_name) || trait_exists($set_class_name))
 					&& (Set_Annotation::of(new Reflection_Class($set_class_name))->value === $set_class_name)
 				) {

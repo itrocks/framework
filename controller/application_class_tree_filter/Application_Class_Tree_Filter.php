@@ -162,9 +162,6 @@ class Application_Class_Tree_Filter
 	protected function prepareCheckpoints()
 	{
 		$class_name = $this->class_name;
-		if (!class_exists($class_name)) {
-			return;
-		}
 		do {
 			// normal case : Vendor\Project\Application
 			$application_class = lParse($class_name, BS, 2) . BS . 'Application';
@@ -172,9 +169,11 @@ class Application_Class_Tree_Filter
 			if (!isset($this->nodes[$application_class])) {
 				$application_class = lParse($application_class, BS) . BS . 'Application';
 			}
-			$this->nodes[$application_class]->checked = true;
+			if (isset($this->nodes[$application_class])) {
+				$this->nodes[$application_class]->checked = true;
+			}
 		}
-		while ($class_name = get_parent_class($class_name));
+		while (class_exists($class_name) && ($class_name = get_parent_class($class_name)));
 	}
 
 	//---------------------------------------------------------------------------------- prepareNodes
