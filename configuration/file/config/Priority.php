@@ -75,17 +75,38 @@ class Priority
 		return $plugin;
 	}
 
+	//------------------------------------------------------------------------ emptyIfNoPluginAnymore
+	/**
+	 * Empty the plugin list if the priority does not contain plugins anymore
+	 *
+	 * @return boolean true if has been emptied, false if the priority still contains plugins
+	 */
+	public function emptyIfNoPluginAnymore()
+	{
+		foreach ($this->plugins as $plugin) {
+			if ($plugin instanceof Plugin) {
+				return false;
+			}
+		}
+		$this->plugins = [];
+		return true;
+	}
+
 	//---------------------------------------------------------------------------------- removePlugin
 	/**
 	 * @param $plugin_name string
+	 * @return integer
 	 */
 	public function removePlugin($plugin_name)
 	{
+		$removed = 0;
 		foreach ($this->plugins as $plugin_key => $plugin) {
 			if (($plugin instanceof Plugin) && ($plugin->class_name === $plugin_name)) {
 				unset($this->plugins[$plugin_key]);
+				$removed ++;
 			}
 		}
+		return $removed;
 	}
 
 	//---------------------------------------------------------------------------------- searchPlugin

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Plugin;
 
+use ITRocks\Framework\Reflection\Reflection_Class;
+
 /**
  * Plugin priorities constants
  */
@@ -21,5 +23,15 @@ abstract class Priority
 	const HIGHER   = 'higher';
 	const HIGHEST  = 'highest';
 	const REMOVE   = 'remove';
+
+	//----------------------------------------------------------------------------- orderedPriorities
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string[] key from 0 to N, values are the lowercase priority constant values
+	 */
+	public static function orderedPriorities()
+	{
+		return array_values((new Reflection_Class(__CLASS__))->getConstants());
+	}
 
 }

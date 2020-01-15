@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Configuration\File;
 use ITRocks\Framework;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Config\Priority;
+use ITRocks\Framework\Plugin;
 
 /**
  * The menu.php configuration file
@@ -48,14 +49,30 @@ class Config extends File
 	{
 		$priority = $this->searchPriority($priority_value);
 		if (!$priority) {
-			$priority                    = new Priority($priority_value);
-			$priority->config            = $this;
-			$this->plugins_by_priority[] = '';
-			$line                        = TAB . '//' . str_repeat('-', 77 - strlen($priority_value));
-			$this->plugins_by_priority[] = $line . SP
-				. strtoupper($priority_value) . SP . 'priority plugins';
-			$this->plugins_by_priority[] = $priority;
-			$this->plugins_by_priority[] = '';
+			$ordered_priorities = Plugin\Priority::orderedPriorities();
+			$new_position       = array_search($priority_value, $ordered_priorities);
+			$insert_position    = count($this->plugins_by_priority);
+			foreach ($this->plugins_by_priority as $position => $priority) {
+				if (
+					!($priority instanceof Priority)
+					|| (array_search($priority->priority, $ordered_priorities) < $new_position)
+				) {
+					continue;
+				}
+				$insert_position = ($position - 1);
+				break;
+			}
+			$priority         = new Priority($priority_value);
+			$priority->config = $this;
+			$line             = TAB . '//' . str_repeat('-', 77 - strlen($priority_value));
+			$new_lines        = [
+				$line . SP . strtoupper($priority_value) . SP . 'priority plugins', $priority, ''
+			];
+			$this->plugins_by_priority = array_merge(
+				array_slice($this->plugins_by_priority, 0, $insert_position),
+				$new_lines,
+				array_slice($this->plugins_by_priority, $insert_position)
+			);
 		}
 		return $priority;
 	}
@@ -75,10 +92,33 @@ class Config extends File
 	 */
 	public function removePlugin($plugin_name)
 	{
-		foreach ($this->plugins_by_priority as $priority) {
+		$recalculate_keys = false;
+		foreach ($this->plugins_by_priority as $key => $priority) {
 			if ($priority instanceof Priority) {
-				$priority->removePlugin($plugin_name);
+				if (
+					$priority->removePlugin($plugin_name)
+					&& $priority->emptyIfNoPluginAnymore()
+				) {
+					unset($this->plugins_by_priority[$key]);
+					$remove_key = $key - 1;
+					while (
+						$remove_key
+						&& isset($this->plugins_by_priority[$remove_key])
+						&& !($this->plugins_by_priority[$remove_key] instanceof Priority)
+						&& (
+							($this->plugins_by_priority[$remove_key] === '')
+							|| (substr($this->plugins_by_priority[$remove_key], 0, 3) === TAB . '//')
+						)
+					) {
+						unset($this->plugins_by_priority[$remove_key]);
+						$remove_key --;
+					}
+					$recalculate_keys = true;
+				}
 			}
+		}
+		if ($recalculate_keys) {
+			$this->plugins_by_priority = array_values($this->plugins_by_priority);
 		}
 	}
 
