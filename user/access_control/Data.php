@@ -15,6 +15,7 @@ use ITRocks\Framework\View;
 
 /**
  * @feature Data user access control
+ * @priority lowest
  */
 class Data implements Registerable
 {

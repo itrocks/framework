@@ -13,7 +13,7 @@ class Config extends File
 
 	//-------------------------------------------------------------------------- $plugins_by_priority
 	/**
-	 * @var Priority[]
+	 * @var Priority[]|string[]
 	 */
 	public $plugins_by_priority;
 

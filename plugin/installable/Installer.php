@@ -66,6 +66,7 @@ class Installer
 	/**
 	 * Add the a Activable / Configurable / Registrable plugin into the config.php configuration file
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name string|Plugin
 	 * @param $configuration     mixed
 	 * @param $priority_value    string If forced priority only @values Priority::const
@@ -77,8 +78,9 @@ class Installer
 		}
 		if (is_a($plugin_class_name, Plugin::class, true)) {
 			if (!$priority_value) {
-				/** @noinspection PhpUndefinedFieldInspection Plugin::PRIORITY always exist */
-				$priority_value = $plugin_class_name::PRIORITY;
+				/** @noinspection PhpUnhandledExceptionInspection */
+				$plugin_class   = new Reflection_Class($plugin_class_name);
+				$priority_value = $plugin_class->getAnnotation('priority')->value;
 			}
 			$file = $this->openFile(Config::class);
 			$file->addPlugin($priority_value, $plugin_class_name, $configuration);

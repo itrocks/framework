@@ -33,7 +33,7 @@ use ITRocks\Framework\View;
  *        ]
  *      ]
  *  ]
- *
+ * @priority lowest
  */
 class IP implements Configurable, Registerable
 {
