@@ -116,7 +116,8 @@ class Compiler implements ICompiler, Needs_Main
 				);
 				foreach ($dependencies as $dependency) {
 					if (
-						!isset($more_sources->sources[$dependency->file_name])
+						!Class_Builder::isBuilt($dependency->class_name)
+						&& !isset($more_sources->sources[$dependency->file_name])
 						&& !isset($more_sources->sources[$dependency->class_name])
 					) {
 						$source = Reflection_Source::ofFile($dependency->file_name, $dependency->class_name);
