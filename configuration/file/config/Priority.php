@@ -22,7 +22,7 @@ class Priority
 	/**
 	 * @var Plugin[]|string[] plugin configuration or free plugin configuration code
 	 */
-	public $plugins;
+	public $plugins = [];
 
 	//------------------------------------------------------------------------------------- $priority
 	/**

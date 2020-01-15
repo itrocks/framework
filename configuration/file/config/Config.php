@@ -51,9 +51,11 @@ class Config extends File
 			$priority                    = new Priority($priority_value);
 			$priority->config            = $this;
 			$this->plugins_by_priority[] = '';
-			$line                        = '//' . str_repeat('-', 77 - strlen($priority_value));
-			$this->plugins_by_priority[] = $line . SP . $priority_value . SP . 'priority plugins';
+			$line                        = TAB . '//' . str_repeat('-', 77 - strlen($priority_value));
+			$this->plugins_by_priority[] = $line . SP
+				. strtoupper($priority_value) . SP . 'priority plugins';
 			$this->plugins_by_priority[] = $priority;
+			$this->plugins_by_priority[] = '';
 		}
 		return $priority;
 	}
