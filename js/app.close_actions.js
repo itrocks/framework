@@ -6,14 +6,18 @@ $(document).ready(function()
 	/**
 	 * Set popup windows close action to javascript remove popup instead of calling a link
 	 */
-	$body.build('click', 'div.popup .general.actions .close > a', function()
+	$body.build('click', 'div.popup .general.actions .close > a', function(event)
 	{
 		var $this = $(this);
 		$this.removeAttr('href').removeAttr('target');
 		setTimeout(function() { $this.closest('.popup').remove(); });
+		event.preventDefault();
+		event.stopImmediatePropagation();
 	});
 
-	$body.build('each', 'div.popup .general.actions a[href]:not([href*="close="])', function() {
+	//------------------------------------------------------------------ div.popup actions:not(close)
+	$body.build('each', 'div.popup .general.actions a[href]:not([href*="close="])', function()
+	{
 		var $this = $(this);
 		var href  = $this.attr('href');
 		if (!href.beginsWith('#')) {
