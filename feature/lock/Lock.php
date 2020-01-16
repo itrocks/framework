@@ -53,14 +53,7 @@ class Lock implements Registerable
 			// if the object is locked : remove edit and delete buttons
 			if ($object->locked) {
 				if (isset($buttons[Feature::F_EDIT])) {
-					if (isA($object, Duplicate::class)) {
-						if ($buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE]) {
-							$buttons[Feature::F_EDIT] = $buttons[Feature::F_EDIT]->sub_buttons[Feature::F_DUPLICATE];
-						}
-					}
-					else {
-						unset($buttons[Feature::F_EDIT]);
-					}
+					unset($buttons[Feature::F_EDIT]);
 				}
 				if (isset($buttons[Feature::F_DELETE])) {
 					unset($buttons[Feature::F_DELETE]);
