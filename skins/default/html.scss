@@ -22,13 +22,19 @@ iframe {
 
 div.popup {
 	background-color: $background;
+	border: 1px solid white;
 	color: $color;
 	position: fixed;
 	z-index: calc(var(--z-index) + 5);
 
-	> article > header {
-		cursor: pointer;
-		margin: -1px;
+	> article {
+		border-left: 1px solid #ccc;
+		border-right: 1px solid #ccc;
+
+		> header {
+			cursor: pointer;
+			margin: -1px;
+		}
 	}
 }
 

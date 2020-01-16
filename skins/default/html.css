@@ -16,12 +16,16 @@ iframe {
 
 div.popup {
   background-color: white;
+  border: 1px solid white;
   color: #444;
   position: fixed;
   z-index: calc(var(--z-index) + 5); }
-  div.popup > article > header {
-    cursor: pointer;
-    margin: -1px; }
+  div.popup > article {
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc; }
+    div.popup > article > header {
+      cursor: pointer;
+      margin: -1px; }
 
 a.auto-redirect, button.auto-refresh {
   display: none; }
