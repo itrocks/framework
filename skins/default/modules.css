@@ -1,8 +1,8 @@
 article[data-module=administration],
 #favorites > li[data-module=administration],
 #menu > ul > li#administration {
-  --dark-color: #444;
-  --light-color: #eee; }
+  --dark-color: #8b8075;
+  --light-color: #d8d5d1; }
 
 body:not(.min-left)[data-module=administration] > #menu > ul > li#administration > h3 > a,
 body:not(.min-left) > #menu > ul > li#administration:focus > h3 > a,
