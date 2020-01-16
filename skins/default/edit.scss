@@ -24,8 +24,7 @@ article > form > ul.data ol.properties > li {
 		position: absolute;
 	}
 
-	&.component-objects > label,
-	&.objects > label {
+	&.component-objects > label {
 		cursor: pointer;
 
 		&:after {
@@ -33,6 +32,15 @@ article > form > ul.data ol.properties > li {
 			padding-right: .5em;
 			position: absolute;
 			right: 0;
+		}
+	}
+
+	&.objects > div > ul {
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		> li:not(:last-child) > div > input {
+			margin-bottom: -1px;
 		}
 	}
 }

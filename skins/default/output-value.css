@@ -1,35 +1,27 @@
 article ol.properties > li.block,
-article ol.properties > li.component-objects,
-article ol.properties > li.objects {
+article ol.properties > li.component-objects {
   background-color: #f8f8f8;
   padding: 0 10px; }
   article ol.properties > li.block > div,
-  article ol.properties > li.component-objects > div,
-  article ol.properties > li.objects > div {
+  article ol.properties > li.component-objects > div {
     padding: 0; }
     article ol.properties > li.block > div ul.collection,
-    article ol.properties > li.component-objects > div ul.collection,
-    article ol.properties > li.objects > div ul.collection {
+    article ol.properties > li.component-objects > div ul.collection {
       border-collapse: collapse; }
       article ol.properties > li.block > div ul.collection > li,
-      article ol.properties > li.component-objects > div ul.collection > li,
-      article ol.properties > li.objects > div ul.collection > li {
+      article ol.properties > li.component-objects > div ul.collection > li {
         display: table-row-group; }
         article ol.properties > li.block > div ul.collection > li:first-child > ol > li,
-        article ol.properties > li.component-objects > div ul.collection > li:first-child > ol > li,
-        article ol.properties > li.objects > div ul.collection > li:first-child > ol > li {
+        article ol.properties > li.component-objects > div ul.collection > li:first-child > ol > li {
           white-space: nowrap; }
         article ol.properties > li.block > div ul.collection > li > ol,
-        article ol.properties > li.component-objects > div ul.collection > li > ol,
-        article ol.properties > li.objects > div ul.collection > li > ol {
+        article ol.properties > li.component-objects > div ul.collection > li > ol {
           display: table-row; }
           article ol.properties > li.block > div ul.collection > li > ol > li,
-          article ol.properties > li.component-objects > div ul.collection > li > ol > li,
-          article ol.properties > li.objects > div ul.collection > li > ol > li {
+          article ol.properties > li.component-objects > div ul.collection > li > ol > li {
             display: table-cell; }
             article ol.properties > li.block > div ul.collection > li > ol > li:not(.minus),
-            article ol.properties > li.component-objects > div ul.collection > li > ol > li:not(.minus),
-            article ol.properties > li.objects > div ul.collection > li > ol > li:not(.minus) {
+            article ol.properties > li.component-objects > div ul.collection > li > ol > li:not(.minus) {
               vertical-align: top; }
             article ol.properties > li.block > div ul.collection > li > ol > li.float, article ol.properties > li.block > div ul.collection > li > ol > li.integer,
             article ol.properties > li.block > div ul.collection > li > ol > li input.float,
@@ -37,15 +29,10 @@ article ol.properties > li.objects {
             article ol.properties > li.component-objects > div ul.collection > li > ol > li.float,
             article ol.properties > li.component-objects > div ul.collection > li > ol > li.integer,
             article ol.properties > li.component-objects > div ul.collection > li > ol > li input.float,
-            article ol.properties > li.component-objects > div ul.collection > li > ol > li input.integer,
-            article ol.properties > li.objects > div ul.collection > li > ol > li.float,
-            article ol.properties > li.objects > div ul.collection > li > ol > li.integer,
-            article ol.properties > li.objects > div ul.collection > li > ol > li input.float,
-            article ol.properties > li.objects > div ul.collection > li > ol > li input.integer {
+            article ol.properties > li.component-objects > div ul.collection > li > ol > li input.integer {
               text-align: right; }
             article ol.properties > li.block > div ul.collection > li > ol > li textarea,
-            article ol.properties > li.component-objects > div ul.collection > li > ol > li textarea,
-            article ol.properties > li.objects > div ul.collection > li > ol > li textarea {
+            article ol.properties > li.component-objects > div ul.collection > li > ol > li textarea {
               margin: 0; }
 
 article > ul.data ul.collection > li > ol > li {

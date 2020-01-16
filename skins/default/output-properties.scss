@@ -19,7 +19,7 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects):not(.objects) {
+	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
 		position: relative;
 
@@ -49,8 +49,7 @@ article ol.properties:not(.tiny) {
 	> li.after,
 	> li.before,
 	> li.block,
-	> li.component-objects,
-	> li.objects {
+	> li.component-objects {
 		display: block;
 	}
 
@@ -70,8 +69,7 @@ article ol.properties:not(.tiny) {
 	}
 
 	> li.block,
-	> li.component-objects,
-	> li.objects {
+	> li.component-objects {
 
 		> div {
 			background: #efefef;
@@ -115,9 +113,12 @@ article ol.properties.tiny {
 
 article > ul.data ol.properties {
 
-	> li:not(.component-objects):not(.objects) > div {
+	> li:not(.component-objects) > div {
 		background: #efefef;
 		border-radius: 2px;
+	}
+
+	> li:not(.component-objects):not(.objects) > div {
 		padding: 9px 10px;
 	}
 

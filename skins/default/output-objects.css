@@ -1,44 +1,25 @@
-ol.properties > li.component-objects > div > ul.collection > li,
-ol.properties > li.objects > div > ul.collection > li {
+ol.properties > li.component-objects > div > ul.collection > li {
   border-bottom: 1px solid #d8d8d8;
   display: block; }
-  ol.properties > li.component-objects > div > ul.collection > li.header,
-  ol.properties > li.objects > div > ul.collection > li.header {
+  ol.properties > li.component-objects > div > ul.collection > li.header {
     background-color: #efefef; }
-    ol.properties > li.component-objects > div > ul.collection > li.header > ol,
-    ol.properties > li.objects > div > ul.collection > li.header > ol {
+    ol.properties > li.component-objects > div > ul.collection > li.header > ol {
       box-shadow: inset 0 -1px #d8d8d8; }
-      ol.properties > li.component-objects > div > ul.collection > li.header > ol > li,
-      ol.properties > li.objects > div > ul.collection > li.header > ol > li {
+      ol.properties > li.component-objects > div > ul.collection > li.header > ol > li {
         color: #333;
         font-weight: 500;
         padding: 4px 10px; }
-  ol.properties > li.component-objects > div > ul.collection > li:not(.header):nth-child(even),
-  ol.properties > li.objects > div > ul.collection > li:not(.header):nth-child(even) {
+  ol.properties > li.component-objects > div > ul.collection > li:not(.header):nth-child(even) {
     background-color: #efefef; }
-  ol.properties > li.component-objects > div > ul.collection > li:not(.header):nth-child(odd),
-  ol.properties > li.objects > div > ul.collection > li:not(.header):nth-child(odd) {
+  ol.properties > li.component-objects > div > ul.collection > li:not(.header):nth-child(odd) {
     background-color: #e8e8e8; }
-  ol.properties > li.component-objects > div > ul.collection > li > ol > li > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li > select, ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea,
-  ol.properties > li.objects > div > ul.collection > li > ol > li > input,
-  ol.properties > li.objects > div > ul.collection > li > ol > li > select,
-  ol.properties > li.objects > div > ul.collection > li > ol > li > textarea {
+  ol.properties > li.component-objects > div > ul.collection > li > ol > li > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li > select, ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea {
     border: none !important;
     color: black;
     width: calc(100% - 20px); }
-    ol.properties > li.component-objects > div > ul.collection > li > ol > li > input[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > select[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea[readonly],
-    ol.properties > li.objects > div > ul.collection > li > ol > li > input[readonly],
-    ol.properties > li.objects > div > ul.collection > li > ol > li > select[readonly],
-    ol.properties > li.objects > div > ul.collection > li > ol > li > textarea[readonly] {
+    ol.properties > li.component-objects > div > ul.collection > li > ol > li > input[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > select[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea[readonly] {
       background: transparent; }
-    ol.properties > li.component-objects > div > ul.collection > li > ol > li > input:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > select:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea:not([readonly]),
-    ol.properties > li.objects > div > ul.collection > li > ol > li > input:not([readonly]),
-    ol.properties > li.objects > div > ul.collection > li > ol > li > select:not([readonly]),
-    ol.properties > li.objects > div > ul.collection > li > ol > li > textarea:not([readonly]) {
+    ol.properties > li.component-objects > div > ul.collection > li > ol > li > input:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > select:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea:not([readonly]) {
       background: white; }
-  ol.properties > li.component-objects > div > ul.collection > li > ol > li.float, ol.properties > li.component-objects > div > ul.collection > li > ol > li.float > div > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li.integer, ol.properties > li.component-objects > div > ul.collection > li > ol > li.integer > div > input,
-  ol.properties > li.objects > div > ul.collection > li > ol > li.float,
-  ol.properties > li.objects > div > ul.collection > li > ol > li.float > div > input,
-  ol.properties > li.objects > div > ul.collection > li > ol > li.integer,
-  ol.properties > li.objects > div > ul.collection > li > ol > li.integer > div > input {
+  ol.properties > li.component-objects > div > ul.collection > li > ol > li.float, ol.properties > li.component-objects > div > ul.collection > li > ol > li.float > div > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li.integer, ol.properties > li.component-objects > div > ul.collection > li > ol > li.integer > div > input {
     text-align: right; }
