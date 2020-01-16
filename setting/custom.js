@@ -1,7 +1,7 @@
 $(document).ready(function()
 {
 	var $body = $('body');
-	var article_header = 'article[data-class] > form > header';
+	var article_header = 'article[data-class] > form > header, article[data-class] > header';
 
 	//------------------------------------------------------------- article[data-class] > header > h2
 	/**
@@ -19,9 +19,7 @@ $(document).ready(function()
 			$('body').click();
 		}
 		else {
-			$select.css(
-				'left', ($this.offset().left) - parseInt($this.parent().offset().left).toString() + 'px'
-			);
+			$select.css('left', $this.position().left.toString() + 'px');
 			$select.css('min-width', $this.width().toString() + 'px');
 			$select.fadeIn(200, function() {
 				var clickEvent = function() {
