@@ -66,6 +66,10 @@ body {
 	overflow: hidden;
 	transition-duration: var(--transition-duration);
 
+	&[data-inside] {
+		grid-template-columns: 0 1fr min-content;
+	}
+
 	&.min-left {
 		grid-template-columns: 44px 1fr min-content;
 	}

@@ -41,6 +41,8 @@ body {
   height: 100vh;
   overflow: hidden;
   transition-duration: var(--transition-duration); }
+  body[data-inside] {
+    grid-template-columns: 0 1fr min-content; }
   body.min-left {
     grid-template-columns: 44px 1fr min-content; }
   body > aside {
