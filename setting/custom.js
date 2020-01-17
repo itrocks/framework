@@ -83,7 +83,6 @@ $(document).ready(function()
 						+ SL + $li.data('id')
 						+ SL + 'delete'
 						+ '?confirm=1';
-					$li.remove();
 					redirectLight(href, '#responses');
 				}
 				else if ($helper.data('inside').is('article')) {
@@ -98,6 +97,15 @@ $(document).ready(function()
 					.text($this.text());
 			}
 		});
+	});
+
+	//------------------------------------------------------------------------------------ li.deleted
+	var selector = '#responses > li.deleted[data-class="ITRocks\\\\Framework\\\\Setting"][data-id]';
+	$body.build('call', selector, function()
+	{
+		var id = $(this).data('id');
+		$('ul.custom.select > li[data-class="ITRocks\\\\Framework\\\\Setting"][data-id=' + id + ']')
+			.remove();
 	});
 
 });
