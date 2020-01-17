@@ -9,12 +9,13 @@ article.list > form {
       height: 33px; }
       article.list > form > table tr > td, article.list > form > table tr > th {
         box-shadow: inset 0 -1px #d8d8d8;
-        box-sizing: border-box;
         vertical-align: middle; }
         article.list > form > table tr > td:first-child:hover, article.list > form > table tr > th:first-child:hover {
           background: #d2f1f9; }
         article.list > form > table tr > td.insert-right, article.list > form > table tr > th.insert-right {
           box-shadow: inset -1px 0 0 0 black, inset 0 -1px #d8d8d8; }
+      article.list > form > table tr > td {
+        box-sizing: border-box; }
 
 article.list > form {
   position: relative; }
