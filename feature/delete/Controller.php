@@ -50,15 +50,18 @@ class Controller implements Default_Feature_Controller
 		$parameters->set('delete_link', $link);
 		$parameters->set('close_link', View::link($parameters->getMainObject()));
 
+		$multiple = false;
 		if ($form) {
 			$parameters->set('data_post', http_build_query($form));
 			if (!Dao::getObjectIdentifier($parameters->getMainObject())) {
 				$parameters->unshift(new Multiple($this->objects));
+				$multiple = true;
 			}
 		}
 		else {
 			$parameters->set('data_post', null);
 		}
+		$parameters->set('multiple', $multiple);
 
 		$parameters = $parameters->getObjects();
 		$parameters[Template::TEMPLATE] = static::CONFIRM;

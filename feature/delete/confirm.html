@@ -17,7 +17,13 @@
 			<h2>|¦{@class.display.ucfirst}¦ deletion|</h2>
 		</header>
 		<div>
-			<p class="question">|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?</p>
+			<p class="question">
+				<!--multiple?-->
+				|Do you confirm the deletion of !{.}! ¦{@class.display}¦| ?
+				<!--else-->
+				|Do you confirm the deletion of ¦{@class.display.ucfirst}¦ !{.}!| ?
+				<!--end-->
+			</p>
 			<p class="warning">|All data will be lost|.</p>
 		</div>
 		<ul class="actions">
