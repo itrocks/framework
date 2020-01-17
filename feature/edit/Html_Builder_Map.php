@@ -103,10 +103,15 @@ class Html_Builder_Map extends Map
 		$builder->readonly    = $this->readOnly();
 
 		$input = new Div($builder->setTemplate($this->template)->build());
-		$minus = new Button('-');
-		$minus->addClass('minus');
-		$minus->setAttribute('tabindex', -1);
-		$cell  = new Item($input . $minus);
+		if (!$this->readOnly() && !$this->noDelete()) {
+			$minus = new Button('-');
+			$minus->addClass('minus');
+			$minus->setAttribute('tabindex', -1);
+			$cell = new Item($input . $minus);
+		}
+		else {
+			$cell = $input;
+		}
 		$type  = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
 		return $cell;
