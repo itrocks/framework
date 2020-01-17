@@ -69,12 +69,11 @@ $(document).ready(function()
 	/**
 	 * when a property is not longer between two columns
 	 */
-	var out = function($this, event, ui)
+	var out = function($this)
 	{
 		$this.find('.insert-right').removeClass('insert-right');
 		$this.removeData('insert-after');
 		$this.removeData('drag-callback');
-		ui.draggable.removeData('over-droppable');
 	};
 
 	//---------------------------------------------------------------------------------- article.list
@@ -133,6 +132,8 @@ $(document).ready(function()
 				out: function(event, ui)
 				{
 					out($(this), event, ui);
+					ui.draggable.removeData('over-droppable');
+					ui.helper.addClass('outside').removeClass('inside');
 				},
 
 				over: function(event, ui)
@@ -140,6 +141,7 @@ $(document).ready(function()
 					var $this = $(this);
 					$this.data('drag-callback', drag);
 					ui.draggable.data('over-droppable', $this);
+					ui.helper.addClass('inside').removeClass('outside');
 				}
 			});
 
