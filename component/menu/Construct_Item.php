@@ -23,9 +23,15 @@ trait Construct_Item
 		if (is_array($item)) {
 			foreach ($item as $property_key => $property) {
 				if (is_numeric($property_key)) {
-					if     (substr($property, 0, 1) == SL)  $menu_item->link        = $property;
-					elseif (substr($property, 0, 1) == '#') $menu_item->link_target = $property;
-					else                                    $menu_item->caption     = $property;
+					if (substr($property, 0, 1) === SL) {
+						$menu_item->link = $property;
+					}
+					elseif (in_array(substr($property, 0, 1), ['#', '_'])) {
+						$menu_item->link_target = $property;
+					}
+					else {
+						$menu_item->caption = $property;
+					}
 				}
 			}
 		}

@@ -21,7 +21,7 @@ trait Has_Get
 	 * Retrieves static implementation form session
 	 *
 	 * @param $default boolean if false, will not instantiate a non-registered plugin
-	 * @return static|null null only if default is false and the plugin is not registered
+	 * @return Plugin|static|null null only if default is false and the plugin is not registered
 	 */
 	public static function get($default = true)
 	{

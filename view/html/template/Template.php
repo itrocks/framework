@@ -2079,6 +2079,9 @@ class Template
 		$content = str_replace(['app:///', 'app://'], SL, $content);
 		$content = str_replace(['rel:///', 'rel://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
+		$content = str_replace(
+			['href="/http://', 'href="/https://'], ['href="http://', 'href="https://'], $content
+		);
 		return $content;
 	}
 

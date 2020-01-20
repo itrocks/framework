@@ -169,20 +169,22 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function checkAccessToLink(&$result)
 	{
-		if (!self::$protect) {
-			$user = User::current();
-			if ($user && isA($user, Has_Groups::class)) {
-				list($uri, $arguments) = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
-				if ($this->checkFeatures($uri)) {
-					$result = $uri;
-					if (!is_null($arguments)) {
-						$result .= '?' . $arguments;
-					}
-				}
-				else {
-					$result = null;
-				}
+		if (self::$protect) {
+			return;
+		}
+		$user = User::current();
+		if (!$user || !isA($user, Has_Groups::class)) {
+			return;
+		}
+		list($uri, $arguments) = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
+		if ($this->checkFeatures($uri)) {
+			$result = $uri;
+			if (!is_null($arguments)) {
+				$result .= '?' . $arguments;
 			}
+		}
+		else {
+			$result = null;
 		}
 	}
 
@@ -192,13 +194,12 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function checkAccessToMenuItem(&$result)
 	{
-		if (isset($result)) {
-			$user = User::current();
-			if ($user && isA($user, Has_Groups::class)) {
-				if (!$this->checkFeatures($result->link)) {
-					$result = null;
-				}
-			}
+		if (!isset($result)) {
+			return;
+		}
+		$user = User::current();
+		if ($user && isA($user, Has_Groups::class) && !$this->checkFeatures($result->link)) {
+			$result = null;
 		}
 	}
 
@@ -212,6 +213,9 @@ class Access_Control implements Configurable, Registerable
 	 */
 	private function checkFeatures(&$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
+		if (beginsWith($uri, ['http://', 'https://'])) {
+			return true;
+		}
 		$last_protect  = self::$protect;
 		self::$protect = true;
 		$user          = User::current();
@@ -407,18 +411,18 @@ class Access_Control implements Configurable, Registerable
 		foreach (
 			[Has_General_Buttons::GENERAL_BUTTONS, Has_Selection_Buttons::SELECTION_BUTTONS] as $buttons
 		) {
-			if (isset($parameters[$buttons])) {
-				foreach ($parameters[$buttons] as $key => $button) {
-					/** @var Button $button */
-					if (empty($button->link)) {
-						unset($parameters[$buttons][$key]);
-					}
-					else {
-						foreach ($button->sub_buttons as $sub_key => $sub_button) {
-							if (empty($sub_button->link)) {
-								unset($button->sub_buttons[$sub_key]);
-							}
-						}
+			if (!isset($parameters[$buttons])) {
+				continue;
+			}
+			foreach ($parameters[$buttons] as $key => $button) {
+				/** @var Button $button */
+				if (empty($button->link)) {
+					unset($parameters[$buttons][$key]);
+					continue;
+				}
+				foreach ($button->sub_buttons as $sub_key => $sub_button) {
+					if (empty($sub_button->link)) {
+						unset($button->sub_buttons[$sub_key]);
 					}
 				}
 			}
