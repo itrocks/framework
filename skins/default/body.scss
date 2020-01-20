@@ -48,6 +48,10 @@ body {
 		border-top: $section_border;
 		z-index: 1;
 	}
+
+	.access.denied > .technical {
+		display: none;
+	}
 }
 
 //------------------------------------------------------------------------------------------ Layout

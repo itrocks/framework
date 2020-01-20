@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\User\Access_Control;
 
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\View\Html\Default_View;
 
 /**
@@ -21,17 +23,20 @@ class Denied_Html_View extends Default_View
 	 */
 	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
 	{
-		$parameters['host'] = isset($_SERVER['HTTP_HOST'])
-			? $_SERVER['HTTP_HOST']
-			: 'console';
+		$parameters['host'] = $_SERVER['HTTP_HOST'] ?? 'console';
 
 		$parameters['remote'] = isset($_SERVER['REMOTE_ADDR'])
 			? ($_SERVER['REMOTE_ADDR'] . ':' . $_SERVER['REMOTE_PORT'])
 			: 'console';
 
-		$parameters['uri'] = isset($_SERVER['REQUEST_URI'])
-			? $_SERVER['REQUEST_URI']
-			: $_SERVER['SCRIPT_NAME'];
+		$parameters['uri'] = $_SERVER['REQUEST_URI'] ?? $_SERVER['SCRIPT_NAME'];
+
+		$uri = new Uri(lParse(Uri::current(), '?'));
+		$parameters['refused_class_name'] = Builder::current()->sourceClassName(
+			get_class($uri->parameters->getMainObject())
+		);
+		$parameters['refused_object']  = $uri->parameters->getMainObject();
+		$parameters['refused_feature'] = $uri->feature_name;
 
 		return parent::run($parameters, $form, $files, $class_name, $feature_name);
 	}
