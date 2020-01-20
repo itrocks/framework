@@ -5,6 +5,8 @@ use ITRocks\Framework\Traits\Has_Name;
 
 /**
  * A brand
+ *
+ * @override name @alias brand
  */
 class Brand
 {
