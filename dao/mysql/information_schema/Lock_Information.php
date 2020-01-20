@@ -90,6 +90,9 @@ EOT;
 				['dependency_name' => $constraint->table_name, 'type' => Dependency::T_STORE],
 				Dependency::class
 			);
+			if (!$dependency) {
+				continue;
+			}
 			$class_name = $dependency->class_name;
 			// TODO Move this search into a common method to get the property name from a column name
 			$property_name = $constraint->column_name;
@@ -106,10 +109,12 @@ EOT;
 					break;
 				}
 			}
-			$objects = $this->link->search([$property_name => $identifier], $class_name);
-			if ($objects) {
-				$lock_objects = new Lock_Objects($object, $class_name, $property_name, $objects);
+			$count = $this->link->count([$property_name => $identifier], $class_name);
+			if (!$count) {
+				continue;
 			}
+			$objects = $this->link->search([$property_name => $identifier], $class_name, Dao::limit(2));
+			$lock_objects[] = new Lock_Objects($object, $class_name, $property_name, $objects, $count);
 		}
 		return $lock_objects;
 	}

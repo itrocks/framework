@@ -141,7 +141,7 @@ class Controller implements Default_Feature_Controller
 	 * Associate each of these locked objects to their locking objects list
 	 *
 	 * @param $objects object[]
-	 * @return array ['object' => $locked_object object, 'lock_objects' => $lock_objects Lock_Objects]
+	 * @return array ['object' => $locked_object object, 'lock_objects' => $lock_objects Lock_Objects[]]
 	 */
 	protected function lockedObjects(array $objects)
 	{

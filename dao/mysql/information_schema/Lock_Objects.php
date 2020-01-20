@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql\Information_Schema;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
@@ -57,6 +58,14 @@ class Lock_Objects
 	 */
 	public $objects;
 
+	//-------------------------------------------------------------------------------- $objects_count
+	/**
+	 * Real objects count, as Lock_Objects may be called with only a few objects (2) on big results
+	 *
+	 * @var integer
+	 */
+	public $objects_count;
+
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * Locking property name into lock objects
@@ -71,13 +80,15 @@ class Lock_Objects
 	 * @param $class_name    string
 	 * @param $property_name string
 	 * @param $objects       object[]
+	 * @param $objects_count integer
 	 */
-	public function __construct($object, $class_name, $property_name, $objects)
+	public function __construct($object, $class_name, $property_name, $objects, $objects_count = null)
 	{
 		$this->object        = $object;
-		$this->class_name    = $class_name;
+		$this->class_name    = Builder::className($class_name);
 		$this->property_name = $property_name;
 		$this->objects       = $objects;
+		$this->objects_count = ($objects_count ?? count($objects));
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -115,9 +126,9 @@ class Lock_Objects
 	public function display()
 	{
 		$object = $this->composite() ? $this->composite : reset($this->objects);
-		if (count($this->objects) > 1) {
-			$displays = Loc::tr(Names::classToDisplay(get_class($object)));
-			return count($this->objects) . SP . $displays;
+		if ($this->objects_count > 1) {
+			$displays = Loc::tr(Names::classToDisplays(get_class($object)));
+			return $this->objects_count . SP . $displays;
 		}
 		elseif ($this->objects) {
 			$display = Loc::tr(Names::classToDisplay(get_class($object)));
@@ -144,7 +155,7 @@ class Lock_Objects
 			$search_property_name = Foreign_Annotation::of($this->composite_property)->value
 				. DOT . $search_property_name;
 		}
-		if (count($this->objects) > 1) {
+		if ($this->objects_count > 1) {
 			return View::link(
 				$class_name,
 				Feature::F_LIST,
