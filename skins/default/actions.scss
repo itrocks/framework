@@ -55,6 +55,7 @@ li.actions > ul,
 ul.actions {
 	background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
 	display: flex;
+	flex-wrap: wrap;
 }
 
 li.action,
