@@ -196,26 +196,23 @@ abstract class Data_Link
 	 */
 	protected function getKeyPropertyName($class_name, array $options = null)
 	{
-		$key = 'id';
-		if (isset($options)) {
-			if (!is_array($options)) {
-				$options = [$options];
-			}
-			foreach ($options as $option) {
-				if ($option instanceof Key) {
-					$key = $option->property_name;
-				}
-			}
+		if ($options) foreach ($options as $option) if ($option instanceof Key) {
+			return $option->property_name;
+		}
+		/** @noinspection PhpUnhandledExceptionInspection */
+		if ((new Reflection_Class($class_name))->isAbstract()) {
+			return ['id', 'class_name'];
 		}
 		/** @noinspection PhpUnhandledExceptionInspection You must call it with a valid class */
 		$class = new Link_Class($class_name);
-		if (($key === 'id') && $class->getLinkedClassName()) {
+		if ($class->getLinkedClassName()) {
 			$key = [];
 			foreach ($class->getUniqueProperties() as $property) {
 				$key[] = $property->name;
 			}
+			return $key;
 		}
-		return $key;
+		return 'id';
 	}
 
 	//--------------------------------------------------------------------------- getStoredProperties
