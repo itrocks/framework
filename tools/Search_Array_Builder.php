@@ -144,6 +144,9 @@ class Search_Array_Builder
 	{
 		$found = [];
 		foreach ($this->classRepresentativeProperties($class) as $property_name) {
+			if (!property_exists($class->name, $property_name)) {
+				continue;
+			}
 			/** @noinspection PhpUnhandledExceptionInspection properties should be good */
 			$property = new Reflection_Property($class->name, $property_name);
 			$texts    = null;
@@ -186,7 +189,7 @@ class Search_Array_Builder
 	 * @param $already string[] For recursion limits : already got classes
 	 * @return string[]
 	 */
-	private function classRepresentativeProperties($class, array $already = [])
+	private function classRepresentativeProperties(Reflection_Class $class, array $already = [])
 	{
 		$property_names = Representative_Annotation::of($class)->values();
 		foreach ($property_names as $key => $property_name) {
@@ -210,6 +213,9 @@ class Search_Array_Builder
 					}
 				}
 			}
+		}
+		if (!$property_names && $class->isAbstract()) {
+			$property_names = ['representative'];
 		}
 		return $property_names;
 	}
