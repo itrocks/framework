@@ -156,6 +156,9 @@ trait Tokens_Parser
 				$continue = false;
 			}
 		} while ($continue && isset($this->tokens[$this->token_key + 1]));
+		if ($token[0] === T_IMPLEMENTS) {
+			$this->token_key --;
+		}
 		if ($continue) {
 			$this->eofError('scanClassNames');
 		}
