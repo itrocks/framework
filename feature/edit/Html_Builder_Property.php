@@ -82,7 +82,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			$default_value = $user_default_annotation->value
 				? $user_default_annotation->call($this->object)
 				: $property->getDefaultValue(true, $this->object);
-			if (strlen($default_value)) {
+			if ($default_value || (!is_array($default_value) && strlen($default_value))) {
 				$this->data['default-value'] = Loc::propertyToLocale($property, $default_value);
 			}
 
