@@ -32,7 +32,7 @@ trait Has_Groups
 	 *
 	 * @param $uri string The uri (path of the feature)
 	 * @return array|null If the object has access to the $uri, returns the active options. Else null.
-	 * Beware : the returned array may be null if the user has the access but if there are no options.
+	 * Beware : the returned array may be [] if the user has the access but if there are no options.
 	 */
 	public function getAccessOptions($uri)
 	{

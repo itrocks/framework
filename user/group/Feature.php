@@ -249,7 +249,7 @@ class Feature
 		if (!isset($this->features)) {
 			$class_name = $this->getClassName();
 			// fix access to features of removed classes
-			if (class_exists($class_name)) {
+			if (class_exists($class_name) || interface_exists($class_name)) {
 				$class_path = str_replace(BS, SL, $this->getClassName());
 				$features   = array_merge(
 					$this->yaml ? $this->yaml->getFeatures($class_path) : [],
