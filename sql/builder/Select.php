@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Pre_Load;
 use ITRocks\Framework\Dao\Sql\Link;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Joins;
 
@@ -104,6 +105,7 @@ class Select
 	/**
 	 * Builds optional SQL expressions, component of the SELECT query
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string[]
 	 */
 	private function buildOptions()
@@ -155,6 +157,10 @@ class Select
 				$columns->expand_objects  = false;
 				$columns->resolve_aliases = false;
 				$order_by                 = $columns->build();
+				/** @noinspection PhpUnhandledExceptionInspection */
+				if (!$order_by && (new Reflection_Class($this->class_name))->isAbstract()) {
+					$order_by = BQ . 'representative' . BQ;
+				}
 				if ($order_by) {
 					$options[20] = LF . 'ORDER BY ' . $order_by;
 				}
