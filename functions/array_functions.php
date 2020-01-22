@@ -580,3 +580,31 @@ function treeToArray(array $array, $ignore_key = null)
 	}
 	return $result;
 }
+
+//------------------------------------------------------------------------------- unsetKeyRecursive
+/**
+ * Remove elements of the $array or its sub-arrays, which key match any value of $keys
+ *
+ * @param $array             array
+ * @param $keys              integer|integer[]|string|string[]
+ * @param $replacement_value mixed The value of the element is replaced by this one instead of unset
+ */
+function unsetKeyRecursive(array &$array, $keys, $replacement_value = null)
+{
+	if (!is_array($keys)) {
+		$keys = [$keys];
+	}
+	foreach ($array as $key => $element) {
+		if (in_array($key, $keys)) {
+			if (isset($replacement_value)) {
+				$array[$key] = $replacement_value;
+			}
+			else {
+				unset($array[$key]);
+			}
+		}
+		elseif (is_array($element)) {
+			unsetKeyRecursive($element, $keys);
+		}
+	}
+}

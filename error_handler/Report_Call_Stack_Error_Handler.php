@@ -67,8 +67,12 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 */
 	private function formData()
 	{
-		$result = '_GET = ' . print_r($_GET, true);
-		$result .= '_POST = ' . print_r($_POST, true);
+		$get  = $_GET;
+		$post = $_POST;
+		unsetKeyRecursive($get,  ['password', 'password2', 'user_password'], 'XXXX');
+		unsetKeyRecursive($post, ['password', 'password2', 'user_password'], 'XXXX');
+		$result = '_GET = '   . print_r($get, true);
+		$result .= '_POST = ' . print_r($post, true);
 		return $result;
 	}
 

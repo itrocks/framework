@@ -65,7 +65,7 @@ class Data implements Validate\Exception
 				unset($arguments['as_widget']);
 			}
 			if (isset($arguments['user_password'])) {
-				$arguments['user_password'] = '***';
+				$arguments['user_password'] = 'XXXX';
 			}
 			$this->arguments = $this->serialize($arguments);
 		}
@@ -74,13 +74,13 @@ class Data implements Validate\Exception
 		}
 		if (isset($form) && !isset($this->form)) {
 			if (isset($form['password'])) {
-				$form['password'] = '***';
+				$form['password'] = 'XXXX';
 			}
 			if (isset($form['password2'])) {
-				$form['password2'] = '***';
+				$form['password2'] = 'XXXX';
 			}
 			if (isset($form['user_password'])) {
-				$form['user_password'] = '***';
+				$form['user_password'] = 'XXXX';
 			}
 			$this->form = $this->serialize($form);
 		}
