@@ -138,6 +138,20 @@ class Html_Builder_Property extends Html_Builder_Type
 				$name = lParse(rLastParse($name, '['), ']');
 			}
 
+			if ($fixed_height = $this->property->getAnnotation('fixed_height')->value) {
+				$this->auto_height = false;
+				if ($fixed_height !== true) {
+					$this->data['height'] = $this->property->getAnnotation('fixed_height')->value;
+				}
+			}
+
+			if ($fixed_width = $this->property->getAnnotation('fixed_width')->value) {
+				$this->auto_width = false;
+				if ($fixed_width !== true) {
+					$this->data['width'] = $this->property->getAnnotation('fixed_width')->value;
+				}
+			}
+
 			$this->loadConditions();
 			parent::__construct($name, $property->getType(), $value, $prefix);
 		}

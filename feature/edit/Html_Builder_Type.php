@@ -32,6 +32,18 @@ class Html_Builder_Type
 	 */
 	public $attributes = [];
 
+	//---------------------------------------------------------------------------------- $auto_height
+	/**
+	 * @var boolean
+	 */
+	public $auto_height = true;
+
+	//----------------------------------------------------------------------------------- $auto_width
+	/**
+	 * @var boolean
+	 */
+	public $auto_width = true;
+
 	//-------------------------------------------------------------------------------------- $classes
 	/**
 	 * @var string[] Additional CSS classes for your DOM element class attribute
@@ -313,7 +325,9 @@ class Html_Builder_Type
 			$this->getFieldName(),
 			$format ? Loc::floatToLocale($this->value) : $this->value
 		);
-		$input->addClass('auto_width');
+		if ($this->auto_width) {
+			$input->addClass('auto_width');
+		}
 		$input->addClass('float');
 		$this->commonAttributes($input);
 		return $input;
@@ -343,7 +357,9 @@ class Html_Builder_Type
 			$this->getFieldName(),
 			$format ? Loc::integerToLocale($this->value) : $this->value
 		);
-		$input->addClass('auto_width');
+		if ($this->auto_width) {
+			$input->addClass('auto_width');
+		}
 		$input->addClass('integer');
 		$this->commonAttributes($input);
 		return $input;
@@ -369,7 +385,9 @@ class Html_Builder_Type
 			? $this->getFieldName()
 			: null;
 		$input    = new Input($input_id, strval($this->value));
-		$input->addClass('auto_width');
+		if ($this->auto_width) {
+			$input->addClass('auto_width');
+		}
 		$input->setData('combo-class', $source_class_name);
 		$input->setData(
 			'combo-set-class',
@@ -593,12 +611,16 @@ class Html_Builder_Type
 	{
 		if ($multiline) {
 			$input = new Textarea($this->getFieldName(), $value);
-			$input->addClass('auto_height');
+			if ($this->auto_height) {
+				$input->addClass('auto_height');
+			}
 		}
 		else {
 			$input = new Input($this->getFieldName(), $value);
 		}
-		$input->addClass('auto_width');
+		if ($this->auto_width) {
+			$input->addClass('auto_width');
+		}
 		return $input;
 	}
 
