@@ -7,6 +7,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Dependency\Tools;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -86,6 +87,7 @@ class View_Builder_Class
 			) {
 				continue;
 			}
+			$representative = Representative_Annotation::of($sub_class)->values();
 			$source_class_name = Builder::current()->sourceClassName($sub_class->name);
 			/** @var $sub_properties Reflection_Property[] */
 			$sub_properties     = $sub_class->accessProperties();
@@ -95,6 +97,17 @@ class View_Builder_Class
 				$sub_property_names[$property_name] = $this->filterProperty($sub_property)
 					? $property_name
 					: Dao\Func::value(null);
+			}
+			foreach ($sub_properties as $property_name => $sub_property) {
+				if (
+					in_array($property_name, $representative)
+					&& !isset($properties[$property_name])
+					&& !isset($sub_property_names[$property_name])
+				) {
+					$sub_property_names['representative'] = $this->filterProperty($sub_property)
+						? $property_name
+						: Dao\Func::value(null);
+				}
 			}
 			$select = new Select($sub_class->name, $sub_property_names);
 			$view->select_queries[$source_class_name] = str_replace(LF, SP, $select->buildQuery());

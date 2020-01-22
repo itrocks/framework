@@ -84,6 +84,13 @@ trait Has_Build_Column
 				$path = $this->translate[$path];
 				$sql  = 'IFNULL(' . $sql . ', ' . $join->masterSql() . ')';
 			}
+			if (
+				($column_name === $path)
+				&& !isset($this->properties[$path])
+				&& ($alias = array_search($path, $this->properties))
+			) {
+				$path = $alias;
+			}
 			$sql
 				.= ($as && ($column_name !== $path) && ($this instanceof Columns) && $this->resolve_aliases)
 				? (' AS ' . BQ . $path . BQ)
