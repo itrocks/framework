@@ -212,7 +212,7 @@ $(document).ready(function()
 		}
 
 		else {
-			$element.removeAttr('required').closest('.mandatory').removeClass('required');
+			$element.removeAttr('required').closest('.mandatory:not(.objects)').removeClass('required');
 			$next.removeAttr('required');
 		}
 	};
@@ -241,6 +241,7 @@ $(document).ready(function()
 	{
 		this.find('input[required], select[required], textarea[required]')
 			.closest('li.mandatory').addClass('required');
+		this.find('li.mandatory.objects').addClass('required');
 		applyRequired.call(this);
 		var $register_elements = this.find(elements_selector);
 		$register_elements = $register_elements.add($register_elements.next(next_elements_selector));
