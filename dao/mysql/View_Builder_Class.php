@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Dependency\Tools;
 use ITRocks\Framework\Reflection\Annotation\Class_;
@@ -104,9 +105,17 @@ class View_Builder_Class
 					&& !isset($properties[$property_name])
 					&& !isset($sub_property_names[$property_name])
 				) {
-					$sub_property_names['representative'] = $this->filterProperty($sub_property)
-						? $property_name
-						: Dao\Func::value(null);
+					if (count($representative) === 1) {
+						$sub_property_names['representative'] = $this->filterProperty($sub_property)
+							? $property_name
+							: Dao\Func::value(null);
+					}
+					else {
+						if (!isset($sub_property_names['representative'])) {
+							$sub_property_names['representative'] = Func::concat([]);
+						}
+						$sub_property_names['representative']->columns[] = $property_name;
+					}
 				}
 			}
 			$select = new Select($sub_class->name, $sub_property_names);
