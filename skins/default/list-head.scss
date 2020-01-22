@@ -69,27 +69,27 @@ article.list > form > table > thead {
 				}
 
 				&.sort1:not(.reverse) {
-					background: url('img/sort-1-down-24.svg') right center no-repeat;
-				}
-
-				&.sort1.reverse {
 					background: url('img/sort-1-up-24.svg') right center no-repeat;
 				}
 
-				&.sort2:not(.reverse) {
-					background: url('img/sort-2-down-24.svg') right center no-repeat;
+				&.sort1.reverse {
+					background: url('img/sort-1-down-24.svg') right center no-repeat;
 				}
 
-				&.sort2.reverse {
+				&.sort2:not(.reverse) {
 					background: url('img/sort-2-up-24.svg') right center no-repeat;
 				}
 
+				&.sort2.reverse {
+					background: url('img/sort-2-down-24.svg') right center no-repeat;
+				}
+
 				&.sort3:not(.reverse) {
-					background: url('img/sort-3-down-24.svg') right center no-repeat;
+					background: url('img/sort-3-up-24.svg') right center no-repeat;
 				}
 
 				&.sort3.reverse {
-					background: url('img/sort-3-up-24.svg') right center no-repeat;
+					background: url('img/sort-3-down-24.svg') right center no-repeat;
 				}
 			}
 		}
