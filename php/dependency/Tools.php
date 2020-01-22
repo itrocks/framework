@@ -49,14 +49,16 @@ trait Tools
 	 *
 	 * @param $class_name    string
 	 * @param $include_class boolean if true, $class_name is included if not an abstract class
+	 * @param $extend_types  string[] values from Dependency's T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string[]
 	 */
-	public static function extendsUse($class_name, $include_class = false)
-	{
+	public static function extendsUse(
+		$class_name, $include_class = false, $extend_types = [Dependency::T_EXTENDS, Dependency::T_USE]
+	) {
 		$children = Dao::search(
 			[
 				'dependency_name' => $class_name,
-				'type'            => [Dependency::T_EXTENDS, Dependency::T_USE]
+				'type'            => $extend_types
 			],
 			Dependency::class
 		);
@@ -98,20 +100,21 @@ trait Tools
 				$key = $what[$index];
 				if (isset(Dependency\Cache::$$index[$key])) {
 					$dependencies = Dependency\Cache::$$index[$key];
-					return isset($dependencies[$type]) ? $dependencies[$type] : null;
+					return $dependencies[$type] ?? null;
 				}
 				$search[$index] = Dao\Func::equal($key);
 			}
 		}
 		$search['type'] = Dependency\Cache::TYPES;
-		$dependencies   = Dao::search($search, static::class, Dao::key('type'));
+		/** @var $dependencies static[] */
+		$dependencies = Dao::search($search, static::class, Dao::key('type'));
 		// store found dependencies into all caches
 		if ($dependencies) {
 			$dependency = reset($dependencies);
 			foreach (Dependency\Cache::INDEXES as $index) {
 				Dependency\Cache::$$index[$dependency->$index] = $dependencies;
 			}
-			return isset($dependencies[$type]) ? $dependencies[$type] : null;
+			return $dependencies[$type] ?? null;
 		}
 		// store null result into matching cache
 		foreach (Dependency\Cache::INDEXES as $index) {

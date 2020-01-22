@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Dependency\Tools;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
@@ -72,28 +73,31 @@ class View_Builder_Class
 				unset($properties[$property_name]);
 			}
 		}
-		/** @noinspection PhpUnhandledExceptionInspection */
-		foreach (Tools::extendsUse($class->name) as $class_name) {
+		$extend_types = [Dependency::T_EXTENDS, Dependency::T_IMPLEMENTS, Dependency::T_USE];
+		foreach (Tools::extendsUse($class->name, null, $extend_types) as $class_name) {
 				/** @noinspection PhpUnhandledExceptionInspection valid class name */
 			$sub_class = new Reflection_Class(Builder::className($class_name));
 			if (
-				!$sub_class->isAbstract()
-				&& !Link_Annotation::of($sub_class)->value
-				&& $this->mysqli->exists(Store_Name_Annotation::of($sub_class)->value)
+				$sub_class->isAbstract()
+				|| !$sub_class->getAnnotation('business')->value
+				|| $sub_class->getAnnotation('private')->value
+				|| Link_Annotation::of($sub_class)->value
+				|| !$this->mysqli->exists(Store_Name_Annotation::of($sub_class)->value)
 			) {
-				$source_class_name = Builder::current()->sourceClassName($sub_class->name);
-				/** @var $sub_properties Reflection_Property[] */
-				$sub_properties     = $sub_class->accessProperties();
-				$sub_property_names = ['id', 'class' => Dao\Func::value($source_class_name)];
-				foreach ($properties as $property_name => $property) {
-					$sub_property = $sub_properties[$property_name];
-					$sub_property_names[$property_name] = $this->filterProperty($sub_property)
-						? $property_name
-						: Dao\Func::value(null);
-				}
-				$select = new Select($sub_class->name, $sub_property_names);
-				$view->select_queries[$source_class_name] = str_replace(LF, SP, $select->buildQuery());
+				continue;
 			}
+			$source_class_name = Builder::current()->sourceClassName($sub_class->name);
+			/** @var $sub_properties Reflection_Property[] */
+			$sub_properties     = $sub_class->accessProperties();
+			$sub_property_names = ['id', 'class' => Dao\Func::value($source_class_name)];
+			foreach ($properties as $property_name => $property) {
+				$sub_property = $sub_properties[$property_name];
+				$sub_property_names[$property_name] = $this->filterProperty($sub_property)
+					? $property_name
+					: Dao\Func::value(null);
+			}
+			$select = new Select($sub_class->name, $sub_property_names);
+			$view->select_queries[$source_class_name] = str_replace(LF, SP, $select->buildQuery());
 		}
 		return $view;
 	}
