@@ -271,6 +271,18 @@ class Parser
 			default:
 				$value = null;
 		}
+
+		// accept private values only if on the first main class : all @private after a *IN are ignored
+		if (substr($value, 0, 6) === '@local') {
+			if (strpos(substr($doc_comment, 0, $i), self::DOC_COMMENT_IN) !== false) {
+				return null;
+			}
+			$value = trim(substr($value, 6));
+			if ($value === '') {
+				$value = true;
+			}
+		}
+
 		/** @var $annotation Annotation */
 		$annotation = isset($value)
 			? new $annotation_class($value, $reflection_object, $annotation_name)

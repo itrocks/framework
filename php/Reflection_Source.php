@@ -447,7 +447,7 @@ class Reflection_Source
 					// dependencies @param, @return, @set, @var
 					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
 					preg_match_all(
-						'%\*\s+@(param|return|set|var)\s+([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
+						'%\*\s+@(param|return|set|var)\s+(?:@local\s+)?([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
