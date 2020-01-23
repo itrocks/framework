@@ -87,7 +87,9 @@ trait Has_Build_Column
 			if (
 				($column_name === $path)
 				&& !isset($this->properties[$path])
+				&& !in_array($column_name, ['id', 'representative'])
 				&& ($alias = array_search($path, $this->properties))
+				&& !is_numeric($alias)
 			) {
 				$path = $alias;
 			}
