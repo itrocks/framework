@@ -2,7 +2,7 @@ $(document).ready(function()
 {
 
 	//------------------------------------------------------------------------ article.import.preview
-	$('body').build('each', 'article.import.preview li.block', function()
+	$('body').build('each', 'article.import section.preview li.block', function()
 	{
 		var $this = $(this);
 		var $section = $this.find('> section:has(ul)');
