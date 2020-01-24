@@ -140,17 +140,22 @@ class Html_Builder_Collection extends Collection
 	//------------------------------------------------------------------------------------- buildCell
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object   object
-	 * @param $property Reflection_Property
+	 * @param $object        object
+	 * @param $property      Reflection_Property
+	 * @param $property_path string
 	 * @return Item
 	 */
-	protected function buildCell($object, Reflection_Property $property)
+	protected function buildCell($object, Reflection_Property $property, $property_path = null)
 	{
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
 		}
-		/** @noinspection PhpUnhandledExceptionInspection property must be from object and accessible */
-		$value = $property->getValue($object);
+		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
+		$property_value = strpos($property_path, DOT)
+			? new Reflection_Property_Value($object, $property_path, $object)
+			: null;
+		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
+		$value = ($property_value ?: $property)->getValue($object);
 		if (strpos($this->pre_path, '[]')) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
@@ -167,10 +172,10 @@ class Html_Builder_Collection extends Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
-			/** @noinspection PhpUnhandledExceptionInspection from valid property */
-			$property_value = new Reflection_Property_Value(
-				$property->root_class, $property->path, $value, true
-			);
+			if (!$property_value) {
+				/** @noinspection PhpUnhandledExceptionInspection from valid property */
+				$property_value = new Reflection_Property_Value($object, $property_path, $object);
+			}
 			array_push($this->template->properties_prefix, $pre_path);
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */

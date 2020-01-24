@@ -123,14 +123,19 @@ class Collection
 	//------------------------------------------------------------------------------------- buildCell
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object   object
-	 * @param $property Reflection_Property
+	 * @param $object        object
+	 * @param $property      Reflection_Property
+	 * @param $property_path string
 	 * @return Item
 	 */
-	protected function buildCell($object, Reflection_Property $property)
+	protected function buildCell($object, Reflection_Property $property, $property_path = null)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
-		$value = $property->getValue($object);
+		$property_value = strpos($property_path, DOT)
+			? new Reflection_Property_Value($object, $property_path, $object)
+			: null;
+		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
+		$value = ($property_value ?: $property)->getValue($object);
 		$type  = $property->getType();
 		if (
 			is_object($value)
@@ -147,10 +152,10 @@ class Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
-			/** @noinspection PhpUnhandledExceptionInspection from valid property */
-			$property_value = new Reflection_Property_Value(
-				$property->root_class, $property->path, $value, true
-			);
+			if (!$property_value) {
+				/** @noinspection PhpUnhandledExceptionInspection from valid property */
+				$property_value = new Reflection_Property_Value($object, $property_path, $object);
+			}
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
 			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
@@ -163,7 +168,9 @@ class Collection
 			}
 		}
 		else {
-			$value = (new Reflection_Property_View($property))->getFormattedValue($object);
+			$value = $property_value
+				? (new Reflection_Property_View($property_value))->getFormattedValue($object)
+				: (new Reflection_Property_View($property))->getFormattedValue($object);
 		}
 		if (is_array($value)) {
 			$link_annotation = Annotation\Property\Link_Annotation::of($property);
@@ -229,12 +236,12 @@ class Collection
 	protected function buildRow($object)
 	{
 		$row = new Ordered();
-		foreach ($this->properties as $property) {
+		foreach ($this->properties as $property_path => $property) {
 			if (
 				!$property->getType()->isMultiple()
 				|| ($property->getType()->getElementTypeAsString() != get_class($object))
 			) {
-				$row->addItem($this->buildCell($object, $property));
+				$row->addItem($this->buildCell($object, $property, $property_path));
 			}
 		}
 		return $row;
@@ -248,7 +255,7 @@ class Collection
 	protected function expandProperties(array $properties)
 	{
 		$expand_properties = [];
-		foreach ($properties as $property_name => $property) {
+		foreach ($properties as $property_path => $property) {
 			if (($integrated = Integrated_Annotation::of($property))->value) {
 				$expand_properties = array_merge(
 					$expand_properties,
@@ -256,7 +263,7 @@ class Collection
 				);
 			}
 			else {
-				$expand_properties[$property_name] = $property;
+				$expand_properties[$property_path] = $property;
 			}
 		}
 		return $expand_properties;
