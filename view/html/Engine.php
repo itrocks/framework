@@ -122,7 +122,7 @@ class Engine implements Configurable, Framework\View\Engine
 				}
 			}
 			// change output URI to simple URI (without the name of the feature)
-			elseif (($feature === Feature::F_OUTPUT) && !$set_class) {
+			elseif (($feature === Feature::F_OUTPUT) && !$set_class && !is_string($object)) {
 				$class_names = Names::classToSet($class_name);
 				if ($class_name !== $class_names) {
 					$feature = null;
