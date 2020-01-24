@@ -209,7 +209,9 @@ class Translator
 			$results = [];
 			foreach ($texts as $text) {
 				if ($text->translation === $translation) {
-					$results[] = strIsCapitals($translation[0]) ? ucfirsta($text->text) : $text->text;
+					$results[] = strIsCapitals($translation[0])
+						? (strIsCapitals($translation) ? strtoupper($text->text) : ucfirsta($text->text))
+						: $text->text;
 				}
 			}
 			if (count($results) > 1) {
@@ -217,7 +219,9 @@ class Translator
 			}
 		}
 		$text = isset($text) ? $text->text : $translation;
-		return empty($text) ? $text : (strIsCapitals($translation[0]) ? ucfirsta($text) : $text);
+		return strIsCapitals(substr($translation, 0, 1))
+			? (strIsCapitals($translation) ? strtoupper($text) : ucfirsta($text))
+			: $text;
 	}
 
 	//-------------------------------------------------------------------------- reverseWithWildcards
@@ -384,7 +388,9 @@ class Translator
 					$this->cache[$lower_text][$context] = $translation;
 				}
 			}
-			$translation = strIsCapitals(substr($text, 0, 1)) ? ucfirsta($translation) : $translation;
+			$translation = strIsCapitals(substr($text, 0, 1))
+				? (strIsCapitals($text) ? strtoupper($text) : ucfirsta($translation))
+				: $translation;
 		}
 		return $translation;
 	}

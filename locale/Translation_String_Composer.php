@@ -142,6 +142,7 @@ class Translation_String_Composer implements Registerable
 			)
 		) {
 			$capital         = strIsCapitals($text[0]);
+			$full_capital    = strIsCapitals($text);
 			$translator      = $object;
 
 			$top_call        = false;
@@ -155,7 +156,10 @@ class Translation_String_Composer implements Registerable
 			$translation     = str_replace(array_keys($ignore_elements), $ignore_elements, $translation);
 
 			// this makes sure the first letter is a capital, even if at any step the text begun with '$'
-			if ($capital) {
+			if ($full_capital) {
+				$translation = strtoupper($translation);
+			}
+			elseif ($capital) {
 				$translation = ucfirsta($translation);
 			}
 		}
