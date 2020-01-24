@@ -6,6 +6,7 @@ use ITRocks\Framework\Feature\Edit\Html_Builder_Collection;
 use ITRocks\Framework\Feature\Edit\Html_Template;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Traits\Is_Immutable;
 use ITRocks\Framework\View\Html\Builder\Collection;
 use ITRocks\Framework\View\Html\Builder\Property;
@@ -47,6 +48,7 @@ class Map_As_Collection extends Property
 			else {
 				$collection = new Collection($this->property, $this->value);
 			}
+			$collection->sort = Widget_Annotation::of($this->property)->option('sort', true);
 			// build
 			return $collection->build();
 		}

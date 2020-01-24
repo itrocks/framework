@@ -62,6 +62,12 @@ class Collection
 	 */
 	public $property;
 
+	//----------------------------------------------------------------------------------------- $sort
+	/**
+	 * @var boolean
+	 */
+	public $sort = true;
+
 	//------------------------------------------------------------------------------------- $template
 	/**
 	 * @var Template
@@ -87,7 +93,9 @@ class Collection
 	 */
 	public function build()
 	{
-		(new Mapper\Collection($this->collection))->sort();
+		if ($this->sort) {
+			(new Mapper\Collection($this->collection))->sort();
+		}
 		$list = new Unordered();
 		$list->addClass('auto_width');
 		$list->addClass('collection');
