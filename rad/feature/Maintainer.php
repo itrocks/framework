@@ -105,7 +105,9 @@ class Maintainer implements Registerable, Updatable
 	{
 		Dao::createStorage(Feature::class);
 		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
-		(new Set())->replace($features, Feature::class);
+		(new Set)->replace(
+			$features, Feature::class, ['status' => Dao\Func::notEqual(Status::BUILT_IN)]
+		);
 		return $features;
 	}
 

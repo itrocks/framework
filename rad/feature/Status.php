@@ -13,6 +13,12 @@ abstract class Status
 	 */
 	const AVAILABLE = 'available';
 
+	//-------------------------------------------------------------------------------------- BUILT_IN
+	/**
+	 * The feature is built-in into the software : you cannot install / uninstall it
+	 */
+	const BUILT_IN = 'built-in';
+
 	//------------------------------------------------------------------------------------- INSTALLED
 	/**
 	 * The feature is installed
