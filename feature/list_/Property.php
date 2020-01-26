@@ -11,6 +11,8 @@ use ITRocks\Framework\Reflection\Type;
  * List property (ie visible column)
  *
  * All data concerning a property=column is here
+ *
+ * @feature Controller
  */
 class Property extends List_Setting\Property
 {

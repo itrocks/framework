@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\AOP\Include_Filter;
 use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -511,16 +512,19 @@ class Reflection_Source
 					);
 					foreach ($matches as $match) {
 						list($compatibility_value, $pos) = $match[2];
-						$line       = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
-						$annotation = new List_Annotation($compatibility_value);
+						$type        = $match[1][0];
+						$declaration = ($type === Dependency::T_BRIDGE_FEATURE ? Declaration::INSTALLABLE : '');
+						$line        = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+						$annotation  = new List_Annotation($compatibility_value);
 						foreach ($annotation->values() as $compatibility_class_name) {
 							$compatibility_class_name = $this->fullClassName($compatibility_class_name);
 							$dependency = new Dependency();
 							$dependency->class_name      = $class->name;
+							$dependency->declaration     = $declaration;
 							$dependency->dependency_name = $compatibility_class_name;
 							$dependency->file_name       = $this->file_name;
 							$dependency->line            = $line;
-							$dependency->type            = $match[1][0];
+							$dependency->type            = $type;
 							$this->dependencies[] = $dependency;
 							if (!$class->name) {
 								$missing_class_name[] = $dependency;
@@ -530,21 +534,55 @@ class Reflection_Source
 
 					// dependency @feature
 					preg_match_all(
-						'%\*\s+@feature\s+([A-Z].*)%',
+						'%\*\s+@(assigned_feature|built_in_feature|feature|installable_feature)\s+([A-Z@].*)%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 					);
 					foreach ($matches as $match) {
-						list($title, $pos) = $match[1];
+						$type              = $match[1][0];
+						list($title, $pos) = $match[2];
 						$line              = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
-						$dependency                  = new Dependency();
+						$declaration       = str_replace('_', '-', lParse($type, '_feature', 1, false));
+						if (in_array(substr($title, 0, 10), ['@built_in ', '@built-in '])) {
+							$title       = trim(substr($title, 10));
+							$declaration = Declaration::BUILT_IN;
+						}
+						elseif (substr($title, 0, 1) === AT) {
+							break;
+						}
+						if (in_array($declaration, ['built_in', 'built-in'])) {
+							$declaration = Declaration::BUILT_IN;
+						}
+						elseif ($declaration === Declaration::ASSIGNED) {
+							$title = $this->fullClassName($title);
+						}
+						elseif (!$declaration) {
+							if (strpos($title, SP)) {
+								$declaration = Declaration::INSTALLABLE;
+							}
+							else {
+								// may be a class name, if in use. Else it is just a title in one word
+								$namespace  = $this->namespace;
+								$title_file = strtolower(str_replace(BS, SL, $this->namespace)) . SL . $title;
+								if (!is_file($title_file . '.php')) {
+									$this->namespace = '';
+								}
+								$title           = $this->fullClassName($title);
+								$this->namespace = $namespace;
+								$declaration     = strpos($title, BS)
+									? Declaration::ASSIGNED
+									: Declaration::INSTALLABLE;
+							}
+						}
+						$dependency = new Dependency();
 						$dependency->class_name      = $class->name;
+						$dependency->declaration     = ($declaration ?: Declaration::INSTALLABLE);
 						$dependency->dependency_name = $title;
 						$dependency->file_name       = $this->file_name;
 						$dependency->line            = $line;
 						$dependency->type            = Dependency::T_FEATURE;
-						$this->dependencies[]        = $dependency;
+						$this->dependencies[] = $dependency;
 						if (!$class->name) {
 							$missing_class_name[] = $dependency;
 						}

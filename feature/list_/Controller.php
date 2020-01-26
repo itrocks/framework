@@ -57,6 +57,8 @@ use ITRocks\Framework\View\Html\Template;
 /**
  * The default list controller is called if no list controller has been defined for a business
  * object class
+ *
+ * @built_in_feature Display your business objects and documents into standard customizable lists
  */
 class Controller extends Output\Controller implements Has_Selection_Buttons
 {

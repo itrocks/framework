@@ -15,6 +15,8 @@ use ITRocks\Framework\View;
 
 /**
  * The default edit controller, when no edit controller is set for the class
+ *
+ * @feature @built-in Edit your business objects and documents into standard forms
  */
 class Controller extends Output\Controller
 {

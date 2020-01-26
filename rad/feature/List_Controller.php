@@ -26,7 +26,6 @@ class List_Controller extends List_\Controller
 	 * @return Button[]
 	 */
 	public function getSelectionButtons(
-		/** @noinspection PhpUnusedParameterInspection @implements */
 		$class_name, array $parameters, Setting\Custom\Set $list_settings = null
 	) {
 		$buttons = parent::getSelectionButtons($class_name, $parameters, $list_settings);
@@ -50,7 +49,7 @@ class List_Controller extends List_\Controller
 	 */
 	public function readDataSelect($class_name, array $properties_path, $search, array $options)
 	{
-		$filter = ['bridge' => false];
+		$filter = ['bridge' => false, 'status' => Func::notIn([Status::BUILT_IN])];
 		$search = $search ? Func::AndOp([$filter, $search]) : $filter;
 		return parent::readDataSelect($class_name, $properties_path, $search, $options);
 	}

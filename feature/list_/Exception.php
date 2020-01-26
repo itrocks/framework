@@ -6,6 +6,8 @@ namespace ITRocks\Framework\Feature\List_;
  * and enabled parsing remaining fields
  *
  * TODO Support special messaging display for bad search part ?
+ *
+ * @assigned_feature Controller
  */
 class Exception extends \Exception
 {

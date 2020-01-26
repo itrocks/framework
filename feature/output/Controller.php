@@ -26,6 +26,8 @@ use ITRocks\Framework\View;
 
 /**
  * All output controllers should extend from this at it offers standard output elements methods and structure
+ *
+ * @feature @built_in Output your business objects and documents into standard views
  */
 class Controller implements Default_Feature_Controller, Has_General_Buttons
 {

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\PHP;
 
+use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\PHP\Dependency\Tools;
 
 /**
@@ -47,7 +48,8 @@ class Dependency
 
 	//---------------------------------------------------------------------------------- $declaration
 	/**
-	 * @values class, interface, property, trait
+	 * @see Declaration
+	 * @values Declaration::const
 	 * @var string
 	 */
 	public $declaration;

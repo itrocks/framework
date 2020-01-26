@@ -137,7 +137,6 @@ class Installer
 		$exhaustive_class       = new Exhaustive_Class($this->files);
 		$modified_built_classes = $this->modified_built_classes;
 		foreach ($modified_built_classes as $class_name) {
-			/** @noinspection PhpUnhandledExceptionInspection must exist */
 			foreach (Dependency::extendsUse($class_name) as $descendent_class_name) {
 				if (
 					isset($exhaustive_class->assembly[$descendent_class_name])
@@ -177,7 +176,6 @@ class Installer
 			(new Installed\Dependency($plugin_class_name))->add($dependency_class_name);
 		}
 		foreach ($plugin_class->getAnnotations('feature_install') as $feature_install) {
-			/** @noinspection PhpUnhandledExceptionInspection valid class */
 			/** @var $feature_install Method_Annotation */
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance()

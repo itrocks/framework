@@ -4,6 +4,7 @@ namespace ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Set;
 use ITRocks\Framework\PHP\Dependency;
+use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\Plugin\Installable\Implicit;
 use ITRocks\Framework\Plugin\Register;
@@ -43,17 +44,24 @@ class Maintainer implements Registerable, Updatable
 	 */
 	protected function featureAnnotationsToFeatures()
 	{
-		$types        = [Dependency::T_BRIDGE_FEATURE, Dependency::T_FEATURE];
-		$dependencies = Dao::search(['type' => $types], Dependency::class, Dao::groupBy('class_name'));
+		$search = [
+			'declaration' => [Declaration::BUILT_IN, Declaration::INSTALLABLE],
+			'type'        => [Dependency::T_BRIDGE_FEATURE, Dependency::T_FEATURE]
+		];
+		$dependencies = Dao::search($search, Dependency::class, Dao::groupBy('class_name'));
 		$features     = [];
 		foreach ($dependencies as $dependency) {
 			/** @noinspection PhpUnhandledExceptionInspection valid dependency */
 			if (!(new Reflection_Class($dependency->class_name))->getAnnotation('feature_off')->value) {
-				$features[] = $this->pluginClassNameAndTitleToFeature(
+				$feature = $this->pluginClassNameAndTitleToFeature(
 					$dependency->class_name,
 					$dependency->dependency_name,
 					($dependency->type === Dependency::T_BRIDGE_FEATURE)
 				);
+				if ($dependency->declaration === Declaration::BUILT_IN) {
+					$feature->status = Status::BUILT_IN;
+				}
+				$features[] = $feature;
 			}
 		}
 		return $features;
@@ -105,9 +113,7 @@ class Maintainer implements Registerable, Updatable
 	{
 		Dao::createStorage(Feature::class);
 		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
-		(new Set)->replace(
-			$features, Feature::class, ['status' => Dao\Func::notEqual(Status::BUILT_IN)]
-		);
+		(new Set)->replace($features, Feature::class);
 		return $features;
 	}
 
