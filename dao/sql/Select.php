@@ -451,7 +451,10 @@ class Select
 					$class = $this->classes[$j];
 					if ($class->isAbstract()) {
 						$final_class = ($this->column_names[$i] === 'class') ? $result[$i]: StdClass::class;
-						$object      = new $final_class;
+						if (!$final_class || !class_exists($final_class)) {
+							$final_class = StdClass::class;
+						}
+						$object = new $final_class;
 					}
 					else {
 						$object = $class->newInstance();
