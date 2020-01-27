@@ -13,6 +13,7 @@ window.modifiable_waiting  = false;
 			ajax:      undefined,
 			ajax_form: undefined,
 			aliases:   {},
+			callback:  undefined,
 			class:     'editing',
 			popup:     undefined,
 			start:     undefined,
@@ -127,6 +128,9 @@ window.modifiable_waiting  = false;
 				{
 					var $input = $(this);
 					if (event.keyCode === 13) {
+						if (settings.callback) {
+							settings.callback.call($input);
+						}
 						if ($input.data('callback')) {
 							$input.data('callback').call($input);
 						}
@@ -143,6 +147,9 @@ window.modifiable_waiting  = false;
 				{
 					setTimeout(function() {
 						if (($popup === undefined) || (!$input.is(':focus') && !$popup.find(':focus').length)) {
+							if (settings.callback) {
+								settings.callback.call($input);
+							}
 							if ($input.data('callback')) {
 								$input.data('callback').call($input);
 							}
