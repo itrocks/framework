@@ -364,6 +364,20 @@ class Columns implements With_Build_Column
 			}
 			($first_property) ? ($first_property = false) : ($sql_columns .= ', ');
 			$foreign_alias = isset($linked_join) ? $linked_join->foreign_alias : $join->foreign_alias;
+			if (!$properties && $class->isAbstract()) {
+				$sql_columns .= $foreign_alias . DOT . BQ . 'class' . BQ
+					. (
+						($this->append || !$this->resolve_aliases) ? '' : (' AS ' . BQ . $path . ':class' . BQ)
+					)
+					. ', ';
+				$sql_columns .= $foreign_alias . DOT . BQ . 'representative' . BQ
+					. (
+						($this->append || !$this->resolve_aliases)
+						? ''
+						: (' AS ' . BQ . $path . ':representative' . BQ)
+					)
+					. ', ';
+			}
 			$sql_columns  .= $foreign_alias . '.id'
 				. (($this->append || !$this->resolve_aliases) ? '' : (' AS ' . BQ . $path . ':id' . BQ));
 		}

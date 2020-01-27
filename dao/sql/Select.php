@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Sql;
 
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Option;
@@ -11,6 +10,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
+use stdClass;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query
@@ -69,7 +69,7 @@ class Select
 	/**
 	 * Set by prepareFetch()
 	 *
-	 * @var string[]
+	 * @var Reflection_Class[]
 	 */
 	private $classes;
 
@@ -152,15 +152,6 @@ class Select
 	 */
 	private $path_classes;
 
-	//--------------------------------------------------------------------------- $reflection_classes
-	/**
-	 * Set by doFetch() and resultToRow()
-	 * Reflection classes cache : key is the name of the class, value is the reflection class object
-	 *
-	 * @var Reflection_Class[]
-	 */
-	private $reflection_classes = [];
-
 	//----------------------------------------------------------------------------------- $result_set
 	/**
 	 * Set by prepareFetch()
@@ -218,15 +209,13 @@ class Select
 			$this->object_builder->ignore_unknown_properties = $this->ignore_unknown_properties;
 			$data_store                                      = [];
 		}
-		$first = true;
 		while ($result = $this->link->fetchRow($this->result_set)) {
 			unset($result['@null']);
-			$row = $this->resultToRow($result, $first);
+			$row = $this->resultToRow($result);
 			if (!$this->store($row, $data_store)) {
 				$stop = true;
 				break;
 			}
-			$first = false;
 		}
 		if (!isset($stop)) {
 			$this->doCallback($data_store);
@@ -348,6 +337,7 @@ class Select
 	 * - $column_count
 	 * - $column_names
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data_store List_Data|array[]|object[]|null
 	 */
 	private function prepareFetch($data_store)
@@ -377,8 +367,11 @@ class Select
 				$main_property          = $split[0];
 				$his_j = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
 				if (!isset($his_j)) {
+					/** @noinspection PhpUnhandledExceptionInspection should be valid here */
+					$class = new Reflection_Class($this->path_classes[$main_property]);
+					$class->accessProperties();
 					$his_j                         = $j;
-					$this->classes[$his_j]         = $this->path_classes[$main_property];
+					$this->classes[$his_j]         = $class;
 					$classes_index[$main_property] = $j;
 					$this->i_to_j[$i]              = $j++;
 				}
@@ -441,12 +434,10 @@ class Select
 
 	//----------------------------------------------------------------------------------- resultToRow
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $result array
-	 * @param $first  boolean
 	 * @return array
 	 */
-	private function resultToRow(array $result, $first)
+	private function resultToRow(array $result)
 	{
 		$row = [];
 		for ($i = 0; $i < $this->column_count; $i++) {
@@ -457,14 +448,15 @@ class Select
 			else {
 				if (!isset($row[$this->columns[$j]])) {
 					// TODO LOW try to get the object from object map to avoid multiple instances
-					/** @noinspection PhpUnhandledExceptionInspection code classes must be valid */
-					$row[$this->columns[$j]] = Builder::create($this->classes[$j]);
-					if ($first && !isset($this->reflection_classes[$this->classes[$j]])) {
-						/** @noinspection PhpUnhandledExceptionInspection code classes must be valid */
-						$class = new Reflection_Class($this->classes[$j]);
-						$class->accessProperties();
-						$this->reflection_classes[$this->classes[$j]] = $class;
+					$class = $this->classes[$j];
+					if ($class->isAbstract()) {
+						$final_class = ($this->column_names[$i] === 'class') ? $result[$i]: StdClass::class;
+						$object      = new $final_class;
 					}
+					else {
+						$object = $class->newInstance();
+					}
+					$row[$this->columns[$j]] = $object;
 				}
 				$property_name = $this->column_names[$i];
 				if ($property_name === 'id') {
