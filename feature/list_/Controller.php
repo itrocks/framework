@@ -53,6 +53,7 @@ use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
+use ReflectionException;
 
 /**
  * The default list controller is called if no list controller has been defined for a business
@@ -1020,7 +1021,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * Replace search criterion on objects into $search by their equivalent in a OR search into its
 	 * representative parts
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $search     string[] search criterion
 	 * @param $recurse    boolean @private true if recursive call
@@ -1034,13 +1034,20 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			if (is_numeric($property_path) || ($property_path === 'id')) {
 				continue;
 			}
-			/** @noinspection PhpUnhandledExceptionInspection verified $class_name */
-			$property      = new Reflection_Property($class_name, $property_path);
+			try {
+				$property = new Reflection_Property($class_name, $property_path);
+			}
+			catch (ReflectionException $exception) {
+				continue;
+			}
 			$property_type = $property->getType();
 			if ($property_type->isClass() && !Store_Annotation::of($property)->isString()) {
 				$class = $property_type->asReflectionClass();
 				$representative_property_names = Representative_Annotation::of($property)->values()
 					?: Class_\Representative_Annotation::of($class)->values();
+				if (!$representative_property_names && $class->isAbstract()) {
+					$representative_property_names[] = 'representative';
+				}
 				if ($representative_property_names) {
 					// search into each value
 					$sub_search            = [];
