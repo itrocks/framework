@@ -235,23 +235,31 @@ abstract class Element
 	//------------------------------------------------------------------------------- removeAttribute
 	/**
 	 * @param $name string
+	 * @return string
 	 */
 	public function removeAttribute($name)
 	{
 		if (isset($this->attributes[$name])) {
+			$value = $this->attributes[$name];
 			unset($this->attributes[$name]);
+			return $value;
 		}
+		return null;
 	}
 
 	//------------------------------------------------------------------------------------ removeData
 	/**
 	 * @param $name string
+	 * @return string
 	 */
 	public function removeData($name)
 	{
 		if (isset($this->attributes['data-' . $name])) {
+			$value = $this->attributes['data-' . $name]->value;
 			unset($this->attributes['data-' . $name]);
+			return $value;
 		}
+		return null;
 	}
 
 	//---------------------------------------------------------------------------------- setAttribute

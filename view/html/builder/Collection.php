@@ -62,6 +62,12 @@ class Collection
 	 */
 	public $property;
 
+	//---------------------------------------------------------------------------- $property_displays
+	/**
+	 * @var string[]
+	 */
+	public $property_displays;
+
 	//----------------------------------------------------------------------------------------- $sort
 	/**
 	 * @var boolean
@@ -107,7 +113,11 @@ class Collection
 		$list->addItem($header);
 		foreach ($this->buildBody() as $line) {
 			if (!($line instanceof Item)) {
-				$line = new Item($line);
+				$value = $line->removeData('id');
+				$line  = new Item($line);
+				if (isset($value)) {
+					$line->setData('id', $value);
+				}
 			}
 			$line->addClass('data');
 			$list->addItem($line);
@@ -197,12 +207,15 @@ class Collection
 		}
 		$cell->addClass($type->asString());
 		$cell->setData(
-			'name',
-			Loc::tr(
-				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
-				$this->class_name
+			'display',
+			$this->property_displays[$property->path]
+			?? (
+				$this->property_displays[$property->path] = Loc::tr(
+					Names::propertyToDisplay(Alias_Annotation::of($property)->value), $this->class_name
+				)
 			)
 		);
+		$cell->setData('name', $property->path);
 		return $cell;
 	}
 
@@ -252,6 +265,7 @@ class Collection
 				$row->addItem($this->buildCell($object, $property, $property_path));
 			}
 		}
+		$row->setData('id', Dao::getObjectIdentifier($object));
 		return $row;
 	}
 
