@@ -34,7 +34,7 @@ class Menu implements Configurable
 	/**
 	 * @var Block[]
 	 */
-	public $blocks;
+	public $blocks = [];
 
 	//-------------------------------------------------------------------------- $configuration_items
 	/**
@@ -42,7 +42,7 @@ class Menu implements Configurable
 	 *
 	 * @var string[]
 	 */
-	public $configuration_items;
+	public $configuration_items = [];
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
