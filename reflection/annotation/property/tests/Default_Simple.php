@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
 
+use ITRocks\Framework\Tools\Date_Time;
+
 /**
  * A very simple class, without AOP, to test @default simple and alone
  *
@@ -9,6 +11,14 @@ namespace ITRocks\Framework\Reflection\Annotation\Property\Tests;
  */
 class Default_Simple extends Default_Extended
 {
+
+	//---------------------------------------------------------------------------------- $alive_until
+	/**
+	 * @default Date_Time::max
+	 * @link DateTime
+	 * @var Date_Time
+	 */
+	public $alive_until;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**

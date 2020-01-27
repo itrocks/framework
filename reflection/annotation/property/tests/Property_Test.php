@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Property annotations unit tests
@@ -83,7 +84,7 @@ class Property_Test extends Test
 
 	//----------------------------------------------------------------------------- testDefaultSimple
 	/**
-	 * Test @default annotation into the simpliest context : no AOP
+	 * Test @default annotation into the simplest context : no AOP
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 */
@@ -121,7 +122,13 @@ class Property_Test extends Test
 		);
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
-			['age' => 18, 'name' => 'Robert', 'null_age' => 43, 'surname' => 'Mitchum'],
+			[
+				'age'         => 18,
+				'alive_until' => Date_Time::max(),
+				'name'        => 'Robert',
+				'null_age'    => 43,
+				'surname'     => 'Mitchum'
+			],
 			(new Reflection_Class(Default_Simple::class))->getDefaultProperties([T_EXTENDS]),
 			'@default.reflection.all'
 		);
