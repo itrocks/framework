@@ -8,6 +8,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * A model
  *
  * @display_order brand, name
+ * @feature
  * @override brand @mandatory
  * @override name @alias model
  * @representative brand, name
