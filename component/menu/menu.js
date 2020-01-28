@@ -18,6 +18,7 @@ $(document).ready(function()
 		});
 	};
 
+	//-------------------------------------------------------------------------- #menu .minimize call
 	$body.build('call', '#menu .minimize', function()
 	{
 		var $button = $(this);
@@ -33,7 +34,7 @@ $(document).ready(function()
 		});
 	});
 
-	//------------------------------------------------------------------------------- #menu .minimize
+	//------------------------------------------------------------------------- #menu .minimize click
 	$body.build('click', '#menu .minimize',function()
 	{
 		var $button = $(this);
@@ -61,13 +62,25 @@ $(document).ready(function()
 		if (!value.length) {
 			return;
 		}
+		var values = value.simple().split(',');
+		for (var i in values) if (values.hasOwnProperty(i)) {
+			values[i] = values[i].trim();
+		}
 
 		$menu.find('li > a').each(function() {
-			var $a    = $(this);
-			var $li   = $a.parent();
-			var $h3_a = $li.parent().closest('li').find('> h3 > a');
-			var is_visible = ($a.text().simple().indexOf(value.simple()) > -1)
-				|| ($h3_a.text().simple().indexOf(value.simple()) > -1);
+			var $a         = $(this);
+			var $li        = $a.parent();
+			var $h3_a      = $li.parent().closest('li').find('> h3 > a');
+			var is_visible = false;
+			var block_text = $h3_a.text().simple();
+			var item_text  = $a.text().simple();
+			for (var i in values) if (values.hasOwnProperty(i)) {
+				var value = values[i];
+				if ((item_text.indexOf(value) > -1) || (block_text.indexOf(value) > -1)) {
+					is_visible = true;
+					break;
+				}
+			}
 			if (!is_visible) {
 				$li.hide();
 			}
