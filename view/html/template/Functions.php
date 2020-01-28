@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Feature\Condition;
 use ITRocks\Framework\Feature\Edit\Html_Builder_Property;
 use ITRocks\Framework\Feature\List_;
+use ITRocks\Framework\Feature\Validate\Property\Values_Annotation;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Collection;
 use ITRocks\Framework\Reflection\Annotation;
@@ -1397,6 +1398,28 @@ class Functions
 			}
 		}
 		return null;
+	}
+
+	//------------------------------------------------------------------------------------- getValues
+	/**
+	 * Returns the possible values for a property
+	 *
+	 * Get from @values, or if it is a link to an object, read all objects
+	 *
+	 * @example {ITRocks\Framework\User.name}
+	 * @param $template Template
+	 * @return string[]
+	 */
+	public function getValues(Template $template)
+	{
+		/** @var $property Reflection_Property */
+		$property = reset($template->objects);
+		$values   = Values_Annotation::of($property)->values();
+		if (!$values && $property->getType()->isClass()) {
+			$class_name = $property->getType()->getElementTypeAsString();
+			$values     = Dao::readAll($class_name);
+		}
+		return $values;
 	}
 
 	//--------------------------------------------------------------------------------------- getVoid

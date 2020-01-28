@@ -1719,13 +1719,18 @@ class Template
 
 	//--------------------------------------------------------------------------- parseStaticProperty
 	/**
+	 * Returns the value of the static property (if static), otherwise the property itself is returned
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name    string
 	 * @param $property_name string
-	 * @return mixed
+	 * @return mixed|Reflection_Property
 	 */
 	protected function parseStaticProperty($class_name, $property_name)
 	{
-		return $class_name::$$property_name;
+		/** @noinspection PhpUnhandledExceptionInspection must exist */
+		$property = (new Reflection_Property($class_name, $property_name));
+		return $property->isStatic() ? $class_name::$$property_name : $property;
 	}
 
 	//----------------------------------------------------------------------------------- parseString
@@ -1850,8 +1855,8 @@ class Template
 		}
 		// if the parse value finishes with a class name : check if the last object is any of this class
 		if (isset($this->parse_class_name)) {
-			$object = isA(reset($this->objects), $this->parse_class_name);
-			unset($this->parse_class_name);
+			$object                 = isA(reset($this->objects), $this->parse_class_name);
+			$this->parse_class_name = null;
 		}
 		// parse object to string
 		if ($as_string && is_object($object)) {
