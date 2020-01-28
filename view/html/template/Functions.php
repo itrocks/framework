@@ -1417,7 +1417,7 @@ class Functions
 		$values   = Values_Annotation::of($property)->values();
 		if (!$values && $property->getType()->isClass()) {
 			$class_name = $property->getType()->getElementTypeAsString();
-			$values     = Dao::readAll($class_name);
+			$values     = Dao::readAll($class_name, Dao::sort());
 		}
 		return $values;
 	}
