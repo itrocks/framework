@@ -4,13 +4,13 @@ namespace ITRocks\Framework\Dao\Sql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Mapper\Abstract_Class;
 use ITRocks\Framework\Mapper\Object_Builder_Array;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Tools\List_Data;
-use stdClass;
 
 /**
  * Manages Select() Dao Link calls : how to call and parse the query
@@ -448,17 +448,8 @@ class Select
 			else {
 				if (!isset($row[$this->columns[$j]])) {
 					// TODO LOW try to get the object from object map to avoid multiple instances
-					$class = $this->classes[$j];
-					if ($class->isAbstract()) {
-						$final_class = ($this->column_names[$i] === 'class') ? $result[$i]: StdClass::class;
-						if (!$final_class || !class_exists($final_class)) {
-							$final_class = StdClass::class;
-						}
-						$object = new $final_class;
-					}
-					else {
-						$object = $class->newInstance();
-					}
+					$class  = $this->classes[$j];
+					$object = $class->isAbstract() ? new Abstract_Class : $class->newInstance();
 					$row[$this->columns[$j]] = $object;
 				}
 				$property_name = $this->column_names[$i];
@@ -468,6 +459,19 @@ class Select
 				else {
 					$row[$this->columns[$j]]->$property_name = $result[$i];
 				}
+				// may be time consuming, and do we need the real complete object ?
+				/*
+				if (
+					in_array($property_name, ['class', 'id'])
+					&& ($row[$this->columns[$j]] instanceof Abstract_Class)
+					&& ($row[$this->columns[$j]]->class ?? false)
+					&& ($row[$this->columns[$j]]->id    ?? false)
+				) {
+					$row[$this->columns[$j]] = Dao::read(
+						$row[$this->columns[$j]]->id, $row[$this->columns[$j]]->class
+					);
+				}
+				*/
 			}
 		}
 		return $row;
