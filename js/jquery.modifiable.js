@@ -17,6 +17,7 @@ window.modifiable_waiting  = false;
 			class:     'editing',
 			live:      undefined,
 			popup:     undefined,
+			select:    false,
 			start:     undefined,
 			stop:      undefined,
 			target:    undefined
@@ -69,6 +70,9 @@ window.modifiable_waiting  = false;
 					event.preventDefault();
 					event.stopImmediatePropagation();
 				});
+				if (settings.select) {
+					$input.select();
+				}
 
 				//----------------------------------------------------------------------------- $input done
 				var done = function()
