@@ -15,6 +15,7 @@ window.modifiable_waiting  = false;
 			aliases:   {},
 			callback:  undefined,
 			class:     'editing',
+			live:      undefined,
 			popup:     undefined,
 			start:     undefined,
 			stop:      undefined,
@@ -141,6 +142,9 @@ window.modifiable_waiting  = false;
 						done();
 					}
 				});
+
+				//---------------------------------------------------------------------------- $input keyup
+				if (settings.live) $input.keyup(settings.live);
 
 				//------------------------------------------------------------- $input, popup elements blur
 				var blur = function()
