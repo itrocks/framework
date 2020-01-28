@@ -21,11 +21,20 @@ ul.actions > li {
     ul.actions > li a:hover {
       background-color: #efefef;
       color: #444; }
-  li.action > ul,
-  li.actions > ul > li > ul,
-  ul.actions > li > ul {
+  li.action > ul > li,
+  li.actions > ul > li > ul > li,
+  ul.actions > li > ul > li {
     background-color: white;
-    border: 1px solid #d8d8d8; }
+    border-left: 1px solid #d8d8d8;
+    border-right: 1px solid #d8d8d8; }
+    li.action > ul > li:first-child,
+    li.actions > ul > li > ul > li:first-child,
+    ul.actions > li > ul > li:first-child {
+      border-top: 1px solid #d8d8d8; }
+    li.action > ul > li:last-child,
+    li.actions > ul > li > ul > li:last-child,
+    ul.actions > li > ul > li:last-child {
+      border-bottom: 1px solid #d8d8d8; }
 
 article.list ul.general.actions > li > ul {
   top: 38px; }
@@ -35,7 +44,8 @@ ul.selection.actions {
   border-top: 1px solid #d8d8d8; }
   article:not(.list) ul.general.actions > li > ul,
   ul.selection.actions > li > ul {
-    top: 31px; }
+    padding-top: 6px;
+    top: 25px; }
 
 ol.properties.tiny + ul.actions {
   background: transparent;
