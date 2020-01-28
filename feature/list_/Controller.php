@@ -1026,7 +1026,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $recurse    boolean @private true if recursive call
 	 * @return array search criterion, may include Func\Logical elements for representative searches
 	 */
-	protected function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
+	public function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
 	{
 		foreach ($search as $property_path => $value) {
 			// ignore numeric keys : these are additions, and do not come from the list form

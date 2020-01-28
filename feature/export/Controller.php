@@ -13,7 +13,7 @@ use ITRocks\Framework\Controller\Parameters;
  * TODO more formats, as a popup of the "export" button and as first $parameter
  * TODO xlsx with best formatting (please forget ssconvert, which do not allow that)
  */
-class Export_Controller implements Default_Feature_Controller
+class Controller implements Default_Feature_Controller
 {
 
 	//------------------------------------------------------------------------------------------- run
