@@ -163,6 +163,24 @@ class Call_Stack
 		return false;
 	}
 
+	//----------------------------------------------------------------------------- containsNamespace
+	/**
+	 * Returns true if the call stack contains a call to any class under the given namespace
+	 *
+	 * @param $namespace string
+	 * @return boolean
+	 */
+	public function containsNamespace($namespace)
+	{
+		$length = strlen($namespace);
+		foreach ($this->stack as $stack) {
+			if (isset($stack['class']) && substr($stack['class'], 0, $length) === $namespace) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	//-------------------------------------------------------------------------------- containsObject
 	/**
 	 * Returns true if the call stack contains the object, or an instance of a class
