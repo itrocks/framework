@@ -323,7 +323,6 @@ class Application_Updater implements Configurable, Serializable
 		if (self::$maintain) {
 			$asynchronous = new Asynchronous();
 			$asynchronous->call('/ITRocks/Framework/Dao/Mysql/maintain valid=1 verbose=1');
-			$asynchronous->wait();
 		}
 		return $this;
 	}
