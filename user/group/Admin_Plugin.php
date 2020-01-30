@@ -89,7 +89,9 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	public function update($last_time)
 	{
 		$feature_cache = new Feature_Cache();
-		$feature_cache->reset();
+		if ($files = $feature_cache->invalidate($last_time)) {
+			$feature_cache->saveToCache($feature_cache->scanFeatures($files));
+		}
 	}
 
 }

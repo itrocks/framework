@@ -16,6 +16,75 @@ use ITRocks\Framework\Tools\Names;
 class Feature_Cache
 {
 
+	//------------------------------------------------------------------------------- INVALIDATE_FILE
+	const INVALIDATE_FILE = 'cache/user_group_feature_cache';
+
+	//------------------------------------------------------------------------------------ invalidate
+	/**
+	 * Returns the complete files to scan list if the cache is invalidated
+	 * If it returns an empty array, then the cache is still valid and does not need to be reset
+	 *
+	 * @param $last_time integer
+	 * @return string[] php/yaml files paths
+	 */
+	public function invalidate($last_time)
+	{
+		/** @var $files_cache string[] ['file/path' => 'last-hash'] The list of cached hashes */
+		$files_cache = [];
+		if (file_exists(static::INVALIDATE_FILE)) {
+			foreach (file(static::INVALIDATE_FILE, FILE_IGNORE_NEW_LINES) as $line) {
+				[$name, $hash]      = explode(';', $line);
+				$files_cache[$name] = $hash;
+			}
+		}
+		else {
+			$last_time = 0;
+		}
+		$application   = Application::current();
+		$files         = $application->include_path->getSourceFiles();
+		$invalidated   = false;
+		$removed_files = $files_cache;
+		foreach ($files as $key => $filename) {
+			$hash = null;
+			if (substr($filename, -4) === '.php') {
+				unset($removed_files[$filename]);
+				if (filemtime($filename) >= $last_time) {
+					$hash = md5(serialize($this->scanPhpFile($filename)));
+				}
+			}
+			elseif (
+				(substr($filename, -5) ===  '.yaml')
+				&& (substr($filename, 0, 38) !== 'itrocks/framework/user/group/defaults/')
+				&& (substr($filename, -16) !== '/exhaustive.yaml')
+			) {
+				unset($removed_files[$filename]);
+				if (filemtime($filename) >= $last_time) {
+					$hash = md5(file_get_contents($filename));
+				}
+			}
+			else {
+				unset($files[$key]);
+			}
+			if (isset($hash) && ($hash !== ($files_cache[$filename] ?? null))) {
+				$files_cache[$filename] = $hash;
+				$invalidated            = true;
+			}
+		}
+		if ($removed_files) {
+			$invalidated = true;
+			foreach (array_keys($removed_files) as $filename) {
+				unset($files_cache[$filename]);
+			}
+		}
+		if ($invalidated) {
+			foreach ($files_cache as $filename => $hash) {
+				$files_cache[$filename] = $filename . ';' . $hash;
+			}
+			file_put_contents(static::INVALIDATE_FILE, join(LF, $files_cache));
+		}
+		return $invalidated ? $files : []; // // //
+	}
+
 	//-------------------------------------------------------------------------------- isFeatureClass
 	/**
 	 * Returns true if the file class header buffer reveals a @feature class
@@ -28,15 +97,6 @@ class Feature_Cache
 	private function isFeatureClass($buffer)
 	{
 		return strpos($buffer, '{') && (strpos($buffer, '* @feature') ? true : false);
-	}
-
-	//----------------------------------------------------------------------------------------- reset
-	/**
-	 * Resets the feature cache : replace it with the scanned features
-	 */
-	public function reset()
-	{
-		$this->saveToCache($this->scanFeatures());
 	}
 
 	//----------------------------------------------------------------------------------- saveToCache
@@ -138,27 +198,22 @@ class Feature_Cache
 	/**
 	 * Scan the application source files for feature classes that may give us final user features
 	 *
-	 * return Feature[]
+	 * @param $files string[] file paths read by invalidate()
+	 * @return Feature[]
+	 * @see invalidate
 	 */
-	public function scanFeatures()
+	public function scanFeatures(array $files)
 	{
-		$application = Application::current();
-		$files = $application->include_path->getSourceFiles();
 		/** @var $php_files_features  Feature[] */
 		/** @var $yaml_files_features Feature[] */
 		$php_files_features  = [];
 		$yaml_files_features = [];
 		foreach ($files as $filename) {
-			if (endsWith($filename, '.yaml')) {
-				if (
-					!beginsWith($filename, 'itrocks/framework/user/group/defaults/')
-					&& !endsWith($filename, '/exhaustive.yaml')
-				) {
-					$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
-				}
-			}
-			elseif (endsWith($filename, '.php')) {
+			if (substr($filename, -4) === '.php') {
 				$php_files_features = array_merge($php_files_features, $this->scanPhpFile($filename));
+			}
+			else {
+				$yaml_files_features = array_merge($yaml_files_features, $this->scanYamlFile($filename));
 			}
 		}
 		return array_merge($php_files_features, $yaml_files_features);
