@@ -3,6 +3,7 @@ namespace ITRocks\Framework\RAD\Feature;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Set;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\PHP\Dependency\Declaration;
 use ITRocks\Framework\Plugin\Installable;
@@ -112,8 +113,12 @@ class Maintainer implements Registerable, Updatable
 	public function installableToFeaturesUpdate()
 	{
 		Dao::createStorage(Feature::class);
+		/** @var $features Feature[] */
 		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
 		(new Set)->replace($features, Feature::class);
+		foreach ($features as $feature) {
+			Loc::tr($feature->title);
+		}
 		return $features;
 	}
 
