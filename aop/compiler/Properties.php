@@ -607,7 +607,7 @@ class Properties
 			return '';
 		}
 		return $over['prototype'] . '
-		foreach (array_keys($this->_) as $aop_property) {
+		if ($this->_) foreach (array_keys($this->_) as $aop_property) {
 			unset($this->$aop_property);
 		}
 	}
