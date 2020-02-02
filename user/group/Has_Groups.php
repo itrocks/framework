@@ -86,35 +86,41 @@ trait Has_Groups
 	/**
 	 * Check if object has the given group
 	 *
-	 * @param $group Group|string|integer
+	 * @param $group Group|integer|string
 	 * @return boolean
 	 */
 	public function hasGroup($group)
 	{
 		$identifier = null;
-		// group given
+		// Group
 		if ($group instanceof Group) {
 			$identifier = Dao::getObjectIdentifier($group);
 		}
-		// string given : this is the name of the group
+		// string : name of the group
 		elseif (is_string($group)) {
 			$group = Dao::searchOne(['name' => $group], Group::class);
-			if (is_object($group)) {
+			if ($group) {
 				$identifier = Dao::getObjectIdentifier($group);
 			}
 		}
-		// integer given this is identifier
-		elseif (isStrictNumeric($group)) {
+		// integer : identifier
+		elseif (isStrictNumeric($group, false, false)) {
 			$identifier = (integer)$group;
 		}
 
-		if (!empty($identifier)) {
-			foreach($this->groups as $object_group) {
-				if (Dao::getObjectIdentifier($object_group) == $identifier) {
-					return true;
-				}
+		if (!$identifier) {
+			return false;
+		}
+
+		foreach($this->groups as $object_group) {
+			if (
+				(Dao::getObjectIdentifier($object_group) == $identifier)
+				|| $object_group->hasGroup($identifier)
+			) {
+				return true;
 			}
 		}
+
 		return false;
 	}
 

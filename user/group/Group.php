@@ -3,6 +3,7 @@ namespace ITRocks\Framework\User;
 
 use ITRocks\Framework\Traits\Has_Name;
 use ITRocks\Framework\User\Group\Feature;
+use ITRocks\Framework\User\Group\Has_Groups;
 use ITRocks\Framework\User\Group\Low_Level_Feature;
 
 /**
@@ -13,9 +14,11 @@ use ITRocks\Framework\User\Group\Low_Level_Feature;
  * @business
  * @display_order name, groups, features
  * @feature
+ * @override groups @foreignlink super_group
  */
 class Group
 {
+	use Has_Groups { getLowLevelFeatures as private hasGroupsGetLowLevelFeatures; }
 	use Has_Name;
 
 	//------------------------------------------------------------------------------------- $features
@@ -26,16 +29,6 @@ class Group
 	 * @var Feature[]
 	 */
 	public $features;
-
-	//--------------------------------------------------------------------------------------- $groups
-	/**
-	 * A group can include several others groups
-	 *
-	 * @foreignlink super_group
-	 * @link Map
-	 * @var Group[]
-	 */
-	public $groups;
 
 	//--------------------------------------------------------------------------- addLowLevelFeatures
 	/**
