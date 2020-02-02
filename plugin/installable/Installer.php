@@ -16,6 +16,8 @@ use ITRocks\Framework\Plugin\Installable;
 use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Bridge;
 use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Build_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
@@ -190,6 +192,22 @@ class Installer
 		}
 		foreach ($menu_items as $menu) {
 			$this->addMenu($menu);
+		}
+		foreach (Feature_Build_Annotation::allOf($plugin_class) as $build_annotation) {
+			$class_name = reset($build_annotation->value);
+			if (class_exists($class_name)) {
+				$slice = 1;
+			}
+			else {
+				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
+				$class_name = $plugin_class->isClass()
+					? $plugin_class->name
+					: reset(Extends_Annotation::of(new Reflection_Class($class_name))->value);
+				$slice = 0;
+			}
+			foreach (array_slice($build_annotation->value, $slice) as $interface_trait_name) {
+				$this->addToClass($class_name, $interface_trait_name);
+			}
 		}
 
 		$installable = $this->pluginObject($plugin);
