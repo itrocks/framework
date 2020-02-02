@@ -1,7 +1,7 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-input:not([type=button]):not([type=checkbox]):not([type=radio]):not([type=submit]),
+input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]),
 select,
 textarea {
 	background: $input-background;
