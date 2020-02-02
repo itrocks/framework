@@ -181,6 +181,14 @@ interface Reflection_Class extends Reflection
 	 */
 	public function isAbstract();
 
+	//--------------------------------------------------------------------------------------- isClass
+	/**
+	 * Checks if this class is a class (not an interface or a trait)
+	 *
+	 * @return boolean
+	 */
+	public function isClass();
+
 	//--------------------------------------------------------------------------------------- isFinal
 	/**
 	 * Checks if class is final

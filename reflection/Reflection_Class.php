@@ -606,6 +606,17 @@ class Reflection_Class extends ReflectionClass
 		return parent::isAbstract() || $this->isInterface() || $this->isTrait();
 	}
 
+	//--------------------------------------------------------------------------------------- isClass
+	/**
+	 * Checks if this class is a class (not an interface or a trait)
+	 *
+	 * @return boolean
+	 */
+	public function isClass()
+	{
+		return !$this->isInterface() && !$this->isTrait();
+	}
+
 	//-------------------------------------------------------------------------------- sortProperties
 	/**
 	 * Sort the properties list from @display_order class annotation(s)
