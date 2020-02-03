@@ -168,6 +168,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 
 	//----------------------------------------------------------------------------- getGeneralButtons
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
 	 * @param $settings   Setting\Custom\Set|Output_Setting\Set
@@ -182,8 +183,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$buttons[Feature::F_EDIT] = new Button(
 			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		if (
-			/** @noinspection PhpUnhandledExceptionInspection object */
 			($object instanceof Duplicate) || (new Reflection_Class($object))->getAnnotations('duplicate')
 		) {
 			$buttons[Feature::F_DUPLICATE] = new Button(
@@ -327,10 +328,8 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $class_name string
 	 * @return mixed[]
 	 */
-	protected function getViewParameters(
-		/** @noinspection PhpUnusedParameterInspection */
-		Parameters $parameters, array $form, $class_name
-	) {
+	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	{
 		$object     = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
 		$feature    = isset($parameters[Feature::FEATURE])
