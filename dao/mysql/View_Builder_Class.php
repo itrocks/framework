@@ -110,7 +110,7 @@ class View_Builder_Class
 							? $property_name
 							: Dao\Func::value(null);
 					}
-					else {
+					elseif (!$properties) {
 						if (!isset($sub_property_names['representative'])) {
 							$sub_property_names['representative'] = Func::concat([]);
 						}
