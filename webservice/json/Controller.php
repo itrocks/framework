@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Search_Array_Builder;
+use ITRocks\Framework\Tools\String_Class;
 
 /**
  * A default json controller to output any object or objects collection into json format
@@ -212,12 +213,11 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected function searchObjectsForAutoCompleteCombo($class_name, array $parameters)
 	{
+		/** @noinspection PhpUnhandledExceptionInspection verified class name */
+		$class  = new Reflection_Class($class_name);
 		$search = null;
 		if (!empty($parameters['term'])) {
-			/** @noinspection PhpUnhandledExceptionInspection verified class name */
-			$search = (new Search_Array_Builder)->buildMultiple(
-				new Reflection_Class($class_name), $parameters['term'], '', '%'
-			);
+			$search = (new Search_Array_Builder)->buildMultiple($class, $parameters['term'], '', '%');
 		}
 		if (!empty($parameters['filters'])) {
 			$this->applyFiltersToSearch($search, $parameters['filters']);
@@ -234,7 +234,9 @@ class Controller implements Default_Feature_Controller
 			$search_options[] = Dao::limit(1);
 			$objects          = $this->search($search, $class_name, $search_options);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
-			$source_object = $objects ? reset($objects) : Builder::create($class_name);
+			$source_object = $objects
+				? reset($objects)
+				: ($class->isAbstract() ? (new String_Class) : Builder::create($class_name));
 			return $this->buildJson($source_object, $class_name);
 		}
 		// all results from search
