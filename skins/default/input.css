@@ -4,9 +4,9 @@ textarea {
   background: white;
   border: 1px solid #d8d8d8;
   border-radius: 2px; }
-  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not(select),
-  select:not(select),
-  textarea:not(select) {
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select),
+  select:not([type=file]):not(select),
+  textarea:not([type=file]):not(select) {
     height: 10px;
     padding: 10px; }
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],

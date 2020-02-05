@@ -133,6 +133,20 @@ class Object_Builder_Array
 	public function build(
 		array $array, $object = null, $null_if_empty = false, $ignore_property_name = null
 	) {
+		// first "null-if-empty" pass : on raw data
+		if ($null_if_empty) {
+			$ok = false;
+			foreach ($array as $key => $value) {
+				if ($value) {
+					$ok = true;
+					break;
+				}
+			}
+			if (!$ok) {
+				return null;
+			}
+		}
+		// start, build
 		if (!$this->started) {
 			$this->start(isset($object) ? get_class($object) : null);
 		}
@@ -142,19 +156,20 @@ class Object_Builder_Array
 		);
 		$this->buildProperties($build);
 		$this->buildSubObjects($build);
+		// second "null-if-empty" pass : on calculated object
 		if ($build->is_null && count($array)) {
 			return null;
 		}
-		else {
-			if ($build->read_properties) {
-				$object = $this->readObject($object, $build->read_properties);
-			}
-			$this->built_objects[] = new Built_Object($build->object);
-			foreach ($this->class->getAnnotations('after_build_array') as $after) {
-				call_user_func_array([$object, $after->value], [&$array]);
-			}
-			return $object;
+		// complete the generated object with the object read from the data store
+		if ($build->read_properties) {
+			$object = $this->readObject($object, $build->read_properties);
 		}
+		// after build
+		$this->built_objects[] = new Built_Object($build->object);
+		foreach ($this->class->getAnnotations('after_build_array') as $after) {
+			call_user_func_array([$object, $after->value], [&$array]);
+		}
+		return $object;
 	}
 
 	//------------------------------------------------------------------------------- buildBasicValue
@@ -328,26 +343,30 @@ class Object_Builder_Array
 		}
 		// build each element
 		foreach ($array as $key => $element) {
-			if (!empty($element)) {
-				if (is_array($element)) {
-					$map[$key] = (new Object_Builder_Array($class_name, $this->from_form))->build(
-						$element, null, true
-					);
+			if (empty($element)) {
+				continue;
+			}
+			if (is_array($element)) {
+				$built = (new Object_Builder_Array($class_name, $this->from_form))->build(
+					$element, null, true
+				);
+				if ($built) {
+					$map[$key] = $built;
 				}
-				else {
-					if (!is_numeric($element) && strpos($element, ':')) {
-						list($real_class_name, $element) = explode(':', $element);
-						if (!isA($real_class_name, $class_name)) {
-							// this is for security purpose, to disallow unauthorized classes injection
-							trigger_error(
-								$real_class_name . ' must inherit abstract/trait ' . $class_name,
-								E_USER_ERROR
-							);
-						}
-						$class_name = $real_class_name;
+			}
+			else {
+				if (!is_numeric($element) && strpos($element, ':')) {
+					list($real_class_name, $element) = explode(':', $element);
+					if (!isA($real_class_name, $class_name)) {
+						// this is for security purpose, to disallow unauthorized classes injection
+						trigger_error(
+							$real_class_name . ' must inherit abstract/trait ' . $class_name,
+							E_USER_ERROR
+						);
 					}
-					$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
+					$class_name = $real_class_name;
 				}
+				$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
 			}
 		}
 		return $map;

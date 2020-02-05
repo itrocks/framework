@@ -14,7 +14,8 @@ $(document).ready(function()
 
 	//------------------------------------------------------------------- li.file.object > div .click
 	var files_selector = 'article > form > ul.data li.file.object > div, '
-		+ 'article > form > ul.data ul.collection > li.data > ol > .file';
+		+ 'article > form > ul.data ul.collection > li.data > ol > .file, '
+		+ 'article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div';
 	$body.build('click', files_selector , function(event)
 	{
 		var $div    = $(this);

@@ -311,7 +311,7 @@ class Html_Builder_Type
 			? (new Html\Builder\File($this->value))->build()
 			: '';
 		$this->commonAttributes($file);
-		return $id_input . $file . $span;
+		return $file . $span . $id_input;
 	}
 
 	//------------------------------------------------------------------------------------ buildFloat

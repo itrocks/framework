@@ -1,5 +1,6 @@
 article > form > ul.data li.file.object > div,
-article > form > ul.data ul.collection > li.data > ol > .file {
+article > form > ul.data ul.collection > li.data > ol > .file,
+article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div {
 	background: url('img/upload.svg') left center no-repeat;
 	background-size: 22px;
 	cursor: pointer;

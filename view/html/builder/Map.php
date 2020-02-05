@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\View\Html\Builder;
 
 use ITRocks\Framework\Controller\Target;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -101,9 +102,14 @@ class Map
 	 */
 	protected function buildCell($object)
 	{
-		$anchor = new Anchor(View::link($object), strval($object));
-		$anchor->setAttribute('target', Target::MAIN);
-		return new Item($anchor);
+		if ($object instanceof Dao\File) {
+			$element = (new File($object, $this->property))->build();
+		}
+		else {
+			$element = new Anchor(View::link($object), strval($object));
+			$element->setAttribute('target', Target::MAIN);
+		}
+		return new Item($element);
 	}
 
 }
