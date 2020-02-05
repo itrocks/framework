@@ -2,73 +2,41 @@
 namespace ITRocks\Framework\Reflection\Annotation\Property;
 
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_;
+use ITRocks\Framework\Reflection\Annotation\Template\Options_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 
 /**
  * Use a specific HTML builder class to build output / edit / object for write for the property
  */
-class Widget_Annotation extends Annotation
+class Widget_Annotation extends Annotation implements Property_Context_Annotation
 {
+	use Options_Annotation;
 	use Types_Annotation;
 
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'widget';
 
-	//-------------------------------------------------------------------------------------- $options
-	/**
-	 * @var array
-	 */
-	protected $options = [];
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value    string
+	 * @param $property Reflection_Property
 	 */
-	public function __construct($value)
+	public function __construct($value, Reflection_Property $property)
 	{
-		if (strpos($value, SP)) {
-			list($value, $options) = explode(SP, $value, 2);
-			$this->parseOptions(explode(',', $options));
-		}
+		$this->constructOptions($value);
 		parent::__construct($value);
-	}
-
-	//---------------------------------------------------------------------------------------- option
-	/**
-	 * Get option value
-	 *
-	 * @param $option  string the name of the option
-	 * @param $default mixed value to return if the option is not set
-	 * @return mixed the value of the option
-	 */
-	public function option($option, $default = null)
-	{
-		return $this->options[$option] ?? $default;
-	}
-
-	//---------------------------------------------------------------------------------- parseOptions
-	/**
-	 * @param $options string[]
-	 */
-	protected function parseOptions(array $options)
-	{
-		foreach ($options as $option) if (strlen($option = trim($option))) {
-			if (strpos($option, '=')) {
-				list($key, $val) = explode('=', $option);
+		if (!$this->value) {
+			$type = $property->getType();
+			if ($type->isClass()) {
+				$widget_annotation = Class_\Widget_Annotation::of($type->asReflectionClass());
+				if ($widget_annotation->value) {
+					$this->options = $widget_annotation->options;
+					$this->value   = $widget_annotation->value;
+				}
 			}
-			else {
-				$key = $options;
-				$val = true;
-			}
-			switch ($val) {
-				case 'true':
-					$val = true;
-					break;
-				case 'false':
-					$val = false;
-					break;
-			}
-			$this->options[$key] = $val;
 		}
 	}
 
