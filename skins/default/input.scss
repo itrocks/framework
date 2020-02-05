@@ -7,8 +7,9 @@ textarea {
 	background: $input-background;
 	border: $input-border;
 	border-radius: $input-border-radius;
+	width: 100px;
 
-	&:not([type=file]):not(select) {
+	&:not([type=file]):not(select):not(textarea) {
 		height: $input-height - ($input-padding * 2);
 		padding: $input-padding;
 	}
@@ -27,5 +28,7 @@ input[type=checkbox], input[type=radio] {
 }
 
 textarea {
+	height: 21px;
 	line-height: 1.5em;
+	padding: $input-padding;
 }

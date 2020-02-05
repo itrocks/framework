@@ -3,10 +3,11 @@ select,
 textarea {
   background: white;
   border: 1px solid #d8d8d8;
-  border-radius: 2px; }
-  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select),
-  select:not([type=file]):not(select),
-  textarea:not([type=file]):not(select) {
+  border-radius: 2px;
+  width: 100px; }
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
+  select:not([type=file]):not(select):not(textarea),
+  textarea:not([type=file]):not(select):not(textarea) {
     height: 10px;
     padding: 10px; }
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],
@@ -21,4 +22,6 @@ input[type=checkbox], input[type=radio] {
   margin: 8px 0 0; }
 
 textarea {
-  line-height: 1.5em; }
+  height: 21px;
+  line-height: 1.5em;
+  padding: 10px; }
