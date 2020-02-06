@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Updater;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Needs_Main;
 use ITRocks\Framework\Plugin\Configurable;
@@ -320,9 +321,10 @@ class Application_Updater implements Configurable, Serializable
 	 */
 	public function runMaintainer()
 	{
-		if (self::$maintain) {
+		if (self::$maintain && (Session::current()->environment !== Environment::DEVELOPMENT)) {
 			$asynchronous = new Asynchronous();
 			$asynchronous->call('/ITRocks/Framework/Dao/Mysql/maintain valid=1 verbose=1');
+			$asynchronous->wait();
 		}
 		return $this;
 	}
