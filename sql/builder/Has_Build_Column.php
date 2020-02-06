@@ -5,10 +5,8 @@ use ITRocks\Framework\Dao\Func\Concat;
 use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Join;
-use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -65,10 +63,8 @@ trait Has_Build_Column
 		}
 		else {
 			$force_column = null;
-			/** @noinspection PhpUnhandledExceptionInspection valid constants */
 			$force_column = (
-				(new Reflection_Method(Joins::class, 'getProperty'))->isPublic()
-				&& ($property = $this->joins->getProperty($master_path, $column_name))
+				($property = $this->joins->getProperty($master_path, $column_name))
 				&& Store_Annotation::of($property)->isFalse()
 			) ? 'NULL' : null;
 			if (($path === DOT) && !$column_name) {
