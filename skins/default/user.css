@@ -46,7 +46,7 @@ article.user.register {
       article.user.register > form > ol.properties > li > input,
       article.user.register > form > ol.properties > li > label {
         display: block;
-        width: calc(100% - 22px); }
+        width: calc(100% - 22px) !important; }
       article.password.reset > form > ol.properties > li > label,
       article.user.login > form > ol.properties > li > label,
       article.user.register > form > ol.properties > li > label {
