@@ -7,7 +7,10 @@ textarea {
 	background: $input-background;
 	border: $input-border;
 	border-radius: $input-border-radius;
-	width: 100px;
+
+	&:not(.auto_width) {
+		width: 100px;
+	}
 
 	&:not([type=file]):not(select):not(textarea) {
 		height: $input-height - ($input-padding * 2);
