@@ -21,6 +21,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Build_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Plugin_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
@@ -207,6 +208,11 @@ class Installer
 			}
 			foreach (array_slice($build_annotation->value, $slice) as $interface_trait_name) {
 				$this->addToClass($class_name, $interface_trait_name);
+			}
+		}
+		foreach (Feature_Plugin_Annotation::allOf($plugin_class) as $plugin_annotation) {
+			foreach ($plugin_annotation->values() as $plugin_class_name) {
+				$this->addPlugin($plugin_class_name);
 			}
 		}
 
