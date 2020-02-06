@@ -44,8 +44,8 @@ class Feature_Build_Annotation extends Template\List_Annotation implements Class
 		if (strpos($value, '+')) {
 			$value = str_replace('+', ',', $value);
 		}
-		elseif ($class->isClass()) {
-			$value = ($class->getName() . ',' . $value);
+		elseif ($value && $class->isClass()) {
+			$value = BS . $class->getName() . ',' . $value;
 		}
 		parent::__construct($value);
 	}
