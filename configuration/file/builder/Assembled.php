@@ -46,7 +46,7 @@ class Assembled extends Built
 		foreach ($interfaces_traits as $interface_trait) {
 			if (!isset($all_components[$interface_trait])) {
 				$all_components[$interface_trait] = $interface_trait;
-				if (beginsWith($interface_trait, AT)) {
+				if (beginsWith($interface_trait, AT) && !beginsWith($interface_trait, '@override')) {
 					$annotation_name = lParse($interface_trait, SP);
 					foreach ($this->components as $key => $component) {
 						if (beginsWith($component, $annotation_name)) {

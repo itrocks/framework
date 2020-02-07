@@ -17,6 +17,7 @@ use ITRocks\Framework\RAD\Feature;
 use ITRocks\Framework\RAD\Feature\Bridge;
 use ITRocks\Framework\RAD\Feature\Status;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Annotate_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Build_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
@@ -181,7 +182,8 @@ class Installer
 		foreach ($plugin_class->getAnnotations('feature_install') as $feature_install) {
 			/** @var $feature_install Method_Annotation */
 			$feature_install->call(
-				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance()
+				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
+				[$this]
 			);
 		}
 		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
@@ -201,14 +203,20 @@ class Installer
 			}
 			else {
 				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
-				$class_name = $plugin_class->isClass()
-					? $plugin_class->name
-					: reset(Extends_Annotation::of(new Reflection_Class($class_name))->value);
+				$interface_trait_name = Builder::current()->sourceClassName(
+					reset(Extends_Annotation::of(new Reflection_Class($class_name))->value)
+				);
+				$class_name = $plugin_class->isClass() ? $plugin_class->name : $interface_trait_name;
 				$slice = 0;
 			}
 			foreach (array_slice($build_annotation->value, $slice) as $interface_trait_name) {
+				$interface_trait_name = Builder::current()->sourceClassName($interface_trait_name);
 				$this->addToClass(Builder::current()->sourceClassName($class_name), $interface_trait_name);
 			}
+		}
+		foreach (Feature_Annotate_Annotation::allOf($plugin_class) as $annotate_annotation) {
+			$class_name = Builder::current()->sourceClassName(reset($annotate_annotation->value));
+			$this->addToClass($class_name, $annotate_annotation->annotation);
 		}
 		foreach (Feature_Plugin_Annotation::allOf($plugin_class) as $plugin_annotation) {
 			foreach ($plugin_annotation->values() as $feature_plugin_class_name) {
