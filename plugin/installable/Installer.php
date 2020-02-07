@@ -207,12 +207,12 @@ class Installer
 				$slice = 0;
 			}
 			foreach (array_slice($build_annotation->value, $slice) as $interface_trait_name) {
-				$this->addToClass($class_name, $interface_trait_name);
+				$this->addToClass(Builder::current()->sourceClassName($class_name), $interface_trait_name);
 			}
 		}
 		foreach (Feature_Plugin_Annotation::allOf($plugin_class) as $plugin_annotation) {
-			foreach ($plugin_annotation->values() as $plugin_class_name) {
-				$this->addPlugin($plugin_class_name);
+			foreach ($plugin_annotation->values() as $feature_plugin_class_name) {
+				$this->addPlugin($feature_plugin_class_name);
 			}
 		}
 
