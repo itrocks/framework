@@ -426,7 +426,7 @@ class Dao implements Configurable
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
 	 */
-	public static function read($identifier, $class_name)
+	public static function read($identifier, $class_name = null)
 	{
 		return self::current()->read($identifier, $class_name);
 	}

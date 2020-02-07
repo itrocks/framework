@@ -261,7 +261,7 @@ abstract class Data_Link
 	 * @param $class_name string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
-	abstract public function read($identifier, $class_name);
+	abstract public function read($identifier, $class_name = null);
 
 	//--------------------------------------------------------------------------------------- readAll
 	/**
