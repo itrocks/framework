@@ -5,7 +5,6 @@ use ITRocks\Framework\Feature\Validate\Result;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
-use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * The regex annotation validator
@@ -19,8 +18,8 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'regex';
 
-	//------------------------------------------------------------------------------- REGEX_DELIMITER
-	const REGEX_DELIMITER = SL;
+	//------------------------------------------------------------------------------ REGEX_DELIMITERS
+	const REGEX_DELIMITERS = [SL, BQ, '~', '¤', 'µ', '§'];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -64,24 +63,22 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	/**
 	 * Validates the property value within this object context
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
 	public function validate($object)
 	{
 		$pattern = $this->value;
-		// @regex may have no delimiter : add it if not present
-		if (
-			($pattern[0] !== $pattern[strlen($pattern) - 1])
-			&& ($pattern[0] !== $pattern[strlen($pattern) - 2])
-		) {
-			$pattern = self::REGEX_DELIMITER . $pattern . self::REGEX_DELIMITER;
+		if (strpos(substr($pattern, -2), $pattern[0]) === false) {
+			foreach (static::REGEX_DELIMITERS as $delimiter) {
+				if (strpos($pattern, $delimiter) === false) {
+					$pattern = $delimiter . $pattern . $delimiter;
+					break;
+				}
+			}
 		}
-		/** @noinspection PhpUnhandledExceptionInspection $property must from $object and accessible */
-		return ($this->property instanceof Reflection_Property)
-			? ((preg_match($pattern, $this->property->getValue($object)) === 1) ? true : false)
-			: null;
+		$value = $this->property->getValue($object);
+		return (bool)preg_match($pattern, $value);
 	}
 
 }
