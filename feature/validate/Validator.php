@@ -366,6 +366,7 @@ class Validator implements Registerable
 			'warning'    => Class_\Warning_Annotation::class,
 		]);
 		$register->setAnnotations(Parser::T_PROPERTY, [
+			'characters' => Property\Characters_Annotation::class,
 			'length'     => Property\Length_Annotation::class,
 			'mandatory'  => Property\Mandatory_Annotation::class,
 			'max_length' => Property\Max_Length_Annotation::class,
