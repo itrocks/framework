@@ -96,8 +96,8 @@ class Installer
 	/**
 	 * Add interfaces and traits to the base class, into the builder.php configuration file
 	 *
-	 * @param $base_class_name         string
-	 * @param $added_interfaces_traits string|string[]
+	 * @param $base_class_name         string          Class name (real class) to be 'improved'
+	 * @param $added_interfaces_traits string|string[] Interface, trait, or class annotation
 	 */
 	public function addToClass($base_class_name, $added_interfaces_traits)
 	{
