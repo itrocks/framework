@@ -37,7 +37,7 @@
 					if ($this.attr('type') === 'password') {
 						var $container = $('<p>');
 						$container.append($this.clone());
-						var $helper = $($container.html().replace('type="password" ', 'type="text"'));
+						var $helper = $($container.html().repl('type="password" ', 'type="text"'));
 						$helper.attr('name', '').data('password', true);
 						$this.hide().after($helper);
 						$this = $helper;

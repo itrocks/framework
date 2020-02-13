@@ -1,10 +1,9 @@
 $(document).ready(function()
 {
-
 	//------------------------------------------------------------------------ article.import.preview
 	$('body').build('each', 'article.import section.preview li.block', function()
 	{
-		var $this = $(this);
+		var $this    = $(this);
 		var $section = $this.find('> section:has(ul)');
 		var $li      = $section.find('> ul > li');
 
@@ -27,7 +26,7 @@ $(document).ready(function()
 				// old section value
 				var $input        = $draggable.closest('section').find('input');
 				var property_name = $draggable.attr('class').lParse(SP);
-				var new_val       = (',' + $input.val() + ',').replace(',' + property_name + ',', ',');
+				var new_val       = (',' + $input.val() + ',').repl(',' + property_name + ',', ',');
 				$input.val((new_val === ',') ? '' : new_val.substr(1, new_val.length - 2));
 				// new section value
 				$input = $($droppable.closest('section').find('input'));

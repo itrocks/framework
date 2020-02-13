@@ -72,7 +72,7 @@ $(document).ready(function()
 		var do_change    = true;
 		var string_value = null;
 		if (!$input.length) {
-			$input = $form.find(search.replace('=' + DQ, '="id_'));
+			$input = $form.find(search.repl('=' + DQ, '="id_'));
 		}
 
 		if (((typeof value) === 'object') && value && !value.hasOwnProperty('0')) {

@@ -27,7 +27,7 @@
 				var index = href.indexOf('#');
 				var form_id = href.substr(index);
 				var $form = $(form_id);
-				$form.attr('action', href.substr(0, index).replace('?&', '?'));
+				$form.attr('action', href.substr(0, index).repl('?&', '?'));
 				$form.submit();
 			}
 		});

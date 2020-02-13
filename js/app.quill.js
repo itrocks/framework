@@ -33,7 +33,7 @@ $(document).ready(function()
 			quill.setContents(JSON.parse($this.text()));
 		}
 		else {
-			$quill.find('.ql-editor').html($this.text().replace("\n", '<br>')).keyup();
+			$quill.find('.ql-editor').html($this.text().repl("\n", '<br>')).keyup();
 		}
 	});
 });

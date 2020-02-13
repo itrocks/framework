@@ -72,7 +72,7 @@ $(document).ready(function()
 										($window.data('feature') !== 'output')
 										&& ($window.data('feature') !== 'edit')
 									) {
-										var uri = SL + data_class.replace(BS, SL) + SL + $window.data('feature');
+										var uri = SL + data_class.repl(BS, SL) + SL + $window.data('feature');
 										$.ajax({
 											url:     app.uri_base + uri + '?as_widget' + app.andSID(),
 											success: function(data) {
@@ -89,7 +89,7 @@ $(document).ready(function()
 							);
 						}
 					}
-					href += SL + ui.helper.data('class').replace(BS, SL);
+					href += SL + ui.helper.data('class').repl(BS, SL);
 					if (ui.helper.data('id')) {
 						href += SL + ui.helper.data('id');
 					}

@@ -36,7 +36,7 @@
 			part = part.trim();
 			object.selectors[part] = always
 				? 'always'
-				: part.replace(' ', '>').split('>').pop().trim();
+				: part.repl(' ', '>').split('>').pop().trim();
 		});
 	};
 
@@ -109,7 +109,7 @@
 				add_part = add_parts[add_part];
 				for (var old_part in old_parts) if (old_parts.hasOwnProperty(old_part)) {
 					old_part = old_parts[old_part];
-					new_parts.push((old_part + ' ' + add_part).trim().replace('  ', ' '));
+					new_parts.push((old_part + ' ' + add_part).trim().repl('  ', ' '));
 				}
 			}
 			parts = new_parts;

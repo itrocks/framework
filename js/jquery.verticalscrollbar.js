@@ -56,12 +56,12 @@
 					var scroll_height    = scrollbar_height - position_height;
 
 					var position_start
-						= $scrollbar.children('.up').height() + parseInt($this.css('top').replace('px', ''));
+						= $scrollbar.children('.up').height() + parseInt($this.css('top').repl('px', ''));
 					var new_start
 						= Math.round(((position_start * (data_total - data_length)) / scroll_height)) + 1;
 
 					if (new_start !== old_start) {
-						$this.attr('href', $this.attr('href').replace('=' + old_start, '=' + new_start));
+						$this.attr('href', $this.attr('href').repl('=' + old_start, '=' + new_start));
 						$this.click();
 					}
 				}

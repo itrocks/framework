@@ -34,7 +34,7 @@ copyCssPropertyTo = function(context, element)
 //-------------------------------------------------------------------------- dateFormatToDatepicker
 dateFormatToDatepicker = function(text)
 {
-	return text.replace('d', 'dd').replace('m', 'mm').replace('Y', 'yy');
+	return text.repl('d', 'dd').repl('m', 'mm').repl('Y', 'yy');
 };
 
 //------------------------------------------------------------------------------ getInputTextHeight
@@ -62,9 +62,9 @@ getTextContentAsArray = function($context, additional_text)
 		additional_text = '';
 	}
 	var text = $context.is('div')
-		? $context.html().replace('<br>', "\n").replace('<p>', "\n\n")
+		? $context.html().repl('<br>', "\n").repl('<p>', "\n\n")
 		: ($context.val() + additional_text);
-	return text.replace('<', '&lt;').replace('>', '&gt;').split("\n");
+	return text.repl('<', '&lt;').repl('>', '&gt;').split("\n");
 };
 
 //----------------------------------------------------------------------------------- getTextHeight

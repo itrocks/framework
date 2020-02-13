@@ -26,7 +26,7 @@
 
 		// numeric option : replaces the $1 element in the text
 		if (!isNaN(options)) {
-			text = text.replace('$1', options);
+			text = text.repl('$1', options);
 			if (options > 1) {
 				context += '*';
 			}

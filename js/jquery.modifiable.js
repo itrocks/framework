@@ -84,9 +84,9 @@ window.modifiable_waiting  = false;
 							if (typeof(value) === 'function') {
 								value = value($this);
 							}
-							ajax = ajax.replace('{' + alias + '}', encodeURI(value));
+							ajax = ajax.repl('{' + alias + '}', encodeURI(value));
 						}
-						ajax = ajax.replace('{value}', encodeURI($input.val()));
+						ajax = ajax.repl('{value}', encodeURI($input.val()));
 						ajax = {
 							url:    ajax,
 							target: settings.target,
@@ -174,7 +174,7 @@ window.modifiable_waiting  = false;
 						if (typeof(value) === 'function') {
 							value = value($this);
 						}
-						popup = popup.replace('{' + alias + '}', encodeURI(value));
+						popup = popup.repl('{' + alias + '}', encodeURI(value));
 					}
 					var left = $input.offset().left;
 					var top = $input.offset().top + $input.height();

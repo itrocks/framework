@@ -27,7 +27,7 @@ $(document).ready(function()
 			var $anchor = $current.children('a');
 			var feature = $article.data('feature');
 			var id      = $article.data('id');
-			var path    = $article.data('class').replace('\\', '/');
+			var path    = $article.data('class').repl('\\', '/');
 			$anchor.text(title).attr(
 				'href',
 				app.uri_base + SL + path + (id ? (SL + id) : '') + (feature ? (SL + feature) : '')

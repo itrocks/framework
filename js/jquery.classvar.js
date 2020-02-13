@@ -25,7 +25,7 @@
 					var replace = (i > 0) ? ' ' + classes[i] : (
 						(i < classes.length - 1) ? classes[i] + ' ' : classes[i]
 					);
-					this.attr('class', this.attr('class').replace(replace, ''));
+					this.attr('class', this.attr('class').repl(replace, ''));
 				}
 				else {
 					return classes[i].substr(length);

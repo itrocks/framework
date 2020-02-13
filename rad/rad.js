@@ -55,10 +55,10 @@ $(document).ready(function()
 			}
 			else {
 				if (call.indexOf('{class}') > -1) {
-					call = call.replace('{class}', $this.closest('[data-class]').data('class').repl(BS, SL));
+					call = call.repl('{class}', $this.closest('[data-class]').data('class').repl(BS, SL));
 				}
 				if (call.indexOf('{feature') > -1) {
-					call = call.replace('{feature}', $this.closest('[data-feature]').data('feature'));
+					call = call.repl('{feature}', $this.closest('[data-feature]').data('feature'));
 				}
 				call = call.replace(/{(\w+)->(\w+)}/g, function(text, selector, attribute) {
 					var value = $this.closest(selector).attr(attribute);

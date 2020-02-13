@@ -28,7 +28,7 @@ $(document).ready(function()
 
 					$.ajax(
 						window.app.uri_base + '/ITRocks/Framework/Property/search'
-						+ '/' + $this.closest('[data-class]').data('class').replace('/', '\\')
+						+ '/' + $this.closest('[data-class]').data('class').repl('/', '\\')
 						+ '?search=' + encodeURI(new_search)
 						+ '&as_widget' + window.app.andSID(),
 						{

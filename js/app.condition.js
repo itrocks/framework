@@ -117,7 +117,7 @@ $(document).ready(function()
 						if (name.beginsWith('id_')) {
 							name = name.substr(3);
 						}
-						name = name.replace('[', '.').replace(']', '').replace('id_', '');
+						name = name.repl('[', '.').repl(']', '').repl('id_', '');
 						var $field = $element.closest('[id="' + name + '"]');
 						if (!$field.length) {
 							$field = $element.closest('[data-name="' + name + '"]');

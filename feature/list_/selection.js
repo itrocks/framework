@@ -58,7 +58,7 @@ $(document).ready(function()
 			selection_checkbox.checked = (count_elements && (count_elements === total));
 			title                      = tr('check to select all $!1 lines').repl('$!1', total);
 		}
-		$summary.html($summary.data('text').replace('?', count_elements));
+		$summary.html($summary.data('text').repl('?', count_elements));
 		$selector.children('input[name=excluded_selection]').val(selection_exclude_content);
 		$selector.children('input[name=select_all]')        .val(select_all_content);
 		$selector.children('input[name=selection]')         .val(selection_content);
