@@ -1,7 +1,14 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
+article.import > .data {
+	display: grid;
+	grid-template-rows: min-content 1fr min-content;
+	overflow: hidden;
+}
+
 article.import section.preview {
+	overflow: auto;
 
 	li.block {
 
@@ -10,6 +17,11 @@ article.import section.preview {
 		}
 
 		> section {
+			min-height: 24px;
+
+			&:not(.none) {
+				padding-top: 6px;
+			}
 
 			> h3 {
 				display: none;
@@ -26,6 +38,17 @@ article.import section.preview {
 				> li {
 					cursor: pointer;
 					display: inline-block;
+					min-height: 16px;
+					padding-top: 4px;
+					vertical-align: middle;
+
+					&:first-child {
+						padding-left: 4px;
+					}
+
+					&:last-child {
+						padding-right: 4px;
+					}
 
 					&:not(:last-child):after {
 						content: ',';
