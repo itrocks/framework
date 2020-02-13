@@ -19,6 +19,13 @@ article.import section.preview li.block > section.identify li {
 article.import section.preview li.block > section.ignore li {
   background-color: #eee;
   color: red; }
-article.import section.preview li.block > section.save li {
+article.import section.preview li.block > section.write li {
   background-color: blue;
   color: white; }
+article.import section.preview table {
+  margin: 10px; }
+  article.import section.preview table th {
+    background: #d8d8d8; }
+  article.import section.preview table th, article.import section.preview table td {
+    border: 1px solid #444;
+    padding: 4px; }

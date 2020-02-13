@@ -44,10 +44,23 @@ article.import section.preview {
 				color: red;
 			}
 
-			&.save li {
+			&.write li {
 				background-color: blue;
 				color: white;
 			}
+		}
+	}
+
+	table {
+		margin: 10px;
+
+		th {
+			background: #d8d8d8;
+		}
+
+		th, td {
+			border: 1px solid #444;
+			padding: 4px;
 		}
 	}
 

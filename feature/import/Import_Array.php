@@ -473,16 +473,21 @@ class Import_Array
 				try {
 					$property = new Reflection_Property($property_class_name, $property_name);
 				}
-				catch (ReflectionException $e) {
-					$translated_property_name = Names::displayToProperty(Loc::rtr(
-						$property_name, $property_class_name
-					));
-					try {
-						$property = new Reflection_Property($property_class_name, $translated_property_name);
-						$property_name = $translated_property_name;
+				catch (ReflectionException $exception) {
+					$source_property_names = Loc::rtr($property_name, $property_class_name);
+					if (!is_array($source_property_names)) {
+						$source_property_names = [$source_property_names];
 					}
-					catch (ReflectionException $e) {
-						// TODO do not catch without at least reporting the problem
+					foreach ($source_property_names as $source_property_name) {
+						$translated_property_name = Names::displayToProperty($source_property_name);
+						try {
+							$property = new Reflection_Property($property_class_name, $translated_property_name);
+							$property_name = $translated_property_name;
+							break;
+						}
+						catch (ReflectionException $exception) {
+							// TODO do not catch without at least reporting the problem
+						}
 					}
 				}
 				$property_names[] = $property_name . ($asterisk ? '*' : '');

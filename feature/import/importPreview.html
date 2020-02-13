@@ -64,7 +64,7 @@
 						<section class="identify properties">
 							<h3>|Identify|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
-							|Identify each !<span>{name.@tr}</span>! by !<ul data-empty="|always create a new record|"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|
+							|Identify each !<span>{name.@tr}</span>! by !<ul data-empty="always create a new record"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|
 							(|must be unique|).
 						</section>
 						<section class="none">
@@ -75,12 +75,12 @@
 						<section class="write properties">
 							<h3>|Write|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
-							|Update the value of !<ul data-empty="|no value to write|"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
+							|Update the value of !<ul data-empty="no value to write"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
 						</section>
 						<section class="ignore properties">
 							<h3>|Ignore|</h3>
 							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
-							|Ignore the value of !<ul data-empty="|no value is ignored|"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
+							|Ignore the value of !<ul data-empty="no value is ignored"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>!|.
 						</section>
 					</li>
 				<!--end-->
