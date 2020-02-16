@@ -129,12 +129,14 @@ $(document).ready(function()
 
 			close: function()
 			{
+				if (DEBUG) console.log('close');
 				var $this = $(this);
 				setTimeout(function() { $this.removeData('visible'); }, 100);
 			},
 
 			open: function()
 			{
+				if (DEBUG) console.log('open');
 				var $this = $(this);
 				$this.data('visible', true);
 				var $select = $('.ui-autocomplete:visible');
@@ -180,7 +182,7 @@ $(document).ready(function()
 				}
 				// mouse click : copy the full value to the input
 				if (!event.keyCode) {
-					if (DEBUG) console.log('select.val:', $value, 'value =', ut.item.value);
+					if (DEBUG) console.log('select.val:', $value, 'value =', ui.item.value);
 					$value.attr('value', ui.item.value).val(ui.item.value).change();
 				}
 				$value.data('combo-value', ui.item.value);
@@ -277,10 +279,15 @@ $(document).ready(function()
 		{
 			var $this = $(this);
 			// down : open even if value is empty
-			if (event.keyCode === 40) {
-				if ($this.autocomplete('option', 'minLength') && !$this.data('visible')) {
-					$this.autocomplete('option', 'minLength', 0).autocomplete('search', '');
-				}
+			if ((event.keyCode === 40) && !$this.data('visible')) {
+				if (DEBUG) console.log('keydown.search');
+				var min_length = $this.autocomplete('option', 'minLength');
+				var value = $this.val();
+				$this.attr('value', '').val('');
+				$this.autocomplete('option', 'minLength', 0);
+				$this.autocomplete('search', '');
+				$this.autocomplete('option', 'minLength', min_length);
+				$this.val(value);
 			}
 		});
 
@@ -307,10 +314,11 @@ $(document).ready(function()
 		event.preventDefault();
 		var $this = $(this).prevAll('input.combo');
 		if (!$this.data('visible')) {
-			if ($this.autocomplete('option', 'minLength')) {
-				$this.autocomplete('option', 'minLength', 0);
-			}
+			if (DEBUG) console.log('click.search');
+			var min_length = $this.autocomplete('option', 'minLength');
+			$this.autocomplete('option', 'minLength', 0);
 			$this.autocomplete('search', '').focus();
+			$this.autocomplete('option', 'minLength', min_length);
 		}
 	});
 
