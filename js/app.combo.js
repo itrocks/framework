@@ -123,21 +123,35 @@ $(document).ready(function()
 	$body.build('call', 'input.combo', function()
 	{
 		this.autocomplete({
-			autoFocus: true,
 			delay:     100,
 			minLength: 1,
 
-			close: function()
+			close: function(event)
 			{
-				if (DEBUG) console.log('close');
 				var $this = $(this);
-				setTimeout(function() { $this.removeData('visible'); }, 100);
+				if (DEBUG) console.log('close');
+				$this.removeData('visible');
+				// echap : reset original value
+				if ((event.keyCode === 27) || $this.data('reset')) {
+					$this.removeData('reset');
+					if (DEBUG) console.log('- reset');
+					origin = $this.data('origin');
+					$this.prev().attr('value', origin.id).val(origin.id).change();
+					$this.attr('value', origin.value).val(origin.value).change();
+				}
+				// else : validate original value
+				else {
+					$this.data('origin', {id: $this.prev().val(), value: $this.val()});
+				}
 			},
 
 			open: function()
 			{
 				if (DEBUG) console.log('open');
 				var $this = $(this);
+				if (!$this.data('origin')) {
+					$this.data('origin', {id: $this.prev().val(), value: $this.val()});
+				}
 				$this.data('visible', true);
 				var $select = $('.ui-autocomplete:visible');
 				var height  = $select.height();
@@ -203,6 +217,9 @@ $(document).ready(function()
 		{
 			var $this = $(this);
 			$this.data('combo-value', $this.val());
+			if (!$this.data('origin')) {
+				$this.data('origin', {id: $this.prev().val(), value: $this.val()});
+			}
 		});
 
 		//---------------------------------------------------------------------------- input.combo blur
@@ -223,6 +240,10 @@ $(document).ready(function()
 				}
 			}
 			$this.removeData('combo-value');
+			$this.removeData('origin');
+			// avoid re-open of the pull-down menu if click on the 'more' button
+			$this.data('blur-lock', true);
+			setTimeout(function() { $this.removeData('blur-lock'); }, 100);
 		});
 
 		//---------------------------------------------------------------------- input.combo ctrl+click
@@ -297,6 +318,7 @@ $(document).ready(function()
 			var $this = $(this);
 			// backspace | delete : close if value is empty
 			if (((event.keyCode === 8) || (event.keyCode === 46)) && !$this.val().length) {
+				$this.data('reset', true);
 				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
 				var $value         = $this.prev().filter('input[type=hidden]');
 				var previous_value = $value.val();
@@ -313,6 +335,9 @@ $(document).ready(function()
 	{
 		event.preventDefault();
 		var $this = $(this).prevAll('input.combo');
+		if ($this.data('blur-lock')) {
+			return;
+		}
 		if (!$this.data('visible')) {
 			if (DEBUG) console.log('click.search');
 			var min_length = $this.autocomplete('option', 'minLength');
