@@ -42,9 +42,15 @@ $(document).ready(function()
 					}
 					else {
 						var $target = $(target);
-						$target.is('input')
-							? $target.attr('value', data)
-							: ($target.is('select') ? $target.val(data) : $target.html(data).build());
+						if ($target.is('input')) {
+							$target.attr('value', data).val(data);
+						}
+						else if ($target.is('select')) {
+							$target.val(data);
+						}
+						else {
+							$target.html(data).build();
+						}
 					}
 				}
 				setTimeout(function() { on_event_pool.splice(on_event_pool_index, 1); });
@@ -106,9 +112,9 @@ $(document).ready(function()
 		}
 
 		if (do_change) {
-			$input.attr('value', value);
+			$input.attr('value', value).val(value);
 			if ((string_value !== null)) {
-				$input.next().attr('value', string_value).change();
+				$input.next().attr('value', string_value).val(string_value).change();
 			}
 			$input.change();
 		}

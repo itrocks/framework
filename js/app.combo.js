@@ -1,6 +1,7 @@
 $(document).ready(function()
 {
 	var $body = $('body');
+	var DEBUG = false;
 
 	//------------------------------------------------------------------------ input.combo comboForce
 	var comboForce = function($element)
@@ -109,10 +110,12 @@ $(document).ready(function()
 			$element.removeData('combo-value');
 		}
 		if ($element.prev().val() !== id) {
-			$element.prev().attr('value', id).change();
+			if (DEBUG) console.log('comboValue.id: ', $element.prev(), 'value =', id);
+			$element.prev().attr('value', id).val(id).change();
 		}
 		if ($element.val() !== value) {
-			$element.attr('value', value).change();
+			if (DEBUG) console.log('comboValue.val: ', $element, 'value =', value);
+			$element.attr('value', value).val(value).change();
 		}
 	};
 
@@ -172,11 +175,13 @@ $(document).ready(function()
 					if (ui.item.class_name !== undefined) {
 						id = ui.item.class_name + ':' + id;
 					}
-					$id.attr('value', id).change();
+					if (DEBUG) console.log('select.id:', $id, 'value =', id);
+					$id.attr('value', id).val(id).change();
 				}
 				// mouse click : copy the full value to the input
 				if (!event.keyCode) {
-					$value.attr('value', ui.item.value).change();
+					if (DEBUG) console.log('select.val:', $value, 'value =', ut.item.value);
+					$value.attr('value', ui.item.value).val(ui.item.value).change();
 				}
 				$value.data('combo-value', ui.item.value);
 				if (!comboMatches($value)) {
@@ -207,7 +212,9 @@ $(document).ready(function()
 			}
 			else {
 				if (comboMatches($this)) {
-					$this.attr('value', $this.data('combo-value')).change();
+					var combo_value = $this.data('combo-value');
+					if (DEBUG) console.log('blur:', $this, combo_value);
+					$this.attr('value', combo_value).val(combo_value).change();
 				}
 				else {
 					comboForce($this);
