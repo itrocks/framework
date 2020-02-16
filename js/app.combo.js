@@ -278,7 +278,7 @@ $(document).ready(function()
 			var $this = $(this);
 			// down : open even if value is empty
 			if (event.keyCode === 40) {
-				if ($this.autocomplete('option', 'minLength')) {
+				if ($this.autocomplete('option', 'minLength') && !$this.val()) {
 					$this.autocomplete('option', 'minLength', 0).autocomplete('search', '');
 				}
 			}
