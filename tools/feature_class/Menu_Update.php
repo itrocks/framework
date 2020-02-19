@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Feature_Class;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller\Feature;
@@ -44,7 +45,8 @@ class Menu_Update extends Update
 			$links[] = View::link($print_model_link, Feature::F_PRINT);
 		}
 		foreach ($links as $menu_item_link) {
-			$item       = new Item();
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$item       = Builder::create(Item::class);
 			$item->link = $menu_item_link;
 			$class_name = $item->linkClass();
 			$this->updateClassName($class_name, $class_names, $feature_classes, $write);

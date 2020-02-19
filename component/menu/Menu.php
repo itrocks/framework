@@ -1,9 +1,13 @@
 <?php
 namespace ITRocks\Framework\Component;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Menu\Block;
 use ITRocks\Framework\Component\Menu\Construct_Item;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
@@ -29,6 +33,9 @@ class Menu implements Configurable
 	const MODULE = 'module';
 	const TARGET = 'target';
 	const TITLE  = 'title';
+
+	//---------------------------------------------------------------------------------------- BLOCKS
+	const BLOCKS = 'blocks';
 
 	//--------------------------------------------------------------------------------------- $blocks
 	/**
@@ -118,7 +125,6 @@ class Menu implements Configurable
 				}
 				// class name : change it to a menu item
 				if (strpos($class_name, BS))  {
-					/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 					$link_class_name = in_array($feature, Feature::ON_SET)
 						? Names::classToSet($class_name)
 						: $class_name;
@@ -139,13 +145,15 @@ class Menu implements Configurable
 
 	//-------------------------------------------------------------------------------- constructBlock
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $block_key string
 	 * @param $items     array
 	 * @return Block
 	 */
 	protected function constructBlock($block_key, array $items)
 	{
-		$block = new Block();
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$block = Builder::create(Block::class);
 
 		if (substr($block_key, 0, 1) == SL) {
 			$block->title_link = $block_key;
@@ -188,6 +196,23 @@ class Menu implements Configurable
 				default:  $this->title = $item;
 			}
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- refresh
+	/**
+	 * Refresh the menu on the front interface, if placed into the standard target (#menu)
+	 */
+	public function refresh()
+	{
+		Main::$current->redirect(
+			View::link(
+				static::class,
+				Feature::F_OUTPUT,
+				null,
+				[Parameter::CONTAINER => static::BLOCKS]
+			),
+			Target::MENU
+		);
 	}
 
 }

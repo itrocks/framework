@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Configuration\File\Menu;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Menu\Block;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Configuration\File;
@@ -38,7 +39,8 @@ class Reader extends File\Reader
 							$block->items[] = $line;
 						}
 						else {
-							$item           = new Item();
+							/** @noinspection PhpUnhandledExceptionInspection class */
+							$item           = Builder::create(Item::class);
 							$item->caption  = trim(trim(rParse($line, '=>')), Q . DQ . ',');
 							$item->link     = trim(trim(lParse($line, '=>')), Q . DQ);
 							$block->items[] = $item;
@@ -65,7 +67,8 @@ class Reader extends File\Reader
 						$title = trim(trim(lParse($line, '=>')), Q . DQ);
 						// 'Menu block title' => [
 						if (strpos($line, '=>') && strpos($line, '[')) {
-							$block                = new Block();
+							/** @noinspection PhpUnhandledExceptionInspection class */
+							$block                = Builder::create(Block::class);
 							$block->title         = $title;
 							$this->file->blocks[] = $block;
 							// '/Full/Class/Path' => [Menu::ALL => Menu::CLEAR]

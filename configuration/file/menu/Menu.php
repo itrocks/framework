@@ -30,7 +30,8 @@ class Menu extends File
 	{
 		$block = $this->searchBlock($block_title);
 		if (!$block) {
-			$block        = new Block();
+			/** @noinspection PhpUndefinedMethodInspection */
+			$block        = Builder::create(Block::class);
 			$block->items = [];
 			$block->title = $block_title;
 			(new Exhaustive($this))->addBlock($block);
@@ -69,7 +70,8 @@ class Menu extends File
 		(new Installed\Menu)->add($block->title, $item_link, $item_caption);
 		$item = $this->searchItem($block, $item_link);
 		if (!$item) {
-			$item           = new Item();
+			/** @noinspection PhpUndefinedMethodInspection class */
+			$item           = Builder::create(Item::class);
 			$item->link     = $item_link;
 			(new Exhaustive($this))->addItem($block, $item);
 		}

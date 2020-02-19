@@ -1048,6 +1048,7 @@ class Functions
 
 	//----------------------------------------------------------------------------- getPropertyBlocks
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @return Block[]
 	 */
@@ -1060,10 +1061,12 @@ class Functions
 			$data = $conditions->values()
 				? ['conditions' => $conditions->asHtmlAttributeValue(), 'name' => $property->name]
 				: [];
-			$blocks[$property->path] = new Block($property->path, $data);
+			/** @noinspection PhpUnhandledExceptionInspection */
+			$blocks[$property->path] = Builder::create(Block::class, [$property->path, $data]);
 		}
 		foreach ($property->getListAnnotation(Annotation::BLOCK)->values() as $block) {
-			$blocks[$block] = new Block($block);
+			/** @noinspection PhpUnhandledExceptionInspection */
+			$blocks[$block] = Builder::create(Block::class, [$block]);
 		}
 		return $blocks;
 	}

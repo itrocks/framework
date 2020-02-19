@@ -5,7 +5,6 @@ use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
-use ITRocks\Framework\Session;
 use ITRocks\Framework\View;
 
 /**
@@ -25,7 +24,7 @@ class Output_Controller implements Feature_Controller
 	{
 		$parameters = $parameters->getObjects();
 		if (!(reset($parameters)) instanceof Menu) {
-			array_unshift($parameters, Session::current()->plugins->get(Menu::class));
+			array_unshift($parameters, Menu::get());
 		}
 		return View::run($parameters, $form, $files, Menu::class, Feature::F_OUTPUT);
 	}

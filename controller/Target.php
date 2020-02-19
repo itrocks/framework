@@ -10,6 +10,7 @@ abstract class Target
 	//------------------------------------------------------------------------------ target constants
 	const BLANK      = '#_blank';
 	const MAIN       = '#main';
+	const MENU       = '#menu';
 	const MODAL      = '#modal';
 	const NEW_WINDOW = '_blank';
 	const NONE       = '#';

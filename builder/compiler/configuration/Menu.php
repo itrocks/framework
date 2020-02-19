@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Builder\Compiler\Configuration;
 
 use ITRocks\Framework\Builder\Compiler\Configuration;
-use ITRocks\Framework\Controller\Main;
+use ITRocks\Framework\Component;
 use ITRocks\Framework\PHP\Reflection_Source;
 
 /**
@@ -17,7 +17,7 @@ class Menu extends Configuration
 	 */
 	public function compile(Reflection_Source $source)
 	{
-		Main::$current->redirect('/ITRocks/Framework/Component/Menu/output?container=blocks', '#menu');
+		Component\Menu::get()->refresh();
 	}
 
 }
