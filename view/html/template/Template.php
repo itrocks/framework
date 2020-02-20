@@ -903,7 +903,7 @@ class Template
 				$params[$key] = substr($param, 1, -1);
 			}
 			else {
-				$params[$key] = $this->parseValue($param);
+				$params[$key] = is_numeric($param) ? $param : $this->parseValue($param);
 			}
 		}
 		return $params;
