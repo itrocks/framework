@@ -64,6 +64,8 @@ $(document).ready(function()
 		$menu.find('.selected').removeClass('selected');
 		$item.addClass('selected');
 		$module.addClass('selected');
+		$item.trigger('select');
+		$module.trigger('select');
 		// set current favorite class, feature, module, href, text
 		var $favorites_current = $('#favorites > .current');
 		if ($favorites_current.data('setCurrent')) {
