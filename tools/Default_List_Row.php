@@ -7,6 +7,7 @@ use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\View;
+use ITRocks\Framework\View\Has_Object_Class;
 
 /**
  * The list row class for Default_List_Data
@@ -169,6 +170,20 @@ class Default_List_Row implements List_Row
 	public function id()
 	{
 		return is_object($this->object) ? Dao::getObjectIdentifier($this->object) : $this->object;
+	}
+
+	//----------------------------------------------------------------------------------- objectClass
+	/**
+	 * @return string
+	 */
+	public function objectClass()
+	{
+		if (is_a($this->class_name, Has_Object_Class::class, true)) {
+			/** @var $object Has_Object_Class */
+			$object = $this->getObject();
+			return $object->objectClass();
+		}
+		return null;
 	}
 
 	//-------------------------------------------------------------------------------------- setValue
