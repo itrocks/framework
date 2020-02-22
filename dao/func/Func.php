@@ -422,11 +422,14 @@ class Func
 
 	//------------------------------------------------------------------------------------------- sum
 	/**
-	 * @return Group_By
+	 * @param $property_path string
+	 * @return Group_By|string
 	 */
-	public static function sum()
+	public static function sum($property_path = null)
 	{
-		return new Group_By(Group_By::SUM);
+		return $property_path
+			? Expressions::add($property_path, new Group_By(Group_By::SUM))
+			: new Group_By(Group_By::SUM);
 	}
 
 	//------------------------------------------------------------------------------------------ trim

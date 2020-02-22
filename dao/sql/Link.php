@@ -7,6 +7,7 @@ use ITRocks\Framework\Dao\Data_Link\Transactional;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Dao_Function;
+use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -385,6 +386,10 @@ abstract class Link extends Identifier_Map implements Transactional
 		$properties = [];
 		foreach ($columns as $key => $column) {
 			$property_path = is_object($column) ? $key : $column;
+			if (Expressions::isFunction($property_path)) {
+				$expression    = Expressions::$current->cache[$property_path];
+				$property_path = $expression->property_path;
+			}
 			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
 			$properties[$property_path] = new Reflection_Property($object_class, $property_path);
 			$functions[$property_path]  = ($column instanceof Dao_Function) ? $column : null;
@@ -419,6 +424,9 @@ abstract class Link extends Identifier_Map implements Transactional
 			}
 			elseif (($option instanceof Option\Array_Result) || ($option === AS_ARRAY)) {
 				$list = [];
+			}
+			elseif (is_callable($option)) {
+				$list = $option;
 			}
 		}
 		return [$double_pass, $list];
