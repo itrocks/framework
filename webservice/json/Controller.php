@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
+use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -136,7 +137,9 @@ class Controller implements Default_Feature_Controller
 	 */
 	protected function search($what, $class_name, array $options)
 	{
-		$options[] = Dao::sort();
+		if (!Sort::in($options)) {
+			$options[] = Dao::sort();
+		}
 		if (
 			($what instanceof Logical)
 			&& ($what->operator == Logical::OR_OPERATOR)
