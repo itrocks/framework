@@ -127,7 +127,9 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 					// - accepts a string if @store allows a string
 					|| (is_string($value) && Store_Annotation::of($this->property)->isString())
 					// - accepts an object if is an instance of the class
-					|| is_a($value, $class_name);
+					|| is_a($value, $class_name)
+					// - accepts an object if @var object
+					|| (is_object($value) && ($class_name === 'object'));
 			}
 		}
 		// string[]
