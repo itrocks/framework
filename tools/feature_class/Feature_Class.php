@@ -48,7 +48,7 @@ class Feature_Class
 	 */
 	public function __toString()
 	{
-		return Loc::tr($this->name);
+		return $this->name ? Loc::tr($this->name) : '';
 	}
 
 }
