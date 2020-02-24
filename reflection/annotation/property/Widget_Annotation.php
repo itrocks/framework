@@ -30,7 +30,7 @@ class Widget_Annotation extends Annotation implements Property_Context_Annotatio
 		parent::__construct($value);
 		if (!$this->value) {
 			$type = $property->getType();
-			if ($type->isClass()) {
+			if ($type->isClass() && !$type->isAbstractClass()) {
 				$widget_annotation = Class_\Widget_Annotation::of($type->asReflectionClass());
 				if ($widget_annotation->value) {
 					$this->options = $widget_annotation->options;
