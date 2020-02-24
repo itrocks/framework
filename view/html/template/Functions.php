@@ -34,6 +34,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\Displayable;
 use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\Tools\Set;
 use ITRocks\Framework\User\Access_Control;
 use ITRocks\Framework\View;
@@ -112,6 +113,16 @@ class Functions
 			}
 		}
 		return $properties;
+	}
+
+	//------------------------------------------------------------------------------- getAbsoluteLink
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getAbsoluteLink(Template $template)
+	{
+		return Paths::getUrl() . $this->getLink($template);
 	}
 
 	//-------------------------------------------------------------------------------- getApplication
