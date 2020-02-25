@@ -1947,6 +1947,16 @@ class Template
 			$i --;
 			$j ++;
 		}
+		// <element>{?something}</element>
+		if ($content[$i - 1] === '>') {
+			while ($content[$i] !== '<') {
+				$i --;
+			}
+			while ($content[$j] !== '>') {
+				$j ++;
+			}
+			return;
+		}
 		while (($content[$i] != SP) && ($content[$i] != ',') && ($content[$i] != SL)) {
 			if (($content[$i] == Q) || ($content[$i] == DQ)) {
 				while ($content[$j] != $content[$i]) {
