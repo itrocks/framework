@@ -37,7 +37,7 @@ class Object_Builder_Array
 	 *
 	 * @var Built_Object[]
 	 */
-	private $built_objects;
+	private $built_objects = [];
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
