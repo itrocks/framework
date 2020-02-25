@@ -32,6 +32,9 @@ use ITRocks\Framework\View;
 class Controller implements Default_Feature_Controller, Has_General_Buttons
 {
 
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = Feature::F_OUTPUT;
+
 	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
 	/**
 	 * Parameter for Reflection_Property::isVisible (for tabs)
@@ -334,7 +337,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$parameters = $parameters->getObjects();
 		$feature    = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
-			: Feature::F_OUTPUT;
+			: static::FEATURE;
 
 		// apply parameters / form to current output settings
 		$output_settings = $this->outputSettings($class_name, $feature);
@@ -444,7 +447,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
-		return View::run($parameters, $form, $files, $class_name, Feature::F_OUTPUT);
+		return View::run($parameters, $form, $files, $class_name, static::FEATURE);
 	}
 
 	//----------------------------------------------------------------------------- selectPrintButton
