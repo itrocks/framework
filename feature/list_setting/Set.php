@@ -163,7 +163,10 @@ class Set extends Setting\Custom\Set
 		}
 		// sort
 		if ($this->sort) foreach ($this->sort->columns as $key => $property_path) {
-			if (!Reflection_Property::exists($class_name, $property_path)) {
+			if (
+				!isset($this->properties[$property_path])
+				|| !Reflection_Property::exists($class_name, $property_path)
+			) {
 				unset($this->sort->columns[$key]);
 				$changes_count ++;
 			}
