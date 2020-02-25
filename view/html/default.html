@@ -11,10 +11,10 @@
 <body>
 <!--BEGIN-->
 
-	<section class="{@class.short.lower} {@feature.lower}">
+	<article class="{@class.short.lower} {@feature.lower}" data-class="{@class}" data-feature="{@feature}" data-id="{~id}">
 		<h2>{@class.display.ucfirst} {@feature.display}</h2>
-		<p>{.}</p>
-	</section>
+		<a href="app://(@link)">{.}</a>
+	</article>
 
 <!--END-->
 </body>
