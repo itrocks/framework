@@ -90,7 +90,9 @@ class Reflection_Property_Value extends Reflection_Property
 		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
 		if (!isset($this->object)) {
-			$this->object = $object;
+			$this->object = (is_object($class_name) && !isset($object) && !$final_value)
+				? $class_name
+				: $object;
 		}
 		else {
 			if (is_object($class_name)) {
