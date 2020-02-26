@@ -5,14 +5,9 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
-use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\Tools\Date_Time;
-use ITRocks\Framework\Trigger\Action;
+use ITRocks\Framework\Trigger;
 use ITRocks\Framework\Trigger\Feature;
-use ITRocks\Framework\User;
 use ITRocks\Framework\View;
 
 /**
@@ -20,9 +15,8 @@ use ITRocks\Framework\View;
  *
  * @feature Trigger actions on feature calls
  */
-class Plugin implements Registerable
+class Plugin extends Trigger\Plugin
 {
-	use Has_Get;
 
 	//----------------------------------------------------------------------------- $no_feature_cache
 	/**
@@ -31,12 +25,6 @@ class Plugin implements Registerable
 	 * @var array Feature[][]
 	 */
 	protected $no_feature_cache = [];
-
-	//----------------------------------------------------------------------------------- $run_action
-	/**
-	 * @var boolean
-	 */
-	protected $run_action = false;
 
 	//------------------------------------------------------------------------ afterExecuteController
 	/**
@@ -65,25 +53,7 @@ class Plugin implements Registerable
 				$run->step = Run::AFTER;
 				Dao::write($run, Dao::only('step'));
 				$action_link = View::link(Feature::class, 'run');
-				// launch next step as an action (will need a running server)
-				$now  = Date_Time::now();
-				$user = User::current();
-				if (!Dao::searchOne(
-					[
-						'action'    => $action_link,
-						'as_user'   => $user,
-						'keep_user' => false,
-						'next'      => Func::lessOrEqual($now),
-						'status'    => Action\Status::PENDING
-					],
-					Action::class
-				)) {
-					$action          = new Action();
-					$action->action  = $action_link;
-					$action->as_user = $user;
-					$action->next    = $now;
-					Dao::write($action);
-				}
+				$this->launchNextStep($action_link);
 			}
 		}
 	}
