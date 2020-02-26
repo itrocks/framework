@@ -635,6 +635,10 @@ class Main
 		}
 		unset($get[session_name()]);
 		unset($post[session_name()]);
+
+		if (!isset($_SERVER['SERVER_NAME'])) {
+			Paths::$uri_base = Session::current()->domainPath();
+		}
 	}
 
 	//-------------------------------------------------------------------------------- setIncludePath

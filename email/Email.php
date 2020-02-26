@@ -196,7 +196,7 @@ class Email
 		if (!isset($this->headers['Message-ID']) && Dao::getObjectIdentifier($this)) {
 			$project = strtolower(mParse(get_class(Application::current()), BS, BS));
 			$this->headers['Message-ID'] = '<'
-				. Dao::getObjectIdentifier($this) . '-' . $project . '@' . Session::current()->domain
+				. Dao::getObjectIdentifier($this) . '-' . $project . '@' . Session::current()->domainName()
 				. '>';
 		}
 		if ($this->reply_to) {

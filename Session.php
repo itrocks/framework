@@ -113,6 +113,36 @@ class Session implements Serializable
 		return isset($_SESSION['session']) ? $_SESSION['session'] : null;
 	}
 
+	//------------------------------------------------------------------------------------ domainName
+	/**
+	 * @example itrocks.org
+	 * @return string
+	 */
+	public function domainName()
+	{
+		return strpos($this->domain, '://') ? parse_url($this->domain)['host'] : $this->domain;
+	}
+
+	//------------------------------------------------------------------------------------ domainPath
+	/**
+	 * @example application
+	 * @return string
+	 */
+	public function domainPath()
+	{
+		return strpos($this->domain, '://') ? parse_url($this->domain)['path'] : '';
+	}
+
+	//---------------------------------------------------------------------------------- domainScheme
+	/**
+	 * @example http, https
+	 * @return string
+	 */
+	public function domainScheme()
+	{
+		return (strpos($this->domain, '://') ? parse_url($this->domain)['scheme'] : null) ?: 'https';
+	}
+
 	//------------------------------------------------------------------------------------------- get
 	/**
 	 * Get the object of class $class_name from session
@@ -183,7 +213,7 @@ class Session implements Serializable
 	/**
 	 * Gets the current application name without having to unserialize it if serialized
 	 *
-	 * @return Application
+	 * @return string
 	 */
 	public function getApplicationName()
 	{

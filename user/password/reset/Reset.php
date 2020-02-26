@@ -55,7 +55,7 @@ trait Reset
 	{
 		$email    = new Email();
 		$name     = 'No-reply';
-		$noreply  = 'noreply@' . Session::current()->domain;
+		$noreply  = 'noreply@' . Session::current()->domainName();
 		$template = new Template($this, __DIR__ . '/email.html');
 		$template->setParameters(['identifier' => $identifier]);
 		$email->content = $template->parse();

@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Session;
+
 /**
  * Application paths functions help you to find out useful paths of your application
  */
@@ -152,7 +154,9 @@ abstract class Paths
 	 */
 	public static function protocol()
 	{
-		return ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http');
+		return isset($_SERVER['SERVER_NAME'])
+			? ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS']) ? 'https' : 'http')
+			: Session::current()->domainScheme();
 	}
 
 	//-------------------------------------------------------------------------------- protocolServer
@@ -162,7 +166,9 @@ abstract class Paths
 	 */
 	public static function protocolServer()
 	{
-		return static::protocol() . '://' . static::server();
+		return isset($_SERVER['SERVER_NAME'])
+			? (static::protocol() . '://' . static::server())
+			: (Session::current()->domainScheme() . '://' . Session::current()->domainName());
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -189,7 +195,7 @@ abstract class Paths
 	 */
 	public static function server()
 	{
-		return $_SERVER['SERVER_NAME'] ?? 'itrocks.org';
+		return $_SERVER['SERVER_NAME'] ?? Session::current()->domainName() ?: 'itrocks.org';
 	}
 
 }
