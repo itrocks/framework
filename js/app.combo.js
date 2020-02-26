@@ -143,6 +143,8 @@ $(document).ready(function()
 				else {
 					$this.data('origin', {id: $this.prev().val(), value: $this.val()});
 				}
+				$this.data('lock-open', true);
+				setTimeout(function() { $this.removeData('lock-open'); }, 100);
 			},
 
 			open: function()
@@ -241,9 +243,6 @@ $(document).ready(function()
 			}
 			$this.removeData('combo-value');
 			$this.removeData('origin');
-			// avoid re-open of the pull-down menu if click on the 'more' button
-			$this.data('blur-lock', true);
-			setTimeout(function() { $this.removeData('blur-lock'); }, 100);
 		});
 
 		//---------------------------------------------------------------------- input.combo ctrl+click
@@ -335,16 +334,14 @@ $(document).ready(function()
 	{
 		event.preventDefault();
 		var $this = $(this).prevAll('input.combo');
-		if ($this.data('blur-lock')) {
+		if ($this.data('lock-open')) {
 			return;
 		}
-		if (!$this.data('visible')) {
-			if (DEBUG) console.log('click.search');
-			var min_length = $this.autocomplete('option', 'minLength');
-			$this.autocomplete('option', 'minLength', 0);
-			$this.autocomplete('search', '').focus();
-			$this.autocomplete('option', 'minLength', min_length);
-		}
+		if (DEBUG) console.log('click.search');
+		var min_length = $this.autocomplete('option', 'minLength');
+		$this.autocomplete('option', 'minLength', 0);
+		$this.autocomplete('search', '').focus();
+		$this.autocomplete('option', 'minLength', min_length);
 	});
 
 });
