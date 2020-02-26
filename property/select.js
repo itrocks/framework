@@ -200,7 +200,7 @@ $(document).ready(function()
 	});
 
 	//----------------------------------------------------------------- .property-select .auto-expand
-	$body.build('call', '.property-select .auto-expand > a.expand', function()
+	$body.build('call', '.property-select > ul.tree > li.auto-expand > a.expand', function()
 	{
 		var $anchors = this;
 		setTimeout(function() { $anchors.click(); });
