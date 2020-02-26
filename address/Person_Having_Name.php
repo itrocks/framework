@@ -7,6 +7,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * Base trait for traits on Person applied on classes having Has_Name
  *
  * @extends Has_Name
+ * @representative name
  */
 trait Person_Having_Name
 {

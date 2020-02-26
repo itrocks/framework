@@ -217,25 +217,39 @@ class Controller implements Default_Feature_Controller
 	protected function searchObjectsForAutoCompleteCombo($class_name, array $parameters)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection verified class name */
-		$class  = new Reflection_Class($class_name);
-		$search = null;
+		$class         = new Reflection_Class($class_name);
+		$first_search  = null;
+		$search        = null;
+		$second_search = null;
 		if (!empty($parameters['term'])) {
-			$search = (new Search_Array_Builder)->buildMultiple($class, $parameters['term'], '', '%');
+			$search_array_builder = new Search_Array_Builder();
+			$search = $search_array_builder->buildMultiple($class, $parameters['term'], '', '%');
+			$second_search = $search_array_builder->buildMultiple(
+				$class, str_replace(' ', '%', $parameters['term']), '', '%'
+			);
+			$search_array_builder->and = '¤no-and-separator¤';
+			$first_search = $search_array_builder->buildMultiple($class, $parameters['term'], '', '%');
 		}
 		if (!empty($parameters['filters'])) {
-			$this->applyFiltersToSearch($search, $parameters['filters']);
+			$this->applyFiltersToSearch($first_search,  $parameters['filters']);
+			$this->applyFiltersToSearch($search,        $parameters['filters']);
+			$this->applyFiltersToSearch($second_search, $parameters['filters']);
 		}
 		$search_options = [];
 		if (
 			$filters = Filter_Annotation::apply($class_name, $search_options, Filter_Annotation::FOR_USE)
 		) {
-			$search = $search ? Dao\Func::andOp([$filters, $search]) : $filters;
+			$first_search  = $first_search  ? Dao\Func::andOp([$filters, $first_search])  : $filters;
+			$search        = $search        ? Dao\Func::andOp([$filters, $search])        : $filters;
+			$second_search = $second_search ? Dao\Func::andOp([$filters, $second_search]) : $filters;
 		}
 
 		// first object only
 		if (!empty($parameters['first'])) {
 			$search_options[] = Dao::limit(1);
-			$objects          = $this->search($search, $class_name, $search_options);
+			$objects = $this->search($first_search, $class_name, $search_options)
+				?: $this->search($second_search, $class_name, $search_options)
+				?: $this->search($search, $class_name, $search_options);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects
 				? reset($objects)
@@ -258,7 +272,9 @@ class Controller implements Default_Feature_Controller
 					}
 				}
 			}
-			$objects = $this->search($search, $class_name, $search_options);
+			$objects = $this->search($first_search, $class_name, $search_options)
+				?: $this->search($second_search, $class_name, $search_options)
+				?: $this->search($search, $class_name, $search_options);
 			return $this->buildJson($objects, $class_name);
 		}
 	}
