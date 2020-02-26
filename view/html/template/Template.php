@@ -2027,11 +2027,21 @@ class Template
 				$j         = strpos($content, $delimiter, $i);
 				$i2        = $i;
 				while (($i2 = strpos($content, '(', $i2)) && ($i2 < $j)) {
-					$content[$i2] = '{';
+					if ($content[$i2 + 1] === Q) {
+						$i2 ++;
+					}
+					else {
+						$content[$i2] = '{';
+					}
 				}
 				$i2 = $i;
 				while (($i2 = strpos($content, ')', $i2)) && ($i2 < $j)) {
-					$content[$i2] = '}';
+					if ($content[$i2 - 1] === Q) {
+						$i2 ++;
+					}
+					else {
+						$content[$i2] = '}';
+					}
 				}
 				$i = $j;
 			}
