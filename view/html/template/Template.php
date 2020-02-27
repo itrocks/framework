@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
 use ITRocks\Framework\Tools\Contextual_Callable;
@@ -1670,12 +1671,12 @@ class Template
 				$property = $object;
 				$object   = $this->parseMethod($object, $property_name);
 				$type     = $property->getType();
+				/** @noinspection PhpUnhandledExceptionInspection is_object */
 				if (
 					is_object($object)
 					&& !($object instanceof Stringable)
-					&& !$type->isObject()
 					&& $type->isSingleClass()
-					&& $type->asReflectionClass()->getAnnotation('business')->value
+					&& (new Reflection_Class($object))->getAnnotation('business')->value
 					&& Dao::getObjectIdentifier($object)
 				) {
 					$anchor = new Anchor(Framework\View::link($object), strval($object));
