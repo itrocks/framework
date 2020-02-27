@@ -178,7 +178,7 @@ abstract class Paths
 			static::patchFCGI();
 		}
 		$slash   = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
-		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php');
+		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php') ?: 1;
 		$root    = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1);
 		self::$file_root    = $root;
 		self::$project_root = getcwd();
