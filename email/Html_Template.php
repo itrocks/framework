@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -8,6 +9,18 @@ use ITRocks\Framework\View\Html\Template;
  */
 class Html_Template extends Template
 {
+
+	//----------------------------------------------------------------------------------- replaceLink
+	/**
+	 * @param $uri string
+	 * @return string
+	 */
+	protected function replaceLink($uri)
+	{
+		return strpos($uri, '://')
+			? $uri
+			: (Paths::absoluteBase() . $uri);
+	}
 
 	//------------------------------------------------------------------------------------ replaceUri
 	/**
