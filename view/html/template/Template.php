@@ -34,6 +34,7 @@ class Template
 {
 
 	//----------------------------------------------------------------------------- options constants
+	const ABSOLUTE_LINKS     = 'absolute_links';
 	const HIDE_PAGE_FRAME    = 'hide_page_frame';
 	const PROPAGATE          = true;
 	const TEMPLATE           = 'template';
@@ -546,7 +547,7 @@ class Template
 	 */
 	protected function getScriptName()
 	{
-		return Paths::$script_name;
+		return Paths::$script_name ?: substr(Paths::$uri_base, 1);
 	}
 
 	//------------------------------------------------------------------------------------ getUriRoot
@@ -2232,9 +2233,10 @@ class Template
 		if (strpos($link, '://')) {
 			return $link;
 		}
-		$full_path = str_replace(
-			[SL . SL, SL . DOT . SL], SL, $this->getUriRoot() . $this->getScriptName() . $link
-		);
+		$base = isset($this->parameters[static::ABSOLUTE_LINKS])
+			? Paths::absoluteBase()
+			: ($this->getUriRoot() . $this->getScriptName());
+		$full_path = str_replace([SL . SL, SL . DOT . SL], SL, $base . $link);
 		if (substr($full_path, 0, 2) == (DOT . SL)) {
 			$full_path = substr($full_path, 2);
 		}
