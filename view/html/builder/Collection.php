@@ -243,6 +243,7 @@ class Collection
 					$cell->setStyle('display', 'none');
 				}
 				$cell->addClass($type->asString());
+				$cell->setData('name', $property->path);
 				$header->addItem($cell);
 			}
 		}
