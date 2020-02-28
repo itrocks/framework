@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Feature\List_\Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
@@ -187,8 +188,12 @@ abstract class Range
 	 */
 	public static function supportsRange(Reflection_Property $property)
 	{
-		$type_string = $property->getType()->asString();
-		return ($property->getAnnotation('search_range')->value !== false)
+		$type_string  = $property->getType()->asString();
+		$search_range = $property->getAnnotation('search_range')->value;
+		$search_range = isset($search_range)
+			? (new Boolean_Annotation($search_range))->value
+			: ($property->getType()->isNumeric() || $property->getType()->isDateTime());
+		return ($search_range !== false)
 			&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING])
 			// TODO NORMAL search range with @values crashes now, but it could be done
 			&& !Values_Annotation::of($property)->value;

@@ -505,7 +505,7 @@ Parser::$default_annotations = [
 	 * Search range using "from-to" with - as separator is accepted by default. Set this to false to
 	 * disable ie for properties which values often contain the - character.
 	 */
-	Parser::T_PROPERTY . '@search_range' => Default_True_Boolean_Annotation::class,
+	Parser::T_PROPERTY . '@search_range' => Annotation::class,
 
 	/**
 	 * @set_store_name store_name
