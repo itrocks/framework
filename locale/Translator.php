@@ -5,8 +5,6 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Wildcard;
-use ITRocks\Framework\Mapper\Search_Object;
-use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Translations give the programmer translations features, and store them into cache
@@ -179,20 +177,18 @@ class Translator
 			}
 			return join(DOT, $text);
 		}
-		$context_property = str_replace('*', '', $context_property_path);
-		$search              = Search_Object::create(Translation::class);
-		$search->language    = $this->language;
-		$search->translation = strtolower($translation);
-		/** @noinspection PhpUnhandledExceptionInspection context and property must be valid */
-		$search->context = $context_property_path
-			? (new Reflection_Property($context, $context_property))->final_class
-			: $context;
-		$texts = Dao::search($search);
+		$search['language']    = $this->language;
+		$search['translation'] = strtolower($translation);
+		$search['context']     = $context;
+		if (isset($limit_to)) {
+			$search['text'] = Func::in($limit_to);
+		}
+		$texts = Dao::search($search, Translation::class);
 		foreach ($texts as $text) if ($text->translation === $translation) break;
-		while (isset($search->context) && $search->context && !isset($text)) {
-			$position        = strrpos($search->context, DOT);
-			$search->context = $position ? substr($search->context, 0, $position) : '';
-			$texts           = Dao::search($search);
+		while (isset($search['context']) && $search['context'] && !isset($text)) {
+			$position          = strrpos($search['context'], DOT);
+			$search['context'] = $position ? substr($search['context'], 0, $position) : '';
+			$texts             = Dao::search($search, Translation::class);
 			foreach ($texts as $text) if ($text->translation === $translation) break;
 		}
 		if (!isset($text) && strpos($translation, ', ')) {

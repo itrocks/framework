@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\List_;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
@@ -230,7 +231,6 @@ class Search_Parameters_Parser
 			}
 			// String types with @values : translate
 			case Type::STRING:
-				/** @noinspection PhpMissingBreakStatementInspection */
 			case Type::STRING_ARRAY: {
 				$property_values = Values_Annotation::of($property)->values();
 				if ($property_values || ($property->getAnnotation('translate')->value === 'common')) {
@@ -243,7 +243,10 @@ class Search_Parameters_Parser
 						$values[] = Names::propertyToDisplay($value);
 					}
 					$reverse_translations = Loc::rtr(
-						$search_value, $property->final_class, $property->name, $values
+						$search_value,
+						Builder::current()->sourceClassName($property->final_class),
+						$property->name,
+						$values
 					);
 					if (!$reverse_translations) {
 						$reverse_translations = $search_value;
