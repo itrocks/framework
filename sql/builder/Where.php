@@ -159,7 +159,7 @@ class Where implements With_Build_Column
 				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $key_clause) . ')'; break;
 				default:
 					if (is_numeric($key)) {
-						if ((count($array) > 1) && !$sql) {
+						if ((count($array) > 1) && !$sql && arrayKeysAllNumeric($array, true)) {
 							$sql       = '(';
 							$clause    = 'OR';
 							$sql_close = ')';

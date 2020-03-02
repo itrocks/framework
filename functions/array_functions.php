@@ -239,6 +239,25 @@ function arrayIsCallable(array $array)
 	return (is_object($first) || class_exists($first)) && method_exists($first, $last);
 }
 
+//----------------------------------------------------------------------------- arrayKeysAllNumeric
+/**
+ * @param $array   array
+ * @param $recurse boolean
+ * @return boolean
+ */
+function arrayKeysAllNumeric(array $array, $recurse = false)
+{
+	foreach ($array as $key => $value) {
+		if (
+			!is_numeric($key)
+			|| ($recurse && is_array($value) && !arrayKeysAllNumeric($value, $recurse))
+		) {
+			return false;
+		}
+	}
+	return true;
+}
+
 //----------------------------------------------------------------------------- arrayMergeRecursive
 /**
  * Merges two arrays, with recursion
