@@ -86,6 +86,15 @@ class Application
 		$this->include_path = new Include_Path(get_class($this));
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return strval($this->name);
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * @param $set_current Application
