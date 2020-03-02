@@ -118,11 +118,12 @@ class Functions
 	//------------------------------------------------------------------------------- getAbsoluteLink
 	/**
 	 * @param $template Template
+	 * @param $feature string
 	 * @return string
 	 */
-	public function getAbsoluteLink(Template $template)
+	public function getAbsoluteLink(Template $template, $feature = null)
 	{
-		return Paths::getUrl() . $this->getLink($template);
+		return Paths::getUrl() . $this->getLink($template, $feature);
 	}
 
 	//-------------------------------------------------------------------------------- getApplication
