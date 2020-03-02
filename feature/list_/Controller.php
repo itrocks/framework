@@ -1063,7 +1063,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 						$sub_search[Func::concat($sub_search_properties, true)] = $value;
 					}
 					unset($search[$property_path]);
-					$search[] = (count($sub_search) == 1) ? $sub_search : Func::orOp($sub_search);
+					if (count($sub_search) === 1) {
+						$search = array_merge($search, $sub_search);
+					}
+					else {
+						$search[] = Func::orOp($sub_search);
+					}
 				}
 			}
 		}
