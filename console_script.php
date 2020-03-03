@@ -315,8 +315,15 @@ class Console
 	private function runningFileName()
 	{
 		if (!isset($this->running_file)) {
+			if (substr_count(__DIR__, '/') > 4) {
+				[,, $vendor, $project, $environment] = explode('/', __DIR__);
+				$prepend = $vendor . '-' . $project . '-' . $environment . '-';
+			}
+			else {
+				$prepend = '';
+			}
 			$this->running_file = $this->temporaryDirectory() . '/'
-				. (str_replace('/', '_', substr($this->uri, 1)) ?: 'index');
+				. $prepend . (str_replace('/', '_', substr($this->uri, 1)) ?: 'index');
 		}
 		return $this->running_file;
 	}
