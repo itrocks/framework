@@ -320,23 +320,25 @@
 
 	//-------------------------------------------------------------------------------------- maxWidth
 	/**
-	 * @return number
+	 * Calculate max width for an input, and store it into its data('max-calculated-width')
 	 */
 	var maxWidth = function()
 	{
 		var $element = $(this);
 		if (!$element.is('input')) {
-			return 9999;
+			$element.data('max-calculated-width', 9999);
+			return;
 		}
 		var $input = $element;
 		var min    = parseInt(
 			$element.css('padding-left') + $element.css('border-left')
 			+ $element.css('padding-right') + $element.css('border-right')
 		);
-		while ($element.css('overflow').lParse(SP) !== 'hidden') {
+		while ($element.css('overflow').lParse(SP).toString() !== 'hidden') {
 			$element = $element.parent();
-			if (!$element.length) {
-				return 9999;
+			if ($element.is(document) || !$element.length) {
+				$input.data('max-calculated-width', 9999);
+				return;
 			}
 			min += parseInt(
 				$element.css('padding-left') + $element.css('border-left')
