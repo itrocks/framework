@@ -8,7 +8,7 @@
 	 * @param $element jQuery
 	 * @param text     string
 	 * @param margins  object margins settings { string jquery_selector: integer margin }
-	 * @returns string
+	 * @return string
 	 */
 	var addMargin = function($element, text, margins)
 	{
@@ -30,7 +30,7 @@
 	 * @param $cell          jQuery  the header cell for the column
 	 * @param cell_position  integer the position of the column cell
 	 * @param input_position integer the position of the input element into each data cell
-	 * @returns jQuery
+	 * @return jQuery
 	 */
 	var blockColumn = function(settings, $block, $cell, cell_position, input_position)
 	{
@@ -143,7 +143,7 @@
 	 *
 	 * @param $element jQuery a jquery object
 	 * @param margins  object margins settings { string jquery_selector: integer margin }
-	 * @returns number
+	 * @return number
 	 */
 	var calculateMargin = function($element, margins)
 	{
@@ -170,7 +170,7 @@
 	 *
 	 * @param $from jQuery
 	 * @param $to   jQuery
-	 * @returns object $from
+	 * @return object $from
 	 */
 	var cssCopy = function($from, $to)
 	{
@@ -211,7 +211,7 @@
 	 * If there is no group object, returns the <table>
 	 *
 	 * @param $block jQuery a jquery .auto_width block object
-	 * @returns object the first <thead>, <tbody>, <colgroup> object into the table, or the <table>
+	 * @return object the first <thead>, <tbody>, <colgroup> object into the table, or the <table>
 	 */
 	var firstRowsGroup = function($block)
 	{
@@ -230,7 +230,7 @@
 	 * @param [read_cache]     boolean default = true
 	 * @param [write_cache]    boolean default = true
 	 * @param additional_text string
-	 * @returns number
+	 * @return number
 	 */
 	var getTextWidth = function(settings, $elements, read_cache, write_cache, additional_text)
 	{
@@ -285,7 +285,7 @@
 	 */
 	var limitWidth = function($element, width, settings, context)
 	{
-		var max_width = settings[context].maximum;
+		var max_width = Math.min(settings[context].maximum, $element.data('max-calculated-width'));
 		var min_width = settings[context].minimum;
 		if (settings[context].use_max_width) {
 			max_width = limitWidthRead($element, 'max-width', max_width);
@@ -304,7 +304,7 @@
 	 * @param $element       jQuery
 	 * @param css_width_name string @values max-width, min-width
 	 * @param width          number
-	 * @returns number
+	 * @return number
 	 */
 	var limitWidthRead = function($element, css_width_name, width)
 	{
@@ -316,6 +316,36 @@
 			width = css_width;
 		}
 		return width;
+	};
+
+	//-------------------------------------------------------------------------------------- maxWidth
+	/**
+	 * @return number
+	 */
+	var maxWidth = function()
+	{
+		var $element = $(this);
+		if (!$element.is('input')) {
+			return 9999;
+		}
+		var $input = $element;
+		var min    = parseInt(
+			$element.css('padding-left') + $element.css('border-left')
+			+ $element.css('padding-right') + $element.css('border-right')
+		);
+		while ($element.css('overflow').lParse(SP) !== 'hidden') {
+			$element = $element.parent();
+			if (!$element.length) {
+				return 9999;
+			}
+			min += parseInt(
+				$element.css('padding-left') + $element.css('border-left')
+				+ $element.css('padding-right') + $element.css('border-right')
+			);
+		}
+		var max_width = $element.innerWidth() - ($input.offset().left - $element.offset().left) - min;
+
+		$input.data('max-calculated-width', max_width);
 	};
 
 	//------------------------------------------------------------------------------------- autoWidth
@@ -346,6 +376,7 @@
 		this.data('settings', settings);
 
 		//------------------------------------------------------------------------- autoWidth on events
+		maxWidth.call(this);
 		this.blur(calculateEvent);
 		this.change(calculateEvent);
 		this.focus(calculateEvent);
