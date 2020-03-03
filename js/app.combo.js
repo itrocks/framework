@@ -111,11 +111,11 @@ $(document).ready(function()
 		}
 		if ($element.prev().val() !== id) {
 			if (DEBUG) console.log('comboValue.id: ', $element.prev(), 'value =', id);
-			$element.prev().attr('value', id).val(id).change();
+			$element.prev().val(id).change();
 		}
 		if ($element.val() !== value) {
 			if (DEBUG) console.log('comboValue.val: ', $element, 'value =', value);
-			$element.attr('value', value).val(value).change();
+			$element.val(value).change();
 		}
 	};
 
@@ -132,12 +132,11 @@ $(document).ready(function()
 				if (DEBUG) console.log('close');
 				$this.removeData('visible');
 				// echap : reset original value
-				if ((event.keyCode === 27) || $this.data('reset')) {
-					$this.removeData('reset');
+				if (event.keyCode === 27) {
 					if (DEBUG) console.log('- reset');
 					origin = $this.data('origin');
-					$this.prev().attr('value', origin.id).val(origin.id).change();
-					$this.attr('value', origin.value).val(origin.value).change();
+					$this.prev().val(origin.id).change();
+					$this.val(origin.value).change();
 				}
 				// else : validate original value
 				else {
@@ -196,12 +195,12 @@ $(document).ready(function()
 						id = ui.item.class_name + ':' + id;
 					}
 					if (DEBUG) console.log('select.id:', $id, 'value =', id);
-					$id.attr('value', id).val(id).change();
+					$id.val(id).change();
 				}
 				// mouse click : copy the full value to the input
 				if (!event.keyCode) {
 					if (DEBUG) console.log('select.val:', $value, 'value =', ui.item.value);
-					$value.attr('value', ui.item.value).val(ui.item.value).change();
+					$value.val(ui.item.value).change();
 				}
 				$value.data('combo-value', ui.item.value);
 				if (!comboMatches($value)) {
@@ -237,7 +236,7 @@ $(document).ready(function()
 				if (comboMatches($this)) {
 					var combo_value = $this.data('combo-value');
 					if (DEBUG) console.log('blur:', $this, combo_value);
-					$this.attr('value', combo_value).val(combo_value).change();
+					$this.val(combo_value).change();
 				}
 				else {
 					comboForce($this);
@@ -305,7 +304,7 @@ $(document).ready(function()
 				if (DEBUG) console.log('keydown.search');
 				var min_length = $this.autocomplete('option', 'minLength');
 				var value = $this.val();
-				$this.attr('value', '').val('');
+				$this.val('');
 				$this.autocomplete('option', 'minLength', 0);
 				$this.autocomplete('search', '');
 				$this.autocomplete('option', 'minLength', min_length);
@@ -319,7 +318,6 @@ $(document).ready(function()
 			var $this = $(this);
 			// backspace | delete : close if value is empty
 			if (((event.keyCode === 8) || (event.keyCode === 46)) && !$this.val().length) {
-				$this.data('reset', true);
 				$this.autocomplete('option', 'minLength', 1).autocomplete('close');
 				var $value         = $this.prev().filter('input[type=hidden]');
 				var previous_value = $value.val();
