@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Configuration\File;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Component\Menu\Block;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Configuration\File;
@@ -23,6 +24,7 @@ class Menu extends File
 	/**
 	 * Add a menu block or return the existing block
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $block_title string
 	 * @return Block
 	 */
@@ -30,8 +32,8 @@ class Menu extends File
 	{
 		$block = $this->searchBlock($block_title);
 		if (!$block) {
-			/** @noinspection PhpUndefinedMethodInspection */
-			$block        = Builder::create(Block::class);
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$block        = Framework\Builder::create(Block::class);
 			$block->items = [];
 			$block->title = $block_title;
 			(new Exhaustive($this))->addBlock($block);
@@ -57,6 +59,7 @@ class Menu extends File
 	/**
 	 * Add a menu item or return the existing item
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $block        Block|string
 	 * @param $item_link    string
 	 * @param $item_caption string
@@ -70,8 +73,8 @@ class Menu extends File
 		(new Installed\Menu)->add($block->title, $item_link, $item_caption);
 		$item = $this->searchItem($block, $item_link);
 		if (!$item) {
-			/** @noinspection PhpUndefinedMethodInspection class */
-			$item           = Builder::create(Item::class);
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$item           = Framework\Builder::create(Item::class);
 			$item->link     = $item_link;
 			(new Exhaustive($this))->addItem($block, $item);
 		}
