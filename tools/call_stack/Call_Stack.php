@@ -163,6 +163,23 @@ class Call_Stack
 		return false;
 	}
 
+	//-------------------------------------------------------------------------------- containsMethod
+	/**
+	 * Get top matching method Line
+	 *
+	 * @param $method callable|array if object, must be exactly the same instance
+	 * @return boolean
+	 */
+	public function containsMethod(array $method)
+	{
+		foreach ($this->stack as $stack) {
+			if ($this->methodMatches($stack, $method)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	//----------------------------------------------------------------------------- containsNamespace
 	/**
 	 * Returns true if the call stack contains a call to any class under the given namespace
@@ -380,9 +397,19 @@ class Call_Stack
 	{
 		return isset($stack['args'])
 			&& isset($stack['function']) && ($stack['function'] === $method[1])
-			&& isset($stack['object']) && (
-				(is_object($method[0]) && ($stack['object'] === $method[0]))
-				|| (is_string($method[0]) && isA($stack['object'], $method[0]))
+			&& (
+				(
+					isset($stack['object'])
+					&& (
+						(is_object($method[0]) && ($stack['object'] === $method[0]))
+						|| (is_string($method[0]) && isA($stack['object'], $method[0]))
+					)
+				)
+				|| (
+					isset($stack['class'])
+					&& is_string($method[0])
+					&& isA($method[0], $stack['class'])
+				)
 			);
 	}
 
