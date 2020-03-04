@@ -20,6 +20,7 @@ use ITRocks\Framework\Sql\Builder\Alter_Table;
 use ITRocks\Framework\Sql\Builder\Create_Table;
 use ITRocks\Framework\Sql\Builder\Create_View;
 use ITRocks\Framework\Sql\Link_Table;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -836,7 +837,7 @@ class Maintainer implements Configurable, Registerable
 		$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
 		// create table
 		if (!$mysql_table) {
-			$queries         = (new Create_Table($class_table))->build();
+			$queries = (new Create_Table($class_table))->build();
 			array_push(
 				$mysqli->contexts,
 				$class_name
@@ -964,6 +965,15 @@ class Maintainer implements Configurable, Registerable
 				array_pop($mysqli->contexts);
 				$result = true;
 			}
+			else {
+				$result = false;
+			}
+		}
+		if (
+			method_exists($class_name, '__maintain')
+			&& !(new Call_Stack)->containsMethod([$class_name, '__maintain'])
+		) {
+			call_user_func([$class_name, '__maintain']);
 		}
 		return $result;
 	}
