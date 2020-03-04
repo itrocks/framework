@@ -66,9 +66,9 @@ trait Has_Code_And_Name
 	 */
 	public function sameAs($object)
 	{
-		return ($object->code || $object->code)
-			? ($object->code === $object->code)
-			: ($object->name === $object->name);
+		return ($object->code || $this->code)
+			? ($object->code === $this->code)
+			: ($object->name === $this->name);
 	}
 
 }
