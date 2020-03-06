@@ -167,8 +167,8 @@ function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true
 			is_numeric($value)
 			&& (substr($value, 0, 2) !== '-0')
 			&& (strpos('0+', substr($value, 0, 1)) === false)
-			&& (stripos($value, 'E')     === false)
-			&& ($decimal_allowed ?: (strpos($value, '.')    === false))
+			&& (stripos($value, 'E') === false)
+			&& ($decimal_allowed ?: (strpos($value, '.') === false))
 			&& ($signed_allowed  ?: (strpos(substr($value, 0, 1), '-') === false))
 		);
 	return $result;
