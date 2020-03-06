@@ -1818,7 +1818,7 @@ class Template
 	 * @param $as_string boolean if true, returned value will always be a string
 	 * @return string|object var value after reading value / executing specs
 	 */
-	protected function parseValue($var_name, $as_string = false)
+	public function parseValue($var_name, $as_string = false)
 	{
 		if ($var_name === DOT) {
 			return reset($this->objects);

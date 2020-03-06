@@ -34,6 +34,15 @@ class String_Class
 		return strval($this->value);
 	}
 
+	//------------------------------------------------------------------------------------------- abs
+	/**
+	 * @return float|int
+	 */
+	public function abs()
+	{
+		return abs($this->value);
+	}
+
 	//------------------------------------------------------------------------------------- cleanWord
 	/**
 	 * Clean the word, this delete all character who don't have a place in a current word.
@@ -207,6 +216,15 @@ class String_Class
 	public function short()
 	{
 		return new String_Class(Namespaces::shortClassName($this->value));
+	}
+
+	//------------------------------------------------------------------------------------------ sign
+	/**
+	 * @return string
+	 */
+	public function sign()
+	{
+		return (substr($this->value, 0, 1) === '-') ? '-' : '+';
 	}
 
 	//---------------------------------------------------------------------------------------- source

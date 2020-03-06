@@ -76,7 +76,6 @@ class Displayable extends String_Class
 	 */
 	public function json()
 	{
-		/** @noinspection PhpParamsInspection objects can be displayable */
 		return is_object($this->value)
 			? (new Json)->encodeObject($this->value)
 			: json_encode($this->value);
