@@ -99,6 +99,23 @@ class Menu extends File
 		}
 	}
 
+	//--------------------------------------------------------------------------------------- hasLink
+	/**
+	 * @param $link string
+	 * @return boolean
+	 */
+	public function hasLink($link)
+	{
+		foreach ($this->blocks as $block) {
+			foreach ($block->items as $item) {
+				if (($item instanceof Item) && $item->link === $link) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
 	//------------------------------------------------------------------------------------------ read
 	/**
 	 * Read from file

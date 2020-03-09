@@ -157,6 +157,16 @@ class Installer
 		}
 	}
 
+	//----------------------------------------------------------------------------------- hasMenuLink
+	/**
+	 * @param $link string
+	 * @return boolean
+	 */
+	public function hasMenuLink($link)
+	{
+		return $this->openFile(Menu::class)->hasLink($link);
+	}
+
 	//--------------------------------------------------------------------------------------- install
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
