@@ -10,9 +10,6 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
 
@@ -106,9 +103,9 @@ class Menu implements Configurable
 	 * - The feature is Feature::F_LIST at start if no other feature begins the list
 	 * - Each time a string without BS is read : it is the name of feature for the next classes
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_names string|string[] class name(s), can be multiple in one or several arguments
-	 *                     If string[] : key can be class name, then value is the feature
+	 * @param $class_names string|string[]|object class name(s), can be multiple in one or several
+	 *                      arguments. If string[] : key can be class name, then value is the feature.
+	 *                      If object, will build a configuration to access this object.
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
 	 */
 	public static function configurationOf($class_names)
@@ -121,21 +118,25 @@ class Menu implements Configurable
 			foreach ($class_names as $class_name => $feature) {
 				if (is_numeric($class_name)) {
 					$class_name = $feature;
-					$feature    = Feature::F_LIST;
+					$feature    = is_string($class_name) ? Feature::F_LIST : null;
+				}
+				if (is_object($class_name)) {
+					$object_link = View::link($class_name, $feature);
+					$class_name  = get_class($class_name);
+					$configuration_items[$object_link] = ucfirst(Names::classToDisplay($class_name));
 				}
 				// class name : change it to a menu item
-				if (strpos($class_name, BS))  {
+				elseif (strpos($class_name, BS))  {
 					$link_class_name = in_array($feature, Feature::ON_SET)
 						? Names::classToSet($class_name)
 						: $class_name;
 					$link_feature = (($feature === Feature::F_LIST) && !class_exists($link_class_name))
 						? null
 						: $feature;
-					/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 					$configuration_items[View::link($link_class_name, $link_feature)] = ucfirst(
 						in_array($feature, Feature::ON_SET)
-							? Displays_Annotation::of(new Reflection_Class($class_name))->value
-							: Display_Annotation::of(new Reflection_Class($class_name))->value
+							? Names::classToDisplays($class_name)
+							: Names::classToDisplay($class_name)
 					);
 				}
 			}
