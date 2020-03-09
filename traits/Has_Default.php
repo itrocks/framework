@@ -26,6 +26,7 @@ trait Has_Default
 	//------------------------------------------------------------------------------------ getDefault
 	/**
 	 * @return static|null
+	 * @return_constant
 	 */
 	public static function getDefault()
 	{
