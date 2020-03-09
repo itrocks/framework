@@ -303,7 +303,6 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getDefaultValue($use_annotation = true, &$default_object = null)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection default_annotation must be a valid method */
 		/** @var $default_annotation Method_Annotation */
 		if (
 			$use_annotation
@@ -325,6 +324,9 @@ class Reflection_Property extends ReflectionProperty
 			$value = $this->getValue($default_object);
 			if (!$was_accessible) {
 				$this->setAccessible(false);
+			}
+			if (!isset($value)) {
+				$value = $default_annotation->call($default_object);
 			}
 			return $value;
 		}
@@ -671,7 +673,6 @@ class Reflection_Property extends ReflectionProperty
 	 * Return true if the both objects match.
 	 * If one is an object and the other is an integer, compare $objectX->id with $objectY
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object1 object|integer
 	 * @param $object2 object|integer
 	 * @return boolean
@@ -704,7 +705,6 @@ class Reflection_Property extends ReflectionProperty
 				}
 			}
 		}
-		/** @noinspection PhpUnhandledExceptionInspection Date_Time type tested */
 		if (
 			($object1 instanceof Date_Time)
 			&& ($object2 instanceof Date_Time)
@@ -825,10 +825,8 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
-	public function setValue(
-		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $object + mixed */
-		$object, $value = self::EMPTY_VALUE
-	) {
+	public function setValue($object, $value = self::EMPTY_VALUE)
+	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			/** @noinspection PhpUnhandledExceptionInspection $this->root_class and $path are valid */
