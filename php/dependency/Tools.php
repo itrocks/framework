@@ -49,7 +49,7 @@ trait Tools
 	 *
 	 * @param $class_name    string
 	 * @param $include_class boolean if true, $class_name is included if not an abstract class
-	 * @param $extend_types  string[] values from Dependency's T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $extend_types  string|string[] values from Dependency's T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string[]
 	 */
 	public static function extendsUse(
