@@ -46,6 +46,17 @@ class Dao implements Configurable
 		Dao::current(new $class_name($configuration));
 	}
 
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Forces add of object to the data link : no update, even if there is an identifier
+	 *
+	 * @return Option\Add
+	 */
+	public static function add()
+	{
+		return new Option\Add();
+	}
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin a transaction with the current data link (non-transactional SQL engines will do nothing
