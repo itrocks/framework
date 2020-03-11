@@ -179,15 +179,13 @@ trait Column_Builder_Property
 			}
 			switch ($property_type->asString()) {
 				case Type::_ARRAY:
+				case Type::_CALLABLE:
+				case Type::null:
+				case Type::NULL:
+				case Type::RESOURCE:
 					return null;
 				case Type::BOOLEAN:
 					return 'tinyint(1)';
-				case Type::_CALLABLE:
-					return null;
-				case Type::null: case Type::NULL:
-					return null;
-				case Type::RESOURCE:
-					return null;
 				case DateTime::class: case Date_Time::class:
 					return 'datetime';
 				default:
