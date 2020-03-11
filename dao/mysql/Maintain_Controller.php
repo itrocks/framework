@@ -93,7 +93,13 @@ class Maintain_Controller implements Feature_Controller
 					if (isset($children[$class_name])) {
 						foreach ($children[$class_name] as $child_class_name) {
 							$child_class = $this->classNamed($child_class_name);
-							if ($child_class && Store_Name_Annotation::equals($child_class, $class)) {
+							if (
+								$child_class
+								&& Store_Name_Annotation::equals($child_class, $class)
+								&& !$child_class->isAbstract()
+								&& $child_class->getAnnotation('business')->value
+								&& !$child_class->getAnnotation('deprecated')->value
+							) {
 								$store = false;
 								break;
 							}
