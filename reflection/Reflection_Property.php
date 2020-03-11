@@ -312,23 +312,11 @@ class Reflection_Property extends ReflectionProperty
 				|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
 			)
 		) {
-			$was_accessible = $this->isPublic();
-			if (!$was_accessible) {
-				$this->setAccessible(true);
-			}
 			if (!isset($default_object)) {
 				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
 				$default_object = Builder::create($this->getFinalClassName());
 			}
-			/** @noinspection PhpUnhandledExceptionInspection Accessibility forced & valid object */
-			$value = $this->getValue($default_object);
-			if (!$was_accessible) {
-				$this->setAccessible(false);
-			}
-			if (!isset($value)) {
-				$value = $default_annotation->call($default_object);
-			}
-			return $value;
+			return $default_annotation->call($default_object);
 		}
 		return $this->getFinalClass()
 			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name];
