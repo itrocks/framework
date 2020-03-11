@@ -287,13 +287,13 @@ class Column implements Sql\Column
 	 */
 	public function equiv(Sql\Column $column)
 	{
-		if (is_numeric($this->Default) && is_numeric($column->Default)) {
-			$this_default   = strval($this->Default);
-			$column_default = strval($column->Default);
+		$column_default = $column->Default;
+		$this_default   = $this->Default;
+		if (is_object($column_default) || is_numeric($column_default)) {
+			$column_default = strval($column_default);
 		}
-		else {
-			$this_default   = $this->Default;
-			$column_default = $column->Default;
+		if (is_object($this_default) || is_numeric($this_default)) {
+			$this_default = strval($this_default);
 		}
 		return ($this_default === $column_default)
 			&& ($this->Extra === $column->Extra)
