@@ -285,7 +285,8 @@ class Console
 		$path = $this->procPath();
 		$pid  = getmypid();
 		if (!file_exists("$path/$pid")) {
-			mkdir("$path/$pid", 0777);
+			mkdir("$path/$pid");
+			chmod("$path/$pid", 0777);
 		}
 		symlink($cwd, "$path/$pid/cwd");
 	}
@@ -300,10 +301,12 @@ class Console
 		$hostname = reset($hostname);
 		$path     = '../proc';
 		if (!file_exists($path)) {
-			mkdir($path, 0777);
+			mkdir($path);
+			chmod($path, 0777);
 		}
 		if (!file_exists("$path/$hostname")) {
-			mkdir("$path/$hostname", 0777);
+			mkdir("$path/$hostname");
+			chmod("$path/$hostname", 0777);
 		}
 		return "$path/$hostname";
 	}

@@ -142,8 +142,7 @@ abstract class Files
 		}
 		else {
 			$result = mkdir($directory, $mode, true);
-			// this patch is for php versions where mkdir does not change the mode
-			if ($result && ($mode !== 0777)) {
+			if ($result) {
 				chmod($directory, $mode);
 			}
 		}
