@@ -781,7 +781,7 @@ class Maintainer implements Configurable, Registerable
 
 	//----------------------------------------------------------------------------------- updateTable
 	/**
-	 * Update table structure corresponding to a data class
+	 * Update table structure matching a data class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
@@ -791,7 +791,7 @@ class Maintainer implements Configurable, Registerable
 	 */
 	public function updateTable($class_name, Contextual_Mysqli $mysqli = null, $implicit = true)
 	{
-		if (isset($this->exclude_classes[$class_name]) || (new Type($class_name))->isAbstractClass()) {
+		if (in_array($class_name, $this->exclude_classes) || (new Type($class_name))->isAbstractClass()) {
 			return false;
 		}
 

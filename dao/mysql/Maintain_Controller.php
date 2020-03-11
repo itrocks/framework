@@ -60,7 +60,6 @@ class Maintain_Controller implements Feature_Controller
 	/**
 	 * Get business classes that will be used for source for maintain
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class[] key is the name of the class
 	 */
 	protected function getClasses()
@@ -75,7 +74,6 @@ class Maintain_Controller implements Feature_Controller
 		// tables
 		/** @var $mysql Mysql\Link */
 		$mysql = Dao::current();
-		/** @noinspection PhpUnhandledExceptionInspection no catch */
 		$table_names = array_flip($mysql->getConnection()->getTables());
 		// @business classes + without Builder replacement + without children with same @store_name
 		// + existing MySQL table
