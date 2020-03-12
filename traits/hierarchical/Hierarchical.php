@@ -37,22 +37,35 @@ trait Hierarchical
 	 * - Create your own getAllSubClassNames() method
 	 * - Call return getAllSub()
 	 *
-	 * @param $sub_property   string sub objects property name
-	 * @param $super_property string super object property name
-	 * @param $limit integer  limit objects recursion depth to avoid cyclic recursion
+	 * Please do not write a hierarchy you read with $limits ! You would lose data.
+	 *
+	 * @param $sub_property    string  sub objects property name
+	 * @param $super_property  string  super object property name
+	 * @param $limit_recursion integer limit objects recursion depth to avoid cyclic recursion
+	 * @param $limit_objects   integer limit number of results to avoid long searches
 	 * @return static[]
 	 */
-	protected function getAllSub($sub_property, $super_property, $limit = 100)
-	{
-		if ($limit) {
-			$objects = $this->readSub($sub_property, $super_property);
-			$map     = new Map($objects);
-			foreach ($this->readSub($sub_property, $super_property) as $sub) {
-				$map->add($sub->getAllSub($sub_property, $super_property, $limit - 1));
-			}
-			return $objects;
+	protected function getAllSub(
+		$sub_property, $super_property, $limit_recursion = PHP_INT_MAX, $limit_objects = PHP_INT_MAX
+	) {
+		if ($limit_recursion <= 0) {
+			return [];
 		}
-		return [];
+		$limit_recursion --;
+		$objects          = $this->readSub($sub_property, $super_property, $limit_objects);
+		$limit_objects   -= count($objects);
+		$map              = new Map($objects);
+		foreach ($objects as $sub) {
+			if ($limit_objects <= 0) {
+				break;
+			}
+			$sub_objects = $sub->getAllSub(
+				$sub_property, $super_property, $limit_recursion, $limit_objects
+			);
+			$limit_objects -= count($sub_objects);
+			$map->add($sub_objects);
+		}
+		return $objects;
 	}
 
 	//----------------------------------------------------------------------------------- getAllSuper
@@ -71,14 +84,15 @@ trait Hierarchical
 	 */
 	protected function getAllSuper($super_property, $limit = 100)
 	{
+		if (!$limit) {
+			return [];
+		}
 		$objects = [];
-		if ($limit) {
-			$super = $this->getSuper($super_property);
-			$map   = new Map($objects);
-			while ($super && $limit--) {
-				$map->add($super);
-				$super = $super->getSuper($super_property);
-			}
+		$super   = $this->getSuper($super_property);
+		$map     = new Map($objects);
+		while ($super && $limit--) {
+			$map->add($super);
+			$super = $super->getSuper($super_property);
 		}
 		return array_reverse($objects, true);
 	}
@@ -114,17 +128,23 @@ trait Hierarchical
 	 * - Create your own readSubClassNames() method
 	 * - Call return readSub('sub_class_names', 'super_class_name') using your two property names
 	 *
+	 * Please do not write a hierarchy you read with a $limit ! You would lose data.
+	 *
 	 * @param $sub_property   string sub objects property name
 	 * @param $super_property string super object property name
+	 * @param $limit          integer
 	 * @return static[]
 	 */
-	protected function readSub($sub_property, $super_property)
+	protected function readSub($sub_property, $super_property, $limit = PHP_INT_MAX)
 	{
-		if (!isset($this->$sub_property)) {
-			$this->$sub_property = Dao::getObjectIdentifier($this)
-				? Dao::search([$super_property => $this], Link_Class::linkedClassNameOf($this))
-				: [];
+		if (isset($this->$sub_property)) {
+			return $this->$sub_property;
 		}
+		$this->$sub_property = Dao::getObjectIdentifier($this)
+			? Dao::search(
+				[$super_property => $this], Link_Class::linkedClassNameOf($this), Dao::limit($limit)
+			)
+			: [];
 		return $this->$sub_property;
 	}
 
