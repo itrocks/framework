@@ -51,113 +51,112 @@ class Html_Builder_Property extends Html_Builder_Type
 	 */
 	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
 	{
-		if (isset($property)) {
-			if ($customized = $property->getAnnotation('customized')->value) {
-				$this->classes[] = $customized;
-			}
-			$this->is_new = ($property instanceof Reflection_Property_Value)
-				&& !Dao::getObjectIdentifier($property->getObject());
-			$this->null     = $property->getAnnotation('null')->value;
-			$this->property = $property;
-
-			$user_annotation = User_Annotation::of($property);
-
-			/** @var $user_default_annotation Method_Annotation */
-			$user_default_annotation = $property->getAnnotation('user_default');
-
-			if ($property instanceof Reflection_Property_Value) {
-				if (!isset($value)) {
-					$value = $property->value();
-				}
-				// if value is empty, then get @user_default ?: @default value (by SM)
-				if (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value))) {
-					$object = $property->getObject(true);
-					if (!Dao::getObjectIdentifier($object)) {
-						$value = $user_default_annotation->value
-							? $user_default_annotation->call($object)
-							: $property->getDefaultValue(true, $object);
-					}
-				}
-			}
-			$default_value = $user_default_annotation->value
-				? $user_default_annotation->call($this->object)
-				: $property->getDefaultValue(true, $this->object);
-			if ($default_value || (!is_array($default_value) && strlen($default_value))) {
-				$this->data['default-value'] = Loc::propertyToLocale($property, $default_value);
-			}
-
-			// 1st, get read_only from @user readonly
-			$this->readonly = (
-				$user_annotation->has(User_Annotation::READONLY)
-				// Create_only annotation and object already exists ? ==> readonly = true
-				|| (
-					$user_annotation->has(User_Annotation::CREATE_ONLY)
-					// TODO Are they the best conditions to test ?
-					&& ($property instanceof Reflection_Property_Value)
-					&& is_object($property->getObject())
-					&& !Empty_Object::isEmpty($property->getObject())
-				)
-			);
-
-			if (
-				!$this->readonly
-				&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))
-			) {
-				// if there is @user_default, there can not be @user if_empty
-				if ($user_default_annotation->value && $user_annotation->has(User_Annotation::IF_EMPTY)) {
-					$flag_cannot_be_if_empty = true;
-				}
-			}
-
-			// 2nd, if not read_only but has a value and @user if_empty, then set read_only
-			if (
-				!$this->readonly
-				&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
-				&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)
-			) {
-				$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
-			}
-
-			if (
-				($property instanceof Reflection_Property_Value) && $property->tooltip && !$this->tooltip
-			) {
-				$this->tooltip = $property->tooltip;
-			}
-
-			// if name contains [...], recalculate name and prefix. TODO explain those rules
-			$name = $property->pathAsField();
-			if (strpos($name, '[')) {
-				$prefix2 = lLastParse($name, '[');
-				$prefix  = $prefix
-					? (
-						strpos($prefix2, '[')
-						? ($prefix . '[' . lParse($prefix2, '[') . '][' . rParse($prefix2, '['))
-						: ($prefix . '[' . $prefix2 . ']')
-					)
-					: $prefix2;
-				$name = lParse(rLastParse($name, '['), ']');
-			}
-
-			if ($fixed_height = $this->property->getAnnotation('fixed_height')->value) {
-				$this->auto_height = false;
-				if ($fixed_height !== true) {
-					$this->data['height'] = $this->property->getAnnotation('fixed_height')->value;
-				}
-			}
-
-			if ($fixed_width = $this->property->getAnnotation('fixed_width')->value) {
-				$this->auto_width = false;
-				if ($fixed_width !== true) {
-					$this->data['width'] = $this->property->getAnnotation('fixed_width')->value;
-				}
-			}
-
-			$this->loadConditions();
-			parent::__construct($name, $property->getType(), $value, $prefix);
-		}
-		else {
+		if (!$property) {
 			parent::__construct(null, null, $value, $prefix);
+			return;
 		}
+		if ($customized = $property->getAnnotation('customized')->value) {
+			$this->classes[] = $customized;
+		}
+		$this->is_new = ($property instanceof Reflection_Property_Value)
+			&& !Dao::getObjectIdentifier($property->getObject());
+		$this->null     = $property->getAnnotation('null')->value;
+		$this->property = $property;
+
+		$user_annotation = User_Annotation::of($property);
+
+		/** @var $user_default_annotation Method_Annotation */
+		$user_default_annotation = $property->getAnnotation('user_default');
+
+		if ($property instanceof Reflection_Property_Value) {
+			if (!isset($value)) {
+				$value = $property->value();
+			}
+			// if value is empty, then get @user_default ?: @default value (by SM)
+			if (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value))) {
+				$object = $property->getObject(true);
+				if (!Dao::getObjectIdentifier($object)) {
+					$value = $user_default_annotation->value
+						? $user_default_annotation->call($object)
+						: $property->getDefaultValue(true, $object);
+				}
+			}
+		}
+		$default_value = $user_default_annotation->value
+			? $user_default_annotation->call($this->object)
+			: $property->getDefaultValue(true, $this->object);
+		if ($default_value || (!is_array($default_value) && strlen($default_value))) {
+			$this->data['default-value'] = Loc::propertyToLocale($property, $default_value);
+		}
+
+		// 1st, get read_only from @user readonly
+		$this->readonly = (
+			$user_annotation->has(User_Annotation::READONLY)
+			// Create_only annotation and object already exists ? ==> readonly = true
+			|| (
+				$user_annotation->has(User_Annotation::CREATE_ONLY)
+				// TODO Are they the best conditions to test ?
+				&& ($property instanceof Reflection_Property_Value)
+				&& is_object($property->getObject())
+				&& !Empty_Object::isEmpty($property->getObject())
+			)
+		);
+
+		if (
+			!$this->readonly
+			&& (is_null($value) || (is_object($value) && Empty_Object::isEmpty($value)))
+		) {
+			// if there is @user_default, there can not be @user if_empty
+			if ($user_default_annotation->value && $user_annotation->has(User_Annotation::IF_EMPTY)) {
+				$flag_cannot_be_if_empty = true;
+			}
+		}
+
+		// 2nd, if not read_only but has a value and @user if_empty, then set read_only
+		if (
+			!$this->readonly
+			&& ((is_object($value) && !Empty_Object::isEmpty($value)) || !empty($value))
+			&& (!isset($flag_cannot_be_if_empty) || !$flag_cannot_be_if_empty)
+		) {
+			$this->readonly = $user_annotation->has(User_Annotation::IF_EMPTY);
+		}
+
+		if (
+			($property instanceof Reflection_Property_Value) && $property->tooltip && !$this->tooltip
+		) {
+			$this->tooltip = $property->tooltip;
+		}
+
+		// if name contains [...], recalculate name and prefix. TODO explain those rules
+		$name = $property->pathAsField();
+		if (strpos($name, '[')) {
+			$prefix2 = lLastParse($name, '[');
+			$prefix  = $prefix
+				? (
+					strpos($prefix2, '[')
+					? ($prefix . '[' . lParse($prefix2, '[') . '][' . rParse($prefix2, '['))
+					: ($prefix . '[' . $prefix2 . ']')
+				)
+				: $prefix2;
+			$name = lParse(rLastParse($name, '['), ']');
+		}
+
+		if ($fixed_height = $this->property->getAnnotation('fixed_height')->value) {
+			$this->auto_height = false;
+			if ($fixed_height !== true) {
+				$this->data['height'] = $this->property->getAnnotation('fixed_height')->value;
+			}
+		}
+
+		if ($fixed_width = $this->property->getAnnotation('fixed_width')->value) {
+			$this->auto_width = false;
+			if ($fixed_width !== true) {
+				$this->data['width'] = $this->property->getAnnotation('fixed_width')->value;
+			}
+		}
+
+		$this->loadConditions();
+		parent::__construct($name, $property->getType(), $value, $prefix);
 	}
 
 	//----------------------------------------------------------------------------------------- build
