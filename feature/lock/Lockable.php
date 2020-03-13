@@ -11,6 +11,7 @@ use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
  *
  * @before_delete isModifiable
  * @before_write  isModifiable
+ * @duplicate onDuplicateLockable
  */
 trait Lockable
 {
@@ -40,6 +41,12 @@ trait Lockable
 			}
 		}
 		return true;
+	}
+
+	//--------------------------------------------------------------------------- onDuplicateLockable
+	public function onDuplicateLockable()
+	{
+		$this->locked = false;
 	}
 
 }
