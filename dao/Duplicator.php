@@ -85,7 +85,7 @@ class Duplicator
 	 */
 	private function onDuplicate($object, Reflection_Class $class)
 	{
-		foreach ($class->getAnnotations('duplicate') as $on_duplicate) {
+		foreach (array_reverse($class->getAnnotations('duplicate')) as $on_duplicate) {
 			$callback = explode('::', $on_duplicate->value);
 			if (($callback[1] === true) || is_numeric($callback[1])) {
 				$callback[1] = 'onDuplicate';
