@@ -282,28 +282,28 @@ class Properties
 	private function compileDefault(array $advices)
 	{
 		$over = $this->overrideMethod('__default', false);
-		$code = $over['call'] ?: (
+		$code = '';
+		foreach ($advices as $property_name => $property_advices) {
+			if (isset($property_advices['default'])) {
+				list($object, $method) = $property_advices['default'];
+				$operator              = ($object === '$this') ? '->' : '::';
+				$code .= "if (!isset(\$this->$property_name)) {
+			\$this->$property_name = $object$operator$method(
+				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
+			);
+		}" . LF . TAB . TAB;
+			}
+		}
+		if (!isset($operator) && beginsWith($over['call'], 'parent::')) {
+			return '';
+		}
+		$code .= $over['call'] ?: (
 			$this->class->getParentClass()
 			? "if (method_exists(get_parent_class(__CLASS__), '__default')) {
 			parent::__default();
 		}"
 				: ''
 		);
-		foreach ($advices as $property_name => $property_advices) {
-			if (isset($property_advices['default'])) {
-				list($object, $method) = $property_advices['default'];
-				$operator              = ($object === '$this') ? '->' : '::';
-				$code .= "
-		if (!isset(\$this->$property_name)) {
-			\$this->$property_name = $object$operator$method(
-				new \\ITRocks\\Framework\\Reflection\\Reflection_Property(__CLASS__, '$property_name')
-			);
-		}";
-			}
-		}
-		if (!isset($operator) && beginsWith($over['call'], 'parent::')) {
-			return '';
-		}
 		return $over['prototype'] . LF . TAB . TAB . $code . LF . TAB . '}' . LF;
 	}
 
