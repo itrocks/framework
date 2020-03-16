@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
@@ -21,6 +22,7 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql;
 use ITRocks\Framework\Sql\Builder\Count;
 use ITRocks\Framework\Sql\Builder\Select;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use mysqli_result;
 
@@ -63,6 +65,12 @@ class Link extends Dao\Sql\Link
 	 */
 	private $commit_stack = 0;
 
+	//--------------------------------------------------------------------------- $commit_stack_trace
+	/**
+	 * @var Call_Stack[]
+	 */
+	private $commit_stack_trace;
+
 	//----------------------------------------------------------------------------------- $connection
 	/**
 	 * Connection to the mysqli server is a mysqli object
@@ -103,6 +111,21 @@ class Link extends Dao\Sql\Link
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __destruct
+	public function __destruct()
+	{
+		if ($this->commit_stack) {
+			trigger_error("Commit stack not closed", E_USER_WARNING);
+			if (isset($GLOBALS['D'])) {
+				$counter = 0;
+				foreach ($this->commit_stack_trace as $call_stack) {
+					echo 'Commit #' . (++$counter) . BRLF;
+					echo $call_stack->asHtml();
+				}
+			}
+		}
+	}
+
 	//----------------------------------------------------------------------------------------- begin
 	/**
 	 * Begin transaction
@@ -116,6 +139,11 @@ class Link extends Dao\Sql\Link
 			$this->query('START TRANSACTION');
 		}
 		$this->commit_stack ++;
+		if (isset($GLOBALS['D'])) {
+			echo "BEGIN #$this->commit_stack" . BRLF;
+			echo PRE . (new Call_Stack)->asHtml() . _PRE;
+			$this->commit_stack_trace[$this->commit_stack] = new Call_Stack();
+		}
 	}
 
 	//---------------------------------------------------------------------------------------- commit
@@ -127,12 +155,22 @@ class Link extends Dao\Sql\Link
 	{
 		if ($flush) {
 			$this->commit_stack = 0;
+			if (isset($GLOBALS['D'])) {
+				$this->commit_stack_trace = [];
+			}
 			$this->query('COMMIT');
 		}
 		elseif ($this->commit_stack > 0) {
+			if (isset($GLOBALS['D'])) {
+				echo "COMMIT #$this->commit_stack" . BRLF;
+				echo PRE . (new Call_Stack)->asHtml() . _PRE;
+			}
 			$this->commit_stack --;
 			if (!$this->commit_stack) {
 				$this->query('COMMIT');
+				if (isset($GLOBALS['D'])) {
+					$this->commit_stack_trace = [];
+				}
 			}
 		}
 		if (!$this->commit_stack) {
@@ -341,9 +379,15 @@ class Link extends Dao\Sql\Link
 						}
 					}
 				}
-				$this->query(Sql\Builder::buildDelete($class_name, $id));
-				$this->disconnect($object);
-				$this->commit();
+				// delete query may crash if the database engine breaks it
+				try {
+					$this->query(Sql\Builder::buildDelete($class_name, $id));
+					$this->disconnect($object);
+					$this->commit();
+				}
+				catch (Exception $exception) {
+					$this->rollback();
+				}
 				array_pop($this->connection->contexts);
 				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 				foreach ((new Reflection_Class($object))->getAnnotations('after_delete') as $after_delete) {
@@ -1074,6 +1118,10 @@ class Link extends Dao\Sql\Link
 	public function rollback()
 	{
 		$this->commit_stack = 0;
+		if (isset($GLOBALS['D'])) {
+			trigger_error('Rollback', E_USER_NOTICE);
+			$this->commit_stack_trace = [];
+		}
 		$this->query('ROLLBACK');
 		return true;
 	}
