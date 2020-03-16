@@ -553,7 +553,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!isset($this->use)) {
 			$this->scanUntilClassName();
 		}
-		return array_keys($this->use);
+		return $this->use ? array_keys($this->use) : [];
 	}
 
 	//-------------------------------------------------------------------------------- getParentClass
