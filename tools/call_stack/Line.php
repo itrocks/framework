@@ -93,7 +93,7 @@ class Line
 		if (is_object($argument)) {
 			$identifier = ($argument instanceof Closure) ? null : Dao::getObjectIdentifier($argument);
 			if (method_exists($argument, '__toString')) {
-				$identifier = (isset($identifier) ? ($identifier . '=') : '') . strval($argument);
+				$identifier = (isset($identifier) ? ($identifier . '=') : '') . $argument->__toString();
 			}
 			$dump = get_class($argument) . (isset($identifier) ? ('::' . $identifier) : '');
 		}
