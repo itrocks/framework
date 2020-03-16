@@ -94,6 +94,18 @@ class Reflection_Method extends ReflectionMethod
 		return $parameters;
 	}
 
+	//----------------------------------------------------------------------------- getParametersCall
+	/**
+	 * Return a calling string for parameters call
+	 *
+	 * @return string ie '$param1, $param2, $param3'
+	 */
+	public function getParametersCall()
+	{
+		$parameters_names = $this->getParametersNames();
+		return $parameters_names ? ('$' . join(', $', $this->getParametersNames())) : '';
+	}
+
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
 	 * @param $by_name boolean

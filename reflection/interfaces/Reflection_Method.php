@@ -21,6 +21,14 @@ interface Reflection_Method extends Reflection_Class_Component
 	 */
 	public function getDeclaringClass();
 
+	//----------------------------------------------------------------------------- getParametersCall
+	/**
+	 * Return a calling string for parameters call
+	 *
+	 * @return string ie '$param1, $param2, $param3'
+	 */
+	public function getParametersCall();
+
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
 	 * @param $by_name boolean
