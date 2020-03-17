@@ -8,6 +8,7 @@ use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Filters_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Placeholder_Annotation;
@@ -238,7 +239,6 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filters string[] the key is the name of the filter, the value is the name of the form
 	 *   containing its value
 	 * @param $as_string boolean true if the object should be used as a string
@@ -247,43 +247,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	public function buildObject(array $filters = null, $as_string = null)
 	{
 		if (!isset($filters)) {
-			$filters_annotation = $this->property->getListAnnotation('filters');
-			$filters_values     = $filters_annotation->values();
-			if ($filters_values) {
-				$class_name         = $this->property->getFinalClassName();
-				foreach ($filters_values as $filter) {
-					if (strpos($filter, '=')) {
-						[$filter, $filter_value_name] = explode('=', $filter);
-						$filter            = trim($filter);
-						$filter_value_name = trim($filter_value_name);
-					}
-					else {
-						$filter_value_name = $filter;
-					}
-					if (
-						is_numeric($filter_value_name)
-						|| (
-							in_array(substr($filter_value_name, 0, 1), [DQ, Q])
-							&& (substr($filter_value_name, 0, 1) === substr($filter_value_name, -1))
-						)
-					) {
-						$filters[$filter] = $filter_value_name;
-					}
-					elseif (property_exists($class_name, $filter_value_name)) {
-						/** @noinspection PhpUnhandledExceptionInspection property_exists */
-						$property         = new Reflection_Property($class_name, $filter_value_name);
-						$filters[$filter] = $property->pathAsField(true);
-					}
-					elseif (method_exists($class_name, $filter_value_name)) {
-						$filters[$filter] = $this->object->$filter_value_name();
-					}
-					else {
-						user_error(
-							'Not a method or property ' . $class_name . '::' . $filter_value_name, E_USER_ERROR
-						);
-					}
-				}
-			}
+			$filters = Filters_Annotation::of($this->property)->parse($this->object);
 		}
 		$as_string = isset($as_string)
 			? $as_string

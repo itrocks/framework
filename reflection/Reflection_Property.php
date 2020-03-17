@@ -785,7 +785,7 @@ class Reflection_Property extends ReflectionProperty
 	public function pathAsField($class_with_id = false)
 	{
 		$path = Names::propertyPathToField($this->path);
-		if ($class_with_id && $this->getType()->isClass()) {
+		if ($class_with_id && ($type = $this->getType()) && $type->isClass() && !$type->isDateTime()) {
 			if (strpos($path, DOT)) {
 				$path .= '[id]';
 			}

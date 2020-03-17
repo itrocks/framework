@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Edit;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Property\Filters_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -101,8 +102,11 @@ class Html_Builder_Map extends Map
 		$builder = new Html_Builder_Type('', $property->getType()->getElementType(), $value, $pre_path);
 		$builder->is_abstract = $this->is_abstract;
 		$builder->readonly    = $this->readOnly();
+		$builder->setTemplate($this->template);
 
-		$input = new Div($builder->setTemplate($this->template)->build());
+		$filters = Filters_Annotation::of($this->property)->parse($object);
+		$builder->parent_level_filters = boolval($filters);
+		$input = new Div($filters ? $builder->buildObject($filters) : $builder->build());
 		if (!$this->readOnly() && !$this->noDelete()) {
 			$minus = new Button('-');
 			$minus->addClass('minus');

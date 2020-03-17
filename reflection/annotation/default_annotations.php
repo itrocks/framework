@@ -395,12 +395,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@immutable' => Default_True_Boolean_Annotation::class,
 
 	/**
-	 * @filters property_name, another_property
-	 * Declares other property names that are used to filter possible values of the property
-	 */
-	Parser::T_PROPERTY . '@filters' => List_Annotation::class,
-
-	/**
 	 * @force_validate [false]
 	 * Force validation of a linked sub-object when the object is validated
 	 */

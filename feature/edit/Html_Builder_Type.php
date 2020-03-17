@@ -102,6 +102,12 @@ class Html_Builder_Type
 	 */
 	public $on_change = [];
 
+	//------------------------------------------------------------------------- $parent_level_filters
+	/**
+	 * @var boolean
+	 */
+	public $parent_level_filters = false;
+
 	//------------------------------------------------------------------------------------- $pre_path
 	/**
 	 * @var string
@@ -384,7 +390,7 @@ class Html_Builder_Type
 		)
 			? $this->getFieldName()
 			: null;
-		$input    = new Input($input_id, strval($this->value));
+		$input = new Input($input_id, strval($this->value));
 		if ($this->auto_width) {
 			$input->addClass('auto_width');
 		}
@@ -424,8 +430,10 @@ class Html_Builder_Type
 		}
 		else {
 			if ($filters) {
-				$html_filters = [];
-				$old_name     = $this->name;
+				$html_filters   = [];
+				$old_name       = $this->name;
+				$old_pre_path   = $this->pre_path;
+				$this->pre_path = lLastParse($this->pre_path, DOT, 1, false) ?: null;
 				foreach ($filters as $filter_name => $filter_value) {
 					if (
 						is_numeric($filter_value)
@@ -442,7 +450,8 @@ class Html_Builder_Type
 						$html_filters[] = $filter_name . '=' . $name;
 					}
 				}
-				$this->name = $old_name;
+				$this->name     = $old_name;
+				$this->pre_path = $old_pre_path;
 				$input->setAttribute('data-combo-filters', join(',', $html_filters));
 			}
 			$input->addClass('combo');
