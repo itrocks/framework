@@ -68,9 +68,13 @@ $(document).ready(function()
 						((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
 						&& (filter[1].substr(0, 1) === filter[1].substr(-1))
 					);
+				var $container = $element.closest('form');
+				if (!$container.length) {
+					$container = $element.closest('article');
+				}
 				var $filter_element = is_constant
 					? { length: 0 }
-					: $element.closest('form').find('[name=' + DQ + filter[1] + DQ + ']');
+					: $container.find('[name=' + DQ + filter[1] + DQ + ']');
 				if ($filter_element.length) {
 					request['filters[' + filter[0] + ']'] = $filter_element.val();
 				}
