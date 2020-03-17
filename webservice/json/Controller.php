@@ -45,6 +45,9 @@ class Controller implements Default_Feature_Controller
 			reset($search->arguments);
 			$search = [key($search->arguments) => current($search->arguments)];
 		}
+		if (!$search->arguments) {
+			$search = null;
+		}
 	}
 
 	//------------------------------------------------------------------------------------- buildJson
