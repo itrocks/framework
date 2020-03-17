@@ -5,10 +5,13 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Dao\Option\Sort;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -24,22 +27,50 @@ use ITRocks\Framework\Tools\String_Class;
 class Controller implements Default_Feature_Controller
 {
 
+	//---------------------------------------------------------------------------------------- $class
+	/**
+	 * @var Reflection_Class
+	 */
+	public $class;
+
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $search  array|object
 	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
 	 */
 	protected function applyFiltersToSearch(&$search, array $filters)
 	{
 		if (!(is_object($search) && $search->isAnd())) {
-			$search = Dao\Func::andOp($search ? [$search] : []);
+			$search = Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
-			$search->arguments[$filter_name] = (
-				is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')
-			)
-				? Dao\Func::notEqual(substr($filter_value, 1))
-				: $filter_value;
+			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')) {
+				$filter_value = Func::notEqual(substr($filter_value, 1));
+			}
+			elseif (substr($filter_name, -1) === '<') {
+				$filter_name  = substr($filter_name, 0, -1);
+				$filter_value = Func::lessOrEqual($filter_value);
+			}
+			elseif (substr($filter_name, -1) === '>') {
+				$filter_name  = substr($filter_name, 0, -1);
+				$filter_value = Func::greaterOrEqual($filter_value);
+			}
+			elseif (substr($filter_name, -1) === '!') {
+				$filter_name  = substr($filter_name, 0, -1);
+				$filter_value = Func::notEqual($filter_value);
+			}
+			/** @noinspection PhpUnhandledExceptionInspection filters must be valid */
+			$property = new Reflection_Property($this->class->name, $filter_name);
+			if ($property->getType()->isDateTime()) {
+				if ($filter_value instanceof Comparison) {
+					$filter_value->than_value = Loc::dateToIso($filter_value->than_value);
+				}
+				else {
+					$filter_value = Loc::dateToIso($filter_value);
+				}
+			}
+			$search->arguments[$filter_name] = $filter_value;
 		}
 		if (count($search->arguments) == 1) {
 			reset($search->arguments);
@@ -220,18 +251,22 @@ class Controller implements Default_Feature_Controller
 	protected function searchObjectsForAutoCompleteCombo($class_name, array $parameters)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection verified class name */
-		$class         = new Reflection_Class($class_name);
+		$this->class   = new Reflection_Class($class_name);
 		$first_search  = null;
 		$search        = null;
 		$second_search = null;
 		if (!empty($parameters['term'])) {
 			$search_array_builder = new Search_Array_Builder();
-			$search = $search_array_builder->buildMultiple($class, $parameters['term'], '', '%');
+			$search = $search_array_builder->buildMultiple(
+				$this->class, $parameters['term'], '', '%'
+			);
 			$second_search = $search_array_builder->buildMultiple(
-				$class, str_replace(' ', '%', $parameters['term']), '', '%'
+				$this->class, str_replace(' ', '%', $parameters['term']), '', '%'
 			);
 			$search_array_builder->and = '¤no-and-separator¤';
-			$first_search = $search_array_builder->buildMultiple($class, $parameters['term'], '', '%');
+			$first_search = $search_array_builder->buildMultiple(
+				$this->class, $parameters['term'], '', '%'
+			);
 		}
 		if (!empty($parameters['filters'])) {
 			$this->applyFiltersToSearch($first_search,  $parameters['filters']);
@@ -242,9 +277,9 @@ class Controller implements Default_Feature_Controller
 		if (
 			$filters = Filter_Annotation::apply($class_name, $search_options, Filter_Annotation::FOR_USE)
 		) {
-			$first_search  = $first_search  ? Dao\Func::andOp([$filters, $first_search])  : $filters;
-			$search        = $search        ? Dao\Func::andOp([$filters, $search])        : $filters;
-			$second_search = $second_search ? Dao\Func::andOp([$filters, $second_search]) : $filters;
+			$first_search  = $first_search  ? Func::andOp([$filters, $first_search])  : $filters;
+			$search        = $search        ? Func::andOp([$filters, $search])        : $filters;
+			$second_search = $second_search ? Func::andOp([$filters, $second_search]) : $filters;
 		}
 
 		// first object only
@@ -256,7 +291,7 @@ class Controller implements Default_Feature_Controller
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects
 				? reset($objects)
-				: ($class->isAbstract() ? (new String_Class) : Builder::create($class_name));
+				: ($this->class->isAbstract() ? (new String_Class) : Builder::create($class_name));
 			return $this->buildJson($source_object, $class_name);
 		}
 		// all results from search
@@ -271,7 +306,7 @@ class Controller implements Default_Feature_Controller
 						!strlen($value)
 						&& (new Reflection_Property($class_name, $property_name))->getType()->isClass()
 					) {
-						$search[$property_name] = Dao\Func::isNull();
+						$search[$property_name] = Func::isNull();
 					}
 				}
 			}
