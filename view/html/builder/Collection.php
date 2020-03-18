@@ -215,7 +215,8 @@ class Collection
 				)
 			)
 		);
-		$cell->setData('name', $property->path);
+		$cell->setData('property', $property->path);
+		$cell->setData('title',    Loc::tr($property->path));
 		return $cell;
 	}
 
@@ -243,7 +244,8 @@ class Collection
 					$cell->setStyle('display', 'none');
 				}
 				$cell->addClass($type->asString());
-				$cell->setData('name', $property->path);
+				$cell->setData('property', $property->path);
+				$cell->setData('title',    Loc::tr($property->path));
 				$header->addItem($cell);
 			}
 		}

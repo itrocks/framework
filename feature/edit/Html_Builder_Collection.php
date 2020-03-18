@@ -220,8 +220,9 @@ class Html_Builder_Collection extends Collection
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');
 		}
+		$cell->setData('property', $property->path);
 		$cell->setData(
-			'name',
+			'title',
 			Loc::tr(
 				Names::propertyToDisplay(Alias_Annotation::of($property)->value),
 				$this->class_name
