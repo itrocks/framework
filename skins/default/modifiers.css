@@ -1,11 +1,15 @@
-button + div.plus-minus, input + div.plus-minus {
+button + div.prev-next, input + div.prev-next {
   display: inline-flex;
   flex-direction: column;
   height: 100%;
   position: absolute; }
-  button + div.plus-minus > a, input + div.plus-minus > a {
+  button + div.prev-next > a, input + div.prev-next > a {
     display: inline-block;
+    font-size: 0;
     height: 50%;
-    padding-top: 2px;
-    text-align: center;
     width: 16px; }
+    button + div.prev-next > a:first-child, input + div.prev-next > a:first-child {
+      background: #d8d8d8 url("img/expand-less-12.svg") center no-repeat;
+      border-bottom: 1px solid #b8b8b8; }
+    button + div.prev-next > a:last-child, input + div.prev-next > a:last-child {
+      background: #d8d8d8 url("img/expand-more-12.svg") center no-repeat; }
