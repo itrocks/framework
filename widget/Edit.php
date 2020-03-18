@@ -12,7 +12,7 @@ class Edit extends Property
 
 	//------------------------------------------------------------------------------------- buildHtml
 	/**
-	 * @inheritDoc
+	 * @return string
 	 */
 	public function buildHtml()
 	{
