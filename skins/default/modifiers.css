@@ -1,0 +1,11 @@
+button + div.plus-minus, input + div.plus-minus {
+  display: inline-flex;
+  flex-direction: column;
+  height: 100%;
+  position: absolute; }
+  button + div.plus-minus > a, input + div.plus-minus > a {
+    display: inline-block;
+    height: 50%;
+    padding-top: 2px;
+    text-align: center;
+    width: 16px; }
