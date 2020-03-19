@@ -188,7 +188,7 @@ class Html_Builder_Type
 			$old_name        = $this->name;
 			foreach ($this->conditions as $condition_name => $condition_value) {
 				$this->name = $condition_name;
-				$name       = $this->getFieldName('', false);
+				$name       = $this->getFieldName('', false, $old_name);
 				$operator   = (in_array(substr($condition_value, 0, 1), ['<', '>']) ? '' : '=');
 				$html_conditions[] = $name . $operator . $condition_value;
 			}
@@ -561,9 +561,10 @@ class Html_Builder_Type
 	/**
 	 * @param $prefix            string
 	 * @param $counter_increment boolean
+	 * @param $counter_name      string
 	 * @return string
 	 */
-	public function getFieldName($prefix = '', $counter_increment = true)
+	public function getFieldName($prefix = '', $counter_increment = true, $counter_name = null)
 	{
 		if (empty($this->name) && $this->pre_path) {
 			$prefix = '';
@@ -572,8 +573,11 @@ class Html_Builder_Type
 			$field_name = $prefix . $this->name;
 		}
 		elseif (substr($this->pre_path, -2) === '[]') {
+			if ($counter_name) {
+				$counter_name = substr($this->pre_path, 0, -2) . '[' . $prefix . $counter_name . ']';
+			}
 			$field_name  = substr($this->pre_path, 0, -2) . '[' . $prefix . $this->name . ']';
-			$count       = $this->template->nextCounter($field_name, $counter_increment);
+			$count       = $this->template->nextCounter($counter_name ?: $field_name, $counter_increment);
 			$field_name .= '[' . $count . ']';
 		}
 		elseif (strlen($prefix . $this->name)) {
