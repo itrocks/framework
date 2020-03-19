@@ -137,9 +137,10 @@ abstract class Data_Link
 	 *
 	 * @param $what       object|string|array source object, class name or properties for filter
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	abstract public function count($what, $class_name = null);
+	abstract public function count($what, $class_name = null, $options = []);
 
 	//--------------------------------------------------------------------------------- createStorage
 	/**

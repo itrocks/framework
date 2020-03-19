@@ -128,11 +128,12 @@ class Dao implements Configurable
 	 *
 	 * @param $what       object|string|array source object for filter, only set properties used
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
+	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public static function count($what, $class_name = null)
+	public static function count($what, $class_name = null, $options = [])
 	{
-		return self::current()->count($what, $class_name);
+		return self::current()->count($what, $class_name, $options);
 	}
 
 	//------------------------------------------------------------------------------ createIfNoResult

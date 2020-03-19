@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
+use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Sql\Join\Joins;
 
@@ -33,14 +34,19 @@ class Count
 	 * - column.foreign_column : column must be a property of class, foreign_column must be a property
 	 * of column's type class.
 	 *
-	 * @param $class_name  string        base object class name
-	 * @param $where_array array|object  where array expression, keys are columns names,
-	 * or filter object
+	 * @param $class_name  string       base object class name
+	 * @param $where_array array|object where array expression, keys are columns names,
+	 *                                  or filter object
 	 * @param $sql_link    Link
+	 * @param $options     Option|Option[] DAO options can be used for complex queries building
 	 */
-	public function __construct($class_name, $where_array = null, Link $sql_link = null)
-	{
-		$joins = new Joins($class_name);
+	public function __construct(
+		$class_name, $where_array = null, Link $sql_link = null, $options = []
+	) {
+		if (!is_array($options)) {
+			$options = $options ? [$options] : [];
+		}
+		$joins = new Joins($class_name, [], strval(Link_Property_Name::in($options)));
 		$this->tables_builder = new Tables($class_name, $joins);
 		$this->where_builder  = new Where($class_name, $where_array, $sql_link, $joins);
 	}
