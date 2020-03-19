@@ -15,6 +15,7 @@ trait Has_Ordering
 	/**
 	 * @customized
 	 * @empty_check false
+	 * @no_autowidth
 	 * @user hide_output
 	 * @var integer
 	 */
