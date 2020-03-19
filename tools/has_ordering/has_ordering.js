@@ -6,7 +6,6 @@ $(document).ready(function()
 	var refresh = function()
 	{
 		var ordering = 0;
-		console.log('refresh', $(this));
 		this.each(function() {
 			ordering ++;
 			$(this).find('li[data-property=ordering] input[name*="[ordering]"]').val(ordering);
