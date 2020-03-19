@@ -86,9 +86,9 @@ class Set extends Element
 	{
 		$content = parent::getContent();
 		// TODO HCR Something more simple (BP : why removeAttribute ?)
-		$conditions = $this->getAttribute('data-conditions');
+		$conditions = $this->getData('conditions');
 		if ($conditions) {
-			$this->removeAttribute('data-conditions');
+			$this->removeData('conditions');
 		}
 		if (!isset($content)) {
 			$values = $this->values;

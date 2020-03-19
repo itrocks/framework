@@ -193,7 +193,7 @@ class Html_Builder_Type
 				$html_conditions[] = $name . $operator . $condition_value;
 			}
 			$this->name = $old_name;
-			$element->setAttribute('data-conditions', join(';', $html_conditions));
+			$element->setData('conditions', join(';', $html_conditions));
 		}
 	}
 
@@ -452,7 +452,7 @@ class Html_Builder_Type
 				}
 				$this->name     = $old_name;
 				$this->pre_path = $old_pre_path;
-				$input->setAttribute('data-combo-filters', join(',', $html_filters));
+				$input->setData('combo-filters', join(',', $html_filters));
 			}
 			$input->addClass('combo');
 			// 'more' button
