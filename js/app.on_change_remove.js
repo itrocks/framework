@@ -111,6 +111,15 @@ $(document).ready(function()
 			}
 		}
 
+		if (
+			$input.val().length
+			&& ($input.is(':focus') || $input.next().is(':focus'))
+			&& ($input.is(':visible') || $input.next().is(':visible'))
+			&& (!$input.is('[readonly]') && !$input.next().is('[readonly]'))
+		) {
+			do_change = false;
+		}
+
 		if (do_change) {
 			$input.attr('value', value).val(value);
 			if ((string_value !== null)) {
