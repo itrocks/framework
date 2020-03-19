@@ -450,6 +450,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@multiline' => Boolean_Annotation::class,
 
 	/**
+	 * @override [false]
+	 * This tells that the property will not have autowidth on collection view
+	 */
+	Parser::T_PROPERTY . '@no_autowidth' => Boolean_Annotation::class,
+
+	/**
 	 * @ordered_values [false]
 	 * This tells that the property values must not be ordered (default is true)
 	 */

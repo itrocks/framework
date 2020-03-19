@@ -244,6 +244,9 @@ class Collection
 					$cell->setStyle('display', 'none');
 				}
 				$cell->addClass($type->asString());
+				if ($property->getAnnotation('no_autowidth')->value) {
+					$cell->addClass('no-autowidth');
+				}
 				$cell->setData('property', $property->path);
 				$cell->setData('title',    Loc::tr($property->path));
 				$header->addItem($cell);
