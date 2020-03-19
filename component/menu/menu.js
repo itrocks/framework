@@ -74,7 +74,7 @@ $(document).ready(function()
 			var is_visible = false;
 			var block_text = $h3_a.text().simple();
 			var item_text  = $a.text().simple();
-			for (var i in values) if (values.hasOwnProperty(i)) {
+			for (var i in values) if (values.hasOwnProperty(i) && values[i].length) {
 				var value = values[i];
 				if ((item_text.indexOf(value) > -1) || (block_text.indexOf(value) > -1)) {
 					is_visible = true;
