@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Option\Only;
 use ITRocks\Framework\Feature\Unlock\Unlockable;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * Apply this to any object that can be locked using a lock button
@@ -46,6 +47,7 @@ trait Lockable
 	 * Determines if data were locked for write
 	 * A locked object can be written only if it has an Only('locked') option
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $link    Data_Link
 	 * @param $options array|Only[]
 	 * @return boolean
@@ -55,7 +57,24 @@ trait Lockable
 		if ($this->isDeletable($link)) {
 			return true;
 		}
+
 		$only = Only::in($options);
+
+		if ($only) {
+			$unlocked = true;
+			foreach ($only->properties as $property_name) {
+				/** @noinspection PhpUnhandledExceptionInspection property must be valid */
+				$property = new Reflection_Property($this, $property_name);
+				if (!$property->getAnnotation('unlocked')->value) {
+					$unlocked = false;
+					break;
+				}
+			}
+			if ($unlocked) {
+				return true;
+			}
+		}
+
 		return (
 			is_a($this, Unlockable::class)
 			&& $only

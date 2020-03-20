@@ -563,6 +563,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@unit' => Constant_Or_Method_Annotation::class,
 
 	/**
+	 * @unlocked
+	 * This allow you to write objects with Dao::only('this_property'), even if the object is locked
+	 */
+	Parser::T_PROPERTY . '@unlocked' => Boolean_Annotation::class,
+
+	/**
 	 * @update_constraint cascade|initial|restrict|set_null
 	 * Force foreign key constraint on update
 	 * initial : cancels any parent forced update constraint using this annotation
