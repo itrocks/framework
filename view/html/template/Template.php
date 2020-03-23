@@ -1684,6 +1684,9 @@ class Template
 					$anchor->setAttribute('target', Target::MAIN);
 					$object = strval($anchor);
 				}
+				elseif (($object instanceof File) && Dao::getObjectIdentifier($object)) {
+					$object = $this->parseFileToString($object);
+				}
 			}
 			else {
 				$object = $this->parseMethod($object, $property_name);
