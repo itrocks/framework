@@ -34,14 +34,6 @@ use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 class Html_Builder_Collection extends Collection
 {
 
-	//---------------------------------------------------------------------------------- $create_only
-	/**
-	 * Property create only
-	 *
-	 * @var boolean
-	 */
-	protected $create_only;
-
 	//--------------------------------------------------------------------------------------- $no_add
 	/**
 	 * Property no add cache. Do not use this property : use noAdd() instead
@@ -264,32 +256,6 @@ class Html_Builder_Collection extends Collection
 		return $row;
 	}
 
-	//------------------------------------------------------------------------------------ createOnly
-	/**
-	 * @return boolean
-	 */
-	protected function createOnly()
-	{
-		if (!isset($this->create_only)) {
-			$this->create_only = $this->getAnnotations()->has(User_Annotation::CREATE_ONLY);
-		}
-		return $this->create_only;
-	}
-
-	//-------------------------------------------------------------------------------- getAnnotations
-	/**
-	 * Read all annotations of this->property
-	 *
-	 * @return List_Annotation
-	 */
-	private function getAnnotations()
-	{
-		if (!$this->user_annotations) {
-			$this->user_annotations = $this->property->getListAnnotation(User_Annotation::ANNOTATION);
-		}
-		return $this->user_annotations;
-	}
-
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @return Reflection_Property[]
@@ -297,20 +263,30 @@ class Html_Builder_Collection extends Collection
 	public function getProperties()
 	{
 		$properties = parent::getProperties();
-		if ($this->readOnly() || $this->createOnly()) {
+		if ($this->readOnly()) {
 			foreach ($properties as $property) {
 				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
-				if ($this->read_only
-					// If collection is set then ==> read only
-					// TODO Is it the best condition to test ?
-					|| ($this->create_only && $this->collection)
-				) {
+				if ($this->read_only) {
 					$user_annotation->add(User_Annotation::READONLY);
 					$user_annotation->add(User_Annotation::TOOLTIP);
 				}
 			}
 		}
 		return $properties;
+	}
+
+	//----------------------------------------------------------------------------- getUserAnnotation
+	/**
+	 * Read @user annotations this->property
+	 *
+	 * @return User_Annotation
+	 */
+	private function getUserAnnotation()
+	{
+		if (!$this->user_annotations) {
+			$this->user_annotations = User_Annotation::of($this->property);
+		}
+		return $this->user_annotations;
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
@@ -333,7 +309,7 @@ class Html_Builder_Collection extends Collection
 	protected function noAdd()
 	{
 		if (!isset($this->no_add)) {
-			$this->no_add = $this->getAnnotations()->has(User_Annotation::NO_ADD);
+			$this->no_add = $this->getUserAnnotation()->has(User_Annotation::NO_ADD);
 		}
 		return $this->no_add;
 	}
@@ -345,7 +321,7 @@ class Html_Builder_Collection extends Collection
 	protected function noDelete()
 	{
 		if (!isset($this->no_delete)) {
-			$this->no_delete = $this->getAnnotations()->has(User_Annotation::NO_DELETE);
+			$this->no_delete = $this->getUserAnnotation()->has(User_Annotation::NO_DELETE);
 		}
 		return $this->no_delete;
 	}
@@ -357,7 +333,7 @@ class Html_Builder_Collection extends Collection
 	protected function readOnly()
 	{
 		if (!isset($this->read_only)) {
-			$this->read_only = $this->getAnnotations()->has(User_Annotation::READONLY);
+			$this->read_only = $this->getUserAnnotation()->has(User_Annotation::READONLY);
 		}
 		return $this->read_only;
 	}

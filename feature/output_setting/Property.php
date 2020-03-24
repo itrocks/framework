@@ -12,14 +12,6 @@ use ITRocks\Framework\Tools\Can_Be_Empty;
 class Property implements Can_Be_Empty
 {
 
-	//---------------------------------------------------------------------------------- $create_only
-	/**
-	 * Field is enable for create only
-	 *
-	 * @var string
-	 */
-	public $create_only;
-
 	//-------------------------------------------------------------------------------------- $display
 	/**
 	 * Display must be stored already translated
@@ -81,14 +73,13 @@ class Property implements Can_Be_Empty
 	{
 		if (isset($class_name) && isset($property_path)) {
 			/** @noinspection PhpUnhandledExceptionInspection class name and property must be valid */
-			$property          = new Reflection_Property_Value($class_name, $property_path);
-			$this->display     = $property->display();
-			$this->path        = $property->path;
-			$user_annotation   = $property->getListAnnotation(User_Annotation::ANNOTATION);
-			$this->create_only = $user_annotation->has(User_Annotation::CREATE_ONLY);
-			$this->hide_empty  = $user_annotation->has(User_Annotation::HIDE_EMPTY);
-			$this->read_only   = $user_annotation->has(User_Annotation::READONLY);
-			$this->tooltip     = $user_annotation->has(Tooltip_Annotation::ANNOTATION);
+			$property         = new Reflection_Property_Value($class_name, $property_path);
+			$this->display    = $property->display();
+			$this->path       = $property->path;
+			$user_annotation  = $property->getListAnnotation(User_Annotation::ANNOTATION);
+			$this->hide_empty = $user_annotation->has(User_Annotation::HIDE_EMPTY);
+			$this->read_only  = $user_annotation->has(User_Annotation::READONLY);
+			$this->tooltip    = $user_annotation->has(Tooltip_Annotation::ANNOTATION);
 		}
 	}
 

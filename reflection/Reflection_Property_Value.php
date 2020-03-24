@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
@@ -266,7 +267,14 @@ class Reflection_Property_Value extends Reflection_Property
 	 */
 	public function isVisible($hide_empty_test = true, $hidden_test = false, $invisible_test = true)
 	{
-		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
+		$user_annotation = User_Annotation::of($this);
+		if (
+			!$this->final_value
+			&& $user_annotation->has(User_Annotation::ADD_ONLY)
+			&& Dao::getObjectIdentifier($this->object)
+		) {
+			$user_annotation->add(User_Annotation::READONLY);
+		}
 		return !$this->isStatic()
 			&& (!$hidden_test    || !$user_annotation->has(User_Annotation::HIDDEN))
 			&& (!$invisible_test || !$user_annotation->has(User_Annotation::INVISIBLE))
@@ -276,8 +284,7 @@ class Reflection_Property_Value extends Reflection_Property
 					|| !$this->isValueEmpty()
 				))
 				|| (!$hide_empty_test && (
-					!$user_annotation->has(User_Annotation::CREATE_ONLY)
-					|| !$user_annotation->has(User_Annotation::HIDE_EMPTY)
+					!$user_annotation->has(User_Annotation::HIDE_EMPTY)
 					|| !$user_annotation->has(User_Annotation::READONLY)
 					|| !$this->isValueEmpty()
 				))

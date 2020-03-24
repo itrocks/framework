@@ -9,16 +9,8 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 class User_Annotation extends List_Annotation
 {
 
-	//------------------------------------------------------------------------------------ ANNOTATION
-	const ANNOTATION = 'user';
-
-	//----------------------------------------------------------------------------------- CREATE_ONLY
-	/**
-	 * create_only : field is enabled on creation only
-	 */
-	const CREATE_ONLY = 'create_only';
-
 	//-------------------------------------------------------------------------- Constants for $value
+	const ADD_ONLY         = 'add_only';
 	const HIDDEN           = 'hidden';
 	const HIDE_EDIT        = 'hide_edit';
 	const HIDE_EMPTY       = 'hide_empty';
@@ -29,6 +21,9 @@ class User_Annotation extends List_Annotation
 	const INVISIBLE_OUTPUT = 'invisible_output';
 	const NO_ADD           = 'no_add';
 	const NO_DELETE        = 'no_delete';
+
+	//------------------------------------------------------------------------------------ ANNOTATION
+	const ANNOTATION = 'user';
 
 	//-------------------------------------------------------------------------------------- READONLY
 	/**

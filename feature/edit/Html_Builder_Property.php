@@ -91,17 +91,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 
 		// 1st, get read_only from @user readonly
-		$this->readonly = (
-			$user_annotation->has(User_Annotation::READONLY)
-			// Create_only annotation and object already exists ? ==> readonly = true
-			|| (
-				$user_annotation->has(User_Annotation::CREATE_ONLY)
-				// TODO Are they the best conditions to test ?
-				&& ($property instanceof Reflection_Property_Value)
-				&& is_object($property->getObject())
-				&& !Empty_Object::isEmpty($property->getObject())
-			)
-		);
+		$this->readonly = $user_annotation->has(User_Annotation::READONLY);
 
 		if (
 			!$this->readonly
