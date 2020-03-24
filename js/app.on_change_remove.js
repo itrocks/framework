@@ -59,15 +59,43 @@ $(document).ready(function()
 		});
 	};
 
+	//----------------------------------------------------------------------------- prepareCollection
+	/**
+	 * Prepare a collection :
+	 * - empty it if value is null
+	 * - if field_name includes a reference to a non-existing line : add it
+	 *
+	 * @param $field jQuery object the field element, with an id.component-objects#field_name_root
+	 * @param search the search selector for the targeted field
+	 * @param value  the value, for testing purpose only (setFieldValue sets the value)
+	 */
+	var prepareCollection = function($field, search, value)
+	{
+		var $collection = $field.find('> div > ul.collection', '> div > ul.map');
+		if (!$collection.length) {
+			return;
+		}
+		if (value === null) {
+			$collection.data('itrocks_add_index',  0);
+			$collection.data('itrocks_last_index', -1);
+			// TODO LOW call "click on minus", to allow on-remove
+			$collection.find('> li.data').remove();
+			return;
+		}
+		if (!$collection.find(search).length) {
+			$collection.data('addLine').call();
+		}
+	};
+
 	//--------------------------------------------------------------------------------- setFieldValue
 	/**
 	 * Use always this method to set a new value to a field
 	 * For a simple field, value is a string (or similar)
 	 * For a combo field, value is [id, string representation of value]
 	 *
-	 * @param $form jQuery object for the targeted form
+	 * @param $form      jQuery object for the targeted form
 	 * @param field_name string
-	 * @param value Array|string
+	 * @param value      Array|string
 	 * @todo should be able to set value for any form field tag (like select)
 	 */
 	var setFieldValue = function($form, field_name, value)
@@ -77,10 +105,27 @@ $(document).ready(function()
 		var $input       = $form.find(search);
 		var do_change    = true;
 		var string_value = null;
+		// id
 		if (!$input.length) {
 			$input = $form.find(search.repl('=' + DQ, '="id_'));
 		}
+		// new element for collection / empty collection
+		if (!$input.length) {
+			$input = $form.find('li.component-objects#' + field_name.lParse('['));
+			if ($input.length) {
+				prepareCollection($input, search, value);
+				if (value === null) {
+					return;
+				}
+				$input = $form.find(search);
+			}
+		}
+		// not found
+		if (!$input.length) {
+			return;
+		}
 
+		// simple value
 		if (((typeof value) === 'object') && value && !value.hasOwnProperty('0')) {
 			$.each(value, function(attribute, value) {
 				var $what = $input.next('input').attr(attribute) ? $input.next() : $input;
@@ -95,7 +140,7 @@ $(document).ready(function()
 			return;
 		}
 
-		// case we receive an array with the value (and id) and its string representation
+		// an array with the value (and id) and its string representation
 		if (Array.isArray(value)) {
 			string_value = ((value.length > 1) ? value[1] : '');
 			value        = (value.length       ? value[0] : '');
