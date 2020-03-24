@@ -35,21 +35,55 @@ $(document).ready(function()
 		return text;
 	};
 
+	//--------------------------------------------------------------------------------------- addLine
+	/**
+	 * @param $block jQuery a 'ul.collection, ul.map' single element
+	 */
+	var addLine = function($block)
+	{
+		// calculate depth in order to increment the right index
+		var depth   = -1;
+		var $parent = $block;
+		while (($parent = $parent.parent()).length) {
+			if ($parent.is(parent_selector)) {
+				depth ++;
+			}
+		}
+		// calculate new row and indexes
+		var $new_row = $block.data('itrocks_add').clone();
+		$block.data('itrocks_last_index', $block.data('itrocks_last_index') + 1);
+		var new_index = $block.data('itrocks_last_index');
+		var old_index = $block.data('itrocks_add_index');
+		var html      = $new_row.html();
+		if (html.indexOf('[') > -1) {
+			html = depthReplace(html, old_index, new_index, '[', ']', depth);
+		}
+		if (html.indexOf('%5B') > 1) {
+			html = depthReplace(html, old_index, new_index, '%5B', '%5D', depth);
+		}
+		$new_row.html(html);
+		// append and build new row
+		var $body = $block.children('tbody');
+		if (!$body.length) {
+			$body = $block;
+		}
+		$body.append($new_row);
+		$new_row.autofocus(false);
+		$new_row.build();
+		$new_row.autofocus(true);
+	};
+
 	//----------------------------------------------------------------------------------- autoAddLine
 	/**
-	 * @param event object jQuery event
-	 * @param force boolean @default false
+	 * Decide if a line must be added (last line with non-default values)
 	 */
-	var autoAddLine = function(event, force)
+	var autoAddLine = function()
 	{
 		var $this = $(this);
 		if (
-			!force
-			&& (
-				($this.val().length && ($this.val() === $this.data('default-value')))
-				|| $this.data('itrocks-no-add')
-				|| $this.data('no-empty-check')
-			)
+			($this.val().length && ($this.val() === $this.data('default-value')))
+			|| $this.data('itrocks-no-add')
+			|| $this.data('no-empty-check')
 		) {
 			return;
 		}
@@ -57,44 +91,12 @@ $(document).ready(function()
 		if ($row.data('itrocks-no-add')) {
 			return;
 		}
-		if (
-			((force !== undefined) && force)
-			|| ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length)
-		) {
+		if ($this.val() && ($this.val() !== '0') && $row.length && !$row.next('tr, li').length) {
 			var $block = $row.closest(parent_selector);
 			if (!$block.data('itrocks_add')) {
 				return;
 			}
-			// calculate depth in order to increment the right index
-			var depth   = -1;
-			var $parent = $block;
-			while (($parent = $parent.parent()).length) {
-				if ($parent.is(parent_selector)) {
-					depth ++;
-				}
-			}
-			// calculate new row and indexes
-			var $new_row = $block.data('itrocks_add').clone();
-			$block.data('itrocks_last_index', $block.data('itrocks_last_index') + 1);
-			var new_index = $block.data('itrocks_last_index');
-			var old_index = $block.data('itrocks_add_index');
-			var html      = $new_row.html();
-			if (html.indexOf('[') > -1) {
-				html = depthReplace(html, old_index, new_index, '[', ']', depth);
-			}
-			if (html.indexOf('%5B') > 1) {
-				html = depthReplace(html, old_index, new_index, '%5B', '%5D', depth);
-			}
-			$new_row.html(html);
-			// append and build new row
-			var $body = $block.children('tbody');
-			if (!$body.length) {
-				$body = $block;
-			}
-			$body.append($new_row);
-			$new_row.autofocus(false);
-			$new_row.build();
-			$new_row.autofocus(true);
+			addLine($block);
 		}
 	};
 
@@ -127,11 +129,24 @@ $(document).ready(function()
 	/**
 	 * Automatically add a line
 	 */
-	$body.build('call', [block_selector, 'input, select, textarea'], function()
+	var no_add_block = block_selector.replace(/,/g, ':not([data-no-add]),') + ':not([data-no-add])';
+	$body.build('call', [no_add_block, 'input, select, textarea'], function()
 	{
 		this.change(function() { if (!$(this).data('itrocks-no-add-change')) autoAddLine.call(this); });
-		this.focus(function() {  if (!$(this).data('itrocks-no-add-focus'))  autoAddLine.call(this); });
-		this.keyup(function() {  if (!$(this).data('itrocks-no-add-keyup'))  autoAddLine.call(this); });
+		this.focus (function() { if (!$(this).data('itrocks-no-add-focus'))  autoAddLine.call(this); });
+		this.keyup (function() { if (!$(this).data('itrocks-no-add-keyup'))  autoAddLine.call(this); });
+	});
+
+	//------------------------- article > form > ul.data ol.properties > li.component-objects addLine
+	/**
+	 * Programmatically add a line
+	 *
+	 * @example $('ul.collection').data('addLine').call();
+	 */
+	$body.build('each', 'ul.collection, ul.map', function()
+	{
+		var $block = $(this);
+		$block.data('addLine', function() { addLine($block); });
 	});
 
 	//------------------- article > form > ul.data ol.properties > li.component-objects > label click
@@ -140,15 +155,16 @@ $(document).ready(function()
 	 */
 	var add_selector = 'article > form > ul.data ol.properties > li.component-objects > label, '
 		+ 'article > form > ul.data ol.properties > li.objects > label';
-	$body.build('click', add_selector, function(event)
+	$body.build('click', add_selector, function()
 	{
-		var $input = $(this).parent()
+		var $label = $(this);
+		var $input = $label.parent()
 			.find('input, select, textarea').filter('[type=file], :visible').last();
-		if ($input.length) {
-			if (!$input.data('itrocks-no-add-click')) {
-				autoAddLine.call($input, event, true);
-			}
+		var $block = $label.nextAll('div').children('ul.collection, ul.map');
+		if ($block.data('no-add') || $input.data('itrocks-no-add-click')) {
+			return;
 		}
+		addLine($block);
 	});
 
 	//-------------------------------------------------------------------- li.multiple li.minus click

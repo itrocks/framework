@@ -104,6 +104,10 @@ class Html_Builder_Collection extends Collection
 	{
 		$table = parent::build();
 
+		if ($this->readOnly() || $this->noAdd()) {
+			$table->setData('no-add', true);
+		}
+
 		/** @var $user_remove_annotations Method_Target_Annotation[] */
 		$property_class          = $this->property->getType()->asReflectionClass();
 		$user_remove_annotations = $property_class->getAnnotations('user_remove');
@@ -128,12 +132,10 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		if (!$this->readOnly() && !$this->noAdd()) {
-			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-			$row = new Item($this->buildRow(Builder::create($this->class_name)));
-			$row->addClass('new');
-			$body[] = $row;
-		}
+		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+		$row = new Item($this->buildRow(Builder::create($this->class_name)));
+		$row->addClass('new');
+		$body[] = $row;
 		return $body;
 	}
 
