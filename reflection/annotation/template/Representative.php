@@ -35,6 +35,20 @@ class Representative extends List_Annotation
 		$this->class = $class;
 	}
 
+	//------------------------------------------------------------------------------------------- add
+	/**
+	 * Adds a value to the annotation list of values
+	 *
+	 * @param $value string
+	 */
+	public function add($value)
+	{
+		if (!$this->has($value)) {
+			parent::add($value);
+			$this->properties = null;
+		}
+	}
+
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @return Reflection_Property[]
@@ -64,6 +78,23 @@ class Representative extends List_Annotation
 	public function getPropertyNames()
 	{
 		return $this->value;
+	}
+
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Remove a value and return true if the value was here and removed, false if the value
+	 * already was not here
+	 *
+	 * @param $value string
+	 * @return boolean
+	 */
+	public function remove($value)
+	{
+		if (parent::remove($value)) {
+			$this->properties = null;
+			return true;
+		}
+		return false;
 	}
 
 }
