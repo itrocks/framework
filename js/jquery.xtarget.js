@@ -417,6 +417,9 @@ var requestTargetHeaders = function($element)
 		 */
 		this.find('a[target^="#"]').add(this.filter('a[target^="#"]')).click(function(event)
 		{
+			if (event.ctrlKey) {
+				return;
+			}
 			if (event.which !== 2) {
 				var anchor        = this;
 				var is_javascript = (anchor.href.substr(0, 11) === 'javascript:');
