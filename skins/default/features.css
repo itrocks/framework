@@ -30,6 +30,10 @@ li.action.install > a,
 li.actions > ul > li.install > a,
 ul.actions > li.install > a {
   background-image: url("img/install-24.svg"); }
+li.action.lock > a,
+li.actions > ul > li.lock > a,
+ul.actions > li.lock > a {
+  background-image: url("img/lock-24.svg"); }
 li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {
@@ -42,3 +46,7 @@ li.action.uninstall > a,
 li.actions > ul > li.uninstall > a,
 ul.actions > li.uninstall > a {
   background-image: url("img/uninstall-24.svg"); }
+li.action.unlock > a,
+li.actions > ul > li.unlock > a,
+ul.actions > li.unlock > a {
+  background-image: url("img/unlock-24.svg"); }
