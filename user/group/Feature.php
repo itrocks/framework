@@ -411,7 +411,7 @@ class Feature
 		if ($class_name && $feature_name) {
 			// use common algorithm to found yaml feature file everywhere in class tree
 			$filename = Getter::get($class_name, $feature_name, '', 'yaml', false);
-			if ($filename) {
+			if ($filename && reset($filename)) {
 				$filename = Names::classToPath(reset($filename)) . '.yaml';
 				if (file_exists($filename)) {
 					$yaml = new Yaml($filename);

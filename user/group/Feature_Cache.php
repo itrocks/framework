@@ -145,22 +145,29 @@ class Feature_Cache
 		$feature_annotations = $class->getAnnotations('feature');
 
 		foreach ($feature_annotations as $annotation) {
-			if (
-				$annotation->value
-				&& ($annotation->value !== true)
-				&& !ctype_upper(substr($annotation->value, 0, 1))
-			) {
-				$ignore_empty_features = true;
-				break;
+			if ($annotation->value === true) {
+				$implicit = true;
+			}
+			elseif (!ctype_upper(substr($annotation->value, 0, 1))) {
+				$explicit = true;
 			}
 		}
 
 		/** @var $features Feature[] */
-		// class explicit features
 		$features = [];
-		if (isset($ignore_empty_features)) {
+
+		// apply implicit features
+		if (isset($implicit)) {
+			foreach (Feature::getImplicitFeatures() as $feature) {
+				$path = str_replace(BS, SL, $class_name) . SL . $feature;
+				$features[$path] = new Feature($path);
+			}
+		}
+
+		// apply explicit features
+		if (isset($explicit)) {
 			foreach ($feature_annotations as $annotation) {
-				if ($annotation->value && !ctype_upper(substr($annotation->value, 0, 1))) {
+				if (($annotation->value !== true) && !ctype_upper(substr($annotation->value, 0, 1))) {
 					$path = lParse($annotation->value, SP);
 					$name = rParse($annotation->value, SP);
 					if (!strpos($path, SL)) {
@@ -168,14 +175,6 @@ class Feature_Cache
 					}
 					$features[$path] = new Feature($path, $name);
 				}
-			}
-		}
-
-		// apply implicit features
-		else {
-			foreach (Feature::getImplicitFeatures() as $feature) {
-				$path = str_replace(BS, SL, $class_name) . SL . $feature;
-				$features[$path] = new Feature($path);
 			}
 		}
 
@@ -246,7 +245,13 @@ class Feature_Cache
 		/** @var $features Feature[] */
 		$features = [];
 		foreach (Yaml::fromFile($filename) as $path => $yaml) {
-			$features[$path]       = new Feature($path);
+			$class_name = Names::pathToClass(lLastParse($path, SL));
+			if (
+				interface_exists($class_name) || trait_exists($class_name) || !class_exists($class_name)
+			) {
+				continue;
+			}
+			$features[$path] = new Feature($path);
 			$features[$path]->yaml = $yaml;
 		}
 		return $features;
