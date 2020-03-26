@@ -5,10 +5,8 @@ use ITRocks\Framework\AOP\Joinpoint\After_Method;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
-use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\Lock\Controller;
 use ITRocks\Framework\Feature\Lock\Lockable;
-use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\View;
@@ -37,6 +35,36 @@ class Lock implements Registerable
 				unset($result[Feature::F_DELETE]);
 			}
 		}
+	}
+
+	//-------------------------------------------------------- afterListControllerGetSelectionButtons
+	/**
+	 * @param $class_name string
+	 * @param $result     Button[]
+	 */
+	public function afterListControllerGetSelectionButtons($class_name, array &$result)
+	{
+		if (!isA($class_name, Lockable::class)) {
+			return;
+		}
+		$lock_button = new Button(
+			'Lock',
+			View::link($class_name, Controller::FEATURE),
+			Controller::FEATURE,
+			Target::RESPONSES
+		);
+		if (!isset($result[Feature::F_DELETE])) {
+			$result[Controller::FEATURE] = $lock_button;
+			return;
+		}
+		$buttons = [];
+		foreach ($result as $key => $button) {
+			if ($key === Feature::F_DELETE) {
+				$buttons[Controller::FEATURE] = $lock_button;
+			}
+			$buttons[$key] = $button;
+		}
+		$result = $buttons;
 	}
 
 	//-------------------------------------------------------- afterOutputControllerGetGeneralButtons
@@ -84,6 +112,10 @@ class Lock implements Registerable
 		$aop->afterMethod(
 			[Edit\Controller::class, 'getGeneralButtons'],
 			[$this, 'afterEditControllerGetGeneralButtons']
+		);
+		$aop->afterMethod(
+			[List_\Controller::class, 'getSelectionButtons'],
+			[$this, 'afterListControllerGetSelectionButtons']
 		);
 		$aop->afterMethod(
 			[Output\Controller::class, 'getGeneralButtons'],

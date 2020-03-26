@@ -24,19 +24,23 @@ class Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		$object = $parameters->getMainObject();
-		if (isA($object, Lockable::class)) {
-			/** @var $object Lockable */
-			$object->locked = true;
-			Dao::begin();
-			Dao::write($object, Dao::only('locked'));
-			Dao::commit();
+		/** @var $objects Lockable[] */
+		$objects = $parameters->getSelectedObjects($form);
+		if (!$objects) {
+			return null;
 		}
-
-		$parameters                       = $parameters->getObjects();
-		$parameters[Parameters::REDIRECT] = View::link($object);
-
-		return View::run($parameters, $form, $files, get_class($object), static::FEATURE);
+		Dao::begin();
+		foreach ($objects as $object) {
+			if (isA($object, Lockable::class)) {
+				$object->locked = true;
+				Dao::write($object, Dao::only('locked'));
+			}
+		}
+		Dao::commit();
+		$parameters->set('objects', $objects);
+		return View::run(
+			$parameters->getObjects(), $form, $files, get_class(reset($objects)), static::FEATURE
+		);
 	}
 
 }
