@@ -15,6 +15,12 @@ abstract class Element
 	//-------------------------------------------------------------------------------- BUILD_MODE_RAW
 	const BUILD_MODE_RAW = 'raw';
 
+	//--------------------------------------------------------------------------------------- $append
+	/**
+	 * @var Element[]
+	 */
+	public $append;
+
 	//----------------------------------------------------------------------------------- $attributes
 	/**
 	 * Available attributes
@@ -48,6 +54,12 @@ abstract class Element
 	 * @var string
 	 */
 	private $name;
+
+	//-------------------------------------------------------------------------------------- $prepend
+	/**
+	 * @var Element[]
+	 */
+	public $prepend;
 
 	//--------------------------------------------------------------------------------------- $styles
 	/**
@@ -86,8 +98,11 @@ abstract class Element
 			ksort($this->attributes);
 		}
 		$content = $this->getContent();
-		return '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
-		. (($this->end_tag || isset($content)) ? ($content . '</' . $this->name . '>') : '');
+		return
+			(isset($this->prepend) ? join('', $this->prepend) : '')
+			. '<' . $this->name . ($this->attributes ? (SP . join(SP, $this->attributes)) : '') . '>'
+			. (($this->end_tag || isset($content)) ? ($content . '</' . $this->name . '>') : '')
+			. (isset($this->append) ? join('', $this->append) : '');
 	}
 
 	//-------------------------------------------------------------------------------------- addClass
