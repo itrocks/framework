@@ -14,7 +14,6 @@ use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Dom\Button;
 use ITRocks\Framework\View\Html\Dom\Element;
 use ITRocks\Framework\View\Html\Dom\Input;
-use ITRocks\Framework\View\Html\Dom\Label;
 use ITRocks\Framework\View\Html\Dom\Select;
 use ITRocks\Framework\View\Html\Dom\Set;
 use ITRocks\Framework\View\Html\Dom\Textarea;
@@ -512,11 +511,11 @@ class Html_Builder_Type
 					);
 				}
 				else {
-					$hidden = new Input(null, $this->value);
+					$hidden = new Input($this->getFieldName(), $this->value);
 					$hidden->setAttribute('readonly');
 					$hidden->setAttribute('type', 'hidden');
-					$input = new Label([$hidden, Loc::tr($values[$this->value])]);
-					$input->setBuildMode(Element::BUILD_MODE_RAW);
+					$input = new Input(null, Loc::tr($this->value));
+					$input->prepend[] = $hidden;
 				}
 			}
 		}
