@@ -167,14 +167,15 @@ class Feature_Cache
 		// apply explicit features
 		if (isset($explicit)) {
 			foreach ($feature_annotations as $annotation) {
-				if (($annotation->value !== true) && !ctype_upper(substr($annotation->value, 0, 1))) {
-					$path = lParse($annotation->value, SP);
-					$name = rParse($annotation->value, SP);
-					if (!strpos($path, SL)) {
-						$path = str_replace(BS, SL, $class_name) . SL . $path;
-					}
-					$features[$path] = new Feature($path, $name);
+				if (($annotation->value === true) || ctype_upper(substr($annotation->value, 0, 1))) {
+					continue;
 				}
+				$path = lParse($annotation->value, SP);
+				$name = rParse($annotation->value, SP);
+				if (!strpos($path, SL)) {
+					$path = str_replace(BS, SL, $class_name) . SL . $path;
+				}
+				$features[$path] = new Feature($path, $name);
 			}
 		}
 
