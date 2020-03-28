@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Export;
 
-use FPDI;
 use ITRocks\Framework\Feature\Export\PDF\Init;
+use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 
 /**
@@ -16,7 +16,7 @@ use TCPDF;
  * / ** @var $pdf PDF|TCPDF * /
  * $pdf = new PDF();
  */
-class PDF extends FPDI
+class PDF extends Fpdi
 {
 	use Init;
 

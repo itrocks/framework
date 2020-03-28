@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Export\PDF;
 
-use FPDI;
 use ITRocks\Framework\Feature\Export\PDF;
+use setasign\Fpdi\Tcpdf\Fpdi;
 
 /**
  * Initialisation features
@@ -18,7 +18,7 @@ trait Init
 	 */
 	public function init()
 	{
-		/** @var $this FPDI|PDF|static */
+		/** @var $this Fpdi|PDF|static */
 		$this->Open();
 		$this->SetFont(Font::COURIER);
 		$this->SetMargins(10, 10, 10);
