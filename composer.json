@@ -1,9 +1,10 @@
 {
-	"authors":      [{ "email": "baptiste@pillot.fr", "name": "Baptiste Pillot" }],
-	"description":  "IT.Rocks framework",
-	"license":      "MIT",
-	"name":         "itrocks/framework",
-	"repositories": [{ "type": "composer", "url": "https://hub.itrocks.org" }],
+	"authors":           [{ "email": "baptiste@pillot.fr", "name": "Baptiste Pillot" }],
+	"description":       "IT.Rocks framework",
+	"license":           "MIT",
+	"minimum-stability": "dev",
+	"name":              "itrocks/framework",
+	"repositories":      [{ "type": "composer", "url": "https://hub.itrocks.org" }],
 	"require": {
 		"apache/incubator-echarts":              "4.2.*",
 		"bappli/document-designer":              "dev-master",
@@ -39,7 +40,7 @@
 		"pear/net_pop3":                         "1.*",
 		"pear/net_smtp":                         "1.*",
 		"php":                                   "^7.1",
-		"phpunit/phpunit": 											 "7.*",
+		"phpunit/phpunit":                       "7.*",
 		"quilljs/quill":                         "1.3.*",
 		"setasign/fpdi":                         "^2.3",
 		"tecnickcom/tcpdf":                      "^6.3"
