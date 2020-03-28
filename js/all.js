@@ -8,7 +8,6 @@ $.getScript(path + 'vendor/jquery/jquery-mousewheel/jquery.mousewheel.min.js');
 $.getScript(path + 'itrocks/framework/js/jquery.confirm.js');
 $.getScript(path + 'itrocks/framework/js/jquery.xtarget.js');
 
-$.getScript(path + 'vendor/alvaro-prieto/colResizable/colResizable-1.6.min.js');
 $.getScript(path + 'vendor/jquery-form/form/jquery.form.js');
 
 $.getScript(path + 'itrocks/framework/js/jquery.aform.js');
