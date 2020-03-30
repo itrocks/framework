@@ -1,37 +1,59 @@
 $(document).ready(function()
 {
 
-	//---------------------------------------------------------------------------- checkCompletedDate
-	var checkCompletedDate = function($datetime)
+	//----------------------------------------------------------------------------------- padWithZero
+	/**
+	 *
+	 * @param value     string A date or time like this : '2803', '28/3', '9:28'
+	 * @param separator string @values '/', ':'
+	 * @return string will return this : '2803', '2803', '0928'
+	 */
+	var padWithZero = function(value, separator)
 	{
-		if ($datetime.val() === '') {
-			return true;
+		if (value === undefined) {
+			return '';
 		}
-		var formattedNow = $.datepicker.formatDate(
-			$datetime.datepicker('option', 'dateFormat'),
-			new Date()
-		);
-
-		// No completion needed
-		if ($datetime.val().length >= formattedNow.length) {
-			return checkDate($datetime);
-		}
-		else {
-			var bufferVal = $datetime.val();
-			$datetime.val(bufferVal + formattedNow.substr($datetime.val().length));
-			//if  Completed date is not valid, fallback to input value
-			return checkDate($datetime) || ($datetime.val(bufferVal) && false)
-		}
+		var split = value.split(separator);
+		if (split[0] && (split[0].length < 2)) split[0] = split[0].padStart(2, 0);
+		if (split[1] && (split[1].length < 2)) split[1] = split[1].padStart(2, 0);
+		if (split[2] && (split[2].length < 2)) split[2] = split[2].padStart(2, 0);
+		return split.join('');
 	};
 
-	//------------------------------------------------------------------------------------- checkDate
-	var checkDate = function($datetime)
+	//---------------------------------------------------------------------------------- reformatDate
+	var reformatDate = function($datetime)
 	{
-		var format_date = $.datepicker.formatDate(
-			$datetime.datepicker('option', 'dateFormat'),
-			$datetime.datepicker('getDate')
-		);
-		return $datetime.val() === format_date;
+		var datetime = $datetime.val();
+		if (datetime === '') {
+			return;
+		}
+		var date, time;
+		[date, time] = datetime.split(SP, 2);
+		date = padWithZero(date, '/');
+		time = padWithZero(time, ':');
+		var now = $.datepicker
+			.formatDate($datetime.datepicker('option', 'dateFormat'), new Date())
+			.replace(/\D/g, '')
+			.lParse(SP);
+		if (date.length < now.length) {
+			date = (date.length === 6)
+				? (date.substr(0, 4) + now.substr(4, 2) + date.substr(4))
+				: (date + now.substr(date.length));
+		}
+		if (time.length && (time.length < 4)) {
+			time += '0000'.substr(time.length);
+		}
+		datetime = date.substr(0, 2) + SL + date.substr(2, 2) + SL + date.substr(4, 4);
+		if (time.length) {
+			datetime += SP + time.substr(0, 2);
+			if (time.length > 2) {
+				datetime += ':' + time.substr(2, 2);
+				if (time.length > 4) {
+					datetime += ':' + time.substr(4);
+				}
+			}
+		}
+		$datetime.val(datetime);
 	};
 
 	//--------------------------------------------------------------- input.datetime datepicker/keyup
@@ -59,7 +81,7 @@ $(document).ready(function()
 
 		this.blur(function()
 		{
-			this.setCustomValidity(checkCompletedDate($(this)) ? '' : 'Invalid date');
+			reformatDate($(this));
 		});
 
 		this.keyup(function(event)
