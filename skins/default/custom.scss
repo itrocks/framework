@@ -28,6 +28,7 @@ article header {
 		0 5px 5px -3px rgba(216, 216, 216, .4);
 		display: none;
 		left: -1px;
+		overflow: hidden;
 		position: absolute;
 		z-index: calc(var(--z-index) + 2);
 

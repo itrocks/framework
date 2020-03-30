@@ -108,4 +108,40 @@ $(document).ready(function()
 			.remove();
 	});
 
+	//------------------------------------------------------------------- ul.custom.select mousewheel
+	$body.build('mousewheel', 'ul.custom.select', function(event)
+	{
+		var $custom = $(this);
+		$custom.scrollTop($custom.scrollTop() - (event.deltaFactor * event.deltaY));
+	});
+
+	//----------------------------------------------------------------------- ul.custom.select resize
+	/**
+	 * this: jQuery an unique 'ul.custom.select' element
+	 */
+	var resize = function()
+	{
+		var $custom = $(this);
+		var $window = $(window);
+		var top     = $custom.scrollTop();
+		$custom.css('height', '');
+		if ($custom.offset().top + $custom.height() > $window.height()) {
+			$custom.css(
+				'height',
+				($window.height() - $custom.offset().top).toString() + 'px'
+			);
+			$custom.scrollTop(top);
+		}
+	};
+	$body.build('each', 'ul.custom.select', resize);
+
+	//--------------------------------------------------------------------------------- window resize
+	$(window).resize(function()
+	{
+		$('ul.custom.select').each(function() {
+			var $custom = $(this);
+			resize.call($custom);
+		});
+	});
+
 });
