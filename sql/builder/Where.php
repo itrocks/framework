@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Sql\Builder;
 
+use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Expression;
@@ -167,8 +168,8 @@ class Where implements With_Build_Column
 						$build = $this->buildPath($path, $value, $sub_clause);
 					}
 					else {
-						$prefix        = '';
-						$master_path   = (($i = strrpos($property_path, DOT)) !== false)
+						$prefix      = '';
+						$master_path = (($i = strrpos($property_path, DOT)) !== false)
 							? substr($property_path, 0, $i) : '';
 						$property_name = ($i !== false) ? substr($property_path, $i + 1) : $property_path;
 						$properties    = $this->joins->getProperties($master_path);
@@ -187,6 +188,16 @@ class Where implements With_Build_Column
 							}
 						}
 						$build = $this->buildPath($key, $value, $sub_clause);
+						if (
+							is_object($value)
+							&& isset($properties[$key])
+							&& ($property = $properties[$key])
+							&& $property->getType()->isClass()
+							&& $property->getType()->isAbstractClass()
+						) {
+							$class_name = Framework\Builder::current()->sourceClassName(get_class($value));
+							$build .= ' AND ' . $this->buildValue($key . '_class', $class_name,  'id_');
+						}
 						if ($prefix && ($key instanceof Expression)) {
 							$key->prefix = null;
 						}
