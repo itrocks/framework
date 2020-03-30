@@ -33,7 +33,7 @@ $(document).ready(function()
 				var after_moving = false;
 				var shift        = $moving.data('shift');
 				$collection.children('li.drop-after').removeClass('drop-after');
-				if (mouse_y < $lines.offset().top) {
+				if (mouse_y < $lines.not($moving).offset().top) {
 					$collection.children('li.header:last').addClass('drop-after');
 					return;
 				}
