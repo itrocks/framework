@@ -110,6 +110,15 @@ class Access_Control implements Configurable, Registerable
 		}
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return 'Controlled access';
+	}
+
 	//---------------------------------------------------------------------- afterTemplateReplaceLink
 	/**
 	 * @param $result string
