@@ -134,10 +134,10 @@ window.modifiable_waiting  = false;
 					var $input = $(this);
 					if (event.keyCode === 13) {
 						if (settings.callback) {
-							settings.callback.call($input);
+							settings.callback.call($input, event);
 						}
 						if ($input.data('callback')) {
-							$input.data('callback').call($input);
+							$input.data('callback').call($input, event);
 						}
 						done();
 					}
