@@ -188,6 +188,8 @@ redirect = function(uri, target, after, callback, history)
 		$.ajax({
 			url:     app.addSID(app.askAnd(uri, more)),
 			success: function(data) {
+				var keep_scroll = new Keep_Scroll($target);
+				keep_scroll.keep();
 				$target.html(data);
 				if (close_function) {
 					// do it before build, in order to disable xtarget on .close button
@@ -202,6 +204,7 @@ redirect = function(uri, target, after, callback, history)
 					});
 				}
 				$target.build();
+				keep_scroll.serve();
 				if (!close_function) {
 					var title = $target.find('h2').first().text();
 					if (!title.length) {
@@ -250,7 +253,10 @@ redirectLight = function(uri, target, condition)
 			url:     app.addSID(uri + more),
 			success: function(data) {
 				if (!condition || condition()) {
+					var keep_scroll = new Keep_Scroll($target);
+					keep_scroll.keep();
 					$target.html(data).build();
+					keep_scroll.serve();
 				}
 			}
 		});
@@ -273,7 +279,11 @@ refresh = function(target)
 	$.ajax({
 		url: app.askAnd(uri, 'as_widget'),
 		success: function(data) {
-			refreshTarget(target).html(data).build();
+			var $target     = refreshTarget(target);
+			var keep_scroll = new Keep_Scroll($target);
+			keep_scroll.keep();
+			$target.html(data).build();
+			keep_scroll.serve();
 		}
 	});
 };

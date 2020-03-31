@@ -277,6 +277,8 @@ var requestTargetHeaders = function($element)
 					$target      = this.popup($from, xhr.from.target.substr(1));
 					build_target = true;
 				}
+				var keep_scroll = new Keep_Scroll($target);
+				keep_scroll.keep();
 				$target = writeHtml(data, $target);
 				if (settings.show && $target.filter(':not(:visible)').length) {
 					$target.filter(':not(:visible)').show();
@@ -333,6 +335,7 @@ var requestTargetHeaders = function($element)
 						? $target.build()
 						: $target.children().build();
 				}
+				keep_scroll.serve();
 				// on success callbacks
 				target = $target.last()[0];
 				if (settings.success !== undefined) {
