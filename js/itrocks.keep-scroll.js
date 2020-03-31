@@ -26,7 +26,6 @@ $(document).ready(function() {
 		{
 			var self = this;
 			this.$target.find('.keep-scroll').each(function () {
-				console.log('keep', $(this), $(this).scrollTop());
 				self.scroll_top.push($(this).scrollTop());
 			});
 		};
@@ -41,14 +40,12 @@ $(document).ready(function() {
 				}
 				var scroll = self.scroll_top.shift();
 				var $this = $(this);
-				console.log('serve', $(this), scroll);
 				$this.scrollTop(scroll);
 				// in cas of autofocus : force
 				setTimeout(function() { $this.scrollTop(scroll); });
 			});
 		};
 
-		return this;
 	};
 
 });
