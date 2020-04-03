@@ -170,6 +170,10 @@ $(document).ready(function()
 			if ((string_value !== null)) {
 				$input.next().attr('value', string_value).val(string_value).change();
 			}
+			else if ($input.is('[readonly]') && $input.next().is('input[readonly]')) {
+				$input.next().val(tr(value));
+			}
+
 			$input.change();
 		}
 	};
