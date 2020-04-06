@@ -187,7 +187,10 @@ class Uri
 			}
 			else {
 				if (is_numeric($uri_element)) {
-					$this->parameters->set(join(BS, $controller_elements), intval($uri_element));
+					$this->parameters->set(
+						join(BS, $controller_elements),
+						(strpos($uri_element, DOT) !== false) ? floatval($uri_element) : intval($uri_element)
+					);
 				}
 				else {
 					if ($controller_elements) {
