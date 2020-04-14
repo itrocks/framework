@@ -193,7 +193,7 @@ class Installer
 			/** @var $feature_install Method_Annotation */
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
-				[$this]
+				[__METHOD__]
 			);
 		}
 		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
@@ -409,6 +409,7 @@ class Installer
 	 * Notice : Developers should beware that the user has well been informed of the full list of
 	 * dependency features he will lost on uninstalling this feature.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name Installable|string plugin object or class name
 	 */
 	public function uninstall($plugin_class_name)
@@ -416,10 +417,20 @@ class Installer
 		Dao::begin();
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
+		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
+		$plugin_class = new Reflection_Class($plugin_class_name);
 
 		// remove all dependencies that need this plugin
 		foreach ($this->willUninstall($plugin_class_name, false) as $feature) {
 			$this->removeDependent($feature);
+		}
+
+		foreach ($plugin_class->getAnnotations('feature_uninstall') as $feature_install) {
+			/** @var $feature_install Method_Annotation */
+			$feature_install->call(
+				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
+				[__METHOD__]
+			);
 		}
 
 		$installed_search = ['features.plugin_class_name' => $plugin_class_name];

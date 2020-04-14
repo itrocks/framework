@@ -203,6 +203,14 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@feature_install' => Method_Annotation::class,
 
 	/**
+	 * @feature_uninstall uninstallFeature
+	 *
+	 * This method (uninstallFeature is the default value if empty) will be called each time a feature
+	 * is uninstalled
+	 */
+	Parser::T_CLASS . '@feature_uninstall' => Method_Annotation::class,
+
+	/**
 	 * @groups_order Group1, Group2, ...
 	 * This is a Multiple_Annotation
 	 *
