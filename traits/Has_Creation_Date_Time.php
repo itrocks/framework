@@ -16,7 +16,7 @@ trait Has_Creation_Date_Time
 	/**
 	 * @default Date_Time::now
 	 * @link DateTime
-	 * @user readonly
+	 * @user invisible_edit, invisible_output, readonly
 	 * @var Date_Time
 	 */
 	public $creation;
