@@ -93,7 +93,10 @@ class Write extends Data_Link\Write
 				$impact_annotations = $property->getListAnnotations('impacts');
 				foreach ($impact_annotations as $impact_annotation) {
 					foreach ($impact_annotation->values() as $impacted_property_name) {
-						if (!in_array($impacted_property_name, $this->only)) {
+						if (
+							property_exists($class_name, $impacted_property_name)
+							&& !in_array($impacted_property_name, $this->only)
+						) {
 							$impacted     = true;
 							$this->only[] = $impacted_property_name;
 						}
