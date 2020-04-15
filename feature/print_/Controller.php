@@ -60,6 +60,7 @@ class Controller implements Default_Feature_Controller
 			$exporter            = new Exporter();
 			$exporter->pdf       = $pdf;
 			$generator           = new Generator($print_model, $exporter);
+			$generator->print    = true;
 			$structure           = $generator->generate($object);
 			$exporter->structure = $structure;
 			$exporter->appendToPdf();

@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Generator\Text_Templating\Parser;
+use ITRocks\Framework\Layout\Structure;
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Field\Final_Image;
@@ -16,6 +17,7 @@ use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ReflectionException;
 
 /**
@@ -23,7 +25,7 @@ use ReflectionException;
  */
 class Property_To_Text
 {
-	use Has_Structure;
+	use Has_Structure { __construct as private structureConstruct; }
 
 	//----------------------------------------------------------------------------------- $iterations
 	/**
@@ -40,6 +42,25 @@ class Property_To_Text
 	 * @var object
 	 */
 	protected $object;
+
+	//---------------------------------------------------------------------------------------- $print
+	/**
+	 * Is it a print model ? If true, will use @print_getter to translate values for print
+	 *
+	 * @var boolean
+	 */
+	protected $print = false;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $structure Structure
+	 * @param $print     boolean
+	 */
+	public function __construct(Structure $structure = null, $print = false)
+	{
+		$this->structureConstruct($structure);
+		$this->print = $print;
+	}
 
 	//---------------------------------------------------------------------------------------- append
 	/**
@@ -151,7 +172,11 @@ class Property_To_Text
 			}
 			foreach ($objects as $object) {
 				/** @noinspection PhpUnhandledExceptionInspection must be valid here */
-				$object = $reflection_property->getValue($object);
+				/** @var $getter Method_Annotation */
+				$object
+					= ($this->print && ($getter = $reflection_property->getAnnotation('print_getter'))->value)
+					? $getter->call($object)
+					: $reflection_property->getValue($object);
 				if (is_array($object)) {
 					// TODO sub-arrays wont work at all : only one level of array values
 					$next_objects = array_merge($next_objects, $object);

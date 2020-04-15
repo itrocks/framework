@@ -54,6 +54,14 @@ class Generator
 	 */
 	public $output;
 
+	//---------------------------------------------------------------------------------------- $print
+	/**
+	 * Is it a print model ? If true, will use @print_getter to translate values for print
+	 *
+	 * @var boolean
+	 */
+	public $print = false;
+
 	//------------------------------------------------------------------------------------ $structure
 	/**
 	 * The data structure : evolves from a raw structure read from the layout to a built structure
@@ -98,7 +106,7 @@ class Generator
 		$this->purgeSnapLines();
 		(new Page_All_Elements($this->structure))->run();
 		(new Link_Groups($this->structure))->run();
-		(new Property_To_Text($this->structure))->run($this->object);
+		(new Property_To_Text($this->structure, $this->print))->run($this->object);
 		(new Automatic_Line_Feed($this->structure))->run($this->output);
 		(new Dispatch_Iterations($this->structure))->run();
 		(new Count_Pages($this->structure))->run();

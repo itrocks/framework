@@ -488,6 +488,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@precision' => Annotation::class,
 
 	/**
+	 * @print_getter printGetPropertyName
+	 * Use this value getter on print only
+	 */
+	Parser::T_PROPERTY . '@print_getter' => Method_Annotation::class,
+
+	/**
 	 * @read_only [false]
 	 * Set this annotation to set the property in read-only mode : it can't be set
 	 * Not to be confused with @user readonly, which enable the application to set a value
