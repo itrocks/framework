@@ -110,9 +110,8 @@ $(document).ready(function()
 			var $page     = $designer.closest('.page');
 			var $input    = pageLayoutInput($page);
 			var fields    = [
-				'article.layout-model.edit .buttons.toolbox .add.tools li',
-				'article.layout-model.edit .page > .snap.tool',
-				'article.layout-model.edit .property-select .property'
+				'article.layout-model.edit',
+				'.buttons.toolbox .add.tools li, .page > .snap.tool, .property-select .property'
 			];
 
 			var $elements = $page.find('[data-style]');
