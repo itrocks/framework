@@ -83,8 +83,6 @@ article.layout-model .buttons.toolbox ul > li {
     background: #f7f7f7 url("img/vertical-line-24.svg") center no-repeat; }
 article.layout-model .data .properties {
   display: flex; }
-article.layout-model .general.actions {
-  border-top: 1px solid #d8d8d8; }
 article.layout-model .page {
   border-top: 1px solid #d8d8d8;
   grid-template-areas: "angle horizontal" "vertical page";
@@ -161,20 +159,20 @@ article.layout-model .property-select {
     width: calc(100% - 16px); }
 
 article.layout-model:not(.form) {
-  grid-template-areas: "header" "content" "pages" "page" "footer";
+  grid-template-areas: "header" "header2" "content" "pages" "page" "footer";
   grid-template-columns: 1fr; }
   article.layout-model:not(.form) .property-select,
   article.layout-model:not(.form) .snap.line,
   article.layout-model:not(.form) .toolbox {
     display: none; }
 article.layout-model > form {
-  grid-template-areas: "header     header  header " "content    content content" "properties pages   toolbox" "properties page    page   " "footer     footer  footer ";
+  grid-template-areas: "header     header  header " "header2    header2 header2" "content    content content" "properties pages   toolbox" "properties page    page   " "footer     footer  footer ";
   grid-template-columns: 200px min-content 1fr; }
   article.layout-model > form ul.data {
     background: white; }
 article.layout-model:not(.form),
 article.layout-model > form {
-  grid-template-rows: min-content min-content 48px 1fr min-content; }
+  grid-template-rows: min-content min-content min-content min-content 1fr min-content; }
   article.layout-model:not(.form) > .buttons.toolbox,
   article.layout-model > form > .buttons.toolbox {
     grid-area: toolbox; }

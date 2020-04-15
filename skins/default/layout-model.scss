@@ -150,10 +150,6 @@ article.layout-model {
 		display: flex;
 	}
 
-	.general.actions {
-		border-top: 1px solid #d8d8d8;
-	}
-
 	.page {
 		border-top: 1px solid #d8d8d8;
 		grid-template-areas: "angle horizontal" "vertical page";
@@ -286,7 +282,7 @@ article.layout-model {
 article.layout-model {
 
 	&:not(.form) {
-		grid-template-areas: "header" "content" "pages" "page" "footer";
+		grid-template-areas: "header" "header2" "content" "pages" "page" "footer";
 		grid-template-columns: 1fr;
 
 		.property-select,
@@ -299,6 +295,7 @@ article.layout-model {
 	> form {
 		grid-template-areas:
 			"header     header  header "
+			"header2    header2 header2"
 			"content    content content"
 			"properties pages   toolbox"
 			"properties page    page   "
@@ -312,7 +309,7 @@ article.layout-model {
 
 	&:not(.form),
 	> form {
-		grid-template-rows: min-content min-content 48px 1fr min-content;
+		grid-template-rows: min-content min-content min-content min-content 1fr min-content;
 
 		> .buttons.toolbox {
 			grid-area: toolbox;
