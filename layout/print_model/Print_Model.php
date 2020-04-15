@@ -6,6 +6,7 @@ use ITRocks\Framework\Layout\Print_Model\Page;
 /**
  * Print model
  *
+ * @feature
  * @override pages @var Page[]
  * @property Page[] pages
  * @see Page
