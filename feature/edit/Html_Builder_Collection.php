@@ -34,6 +34,9 @@ use ITRocks\Framework\View\Html\Dom\List_\Unordered;
 class Html_Builder_Collection extends Collection
 {
 
+	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
+	const HIDE_EMPTY_TEST = false;
+
 	//--------------------------------------------------------------------------------------- $no_add
 	/**
 	 * Property no add cache. Do not use this property : use noAdd() instead
@@ -210,7 +213,7 @@ class Html_Builder_Collection extends Collection
 		$cell = new Item($content);
 		$type = $property->getType();
 		$cell->addClass(strtolower(Namespaces::shortClassName($type->asString())));
-		if(!$property->isVisible()){
+		if(!$property->isVisible(static::HIDE_EMPTY_TEST)){
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');
 		}

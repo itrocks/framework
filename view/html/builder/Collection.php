@@ -22,6 +22,7 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Reflection_Property_View;
+use ITRocks\Framework\Tools\Can_Be_Empty;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\View;
@@ -38,6 +39,9 @@ use ITRocks\Framework\View\Html\Template;
 class Collection
 {
 
+	//------------------------------------------------------------------------------- HIDE_EMPTY_TEST
+	const HIDE_EMPTY_TEST = true;
+
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
@@ -49,6 +53,14 @@ class Collection
 	 * @var object[]
 	 */
 	public $collection;
+
+	//------------------------------------------------------------------------------------ $has_value
+	/**
+	 * This is the list of properties with @user hide_empty that have a value on at least 1 line
+	 *
+	 * @var boolean[] key is the name of the property, value is always true
+	 */
+	public $has_value;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -200,8 +212,8 @@ class Collection
 			}
 		}
 		$cell = new Item(($value instanceof Dao\File) ? (new File($value))->build() : $value);
-		$type = $property->getType();
-		if (!$property->isVisible()) {
+		$hide_empty_test = !($this->has_value[$property->path] ?? !static::HIDE_EMPTY_TEST);
+		if (!$property->isVisible($hide_empty_test)) {
 			$cell->addClass('hidden');
 			$cell->setStyle('display', 'none');
 		}
@@ -228,9 +240,10 @@ class Collection
 	{
 		$header = new Ordered();
 		foreach ($this->properties as $property) {
+			$type = $property->getType();
 			if (
-				!$property->getType()->isMultiple()
-				|| ($property->getType()->getElementTypeAsString() != $property->getFinalClass()->name)
+				!$type->isMultiple()
+				|| ($type->getElementTypeAsString() != $property->getFinalClass()->name)
 			) {
 				$cell = new Item(
 					Loc::tr(
@@ -238,8 +251,13 @@ class Collection
 						$this->class_name
 					)
 				);
-				$type = $property->getType();
-				if (!$property->isVisible()) {
+				$hide_empty_test = (
+					static::HIDE_EMPTY_TEST
+					&& User_Annotation::of($property)->has(User_Annotation::HIDE_EMPTY)
+				)
+					? !($this->has_value[$property->path] = $this->propertyHasValue($property))
+					: static::HIDE_EMPTY_TEST;
+				if (!$property->isVisible($hide_empty_test)) {
 					$cell->addClass('hidden');
 					$cell->setStyle('display', 'none');
 				}
@@ -355,6 +373,26 @@ class Collection
 		return !$user_annotation->has(User_Annotation::HIDE_OUTPUT)
 			&& !$user_annotation->has(User_Annotation::INVISIBLE)
 			&& !$user_annotation->has(User_Annotation::INVISIBLE_OUTPUT);
+	}
+
+	//------------------------------------------------------------------------------ propertyHasValue
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $property Reflection_Property
+	 * @return boolean
+	 */
+	protected function propertyHasValue(Reflection_Property $property)
+	{
+		foreach ($this->collection as $object) {
+			/** @noinspection PhpUnhandledExceptionInspection */
+			if (
+				($value = $property->getValue($object))
+				&& ((!$value instanceof Can_Be_Empty) || !$value->isEmpty())
+			) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	//----------------------------------------------------------------------------------- setTemplate
