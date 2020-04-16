@@ -58,7 +58,8 @@ article ol.properties:not(.tiny) {
     article ol.properties:not(.tiny) > li.block > label:first-letter,
     article ol.properties:not(.tiny) > li.component-objects > label:first-letter {
       text-transform: uppercase; }
-  article ol.properties:not(.tiny) > li.multiline > div {
+  article ol.properties:not(.tiny) > li.multiline > div,
+  article ol.properties:not(.tiny) ul.collection > li.data > ol > li.multiline {
     white-space: pre-line; }
 
 article ol.properties.tiny {

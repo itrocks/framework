@@ -92,7 +92,8 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li.multiline > div {
+	> li.multiline > div,
+	ul.collection > li.data > ol > li.multiline {
 		white-space: pre-line;
 	}
 }

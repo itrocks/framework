@@ -218,6 +218,9 @@ class Collection
 			$cell->setStyle('display', 'none');
 		}
 		$cell->addClass($type->asString());
+		if ($property->getAnnotation('multiline')->value) {
+			$cell->addClass('multiline');
+		}
 		$cell->setData(
 			'display',
 			$this->property_displays[$property->path]
