@@ -4,7 +4,9 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -15,8 +17,10 @@ use ReflectionException;
  *
  * [/Called/Class/Path[/feature]] [:] Block caption [>|/|, item caption]
  */
-class Feature_Menu_Annotation extends Annotation implements Class_Context_Annotation
+class Feature_Menu_Annotation extends Annotation
+	implements Class_Context_Annotation, Do_Not_Inherit
 {
+	use Template\Feature_Annotation;
 
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'feature_menu';

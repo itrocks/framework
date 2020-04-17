@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Class_;
 
 use ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Reflection\Annotation\Template\Class_Context_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 
@@ -16,8 +17,10 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  * @override $value @var string[]
  * @property string[] value
  */
-class Feature_Build_Annotation extends Template\List_Annotation implements Class_Context_Annotation
+class Feature_Build_Annotation extends Template\List_Annotation
+	implements Class_Context_Annotation, Do_Not_Inherit
 {
+	use Template\Feature_Annotation;
 	use Types_Annotation;
 
 	//------------------------------------------------------------------------------------ ANNOTATION

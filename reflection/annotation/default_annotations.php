@@ -187,30 +187,6 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@duplicate' => Method_Annotation::class,
 
 	/**
-	 * @feature [[[Class/Path/]feature] Human-readable atomic end-user feature name]
-	 * This is a Multiple_Annotation
-	 * Marks the class as an atomic end-user feature
-	 * Implicit end-user features will be enabled for this class if there are no yaml files
-	 */
-	Parser::T_CLASS . '@feature' => Annotation::class,
-
-	/**
-	 * @feature_install installFeature
-	 *
-	 * This method (installFeature is the default value if empty) will be called each time a feature
-	 * is installed
-	 */
-	Parser::T_CLASS . '@feature_install' => Method_Annotation::class,
-
-	/**
-	 * @feature_uninstall uninstallFeature
-	 *
-	 * This method (uninstallFeature is the default value if empty) will be called each time a feature
-	 * is uninstalled
-	 */
-	Parser::T_CLASS . '@feature_uninstall' => Method_Annotation::class,
-
-	/**
 	 * @groups_order Group1, Group2, ...
 	 * This is a Multiple_Annotation
 	 *

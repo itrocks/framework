@@ -21,9 +21,10 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Annotate_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Build_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Exclude_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Include_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Install_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Menu_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Plugin_Annotation;
-use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Uninstall_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
@@ -189,8 +190,7 @@ class Installer
 			$this->install($dependency_class_name);
 			(new Installed\Dependency($plugin_class_name))->add($dependency_class_name);
 		}
-		foreach ($plugin_class->getAnnotations('feature_install') as $feature_install) {
-			/** @var $feature_install Method_Annotation */
+		foreach (Feature_Install_Annotation::allOf($plugin_class) as $feature_install) {
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
 				[__METHOD__]
@@ -425,8 +425,7 @@ class Installer
 			$this->removeDependent($feature);
 		}
 
-		foreach ($plugin_class->getAnnotations('feature_uninstall') as $feature_install) {
-			/** @var $feature_install Method_Annotation */
+		foreach (Feature_Uninstall_Annotation::allOf($plugin_class) as $feature_install) {
 			$feature_install->call(
 				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
 				[__METHOD__]
