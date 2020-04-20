@@ -220,6 +220,7 @@ class Integrated_Properties
 	) {
 		$expanded          = [];
 		$integrated_alias  = $integrated->has(Integrated_Annotation::ALIAS);
+		$integrated_parent = $integrated->has(Integrated_Annotation::PARENT);
 		$integrated_simple = $integrated->has(Integrated_Annotation::SIMPLE);
 		foreach ($expand_properties as $sub_property_path => $sub_property) {
 			// prefixed display, sub-prefix
@@ -234,9 +235,20 @@ class Integrated_Properties
 			}
 			// if no recurse : prepare and add expanded property
 			else {
-				$sub_property = $this->prepareExpandedProperty(
+				$sub_property    = $this->prepareExpandedProperty(
 					$blocks, $integrated_alias, $integrated_simple, $sub_property, $display
 				);
+				if ($integrated_parent) {
+					$sub_property->display = Loc::tr(
+						$integrated_simple
+							? (
+								$integrated_alias
+									? Alias_Annotation::of($property)->value
+									: rLastParse($property->path, DOT, 1, true)
+							)
+							: $display
+					);
+				}
 				$properties_list[$sub_property_path] = $sub_property;
 				$expanded[$sub_property_path]        = $sub_property;
 			}
@@ -266,8 +278,8 @@ class Integrated_Properties
 			$integrated_simple
 				? (
 					$integrated_alias
-					? Alias_Annotation::of($sub_property)->value
-					: rLastParse($sub_property->path, DOT, 1, true)
+						? Alias_Annotation::of($sub_property)->value
+						: rLastParse($sub_property->path, DOT, 1, true)
 				)
 				: $display
 		);
@@ -287,7 +299,7 @@ class Integrated_Properties
 	 * @param $properties Reflection_Property[]
 	 * @param $property   Reflection_Property
 	 */
-	protected function startFromRootClass(array &$properties, Reflection_Property $property)
+	protected function startFromRootClass(array $properties, Reflection_Property $property)
 	{
 		foreach ($properties as $expand_property_path => $expand_property) {
 			$expand_property->aliased_path = ($property->aliased_path ?: $property->alias)

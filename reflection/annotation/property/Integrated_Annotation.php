@@ -43,6 +43,7 @@ class Integrated_Annotation extends Options_Properties_Annotation
 	const BLOCK  = 'block';
 	const FINAL_ = 'final';
 	const FULL   = 'full';
+	const PARENT = 'parent';
 	const SIMPLE = 'simple';
 
 	//------------------------------------------------------------------------------------ ANNOTATION
@@ -55,7 +56,9 @@ class Integrated_Annotation extends Options_Properties_Annotation
 	const EXCLUDED_OPTIONS = [[self::FULL, self::SIMPLE]];
 
 	//-------------------------------------------------------------------------------- RESERVED_WORDS
-	const RESERVED_WORDS = [self::ALIAS, self::BLOCK, self::FINAL_, self::FULL, self::SIMPLE];
+	const RESERVED_WORDS = [
+		self::ALIAS, self::BLOCK, self::FINAL_, self::FULL, self::PARENT, self::SIMPLE
+	];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -71,7 +74,7 @@ class Integrated_Annotation extends Options_Properties_Annotation
 		if (
 			$this->value
 			&& !(static::has(self::FULL) || static::has(self::SIMPLE))
-			&& (static::has(self::ALIAS) || static::has(self::BLOCK))
+			&& (static::has(self::ALIAS) || static::has(self::BLOCK) || static::has(self::PARENT))
 		) {
 			$this->value[] = self::SIMPLE;
 		}
