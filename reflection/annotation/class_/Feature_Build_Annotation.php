@@ -26,6 +26,12 @@ class Feature_Build_Annotation extends Template\List_Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'feature_build';
 
+	//---------------------------------------------------------------------------------- $build_first
+	/**
+	 * @var boolean
+	 */
+	public $build_first = false;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @example
@@ -48,10 +54,12 @@ class Feature_Build_Annotation extends Template\List_Annotation
 			$class = static::$context;
 		}
 		if (strpos($value, '+')) {
-			$value = str_replace('+', ',', $value);
+			$this->build_first = true;
+			$value             = str_replace('+', ',', $value);
 		}
 		elseif ($value && $class->isClass()) {
-			$value = BS . $class->getName() . ',' . $value;
+			$this->build_first = true;
+			$value             = BS . $class->getName() . ',' . $value;
 		}
 		parent::__construct($value);
 	}

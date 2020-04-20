@@ -208,7 +208,7 @@ class Installer
 		}
 		foreach (Feature_Build_Annotation::allOf($plugin_class) as $build_annotation) {
 			$class_name = reset($build_annotation->value);
-			if (class_exists($class_name)) {
+			if (class_exists($class_name) || $build_annotation->build_first) {
 				$slice = 1;
 			}
 			else {
