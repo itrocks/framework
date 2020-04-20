@@ -8,17 +8,28 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
  * allOf must read the parent annotations, if they do not have any @feature Feature name
+ *
+ * @implements Do_Not_Inherit
  */
 trait Feature_Annotation
 {
 
+	//-------------------------------------------------------------------------------------- $context
+	/**
+	 * @var Reflection_Class
+	 */
+	protected static $context;
+
 	//----------------------------------------------------------------------------------------- allOf
 	/**
 	 * @param $reflection_object Reflection|Reflection_Class
+	 * @param $context           Reflection|Reflection_Class for internal use
 	 * @return static[]
 	 */
-	public static function allOf(Reflection $reflection_object)
+	public static function allOf(Reflection $reflection_object, Reflection $context = null)
 	{
+		static::$context = $context ?: $reflection_object;
+
 		/** @var $this Annotation|static */
 		/** @noinspection PhpUndefinedClassInspection */
 		/** @see Annotation::allOf */
@@ -31,7 +42,7 @@ trait Feature_Annotation
 
 		foreach ($parents as $parent) {
 			if (!static::hasFeatureAnnotation($parent)) {
-				$annotations = static::allOf($parent) + $annotations;
+				$annotations = static::allOf($parent, $context ?: $reflection_object) + $annotations;
 			}
 		}
 

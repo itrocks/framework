@@ -44,6 +44,9 @@ class Feature_Build_Annotation extends Template\List_Annotation
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
+		if (static::$context) {
+			$class = static::$context;
+		}
 		if (strpos($value, '+')) {
 			$value = str_replace('+', ',', $value);
 		}

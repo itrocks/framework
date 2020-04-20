@@ -45,6 +45,9 @@ class Feature_Menu_Annotation extends Annotation
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
+		if (static::$context) {
+			$class = static::$context;
+		}
 		$value = str_replace(':', SP, $value);
 		if (substr($value, 0, 1) !== SL) {
 			$value = View::link(Names::classToSet($class->getName()), Feature::F_LIST) . SP . $value;

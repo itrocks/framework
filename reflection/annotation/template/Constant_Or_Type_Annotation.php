@@ -22,7 +22,7 @@ class Constant_Or_Type_Annotation extends Type_Annotation implements Class_Conte
 				$value = BS . $class->getConstant($constant_name);
 			}
 		}
-		return parent::__construct($value);
+		parent::__construct($value);
 	}
 
 }
