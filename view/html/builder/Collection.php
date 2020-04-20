@@ -145,6 +145,9 @@ class Collection
 	{
 		$body = [];
 		foreach ($this->collection as $object) {
+			if (isset($object->{CONFIDENTIAL})) {
+				continue;
+			}
 			$body[] = $this->buildRow($object);
 		}
 		return $body;
