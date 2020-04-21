@@ -56,8 +56,8 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public $all_users = [
 		'/',
+		'/ITRocks/Framework/Component/Menu/output',
 		'/ITRocks/Framework/Locale/translate',
-		'/ITRocks/Framework/Menu/output',
 		'/ITRocks/Framework/User/disconnect'
 	];
 
@@ -68,8 +68,8 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $blank = [
-		'/ITRocks/Framework/Environment/output',
-		'/ITRocks/Framework/Menu/output'
+		'/ITRocks/Framework/Component/Menu/output',
+		'/ITRocks/Framework/Environment/output'
 	];
 
 	//----------------------------------------------------------------------------------- $exceptions
