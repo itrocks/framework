@@ -69,7 +69,8 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public $blank = [
 		'/ITRocks/Framework/Component/Menu/output',
-		'/ITRocks/Framework/Environment/output'
+		'/ITRocks/Framework/Environment/output',
+		'/ITRocks/Framework/User/miniDisplay'
 	];
 
 	//----------------------------------------------------------------------------------- $exceptions
@@ -80,6 +81,7 @@ class Access_Control implements Configurable, Registerable
 	 * @var string[]
 	 */
 	public $exceptions = [
+		'/ITRocks/Framework/Application/blank',
 		'/ITRocks/Framework/Tests/run',
 		'/ITRocks/Framework/User/authenticate',
 		'/ITRocks/Framework/User/Password/reset',
