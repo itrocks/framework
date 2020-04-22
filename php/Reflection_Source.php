@@ -503,7 +503,7 @@ class Reflection_Source
 						}
 					}
 
-					// dependencies @compatibility / @feature_bridge
+					// dependencies @bridge_feature / @compatibility
 					preg_match_all(
 						'%\*\s+@(bridge_feature|compatibility)\s+([A-Z].*)%',
 						$doc_comment,
