@@ -31,7 +31,8 @@ ol.properties > li.component-objects > div > ul.collection > li {
 		> input, > select, > textarea {
 			border: none !important;
 			color: black;
-			width: calc(100% - 20px);
+			//noinspection CssInvalidPropertyValue
+			width: calc(max(48px, 100%) - 20px);
 
 			&[readonly] {
 				background: transparent;

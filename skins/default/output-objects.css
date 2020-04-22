@@ -16,7 +16,7 @@ ol.properties > li.component-objects > div > ul.collection > li {
   ol.properties > li.component-objects > div > ul.collection > li > ol > li > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li > select, ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea {
     border: none !important;
     color: black;
-    width: calc(100% - 20px); }
+    width: calc(max(48px, 100%) - 20px); }
     ol.properties > li.component-objects > div > ul.collection > li > ol > li > input[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > select[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea[readonly] {
       background: transparent; }
     ol.properties > li.component-objects > div > ul.collection > li > ol > li > input:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > select:not([readonly]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea:not([readonly]) {
