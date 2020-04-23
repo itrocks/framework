@@ -38,6 +38,7 @@ $(document).ready(function()
 	//--------------------------------------------------------------------------------------- addLine
 	/**
 	 * @param $block jQuery a 'ul.collection, ul.map' single element
+	 * @return jQuery new row = added line element
 	 */
 	var addLine = function($block)
 	{
@@ -71,6 +72,7 @@ $(document).ready(function()
 		$new_row.autofocus(false);
 		$new_row.build();
 		$new_row.autofocus(true);
+		return $new_row;
 	};
 
 	//----------------------------------------------------------------------------------- autoAddLine
@@ -146,7 +148,7 @@ $(document).ready(function()
 	$body.build('each', 'ul.collection, ul.map', function()
 	{
 		var $block = $(this);
-		$block.data('addLine', function() { addLine($block); });
+		$block.data('addLine', function() { return addLine($block); });
 	});
 
 	//------------------- article > form > ul.data ol.properties > li.component-objects > label click

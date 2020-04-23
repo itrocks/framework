@@ -66,24 +66,23 @@ $(document).ready(function()
 	 * - if field_name includes a reference to a non-existing line : add it
 	 *
 	 * @param $field jQuery object the field element, with an id.component-objects#field_name_root
-	 * @param search the search selector for the targeted field
-	 * @param value  the value, for testing purpose only (setFieldValue sets the value)
+	 * @param search string the search selector for the targeted field. If empty : empty collection
+	 * @return jQuery if set, caller can add a line to this collection if he wants
 	 */
-	var prepareCollection = function($field, search, value)
+	var prepareCollection = function($field, search)
 	{
 		var $collection = $field.find('> div > ul.collection', '> div > ul.map');
 		if (!$collection.length) {
-			return;
+			return null;
 		}
-		if (value === null) {
-			$collection.data('itrocks_add_index',  0);
+		if (!search) {
 			$collection.data('itrocks_last_index', -1);
 			// TODO LOW call "click on minus", to allow on-remove
 			$collection.find('> li.data').remove();
-			return;
+			return null;
 		}
 		if (!$collection.find(search).length) {
-			$collection.data('addLine').call();
+			return $collection.data('addLine').call();
 		}
 	};
 
@@ -111,13 +110,24 @@ $(document).ready(function()
 		}
 		// new element for collection / empty collection
 		if (!$input.length) {
-			$input = $form.find('li.component-objects#' + field_name.lParse('['));
+			$input = $form.find('li.component-objects#' + field_name);
 			if ($input.length) {
-				prepareCollection($input, search, value);
-				if (value === null) {
-					return;
-				}
-				$input = $form.find(search);
+				prepareCollection($input);
+				return;
+			}
+			if (value === null) {
+				return;
+			}
+			$input = $form.find('li.component-objects#' + field_name.lParse('['));
+			if (!$input.length) {
+				return;
+			}
+			var $added_line = prepareCollection($input, search);
+			$input = $form.find(search);
+			if ($added_line && !$input.length) {
+				var $collection = $added_line.closest('ul.collection, ul.map');
+				$added_line.remove();
+				$collection.data('itrocks_last_index', $collection.data('itrocks_last_index') - 1);
 			}
 		}
 		// not found
