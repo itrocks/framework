@@ -69,8 +69,8 @@ trait Types_Annotation
 				$declared_class_name = substr($class_name, 1);
 			}
 			else {
-				trigger_error('Bad class name ' . $class_name, E_USER_ERROR);
 				$declared_class_name = null;
+				trigger_error('Bad class name ' . $class_name, E_USER_ERROR);
 			}
 			$declared_class_names[$key] = $declared_class_name  . $multiple;
 			if ($this->build_class_name) {
