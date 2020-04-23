@@ -173,7 +173,7 @@ class Class_Builder
 				$type     = 'trait';
 			}
 			else {
-				$abstract = $class->isAbstract() ? 'abstract ' : '';
+				$abstract = ($class->isAbstract() || !$end) ? 'abstract ' : '';
 				$extends  = ' extends ' . BS . $extends;
 				$type     = 'class';
 			}
