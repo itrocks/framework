@@ -882,7 +882,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function isAbstract()
 	{
-		if (!isset($this->name)) {
+		if (!isset($this->is_abstract)) {
 			$this->scanUntilClassName();
 		}
 		return $this->is_abstract;
