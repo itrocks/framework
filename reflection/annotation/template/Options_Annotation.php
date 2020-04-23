@@ -25,9 +25,19 @@ trait Options_Annotation
 	protected function constructOptions(&$value)
 	{
 		if (strpos($value, SP)) {
-			list($value, $options) = explode(SP, $value, 2);
+			[$value, $options] = explode(SP, $value, 2);
 			$this->parseOptions(explode(',', $options));
 		}
+	}
+
+	//------------------------------------------------------------------------------------- hasOption
+	/**
+	 * @param $option string
+	 * @return boolean
+	 */
+	public function hasOption($option)
+	{
+		return isset($this->options[$option]);
 	}
 
 	//---------------------------------------------------------------------------------------- option
@@ -51,10 +61,10 @@ trait Options_Annotation
 	{
 		foreach ($options as $option) if (strlen($option = trim($option))) {
 			if (strpos($option, '=')) {
-				list($key, $val) = explode('=', $option);
+				[$key, $val] = explode('=', $option);
 			}
 			else {
-				$key = $options;
+				$key = $option;
 				$val = true;
 			}
 			switch ($val) {

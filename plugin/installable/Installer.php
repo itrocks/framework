@@ -213,9 +213,10 @@ class Installer
 			}
 			else {
 				/** @noinspection PhpUnhandledExceptionInspection Must be valid */
-				$interface_trait_name = Builder::current()->sourceClassName(
-					reset(Extends_Annotation::of(new Reflection_Class($class_name))->value)
-				);
+				$class                = new Reflection_Class($class_name);
+				$interface_trait_name = Builder::current()->sourceClassName(reset(
+					Extends_Annotation::notOf($class, Extends_Annotation::STRICT)->value
+				));
 				$class_name = $plugin_class->isClass() ? $plugin_class->name : $interface_trait_name;
 				$slice = 0;
 			}
