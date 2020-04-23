@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 
@@ -379,7 +380,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 		$methods = $class->getMethods($flags);
 		if (!isset($methods[$method_name]) && in_array(T_EXTENDS, $flags)) {
 			do {
-				$extends = $class->getListAnnotation('extends')->values();
+				$extends = Extends_Annotation::of($class)->values();
 				$class   = $extends ? $class->source->getOutsideClass($extends[0]) : null;
 				$methods = $class   ? $class->getMethods($flags)                   : null;
 			}

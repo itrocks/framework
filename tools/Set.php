@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Tools;
 
 use Iterator;
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -172,9 +173,9 @@ class Set implements Iterator
 		/** @noinspection PhpUnhandledExceptionInspection trait $class_name exists tested */
 		elseif (
 			trait_exists($class_name)
-			&& ($extends_class = (new Reflection_Class($class_name))->getListAnnotation('extends')->value)
+			&& ($extends_classes = Extends_Annotation::of(new Reflection_Class($class_name))->values())
 		) {
-			$extends_class = reset($extends_class);
+			$extends_class = reset($extends_classes);
 			return new $extends_class($elements);
 		}
 		else {
@@ -187,7 +188,7 @@ class Set implements Iterator
 	/**
 	 * Return the key of the current element designed by the pointer of the set
 	 *
-	 * @return object
+	 * @return int|string
 	 */
 	public function key()
 	{

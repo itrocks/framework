@@ -2,6 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Php\Reflection_Class;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Tools\OS;
 
 /**
@@ -122,8 +123,7 @@ class Include_Path
 				$directories = $this->getSourceDirectories($include_subdirectories, $extends, $already);
 			}
 			// get source directories for secondary applications extends
-			$class = Reflection_Class::of($application_class);
-			$extends_annotations = $class->getListAnnotations('extends');
+			$extends_annotations = Extends_Annotation::allOf(Reflection_Class::of($application_class));
 			foreach ($extends_annotations as $extends_annotation) {
 				foreach ($extends_annotation->values() as $extends) {
 					if (!isset($already[$extends])) {

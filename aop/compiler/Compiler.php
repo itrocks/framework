@@ -17,6 +17,7 @@ use ITRocks\Framework\PHP\Done_Compiler;
 use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
+use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -314,7 +315,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 				$class_properties = $class->getProperties([T_EXTENDS]);
 				$extends          = $class;
 				while (!isset($class_properties[$match['property_name']])) {
-					$extends_values = $extends->getListAnnotation('extends')->values();
+					$extends_values = Extends_Annotation::of($extends)->values();
 					if (!$extends_values) {
 						break;
 					}
