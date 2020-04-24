@@ -357,6 +357,16 @@ class Write extends Data_Link\Write
 			$id = $this->link->getObjectIdentifier($this->object, $this->id_property);
 		}
 		if ($write) {
+			$write_properties  = [];
+			foreach ($properties as $property) {
+				$column_name = Store_Name_Annotation::of($property)->value;
+				if (array_key_exists($column_name, $write)) {
+					$write_properties[$column_name] = $property;
+				}
+				elseif (array_key_exists('id_' . $column_name, $write)) {
+					$write_properties['id_' . $column_name] = $property;
+				}
+			}
 			$mysqli = $this->link->getConnection();
 			array_push($mysqli->contexts, $class->name);
 			if (empty($id) || isset($this->force_add)) {
@@ -370,7 +380,7 @@ class Write extends Data_Link\Write
 				}
 			}
 			else {
-				$this->link->query(Sql\Builder::buildUpdate($class->name, $write, $id));
+				$this->link->query(Sql\Builder::buildUpdate($class->name, $write, $id, $write_properties));
 			}
 			array_pop($mysqli->contexts);
 		}

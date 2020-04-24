@@ -135,20 +135,22 @@ abstract class Builder
 	/**
 	 * Build a SQL UPDATE query
 	 *
-	 * @param $class Reflection_Class|string
-	 * @param $write array the data to write for each column : key is the column name
-	 * @param $id    integer|integer[]
+	 * @param $class            Reflection_Class|string
+	 * @param $write            array the data to write for each column : key is the column name
+	 * @param $id               integer|integer[]
+	 * @param $write_properties Reflection_Property[] key is the column name
 	 * @return string
 	 */
-	public static function buildUpdate($class, array $write, $id)
+	public static function buildUpdate($class, array $write, $id, array $write_properties)
 	{
 		$sql_update = self::UPDATE . SP . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
 		$i = 0;
 		foreach ($write as $key => $value) {
+			$property = $write_properties[$key] ?? null;
 			if ($i++) {
 				$sql_update .= ', ';
 			}
-			$sql_update .= BQ . $key . BQ . ' = ' . Value::escape($value);
+			$sql_update .= BQ . $key . BQ . ' = ' . Value::escape($value, false, $property);
 		}
 		$sql_update .= LF . 'WHERE';
 		if (is_numeric($id)) {
