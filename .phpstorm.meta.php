@@ -10,6 +10,7 @@ namespace PHPSTORM_META;
  * To apply your changes to this file : simply close then re-launch PhpStorm
  */
 
+use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use mysqli_result;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameters;
@@ -24,6 +25,10 @@ use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\View\Html\Template;
 use PHPUnit\Framework\TestCase;
+
+function override($callable, $override) {
+	return "override $callable $override";
+}
 
 $STATIC_METHOD_TYPES = [
 	mysqli_result::fetch_object('') => [
@@ -80,6 +85,9 @@ $STATIC_METHOD_TYPES = [
 	Plugin\Manager::get('') => [
 		'' == '@'
 	],
+	Replaces_Annotations::removeReplacedProperties('') => [
+		'' == '@'
+	],
 	Search_Object::create('') => [
 		'' == '@'
 	],
@@ -100,5 +108,5 @@ $STATIC_METHOD_TYPES = [
 	],
 	TestCase::getMockBuilder('') => [
 		'' == '@'
-	],
+	]
 ];

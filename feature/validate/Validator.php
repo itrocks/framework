@@ -50,7 +50,7 @@ class Validator implements Registerable
 	 * If you launch multiple validations with exception capture, don't forget to reset the report,
 	 * or it will be accumulated for your further validations !
 	 *
-	 * @var Reflection\Annotation[]|Annotation[]
+	 * @var Reflection\Annotation[]|Annotation[]|Property\Annotation[]
 	 */
 	public $report = [];
 
@@ -389,12 +389,15 @@ class Validator implements Registerable
 	 * @param $object             object
 	 * @param $only_properties    string[] property names if we want to check those properties only
 	 * @param $exclude_properties string[] property names if we don't want to check those properties
+	 * @param $component          boolean
 	 * @return string|null|true @values Result::const
 	 */
-	public function validate($object, array $only_properties = [], array $exclude_properties = [])
-	{
+	public function validate(
+		$object, array $only_properties = [], array $exclude_properties = [], $component = false
+	) {
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class      = new Link_Class($object);
+		/** @var $properties Reflection_Property[] */
 		$properties = Replaces_Annotations::removeReplacedProperties(
 			Reflection\Annotation\Class_\Link_Annotation::of($class)->value
 				? $class->getLinkProperties()
@@ -402,7 +405,9 @@ class Validator implements Registerable
 		);
 
 		$this->valid = Result::andResult(
-			$this->validateProperties($object, $properties, $only_properties, $exclude_properties),
+			$this->validateProperties(
+				$object, $properties, $only_properties, $exclude_properties, $component
+			),
 			$this->validateObject($object, $class)
 		);
 
@@ -461,14 +466,14 @@ class Validator implements Registerable
 	 * @param $object             object
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
-	 * @param $property           Reflection\Reflection_Property
+	 * @param $property           Reflection_Property
 	 * @return string|null|true @values Result::const
 	 */
 	private function validateComponent(
 		$object,
 		array $only_properties,
 		array $exclude_properties,
-		Reflection\Reflection_Property $property
+		Reflection_Property $property
 	) {
 		$result = true;
 		$type   = $property->getType();
@@ -492,22 +497,23 @@ class Validator implements Registerable
 					->subObjectOption($property->name, true)->properties;
 				foreach ($sub_objects as $sub_object) {
 					$result = Result::andResult(
-						$result, $this->validate($sub_object, $only_properties, $exclude_properties)
+						$result, $this->validate($sub_object, $only_properties, $exclude_properties, true)
 					);
 				}
 				// update properties path of report annotations to be relative to parent property
 				$property_class_name = $type->getElementTypeAsString();
 				$class_name          = get_class($object);
 				foreach ($this->report as $annotation) {
+					/** @var $annotation_property Reflection\Reflection_Property */
 					if (
 						isA($annotation, Property\Annotation::class)
 						&& $annotation->property
-						&& isA($annotation->property, Reflection\Reflection_Property::class)
-						&& $annotation->property->root_class == $property_class_name
+						&& isA($annotation_property = $annotation->property, Reflection\Reflection_Property::class)
+						&& $annotation_property->root_class == $property_class_name
 					) {
 						/** @noinspection PhpUnhandledExceptionInspection $class_name comes from an object */
 						$annotation->property = new Reflection\Reflection_Property(
-							$class_name, $property->path . DOT . $annotation->property->path
+							$class_name, $property->path . DOT . $annotation_property->path
 						);
 					}
 				}
@@ -536,23 +542,24 @@ class Validator implements Registerable
 	 * @param $properties         Reflection_Property[]
 	 * @param $only_properties    string[]
 	 * @param $exclude_properties string[]
+	 * @param $component          boolean
 	 * @return string|null|true @values Result::const
 	 */
 	protected function validateProperties(
-		$object, array $properties, array $only_properties, array $exclude_properties
+		$object, array $properties, array $only_properties, array $exclude_properties,
+		$component = false
 	) {
 		$result             = true;
 		$exclude_properties = array_flip($exclude_properties);
 		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
-			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
 			if (
 				(
 					!$property->isStatic()
 					&& (!$only_properties || isset($only_properties[$property->name]))
 					&& !isset($exclude_properties[$property->name])
 					&& !$property->getAnnotation('calculated')->value
-					&& !$property->getAnnotation('composite')->value
+					&& (!$component || !$property->getAnnotation('composite')->value)
 					&& !$property->getAnnotation('link_composite')->value
 				)
 				|| (
