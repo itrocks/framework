@@ -565,13 +565,24 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * Returns current date-time
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
 	public static function now()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid call without parameters */
 		return new static();
+	}
+
+	//------------------------------------------------------------------------------------- nowMinute
+	/**
+	 * Returns current date-time, without initializing seconds
+	 *
+	 * @return Date_Time
+	 */
+	public static function nowMinute()
+	{
+		$date_time = new static();
+		$date_time->setTime($date_time->format('H'), $date_time->format('i'));
+		return $date_time;
 	}
 
 	//------------------------------------------------------------------------------------------- sub
