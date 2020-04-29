@@ -157,6 +157,7 @@ class Class_Builder
 		$namespace_prefix = Namespaces::of(static::builtClassName($class_name));
 		$namespace        = $built_class = null;
 		$source           = null;
+		$class            = Reflection_Source::ofClass($class_name)->getFirstClass();
 		foreach ($traits as $level => $class_traits) {
 			// must be set before $namespace (extends last class)
 			$extends   = (isset($namespace) ? ($namespace . BS . $short_class) : $class_name);
@@ -165,7 +166,6 @@ class Class_Builder
 			$count     = isset(static::$builds[$class_name]) ? count(static::$builds[$class_name]) : '';
 			$sub_count = $end ? '' : (BS . 'Sub' . ($end - $level));
 
-			$class = Reflection_Source::ofClass($extends)->getFirstClass();
 			if ($class->getType() === T_TRAIT) {
 				array_unshift($class_traits, $extends);
 				$abstract = '';
