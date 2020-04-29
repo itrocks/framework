@@ -842,6 +842,31 @@ class Reflection_Property extends ReflectionProperty
 		}
 	}
 
+	//----------------------------------------------------------------------------------- showSeconds
+	/**
+	 * @return string
+	 */
+	public function showSeconds()
+	{
+		if (!$this->getType()->isDateTime()) {
+			return '';
+		}
+		return $this->getAnnotation('show_seconds')->value ? 'show-seconds' : '';
+	}
+
+	//-------------------------------------------------------------------------------------- showTime
+	/**
+	 * @return string
+	 */
+	public function showTime()
+	{
+		if (!$this->getType()->isDateTime()) {
+			return '';
+		}
+		$show_time = $this->getAnnotation('show_time')->value;
+		return in_array($show_time, ['always', 'auto', true], true) ? 'show-time' : '';
+	}
+
 	//--------------------------------------------------------------------- toReflectionPropertyValue
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection

@@ -8,7 +8,7 @@ textarea {
 	border: $input-border;
 	border-radius: $input-border-radius;
 
-	&:not(.auto_width) {
+	&:not(.auto_width):not(.datetime) {
 		width: 100px;
 	}
 

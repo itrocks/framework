@@ -8,3 +8,29 @@ button.ui-datepicker-trigger {
 .ui-datepicker td.ui-datepicker-week-col {
 	text-align: center;
 }
+
+input.datetime {
+
+	&.show-seconds {
+		width: 136px;
+	}
+
+	&.show-time:not(.show-seconds) {
+		width: 118px;
+	}
+}
+
+li.date_time.object {
+
+	&:not(.show-seconds):not(.show-time) input.datetime {
+		width: 82px;
+	}
+
+	&.show-seconds input.datetime {
+		width: 136px;
+	}
+
+	&.show-time:not(.show-seconds) input.datetime {
+		width: 118px;
+	}
+}

@@ -4,3 +4,15 @@ button.ui-datepicker-trigger {
 
 .ui-datepicker td.ui-datepicker-week-col {
   text-align: center; }
+
+input.datetime.show-seconds {
+  width: 136px; }
+input.datetime.show-time:not(.show-seconds) {
+  width: 118px; }
+
+li.date_time.object:not(.show-seconds):not(.show-time) input.datetime {
+  width: 82px; }
+li.date_time.object.show-seconds input.datetime {
+  width: 136px; }
+li.date_time.object.show-time:not(.show-seconds) input.datetime {
+  width: 118px; }

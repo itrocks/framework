@@ -44,7 +44,7 @@ class Date_Format
 
 	//------------------------------------------------------------------------------------ $show_time
 	/**
-	 * @var string
+	 * @var string @values always, auto, never
 	 */
 	public $show_time = self::TIME_AUTO;
 
