@@ -42,7 +42,9 @@ trait Feature_Annotation
 
 		foreach ($parents as $parent) {
 			if (!static::hasFeatureAnnotation($parent)) {
-				$annotations = static::allOf($parent, $context ?: $reflection_object) + $annotations;
+				$annotations = array_merge(
+					static::allOf($parent, $context ?: $reflection_object), $annotations
+				);
 			}
 		}
 
