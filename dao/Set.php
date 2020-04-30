@@ -64,6 +64,10 @@ class Set
 				$written[$dao->getObjectIdentifier($dao->write($object))] = true;
 			}
 		}
+		if ($dao instanceof Sql\Link) {
+			$dao->commit();
+			$dao->begin();
+		}
 		// delete old unused objects
 		foreach ($old_objects as $key => $object) {
 			if (!isset($written[$key])) {
