@@ -21,6 +21,12 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'conditions';
 
+	//----------------------------------------------------------------------------------------- EMPTY
+	const EMPTY = '@empty';
+
+	//------------------------------------------------------------------------------------------- SET
+	const SET = '@set';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value    string
@@ -53,11 +59,11 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 				else {
 					$property_name = $condition;
 					if (beginsWith($property_name, '!')) {
-						$condition     = '@empty';
+						$condition     = static::EMPTY;
 						$property_name = substr($property_name, 1);
 					}
 					elseif ($this->typeOf($property, $property_name)->isClass()) {
-						$condition = '@set';
+						$condition = static::SET;
 					}
 				}
 				if (
@@ -94,7 +100,11 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 			/** @noinspection PhpUnhandledExceptionInspection object, property must be valid */
 			$property_value   = new Reflection_Property_Value($object, $property_name, $object);
 			$value            = $property_value->value();
-			if (!in_array($value, $condition_values)) {
+			if (
+				!(isset($value) && in_array(static::SET, $condition_values))
+				&& !(!$value && in_array(static::EMPTY, $condition_values))
+				&& !in_array($value, $condition_values)
+			) {
 				return false;
 			}
 		}
