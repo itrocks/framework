@@ -97,13 +97,13 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			if (in_array($type_annotation->value, ['__CLASS_NAME__', 'self'])) {
 				$type_annotation->value = BS . $class->getName();
 			}
-			elseif ($type_annotation->value == 'static') {
+			elseif ($type_annotation->value === 'static') {
 				if ($class_property instanceof Reflection_Property) {
 					$class = $class_property->getDeclaringClass();
 				}
 				$type_annotation->value = BS . $class->getName();
 			}
-			elseif ($type_annotation->value == 'composite') {
+			elseif ($type_annotation->value === 'composite') {
 				/** @var $composite_property Reflection_Property */
 				$composite_property     = call_user_func([$class->getName(), 'getCompositeProperty']);
 				$type_annotation->value = $composite_property->getType()->asString();
