@@ -15,6 +15,7 @@ use ITRocks\Framework\Feature\Save;
 use ITRocks\Framework\Feature\Validate\Annotation\Warning_Annotation;
 use ITRocks\Framework\Feature\Validate\Property;
 use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Feature\Validate\Property\Validate_Annotation;
 use ITRocks\Framework\Feature\Validate\Property\Var_Annotation;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
@@ -553,7 +554,7 @@ class Validator implements Registerable
 		$exclude_properties = array_flip($exclude_properties);
 		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
-			if (
+			if (!(
 				(
 					!$property->isStatic()
 					&& (!$only_properties || isset($only_properties[$property->name]))
@@ -568,49 +569,50 @@ class Validator implements Registerable
 						[static::class, 'validate'], ['object' => $property->getValue($object)]
 					)
 				)
+			)) {
+				continue;
+			}
+			$type = $property->getType();
+			// we could do this control for all, but this may run getters and useless data reads
+			// this control was added for date-time format control, and nothing else
+			$var_is_valid = true;
+			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
+			if ($type->isDateTime() && ($property->getValue($object) instanceof Date_Time_Error)) {
+				$var_annotation = new Var_Annotation($type->asString(), $property);
+				$var_annotation->reportMessage(Loc::tr('bad format'));
+				$var_annotation->valid = Result::ERROR;
+				$this->report[]        = $var_annotation;
+				$var_is_valid          = false;
+				$result                = Result::andResult($result, Result::ERROR);
+			}
+			if (!$var_is_valid) {
+				continue;
+			}
+			// if value is not set and is a link (component or not), then we validate only mandatory
+			if (
+				!isset($object->{$property->name})
+				&& Reflection\Annotation\Class_\Link_Annotation::of($property)->value
 			) {
-				$type = $property->getType();
-				// we could do this control for all, but this may run getters and useless data reads
-				// this control was added for date-time format control, and nothing else
-				$var_is_valid = true;
-				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
-				if ($type->isDateTime() && ($property->getValue($object) instanceof Date_Time_Error)) {
-					$var_annotation = new Var_Annotation($type->asString(), $property);
-					$var_annotation->reportMessage(Loc::tr('bad format'));
-					$var_annotation->valid = Result::ERROR;
-					$this->report[]        = $var_annotation;
-					$var_is_valid          = false;
-					$result                = Result::andResult($result, Result::ERROR);
-				}
-				if ($var_is_valid) {
-					// if value is not set and is a link (component or not), then we validate only mandatory
-					if (
-						!isset($object->{$property->name})
-						&& Reflection\Annotation\Class_\Link_Annotation::of($property)->value
-					) {
-						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, [Mandatory_Annotation::of($property)]
-						));
-					}
-					// otherwise we validate all annotations, and recurse if is component
-					else {
-						$result = Result::andResult($result, $this->validateAnnotations(
-							$object, $property->getAnnotations()
-						));
-						if (
-							$property->getAnnotation('component')->value
-							|| Link_Annotation::of($property)->isCollection()
-							|| (
-								Integrated_Annotation::of($property)->value
-								&& Mandatory_Annotation::of($property)->value
-							)
-						) {
-							$result = Result::andResult($result, $this->validateComponent(
-								$object, $only_properties, $exclude_properties, $property
-							));
-						}
-					}
-				}
+				$result = Result::andResult($result, $this->validateAnnotations(
+					$object, [Mandatory_Annotation::of($property), Validate_Annotation::of($property)]
+				));
+				continue;
+			}
+			// otherwise we validate all annotations, and recurse if is component
+			$result = Result::andResult($result, $this->validateAnnotations(
+				$object, $property->getAnnotations()
+			));
+			if (
+				$property->getAnnotation('component')->value
+				|| Link_Annotation::of($property)->isCollection()
+				|| (
+					Integrated_Annotation::of($property)->value
+					&& Mandatory_Annotation::of($property)->value
+				)
+			) {
+				$result = Result::andResult($result, $this->validateComponent(
+					$object, $only_properties, $exclude_properties, $property
+				));
 			}
 		}
 		return $result;

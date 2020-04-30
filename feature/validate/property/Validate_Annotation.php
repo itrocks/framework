@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Validate\Property;
 
 use ITRocks\Framework\Feature\Validate;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -26,6 +27,15 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 		$this->property = $property;
 	}
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return Loc::tr('valid value');
+	}
+
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * Validates the property value within this object context
@@ -35,6 +45,9 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	 */
 	public function validate($object)
 	{
+		if (!$this->value) {
+			return true;
+		}
 		$result        = $this->call($object, [$this->property]);
 		$this->message = is_string($result) ? $result : null;
 		return is_string($result) ? false : $result;
