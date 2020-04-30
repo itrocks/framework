@@ -197,7 +197,9 @@ $(document).ready(function()
 			(($this.attr('type') === 'checkbox') || !$this.data('realtime-change'))
 			&& !$this.is('input:focus, textarea:focus')
 		) {
-			onEvent.call(this, 'on-change');
+			var self = this;
+			// ensure that it will be called after the blur() event (datetime compatibility)
+			setTimeout(function() { onEvent.call(self, 'on-change') });
 		}
 	});
 
