@@ -214,7 +214,17 @@ class Collection
 				$value = (new Map($property, $value))->build();
 			}
 		}
-		$cell = new Item(($value instanceof Dao\File) ? (new File($value))->build() : $value);
+
+		if ($value instanceof Dao\File) {
+			$value = (new File($value))->build();
+		}
+		if (
+			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
+			&& (strpos($value, '|') !== false)
+		) {
+			$value = str_replace('|', '&#124;', $value);
+		}
+		$cell = new Item($value);
 		$hide_empty_test = !($this->has_value[$property->path] ?? !static::HIDE_EMPTY_TEST);
 		if (!$property->isVisible($hide_empty_test)) {
 			$cell->addClass('hidden');

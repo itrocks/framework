@@ -66,7 +66,11 @@ class File
 		}
 		$feature = $image ? 'image' : Feature::F_OUTPUT;
 
-		$anchor = new Anchor($file->link($feature), $image . new Span($file->name));
+		$file_name = $file->name;
+		if (strpos($file_name, '|') !== false) {
+			$file_name = str_replace('|', '&#124;', $file_name);
+		}
+		$anchor = new Anchor($file->link($feature), $image . new Span($file_name));
 
 		if ($image) {
 			$anchor->setAttribute('target', Target::BLANK);

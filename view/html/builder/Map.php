@@ -106,7 +106,11 @@ class Map
 			$element = (new File($object, $this->property))->build();
 		}
 		else {
-			$element = new Anchor(View::link($object), strval($object));
+			$value = strval($object);
+			if (strpos($value, '|') !== false) {
+				$value = str_replace('|', '&#124;', $value);
+			}
+			$element = new Anchor(View::link($object), $value);
 			$element->setAttribute('target', Target::MAIN);
 		}
 		return new Item($element);

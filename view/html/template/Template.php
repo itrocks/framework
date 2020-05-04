@@ -1524,7 +1524,14 @@ class Template
 			}
 		}
 		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		return $ignore_unknown_property ? @$object->$property_name : $object->$property_name;
+		$value = $ignore_unknown_property ? @$object->$property_name : $object->$property_name;
+		if (
+			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
+			&& (strpos($value, '|') !== false)
+		) {
+			$value = str_replace('|', '&#124;', $value);
+		}
+		return $value;
 	}
 
 	//-------------------------------------------------------------------------------- parseSeparator
@@ -1735,7 +1742,14 @@ class Template
 	{
 		/** @noinspection PhpUnhandledExceptionInspection must exist */
 		$property = (new Reflection_Property($class_name, $property_name));
-		return $property->isStatic() ? $class_name::$$property_name : $property;
+		$value = $property->isStatic() ? $class_name::$$property_name : $property;
+		if (
+			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
+			&& (strpos($value, '|') !== false)
+		) {
+			$value = str_replace('|', '&#124;', $value);
+		}
+		return $value;
 	}
 
 	//----------------------------------------------------------------------------------- parseString
@@ -1887,8 +1901,11 @@ class Template
 			$object = $this->group($var_name, $object);
 		}
 		// if value contains translated data (|), do not translate if | is alone
-		if (is_string($object) && (substr_count($object, '|') % 2)) {
-			$object = str_replace('|', '||', $object);
+		if (
+			(is_string($object) || (is_object($object) && method_exists($object, '__toString')))
+			&& (substr_count($object, '|') % 2)
+		) {
+			$object = str_replace('|', '&#124;', $object);
 		}
 		return $object;
 	}

@@ -46,7 +46,7 @@ class Html_Translator implements Registerable
 		while (($position = strpos($content, PIPE, $position)) !== false) {
 			$position ++;
 			if ($position < strlen($content)) {
-				if ($content[$position] == PIPE) {
+				if ($content[$position] === PIPE) {
 					$content = substr($content, 0, $position) . substr($content, $position);
 					$position ++;
 				}
