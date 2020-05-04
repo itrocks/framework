@@ -6,6 +6,8 @@ use ITRocks\Framework\Tools\Has_Ordering;
 
 /**
  * Card group property
+ *
+ * @business false
  */
 class Group extends Property
 {
