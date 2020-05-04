@@ -273,7 +273,6 @@ class Parameters
 			}
 			return $parameters;
 		}
-		/** @noinspection PhpIncompatibleReturnTypeInspection will be string[] */
 		return arrayUnnamedValues($this->parameters);
 	}
 
@@ -305,11 +304,15 @@ class Parameters
 	/**
 	 * Removes a parameter
 	 *
-	 * @param $key integer|string
+	 * @param $key             integer|string
+	 * @param $from_values_too boolean if true, remove from keys and values
 	 */
-	public function remove($key)
+	public function remove($key, $from_values_too = false)
 	{
 		if (isset($this->parameters[$key])) {
+			unset($this->parameters[$key]);
+		}
+		if ($from_values_too && (($key = array_search($key, $this->parameters, true)) !== false)) {
 			unset($this->parameters[$key]);
 		}
 	}
