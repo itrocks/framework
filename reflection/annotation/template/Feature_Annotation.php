@@ -30,9 +30,9 @@ trait Feature_Annotation
 	{
 		static::$context = $context ?: $reflection_object;
 
-		/** @var $this Annotation|static */
 		/** @noinspection PhpUndefinedClassInspection */
 		/** @see Annotation::allOf */
+		/** @var $this Annotation|static */
 		$annotations = parent::allOf($reflection_object);
 
 		$parents = $reflection_object->getTraits();

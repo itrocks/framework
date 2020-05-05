@@ -100,9 +100,6 @@ abstract class Authentication
 	 * Remove current user from script and session
 	 *
 	 * Call this to disconnect user
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $user User
 	 */
 	public static function disconnect()
 	{
@@ -157,7 +154,7 @@ abstract class Authentication
 		}
 
 		/** @noinspection PhpUnhandledExceptionInspection valid constant property for object */
-		$property = new Reflection_Property(User::class, 'password');
+		$property = new Reflection_Property(Builder::className(User::class), 'password');
 		$password = (new Password($password, Password_Annotation::of($property)->value))->encrypted();
 
 		/** @var $users User[] */
