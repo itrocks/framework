@@ -123,7 +123,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		$name = $property->pathAsField();
 		if (strpos($name, '[')) {
 			$prefix2 = lLastParse($name, '[');
-			$prefix  = $prefix
+			$prefix  = ($prefix && !is_numeric($prefix))
 				? (
 					strpos($prefix2, '[')
 					? ($prefix . '[' . lParse($prefix2, '[') . '][' . rParse($prefix2, '['))
