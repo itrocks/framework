@@ -312,6 +312,7 @@ class Set extends Setting\Custom\Set
 	 */
 	public function reverse($property_path)
 	{
+		$this->sort($property_path);
 		if (!in_array($property_path, $this->sort->reverse)) {
 			$this->sort->reverse[] = $property_path;
 		}

@@ -62,7 +62,9 @@ class Property extends List_Setting\Property
 	 */
 	public function htmlSortLink()
 	{
-		return (($this->sort == 1) && !$this->reverse) ? 'reverse' : 'sort';
+		return ($this->sort == 1)
+			? ($this->reverse ? 'sort' : 'reverse')
+			: ($this->reverse ? 'reverse' : 'sort');
 	}
 
 	//-------------------------------------------------------------------------------------------- tr
