@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework;
 
+use Exception;
+
 /**
  * Call with php itrocks/framework/console.php
  *
@@ -272,10 +274,19 @@ class Console
 		if (!$pid) {
 			$pid = getmypid();
 		}
-		foreach (scandir("$path/$pid") as $file) if ($file[0] !== '.') {
-			unlink("$path/$pid/$file");
+		if (is_dir("$path/$pid")) {
+			try {
+				foreach (scandir("$path/$pid") as $file) {
+					if ($file[0] !== '.') {
+						unlink("$path/$pid/$file");
+					}
+				}
+				rmdir("$path/$pid");
+			}
+			catch (Exception $exception) {
+				// ignore files created by another user : this user will purge them
+			}
 		}
-		rmdir("$path/$pid");
 	}
 
 	//--------------------------------------------------------------------------------- procInfoWrite
