@@ -233,7 +233,7 @@ abstract class Link extends Identifier_Map implements Transactional
 				return $list;
 			}
 			$filter_object = $filter_object
-				? Func::andOp([$filter_object, Func::orOp($new_filter_object)])
+				? Func::andOp([$filter_object, Func::in($new_filter_object)])
 				: $new_filter_object;
 		}
 
