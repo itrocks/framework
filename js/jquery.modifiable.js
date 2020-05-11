@@ -45,7 +45,7 @@ window.modifiable_waiting  = false;
 							}
 							window.modifiable_waiting = false;
 						},
-						200
+						300
 					);
 				}
 			}
