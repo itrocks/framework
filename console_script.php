@@ -345,7 +345,9 @@ class Console
 	//------------------------------------------------------------------------------ storeRunningFile
 	private function storeRunningFile()
 	{
-		touch($this->runningFileName());
+		$running_filename = $this->runningFileName();
+		touch($running_filename);
+		chmod($running_filename, 0777);
 	}
 
 	//---------------------------------------------------------------------------- temporaryDirectory
