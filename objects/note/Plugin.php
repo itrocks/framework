@@ -29,6 +29,10 @@ class Plugin implements Registerable
 	 */
 	public function addNotesButton($object, array &$result)
 	{
+		if (!Dao::getObjectIdentifier($object)) {
+			return;
+		}
+
 		$buttons =& $result;
 		$count   =  Dao::count(['object' => $object], Note::class) ?: null;
 
