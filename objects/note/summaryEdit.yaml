@@ -1,2 +1,3 @@
 features: summaryAdd, summaryEdit
 includes: admin, summaryOutput
+name: Note summary edit
