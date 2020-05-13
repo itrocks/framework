@@ -2094,16 +2094,25 @@ class Template
 
 		$i            = 0;
 		$replacements = false;
-		while (($i = strpos($content, 'data-begin=' . DQ, $i)) !== false) {
-			$i      += 12;
-			$j       = strpos($content, DQ, $i);
-			$content = substr($content, 0, $i - 12)
+		while (($i = strpos($content, 'data-begin="{', $i)) !== false) {
+			$i      += 13;
+			$j       = strpos($content, '}' . DQ, $i);
+			$content = substr($content, 0, $i - 13)
 				. '<!--' . substr($content, $i, $j - $i) . '-->'
-				. substr($content, $j + (($content[$j + 1] === SP) ? 2 : 1));
+				. substr($content, $j + (($content[$j + 2] === SP) ? 2 : 1));
 			$replacements = true;
 		}
 		if ($replacements) {
 			$content = str_replace('data-end', '<!--end-->', $content);
+		}
+
+		$i = 0;
+		while (($i = strpos($content, 'data-each="{', $i)) !== false) {
+			$i += 12;
+			$j  = strpos($content, '}' . DQ, $i);
+			$content = substr($content, 0, $i - 12)
+				. '<!--' . substr($content, $i, $j - $i) . '--> data-{@key}="{.}"<!--end-->'
+				. substr($content, $j + 2);
 		}
 
 		$i = 0;
