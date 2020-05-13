@@ -20,6 +20,9 @@ class Button
 	//----------------------------------------------------------------------------------------- COLOR
 	const COLOR = 'color';
 
+	//------------------------------------------------------------------------------------------ DATA
+	const DATA = 'data';
+
 	//------------------------------------------------------------------------------------------ HINT
 	const HINT = 'hint';
 
@@ -103,6 +106,12 @@ class Button
 	 * @var string
 	 */
 	public $confirm_message;
+
+	//----------------------------------------------------------------------------------------- $data
+	/**
+	 * @var float[]|integer[]|string[]
+	 */
+	public $data = [];
 
 	//---------------------------------------------------------------------------------- $data_object
 	/**
@@ -234,6 +243,9 @@ class Button
 			$this->class .= (isset($this->class) ? SP : '')
 				. (is_numeric($key) ? substr($option, 1) : $option);
 		}
+		elseif ($key === self::DATA) {
+			$this->data = array_merge($this->data, $option);
+		}
 		elseif ($key === self::HINT) {
 			$this->hint = $option;
 		}
@@ -284,7 +296,6 @@ class Button
 
 	//------------------------------------------------------------------------------ setObjectContext
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 */
 	public function setObjectContext($object)
@@ -298,7 +309,6 @@ class Button
 				isA($object, $uri->controller_name)
 				&& !$uri->parameters->getRawParameter($uri->controller_name)
 			) {
-				/** @noinspection PhpUnhandledExceptionInspection object must still be here */
 				$uri->parameters->getMainObject($object);
 				$uri->parameters->shift();
 				if ($uri->feature_name == Feature::F_ADD) {
