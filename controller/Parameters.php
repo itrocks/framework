@@ -84,6 +84,33 @@ class Parameters
 		return count($this->parameters);
 	}
 
+	//-------------------------------------------------------------------------------- firstKeyObject
+	/**
+	 * @return array [$key mixed, $object object]
+	 */
+	protected function firstKeyObject()
+	{
+		foreach ($this->parameters as $key => $value) {
+			if (is_object($value)) {
+				return [$key, $value];
+			}
+			elseif (ucfirst(substr($key, 0, 1)) && class_exists($key)) {
+				return [$key, Dao::read($value, $key)];
+			}
+		}
+		return [null, null];
+	}
+
+	//----------------------------------------------------------------------------------- firstObject
+	/**
+	 * @return object
+	 */
+	public function firstObject()
+	{
+		[,$value] = $this->firstKeyObject();
+		return $value;
+	}
+
 	//--------------------------------------------------------------------------------- getMainObject
 	/**
 	 * Gets the main object from the parameters
@@ -401,16 +428,10 @@ class Parameters
 	 */
 	public function shiftObject()
 	{
-		foreach ($this->parameters as $key => $value) {
-			if (is_object($value)) {
-				unset($this->parameters[$key]);
-				return $value;
-			}
-			elseif (ucfirst(substr($key, 0, 1)) && class_exists($key)) {
-				$value = Dao::read($value, $key);
-				unset($this->parameters[$key]);
-				return $value;
-			}
+		[$key, $value] = $this->firstKeyObject();
+		if (isset($key)) {
+			unset($this->parameters[$key]);
+			return $value;
 		}
 		return null;
 	}
