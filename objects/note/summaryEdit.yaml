@@ -1,0 +1,2 @@
+features: summaryAdd, summaryEdit
+includes: admin, summaryOutput

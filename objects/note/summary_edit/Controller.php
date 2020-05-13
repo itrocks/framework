@@ -31,7 +31,7 @@ class Controller implements Feature_Controller
 		}
 		else {
 			$note->object = $object;
-			$parameters->set('close_link', '/ITRocks/Framework/blank');
+			$parameters->set('close_link', '/ITRocks/Framework/Application/blank');
 		}
 		return View::run($parameters->getObjects(), $form, $files, Note::class, static::FEATURE);
 	}

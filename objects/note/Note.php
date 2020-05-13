@@ -7,7 +7,8 @@ use ITRocks\Framework\Tools\Date_Time;
  * @business
  * @display_order text, title, date, object
  * @feature
- * @feature summary
+ * @feature summaryEdit
+ * @feature summaryOutput
  * @sort -date, title
  */
 class Note
