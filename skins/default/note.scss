@@ -1,0 +1,118 @@
+@import 'colors.scss';
+
+.general.actions > .notes[data-count] {
+	border: none;
+	margin-left: auto;
+
+	&:after {
+		content: attr(data-count);
+		font-size: 12px;
+		font-weight: $medium;
+		position: absolute;
+		left: 26px;
+		top: -2px;
+	}
+
+	> a {
+		background: url('img/note-24.svg') center no-repeat;
+		font-size: 0;
+
+		&:hover {
+			background-color: #efefef;
+		}
+	}
+}
+
+#notes-summary {
+	background-color: $background;
+	border: 1px solid white;
+	color: $color;
+	position: fixed;
+	z-index: calc(var(--z-index) + 5);
+
+	ul.notes {
+		background-color: white;
+		border: 1px solid #ddd;
+		box-shadow: -2px 2px 2px 2px rgba(0, 0, 0, .1);
+		line-height: 1.2em;
+		max-width: 33vw;
+		min-height: 36px;
+		min-width: 20vw;
+		padding: 10px;
+		position: relative;
+		white-space: initial;
+
+		> li {
+			display: block;
+
+			&:first-child {
+				display: inline-block;
+				position: absolute;
+				right: 0;
+			}
+
+			&:not(:last-child):not(:empty) {
+				margin-bottom: 1em;
+			}
+
+			&[id^="note-"] {
+				cursor: pointer;
+
+				li {
+
+					&#title {
+						width: calc(100% - 132px);
+					}
+
+					&#text {
+						width: calc(100% - 22px);
+					}
+
+					label {
+						display: none;
+					}
+
+					input {
+						width: 100%;
+					}
+
+					textarea {
+						min-width: calc(33vw - 20px);
+						width: 100%;
+					}
+				}
+			}
+
+			&[id="note-"] li#title {
+				width: calc(100% - 95px);
+			}
+
+			> .date {
+				color: #888;
+			}
+
+			> .text {
+				white-space: pre-line;
+			}
+
+			> h3 {
+				font-size: 1.4em;
+			}
+
+			ul.actions {
+				background: initial;
+				flex-direction: row-reverse;
+				margin-bottom: -28px;
+
+				> li > a {
+					font-size: 0;
+					padding-left: 16px;
+				}
+			}
+
+			form > ul.actions {
+				width: calc(100% + 10px);
+			}
+		}
+	}
+}

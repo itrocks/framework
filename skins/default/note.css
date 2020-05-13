@@ -1,0 +1,71 @@
+.general.actions > .notes[data-count] {
+  border: none;
+  margin-left: auto; }
+  .general.actions > .notes[data-count]:after {
+    content: attr(data-count);
+    font-size: 12px;
+    font-weight: 500;
+    position: absolute;
+    left: 26px;
+    top: -2px; }
+  .general.actions > .notes[data-count] > a {
+    background: url("img/note-24.svg") center no-repeat;
+    font-size: 0; }
+    .general.actions > .notes[data-count] > a:hover {
+      background-color: #efefef; }
+
+#notes-summary {
+  background-color: white;
+  border: 1px solid white;
+  color: #444;
+  position: fixed;
+  z-index: calc(var(--z-index) + 5); }
+  #notes-summary ul.notes {
+    background-color: white;
+    border: 1px solid #ddd;
+    box-shadow: -2px 2px 2px 2px rgba(0, 0, 0, 0.1);
+    line-height: 1.2em;
+    max-width: 33vw;
+    min-height: 36px;
+    min-width: 20vw;
+    padding: 10px;
+    position: relative;
+    white-space: initial; }
+    #notes-summary ul.notes > li {
+      display: block; }
+      #notes-summary ul.notes > li:first-child {
+        display: inline-block;
+        position: absolute;
+        right: 0; }
+      #notes-summary ul.notes > li:not(:last-child):not(:empty) {
+        margin-bottom: 1em; }
+      #notes-summary ul.notes > li[id^="note-"] {
+        cursor: pointer; }
+        #notes-summary ul.notes > li[id^="note-"] li#title {
+          width: calc(100% - 132px); }
+        #notes-summary ul.notes > li[id^="note-"] li#text {
+          width: calc(100% - 22px); }
+        #notes-summary ul.notes > li[id^="note-"] li label {
+          display: none; }
+        #notes-summary ul.notes > li[id^="note-"] li input {
+          width: 100%; }
+        #notes-summary ul.notes > li[id^="note-"] li textarea {
+          min-width: calc(33vw - 20px);
+          width: 100%; }
+      #notes-summary ul.notes > li[id="note-"] li#title {
+        width: calc(100% - 95px); }
+      #notes-summary ul.notes > li > .date {
+        color: #888; }
+      #notes-summary ul.notes > li > .text {
+        white-space: pre-line; }
+      #notes-summary ul.notes > li > h3 {
+        font-size: 1.4em; }
+      #notes-summary ul.notes > li ul.actions {
+        background: initial;
+        flex-direction: row-reverse;
+        margin-bottom: -28px; }
+        #notes-summary ul.notes > li ul.actions > li > a {
+          font-size: 0;
+          padding-left: 16px; }
+      #notes-summary ul.notes > li form > ul.actions {
+        width: calc(100% + 10px); }

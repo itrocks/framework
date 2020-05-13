@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../../"; </script>
+	<script src="../../../js/all.js"></script>
+	<style> @import "../../../skins/default/all.css"; </style>
+	<title>{title}</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<ul class="notes">
+		<li class="actions">
+			<ul class="actions">
+				<li class="close-small">
+					<a href="app://ITRocks/Framework/blank" target="#notes-summary" title="|close|">
+						|Close|
+					</a>
+				</li>
+				<li class="add-small">
+					<a href="app://ITRocks/Framework/Objects/Note/summaryAdd/(object.@link)" target="#note-" title="|add|">
+						|Add|
+					</a>
+				</li>
+			</ul>
+		</li>
+		<li id="note-"></li>
+		<!--notes-->
+		<li data-id="{id}" id="note-{id}">
+			{/note/summaryOutput.html}
+		</li>
+		<!--end-->
+	</ul>
+
+<!--END-->
+</body>
+</html>
+

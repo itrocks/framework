@@ -2,10 +2,22 @@ li.action.add > a,
 li.actions > ul > li.add > a,
 ul.actions > li.add > a {
   background-image: url("img/add-24.svg"); }
+li.action.add-small > a,
+li.actions > ul > li.add-small > a,
+ul.actions > li.add-small > a {
+  background-image: url("img/add-small-24.svg");
+  font-size: 0;
+  padding-left: 16px; }
 li.action.close > a,
 li.actions > ul > li.close > a,
 ul.actions > li.close > a {
   background-image: url("img/close-24.svg"); }
+li.action.close-small > a,
+li.actions > ul > li.close-small > a,
+ul.actions > li.close-small > a {
+  background-image: url("img/close-small-24.svg");
+  font-size: 0;
+  padding-left: 16px; }
 li.action.delete > a,
 li.actions > ul > li.delete > a,
 ul.actions > li.delete > a {

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../../"; </script>
+	<script src="../../../js/all.js"></script>
+	<style> @import "../../../skins/default/all.css"; </style>
+	<title>{title}</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<form
+		action="app://ITRocks/Framework/Objects/Note/(id)/save"
+		autocomplete="off"
+		enctype="multipart/form-data"
+		method="post"
+		name="note-summary-add"
+		target="#responses">
+
+		<ul class="actions">
+			<li class="close">
+				<a href="app://(close_link)" target="#note-{id}" title="|cancel|">
+					|Cancel|
+				</a>
+			</li>
+			<!--id?-->
+			<li class="delete">
+				<a class="submit" href="app://ITRocks/Framework/Objects/Note/(id)/delete" target="#responses" title="|delete|">
+					|Delete|
+				</a>
+			</li>
+			<!--end-->
+			<li class="save">
+				<a class="submit" href="app://ITRocks/Framework/Objects/Note/(id)/save" target="#responses" title="|save|">
+					|Save|
+				</a>
+			</li>
+		</ul>
+
+		<input type="hidden" name="object" value="{object.@class}:{object.id}">
+
+		<ul class="data">
+			<li id="title">
+				<label for="title-input">|title|</label>
+				<input id="title-input" name="title" placeholder="|title|" value="{?title}">
+			</li>
+			<li id="text">
+				<label for="text-input">|text|</label>
+				<textarea class="auto_height" id="text-input" name="text" placeholder="|text|">{text}</textarea>
+			</li>
+		</ul>
+
+	</form>
+
+<!--END-->
+</body>
+</html>
