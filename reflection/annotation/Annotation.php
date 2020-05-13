@@ -57,7 +57,6 @@ class Annotation
 	 */
 	public static function allOf(Reflection $reflection_object)
 	{
-		/** @noinspection PhpIncompatibleReturnTypeInspection static[] is the most acute */
 		return $reflection_object->getAnnotations(
 			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
 		);

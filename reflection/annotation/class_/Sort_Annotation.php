@@ -35,7 +35,6 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 		parent::__construct($value);
 		// default sort : all representative values but links
 		if (!$this->value) {
-			/** @var $representative string[] @representative property names */
 			$representative = Representative_Annotation::of($class)->value;
 			foreach ($representative as $property_path) {
 				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
