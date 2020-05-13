@@ -5,6 +5,7 @@ use Exception;
 use ITRocks\Framework\Controller\Default_Class_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Locale\Loc;
@@ -113,6 +114,13 @@ class Controller implements Default_Class_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		$parameters->set(
+			'then_target',
+			($parameters->getRawParameter('then') && !$parameters->getRawParameter('then_target'))
+				? Target::MAIN
+				: ('#' . $parameters->getRawParameter('then_target'))
+		);
+
 		/** @noinspection PhpUnhandledExceptionInspection Useless for the developer */
 		// this is managed by the top-level Main\Controller
 		$this->checkFormIntegrity($form, $files);
