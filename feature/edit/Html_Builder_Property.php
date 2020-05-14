@@ -281,7 +281,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				if ($object && $user_change->is_composite) {
 					/** @var $object Component */
 					$object = $object->getComposite();
-					if (strpos($user_change, '::')) {
+					if ($object && strpos($user_change, '::')) {
 						$user_change->value = Builder::current()->sourceClassName(get_class($object))
 							. '::' . rParse($user_change->value, '::');
 					}
