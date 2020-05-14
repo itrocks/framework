@@ -1,8 +1,34 @@
+$(document).ready(function()
+{
+
+	$('body').build('each', 'article.output > header > h2', function()
+	{
+		var className = function($this)
+		{
+			return $this.closest('article').data('class').repl(BS, SL);
+		};
+		var featureName = function($this)
+		{
+			return $this.closest('article').data('feature');
+		};
+		var callback_uri = window.app.uri_base + '/{className}/outputSetting'
+			+ '?as_widget&feature={featureName}' + window.app.andSID();
+
+		//------------------------------ article > header > h2, div[class][id] > label > a modifiable
+		// output title is modifiable (dbl-click)
+		$(this).modifiable({
+			ajax:    callback_uri + '&title={value}',
+			aliases: {className: className, featureName: featureName},
+			target:  '#responses'
+		});
+	});
+
+});
 
 function radOutput()
 {
 
-	$('body').build('each', 'article.edit > fieldset, article.output > fieldset', function()
+	$('body').build('each', 'article.edit > .data, article.output > .data', function()
 	{
 		var $this = $(this);
 
@@ -138,29 +164,9 @@ function radOutput()
 		var callback_uri = window.app.uri_base + '/{className}/outputSetting'
 			+ '?as_widget&feature={featureName}' + window.app.andSID();
 
-		var output_edit_uri = window.app.uri_base
-			+ '/ITRocks/Framework/Feature/Output_Setting/edit/{className}/{featureName}?as_widget'
-			+ window.app.andSID();
-
 		var output_property_uri = window.app.uri_base
 			+ '/ITRocks/Framework/Feature/Output_Setting/Property/edit/{className}/{featureName}/{propertyPath}?as_widget'
 			+ window.app.andSID();
-
-		//------------------------------ article > header > h2, div[class][id] > label > a modifiable
-		// output title is modifiable (dbl-click)
-		$this.parent().find('header > h2').modifiable({
-			ajax:      callback_uri + '&title={value}',
-			ajax_form: 'form',
-			aliases:   {className: className, featureName: featureName},
-			popup:     output_edit_uri,
-			target:    '#responses',
-			start: function() {
-				$(this).closest('h2').children('.custom.actions').css('display', 'none');
-			},
-			stop: function() {
-				$(this).closest('h2').children('.custom.actions').css('display', '');
-			}
-		});
 
 		//--------------------------------------------------------- div[class][id]>label>a modifiable
 		// property label is modifiable
