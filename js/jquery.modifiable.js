@@ -23,6 +23,23 @@ window.modifiable_waiting  = false;
 			target:    undefined
 		}, options);
 
+		//------------------------------------------------------------------------------ replaceAliases
+		/**
+		 * @param $this jQuery
+		 * @param ajax  string
+		 */
+		var replaceAliases = function($this, ajax)
+		{
+			for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
+				var value = settings.aliases[alias];
+				if (typeof(value) === 'function') {
+					value = value($this);
+				}
+				ajax = ajax.repl('{' + alias + '}', encodeURI(value));
+			}
+			return ajax;
+		};
+
 		//------------------------------------------------------------------------------------- click()
 		this.click(function(event)
 		{
@@ -79,42 +96,37 @@ window.modifiable_waiting  = false;
 				{
 					var ajax = settings.ajax;
 					if (typeof(ajax) === 'string') {
-						for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
-							var value = settings.aliases[alias];
-							if (typeof(value) === 'function') {
-								value = value($this);
-							}
-							ajax = ajax.repl('{' + alias + '}', encodeURI(value));
-						}
+						ajax = replaceAliases($this, ajax);
 						ajax = ajax.repl('{value}', encodeURI($input.val()));
 						ajax = {
 							url:    ajax,
 							target: settings.target,
 							success: function(data, status, xhr)
 							{
-								var destination = xhr.target;
-								$(destination).html(data);
+								$(xhr.target).html(data).build();
 							}
 						};
-						ajax.target = settings.target;
 
 						// ajax call : post form, use form plugin, or simple post
+						var xhr;
 						if (settings.ajax_form !== undefined) {
 							var $ajax_form = $popup.find(settings.ajax_form);
 							if ($ajax_form.ajaxSubmit !== undefined) {
 								$ajax_form.ajaxSubmit($.extend(
 									ajax, { type: $ajax_form.attr('method') }
 								));
+								xhr = $ajax_form.data('jqxhr');
 							}
 							else {
-								$.ajax($.extend(
+								xhr = $.ajax($.extend(
 									ajax, { data: $ajax_form.serialize(), type: $ajax_form.attr('method') }
 								));
 							}
 						}
 						else {
-							$.ajax(ajax);
+							xhr = $.ajax(ajax);
 						}
+						xhr.target = settings.target;
 
 					}
 					if (settings.stop) {
@@ -168,17 +180,10 @@ window.modifiable_waiting  = false;
 
 				//---------------------------------------------------------------------------------- $popup
 				if (settings.popup !== undefined) {
-					var popup = settings.popup;
-					for (var alias in settings.aliases) if (settings.aliases.hasOwnProperty(alias)) {
-						var value = settings.aliases[alias];
-						if (typeof(value) === 'function') {
-							value = value($this);
-						}
-						popup = popup.repl('{' + alias + '}', encodeURI(value));
-					}
-					var left = $input.offset().left;
-					var top = $input.offset().top + $input.height();
-					$popup = $('<div>').addClass('popup').css({
+					var popup = replaceAliases($this, settings.popup);
+					var left  = $input.offset().left;
+					var top   = $input.offset().top + $input.height();
+					$popup    = $('<div>').addClass('popup').css({
 						left:      left,
 						position:  'absolute',
 						top:       top,
