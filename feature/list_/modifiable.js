@@ -4,7 +4,7 @@ $(document).ready(function()
 	//------------------------------------------------------------------------------------- className
 	var className = function($this)
 	{
-		return $this.closest('article.list').data('class');
+		return $this.closest('article.list').data('class').repl(BS, SL);
 	};
 
 	//---------------------------------------------------------------------------------- propertyPath
