@@ -31,21 +31,6 @@ $(document).ready(function()
 		}
 	});
 
-	//------------------------------------------------ article[data-class] > header input#custom_name
-	/**
-	 * When a title is modified : save it as a 'custom article'
-	 */
-	$body.build('each', [article_header, '> h2.editing > input'], function()
-	{
-		$(this).data('callback', function() {
-			var $input = this;
-			if ($input.val().trim()) {
-				$input.attr('name', 'save_name');
-				$input.closest('form').submit();
-			}
-		});
-	});
-
 	$body.build('call', [article_header, '.custom.select li[data-class][data-id]'], function()
 	{
 		this.draggable({

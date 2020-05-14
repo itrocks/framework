@@ -223,13 +223,14 @@ abstract class Set
 
 	//------------------------------------------------------------------------------------------ save
 	/**
+	 * In all cases : saves the Setting\Custom\Set object for current user and session
 	 * If $save_name is set : saves the Setting\Custom\Set object into the Settings set
-	 * If $save_name is not set : saves the Setting\Custom\Set object for current user and session
 	 *
 	 * @param $save_name string
 	 */
 	public function save($save_name = null)
 	{
+		Dao::write($this->setting);
 		if (isset($save_name)) {
 			$this->name = $save_name;
 			$setting    = new Setting(
@@ -239,11 +240,8 @@ abstract class Set
 			);
 			$setting        = Dao::searchOne($setting) ?: $setting;
 			$setting->value = $this;
+			Dao::write($setting);
 		}
-		else {
-			$setting = $this->setting;
-		}
-		Dao::write($setting);
 	}
 
 	//-------------------------------------------------------------- selectedSettingsToCustomSettings

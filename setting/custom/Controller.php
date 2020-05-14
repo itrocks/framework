@@ -22,10 +22,6 @@ abstract class Controller
 			$custom_settings->delete();
 			$did_change = true;
 		}
-		if (isset($parameters['save_name'])) {
-			$custom_settings->save($parameters['save_name']);
-			$did_change = true;
-		}
 		// keep it last, as load name could be sent on every calls
 		if (isset($parameters['load_name'])) {
 			$feature = isset($parameters[Feature::FEATURE]) ? $parameters[Feature::FEATURE] : null;
