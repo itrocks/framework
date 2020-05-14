@@ -26,7 +26,6 @@ class Controller implements Default_Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection no stored object */
 		$parameters = $parameters->getObjects();
 		$feature    = isset($parameters[Feature::FEATURE])
 			? $parameters[Feature::FEATURE]
@@ -39,6 +38,7 @@ class Controller implements Default_Feature_Controller
 		$output_controller->applyParametersToOutputSettings($output_settings, $parameters, $form);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$parameters = array_merge([$class_name => Builder::create($class_name)], $parameters);
+		unset($parameters['feature']);
 		return View::run($parameters, $form, $files, $class_name, 'outputSetting');
 	}
 
