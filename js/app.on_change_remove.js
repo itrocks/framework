@@ -214,7 +214,7 @@ $(document).ready(function()
 	});
 
 	//--------------------------------------------------------- table[data-on-remove] td.minus .click
-	$body.build('click', 'li.multiple li.minus', function()
+	$body.build('click', 'ul.collection li.minus', function()
 	{
 		var $this    = $(this);
 		var selector = 'table[data-on-remove], ul[data-on-remove]';
