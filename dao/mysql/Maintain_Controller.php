@@ -151,7 +151,7 @@ class Maintain_Controller implements Feature_Controller
 			$maintainer->simulationStart();
 		}
 
-		$this->updateAllTables($classes, $verbose, $simulation);
+		$this->updateAllTables($classes, $simulation);
 
 		if ($simulation) {
 			$maintainer->simulationStop();
@@ -164,17 +164,14 @@ class Maintain_Controller implements Feature_Controller
 	//------------------------------------------------------------------------------- updateAllTables
 	/**
 	 * @param $classes    Reflection_Class[]
-	 * @param $verbose    string
 	 * @param $simulation boolean
 	 */
-	protected function updateAllTables(array $classes, $verbose, $simulation)
+	protected function updateAllTables(array $classes, $simulation)
 	{
 		foreach ($classes as $class) {
 			$class_name = $class->name;
 			$maintainer = Maintainer::get();
-			if ($verbose) {
-				echo '<h5>' . ($simulation ? '[Simulate]' : '[Run]') . SP . $class_name . '</h5>';
-			}
+			$maintainer->verbose = $this->verbose;
 			$maintainer->updateTable($class_name, null);
 			if (count($maintainer->requests)) {
 				echo '<h4>'

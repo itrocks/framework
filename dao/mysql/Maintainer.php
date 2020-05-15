@@ -125,6 +125,12 @@ class Maintainer implements Configurable, Registerable
 	 */
 	private $simulation = false;
 
+	//-------------------------------------------------------------------------------------- $verbose
+	/**
+	 * @var boolean
+	 */
+	public $verbose = false;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
@@ -793,6 +799,10 @@ class Maintainer implements Configurable, Registerable
 	{
 		if (in_array($class_name, $this->exclude_classes) || (new Type($class_name))->isAbstractClass()) {
 			return false;
+		}
+
+		if ($this->verbose) {
+			echo '<h5>' . ($this->simulation ? '[Simulate]' : '[Run]') . SP . $class_name . '</h5>';
 		}
 
 		if (!$mysqli) {
