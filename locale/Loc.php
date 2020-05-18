@@ -231,12 +231,23 @@ class Loc implements Registerable
 	/**
 	 * Returns the current valid context from the contexts stack
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string|null
 	 */
 	public static function getContext()
 	{
 		$context = end(self::$contexts_stack);
-		while ($context && is_a($context, Reflector::class, true)) {
+		/** @noinspection PhpUnhandledExceptionInspection class_exists */
+		while (
+			$context
+			&& (
+				is_a($context, Reflector::class, true)
+				|| !(
+					class_exists($context)
+					&& (new Reflection_Class($context))->getAnnotation('business')->value
+				)
+			)
+		) {
 			$context = prev(self::$contexts_stack);
 		}
 		return $context;
