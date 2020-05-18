@@ -2,8 +2,11 @@
 namespace ITRocks\Framework\Feature\List_Setting;
 
 use ITRocks\Framework\Controller\Default_Feature_Controller;
+use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Feature\List_;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools;
 use ITRocks\Framework\View;
 
@@ -38,7 +41,11 @@ class Controller implements Default_Feature_Controller
 			$list_settings->save($parameters['title'] ?? null);
 		}
 
-		$parameters['redirect'] = View::link($class_name);
+		if (!isset($parameters['title'])) {
+			$parameters['title'] = Loc::tr('list setting');
+			Main::$current->redirect(View::link($class_name), Target::MAIN);
+		}
+
 		return View::run($parameters, $form, $files, $class_name, static::FEATURE);
 	}
 
