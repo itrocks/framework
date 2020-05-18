@@ -137,7 +137,8 @@ class Columns implements With_Build_Column
 			$class_name     = isset($this->translate) ? $this->joins->getStartingClassName() : null;
 			$first_property = true;
 			$sql_columns    = '';
-			foreach ($this->properties as $key_path => $path) {
+			foreach ($this->properties as $key_path => $property_path) {
+				$path = $property_path;
 				if ($path instanceof Func\Column) {
 					$sql_columns .= $this->buildDaoSelectFunction($key_path, $path, $first_property);
 				}
@@ -162,7 +163,7 @@ class Columns implements With_Build_Column
 						? $this->buildObjectColumns($path, $join, $first_property)
 						: $this->buildNextColumn($path, $join, $first_property);
 				}
-				$sql_columns .=  $this->append(is_numeric($key_path) ? $path : $key_path);
+				$sql_columns .=  $this->append(is_numeric($key_path) ? $property_path : $key_path);
 			}
 		}
 		elseif ($this->joins->getJoins()) {
