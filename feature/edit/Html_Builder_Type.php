@@ -495,6 +495,7 @@ class Html_Builder_Type
 					}
 					$input = new Select($this->getFieldName(), $values, $this->value);
 					if ($ordered_values) {
+						$input->ordered = true;
 						$input->setData('ordered');
 					}
 				}

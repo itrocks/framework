@@ -7,6 +7,15 @@ namespace ITRocks\Framework\View\Html\Dom;
 class Select extends Element
 {
 
+	//-------------------------------------------------------------------------------------- $ordered
+	/**
+	 * If true, values are ordered and should not be sorted.
+	 * If false, do not care of values order : they will be sorted alphabetically.
+	 *
+	 * @var boolean
+	 */
+	public $ordered = false;
+
 	//------------------------------------------------------------------------------------- $selected
 	/**
 	 * @var string
@@ -59,7 +68,9 @@ class Select extends Element
 		$content = parent::getContent();
 		if (!isset($content)) {
 			$values = $this->values;
-			asort($values);
+			if (!$this->ordered) {
+				asort($values);
+			}
 			if (isset($values[''])) {
 				$value = $values[''];
 				unset($values['']);
