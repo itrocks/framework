@@ -51,7 +51,7 @@ var requestTargetHeaders = function($element)
 	 *   writeHtml('<!--target #another-id-->and other<!--end-->', $('#main'))
 	 * equiv :
 	 *   $('#another-id').html('and other');
-	 *   $('#main').html('');
+	 *   $('#main').empty();
 	 * @param data         string
 	 * @param $main_target jQuery
 	 * @return jQuery[] targets
