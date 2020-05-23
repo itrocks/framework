@@ -130,23 +130,6 @@ abstract class Paths
 			. (isset($object) ? (SL . Names::classToUri($object)) : '');
 	}
 
-	//------------------------------------------------------------------------------------- patchFCGI
-	/**
-	 * Enable to work with PHP-FPM (FastCGI mode).
-	 * This simply change used $_SERVER vars to be libapache2-mod-php compliant
-	 *
-	 * You must configure fastcgi into apache with this kind of line into your server configuration :
-	 * ProxyPassMatch ^\/appname([^\.]*(\.php)?)$ unix:/run/php/php7.1-fpm.sock|fcgi://localhost/path/to/itrocks/framework/index.php
-	 */
-	protected static function patchFCGI()
-	{
-		$script                     = explode(SL, $_SERVER['PATH_INFO'])[1];
-		$_SERVER['PATH_INFO']       = substr($_SERVER['PATH_INFO'], strlen($script) + 1);
-		$_SERVER['SCRIPT_NAME']     = SL . $script . '.php';
-		$_SERVER['SCRIPT_FILENAME'] = $_SERVER['DOCUMENT_ROOT'] . $_SERVER['SCRIPT_NAME'];
-		$_SERVER['PHP_SELF']        = $_SERVER['SCRIPT_NAME'] . $_SERVER['PATH_INFO'];
-	}
-
 	//-------------------------------------------------------------------------------------- protocol
 	/**
 	 * @example https
@@ -174,9 +157,6 @@ abstract class Paths
 	//-------------------------------------------------------------------------------------- register
 	public static function register()
 	{
-		if (isset($_SERVER['FCGI_ROLE'])) {
-			static::patchFCGI();
-		}
 		$slash   = strrpos($_SERVER['SCRIPT_NAME'], SL) + 1;
 		$dot_php = strrpos($_SERVER['SCRIPT_NAME'], '.php') ?: 1;
 		$root    = substr($_SERVER['SCRIPT_FILENAME'], 0, strrpos($_SERVER['SCRIPT_FILENAME'], SL) + 1);
