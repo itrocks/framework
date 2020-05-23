@@ -407,7 +407,7 @@ class Template
 			if ($i = strrpos($path, SL)) {
 				$path = substr($path, 0, $i);
 			}
-			$path           = substr($path, strlen(Paths::$file_root));
+			$path           = substr($path, strlen(realpath(Paths::$file_root)) + 1);
 			$css_path[$css] = $path;
 		}
 		return $path;
@@ -2358,7 +2358,7 @@ class Template
 		}
 		if ($file_name && !isset($file_path)) {
 			$file_path = substr(
-				stream_resolve_include_path($file_name), strlen(Paths::$file_root)
+				stream_resolve_include_path($file_name), strlen(realpath(Paths::$file_root)) + 1
 			);
 			if (!$file_path || !file_exists(Paths::$file_root . $file_path)) {
 				return $this->replaceLink(SL . $uri);
