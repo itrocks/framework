@@ -111,7 +111,7 @@ class Contextual_Mysqli extends mysqli
 		$host = '127.0.0.1', $user = null, $password = null, $database = null, $port = 3306,
 		$socket = null
 	) {
-		parent::__construct($host, $user, $password, $database, $port);
+		parent::__construct($host, $user, $password, $database, $port, $socket);
 		$this->host     = $host;
 		$this->user     = $user;
 		$this->password = $password;

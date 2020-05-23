@@ -75,7 +75,7 @@ $config['ITRocks/Framework'] = [
 			],
 			2 => [
 				Builder\Linked_Classes_Compiler::class,
-				AOP\Compiler::class,
+				AOP\Compiler::class
 			],
 			3 => [
 				Mysql\Compiler::class
@@ -84,9 +84,11 @@ $config['ITRocks/Framework'] = [
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
 			Link::DATABASE => $loc[Link::class][Link::DATABASE],
-			Link::HOST     => '127.0.0.1',
+			Link::HOST     => $loc[Link::class][Link::HOST] ?? '127.0.0.1',
 			Link::LOGIN    => $loc[Link::class][Link::LOGIN],
 			Link::PASSWORD => $pwd[Link::class],
+			Link::PORT     => $loc[Link::class][Link::PORT]   ?? 3306,
+			Link::SOCKET   => $loc[Link::class][Link::SOCKET] ?? null
 		],
 		Html_Translator::class,
 		Loc::class,
@@ -97,7 +99,7 @@ $config['ITRocks/Framework'] = [
 				Number_Format::DECIMAL_MINIMAL_COUNT => 2,
 				Number_Format::DECIMAL_MAXIMAL_COUNT => 4,
 				Number_Format::DECIMAL_SEPARATOR     => DOT,
-				Number_Format::THOUSAND_SEPARATOR    => ',',
+				Number_Format::THOUSAND_SEPARATOR    => ','
 			]
 		],
 		Menu_Update::class,
@@ -107,7 +109,7 @@ $config['ITRocks/Framework'] = [
 			Tests_Configurator::PHPUNIT_OPTIONS => [
 				__DIR__ . '/../../vendor/bin/phpunit',
 				'configuration' => __DIR__ . '/../../phpunit.xml.dist',
-				'printer'       => Tests_Html_ResultPrinter::class,
+				'printer'       => Tests_Html_ResultPrinter::class
 			]
 		],
 		Translation_String_Composer::class,
