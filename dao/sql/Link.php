@@ -25,6 +25,8 @@ abstract class Link extends Identifier_Map implements Transactional
 	const HOST     = 'host';
 	const LOGIN    = 'login';
 	const PASSWORD = 'password';
+	const PORT     = 'port';
+	const SOCKET   = 'socket';
 	const TABLES   = 'tables';
 
 	//--------------------------------------------------------------------------------------- $tables

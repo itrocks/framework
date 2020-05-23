@@ -193,7 +193,9 @@ class Link extends Dao\Sql\Link
 			$parameters[self::HOST],
 			$parameters[self::LOGIN],
 			$parameters[self::PASSWORD],
-			isset($parameters[self::DATABASE]) ? $parameters[self::DATABASE] : null
+			$parameters[self::DATABASE] ?? null,
+			$parameters[self::PORT] ?? 3306,
+			$parameters[self::SOCKET] ?? null
 		);
 		$this->query('SET NAMES ' . $this->collation);
 	}
