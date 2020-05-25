@@ -72,11 +72,11 @@ class Controller implements Default_Feature_Controller
 			}
 			$search->arguments[$filter_name] = $filter_value;
 		}
-		if (count($search->arguments) == 1) {
+		if (count($search->arguments) === 1) {
 			reset($search->arguments);
 			$search = [key($search->arguments) => current($search->arguments)];
 		}
-		if (!$search->arguments) {
+		elseif (!$search->arguments) {
 			$search = null;
 		}
 	}
