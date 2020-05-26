@@ -195,12 +195,12 @@ class Join
 	public function toSql()
 	{
 		$sql = LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
-			. ' ON ' . $this->foreignSql() . ' LIKE ' . $this->masterSql();
+			. ' ON ' . $this->foreignSql() . ' = ' . $this->masterSql();
 		foreach ($this->secondary as $foreign => $master) {
 			$sql .= ' AND ' . $this->foreign_alias . DOT . BQ . $foreign . BQ;
 			$sql .= in_array($master[0], [DQ, Q])
 				? (' = ' . $master)
-				: (' LIKE ' . $this->master_alias . DOT . BQ . $master . BQ);
+				: (' = ' . $this->master_alias . DOT . BQ . $master . BQ);
 		}
 		return $sql;
 	}
