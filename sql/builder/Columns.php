@@ -151,7 +151,7 @@ class Columns implements With_Build_Column
 						) {
 							$alias = $path;
 							$path  = Translation::class
-								. '(text=' . $path . ',language=' . Q . Loc::language(). Q . ')'
+								. '(text=~' . $path . ',language=' . Q . Loc::language(). Q . ')'
 								. '.translation';
 							$this->translate[$path] = $alias;
 						}

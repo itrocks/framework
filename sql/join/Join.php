@@ -61,6 +61,12 @@ class Join
 	 */
 	public $foreign_table;
 
+	//----------------------------------------------------------------------------------------- $like
+	/**
+	 * @var boolean[] key 0 : primary join, keys 1..n : secondary joins
+	 */
+	public $like = [];
+
 	//--------------------------------------------------------------------------------- $linked_class
 	/**
 	 * Linked class join
@@ -194,13 +200,15 @@ class Join
 	 */
 	public function toSql()
 	{
+		$sign = ($this->like[0] ?? false) ? 'LIKE' : '=';
 		$sql = LF . $this->mode . ' JOIN ' . BQ . $this->foreign_table . BQ . SP . $this->foreign_alias
-			. ' ON ' . $this->foreignSql() . ' = ' . $this->masterSql();
+			. ' ON ' . $this->foreignSql() . SP . $sign . SP . $this->masterSql();
 		foreach ($this->secondary as $foreign => $master) {
+			$sign = ($this->like[$foreign] ?? false) ? 'LIKE' : '=';
 			$sql .= ' AND ' . $this->foreign_alias . DOT . BQ . $foreign . BQ;
 			$sql .= in_array($master[0], [DQ, Q])
-				? (' = ' . $master)
-				: (' = ' . $this->master_alias . DOT . BQ . $master . BQ);
+				? (SP . $sign . SP . $master)
+				: (SP . $sign . SP . $this->master_alias . DOT . BQ . $master . BQ);
 		}
 		return $sql;
 	}

@@ -402,12 +402,20 @@ class Joins
 		if (strpos($foreign_property_name, ',')) {
 			foreach (explode(',', rParse($foreign_property_name, ',')) as $secondary_link) {
 				list($secondary_foreign, $secondary_master) = explode('=', $secondary_link);
+				if ($secondary_master[0] === '~') {
+					$join->like[$secondary_foreign] = true;
+					$secondary_master               = substr($secondary_master, 1);
+				}
 				$join->secondary[$secondary_foreign] = $secondary_master;
 			}
 			$foreign_property_name = lParse($foreign_property_name, ',');
 		}
 		if (strpos($foreign_property_name, '=')) {
 			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
+			if ($master_property_name[0] === '~') {
+				$join->like[0]        = true;
+				$master_property_name = substr($master_property_name, 1);
+			}
 			/** @noinspection PhpUnhandledExceptionInspection master property must be valid in class */
 			$master_property = new Reflection_Property($master_class_name, $master_property_name);
 			if (strpos($master_property_name, DOT)) {
