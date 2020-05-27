@@ -393,6 +393,7 @@ class Compiler extends Cache implements
 			$this->last_wave
 			&& file_exists($file_name)
 			&& !isset($this->has_changed[$source->file_name])
+			&& !Class_Builder::isBuilt($source->getFirstClassName())
 		) {
 			if (isset($GLOBALS['D'])) {
 				echo "<strong>unlink($file_name)</strong><br>";
