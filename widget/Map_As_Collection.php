@@ -69,11 +69,12 @@ class Map_As_Collection extends Property
 	 */
 	public function buildValue($object, $null_if_empty)
 	{
-		$builder    = new Object_Builder_Array();
-		$class_name = $this->property->getType()->getElementTypeAsString();
+		$builder                            = new Object_Builder_Array();
+		$class_name                         = $this->property->getType()->getElementTypeAsString();
+		$builder->null_if_empty_sub_objects = true;
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$old_value  = $this->property->getValue($object);
-		$objects    = $builder->buildCollection($class_name, $old_value, $this->value);
+		$objects    = $builder->buildCollection($class_name, $old_value, $this->value, $null_if_empty);
 
 		// Remove empty objects from collection to avoid control on null value
 		foreach ($objects as $key => $object) {

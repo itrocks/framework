@@ -219,6 +219,9 @@ class Object_Builder_Array
 		$collection = [];
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
+			if ($this->null_if_empty_sub_objects) {
+				$builder->null_if_empty_sub_objects = true;
+			}
 			// replace $array[$property_name][$object_number] with $array[$object_number][$property_name]
 			reset($array);
 			if ($this->from_form && !is_numeric(key($array))) {
@@ -718,6 +721,9 @@ class Object_Builder_Array
 							}
 							if ($linked_array) {
 								$builder = new Object_Builder_Array($property_class_name, $this->from_form);
+								if ($this->null_if_empty_sub_objects) {
+									$builder->null_if_empty_sub_objects = true;
+								}
 								$array[$property_name] = $builder->build($linked_array);
 							}
 						}
