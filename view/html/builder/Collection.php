@@ -319,10 +319,17 @@ class Collection
 		$expand_properties = [];
 		foreach ($properties as $property_path => $property) {
 			if (($integrated = Integrated_Annotation::of($property))->value) {
-				$expand_properties = array_merge(
-					$expand_properties,
-					(new Integrated_Properties())->expandUsingClassName($property->class)
-				);
+				if (!isset($expand)) {
+					$expand = (new Integrated_Properties())->expandUsingClassName($property->class);
+				}
+				foreach ($expand as $expand_property_path => $expand_property) {
+					if (
+						beginsWith($expand_property_path, $property_path . DOT)
+						&& $this->isPropertyVisible($expand_property)
+					) {
+						$expand_properties[$expand_property_path] = $expand_property;
+					}
+				}
 			}
 			else {
 				$expand_properties[$property_path] = $property;
