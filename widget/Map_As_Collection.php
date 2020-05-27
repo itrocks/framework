@@ -41,12 +41,14 @@ class Map_As_Collection extends Property
 			}
 			// - edit
 			if ($this->template instanceof Html_Template) {
-				$collection = new Html_Builder_Collection($this->property, $this->value, $this->pre_path);
+				$collection = new Html_Builder_Collection(
+					$this->property, $this->value, true, $this->pre_path
+				);
 				$collection->setTemplate($this->template);
 			}
 			// - output
 			else {
-				$collection = new Collection($this->property, $this->value);
+				$collection = new Collection($this->property, $this->value, true);
 			}
 			$collection->sort = Widget_Annotation::of($this->property)->option('sort', true);
 			// build

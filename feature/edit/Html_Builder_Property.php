@@ -180,7 +180,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 		$collection = $this->property->getType()->isAbstractClass()
 			? new Html_Builder_Abstract_Collection($this->property, $this->value, $this->pre_path)
-			: new Html_Builder_Collection($this->property, $this->value, $this->pre_path);
+			: new Html_Builder_Collection($this->property, $this->value, false, $this->pre_path);
 		$collection->setTemplate($this->template);
 		return $collection->build();
 	}

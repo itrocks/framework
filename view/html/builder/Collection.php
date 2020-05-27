@@ -18,6 +18,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Integrated_Properties;
+use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -94,15 +95,19 @@ class Collection
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property   Reflection_Property
-	 * @param $collection object[]
+	 * @param $property        Reflection_Property
+	 * @param $collection      object[]
+	 * @param $link_properties boolean
+	 *   Linked class properties are hidden by default : only the link property is shown
+	 *   If set to true, the link property will by hidden and the class properties shown
 	 */
-	public function __construct(Reflection_Property $property, array $collection)
-	{
+	public function __construct(
+		Reflection_Property $property, array $collection, $link_properties = false
+	) {
 		$this->property   = $property;
 		$this->collection = $collection;
 		$this->class_name = $this->property->getType()->getElementTypeAsString();
-		$this->properties = $this->expandProperties($this->getProperties());
+		$this->properties = $this->expandProperties($this->getProperties($link_properties));
 	}
 
 	//----------------------------------------------------------------------------------------- build
@@ -341,9 +346,10 @@ class Collection
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $link_properties boolean
 	 * @return Reflection_Property[]
 	 */
-	protected function getProperties()
+	protected function getProperties($link_properties)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class          = new Reflection_Class($this->class_name);
@@ -358,12 +364,20 @@ class Collection
 			// remove linked class properties
 			$linked_class = Link_Annotation::of($class)->value;
 			if ($linked_class) {
-				/** @noinspection PhpUnhandledExceptionInspection link class comes from valid class */
-				foreach (
-					array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
-					as $property_name
-				) {
-					unset($properties[$property_name]);
+				if ($link_properties) {
+					// remove link property
+					/** @noinspection PhpUnhandledExceptionInspection must be valid */
+					$link_property = (new Link_Class($this->class_name))->getLinkProperty();
+					unset($properties[$link_property->name]);
+				}
+				else {
+					/** @noinspection PhpUnhandledExceptionInspection link class comes from valid class */
+					foreach (
+						array_keys((new Reflection_Class($linked_class))->getProperties([T_EXTENDS, T_USE]))
+						as $property_name
+					) {
+						unset($properties[$property_name]);
+					}
 				}
 			}
 			// remove composite property

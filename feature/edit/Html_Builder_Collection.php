@@ -77,13 +77,15 @@ class Html_Builder_Collection extends Collection
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property   Reflection_Property
-	 * @param $collection array
-	 * @param $pre_path   string
+	 * @param $property        Reflection_Property
+	 * @param $collection      array
+	 * @param $link_properties boolean
+	 * @param $pre_path        string
 	 */
-	public function __construct(Reflection_Property $property, array $collection, $pre_path = null)
-	{
-		parent::__construct($property, $collection);
+	public function __construct(
+		Reflection_Property $property, array $collection, $link_properties = false, $pre_path = null
+	) {
+		parent::__construct($property, $collection, $link_properties);
 		$this->pre_path = $pre_path;
 	}
 
@@ -261,11 +263,12 @@ class Html_Builder_Collection extends Collection
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
+	 * @param $link_properties boolean
 	 * @return Reflection_Property[]
 	 */
-	public function getProperties()
+	public function getProperties($link_properties)
 	{
-		$properties = parent::getProperties();
+		$properties = parent::getProperties($link_properties);
 		if ($this->readOnly()) {
 			foreach ($properties as $property) {
 				$user_annotation = $property->getListAnnotation(User_Annotation::ANNOTATION);
