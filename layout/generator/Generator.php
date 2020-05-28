@@ -13,6 +13,7 @@ use ITRocks\Framework\Layout\Generator\Page_All_Elements;
 use ITRocks\Framework\Layout\Generator\Property_To_Text;
 use ITRocks\Framework\Layout\Generator\Text_Templating;
 use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
+use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Page\From_Json;
 
 /**
@@ -100,6 +101,7 @@ class Generator
 		$this->object    = $object;
 		$this->structure = new Structure(Builder::className($this->model->class_name));
 		$this->modelToStructure();
+		$this->sortPageElements();
 		// associate and auto-generate groups before page all elements to avoid mixing
 		(new Associate_Groups($this->structure))->run();
 		(new Generate_Groups($this->structure))->run();
@@ -144,6 +146,26 @@ class Generator
 					unset($page->elements[$element_key]);
 				}
 			}
+		}
+	}
+
+	//---------------------------------------------------------------------------------- sortElements
+	/**
+	 * @param $elements Element[]
+	 */
+	protected function sortElements(array &$elements)
+	{
+		usort($elements, function(Element $element1, Element $element2) {
+			return cmp($element1->top, $element2->top) ?: cmp($element1->left, $element2->left);
+		});
+	}
+
+	//------------------------------------------------------------------------------ sortPageElements
+	protected function sortPageElements()
+	{
+		foreach ($this->structure->pages as $page) {
+			$this->sortElements($page->elements);
+			$this->sortElements($page->properties);
 		}
 	}
 
