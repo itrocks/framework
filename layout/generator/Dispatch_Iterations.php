@@ -53,11 +53,22 @@ class Dispatch_Iterations
 	 */
 	protected function maxHeight(array $elements)
 	{
+		$bottom = 0;
 		$height = 0;
+		$margin = 0;
+		$top    = 0;
 		foreach ($elements as $element) {
-			$height = max($height, $element->height + $element->top);
+			if ($element->top > $top) {
+				if ($bottom) {
+					$margin = max($margin, $element->top - $bottom);
+					$bottom = 0;
+				}
+				$top = $element->top;
+			}
+			$bottom = max($bottom, $element->top + $element->height);
+			$height = max($height, $element->top + $element->height);
 		}
-		return $height;
+		return $height + $margin;
 	}
 
 	//------------------------------------------------------------------------------------------- run
