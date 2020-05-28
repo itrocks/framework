@@ -26,6 +26,7 @@ class Automatic_Line_Feed
 	//--------------------------------------------------------------------------------------- element
 	/**
 	 * @param $element Element
+	 * @return float The height increase
 	 */
 	protected function element(Element $element)
 	{
@@ -33,7 +34,7 @@ class Automatic_Line_Feed
 			!($element instanceof Text\Resizable)
 			&& !(($element instanceof Final_Text) && ($element->property instanceof Property\Resizable))
 		) {
-			return;
+			return 0;
 		}
 
 		$changed_text  = false;
@@ -67,9 +68,12 @@ class Automatic_Line_Feed
 			}
 		}
 		if ($changed_text) {
-			$element->text = join(LF, $element_texts);
+			$element_height = $element->height;
+			$element->text  = join(LF, $element_texts);
 			$element->calculateHeight();
+			return $element->height - $element_height;
 		}
+		return 0;
 	}
 
 	//----------------------------------------------------------------------------------------- group
@@ -95,8 +99,17 @@ class Automatic_Line_Feed
 	 */
 	protected function iteration(Iteration $iteration)
 	{
+		$shift     = 0;
+		$shift_top = 0;
+		$top       = -1;
 		foreach ($iteration->elements as $element) {
-			$this->element($element);
+			if ($element->top > $top) {
+				$shift_top += $shift;
+				$shift      = 0;
+				$top        = $element->top;
+			}
+			$element->top += $shift_top;
+			$shift         = max($shift, $this->element($element));
 		}
 	}
 
