@@ -14,6 +14,8 @@ use ITRocks\Framework\Tools\Call_Stack;
 /**
  * This class allow to remove empty columns from a structure
  *
+ * All properties are public to easily allow extensions (eg Identical_Columns_Remover)
+ *
  * @feature Automatically remove empty columns from prints
  */
 class Empty_Columns_Remover implements Registerable
@@ -24,49 +26,49 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @var Element[]
 	 */
-	protected $elements;
+	public $elements;
 
 	//---------------------------------------------------------------------------------------- $group
 	/**
 	 * @var Group
 	 */
-	protected $group;
+	public $group;
 
 	//-------------------------------------------------------------------------------------- $headers
 	/**
-	 * @var Element[]
+	 * @var Text[]
 	 */
-	protected $headers;
+	public $headers;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Property[]
 	 */
-	protected $properties;
+	public $properties;
 
 	//------------------------------------------------------------------------------------------ $set
 	/**
 	 * @var boolean[]
 	 */
-	protected $set;
+	public $set;
 
 	//--------------------------------------------------------------------------------------- $shifts
 	/**
 	 * @var float[] float[$column: integer]
 	 */
-	protected $shifts;
+	public $shifts;
 
 	//---------------------------------------------------------------------------------------- $unset
 	/**
 	 * @var Property[]
 	 */
-	protected $unset;
+	public $unset;
 
 	//--------------------------------------------------------------------------------------- $widths
 	/**
 	 * @var float[] float[$column: integer
 	 */
-	protected $widths;
+	public $widths;
 
 	//----------------------------------------------------------------------------- applyShiftsWidths
 	/**
@@ -107,8 +109,11 @@ class Empty_Columns_Remover implements Registerable
 		$this->set        = [];
 		foreach ($this->group->iterations as $iteration) {
 			for ($column = 0; $column < $properties_count; $column ++) {
+				if (isset($this->set[$column])) {
+					continue;
+				}
 				$element = $iteration->elements[$column];
-				if (isset($this->set[$column]) || !($element instanceof Text) || !strlen($element->text)) {
+				if (!($element instanceof Text) || !strlen($element->text)) {
 					continue;
 				}
 				$this->set[$column] = true;
