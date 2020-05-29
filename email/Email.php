@@ -15,6 +15,8 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * @before_write beforeWrite
  * @business
+ * @display_order account, date, send_date, receive_date, from, to, copy_to, blind_copy_to,
+ * reply_to, return_path, headers, send_message, uidl, subject, attachments, content
  * @representative date, from, to, subject
  */
 class Email
@@ -23,6 +25,7 @@ class Email
 	//-------------------------------------------------------------------------------------- $account
 	/**
 	 * @link Object
+	 * @user hide_empty
 	 * @var Account
 	 */
 	public $account;
@@ -30,6 +33,7 @@ class Email
 	//---------------------------------------------------------------------------------- $attachments
 	/**
 	 * @link Map
+	 * @user hide_empty
 	 * @var Attachment[]
 	 */
 	public $attachments;
@@ -38,13 +42,15 @@ class Email
 	/**
 	 * @link Map
 	 * @set_store_name emails_recipients_blind_copy_to
+	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $blind_copy_to = [];
+	public $blind_copy_to;
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @dao files
+	 * @editor
 	 * @max_length 10000000
 	 * @multiline
 	 * @store gz
@@ -56,9 +62,10 @@ class Email
 	/**
 	 * @link Map
 	 * @set_store_name emails_recipients_copy_to
+	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $copy_to = [];
+	public $copy_to;
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
@@ -76,14 +83,17 @@ class Email
 
 	//-------------------------------------------------------------------------------------- $headers
 	/**
+	 * @getter
 	 * @store json
+	 * @user invisible
 	 * @var string[]
 	 */
-	public $headers = [];
+	public $headers;
 
 	//--------------------------------------------------------------------------------- $receive_date
 	/**
 	 * @link DateTime
+	 * @user hide_empty
 	 * @var Date_Time
 	 */
 	public $receive_date;
@@ -91,6 +101,7 @@ class Email
 	//------------------------------------------------------------------------------------- $reply_to
 	/**
 	 * @link Object
+	 * @user hide_empty
 	 * @var Recipient
 	 */
 	public $reply_to;
@@ -98,6 +109,7 @@ class Email
 	//---------------------------------------------------------------------------------- $return_path
 	/**
 	 * @link Object
+	 * @user hide_empty
 	 * @var Recipient
 	 */
 	public $return_path;
@@ -105,12 +117,14 @@ class Email
 	//------------------------------------------------------------------------------------ $send_date
 	/**
 	 * @link DateTime
+	 * @user hide_empty
 	 * @var Date_Time
 	 */
 	public $send_date;
 
 	//--------------------------------------------------------------------------------- $send_message
 	/**
+	 * @user hide_empty, readonly
 	 * @var string
 	 */
 	public $send_message;
@@ -125,9 +139,20 @@ class Email
 	/**
 	 * @link Map
 	 * @set_store_name emails_recipients_to
+	 * @user hide_empty
 	 * @var Recipient[]
 	 */
-	public $to = [];
+	public $to;
+
+	//----------------------------------------------------------------------------------------- $uidl
+	/**
+	 * The unique identification number of the mail into the distant server once it has been
+	 * received / sent
+	 *
+	 * @user hide_empty, readonly
+	 * @var string
+	 */
+	public $uidl;
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -138,27 +163,15 @@ class Email
 		return strval($this->subject);
 	}
 
-	//----------------------------------------------------------------------------------------- $uidl
-	/**
-	 * The unique identification number of the mail into the distant server once it has been
-	 * received / sent
-	 *
-	 * @var string
-	 */
-	public $uidl;
-
 	//----------------------------------------------------------------------------------- beforeWrite
 	/**
 	 * Called before write : optimize attachments and recipients.
 	 * - Reuse those which are already stored into the data storage.
 	 * - Do not enable to alter an already stored attachment or recipient.
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function beforeWrite()
 	{
 		if (!isset($this->date)) {
-			/** @noinspection PhpUnhandledExceptionInspection valid call */
 			$this->date = new Date_Time();
 		}
 		$this->uniqueAttachments();
@@ -173,6 +186,20 @@ class Email
 	protected function encodeHeader($text)
 	{
 		return mb_encode_mimeheader(strval($text), 'utf-8', 'Q');
+	}
+
+	//------------------------------------------------------------------------------------ getHeaders
+	/**
+	 * store json is not enough to decode the json string and change it into an array
+	 *
+	 * @return string[]
+	 */
+	protected function getHeaders()
+	{
+		if (is_string($this->headers)) {
+			$this->headers = json_decode($this->headers, true);
+		}
+		return $this->headers;
 	}
 
 	//--------------------------------------------------------------------------- getHeadersAsStrings
