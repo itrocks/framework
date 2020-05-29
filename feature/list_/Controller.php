@@ -525,7 +525,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	) {
 		$layout_model_buttons = (new Buttons_Generator($class_name))->getButtons();
 
-		/** @var $buttons Button[] */
 		$buttons = [
 			Feature::F_EXPORT => new Button(
 				'Export',

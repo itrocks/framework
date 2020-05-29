@@ -239,7 +239,7 @@ abstract class Data_Link
 	 */
 	public function getWrite($object = null, array $options = [])
 	{
-		$write_class = Namespaces::of(get_class($this)) . BS . 'Write';
+		$write_class = Namespaces::of($this) . BS . 'Write';
 		return new $write_class($this, $object, $options);
 	}
 
