@@ -125,6 +125,15 @@ abstract class Element
 			. $this->left . ', ' . $this->top . ' - ' . $this->width . ', ' . $this->height;
 	}
 
+	//------------------------------------------------------------------------------------------ hotX
+	/**
+	 * @return float
+	 */
+	public function hotX()
+	{
+		return $this->left;
+	}
+
 	//----------------------------------------------------------------------------------- insideGroup
 	/**
 	 * Returns true if the element is the group, or is inside the group (with recursion)

@@ -55,6 +55,14 @@ class Generator
 	 */
 	public $output;
 
+	//------------------------------------------------------------------------------------ $precision
+	/**
+	 * The precision used to guess elements alignment
+	 *
+	 * @var float
+	 */
+	public static $precision = .25;
+
 	//---------------------------------------------------------------------------------------- $print
 	/**
 	 * Is it a print model ? If true, will use @print_getter to translate values for print
@@ -156,16 +164,23 @@ class Generator
 	protected function sortElements(array &$elements)
 	{
 		usort($elements, function(Element $element1, Element $element2) {
-			return cmp($element1->top, $element2->top) ?: cmp($element1->left, $element2->left);
+			return (abs($element1->top - $element2->top) >= Generator::$precision)
+				? cmp($element1->top, $element2->top)
+				: cmp($element1->hotX(), $element2->hotX());
 		});
 	}
 
 	//------------------------------------------------------------------------------ sortPageElements
-	protected function sortPageElements()
+	/**
+	 * @param $properties boolean
+	 */
+	public function sortPageElements($properties = true)
 	{
 		foreach ($this->structure->pages as $page) {
 			$this->sortElements($page->elements);
-			$this->sortElements($page->properties);
+			if ($properties) {
+				$this->sortElements($page->properties);
+			}
 		}
 	}
 
