@@ -30,6 +30,10 @@ li.action.edit > a,
 li.actions > ul > li.edit > a,
 ul.actions > li.edit > a {
   background-image: url("img/edit-24.svg"); }
+li.action.email > a,
+li.actions > ul > li.email > a,
+ul.actions > li.email > a {
+  background-image: url("img/email-24.svg"); }
 li.action.export > a,
 li.actions > ul > li.export > a,
 ul.actions > li.export > a {

@@ -35,6 +35,10 @@ ul.actions > li {
 		background-image: url('img/edit-24.svg');
 	}
 
+	&.email > a {
+		background-image: url('img/email-24.svg');
+	}
+
 	&.export > a {
 		background-image: url('img/export-24.svg');
 	}
