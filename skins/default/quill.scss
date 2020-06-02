@@ -1,8 +1,37 @@
+.ql-container {
+	background: white;
+	height: initial;
+
+	strong {
+		font-weight: bold;
+	}
+}
+
 .ql-editor {
 	// white-space: initial; // this allows text-align: justify but removes spaces during typing
 }
 
 .ql-toolbar {
+	background: white;
+
+	&:after, .ql-formats:after {
+		display: none !important;
+	}
+
+	.ql-header.ql-picker {
+		.ql-picker-item:before, .ql-picker-label:before {
+			color: transparent;
+		}
+	}
+
+	button {
+		height: 18px !important;
+	}
+
+	svg {
+		filter: brightness(110%);
+	}
+
 	.ql-code > svg {
 		background-color: #f0f0f0;
 	}

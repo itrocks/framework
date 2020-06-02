@@ -1,6 +1,22 @@
-.ql-toolbar .ql-code > svg {
-  background-color: #f0f0f0; }
-.ql-toolbar .ql-code-block > svg {
-  background-color: #23241f; }
-  .ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
-    stroke: #f0f0f0; }
+.ql-container {
+  background: white;
+  height: initial; }
+  .ql-container strong {
+    font-weight: bold; }
+
+.ql-toolbar {
+  background: white; }
+  .ql-toolbar:after, .ql-toolbar .ql-formats:after {
+    display: none !important; }
+  .ql-toolbar .ql-header.ql-picker .ql-picker-item:before, .ql-toolbar .ql-header.ql-picker .ql-picker-label:before {
+    color: transparent; }
+  .ql-toolbar button {
+    height: 18px !important; }
+  .ql-toolbar svg {
+    filter: brightness(110%); }
+  .ql-toolbar .ql-code > svg {
+    background-color: #f0f0f0; }
+  .ql-toolbar .ql-code-block > svg {
+    background-color: #23241f; }
+    .ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
+      stroke: #f0f0f0; }

@@ -50,7 +50,7 @@ class Email
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @dao files
-	 * @editor
+	 * @editor quill simple
 	 * @max_length 10000000
 	 * @multiline
 	 * @store gz
