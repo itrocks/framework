@@ -37,12 +37,22 @@ class Reflection_Property_View
 	{
 		$type = $this->property->getType();
 		if (is_string($value) && $type->isString()) {
-			$value = str_replace(['<', '>'], ['&lt;', '&gt;'], $value);
-			$value = preg_replace('/{(~\s)/', '&lbrace;$1', $value);
-			$value = preg_replace('/(~\s)}/', '$1&rbrace;', $value);
+			if ($this->property->getAnnotation('editor')->value) {
+				$value = str_ireplace(['<script', '</script'], ['&lt;script', '&lt;/script'], $value);
+			}
+			else {
+				$value = str_replace(['<', '>'], ['&lt;', '&gt;'], $value);
+				$value = preg_replace('/{(~\s)/', '&lbrace;$1', $value);
+				$value = preg_replace('/(~\s)}/', '$1&rbrace;', $value);
+			}
 		}
 		elseif (is_array($value) && $type->isMultipleString()) {
+			$has_editor = $this->property->getAnnotation('editor')->value;
 			foreach ($value as &$val) {
+				if ($has_editor) {
+					$val = str_ireplace(['<script', '</script'], ['&lt;script', '&lt;/script'], $val);
+					continue;
+				}
 				$val = str_replace(['<', '>'], ['&lt;', '&gt;'], $val);
 				$val = preg_replace('/{(~\s)/', '&lbrace;$1', $val);
 				$val = preg_replace('/(~\s)}/', '$1&rbrace;', $val);
