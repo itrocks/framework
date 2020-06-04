@@ -88,6 +88,7 @@ class Email
 	//-------------------------------------------------------------------------------------- $headers
 	/**
 	 * @getter
+	 * @null
 	 * @store json
 	 * @user invisible
 	 * @var string[]
