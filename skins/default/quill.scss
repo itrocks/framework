@@ -5,10 +5,49 @@
 	strong {
 		font-weight: bold;
 	}
+
+	.ql-editor {
+		// white-space: initial; // this allows text-align: justify but removes spaces during typing
+	}
 }
 
-.ql-editor {
-	// white-space: initial; // this allows text-align: justify but removes spaces during typing
+.ql-table-tools {
+	left: 0;
+	position: absolute;
+	top: 0;
+
+	li {
+		list-style: none;
+		position: absolute !important;
+
+		button {
+			font-size: 0;
+			height: 24px;
+			width: 24px;
+		}
+
+		&.ql-table-delete button {
+			background: url('img/delete-table.svg');
+		}
+		&.ql-table-delete-column button {
+			background: url('img/remove.svg');
+		}
+		&.ql-table-delete-row button {
+			background: url('img/remove.svg');
+		}
+		&.ql-table-insert-column-left button {
+			background: url('img/insert-column-left.svg');
+		}
+		&.ql-table-insert-column-right button {
+			background: url('img/insert-column-right.svg');
+		}
+		&.ql-table-insert-row-above button {
+			background: url('img/insert-row-above.svg');
+		}
+		&.ql-table-insert-row-below button {
+			background: url('img/insert-row-below.svg');
+		}
+	}
 }
 
 .ql-toolbar {
