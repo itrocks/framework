@@ -5,6 +5,7 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Email\Account;
 use ITRocks\Framework\Email\Attachment;
+use ITRocks\Framework\Email\Output\Has_Output_Properties;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Search_Object;
@@ -21,6 +22,7 @@ use ITRocks\Framework\Tools\Date_Time;
  */
 class Email
 {
+	use Has_Output_Properties;
 
 	//-------------------------------------------------------------------------------------- $account
 	/**
@@ -40,6 +42,7 @@ class Email
 
 	//-------------------------------------------------------------------------------- $blind_copy_to
 	/**
+	 * @alias bcc
 	 * @link Map
 	 * @set_store_name emails_recipients_blind_copy_to
 	 * @user hide_empty
@@ -60,6 +63,7 @@ class Email
 
 	//-------------------------------------------------------------------------------------- $copy_to
 	/**
+	 * @alias cc
 	 * @link Map
 	 * @set_store_name emails_recipients_copy_to
 	 * @user hide_empty
