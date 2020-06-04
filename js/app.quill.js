@@ -164,8 +164,7 @@ $(document).ready(function()
 			})();
 
 			// - link clicked buttons to quill actions on table
-			$actions = $actions.children('button');
-			$actions.click(function(event) { event.preventDefault(); });
+			$actions = $actions.children('button').attr('type', 'button');
 			$($actions[0]).click(function() { table.deleteTable(); });
 			$($actions[1]).click(function() { table.deleteColumn(); });
 			$($actions[2]).click(function() { table.deleteRow(); });
