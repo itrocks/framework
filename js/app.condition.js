@@ -114,7 +114,7 @@ $(document).ready(function()
 						if (!name && $element.is('label')) {
 							name = $element.closest('[id]').attr('id');
 						}
-						if (name.beginsWith('id_')) {
+						if (name.startsWith('id_')) {
 							name = name.substr(3);
 						}
 						name = name.repl('[', '.').repl(']', '').repl('id_', '');

@@ -131,7 +131,7 @@ $(document).ready(function()
 			var $element = $(this);
 			var name     = elementName($element);
 			if (
-				name.beginsWith(filter_in)
+				name.startsWith(filter_in)
 				&& (!trailing || name.endsWith(trailing))
 				&& (parent_name !== name)
 				&& elementValue($element)

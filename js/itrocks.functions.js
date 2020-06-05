@@ -161,7 +161,7 @@ redirect = function(uri, target, after, callback, history)
 		var close_function;
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
 		if (target && target.endsWith('main') && !$target.length) {
-			$target = $(target.beginsWith('#') ? 'main' : '#main');
+			$target = $(target.startsWith('#') ? 'main' : '#main');
 		}
 		if (!$target.length) {
 			var z_index = zIndexInc();
@@ -197,7 +197,7 @@ redirect = function(uri, target, after, callback, history)
 					$target.find('a').each(function() {
 						var $this = $(this);
 						var href = $this.attr('href');
-						if (!href.beginsWith('#')) {
+						if (!href.startsWith('#')) {
 							var close_link = app.askAnd(href, 'close=window' + window.id_index);
 							$this.attr('href', close_link);
 						}
@@ -247,7 +247,7 @@ redirectLight = function(uri, target, condition)
 	if (more) {
 		var $target = (target && (typeof target === 'object')) ? target : $(target);
 		if (target && target.endsWith('main') && !$target.length) {
-			$target = $(target.beginsWith('#') ? 'main' : '#main');
+			$target = $(target.startsWith('#') ? 'main' : '#main');
 		}
 		$.ajax({
 			url:     app.addSID(uri + more),
@@ -325,7 +325,7 @@ refreshTarget = function(target)
 {
 	var $target = $(target);
 	if (((typeof target) === 'string') && target.endsWith('main') && !$target.length) {
-		$target = $(target.beginsWith('#') ? 'main' : '#main');
+		$target = $(target.startsWith('#') ? 'main' : '#main');
 	}
 	return $target;
 };

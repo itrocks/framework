@@ -1,39 +1,4 @@
 
-//-------------------------------------------------------------------------------------- beginsWith
-if (!String.prototype.beginsWith) {
-	String.prototype.beginsWith = function(string)
-	{
-		return this.indexOf(string) === 0;
-	}
-}
-
-//---------------------------------------------------------------------------------------- contains
-if (!String.prototype.contains) {
-	String.prototype.contains = function(search)
-	{
-		return this.indexOf(search) > -1;
-	}
-}
-
-//---------------------------------------------------------------------------------------- endsWith
-if (!String.prototype.endsWith) {
-	String.prototype.endsWith = function(search, position)
-	{
-		var subject = this.toString();
-		if (
-			(typeof position !== 'number')
-			|| !isFinite(position)
-			|| (Math.floor(position) !== position)
-			|| (position > subject.length)
-		) {
-			position = subject.length;
-		}
-		position      -= search.length;
-		var last_index = subject.indexOf(search, position);
-		return (last_index !== -1) && (last_index === position);
-	};
-}
-
 //----------------------------------------------------------------------------------------- flexCmp
 /**
  * Compare two strings without taking care of trailing spaces, case or accents

@@ -139,7 +139,7 @@ $(document).ready(function()
 		if (((typeof value) === 'object') && value && !value.hasOwnProperty('0')) {
 			$.each(value, function(attribute, value) {
 				var $what = $input.next('input').attr(attribute) ? $input.next() : $input;
-				if (attribute.beginsWith('data-')) {
+				if (attribute.startsWith('data-')) {
 					$what.removeData(attribute.substr(5));
 				}
 				$what.attr(attribute, value);

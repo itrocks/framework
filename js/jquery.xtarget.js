@@ -23,7 +23,7 @@ var requestHeaders = function(request)
 var requestTargetHeaders = function($element)
 {
 	var target = $element.attr('target');
-	if (target.beginsWith('#')) {
+	if (target.startsWith('#')) {
 		var $target = $(target);
 		if ((target === '#main') && !$target.length) {
 			$target = $('main');
@@ -266,7 +266,7 @@ var requestTargetHeaders = function($element)
 				var $target      = $(target);
 				var build_target = false;
 				if (target.endsWith('main') && !$target.length) {
-					$target = $(target.beginsWith('#') ? 'main' : '#main');
+					$target = $(target.startsWith('#') ? 'main' : '#main');
 				}
 				// popup a new element
 				if ($target.is('.' + settings.closeable_popup)) {
@@ -313,7 +313,7 @@ var requestTargetHeaders = function($element)
 				}
 				// track window position to target
 				else if (
-					settings.track && xhr.from.target.beginsWith('#') && (window.scrollbar !== undefined)
+					settings.track && xhr.from.target.startsWith('#') && (window.scrollbar !== undefined)
 				) {
 					$target.each(function() {
 						var $target = $(this);

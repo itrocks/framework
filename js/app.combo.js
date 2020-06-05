@@ -277,7 +277,7 @@ $(document).ready(function()
 				}
 				var $target = $(target);
 				if (target.endsWith('main') && !$target.length) {
-					$target = $(target.beginsWith('#') ? 'main' : '#main');
+					$target = $(target.startsWith('#') ? 'main' : '#main');
 				}
 				var target_exists = $target.length;
 				redirect(
