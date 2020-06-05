@@ -17,7 +17,7 @@ use ITRocks\Framework\Tools\Date_Time;
  * @before_write beforeWrite
  * @business
  * @display_order account, date, send_date, receive_date, from, to, copy_to, blind_copy_to,
- * reply_to, return_path, headers, send_message, uidl, subject, attachments, content
+ * reply_to, return_path, headers, send_message, uidl, subject, content, attachments
  * @representative date, from, to, subject
  */
 class Email
