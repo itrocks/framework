@@ -64,11 +64,14 @@ $(document).ready(function()
 		var quill = new Quill($quill.get(0), options);
 		var table = quill.getModule('table');
 
-		if ($this.text().beginsWith('{')) {
+		if ($this.text().startsWith('{')) {
 			quill.setContents(JSON.parse($this.text()));
 		}
+		else if ($this.text().trimStart().startsWith('<')) {
+			$quill.find('.ql-editor').html($this.text().repl(LF, '').repl(TAB, '').repl(BR, LF)).keyup();
+		}
 		else {
-			$quill.find('.ql-editor').html($this.text().repl("\n", '<br>')).keyup();
+			$quill.find('.ql-editor').html($this.text().repl(LF, BR)).keyup();
 		}
 
 		$quill = $quill.parent();
