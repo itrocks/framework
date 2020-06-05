@@ -1,5 +1,6 @@
 article > form > ul.data li.file.object > div,
 article > form > ul.data ul.collection > li.data > ol > .file,
+article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div,
 article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div {
   background: url("img/upload.svg") left center no-repeat;
   background-size: 22px;
@@ -9,6 +10,8 @@ article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div {
   article > form > ul.data li.file.object > div > a, article > form > ul.data li.file.object > div > span,
   article > form > ul.data ul.collection > li.data > ol > .file > a,
   article > form > ul.data ul.collection > li.data > ol > .file > span,
+  article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div > a,
+  article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div > span,
   article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div > a,
   article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div > span {
     display: inline-block;
@@ -17,10 +20,13 @@ article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div {
     article > form > ul.data li.file.object > div > a > span, article > form > ul.data li.file.object > div > span > span,
     article > form > ul.data ul.collection > li.data > ol > .file > a > span,
     article > form > ul.data ul.collection > li.data > ol > .file > span > span,
+    article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div > a > span,
+    article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div > span > span,
     article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div > a > span,
     article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div > span > span {
       margin-left: .5em; }
   article > form > ul.data li.file.object > div > input[type=file],
   article > form > ul.data ul.collection > li.data > ol > .file > input[type=file],
+  article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div > input[type=file],
   article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div > input[type=file] {
     display: none; }
