@@ -157,7 +157,7 @@ class Session implements Serializable
 	{
 		if (isset($this->current[$class_name])) {
 			$current = $this->current[$class_name];
-			if (is_array($current)) {
+			if (is_array($current) && class_exists($class_name)) {
 				$current = $current[1];
 				$this->current[$class_name] = $current = (
 					is_numeric($current)
