@@ -287,7 +287,10 @@ class Session implements Serializable
 	public function set($object, $class_name = null)
 	{
 		if (isset($object)) {
-			$this->current[isset($class_name) ? $class_name : get_class($object)] = $object;
+			$class_name = Builder::current()->sourceClassName(
+				isset($class_name) ? $class_name : get_class($object)
+			);
+			$this->current[$class_name] = $object;
 		}
 	}
 
