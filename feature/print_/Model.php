@@ -13,8 +13,15 @@ use TCPDF;
 /**
  * Everything to print a document using layout models
  */
-class Model
+class Model extends PDF\Output
 {
+
+	//--------------------------------------------------------------------------------------- $output
+	/**
+	 * @values static::const
+	 * @var string
+	 */
+	public $output = self::INLINE;
 
 	//---------------------------------------------------------------------------------------- append
 	/**
@@ -66,7 +73,7 @@ class Model
 		$pdf->Open();
 		$this->append($pdf, $objects, $print_model);
 		$file_name = Names::classToDisplay($print_model->class_name) . '.pdf';
-		return $pdf->Output($file_name, PDF\Output::INLINE);
+		return $pdf->Output($file_name, $this->output);
 	}
 
 }
