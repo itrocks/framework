@@ -73,6 +73,7 @@ class Email
 
 	//----------------------------------------------------------------------------------------- $date
 	/**
+	 * @default Date_Time::now
 	 * @link DateTime
 	 * @var Date_Time
 	 */
@@ -200,7 +201,7 @@ class Email
 	 *
 	 * @return string[]
 	 */
-	protected function getHeaders()
+	protected function & getHeaders()
 	{
 		if (is_string($this->headers)) {
 			$this->headers = json_decode($this->headers, true);

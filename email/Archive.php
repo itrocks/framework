@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Enables archiving of all received and sent emails
@@ -31,6 +32,9 @@ class Archive implements Registerable
 	 */
 	public function save(Email $email)
 	{
+		if ($email->send_date->isEmpty()) {
+			$email->send_date = Date_Time::now();
+		}
 		Dao::write($email);
 	}
 
