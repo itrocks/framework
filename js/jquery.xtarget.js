@@ -108,6 +108,7 @@ var requestTargetHeaders = function($element)
 			history:           false, // { condition, popup, post, title }
 			keep:              'popup',
 			popup_element:     'div',
+			post:              undefined,
 			show:              undefined,
 			submit:            'submit',
 			success:           undefined,
@@ -144,46 +145,67 @@ var requestTargetHeaders = function($element)
 			 */
 			pushHistory: function(xhr, $target)
 			{
-				if ((settings.history.popup !== undefined) || !$target.hasClass('popup')) {
-					var type = xhr.ajax.type;
-					if (type === undefined) type = xhr.call_type;
-					if (type === undefined) type = 'get';
-					if (
-						(settings.history.condition !== undefined)
-						&& $target.find(settings.history.condition).length
-						&& (settings.history.post || (type !== 'post'))
-					) {
-						var title;
-						if ((settings.history.title !== undefined) && settings.history.title) {
-							title = $target.find(settings.history.title).first().text();
-							if (!title.length) {
-								title = xhr.from.href;
-							}
+				// no history for popups
+				if ((settings.history.popup === undefined) && $target.hasClass('popup')) {
+					return;
+				}
+				// query type : get / post ?
+				var type = xhr.ajax.type;
+				if (type === undefined) type = xhr.call_type;
+				if (type === undefined) type = 'get';
+				// no history when no condition, or when post queries are all filtered
+				if (
+					(settings.history.condition === undefined)
+					|| !$target.find(settings.history.condition).length
+					|| ((type === 'post') && !settings.history.post)
+				) {
+					return;
+				}
+				// no history when do not match post conditions
+				var history_entry = xhr.from.href;
+				if ((type === 'post') && Array.isArray(settings.history.post)) {
+					var match_post = false;
+					for (var post_filter in settings.history.post) {
+						if (
+							settings.history.post.hasOwnProperty(post_filter)
+							&& history_entry.match(settings.history.post[post_filter])
+						) {
+							match_post = true;
+							break;
 						}
-						else {
-							title = xhr.from.href;
-						}
-						document.title = title;
-
-						var history_entry = xhr.from.href;
-						if (history_entry !== undefined) {
-							var history_push = true;
-							for (var without_get_var in settings.history.without_get_vars) {
-								if (settings.history.without_get_vars.hasOwnProperty(without_get_var)) {
-									if (history_entry.match(settings.history.without_get_vars[without_get_var])) {
-										history_push = false;
-										break;
-									}
-								}
-							}
-							if (history_push && (history_entry !== last_history_entry)) {
-								last_history_entry = xhr.from.href;
-								window.history.pushState({reload: true}, title, history_entry);
-							}
-						}
-
+					}
+					if (!match_post) {
+						return;
 					}
 				}
+				// set document title
+				var title;
+				if ((settings.history.title !== undefined) && settings.history.title) {
+					title = $target.find(settings.history.title).first().text();
+					if (!title.length) {
+						title = xhr.from.href;
+					}
+				}
+				else {
+					title = xhr.from.href;
+				}
+				document.title = title;
+				// no history when the history entry is the same than the previous one was
+				if ((history_entry === undefined) || (history_entry === last_history_entry)) {
+					return;
+				}
+				// no history when do not match get conditions
+				for (var without_get_var in settings.history.without_get_vars) {
+					if (
+						settings.history.without_get_vars.hasOwnProperty(without_get_var)
+						&& history_entry.match(settings.history.without_get_vars[without_get_var])
+					) {
+						return;
+					}
+				}
+				// history
+				last_history_entry = xhr.from.href;
+				window.history.pushState({reload: true}, title, history_entry);
 			},
 
 			//-------------------------------------------------------------------------------- ajax.popup

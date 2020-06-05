@@ -18,7 +18,8 @@ $(document).ready(function()
 			history: {
 				condition: 'h2',
 				title:     'h2',
-				without_get_vars: ['.*/list\\?.*', '.*/output\\?.*', '.*\\?save_name=']
+				post:      ['/email$'],
+				without_get_vars: ['/email\\?', '/list\\?', '/output\\?', '\\?save_name=']
 			},
 			url_append: 'as_widget'
 		});
