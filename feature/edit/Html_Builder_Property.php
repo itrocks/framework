@@ -302,6 +302,14 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!isset($this->tooltip)) {
 			$this->tooltip = Tooltip_Annotation::of($this->property)->callProperty($this->property);
 		}
+		if ($data_entries = $this->property->getListAnnotation('data')->value) {
+			foreach ($data_entries as $data) {
+				if (!strpos($data, '=')) {
+					$data .= '=' . $data;
+				}
+				$this->data[lParse($data, '=')] = rParse($data, '=');
+			}
+		}
 		return parent::build();
 	}
 

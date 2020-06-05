@@ -329,6 +329,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@dao' => Annotation::class,
 
 	/**
+	 * @data key=value[, key2=value2[, key3]]
+	 * Allow to store data associated with the property, from the property to the view.
+	 */
+	Parser::T_PROPERTY . '@data' => List_Annotation::class,
+
+	/**
 	 * @default [[\Class\Namespace\]Class_Name::]methodName
 	 * Identifies a method that gets the default value for the property
 	 * The Property will be sent as an argument to this callable
