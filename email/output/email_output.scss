@@ -1,27 +1,51 @@
-article.email #to {
+article.email {
 
-	.collapsed {
-		display: inline-block;
-		position: relative;
-		vertical-align: top;
+	#content > div {
 
-		> li {
-			background: #ddd;
-			border: 1px solid #aaa;
-			border-radius: 3px;
-			display: inline-block;
-			list-style: none;
-			margin-left: 8px;
+		a {
+			color: blue;
+			text-decoration: underline;
+		}
 
-			> button {
-				height: 30px;
-				padding: 4px !important;
-				width: 30px;
+		p {
+
+			&:not(:last-of-type) {
+				margin-bottom: 1em;
+			}
+
+			&:not(:first-of-type) {
+				margin-top: 1em;
 			}
 		}
+
+		white-space: initial;
 	}
 
-	.map {
-		display: inline-table;
+	#to {
+
+		.collapsed {
+			display: inline-block;
+			position: relative;
+			vertical-align: top;
+
+			> li {
+				background: #ddd;
+				border: 1px solid #aaa;
+				border-radius: 3px;
+				display: inline-block;
+				list-style: none;
+				margin-left: 8px;
+
+				> button {
+					height: 30px;
+					padding: 4px !important;
+					width: 30px;
+				}
+			}
+		}
+
+		.map {
+			display: inline-table;
+		}
 	}
 }

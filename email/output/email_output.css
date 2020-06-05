@@ -1,3 +1,12 @@
+article.email #content > div {
+  white-space: initial; }
+  article.email #content > div a {
+    color: blue;
+    text-decoration: underline; }
+  article.email #content > div p:not(:last-of-type) {
+    margin-bottom: 1em; }
+  article.email #content > div p:not(:first-of-type) {
+    margin-top: 1em; }
 article.email #to .collapsed {
   display: inline-block;
   position: relative;
