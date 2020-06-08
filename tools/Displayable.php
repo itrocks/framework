@@ -48,7 +48,7 @@ class Displayable extends String_Class
 	 * @param $value string
 	 * @param $type  string the type of the displayable object : class, method, property or string
 	 */
-	public function __construct($value, $type)
+	public function __construct($value, $type = self::TYPE_STRING)
 	{
 		parent::__construct($value);
 		$this->type = $type;
