@@ -1945,7 +1945,7 @@ class Template
 		if ($auto_remove && !strlen($value)) {
 			$this->parseVarRemove($content, $i, $j);
 		}
-		if ($html_entities && ($var_name[0] !== SL)) {
+		if ($html_entities && ($var_name[0] !== SL) && !($value instanceof No_Escape)) {
 			$value = $this->htmlEntities($value);
 		}
 		$content = substr($content, 0, $i) . $value . substr($content, $j + 1);
