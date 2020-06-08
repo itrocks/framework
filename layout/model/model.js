@@ -161,7 +161,7 @@ $(document).ready(function()
 		 */
 		$editor.find('.field:contains(#)').each(function() {
 			var $field = $(this);
-			if ($field.text().beginsWith('#') && ($field.text().length > 3)) {
+			if ($field.text().startsWith('#') && ($field.text().length > 3)) {
 				$field.text($field.text().replace(/#([\.\w]+)/g, '{$1}'));
 			}
 		});
