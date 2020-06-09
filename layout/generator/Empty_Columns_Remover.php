@@ -238,7 +238,7 @@ class Empty_Columns_Remover implements Registerable
 	{
 		$property = end($this->unset);
 		$column   = key($this->unset);
-		$right    = ($column === count($this->properties))
+		$right    = ($column === (count($this->properties) - 1))
 			? $property->right()
 			: $this->properties[$column + 1]->left;
 		$shift        = 0;
