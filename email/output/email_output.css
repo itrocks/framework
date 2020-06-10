@@ -7,6 +7,12 @@ article.email #content > div {
     margin-bottom: 1em; }
   article.email #content > div p:not(:first-of-type) {
     margin-top: 1em; }
+article.email #content {
+  border-spacing: 0;
+  display: block;
+  padding: 0 10px; }
+  article.email #content > label {
+    display: none; }
 article.email #to .collapsed {
   display: inline-block;
   position: relative;

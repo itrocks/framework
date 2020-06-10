@@ -21,6 +21,16 @@ article.email {
 		white-space: initial;
 	}
 
+	#content {
+		border-spacing: 0;
+		display: block;
+		padding: 0 10px;
+
+		> label {
+			display: none;
+		}
+	}
+
 	#to {
 
 		.collapsed {
