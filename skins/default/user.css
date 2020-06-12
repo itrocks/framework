@@ -90,6 +90,7 @@ article.user.register {
     article.password.reset > form > ul.actions,
     article.user.login > form > ul.actions,
     article.user.register > form > ul.actions {
+      background: initial;
       position: relative; }
       article.password.reset > form > ul.actions > li,
       article.user.login > form > ul.actions > li,
