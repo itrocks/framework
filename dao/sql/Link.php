@@ -8,7 +8,9 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Column;
 use ITRocks\Framework\Dao\Func\Dao_Function;
 use ITRocks\Framework\Dao\Func\Expressions;
+use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
@@ -235,7 +237,7 @@ abstract class Link extends Identifier_Map implements Transactional
 				return $list;
 			}
 			$filter_object = $filter_object
-				? Func::andOp([$filter_object, Func::in($new_filter_object)])
+				? Func::andOp([$filter_object, $new_filter_object])
 				: $new_filter_object;
 		}
 
@@ -259,45 +261,43 @@ abstract class Link extends Identifier_Map implements Transactional
 	 *                       search. Can be an array associating properties names to matching search
 	 *                       value too.
 	 * @param $options       Option[] some options for advanced search
-	 * @return array An array of read objects identifiers
+	 * @return Where|null
 	 */
 	private function selectFirstPass(
 		$object_class, array $properties, $filter_object, array &$options
 	) {
-		// select properties with @link Collection|Map : only if Count
-		$select_properties = false;
-		foreach ($options as $option) {
-			if ($option instanceof Option\Count) {
-				$select_properties = true;
-				break;
+		$properties = $this->selectFirstPassProperties($object_class, $properties, $options);
+		$select     = new Select($object_class, $properties, $this);
+		$query      = $select->prepareQuery($filter_object, $options);
+		$result_set = true;
+		if ($properties) {
+			$read_lines_filter = $this->query($query, AS_ARRAY, $result_set);
+			foreach ($read_lines_filter as $key => &$value) {
+				foreach ($value as $key2 => $value2) {
+					if (is_null($value2)) {
+						unset($value[$key2]);
+					}
+				}
+				$read_lines_filter[$key] = (count($value) > 1) ? Func::andOp($value) : $value;
 			}
 		}
-		$properties = $select_properties
-			? $this->selectFirstPassProperties($object_class, $properties, $options)
-			: [];
-		// first pass
-		$select            = new Select($object_class, $properties, $this);
-		$query             = $select->prepareQuery($filter_object, $options);
-		$result_set        = true;
-		$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
+		else {
+			$read_lines_filter = $this->query($query, AS_VALUES, $result_set);
+		}
 		$select->doneQuery();
 		if ($options && $result_set) {
 			$this->getRowsCount('SELECT', $options, $result_set);
 			$this->free($result_set);
+			// remove options for second path
 			foreach ($options as $key => $option) {
-				// keep Limit if we did not need to keep @link Collection|Map property paths for counting
-				// if we remove Limit, we may have more result records than we want in this case
-				if (($option instanceof Option\Limit) && !$properties) {
-					unset($options[$key]);
-				}
-				// the Count option is kept by the originator, but we don't want it for the second pass
-				// only the first pass counts the number of resulting lines
-				elseif ($option instanceof Option\Count) {
+				if (($option instanceof Option\Count) || ($option instanceof Option\Limit)) {
 					unset($options[$key]);
 				}
 			}
 		}
-		return $read_lines_filter;
+		return $read_lines_filter
+			? ($properties ? Func::orOp($read_lines_filter) : Func::in($read_lines_filter))
+			: null;
 	}
 
 	//--------------------------------------------------------------------- selectFirstPassProperties
@@ -312,61 +312,34 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	private function selectFirstPassProperties($object_class, array $properties, array $options)
 	{
-		$result = [];
-		foreach ($options as $option) {
-			if ($option instanceof Option\Group_By) {
-				$result = array_merge($properties, $option->properties);
-			}
+		if ($group_by = Option\Group_By::in($options)) {
+			return $group_by->properties;
 		}
-		if (!$result) {
-			foreach ($properties as $key => $property_path) {
-				if (is_string($key) && !is_string($property_path)) {
-					$property_path = $key;
+		$result = [];
+		foreach ($properties as $key => $property_path) {
+			if (is_string($key) && !is_string($property_path)) {
+				$property_path = $key;
+			}
+			$path = '';
+			foreach (explode(DOT, $property_path) as $property_name) {
+				$path .= ($path ? DOT : '') . $property_name;
+				if (substr($path, -1) === ')') {
+					continue;
 				}
-				// $keep_path = the deepest path of a @link Collection|Map property
-				$keep_path = $path = '';
-				foreach (explode(DOT, $property_path) as $property_name) {
-					$path .= ($path ? DOT : '') . $property_name;
-					if (substr($path, -1) !== ')') {
-						/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
-						$link  = Link_Annotation::of(new Reflection_Property($object_class, $path));
-						if ($link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
-							$keep_path = $path;
-						}
-					}
+				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
+				$property = new Reflection_Property($object_class, $path);
+				$link     = Link_Annotation::of($property);
+				if (!$link->is(Link_Annotation::COLLECTION, Link_Annotation::MAP)) {
+					continue;
 				}
-				if ($keep_path) {
-					$add = true;
-					// add the path only if is not the start of an already added path
-					$property_path_dot = $property_path . DOT;
-					$length            = strlen($property_path_dot);
-					foreach ($result as $existing_path) {
-						if (substr($existing_path, 0, $length) === $property_path_dot) {
-							$add = false;
-						}
-					}
-					if ($add) {
-						// optimization : get the full path if the last property is not an object
-						if (
-							((substr_count($property_path, DOT) - substr_count($keep_path, DOT)) === 1)
-							&& (isset($link) && !$link->value)
-						) {
-							$result[$property_path] = $property_path;
-						}
-						// get the intermediate path (the entire object will be read, but who cares ?)
-						else {
-							$result[$keep_path] = $keep_path;
-						}
-						// remove all other already added paths that are the start of the path
-						$remove_path = '';
-						foreach (explode(DOT, $keep_path) as $part) {
-							$remove_path .= ($remove_path ? DOT : '') . $part;
-							if (isset($result[$remove_path])) {
-								unset($result[$remove_path]);
-							}
-						}
-					}
+				$class = $property->getType()->asLinkClass();
+				if ($link->isCollection() && Class_\Link_Annotation::of($class)->value) {
+					$property_path = $path . DOT . $class->getLinkProperty()->name . '.id';
 				}
+				else {
+					$property_path = $path . '.id';
+				}
+				$result[$property_path] = $property_path;
 			}
 		}
 		return $result;
