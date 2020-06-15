@@ -157,7 +157,11 @@ class Where implements With_Build_Column
 			switch ($key_clause) {
 				case 'NOT': $sql .= 'NOT (' . $this->buildPath($path, $value, 'AND') . ')';  break;
 				case 'AND': $sql .= $this->buildPath($path, $value, $key_clause);             break;
-				case 'OR':  $sql .= '(' . $this->buildPath($path, $value, $key_clause) . ')'; break;
+				case 'OR':
+					$sql .= (count($value) > 1)
+						? ('(' . $this->buildPath($path, $value, $key_clause) . ')')
+						: $this->buildPath($path, $value, $key_clause);
+					break;
 				default:
 					if (is_numeric($key)) {
 						if ((count($array) > 1) && !$sql && arrayKeysAllNumeric($array, true)) {
