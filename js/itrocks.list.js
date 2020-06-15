@@ -91,7 +91,6 @@ $(document).ready(function()
 					var $trs          = $load_table.find('> tbody > tr:not(.more)');
 					var $existing_trs = $tbody.children(':not(.more)');
 					var reset         = false;
-					var scroll_top    = $tbody.scrollTop();
 					// append trailing cells
 					$trs.append('<td class="trailing" style="width: 100%">');
 					// if table was updated : remove all rows, as their updated version was loaded
@@ -128,8 +127,6 @@ $(document).ready(function()
 							$cell.css('min-width', cell_width);
 						}
 					});
-					// fix a bug where scroll position moves each time I add lines
-					$tbody.scrollTop(scroll_top);
 					// recalculate and redraw vertical scrollbar
 					$table.scrollBar('draw');
 					// unlock "more lines loading"

@@ -74,6 +74,9 @@
 		// bar size
 		var percentage = Math.round(1000 * body_size / body_scroll_size) / 10;
 		$bar.css(size, percentage.toString() + '%');
+		if (scrollbar.dont_move) {
+			return true;
+		}
 		// bar position
 		var max_position = scroll_size - bar_size;
 		var new_position = drawBarGetPosition($scroll, $bar, direction, position, size, max_position);
@@ -702,7 +705,9 @@
 	$.fn.scrollBar = function(settings)
 	{
 		if (settings === 'draw') {
+			this.data('scrollbar').dont_move = true;
 			draw(this);
+			this.data('scrollbar').dont_move = false;
 			scroll(this, 'horizontal', 0);
 			scroll(this, 'vertical',   0);
 			return this;
