@@ -181,13 +181,24 @@ class Type
 		return $this->type;
 	}
 
+	//----------------------------------------------------------------------------------- asLinkClass
+	/**
+	 * Gets a single or multiple class type as a Link_Class
+	 *
+	 * @return Link_Class
+	 */
+	public function asLinkClass()
+	{
+		return $this->asReflectionClass(Link_Class::class);
+	}
+
 	//----------------------------------------------------------------------------- asReflectionClass
 	/**
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
-	 * @return Interfaces\Reflection_Class|PHP\Reflection_Class|Reflection_Class
+	 * @return Interfaces\Reflection_Class|Link_Class|PHP\Reflection_Class|Reflection_Class
 	 */
 	public function asReflectionClass($reflection_class_name = null)
 	{
