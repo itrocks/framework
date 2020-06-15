@@ -942,12 +942,7 @@ class Link extends Dao\Sql\Link
 	{
 		$elements = [];
 		while ($element = $result->fetch_assoc()) {
-			if (isset($element['id'])) {
-				$elements[$element['id']] = $element;
-			}
-			else {
-				$elements[] = $element;
-			}
+			$elements[] = $element;
 		}
 		return $elements;
 	}
