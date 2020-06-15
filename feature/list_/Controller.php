@@ -800,7 +800,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$max_lines = isset($_SERVER['HTTP_TARGET_HEIGHT'])
 				? intval(ceil($_SERVER['HTTP_TARGET_HEIGHT'] / 33))
 				: 20;
-			if ($list_settings->maximum_displayed_lines_count < $max_lines) {
+			if ($list_settings->maximum_displayed_lines_count != $max_lines) {
 				$list_settings->maximum_displayed_lines_count = $max_lines;
 			}
 			$limit = new Limit(
