@@ -78,10 +78,14 @@ class Empty_Columns_Remover implements Registerable
 	protected function applyShiftsWidths(array $elements)
 	{
 		foreach ($this->shifts as $column => $shift) {
-			$elements[$column]->left += $shift;
+			if (isset($elements[$column])) {
+				$elements[$column]->left += $shift;
+			}
 		}
 		foreach ($this->widths as $column => $width) {
-			$elements[$column]->width += $width;
+			if (isset($elements[$column])) {
+				$elements[$column]->width += $width;
+			}
 		}
 	}
 
