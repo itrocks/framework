@@ -94,7 +94,7 @@ class Email
 	 * @user invisible
 	 * @var string[]
 	 */
-	public $headers;
+	public $headers = [];
 
 	//--------------------------------------------------------------------------------- $receive_date
 	/**
