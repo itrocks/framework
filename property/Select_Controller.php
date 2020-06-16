@@ -259,8 +259,9 @@ class Select_Controller implements Feature_Controller
 			$objects,
 			($top_property_class instanceof Reflection_Property) ? $top_property_class : null
 		);
-		$objects['class_name'] = Builder::current()->sourceClassName($class_name);
-		$objects['properties'] = $properties;
+		$objects['class_name']         = Builder::current()->sourceClassName($class_name);
+		$objects['link_class_feature'] = $this->for;
+		$objects['properties']         = $properties;
 		/**
 		 * Objects for the view :
 		 * first        Property the property object (with selected property name, or not)

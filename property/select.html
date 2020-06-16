@@ -26,7 +26,7 @@
 			<li class="{?isExpandable} {?autoExpand}">
 				<a class="property {?isBasicHtml} {?isStringableHtml} {?classHtml}" data-property="{link_path}" data-begin="{link_path?}" title="|{link_path.path}|" data-end>{display}</a>
 				<!--isExpandable?-->
-				<a class="expand" href="app://ITRocks/Framework/Property/select/(link_class.path)?property_path=(link_path)" target="#tree-{link_path.idTag}">|expand|</a>
+				<a class="expand" href="app://ITRocks/Framework/Property/select/(link_class.path)/(?link_class_feature)?property_path=(link_path)" target="#tree-{link_path.idTag}">|expand|</a>
 				<!--end-->
 				<div id="tree-{link_path.idTag}"></div>
 			</li>
