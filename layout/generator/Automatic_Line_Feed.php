@@ -49,7 +49,8 @@ class Automatic_Line_Feed
 				foreach (explode(SP, $element_text) as $word) {
 					$word_width = $this->output->textWidth($word, null, null, $element->font_size);
 					if (
-						($line_width + ($line_words_count ? $space_width : 0) + $word_width) > $element->width
+						(($line_width + ($line_words_count ? $space_width : 0) + $word_width) > $element->width)
+						&& strlen($text)
 					) {
 						$text            .= LF;
 						$line_width       = 0;
