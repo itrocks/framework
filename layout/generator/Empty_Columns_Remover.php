@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Generator;
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
@@ -42,7 +43,7 @@ class Empty_Columns_Remover implements Registerable
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
-	 * @var Property[]
+	 * @var Element[]|Property[]
 	 */
 	public $properties;
 
@@ -112,6 +113,11 @@ class Empty_Columns_Remover implements Registerable
 		$properties_count = count($this->properties);
 		$this->set        = [];
 		foreach ($this->group->iterations as $iteration) {
+			usort($iteration->elements, function(Field $element1, Field $element2) {
+				return (abs($element1->top - $element2->top) >= Generator::$precision)
+					? cmp($element1->top, $element2->top)
+					: cmp($element1->hotX(), $element2->hotX());
+			});
 			for ($column = 0; $column < $properties_count; $column ++) {
 				if (isset($this->set[$column])) {
 					continue;
@@ -178,6 +184,17 @@ class Empty_Columns_Remover implements Registerable
 			if (abs($property->top - $top) < Generator::$precision) {
 				$this->properties[$column] = $property;
 			}
+		}
+		foreach ($this->group->elements as $column => $element) {
+			if (abs($element->top - $top) < Generator::$precision) {
+				$this->properties[] = $element;
+				$added_elements = true;
+			}
+		}
+		if (isset($added_elements)) {
+			usort($this->properties, function(Field $property1, Field $property2) {
+				return cmp($property1->hotX(), $property2->hotX());
+			});
 		}
 	}
 
