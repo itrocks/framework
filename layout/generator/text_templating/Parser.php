@@ -5,6 +5,7 @@ use ITRocks\Framework\Layout\Generator\Text_Templating;
 use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 
 /**
@@ -85,15 +86,28 @@ class Parser
 					$object = $this->root_object;
 				}
 			}
-			try {
-				$property = new Reflection_Property($object, $property_path);
-				$value    = Loc::propertyToLocale($property, $property->getValue($object));
+			foreach (explode(DOT, $property_path) as $property_name) {
+				if (!property_exists($object, $property_name)) {
+					$property_name = Names::displayToProperty(Loc::rtr(
+						Names::propertyToDisplay($property_name),
+						get_class($object))
+					);
+				}
+				try {
+					$property = new Reflection_Property($object, $property_name);
+					$object   = $property->getValue($object);
+				}
+				catch (ReflectionException $exception) {
+					$object = '{' . $property_path . ' : ' . 'unknown ' . $property_name . '}';
+					break;
+				}
+				if (is_null($object)) {
+					break;
+				}
 			}
-			catch (ReflectionException $exception) {
-				$value = '{' . Loc::tr($exception) . '}';
-			}
-			if ($value) {
-				return $value;
+			$value = $object;
+			if (isset($property) && $value) {
+				$value = Loc::propertyToLocale($property, $value);
 			}
 		}
 		return $value;

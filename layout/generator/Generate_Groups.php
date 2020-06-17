@@ -8,7 +8,9 @@ use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 use ITRocks\Framework\Layout\Structure\Page;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Scan all property zones for groups and repetitive
@@ -198,6 +200,12 @@ class Generate_Groups
 			$last_group    = null;
 			$property_path = '';
 			foreach (explode(DOT, $current_property_path) as $property_name) {
+				if (!property_exists($class_name, $property_name)) {
+					$property_name = Names::displayToProperty(Loc::rtr(
+						Names::propertyToDisplay($property_name),
+						$class_name
+					));
+				}
 				if ($property_path) {
 					$property_path .= DOT;
 				}
