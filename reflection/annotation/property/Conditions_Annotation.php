@@ -98,14 +98,23 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 		foreach ($this->value as $property_name => $condition_value) {
 			$condition_values = explode(',', $condition_value);
 			/** @noinspection PhpUnhandledExceptionInspection object, property must be valid */
-			$property_value   = new Reflection_Property_Value($object, $property_name, $object);
-			$value            = $property_value->value();
-			if (
-				!(isset($value) && in_array(static::SET, $condition_values))
-				&& !(!$value && in_array(static::EMPTY, $condition_values))
-				&& !in_array($value, $condition_values)
-			) {
-				return false;
+			$property_value = new Reflection_Property_Value($object, $property_name, $object);
+			$value          = $property_value->value();
+			foreach ($condition_values as $condition) {
+				$op = (substr($condition, 1, 1) === '=')
+					? substr($condition, 0, 2)
+					: substr($condition, 0, 1);
+				if (!(
+					(isset($value) && ($condition === static::SET))
+					|| (!$value    && ($condition === static::EMPTY))
+					|| (($op === '>')  && ($value >  substr($condition, 1)))
+					|| (($op === '>=') && ($value >= substr($condition, 2)))
+					|| (($op === '<')  && ($value <  substr($condition, 1)))
+					|| (($op === '<=') && ($value <= substr($condition, 2)))
+					|| ($value === $condition_values)
+				)) {
+					return false;
+				}
 			}
 		}
 		return true;

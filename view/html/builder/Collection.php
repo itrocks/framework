@@ -11,6 +11,7 @@ use ITRocks\Framework\Mapper;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -228,6 +229,9 @@ class Collection
 			&& (strpos($value, '|') !== false)
 		) {
 			$value = str_replace('|', '&#124;', $value);
+		}
+		if (strlen($value) && !Conditions_Annotation::of($property)->applyTo($object)) {
+			$value = null;
 		}
 		$cell = new Item($value);
 		$hide_empty_test = !($this->has_value[$property->path] ?? !static::HIDE_EMPTY_TEST);
