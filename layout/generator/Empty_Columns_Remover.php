@@ -192,6 +192,17 @@ class Empty_Columns_Remover implements Registerable
 		);
 	}
 
+	//-------------------------------------------------------------------------------- removeElements
+	/**
+	 * @param $elements Element[]
+	 */
+	protected function removeElements(array &$elements)
+	{
+		foreach (array_keys($this->unset) as $key) {
+			unset($elements[$key]);
+		}
+	}
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @call runGroup
@@ -228,6 +239,7 @@ class Empty_Columns_Remover implements Registerable
 		$this->applyShiftsWidths($this->headers);
 		foreach ($this->group->iterations as $iteration) {
 			$this->applyShiftsWidths($iteration->elements);
+			$this->removeElements($iteration->elements);
 		}
 	}
 
