@@ -114,7 +114,7 @@ class Property_To_Text
 		foreach ($values as $iteration_number => $object) {
 			if ($text instanceof Text) {
 				$parser = new Parser($object, $this->object, $text->group->property_path);
-				$value  = $parser->elementText($text);
+				$value  = $parser->elementText($text, $iteration_number);
 			}
 			else {
 				$value = $text->file;

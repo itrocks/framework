@@ -9,7 +9,7 @@ class Final_Text extends Text
 
 	//------------------------------------------------------------------------------------- $property
 	/**
-	 * @var Property
+	 * @var Property|Text
 	 */
 	public $property;
 

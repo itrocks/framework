@@ -47,10 +47,11 @@ class Parser
 
 	//----------------------------------------------------------------------------------- elementText
 	/**
-	 * @param $element Text
+	 * @param $element          Text
+	 * @param $iteration_number integer
 	 * @return string
 	 */
-	public function elementText(Text $element)
+	public function elementText(Text $element, $iteration_number = 0)
 	{
 		$text     = $element->text;
 		$position = 0;
@@ -58,7 +59,7 @@ class Parser
 			$position            ++;
 			$end_position        = strpos($text, '}', $position);
 			$property_expression = substr($text, $position, $end_position - $position);
-			$value     = $this->propertyExpression($property_expression);
+			$value     = $this->propertyExpression($property_expression, $iteration_number);
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
 			$position += strlen($value) - 1;
 		}
@@ -68,9 +69,10 @@ class Parser
 	//---------------------------------------------------------------------------- propertyExpression
 	/**
 	 * @param $property_expression string
+	 * @param $iteration_number    integer
 	 * @return string
 	 */
-	public function propertyExpression($property_expression)
+	public function propertyExpression($property_expression, $iteration_number = 0)
 	{
 		$value = '';
 		foreach (explode('?:', $property_expression) as $property_path) {
@@ -103,6 +105,9 @@ class Parser
 				}
 				if (is_null($object)) {
 					break;
+				}
+				if (is_array($object)) {
+					$object = array_slice($object, $iteration_number, 1)[0];
 				}
 			}
 			$value = $object;
