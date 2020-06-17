@@ -79,20 +79,26 @@ class Number_Format
 
 	//--------------------------------------------------------------------------------- floatToLocale
 	/**
-	 * @param $float float
+	 * @param $float                 float
+	 * @param $decimal_minimal_count integer if set, overrides decimal minimal count
+	 * @param $decimal_maximal_count integer if set, overrides decimal maximal count
 	 * @return string
 	 */
-	public function floatToLocale($float)
-	{
+	public function floatToLocale(
+		$float, $decimal_minimal_count = null, $decimal_maximal_count = null
+	) {
 		if (is_numeric($float)) {
 			$float = number_format(
-				$float, $this->decimal_maximal_count, $this->decimal_separator, $this->thousand_separator
+				$float,
+				$decimal_maximal_count ?? $this->decimal_maximal_count,
+				$this->decimal_separator,
+				$this->thousand_separator
 			);
 			if ($position = strrpos($float, $this->decimal_separator)) {
 				$decimals = strlen($float) - $position - 1;
 				while (
 					($float[$position + $decimals] === '0')
-					&& ($decimals > $this->decimal_minimal_count)
+					&& ($decimals > ($decimal_minimal_count ?? $this->decimal_minimal_count))
 				) {
 					$decimals --;
 				}

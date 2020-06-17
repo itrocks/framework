@@ -206,12 +206,17 @@ class Loc implements Registerable
 	/**
 	 * Takes a float number and make it locale
 	 *
-	 * @param $float float ie 1000 1000.28 1000.2148
+	 * @param $float                 float ie 1000 1000.28 1000.2148
+	 * @param $decimal_minimal_count integer if set, overrides decimal minimal count
+	 * @param $decimal_maximal_count integer if set, overrides decimal maximal count
 	 * @return string ie '1 000,00' '1 000,28' '1 000,2148'
 	 */
-	public static function floatToLocale($float)
-	{
-		return Locale::current()->number_format->floatToLocale($float);
+	public static function floatToLocale(
+		$float, $decimal_minimal_count = null, $decimal_maximal_count = null
+	) {
+		return Locale::current()->number_format->floatToLocale(
+			$float, $decimal_minimal_count, $decimal_maximal_count
+		);
 	}
 
 	//------------------------------------------------------------------------------- formatTranslate
