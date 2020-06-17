@@ -39,7 +39,7 @@ trait Templating
 		foreach ($template_sections as $template_section) {
 			$property_paths = explode('?:', substr($template_section, 0, strpos($template_section, '}')));
 			foreach ($property_paths as $property_path) {
-				$this->property_paths[] = Names::displayToProperty($property_path);
+				$this->property_paths[] = Names::displayToProperty(str_replace('?', '', $property_path));
 			}
 		}
 		return $this->property_paths;

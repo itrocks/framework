@@ -59,7 +59,10 @@ class Parser
 			$position            ++;
 			$end_position        = strpos($text, '}', $position);
 			$property_expression = substr($text, $position, $end_position - $position);
-			$value     = $this->propertyExpression($property_expression, $iteration_number);
+			$value = $this->propertyExpression($property_expression, $iteration_number);
+			if (!$value && strpos($property_expression, '?') !== false) {
+				return '';
+			}
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
 			$position += strlen($value) - 1;
 		}
@@ -89,6 +92,9 @@ class Parser
 				}
 			}
 			foreach (explode(DOT, $property_path) as $property_name) {
+				if ($property_name[0] === '?') {
+					$property_name = str_replace('?', '', $property_name);
+				}
 				if (!property_exists($object, $property_name)) {
 					$property_name = Names::displayToProperty(Loc::rtr(
 						Names::propertyToDisplay($property_name),
