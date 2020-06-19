@@ -325,15 +325,10 @@ class Link extends Dao\Sql\Link
 	 */
 	public function delete($object)
 	{
-		$will_delete = true;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class($object))->getAnnotations('before_delete') as $before_delete) {
-			/** @var $before_delete Method_Annotation */
-			if ($before_delete->call($object, [$this]) === false) {
-				$will_delete = false;
-				break;
-			}
-		}
+		$will_delete = Method_Annotation::callAll(
+			(new Reflection_Class($object))->getAnnotations('before_delete'), $object, [$this]
+		);
 
 		if ($will_delete) {
 			$id = $this->getObjectIdentifier($object);
@@ -393,12 +388,9 @@ class Link extends Dao\Sql\Link
 				}
 				array_pop($this->connection->contexts);
 				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-				foreach ((new Reflection_Class($object))->getAnnotations('after_delete') as $after_delete) {
-					/** @var $after_delete Method_Annotation */
-					if ($after_delete->call($object, [$this]) === false) {
-						break;
-					}
-				}
+				Method_Annotation::callAll(
+					(new Reflection_Class($object))->getAnnotations('after_delete'), $object, [$this]
+				);
 				return true;
 			}
 		}

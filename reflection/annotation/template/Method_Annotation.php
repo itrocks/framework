@@ -72,6 +72,23 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 		return call_user_func_array([$object, rParse($this->value, '::')], $arguments);
 	}
 
+	//--------------------------------------------------------------------------------------- callAll
+	/**
+	 * @param $annotations static[]
+	 * @param $object      object
+	 * @param $arguments   array
+	 * @return boolean false if calls chain was interrupted, true if every call were ok
+	 */
+	public static function callAll(array $annotations, $object, array $arguments = [])
+	{
+		foreach ($annotations as $annotation) {
+			if ($annotation->call($object, $arguments) === false) {
+				return false;
+			}
+		}
+		return true;
+	}
+
 	//--------------------------------------------------------------------------------- completeValue
 	/**
 	 * @param $value           string

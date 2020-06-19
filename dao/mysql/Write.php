@@ -117,12 +117,7 @@ class Write extends Data_Link\Write
 	 */
 	protected function callEvent(Event $event, array $annotations)
 	{
-		foreach ($annotations as $annotation) {
-			if ($annotation->call($event->object, [$event]) === false) {
-				return false;
-			}
-		}
-		return true;
+		return Method_Annotation::callAll($annotations, $event->object, [$event]);
 	}
 
 	//---------------------------------------------------------------------------------- parseOptions

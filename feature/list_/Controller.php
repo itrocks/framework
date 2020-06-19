@@ -784,12 +784,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		//$search = $this->applySearchParameters($list_settings);
 
 		$class = $list_settings->getClass();
-		foreach ($class->getAnnotations('on_list') as $execute) {
-			/** @var $execute Method_Annotation */
-			if ($execute->call($class->name, [&$search]) === false) {
-				break;
-			}
-		}
+		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
 
 		if (!$options) {
 			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)];
@@ -903,12 +898,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$class_name, List_Setting\Set $list_settings, array $search, Count $count = null
 	) {
 		$class = $list_settings->getClass();
-		foreach ($class->getAnnotations('on_list') as $execute) {
-			/** @var $execute Method_Annotation */
-			if ($execute->call($class->name, [&$search]) === false) {
-				break;
-			}
-		}
+		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
 		$options = [$list_settings->sort, Dao::doublePass()];
 		if ($count) {
 			$options[] = $count;

@@ -68,11 +68,7 @@ abstract class Write
 		if (in_array($after_write_annotation, [self::AFTER_CREATE, self::AFTER_UPDATE])) {
 			$after_writes = array_merge($after_writes, $class->getAnnotations(self::AFTER_WRITE));
 		}
-		foreach ($after_writes as $after_write) {
-			if ($after_write->call($object, [$this->link, &$options]) === false) {
-				break;
-			}
-		}
+		Method_Annotation::callAll($after_writes, $object, [$this->link, &$options]);
 	}
 
 	//----------------------------------------------------------------------------------- beforeWrite
@@ -101,22 +97,6 @@ abstract class Write
 				}
 			}
 			foreach ($before_writes as $before_write) {
-				// TODO This is here for in-prod diagnostic. Please remove when done.
-				if (!($before_write instanceof Method_Annotation)) {
-					trigger_error(
-						'Method_Annotation awaited ' . print_r($before_write, true) . LF
-						. 'on object ' . print_r($object, true),
-						E_USER_WARNING
-					);
-					/** @noinspection PhpUnhandledExceptionInspection object */
-					$before_write = new Method_Annotation(
-						$before_write->value, new Reflection_Class($object), $before_write_annotation
-					);
-					trigger_error(
-						'Try executing @' . $before_write_annotation
-						. SP . print_r($before_write, true), E_USER_WARNING
-					);
-				}
 				$response = $before_write->call($object, [$this->link, &$options]);
 				if ($response === false) {
 					return false;

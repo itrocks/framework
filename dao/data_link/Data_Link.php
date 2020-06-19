@@ -40,14 +40,11 @@ abstract class Data_Link
 	 */
 	public function afterCommit()
 	{
-		if ($this->after_commit) {
-			foreach ($this->after_commit as $after_commit) {
-				if ($after_commit->call($this) === false) {
-					break;
-				}
-			}
-			$this->after_commit = [];
+		if (!$this->after_commit) {
+			return;
 		}
+		Method_Annotation::callAll($this->after_commit, $this);
+		$this->after_commit = [];
 	}
 
 	//------------------------------------------------------------------------------------- afterRead
@@ -57,14 +54,11 @@ abstract class Data_Link
 	 */
 	public function afterRead($object)
 	{
+		$options = [];
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		foreach ((new Reflection_Class($object))->getAnnotations('after_read') as $after_read) {
-			/** @var $after_read Method_Annotation */
-			$options = [];
-			if ($after_read->call($object, [$this, &$options]) === false) {
-				break;
-			}
-		}
+		Method_Annotation::callAll(
+			(new Reflection_Class($object))->getAnnotations('after_read'), $object, [$this, &$options]
+		);
 	}
 
 	//----------------------------------------------------------------------------- afterReadMultiple
@@ -80,11 +74,7 @@ abstract class Data_Link
 			/** @var $after_reads Method_Annotation[] */
 			$after_reads = (new Reflection_Class(reset($objects)))->getAnnotations('after_read');
 			foreach ($objects as $object) {
-				foreach ($after_reads as $after_read) {
-					if ($after_read->call($object, [$this, &$options]) === false) {
-						break;
-					}
-				}
+				Method_Annotation::callAll($after_reads, $object, [$this, &$options]);
 			}
 		}
 	}

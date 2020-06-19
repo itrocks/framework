@@ -199,12 +199,7 @@ class Selection
 				? $this->allButExcludedFilter()
 				: $this->selectedFilter();
 			$class = $this->getListSettings()->getClass();
-			foreach ($class->getAnnotations('on_list') as $execute) {
-				/** @var $execute Method_Annotation */
-				if ($execute->call($class->name, [&$this->search]) === false) {
-					break;
-				}
-			}
+			Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$this->search]);
 		}
 		return $search
 			? ($this->search ? [Func::andOp([$search, $this->search])] : $search)
