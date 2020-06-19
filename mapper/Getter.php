@@ -476,7 +476,7 @@ abstract class Getter
 					if ($type->isClass() && $type->isMultiple() && !$type->isAbstractClass()) {
 						$property_class_name = $type->getElementTypeAsString();
 						foreach ($stored_value as $key => $object_identifier) {
-							if (is_integer($object_identifier)) {
+							if (is_numeric($object_identifier)) {
 								if (!isset($arrays_of_objects[$property_name])) {
 									$arrays_of_objects[$property_name] = [];
 								}

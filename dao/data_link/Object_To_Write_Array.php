@@ -17,6 +17,7 @@ use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Stringable;
 
 /**
  * Object to write array
@@ -495,15 +496,44 @@ class Object_To_Write_Array
 			// encode only stored data and map, not collection
 			$object_to_write_array = (new Object_To_Write_Array($this->link, $value, $options, true))
 				->build();
-			$array = $object_to_write_array->array;
-			$maps  = $object_to_write_array->maps;
+			$array       = $object_to_write_array->array;
+			$collections = $object_to_write_array->collections;
+			$maps        = $object_to_write_array->maps;
 			// JSON comes first, like it is done by serialize()
 			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);
-			foreach ($maps as list($property, $values)) {
+			foreach ($array as $key => $value) {
+				if (is_object($value)) {
+					if ($identifier = Dao::getObjectIdentifier($value)) {
+						$value = $identifier;
+					}
+					elseif ($value instanceof Stringable) {
+						$value = strval($value);
+					}
+					else {
+						$value = $this->valueToWriteArray($value, $options);
+						unset($value[Store_Annotation::JSON_CLASS]);
+					}
+					$array[$key] = $value;
+				}
+			}
+			foreach ($collections as [$property, $values]) {
 				/** @var $property Reflection_Property */
 				foreach ($values as $key => $value) {
-					if (Dao::getObjectIdentifier($value)) {
-						$array[$property->name][$key] = Dao::getObjectIdentifier($value);
+					$element = $this->valueToWriteArray($value, $options);
+					unset($element[Store_Annotation::JSON_CLASS]);
+					$array[$property->name][$key] = $element;
+				}
+			}
+			foreach ($maps as [$property, $values]) {
+				/** @var $property Reflection_Property */
+				foreach ($values as $key => $value) {
+					if ($identifier = Dao::getObjectIdentifier($value)) {
+						$array[$property->name][$key] = $identifier;
+					}
+					else {
+						$element = $this->valueToWriteArray($value, $options);
+						unset($element[Store_Annotation::JSON_CLASS]);
+						$array[$property->name][$key] = $element;
 					}
 				}
 			}
