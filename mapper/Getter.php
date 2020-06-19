@@ -191,7 +191,7 @@ abstract class Getter
 	 * @param $stored Date_Time|string
 	 * @return Date_Time
 	 */
-	public static function getDateTime(&$stored)
+	public static function & getDateTime(&$stored)
 	{
 		if (is_null($stored)) {
 			$stored = Date_Time::min();
@@ -262,7 +262,8 @@ abstract class Getter
 			case Link_Annotation::OBJECT:
 				return static::getObject($object->$property_name, $object, $property);
 		}
-		return null;
+		$null = null;
+		return $null;
 	}
 
 	//---------------------------------------------------------------------------------------- getMap
@@ -321,7 +322,7 @@ abstract class Getter
 	 * @param $property   string|Reflection_Property the parent property
 	 * @return object
 	 */
-	public static function getObject(&$stored, $class_name, $object = null, $property = null)
+	public static function & getObject(&$stored, $class_name, $object = null, $property = null)
 	{
 		if (!(self::$ignore || is_object($stored))) {
 			if ($property instanceof Reflection_Property) {
