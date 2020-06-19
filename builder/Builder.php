@@ -2,6 +2,7 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Builder\Class_Builder;
+use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Activable;
@@ -244,8 +245,14 @@ class Builder implements Activable, Serializable
 					else {
 						$property_class_name = $type->getElementTypeAsString();
 						if ($type->isMultiple()) {
+							$is_component = isA($property_class_name, Component::class);
 							foreach ($value as $key => $val) {
-								$value[$key] = self::fromArray($property_class_name, $val);
+								$element = self::fromArray($property_class_name, $val);
+								if ($is_component) {
+									/** @var $element Component */
+									$element->setComposite($object);
+								}
+								$value[$key] = $element;
 							}
 						}
 						else {

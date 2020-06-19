@@ -467,7 +467,7 @@ abstract class Getter
 			$constructor_arguments = [];
 		}
 		if ($class_name) {
-			/** @var $arrays_of_objects array object[$property_name][$key] */
+			/** @var $arrays_of_objects object[] object[$property_name][$key] */
 			$arrays_of_objects = [];
 			foreach ($stored_array as $property_name => $stored_value) {
 				if (is_array($stored_value)) {
