@@ -63,9 +63,30 @@ Parser::$default_annotations = [
 	 * @after_transform afterTransform
 	 * This is a Multiple_Annotation
 	 * Declare one or several methods to call after the object is being created from a transformation
-	 * - These methods may accept the source object, if needed
+	 * - Arguments are [$source_object]
+	 * - This is an alias to @after_transform_to
+	 * - This is called after @after_transform_from and before @after_transform_to
 	 */
 	Parser::T_CLASS . '@after_transform' => Method_Annotation::class,
+
+	/**
+	 * @after_transform_to afterTransformFrom
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object has been transformed
+	 * - Arguments are [$destination_object]
+	 * - This is called before @after_transform and @after_transform_to
+	 */
+	Parser::T_CLASS . '@after_transform_from' => Method_Annotation::class,
+
+	/**
+	 * @after_transform_to afterTransformTo
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call after the object is being created from a transformation
+	 * - Arguments are [$source_object]
+	 * - This is an alias to @after_transform
+	 * - This is called after @after_transform_from and @after_transform
+	 */
+	Parser::T_CLASS . '@after_transform_to' => Method_Annotation::class,
 
 	/**
 	 * @after_update afterUpdate
