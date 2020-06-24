@@ -15,26 +15,26 @@ $project_directory  = $dir . '/' . $vendor_lower . '/' . $project_lower;
 $project_password   = uniqid();
 
 // database
-$database_name = $vendor_lower . '_' . $project_lower;
-$user_name     = substr($database_name, 0, 16);
+$database_name = $vendor_lower . '-' . $project_lower;
+$user_name     = substr($database_name, 0, 32);
 
 // files
-$application_file      = $project_directory . '/Application.php';
-$composer_executable   = $dir . '/composer.phar';
-$composer_file         = $dir . '/composer.json';
-$composer_setup        = $dir . '/composer-setup.php';
-$configuration_file    = $project_directory . '/config.php';
-$console_file          = $dir . '/itrocks/framework/console';
-$hello_world_template  = $project_directory . '/Application_home.html';
-$gitignore_file        = $dir . '/.gitignore';
-$launcher_file         = substr($dir, 0, strrpos($dir, '/')) . '/' . $project_lower . '.php';
-$local_file            = $dir . '/loc.php';
-$password_file         = $dir . '/pwd.php';
-$update_file           = $dir . '/update';
+$application_file     = $project_directory . '/Application.php';
+$composer_executable  = $dir . '/composer.phar';
+$composer_file        = $dir . '/composer.json';
+$composer_setup       = $dir . '/composer-setup.php';
+$configuration_file   = $project_directory . '/config.php';
+$console_file         = $dir . '/itrocks/framework/console';
+$hello_world_template = $project_directory . '/Application_home.html';
+$gitignore_file       = $dir . '/.gitignore';
+$launcher_file        = substr($dir, 0, strrpos($dir, '/')) . '/' . $project_lower . '.php';
+$local_file           = $dir . '/loc.php';
+$password_file        = $dir . '/pwd.php';
+$update_file          = $dir . '/update';
 
 // directories
-$cache_directory       = $dir . '/cache';
-$temporary_directory   = $dir . '/tmp';
+$cache_directory     = $dir . '/cache';
+$temporary_directory = $dir . '/tmp';
 
 // others
 $namespace          = $vendor_name . "\\" . $project_name;
@@ -199,8 +199,8 @@ EOT
 
 echo '- get composer hash' . "\n";
 $download_page = file_get_contents('https://getcomposer.org/download/');
-$hash_begin = "hash_file('sha384', 'composer-setup.php') === '";
-$hash_end = "'";
+$hash_begin    = "hash_file('sha384', 'composer-setup.php') === '";
+$hash_end      = "'";
 $hash_position = strpos($download_page, $hash_begin) + strlen($hash_begin);
 $hash = substr(
 	$download_page, $hash_position, strpos($download_page, $hash_end, $hash_position) - $hash_position
@@ -220,16 +220,15 @@ unlink($composer_setup);
 echo '- install composer dependencies' . "\n";
 system('php ' . $composer_executable . ' install');
 
-echo '- create database ' . $database_name . " - NEED YOUR DATABASE ROOT PASSWORD\n";
+echo '- create database ' . $database_name . "\n";
 file_put_contents($temporary_directory . '/init.sql', <<<EOT
-CREATE DATABASE IF NOT EXISTS $database_name;
-DELETE FROM mysql.db WHERE user = '$user_name';
-DELETE FROM mysql.user WHERE user = '$user_name';
-CREATE USER '$user_name'@'localhost' IDENTIFIED BY '$project_password';
-GRANT ALL PRIVILEGES ON $database_name.* TO '$user_name'@'localhost';
+CREATE DATABASE IF NOT EXISTS `$database_name`;
+DROP USER IF EXISTS `$user_name`@localhost;
+CREATE USER `$user_name`@localhost IDENTIFIED BY '$project_password';
+GRANT ALL PRIVILEGES ON `$database_name`.* TO `$user_name`@localhost;
 FLUSH PRIVILEGES;
-USE $database_name;
-CREATE TABLE `dependencies` (
+USE `$database_name`;
+CREATE TABLE IF NOT EXISTS `dependencies` (
   `id` bigint(18) unsigned NOT NULL AUTO_INCREMENT,
   `class_name` varchar(255) NOT NULL DEFAULT '',
   `declaration` enum('class','interface','trait','assigned','built-in','installable','property','') NOT NULL DEFAULT '',
@@ -242,14 +241,14 @@ CREATE TABLE `dependencies` (
   KEY `dependency_name` (`dependency_name`),
   KEY `file_name` (`file_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `feature_classes` (
+CREATE TABLE IF NOT EXISTS `feature_classes` (
   `id` bigint(18) unsigned NOT NULL AUTO_INCREMENT,
   `class_name` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `class_name` (`class_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-CREATE TABLE `print_models` (
+CREATE TABLE IF NOT EXISTS `print_models` (
   `id` bigint(18) unsigned NOT NULL AUTO_INCREMENT,
   `class_name` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) NOT NULL DEFAULT '',
@@ -260,10 +259,10 @@ CREATE TABLE `print_models` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 EOT
 );
-system('mysql -uroot -p <' . $temporary_directory . '/init.sql');
+system('sudo mysql -f <' . $temporary_directory . '/init.sql');
 unlink($temporary_directory . '/init.sql');
 
-echo '- initialise your application cache...' . "\n";
+echo '- initialize your application cache...' . "\n";
 echo "php $console_file\n";
 system('php ' . $console_file);
 
