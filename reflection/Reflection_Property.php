@@ -137,7 +137,7 @@ class Reflection_Property extends ReflectionProperty
 			$class_name = $type->getElementTypeAsString();
 			if (isset($object)) {
 				$object = $object->{$property->name};
-				if ($object && in_array($class_name, ['mixed', 'object'])) {
+				if ($object) {
 					$class_name = get_class($object);
 				}
 			}
@@ -561,9 +561,7 @@ class Reflection_Property extends ReflectionProperty
 				/** @var $property Reflection_Property */
 				if (isset($property)) {
 					$type_name = $property->getType()->getElementTypeAsString();
-					$class     = in_array($type_name, ['mixed', 'object'])
-						? get_class($object)
-						: Builder::className($type_name);
+					$class     = is_object($object) ? get_class($object) : Builder::className($type_name);
 				}
 				/** @noinspection PhpUnhandledExceptionInspection $class is valid */
 				$property = new Reflection_Property($class, $property_name);

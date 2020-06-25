@@ -180,13 +180,19 @@ class Integrated_Properties
 	/**
 	 * Implicit integrated properties : take from the property type (class) properties list
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Reflection_Property
 	 * @return Reflection_Property[]
 	 */
 	protected function getImplicitIntegratedProperties(Reflection_Property $property)
 	{
-		$expand_properties    = [];
-		$sub_properties_class = $property->getType()->asReflectionClass();
+		$expand_properties = [];
+		/** @noinspection PhpUnhandledExceptionInspection will be valid */
+		$sub_properties_class = (
+			($property instanceof Reflection_Property_Value)
+			&& ($object = $property->value())
+		) ? (new Reflection_Class($object))
+			: $property->getType()->asReflectionClass();
 		foreach (
 			$sub_properties_class->getProperties([T_EXTENDS, T_USE, Reflection_Class::T_SORT])
 			as $sub_property_name => $sub_property
@@ -235,7 +241,7 @@ class Integrated_Properties
 			}
 			// if no recurse : prepare and add expanded property
 			else {
-				$sub_property    = $this->prepareExpandedProperty(
+				$sub_property = $this->prepareExpandedProperty(
 					$blocks, $integrated_alias, $integrated_simple, $sub_property, $display
 				);
 				if ($integrated_parent) {
