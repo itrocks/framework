@@ -220,6 +220,28 @@ class Reflection_Property_Value extends Reflection_Property
 		return $object;
 	}
 
+	//----------------------------------------------------------------------------- getParentProperty
+	/**
+	 * Gets the parent property for a $property.path
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection $this->root_class is always valid
+	 * @return Reflection_Property_Value|null
+	 */
+	public function getParentProperty()
+	{
+		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
+			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
+			return new Reflection_Property_Value(
+				$this->object ?: $this->root_class,
+				substr($this->path, 0, $i),
+				$this->object,
+				$this->final_value,
+				$this->user
+			);
+		}
+		return null;
+	}
+
 	//------------------------------------------------------------------------ getWidgetClassesString
 	/**
 	 * @return string
