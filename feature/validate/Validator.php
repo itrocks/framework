@@ -397,7 +397,7 @@ class Validator implements Registerable
 		$object, array $only_properties = [], array $exclude_properties = [], $component = false
 	) {
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		$class      = new Link_Class($object);
+		$class = new Link_Class($object);
 		/** @var $properties Reflection_Property[] */
 		$properties = Replaces_Annotations::removeReplacedProperties(
 			Reflection\Annotation\Class_\Link_Annotation::of($class)->value
