@@ -110,7 +110,7 @@ class Textile extends Parser
 	{
 		$text   = strReplace(['@@@' => '@&at;', '@@' => '&at;'], $text);
 		$result = parent::parse($text);
-		return strReplace(['&at;' => '@', '&amp;at;' => '@', '|' => '||'], $result);
+		return strReplace(['&at;' => '@', '&amp;at;' => '@'], $result);
 	}
 
 	//----------------------------------------------------------------------------------------- spans
