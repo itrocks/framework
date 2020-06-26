@@ -170,12 +170,9 @@ class Collection
 	protected function buildCell($object, Reflection_Property $property, $property_path = null)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
-		$property_value = strpos($property_path, DOT)
-			? new Reflection_Property_Value($object, $property_path, $object)
-			: null;
-		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
-		$value = ($property_value ?: $property)->getValue($object);
-		$type  = $property->getType();
+		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
+		$type           = $property->getType();
+		$value          = $property_value->value();
 		if (
 			is_object($value)
 			&& !($value instanceof Stringable)
@@ -191,10 +188,6 @@ class Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
-			if (!$property_value) {
-				/** @noinspection PhpUnhandledExceptionInspection from valid property */
-				$property_value = new Reflection_Property_Value($object, $property_path, $object);
-			}
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
 			$builder = Builder::create($builder, [$property_value, $value, $this->template]);
@@ -207,9 +200,7 @@ class Collection
 			}
 		}
 		else {
-			$value = $property_value
-				? (new Reflection_Property_View($property_value))->getFormattedValue($object)
-				: (new Reflection_Property_View($property))->getFormattedValue($object);
+			$value = (new Reflection_Property_View($property_value))->getFormattedValue($object);
 		}
 		if (is_array($value)) {
 			$link_annotation = Annotation\Property\Link_Annotation::of($property);
