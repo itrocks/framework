@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
@@ -130,7 +131,12 @@ class Html_Builder_Collection extends Collection
 	{
 		$body = parent::buildBody();
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-		$row = new Item($this->buildRow(Builder::create($this->class_name)));
+		$add_row = Builder::create($this->class_name);
+		if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
+			/** @var $add_row Component */
+			$add_row->setComposite($this->property->getParentProperty()->value());
+		}
+		$row = new Item($this->buildRow($add_row));
 		$row->addClass('new');
 		$body[] = $row;
 		return $body;
@@ -150,11 +156,8 @@ class Html_Builder_Collection extends Collection
 			$this->template = new Html_Template();
 		}
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
-		$property_value = strpos($property_path, DOT)
-			? new Reflection_Property_Value($object, $property_path, $object)
-			: null;
-		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
-		$value = ($property_value ?: $property)->getValue($object);
+		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
+		$value = $property_value->value();
 		if (strpos($this->pre_path, '[]')) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
@@ -171,10 +174,6 @@ class Html_Builder_Collection extends Collection
 			($builder = Widget_Annotation::of($property)->value)
 			&& is_a($builder, Property::class, true)
 		) {
-			if (!$property_value) {
-				/** @noinspection PhpUnhandledExceptionInspection from valid property */
-				$property_value = new Reflection_Property_Value($object, $property_path, $object);
-			}
 			array_push($this->template->properties_prefix, $pre_path);
 			/** @noinspection PhpUnhandledExceptionInspection $builder and $property are valid */
 			/** @var $builder Property */
