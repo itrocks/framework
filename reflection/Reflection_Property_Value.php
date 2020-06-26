@@ -242,6 +242,26 @@ class Reflection_Property_Value extends Reflection_Property
 		return null;
 	}
 
+	//-------------------------------------------------------------------------------------- getValue
+	/**
+	 * Gets value
+	 *
+	 * @param $object       object
+	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
+	 * @return mixed
+	 * @throws ReflectionException
+	 */
+	public function getValue($object = null, $with_default = false)
+	{
+		if ($this->user && !$this->final_value) {
+			$user_getter = $this->getAnnotation('user_getter');
+			if ($user_getter->value) {
+				return $this->userGetterValue($user_getter);
+			}
+		}
+		return parent::getValue($object, $with_default);
+	}
+
 	//------------------------------------------------------------------------ getWidgetClassesString
 	/**
 	 * @return string
@@ -357,6 +377,28 @@ class Reflection_Property_Value extends Reflection_Property
 		return $annotation->call($this->getObject() ?: $this->getFinalClassName(), [$this->name]);
 	}
 
+	//------------------------------------------------------------------------------- userGetterValue
+	/**
+	 * Gets @user_getter value
+	 *
+	 * @param $user_getter Annotation
+	 * @return mixed
+	 */
+	public function userGetterValue(Annotation $user_getter = null)
+	{
+		if (!isset($user_getter)) {
+			$user_getter = $this->getAnnotation('user_getter');
+		}
+		$object = $this->object;
+		if (strpos($this->path, DOT)) {
+			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
+				$object = $object->$property_name;
+			}
+		}
+		$callable = new Contextual_Callable($user_getter->value, $object);
+		return $callable->call();
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -375,16 +417,9 @@ class Reflection_Property_Value extends Reflection_Property
 			}
 		}
 		if ($this->user && !$this->final_value) {
-			$user_getter = $this->getAnnotation('user_getter')->value;
-			if ($user_getter) {
-				$object = $this->object;
-				if (strpos($this->path, DOT)) {
-					foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
-						$object = $object->$property_name;
-					}
-				}
-				$callable = new Contextual_Callable($user_getter, $object);
-				return $callable->call();
+			$user_getter = $this->getAnnotation('user_getter');
+			if ($user_getter->value) {
+				return $this->userGetterValue($user_getter);
 			}
 		}
 		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
