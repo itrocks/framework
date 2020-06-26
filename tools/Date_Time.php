@@ -119,7 +119,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function add(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
-		$quantity, $unit = Date_Time::DAY
+		$quantity, $unit = self::DAY
 	) {
 		if ($quantity instanceof DateInterval) {
 			parent::add($quantity);
@@ -133,13 +133,13 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 				$invert = false;
 			}
 			switch ($unit) {
-				case Date_Time::HOUR:   $interval = 'PT' . $quantity . 'H'; break;
-				case Date_Time::MINUTE: $interval = 'PT' . $quantity . 'M'; break;
-				case Date_Time::SECOND: $interval = 'PT' . $quantity . 'S'; break;
-				case Date_Time::DAY:    $interval = 'P'  . $quantity . 'D'; break;
-				case Date_Time::WEEK:   $interval = 'P'  . ($quantity * 7) . 'D'; break;
-				case Date_Time::MONTH:  $interval = 'P'  . $quantity . 'M'; break;
-				case Date_Time::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
+				case self::HOUR:   $interval = 'PT' . $quantity . 'H'; break;
+				case self::MINUTE: $interval = 'PT' . $quantity . 'M'; break;
+				case self::SECOND: $interval = 'PT' . $quantity . 'S'; break;
+				case self::DAY:    $interval = 'P'  . $quantity . 'D'; break;
+				case self::WEEK:   $interval = 'P'  . ($quantity * 7) . 'D'; break;
+				case self::MONTH:  $interval = 'P'  . $quantity . 'M'; break;
+				case self::YEAR:   $interval = 'P'  . $quantity . 'Y'; break;
 			}
 			if (isset($interval)) {
 				/** @noinspection PhpUnhandledExceptionInspection $interval is generated and valid */
@@ -254,7 +254,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 
 	//---------------------------------------------------------------------------------------- daysIn
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $unit string @values day, month, week, year
 	 * @return integer
 	 */
@@ -268,8 +267,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			case self::WEEK:
 				return 7;
 			case self::YEAR:
-				/** @noinspection PhpUnhandledExceptionInspection copy of valid $this */
-				return (new static($this))->toEndOf(self::YEAR)->format(self::DAY_OF_YEAR);
+				return (clone $this)->toEndOf(self::YEAR)->format(self::DAY_OF_YEAR);
 		}
 		return null;
 	}
@@ -595,7 +593,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 */
 	public function sub(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
-		$quantity, $unit = Date_Time::DAY
+		$quantity, $unit = self::DAY
 	) {
 		($quantity instanceof DateInterval)
 			? parent::sub($quantity)
@@ -623,24 +621,24 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE:
+			case self::MINUTE:
 				$format = 'Y-m-d H:i:00';
 				break;
-			case Date_Time::HOUR:
+			case self::HOUR:
 				$format = 'Y-m-d H:00:00';
 				break;
-			case Date_Time::DAY:
+			case self::DAY:
 				$format = 'Y-m-d 00:00:00';
 				break;
-			case Date_Time::WEEK:
+			case self::WEEK:
 				/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 				return (new static($this->format('Y-m-d 00:00:00')))
 					->sub($this->format(self::DAY_OF_WEEK_ISO) - 1);
 				break;
-			case Date_Time::MONTH:
+			case self::MONTH:
 				$format = 'Y-m-01 00:00:00';
 				break;
-			case Date_Time::YEAR:
+			case self::YEAR:
 				$format = 'Y-01-01 00:00:00';
 				break;
 			// invalid value for $unit : a new Date_Time with the same time
@@ -690,24 +688,24 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		switch ($unit) {
-			case Date_Time::MINUTE:
+			case self::MINUTE:
 				$format = 'Y-m-d H:i:59';
 				break;
-			case Date_Time::HOUR:
+			case self::HOUR:
 				$format = 'Y-m-d H:59:59';
 				break;
-			case Date_Time::DAY:
+			case self::DAY:
 				$format = 'Y-m-d 23:59:59';
 				break;
-			case Date_Time::WEEK:
+			case self::WEEK:
 				/** @noinspection PhpUnhandledExceptionInspection valid copy of $this and constant format */
 				return (new static($this->format('Y-m-d 23:59:59')))
 					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
 				break;
-			case Date_Time::MONTH:
+			case self::MONTH:
 				$format = 'Y-m-t 23:59:59';
 				break;
-			case Date_Time::YEAR:
+			case self::YEAR:
 				$format = 'Y-12-31 23:59:59';
 				break;
 			// invalid value for $unit : a new Date_Time with the same time
