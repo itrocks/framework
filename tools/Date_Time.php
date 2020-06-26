@@ -450,6 +450,24 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		return $this->isMin() || $this->isMax();
 	}
 
+	//--------------------------------------------------------------------------------------- isEndOf
+	/**
+	 * @param $unit string @values day, hour, minute, month, week, year
+	 * @return boolean
+	 */
+	public function isEndOf($unit)
+	{
+		switch ($unit) {
+			case self::DAY:    return $this->format('H:i:s') === '23:59:59';
+			case self::HOUR:   return $this->format('i')     === '59';
+			case self::MINUTE: return $this->format('s')     === '59';
+			case self::MONTH:  return $this->dayOfMonth()    === $this->daysIn(Date_Time::MONTH);
+			case self::WEEK:   return $this->dayOfWeek()     === 7;
+			case self::YEAR:   return $this->dayOfYear()     === $this->daysIn(Date_Time::YEAR);
+		}
+		return null;
+	}
+
 	//----------------------------------------------------------------------------------------- isMax
 	/**
 	 * Returns true if date is equals to the max() date
@@ -678,7 +696,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::DAY)    => 'YYYY-MM-DD 00:00:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::MONTH)  => 'YYYY-MM-01 00:00:00'
 	 * @example 'YYYY-MM-DD HH:II:SS'(Date_Time::YEAR)   => 'YYYY-01-01 00:00:00'
-	 * @param $unit string @values day, hour, month, minute, year
+	 * @param $unit string @values day, hour, minute, month, week, year
 	 * @return Date_Time
 	 */
 	public function toEndOf($unit)
@@ -688,22 +706,22 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 			return new static($this);
 		}
 		switch ($unit) {
-			case self::MINUTE:
-				$format = 'Y-m-d H:i:59';
+			case self::DAY:
+				$format = 'Y-m-d 23:59:59';
 				break;
 			case self::HOUR:
 				$format = 'Y-m-d H:59:59';
 				break;
-			case self::DAY:
-				$format = 'Y-m-d 23:59:59';
+			case self::MINUTE:
+				$format = 'Y-m-d H:i:59';
+				break;
+			case self::MONTH:
+				$format = 'Y-m-t 23:59:59';
 				break;
 			case self::WEEK:
 				/** @noinspection PhpUnhandledExceptionInspection valid copy of $this and constant format */
 				return (new static($this->format('Y-m-d 23:59:59')))
 					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
-				break;
-			case self::MONTH:
-				$format = 'Y-m-t 23:59:59';
 				break;
 			case self::YEAR:
 				$format = 'Y-12-31 23:59:59';
