@@ -134,7 +134,8 @@ class Html_Builder_Collection extends Collection
 		$add_row = Builder::create($this->class_name);
 		if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
 			/** @var $add_row Component */
-			$add_row->setComposite($this->property->getParentProperty()->value());
+			$property = $this->property->getParentProperty();
+			$add_row->setComposite($property ? $property->value() : $this->property->getObject());
 		}
 		$row = new Item($this->buildRow($add_row));
 		$row->addClass('new');
