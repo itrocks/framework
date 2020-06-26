@@ -589,8 +589,8 @@ class Template
 	protected function htmlEntities($value)
 	{
 		return str_ireplace(
-			['{'     , '}'     , '<!--'   , '-->'   , '<script',    '</script'],
-			['&#123;', '&#125;', '&lt;!--', '--&gt;', '&lt;script', '&lt;/script'],
+			['|',      '{'     , '}'     , '<!--'   , '-->'   , '<script',    '</script'],
+			['&#124;', '&#123;', '&#125;', '&lt;!--', '--&gt;', '&lt;script', '&lt;/script'],
 			strval($value)
 		);
 	}
