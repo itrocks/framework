@@ -45,7 +45,7 @@ class Write_Access_Control implements Registerable
 	 */
 	public function checkAccess(&$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
-		if (User::current()) {
+		if (User::current() || ($uri === '/ITRocks/Framework/User/Password/reset')) {
 			return;
 		}
 		$uri_object = new Uri(lParse($uri, '?'));
@@ -62,7 +62,7 @@ class Write_Access_Control implements Registerable
 	 */
 	public function checkAccessToLink(&$result)
 	{
-		if (User::current()) {
+		if (User::current() || ($result === '/ITRocks/Framework/User/Password/reset')) {
 			return;
 		}
 		$uri_object = new Uri(lParse($result, '?'));
