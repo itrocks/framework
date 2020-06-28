@@ -11,6 +11,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\Output;
+use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\User;
@@ -21,6 +22,7 @@ use ITRocks\Framework\View;
  */
 class Write_Access_Control implements Registerable
 {
+	use Has_Get;
 
 	//--------------------------------------------------------------------------------- READ_FEATURES
 	const READ_FEATURES = Feature::READ;
@@ -73,7 +75,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result Item
 	 */
-	public function checkAccessToMenuItem(Item &$result)
+	public function checkAccessToMenuItem(Item &$result = null)
 	{
 		if (User::current() || !isset($result)) {
 			return;
