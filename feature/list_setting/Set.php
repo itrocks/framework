@@ -171,6 +171,9 @@ class Set extends Setting\Custom\Set
 				$changes_count ++;
 			}
 		}
+		if ($this->maximum_displayed_lines_count < 10) {
+			$this->maximum_displayed_lines_count = 10;
+		}
 
 		return $changes_count;
 	}
