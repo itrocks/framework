@@ -506,7 +506,7 @@ class Functions
 	 * Multiple properties come last
 	 *
 	 * @param $template Template
-	 * @return string
+	 * @return Reflection_Property[]
 	 */
 	public function getEndWithMultiple(Template $template)
 	{
@@ -700,6 +700,8 @@ class Functions
 	 */
 	public function getHasAccessTo(Template $template, $feature = null, $class_name = null)
 	{
+		$access_control = Access_Control::get(false);
+		if (!$access_control) return false;
 		reset($template->objects);
 		if (!$feature) {
 			$feature = current($template->objects);
@@ -708,7 +710,7 @@ class Functions
 		if (!$class_name) {
 			$class_name = $this->displayableClassNameOf(current($template->objects))->value;
 		}
-		return Access_Control::get()->hasAccessTo([$class_name, $feature]);
+		return $access_control->hasAccessTo([$class_name, $feature]);
 	}
 
 	//-------------------------------------------------------------------------------------- getImage
