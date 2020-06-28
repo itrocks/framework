@@ -49,7 +49,7 @@ class Write_Access_Control implements Registerable
 			return;
 		}
 		$uri_object = new Uri(lParse($uri, '?'));
-		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+		if (!in_array($uri_object->feature_name, $this->readFeatures())) {
 			$uri = $this->blankUri();
 			$get = $post = $files = [];
 			$get[Parameter::AS_WIDGET] = true;
@@ -66,7 +66,7 @@ class Write_Access_Control implements Registerable
 			return;
 		}
 		$uri_object = new Uri(lParse($result, '?'));
-		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+		if (!in_array($uri_object->feature_name, $this->readFeatures())) {
 			$result = $this->blankUri();
 		}
 	}
@@ -81,9 +81,18 @@ class Write_Access_Control implements Registerable
 			return;
 		}
 		$uri_object = new Uri(lParse($result->link, '?'));
-		if (!in_array($uri_object->feature_name, static::READ_FEATURES)) {
+		if (!in_array($uri_object->feature_name, $this->readFeatures())) {
 			$result = null;
 		}
+	}
+
+	//---------------------------------------------------------------------------------- readFeatures
+	/**
+	 * @return string[]
+	 */
+	public function readFeatures()
+	{
+		return static::READ_FEATURES;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -112,7 +121,7 @@ class Write_Access_Control implements Registerable
 		}
 		$buttons =& $result;
 		foreach ($buttons as $button_key => $button) {
-			if (!in_array($button->feature, static::READ_FEATURES)) {
+			if (!in_array($button->feature, $this->readFeatures())) {
 				unset($buttons[$button_key]);
 			}
 		}
