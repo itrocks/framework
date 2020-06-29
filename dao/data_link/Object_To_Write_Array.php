@@ -169,7 +169,6 @@ class Object_To_Write_Array
 		$exclude_properties  = $link->value
 			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 			: [];
-		/** @var $properties Reflection_Property[] */
 		$properties        = $this->class->accessProperties();
 		$properties        = Replaces_Annotations::removeReplacedProperties($properties);
 		$aop_getter_ignore = Getter::$ignore;
@@ -180,6 +179,7 @@ class Object_To_Write_Array
 				&& !in_array($property->name, $this->exclude)
 				&& !in_array($property->name, $exclude_properties)
 				&& !Store_Annotation::of($property)->isFalse()
+				&& !($this->json_encoding && $property->getAnnotation('composite')->value)
 			) {
 				$property_name = $property->name;
 				if (Getter_Annotation::of($property)->value) {
