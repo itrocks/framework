@@ -132,14 +132,21 @@ class Reflection_Property extends ReflectionProperty
 		$i                = 0;
 		$aliases          = [];
 		while (($j = strpos($property_name, DOT, $i)) !== false) {
-			$property   = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
-			$type       = $property->getType();
-			$class_name = $type->getElementTypeAsString();
+			$property = new Reflection_Property($class_name, substr($property_name, $i, $j - $i));
 			if (isset($object)) {
 				$object = $object->{$property->name};
-				if ($object) {
+				if (is_object($object)) {
 					$class_name = get_class($object);
 				}
+				elseif (is_array($object) && is_object(reset($object))) {
+					$class_name = get_class(reset($object));
+				}
+				else {
+					$class_name = $property->getType()->getElementTypeAsString();
+				}
+			}
+			else {
+				$class_name = $property->getType()->getElementTypeAsString();
 			}
 			$aliases[] = $property->alias;
 			$i         = $j + 1;
