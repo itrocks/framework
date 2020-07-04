@@ -38,6 +38,7 @@ class Map
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
+	 * @todo is not this dead code ? Look if used on any project, remove it if unused
 	 * @var Reflection_Property[]
 	 */
 	protected $properties;
