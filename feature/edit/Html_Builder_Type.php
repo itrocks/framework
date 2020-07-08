@@ -159,6 +159,12 @@ class Html_Builder_Type
 	 */
 	protected $value;
 
+	//-------------------------------------------------------------------------------------- $with_id
+	/**
+	 * @var boolean
+	 */
+	protected $with_id;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $name     string
@@ -379,6 +385,7 @@ class Html_Builder_Type
 	 */
 	public function buildObject(array $filters = null, $as_string = false)
 	{
+		$this->with_id     = true;
 		$class_name        = $this->type->asString();
 		$source_class_name = Builder::current()->sourceClassName($class_name);
 		// visible input ?
@@ -574,7 +581,8 @@ class Html_Builder_Type
 		}
 		elseif (substr($this->pre_path, -2) === '[]') {
 			if ($counter_name) {
-				$counter_name = substr($this->pre_path, 0, -2) . '[' . $prefix . $counter_name . ']';
+				$counter_name = substr($this->pre_path, 0, -2)
+					. '[' . ($this->with_id ? 'id_' : '') . $counter_name . ']';
 			}
 			$field_name  = substr($this->pre_path, 0, -2) . '[' . $prefix . $this->name . ']';
 			$count       = $this->template->nextCounter($counter_name ?: $field_name, $counter_increment);
