@@ -100,7 +100,11 @@ $(document).ready(function()
 	var setFieldValue = function($form, field_name, value)
 	{
 		var search = 'input[name=' + DQ + field_name + DQ + ']'
-			+ ', input[data-name=' + DQ + field_name + DQ + ']';
+			+ ', input[data-name=' + DQ + field_name + DQ + ']'
+			+ ', select[name=' + DQ + field_name + DQ + ']'
+			+ ', select[data-name=' + DQ + field_name + DQ + ']'
+			+ ', textarea[name=' + DQ + field_name + DQ + ']'
+			+ ', textarea[data-name=' + DQ + field_name + DQ + ']';
 		var $input       = $form.find(search);
 		var do_change    = true;
 		var string_value = null;
