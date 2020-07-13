@@ -456,6 +456,9 @@ abstract class Getter
 		else {
 			$class_name = '';
 		}
+		if ($class_name) {
+			$class_name = Builder::className($class_name);
+		}
 		if (isset($stored_array[Store_Annotation::JSON_CONSTRUCT])) {
 			$constructor_arguments = $stored_array[Store_Annotation::JSON_CONSTRUCT];
 			if (!is_array($constructor_arguments)) {

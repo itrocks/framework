@@ -432,8 +432,9 @@ class Object_To_Write_Array
 		}
 		// prepare Date_Time for json encoding
 		elseif ($this->json_encoding && ($value instanceof Date_Time)) {
-			$write_value = [
-				Store_Annotation::JSON_CLASS     => get_class($value),
+			$value_class_name = Builder::current()->sourceClassName(get_class($value));
+			$write_value      = [
+				Store_Annotation::JSON_CLASS     => $value_class_name,
 				Store_Annotation::JSON_CONSTRUCT => $value->toISO(true)
 			];
 		}
@@ -500,7 +501,8 @@ class Object_To_Write_Array
 			$collections = $object_to_write_array->collections;
 			$maps        = $object_to_write_array->maps;
 			// JSON comes first, like it is done by serialize()
-			$array = array_merge([Store_Annotation::JSON_CLASS => get_class($value)], $array);
+			$value_class_name = Builder::current()->sourceClassName(get_class($value));
+			$array            = array_merge([Store_Annotation::JSON_CLASS => $value_class_name], $array);
 			foreach ($array as $key => $value) {
 				if (is_object($value)) {
 					if ($identifier = Dao::getObjectIdentifier($value)) {
