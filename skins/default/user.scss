@@ -20,7 +20,9 @@ article.user.register {
 	> form {
 		display: inline-block;
 		overflow: initial;
-		padding-top: 82px;
+		@media screen and (min-height: 480px) {
+			padding-top: 82px;
+		}
 		position: relative;
 		width: 256px;
 
@@ -32,6 +34,14 @@ article.user.register {
 				margin: 0;
 				position: relative;
 			}
+		}
+
+		> .info {
+			background: lightsalmon;
+			font-size: 1.2em;
+			font-weight: $medium;
+			line-height: 1.2em;
+			padding: .2em;
 		}
 
 		> ol.properties > li {
