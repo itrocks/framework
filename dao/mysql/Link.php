@@ -385,6 +385,8 @@ class Link extends Dao\Sql\Link
 				}
 				catch (Exception $exception) {
 					$this->rollback();
+					/** @noinspection PhpUnhandledExceptionInspection but it might be... TODO LOW redeclare */
+					throw $exception;
 				}
 				array_pop($this->connection->contexts);
 				/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
