@@ -392,6 +392,22 @@ abstract class Getter
 		return $stored;
 	}
 
+	//-------------------------------------------------------------------------------- getStringArray
+	/**
+	 * Use it for var string[] without @values : add @getter Getter::getStringArray
+	 * TODO create @link StringArray as a shortcut
+	 *
+	 * @param $stored string|string[]
+	 * @return string[]
+	 */
+	public static function & getStringArray(&$stored)
+	{
+		if (is_string($stored)) {
+			$stored = trim($stored) ? explode(LF, str_replace(',', LF, $stored)) : [];
+		}
+		return $stored;
+	}
+
 	//---------------------------------------------------------------------------------------- ignore
 	/**
 	 * Changes the state of self::$ignore
