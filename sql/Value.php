@@ -44,18 +44,18 @@ abstract class Value
 			$string_value = 'NULL';
 		}
 		elseif (is_array($value)) {
-			$do           = false;
-			$string_value = '';
+			$has_quotes = false;
+			$strings    = [];
 			foreach ($value as $object_value) {
-				if ($object_value !== null) {
-					if ($do) {
-						$string_value .= ',';
-					}
-					$string_value .= str_replace(DQ, DQ . DQ, $object_value);
-					$do = true;
+				if (is_null($object_value)) {
+					continue;
 				}
+				if (strpos($object_value, ',') !== false) {
+					$has_quotes = true;
+				}
+				$strings[] = Dao::current()->escapeString($object_value);
 			}
-			$string_value = substr($string_value, 2);
+			$string_value = DQ . join($has_quotes ? LF : ',', $strings) . DQ;
 		}
 		elseif ($value instanceof Date_Time) {
 			$string_value = Q . $value->toISO(false) . Q;

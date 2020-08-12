@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Sql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Name_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionClass;
@@ -149,6 +150,13 @@ abstract class Builder
 			$property = $write_properties[$key] ?? null;
 			if ($i++) {
 				$sql_update .= ', ';
+			}
+			if (
+				$property
+				&& $property->getType()->isMultipleString()
+				&& !Values_Annotation::of($property)->value
+			) {
+				$value = join(LF, $value);
 			}
 			$sql_update .= BQ . $key . BQ . ' = ' . Value::escape($value, false, $property);
 		}

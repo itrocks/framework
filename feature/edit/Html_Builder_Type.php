@@ -528,6 +528,9 @@ class Html_Builder_Type
 			}
 		}
 		// case of free editable text (mono or multi line)
+		elseif ($this->type->isMultipleString()) {
+			$input = $this->makeTextInputOrTextarea(true, join("\n", $this->value));
+		}
 		else {
 			$input = $this->makeTextInputOrTextarea($multiline, $this->value);
 		}
