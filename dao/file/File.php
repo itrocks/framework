@@ -132,6 +132,7 @@ class File
 	 * Gets temporary file name, or write content into a temporary file name and get this name if not
 	 * set or file does not exist
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
 	protected function getTemporaryFileName()
@@ -155,6 +156,7 @@ class File
 	 * Gets the temporary file URI, relative to the document root
 	 *
 	 * @deprecated I don't know what it is useful for
+	 * @noinspection PhpUnused @getter
 	 * @return string
 	 */
 	public function getTemporaryFileUri()
@@ -211,6 +213,7 @@ class File
 	 * - image : the link to the image, with the given size
 	 * - another file type : the link to the file type icon
 	 *
+	 * @noinspection PhpUnused @getter
 	 * @param $size integer
 	 * @return string
 	 */
@@ -235,14 +238,12 @@ class File
 
 	//------------------------------------------------------------------------------------ setContent
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $content string
 	 */
 	protected function setContent($content)
 	{
 		$this->content = $content;
 		$this->calcHash();
-		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$this->updated_on = new Date_Time();
 	}
 
