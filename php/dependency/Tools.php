@@ -130,7 +130,6 @@ trait Tools
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_names string|string[]
 	 * @return Reflection_Property[]
-	 * @throws ReflectionException
 	 */
 	public static function propertiesUsingClass($class_names)
 	{

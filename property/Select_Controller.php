@@ -141,7 +141,6 @@ class Select_Controller implements Feature_Controller
 
 	//-------------------------------------------------------------------------- getReverseProperties
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class Reflection_Class
 	 * @return Reflection_Property[]
 	 */
@@ -160,7 +159,6 @@ class Select_Controller implements Feature_Controller
 		}
 
 		// dependencies : which properties point to the class ?
-		/** @noinspection PhpUnhandledExceptionInspection valid class names */
 		$properties = Dependency::propertiesUsingClass($class_names);
 
 		// filter and add properties
