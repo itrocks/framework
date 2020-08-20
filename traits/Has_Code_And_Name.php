@@ -33,7 +33,8 @@ trait Has_Code_And_Name
 	 */
 	public static function fromString($value)
 	{
-		return reset(static::fromStringMultiple($value));
+		$values = static::fromStringMultiple($value);
+		return reset($values);
 	}
 
 	//---------------------------------------------------------------------------- fromStringMultiple
@@ -47,6 +48,7 @@ trait Has_Code_And_Name
 	 */
 	public static function fromStringMultiple($value)
 	{
+		/** @var $values static[] */
 		$values = Dao::search(['code' => $value], static::class);
 		if (!$values) {
 			$values = Dao::search(['name' => $value], static::class);
