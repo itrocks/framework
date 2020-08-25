@@ -38,24 +38,23 @@ class By_Token implements Registerable
 		if (!isset($token)) {
 			return;
 		}
-		$creation = Date_Time::now()->sub(1, Date_Time::MINUTE);
-		$token    = Dao::searchOne(
-			['code' => $token, 'creation' => Func::greater($creation)],
-			Token::class
-		);
+		$this->purge();
+		/** @var $token Token */
+		$token = Dao::searchOne(['code' => $token], Token::class);
 		if (!$token) {
 			return;
 		}
 		Authentication::authenticate($token->user);
-		Dao::delete($token);
-		$this->purge();
+		if ($token->single_use) {
+			Dao::delete($token);
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- newToken
 	/**
-	 * @param $user   User
-	 * @param $prefix string
-	 * @return string
+	 * @param $user       User
+	 * @param $prefix     string
+	 * @return Token
 	 */
 	public function newToken(User $user = null, $prefix = '')
 	{
@@ -66,7 +65,7 @@ class By_Token implements Registerable
 		$token->code = uniqid($prefix, true);
 		$token->user = $user;
 		Dao::write($token);
-		return $token->code;
+		return $token;
 	}
 
 	//----------------------------------------------------------------------------------------- purge
@@ -75,8 +74,8 @@ class By_Token implements Registerable
 	 */
 	public function purge()
 	{
-		$creation = Date_Time::now()->sub(1, Date_Time::MINUTE);
-		foreach (Dao::search(['creation' => Func::lessOrEqual($creation)], Token::class) as $token) {
+		$search = ['validity_end_date' => Func::lessOrEqual(Date_Time::now())];
+		foreach (Dao::search($search, Token::class) as $token) {
 			Dao::delete($token);
 		}
 	}

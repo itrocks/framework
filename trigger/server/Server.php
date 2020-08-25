@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Trigger;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry\Data;
@@ -48,6 +49,7 @@ class Server
 
 	//---------------------------------------------------------------------------------- launchAction
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $action Action
 	 * @param $last   Date_Time
 	 */
@@ -60,9 +62,11 @@ class Server
 		Dao::commit();
 		$uri = $action->action;
 		if ($action->as_user) {
-			$token = (new By_Token)->newToken($action->as_user);
-			$uri  .= (strpos($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token;
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$token = Builder::create(By_Token::class)->newToken($action->as_user);
+			$uri  .= (strpos($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token->code;
 		}
+		/** @see afterAction */
 		/** @var $callback callable */
 		$callback       = [$this, 'afterAction'];
 		$callback[]     = Dao::getObjectIdentifier($action) ? $action : null;
@@ -101,6 +105,7 @@ class Server
 	public function loop()
 	{
 		// next scheduled actions
+		/** @var $actions Action[] */
 		$actions = Dao::search(
 			[
 				'next'   => Func::lessOrEqual(Date_Time::now()),
