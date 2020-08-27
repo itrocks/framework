@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Configuration\Environment;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Logger\Entry\Data;
@@ -173,13 +174,15 @@ class Server
 	protected function wakeFlagUp()
 	{
 		static $next;
-		if (
-			((microtime(true) > $next) || !isset($next))
-			&& is_file(static::FLAG_FILE)
-		) {
-			$next = floor(microtime(true)) + 60;
-			touch(static::FLAG_FILE);
+		if (isset($next) && (microtime(true) <= $next)) {
+			return;
 		}
+		foreach ([static::FLAG_FILE, Environment::runningFileName()] as $flag_file) {
+			if (is_file($flag_file)) {
+				touch($flag_file);
+			}
+		}
+		$next = floor(microtime(true)) + 10;
 	}
 
 }

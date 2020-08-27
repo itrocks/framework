@@ -324,7 +324,15 @@ class Console
 
 	//------------------------------------------------------------------------------- runningFileName
 	/**
+	 * Calculates the current running file name (complete path)
+	 *
+	 * This is a little bit hard-coded, sorry :)
+	 * This complies to the default way itrocks/deploy / itrocks/platform works
+	 *
+	 * You will find almost the same code into console_script.php's Console::runningFileName()
+	 *
 	 * @return string
+	 * @see Environment::runningFileName
 	 */
 	private function runningFileName()
 	{
