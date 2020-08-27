@@ -2,12 +2,12 @@
     <defs>
         <path id="a" d="M12 6a1 1 0 0 1 1 1v4h4a1 1 0 0 1 0 2h-4v4a1 1 0 0 1-2 0v-4H7a1 1 0 0 1 0-2h4V7a1 1 0 0 1 1-1z"/>
     </defs>
-    <g fill="none" fill-rule="evenodd">
+    <g>
         <mask id="b" fill="#fff">
             <use xlink:href="#a"/>
         </mask>
-        <use fill="#666" xlink:href="#a"/>
-        <g fill="#666" mask="url(#b)">
+        <use fill="#444" xlink:href="#a"/>
+        <g fill="#444" mask="url(#b)">
             <path d="M0 24h24V0H0z"/>
         </g>
     </g>

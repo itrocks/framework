@@ -2,12 +2,12 @@
     <defs>
         <path id="prefix__a" d="M12 7c.552 0 1 .448 1 1v3h3c.552 0 1 .448 1 1s-.448 1-1 1h-3.001L13 16c0 .552-.448 1-1 1s-1-.448-1-1l-.001-3H8c-.552 0-1-.448-1-1s.448-1 1-1h3V8c0-.552.448-1 1-1z"/>
     </defs>
-    <g fill="none" fill-rule="evenodd">
+    <g fill="none">
         <mask id="prefix__b" fill="#fff">
             <use xlink:href="#prefix__a"/>
         </mask>
         <use fill="#000" xlink:href="#prefix__a"/>
-        <g fill="#666" mask="url(#prefix__b)">
+        <g fill="#444" mask="url(#prefix__b)">
             <path d="M0 24L24 24 24 0 0 0z"/>
         </g>
     </g>
