@@ -14,7 +14,7 @@ use ITRocks\Framework\Tools\Namespaces;
  * The represents an atomic end-user feature into the software :
  * a feature which a user group gives access to
  *
- * @after_read emptyName
+ * @DISABLED-after_read emptyName # Disabled because slows-down configuration
  * @before_write beforeWrite
  * @business
  * @representative name
