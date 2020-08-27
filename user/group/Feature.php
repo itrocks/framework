@@ -14,6 +14,7 @@ use ITRocks\Framework\Tools\Namespaces;
  * The represents an atomic end-user feature into the software :
  * a feature which a user group gives access to
  *
+ * @after_read emptyName
  * @before_write beforeWrite
  * @business
  * @representative name
@@ -185,6 +186,23 @@ class Feature
 		$this->getName();
 	}
 
+	//------------------------------------------------------------------------------------- emptyName
+	/**
+	 * Empties in order it will be correctly translated
+	 *
+	 * @noinspection PhpUnused @after_read
+	 * @todo HIGHER when all configurations are updated with the right names, we will not need this
+	 */
+	public function emptyName()
+	{
+		$old_name   = $this->name;
+		$this->name = null;
+		$new_name   = $this->name;
+		if (($new_name !== $old_name) && Dao::getObjectIdentifier($this)) {
+			Dao::write($this, Dao::only('name'));
+		}
+	}
+
 	//-------------------------------------------------------------------------------- getAllFeatures
 	/**
 	 * Gets all features from $this->includes + $this->features
@@ -344,11 +362,11 @@ class Feature
 			elseif (isset($this->path)) {
 				$loc_disabled  = Loc::$disabled;
 				Loc::$disabled = false;
-				$this->name    = ucfirst(Loc::tr(
+				$this->name    = Loc::tr(
 					HOLE_PIPE . Names::classToDisplays($this->getClassName()) . HOLE_PIPE
 					. SP . HOLE_PIPE . Names::methodToDisplay($this->getFeatureName()) . HOLE_PIPE,
 					static::class
-				));
+				);
 				Loc::$disabled = $loc_disabled;
 			}
 			if (Dao::getObjectIdentifier($this)) {
@@ -466,20 +484,17 @@ class Feature
 			$feature_name  = $this->getFeatureName();
 			$loc_disabled  = Loc::$disabled;
 			Loc::$disabled = false;
-			$name          = ucfirst(str_replace(
-				['$class feature', '$class', '$feature'],
-				[
-					Loc::tr(
-						HOLE_PIPE . ucfirst(Names::classToDisplays($class_name)) . HOLE_PIPE
-						. SP . HOLE_PIPE . Names::methodToDisplay($feature_name) . HOLE_PIPE,
-						static::class
-					),
-					Loc::tr(Names::classToDisplays($class_name), $class_name),
-					Loc::tr(Names::methodToDisplay($feature_name), $class_name)
-				],
-				$name
-			));
+			$name = Loc::tr(
+				$name,
+				[static::class, Loc::replace([
+					'class'   => Loc::tr(Names::classToDisplays($class_name),   $class_name),
+					'feature' => Loc::tr(Names::methodToDisplay($feature_name), $class_name)
+				])]
+			);
 			Loc::$disabled = $loc_disabled;
+		}
+		else {
+			$name = Loc::tr($name);
 		}
 		return $name;
 	}
