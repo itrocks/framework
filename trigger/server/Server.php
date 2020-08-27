@@ -182,7 +182,7 @@ class Server
 				touch($flag_file);
 			}
 		}
-		$next = floor(microtime(true)) + 10;
+		$next = floor(microtime(true)) + 60;
 	}
 
 }
