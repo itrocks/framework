@@ -111,7 +111,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 					|| (($op === '>=') && ($value >= substr($condition, 2)))
 					|| (($op === '<')  && ($value <  substr($condition, 1)))
 					|| (($op === '<=') && ($value <= substr($condition, 2)))
-					|| ($value === $condition_values)
+					|| (($value === $condition) && !in_array($op, ['>', '<']))
 				)) {
 					return false;
 				}
