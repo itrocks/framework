@@ -154,6 +154,10 @@ class Default_Yaml
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_IMPORT));
 			$yaml->extendYaml();
 		}
+		elseif (in_array($feature, Feature::JSON)) {
+			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_JSON));
+			$yaml->extendYaml();
+		}
 		elseif (in_array($feature, Feature::OUTPUT)) {
 			$yaml = new Yaml(Yaml::defaultFileName(Controller\Feature::F_OUTPUT));
 			$yaml->extendYaml();

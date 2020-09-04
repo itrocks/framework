@@ -56,6 +56,11 @@ class Feature
 		Controller\Feature::F_IMPORT
 	];
 
+	//------------------------------------------------------------------------------------------ JSON
+	const JSON = [
+		Controller\Feature::F_JSON
+	];
+
 	//---------------------------------------------------------------------------------------- OUTPUT
 	const OUTPUT = [
 		Controller\Feature::F_CARDS,
@@ -159,6 +164,7 @@ class Feature
 				Feature::EXPORT,
 				Feature::F_PRINT,
 				Feature::IMPORT,
+				Feature::JSON,
 				Feature::OUTPUT
 			);
 			Feature::$implicit = array_combine($implicit_features, $implicit_features);
@@ -326,6 +332,7 @@ class Feature
 			Controller\Feature::F_EDIT,
 			Controller\Feature::F_EXPORT,
 			Controller\Feature::F_IMPORT,
+			Controller\Feature::F_JSON,
 			Controller\Feature::F_PRINT,
 			Controller\Feature::F_OUTPUT
 		];
