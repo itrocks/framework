@@ -1,2 +1,4 @@
-features: print
+features:
+  - print
+  - ITRocks/Framework/Layout/Print_Model/output
 includes: output
