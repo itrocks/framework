@@ -159,9 +159,11 @@ class Proxy
 			foreach ($array as $key => $val) {
 				if (is_array($val)) {
 					$url .= '&' . $this->dataEncode($val, $prefix ? ($prefix . "[$key]") : $key);
-				} elseif ($prefix) {
+				}
+				elseif ($prefix) {
 					$url .= '&' . $prefix . "[$key]=$val";
-				} else {
+				}
+				else {
 					$url .= "&$key=$val";
 				}
 			}

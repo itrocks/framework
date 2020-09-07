@@ -48,7 +48,8 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					[$filter, $filter_value_name] = explode('=', $filter);
 					$filter = trim($filter);
 					$filter_value_name = trim($filter_value_name);
-				} else {
+				}
+				else {
 					$filter_value_name = $filter;
 				}
 				if (
