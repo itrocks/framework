@@ -229,11 +229,12 @@ class Empty_Columns_Remover implements Registerable
 	public function run()
 	{
 		foreach ($this->structure->pages as $page) {
-			$this->elements =& $page->elements;
+			$this->elements = $page->elements;
 			foreach ($page->groups as $group) {
 				$this->group = $group;
 				$this->runGroup();
 			}
+			$page->elements = $this->elements;
 		}
 	}
 
