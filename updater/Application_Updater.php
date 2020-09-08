@@ -207,7 +207,7 @@ class Application_Updater implements Configurable, Serializable
 		$this->setLastUpdateTime(self::$update_time);
 		self::$update_time = null;
 		clearstatcache(true, self::UPDATE_FILE);
-		if (file_exists(self::UPDATE_FILE)) {
+		if (file_exists(self::UPDATE_FILE) && Will_Call::isDone()) {
 			unlink(self::UPDATE_FILE);
 		}
 		if (function_exists('opcache_reset')) {
@@ -420,6 +420,8 @@ class Application_Updater implements Configurable, Serializable
 			}
 			$updatable->update($last_update_time);
 		}
+
+		Will_Call::call();
 
 		self::$running = false;
 	}
