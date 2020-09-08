@@ -27,17 +27,17 @@ class File
 	//-------------------------------------------------------------------------------------- $content
 	/**
 	 * @binary
-	 * @getter getContent
+	 * @getter
 	 * @impacts hash, updated_on
 	 * @max_length 4000000000
-	 * @setter setContent
+	 * @setter
 	 * @var string
 	 */
 	public $content;
 
 	//----------------------------------------------------------------------------------------- $hash
 	/**
-	 * @getter getHash
+	 * @getter
 	 * @var string
 	 */
 	public $hash;
@@ -46,7 +46,7 @@ class File
 	/**
 	 * Temporary file name where the file is stored, used to get content into $content only if needed
 	 *
-	 * @getter getTemporaryFileName
+	 * @getter
 	 * @var string
 	 */
 	public $temporary_file_name;
@@ -242,8 +242,12 @@ class File
 	 */
 	protected function setContent($content)
 	{
+		$old_hash      = $this->hash;
 		$this->content = $content;
 		$this->calcHash();
+		if ($this->hash !== $old_hash) {
+			$this->temporary_file_name = '';
+		}
 		$this->updated_on = new Date_Time();
 	}
 
