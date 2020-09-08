@@ -22,10 +22,14 @@ class Will_Call
 	 * You can call this to ask for a call to $callable after next update
 	 *
 	 * @param $callable callable
+	 * @param $wait     integer number of clicks to wait before executing the callable
 	 */
-	public static function add($callable)
+	public static function add($callable, $wait = 0)
 	{
 		$will_call = Session::current()->get(static::class, true);
+		if ($wait) {
+			$callable[2] = $wait;
+		}
 		array_push($will_call->callables, $callable);
 	}
 
