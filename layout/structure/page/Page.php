@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Structure\Draw\Snap_Line;
 use ITRocks\Framework\Layout\Structure\Field\Property;
@@ -111,21 +112,24 @@ class Page
 	 *
 	 * All elements are cloned and get the new page context
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $number integer
 	 * @return static
 	 */
 	public function cloneWithNumber($number)
 	{
-		$page         = clone $this;
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$page = Builder::create(static::class);
+		foreach (get_object_vars($this) as $property => $value) {
+			$page->$property = $value;
+		}
 		$page->number = $number;
 
 		foreach (['elements', 'groups'] as $elements_property_name) {
-			$elements = [];
+			$page->$elements_property_name = [];
 			foreach ($this->$elements_property_name as $element) {
-				/** @var $element Element */
-				$elements[] = $element->cloneWithContext($page);
+				$page->$elements_property_name[] = $element->cloneWithContext($page);
 			}
-			$page->$elements_property_name = $elements;
 		}
 
 		return $page;
