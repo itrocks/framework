@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Objects;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
+use ITRocks\Framework\Dao\Mysql\Lock;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -85,6 +86,36 @@ class Counter
 		return $this->showIdentifier();
 	}
 
+	//--------------------------------------------------------------------------------- autoDecrement
+	/**
+	 * Decrement the counter value
+	 *
+	 * @noinspection PhpUnused often used on business objects' @after_delete with $number
+	 * @param $object        object|string object or class name
+	 * @param $property_name string The name of the property containing the counter value
+	 */
+	public static function autoDecrement($object, $property_name = 'number')
+	{
+		$class_name = is_object($object) ? get_class($object) : $object;
+		$class_name = Builder::current()->sourceClassName($class_name);
+		$lock       = static::lock($class_name);
+		/** @var $counter Counter */
+		$counter = Dao::searchOne(['identifier' => $class_name], Counter::class);
+		if ($counter) {
+			$old_value = $counter->last_value;
+			while (
+				($counter->last_value > 0)
+				&& !Dao::searchOne([$property_name => $counter->formatLastValue()], $class_name)
+			) {
+				$counter->last_value --;
+			}
+			if ($old_value !== $counter->last_value) {
+				Dao::write($counter, Dao::only('last_value'));
+			}
+		}
+		static::unlock($lock);
+	}
+
 	//------------------------------------------------------------------------------- formatLastValue
 	/**
 	 * Returns the last counter value, formatted
@@ -125,11 +156,7 @@ class Counter
 		if (empty($identifier)) {
 			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
-		$table_name = $dao->storeNameOf(__CLASS__);
-		$lock       = $dao->lockRecord(
-			$table_name,
-			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 0
-		);
+		$lock = static::lock($identifier);
 		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
 			?: new static($identifier);
 		$next_value = $counter->next($object);
@@ -137,9 +164,28 @@ class Counter
 			$counter,
 			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
 		);
-		$dao->unlock($lock);
+		static::unlock($lock);
 		$dao->commit();
 		return $next_value;
+	}
+
+	//------------------------------------------------------------------------------------------ lock
+	/**
+	 * Locks database access for only one simultaneous access to the counter
+	 * Don't forget to call unlock when done !
+	 *
+	 * @param $identifier string The identifier of the counter ; default is get_class($object)
+	 * @return Lock
+	 */
+	protected static function lock($identifier)
+	{
+		/** @var $dao Mysql\Link */
+		$dao        = Dao::current();
+		$table_name = $dao->storeNameOf(__CLASS__);
+		return $dao->lockRecord(
+			$table_name,
+			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 0
+		);
 	}
 
 	//------------------------------------------------------------------------------------------ next
@@ -193,6 +239,18 @@ class Counter
 			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->identifier))->value);
 		}
 		return Loc::tr($this->identifier);
+	}
+
+	//---------------------------------------------------------------------------------------- unlock
+	/**
+	 * @param $lock Lock
+	 */
+	protected static function unlock(Lock $lock)
+	{
+		/** @var $dao Mysql\Link */
+		$dao = Dao::current();
+		$dao->unlock($lock);
+
 	}
 
 }
