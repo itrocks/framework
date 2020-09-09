@@ -23,6 +23,8 @@ trait Templating
 
 	//--------------------------------------------------------------------------------- propertyPaths
 	/**
+	 * Gets only property.paths ("constant texts" are ignored)
+	 *
 	 * @return string[]
 	 */
 	public function propertyPaths()
@@ -39,6 +41,12 @@ trait Templating
 		foreach ($template_sections as $template_section) {
 			$property_paths = explode('?:', substr($template_section, 0, strpos($template_section, '}')));
 			foreach ($property_paths as $property_path) {
+				if (
+					in_array(substr($property_path, 0, 1), [DQ, Q])
+					&& (substr($property_path, -1) === $property_path[0])
+				) {
+					continue;
+				}
 				$this->property_paths[] = Names::displayToProperty(str_replace('?', '', $property_path));
 			}
 		}

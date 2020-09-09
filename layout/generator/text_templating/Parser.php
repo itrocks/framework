@@ -95,6 +95,13 @@ class Parser
 				if ($property_name[0] === '?') {
 					$property_name = str_replace('?', '', $property_name);
 				}
+				if (
+					in_array(substr($property_name, 0, 1), [DQ, Q])
+					&& (substr($property_name, -1) === $property_name[0])
+				) {
+					$object = substr($property_name, 1, -1);
+					continue;
+				}
 				if (!property_exists($object, $property_name)) {
 					$property_name = Names::displayToProperty(Loc::rtr(
 						Names::propertyToDisplay($property_name),
@@ -119,6 +126,9 @@ class Parser
 			$value = $object;
 			if (isset($property) && $value) {
 				$value = Loc::propertyToLocale($property, $value);
+			}
+			if ($value) {
+				break;
 			}
 		}
 		return $value;
