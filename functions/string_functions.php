@@ -213,6 +213,20 @@ function mParse($string, $begin_separator, $end_separator, $count = 1)
 	return lParse(rParse($string, $begin_separator, $count), $end_separator);
 }
 
+//---------------------------------------------------------------------------------------- noQuotes
+/**
+ * Remove first and last quote or double-quote, if there are some
+ *
+ * @param $string string
+ * @return string
+ */
+function noQuotes($string)
+{
+	return (in_array(substr($string, 0, 1), [DQ, Q]) && substr($string, -1) === $string[0])
+		? substr($string, 1, -1)
+		: $string;
+}
+
 //----------------------------------------------------------------------------------- removeAccents
 /**
  * Replace accents by the closest char in the given string.
