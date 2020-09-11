@@ -358,7 +358,13 @@ class Object_Builder_Array
 				}
 			}
 			else {
-				if (!is_numeric($element) && strpos($element, ':')) {
+				if (
+					is_string($element)
+					&& !is_numeric($element)
+					&& strpos($element, ':')
+					&& is_numeric(rParse($element, ':'))
+					&& class_exists(lParse($element, ':'))
+				) {
 					list($real_class_name, $element) = explode(':', $element);
 					if (!isA($real_class_name, $class_name)) {
 						// this is for security purpose, to disallow unauthorized classes injection
@@ -369,7 +375,17 @@ class Object_Builder_Array
 					}
 					$class_name = $real_class_name;
 				}
-				$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
+				if (
+					is_string($element)
+					&& !is_numeric($element)
+					&& is_a($class_name, Fast_Add::class, true)
+				) {
+					/** @see Fast_Add::fromString */
+					$map[$key] = call_user_func([$class_name, 'fromString'], $element);
+				}
+				else {
+					$map[$key] = is_object($element) ? $element : Dao::read($element, $class_name);
+				}
 			}
 		}
 		return $map;
@@ -502,6 +518,7 @@ class Object_Builder_Array
 					|| (strlen(trim($value)) && is_a($type->asString(), Fast_Add::class, true))
 				)
 			) {
+				/** @see Fast_Add::fromString */
 				$value = call_user_func([$type->asString(), 'fromString'], trim($value));
 			}
 		}
