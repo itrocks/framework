@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
+use ReflectionException;
 
 /**
  * Data list settings : all that can be customized into a list view
@@ -226,8 +227,12 @@ class Set extends Setting\Custom\Set
 				foreach (
 					List_Annotation::of(new Reflection_Class($class_name))->properties as $property_name
 				) {
-					/** @noinspection PhpUnhandledExceptionInspection valid $class_name::$property_name */
-					$property = new Reflection_Property($class_name, $property_name);
+					try {
+						$property = new Reflection_Property($class_name, $property_name);
+					}
+					catch (ReflectionException $exception) {
+						continue;
+					}
 					if ($property->isPublic() && !$property->isStatic()) {
 						/** @noinspection PhpUnhandledExceptionInspection ::class */
 						$this->properties[$property->path] = Builder::create(
