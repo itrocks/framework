@@ -81,19 +81,26 @@ class Model extends PDF\Output
 	 * Print objects using a layout model, using PDF format
 	 * This returns the raw content of the generated PDF file
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $objects     object[] Objects to print, all must be of the same class
 	 * @param $print_model Print_Model if not set, the first available print model will be taken
 	 * @return mixed
 	 */
 	public function print(array $objects, Print_Model $print_model = null)
 	{
+		$first_object = reset($objects);
 		if (!$print_model) {
-			$class_name  = Builder::current()->sourceClassName(get_class(reset($objects)));
+			$class_name  = Builder::current()->sourceClassName(get_class($first_object));
 			$print_model = Dao::searchOne(['class_name' => $class_name], Print_Model::class, Dao::sort());
 		}
+
+		$file_name = ($first_object instanceof Has_Print_File_Name)
+			? $first_object->printFileName($objects)
+			: Names::classToDisplay($print_model->class_name) . '.pdf';
+
 		$pdf = static::newPdf();
 		$this->append($pdf, $objects, $print_model);
-		$file_name = Names::classToDisplay($print_model->class_name) . '.pdf';
+		/** @noinspection PhpUnhandledExceptionInspection Buffer output should not crash */
 		return $pdf->Output($file_name, $this->output);
 	}
 
