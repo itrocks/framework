@@ -29,7 +29,10 @@
 		//--------------------------------------------------------------------------------------- keyup
 		this.keyup(function(event)
 		{
-			var $this   = $(this);
+			var $this = $(this);
+			if ($this.data('no-change-state')) {
+				return;
+			}
 			var is_set  = isValueSet($this.val());
 			var was_set = $this.data('change_state_was_set');
 			if (was_set === undefined) {
