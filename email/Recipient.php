@@ -35,6 +35,19 @@ class Recipient
 	public function __toString()
 	{
 		return sprintf(
+			$this->name ? '%s <%s>' : '%s%s',
+			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name),
+			$this->email
+		);
+	}
+
+	//---------------------------------------------------------------------------------------- toMIME
+	/**
+	 * @return string
+	 */
+	public function toMIME()
+	{
+		return sprintf(
 			$this->name ? '"%s" <%s>' : '%s%s',
 			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name),
 			$this->email

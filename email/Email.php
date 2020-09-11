@@ -216,10 +216,10 @@ class Email
 	public function getHeadersAsStrings()
 	{
 		if ($this->blind_copy_to) {
-			$this->headers['Bcc'] = $this->encodeHeader(join(',', $this->blind_copy_to));
+			$this->headers['Bcc'] = $this->encodeHeader($this->mimeRecipients($this->blind_copy_to));
 		}
 		if ($this->copy_to) {
-			$this->headers['Cc'] = $this->encodeHeader(join(',', $this->copy_to));
+			$this->headers['Cc'] = $this->encodeHeader($this->mimeRecipients($this->copy_to));
 		}
 		if (!isset($this->headers['Date'])) {
 			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s p');
@@ -243,7 +243,7 @@ class Email
 			$this->headers['Subject'] = $this->encodeHeader($this->subject);
 		}
 		if ($this->to) {
-			$this->headers['To'] = $this->encodeHeader(join(',', $this->to));
+			$this->headers['To'] = $this->encodeHeader($this->mimeRecipients($this->to));
 		}
 		if (!isset($this->headers['Content-Type'])) {
 			$this->headers['Content-Type'] = 'text/html; charset=utf-8';
@@ -278,6 +278,20 @@ class Email
 			}
 		}
 		return $recipients;
+	}
+
+	//-------------------------------------------------------------------------------- mimeRecipients
+	/**
+	 * @param $recipients Recipient[]
+	 * @return string
+	 */
+	protected function mimeRecipients(array $recipients)
+	{
+		$mime = [];
+		foreach ($recipients as $recipient) {
+			array_push($mime, $recipient->toMIME());
+		}
+		return join(',', $mime);
 	}
 
 	//----------------------------------------------------------------------------- uniqueAttachments
