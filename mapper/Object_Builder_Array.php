@@ -499,6 +499,13 @@ class Object_Builder_Array
 				}
 				// map or not-linked array of objects
 				elseif ($type->isClass()) {
+					if ($build->fast_add) {
+						foreach ($value as $element_key => $element_string) {
+							if ($element_string && $build->array[$property_name][$element_key]) {
+								$value[$element_key] = $build->array[$property_name][$element_key];
+							}
+						}
+					}
 					$value = $this->buildMap($value, $type->getElementTypeAsString());
 				}
 			}
@@ -524,7 +531,9 @@ class Object_Builder_Array
 		}
 		// the property value is set only for official properties, if not default and not empty
 		if (($value !== '') || !$property->getType()->isClass()) {
-			if (!isset($object->$property_name) || ($value != $object->$property_name)) {
+			if (
+				!isset($object->$property_name) || ($value != $object->$property_name) || $build->fast_add
+			) {
 				$object->$property_name = $value;
 			}
 		}
@@ -549,6 +558,14 @@ class Object_Builder_Array
 	{
 		$asterisk = $this->extractAsterisk($property_name);
 		$property = isset($this->properties[$property_name]) ? $this->properties[$property_name] : null;
+		if (
+			!$property
+			&& (substr($property_name, -1) === '_')
+			&& isset($this->properties[substr($property_name, 0, -1)])
+		) {
+			$build->fast_add = true;
+			$property        = $this->properties[substr($property_name, 0, -1)];
+		}
 		if (substr($property_name, 0, 3) === 'id_') {
 			if (
 				!$this->buildIdProperty($build->object, $property_name, $value, $build->null_if_empty)
@@ -578,6 +595,7 @@ class Object_Builder_Array
 		if ($asterisk) {
 			$build->read_properties[$property_name] = $value;
 		}
+		$build->fast_add = false;
 	}
 
 	//-------------------------------------------------------------------------------- buildSubObject

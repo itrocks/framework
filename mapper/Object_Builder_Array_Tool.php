@@ -16,6 +16,12 @@ class Object_Builder_Array_Tool
 	 */
 	public $array;
 
+	//------------------------------------------------------------------------------------- $fast_add
+	/**
+	 * @var boolean
+	 */
+	public $fast_add = false;
+
 	//------------------------------------------------------------------------- $ignore_property_name
 	/**
 	 * The name of a property to ignore

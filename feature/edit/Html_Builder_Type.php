@@ -389,6 +389,10 @@ class Html_Builder_Type
 		$class_name        = $this->type->asString();
 		$source_class_name = Builder::current()->sourceClassName($class_name);
 		// visible input ?
+		if (!$this->name) {
+			$this->pre_path .= '_';
+			$re_pre_path     = true;
+		}
 		$input_id = (
 			$as_string
 			|| is_a($class_name, Fast_Add::class, true)
@@ -396,6 +400,9 @@ class Html_Builder_Type
 		)
 			? $this->getFieldName()
 			: null;
+		if (isset($re_pre_path)) {
+			$this->pre_path = substr($this->pre_path, 0, -1);
+		}
 		$input = new Input($input_id, strval($this->value));
 		if ($this->auto_width) {
 			$input->addClass('auto_width');
