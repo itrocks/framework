@@ -1,6 +1,9 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Component\Combo\Fast_Add;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Traits\Has_Email;
 use ITRocks\Framework\Traits\Has_Name;
 
@@ -12,7 +15,7 @@ use ITRocks\Framework\Traits\Has_Name;
  * @representative name, email
  * @sort name, email
  */
-class Recipient
+class Recipient implements Fast_Add
 {
 	use Has_Email;
 	use Has_Name;
@@ -39,6 +42,30 @@ class Recipient
 			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name),
 			$this->email
 		);
+	}
+
+	//------------------------------------------------------------------------------------ fromString
+	/**
+	 * @param $string string
+	 * @return static
+	 */
+	public static function fromString($string)
+	{
+		if (!trim($string)) {
+			return null;
+		}
+		$string    = cleanSpaces($string);
+		$recipient = Search_Object::create(static::class);
+		if ((strpos($string, '<') !== false) && strpos($string, '>')) {
+			$recipient->name  = noQuotes(trim(lParse($string, '<')));
+			$recipient->email = trim(mParse($string, '<', '>'));
+		}
+		else {
+			$recipient->name  = '';
+			$recipient->email = $string;
+		}
+		$recipient = Dao::searchOne($recipient) ?: $recipient;
+		return $recipient;
 	}
 
 	//---------------------------------------------------------------------------------------- toMIME
