@@ -8,6 +8,10 @@
 
 	.ql-editor {
 		// white-space: initial; // this allows text-align: justify but removes spaces during typing
+
+		table {
+			table-layout: initial;
+		}
 	}
 }
 

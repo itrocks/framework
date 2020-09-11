@@ -1,48 +1,71 @@
 .ql-container {
   background: white;
-  height: initial; }
-  .ql-container strong {
-    font-weight: bold; }
+  height: initial;
+}
+.ql-container strong {
+  font-weight: bold;
+}
+.ql-container .ql-editor table {
+  table-layout: initial;
+}
 
 .ql-table-tools {
   left: 0;
   position: absolute;
-  top: 0; }
-  .ql-table-tools li {
-    list-style: none;
-    position: absolute !important; }
-    .ql-table-tools li button {
-      font-size: 0;
-      height: 24px;
-      width: 24px; }
-    .ql-table-tools li.ql-table-delete button {
-      background: url("img/delete-table.svg"); }
-    .ql-table-tools li.ql-table-delete-column button {
-      background: url("img/remove.svg"); }
-    .ql-table-tools li.ql-table-delete-row button {
-      background: url("img/remove.svg"); }
-    .ql-table-tools li.ql-table-insert-column-left button {
-      background: url("img/insert-column-left.svg"); }
-    .ql-table-tools li.ql-table-insert-column-right button {
-      background: url("img/insert-column-right.svg"); }
-    .ql-table-tools li.ql-table-insert-row-above button {
-      background: url("img/insert-row-above.svg"); }
-    .ql-table-tools li.ql-table-insert-row-below button {
-      background: url("img/insert-row-below.svg"); }
+  top: 0;
+}
+.ql-table-tools li {
+  list-style: none;
+  position: absolute !important;
+}
+.ql-table-tools li button {
+  font-size: 0;
+  height: 24px;
+  width: 24px;
+}
+.ql-table-tools li.ql-table-delete button {
+  background: url("img/delete-table.svg");
+}
+.ql-table-tools li.ql-table-delete-column button {
+  background: url("img/remove.svg");
+}
+.ql-table-tools li.ql-table-delete-row button {
+  background: url("img/remove.svg");
+}
+.ql-table-tools li.ql-table-insert-column-left button {
+  background: url("img/insert-column-left.svg");
+}
+.ql-table-tools li.ql-table-insert-column-right button {
+  background: url("img/insert-column-right.svg");
+}
+.ql-table-tools li.ql-table-insert-row-above button {
+  background: url("img/insert-row-above.svg");
+}
+.ql-table-tools li.ql-table-insert-row-below button {
+  background: url("img/insert-row-below.svg");
+}
 
 .ql-toolbar {
-  background: white; }
-  .ql-toolbar:after, .ql-toolbar .ql-formats:after {
-    display: none !important; }
-  .ql-toolbar .ql-header.ql-picker .ql-picker-item:before, .ql-toolbar .ql-header.ql-picker .ql-picker-label:before {
-    color: transparent; }
-  .ql-toolbar button {
-    height: 18px !important; }
-  .ql-toolbar svg {
-    filter: brightness(110%); }
-  .ql-toolbar .ql-code > svg {
-    background-color: #f0f0f0; }
-  .ql-toolbar .ql-code-block > svg {
-    background-color: #23241f; }
-    .ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
-      stroke: #f0f0f0; }
+  background: white;
+}
+.ql-toolbar:after, .ql-toolbar .ql-formats:after {
+  display: none !important;
+}
+.ql-toolbar .ql-header.ql-picker .ql-picker-item:before, .ql-toolbar .ql-header.ql-picker .ql-picker-label:before {
+  color: transparent;
+}
+.ql-toolbar button {
+  height: 18px !important;
+}
+.ql-toolbar svg {
+  filter: brightness(110%);
+}
+.ql-toolbar .ql-code > svg {
+  background-color: #f0f0f0;
+}
+.ql-toolbar .ql-code-block > svg {
+  background-color: #23241f;
+}
+.ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
+  stroke: #f0f0f0;
+}
