@@ -225,7 +225,11 @@ class Email
 			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s p');
 		}
 		if ($this->from) {
-			$this->headers['From'] = $this->encodeHeader($this->from);
+			$from = strval($this->from);
+			if (strpos($from, '<')) {
+				$from = str_replace(DOT, SP, lParse($from, '<')) . '<' . rParse($from, '<');
+			}
+			$this->headers['From'] = $this->encodeHeader($from);
 		}
 		if (!isset($this->headers['Message-ID']) && Dao::getObjectIdentifier($this)) {
 			$project = strtolower(mParse(get_class(Application::current()), BS, BS));
@@ -287,11 +291,7 @@ class Email
 	 */
 	protected function mimeRecipients(array $recipients)
 	{
-		$mime = [];
-		foreach ($recipients as $recipient) {
-			array_push($mime, $recipient->toMIME());
-		}
-		return join(',', $mime);
+		return join(',', $recipients);
 	}
 
 	//----------------------------------------------------------------------------- uniqueAttachments

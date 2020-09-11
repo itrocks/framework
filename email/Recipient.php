@@ -68,17 +68,4 @@ class Recipient implements Fast_Add
 		return $recipient;
 	}
 
-	//---------------------------------------------------------------------------------------- toMIME
-	/**
-	 * @return string
-	 */
-	public function toMIME()
-	{
-		return sprintf(
-			$this->name ? '"%s" <%s>' : '%s%s',
-			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name),
-			$this->email
-		);
-	}
-
 }
