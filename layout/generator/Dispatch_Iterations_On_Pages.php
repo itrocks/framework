@@ -48,6 +48,10 @@ class Dispatch_Iterations_On_Pages
 			$iteration->up($shift_top);
 			$page_group->iterations[] = $iteration;
 		}
+
+		if (count($this->pages) < $this->structure->pages_count) {
+			$this->nextPageGroup($group, $page_number);
+		}
 	}
 
 	//--------------------------------------------------------------------------------- nextPageGroup
