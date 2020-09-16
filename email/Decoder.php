@@ -92,11 +92,11 @@ class Decoder
 	{
 		if (strpos($string, '<') === false) {
 			$address[0] = '';
-			$address[1] = $string;
+			$address[1] = noQuotes($string);
 		}
 		else {
 			$address    = explode('<', $string);
-			$address[0] = trim($address[0]);
+			$address[0] = noQuotes(trim($address[0]));
 			$address[1] = lParse($address[1], '>');
 		}
 		return Dao::searchOne(['email' => $address[1], 'name' => $address[0]], Recipient::class)
