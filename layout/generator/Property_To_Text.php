@@ -88,7 +88,7 @@ class Property_To_Text
 	 */
 	protected function group(Group $group)
 	{
-		if (reset($group->links) && (key($group->links) !== $group->page->number)) {
+		if (reset($group->links) && strcmp(key($group->links), $group->page->number)) {
 			return;
 		}
 		foreach ($group->groups as $sub_group) {
