@@ -82,7 +82,14 @@ abstract class Empty_Object
 							(!is_object($value))
 							|| (($check_composite && $is_composite) || !Empty_Object::isEmpty($value))
 						)
-						&& (is_object($value) || ($value !== $default[$property->name]))
+						&& (
+							is_object($value)
+							|| (
+								array_key_exists($property->name, $default)
+									? ($value !== $default[$property->name])
+									: $value
+							)
+						)
 					) {
 						$is_empty = false;
 						break;
