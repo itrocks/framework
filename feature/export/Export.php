@@ -93,7 +93,7 @@ class Export
 				elseif (isset($translate[$property_path])) {
 					$value = Loc::tr($value);
 				}
-				$write[] = $value;
+				$write[] = str_replace(DQ, Q . Q, $value);
 			}
 			fputcsv($file, $write);
 		}
