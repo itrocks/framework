@@ -171,23 +171,28 @@ class Installer
 	//--------------------------------------------------------------------------------------- install
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $plugin Installable|string plugin to install
+	 * @param $plugin   Installable|string plugin to install
+	 * @param $features Feature[]
 	 */
-	public function install($plugin)
+	public function install($plugin, array $features = [])
 	{
-		Dao::begin();
 		$plugin_class_name         = is_string($plugin) ? $plugin : get_class($plugin);
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
 		/** @noinspection PhpUnhandledExceptionInspection plugin class name must be valid */
 		$plugin_class = new Reflection_Class($plugin_class_name);
+		if (isset($features[$plugin_class_name])) {
+			return;
+		}
+		$features[$plugin_class_name] = true;
 
+		Dao::begin();
 		foreach (Feature_Exclude_Annotation::allOf($plugin_class) as $feature_exclude) {
 			$this->uninstall(Builder::current()->sourceClassName($feature_exclude->value));
 		}
 		foreach (Feature_Include_Annotation::allOf($plugin_class) as $feature_include) {
 			$dependency_class_name = Builder::current()->sourceClassName($feature_include->value);
-			$this->install($dependency_class_name);
+			$this->install($dependency_class_name, $features);
 			(new Installed\Dependency($plugin_class_name))->add($dependency_class_name);
 		}
 		foreach (Feature_Install_Annotation::allOf($plugin_class) as $feature_install) {
@@ -485,11 +490,11 @@ class Installer
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name string
 	 * @param $recurse           boolean
+	 * @param $features          Feature[] key is Feature::$plugin_class_name only if recurse
 	 * @return Feature[]
 	 */
-	public function willInstall($plugin_class_name, $recurse = true)
+	public function willInstall($plugin_class_name, $recurse = true, array $features = [])
 	{
-		$features = [];
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$includes = Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name));
 		foreach ($includes as $include) {
@@ -498,11 +503,10 @@ class Installer
 			if (isset($features[$feature->plugin_class_name])) {
 				continue;
 			}
-			$features = array_merge(
-				$features,
-				[$feature->plugin_class_name => $feature],
-				$recurse ? $this->willInstall($feature->plugin_class_name) : []
-			);
+			$features[$feature->plugin_class_name] = $feature;
+			if ($recurse) {
+				$features = $this->willInstall($feature->plugin_class_name, true, $features);
+			}
 		}
 		return $features;
 	}
@@ -513,11 +517,11 @@ class Installer
 	 *
 	 * @param $plugin_class_name string
 	 * @param $recurse           boolean
+	 * @param $features          Feature[] key is Feature::$plugin_class_name only if recurse
 	 * @return Feature[]
 	 */
-	public function willUninstall($plugin_class_name, $recurse = true)
+	public function willUninstall($plugin_class_name, $recurse = true, array $features = [])
 	{
-		$features = [];
 		$dependency_search = ['dependency.plugin_class_name' => $plugin_class_name];
 		/** @var $dependents Installed\Dependency[] */
 		$dependents = Dao::search($dependency_search, Installed\Dependency::class);
@@ -526,11 +530,10 @@ class Installer
 				if (isset($features[$feature->plugin_class_name])) {
 					continue;
 				}
-				$features = array_merge(
-					$features,
-					[$feature->plugin_class_name => $feature],
-					$recurse ? $this->willUninstall($feature->plugin_class_name) : []
-				);
+				$features[$feature->plugin_class_name] = $feature;
+				if ($recurse) {
+					$features = $this->willUninstall($feature->plugin_class_name, true, $features);
+				}
 			}
 		}
 		return $features;
