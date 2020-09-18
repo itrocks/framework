@@ -42,4 +42,17 @@ class User
 		return $user;
 	}
 
+	//----------------------------------------------------------------------------------- hasAccessTo
+	/**
+	 * When no access control plugin is installed : any user has access to anything.
+	 * Access control plugins override this to implement access control.
+	 *
+	 * @param $url string
+	 * @return boolean
+	 */
+	public function hasAccessTo(/* @noinspection PhpUnusedParameterInspection */ $url)
+	{
+		return true;
+	}
+
 }
