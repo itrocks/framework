@@ -47,10 +47,10 @@ class User
 	 * When no access control plugin is installed : any user has access to anything.
 	 * Access control plugins override this to implement access control.
 	 *
-	 * @param $url string
+	 * @param $uri string
 	 * @return boolean
 	 */
-	public function hasAccessTo(/* @noinspection PhpUnusedParameterInspection */ $url)
+	public function hasAccessTo(/* @noinspection PhpUnusedParameterInspection */ $uri)
 	{
 		return true;
 	}
