@@ -254,6 +254,7 @@ class File
 
 	//-------------------------------------------------------------------------- setTemporaryFileName
 	/**
+	 * @noinspection PhpUnused @getter
 	 * @param $temporary_file_name string
 	 */
 	protected function setTemporaryFileName($temporary_file_name)
