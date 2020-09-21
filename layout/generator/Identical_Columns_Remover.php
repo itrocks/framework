@@ -1,7 +1,10 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field\Text;
+use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -35,11 +38,13 @@ class Identical_Columns_Remover implements Configurable, Registerable
 
 	//------------------------------------------------------------------------------ identicalColumns
 	/**
-	 * @input $group->iterations, $properties, $set, $unset
+	 * @input  $set, $unset
 	 * @output $set, $unset
-	 * @param $object Empty_Columns_Remover
+	 * @param $object     Empty_Columns_Remover
+	 * @param $group      Group
+	 * @param $properties Element[]|Property[]
 	 */
-	public function identicalColumns(Empty_Columns_Remover $object)
+	public function identicalColumns(Empty_Columns_Remover $object, Group $group, array $properties)
 	{
 		if (!$object->unset) {
 			return;
@@ -49,7 +54,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 		$first_column = key($object->set);
 		$different    = [$first_column => true];
 		$set_count    = count($object->set);
-		foreach ($object->group->iterations as $iteration) {
+		foreach ($group->iterations as $iteration) {
 			/** @var $previous_element Text */
 			$previous_column = $first_column;
 			foreach ($columns as $column) {
@@ -73,7 +78,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 			}
 		}
 		$object->set   = array_intersect_key($different, $object->set);
-		$object->unset = array_diff_key($object->properties, $object->set);
+		$object->unset = array_diff_key($properties, $object->set);
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -92,13 +97,16 @@ class Identical_Columns_Remover implements Configurable, Registerable
 
 	//--------------------------------------------------------------------------------- renameHeaders
 	/**
+	 * @input $headers
 	 * @param $object Empty_Columns_Remover
 	 */
 	public function renameHeaders(Empty_Columns_Remover $object)
 	{
-		foreach ($object->headers as $header) {
-			if (isset($this->rename[$header->text])) {
-				$header->text = $this->rename[$header->text];
+		foreach ($object->headers as $headers) {
+			foreach ($headers as $header) {
+				if (isset($this->rename[$header->text])) {
+					$header->text = $this->rename[$header->text];
+				}
 			}
 		}
 	}

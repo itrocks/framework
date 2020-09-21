@@ -23,29 +23,11 @@ class Empty_Columns_Remover implements Registerable
 {
 	use Has_Structure;
 
-	//------------------------------------------------------------------------------------- $elements
-	/**
-	 * @var Element[]
-	 */
-	public $elements;
-
-	//---------------------------------------------------------------------------------------- $group
-	/**
-	 * @var Group
-	 */
-	public $group;
-
 	//-------------------------------------------------------------------------------------- $headers
 	/**
-	 * @var Text[]
+	 * @var array Text[][]
 	 */
 	public $headers;
-
-	//----------------------------------------------------------------------------------- $properties
-	/**
-	 * @var Element[]|Property[]
-	 */
-	public $properties;
 
 	//------------------------------------------------------------------------------------------ $set
 	/**
@@ -105,14 +87,15 @@ class Empty_Columns_Remover implements Registerable
 
 	//---------------------------------------------------------------------------------- emptyColumns
 	/**
-	 * @input  $group->iterations, $properties
 	 * @output $set, $unset
+	 * @param $group      Group
+	 * @param $properties Element[]|Property[]
 	 */
-	protected function emptyColumns()
+	protected function emptyColumns(Group $group, array $properties)
 	{
-		$properties_count = count($this->properties);
+		$properties_count = count($properties);
 		$this->set        = [];
-		foreach ($this->group->iterations as $iteration) {
+		foreach ($group->iterations as $iteration) {
 			usort($iteration->elements, function(Field $element1, Field $element2) {
 				return (abs($element1->top - $element2->top) >= Generator::$precision)
 					? cmp($element1->top, $element2->top)
@@ -133,7 +116,7 @@ class Empty_Columns_Remover implements Registerable
 				}
 			}
 		}
-		$this->unset = array_diff_key($this->properties, $this->set);
+		$this->unset = array_diff_key($properties, $this->set);
 	}
 
 	//--------------------------------------------------------------------------------------- headers
@@ -142,60 +125,66 @@ class Empty_Columns_Remover implements Registerable
 	 * - Remove unset headers from elements
 	 * Need elements to be sorted by y then x
 	 *
-	 * @input $elements, $group->top, $properties
-	 * @output $headers, $elements
+	 * @output $headers
+	 * @param $group      Group
+	 * @param $properties Element[]|Property[]
 	 */
-	protected function headers()
+	protected function headers(Group $group, array $properties)
 	{
-		$element = end($this->elements);
-		while ($element->top > $this->group->top) {
-			$element = prev($this->elements);
-		}
-		$property = end($this->properties);
-		while ($element->left > ($property->left + ($property->width / 2))) {
-			$element = prev($this->elements);
-		}
-		$element_top   = $element->top;
 		$this->headers = [];
-		do {
-			$column = key($this->properties);
-			if (isset($this->set[$column])) {
-				$this->headers[$column] = $element;
+		foreach ($group->links ?: [$group] as $group) {
+			$elements = $group->page->elements;
+			$element  = end($elements);
+			while ($element->top > $group->top) {
+				$element = prev($elements);
 			}
-			else {
-				unset($this->elements[key($this->elements)]);
+			$property = end($properties);
+			while ($element->left > ($property->left + ($property->width / 2))) {
+				$element = prev($elements);
 			}
-			prev($this->properties);
-			$element = prev($this->elements);
+			$element_top = $element->top;
+			do {
+				$column = key($properties);
+				if (isset($this->set[$column])) {
+					$this->headers[$group->page->number][$column] = $element;
+				}
+				else {
+					unset($elements[key($elements)]);
+				}
+				prev($properties);
+				$element = prev($elements);
+			}
+			while (abs($element_top - $element->top) < Generator::$precision);
+			$group->page->elements = $elements;
 		}
-		while (abs($element_top - $element->top) < Generator::$precision);
 	}
 
 	//------------------------------------------------------------------------------------ properties
 	/**
-	 * @input $group->properties
-	 * @output $properties
+	 * @param $group Group
+	 * @return Element[]|Property[]
 	 */
-	protected function properties()
+	protected function properties(Group $group)
 	{
-		$this->properties = [];
-		$top              = reset($this->group->properties)->top;
-		foreach ($this->group->properties as $column => $property) {
+		$properties = [];
+		$top        = reset($group->properties)->top;
+		foreach ($group->properties as $column => $property) {
 			if (abs($property->top - $top) < Generator::$precision) {
-				$this->properties[$column] = $property;
+				$properties[$column] = $property;
 			}
 		}
-		foreach ($this->group->elements as $column => $element) {
+		foreach ($group->elements as $column => $element) {
 			if (abs($element->top - $top) < Generator::$precision) {
-				$this->properties[] = $element;
+				$properties[]   = $element;
 				$added_elements = true;
 			}
 		}
 		if (isset($added_elements)) {
-			usort($this->properties, function(Field $property1, Field $property2) {
+			usort($properties, function(Field $property1, Field $property2) {
 				return cmp($property1->hotX(), $property2->hotX());
 			});
 		}
+		return $properties;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -223,39 +212,36 @@ class Empty_Columns_Remover implements Registerable
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @call runGroup
-	 * @input $structure->pages->elements, $structure->pages->groups
-	 * @output $elements, $groups
 	 */
 	public function run()
 	{
 		foreach ($this->structure->pages as $page) {
-			$this->elements = $page->elements;
 			foreach ($page->groups as $group) {
-				$this->group = $group;
-				$this->runGroup();
+				$this->runGroup($group);
 			}
-			$page->elements = $this->elements;
 		}
 	}
 
 	//-------------------------------------------------------------------------------------- runGroup
 	/**
-	 * @input $elements, $group
+	 * @param $group Group
 	 */
-	protected function runGroup()
+	protected function runGroup(Group $group)
 	{
-		if (!$this->group->iterations) {
+		if (!$group->iterations) {
 			return;
 		}
-		$this->properties();
-		$this->emptyColumns();
+		$properties = $this->properties($group);
+		$this->emptyColumns($group, $properties);
 		if (!$this->unset) {
 			return;
 		}
-		$this->headers();
-		$this->shiftsWidths();
-		$this->applyShiftsWidths($this->headers);
-		foreach ($this->group->iterations as $iteration) {
+		$this->headers($group, $properties);
+		$this->shiftsWidths($properties);
+		foreach ($this->headers as $headers) {
+			$this->applyShiftsWidths($headers);
+		}
+		foreach ($group->iterations as $iteration) {
 			$this->applyShiftsWidths($iteration->elements);
 			$this->removeElements($iteration->elements);
 		}
@@ -265,16 +251,17 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * Calculate column shifts / widths increment
 	 *
-	 * @input $properties, $unset
+	 * @input $unset
 	 * @output $shifts, $widths
+	 * @param $properties Element[]|Property[]
 	 */
-	protected function shiftsWidths()
+	protected function shiftsWidths(array $properties)
 	{
 		$property = end($this->unset);
 		$column   = key($this->unset);
-		$right    = ($column === (count($this->properties) - 1))
+		$right    = ($column === (count($properties) - 1))
 			? $property->right()
-			: $this->properties[$column + 1]->left;
+			: $properties[$column + 1]->left;
 		$shift        = 0;
 		$this->shifts = [];
 		$this->widths = [];
@@ -285,7 +272,7 @@ class Empty_Columns_Remover implements Registerable
 			$property     = prev($this->unset);
 			$unset_column = key($this->unset) ?: -1;
 			while ($column > $unset_column) {
-				$set_property = $this->properties[$column];
+				$set_property = $properties[$column];
 				$right        = $set_property->left;
 				if ($set_property->text_align === Property::LEFT) {
 					$this->widths[$column] = $shift;
