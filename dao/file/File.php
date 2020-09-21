@@ -47,6 +47,7 @@ class File
 	 * Temporary file name where the file is stored, used to get content into $content only if needed
 	 *
 	 * @getter
+	 * @setter
 	 * @var string
 	 */
 	public $temporary_file_name;
@@ -249,6 +250,18 @@ class File
 			$this->temporary_file_name = '';
 		}
 		$this->updated_on = new Date_Time();
+	}
+
+	//-------------------------------------------------------------------------- setTemporaryFileName
+	/**
+	 * @param $temporary_file_name string
+	 */
+	protected function setTemporaryFileName($temporary_file_name)
+	{
+		if ($temporary_file_name && file_exists($temporary_file_name)) {
+			$this->content = null;
+		}
+		$this->temporary_file_name = $temporary_file_name;
 	}
 
 	//------------------------------------------------------------------------------------------ size
