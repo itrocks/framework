@@ -85,7 +85,8 @@ class File
 	 */
 	protected function calcHash()
 	{
-		$this->hash = md5($this->content);
+		$this->content;
+		$this->hash = isset($this->content) ? md5($this->content) : null;
 	}
 
 	//------------------------------------------------------------------------------------ getContent
