@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 
@@ -29,15 +30,41 @@ class Dispatch_Iterations
 		$previous_iterations_height = 0;
 		foreach ($group->iterations as $iteration) {
 			$iteration->top += $previous_iterations_height;
-			$minimal_top     = reset($iteration->elements)->page->height;
 			foreach ($iteration->elements as $element) {
 				$element->top += $previous_iterations_height;
-				$minimal_top   = min($minimal_top, $element->top);
 			}
-			// next line shift value
-			$max_height                  = $this->maxHeight($iteration->elements) - $minimal_top;
+			$this->ignoreEmptyLines($iteration->elements);
+			$max_height                  = $this->maxHeight($iteration->elements);
 			$iteration->height           = $max_height;
 			$previous_iterations_height += $max_height + $group->iteration_spacing;
+		}
+	}
+
+	//------------------------------------------------------------------------------ ignoreEmptyLines
+	/**
+	 * Shift up elements positions in iteration in order to ignore empty lines
+	 *
+	 * @param $elements Element[]
+	 */
+	protected function ignoreEmptyLines(array $elements)
+	{
+		$line_has_value = false;
+		$line_top       = reset($elements)->top;
+		$shift_up       = 0;
+		foreach ($elements as $element) {
+			if ($element->top > $line_top) {
+				if (!$line_has_value) {
+					$shift_up += $element->top - $line_top;
+				}
+				$line_has_value = false;
+				$line_top       = $element->top;
+			}
+			if (!($element instanceof Text) || strlen($element->text)) {
+				$line_has_value = true;
+			}
+			if ($shift_up) {
+				$element->top -= $shift_up;
+			}
 		}
 	}
 
@@ -53,22 +80,23 @@ class Dispatch_Iterations
 	 */
 	protected function maxHeight(array $elements)
 	{
-		$bottom = 0;
-		$height = 0;
-		$margin = 0;
-		$top    = 0;
+		$iteration_bottom = 0;
+		$iteration_margin = 0;
+		$iteration_top    = reset($elements)->top;
+		$line_bottom      = 0;
+		$line_top         = 0;
 		foreach ($elements as $element) {
-			if ($element->top > $top) {
-				if ($bottom) {
-					$margin = max($margin, $element->top - $bottom);
-					$bottom = 0;
+			if ($element->top > $line_top) {
+				if ($line_bottom) {
+					$iteration_margin = max($iteration_margin, $element->top - $line_bottom);
+					$line_bottom      = 0;
 				}
-				$top = $element->top;
+				$line_top = $element->top;
 			}
-			$bottom = max($bottom, $element->top + $element->height);
-			$height = max($height, $element->top + $element->height);
+			$line_bottom      = max($line_bottom, $element->top + $element->height);
+			$iteration_bottom = max($iteration_bottom, $line_bottom);
 		}
-		return $height + $margin;
+		return $iteration_bottom + $iteration_margin - $iteration_top;
 	}
 
 	//------------------------------------------------------------------------------------------- run
