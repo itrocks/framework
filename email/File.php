@@ -36,7 +36,7 @@ class File
 			$this->filename = $email;
 		}
 		else {
-			user_error('Need a valid email or filename', E_USER_ERROR);
+			trigger_error('Need a valid email or filename', E_USER_ERROR);
 		}
 	}
 

@@ -73,7 +73,7 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					$filters[$filter] = $final_object->$filter_value_name();
 				}
 				else {
-					user_error(
+					trigger_error(
 						'Not a method or property ' . $class_name . '::' . $filter_value_name, E_USER_ERROR
 					);
 				}

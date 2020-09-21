@@ -182,7 +182,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function readProperty($object, $property_name)
 	{
-		user_error(
+		trigger_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name
 			. ' cannot be read alone into a ' . get_class($this) . ' data link',
 			E_USER_ERROR
@@ -447,7 +447,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 */
 	public function writeProperty($object, $property_name, $value = null)
 	{
-		user_error(
+		trigger_error(
 			'@dao : property ' . get_class($object) . '::' . $property_name
 				. ' cannot be written alone into a ' . get_class($this) . ' data link',
 			E_USER_ERROR

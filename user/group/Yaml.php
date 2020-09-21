@@ -219,7 +219,7 @@ class Yaml
 					$feature_detail = [];
 				}
 				elseif (!(is_string($feature) && is_array($feature_detail))) {
-					user_error(
+					trigger_error(
 						'Parse of ' . $this->filename . ' features : feature is not allowed ['
 						. print_r($feature, true) . ': ' . print_r($feature_detail, true) . ']',
 						E_USER_ERROR
