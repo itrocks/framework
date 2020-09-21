@@ -189,7 +189,7 @@ class Builder implements Activable, Serializable
 				}
 			}
 			// identify destination object = source object, or disconnect destination object
-			if ($same_identifier) {
+			if ($same_identifier && Dao::getObjectIdentifier($object)) {
 				Dao::replace($clone, $object, false);
 			}
 			else {
