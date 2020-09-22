@@ -115,8 +115,18 @@ class Identical_Columns_Remover implements Configurable, Registerable
 			return;
 		}
 		foreach ($result as $headers) {
-			foreach ($headers as $header) {
+			$replacements = [];
+			foreach ($headers as $key => $header) {
 				if (isset($this->rename[$header->text])) {
+					$replacements[$this->rename[$header->text]]
+						= ($replacements[$this->rename[$header->text]] ?? 0) + 1;
+				}
+			}
+			foreach ($headers as $header) {
+				if (
+					isset($this->rename[$header->text])
+					&& ($replacements[$this->rename[$header->text]] === 1)
+				) {
 					$header->text = $this->rename[$header->text];
 				}
 			}
