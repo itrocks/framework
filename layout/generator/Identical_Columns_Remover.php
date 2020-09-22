@@ -2,8 +2,8 @@
 namespace ITRocks\Framework\Layout\Generator;
 
 use ITRocks\Framework\Layout\Structure\Element;
-use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
+use ITRocks\Framework\Layout\Structure\Field\Text;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
@@ -54,10 +54,18 @@ class Identical_Columns_Remover implements Configurable, Registerable
 		$first_column = key($object->set);
 		$different    = [$first_column => true];
 		$set_count    = count($object->set);
+		$headers      = $object->headers($group, $properties);
+		$headers      = reset($headers);
+
 		foreach ($group->iterations as $iteration) {
 			/** @var $previous_element Text */
 			$previous_column = $first_column;
 			foreach ($columns as $column) {
+				if (!isset($this->rename[strtoupper($headers[$column]->text)])) {
+					$different[$column] = true;
+					$previous_column    = $column;
+					continue;
+				}
 				if (isset($different[$column])) {
 					$previous_column = $column;
 					continue;
@@ -98,11 +106,15 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	//--------------------------------------------------------------------------------- renameHeaders
 	/**
 	 * @input $headers
-	 * @param $object Empty_Columns_Remover
+	 * @param $alter  boolean
+	 * @param $result array Text[][]
 	 */
-	public function renameHeaders(Empty_Columns_Remover $object)
+	public function renameHeaders($alter, array $result)
 	{
-		foreach ($object->headers as $headers) {
+		if (!$alter) {
+			return;
+		}
+		foreach ($result as $headers) {
 			foreach ($headers as $header) {
 				if (isset($this->rename[$header->text])) {
 					$header->text = $this->rename[$header->text];

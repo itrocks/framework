@@ -23,12 +23,6 @@ class Empty_Columns_Remover implements Registerable
 {
 	use Has_Structure;
 
-	//-------------------------------------------------------------------------------------- $headers
-	/**
-	 * @var array Text[][]
-	 */
-	public $headers;
-
 	//------------------------------------------------------------------------------------------ $set
 	/**
 	 * @var boolean[]
@@ -128,10 +122,12 @@ class Empty_Columns_Remover implements Registerable
 	 * @output $headers
 	 * @param $group      Group
 	 * @param $properties Element[]|Property[]
+	 * @param $alter      boolean if true, headers are removed. Not if false.
+	 * @return Text[][]
 	 */
-	protected function headers(Group $group, array $properties)
+	public function headers(Group $group, array $properties, $alter = false)
 	{
-		$this->headers = [];
+		$headers = [];
 		foreach ($group->links ?: [$group] as $group) {
 			$elements = $group->page->elements;
 			$element  = end($elements);
@@ -149,17 +145,20 @@ class Empty_Columns_Remover implements Registerable
 			do {
 				$column = key($properties);
 				if (isset($this->set[$column])) {
-					$this->headers[$group->page->number][$column] = $element;
+					$headers[$group->page->number][$column] = $element;
 				}
-				else {
+				elseif ($alter) {
 					unset($elements[key($elements)]);
 				}
 				prev($properties);
 				$element = prev($elements);
 			}
 			while ($element && (abs($element_top - $element->top) < Generator::$precision));
-			$group->page->elements = $elements;
+			if ($alter) {
+				$group->page->elements = $elements;
+			}
 		}
+		return $headers;
 	}
 
 	//------------------------------------------------------------------------------------ properties
@@ -239,9 +238,9 @@ class Empty_Columns_Remover implements Registerable
 		if (!$this->unset) {
 			return;
 		}
-		$this->headers($group, $properties);
+		$page_headers = $this->headers($group, $properties, true);
 		$this->shiftsWidths($properties);
-		foreach ($this->headers as $headers) {
+		foreach ($page_headers as $headers) {
 			$this->applyShiftsWidths($headers);
 		}
 		foreach ($group->iterations as $iteration) {
