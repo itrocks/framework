@@ -190,7 +190,7 @@ redirect = function(uri, target, after, callback, history)
 			success: function(data) {
 				var keep_scroll = new Keep_Scroll($target);
 				keep_scroll.keep();
-				$target.html(data);
+				$target = $target.htmlTarget(data);
 				if (close_function) {
 					// do it before build, in order to disable xtarget on .close button
 					$target.find('.actions .close a').click(close_function);
