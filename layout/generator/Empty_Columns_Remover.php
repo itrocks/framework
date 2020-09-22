@@ -135,8 +135,11 @@ class Empty_Columns_Remover implements Registerable
 		foreach ($group->links ?: [$group] as $group) {
 			$elements = $group->page->elements;
 			$element  = end($elements);
-			while ($element->top > $group->top) {
+			while ($element && ($element->top > $group->top)) {
 				$element = prev($elements);
+			}
+			if (!$element) {
+				continue;
 			}
 			$property = end($properties);
 			while ($element->left > ($property->left + ($property->width / 2))) {
@@ -154,7 +157,7 @@ class Empty_Columns_Remover implements Registerable
 				prev($properties);
 				$element = prev($elements);
 			}
-			while (abs($element_top - $element->top) < Generator::$precision);
+			while ($element && (abs($element_top - $element->top) < Generator::$precision));
 			$group->page->elements = $elements;
 		}
 	}
