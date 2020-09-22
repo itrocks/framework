@@ -446,7 +446,7 @@
 	var mouseMove = function(event)
 	{
 		if (!event.which) {
-			return scrollbar.mouseup(event);
+			return window.scrollbar.mouseup(event);
 		}
 		moving.mouse = { left: event.pageX, top: event.pageY };
 		draw(moving.$element);
@@ -545,7 +545,12 @@
 	var resize = function()
 	{
 		for(var index in elements) if (elements.hasOwnProperty(index)) {
-			draw(elements[index]);
+			var $element  = elements[index];
+			var scrollbar = $element.data('scrollbar');
+			var distance  = parseInt(scrollbar.$horizontal.children('div').css('left'));
+			scroll($element, 'horizontal', -distance);
+			draw($element);
+			scroll($element, 'horizontal', distance);
 		}
 	};
 
