@@ -13,7 +13,7 @@ $(document).ready(function()
 	};
 
 	//------------------------------------------------------------------------ tr.new refreshOrdering
-	$body.build('call', 'article > form ul.collection li[data-property=ordering]', function()
+	$body.build('call', 'article ul.collection li[data-property=ordering]', function()
 	{
 		var $li = $(this);
 
