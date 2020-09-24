@@ -7,6 +7,11 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 use TCPDF_STATIC;
 
+// A patch because composer does not want to compile fpdi-pdf-parser's autoloader
+if (file_exists(__DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src')) {
+	require_once __DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src/autoload.php';
+}
+
 /**
  * PDF export library
  *
