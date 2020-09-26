@@ -51,12 +51,12 @@ class Plugin implements Configurable, Registerable
 	 */
 	protected function multipleFiles(File $file, array $files)
 	{
-		if ($file->delete_flag_file) {
-			foreach ($files as $file_path) {
-				unlink($file_path);
-			}
+		$file_path = $file->file_path;
+		foreach ($files as $file_path) {
+			$file->file_path = $file_path;
+			$this->singleFile($file);
 		}
-		$this->triggerActions($file);
+		$file->file_path = $file_path;
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -80,6 +80,13 @@ class Plugin implements Configurable, Registerable
 	{
 		if ($file->delete_flag_file) {
 			unlink($file->file_path);
+		}
+		elseif (!$file->trigger_static) {
+			if (!State::get($file)) {
+				return;
+			}
+			State::set($file);
+			State::purge();
 		}
 		$this->triggerActions($file);
 	}

@@ -32,4 +32,16 @@ class File extends Trigger
 	 */
 	public $file_path;
 
+	//------------------------------------------------------------------------------- $trigger_static
+	/**
+	 *
+	 * false (default) : the action will be triggered each time the file modification date changes.
+	 * true : the action will be triggered while the file is here, even if it is not changed.
+	 *
+	 * This affects action triggering only when $delete_flag_file is false.
+	 *
+	 * @var boolean
+	 */
+	public $trigger_static;
+
 }
