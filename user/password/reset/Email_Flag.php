@@ -1,10 +1,10 @@
 <?php
 namespace ITRocks\Framework\User\Password\Reset;
 
+use ITRocks\Framework\Email\Sender\File;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
-use ITRocks\Framework\User\Password\Reset;
 
 /**
  * This plugin allow another program to send password reset emails asynchronously
@@ -12,6 +12,8 @@ use ITRocks\Framework\User\Password\Reset;
  * Each time a password reset email is generated, and empty flag file $file_path is created
  * The other program has to scan all applications for emails without account to send, and send them
  * It can call /ITRocks/Framework/Email/xxx/content to easily get the email content
+ *
+ * TODO NORMAL This plugin should be moved into Email
  */
 class Email_Flag implements Configurable, Registerable
 {
@@ -43,7 +45,7 @@ class Email_Flag implements Configurable, Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod([Reset::class, 'sendEmail'], [$this, 'touchFlag']);
+		$aop->afterMethod([File::class, 'send'], [$this, 'touchFlag']);
 	}
 
 	//------------------------------------------------------------------------------------- touchFlag
