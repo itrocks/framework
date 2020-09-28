@@ -87,7 +87,11 @@ class Export
 						$value = null;
 					}
 					elseif (substr($value, -8) === '00:00:00') {
-						$value = lParse($value, SP);
+						$value = substr($value, 8, 2) . SL . substr($value, 5, 2) . SL . substr($value, 0, 2);
+					}
+					else {
+						$value = substr($value, 8, 2) . SL . substr($value, 5, 2) . SL . substr($value, 0, 2)
+							. SP . substr($value, 11, 2) . ':' . substr($value, 14, 2) . ':' . substr($value, 17, 2);
 					}
 				}
 				elseif (isset($translate[$property_path])) {
