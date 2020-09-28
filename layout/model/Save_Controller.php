@@ -2,13 +2,37 @@
 namespace ITRocks\Framework\Layout\Model;
 
 use ITRocks\Framework\Controller\Parameters;
+use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\File\Builder\Post_Files;
 use ITRocks\Framework\Feature\Save;
+use ITRocks\Framework\Mapper\Built_Object;
 
 /**
  * Layout model save controller
  */
 class Save_Controller extends Save\Controller
 {
+
+	//---------------------------------------------------------------------------------- buildObjects
+	/**
+	 * @param $object object
+	 * @param $form   array
+	 * @param $files  array
+	 * @return Built_Object[]
+	 */
+	protected function buildObjects($object, array $form, array $files)
+	{
+		$built_objects = parent::buildObjects($object, $form, $files);
+		$builder       = new Post_Files(get_class($object));
+		$form          = $builder->appendToForm($form, $files);
+		// this patch because we must save the new background as a new file
+		// (existing file should not be replaced, and is not written if an id is already set)
+		foreach ($form['pages']['background'] as $background_key => $background_data) {
+			if (!$background_data) continue;
+			Dao::disconnect($object->pages[$background_key]->background);
+		}
+		return $built_objects;
+	}
 
 	//------------------------------------------------------------------------------------------- run
 	/**
