@@ -222,7 +222,7 @@ class Email
 			$this->headers['Cc'] = $this->encodeHeader($this->mimeRecipients($this->copy_to));
 		}
 		if (!isset($this->headers['Date'])) {
-			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s p');
+			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s O');
 		}
 		if ($this->from) {
 			$from = strval($this->from);
