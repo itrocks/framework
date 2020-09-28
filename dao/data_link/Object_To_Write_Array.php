@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Stringable;
 
@@ -381,6 +382,10 @@ class Object_To_Write_Array
 	{
 		$store = Store_Annotation::of($property);
 		if ($store->isJson()) {
+			if (is_object($value) && ($write = (new Call_Stack)->getObject(Write::class))) {
+				$write->beforeWrite($value, $this->options, Write::BEFORE_WRITE);
+				$write->beforeWriteComponents($value, $this->options, Write::BEFORE_WRITE);
+			}
 			$value = $this->valueToWriteArray($value, $this->options);
 			if (isset($value) && !is_string($value)) {
 				$value = json_encode($value);

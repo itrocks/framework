@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
@@ -107,6 +108,40 @@ abstract class Write
 			}
 		}
 		return true;
+	}
+
+	//------------------------------------------------------------------------- beforeWriteComponents
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object                  object
+	 * @param $options                 Option[]
+	 * @param $before_write_annotation string @values before_create, before_update, before_write,
+	 *                                 before_writes
+	 */
+	public function beforeWriteComponents($object, $options, $before_write_annotation)
+	{
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($object))->getProperties() as $property) {
+			if (
+				!$property->getAnnotation('component')->value
+				&& !Link_Annotation::of($property)->isCollection()
+			) {
+				continue;
+			}
+			if ($property->getType()->isMultiple()) {
+				/** @noinspection PhpUnhandledExceptionInspection */
+				foreach ($property->getValue($object) as $value) {
+					$this->beforeWrite($value, $options, $before_write_annotation);
+					$this->beforeWriteComponents($value, $options, $before_write_annotation);
+				}
+			}
+			else {
+				/** @noinspection PhpUnhandledExceptionInspection */
+				$value = $property->getValue($object);
+				$this->beforeWrite($value, $options, $before_write_annotation);
+				$this->beforeWriteComponents($value, $options, $before_write_annotation);
+			}
+		}
 	}
 
 	//---------------------------------------------------------------------------- prepareAfterCommit
