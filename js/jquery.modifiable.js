@@ -109,7 +109,7 @@ window.modifiable_waiting  = false;
 
 						// ajax call : post form, use form plugin, or simple post
 						var xhr;
-						if (settings.ajax_form !== undefined) {
+						if ((settings.ajax_form !== undefined) && $popup.find(settings.ajax_form).length) {
 							var $ajax_form = $popup.find(settings.ajax_form);
 							if ($ajax_form.ajaxSubmit !== undefined) {
 								$ajax_form.ajaxSubmit($.extend(

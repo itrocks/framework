@@ -41,9 +41,12 @@ class Controller implements Default_Feature_Controller
 			$list_settings->save($parameters['title'] ?? null);
 		}
 
+		if (isset($parameters['remove_property'])) {
+			Main::$current->redirect(View::link($class_name), Target::MAIN);
+		}
+
 		if (!isset($parameters['title'])) {
 			$parameters['title'] = Loc::tr('list setting');
-			Main::$current->redirect(View::link($class_name), Target::MAIN);
 		}
 
 		return View::run($parameters, $form, $files, $class_name, static::FEATURE);
