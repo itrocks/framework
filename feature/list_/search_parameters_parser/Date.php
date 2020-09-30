@@ -419,6 +419,10 @@ abstract class Date
 				'Y-m-d H:i:s', mktime(0, 0, -1, self::$current_month + 1, 1, self::$current_year)
 			);
 		}
+		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::WEEK))) {
+			$date_begin = Date_Time::now()->toBeginOf(Date_Time::WEEK);
+			$date_end   = Date_Time::now()->toEndOf(Date_Time::WEEK);
+		}
 		elseif (in_array($word, self::getDateWordsToCompare(Date_Time::DAY))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
@@ -882,10 +886,11 @@ abstract class Date
 	private static function getDateWordsToCompare($date_part)
 	{
 		static $all_words_references = [
-			Date_Time::DAY   => ['current day',   'today'],
+			Date_Time::DAY   => ['current day',   'today', 'day'],
 			Date_Time::MONTH => ['current month', 'month'],
 			Date_Time::YEAR  => ['current year',  'year'],
 			Date_Time::HOUR  => ['current hour',  'hour'],
+			Date_Time::WEEK  => ['current week',  'week'],
 			'tomorrow'       => ['tomorrow'],
 			'yesterday'      => ['yesterday']
 		];
