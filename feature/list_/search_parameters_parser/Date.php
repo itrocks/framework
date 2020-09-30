@@ -430,6 +430,17 @@ abstract class Date
 				mktime(23, 59, 59, self::$current_month, self::$current_day, self::$current_year)
 			);
 		}
+		elseif (in_array($word, self::getDateWordsToCompare('tomorrow'))) {
+			//we convert a current day word in numeric current day period
+			$date_begin = date(
+				'Y-m-d H:i:s',
+				mktime(0, 0, 0, self::$current_month, (int)self::$current_day+1, self::$current_year)
+			);
+			$date_end = date(
+				'Y-m-d H:i:s',
+				mktime(23, 59, 59, self::$current_month, (int)self::$current_day+1, self::$current_year)
+			);
+		}
 		elseif (in_array($word, self::getDateWordsToCompare('yesterday'))) {
 			//we convert a current day word in numeric current day period
 			$date_begin = date(
@@ -871,10 +882,11 @@ abstract class Date
 	private static function getDateWordsToCompare($date_part)
 	{
 		static $all_words_references = [
-			Date_Time::DAY   => ['current day', 'today'],
-			Date_Time::MONTH => ['current month'],
-			Date_Time::YEAR  => ['current year'],
-			Date_Time::HOUR  => ['current hour'],
+			Date_Time::DAY   => ['current day',   'today'],
+			Date_Time::MONTH => ['current month', 'month'],
+			Date_Time::YEAR  => ['current year',  'year'],
+			Date_Time::HOUR  => ['current hour',  'hour'],
+			'tomorrow'       => ['tomorrow'],
 			'yesterday'      => ['yesterday']
 		];
 		static $all_words_localized = [];

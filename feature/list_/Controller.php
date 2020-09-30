@@ -310,7 +310,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		// check if we have errors in search expressions
 		$this->errors = [];
 		foreach ($search as $property_path => &$search_value) {
-			if ($search_value instanceof \Exception) {
+			if ($search_value instanceof Exception) {
 				$this->errors[$property_path] = $search_value;
 				// reset result value to a valid empty expression that can be given to readData() to work
 				// properly
