@@ -5,7 +5,6 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
-use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Comparison;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Date;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Range;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Scalar;
@@ -69,8 +68,9 @@ use ITRocks\Framework\Tools\Names;
  *              | "y" [+|-] integer (means from 01/01/yyyy to 31/12/yyyy)
  *              | "m" [+|-] integer (means from 01/mm/currentyear to 31!/mm/currentyear)
  *              | "d" [+|-] integer (means implicit current month and year)
- * dateword     = "current year" | "current month" | localized equivalent
+ * dateword     = "current year" | "year" | "current month" | "month" | localized equivalent
  *              | "today" | "current day" | localized equivalent
+ *              | "yesterday" | "tomorrow" | localized equivalent
  *              | "now" (means with current time?)
  * dd           = #[0-3?]?[0-9?]|*# | "d" (+|-) integer
  * mm           = #[0-1?]?[0-9?]|*# | "m" (+|-) integer
@@ -137,6 +137,53 @@ class Search_Parameters_Parser
 		}
 	}
 
+	//------------------------------------------------------------------------------- applyComparison
+	/**
+	 * Apply a Comparison expression on search string. The Comparison is supposed to exist !
+	 *
+	 * @param $expression string|Option
+	 * @param $property   Reflection_Property
+	 * @return Func\Comparison
+	 */
+	protected function applyComparison($expression, Reflection_Property $property)
+	{
+		$comparison = null;
+		$expression = ltrim($expression);
+		if (in_array($sign = substr($expression, 0, 2), ['<=', '>=', '<>'])) {
+			$comparison = new Func\Comparison($sign, ltrim(substr($expression, 2)));
+		}
+		elseif (in_array($sign = substr($expression, 0, 1), ['<', '>', '='])) {
+			$comparison = new Func\Comparison($sign, ltrim(substr($expression, 1)));
+		}
+		if ($comparison && $property->getType()->isDateTime()) {
+			$applied = $this->applyDateValue($comparison->than_value, $property);
+			if ($applied instanceof Func\Range) {
+				switch ($comparison->sign) {
+					case '>=': case '<':
+						$comparison->than_value = $applied->from;
+						break;
+					case '<=': case '>':
+						$comparison->than_value = $applied->to;
+						break;
+					case '<>':
+						$comparison = Func::andOp(
+							[new Func\Comparison('<', $applied->from), new Func\Comparison('>', $applied->to)]
+						);
+						break;
+					case '=':
+						$comparison = Func::andOp(
+							[new Func\Comparison('>=', $applied->from), new Func\Comparison('<=', $applied->to)]
+						);
+						break;
+				}
+			}
+			else {
+				$comparison->than_value = $applied;
+			}
+		}
+		return $comparison;
+	}
+
 	//----------------------------------------------------------------------------- applyComplexValue
 	/**
 	 * @param $search_value string
@@ -146,16 +193,27 @@ class Search_Parameters_Parser
 	 */
 	protected function applyComplexValue($search_value, Reflection_Property $property)
 	{
-		if (Comparison::isComparison($search_value, $property) && Range::supportsRange($property)) {
-			$search = Comparison::applyComparison($search_value, $property);
-		}
-		elseif (Range::isRange($search_value, $property) && Range::supportsRange($property)) {
-			$search = Range::applyRange($search_value, $property);
-		}
-		else {
-			$search = $this->applySingleValue($search_value, $property);
+		$search = $this->applyComparison($search_value, $property);
+		if (!$search) {
+			if (Range::isRange($search_value, $property) && Range::supportsRange($property)) {
+				$search = Range::applyRange($search_value, $property);
+			}
+			else {
+				$search = $this->applySingleValue($search_value, $property);
+			}
 		}
 		return $search;
+	}
+
+	//-------------------------------------------------------------------------------- applyDateValue
+	/**
+	 * @param $date_time string locale formatted date-time
+	 * @param $property  Reflection_Property
+	 * @return string|Func\Range|mixed Date::applyDateValue is incompletly documented : I don't know !
+	 */
+	protected function applyDateValue($date_time, Reflection_Property $property)
+	{
+		return Date::applyDateValue($date_time, $property);
 	}
 
 	//-------------------------------------------------------------------------------------- applyNot
@@ -226,7 +284,7 @@ class Search_Parameters_Parser
 			}
 			// Date_Time type
 			case Date_Time::class: {
-				$search = Date::applyDateValue($search_value, $property);
+				$search = $this->applyDateValue($search_value, $property);
 				break;
 			}
 			// String types with @values : translate
