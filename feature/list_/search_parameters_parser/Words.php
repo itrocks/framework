@@ -5,7 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
-use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Tools\Date_Time;
 
 /**
  * Word search parameters parser
@@ -26,23 +26,20 @@ abstract class Words
 	public static function applyWordMeaningEmpty($expression, Reflection_Property $property)
 	{
 		if (self::meansEmpty($expression)) {
-			$type_string = $property->getType()->asString();
-			switch ($type_string) {
-				case Type::STRING:
-				case Type::STRING_ARRAY: {
-					if (Null_Annotation::of($property)->value) {
-						return Func::orOp([Func::isNull(), Func::equal('')]);
-					}
-					return Func::equal('');
+			$type = $property->getType();
+			if ($type->isString() || $type->isMultipleString()) {
+				if (Null_Annotation::of($property)->value) {
+					return Func::orOp([Func::isNull(), Func::equal('')]);
 				}
-				default: {
-					// other types, empty word means IS NULL
-					return Func::isNull();
-				}
+				return Func::equal('');
 			}
-
+			elseif ($type->isDateTime()) {
+				return Func::orOp([Date_Time::min(), Date_Time::max()]);
+			}
+			else {
+				return Func::isNull();
+			}
 		}
-		// not a word meaning empty
 		return null;
 	}
 
