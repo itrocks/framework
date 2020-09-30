@@ -49,8 +49,16 @@ article ol.properties {
 	}
 }
 
-article > ul.data ul.collection > li > ol > li {
+article ul.data ul.collection > li.header > ol > li {
 	padding: 8px;
+}
+
+article > ul.data ul.collection > li:not(.header) > ol > li {
+	padding: 8px;
+
+	> ul.collection {
+		margin: -8px;
+	}
 }
 
 article ul.data ul.map {
