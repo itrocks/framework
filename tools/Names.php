@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Tools;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Autoloader;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Displays_Annotation;
@@ -405,22 +404,14 @@ abstract class Names
 			return self::$sets[$class_name];
 		}
 		// if $class_name is explicitely declared as 'singular' : return it
-		$dependency = Dao::searchOne(
-			['class_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
-			Dependency::class
-		);
-		if ($dependency) {
+		if (Dependency\Tools::hasSet($class_name)) {
 			self::$sets[$class_name] = $class_name;
 			return $class_name;
 		}
 		// explicitely declared as 'plural of ...' : return the matching class name
-		$dependency = Dao::searchOne(
-			['dependency_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
-			Dependency::class
-		);
-		if ($dependency) {
-			self::$sets[$class_name] = $dependency->class_name;
-			return $dependency->class_name;
+		if ($dependency_class_name = Dependency\Tools::dependencyToClass($class_name)) {
+			self::$sets[$class_name] = $dependency_class_name;
+			return $dependency_class_name;
 		}
 		// guess the singular using common syntactic changes (apply setToSingle to words)
 		$set_class_name = $class_name;

@@ -348,6 +348,9 @@ class Compiler extends Cache implements
 			}
 		}
 		$this->sources = null;
+
+		(new Dependency\Cache)->generate();
+
 		$this->text_output->log('Compilation done');
 		$this->text_output->end();
 	}

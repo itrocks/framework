@@ -17,6 +17,12 @@ use ReflectionException;
 trait Tools
 {
 
+	//----------------------------------------------------------------------------- $dependency_class
+	/**
+	 * @var string[]
+	 */
+	static $dependency_class;
+
 	//--------------------------------------------------------------- classesWithPropertiesUsingClass
 	/**
 	 * Get dependencies to class that declare which property(ies) has var $class_name
@@ -41,6 +47,20 @@ trait Tools
 			$class_names[$dependency->class_name] = $dependency->class_name;
 		}
 		return $class_names;
+	}
+
+	//----------------------------------------------------------------------------- dependencyToClass
+	/**
+	 * @param $dependency_name string
+	 * @return string
+	 */
+	public static function dependencyToClass($dependency_name)
+	{
+		if (!static::$dependency_class) {
+			/** @noinspection PhpIncludeInspection */
+			static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+		}
+		return static::$dependency_class[$dependency_name] ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ extendsUse
@@ -123,6 +143,20 @@ trait Tools
 			}
 		}
 		return null;
+	}
+
+	//---------------------------------------------------------------------------------------- hasSet
+	/**
+	 * @param $class_name string
+	 * @return boolean
+	 */
+	public static function hasSet($class_name)
+	{
+		if (!static::$dependency_class) {
+			/** @noinspection PhpIncludeInspection */
+			static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+		}
+		return in_array($class_name, static::$dependency_class);
 	}
 
 	//-------------------------------------------------------------------------- propertiesUsingClass
