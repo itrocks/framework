@@ -199,6 +199,20 @@ class Email
 		return mb_encode_mimeheader(strval($text), 'utf-8', 'Q');
 	}
 
+	//------------------------------------------------------------------------------- encodeRecipient
+	/**
+	 * @param $recipient Recipient
+	 * @return string
+	 */
+	protected function encodeRecipient(Recipient $recipient)
+	{
+		if ($recipient->name) {
+			$name = str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $recipient->name);
+			return mb_encode_mimeheader($name, 'utf-8', 'Q') . SP . '<' . $recipient->email . '>';
+		}
+		return $recipient->email;
+	}
+
 	//------------------------------------------------------------------------------------ getHeaders
 	/**
 	 * store json is not enough to decode the json string and change it into an array
@@ -229,11 +243,12 @@ class Email
 			$this->headers['Date'] = $this->date->format('D, j M Y H:i:s O');
 		}
 		if ($this->from) {
-			$from = strval($this->from);
-			if (strpos($from, '<')) {
-				$from = str_replace(DOT, SP, lParse($from, '<')) . '<' . rParse($from, '<');
+			$from = $this->from;
+			if ($from->name) {
+				$from = clone $from;
+				$from->name = str_replace(DOT, SP, $from->name);
 			}
-			$this->headers['From'] = $this->encodeHeader($from);
+			$this->headers['From'] = $this->encodeRecipient($from);
 		}
 		if (!isset($this->headers['Message-ID']) && Dao::getObjectIdentifier($this)) {
 			$project = strtolower(mParse(get_class(Application::current()), BS, BS));
@@ -295,7 +310,11 @@ class Email
 	 */
 	protected function mimeRecipients(array $recipients)
 	{
-		return join(',', $recipients);
+		$result = [];
+		foreach ($recipients as $recipient) {
+			$result[] = $this->encodeRecipient($recipient);
+		}
+		return join(',', $result);
 	}
 
 	//----------------------------------------------------------------------------- uniqueAttachments
