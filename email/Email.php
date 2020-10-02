@@ -22,6 +22,8 @@ use ITRocks\Framework\Tools\Date_Time;
  * @feature edit
  * @feature json
  * @feature output
+ * @feature resend
+ * @feature send
  * @representative date, from, to, subject
  */
 class Email
@@ -86,6 +88,7 @@ class Email
 	//----------------------------------------------------------------------------------------- $from
 	/**
 	 * @link Object
+	 * @user invisible_edit
 	 * @var Recipient
 	 */
 	public $from;

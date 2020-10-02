@@ -63,6 +63,10 @@ ul.actions > li {
 		background-image: url('img/save-24.svg');
 	}
 
+	&.send > a {
+		background-image: url('img/email-24.svg');
+	}
+
 	&.uninstall > a {
 		background-image: url('img/uninstall-24.svg');
 	}

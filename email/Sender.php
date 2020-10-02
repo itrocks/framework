@@ -102,6 +102,7 @@ class Sender implements Configurable, Sender_Interface
 		error_reporting($error_reporting);
 
 		// user error when errors
+		$email->send_message = '';
 		if ($send_result instanceof PEAR_Error) {
 			return $email->send_message = (strval($send_result) ?: 'Send error : unknown');
 		}
