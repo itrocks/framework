@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Dao\Option;
+use ITRocks\Framework\Mapper\Component;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -128,9 +129,11 @@ abstract class Write
 			) {
 				continue;
 			}
+			/** @var $value Component */
 			if ($property->getType()->isMultiple()) {
 				/** @noinspection PhpUnhandledExceptionInspection */
 				foreach ($property->getValue($object) as $value) {
+					$value->setComposite($object);
 					$this->beforeWrite($value, $options, $before_write_annotation);
 					$this->beforeWriteComponents($value, $options, $before_write_annotation);
 				}
@@ -138,6 +141,7 @@ abstract class Write
 			else {
 				/** @noinspection PhpUnhandledExceptionInspection */
 				$value = $property->getValue($object);
+				$value->setComposite($object);
 				$this->beforeWrite($value, $options, $before_write_annotation);
 				$this->beforeWriteComponents($value, $options, $before_write_annotation);
 			}
