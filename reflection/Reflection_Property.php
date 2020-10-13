@@ -405,24 +405,16 @@ class Reflection_Property extends ReflectionProperty
 
 	//------------------------------------------------------------------------------ getFinalProperty
 	/**
+	 * Returns a new Reflection_Property object that matches the final property without property.path.
+	 * If $this has no property.path (eg is already a final property) : returns $this.
+	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
 	public function getFinalProperty()
 	{
-		if (strpos($this->path, DOT)) {
-			$path = explode(DOT, $this->path);
-			/** @noinspection PhpUnhandledExceptionInspection $this->path is valid */
-			$property = new Reflection_Property($this->class, array_shift($path));
-			foreach ($path as $property_name) {
-				/** @noinspection PhpUnhandledExceptionInspection $this->path is valid */
-				$property = new Reflection_Property(
-					$property->getType()->getElementTypeAsString(), $property_name
-				);
-			}
-			return $property;
-		}
-		return $this;
+		/** @noinspection PhpUnhandledExceptionInspection $this is valid */
+		return strpos($this->path, DOT) ? new static($this->final_class, $this->name) : $this;
 	}
 
 	//------------------------------------------------------------------------- getOverriddenProperty

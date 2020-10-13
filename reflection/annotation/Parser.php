@@ -4,15 +4,17 @@ namespace ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
-use ITRocks\Framework\Property\Reflection_Property;
+use ITRocks\Framework\Property;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Annotation_In;
 use ITRocks\Framework\Reflection\Annotation\Template\Do_Not_Inherit;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Class_Component;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
 
@@ -95,8 +97,8 @@ class Parser
 	 *
 	 * @param $reflection_object Has_Doc_Comment
 	 * @param $annotation_name   string
-	 * @param $multiple          boolean if null, multiple automatically set if annotation class is a
-	 *                           Multiple_Annotation
+	 * @param $multiple          boolean|null if null, multiple automatically set if annotation class
+	 *                           is a Multiple_Annotation
 	 * @param $local             boolean if true, only local doc-comments is read
 	 * @return Annotation|Annotation[]
 	 */
@@ -111,11 +113,18 @@ class Parser
 		}
 		$doc_comment = $local
 			? (
-				($reflection_object instanceof Reflection_Property)
+				($reflection_object instanceof Property\Reflection_Property)
 					? $reflection_object->getDocComment([], false)
 					: $reflection_object->getDocComment([])
 				)
 			: $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
+		if (
+			is_a($annotation_class, Property_Context_Annotation::class, true)
+			&& ($reflection_object instanceof Reflection_Property)
+			&& strpos($reflection_object->path, DOT)
+		) {
+			$reflection_object = $reflection_object->getFinalProperty();
+		}
 		$annotations = [];
 		$annotation  = null;
 		$i           = 0;
