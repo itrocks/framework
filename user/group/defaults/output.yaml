@@ -5,4 +5,5 @@ features:
   - json
   - output
   - ITRocks/Framework/Property/remove
+  - ITRocks/Framework/Property/search
   - ITRocks/Framework/Property/select
