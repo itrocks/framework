@@ -264,6 +264,13 @@ var requestTargetHeaders = function($element)
 				var keep_scroll = new Keep_Scroll($target);
 				keep_scroll.keep();
 				$target = $target.htmlTarget(data);
+				$target.each(function() {
+					var $target = $(this);
+					if ($target.find('form, .form').length && $target.closest('form').length) {
+						$target.css({ right: 0, top: $target.offset().top + 'px' });
+						$target.insertAfter($target.closest('form'));
+					}
+				});
 				if (settings.show && $target.filter(':not(:visible)').length) {
 					$target.filter(':not(:visible)').show();
 				}
