@@ -41,15 +41,16 @@ class Controller extends Output\Controller
 			$parameters,
 			View::link(Names::classToSet(is_object($object) ? get_class($object) : $object))
 		);
-		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
-		unset($buttons[Feature::F_EDIT]);
-		unset($buttons[Feature::F_PRINT]);
-		$fill_combo = isset($parameters['fill_combo'])
-			? ['fill_combo' => $parameters['fill_combo']]
-			: [];
-		$buttons = ($settings && $settings->actions)
-			? $buttons
-			: [
+		if ($settings && $settings->actions) {
+			$buttons = parent::getGeneralButtons($object, $parameters, $settings);
+			unset($buttons[Feature::F_EDIT]);
+			unset($buttons[Feature::F_PRINT]);
+		}
+		else {
+			$fill_combo = isset($parameters['fill_combo'])
+				? ['fill_combo' => $parameters['fill_combo']]
+				: [];
+			$buttons = [
 				Feature::F_CLOSE => new Button(
 					'Close',
 					$close_link,
@@ -63,6 +64,7 @@ class Controller extends Output\Controller
 					[Target::RESPONSES, Tag::SUBMIT]
 				)
 			];
+		}
 		if (Dao::getObjectIdentifier($object) && !isset($buttons[Feature::F_DELETE])) {
 			$buttons[Feature::F_DELETE] = new Button(
 				'Delete',
