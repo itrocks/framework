@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Objects\Note;
 
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\Objects\Note;
 use ITRocks\Framework\Objects\Note\Summary;
@@ -22,6 +23,9 @@ use ITRocks\Framework\View;
 class Plugin implements Registerable
 {
 
+	//--------------------------------------------------------------------------------------- FEATURE
+	const FEATURE = 'notes';
+
 	//-------------------------------------------------------------------------------- addNotesButton
 	/**
 	 * @param $object object
@@ -29,17 +33,17 @@ class Plugin implements Registerable
 	 */
 	public function addNotesButton($object, array &$result)
 	{
-		if (!Dao::getObjectIdentifier($object)) {
+		if (!Dao::getObjectIdentifier($object) || isset($result[static::FEATURE])) {
 			return;
 		}
 
 		$buttons =& $result;
 		$count   =  Dao::count(['object' => $object], Note::class) ?: null;
 
-		$buttons['notes'] = new Button(
+		$buttons[static::FEATURE] = new Button(
 			'Notes',
 			View::link(Note::class, Summary\Controller::FEATURE, [$object]),
-			'notes',
+			static::FEATURE,
 			['#notes-summary', Button::DATA => ['count' => $count]]
 		);
 	}
@@ -50,6 +54,9 @@ class Plugin implements Registerable
 	 */
 	public function register(Register $register)
 	{
+		$register->aop->afterMethod(
+			[Edit\Controller::class, 'getGeneralButtons'], [$this, 'addNotesButton']
+		);
 		$register->aop->afterMethod(
 			[Output\Controller::class, 'getGeneralButtons'], [$this, 'addNotesButton']
 		);
