@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Locale;
@@ -359,7 +360,7 @@ class Summary_Builder
 		$properties = $this->joins->getProperties($master_path);
 		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 		// if null, new way to do
-		if (is_null($property)) {
+		if (is_null($property) && !beginsWith($path, Expressions::MARKER)) {
 			/** @noinspection PhpUnhandledExceptionInspection root class and property must be valid */
 			$property = new Reflection_Property($this->joins->getClass(''), $path);
 		}

@@ -10,7 +10,9 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Comparison;
 use ITRocks\Framework\Dao\Func\Group_Concat;
+use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Dao\Mysql\Mysql_Error_Exception;
 use ITRocks\Framework\Dao\Option;
@@ -491,9 +493,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @return string
 	 */
 	public function getSearchSummary(
-		$class_name, List_Setting\Set $list_settings, array $search = null
+		string $class_name, List_Setting\Set $list_settings, array $search
 	) {
-		if (empty($search)) {
+		if (!$search) {
 			return '';
 		}
 		if ($list_settings->search) {
@@ -1017,7 +1019,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
 	{
-		foreach ($search as $property_path => $value) {
+		foreach ($search as $property_path => $search_value) {
 			// ignore numeric keys : these are additions, and do not come from the list form
 			// ignore id filters, which filter current object using direct identifiers (no need to search)
 			if (is_numeric($property_path) || ($property_path === 'id')) {
@@ -1030,35 +1032,52 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				continue;
 			}
 			$property_type = $property->getType();
-			if ($property_type->isClass() && !Store_Annotation::of($property)->isString()) {
-				$class = $property_type->asReflectionClass();
-				$representative_property_names = Representative_Annotation::of($property)->values()
-					?: Class_\Representative_Annotation::of($class)->values();
-				if (!$representative_property_names && $class->isAbstract()) {
-					$representative_property_names[] = 'representative';
+			if (!$property_type->isClass() || Store_Annotation::of($property)->isString()) {
+				continue;
+			}
+			$class = $property_type->asReflectionClass();
+			$representative_property_names = Representative_Annotation::of($property)->values()
+				?: Class_\Representative_Annotation::of($class)->values();
+			if (!$representative_property_names && $class->isAbstract()) {
+				$representative_property_names[] = 'representative';
+			}
+			if (!$representative_property_names) {
+				continue;
+			}
+
+			unset($search[$property_path]);
+			$add_search = [];
+			$values     = ($search_value instanceof Logical) ? $search_value->arguments : [$search_value];
+			foreach ($values as $key => $value) {
+				$sub_search            = [];
+				$sub_search_properties = [];
+				foreach ($representative_property_names as $property_name) {
+					$sub_property              = $property_path . DOT . $property_name;
+					$sub_search[$sub_property] = $value;
+					$sub_search_properties[]   = $sub_property;
 				}
-				if ($representative_property_names) {
-					// search into each value
-					$sub_search            = [];
-					$sub_search_properties = [];
-					foreach ($representative_property_names as $property_name) {
-						$sub_property              = $property_path . DOT . $property_name;
-						$sub_search[$sub_property] = $value;
-						$sub_search_properties[]   = $sub_property;
-					}
-					$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search, true);
-					// concatenated search
-					if ((count($sub_search) > 1) && !$recurse) {
-						$sub_search[Func::concat($sub_search_properties, true)] = $value;
-					}
-					unset($search[$property_path]);
-					if (count($sub_search) === 1) {
-						$search = array_merge($search, $sub_search);
-					}
-					else {
-						$search[] = Func::orOp($sub_search);
-					}
+				$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search, true);
+				// concatenated search
+				if ((count($sub_search) > 1) && !$recurse) {
+					$sub_search[Func::concat($sub_search_properties, true)] = $value;
 				}
+				if (count($sub_search) === 1) {
+					$add_search = array_merge($add_search, $sub_search);
+				}
+				else {
+					$not_equal_comparison = ($value instanceof Comparison)
+						&& in_array($value->sign, [Comparison::NOT_EQUAL, Comparison::NOT_LIKE]);
+					$add_search[] = $not_equal_comparison
+						? Func::andOp($sub_search)
+						: Func::orOp($sub_search);
+				}
+			}
+			if ($search_value instanceof Logical) {
+				$search_value->arguments = $add_search;
+				$search[] = $search_value;
+			}
+			else {
+				$search = array_merge($search, $add_search);
 			}
 		}
 
