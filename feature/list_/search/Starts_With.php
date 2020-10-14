@@ -9,10 +9,10 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 
 /**
- * @feature Search by contained keywords
- * @feature_exclude Starts_With
+ * @feature Always search for data starting with the criteria entered by the user
+ * @feature_exclude Implicit_Jokers
  */
-class Implicit_Jokers implements Registerable
+class Starts_With implements Registerable
 {
 	use Has_Get;
 
@@ -22,12 +22,12 @@ class Implicit_Jokers implements Registerable
 	 */
 	private $enabled = true;
 
-	//---------------------------------------------------------------------------------- jokersAround
+	//----------------------------------------------------------------------------------- appendJoker
 	/**
 	 * @param $search_value string The value around which you add jokers (modified)
 	 * @param $property     Reflection_Property
 	 */
-	public function jokersAround(string &$search_value, Reflection_Property $property)
+	public function appendJoker(string &$search_value, Reflection_Property $property)
 	{
 		if (!$this->enabled) {
 			return;
@@ -37,7 +37,7 @@ class Implicit_Jokers implements Registerable
 		if (in_array($type_string, [Type::STRING, Type::STRING_ARRAY], true) || $type->isClass()) {
 			$search_value = beginsWith($search_value, '=')
 				? substr($search_value, 1)
-				: str_replace('**', '*', ('*' . $search_value . '*'));
+				: str_replace('**', '*', ($search_value . '*'));
 		}
 	}
 
@@ -48,7 +48,7 @@ class Implicit_Jokers implements Registerable
 	public function register(Register $register)
 	{
 		$register->aop->beforeMethod(
-			[Search_Parameters_Parser::class, 'applySingleValue'], [$this, 'jokersAround']
+			[Search_Parameters_Parser::class, 'applySingleValue'], [$this, 'appendJoker']
 		);
 	}
 

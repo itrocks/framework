@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Feature\List_\Search\Implicit_Jokers;
+use ITRocks\Framework\Feature\List_\Search\Starts_With;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Tests\Objects\Document;
@@ -14,14 +15,6 @@ use ITRocks\Framework\Tools\Date_Time;
  */
 class Parser_Test extends Test
 {
-
-	//----------------------------------------------------------------------------------- $class_name
-	/**
-	 * Business object to use for tests. Should contains properties of type required for tests
-	 *
-	 * @var Search_Parameters_Parser
-	 */
-	private $class_name;
 
 	//--------------------------------------------------------------------------- $date_format_backup
 	/**
@@ -49,11 +42,12 @@ class Parser_Test extends Test
 		if ($jokers = Implicit_Jokers::get(false)) {
 			$jokers->setEnabled(false);
 		}
+		if ($jokers = Starts_With::get(false)) {
+			$jokers->setEnabled(false);
+		}
 		// TODO Build
-		$this->class_name = Document::class;
-		$this->parser     = new Search_Parameters_Parser($this->class_name);
+		$this->parser = new Search_Parameters_Parser(Document::class);
 		// init the date we base upon for tests
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		Date::initDates(new Date_Time('2016-06-15 12:30:45'));
 	}
 
