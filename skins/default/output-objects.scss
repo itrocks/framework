@@ -43,6 +43,10 @@ ol.properties > li.component-objects > div > ul.collection > li {
 			}
 		}
 
+		> select {
+			min-width: 34px;
+		}
+
 		&.float,
 		&.float > div > input,
 		&.integer,
