@@ -316,7 +316,7 @@ class Summary_Builder
 			$date_format->show_time = $show_time;
 			return $date;
 		}
-		elseif (is_numeric($value)) {
+		elseif ($property && is_numeric($value)) {
 			$type_string = $property->getType()->asString();
 			if ($type_string == Type::BOOLEAN) {
 				return ($value ? Loc::tr(YES) : Loc::tr(NO));
