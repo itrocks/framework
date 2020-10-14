@@ -107,7 +107,7 @@ class Search_Parameters_Parser
 	 * @param $class_name string
 	 * @param $search     array user-input search string
 	 */
-	public function __construct($class_name, array $search = [])
+	public function __construct(string $class_name, array $search = [])
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$this->class  = new Reflection_Class($class_name);
@@ -122,9 +122,9 @@ class Search_Parameters_Parser
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyAnd($search_value, Reflection_Property $property)
+	protected function applyAnd(string $search_value, Reflection_Property $property)
 	{
-		if (is_string($search_value) && (strpos($search_value, '&') !== false)) {
+		if (strpos($search_value, '&') !== false) {
 			$and = [];
 			foreach (explode('&', $search_value) as $search) {
 				$and[] = $this->applyNot($search, $property);
@@ -144,6 +144,7 @@ class Search_Parameters_Parser
 	 * @param $expression string|Option
 	 * @param $property   Reflection_Property
 	 * @return Func\Comparison
+	 * @throws Exception
 	 */
 	protected function applyComparison($expression, Reflection_Property $property)
 	{
@@ -159,10 +160,12 @@ class Search_Parameters_Parser
 			$applied = $this->applyDateValue($comparison->than_value, $property);
 			if ($applied instanceof Func\Range) {
 				switch ($comparison->sign) {
-					case '>=': case '<':
+					case '>=':
+					case '<':
 						$comparison->than_value = $applied->from;
 						break;
-					case '<=': case '>':
+					case '<=':
+					case '>':
 						$comparison->than_value = $applied->to;
 						break;
 					case '<>':
@@ -191,7 +194,7 @@ class Search_Parameters_Parser
 	 * @return mixed        a range, dao func or scalar
 	 * @throws Exception
 	 */
-	protected function applyComplexValue($search_value, Reflection_Property $property)
+	protected function applyComplexValue(string $search_value, Reflection_Property $property)
 	{
 		$search = $this->applyComparison($search_value, $property);
 		if (!$search) {
@@ -210,8 +213,9 @@ class Search_Parameters_Parser
 	 * @param $date_time string locale formatted date-time
 	 * @param $property  Reflection_Property
 	 * @return string|Func\Range|mixed Date::applyDateValue is incompletly documented : I don't know !
+	 * @throws Exception
 	 */
-	protected function applyDateValue($date_time, Reflection_Property $property)
+	protected function applyDateValue(string $date_time, Reflection_Property $property)
 	{
 		return Date::applyDateValue($date_time, $property);
 	}
@@ -223,9 +227,9 @@ class Search_Parameters_Parser
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyNot($search_value, Reflection_Property $property)
+	protected function applyNot(string $search_value, Reflection_Property $property)
 	{
-		if (is_string($search_value) && (substr(trim($search_value), 0, 1) === '!')) {
+		if (substr(trim($search_value), 0, 1) === '!') {
 			$search_value = substr(trim($search_value), 1);
 			$search       = $this->applyComplexValue($search_value, $property);
 			if ($search instanceof Func\Negate) {
@@ -248,9 +252,9 @@ class Search_Parameters_Parser
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyOr($search_value, Reflection_Property $property)
+	protected function applyOr(string $search_value, Reflection_Property $property)
 	{
-		if (is_string($search_value) && (strpos($search_value, ',') !== false)) {
+		if (strpos($search_value, ',') !== false) {
 			$or = [];
 			foreach (explode(',', $search_value) as $search) {
 				$or[] = $this->applyAnd($search, $property);
@@ -417,7 +421,7 @@ class Search_Parameters_Parser
 	 * @param $search_value string
 	 * @param $property Reflection_Property
 	 */
-	protected function parseField(&$search_value, Reflection_Property $property)
+	protected function parseField(string &$search_value, Reflection_Property $property)
 	{
 		try {
 			$search_value = $this->applyOr($search_value, $property);
