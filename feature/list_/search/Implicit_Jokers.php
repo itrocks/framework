@@ -34,7 +34,10 @@ class Implicit_Jokers implements Registerable
 		}
 		$type        = $property->getType();
 		$type_string = $type->asString();
-		if (in_array($type_string, [Type::STRING, Type::STRING_ARRAY], true) || $type->isClass()) {
+		if (
+			in_array($type_string, [Type::STRING, Type::STRING_ARRAY], true)
+			|| ($type->isClass() && !$type->isDateTime())
+		) {
 			$search_value = beginsWith($search_value, '=')
 				? substr($search_value, 1)
 				: str_replace('**', '*', ('*' . $search_value . '*'));
