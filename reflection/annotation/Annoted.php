@@ -211,7 +211,7 @@ trait Annoted
 
 	//------------------------------------------------------------------------------ removeAnnotation
 	/**
-	 * Remove an annotation, identified by its class and value, from a multiple annotations
+	 * Remove an annotation, identified by its class and value, from simple & multiple annotations
 	 *
 	 * Don't call this with non-multiples annotations or it will crash your application !
 	 *
@@ -222,7 +222,12 @@ trait Annoted
 	{
 		$path = $this->getAnnotationCachePath();
 		if (!$annotation) {
-			self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = [];
+			if (isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][0])) {
+				unset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][0]);
+			}
+			if (isset(self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true])) {
+				self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = [];
+			}
 			return;
 		}
 		$this->getAnnotations($annotation_name);
