@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection\Annotation\Template;
 
+use Exception;
 use ITRocks\Framework;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Event;
@@ -135,10 +136,15 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 					|| ($class_property->getDeclaringTraitName() === $class_property->getFinalClassName())
 				)
 			) {
-				$dependencies = Dao::search(
-					['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
-					Dependency::class
-				);
+				try {
+					$dependencies = Dao::search(
+						['class_name' => $class->getName(), 'type' => Dependency::T_NAMESPACE_USE],
+						Dependency::class
+					);
+				}
+				catch (Exception $exception) {
+					$dependencies = [];
+				}
 				$use = [];
 				foreach ($dependencies as $dependency) {
 					$use[] = $dependency->dependency_name;

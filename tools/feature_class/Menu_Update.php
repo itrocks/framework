@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Feature_Class;
 
+use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Menu;
 use ITRocks\Framework\Component\Menu\Item;
@@ -40,7 +41,12 @@ class Menu_Update extends Update
 		/** @var $write           Keep[] */
 		[$class_names, $feature_classes, $write] = $this->updateInit();
 		$links             = array_keys(Menu::get()->configuration_items);
-		$print_model_links = array_keys(Dao::readAll(Print_Model::class, Dao::key('class_name')));
+		try {
+			$print_model_links = array_keys(Dao::readAll(Print_Model::class, Dao::key('class_name')));
+		}
+		catch (Exception $exception) {
+			$print_model_links = [];
+		}
 		foreach ($print_model_links as $print_model_link) {
 			$links[] = View::link($print_model_link, Feature::F_PRINT);
 		}
