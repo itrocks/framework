@@ -159,6 +159,16 @@ class String_Class
 		return new String_Class($this->value);
 	}
 
+	//------------------------------------------------------------------------------------------ left
+	/**
+	 * @param $length integer
+	 * @return string
+	 */
+	public function left(int $length)
+	{
+		return new String_Class(substr($this->value, 0, $length));
+	}
+
 	//---------------------------------------------------------------------------------------- length
 	/**
 	 * @return integer
@@ -207,6 +217,16 @@ class String_Class
 	public function path()
 	{
 		return new String_Class(str_replace(BS, SL, Builder::current()->sourceClassName($this->value)));
+	}
+
+	//----------------------------------------------------------------------------------------- right
+	/**
+	 * @param $length integer
+	 * @return string
+	 */
+	public function right(int $length)
+	{
+		return new String_Class(substr($this->value, -$length));
 	}
 
 	//----------------------------------------------------------------------------------------- short
