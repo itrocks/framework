@@ -323,7 +323,7 @@ class Reflection_Property extends ReflectionProperty
 				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
 				$default_object = Builder::create($this->getFinalClassName());
 			}
-			return $default_annotation->call($default_object);
+			return $default_annotation->call($default_object, [$this]);
 		}
 		return $this->getFinalClass()
 			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name];
