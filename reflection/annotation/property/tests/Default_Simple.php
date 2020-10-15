@@ -7,7 +7,8 @@ use ITRocks\Framework\Tools\Date_Time;
  * A very simple class, without AOP, to test @default simple and alone
  *
  * @override age @default Default_Simple::defaultAge
- * @override null_age @default Default_Simple::defaultAge
+ * @override null_age @default defaultAge
+ * @see Default_Simple
  */
 class Default_Simple extends Default_Extended
 {
@@ -37,7 +38,7 @@ class Default_Simple extends Default_Extended
 	/**
 	 * @return integer
 	 */
-	protected function defaultAge()
+	public static function defaultAge()
 	{
 		return 43;
 	}
@@ -47,7 +48,7 @@ class Default_Simple extends Default_Extended
 	 * @return string
 	 * @return_constant
 	 */
-	protected function defaultName()
+	public function defaultName()
 	{
 		return 'Robert';
 	}

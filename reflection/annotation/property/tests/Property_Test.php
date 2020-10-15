@@ -91,14 +91,13 @@ class Property_Test extends Test
 	public function testDefaultSimple()
 	{
 		$robert = new Default_Simple();
-		// TODO LOW default for age should be 43, but this case does not work. Warning in documentation
 		static::assertEquals(18, $robert->age, '@default.override');
 		static::assertEquals(43, $robert->null_age, '@default.override_null');
 		static::assertEquals('Robert', $robert->name, '@default.simple');
 		static::assertEquals('Mitchum', $robert->surname, '@default.very_simple');
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
-			18,
+			43,
 			(new Reflection_Property(Default_Simple::class, 'age'))->getDefaultValue(),
 			'@default.reflection.override'
 		);
@@ -123,7 +122,7 @@ class Property_Test extends Test
 		/** @noinspection PhpUnhandledExceptionInspection constants */
 		static::assertEquals(
 			[
-				'age'         => 18,
+				'age'         => 43,
 				'alive_until' => Date_Time::max(),
 				'name'        => 'Robert',
 				'null_age'    => 43,

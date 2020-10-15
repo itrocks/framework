@@ -76,7 +76,7 @@ class Test_Object
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
-	public static function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
+	public function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
 	{
 		return 'default value for ' . $property->getName();
 	}
