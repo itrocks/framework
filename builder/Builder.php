@@ -528,11 +528,16 @@ class Builder implements Activable, Serializable
 	/**
 	 * Gets source class name for a replacement class name
 	 *
-	 * @param $class_name string
+	 * @param $class_name string|null
+	 * @param $built      boolean if true, $class_name can be a built class : it will go to parent
 	 * @return string
+	 * @todo LOW should never be called with null, but it happens
 	 */
-	public function sourceClassName($class_name)
+	public function sourceClassName(string $class_name = null, $built = false)
 	{
+		while ($built && Class_Builder::isBuilt($class_name)) {
+			$class_name = get_parent_class($class_name);
+		}
 		$found = array_search($class_name, $this->replacements);
 		return ($found === false) ? $class_name : $this->sourceClassName($found);
 	}
