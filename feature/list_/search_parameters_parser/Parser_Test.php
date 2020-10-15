@@ -244,7 +244,11 @@ class Parser_Test extends Test
 	{
 		$this->parser->search = ['date' => 'empty,none, null '];
 		$check                = $this->parser->parse();
-		$assume = [ 'date' => Func::orOp([ Func::isNull(), Func::isNull(), Func::isNull() ]) ];
+		$assume = ['date' => Func::orOp([
+			Func::orOp([Date_Time::min(), Date_Time::max()]),
+			Func::orOp([Date_Time::min(), Date_Time::max()]),
+			Func::orOp([Date_Time::min(), Date_Time::max()])
+		])];
 		static::assertEquals($assume, $check);
 	}
 

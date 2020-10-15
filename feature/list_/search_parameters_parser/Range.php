@@ -39,7 +39,21 @@ abstract class Range
 	 */
 	public static function applyRange($expression, Reflection_Property $property)
 	{
-		$range    = explode('-', $expression, 2);
+		if ($property->getType()->isDateTime() && (substr_count($expression, '-') > 1)) {
+			if (
+				preg_match('/[a-z]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
+				?: preg_match('/[0-9]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
+			) {
+				$split_position = $match[1][1];
+			}
+			else {
+				$split_position = strpos($expression, '-');
+			}
+			$range = [substr($expression, 0, $split_position), substr($expression, $split_position + 1)];
+		}
+		else {
+			$range = explode('-', $expression, 2);
+		}
 		$range[0] = self::applyRangeValue($range[0], $property, self::MIN);
 		$range[1] = self::applyRangeValue($range[1], $property, self::MAX);
 		if ($range[0] === false || $range[1] === false) {

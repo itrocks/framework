@@ -36,6 +36,7 @@ abstract class Document
 	 * Document number
 	 *
 	 * @mandatory
+	 * @search_range
 	 * @var string
 	 */
 	private $number;
