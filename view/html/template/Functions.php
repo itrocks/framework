@@ -42,6 +42,7 @@ use ITRocks\Framework\View\Html\Builder\File;
 use ITRocks\Framework\View\Html\Builder\Property_Select;
 use ITRocks\Framework\View\Html\Dom\Input;
 use ITRocks\Framework\View\Html\Template;
+use ReflectionException;
 
 /**
  * Html template functions : those which are called using {@functionName} into templates
@@ -963,6 +964,41 @@ class Functions
 		$name            = strval(reset($template->objects));
 		$property_prefix = $this->getPropertyPrefix($template);
 		return $property_prefix ? ($property_prefix . '[' . $name . ']') : $name;
+	}
+
+	//-------------------------------------------------------------------------------- getPrintGetter
+	/**
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getPrintGetter(Template $template)
+	{
+		$value = reset($template->objects);
+		$object = next($template->objects);
+		if (!is_object($object)) {
+			return $value;
+		}
+		if ($object instanceof Reflection_Property) {
+			$property = $object;
+			$object   = ($property instanceof Reflection_Property_Value) ? $property->getObject() : null;
+			if (!is_object($object)) {
+				return $value;
+			}
+		}
+		else {
+			try {
+				$property = new Reflection_Property($object, reset($template->var_names));
+			}
+			catch (ReflectionException $exception) {
+				return $value;
+			}
+		}
+		/** @var $getter Method_Annotation */
+		$getter = $property->getAnnotation('print_getter');
+		if (!$getter->value) {
+			return $value;
+		}
+		return $getter->call($object);
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
