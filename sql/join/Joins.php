@@ -210,6 +210,11 @@ class Joins
 		) {
 			$join->secondary['class'] = $join->master_column . '_class';
 		}
+		if ($join->foreign_property && $join->foreign_property->getType()->isAbstractClass()) {
+			$source_class_name = Builder::current()->sourceClassName($this->classes[$master_path]);
+			$escaped           = str_replace(BS, BS . BS, $source_class_name);
+			$join->secondary[$join->foreign_column . '_class'] = Q . $escaped . Q;
+		}
 		return $join;
 	}
 
