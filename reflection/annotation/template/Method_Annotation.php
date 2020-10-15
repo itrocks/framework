@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * This annotation template contains a callable method :
@@ -169,6 +170,13 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			$value = (substr($value, 0, 1) === SL)
 				? substr($value, 1)
 				: ($class->getName() . '::' . $value);
+			[$class_name, $method_name] = explode('::', $value);
+			try {
+				$this->static = (new Reflection_Method($class_name, $method_name))->isStatic();
+			}
+			catch (ReflectionException $exception) {
+				$this->static = true;
+			}
 		}
 		return $value;
 	}
