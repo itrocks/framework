@@ -1,70 +1,93 @@
 article.list > form > table > thead {
-  background: #efefef; }
-  article.list > form > table > thead > tr > :first-child {
-    background: #efefef; }
-  article.list > form > table > thead > tr > .hover {
-    background-color: #f5e6d1 !important; }
-  article.list > form > table > thead > tr.title > th {
-    color: #333;
-    font-weight: 500; }
-    article.list > form > table > thead > tr.title > th.property.float > a, article.list > form > table > thead > tr.title > th.property.integer > a {
-      text-align: right; }
-    article.list > form > table > thead > tr.title > th > a {
-      box-sizing: border-box;
-      display: block;
-      height: 32px;
-      position: relative;
-      vertical-align: top;
-      width: 100%; }
-      article.list > form > table > thead > tr.title > th > a > input {
-        left: 0;
-        position: absolute;
-        top: -1px; }
-    article.list > form > table > thead > tr.title > th.visible.lines {
-      padding: 0 .83em 0 .75em; }
-      article.list > form > table > thead > tr.title > th.visible.lines > input {
-        margin: 0; }
-    article.list > form > table > thead > tr.title > th:not(:first-child) > a {
-      padding: 10px .75em 0 .5em;
-      text-align: left; }
-    article.list > form > table > thead > tr.title > th.column_select {
-      background: #efefef url("img/add-column-16.svg") right 3px center no-repeat; }
-      article.list > form > table > thead > tr.title > th.column_select > a {
-        font-size: 0;
-        min-width: 20px; }
-    article.list > form > table > thead > tr.title > th.sort1 > a, article.list > form > table > thead > tr.title > th.sort2 > a, article.list > form > table > thead > tr.title > th.sort3 > a {
-      padding-right: 24px; }
-    article.list > form > table > thead > tr.title > th.sort1:not(.reverse) {
-      background: url("img/sort-1-up-24.svg") right center no-repeat; }
-    article.list > form > table > thead > tr.title > th.sort1.reverse {
-      background: url("img/sort-1-down-24.svg") right center no-repeat; }
-    article.list > form > table > thead > tr.title > th.sort2:not(.reverse) {
-      background: url("img/sort-2-up-24.svg") right center no-repeat; }
-    article.list > form > table > thead > tr.title > th.sort2.reverse {
-      background: url("img/sort-2-down-24.svg") right center no-repeat; }
-    article.list > form > table > thead > tr.title > th.sort3:not(.reverse) {
-      background: url("img/sort-3-up-24.svg") right center no-repeat; }
-    article.list > form > table > thead > tr.title > th.sort3.reverse {
-      background: url("img/sort-3-down-24.svg") right center no-repeat; }
-  article.list > form > table > thead > tr.search > .reset {
-    font-size: 0;
-    text-align: center;
-    vertical-align: middle; }
-    article.list > form > table > thead > tr.search > .reset > a {
-      background: url("img/filter-24.svg") center no-repeat;
-      display: inline-block;
-      height: 28px;
-      width: 28px; }
-  article.list > form > table > thead > tr.search > td {
-    background: #f8f8f8;
-    box-shadow: inset 1px 0 #d8d8d8, inset 0 -1px #d8d8d8;
-    padding: 0 1px;
-    vertical-align: top; }
-    article.list > form > table > thead > tr.search > td > input {
-      background: transparent !important;
-      border: none !important;
-      box-shadow: inset 0 0 1px 1px #fbfaf9;
-      display: block;
-      height: 12px !important;
-      padding: 10px 5px !important;
-      width: calc(100% - 10px) !important; }
+  background: #efefef;
+}
+article.list > form > table > thead > tr > :first-child {
+  background: #efefef;
+}
+article.list > form > table > thead > tr > .hover {
+  background-color: #f5e6d1 !important;
+}
+article.list > form > table > thead > tr.title > th {
+  color: #333;
+  font-weight: 500;
+}
+article.list > form > table > thead > tr.title > th.property.float > a, article.list > form > table > thead > tr.title > th.property.integer > a {
+  text-align: right;
+}
+article.list > form > table > thead > tr.title > th > a {
+  box-sizing: border-box;
+  display: block;
+  height: 32px;
+  position: relative;
+  vertical-align: top;
+  width: 100%;
+}
+article.list > form > table > thead > tr.title > th > a > input {
+  left: 0;
+  position: absolute;
+  top: -1px;
+}
+article.list > form > table > thead > tr.title > th.visible.lines {
+  padding: 0 0.83em 0 0.75em;
+}
+article.list > form > table > thead > tr.title > th.visible.lines > input {
+  margin: 0;
+}
+article.list > form > table > thead > tr.title > th:not(:first-child) > a {
+  padding: 10px 0.75em 0 0.5em;
+  text-align: left;
+}
+article.list > form > table > thead > tr.title > th.column_select {
+  background: #e8e8e8 url("img/add-column-16.svg") center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.column_select > a {
+  font-size: 0;
+  min-width: 20px;
+}
+article.list > form > table > thead > tr.title > th.sort1 > a, article.list > form > table > thead > tr.title > th.sort2 > a, article.list > form > table > thead > tr.title > th.sort3 > a {
+  padding-right: 24px;
+}
+article.list > form > table > thead > tr.title > th.sort1:not(.reverse) {
+  background: url("img/sort-1-up-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.sort1.reverse {
+  background: url("img/sort-1-down-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.sort2:not(.reverse) {
+  background: url("img/sort-2-up-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.sort2.reverse {
+  background: url("img/sort-2-down-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.sort3:not(.reverse) {
+  background: url("img/sort-3-up-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.title > th.sort3.reverse {
+  background: url("img/sort-3-down-24.svg") right center no-repeat;
+}
+article.list > form > table > thead > tr.search > .reset {
+  font-size: 0;
+  text-align: center;
+  vertical-align: middle;
+}
+article.list > form > table > thead > tr.search > .reset > a {
+  background: url("img/filter-24.svg") center no-repeat;
+  display: inline-block;
+  height: 28px;
+  width: 28px;
+}
+article.list > form > table > thead > tr.search > td {
+  background: #f8f8f8;
+  box-shadow: inset 1px 0 #d8d8d8, inset 0 -1px #d8d8d8;
+  padding: 0 1px;
+  vertical-align: top;
+}
+article.list > form > table > thead > tr.search > td > input {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: inset 0 0 1px 1px #fbfaf9;
+  display: block;
+  height: 12px !important;
+  padding: 10px 5px !important;
+  width: calc(100% - 10px) !important;
+}

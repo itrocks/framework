@@ -1,7 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-    <g fill="#444">
-        <path fill-rule="nonzero" d="M4 15V4h9v11h-2v1h3V2c0-1.333-.667-2-2-2H4.973C4.733.01 3 .139 3 2v14h3v-1H4z"/>
-        <path d="M9 6H8v5h1z"/>
-        <path d="M11 8H6v1h5zM11 13H6l2.5 3z"/>
-    </g>
+<g fill="#444" transform="matrix(-1 0 0 1 13 0)">
+<path d="M1 12L9 12 5 16z"/>
+<path d="M5 0c.552 0 1 .448 1 1v3h3c.552 0 1 .448 1 1s-.448 1-1 1H5.999L6 9c0 .552-.448 1-1 1s-1-.448-1-1l-.001-3H1c-.552 0-1-.448-1-1s.448-1 1-1h3V1c0-.552.448-1 1-1z"/>
+</g>
 </svg>
