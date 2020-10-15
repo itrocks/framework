@@ -393,7 +393,7 @@ class Joins
 	 * @todo use @store_name to get correct master and foreign columns name
 	 */
 	private function addReverseJoin(
-		Join $join, $master_path, $master_property_name, $foreign_path
+		Join $join, &$master_path, $master_property_name, $foreign_path
 	) {
 		// new Class_Name(property_name)
 		if (strpos($master_property_name, ')')) {
@@ -457,6 +457,9 @@ class Joins
 		}
 		else {
 			$join->foreign_property = $foreign_property;
+		}
+		if (isset($sub_master) && $sub_master) {
+			$master_path = $sub_master;
 		}
 		return $foreign_class_name;
 	}
