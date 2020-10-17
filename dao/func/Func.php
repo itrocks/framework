@@ -21,6 +21,7 @@ use ITRocks\Framework\Dao\Func\Now;
 use ITRocks\Framework\Dao\Func\Position;
 use ITRocks\Framework\Dao\Func\Property;
 use ITRocks\Framework\Dao\Func\Range;
+use ITRocks\Framework\Dao\Func\Trimester;
 use ITRocks\Framework\Dao\Func\Value;
 use ITRocks\Framework\Dao\Func\Where;
 use ITRocks\Framework\Dao\Func\Year;
@@ -439,6 +440,18 @@ class Func
 	public static function trim()
 	{
 		return new Call(Call::TRIM);
+	}
+
+	//------------------------------------------------------------------------------------- trimester
+	/**
+	 * @param $property_path string If set, will return a key to the instantiated Trimester object
+	 * @return Trimester|string
+	 */
+	public static function trimester($property_path = null)
+	{
+		return $property_path
+			? Expressions::add($property_path, new Trimester())
+			: new Trimester();
 	}
 
 	//----------------------------------------------------------------------------------------- value
