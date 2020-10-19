@@ -38,7 +38,7 @@ article.list > form > table > thead > tr.title > th:not(:first-child) > a {
   text-align: left;
 }
 article.list > form > table > thead > tr.title > th.column_select {
-  background: #e8e8e8 url("img/add-column-16.svg") center no-repeat;
+  background: #e8e8e8 url("img/add-column-16.svg") right 2px center no-repeat;
 }
 article.list > form > table > thead > tr.title > th.column_select > a {
   font-size: 0;
