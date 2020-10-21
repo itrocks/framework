@@ -166,7 +166,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					/** @noinspection PhpUnhandledExceptionInspection valid $object */
 					/** @var $property Reflection_Property */
 					$value = $user_getter
-						? (new Contextual_Callable($user_getter, $object))->call()
+						? (new Contextual_Callable($user_getter, $object))->call($property)
 						: $property->getValue($object);
 					if (is_object($value)){
 						$value = strval($value);

@@ -396,7 +396,11 @@ class Reflection_Property_Value extends Reflection_Property
 			}
 		}
 		$callable = new Contextual_Callable($user_getter->value, $object);
-		return $callable->call();
+		$this_user         = $this->user;
+		$this->user        = false;
+		$user_getter_value = $callable->call($this);
+		$this->user        = $this_user;
+		return $user_getter_value;
 	}
 
 	//----------------------------------------------------------------------------------------- value

@@ -1516,11 +1516,11 @@ class Template
 		$class_name = get_class($object);
 		if (property_exists($class_name, $property_name)) {
 			/** @noinspection PhpUnhandledExceptionInspection property exists */
-			$getter = (new Reflection_Property($class_name, $property_name))
-				->getAnnotation('user_getter')->value;
+			$property = new Reflection_Property($class_name, $property_name);
+			$getter   = $property->getAnnotation('user_getter')->value;
 			if ($getter) {
 				$callable = new Contextual_Callable($getter, $object);
-				return $callable->call();
+				return $callable->call($property);
 			}
 		}
 		/** @noinspection PhpUsageOfSilenceOperatorInspection */
