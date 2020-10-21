@@ -246,7 +246,7 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * Gets value
 	 *
-	 * @param $object       object
+	 * @param $object       object|null
 	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed
 	 * @throws ReflectionException

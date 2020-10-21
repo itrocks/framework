@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Add;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
@@ -8,6 +9,7 @@ use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\Output_Setting;
+use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -26,7 +28,7 @@ class Controller extends Edit\Controller
 	/**
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Output_Setting\Set
+	 * @param $settings   Setting\Custom\Set|Output_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
@@ -64,6 +66,7 @@ class Controller extends Edit\Controller
 		$object = $parameters->getMainObject($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$properties = (new Reflection_Class($class_name))->accessProperties();
+		$this->initializeSubObjects($object, $properties);
 		$objects    = $parameters->getObjects();
 		if ((count($objects) > 1) || $form) {
 			$this->initializeValues($object, array_merge($objects, $form), $properties);
@@ -71,6 +74,26 @@ class Controller extends Edit\Controller
 		$parameters = parent::getViewParameters($parameters, $form, $class_name);
 		$parameters['title'] = Loc::tr('New', $class_name) . SP . $parameters['title'];
 		return $parameters;
+	}
+
+	//-------------------------------------------------------------------------- initializeSubObjects
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object     object
+	 * @param $properties Reflection_Property[]
+	 */
+	protected function initializeSubObjects($object, array $properties)
+	{
+		foreach ($properties as $property) {
+			if (
+				$property->getAnnotation('component')->value
+				&& Mandatory_Annotation::of($property)->value
+				&& ($type = $property->getType())->isSingleClass()
+			) {
+				/** @noinspection PhpUnhandledExceptionInspection @var */
+				$property->setValue($object, Builder::create($type->getElementTypeAsString()));
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------ initializeValues
@@ -126,7 +149,7 @@ class Controller extends Edit\Controller
 	 * @param $properties Reflection_Property[] The list of properties to search into
 	 * @return string|null The name of the matching property, null if not found
 	 */
-	protected function matchingProperty($class_name, array $properties)
+	protected function matchingProperty(string $class_name, array $properties)
 	{
 		foreach ($properties as $property) {
 			$type = $property->getType();
