@@ -46,8 +46,8 @@ class Data implements Registerable
 		/** @noinspection PhpUnhandledExceptionInspection Must be a valid class name */
 		$class = new Reflection_Class($class_name);
 		/** @var $data_access_control Method_Annotation */
-		$data_access_control = $class->getAnnotation('data_access_control');
-		if ($data_access_control->value) {
+		$data_access_controls = $class->getAnnotations('data_access_control');
+		foreach ($data_access_controls as $data_access_control) {
 			$object = $uri_object->parameters->getMainObject();
 			if ($object instanceof Set) {
 				/** @noinspection PhpUnhandledExceptionInspection value element class name */
@@ -59,11 +59,13 @@ class Data implements Registerable
 			);
 			if ($replacement_link) {
 				$access_control->setUri($replacement_link, $uri, $get, $post, $files);
+				break;
 			}
 			elseif (!$result) {
 				$access_control->setUri(
 					View::link(Access_Control::class, Feature::F_DENIED), $uri, $get, $post, $files
 				);
+				break;
 			}
 		}
 	}

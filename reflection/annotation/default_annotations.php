@@ -170,6 +170,7 @@ Parser::$default_annotations = [
 
 	/**
 	 * @data_access_control dataAccessControl
+	 * This is a Multiple_Annotation : several access control callbacks can be defined
 	 */
 	Parser::T_CLASS . '@data_access_control' => Method_Annotation::class,
 
