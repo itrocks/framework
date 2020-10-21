@@ -53,7 +53,11 @@ class Duplicator
 				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 				: [];
 			foreach ($class->accessProperties() as $property) {
-				if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
+				if (
+					!$property->isStatic()
+					&& !in_array($property->name, $exclude_properties)
+					&& $property->getAnnotation('duplicate')->value
+				) {
 					$property_link = Link_Annotation::of($property);
 					// @link Collection : must disconnect objects
 					// @link Collection | Map : duplicate and remove reference to the parent id

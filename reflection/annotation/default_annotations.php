@@ -382,6 +382,12 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@display_order' => List_Annotation::class,
 
 	/**
+	 * @duplicate [true]
+	 * Identifies a property which value should not be duplicated by the duplicate feature
+	 */
+	Parser::T_PROPERTY . '@duplicate' => Default_True_Boolean_Annotation::class,
+
+	/**
 	 * @editor editor_name
 	 * Enables online text editor (ckeditor)
 	 */
