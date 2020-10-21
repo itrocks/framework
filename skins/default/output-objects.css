@@ -21,8 +21,12 @@ ol.properties > li.component-objects > div > ul.collection > li:not(.header):nth
 }
 ol.properties > li.component-objects > div > ul.collection > li > ol > li > input, ol.properties > li.component-objects > div > ul.collection > li > ol > li > select, ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea {
   border: none !important;
+  box-sizing: border-box;
   color: black;
-  width: calc(max(48px, 100%) - 20px);
+  width: 100%;
+}
+ol.properties > li.component-objects > div > ul.collection > li > ol > li > input:not([type=checkbox]):not([type=radio]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > select:not([type=checkbox]):not([type=radio]), ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea:not([type=checkbox]):not([type=radio]) {
+  min-height: 30px;
 }
 ol.properties > li.component-objects > div > ul.collection > li > ol > li > input[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > select[readonly], ol.properties > li.component-objects > div > ul.collection > li > ol > li > textarea[readonly] {
   background: transparent;
