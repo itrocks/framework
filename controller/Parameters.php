@@ -344,6 +344,17 @@ class Parameters
 		}
 	}
 
+	//----------------------------------------------------------------------------------------- reset
+	/**
+	 * Resets all parameters and objects
+	 */
+	public function reset()
+	{
+		$this->objects    = [];
+		$this->parameters = array_key_exists('as_widget', $this->parameters)
+			? ['as_widget' => $this->parameters['as_widget']] : [];
+	}
+
 	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Returns the key of the parameter having value $string
