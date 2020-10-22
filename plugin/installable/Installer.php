@@ -297,11 +297,12 @@ class Installer
 
 	//------------------------------------------------------------------------------- removeDependent
 	/**
-	 * @param $feature Feature
+	 * @param $feature  Feature
+	 * @param $features Feature[]
 	 */
-	protected function removeDependent(Feature $feature)
+	protected function removeDependent(Feature $feature, array $features)
 	{
-		$this->uninstall($feature->plugin_class_name);
+		$this->uninstall($feature->plugin_class_name, $features);
 		(new Installed\Dependency($feature->plugin_class_name))->remove($this->plugin_class_name);
 	}
 
@@ -417,9 +418,14 @@ class Installer
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $plugin_class_name Installable|string plugin object or class name
+	 * @param $features          Feature[]
 	 */
-	public function uninstall($plugin_class_name)
+	public function uninstall($plugin_class_name, array $features = [])
 	{
+		if (isset($features[$plugin_class_name])) {
+			return;
+		}
+		$features[$plugin_class_name] = true;
 		Dao::begin();
 		$stacked_plugin_class_name = $this->plugin_class_name;
 		$this->plugin_class_name   = $plugin_class_name;
@@ -428,7 +434,9 @@ class Installer
 
 		// remove all dependencies that need this plugin
 		foreach ($this->willUninstall($plugin_class_name, false) as $feature) {
-			$this->removeDependent($feature);
+			if (!isset($features[$feature->plugin_class_name])) {
+				$this->removeDependent($feature, $features);
+			}
 		}
 
 		foreach (Feature_Uninstall_Annotation::allOf($plugin_class) as $feature_install) {
@@ -499,13 +507,17 @@ class Installer
 		$includes = Feature_Include_Annotation::allOf(new Reflection_Class($plugin_class_name));
 		foreach ($includes as $include) {
 			$feature_class_name = Builder::current()->sourceClassName($include->value);
+			/** @var $feature Feature */
 			$feature = Dao::searchOne(['plugin_class_name' => $feature_class_name], Feature::class);
 			if (isset($features[$feature->plugin_class_name])) {
 				continue;
 			}
 			$features[$feature->plugin_class_name] = $feature;
 			if ($recurse) {
+				$backup_class_name       = $this->plugin_class_name;
+				$this->plugin_class_name = $feature->plugin_class_name;
 				$features = $this->willInstall($feature->plugin_class_name, true, $features);
+				$this->plugin_class_name = $backup_class_name;
 			}
 		}
 		return $features;
@@ -532,7 +544,10 @@ class Installer
 				}
 				$features[$feature->plugin_class_name] = $feature;
 				if ($recurse) {
+					$backup_class_name       = $this->plugin_class_name;
+					$this->plugin_class_name = $feature->plugin_class_name;
 					$features = $this->willUninstall($feature->plugin_class_name, true, $features);
+					$this->plugin_class_name = $backup_class_name;
 				}
 			}
 		}

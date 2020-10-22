@@ -130,8 +130,9 @@ class Feature
 	 */
 	public function willInstall($recurse = true)
 	{
-		$installer    = new Installer();
-		$will_install = $installer->willInstall($this->plugin_class_name, $recurse);
+		$installer                    = new Installer();
+		$installer->plugin_class_name = $this->plugin_class_name;
+		$will_install                 = $installer->willInstall($this->plugin_class_name, $recurse);
 		unset($will_install[$this->plugin_class_name]);
 		return $will_install;
 	}
@@ -145,8 +146,9 @@ class Feature
 	 */
 	public function willUninstall($recurse = true)
 	{
-		$installer      = new Installer();
-		$will_uninstall = $installer->willUninstall($this->plugin_class_name, $recurse);
+		$installer                    = new Installer();
+		$installer->plugin_class_name = $this->plugin_class_name;
+		$will_uninstall               = $installer->willUninstall($this->plugin_class_name, $recurse);
 		unset($will_uninstall[$this->plugin_class_name]);
 		return $will_uninstall;
 	}
