@@ -71,7 +71,7 @@ trait Foreign_Key_Builder_Property
 	private static function propertyOnUpdateToMysql(Reflection_Property $property)
 	{
 		$constraint = $property->getAnnotation('update_constraint')->value;
-		if ($constraint && ($constraint === 'initial')) {
+		if ($constraint && ($constraint !== 'initial')) {
 			return strtoupper(str_replace('_', SP, $constraint));
 		}
 		if ($property->getAnnotation('constraint')->value === 'set_null') {
