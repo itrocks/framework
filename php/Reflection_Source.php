@@ -120,12 +120,12 @@ class Reflection_Source
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $file_name  string may be the name of a file
+	 * @param $file_name  string|null may be the name of a file
 	 *                    or the PHP source code if beginning with '<?php'
-	 * @param $class_name string If file name can be null, $class_name will force initialisation
+	 * @param $class_name string|null If file name can be null, $class_name will force initialisation
 	 *                    of classes as a Reflection_Class object for $class_name
 	 */
-	public function __construct($file_name = null, $class_name = null)
+	public function __construct(string $file_name = null, string $class_name = null)
 	{
 		$this->accept_compiled_source = !empty($file_name);
 		if (isset($file_name)) {
@@ -142,7 +142,7 @@ class Reflection_Source
 			$this->classes = [$class_name => new Reflection_Class($this, $class_name)];
 		}
 		$source_class_name = $this->getFirstClassName();
-		if ($class_name && ($source_class_name !== $source_class_name)) {
+		if ($class_name && ($class_name !== $source_class_name)) {
 			trigger_error(
 				"Build Reflection_Source($file_name, $class_name)"
 				. SP . "has non-matching class $source_class_name into source",
@@ -161,7 +161,7 @@ class Reflection_Source
 	 *
 	 * @param $class_or_file_name string If null, then clear the entire cache
 	 */
-	public static function clearCache($class_or_file_name = null)
+	public static function clearCache(string $class_or_file_name = null)
 	{
 		if (!isset($class_or_file_name)) {
 			self::$cache = [];
@@ -448,7 +448,7 @@ class Reflection_Source
 					// dependencies @param, @return, @set, @var
 					// 0 : everything until var name, 1 : type, 2 : Class_Name / $param, 3 : Class_Name
 					preg_match_all(
-						'%\*\s+@(param|return|set|var)\s+(?:@local\s+)?([\w\$\[\]\|\\\\]+)(?:\s+([\w\$\[\]\|\\\\]+))?%',
+						'%\*\s+@(param|return|set|var)\s+(?:@local\s+)?([\w\$\[\]|\\\\]+)(?:\s+\??([\w\$\[\]|\\\\]+))?%',
 						$doc_comment,
 						$matches,
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
@@ -654,10 +654,7 @@ class Reflection_Source
 		$filters = [self::DEPENDENCIES];
 		if (!isset($this->classes))      $filters[] = self::CLASSES;
 		if (!isset($this->instantiates)) $filters[] = self::INSTANTIATES;
-		if (!isset($this->namespaces))   $filters[] = self::NAMESPACES;
-		if (!isset($this->requires))     $filters[] = self::REQUIRES;
-		if (!isset($this->use))          $filters[] = self::USES;
-		$this->get($filters);
+		$this->getFilters($filters);
 		$result = get_object_vars($this);
 		unset($result['lines']);
 		unset($result['source']);
@@ -672,7 +669,7 @@ class Reflection_Source
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
-	public function getClass($class_name)
+	public function getClass(string $class_name)
 	{
 		$classes = $this->getClasses();
 		return isset($classes[$class_name])
@@ -710,11 +707,7 @@ class Reflection_Source
 	public function getClasses()
 	{
 		if (!isset($this->classes)) {
-			$filters = [self::CLASSES, self::DEPENDENCIES];
-			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
-			if (!isset($this->requires))   $filters[] = self::REQUIRES;
-			if (!isset($this->use))        $filters[] = self::USES;
-			$this->get($filters);
+			$this->getFilters([self::CLASSES, self::DEPENDENCIES]);
 		}
 		return $this->classes;
 	}
@@ -732,14 +725,23 @@ class Reflection_Source
 		if (!isset($this->dependencies) || ($instantiates && !isset($this->instantiates))) {
 			$filters = [self::DEPENDENCIES];
 			if ($instantiates && !isset($this->instantiates)) $filters[] = self::INSTANTIATES;
-			if (!isset($this->namespaces))                    $filters[] = self::NAMESPACES;
-			if (!isset($this->requires))                      $filters[] = self::REQUIRES;
-			if (!isset($this->use))                           $filters[] = self::USES;
-			$this->get($filters);
+			$this->getFilters($filters);
 		}
 		return $instantiates
 			? arrayMergeRecursive($this->dependencies, $this->instantiates)
 			: $this->dependencies;
+	}
+
+	//------------------------------------------------------------------------------------ getFilters
+	/**
+	 * @param $filters array
+	 */
+	protected function getFilters(array $filters)
+	{
+		if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
+		if (!isset($this->requires))   $filters[] = self::REQUIRES;
+		if (!isset($this->use))        $filters[] = self::USES;
+		$this->get($filters);
 	}
 
 	//--------------------------------------------------------------------------------- getFirstClass
@@ -776,11 +778,7 @@ class Reflection_Source
 	public function getInstantiates()
 	{
 		if (!isset($this->instantiates)) {
-			$filters = [self::DEPENDENCIES, self::INSTANTIATES];
-			if (!isset($this->namespaces)) $filters[] = self::NAMESPACES;
-			if (!isset($this->requires))   $filters[] = self::REQUIRES;
-			if (!isset($this->use))        $filters[] = self::USES;
-			$this->get($filters);
+			$this->getFilters([self::DEPENDENCIES, self::INSTANTIATES]);
 		}
 		return $this->instantiates;
 	}
@@ -805,11 +803,10 @@ class Reflection_Source
 	 * for a class name.
 	 * Use this to get a class from outside current source.
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
-	public function getOutsideClass($class_name)
+	public function getOutsideClass(string $class_name)
 	{
 		if (substr($class_name, 0, 1) === BS) {
 			$class_name = substr($class_name, 1);
@@ -904,7 +901,7 @@ class Reflection_Source
 	 * @param $token_id integer
 	 * @return string
 	 */
-	private function nameOf($token_id)
+	private function nameOf(int $token_id)
 	{
 		return strtolower(substr(token_name($token_id), 2));
 	}
@@ -914,7 +911,7 @@ class Reflection_Source
 	 * @param $class_name string
 	 * @return Reflection_Source
 	 */
-	public static function ofClass($class_name)
+	public static function ofClass(string $class_name)
 	{
 		if (isset(self::$cache[$class_name])) {
 			$result = self::$cache[$class_name];
@@ -934,10 +931,10 @@ class Reflection_Source
 	//---------------------------------------------------------------------------------------- ofFile
 	/**
 	 * @param $file_name  string
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 * @return Reflection_Source
 	 */
-	public static function ofFile($file_name, $class_name = null)
+	public static function ofFile(string $file_name, string $class_name = null)
 	{
 		if (isset(self::$cache[$file_name])) {
 			$result = self::$cache[$file_name];
@@ -980,7 +977,7 @@ class Reflection_Source
 	 * @param $files      string[] The possible files that may contain the class definition
 	 * @return boolean true if the file has been found, else false
 	 */
-	public function searchFile($class_name, array $files)
+	public function searchFile(string $class_name, array $files)
 	{
 		static $already = [];
 
@@ -1024,7 +1021,7 @@ class Reflection_Source
 	 * @param $reset  boolean
 	 * @return Reflection_Source
 	 */
-	public function setSource($source, $reset = true)
+	public function setSource(string $source, bool $reset = true)
 	{
 		$this->changed = true;
 		if ($reset) {

@@ -24,6 +24,7 @@ trait Has_Begin_End_Dates
 
 	//------------------------------------------------------------------------------------- $end_date
 	/**
+	 * @default Date_Time::max
 	 * @link DateTime
 	 * @var Date_Time
 	 */
@@ -36,18 +37,20 @@ trait Has_Begin_End_Dates
 	 * @param $date_time Date_Time|null @default Date_Time::now
 	 * @return static|null
 	 */
-	public static function activeAt(Date_Time $date_time = null)
+	public static function activeAt(Date_Time $date_time = null) : ?Has_Begin_End_Dates
 	{
 		if (!isset($date_time)) {
 			$date_time = Date_Time::now();
 		}
-		return Dao::searchOne(
+		/** @var $result static */
+		$result = Dao::searchOne(
 			[
 				'begin_date' => Func::lessOrEqual($date_time->toEndOf(Date_Time::DAY)),
 				'end_date'   => Func::greaterOrEqual($date_time->toBeginOf(Date_Time::DAY))
 			],
 			static::class
 		);
+		return $result;
 	}
 
 	//--------------------------------------------------------------------------------- checkOverlaps
@@ -55,13 +58,13 @@ trait Has_Begin_End_Dates
 	 * Returns true if there is no date overlap into $array objects, or an error message if there are
 	 *
 	 * @param $array      static[] an array of elements with begin-end dates
-	 * @param $array_name string a name for the object that contains the array
+	 * @param $array_name string|null a name for the object that contains the array
 	 * @return boolean|string|array
 	 * boolean : true if there is no overlapping error
 	 * string : first error message (if $array_name is set only)
 	 * array[object $first_element, object $second_element] : if $array_name is null, returns overlaps
 	 */
-	public static function checkOverlaps(array $array, $array_name = null)
+	public static function checkOverlaps(array $array, string $array_name = null)
 	{
 		$overlaps = [];
 		foreach ($array as $first_element) {
@@ -98,7 +101,7 @@ trait Has_Begin_End_Dates
 	 * @param $with Has_Begin_End_Dates
 	 * @return boolean
 	 */
-	public function datesOverlap($with)
+	public function datesOverlap(Has_Begin_End_Dates $with) : bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$this_period = Builder::create(Period::class, [$this->begin_date, $this->end_date]);
