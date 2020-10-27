@@ -159,7 +159,7 @@ class Reflection_Source
 	 * - both caches accessible with class or file name will be cleared
 	 * - if the first class name into the file differs from $class_or_file_name, both will be cleared
 	 *
-	 * @param $class_or_file_name string If null, then clear the entire cache
+	 * @param $class_or_file_name string|null If null, then clear the entire cache
 	 */
 	public static function clearCache(string $class_or_file_name = null)
 	{
