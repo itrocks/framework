@@ -2,11 +2,14 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Dao\Func\Dao_Function;
-use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
 /**
  * A default list data set class : this stores data (visible strings and linked object) for list views
+ *
+ * @override elements @var List_Row[]
+ * @property List_Row[] elements
  */
 class Default_List_Data extends Set implements List_Data
 {
@@ -29,7 +32,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $properties         Reflection_Property[] the key must be the path of the property
 	 * @param $functions          Dao_Function[]
 	 */
-	public function __construct($element_class_name, array $properties, array $functions = [])
+	public function __construct(string $element_class_name, array $properties, array $functions = [])
 	{
 		parent::__construct($element_class_name);
 		$this->functions  = $functions;
@@ -50,16 +53,29 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * @return integer
 	 */
-	public function count()
+	public function count() : int
 	{
 		return count($this->properties);
+	}
+
+	//------------------------------------------------------------------------------------ firstValue
+	/**
+	 * @return mixed
+	 */
+	public function firstValue()
+	{
+		if (!$this->elements) {
+			return null;
+		}
+		$values = reset($this->elements)->getValues();
+		return reset($values);
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
 	 * @return Reflection_Class
 	 */
-	public function getClass()
+	public function getClass() : Reflection_Class
 	{
 		return $this->elementClass();
 	}
@@ -68,7 +84,7 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * @return Dao_Function[]
 	 */
-	public function getFunctions()
+	public function getFunctions() : array
 	{
 		return $this->functions;
 	}
@@ -78,7 +94,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $row_index integer
 	 * @return object
 	 */
-	public function getObject($row_index)
+	public function getObject(int $row_index)
 	{
 		return $this->getRow($row_index)->getObject();
 	}
@@ -89,7 +105,7 @@ class Default_List_Data extends Set implements List_Data
 	 *
 	 * @return Reflection_Property[]
 	 */
-	public function getProperties()
+	public function getProperties() : array
 	{
 		return $this->properties;
 	}
@@ -99,7 +115,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $row_index integer
 	 * @return List_Row
 	 */
-	public function getRow($row_index)
+	public function getRow(int $row_index) : List_Row
 	{
 		/** @var $list_row List_Row */
 		$list_row = $this->get($row_index);
@@ -110,7 +126,7 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * @return List_Row[]
 	 */
-	public function getRows()
+	public function getRows() : array
 	{
 		return $this->elements;
 	}
@@ -121,7 +137,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $property  string
 	 * @return mixed
 	 */
-	public function getValue($row_index, $property)
+	public function getValue(int $row_index, string $property)
 	{
 		return $this->getRow($row_index)->getValue($property);
 	}
@@ -132,12 +148,12 @@ class Default_List_Data extends Set implements List_Data
 	 *
 	 * @param $class_name string The class name of the main business object stored into the row
 	 * @param $object     object The main business object stored into the row
-	 * @param $row        array|object The data stored into the row
+	 * @param $values     array  The values to store into the row
 	 * @return List_Row
 	 */
-	public function newRow($class_name, $object, $row)
+	public function newRow(string $class_name, $object, array $values) : List_Row
 	{
-		return new Default_List_Row($class_name, $object, $row, $this);
+		return new Default_List_Row($class_name, $object, $values, $this);
 	}
 
 }

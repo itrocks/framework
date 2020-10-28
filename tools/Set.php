@@ -30,10 +30,10 @@ class Set implements Iterator
 	/**
 	 * Constructs a Set object for given element class name
 	 *
-	 * @param $element_class_name string   the class name
+	 * @param $element_class_name string|null the name of the class
 	 * @param $elements           object[] the set can be initialized with this set of elements
 	 */
-	public function __construct($element_class_name = null, array $elements = [])
+	public function __construct(string $element_class_name = null, array $elements = [])
 	{
 		$this->element_class_name = empty($element_class_name)
 			? Names::setToClass(get_class($this))
@@ -45,7 +45,7 @@ class Set implements Iterator
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return Names::classToDisplay($this->element_class_name);
 	}
@@ -85,7 +85,7 @@ class Set implements Iterator
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
-	public function elementClass()
+	public function elementClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $element_class_name must always be valid */
 		return new Reflection_Class($this->element_class_name);
@@ -98,7 +98,7 @@ class Set implements Iterator
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function elementClassNameOf($class_name)
+	public static function elementClassNameOf(string $class_name) : string
 	{
 		if (is_a($class_name, __CLASS__, true)) {
 			$class_name = (new $class_name)->element_class_name;
@@ -116,7 +116,7 @@ class Set implements Iterator
 	 *        and sorted elements list is returned without changing the set
 	 * @return object[] filtered and sorted array of elements
 	 */
-	public function filterAndSort(array $filter_elements, $change = true)
+	public function filterAndSort(array $filter_elements, bool $change = true) : array
 	{
 		$sorted_elements = [];
 		foreach ($filter_elements as $element_key) {
@@ -165,7 +165,7 @@ class Set implements Iterator
 	 * @param $elements   object[]
 	 * @return Set
 	 */
-	public static function instantiate($class_name, array $elements = [])
+	public static function instantiate(string $class_name, array $elements = []) : Set
 	{
 		if (class_exists($class_name) && ($class_name instanceof Set)) {
 			return new $class_name($elements);
@@ -212,7 +212,7 @@ class Set implements Iterator
 	 *
 	 * @return integer
 	 */
-	public function length()
+	public function length() : int
 	{
 		return count($this->elements);
 	}
@@ -256,7 +256,7 @@ class Set implements Iterator
 	 *
 	 * @return boolean
 	 */
-	public function valid()
+	public function valid() : bool
 	{
 		return !empty(current($this->elements));
 	}

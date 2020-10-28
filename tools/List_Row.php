@@ -14,13 +14,13 @@ interface List_Row
 	 * @param $values     string[]
 	 * @param $list       List_Data
 	 */
-	public function __construct($class_name, $object, array $values, List_Data $list);
+	public function __construct(string $class_name, $object, array $values, List_Data $list);
 
 	//----------------------------------------------------------------------------------------- count
 	/**
 	 * @return integer
 	 */
-	public function count();
+	public function count() : int;
 
 	//---------------------------------------------------------------------------------- getClassName
 	/**
@@ -28,7 +28,7 @@ interface List_Row
 	 *
 	 * @return string
 	 */
-	public function getClassName();
+	public function getClassName() : string;
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
@@ -45,7 +45,7 @@ interface List_Row
 	 * @param $property string the path of the property
 	 * @return mixed
 	 */
-	public function getValue($property);
+	public function getValue(string $property);
 
 	//------------------------------------------------------------------------------------- getValues
 	/**
@@ -53,7 +53,7 @@ interface List_Row
 	 *
 	 * @return array
 	 */
-	public function getValues();
+	public function getValues() : array;
 
 	//-------------------------------------------------------------------------------------------- id
 	/**
@@ -68,6 +68,6 @@ interface List_Row
 	 * @param $property string the path of the property
 	 * @param $value    mixed the new value
 	 */
-	public function setValue($property, $value);
+	public function setValue(string $property, $value);
 
 }

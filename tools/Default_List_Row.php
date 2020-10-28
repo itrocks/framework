@@ -46,7 +46,7 @@ class Default_List_Row implements List_Row
 	 * @param $values     string[]
 	 * @param $list       List_Data
 	 */
-	public function __construct($class_name, $object, array $values, List_Data $list)
+	public function __construct(string $class_name, $object, array $values, List_Data $list)
 	{
 		$this->class_name = $class_name;
 		$this->list       = $list;
@@ -58,7 +58,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * @return integer
 	 */
-	public function count()
+	public function count() : int
 	{
 		return count($this->values);
 	}
@@ -71,7 +71,7 @@ class Default_List_Row implements List_Row
 	 * @return string[]
 	 * @see formatValuesEx
 	 */
-	public function formatValues()
+	public function formatValues() : array
 	{
 		$values = [];
 		static $cache = [];
@@ -96,7 +96,7 @@ class Default_List_Row implements List_Row
 	 *
 	 * @return string[]
 	 */
-	public function formatValuesEx()
+	public function formatValuesEx() : array
 	{
 		$properties = $this->list->getProperties();
 		$translate  = Loc::formatTranslate(false);
@@ -116,7 +116,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * @return string
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		return $this->class_name;
 	}
@@ -137,7 +137,7 @@ class Default_List_Row implements List_Row
 	 *
 	 * @return string
 	 */
-	public function getOutputLink()
+	public function getOutputLink() : string
 	{
 		return View::link(
 			is_object($this->object) ? $this->object : [$this->class_name, $this->object]
@@ -149,7 +149,7 @@ class Default_List_Row implements List_Row
 	 * @param $property string
 	 * @return mixed
 	 */
-	public function getValue($property)
+	public function getValue(string $property)
 	{
 		return $this->values[$property];
 	}
@@ -158,7 +158,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * @return array
 	 */
-	public function getValues()
+	public function getValues() : array
 	{
 		return $this->values;
 	}
@@ -174,9 +174,9 @@ class Default_List_Row implements List_Row
 
 	//----------------------------------------------------------------------------------- objectClass
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function objectClass()
+	public function objectClass() : ?string
 	{
 		if (is_a($this->class_name, Has_Object_Class::class, true)) {
 			/** @var $object Has_Object_Class */
@@ -191,7 +191,7 @@ class Default_List_Row implements List_Row
 	 * @param $property string the path of the property
 	 * @param $value    mixed the new value
 	 */
-	public function setValue($property, $value)
+	public function setValue(string $property, $value)
 	{
 		$this->values[$property] = $value;
 	}

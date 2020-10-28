@@ -25,7 +25,13 @@ interface List_Data extends Iterator
 	 *
 	 * @return integer
 	 */
-	public function count();
+	public function count() : int;
+
+	//------------------------------------------------------------------------------------ firstValue
+	/**
+	 * @return mixed
+	 */
+	public function firstValue();
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
@@ -33,7 +39,7 @@ interface List_Data extends Iterator
 	 *
 	 * @return Reflection_Class
 	 */
-	public function getClass();
+	public function getClass() : Reflection_Class;
 
 	//------------------------------------------------------------------------------------- getObject
 	/**
@@ -42,7 +48,7 @@ interface List_Data extends Iterator
 	 * @param $row_index integer 0..n
 	 * @return object
 	 */
-	public function getObject($row_index);
+	public function getObject(int $row_index);
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
@@ -50,7 +56,7 @@ interface List_Data extends Iterator
 	 *
 	 * @return Reflection_Property[]
 	 */
-	public function getProperties();
+	public function getProperties() : array;
 
 	//---------------------------------------------------------------------------------------- getRow
 	/**
@@ -59,13 +65,13 @@ interface List_Data extends Iterator
 	 * @param $row_index integer
 	 * @return List_Row
 	 */
-	public function getRow($row_index);
+	public function getRow(int $row_index) : List_Row;
 
 	//--------------------------------------------------------------------------------------- getRows
 	/**
 	 * @return List_Row[]
 	 */
-	public function getRows();
+	public function getRows() : array;
 
 	//-------------------------------------------------------------------------------------- getValue
 	/**
@@ -73,9 +79,9 @@ interface List_Data extends Iterator
 	 *
 	 * @param $row_index integer
 	 * @param $property string
-	 * @return string
+	 * @return mixed
 	 */
-	public function getValue($row_index, $property);
+	public function getValue(int $row_index, string $property);
 
 	//---------------------------------------------------------------------------------------- length
 	/**
@@ -83,7 +89,7 @@ interface List_Data extends Iterator
 	 *
 	 * @return integer
 	 */
-	public function length();
+	public function length() : int;
 
 	//---------------------------------------------------------------------------------------- newRow
 	/**
@@ -91,9 +97,9 @@ interface List_Data extends Iterator
 	 *
 	 * @param $class_name string The class name of the main business object stored into the row
 	 * @param $object     object The main business object stored into the row
-	 * @param $row        array|object The data stored into the row
+	 * @param $values     array  The values to store into the row
 	 * @return List_Row
 	 */
-	public function newRow($class_name, $object, $row);
+	public function newRow(string $class_name, $object, array $values) : List_Row;
 
 }
