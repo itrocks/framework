@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Import;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Default_Feature_Controller;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Parameters;
@@ -35,14 +36,13 @@ class Import_Execute_Controller implements Default_Feature_Controller
 			$form, Session::current()->get(Files::class)->files
 		);
 		$import->class_name = $class_name;
-		/** @noinspection PhpUnhandledExceptionInspection object */
 		$parameters->getMainObject($import);
-		/** @noinspection PhpUnhandledExceptionInspection no object */
 		$parameters = $parameters->getObjects();
 		foreach ($import->worksheets as $worksheet) {
-			$array        = $worksheet->file->getCsvContent();
-			$import_array = new Import_Array($worksheet->settings, $import->class_name);
+			$array = $worksheet->file->getCsvContent();
 			try {
+				/** @noinspection PhpUnhandledExceptionInspection class */
+				$import_array = Builder::create(Import_Array::class, [$worksheet->settings, $import->class_name]);
 				$import_array->importArray($array);
 			}
 			catch (Import_Exception $exception) {

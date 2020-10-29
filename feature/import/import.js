@@ -22,12 +22,13 @@ $(document).ready(function()
 				// drop
 				var $draggable = ui.draggable;
 				var $droppable = $(this);
-				$draggable.removeAttr('style').appendTo($droppable.find('ul'));
 				// old section value
 				var $input        = $draggable.closest('section').find('input');
 				var property_name = $draggable.attr('class').lParse(SP);
 				var new_val       = (',' + $input.val() + ',').repl(',' + property_name + ',', ',');
 				$input.val((new_val === ',') ? '' : new_val.substr(1, new_val.length - 2));
+				// move property
+				$draggable.removeAttr('style').appendTo($droppable.find('ul'));
 				// new section value
 				$input = $($droppable.closest('section').find('input'));
 				$input.val($input.val() + ($input.val() ? ',' : '') + property_name);
