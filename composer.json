@@ -34,7 +34,7 @@
 		"jquery-form/form":                      "3.*",
 		"kensnyder/quill-image-resize-module":   "1.0.0",
 		"netcarver/textile":                     "3.*",
-		"oomphinc/composer-installers-extender": "~1.1",
+		"oomphinc/composer-installers-extender": "^2.0",
 		"pear/mail":                             "1.*",
 		"pear/mail_mime":                        "1.*",
 		"pear/net_pop3":                         "1.*",
