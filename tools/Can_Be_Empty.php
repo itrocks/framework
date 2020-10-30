@@ -11,6 +11,6 @@ interface Can_Be_Empty
 	/**
 	 * @return boolean
 	 */
-	public function isEmpty();
+	public function isEmpty() : bool;
 
 }

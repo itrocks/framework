@@ -48,6 +48,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//----------------------------------------------------------------------------------------- MONTH
 	const MONTH = 'month';
 
+	//--------------------------------------------------------------------------------- MONTH_OF_YEAR
+	const MONTH_OF_YEAR = 'm';
+
+	//-------------------------------------------------------------------- MONTH_OF_YEAR_WITHOUT_ZERO
+	const MONTH_OF_YEAR_WITHOUT_ZERO = 'n';
+
 	//------------------------------------------------------------------------------------------- NOW
 	const NOW = 'now';
 
@@ -85,7 +91,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @param $time     DateTime|integer|string|null current time in string or timestamp format
 	 *                  If null, current time on timezone will be used to initialize
-	 * @param $timezone DateTimeZone
+	 * @param $timezone DateTimeZone|null
 	 * @throws Exception
 	 */
 	public function __construct($time = self::NOW, DateTimeZone $timezone = null)
@@ -103,7 +109,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->toISO(false);
 	}
@@ -120,7 +126,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function add(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
 		$quantity, $unit = self::DAY
-	) {
+	) : Date_Time {
 		if ($quantity instanceof DateInterval) {
 			parent::add($quantity);
 		}
@@ -158,7 +164,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date Date_Time
 	 * @return integer -1 if $this < $date, 1 if $this > $date, 0 if they are equal
 	 */
-	public function compare(Date_Time $date)
+	public function compare(Date_Time $date) : int
 	{
 		return $this->isBefore($date) ? -1 : ($this->isAfter($date) ? 1 : 0);
 	}
@@ -170,7 +176,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date Date_Time
 	 * @return boolean true if different, false if both dates are empty or if both dates are set
 	 */
-	public function compareEmpty(Date_Time $date)
+	public function compareEmpty(Date_Time $date) : bool
 	{
 		return ($this->isEmpty() && !$date->isEmpty()) || ($date->isEmpty() && !$this->isEmpty());
 	}
@@ -180,7 +186,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $format   string
 	 * @param $time     string
-	 * @param $timezone DateTimeZone
+	 * @param $timezone DateTimeZone|null
 	 * @return Date_Time
 	 */
 	public static function createFromFormat(
@@ -208,7 +214,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @see toBeginOf
 	 * @see toEndOf
 	 */
-	public function day($end_of_day = false)
+	public function day($end_of_day = false) : Date_Time
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant format */
 		return new static($this->format('Y-m-d') . ($end_of_day ? ' 23:59:59' : ''));
@@ -234,9 +240,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * Returns the number of the day in the week, 1 (monday) through 7 (sunday)
 	 *
 	 * @param $iso_8601 boolean if set to false, sunday will return 0 instead of 7
-	 * @return string
+	 * @return integer
 	 */
-	public function dayOfWeek($iso_8601 = true)
+	public function dayOfWeek($iso_8601 = true) : int
 	{
 		return $this->format($iso_8601 ? self::DAY_OF_WEEK_ISO : self::DAY_OF_WEEK);
 	}
@@ -247,7 +253,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return integer
 	 */
-	public function dayOfYear()
+	public function dayOfYear() : int
 	{
 		return $this->format(self::DAY_OF_YEAR);
 	}
@@ -255,9 +261,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//---------------------------------------------------------------------------------------- daysIn
 	/**
 	 * @param $unit string @values day, month, week, year
-	 * @return integer
+	 * @return ?integer
 	 */
-	public function daysIn($unit)
+	public function daysIn(string $unit) : ?int
 	{
 		switch ($unit) {
 			case self::DAY:
@@ -280,7 +286,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return integer
 	 * @see daysIn
 	 */
-	public function daysInMonth()
+	public function daysInMonth() : int
 	{
 		return $this->format(self::DAYS_IN_MONTH);
 	}
@@ -292,7 +298,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date Date_Time date-times ...
 	 * @return Date_Time
 	 */
-	public function earliest(Date_Time $date)
+	public function earliest(Date_Time $date) : Date_Time
 	{
 		$earliest = $this;
 		foreach (func_get_args() as $date) {
@@ -311,7 +317,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return static
 	 */
-	public static function empty()
+	public static function empty() : Date_Time
 	{
 		return static::min();
 	}
@@ -339,7 +345,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @throws Exception
 	 */
-	public static function fromISO($date, $max = false)
+	public static function fromISO(string $date, bool $max = false) : Date_Time
 	{
 		return (!empty($date) && (substr($date, 0, 4) !== '0000'))
 			? new static(
@@ -353,10 +359,10 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return self
+	 * @return static
 	 * @throws Exception
 	 */
-	public static function fromString($string)
+	public static function fromString($string) : Date_Time
 	{
 		return static::fromISO($string);
 	}
@@ -366,7 +372,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date Date_Time|string|null
 	 * @return boolean
 	 */
-	public function is($date)
+	public function is($date) : bool
 	{
 		return $this->toISO(false) === strval($date);
 	}
@@ -383,7 +389,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isAfter($date_time, $null_is_late = false)
+	public function isAfter($date_time, bool $null_is_late = false) : bool
 	{
 		return isset($date_time) ? ($this->toISO(false) > strval($date_time)) : !$null_is_late;
 	}
@@ -400,7 +406,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isAfterOrEqual($date_time, $null_is_late = false)
+	public function isAfterOrEqual($date_time, bool $null_is_late = false) : bool
 	{
 		return isset($date_time) ? ($this->toISO(false) >= strval($date_time)) : !$null_is_late;
 	}
@@ -417,7 +423,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isBefore($date_time, $null_is_late = false)
+	public function isBefore($date_time, bool $null_is_late = false) : bool
 	{
 		return isset($date_time) ? ($this->toISO(false) < strval($date_time)) : $null_is_late;
 	}
@@ -434,7 +440,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $null_is_late boolean
 	 * @return boolean
 	 */
-	public function isBeforeOrEqual($date_time, $null_is_late = false)
+	public function isBeforeOrEqual($date_time, bool $null_is_late = false) : bool
 	{
 		return isset($date_time) ? ($this->toISO(false) <= strval($date_time)) : $null_is_late;
 	}
@@ -445,7 +451,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return boolean
 	 */
-	public function isEmpty()
+	public function isEmpty() : bool
 	{
 		return $this->isMin() || $this->isMax();
 	}
@@ -453,9 +459,9 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//--------------------------------------------------------------------------------------- isEndOf
 	/**
 	 * @param $unit string @values day, hour, minute, month, week, year
-	 * @return boolean
+	 * @return ?boolean
 	 */
-	public function isEndOf($unit)
+	public function isEndOf(string $unit) : ?bool
 	{
 		switch ($unit) {
 			case self::DAY:    return $this->format('H:i:s') === '23:59:59';
@@ -474,7 +480,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return boolean
 	 */
-	public function isMax()
+	public function isMax() : bool
 	{
 		return ($this->toISO(false) >= self::$max_date);
 	}
@@ -485,7 +491,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return boolean
 	 */
-	public function isMin()
+	public function isMin() : bool
 	{
 		return ($this->toISO(false) <= self::$min_date);
 	}
@@ -500,7 +506,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @see toEndOf
 	 */
-	public function lastDayOfMonth()
+	public function lastDayOfMonth() : Date_Time
 	{
 		if ($this->isEmpty()) {
 			/** @noinspection PhpUnhandledExceptionInspection copy of valid $this */
@@ -517,7 +523,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $date Date_Time date-times ...
 	 * @return Date_Time
 	 */
-	public function latest(Date_Time $date)
+	public function latest(Date_Time $date) : Date_Time
 	{
 		$latest = $this;
 		foreach (func_get_args() as $date) {
@@ -537,7 +543,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @return_constant
 	 */
-	public static function max()
+	public static function max() : Date_Time
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		return new static(self::$max_date);
@@ -551,7 +557,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @return_constant
 	 */
-	public static function min()
+	public static function min() : Date_Time
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		return new static(self::$min_date);
@@ -567,7 +573,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @see toBeginOf
 	 */
-	public function month()
+	public function month() : Date_Time
 	{
 		if ($this->isEmpty()) {
 			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
@@ -583,7 +589,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return Date_Time
 	 */
-	public static function now()
+	public static function now() : Date_Time
 	{
 		return new static();
 	}
@@ -594,7 +600,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return Date_Time
 	 */
-	public static function nowMinute()
+	public static function nowMinute() : Date_Time
 	{
 		$date_time = new static();
 		$date_time->setTime($date_time->format('H'), $date_time->format('i'));
@@ -612,7 +618,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	public function sub(
 		/** @noinspection PhpSignatureMismatchDuringInheritanceInspection $quantity + integer */
 		$quantity, $unit = self::DAY
-	) {
+	) : Date_Time {
 		($quantity instanceof DateInterval)
 			? parent::sub($quantity)
 			: $this->add(-$quantity, $unit);
@@ -632,7 +638,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $unit string @values day, hour, month, minute, year
 	 * @return Date_Time
 	 */
-	public function toBeginOf($unit)
+	public function toBeginOf(string $unit) : Date_Time
 	{
 		if ($this->isEmpty()) {
 			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
@@ -652,7 +658,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 				/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 				return (new static($this->format('Y-m-d 00:00:00')))
 					->sub($this->format(self::DAY_OF_WEEK_ISO) - 1);
-				break;
 			case self::MONTH:
 				$format = 'Y-m-01 00:00:00';
 				break;
@@ -681,7 +686,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return Date_Time
 	 * @see toBeginOf
 	 */
-	public function toBeginningOf($unit)
+	public function toBeginningOf(string $unit) : Date_Time
 	{
 		return $this->toBeginOf($unit);
 	}
@@ -699,7 +704,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $unit string @values day, hour, minute, month, week, year
 	 * @return Date_Time
 	 */
-	public function toEndOf($unit)
+	public function toEndOf(string $unit) : Date_Time
 	{
 		if ($this->isEmpty()) {
 			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
@@ -722,7 +727,6 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 				/** @noinspection PhpUnhandledExceptionInspection valid copy of $this and constant format */
 				return (new static($this->format('Y-m-d 23:59:59')))
 					->add(7 - $this->format(self::DAY_OF_WEEK_ISO));
-				break;
 			case self::YEAR:
 				$format = 'Y-12-31 23:59:59';
 				break;
@@ -739,7 +743,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
 	 * @return string
 	 */
-	public function toISO($empty_min_max = true)
+	public function toISO(bool $empty_min_max = true) : string
 	{
 		$format = max($this->format('Y-m-d H:i:s'), self::$min_date);
 		return ($empty_min_max && (($format <= self::$min_date) || ($format >= self::$max_date)))
@@ -751,7 +755,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @param $empty_min_max boolean If true, returns an empty string for zero or max dates
 	 * @return string
 	 */
-	public function toISODay($empty_min_max = true)
+	public function toISODay(bool $empty_min_max = true) : string
 	{
 		return substr($this->toISO($empty_min_max), 0, 10);
 	}
@@ -765,7 +769,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @example    'YYYY-MM-DD HH:II:SS' -> 'YYYY-MM-01 00:00:00'
 	 * @return     Date_Time
 	 */
-	public function toMonth()
+	public function toMonth() : Date_Time
 	{
 		if ($this->isMin()) {
 			/** @noinspection PhpUnhandledExceptionInspection valid copy of $this */
@@ -782,7 +786,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Date_Time
 	 */
-	public static function today()
+	public static function today() : Date_Time
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant format */
 		return new static(date('Y-m-d 00:00:00'));
@@ -794,7 +798,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return Date_Time
 	 */
-	public static function tomorrow()
+	public static function tomorrow() : Date_Time
 	{
 		return static::today()->add(1);
 	}
@@ -805,7 +809,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 *
 	 * @return Date_Time
 	 */
-	public static function yesterday()
+	public static function yesterday() : Date_Time
 	{
 		return static::today()->sub(1);
 	}

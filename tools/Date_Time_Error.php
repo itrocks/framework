@@ -21,7 +21,7 @@ class Date_Time_Error extends Date_Time
 	/**
 	 * @return string The error entry
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->error);
 	}
@@ -30,9 +30,9 @@ class Date_Time_Error extends Date_Time
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $date string
-	 * @return Date_Time equals Date_Time::min()
+	 * @return static equivalent of Date_Time::min()
 	 */
-	public static function fromError($date)
+	public static function fromError(string $date) : Date_Time_Error
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$date_time        = new Date_Time_Error(self::$min_date);

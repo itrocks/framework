@@ -74,7 +74,7 @@ class Property extends List_Setting\Property
 	 * @param $text string
 	 * @return string
 	 */
-	protected function tr($text)
+	protected function tr(string $text) : string
 	{
 		$context = $this->search->getFinalClass()->getName();
 		return Locale::current() ? Loc::tr($text, $context) : $text;

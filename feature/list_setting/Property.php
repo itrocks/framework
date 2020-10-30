@@ -34,11 +34,11 @@ class Property implements Can_Be_Empty
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name    string
-	 * @param $property_path string
+	 * @param $class_name    string|null
+	 * @param $property_path string|null
 	 * @throws ReflectionException
 	 */
-	public function __construct($class_name = null, $property_path = null)
+	public function __construct(string $class_name = null, string $property_path = null)
 	{
 		if (isset($class_name) && isset($property_path)) {
 			$property      = new Reflection_Property_Value($class_name, $property_path);
@@ -51,7 +51,7 @@ class Property implements Can_Be_Empty
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->display);
 	}
@@ -60,7 +60,7 @@ class Property implements Can_Be_Empty
 	/**
 	 * @return string
 	 */
-	public function htmlGroupBy()
+	public function htmlGroupBy() : string
 	{
 		return $this->group_by ? 'checked' : '';
 	}
@@ -69,7 +69,7 @@ class Property implements Can_Be_Empty
 	/**
 	 * @return boolean
 	 */
-	public function isEmpty()
+	public function isEmpty() : bool
 	{
 		return !(strval($this->display) || strval($this->path));
 	}
@@ -78,7 +78,7 @@ class Property implements Can_Be_Empty
 	/**
 	 * @return string
 	 */
-	public function shortTitle()
+	public function shortTitle() : string
 	{
 		if (empty($this->display)) {
 			$display = str_replace('_', SP, $this->tr($this->path));
@@ -93,10 +93,9 @@ class Property implements Can_Be_Empty
 	/**
 	 * @return string
 	 */
-	public function title()
+	public function title() : string
 	{
-		$display = str_replace('_', SP, $this->tr($this->path));
-		return $display;
+		return str_replace('_', SP, $this->tr($this->path));
 	}
 
 	//-------------------------------------------------------------------------------------------- tr
@@ -106,7 +105,7 @@ class Property implements Can_Be_Empty
 	 * @param $text string
 	 * @return string
 	 */
-	protected function tr($text)
+	protected function tr(string $text) : string
 	{
 		return Locale::current() ? Loc::tr($text) : $text;
 	}
