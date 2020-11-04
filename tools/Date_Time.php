@@ -48,6 +48,12 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	//----------------------------------------------------------------------------------------- MONTH
 	const MONTH = 'month';
 
+	//------------------------------------------------------------------------------------ MONTH_NAME
+	const MONTH_NAME = 'F';
+
+	//------------------------------------------------------------------------------ MONTH_NAME_SHORT
+	const MONTH_NAME_SHORT = 'M';
+
 	//--------------------------------------------------------------------------------- MONTH_OF_YEAR
 	const MONTH_OF_YEAR = 'm';
 
@@ -777,6 +783,32 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 		}
 		/** @noinspection PhpUnhandledExceptionInspection valid $this and constant format */
 		return new static($this->format('Y-m'));
+	}
+
+	//---------------------------------------------------------------------------------------- toNext
+	/**
+	 * @param $what      int|string
+	 * @param $what_else string|null
+	 * @return Date_Time
+	 */
+	public function toNext($what, string $what_else = null) : Date_Time
+	{
+		return $what_else
+			? (clone $this)->add($what, $what_else)
+			: (is_numeric($what) ? (clone $this)->add($what) : (clone $this)->add(1, $what_else));
+	}
+
+	//------------------------------------------------------------------------------------ toPrevious
+	/**
+	 * @param $what      int|string
+	 * @param $what_else string|null
+	 * @return Date_Time
+	 */
+	public function toPrevious($what, string $what_else = null) : Date_Time
+	{
+		return $what_else
+			? (clone $this)->sub($what, $what_else)
+			: (is_numeric($what) ? (clone $this)->sub($what) : (clone $this)->sub(1, $what_else));
 	}
 
 	//----------------------------------------------------------------------------------------- today
