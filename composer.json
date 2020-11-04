@@ -8,7 +8,6 @@
 	"require": {
 		"apache/incubator-echarts":              "4.2.*",
 		"bappli/document-designer":              "dev-master",
-		"baptistepillot/tcpdf":                  "^6.3",
 		"components/flag-icon-css":              "3.*",
 		"components/jquery":                     "3.*",
 		"components/jqueryui":                   "1.*",
@@ -44,7 +43,8 @@
 		"phpunit/phpunit":                       "7.*",
 		"itrocks/quill":                         "2.0.*",
 		"itrocks/quill-better-table":            "0.1.*",
-		"setasign/fpdi":                         "^2.3"
+		"setasign/fpdi":                         "^2.3",
+		"tecnickcom/tcpdf":                      "^6.3"
 	},
 	"type": "itrocks"
 }
