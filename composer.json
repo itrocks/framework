@@ -8,7 +8,7 @@
 	"require": {
 		"apache/incubator-echarts":              "4.2.*",
 		"bappli/document-designer":              "dev-master",
-		"baptistepillot/tcpdf":                  "^6.3",
+		"baptistepillot/tcpdf":                  "dev-master",
 		"components/flag-icon-css":              "3.*",
 		"components/jquery":                     "3.*",
 		"components/jqueryui":                   "1.*",
