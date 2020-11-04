@@ -795,7 +795,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	{
 		return $what_else
 			? (clone $this)->add($what, $what_else)
-			: (is_numeric($what) ? (clone $this)->add($what) : (clone $this)->add(1, $what_else));
+			: (is_numeric($what) ? (clone $this)->add($what) : (clone $this)->add(1, $what));
 	}
 
 	//------------------------------------------------------------------------------------ toPrevious
@@ -808,7 +808,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	{
 		return $what_else
 			? (clone $this)->sub($what, $what_else)
-			: (is_numeric($what) ? (clone $this)->sub($what) : (clone $this)->sub(1, $what_else));
+			: (is_numeric($what) ? (clone $this)->sub($what) : (clone $this)->sub(1, $what));
 	}
 
 	//----------------------------------------------------------------------------------------- today
