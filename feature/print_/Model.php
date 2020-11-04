@@ -27,9 +27,9 @@ class Model extends PDF\Output
 	/**
 	 * Print objects into an existing $pdf object : pages are appended
 	 *
-	 * @param $pdf         PDF|TCPDF   The already instantiated and opened PDF object
-	 * @param $objects     object[]    Objects to print, all must be of the same class
-	 * @param $print_model Print_Model If not set, the first available print model will be taken
+	 * @param $pdf         PDF|TCPDF        The already instantiated and opened PDF object
+	 * @param $objects     object[]         Objects to print, all must be of the same class
+	 * @param $print_model Print_Model|null If not set, the first available print model will be taken
 	 */
 	public function append(PDF $pdf, array $objects, Print_Model $print_model = null)
 	{
@@ -65,7 +65,7 @@ class Model extends PDF\Output
 	/**
 	 * @return PDF|TCPDF
 	 */
-	protected function newPdf()
+	protected function newPdf() : PDF
 	{
 		// TODO LOW This is for a warning in php 7.3. Remove it when tcpdf is compatible
 		$error_reporting = error_reporting(E_ALL & ~E_WARNING);
@@ -82,11 +82,11 @@ class Model extends PDF\Output
 	 * This returns the raw content of the generated PDF file
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $objects     object[] Objects to print, all must be of the same class
-	 * @param $print_model Print_Model if not set, the first available print model will be taken
-	 * @return mixed
+	 * @param $objects     object[]         Objects to print, all must be of the same class
+	 * @param $print_model Print_Model|null If not set, the first available print model will be taken
+	 * @return string
 	 */
-	public function print(array $objects, Print_Model $print_model = null)
+	public function print(array $objects, Print_Model $print_model = null) : string
 	{
 		$first_object = reset($objects);
 		if (!$print_model) {
@@ -98,7 +98,7 @@ class Model extends PDF\Output
 			? $first_object->printFileName($objects)
 			: Names::classToDisplay($print_model->class_name) . '.pdf';
 
-		$pdf = static::newPdf();
+		$pdf = $this->newPdf();
 		$this->append($pdf, $objects, $print_model);
 		/** @noinspection PhpUnhandledExceptionInspection Buffer output should not crash */
 		return $pdf->Output($file_name, $this->output);
