@@ -887,6 +887,15 @@ class Functions
 					return Loc::propertyToLocale($property, reset($template->objects));
 				}
 			}
+			elseif (is_array($object)) {
+				$value = reset($template->objects);
+				if (is_numeric($value)) {
+					return (strpos($value, DOT) !== false)
+						? Loc::floatToLocale($value)
+						: Loc::integerToLocale($value);
+				}
+				return $value;
+			}
 			next($template->var_names);
 		}
 		return reset($object);
