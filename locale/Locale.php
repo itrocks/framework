@@ -157,7 +157,7 @@ class Locale implements Configurable
 		if (Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
-		elseif ($value instanceof Date_Time) {
+		elseif ($type->isDateTime()) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 			$this->date_format->show_time    = $property->getAnnotation('show_time')->value;
 		}
