@@ -5,7 +5,6 @@ use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
 /**
  * Filters property annotation
@@ -66,11 +65,8 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 					$property = new Reflection\Reflection_Property($class_name, $filter_value_name);
 					$filters[$filter] = $property->pathAsField(true);
 				}
-				elseif (
-					method_exists($class_name, $filter_value_name)
-					&& ($property instanceof Reflection_Property_Value)
-				) {
-					$filters[$filter] = $final_object->$filter_value_name();
+				elseif (method_exists($class_name, $filter_value_name)) {
+					$filters[$filter] = Q . $final_object->$filter_value_name() . Q;
 				}
 				else {
 					trigger_error(

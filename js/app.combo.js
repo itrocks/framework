@@ -68,14 +68,16 @@ $(document).ready(function()
 						((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
 						&& (filter[1].substr(0, 1) === filter[1].substr(-1))
 					);
-				var combo_name = $element.prev().attr('name');
-				if (combo_name.indexOf(']') && $element.closest('ul.collection').length) {
-					var property_name = 'id_' + $element.closest('li[data-property]').data('property');
-					filter[1] = combo_name.replace(property_name, filter[1]);
-				}
-				var $container = $element.closest('form');
-				if (!$container.length) {
-					$container = $element.closest('article');
+				if (!is_constant) {
+					var combo_name = $element.prev().attr('name');
+					if (combo_name.indexOf(']') && $element.closest('ul.collection').length) {
+						var property_name = 'id_' + $element.closest('li[data-property]').data('property');
+						filter[1] = combo_name.replace(property_name, filter[1]);
+					}
+					var $container = $element.closest('form');
+					if (!$container.length) {
+						$container = $element.closest('article');
+					}
 				}
 				var $filter_element = is_constant
 					? { length: 0 }
