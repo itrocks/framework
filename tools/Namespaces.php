@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Tools;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder\Class_Builder;
 use ITRocks\Framework\Router;
 
 /**
@@ -141,6 +142,20 @@ abstract class Namespaces
 		return strpos($class_name, BS) === false;
 	}
 
+	//---------------------------------------------------------------------------------------- module
+	/**
+	 * @param $class_name string
+	 * @param $level      integer Module level : 1 is the first level, under the project name
+	 * @return string
+	 */
+	public static function module(string $class_name, int $level = 1) : string
+	{
+		if (Class_Builder::isBuilt($class_name)) {
+			$level ++;
+		}
+		return mParse($class_name, BS, BS, $level + 1);
+	}
+
 	//-------------------------------------------------------------------------------------------- of
 	/**
 	 * Returns the namespace from a class name, or an empty string if the class is in the global scope
@@ -159,6 +174,16 @@ abstract class Namespaces
 		else {
 			return '';
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- project
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function project(string $class_name) : string
+	{
+		return mParse($class_name, BS, BS);
 	}
 
 	//------------------------------------------------------------------------------- resolveFilePath
@@ -217,6 +242,16 @@ abstract class Namespaces
 		return ($i === false)
 			? ['', $class_name]
 			: [substr($class_name, 0, $i), substr($class_name, $i + 1)];
+	}
+
+	//---------------------------------------------------------------------------------------- vendor
+	/**
+	 * @param $class_name string
+	 * @return string
+	 */
+	public static function vendor(string $class_name) : string
+	{
+		return lParse($class_name, BS);
 	}
 
 }
