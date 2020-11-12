@@ -28,7 +28,7 @@ abstract class Words
 		if (self::meansEmpty($expression)) {
 			$type = $property->getType();
 			if ($type->isString() || $type->isMultipleString()) {
-				if (Null_Annotation::of($property)->value) {
+				if ($property->path || Null_Annotation::of($property)->value) {
 					return Func::orOp([Func::isNull(), Func::equal('')]);
 				}
 				return Func::equal('');
