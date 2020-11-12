@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Search;
 
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser;
+use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
@@ -29,7 +30,7 @@ class Implicit_Jokers implements Registerable
 	 */
 	public function jokersAround(string &$search_value, Reflection_Property $property)
 	{
-		if (!$this->enabled) {
+		if (!$this->enabled || Words::meansEmpty($search_value)) {
 			return;
 		}
 		$type        = $property->getType();

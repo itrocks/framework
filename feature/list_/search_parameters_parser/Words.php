@@ -67,7 +67,7 @@ abstract class Words
 	 * @param $word string
 	 * @return boolean true if empty word
 	 */
-	private static function meansEmpty($word)
+	public static function meansEmpty($word)
 	{
 		if (!Wildcard::containsWildcards($word)) {
 			$word = Loc::rtr($word);
