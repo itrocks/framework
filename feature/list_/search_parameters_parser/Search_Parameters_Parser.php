@@ -11,6 +11,7 @@ use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Scalar;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Type_Boolean;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Wildcard;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
+use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
@@ -254,17 +255,35 @@ class Search_Parameters_Parser
 	 */
 	protected function applyOr(string $search_value, Reflection_Property $property)
 	{
-		if (strpos($search_value, ',') !== false) {
-			$or = [];
-			foreach (explode(',', $search_value) as $search) {
-				$or[] = $this->applyAnd($search, $property);
+		if (strpos($search_value, ',') === false) {
+			return $this->applyAnd($search_value, $property);
+		}
+		if ($property->getType()->isFloat()) {
+			$number_format     = Locale::current()->number_format;
+			$is_thousand_float = ($number_format->thousand_separator === ',');
+			if ($is_thousand_float) {
+				return $this->applyAnd($search_value, $property);
 			}
-			return Func::orOp($or);
+			$is_decimal_float = ($number_format->decimal_separator === ',');
+			if ($is_decimal_float && !strpos($search_value, DOT)) {
+				$decimal  = true;
+				$position = -1;
+				while (($position = strpos($search_value, ',', $position + 1)) !== false) {
+					if ($decimal) {
+						$search_value[$position] = DOT;
+					}
+					$decimal = !$decimal;
+				}
+			}
+			if (strpos($search_value, ',') === false) {
+				return $this->applyAnd($search_value, $property);
+			}
 		}
-		else {
-			$search = $this->applyAnd($search_value, $property);
-			return $search;
+		$or = [];
+		foreach (explode(',', $search_value) as $search) {
+			$or[] = $this->applyAnd($search, $property);
 		}
+		return Func::orOp($or);
 	}
 
 	//------------------------------------------------------------------------------ applySingleValue
