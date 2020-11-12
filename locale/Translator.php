@@ -250,24 +250,24 @@ class Translator
 			$search, Translation::class, [Dao::groupBy('text'), Dao::limit($limit)]
 		);
 		// security strengthen : do not get any value if a user types something like '%a%'
-		if (count($translations) < $limit) {
-			foreach ($translations as $found_translation) {
-				// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
-				if (!Wildcard::containsWildcards($found_translation->translation)) {
-					$more_texts = $this->reverse(
-						$found_translation->translation, $context, $context_property_path, null, true
-					);
-					if (is_array($more_texts)) {
-						$texts = array_merge($texts, $more_texts);
-					}
-					else {
-						$texts[] = $more_texts;
-					}
+		if (count($translations) >= $limit) {
+			return static::TOO_MANY_RESULTS_MATCH_YOUR_INPUT;
+		}
+		foreach ($translations as $found_translation) {
+			// disable infinite recursion caused by translation-has-wildcards (limitation, but security)
+			if (!Wildcard::containsWildcards($found_translation->translation)) {
+				$more_texts = $this->reverse(
+					$found_translation->translation, $context, $context_property_path, null, true
+				);
+				if (is_array($more_texts)) {
+					$texts = array_merge($texts, $more_texts);
+				}
+				else {
+					$texts[] = $more_texts;
 				}
 			}
 		}
-		return ((count($texts) > 1) ? $texts : reset($texts))
-			?: static::TOO_MANY_RESULTS_MATCH_YOUR_INPUT;
+		return (count($texts) > 1) ? $texts : reset($texts);
 	}
 
 	//------------------------------------------------------------------------- separatedTranslations
