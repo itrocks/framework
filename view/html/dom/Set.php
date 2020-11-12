@@ -112,14 +112,14 @@ class Set extends Element
 					$html_option->setAttribute('disabled');
 					$html_option->setAttribute('readonly');
 				}
-				$label = new Label(strval($html_option) . Loc::tr($caption));
+				$label = new Label(strval($html_option) . strval(new Span(Loc::tr($caption))));
 				$label->setAttribute('name', $this->base_name);
 				if ($conditions) {
 					$label->setAttribute($conditions->name, $conditions->value);
 				}
-				$content .= strval($label) . BR;
+				$content .= strval($label) . LF;
 			}
-			$this->setContent($content);
+			$this->setContent(trim($content));
 		}
 		return $content;
 	}

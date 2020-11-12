@@ -14,7 +14,16 @@ article > form > ul.data ol.properties > li {
 
 		&.set {
 			display: inline-block;
+			max-width: 360px;
 			vertical-align: top;
+
+			label {
+				white-space: nowrap;
+
+				&:not(:last-child) {
+					margin-right: 10px;
+				}
+			}
 		}
 	}
 

@@ -1,24 +1,39 @@
 article > form {
-  background-color: #efefef; }
+  background-color: #efefef;
+}
 
 article > form > ul.data ol.properties > li.float > div > input, article > form > ul.data ol.properties > li.integer > div > input {
-  text-align: right; }
+  text-align: right;
+}
 article > form > ul.data ol.properties > li > div > span.set {
   display: inline-block;
-  vertical-align: top; }
+  max-width: 360px;
+  vertical-align: top;
+}
+article > form > ul.data ol.properties > li > div > span.set label {
+  white-space: nowrap;
+}
+article > form > ul.data ol.properties > li > div > span.set label:not(:last-child) {
+  margin-right: 10px;
+}
 article > form > ul.data ol.properties > li.required > label:after {
-  content: '*';
+  content: "*";
   padding-left: 2px;
-  position: absolute; }
+  position: absolute;
+}
 article > form > ul.data ol.properties > li.component-objects > label {
-  cursor: pointer; }
-  article > form > ul.data ol.properties > li.component-objects > label:after {
-    content: '+';
-    padding-right: .5em;
-    position: absolute;
-    right: 0; }
+  cursor: pointer;
+}
+article > form > ul.data ol.properties > li.component-objects > label:after {
+  content: "+";
+  padding-right: 0.5em;
+  position: absolute;
+  right: 0;
+}
 article > form > ul.data ol.properties > li.objects > div > ul {
   border-collapse: collapse;
-  border-spacing: 0; }
-  article > form > ul.data ol.properties > li.objects > div > ul > li:not(:last-child) > div > input {
-    margin-bottom: -1px; }
+  border-spacing: 0;
+}
+article > form > ul.data ol.properties > li.objects > div > ul > li:not(:last-child) > div > input {
+  margin-bottom: -1px;
+}
