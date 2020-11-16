@@ -14,6 +14,7 @@ use ITRocks\Framework\Dao\Option\Sort;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
@@ -45,6 +46,11 @@ class Controller implements Default_Feature_Controller
 			$search = Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
+			/** @noinspection PhpUnhandledExceptionInspection filters must be valid */
+			$property           = new Reflection_Property($this->class->name, $filter_name);
+			$is_multiple_values = (
+				Values_Annotation::of($property)->value && $property->getType()->isMultipleString()
+			);
 			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')) {
 				$filter_value = Func::notEqual(substr($filter_value, 1));
 			}
@@ -58,10 +64,13 @@ class Controller implements Default_Feature_Controller
 			}
 			elseif (substr($filter_name, -1) === '!') {
 				$filter_name  = substr($filter_name, 0, -1);
-				$filter_value = Func::notEqual($filter_value);
+				$filter_value = $is_multiple_values
+					? Func::notInSet($filter_value)
+					: Func::notEqual($filter_value);
 			}
-			/** @noinspection PhpUnhandledExceptionInspection filters must be valid */
-			$property = new Reflection_Property($this->class->name, $filter_name);
+			elseif ($is_multiple_values) {
+				$filter_value = Func::inSet($filter_value);
+			}
 			if ($property->getType()->isDateTime()) {
 				if ($filter_value instanceof Comparison) {
 					$filter_value->than_value = Loc::dateToIso($filter_value->than_value);
