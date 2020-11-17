@@ -977,16 +977,26 @@ class Link extends Dao\Sql\Link
 
 	//---------------------------------------------------------------------------- queryFetchAsValues
 	/**
-	 * TODO not tested : the first value will probably be 'id'. But is the last value right ?
-	 *
 	 * @param $result mysqli_result
 	 * @return array [$id|$n => $value] each element is the value of the first returned column
 	 */
 	private function queryFetchAsValues(mysqli_result $result)
 	{
-		$values = [];
-		while ($element = $result->fetch_assoc()) {
-			$values[] = $element['id'];
+		$values  = [];
+		$element = $result->fetch_assoc();
+		if (isset($element['id'])) {
+			do {
+				$id = $element['id'];
+				unset($element['id']);
+				$values[$id] = reset($element);
+			}
+			while ($element = $result->fetch_assoc());
+		}
+		else {
+			do {
+				$values[] = reset($element);
+			}
+			while ($element = $result->fetch_assoc());
 		}
 		return $values;
 	}
