@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
+use ReflectionException;
 
 /**
  * This is the common class for all SQL data links classes
@@ -347,7 +348,6 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//------------------------------------------------------------------------------------ selectList
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object_class string class for the read object
 	 * @param $columns      string[]|Column[] the list of the columns names : only those properties
 	 *                      will be read. You can use 'column.sub_column' to get values from linked
@@ -365,8 +365,12 @@ abstract class Link extends Identifier_Map implements Transactional
 				$expression    = Expressions::$current->cache[$property_path];
 				$property_path = $expression->property_path;
 			}
-			/** @noinspection PhpUnhandledExceptionInspection property must be valid */
-			$properties[$property_path] = new Reflection_Property($object_class, $property_path);
+			try {
+				$properties[$property_path] = new Reflection_Property($object_class, $property_path);
+			}
+			catch (ReflectionException $exception) {
+				// nothing : no property, period
+			}
 			$functions[$property_path]  = ($column instanceof Dao_Function) ? $column : null;
 		}
 		return new Default_List_Data($object_class, $properties, $functions);
