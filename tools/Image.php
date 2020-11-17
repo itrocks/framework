@@ -98,11 +98,11 @@ class Image
 	//-------------------------------------------------------------------------------- createFromFile
 	/**
 	 * @param $file File|string
-	 * @return Image
+	 * @return static
 	 */
 	public static function createFromFile($file)
 	{
-		return self::createFromString(file_get_contents(
+		return static::createFromString(file_get_contents(
 			($file instanceof File) ? $file->temporary_file_name : $file
 		));
 	}
@@ -110,13 +110,13 @@ class Image
 	//------------------------------------------------------------------------------ createFromString
 	/**
 	 * @param $image string
-	 * @return Image
+	 * @return static
 	 */
 	public static function createFromString($image)
 	{
 		if (strpos($image, '<svg') === false) {
 			$size = getimagesizefromstring($image);
-			return new Image($size[0], $size[1], imagecreatefromstring($image), $size[2]);
+			return new static($size[0], $size[1], imagecreatefromstring($image), $size[2]);
 		}
 		$xml = simplexml_load_string($image);
 		$attributes = $xml->attributes();
@@ -136,7 +136,7 @@ class Image
 			$height = 150;
 			$width  = 300;
 		}
-		return new Image($width, $height, null, IMAGETYPE_SVG);
+		return new static($width, $height, null, IMAGETYPE_SVG);
 	}
 
 	//--------------------------------------------------------------------------------------- display
@@ -197,14 +197,14 @@ class Image
 	/**
 	 * @param $width  integer
 	 * @param $height integer
-	 * @return Image
+	 * @return static
 	 */
 	public function newImageKeepsAlpha($width = null, $height = null)
 	{
 		if (!$height) $height = $this->height;
 		if (!$width)  $width  = $this->width;
 
-		$image = new Image($width, $height, null, $this->type);
+		$image = new static($width, $height, null, $this->type);
 
 		if ($this->hasTransparency()) {
 			imagecolortransparent(
@@ -267,7 +267,7 @@ class Image
 	 * @param $width      integer the width of the new image. null for automatic
 	 * @param $height     integer the height of the new image. null for automatic
 	 * @param $keep_ratio boolean keep image ratio (margins are added if image ratio changes)
-	 * @return Image
+	 * @return static
 	 */
 	public function resize($width = null, $height = null, $keep_ratio = true)
 	{
@@ -325,7 +325,7 @@ class Image
 	 * Gets a rotated version of the image
 	 *
 	 * @param $angle float Rotation angle in degrees
-	 * @return Image
+	 * @return static
 	 */
 	public function rotate($angle)
 	{
@@ -356,7 +356,7 @@ class Image
 	 * @param $filename string if null, the image is displayed instead of being saved
 	 * @param $type     integer Image type is one of the IMAGETYPE_XXX image types, or current if null
 	 * @param $quality  integer Image quality (percent)
-	 * @return Image
+	 * @return static
 	 */
 	public function save($filename, $type = null, $quality = null)
 	{
@@ -365,7 +365,6 @@ class Image
 
 		switch ($type) {
 			case IMAGETYPE_BMP:
-				/** @noinspection PhpDeprecationInspection PHP documentation don't say it's deprecated */
 				image2wbmp($this->resource, $filename);
 				break;
 			case IMAGETYPE_GIF:
@@ -391,12 +390,12 @@ class Image
 	 * @param $height         integer the thumbnail image file height. null for automatic
 	 * @param $type           integer IMAGETYPE_XXX image type constant
 	 * @param $quality        integer
-	 * @return Image
+	 * @return static
 	 */
 	public static function stringToThumbnailFile(
 		$image, $thumbnail_file, $width = null, $height = null, $type = null, $quality = null
 	) {
-		return self::createFromString($image)->resize(
+		return static::createFromString($image)->resize(
 			$width, $height)->save($thumbnail_file, $type, $quality
 		);
 	}
