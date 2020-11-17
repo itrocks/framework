@@ -988,12 +988,20 @@ class Link extends Dao\Sql\Link
 			return $values;
 		}
 		if (isset($element['id'])) {
-			do {
-				$id = $element['id'];
-				unset($element['id']);
-				$values[$id] = reset($element);
+			if (count($element) > 1) {
+				do {
+					$id = $element['id'];
+					unset($element['id']);
+					$values[$id] = reset($element);
+				} while ($element = $result->fetch_assoc());
 			}
-			while ($element = $result->fetch_assoc());
+			else {
+				do {
+					$id = $element['id'];
+					$values[$id] = $id;
+				}
+				while ($element = $result->fetch_assoc());
+			}
 		}
 		else {
 			do {
