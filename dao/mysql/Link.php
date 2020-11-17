@@ -984,6 +984,9 @@ class Link extends Dao\Sql\Link
 	{
 		$values  = [];
 		$element = $result->fetch_assoc();
+		if (!$element) {
+			return $values;
+		}
 		if (isset($element['id'])) {
 			do {
 				$id = $element['id'];
