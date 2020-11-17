@@ -13,6 +13,7 @@ use ITRocks\Framework\View;
 /**
  * Triggered action
  *
+ * @list last, action, status
  * @representative action
  * @store_name trigger_actions
  */
