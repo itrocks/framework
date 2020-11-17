@@ -107,7 +107,7 @@ class Engine implements Configurable, Framework\View\Engine
 
 		// identifier
 		$identifier = is_object($object)
-			? Dao::getObjectIdentifier($object)
+			? Dao::getObjectIdentifier($object, 'id')
 			: (is_array($object) ? end($object) : null);
 
 		// Can simplify URI with removal of feature : only if there are no parameters
@@ -150,7 +150,7 @@ class Engine implements Configurable, Framework\View\Engine
 				}
 				if (is_object($value)) {
 					$link .= SL . Names::classToUri(get_class($value))
-						. SL . Dao::getObjectIdentifier($value);
+						. SL . Dao::getObjectIdentifier($value, 'id');
 				}
 				else {
 					$link .= SL . $value;
