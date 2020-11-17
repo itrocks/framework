@@ -140,7 +140,7 @@ class Link_Table
 				$this->table = strtolower($table);
 			}
 			else {
-				$master_table  = Dao::storeNameOf($this->property->class);
+				$master_table  = Dao::storeNameOf($this->property->final_class);
 				$foreign_table = Dao::storeNameOf($this->property->getType()->getElementTypeAsString());
 				$this->table = $this->defaultStoreName($master_table, $foreign_table);
 			}
