@@ -197,6 +197,13 @@
 		if (selector === undefined) {
 			selector = 'always';
 		}
+		if (((typeof parameters) === 'object') && parameters.priority) {
+			priority = parameters.priority;
+			delete parameters.priority;
+			if (!Object.keys(parameters).length) {
+				parameters = undefined;
+			}
+		}
 		priority = (priority * 1000000) + Object.keys(window.jquery_build_callback).length;
 		callback = new Callback(event, selector, callback, priority, always, parameters);
 		window.jquery_build_callback = keySortPush(window.jquery_build_callback, priority, callback);
