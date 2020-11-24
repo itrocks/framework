@@ -1,7 +1,7 @@
 {
 	"authors":           [{ "email": "baptiste@pillot.fr", "name": "Baptiste Pillot" }],
 	"description":       "IT.Rocks framework",
-	"license":           "MIT",
+	"license":           "LGPL-3.0-or-later",
 	"minimum-stability": "dev",
 	"name":              "itrocks/framework",
 	"repositories":      [{ "type": "composer", "url": "https://hub.itrocks.org" }],
