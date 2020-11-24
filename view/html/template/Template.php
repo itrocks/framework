@@ -2049,7 +2049,7 @@ class Template
 				$j         = strpos($content, $delimiter, $i);
 				$i2        = $i;
 				while (($i2 = strpos($content, '(', $i2)) && ($i2 < $j)) {
-					if ($content[$i2 + 1] === Q) {
+					if (($content[$i2 + 1] === Q) && ($content[strpos($content, ')', $i2) - 1] === Q)) {
 						$i2 ++;
 					}
 					else {
