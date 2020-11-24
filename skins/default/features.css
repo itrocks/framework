@@ -97,3 +97,7 @@ li.actions > ul > li.unlock > a,
 ul.actions > li.unlock > a {
   background-image: url("img/unlock-24.svg");
 }
+
+.merge.confirm.message ul.actions > li.confirm > a {
+  background-image: url("img/merge-24.svg");
+}
