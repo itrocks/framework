@@ -150,7 +150,7 @@ class Join
 	 */
 	public function foreignSql()
 	{
-		return $this->foreign_alias . DOT . BQ . $this->foreign_column . BQ;
+		return $this->foreign_alias . DOT . $this->foreign_column;
 	}
 
 	//------------------------------------------------------------------------------------- masterSql
@@ -159,7 +159,7 @@ class Join
 	 */
 	public function masterSql()
 	{
-		return $this->master_alias . DOT . BQ . $this->master_column . BQ;
+		return $this->master_alias . DOT . $this->master_column;
 	}
 
 	//----------------------------------------------------------------------------------- newInstance
