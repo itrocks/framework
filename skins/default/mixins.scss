@@ -5,8 +5,8 @@
 	article[data-module=#{$module}],
 	#favorites > li[data-module=#{$module}],
 	#menu > ul > li##{$module} {
-		--dark-color:  $color1;
-		--light-color: $color2;
+		--dark-color:  #{$color1};
+		--light-color: #{$color2};
 	}
 
 	body:not(.min-left)[data-module=#{$module}] > #menu > ul > li##{$module},

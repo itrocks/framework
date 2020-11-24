@@ -13,6 +13,10 @@ ul.actions > li {
 		padding-left: 16px;
 	}
 
+	&.archive > a {
+		background-image: url('img/archive-24.svg');
+	}
+
 	&.close > a {
 		background-image: url('img/close-24.svg');
 	}
@@ -53,6 +57,10 @@ ul.actions > li {
 
 	&.lock > a {
 		background-image: url('img/lock-24.svg');
+	}
+
+	&.merge > a {
+		background-image: url('img/merge-24.svg');
 	}
 
 	&.print > a {

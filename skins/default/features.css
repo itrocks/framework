@@ -10,6 +10,11 @@ ul.actions > li.add-small > a {
   font-size: 0;
   padding-left: 16px;
 }
+li.action.archive > a,
+li.actions > ul > li.archive > a,
+ul.actions > li.archive > a {
+  background-image: url("img/archive-24.svg");
+}
 li.action.close > a,
 li.actions > ul > li.close > a,
 ul.actions > li.close > a {
@@ -61,6 +66,11 @@ li.action.lock > a,
 li.actions > ul > li.lock > a,
 ul.actions > li.lock > a {
   background-image: url("img/lock-24.svg");
+}
+li.action.merge > a,
+li.actions > ul > li.merge > a,
+ul.actions > li.merge > a {
+  background-image: url("img/merge-24.svg");
 }
 li.action.print > a,
 li.actions > ul > li.print > a,

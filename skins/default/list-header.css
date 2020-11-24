@@ -3,21 +3,25 @@ article.list header > .summary {
   border-top: 1px solid #ccc;
   padding: 13px 10px 12px;
   text-align: right;
-  white-space: nowrap; }
-  article.list header > .summary > h3, article.list header > .summary > .filters {
-    display: none; }
+  white-space: nowrap;
+}
+article.list header > .summary > h3, article.list header > .summary > .filters {
+  display: none;
+}
 
 .property.ui-draggable-dragging {
   background: #efefef;
   border: 1px solid #d0d0d0;
   box-shadow: 0 0 3px 3px rgba(216, 216, 216, 0.4);
   padding: 10px;
-  position: relative; }
-  .property.ui-draggable-dragging.outside:before {
-    background: url("img/delete-24-red.svg") center no-repeat;
-    content: '';
-    height: 32px;
-    left: -32px;
-    position: absolute;
-    top: 0;
-    width: 32px; }
+  position: relative;
+}
+.property.ui-draggable-dragging.outside:before {
+  background: url("img/delete-24-red.svg") center no-repeat;
+  content: "";
+  height: 32px;
+  left: -32px;
+  position: absolute;
+  top: 0;
+  width: 32px;
+}

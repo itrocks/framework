@@ -1,9 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <g fill="#444">
-        <g transform="translate(4 5)">
-            <path fill-rule="nonzero" d="M1 13V4h14v9c0 .553-.447 1-1 1H2c-.553 0-1-.447-1-1zm1-8v8h12V5H2z"/>
-            <path d="M1 0h14a1 1 0 0 1 1 1v2H0V1a1 1 0 0 1 1-1z"/>
-            <rect width="4" height="2" x="6" y="7" rx="1"/>
-        </g>
-    </g>
+<g fill="#444" transform="translate(4 5)">
+<path d="M1 13V4h14v9c0 .553-.447 1-1 1H2c-.553 0-1-.447-1-1zm1-8v8h12V5H2z"/>
+<path d="M1 0h14a1 1 0 0 1 1 1v2H0V1a1 1 0 0 1 1-1z"/>
+<rect width="4" height="2" x="6" y="7" rx="1"/>
+</g>
 </svg>
