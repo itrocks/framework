@@ -51,7 +51,11 @@ $(document).ready(function()
 			}
 		}
 		// calculate new row and indexes
-		var $new_row = $block.data('itrocks_add').clone();
+		var $itrocks_add = $block.data('itrocks_add');
+		if (!$itrocks_add) {
+			return null;
+		}
+		var $new_row = $itrocks_add.clone();
 		$block.data('itrocks_last_index', $block.data('itrocks_last_index') + 1);
 		var new_index = $block.data('itrocks_last_index');
 		var old_index = $block.data('itrocks_add_index');
