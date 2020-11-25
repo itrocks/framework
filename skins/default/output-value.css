@@ -39,6 +39,7 @@ article ol.properties > li.component-objects > div ul.collection > li > ol > li.
 article ol.properties > li.component-objects > div ul.collection > li > ol > li input.float,
 article ol.properties > li.component-objects > div ul.collection > li > ol > li input.integer {
   text-align: right;
+  white-space: nowrap;
 }
 article ol.properties > li.block > div ul.collection > li > ol > li textarea,
 article ol.properties > li.component-objects > div ul.collection > li > ol > li textarea {
