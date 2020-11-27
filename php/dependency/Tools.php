@@ -3,6 +3,7 @@ namespace ITRocks\Framework\PHP\Dependency;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Dao\Option\Group_By;
 use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -30,7 +31,7 @@ trait Tools
 	 * @param $class_name string
 	 * @return string[] class names that contain one or more matching properties
 	 */
-	public static function classesWithPropertiesUsingClass($class_name)
+	public static function classesWithPropertiesUsingClass(string $class_name) : array
 	{
 		$used_by = Dao::search(
 			[
@@ -52,13 +53,23 @@ trait Tools
 	//----------------------------------------------------------------------------- dependencyToClass
 	/**
 	 * @param $dependency_name string
-	 * @return string
+	 * @return ?string
 	 */
-	public static function dependencyToClass($dependency_name)
+	public static function dependencyToClass(string $dependency_name) : ?string
 	{
 		if (!static::$dependency_class) {
-			/** @noinspection PhpIncludeInspection */
-			static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+			if (file_exists(Cache::CACHE_DIR . '/dependency_class.php')) {
+				/** @noinspection PhpIncludeInspection file_exists */
+				static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+			}
+			else {
+				/** @var $dependency Dependency */
+				$dependency = Dao::searchOne(
+					['dependency_name' => Func::equal($dependency_name), 'type' => Dependency::T_SET],
+					Dependency::class
+				);
+				return $dependency ? $dependency->class_name : null;
+			}
 		}
 		return static::$dependency_class[$dependency_name] ?? null;
 	}
@@ -73,8 +84,11 @@ trait Tools
 	 * @return string[]
 	 */
 	public static function extendsUse(
-		$class_name, $include_class = false, $extend_types = [Dependency::T_EXTENDS, Dependency::T_USE]
-	) {
+		string $class_name,
+		bool $include_class = false,
+		$extend_types = [Dependency::T_EXTENDS, Dependency::T_USE]
+	) : array
+	{
 		$children = Dao::search(
 			[
 				'dependency_name' => $class_name,
@@ -106,11 +120,11 @@ trait Tools
 	 * Use caching to avoid several identical queries to be executed
 	 *
 	 * @param $what string[] need keys type with allowed value, and allowed index
-	 * @return static
+	 * @return ?Dependency
 	 * @see Dependency\Cache::INDEXES
 	 * @see Dependency\Cache::TYPES
 	 */
-	public static function getType($what)
+	public static function getType(array $what) : ?Dependency
 	{
 		$search = [];
 		$type   = $what['type'];
@@ -126,8 +140,8 @@ trait Tools
 			}
 		}
 		$search['type'] = Dependency\Cache::TYPES;
-		/** @var $dependencies static[] */
-		$dependencies = Dao::search($search, static::class, Dao::key('type'));
+		/** @var $dependencies Dependency[] */
+		$dependencies = Dao::search($search, Dependency::class, Dao::key('type'));
 		// store found dependencies into all caches
 		if ($dependencies) {
 			$dependency = reset($dependencies);
@@ -150,11 +164,19 @@ trait Tools
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public static function hasSet($class_name)
+	public static function hasSet(string $class_name) : bool
 	{
 		if (!static::$dependency_class) {
-			/** @noinspection PhpIncludeInspection */
-			static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+			if (file_exists(Cache::CACHE_DIR . '/dependency_class.php')) {
+				/** @noinspection PhpIncludeInspection file_exists */
+				static::$dependency_class = include(Cache::CACHE_DIR . '/dependency_class.php');
+			}
+			else {
+				return boolval(Dao::searchOne(
+					['class_name' => Func::equal($class_name), 'type' => Dependency::T_SET],
+					Dependency::class
+				));
+			}
 		}
 		return in_array($class_name, static::$dependency_class);
 	}
@@ -165,7 +187,7 @@ trait Tools
 	 * @param $class_names string|string[]
 	 * @return Reflection_Property[]
 	 */
-	public static function propertiesUsingClass($class_names)
+	public static function propertiesUsingClass($class_names) : array
 	{
 		$properties = [];
 		foreach ((is_array($class_names) ? $class_names : [$class_names]) as $class_name) {
