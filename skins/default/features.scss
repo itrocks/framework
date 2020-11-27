@@ -47,6 +47,10 @@ ul.actions > li {
 		background-image: url('img/export-24.svg');
 	}
 
+	&.fileexport > a {
+		background-image: url('img/export-24.svg');
+	}
+
 	&.import > a {
 		background-image: url('img/import-24.svg');
 	}

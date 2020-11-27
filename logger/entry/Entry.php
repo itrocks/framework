@@ -15,6 +15,8 @@ use ITRocks\Framework\User;
  *
  * @business
  * @feature Consulting the software usage log
+ * @feature
+ * @feature fileExport
  * @feature_menu Administration
  * @list start, stop, duration, uri, data.arguments
  * @representative start, uri
@@ -125,19 +127,17 @@ class Entry implements Validate\Exception
 	/**
 	 * The constructor initialises logged information for a call on script beginning.
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $uri       string
-	 * @param $arguments array
-	 * @param $form      array
-	 * @param $files     array[]
+	 * @param $uri       ?string
+	 * @param $arguments ?array
+	 * @param $form      ?array
+	 * @param $files     ?array[]
 	 */
 	public function __construct(
-		$uri = null, array $arguments = null, array $form = null, array $files = null
+		string $uri = null, array $arguments = null, array $form = null, array $files = null
 	) {
 		if (isset($uri)) {
 			if (!isset($this->start)) {
 				$this->duration_start = microtime(true);
-				/** @noinspection PhpUnhandledExceptionInspection valid call */
 				$this->start = new Date_Time();
 			}
 			if (!isset($this->process_id)) {
@@ -152,7 +152,7 @@ class Entry implements Validate\Exception
 			if (!isset($this->session_id)) {
 				$this->session_id = session_id();
 			}
-			if (isset($uri) && !isset($this->uri)) {
+			if (!isset($this->uri)) {
 				$this->uri = $uri;
 			}
 			if (
@@ -191,7 +191,7 @@ class Entry implements Validate\Exception
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return trim(Loc::dateToLocale($this->start) . SP . $this->uri);
 	}
@@ -204,14 +204,10 @@ class Entry implements Validate\Exception
 	}
 
 	//------------------------------------------------------------------------------------------ stop
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function stop()
 	{
 		$this->duration     = microtime(true) - $this->duration_start;
 		$this->memory_usage = ceil(memory_get_peak_usage(true) / 1024 / 1024);
-		/** @noinspection PhpUnhandledExceptionInspection valid call */
 		$this->stop = new Date_Time();
 	}
 

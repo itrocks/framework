@@ -52,6 +52,11 @@ li.actions > ul > li.export > a,
 ul.actions > li.export > a {
   background-image: url("img/export-24.svg");
 }
+li.action.fileexport > a,
+li.actions > ul > li.fileexport > a,
+ul.actions > li.fileexport > a {
+  background-image: url("img/export-24.svg");
+}
 li.action.import > a,
 li.actions > ul > li.import > a,
 ul.actions > li.import > a {
