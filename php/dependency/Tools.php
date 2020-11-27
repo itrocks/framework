@@ -52,11 +52,14 @@ trait Tools
 
 	//----------------------------------------------------------------------------- dependencyToClass
 	/**
-	 * @param $dependency_name string
+	 * @param $dependency_name ?string
 	 * @return ?string
 	 */
-	public static function dependencyToClass(string $dependency_name) : ?string
+	public static function dependencyToClass(?string $dependency_name) : ?string
 	{
+		if (!$dependency_name) {
+			return null;
+		}
 		if (!static::$dependency_class) {
 			if (file_exists(Cache::CACHE_DIR . '/dependency_class.php')) {
 				/** @noinspection PhpIncludeInspection file_exists */
@@ -161,11 +164,14 @@ trait Tools
 
 	//---------------------------------------------------------------------------------------- hasSet
 	/**
-	 * @param $class_name string
+	 * @param $class_name ?string
 	 * @return boolean
 	 */
-	public static function hasSet(string $class_name) : bool
+	public static function hasSet(?string $class_name) : bool
 	{
+		if (!$class_name) {
+			return false;
+		}
 		if (!static::$dependency_class) {
 			if (file_exists(Cache::CACHE_DIR . '/dependency_class.php')) {
 				/** @noinspection PhpIncludeInspection file_exists */
