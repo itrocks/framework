@@ -144,7 +144,7 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $vars     array
 	 * @return boolean
 	 */
-	public function handle($err_no, $err_msg, $filename, $line_num, array $vars)
+	public function handle($err_no, $err_msg, $filename, $line_num, array $vars = [])
 	{
 		if ((error_reporting() & $err_no) == $err_no) {
 			if (!class_exists(Handled_Error::class)) {
