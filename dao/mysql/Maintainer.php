@@ -980,7 +980,8 @@ class Maintainer implements Configurable, Registerable
 			}
 		}
 		if (
-			method_exists($class_name, '__maintain')
+			$class_name
+			&& method_exists($class_name, '__maintain')
 			&& !(new Call_Stack)->containsMethod([$class_name, '__maintain'])
 		) {
 			call_user_func([$class_name, '__maintain']);
