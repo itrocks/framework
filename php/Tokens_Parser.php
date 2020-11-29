@@ -11,6 +11,12 @@ use ITRocks\Framework\Tools\Call_Stack;
 trait Tokens_Parser
 {
 
+	//---------------------------------------------------------------------------- $class_name_tokens
+	/**
+	 * @var integer[]
+	 */
+	public static $class_name_tokens = [314, T_NS_SEPARATOR, T_STRING];
+
 	//------------------------------------------------------------------------------------ $namespace
 	/**
 	 * The current namespace name
@@ -111,11 +117,12 @@ trait Tokens_Parser
 		$class_name = '';
 		do {
 			$token = $this->tokens[++$this->token_key];
-		} while (($token[0] === T_WHITESPACE) && isset($this->tokens[$this->token_key + 1]));
+		}
+		while (($token[0] === T_WHITESPACE) && isset($this->tokens[$this->token_key + 1]));
 		if ($token[0] === T_WHITESPACE) {
 			$this->eofError('scanClassName');
 		}
-		while (in_array($token[0], [T_NS_SEPARATOR, T_STRING])) {
+		while (in_array($token[0], static::$class_name_tokens)) {
 			$class_name .= $token[1];
 			$token = $this->tokens[++$this->token_key];
 		}
@@ -138,7 +145,7 @@ trait Tokens_Parser
 		do {
 			$token = $this->tokens[++$this->token_key];
 			if (is_array($token)) {
-				if (in_array($token[0], [T_NS_SEPARATOR, T_STRING])) {
+				if (in_array($token[0], static::$class_name_tokens)) {
 					$line = $token[2];
 					$used .= $token[1];
 					$continue = true;
@@ -223,7 +230,7 @@ trait Tokens_Parser
 						break;
 					}
 				}
-				elseif (in_array($token_id, [T_NS_SEPARATOR, T_STRING]) && !$depth) {
+				elseif (in_array($token_id, static::$class_name_tokens) && !$depth) {
 					$trait_name .= $token[1];
 					$line = $token[2];
 				}
@@ -241,4 +248,8 @@ trait Tokens_Parser
 		return $trait_names;
 	}
 
+}
+
+if (PHP_VERSION < '8') {
+	Tokens_Parser::$class_name_tokens = [T_NS_SEPARATOR, T_STRING];
 }

@@ -600,7 +600,8 @@ class Reflection_Source
 						do {
 							$class_name = $this->tokens[$tk][1] . $class_name;
 							$tk --;
-						} while (in_array($this->tokens[$tk][0], [T_NS_SEPARATOR, T_STRING]));
+						}
+						while (in_array($this->tokens[$tk][0], Tokens_Parser::$class_name_tokens));
 						$class_name = in_array($token[1], ['__CLASS__', 'self', 'static'])
 							? $class->name
 							: $this->fullClassName($class_name);
