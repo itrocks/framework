@@ -559,7 +559,7 @@ class Main
 				$result = $this->run($uri, $get, $post, $files) . View::setLocation($uri, $result);
 			}
 			foreach ($this->redirects as $target => $redirection) {
-				$result .= View::redirect($redirection, $target);
+				$result .= View::redirect($redirection, [View::TARGET => $target]);
 			}
 			$this->redirects = [];
 		}

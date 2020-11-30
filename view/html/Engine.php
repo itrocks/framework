@@ -190,15 +190,22 @@ class Engine implements Configurable, Framework\View\Engine
 			list($link, $data) = $link;
 		}
 		$link = Paths::$uri_base . str_replace('&amp;', '&', $link);
-		if (isset($_GET['as_widget']) && (strpos($link, 'as_widget') === false)) {
-			$link .= ((strpos($link, '?') === false) ? '?' : '&') . 'as_widget';
-		}
 		if (!is_array($options)) {
 			$options = [$options];
 		}
+		if (
+			isset($_GET['as_widget'])
+			&& (strpos($link, 'as_widget') === false)
+			&& !in_array(($options[Framework\View::TARGET][0] ?? false), ['', '_'], true)
+		) {
+			$link .= ((strpos($link, '?') === false) ? '?' : '&') . 'as_widget';
+		}
 		$target = Target::RESPONSES;
-		foreach ($options as $option) {
-			if (substr($option, 0, 1) === '#') {
+		foreach ($options as $key => $option) {
+			if (
+				($key === Framework\View::TARGET)
+				|| (is_numeric($key) && (substr($option, 0, 1) === '#'))
+			) {
 				$target = $option;
 			}
 		}
