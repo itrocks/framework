@@ -76,7 +76,7 @@ class View_Builder_Class
 			}
 		}
 		$extend_types = [Dependency::T_EXTENDS, Dependency::T_IMPLEMENTS, Dependency::T_USE];
-		foreach (Tools::extendsUse($class->name, null, $extend_types) as $class_name) {
+		foreach (Tools::extendsUse($class->name, false, $extend_types) as $class_name) {
 				/** @noinspection PhpUnhandledExceptionInspection valid class name */
 			$sub_class = new Reflection_Class(Builder::className($class_name));
 			if (
