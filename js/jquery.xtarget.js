@@ -415,7 +415,10 @@ var requestTargetHeaders = function($element)
 				return;
 			}
 			if (event.which !== 2) {
-				var anchor        = this;
+				var anchor = this;
+				if (!anchor.href) {
+					return;
+				}
 				var is_javascript = (anchor.href.substr(0, 11) === 'javascript:');
 				event.preventDefault();
 				var executeClick = function() {
