@@ -261,7 +261,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name string
 	 * @return mixed
 	 */
-	public function getConstant(string $name)
+	public function getConstant($name)
 	{
 		$constants = $this->getConstants([]);
 		if (!isset($constants[$name])) {
@@ -280,7 +280,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE])
+	public function getConstants(array $flags = [T_EXTENDS, T_USE])
 	{
 		if (!$this->constants) {
 			$this->scanUntilClassEnds();
@@ -915,10 +915,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Checks class for instance
 	 *
-	 * @param $object object
+	 * @param $object object|string
 	 * @return boolean
 	 */
-	public function isInstance(object $object)
+	public function isInstance($object)
 	{
 		return is_a($object, $this->name, true);
 	}
