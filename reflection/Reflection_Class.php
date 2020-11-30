@@ -150,7 +150,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return mixed[] Constant name in key, constant value in value
 	 */
-	public function getConstants(array $flags = [T_EXTENDS, T_IMPLEMENTS, T_USE])
+	public function getConstants($flags = [T_EXTENDS, T_IMPLEMENTS, T_USE])
 	{
 		$constants = parent::getConstants();
 		$flags     = array_flip($flags);
