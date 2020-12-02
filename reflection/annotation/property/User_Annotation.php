@@ -42,6 +42,12 @@ class User_Annotation extends List_Annotation
 	//--------------------------------------------------------------------------------------- TOOLTIP
 	const TOOLTIP = 'tooltip';
 
+	//-------------------------------------------------------------------------------- NOT_MODIFIABLE
+	const NOT_MODIFIABLE = [
+		self::ADD_ONLY, self::HIDDEN, self::HIDE_EDIT, self::INVISIBLE, self::INVISIBLE_EDIT,
+		self::READONLY, self::STRICT_READ_ONLY
+	];
+
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * Annotation value
@@ -86,6 +92,12 @@ class User_Annotation extends List_Annotation
 	{
 		parent::add($value);
 		return $this->validate();
+	}
+
+	//---------------------------------------------------------------------------------- isModifiable
+	public function isModifiable() : bool
+	{
+		return !array_intersect($this->value, static::NOT_MODIFIABLE);
 	}
 
 	//---------------------------------------------------------------------------------------- remove
