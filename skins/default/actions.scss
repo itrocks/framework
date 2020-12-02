@@ -12,7 +12,7 @@ ul.actions > li {
 	margin: 5px 6px 5px 4px;
 	white-space: nowrap;
 
-	> a {
+	> a, > ul > li > a {
 		background: #f8f8f8 1px center no-repeat;
 		box-sizing: border-box;
 		display: block;
@@ -23,6 +23,10 @@ ul.actions > li {
 			background-color: #efefef;
 			color: #444;
 		}
+	}
+
+	> ul > li > a {
+		padding: 6px 10px;
 	}
 
 	> ul > li {

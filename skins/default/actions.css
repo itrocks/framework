@@ -7,22 +7,33 @@ ul.actions > li {
   margin: 5px 6px 5px 4px;
   white-space: nowrap;
 }
-li.action > a,
+li.action > a, li.action > ul > li > a,
 li.actions > ul > li > a,
-ul.actions > li > a {
+li.actions > ul > li > ul > li > a,
+ul.actions > li > a,
+ul.actions > li > ul > li > a {
   background: #f8f8f8 1px center no-repeat;
   box-sizing: border-box;
   display: block;
   height: 100%;
   padding: 6px 10px 6px 26px;
 }
-li.action > a:focus, li.action > a:hover,
+li.action > a:focus, li.action > a:hover, li.action > ul > li > a:focus, li.action > ul > li > a:hover,
 li.actions > ul > li > a:focus,
 li.actions > ul > li > a:hover,
+li.actions > ul > li > ul > li > a:focus,
+li.actions > ul > li > ul > li > a:hover,
 ul.actions > li > a:focus,
-ul.actions > li > a:hover {
+ul.actions > li > a:hover,
+ul.actions > li > ul > li > a:focus,
+ul.actions > li > ul > li > a:hover {
   background-color: #efefef;
   color: #444;
+}
+li.action > ul > li > a,
+li.actions > ul > li > ul > li > a,
+ul.actions > li > ul > li > a {
+  padding: 6px 10px;
 }
 li.action > ul > li,
 li.actions > ul > li > ul > li,
