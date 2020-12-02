@@ -184,13 +184,13 @@ class Controller implements Default_Class_Controller
 
 	//----------------------------------------------------------------------------------- writeObject
 	/**
-	 * @param $object        object
+	 * @param $write_object  object
 	 * @param $write_options array
 	 * @return object $object if write was ok
 	 */
-	protected function writeObject($object, array $write_options)
+	protected function writeObject($write_object, array $write_options)
 	{
-		return Dao::write($object, $write_options);
+		return Dao::write($write_object, $write_options);
 	}
 
 }
