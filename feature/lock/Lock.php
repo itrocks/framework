@@ -4,11 +4,14 @@ namespace ITRocks\Framework\Feature;
 use ITRocks\Framework\AOP\Joinpoint\After_Method;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Controller\Feature;
+use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Feature\Lock\Controller;
 use ITRocks\Framework\Feature\Lock\Lockable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View;
 
 /**
@@ -28,7 +31,7 @@ class Lock implements Registerable
 			return;
 		}
 		if ($object->locked) {
-			if (isset($result[Feature::F_SAVE])) {
+			if (isset($result[Feature::F_SAVE]) && !static::unlockedProperties($object)) {
 				unset($result[Feature::F_SAVE]);
 			}
 			if (isset($result[Feature::F_DELETE])) {
@@ -80,8 +83,11 @@ class Lock implements Registerable
 		/** @var $buttons Button[] */
 		$buttons =& $joinpoint->result;
 		if ($object->locked) {
-			if (isset($buttons[Feature::F_EDIT])) {
+			if (isset($buttons[Feature::F_EDIT]) && !static::unlockedProperties($object)) {
 				unset($buttons[Feature::F_EDIT]);
+			}
+			if (isset($buttons[Feature::F_EDIT])) {
+				$buttons[Feature::F_EDIT]->addOption(Target::POPUP, View::TARGET);
 			}
 			if (isset($buttons[Feature::F_DELETE])) {
 				unset($buttons[Feature::F_DELETE]);
@@ -97,6 +103,38 @@ class Lock implements Registerable
 				Controller::FEATURE,
 				Target::RESPONSES
 			);
+		}
+	}
+
+	//--------------------------------------------------------- beforeEditControllerGetViewParameters
+	/**
+	 * @param $parameters Parameters
+	 */
+	public function beforeEditControllerGetViewParameters(Parameters $parameters)
+	{
+		/** @var $object Lockable */
+		$object = $parameters->getMainObject();
+		if (isA($object, Lockable::class) && $object->locked) {
+			$parameters->set('only', ['@modifiable', '@unlocked']);
+		}
+	}
+
+	//------------------------------------------------------ beforeOutputControllerOnlyPropertiesAuto
+	/**
+	 * @param $properties_filter string[]
+	 * @param $auto              string[]
+	 * @param $properties        Reflection_Property[]
+	 */
+	public function beforeOutputControllerOnlyPropertiesAuto(
+		array &$properties_filter, array &$auto, array $properties
+	) {
+		if (isset($auto['@unlocked'])) {
+			foreach ($properties_filter as $key => $property_name) {
+				if ($properties[$property_name]->getAnnotation('unlocked')->value) {
+					continue;
+				}
+				unset($properties_filter[$key]);
+			}
 		}
 	}
 
@@ -121,6 +159,31 @@ class Lock implements Registerable
 			[Output\Controller::class, 'getGeneralButtons'],
 			[$this, 'afterOutputControllerGetGeneralButtons']
 		);
+		$aop->beforeMethod(
+			[Edit\Controller::class, 'getViewParameters'],
+			[$this, 'beforeEditControllerGetViewParameters']
+		);
+		$aop->beforeMethod(
+			[Output\Controller::class, 'onlyPropertiesAuto'],
+			[$this, 'beforeOutputControllerOnlyPropertiesAuto']
+		);
+	}
+
+	//---------------------------------------------------------------------------- unlockedProperties
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object object
+	 * @return string[]
+	 */
+	public static function unlockedProperties($object) : array
+	{
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$properties     = (new Reflection_Class($object))->getProperties();
+		$property_names = array_keys($properties);
+		(new Output\Controller)->onlyPropertiesAuto(
+			$property_names, ['@modifiable' => true, '@unlocked' => true], $properties
+		);
+		return $property_names;
 	}
 
 }

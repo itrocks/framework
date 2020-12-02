@@ -1,9 +1,11 @@
 <?php
 namespace ITRocks\Framework\Feature\Lock;
 
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Option\Only;
+use ITRocks\Framework\Feature\Lock;
 use ITRocks\Framework\Feature\Unlock\Unlockable;
 use ITRocks\Framework\Reflection\Reflection_Property;
 
@@ -52,7 +54,7 @@ trait Lockable
 	 * @param $options array|Only[]
 	 * @return boolean
 	 */
-	public function isWritable(Data_Link $link, array $options)
+	public function isWritable(Data_Link $link, array &$options)
 	{
 		if ($this->isDeletable($link)) {
 			return true;
@@ -71,6 +73,13 @@ trait Lockable
 				}
 			}
 			if ($unlocked) {
+				return true;
+			}
+		}
+		else {
+			$property_names = Lock::unlockedProperties($this);
+			if ($property_names) {
+				$options[] = Dao::only($property_names);
 				return true;
 			}
 		}
