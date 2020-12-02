@@ -475,6 +475,27 @@ class Parameters
 		throw new Object_Not_Found_Exception(Loc::tr($message));
 	}
 
+	//--------------------------------------------------------------------------------------- toArray
+	/**
+	 * @param $parameter array|string
+	 * @return array
+	 */
+	public static function toArray($value)
+	{
+		if (
+			is_string($value)
+			&& (strlen($value) > 2)
+			&& ($value[0] === '[')
+			&& ($value[strlen($value) - 1] === ']')
+		) {
+			$value = explode(',', substr($value, 1, -1));
+		}
+		elseif (!is_array($value)) {
+			$value = [$value];
+		}
+		return $value;
+	}
+
 	//----------------------------------------------------------------------------------------- toGet
 	/**
 	 * Changes named parameters (which name is not numeric and value not object) into a 'get-like'

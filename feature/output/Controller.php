@@ -392,7 +392,60 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$object, $parameters, $output_settings
 		);
+		if (isset($parameters['only'])) {
+			$this->onlyProperties(
+				$object, $parameters[Parameter::PROPERTIES_FILTER], Parameters::toArray($parameters['only'])
+			);
+		}
 		return $parameters;
+	}
+
+	//-------------------------------------------------------------------------------- onlyProperties
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object            object
+	 * @param $properties_filter string[]
+	 * @param $only              string[]
+	 */
+	protected function onlyProperties($object, array &$properties_filter, array $only)
+	{
+		$auto = [];
+		foreach ($only as $key => $property_name) {
+			unset($only[$key]);
+			if ($property_name[0] === '@') {
+				$auto[$property_name] = true;
+			}
+		}
+		if ($only) {
+			$properties_filter = array_intersect($properties_filter, $only);
+		}
+		if (!$auto) {
+			return;
+		}
+		$properties = [];
+		foreach ($properties_filter as $property_name) {
+			/** @noinspection PhpUnhandledExceptionInspection must exist */
+			$properties[$property_name] = new Reflection_Property($object, $property_name);
+		}
+		$this->onlyPropertiesAuto($properties_filter, $auto, $properties);
+	}
+
+	//---------------------------------------------------------------------------- onlyPropertiesAuto
+	/**
+	 * @param $properties_filter string[]
+	 * @param $auto              string[]
+	 * @param $properties        Reflection_Property[]
+	 */
+	public function onlyPropertiesAuto(array &$properties_filter, array $auto, array $properties)
+	{
+		if (isset($auto['@modifiable'])) {
+			foreach ($properties_filter as $key => $property_name) {
+				if (User_Annotation::of($properties[$property_name])->isModifiable()) {
+					continue;
+				}
+				unset($properties_filter[$key]);
+			}
+		}
 	}
 
 	//-------------------------------------------------------------------------------- outputSettings
