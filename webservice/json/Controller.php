@@ -34,6 +34,20 @@ class Controller implements Default_Feature_Controller
 	 */
 	public $class;
 
+	//----------------------------------------------------------------------------------- $properties
+	/**
+	 * Cache for $property_names properties
+	 *
+	 * @var Reflection_Property[]
+	 */
+	public $properties;
+
+	//------------------------------------------------------------------------------- $property_names
+	/**
+	 * @var string[]
+	 */
+	public $property_names = [];
+
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
@@ -92,39 +106,59 @@ class Controller implements Default_Feature_Controller
 
 	//------------------------------------------------------------------------------------- buildJson
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $objects    object[]|object
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function buildJson($objects, $class_name)
+	protected function buildJson($objects, string $class_name) : string
 	{
+		if ($this->property_names && $objects) {
+			$first_object = is_object($objects) ? $objects : reset($objects);
+			foreach ($this->property_names as $property_name) {
+				if (property_exists($first_object, $property_name)) {
+					/** @noinspection PhpUnhandledExceptionInspection property_exists */
+					$this->properties[$property_name] = new Reflection_Property($first_object, $property_name);
+				}
+			}
+		}
 		$is_abstract = (new Type($class_name))->isAbstractClass();
 		if (is_array($objects)) {
 			$entries = [];
 			foreach ($objects as $source_object) {
-				$identifier = Dao::getObjectIdentifier($source_object);
-				$value      = strval($source_object);
-				if ($is_abstract) {
-					$class_name = Builder::current()->sourceClassName(get_class($source_object));
-					$entries[] = new Autocomplete_Entry_With_Class_Name($identifier, $value, $class_name);
-				}
-				else {
-					$entries[] = new Autocomplete_Entry($identifier, $value);
-				}
+				$entries[] = $this->buildJsonEntry($source_object, $is_abstract);
 			}
 		}
 		else {
-			$identifier = Dao::getObjectIdentifier($objects);
-			$value      = strval($objects);
-			if ($is_abstract) {
-				$class_name = Builder::current()->sourceClassName(get_class($objects));
-				$entries    = new Autocomplete_Entry_With_Class_Name($identifier, $value, $class_name);
-			}
-			else {
-				$entries = new Autocomplete_Entry($identifier, $value);
-			}
+			$entries = $this->buildJsonEntry($objects, $is_abstract);
 		}
 		return json_encode($entries);
+	}
+
+	//-------------------------------------------------------------------------------- buildJsonEntry
+	/**
+	 * @param $object      object
+	 * @param $is_abstract boolean
+	 * @return Autocomplete_Entry
+	 */
+	protected function buildJsonEntry($object, bool $is_abstract) : Autocomplete_Entry
+	{
+		$identifier = Dao::getObjectIdentifier($object);
+		$value      = strval($object);
+		if ($is_abstract) {
+			$class_name = Builder::current()->sourceClassName(get_class($object));
+			$entry      = new Autocomplete_Entry_With_Class_Name($identifier, $value, $class_name);
+		}
+		else {
+			$entry = new Autocomplete_Entry($identifier, $value);
+		}
+		foreach ($this->property_names as $property_name) {
+			$property = $this->properties[$property_name] ?? false;
+			$entry->$property_name = $property
+				? Loc::propertyToLocale($property, $object->$property_name)
+				: $object->$property_name;
+		}
+		return $entry;
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -142,6 +176,10 @@ class Controller implements Default_Feature_Controller
 	{
 		$class_name = Builder::className(Names::setToClass($class_name));
 		$parameters = $parameters->getObjects();
+		if (isset($parameters['property_names'])) {
+			$this->property_names = $parameters['property_names'];
+			unset($parameters['property_names']);
+		}
 		// read all objects corresponding to class name
 		if (!$parameters) {
 			return json_encode(Dao::readAll($class_name, Dao::sort()));

@@ -18,6 +18,7 @@ $(document).ready(function()
 						data.value ? data.value : ($element.attr('name') ? $element.val() : ''),
 						data.class_name
 					);
+					$element.prev().data('object', data);
 				})
 				.always(function() {
 					window.running_combo = undefined;
@@ -90,6 +91,9 @@ $(document).ready(function()
 						= is_constant ? filter[1].substr(1, filter[1].length - 2) : filter[1];
 				}
 			}
+		}
+		if ($element.data('combo-object')) {
+			request['property_names'] = $element.data('combo-object').split(';');
 		}
 		return request;
 	};
@@ -222,6 +226,9 @@ $(document).ready(function()
 				}
 				if (previous_id !== $id.val()) {
 					$id.change();
+				}
+				if ($value.data('combo-object')) {
+					$id.data('object', ui.item);
 				}
 			}
 		});
