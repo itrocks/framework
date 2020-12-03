@@ -1,3 +1,13 @@
+button.action {
+  background-color: #efefef;
+  border: 1px solid #d0d0d0;
+  padding: 7px 10px !important;
+  position: absolute;
+}
+button.action:not(:hover) {
+  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+}
+
 li.action,
 li.actions > ul > li,
 ul.actions > li {

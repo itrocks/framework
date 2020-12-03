@@ -1,6 +1,17 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
+button.action {
+	background-color: #efefef;
+	border: 1px solid #d0d0d0;
+	padding: 7px 10px !important;
+	position: absolute;
+
+	&:not(:hover) {
+		background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
+	}
+}
+
 //------------------------------------------------------------------------------------------- Style
 
 li.action,
