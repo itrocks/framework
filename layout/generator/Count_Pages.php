@@ -40,7 +40,7 @@ class Count_Pages
 				$page_height      = $group->heightOnPage($page);
 				$available_height = $page_height;
 			}
-			$available_height -= $iteration->height;
+			$available_height -= ($iteration->height + $group->iteration_spacing);
 		}
 		$structure->pages_count = $pages_count;
 	}
@@ -52,8 +52,9 @@ class Count_Pages
 	 * @example
 	 * - one page or 'unique' page exists => 1
 	 * - all other cases => 2
+	 * @return integer
 	 */
-	protected function minimumPagesCount()
+	protected function minimumPagesCount() : int
 	{
 		$pages = $this->structure->pages;
 		if (isset($pages[Page::UNIQUE]) || (count($pages) === 1)) {
