@@ -53,10 +53,10 @@ class Property_To_Text
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $structure Structure
+	 * @param $structure Structure|null
 	 * @param $print     boolean
 	 */
-	public function __construct(Structure $structure = null, $print = false)
+	public function __construct(Structure $structure = null, bool $print = false)
 	{
 		$this->structureConstruct($structure);
 		$this->print = $print;
@@ -67,7 +67,7 @@ class Property_To_Text
 	 * @param $final_element    Element|Final_Image|Final_Text
 	 * @param $iteration_number integer
 	 */
-	protected function append(Element $final_element, $iteration_number = null)
+	protected function append(Element $final_element, int $iteration_number = null)
 	{
 		// append element to the group iteration / page
 		if ($final_element->group) {
@@ -135,7 +135,7 @@ class Property_To_Text
 	 * @param $iteration_number integer
 	 * @return Iteration
 	 */
-	protected function iteration(Group $group, $iteration_number)
+	protected function iteration(Group $group, int $iteration_number) : Iteration
 	{
 		if (!isset($this->iterations[$group->property_path][$iteration_number])) {
 			$iteration           = new Iteration($group->page);
@@ -159,7 +159,7 @@ class Property_To_Text
 	 * @return object[]
 	 * @throws ReflectionException
 	 */
-	protected function nextObjects(array $objects, $property_name)
+	protected function nextObjects(array $objects, string $property_name) : array
 	{
 		$next_objects = [];
 		if ($objects) {
@@ -260,7 +260,7 @@ class Property_To_Text
 	 * @param $value    string
 	 * @return Element|Final_Image|Final_Text
 	 */
-	protected function propertyToFinal(Field $property, $value)
+	protected function propertyToFinal(Field $property, string $value) : Element
 	{
 		return ($value instanceof File)
 			? $this->propertyToFinalImage($property, $value)
@@ -273,7 +273,7 @@ class Property_To_Text
 	 * @param $value    File
 	 * @return Final_Image
 	 */
-	protected function propertyToFinalImage(Field $property, File $value)
+	protected function propertyToFinalImage(Field $property, File $value) : Final_Image
 	{
 		// change property to final image
 		$final_image = new Final_Image($property->page);
@@ -293,7 +293,7 @@ class Property_To_Text
 	 * @param $value    string
 	 * @return Final_Text
 	 */
-	protected function propertyToFinalText(Field $property, $value)
+	protected function propertyToFinalText(Field $property, string $value) : Final_Text
 	{
 		// change property to final text
 		$final_text = new Final_Text($property->page);
@@ -335,7 +335,7 @@ class Property_To_Text
 	 * @param $property_path string
 	 * @return object[]
 	 */
-	protected function values($property_path)
+	protected function values(string $property_path) : array
 	{
 		// This is a 'linear' algorithm, not recursive, to go faster : objects list grow during descend
 		$objects = [$this->object];

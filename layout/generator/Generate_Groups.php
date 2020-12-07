@@ -112,7 +112,7 @@ class Generate_Groups
 	 * @param $property Property
 	 * @return boolean true if the property was stored into a group, else false
 	 */
-	protected function property(Property $property)
+	protected function property(Property $property) : bool
 	{
 		$class_name = $this->structure->class_name;
 		/** @var $last_group Group|null */
@@ -150,7 +150,7 @@ class Generate_Groups
 	 * @param $property_path string 'property.path'
 	 * @return Group
 	 */
-	protected function propertyGroup(Field $field, $property_path)
+	protected function propertyGroup(Field $field, $property_path) : Group
 	{
 		if (isset($this->groups[$property_path])) {
 			$group = $this->groups[$property_path];
@@ -187,7 +187,7 @@ class Generate_Groups
 	 * @param $text Text
 	 * @return boolean
 	 */
-	protected function text(Text $text)
+	protected function text(Text $text) : bool
 	{
 		/** @var $last_group Group|null */
 		$last_group_count = 0;

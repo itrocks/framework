@@ -38,7 +38,7 @@ class Parser
 	 * @param $root_object   object
 	 * @param $property_path string reference property path
 	 */
-	public function __construct($object, $root_object = null, $property_path = '')
+	public function __construct($object, $root_object = null, string $property_path = '')
 	{
 		$this->object        = $object;
 		$this->root_object   = $root_object;
@@ -51,7 +51,7 @@ class Parser
 	 * @param $iteration_number integer
 	 * @return string
 	 */
-	public function elementText(Text $element, $iteration_number = 0)
+	public function elementText(Text $element, int $iteration_number = 0) : string
 	{
 		$text     = $element->text;
 		$position = 0;
@@ -75,7 +75,8 @@ class Parser
 	 * @param $iteration_number    integer
 	 * @return string
 	 */
-	public function propertyExpression($property_expression, $iteration_number = 0)
+	public function propertyExpression(string $property_expression, int $iteration_number = 0)
+		: string
 	{
 		$value = '';
 		foreach (explode('?:', $property_expression) as $property_path) {

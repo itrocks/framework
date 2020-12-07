@@ -14,6 +14,8 @@ class Text_Templating
 
 	//--------------------------------------------------------------------------- PAGE_PROPERTY_PATHS
 	const PAGE_PROPERTY_PATHS = ['page.number', 'pages.count'];
+
+	//----------------------------------------------------------------------------- PAGE_SIMPLE_PATHS
 	const PAGE_SIMPLE_PATHS   = [
 		'#'    => '{page.number}',
 		'##'   => '{pages.count}',
@@ -25,9 +27,9 @@ class Text_Templating
 	/**
 	 * @param $property_path string
 	 * @param $element       Text
-	 * @return mixed
+	 * @return mixed|null
 	 */
-	protected function pageProperty($property_path, Text $element)
+	protected function pageProperty(string $property_path, Text $element)
 	{
 		switch ($property_path) {
 			case 'page.number': return $element->page->number;

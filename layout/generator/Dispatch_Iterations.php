@@ -78,7 +78,7 @@ class Dispatch_Iterations
 	 * @param $elements Element[]
 	 * @return float
 	 */
-	protected function maxHeight(array $elements)
+	protected function maxHeight(array $elements) : float
 	{
 		$iteration_bottom = 0;
 		$iteration_margin = 0;

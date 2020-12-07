@@ -109,7 +109,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	 * @param $alter  boolean
 	 * @param $result array Text[][]
 	 */
-	public function renameHeaders($alter, array $result)
+	public function renameHeaders(bool $alter, array $result)
 	{
 		if (!$alter) {
 			return;

@@ -35,9 +35,9 @@ class Structure
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 */
-	public function __construct($class_name = null)
+	public function __construct(string $class_name = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
@@ -48,7 +48,7 @@ class Structure
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->dump();
 	}
@@ -57,7 +57,7 @@ class Structure
 	/**
 	 * @return string
 	 */
-	public function dump()
+	public function dump() : string
 	{
 		$dump = $this->pages_count . ' PAGES' . LF . LF;
 		foreach ($this->pages as $page) {
@@ -71,11 +71,11 @@ class Structure
 	 * Gets the page model that matches the page number and pages count
 	 *
 	 * @param $page_number integer absolute page number
-	 * @param $pages_count integer default is $this->pages_count
+	 * @param $pages_count integer|null default is $this->pages_count
 	 * @param $pages       Page[] default is $this->pages
 	 * @return Page
 	 */
-	public function page($page_number, $pages_count = null, array $pages = null)
+	public function page(int $page_number, int $pages_count = null, array $pages = []) : Page
 	{
 		if (!$pages) {
 			$pages = $this->pages;

@@ -125,7 +125,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @param $alter      boolean if true, headers are removed. Not if false.
 	 * @return Text[][]
 	 */
-	public function headers(Group $group, array $properties, $alter = false)
+	public function headers(Group $group, array $properties, $alter = false) : array
 	{
 		$headers = [];
 		foreach ($group->links ?: [$group] as $group) {
@@ -166,7 +166,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @param $group Group
 	 * @return Element[]|Property[]
 	 */
-	protected function properties(Group $group)
+	protected function properties(Group $group) : array
 	{
 		$properties = [];
 		$top        = reset($group->properties)->top;

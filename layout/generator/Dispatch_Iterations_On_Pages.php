@@ -60,7 +60,7 @@ class Dispatch_Iterations_On_Pages
 	 * @param $page_number integer Incremented 1..n times : until next page with a linked group found
 	 * @return Group The linked group for the found page
 	 */
-	protected function nextPageGroup(Group $group, &$page_number)
+	protected function nextPageGroup(Group $group, int &$page_number) : Group
 	{
 		do {
 			$page_number ++;
@@ -78,9 +78,9 @@ class Dispatch_Iterations_On_Pages
 	 * Get the real page for this page number
 	 *
 	 * @param $page_number integer
-	 * @return Page
+	 * @return ?Page
 	 */
-	protected function page($page_number)
+	protected function page(int $page_number) : ?Page
 	{
 		if (isset($this->pages[$page_number])) {
 			return $this->pages[$page_number];

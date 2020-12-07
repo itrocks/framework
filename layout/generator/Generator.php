@@ -84,8 +84,8 @@ class Generator
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $model  Model
-	 * @param $output Output
+	 * @param $model  Model|null
+	 * @param $output Output|null
 	 */
 	public function __construct(Model $model = null, Output $output = null)
 	{
@@ -104,7 +104,7 @@ class Generator
 	 * @param $object object
 	 * @return Structure
 	 */
-	public function generate($object)
+	public function generate($object) : Structure
 	{
 		$this->object    = $object;
 		$this->structure = new Structure(Builder::className($this->model->class_name));

@@ -28,7 +28,7 @@ class Automatic_Line_Feed
 	 * @param $element Element
 	 * @return float The height increase
 	 */
-	protected function element(Element $element)
+	protected function element(Element $element) : float
 	{
 		if (
 			!($element instanceof Text\Resizable)
