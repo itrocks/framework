@@ -73,10 +73,10 @@ class Parser
 	/**
 	 * @param $property_expression string
 	 * @param $iteration_number    integer
-	 * @return string
+	 * @return ?string
 	 */
 	public function propertyExpression(string $property_expression, int $iteration_number = 0)
-		: string
+		: ?string
 	{
 		$value = '';
 		foreach (explode('?:', $property_expression) as $property_path) {

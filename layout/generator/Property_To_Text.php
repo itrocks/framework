@@ -257,14 +257,14 @@ class Property_To_Text
 	//------------------------------------------------------------------------------- propertyToFinal
 	/**
 	 * @param $property Field|Image|Property|Text
-	 * @param $value    string
+	 * @param $value    mixed
 	 * @return Element|Final_Image|Final_Text
 	 */
-	protected function propertyToFinal(Field $property, string $value) : Element
+	protected function propertyToFinal(Field $property, $value) : Element
 	{
 		return ($value instanceof File)
 			? $this->propertyToFinalImage($property, $value)
-			: $this->propertyToFinalText ($property, $value);
+			: $this->propertyToFinalText ($property, strval($value));
 	}
 
 	//-------------------------------------------------------------------------- propertyToFinalImage
