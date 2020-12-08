@@ -1020,6 +1020,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	public function searchObjectsToRepresentative($class_name, array $search, $recurse = false)
 	{
 		foreach ($search as $property_path => $search_value) {
+			if (($search_value instanceof Comparison) && is_null($search_value->than_value)) {
+				continue;
+			}
 			// ignore numeric keys : these are additions, and do not come from the list form
 			// ignore id filters, which filter current object using direct identifiers (no need to search)
 			if (is_numeric($property_path) || ($property_path === 'id')) {
