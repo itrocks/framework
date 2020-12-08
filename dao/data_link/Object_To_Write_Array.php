@@ -184,8 +184,7 @@ class Object_To_Write_Array
 			) {
 				$property_name = $property->name;
 				if (Getter_Annotation::of($property)->value) {
-					// call @getter
-					$this->object->$property_name;
+					// call @getter (not really : only isset is called. Real @getter call may cause problems)
 					$is_property_set = isset($this->object->$property_name);
 				}
 				else {
