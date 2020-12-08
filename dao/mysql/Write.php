@@ -405,7 +405,7 @@ class Write extends Data_Link\Write
 		// collection properties : write each of them
 		if ($collection) {
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
-			$is_component          = isA($this->object, Component::class);
+			$is_component          = isA(reset($collection), Component::class);
 			foreach ($collection as $key => $element) {
 				$options = $this->spread_options;
 				if (!Dao::isLinkedObjectModified($element)) {
