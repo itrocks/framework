@@ -17,14 +17,16 @@ class Exclude extends Properties
 	 * If $no_property_returns_true is set to false, the function will return false if there is none
 	 * If $no_property_returns_true is kept to true, the function will return true if there is none
 	 *
-	 * @param $options                  Option[]
-	 * @param $property                 string
-	 * @param $no_property_returns_true boolean if there is no Properties option, returns this value
+	 * @param $options                Option[]
+	 * @param $property_name          string
+	 * @param $no_option_returns_true boolean if there is no Properties option, returns this value
 	 * @return boolean
 	 */
-	public static function have(array $options, $property, $no_property_returns_true = false)
+	public static function have(
+		array $options, string $property_name, bool $no_option_returns_true = false
+	) : bool
 	{
-		return parent::have($options, $property, $no_property_returns_true);
+		return parent::have($options, $property_name, $no_option_returns_true);
 	}
 
 }
