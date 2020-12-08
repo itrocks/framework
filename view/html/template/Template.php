@@ -36,6 +36,7 @@ class Template
 	//----------------------------------------------------------------------------- options constants
 	const ABSOLUTE_LINKS     = 'absolute_links';
 	const HIDE_PAGE_FRAME    = 'hide_page_frame';
+	const ORIGIN             = '@-OrIgIn-@';
 	const PROPAGATE          = true;
 	const TEMPLATE           = 'template';
 	const TEMPLATE_CLASS     = 'template_class';
@@ -1672,31 +1673,39 @@ class Template
 				$builder = Builder::create(
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
-				$object       = $builder->buildHtml();
-				$format_value = false;
-			}
-			elseif ($is_property_value && $this->link_objects) {
-				$property = $object;
-				$object   = $this->parseMethod($object, $property_name);
-				$type     = $property->getType();
-				/** @noinspection PhpUnhandledExceptionInspection is_object */
-				if (
-					is_object($object)
-					&& !($object instanceof Stringable)
-					&& $type->isSingleClass()
-					&& (new Reflection_Class($object))->getAnnotation('business')->value
-					&& Dao::getObjectIdentifier($object)
-				) {
-					$anchor = new Anchor(Framework\View::link($object), strval($object));
-					$anchor->setAttribute('target', Target::MAIN);
-					$object = strval($anchor);
-				}
-				elseif (($object instanceof File) && Dao::getObjectIdentifier($object)) {
-					$object = $this->parseFileToString($object);
+				$value = $builder->buildHtml();
+				if ($value !== static::ORIGIN) {
+					$format_value = false;
+					$object       = $value;
 				}
 			}
 			else {
-				$object = $this->parseMethod($object, $property_name);
+				$value = static::ORIGIN;
+			}
+			if ($value === static::ORIGIN) {
+				if ($is_property_value && $this->link_objects) {
+					$property = $object;
+					$object   = $this->parseMethod($object, $property_name);
+					$type     = $property->getType();
+					/** @noinspection PhpUnhandledExceptionInspection is_object */
+					if (
+						is_object($object)
+						&& !($object instanceof Stringable)
+						&& $type->isSingleClass()
+						&& (new Reflection_Class($object))->getAnnotation('business')->value
+						&& Dao::getObjectIdentifier($object)
+					) {
+						$anchor = new Anchor(Framework\View::link($object), strval($object));
+						$anchor->setAttribute('target', Target::MAIN);
+						$object = strval($anchor);
+					}
+					elseif (($object instanceof File) && Dao::getObjectIdentifier($object)) {
+						$object = $this->parseFileToString($object);
+					}
+				}
+				else {
+					$object = $this->parseMethod($object, $property_name);
+				}
 			}
 		}
 		elseif (isset($object->$property_name)) {

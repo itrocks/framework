@@ -192,6 +192,9 @@ class Html_Template extends Template
 				}
 			}
 			else {
+				$value = static::ORIGIN;
+			}
+			if ($value === static::ORIGIN) {
 				$value = $property->getType()->isBoolean()
 					? $property->value(null, true)
 					: parent::parseSingleValue($property_name, false);
@@ -262,7 +265,6 @@ class Html_Template extends Template
 	/**
 	 * Replace all <section class="edit window"> into the content by <form>
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection Names::classToUri valid class name
 	 * @param $content string
 	 * @return string
 	 */
