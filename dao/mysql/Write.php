@@ -405,6 +405,7 @@ class Write extends Data_Link\Write
 		// collection properties : write each of them
 		if ($collection) {
 			$foreign_property_name = Foreign_Annotation::of($property)->value;
+			$is_component          = isA($this->object, Component::class);
 			foreach ($collection as $key => $element) {
 				$options = $this->spread_options;
 				if (!Dao::isLinkedObjectModified($element)) {
@@ -418,7 +419,9 @@ class Write extends Data_Link\Write
 						[$element_link->getLinkClass()->getCompositeProperty()->name => $element]
 					);
 				}
-				$element->setComposite($this->object, $foreign_property_name);
+				if ($is_component) {
+					$element->setComposite($this->object, $foreign_property_name);
+				}
 				$id = $element_link->value
 					? $this->link->getLinkObjectIdentifier($element, $element_link)
 					: $this->link->getObjectIdentifier($element);
