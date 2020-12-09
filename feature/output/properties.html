@@ -27,7 +27,11 @@
 		<li class="{name} {getType.asString.short.lower} {?getWidgetClassesString} {?isComponentObjectHtml} {?isHidden} {?isMandatory} {?isMultiline} {?showTime} {?showSeconds}" id="{path}">
 			<!--@isVisible?-->
 			<label title="{?pathIfDifferent.display.@tr}">{display}</label>
+			<!--@isSimple?-->
 			<div title="{?tooltip}">{value}<!--unit?--><span class="unit">{unit}</span><!--end--></div>
+			<!--else-->
+			{value}
+			<!--end-->
 			<!--end-->
 		</li>
 		<!--getAnnotations('after')--><li class="after {..name}">|{value}|</li><!--end-->

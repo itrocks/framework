@@ -1,0 +1,23 @@
+ul.objects, ol.objects, table.objects,
+.objects > ul, .objects > ol, .objects > table {
+  background-color: #efefef;
+  display: table;
+}
+ul.objects > *, ol.objects > *, table.objects > *,
+.objects > ul > *, .objects > ol > *, .objects > table > * {
+  display: table-row;
+}
+ul.objects > * > *, ol.objects > * > *, table.objects > * > *,
+.objects > ul > * > *, .objects > ol > * > *, .objects > table > * > * {
+  display: table-cell;
+}
+
+article > form ul.objects, article > form ol.objects, article > form table.objects,
+article > form .objects > ul, article > form .objects > ol, article > form .objects > table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+article > form ul.objects > :not(:last-child) > div > input, article > form ol.objects > :not(:last-child) > div > input, article > form table.objects > :not(:last-child) > div > input,
+article > form .objects > ul > :not(:last-child) > div > input, article > form .objects > ol > :not(:last-child) > div > input, article > form .objects > table > :not(:last-child) > div > input {
+  margin-bottom: -1px;
+}

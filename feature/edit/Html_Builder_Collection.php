@@ -227,6 +227,9 @@ class Html_Builder_Collection extends Collection
 				$this->class_name
 			)
 		);
+		if ($component_object_html = $property->isComponentObjectHtml()) {
+			$cell->addClass($component_object_html);
+		}
 		return $cell;
 	}
 

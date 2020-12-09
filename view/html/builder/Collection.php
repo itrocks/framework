@@ -127,7 +127,7 @@ class Collection
 		if (!($header instanceof Item)) {
 			$header = new Item($header);
 		}
-		$header->addClass('header');
+		$header->addClass('head');
 		$list->addItem($header);
 		foreach ($this->buildBody() as $line) {
 			if (!($line instanceof Item)) {
@@ -245,6 +245,9 @@ class Collection
 		);
 		$cell->setData('property', $property->path);
 		$cell->setData('title',    Loc::tr($property->path));
+		if ($component_object_html = $property->isComponentObjectHtml()) {
+			$cell->addClass($component_object_html);
+		}
 		return $cell;
 	}
 

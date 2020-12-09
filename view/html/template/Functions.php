@@ -20,6 +20,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\Conditions_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Integrated_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Integrated_Properties;
@@ -766,6 +767,31 @@ class Functions
 			$var_name = isset($var_name) ? next($template->var_names) : reset($template->var_names);
 		}
 		return null;
+	}
+
+	//----------------------------------------------------------------------------------- getIsSimple
+	/**
+	 * Returns true if the property value has a simple display
+	 *
+	 * @param $template Template
+	 * @return boolean
+	 */
+	public function getIsSimple(Template $template) : bool
+	{
+		foreach ($template->objects as $property) {
+			if (!($property instanceof Reflection_Property)) {
+				continue;
+			}
+			$is_simple = !$property->getType()->isMultiple();
+			if ($is_simple) {
+				$widget_annotation = Widget_Annotation::of($property);
+				if ($widget_annotation->value) {
+					$is_simple = false;
+				}
+			}
+			return $is_simple;
+		}
+		return true;
 	}
 
 	//---------------------------------------------------------------------------------- getIsVisible

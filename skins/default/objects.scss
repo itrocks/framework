@@ -1,0 +1,27 @@
+
+ul.objects, ol.objects, table.objects,
+.objects > ul, .objects > ol, .objects > table {
+	background-color: #efefef;
+	display: table;
+
+	> * {
+		display: table-row;
+
+		> * {
+			display: table-cell;
+		}
+	}
+}
+
+article > form {
+
+	ul.objects, ol.objects, table.objects,
+	.objects > ul, .objects > ol, .objects > table {
+		border-collapse: collapse;
+		border-spacing: 0;
+
+		> :not(:last-child) > div > input {
+			margin-bottom: -1px;
+		}
+	}
+}

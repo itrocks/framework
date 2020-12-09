@@ -24,6 +24,7 @@ use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\View\Html;
 use ITRocks\Framework\View\Html\Dom\Anchor;
+use ITRocks\Framework\View\Html\Dom\Div;
 use ITRocks\Framework\View\Html\Template\Functions;
 use ITRocks\Framework\View\Html\Template\Loop;
 
@@ -1674,7 +1675,14 @@ class Template
 					$builder, [$object, $this->parseMethod($object, $property_name), $this]
 				);
 				$value = $builder->buildHtml();
-				if ($value !== static::ORIGIN) {
+				if ($value === static::ORIGIN) {
+					$div = new Div($value);
+					if (property_exists($object, 'tooltip') && $object->tooltip) {
+						$div->setData('tooltip', $object->tooltip());
+					}
+					$value = strval($div);
+				}
+				else {
 					$format_value = false;
 					$object       = $value;
 				}

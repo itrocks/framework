@@ -13,28 +13,28 @@ $(document).ready(function()
 	};
 
 	//------------------------------------------------------------------------ tr.new refreshOrdering
-	$body.build('call', 'article ul.collection li[data-property=ordering]', function()
+	$body.build('call', '.component-objects [data-property=ordering]', function()
 	{
-		var $li = $(this);
+		var $li = this;
 
 		//----------------------------------------------------------------------------------- draggable
 		$li.closest('li.data').draggable(
 		{
-			appendTo: function() { $(this).closest('ul.collection'); },
+			appendTo: function() { $(this).closest('.collection'); },
 			handle:   'li[data-property=ordering]',
 
 			//---------------------------------------------------------------------------- draggable drag
 			drag: function(event)
 			{
 				var $moving      = $(this);
-				var $collection  = $moving.closest('ul.collection');
-				var $lines       = $collection.children('li:not(.header)');
+				var $collection  = $moving.closest('ul, ol, table');
+				var $lines       = $collection.find('> li:not(.head), > tbody > tr');
 				var mouse_y      = event.pageY;
 				var after_moving = false;
 				var shift        = $moving.data('shift');
-				$collection.children('li.drop-after').removeClass('drop-after');
+				$collection.find('.drop-after').removeClass('drop-after');
 				if (mouse_y < $lines.not($moving).offset().top) {
-					$collection.children('li.header:last').addClass('drop-after');
+					$collection.find('> li.head:last, > thead > tr:last').addClass('drop-after');
 					return;
 				}
 				$lines.each(function() {
@@ -65,8 +65,8 @@ $(document).ready(function()
 						$line.addClass('drop-after');
 					}
 				});
-				if (!$collection.children('li.drop-after').length) {
-					$collection.children('li:last').addClass('drop-after');
+				if (!$collection.find('.drop-after').length) {
+					$collection.find('> li:last, > tbody > tr:last').addClass('drop-after');
 				}
 			},
 
@@ -84,23 +84,23 @@ $(document).ready(function()
 			stop: function()
 			{
 				var $moving     = $(this);
-				var $collection = $moving.closest('ul.collection');
-				var $lines      = $collection.children('li');
-				$moving.insertAfter($collection.children('li.drop-after'));
-				$collection.children('li.drop-after').removeClass('drop-after');
+				var $collection = $moving.closest('ul, ol, table');
+				var $lines      = $collection.find('> li, > * > tr');
+				$moving.insertAfter($lines.filter('.drop-after'));
+				$collection.find('.drop-after').removeClass('drop-after');
 				$lines.css({ left: '', top: '' });
-				refresh.call($collection.children('li.data'));
+				refresh.call($collection.children('.data'));
 			}
 		});
 
 		//---------------------------------------------------------------------- ul.collection sortable
-		$li.closest('ul.collection').each(function()
+		$li.closest('ul, ol, table').each(function()
 		{
 			var $collection = $(this);
-			refresh.call($collection.children('li.data'));
+			refresh.call($collection.children(':not(.head):not(thead)'));
 
 			if (!$collection.data('sortable')) {
-				$collection.droppable({ accept: 'li[data-property=ordering]', tolerance: 'touch' });
+				$collection.droppable({ accept: '[data-property=ordering]', tolerance: 'touch' });
 			}
 		});
 	});

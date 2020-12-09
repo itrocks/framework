@@ -71,7 +71,7 @@ $(document).ready(function()
 	 */
 	var prepareCollection = function($field, search)
 	{
-		var $collection = $field.find('> div > ul.collection', '> div > ul.map');
+		var $collection = $field.is('ul, ol, table') ? $field : $field.children('ul, ol, table');
 		if (!$collection.length) {
 			return null;
 		}
@@ -129,7 +129,10 @@ $(document).ready(function()
 			var $added_line = prepareCollection($input, search);
 			$input = $form.find(search);
 			if ($added_line && !$input.length) {
-				var $collection = $added_line.closest('ul.collection, ul.map');
+				var $collection = $added_line.closest('.component-objects, .objects');
+				if (!$collection.is('ul, ol, table')) {
+					$collection = $collection.children('ul, ol, table');
+				}
 				$added_line.remove();
 				$collection.data('itrocks_last_index', $collection.data('itrocks_last_index') - 1);
 			}
@@ -218,10 +221,10 @@ $(document).ready(function()
 	});
 
 	//--------------------------------------------------------- table[data-on-remove] td.minus .click
-	$body.build('click', 'ul.collection li.minus', function()
+	$body.build('click', '.component-objects .minus', function()
 	{
 		var $this    = $(this);
-		var selector = 'table[data-on-remove], ul[data-on-remove]';
+		var selector = 'ul[data-on-remove], ol[data-on-remove], table[data-on-remove]';
 		var $block   = $this.closest(selector);
 		if (!$block.length) {
 			return;

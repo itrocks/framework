@@ -71,7 +71,7 @@ $(document).ready(function()
 					);
 				if (!is_constant) {
 					var combo_name = $element.prev().attr('name');
-					if (combo_name.indexOf(']') && $element.closest('ul.collection').length) {
+					if (combo_name.indexOf(']') && $element.closest('.component-objects').length) {
 						var property_name = 'id_' + $element.closest('li[data-property]').data('property');
 						filter[1] = combo_name.replace(property_name, filter[1]);
 					}

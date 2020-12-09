@@ -1,21 +1,32 @@
 
-ul.collection {
+ul.component-objects,
+ol.component-objects,
+table.component-objects,
+.component-objects > ul,
+.component-objects > ol,
+.component-objects > table {
 
-	> li.data.ui-draggable-dragging {
-		z-index: 999;
-	}
-
-	> li.data > ol > li[data-property=ordering] {
-		background: url('img/drag-handle-16.svg') center no-repeat;
-		cursor: ns-resize;
-
-		> input {
-			display: none;
+	> .head,
+	> thead {
+		> * > [data-property=ordering] {
+			font-size: 0;
+			width: 4px;
 		}
 	}
 
-	> li.header > ol > li[data-property=ordering] {
-		font-size: 0;
-		width: 4px;
+	> :not(.head):not(thead) {
+
+		> .ui-draggable-dragging {
+			z-index: 999;
+		}
+
+		> * > [data-property=ordering] {
+			background: url('img/drag-handle-16.svg') center no-repeat;
+			cursor: ns-resize;
+
+			> input {
+				display: none;
+			}
+		}
 	}
 }

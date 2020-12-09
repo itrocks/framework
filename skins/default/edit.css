@@ -1,43 +1,19 @@
 article > form {
   background-color: #efefef;
 }
-
-article > form > ul.data ol.properties > li.float > div > input, article > form > ul.data ol.properties > li.integer > div > input {
-  text-align: right;
-}
-article > form > ul.data ol.properties > li > div > span.set {
+article > form .properties > li > div > span.set {
   display: inline-block;
   max-width: 360px;
   vertical-align: top;
 }
-article > form > ul.data ol.properties > li > div > span.set label {
+article > form .properties > li > div > span.set label {
   white-space: nowrap;
 }
-article > form > ul.data ol.properties > li > div > span.set label:not(:last-child) {
+article > form .properties > li > div > span.set label:not(:last-child) {
   margin-right: 10px;
 }
-article > form > ul.data ol.properties > li.required > label:after {
+article > form .properties > li.required > label:after {
   content: "*";
   padding-left: 2px;
   position: absolute;
-}
-
-.component-objects > label {
-  cursor: pointer;
-}
-.component-objects > label:after {
-  content: "+";
-  padding-right: 0.5em;
-  position: absolute;
-  right: 0;
-}
-
-.objects > ul, .objects > ol, .objects > table,
-ul.objects, ol.objects, table.objects {
-  border-collapse: collapse;
-  border-spacing: 0;
-}
-.objects > ul > li:not(:last-child) > div > input, .objects > ol > li:not(:last-child) > div > input, .objects > table > li:not(:last-child) > div > input,
-ul.objects > li:not(:last-child) > div > input, ol.objects > li:not(:last-child) > div > input, table.objects > li:not(:last-child) > div > input {
-  margin-bottom: -1px;
 }

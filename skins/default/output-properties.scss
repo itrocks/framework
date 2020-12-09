@@ -67,10 +67,6 @@
 	> .block,
 	> .component-objects {
 
-		> div {
-			background: #efefef;
-		}
-
 		> label {
 			background-color: #f8f8f8;
 			box-sizing: border-box;
@@ -88,8 +84,8 @@
 		}
 	}
 
-	> .multiline > div,
-	.collection > .data > ol > .multiline {
+	> .multiline.string > div,
+	.component-objects .multiline.string {
 		white-space: pre-line;
 	}
 }
@@ -113,20 +109,9 @@ article > .data .properties,
 article > .properties {
 
 	> * > div {
-		vertical-align: top;
-	}
-
-	> :not(.component-objects) > div {
 		background: #efefef;
 		border-radius: 2px;
-	}
-
-	> :not(.component-objects):not(.objects) > div {
 		padding: 9px 10px;
-	}
-
-	> .float > div,
-	> .integer > div {
-		text-align: right;
+		vertical-align: top;
 	}
 }

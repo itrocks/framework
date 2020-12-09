@@ -1,0 +1,27 @@
+
+.float,
+.integer {
+
+	&,
+	> a,
+	> div > input {
+		text-align: right;
+		white-space: nowrap
+	}
+
+	> div {
+		text-align: initial;
+	}
+}
+
+article > .data {
+
+	.float,
+	.integer {
+
+		> div {
+			text-align: right;
+			white-space: nowrap;
+		}
+	}
+}

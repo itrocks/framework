@@ -50,10 +50,6 @@
 .properties:not(.tiny) > .block {
   margin-top: -1px;
 }
-.properties:not(.tiny) > .block > div,
-.properties:not(.tiny) > .component-objects > div {
-  background: #efefef;
-}
 .properties:not(.tiny) > .block > label,
 .properties:not(.tiny) > .component-objects > label {
   background-color: #f8f8f8;
@@ -70,8 +66,8 @@
 .properties:not(.tiny) > .component-objects > label:first-letter {
   text-transform: uppercase;
 }
-.properties:not(.tiny) > .multiline > div,
-.properties:not(.tiny) .collection > .data > ol > .multiline {
+.properties:not(.tiny) > .multiline.string > div,
+.properties:not(.tiny) .component-objects .multiline.string {
   white-space: pre-line;
 }
 
@@ -89,20 +85,8 @@
 
 article > .data .properties > * > div,
 article > .properties > * > div {
-  vertical-align: top;
-}
-article > .data .properties > :not(.component-objects) > div,
-article > .properties > :not(.component-objects) > div {
   background: #efefef;
   border-radius: 2px;
-}
-article > .data .properties > :not(.component-objects):not(.objects) > div,
-article > .properties > :not(.component-objects):not(.objects) > div {
   padding: 9px 10px;
-}
-article > .data .properties > .float > div,
-article > .data .properties > .integer > div,
-article > .properties > .float > div,
-article > .properties > .integer > div {
-  text-align: right;
+  vertical-align: top;
 }

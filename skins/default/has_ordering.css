@@ -1,14 +1,40 @@
-ul.collection > li.data.ui-draggable-dragging {
+ul.component-objects > .head > * > [data-property=ordering],
+ul.component-objects > thead > * > [data-property=ordering],
+ol.component-objects > .head > * > [data-property=ordering],
+ol.component-objects > thead > * > [data-property=ordering],
+table.component-objects > .head > * > [data-property=ordering],
+table.component-objects > thead > * > [data-property=ordering],
+.component-objects > ul > .head > * > [data-property=ordering],
+.component-objects > ul > thead > * > [data-property=ordering],
+.component-objects > ol > .head > * > [data-property=ordering],
+.component-objects > ol > thead > * > [data-property=ordering],
+.component-objects > table > .head > * > [data-property=ordering],
+.component-objects > table > thead > * > [data-property=ordering] {
+  font-size: 0;
+  width: 4px;
+}
+ul.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
+ol.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
+table.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
+.component-objects > ul > :not(.head):not(thead) > .ui-draggable-dragging,
+.component-objects > ol > :not(.head):not(thead) > .ui-draggable-dragging,
+.component-objects > table > :not(.head):not(thead) > .ui-draggable-dragging {
   z-index: 999;
 }
-ul.collection > li.data > ol > li[data-property=ordering] {
+ul.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
+ol.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
+table.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
+.component-objects > ul > :not(.head):not(thead) > * > [data-property=ordering],
+.component-objects > ol > :not(.head):not(thead) > * > [data-property=ordering],
+.component-objects > table > :not(.head):not(thead) > * > [data-property=ordering] {
   background: url("img/drag-handle-16.svg") center no-repeat;
   cursor: ns-resize;
 }
-ul.collection > li.data > ol > li[data-property=ordering] > input {
+ul.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
+ol.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
+table.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
+.component-objects > ul > :not(.head):not(thead) > * > [data-property=ordering] > input,
+.component-objects > ol > :not(.head):not(thead) > * > [data-property=ordering] > input,
+.component-objects > table > :not(.head):not(thead) > * > [data-property=ordering] > input {
   display: none;
-}
-ul.collection > li.header > ol > li[data-property=ordering] {
-  font-size: 0;
-  width: 4px;
 }

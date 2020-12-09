@@ -1,74 +1,9 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-.properties > .block,
-.component-objects {
+.properties > .block {
 	background-color: #f8f8f8;
 	padding: 0 10px;
-
-	> div {
-		padding: 0;
-
-		ul.collection {
-			border-collapse: collapse;
-
-			> li {
-				display: table-row-group;
-
-				&:first-child > ol > li {
-					white-space: nowrap;
-				}
-
-				> ol {
-					display: table-row;
-
-					> li {
-						display: table-cell;
-
-						&:not(.minus) {
-							vertical-align: top;
-						}
-
-						&.float,
-						&.integer,
-						input.float,
-						input.integer {
-							text-align: right;
-							white-space: nowrap;
-						}
-
-						textarea {
-							margin: 0;
-						}
-					}
-				}
-			}
-		}
-	}
-}
-
-article ul.data ul.collection > li.header > ol > li {
-	padding: 8px;
-}
-
-article > ul.data ul.collection > li:not(.header) > ol > li {
-	padding: 8px;
-
-	> ul.collection {
-		margin: -8px;
-	}
-}
-
-article ul.data ul.map {
-	display: table;
-
-	> li {
-		display: table-row;
-
-		> * {
-			display: table-cell;
-		}
-	}
 }
 
 article ul.data > li {

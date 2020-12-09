@@ -1,0 +1,136 @@
+@import 'colors.scss';
+
+ul.component-objects, ol.component-objects, table.component-objects,
+.component-objects > ul, .component-objects > ol, .component-objects > table {
+	border-collapse: collapse;
+	display: table;
+
+	> * {
+		display: table-row-group;
+
+		&:first-child > * > * {
+			white-space: nowrap;
+		}
+
+		> * {
+			display: table-row;
+
+			> * {
+				display: table-cell;
+
+				&:not(.minus) {
+					vertical-align: top;
+				}
+
+				textarea {
+					margin: 0;
+				}
+			}
+		}
+	}
+}
+
+.component-objects {
+	background-color: #f8f8f8;
+	padding: 0 10px;
+
+	> li,
+	> * > li,
+	> table > * > tr,
+	> * > tr {
+		border-bottom: 1px solid #d8d8d8;
+	}
+
+	> * > li.head,
+	> li.head,
+	> table > thead,
+	> thead {
+		background-color: #efefef;
+		padding: 8px;
+
+		> * {
+			box-shadow: inset 0 -1px #d8d8d8;
+
+			> * {
+				color: #333;
+				font-weight: $medium;
+				padding: 4px 10px;
+			}
+		}
+	}
+
+	> * > li:not(.head),
+	> li:not(.head),
+	> table > tbody,
+	> tbody {
+
+		&:nth-child(even) {
+			background-color: #efefef;
+		}
+
+		&:nth-child(odd) {
+			background-color: #e8e8e8;
+		}
+
+		> * > * {
+
+			> input, > select, > textarea {
+				border: none !important;
+				box-sizing: border-box;
+				color: black;
+				width: 100%;
+
+				&:not([type=checkbox]):not([type=radio]) {
+					min-height: 30px;
+				}
+
+				&[readonly] {
+					background: transparent;
+				}
+
+				&:not([readonly]) {
+					background: white;
+				}
+			}
+
+			> select {
+				min-width: 34px;
+			}
+		}
+	}
+
+	.component-objects {
+		background-color: inherit;
+		min-height: calc(1em + 16px);
+		padding: 0;
+	}
+
+	ul.component-objects, ol.component-objects, table.component-objects,
+	.component-objects > ul, .component-objects > ol, .component-objects > table {
+		width: 100%;
+	}
+}
+
+article > .data .component-objects {
+
+	> * > li:not(.head),
+	> li:not(.head),
+	> table > tbody,
+	> tbody {
+
+		> * > :not(.component-objects) {
+			padding: 8px;
+		}
+	}
+}
+
+.component-objects > label {
+	cursor: pointer;
+
+	&:after {
+		content: '+';
+		padding-right: .5em;
+		position: absolute;
+		right: 0;
+	}
+}
