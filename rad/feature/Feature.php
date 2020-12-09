@@ -1,14 +1,19 @@
 <?php
 namespace ITRocks\Framework\RAD;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Plugin\Installable\Installer;
+use ITRocks\Framework\RAD\Feature\Module;
 use ITRocks\Framework\RAD\Feature\Status;
+use ITRocks\Framework\Tools\Names;
+use ITRocks\Framework\Tools\Namespaces;
 
 /**
  * Final user installable feature
  *
+ * @after_read initModule
  * @business
  * @display_order title, description, status, tags
  * @list title, status
@@ -40,6 +45,13 @@ class Feature
 	 * @var string
 	 */
 	public $description;
+
+	//--------------------------------------------------------------------------------------- $module
+	/**
+	 * @link Object
+	 * @var Module
+	 */
+	public $module;
 
 	//---------------------------------------------------------------------------- $plugin_class_name
 	/**
@@ -73,10 +85,10 @@ class Feature
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $title       string Feature title
-	 * @param $description string Feature complete description
+	 * @param $title       string|null Feature title
+	 * @param $description string|null Feature complete description
 	 */
-	public function __construct($title = null, $description = null)
+	public function __construct(string $title = null, string $description = null)
 	{
 		if (isset($title))       $this->title       = $title;
 		if (isset($description)) $this->description = $description;
@@ -86,9 +98,27 @@ class Feature
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->title ? Loc::tr($this->title) : '';
+	}
+
+	//------------------------------------------------------------------------------------ initModule
+	public function initModule()
+	{
+		if ($this->module) {
+			return;
+		}
+		$module_name = ucfirst(Names::classToDisplay(Namespaces::project($this->plugin_class_name)));
+		$module      = Dao::searchOne(['name' => $module_name], Module::class);
+		if (!$module) {
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$module       = Builder::create(Module::class);
+			$module->name = $module_name;
+			Dao::write($module);
+		}
+		$this->module = $module;
+		Dao::write($this, Dao::only('module'));
 	}
 
 	//--------------------------------------------------------------------------------------- install
@@ -97,7 +127,7 @@ class Feature
 	 *
 	 * @return boolean true if the feature was correctly installed
 	 */
-	public function install()
+	public function install() : bool
 	{
 		Dao::begin();
 		$installer = new Installer();
@@ -111,7 +141,7 @@ class Feature
 	/**
 	 * @return boolean true if the feature was correctly uninstalled
 	 */
-	public function uninstall()
+	public function uninstall() : bool
 	{
 		Dao::begin();
 		$installer = new Installer();
@@ -128,7 +158,7 @@ class Feature
 	 * @param $recurse boolean
 	 * @return Feature[]
 	 */
-	public function willInstall($recurse = true)
+	public function willInstall(bool $recurse = true) : array
 	{
 		$installer                    = new Installer();
 		$installer->plugin_class_name = $this->plugin_class_name;
@@ -144,7 +174,7 @@ class Feature
 	 * @param $recurse boolean
 	 * @return Feature[]
 	 */
-	public function willUninstall($recurse = true)
+	public function willUninstall(bool $recurse = true) : array
 	{
 		$installer                    = new Installer();
 		$installer->plugin_class_name = $this->plugin_class_name;
