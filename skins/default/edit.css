@@ -21,19 +21,23 @@ article > form > ul.data ol.properties > li.required > label:after {
   padding-left: 2px;
   position: absolute;
 }
-article > form > ul.data ol.properties > li.component-objects > label {
+
+.component-objects > label {
   cursor: pointer;
 }
-article > form > ul.data ol.properties > li.component-objects > label:after {
+.component-objects > label:after {
   content: "+";
   padding-right: 0.5em;
   position: absolute;
   right: 0;
 }
-article > form > ul.data ol.properties > li.objects > div > ul {
+
+.objects > ul, .objects > ol, .objects > table,
+ul.objects, ol.objects, table.objects {
   border-collapse: collapse;
   border-spacing: 0;
 }
-article > form > ul.data ol.properties > li.objects > div > ul > li:not(:last-child) > div > input {
+.objects > ul > li:not(:last-child) > div > input, .objects > ol > li:not(:last-child) > div > input, .objects > table > li:not(:last-child) > div > input,
+ul.objects > li:not(:last-child) > div > input, ol.objects > li:not(:last-child) > div > input, table.objects > li:not(:last-child) > div > input {
   margin-bottom: -1px;
 }

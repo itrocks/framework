@@ -32,24 +32,25 @@ article > form > ul.data ol.properties > li {
 		padding-left: 2px;
 		position: absolute;
 	}
+}
 
-	&.component-objects > label {
-		cursor: pointer;
+.component-objects > label {
+	cursor: pointer;
 
-		&:after {
-			content: '+';
-			padding-right: .5em;
-			position: absolute;
-			right: 0;
-		}
+	&:after {
+		content: '+';
+		padding-right: .5em;
+		position: absolute;
+		right: 0;
 	}
+}
 
-	&.objects > div > ul {
-		border-collapse: collapse;
-		border-spacing: 0;
+.objects > ul, .objects > ol, .objects > table,
+ul.objects, ol.objects, table.objects {
+	border-collapse: collapse;
+	border-spacing: 0;
 
-		> li:not(:last-child) > div > input {
-			margin-bottom: -1px;
-		}
+	> li:not(:last-child) > div > input {
+		margin-bottom: -1px;
 	}
 }

@@ -2,11 +2,7 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-article > ul.data ol.properties > li > div {
-	vertical-align: top;
-}
-
-article ol.properties:not(.tiny) {
+.properties:not(.tiny) {
 	border-collapse: separate;
 	border-spacing: 10px;
 	display: block;
@@ -19,7 +15,7 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+	> :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
 		position: relative;
 
@@ -46,15 +42,15 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li.after,
-	> li.before,
-	> li.block,
-	> li.component-objects {
+	> .after,
+	> .before,
+	> .block,
+	> .component-objects {
 		display: block;
 	}
 
-	> li.after,
-	> li.before {
+	> .after,
+	> .before {
 		line-height: 1.5em;
 		padding: 0 10px;
 		white-space: pre-line;
@@ -64,12 +60,12 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li.block {
+	> .block {
 		margin-top: -1px;
 	}
 
-	> li.block,
-	> li.component-objects {
+	> .block,
+	> .component-objects {
 
 		> div {
 			background: #efefef;
@@ -92,16 +88,16 @@ article ol.properties:not(.tiny) {
 		}
 	}
 
-	> li.multiline > div,
-	ul.collection > li.data > ol > li.multiline {
+	> .multiline > div,
+	.collection > .data > ol > .multiline {
 		white-space: pre-line;
 	}
 }
 
-article ol.properties.tiny {
+.properties.tiny {
 	padding: 10px;
 
-	> li {
+	> * {
 		display: block;
 
 		label {
@@ -112,19 +108,25 @@ article ol.properties.tiny {
 	}
 }
 
-article > ul.data ol.properties {
+// output article
+article > .data .properties,
+article > .properties {
 
-	> li:not(.component-objects) > div {
+	> * > div {
+		vertical-align: top;
+	}
+
+	> :not(.component-objects) > div {
 		background: #efefef;
 		border-radius: 2px;
 	}
 
-	> li:not(.component-objects):not(.objects) > div {
+	> :not(.component-objects):not(.objects) > div {
 		padding: 9px 10px;
 	}
 
-	> li.float > div,
-	> li.integer > div {
+	> .float > div,
+	> .integer > div {
 		text-align: right;
 	}
 }
