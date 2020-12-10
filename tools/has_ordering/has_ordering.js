@@ -8,7 +8,7 @@ $(document).ready(function()
 		var ordering = 0;
 		this.each(function() {
 			ordering ++;
-			$(this).find('li[data-property=ordering] input[name*="[ordering]"]').val(ordering);
+			$(this).find('li[data-property=ordering] input[name*="[ordering]"]').attr('value', ordering);
 		});
 	};
 
@@ -97,7 +97,7 @@ $(document).ready(function()
 		$li.closest('ul, ol, table').each(function()
 		{
 			var $collection = $(this);
-			refresh.call($collection.children(':not(.head):not(thead)'));
+			refresh.call($collection.children('.data'));
 
 			if (!$collection.data('sortable')) {
 				$collection.droppable({ accept: '[data-property=ordering]', tolerance: 'touch' });

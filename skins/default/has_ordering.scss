@@ -1,31 +1,27 @@
 
-ul.component-objects,
-ol.component-objects,
-table.component-objects,
-.component-objects > ul,
-.component-objects > ol,
-.component-objects > table {
+.integer[data-property=ordering] {
+	font-size: 0;
+}
 
-	> .head,
-	> thead {
-		> * > [data-property=ordering] {
-			font-size: 0;
-			width: 4px;
-		}
-	}
+article > form {
 
-	> :not(.head):not(thead) {
+	ul, ol, table {
 
-		> .ui-draggable-dragging {
-			z-index: 999;
-		}
+		> li.ui-draggable,
+		> tbody > tr.ui-draggable {
 
-		> * > [data-property=ordering] {
-			background: url('img/drag-handle-16.svg') center no-repeat;
-			cursor: ns-resize;
+			&.ui-draggable-dragging {
+				z-index: 999;
+			}
 
-			> input {
-				display: none;
+			.integer[data-property=ordering] {
+				background: url('img/drag-handle-16.svg') center no-repeat;
+				cursor: ns-resize;
+				width: 4px;
+
+				> input {
+					display: none;
+				}
 			}
 		}
 	}

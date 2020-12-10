@@ -1,40 +1,24 @@
-ul.component-objects > .head > * > [data-property=ordering],
-ul.component-objects > thead > * > [data-property=ordering],
-ol.component-objects > .head > * > [data-property=ordering],
-ol.component-objects > thead > * > [data-property=ordering],
-table.component-objects > .head > * > [data-property=ordering],
-table.component-objects > thead > * > [data-property=ordering],
-.component-objects > ul > .head > * > [data-property=ordering],
-.component-objects > ul > thead > * > [data-property=ordering],
-.component-objects > ol > .head > * > [data-property=ordering],
-.component-objects > ol > thead > * > [data-property=ordering],
-.component-objects > table > .head > * > [data-property=ordering],
-.component-objects > table > thead > * > [data-property=ordering] {
+.integer[data-property=ordering] {
   font-size: 0;
-  width: 4px;
 }
-ul.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
-ol.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
-table.component-objects > :not(.head):not(thead) > .ui-draggable-dragging,
-.component-objects > ul > :not(.head):not(thead) > .ui-draggable-dragging,
-.component-objects > ol > :not(.head):not(thead) > .ui-draggable-dragging,
-.component-objects > table > :not(.head):not(thead) > .ui-draggable-dragging {
+
+article > form ul > li.ui-draggable.ui-draggable-dragging,
+article > form ul > tbody > tr.ui-draggable.ui-draggable-dragging, article > form ol > li.ui-draggable.ui-draggable-dragging,
+article > form ol > tbody > tr.ui-draggable.ui-draggable-dragging, article > form table > li.ui-draggable.ui-draggable-dragging,
+article > form table > tbody > tr.ui-draggable.ui-draggable-dragging {
   z-index: 999;
 }
-ul.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
-ol.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
-table.component-objects > :not(.head):not(thead) > * > [data-property=ordering],
-.component-objects > ul > :not(.head):not(thead) > * > [data-property=ordering],
-.component-objects > ol > :not(.head):not(thead) > * > [data-property=ordering],
-.component-objects > table > :not(.head):not(thead) > * > [data-property=ordering] {
+article > form ul > li.ui-draggable .integer[data-property=ordering],
+article > form ul > tbody > tr.ui-draggable .integer[data-property=ordering], article > form ol > li.ui-draggable .integer[data-property=ordering],
+article > form ol > tbody > tr.ui-draggable .integer[data-property=ordering], article > form table > li.ui-draggable .integer[data-property=ordering],
+article > form table > tbody > tr.ui-draggable .integer[data-property=ordering] {
   background: url("img/drag-handle-16.svg") center no-repeat;
   cursor: ns-resize;
+  width: 4px;
 }
-ul.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
-ol.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
-table.component-objects > :not(.head):not(thead) > * > [data-property=ordering] > input,
-.component-objects > ul > :not(.head):not(thead) > * > [data-property=ordering] > input,
-.component-objects > ol > :not(.head):not(thead) > * > [data-property=ordering] > input,
-.component-objects > table > :not(.head):not(thead) > * > [data-property=ordering] > input {
+article > form ul > li.ui-draggable .integer[data-property=ordering] > input,
+article > form ul > tbody > tr.ui-draggable .integer[data-property=ordering] > input, article > form ol > li.ui-draggable .integer[data-property=ordering] > input,
+article > form ol > tbody > tr.ui-draggable .integer[data-property=ordering] > input, article > form table > li.ui-draggable .integer[data-property=ordering] > input,
+article > form table > tbody > tr.ui-draggable .integer[data-property=ordering] > input {
   display: none;
 }
