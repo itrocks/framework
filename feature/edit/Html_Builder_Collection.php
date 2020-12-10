@@ -194,21 +194,21 @@ class Html_Builder_Collection extends Collection
 			$builder         = (new Html_Builder_Property($property, $value, $pre_path . '[]'));
 			$builder->object = $object;
 			$input           = $builder->setTemplate($this->template)->build();
-			/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
-			if (
-				($property->name === reset($this->properties)->name)
-				&& !Link_Annotation::of(new Reflection_Class($this->class_name))->value
-			) {
+			if ($property->name === reset($this->properties)->name) {
 				$property_builder = new Html_Builder_Property();
 				$property_builder->setTemplate($this->template);
-				$id_input = new Input(
-					$pre_path . '[id][' . $property_builder->template->nextCounter($pre_path . '[id][]') . ']',
-					isset($object->id) ? $object->id : null
-				);
-				$id_input->setAttribute('type', 'hidden');
-				$property_builder->readonly = $this->readOnly();
-				$property_builder->setInputAsReadOnly($id_input);
-				$input = $id_input . $input;
+				$next_counter = $property_builder->template->nextCounter($pre_path . '[id][]');
+				/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
+				if (!Link_Annotation::of(new Reflection_Class($this->class_name))->value) {
+					$id_input = new Input(
+						$pre_path . '[id][' . $next_counter . ']',
+						isset($object->id) ? $object->id : null
+					);
+					$id_input->setAttribute('type', 'hidden');
+					$property_builder->readonly = $this->readOnly();
+					$property_builder->setInputAsReadOnly($id_input);
+					$input = $id_input . $input;
+				}
 			}
 			$content = $input;
 		}
