@@ -517,8 +517,10 @@ class Parser_Test extends Test
 	{
 		//TODO: Do CHeck forcing FR and EN locales
 		$this->parser->search = ['number' => 'empty,none,null'];
-		$check                = $this->parser->parse();
-		$assume = [ 'number' => Func::orOp([ Func::isNull(), Func::isNull(), Func::isNull() ]) ];
+		$check  = $this->parser->parse();
+		$assume = [
+			'number' => Func::orOp(array_fill(0, 3, Func::orOp([Func::isNull(), Func::equal('')])))
+		];
 		static::assertEquals($assume, $check);
 	}
 
