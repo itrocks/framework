@@ -44,8 +44,7 @@
 
 	> .after,
 	> .before,
-	> .block,
-	> .component-objects {
+	> .block {
 		display: block;
 	}
 
@@ -62,10 +61,6 @@
 
 	> .block {
 		margin-top: -1px;
-	}
-
-	> .block,
-	> .component-objects {
 
 		> label {
 			background-color: #f8f8f8;
@@ -84,8 +79,7 @@
 		}
 	}
 
-	> .multiline.string > div,
-	.component-objects .multiline.string {
+	> .multiline.string > div {
 		white-space: pre-line;
 	}
 }

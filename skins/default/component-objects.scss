@@ -99,6 +99,10 @@ ul.component-objects, ol.component-objects, table.component-objects,
 		}
 	}
 
+	.multiline.string {
+		white-space: pre-line;
+	}
+
 	.component-objects {
 		background-color: inherit;
 		min-height: calc(1em + 16px);
@@ -126,12 +130,25 @@ article > .data.component-objects {
 }
 
 .component-objects > label {
+	background-color: #f8f8f8;
+	box-sizing: border-box;
+	color: var(--dark-color);
 	cursor: pointer;
+	display: block;
+	font-size: 14px;
+	font-weight: bold;
+	height: 34px;
+	padding: 10px 0;
+	width: 100%;
 
 	&:after {
 		content: '+';
 		padding-right: .5em;
 		position: absolute;
 		right: 0;
+	}
+
+	&:first-letter {
+		text-transform: uppercase;
 	}
 }

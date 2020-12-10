@@ -128,6 +128,9 @@ ul.component-objects > * > * > * textarea, ol.component-objects > * > * > * text
 .component-objects > tbody > * > * > select {
   min-width: 34px;
 }
+.component-objects .multiline.string {
+  white-space: pre-line;
+}
 .component-objects .component-objects {
   background-color: inherit;
   min-height: calc(1em + 16px);
@@ -150,11 +153,23 @@ article > .data.component-objects > tbody > * > :not(.component-objects) {
 }
 
 .component-objects > label {
+  background-color: #f8f8f8;
+  box-sizing: border-box;
+  color: var(--dark-color);
   cursor: pointer;
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  height: 34px;
+  padding: 10px 0;
+  width: 100%;
 }
 .component-objects > label:after {
   content: "+";
   padding-right: 0.5em;
   position: absolute;
   right: 0;
+}
+.component-objects > label:first-letter {
+  text-transform: uppercase;
 }

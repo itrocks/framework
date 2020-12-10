@@ -33,8 +33,7 @@
 }
 .properties:not(.tiny) > .after,
 .properties:not(.tiny) > .before,
-.properties:not(.tiny) > .block,
-.properties:not(.tiny) > .component-objects {
+.properties:not(.tiny) > .block {
   display: block;
 }
 .properties:not(.tiny) > .after,
@@ -50,8 +49,7 @@
 .properties:not(.tiny) > .block {
   margin-top: -1px;
 }
-.properties:not(.tiny) > .block > label,
-.properties:not(.tiny) > .component-objects > label {
+.properties:not(.tiny) > .block > label {
   background-color: #f8f8f8;
   box-sizing: border-box;
   color: var(--dark-color);
@@ -62,12 +60,10 @@
   padding: 10px 0;
   width: 100%;
 }
-.properties:not(.tiny) > .block > label:first-letter,
-.properties:not(.tiny) > .component-objects > label:first-letter {
+.properties:not(.tiny) > .block > label:first-letter {
   text-transform: uppercase;
 }
-.properties:not(.tiny) > .multiline.string > div,
-.properties:not(.tiny) .component-objects .multiline.string {
+.properties:not(.tiny) > .multiline.string > div {
   white-space: pre-line;
 }
 
