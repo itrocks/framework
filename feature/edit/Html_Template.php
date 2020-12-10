@@ -144,7 +144,7 @@ class Html_Template extends Template
 	{
 		if ($loop->has_id && $loop->counter) {
 			if (
-				($expand_property_path = $this->parameters[Parameter::EXPAND_PROPERTY_PATH])
+				($expand_property_path = ($this->parameters[Parameter::EXPAND_PROPERTY_PATH] ?? false))
 				&& isset($this->cache[self::PARSED_ID][$this->getFormId()])
 			) {
 				if (substr($expand_property_path, -1) === DOT) {
