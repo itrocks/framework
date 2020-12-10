@@ -20,11 +20,11 @@ use ITRocks\Framework\View;
 class Collection_Test extends Test
 {
 
-	//---------------------------------------------------------------------------------- buildVehicle
+	//----------------------------------------------------------------------------------- buildObject
 	/**
-	 * @return Vehicle
+	 * @return object
 	 */
-	private function buildVehicle()
+	protected function buildObject()
 	{
 		// vehicle door pieces
 		$lever        = new Vehicle_Door_Piece();
@@ -49,47 +49,26 @@ class Collection_Test extends Test
 		return $vehicle;
 	}
 
-	//--------------------------------------------------------------------- callVehicleEditController
+	//---------------------------------------------------------------------------- callEditController
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $vehicle Vehicle
+	 * @param $object object
 	 * @return string
 	 */
-	private function callVehicleEditController(Vehicle $vehicle)
+	protected function callEditController($object) : string
 	{
 		$edit       = new Edit\Controller();
-		$uri        = new Uri(View::link($vehicle, Feature::F_EDIT));
+		$uri        = new Uri(View::link($object, Feature::F_EDIT));
 		$parameters = new Parameters($uri);
 		$parameters->set(Parameter::IS_INCLUDED, true);
-		$parameters->unshift($vehicle);
-		/** @noinspection PhpUnhandledExceptionInspection object exists, sure */
-		return $edit->run($parameters, [], [], Vehicle::class);
+		$parameters->unshift($object);
+		return $edit->run($parameters, [], [], get_class($object));
 	}
 
-	//--------------------------------------------------------------------------------- getInputNames
-	/**
-	 * @param $html string
-	 * @return string[]
-	 */
-	private function getInputNames($html)
-	{
-		$input_names = [];
-		foreach (explode('<input', $html) as $key => $input) {
-			if ($key) {
-				$name = mParse(lParse($input, '>'), 'name=' . DQ, DQ);
-				if ($name) {
-					$input_names[] = $name;
-				}
-			}
-		}
-		return $input_names;
-	}
-
-	//------------------------------------------------------------------------ getVehicleAssumedNames
+	//------------------------------------------------------------------------------- getAssumedNames
 	/**
 	 * @return string[]
 	 */
-	private function getVehicleAssumedNames()
+	protected function getAssumedNames() : array
 	{
 		return [
 			'doors[id][0]',
@@ -118,16 +97,35 @@ class Collection_Test extends Test
 		];
 	}
 
+	//--------------------------------------------------------------------------------- getInputNames
+	/**
+	 * @param $html string
+	 * @return string[]
+	 */
+	protected function getInputNames(string $html) : array
+	{
+		$input_names = [];
+		foreach (explode('<input', $html) as $key => $input) {
+			if ($key) {
+				$name = mParse(lParse($input, '>'), 'name=' . DQ, DQ);
+				if ($name) {
+					$input_names[] = $name;
+				}
+			}
+		}
+		return $input_names;
+	}
+
 	//-------------------------------------------------------------------- testCollectionOfCollection
 	/**
 	 * A collection inside a collection
 	 */
 	public function testCollectionOfCollection()
 	{
-		$vehicle        = $this->buildVehicle();
-		$html           = $this->callVehicleEditController($vehicle);
+		$object         = $this->buildObject();
+		$html           = $this->callEditController($object);
 		$input_names    = $this->getInputNames($html);
-		$expected_names = $this->getVehicleAssumedNames();
+		$expected_names = $this->getAssumedNames();
 		static::assertEquals($expected_names, $input_names);
 	}
 
