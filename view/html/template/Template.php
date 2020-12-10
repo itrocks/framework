@@ -1106,9 +1106,9 @@ class Template
 	protected function parseLoopArray(Loop $loop, array $elements)
 	{
 		$loop_insert = '';
-		$property = reset($this->objects);
+		$property    = reset($this->objects);
 		if ($property instanceof Reflection_Property) {
-			$this->properties_prefix[] = $property->path;
+			array_push($this->properties_prefix, $property->path);
 		}
 		if (is_array($elements)) foreach ($elements as $loop->key => $loop->element) {
 			$parsed_element = $this->parseLoopElement($loop);
@@ -1148,6 +1148,14 @@ class Template
 	protected function parseLoopElement(Loop $loop, $else = false)
 	{
 		if (is_numeric($loop->key)) {
+			if (!$this->properties_prefix) {
+				reset($this->objects);
+				$object = next($this->objects);
+				if (is_object($object) && property_exists($object, $loop->var_name)) {
+					array_push($this->properties_prefix, $loop->var_name);
+					$pop_properties_prefix = true;
+				}
+			}
 			array_push($this->properties_prefix, $loop->key);
 		}
 		$loop->counter ++;
@@ -1172,6 +1180,9 @@ class Template
 		}
 		if (is_numeric($loop->key)) {
 			array_pop($this->properties_prefix);
+			if ($pop_properties_prefix ?? false) {
+				array_pop($this->properties_prefix);
+			}
 		}
 		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
 			$loop_insert = substr($loop_insert, 1);
