@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Interfaces\Has_Doc_Comment;
@@ -621,16 +622,24 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Sort the properties list from @display_order class annotation(s)
 	 *
-	 * @param $properties Reflection_Property[] key is the name of the property
+	 * @param $properties     Reflection_Property[] key is the name of the property
+	 * @param $display_orders List_Annotation[]|string[][] additional display order annotations
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function sortProperties(array $properties)
+	public function sortProperties(array $properties, array $display_orders = [])
 	{
 		/** @var $annotations Display_Order_Annotation[] */
-		if ($annotations = $this->getListAnnotations(Display_Order_Annotation::ANNOTATION)) {
+		$annotations = array_merge(
+			$display_orders,
+			$this->getListAnnotations(Display_Order_Annotation::ANNOTATION)
+		);
+		if ($annotations) {
 			$lists = [];
 			foreach ($annotations as $annotation) {
-				if ($annotation->value) {
+				if (is_array($annotation) && $annotation) {
+					$lists[] = $annotation;
+				}
+				elseif ($annotation->value) {
 					$lists[] = $annotation->value;
 				}
 			}

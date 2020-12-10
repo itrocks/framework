@@ -349,15 +349,16 @@ class Collection
 	 */
 	protected function getProperties($link_properties)
 	{
+		$property_display_order = $this->property->getListAnnotations('display_order');
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$class          = new Reflection_Class($this->class_name);
 		$representative = Representative_Annotation::of($this->property);
-		$properties     = $representative->getProperties();
+		/** @var $properties Reflection_Property[] */
+		$properties = $representative->getProperties();
 		if (!$properties) {
 			// gets all properties from collection element class
 			$properties = $class->getProperties([T_EXTENDS, T_USE]);
 			// remove replaced properties
-			/** @var $properties Reflection_Property[] */
 			$properties = Replaces_Annotations::removeReplacedProperties($properties);
 			// remove linked class properties
 			$linked_class = Link_Annotation::of($class)->value;
@@ -389,9 +390,11 @@ class Collection
 					unset($properties[$property_name]);
 				}
 			}
+			$properties = $class->sortProperties($properties, $property_display_order);
 		}
-		// use @display_order to reorder properties
-		$properties = $class->sortProperties($properties);
+		elseif ($property_display_order) {
+			$properties = $class->sortProperties($properties, $property_display_order);
+		}
 
 		// returns properties
 		return $properties;
