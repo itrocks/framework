@@ -111,7 +111,8 @@ ul.component-objects, ol.component-objects, table.component-objects,
 	}
 }
 
-article > .data .component-objects {
+article > .data .component-objects,
+article > .data.component-objects {
 
 	> * > li:not(.head),
 	> li:not(.head),

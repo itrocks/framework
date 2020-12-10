@@ -1,7 +1,7 @@
-article > form > ul.data li.file.object > div,
-article > form > ul.data .component-objects > ul > li.data > ol > .file,
-article > form > ul.data li[class~="attachment[]"] li[class~="attachment[]"] > div,
-article > form > ul.data li[class~="file[]"] li[class~="file[]"] > div {
+article > form li.file.object > div,
+article > form .component-objects > ul > li.data > ol > .file,
+article > form li[class~="attachment[]"] li[class~="attachment[]"] > div,
+article > form li[class~="file[]"] li[class~="file[]"] > div {
 	background: url('img/upload.svg') left center no-repeat;
 	background-size: 22px;
 	cursor: pointer;
