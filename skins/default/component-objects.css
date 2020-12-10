@@ -156,7 +156,6 @@ article > .data.component-objects > tbody > * > :not(.component-objects) {
   background-color: #f8f8f8;
   box-sizing: border-box;
   color: var(--dark-color);
-  cursor: pointer;
   display: block;
   font-size: 14px;
   font-weight: bold;
@@ -164,12 +163,17 @@ article > .data.component-objects > tbody > * > :not(.component-objects) {
   padding: 10px 0;
   width: 100%;
 }
-.component-objects > label:after {
+.component-objects > label:first-letter {
+  text-transform: uppercase;
+}
+
+article > form .component-objects > label {
+  cursor: pointer;
+  position: relative;
+}
+article > form .component-objects > label:after {
   content: "+";
   padding-right: 0.5em;
   position: absolute;
   right: 0;
-}
-.component-objects > label:first-letter {
-  text-transform: uppercase;
 }

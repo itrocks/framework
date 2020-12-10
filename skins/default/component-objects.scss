@@ -133,7 +133,6 @@ article > .data.component-objects {
 	background-color: #f8f8f8;
 	box-sizing: border-box;
 	color: var(--dark-color);
-	cursor: pointer;
 	display: block;
 	font-size: 14px;
 	font-weight: bold;
@@ -141,14 +140,19 @@ article > .data.component-objects {
 	padding: 10px 0;
 	width: 100%;
 
+	&:first-letter {
+		text-transform: uppercase;
+	}
+}
+
+article > form .component-objects > label {
+	cursor: pointer;
+	position: relative;
+
 	&:after {
 		content: '+';
 		padding-right: .5em;
 		position: absolute;
 		right: 0;
-	}
-
-	&:first-letter {
-		text-transform: uppercase;
 	}
 }
