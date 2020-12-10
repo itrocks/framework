@@ -31,8 +31,8 @@ class Built_Object
 	 */
 	public function __construct($object = null, array $write_options = null)
 	{
-		if (isset($object))  $this->object        = $object;
-		if (isset($options)) $this->write_options = $write_options;
+		if (isset($object))        $this->object        = $object;
+		if (isset($write_options)) $this->write_options = $write_options;
 	}
 
 }
