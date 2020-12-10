@@ -13,12 +13,6 @@
   display: table-row;
   position: relative;
 }
-.properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit {
-  white-space: nowrap;
-}
-.properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div > span.unit:before {
-  content: " ";
-}
 .properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
   font-weight: 500;
   padding: 9px 0;
@@ -85,4 +79,12 @@ article > .properties > * > div {
   border-radius: 2px;
   padding: 9px 10px;
   vertical-align: top;
+}
+
+.unit {
+  white-space: nowrap;
+}
+
+article > .data .unit:before {
+  content: " ";
 }

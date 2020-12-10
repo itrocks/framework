@@ -27,4 +27,10 @@ article > form {
 			position: absolute;
 		}
 	}
+
+
+	input + .unit, select + .unit,
+	li.value[data-property] {
+		padding: 8px;
+	}
 }

@@ -19,14 +19,6 @@
 		display: table-row;
 		position: relative;
 
-		> div > span.unit {
-			white-space: nowrap;
-
-			&:before {
-				content: ' ';
-			}
-		}
-
 		> label {
 			font-weight: $medium;
 			padding: 9px 0;
@@ -108,4 +100,12 @@ article > .properties {
 		padding: 9px 10px;
 		vertical-align: top;
 	}
+}
+
+.unit {
+	white-space: nowrap;
+}
+
+article > .data .unit:before {
+	content: ' ';
 }

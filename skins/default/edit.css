@@ -17,3 +17,7 @@ article > form .properties > li.required > label:after {
   padding-left: 2px;
   position: absolute;
 }
+article > form input + .unit, article > form select + .unit,
+article > form li.value[data-property] {
+  padding: 8px;
+}
