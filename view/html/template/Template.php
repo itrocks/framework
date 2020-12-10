@@ -1673,6 +1673,7 @@ class Template
 			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
 			&& method_exists($object, $property_name)
 		) {
+			$add_div = false;
 			/** @var $object Reflection_Property|mixed */
 			$is_property_value = ($property_name === 'value') && ($object instanceof Reflection_Property);
 			if (
@@ -1687,11 +1688,7 @@ class Template
 				);
 				$value = $builder->buildHtml();
 				if ($value === static::ORIGIN) {
-					$div = new Div($value);
-					if (property_exists($object, 'tooltip') && $object->tooltip) {
-						$div->setData('tooltip', $object->tooltip());
-					}
-					$value = strval($div);
+					$add_div = true;
 				}
 				else {
 					$format_value = false;
@@ -1702,8 +1699,8 @@ class Template
 				$value = static::ORIGIN;
 			}
 			if ($value === static::ORIGIN) {
+				$property = $object;
 				if ($is_property_value && $this->link_objects) {
-					$property = $object;
 					$object   = $this->parseMethod($object, $property_name);
 					$type     = $property->getType();
 					/** @noinspection PhpUnhandledExceptionInspection is_object */
@@ -1724,6 +1721,13 @@ class Template
 				}
 				else {
 					$object = $this->parseMethod($object, $property_name);
+				}
+				if ($add_div) {
+					$div = new Div($object);
+					if (property_exists($property, 'tooltip') && $property->tooltip) {
+						$div->setData('tooltip', $property->tooltip());
+					}
+					$object = strval($div);
 				}
 			}
 		}
