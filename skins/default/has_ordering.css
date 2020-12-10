@@ -1,10 +1,14 @@
 ul.collection > li.data.ui-draggable-dragging {
-  z-index: 999; }
+  z-index: 999;
+}
 ul.collection > li.data > ol > li[data-property=ordering] {
   background: url("img/drag-handle-16.svg") center no-repeat;
-  cursor: ns-resize; }
-  ul.collection > li.data > ol > li[data-property=ordering] > input {
-    display: none; }
+  cursor: ns-resize;
+}
+ul.collection > li.data > ol > li[data-property=ordering] > input {
+  display: none;
+}
 ul.collection > li.header > ol > li[data-property=ordering] {
   font-size: 0;
-  width: 4px; }
+  width: 4px;
+}
