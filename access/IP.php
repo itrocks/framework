@@ -102,7 +102,7 @@ class IP implements Configurable, Registerable
 	/**
 	 * @return string
 	 */
-	public function badCheckIp()
+	public function badCheckIp() : string
 	{
 		return View::link(Access_Control::class, Controller\Feature::F_DENIED);
 	}
@@ -111,15 +111,17 @@ class IP implements Configurable, Registerable
 	/**
 	 * @param $uri string
 	 */
-	public function checkAccess(&$uri)
+	public function checkAccess(string &$uri)
 	{
 		foreach ($this->uris as $group_name => $uris) {
-			if (pregMatchArray($uris, $uri, true)) {
-				if (!$this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
-					$uri = $this->badCheckIp();
-				}
+			if (
+				pregMatchArray($uris, $uri, true)
+				&& $this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)
+			) {
+				return;
 			}
 		}
+		$uri = $this->badCheckIp();
 	}
 
 	//--------------------------------------------------------------------------------------- checkIP
@@ -130,7 +132,7 @@ class IP implements Configurable, Registerable
 	 * @param $group_name     string
 	 * @return boolean
 	 */
-	private function checkIP($remote_address, $group_name)
+	private function checkIP(string $remote_address, string $group_name) : bool
 	{
 		if (isset($this->remote_addresses[$group_name][$remote_address])) {
 			return true;
@@ -156,9 +158,9 @@ class IP implements Configurable, Registerable
 	 * Returns true if $address is an IP
 	 *
 	 * @param $address string
-	 * @return true
+	 * @return boolean
 	 */
-	private function isIP($address)
+	private function isIP(string $address) : bool
 	{
 		$address = explode(DOT, $address);
 		return (count($address) == 4)
