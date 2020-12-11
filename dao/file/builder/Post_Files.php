@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Dao\File\Builder;
 
+use ITRocks\Framework\Builder;
+use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ReflectionException;
 
@@ -30,11 +32,12 @@ class Post_Files
 
 	//---------------------------------------------------------------------------------- appendToForm
 	/**
-	 * @param $form  array
-	 * @param $files array[]
-	 * @return array
+	 * @param $form            array
+	 * @param $files           array[]
+	 * @param $result_as_files boolean if true, result will be File[]
+	 * @return array[]|File[]
 	 */
-	public function appendToForm(array $form, array $files)
+	public function appendToForm(array $form, array $files, bool $result_as_files = false) : array
 	{
 		foreach ($files as $top => $element) {
 			// element keys are standard post files keys : name, type, tmp_name, error, size
@@ -43,14 +46,22 @@ class Post_Files
 					$form[$top] = [];
 				}
 				$form[$top] = $this->appendToFormRecurse(
-					$top, $form[$top], $element['name'], $element['tmp_name']
+					$top, $form[$top], $element['name'], $element['tmp_name'], $result_as_files
 				);
 			}
 			elseif (!(empty($element['name']) || empty($element['tmp_name']))) {
-				$form[$top]= [
-					'name'                => $element['name'],
-					'temporary_file_name' => $element['tmp_name']
-				];
+				if ($result_as_files) {
+					$file                      = $this->newFileObject($top);
+					$file->name                = $element['name'];
+					$file->temporary_file_name = $element['tmp_name'];
+					$form[$top]                = $file;
+				}
+				else {
+					$form[$top] = [
+						'name'                => $element['name'],
+						'temporary_file_name' => $element['tmp_name']
+					];
+				}
 			}
 		}
 		return $form;
@@ -62,18 +73,25 @@ class Post_Files
 	 * @param $form             array
 	 * @param $name_element     array
 	 * @param $tmp_name_element array
-	 * @return array
+	 * @param $result_as_files  boolean
+	 * @return array[]|File[]
 	 */
 	private function appendToFormRecurse(
-		$property_path, array $form, array $name_element, array $tmp_name_element
-	) {
+		string $property_path, array $form, array $name_element, array $tmp_name_element,
+		bool $result_as_files
+	) : array
+	{
 		foreach ($name_element as $key => $name_sub_element) {
 			if (is_array($name_sub_element)) {
 				if (!isset($form[$key])) {
 					$form[$key] = [];
 				}
 				$form[$key] = $this->appendToFormRecurse(
-					$property_path . DOT . $key, $form[$key], $name_sub_element, $tmp_name_element[$key]
+					$property_path . DOT . $key,
+					$form[$key],
+					$name_sub_element,
+					$tmp_name_element[$key],
+					$result_as_files
 				);
 			}
 			else {
@@ -85,13 +103,45 @@ class Post_Files
 					catch(ReflectionException $exception) {
 					}
 				}
-				$form[$key] = [
-					'name'                => $name_sub_element,
-					'temporary_file_name' => $tmp_name_element[$key]
-				];
+				if ($result_as_files) {
+					$file                      = $this->newFileObject($property_path);
+					$file->name                = $name_sub_element;
+					$file->temporary_file_name = $tmp_name_element[$key];
+					$form[$key]                = $file;
+				}
+				else {
+					$form[$key] = [
+						'name'                => $name_sub_element,
+						'temporary_file_name' => $tmp_name_element[$key]
+					];
+				}
 			}
 		}
 		return $form;
+	}
+
+	//--------------------------------------------------------------------------------- newFileObject
+	/**
+	 * Return a file object that complies the file type of the property into the reference class name
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $property_path string
+	 * @return File
+	 */
+	protected function newFileObject(string $property_path) : File
+	{
+		if ($this->for_class_name) {
+			try {
+				$property   = new Reflection_Property($this->for_class_name, $property_path);
+				$file_class = $property->getType()->getElementTypeAsString();
+			}
+			catch (ReflectionException $exception) {
+			}
+		}
+		/** @noinspection PhpUnhandledExceptionInspection file class must be a valid class */
+		/** @var $file File */
+		$file = Builder::create($file_class ?? File::class);
+		return $file;
 	}
 
 }

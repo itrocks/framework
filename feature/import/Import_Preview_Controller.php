@@ -33,7 +33,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 	/**
 	 * @param $class_name string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Import_Settings always null (unused)
+	 * @param $settings   Setting\Custom\Set|Import_Settings|null always null (unused)
 	 * @return Button[]
 	 */
 	public function getGeneralButtons(
@@ -67,8 +67,8 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		// convert form files to worksheets and session files
 		if ($files) {
 			$errors = [];
-			$form   = (new Post_Files())->appendToForm($form, $files);
-			$import             = $parameters->getMainObject(Import::class);
+			$form   = (new Post_Files)->appendToForm($form, $files, true);
+			$import = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
 			foreach ($form as $file) {
 				if ($file instanceof File) {
@@ -102,9 +102,10 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		// convert from form and session files to worksheets
 		else {
 			/** @var $files File[] */
-			$files                       = Session::current()->get(Files::class)->files;
-			$parameters->unshift($import = Import_Builder_Form::build($form, $files));
-			$import->class_name          = $class_name;
+			$files  = Session::current()->get(Files::class, true)->files;
+			$import = Import_Builder_Form::build($form, $files);
+			$import->class_name = $class_name;
+			$parameters->unshift($import);
 		}
 		// prepare parameters
 		$parameters      = $parameters->getObjects();
@@ -169,7 +170,7 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		}
 		// view
 		$parameters[Template::TEMPLATE] = 'importPreview';
-		return View::run($parameters, $form, $files, $class_name, Feature::F_IMPORT);
+		return View::run($parameters, $form, [], $class_name, Feature::F_IMPORT);
 	}
 
 }

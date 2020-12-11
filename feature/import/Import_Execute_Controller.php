@@ -33,7 +33,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 		upgradeTimeLimit(900);
 
 		$import = Import_Builder_Form::build(
-			$form, Session::current()->get(Files::class)->files
+			$form, Session::current()->get(Files::class, true)->files
 		);
 		$import->class_name = $class_name;
 		$parameters->getMainObject($import);

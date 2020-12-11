@@ -39,7 +39,7 @@ class Output_Controller implements Feature_Controller
 			);
 		}
 		$file_key      = array_shift($raw_parameters);
-		$session_files = Session::current()->get(Files::class);
+		$session_files = Session::current()->get(Files::class, true);
 		// numeric (session files index) file key
 		if (isset($session_files->files[$file_key])) {
 			$file = $session_files->files[$file_key];
