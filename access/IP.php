@@ -123,9 +123,9 @@ class IP implements Configurable, Registerable
 					$ok = false;
 				}
 			}
-			if (!$ok) {
-				$uri = $this->badCheckIp();
-			}
+		}
+		if (!$ok) {
+			$uri = $this->badCheckIp();
 		}
 	}
 
