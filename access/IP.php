@@ -113,15 +113,20 @@ class IP implements Configurable, Registerable
 	 */
 	public function checkAccess(string &$uri)
 	{
+		$ok = true;
 		foreach ($this->uris as $group_name => $uris) {
-			if (
-				pregMatchArray($uris, $uri, true)
-				&& $this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)
-			) {
-				return;
+			if (pregMatchArray($uris, $uri, true)) {
+				if ($this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
+					return;
+				}
+				else {
+					$ok = false;
+				}
+			}
+			if (!$ok) {
+				$uri = $this->badCheckIp();
 			}
 		}
-		$uri = $this->badCheckIp();
 	}
 
 	//--------------------------------------------------------------------------------------- checkIP
