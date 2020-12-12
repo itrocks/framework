@@ -2,7 +2,6 @@
 ul.objects, ol.objects, table.objects,
 .objects > ul, .objects > ol, .objects > table {
 	background-color: #efefef;
-	display: table;
 
 	> * {
 		display: table-row;
