@@ -74,7 +74,7 @@ trait Has_Build_Column
 			$sql = $force_column ?: (
 				$join
 					? ($join->foreign_alias . DOT . BQ . $column_name . BQ)
-					: ($this->joins->rootAlias() . DOT . BQ . $path . BQ)
+					: ($this->joins->rootAlias() . DOT . (($path === '*') ? $path : (BQ . $path . BQ)))
 			);
 			if (isset($this->translate[$path])) {
 				$path = $this->translate[$path];

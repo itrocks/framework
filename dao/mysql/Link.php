@@ -581,7 +581,7 @@ class Link extends Dao\Sql\Link
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mysqli_result The result set : in most cases, will come from query()
-	 * @return object
+	 * @return array
 	 */
 	public function fetchRow($result_set)
 	{
@@ -1177,16 +1177,15 @@ class Link extends Dao\Sql\Link
 			$query   = $builder->buildQuery();
 			array_push($this->connection->contexts, $builder->getJoins()->getClassNames());
 			if (Option\Pre_Load::in($options)) {
-				$objects = [];
-				(new Dao\Sql\Select($class_name, null, $this))->executeQuery($query);
+				$result_set = (new Dao\Sql\Select($class_name, null, $this))->executeQuery($query);
 			}
 			else {
 				$result_set = $this->connection->query($query);
 				if ($options) {
 					$this->getRowsCount('SELECT', $options, $result_set);
 				}
-				$objects = $this->fetchAll($class_name, $options, $result_set);
 			}
+			$objects = $this->fetchAll($class_name, $options, $result_set);
 			array_pop($this->connection->contexts);
 			// store result in cache
 			if ($cache_result) {
