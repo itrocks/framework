@@ -3,8 +3,7 @@
 
 div#column_select.popup {
 	bottom: 0;
-	overflow-x: hidden;
-	overflow-y: auto;
+	overflow: hidden;
 }
 
 .func-select,
@@ -13,6 +12,7 @@ div#column_select.popup {
 	border-left: 1px solid #d0d0d0;
 	box-sizing: border-box;
 	height: 100%;
+	overflow: hidden;
 	white-space: nowrap;
 
 	> h3 {
@@ -22,16 +22,23 @@ div#column_select.popup {
 	> .search {
 		background: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
 		border-bottom: 1px solid #ccc;
+		position: relative;
 
 		> input {
-			background: white;
-			box-sizing: border-box;
-			width: 100%;
+			background: white !important;
+			border: none !important;
+			width: calc(100% - 20px) !important;
 		}
 
 		> label {
 			display: none;
 		}
+	}
+
+	> .tree {
+		height: calc(100% - 21px);
+		overflow-x: hidden;
+		overflow-y: auto;
 	}
 
 	ul {

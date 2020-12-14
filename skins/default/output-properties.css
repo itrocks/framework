@@ -1,90 +1,95 @@
-.properties:not(.tiny) {
+.properties:not(.tiny),
+.data.property,
+.property > table {
   border-collapse: separate;
-  border-spacing: 10px;
-  display: block;
-}
-.properties:not(.tiny) li {
-  position: relative;
-}
-.properties:not(.tiny) li > div, .properties:not(.tiny) li > label {
-  position: relative;
-}
-.properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+  border-spacing: 10px; }
+
+.properties:not(.tiny) {
+  display: block; }
+
+.properties:not(.tiny) li,
+.property:not(a):not(th):not(td):not(.tiny) {
+  position: relative; }
+  .properties:not(.tiny) li > div, .properties:not(.tiny) li > label,
+  .property:not(a):not(th):not(td):not(.tiny) > div,
+  .property:not(a):not(th):not(td):not(.tiny) > label {
+    position: relative; }
+
+.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects),
+.property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
   display: table-row;
-  position: relative;
-}
-.properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
-  font-weight: 500;
-  padding: 9px 0;
-  text-align: right;
-  vertical-align: top;
-  white-space: nowrap;
-}
-.properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div, .properties:not(.tiny) > :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
-  box-sizing: border-box;
-  display: table-cell;
-  height: 32px;
-}
-.properties:not(.tiny) > .after,
-.properties:not(.tiny) > .before,
-.properties:not(.tiny) > .block {
-  display: block;
-}
-.properties:not(.tiny) > .after,
-.properties:not(.tiny) > .before {
+  position: relative; }
+  .properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
+  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+    font-weight: 500;
+    padding: 9px 0;
+    text-align: right;
+    vertical-align: top;
+    white-space: nowrap; }
+  .properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div, .properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
+  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
+  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+    box-sizing: border-box;
+    display: table-cell;
+    height: 32px; }
+.properties:not(.tiny) > *.after, .properties:not(.tiny) > *.before, .properties:not(.tiny) > *.block,
+.property:not(a):not(th):not(td):not(.tiny).after,
+.property:not(a):not(th):not(td):not(.tiny).before,
+.property:not(a):not(th):not(td):not(.tiny).block {
+  display: block; }
+.properties:not(.tiny) > *.after, .properties:not(.tiny) > *.before,
+.property:not(a):not(th):not(td):not(.tiny).after,
+.property:not(a):not(th):not(td):not(.tiny).before {
   line-height: 1.5em;
   padding: 0 10px;
-  white-space: pre-line;
-}
-.properties:not(.tiny) > .after > div,
-.properties:not(.tiny) > .before > div {
-  display: block;
-}
-.properties:not(.tiny) > .block {
-  margin-top: -1px;
-}
-.properties:not(.tiny) > .block > label {
-  background-color: #f8f8f8;
-  box-sizing: border-box;
-  color: var(--dark-color);
-  display: block;
-  font-size: 14px;
-  font-weight: bold;
-  height: 34px;
-  padding: 10px 0;
-  width: 100%;
-}
-.properties:not(.tiny) > .block > label:first-letter {
-  text-transform: uppercase;
-}
-.properties:not(.tiny) > .multiline.string > div {
-  white-space: pre-line;
-}
+  white-space: pre-line; }
+  .properties:not(.tiny) > *.after > div, .properties:not(.tiny) > *.before > div,
+  .property:not(a):not(th):not(td):not(.tiny).after > div,
+  .property:not(a):not(th):not(td):not(.tiny).before > div {
+    display: block; }
+.properties:not(.tiny) > *.block,
+.property:not(a):not(th):not(td):not(.tiny).block {
+  margin-top: -1px; }
+  .properties:not(.tiny) > *.block > label,
+  .property:not(a):not(th):not(td):not(.tiny).block > label {
+    background-color: #f8f8f8;
+    box-sizing: border-box;
+    color: var(--dark-color);
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    height: 34px;
+    padding: 10px 0;
+    width: 100%; }
+    .properties:not(.tiny) > *.block > label:first-letter,
+    .property:not(a):not(th):not(td):not(.tiny).block > label:first-letter {
+      text-transform: uppercase; }
+.properties:not(.tiny) > *.multiline.string > div,
+.property:not(a):not(th):not(td):not(.tiny).multiline.string > div {
+  white-space: pre-line; }
 
 .properties.tiny {
-  padding: 10px;
-}
-.properties.tiny > * {
-  display: block;
-}
-.properties.tiny > * label {
-  display: block;
-  font-weight: 500;
-  padding: 4px 0;
-}
+  padding: 10px; }
+
+.properties.tiny > *,
+.property.tiny {
+  display: block; }
+  .properties.tiny > * label,
+  .property.tiny label {
+    display: block;
+    font-weight: 500;
+    padding: 4px 0; }
 
 article > .data .properties > * > div,
-article > .properties > * > div {
+article > .properties > * > div,
+.property:not(a):not(th):not(td) > div {
   background: #efefef;
   border-radius: 2px;
   padding: 9px 10px;
-  vertical-align: top;
-}
+  vertical-align: top; }
 
 .unit {
-  white-space: nowrap;
-}
+  white-space: nowrap; }
 
 article > .data .unit:before {
-  content: " ";
-}
+  content: ' '; }

@@ -2,12 +2,19 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-.properties:not(.tiny) {
+.properties:not(.tiny),
+.data.property,
+.property > table {
 	border-collapse: separate;
 	border-spacing: 10px;
-	display: block;
+}
 
-	li {
+.properties:not(.tiny) {
+	display: block;
+}
+
+.properties:not(.tiny) li,
+.property:not(a):not(th):not(td):not(.tiny) {
 		position: relative;
 
 		> div, > label {
@@ -15,7 +22,10 @@
 		}
 	}
 
-	> :not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+.properties:not(.tiny) > *,
+.property:not(a):not(th):not(td):not(.tiny) {
+
+	&:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;
 		position: relative;
 
@@ -34,14 +44,14 @@
 		}
 	}
 
-	> .after,
-	> .before,
-	> .block {
+	&.after,
+	&.before,
+	&.block {
 		display: block;
 	}
 
-	> .after,
-	> .before {
+	&.after,
+	&.before {
 		line-height: 1.5em;
 		padding: 0 10px;
 		white-space: pre-line;
@@ -51,7 +61,7 @@
 		}
 	}
 
-	> .block {
+	&.block {
 		margin-top: -1px;
 
 		> label {
@@ -71,35 +81,34 @@
 		}
 	}
 
-	> .multiline.string > div {
+	&.multiline.string > div {
 		white-space: pre-line;
 	}
 }
 
 .properties.tiny {
 	padding: 10px;
+}
 
-	> * {
+.properties.tiny > *,
+.property.tiny {
+	display: block;
+
+	label {
 		display: block;
-
-		label {
-			display: block;
-			font-weight: $medium;
-			padding: 4px 0;
-		}
+		font-weight: $medium;
+		padding: 4px 0;
 	}
 }
 
 // output article
-article > .data .properties,
-article > .properties {
-
-	> * > div {
-		background: #efefef;
-		border-radius: 2px;
-		padding: 9px 10px;
-		vertical-align: top;
-	}
+article > .data .properties > * > div,
+article > .properties > * > div,
+.property:not(a):not(th):not(td) > div {
+	background: #efefef;
+	border-radius: 2px;
+	padding: 9px 10px;
+	vertical-align: top;
 }
 
 .unit {

@@ -1,7 +1,6 @@
 div#column_select.popup {
   bottom: 0;
-  overflow-x: hidden;
-  overflow-y: auto; }
+  overflow: hidden; }
 
 .func-select,
 .property-select {
@@ -9,6 +8,7 @@ div#column_select.popup {
   border-left: 1px solid #d0d0d0;
   box-sizing: border-box;
   height: 100%;
+  overflow: hidden;
   white-space: nowrap; }
   .func-select > h3,
   .property-select > h3 {
@@ -16,15 +16,21 @@ div#column_select.popup {
   .func-select > .search,
   .property-select > .search {
     background: linear-gradient(to bottom, #f8f8f8 50%, #efefef);
-    border-bottom: 1px solid #ccc; }
+    border-bottom: 1px solid #ccc;
+    position: relative; }
     .func-select > .search > input,
     .property-select > .search > input {
-      background: white;
-      box-sizing: border-box;
-      width: 100%; }
+      background: white !important;
+      border: none !important;
+      width: calc(100% - 20px) !important; }
     .func-select > .search > label,
     .property-select > .search > label {
       display: none; }
+  .func-select > .tree,
+  .property-select > .tree {
+    height: calc(100% - 21px);
+    overflow-x: hidden;
+    overflow-y: auto; }
   .func-select ul > li,
   .property-select ul > li {
     display: block;
