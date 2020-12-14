@@ -2,11 +2,15 @@
 namespace ITRocks\Framework\Feature\Export;
 
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao\Option\Translate;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
@@ -16,6 +20,12 @@ use ITRocks\Framework\Tools\Names;
  */
 class Export
 {
+
+	//------------------------------------------------------------------------------- $all_properties
+	/**
+	 * @var boolean
+	 */
+	public $all_properties = false;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
@@ -35,20 +45,45 @@ class Export
 	 * @param $object     object|Parameters object or Parameters with a main object
 	 * @param $form       array
 	 */
-	public function __construct($class_name, $object, array $form)
+	public function __construct(string $class_name, $object, array $form)
 	{
 		$this->class_name = $class_name;
 		$this->selection  = new Selection($object, $form);
+	}
+
+	//--------------------------------------------------------------------------------- allProperties
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return Reflection_Property[] The key is the property path
+	 */
+	protected function allProperties() : array
+	{
+		$class_name = Builder::className(Names::setToClass($this->class_name));
+		$properties = [];
+		/** @noinspection PhpUnhandledExceptionInspection valid */
+		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
+			if (
+				!$property->isStatic()
+				&& !Link_Annotation::of($property)->isCollection()
+				&& !Link_Annotation::of($property)->isMap()
+				&& !User_Annotation::of($property)->has(User_Annotation::INVISIBLE)
+			) {
+				$properties[$property->path] = $property;
+			}
+		}
+		return $properties;
 	}
 
 	//---------------------------------------------------------------------------------------- export
 	/**
 	 * @return string
 	 */
-	public function export()
+	public function export() : string
 	{
-		$data       = $this->selection->readDataSelect(null, null, new Translate());
-		$properties = $data->getProperties();
+		$selection_properties = $this->all_properties ? $this->allProperties() : [];
+		$property_names       = array_keys($selection_properties) ?: null;
+		$data                 = $this->selection->readDataSelect($property_names, null, new Translate());
+		$properties           = $data->getProperties();
 
 		// create temporary file
 		$application   = Session::current()->get(Application::class);
@@ -59,16 +94,28 @@ class Export
 
 		// write first line (properties path)
 		$row = [];
-		foreach ($this->selection->getListSettings()->properties as $property) {
-			if (isset($properties[$property->path])) {
-				$row[] = $property->title();
+		if ($selection_properties) {
+			foreach ($properties as $property) {
+				$row[] = Loc::tr($property->path);
+			}
+		}
+		else {
+			$selection_properties = $this->selection->getListSettings()->properties;
+			foreach ($selection_properties as $property) {
+				if (isset($properties[$property->path])) {
+					$row[] = $property->title();
+				}
 			}
 		}
 		fputcsv($file, $row);
 
-		// format dates
+		// format columns
+		$bool_val = [0 => Loc::tr('no'), 1 => Loc::tr('yes')];
 		foreach ($properties as $property_path => $property) {
 			if ($property instanceof Reflection_Property) {
+				if ($property->getType()->isBoolean()) {
+					$booleans[$property_path] = true;
+				}
 				if ($property->getType()->isDateTime()) {
 					$date_times[$property_path] = true;
 				}
@@ -93,6 +140,9 @@ class Export
 						$value = substr($value, 8, 2) . SL . substr($value, 5, 2) . SL . substr($value, 0, 4)
 						. SP . substr($value, 11, 2) . ':' . substr($value, 14, 2) . ':' . substr($value, 17, 2);
 					}
+				}
+				elseif (isset($booleans[$property_path])) {
+					$value = $value ? $bool_val[1] : $bool_val[0];
 				}
 				elseif (isset($translate[$property_path])) {
 					$value = Loc::tr($value);

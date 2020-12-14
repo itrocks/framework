@@ -59,13 +59,21 @@ article.list ul.general.actions > li > ul {
 	top: 38px;
 }
 
-article:not(.list) ul.general.actions,
-ul.selection.actions {
+article:not(.list) ul.general.actions {
 	border-top: 1px solid #d8d8d8;
 
 	> li > ul {
 		padding-top: 6px;
 		top: 25px;
+	}
+}
+
+ul.selection.actions {
+	border-bottom: 1px solid #d8d8d8;
+
+	> li > ul {
+		padding-bottom: 6px;
+		bottom: 25px;
 	}
 }
 

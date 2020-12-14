@@ -16,6 +16,9 @@ use ITRocks\Framework\Controller\Parameters;
 class Controller implements Default_Feature_Controller
 {
 
+	//-------------------------------------------------------------------------------- ALL_PROPERTIES
+	const ALL_PROPERTIES = 'all_properties';
+
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @param $parameters Parameters
@@ -31,6 +34,7 @@ class Controller implements Default_Feature_Controller
 		upgradeTimeLimit(3600);
 
 		$export = new Export($class_name, $parameters, $form);
+		$export->all_properties = $parameters->isTrue(static::ALL_PROPERTIES, true);
 		return $export->export();
 	}
 

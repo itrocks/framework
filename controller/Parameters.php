@@ -327,6 +327,18 @@ class Parameters
 		return in_array($value, $this->parameters, $strict);
 	}
 
+	//---------------------------------------------------------------------------------------- isTrue
+	/**
+	 * @param $key           string
+	 * @param $in_values_too boolean
+	 * @return boolean
+	 */
+	public function isTrue(string $key, bool $in_values_too = false) : bool
+	{
+		return $this->has($key, $in_values_too)
+			&& (!isset($this->parameters[$key]) || ($this->parameters[$key]));
+	}
+
 	//---------------------------------------------------------------------------------------- remove
 	/**
 	 * Removes a parameter

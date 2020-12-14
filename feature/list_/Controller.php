@@ -23,6 +23,7 @@ use ITRocks\Framework\Dao\Option\Reverse;
 use ITRocks\Framework\Dao\Option\Time_Limit;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
+use ITRocks\Framework\Feature\Export;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\History;
@@ -534,7 +535,20 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					Names::classToSet($class_name), Feature::F_EXPORT, null, [Parameter::AS_WIDGET => true]
 				),
 				Feature::F_EXPORT,
-				[View::TARGET => Target::TOP]
+				[
+					View::TARGET => Target::TOP,
+					Button::SUB_BUTTONS => [
+						new Button(
+							'All columns',
+							View::link(
+								Names::classToSet($class_name), Feature::F_EXPORT, null,
+								[Parameter::AS_WIDGET => true, Export\Controller::ALL_PROPERTIES => true]
+							),
+							Feature::F_EXPORT,
+							[View::TARGET => Target::TOP]
+						)
+					]
+				]
 			),
 			Feature::F_PRINT => new Button(
 				'Print',
