@@ -46,6 +46,12 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 				if (strpos($filter, '=')) {
 					[$filter, $filter_value_name] = explode('=', $filter);
 					$filter = trim($filter);
+					while (
+						in_array($filter[strlen($filter) - 2], [SP, TAB])
+						&& in_array(substr($filter, - 1), ['<', '>', '!'])
+					) {
+						$filter = substr($filter, 0, -2) . substr($filter, -1);
+					}
 					$filter_value_name = trim($filter_value_name);
 				}
 				else {
