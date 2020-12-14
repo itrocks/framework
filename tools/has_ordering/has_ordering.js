@@ -15,10 +15,10 @@ $(document).ready(function()
 	//------------------------------------------------------------------------ tr.new refreshOrdering
 	$body.build('call', '.component-objects [data-property=ordering]', function()
 	{
-		var $li = this;
+		var $property = this;
 
 		//----------------------------------------------------------------------------------- draggable
-		$li.closest('li.data').draggable(
+		$property.closest('.data').draggable(
 		{
 			appendTo: function() { $(this).closest('.collection'); },
 			handle:   'li[data-property=ordering]',
@@ -94,7 +94,8 @@ $(document).ready(function()
 		});
 
 		//---------------------------------------------------------------------- ul.collection sortable
-		$li.closest('ul, ol, table').each(function()
+		var $component_objects = $property.closest('.component-objects');
+		$component_objects.children('ul, ol, table').each(function()
 		{
 			var $collection = $(this);
 			refresh.call($collection.children('.data'));
