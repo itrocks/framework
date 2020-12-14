@@ -131,7 +131,8 @@ $(document).ready(function()
 	//--------------------------------------------------------------------------- .property draggable
 	$body.build('call', '.property', function()
 	{
-		this.draggable({
+		var $properties = this.filter(':not(:has(ol,table,ul))')
+		$properties.draggable({
 			appendTo: 'body',
 			cursorAt: { left: 10, top: 10 },
 			scroll:   false,
