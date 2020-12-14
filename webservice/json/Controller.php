@@ -50,7 +50,6 @@ class Controller implements Default_Feature_Controller
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $search  array|object
 	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
 	 */
@@ -60,11 +59,6 @@ class Controller implements Default_Feature_Controller
 			$search = Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
-			/** @noinspection PhpUnhandledExceptionInspection filters must be valid */
-			$property           = new Reflection_Property($this->class->name, $filter_name);
-			$is_multiple_values = (
-				Values_Annotation::of($property)->value && $property->getType()->isMultipleString()
-			);
 			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')) {
 				$filter_value = Func::notEqual(substr($filter_value, 1));
 			}
@@ -78,13 +72,14 @@ class Controller implements Default_Feature_Controller
 			}
 			elseif (substr($filter_name, -1) === '!') {
 				$filter_name  = substr($filter_name, 0, -1);
-				$filter_value = $is_multiple_values
+				$filter_value = $this->isMultipleValues($filter_name)
 					? Func::notInSet($filter_value)
 					: Func::notEqual($filter_value);
 			}
-			elseif ($is_multiple_values) {
+			elseif ($this->isMultipleValues($filter_name)) {
 				$filter_value = Func::inSet($filter_value);
 			}
+			$property = $this->class->getProperty($filter_name);
 			if ($property->getType()->isDateTime()) {
 				if ($filter_value instanceof Comparison) {
 					$filter_value->than_value = Loc::dateToIso($filter_value->than_value);
@@ -159,6 +154,17 @@ class Controller implements Default_Feature_Controller
 				: $object->$property_name;
 		}
 		return $entry;
+	}
+
+	//------------------------------------------------------------------------------ isMultipleValues
+	/**
+	 * @param $property_path string
+	 * @return boolean
+	 */
+	protected function isMultipleValues(string $property_path) : bool
+	{
+		$property = $this->class->getProperty($property_path);
+		return Values_Annotation::of($property)->value && $property->getType()->isMultipleString();
 	}
 
 	//------------------------------------------------------------------------------------------- run
