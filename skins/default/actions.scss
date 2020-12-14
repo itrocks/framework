@@ -44,15 +44,15 @@ ul.actions > li {
 		background-color: white;
 		border-left: 1px solid #d8d8d8;
 		border-right: 1px solid #d8d8d8;
-
-		&:first-child {
-			border-top: 1px solid #d8d8d8;
-		}
-
-		&:last-child {
-			border-bottom: 1px solid #d8d8d8;
-		}
 	}
+}
+
+ul.actions:not(.general) > li > ul > li:first-child {
+	border-top: 1px solid #d8d8d8;
+}
+
+ul.actions:not(.selection) > li > ul > li:last-child {
+	border-bottom: 1px solid #d8d8d8;
 }
 
 article.list ul.general.actions > li > ul {
@@ -69,11 +69,15 @@ article:not(.list) ul.general.actions {
 }
 
 ul.selection.actions {
-	border-bottom: 1px solid #d8d8d8;
 
 	> li > ul {
+		border-left: 1px solid #d8d8d8;
 		padding-bottom: 6px;
 		bottom: 25px;
+
+		> li {
+			border-left: none;
+		}
 	}
 }
 

@@ -45,14 +45,12 @@ ul.actions > li {
     background-color: white;
     border-left: 1px solid #d8d8d8;
     border-right: 1px solid #d8d8d8; }
-    li.action > ul > li:first-child,
-    li.actions > ul > li > ul > li:first-child,
-    ul.actions > li > ul > li:first-child {
-      border-top: 1px solid #d8d8d8; }
-    li.action > ul > li:last-child,
-    li.actions > ul > li > ul > li:last-child,
-    ul.actions > li > ul > li:last-child {
-      border-bottom: 1px solid #d8d8d8; }
+
+ul.actions:not(.general) > li > ul > li:first-child {
+  border-top: 1px solid #d8d8d8; }
+
+ul.actions:not(.selection) > li > ul > li:last-child {
+  border-bottom: 1px solid #d8d8d8; }
 
 article.list ul.general.actions > li > ul {
   top: 38px; }
@@ -63,11 +61,12 @@ article:not(.list) ul.general.actions {
     padding-top: 6px;
     top: 25px; }
 
-ul.selection.actions {
-  border-bottom: 1px solid #d8d8d8; }
-  ul.selection.actions > li > ul {
-    padding-bottom: 6px;
-    bottom: 25px; }
+ul.selection.actions > li > ul {
+  border-left: 1px solid #d8d8d8;
+  padding-bottom: 6px;
+  bottom: 25px; }
+  ul.selection.actions > li > ul > li {
+    border-left: none; }
 
 ol.properties.tiny + ul.actions {
   background: transparent;
