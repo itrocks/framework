@@ -9,8 +9,8 @@ use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
+use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
@@ -53,15 +53,13 @@ class Export
 
 	//--------------------------------------------------------------------------------- allProperties
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property[] The key is the property path
 	 */
 	protected function allProperties() : array
 	{
 		$class_name = Builder::className(Names::setToClass($this->class_name));
 		$properties = [];
-		/** @noinspection PhpUnhandledExceptionInspection valid */
-		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
+		foreach ((new Integrated_Properties)->expandUsingClassName($class_name) as $property) {
 			if (
 				!$property->isStatic()
 				&& !Link_Annotation::of($property)->isCollection()
