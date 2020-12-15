@@ -99,6 +99,15 @@ $(document).ready(function()
 	 */
 	var setFieldValue = function($form, field_name, value)
 	{
+		if (field_name.substr(0, 1) === '?') {
+			modalWindow(value.title, value.text, value.choices, function(choice)
+			{
+				if (choice === 'confirm') {
+					setFieldValue($form, field_name.substr(1), value.value);
+				}
+			});
+			return;
+		}
 		var search = 'input[name=' + DQ + field_name + DQ + ']'
 			+ ', input[data-name=' + DQ + field_name + DQ + ']'
 			+ ', select[name=' + DQ + field_name + DQ + ']'
