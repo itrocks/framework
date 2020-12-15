@@ -50,6 +50,35 @@ $(document).ready(function()
 			$(this).parent().find('.hover').removeClass('hover');
 		});
 
+		//----------------------------------------------------------- table input[type=checkbox] arrows
+		$body.build('keydown', 'article.list > form > table.list', function(event)
+		{
+			var $target = $(event.target);
+			if (!$target.is('input[type=checkbox]')) {
+				return;
+			}
+			var $td = $target.closest('th');
+			var $tr = $target.closest('tr');
+
+			switch (event.keyCode) {
+				case 37: // left
+				case 38: // top
+					$tr.prev().length
+						? $tr.prev().children('th:first-child').find('input[type=checkbox]').focus()
+						: $tr.parent().prev().find('input[type=checkbox]:first').focus();
+					break;
+				case 39: // right
+					$td.nextAll().find('a:first').focus();
+					break;
+				case 40: // down
+					$tr.parent().is('tbody')
+						? $tr.next().children('th:first-child').find('input[type=checkbox]').focus()
+						: $tr.parent().next().children('tr:first-child').children('th:first-child')
+							.find('input[type=checkbox]').focus();
+					break;
+			}
+		});
+
 		//------------------------------------------------------------------------------------ loadMore
 		/**
 		 * If the "load more" section is visible, load more lines

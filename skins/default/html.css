@@ -10,6 +10,9 @@ input[type=submit] {
   cursor: pointer;
   white-space: nowrap; }
 
+input[type=checkbox]:focus {
+  box-shadow: 0 0 1px 1px green; }
+
 iframe {
   height: 300px;
   width: 100%; }

@@ -191,7 +191,7 @@ $(document).ready(function()
 			if ($(event.target).is('input[type=checkbox]')) {
 				return;
 			}
-			$(this).children('input[type=checkbox]').click();
+			$(this).children('input[type=checkbox]').click().focus();
 		});
 	});
 
