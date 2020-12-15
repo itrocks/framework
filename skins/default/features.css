@@ -1,108 +1,91 @@
 li.action.add > a,
 li.actions > ul > li.add > a,
 ul.actions > li.add > a {
-  background-image: url("img/add-24.svg");
-}
+  background-image: url("img/add-24.svg"); }
 li.action.add-small > a,
 li.actions > ul > li.add-small > a,
 ul.actions > li.add-small > a {
   background-image: url("img/add-small-24.svg");
   font-size: 0;
-  padding-left: 16px;
-}
+  padding-left: 16px; }
 li.action.archive > a,
 li.actions > ul > li.archive > a,
 ul.actions > li.archive > a {
-  background-image: url("img/archive-24.svg");
-}
+  background-image: url("img/archive-24.svg"); }
 li.action.close > a,
 li.actions > ul > li.close > a,
 ul.actions > li.close > a {
-  background-image: url("img/close-24.svg");
-}
+  background-image: url("img/close-24.svg"); }
 li.action.close-small > a,
 li.actions > ul > li.close-small > a,
 ul.actions > li.close-small > a {
   background-image: url("img/close-small-24.svg");
   font-size: 0;
-  padding-left: 16px;
-}
+  padding-left: 16px; }
+li.action.confirm > a,
+li.actions > ul > li.confirm > a,
+ul.actions > li.confirm > a {
+  background-image: url("img/valid-24.svg"); }
 li.action.delete > a,
 li.actions > ul > li.delete > a,
 ul.actions > li.delete > a {
-  background-image: url("img/delete-24.svg");
-}
+  background-image: url("img/delete-24.svg"); }
 li.action.duplicate > a,
 li.actions > ul > li.duplicate > a,
 ul.actions > li.duplicate > a {
-  background-image: url("img/duplicate-24.svg");
-}
+  background-image: url("img/duplicate-24.svg"); }
 li.action.edit > a,
 li.actions > ul > li.edit > a,
 ul.actions > li.edit > a {
-  background-image: url("img/edit-24.svg");
-}
+  background-image: url("img/edit-24.svg"); }
 li.action.email > a,
 li.actions > ul > li.email > a,
 ul.actions > li.email > a {
-  background-image: url("img/email-24.svg");
-}
+  background-image: url("img/email-24.svg"); }
 li.action.export > a,
 li.actions > ul > li.export > a,
 ul.actions > li.export > a {
-  background-image: url("img/export-24.svg");
-}
+  background-image: url("img/export-24.svg"); }
 li.action.fileexport > a,
 li.actions > ul > li.fileexport > a,
 ul.actions > li.fileexport > a {
-  background-image: url("img/export-24.svg");
-}
+  background-image: url("img/export-24.svg"); }
 li.action.import > a,
 li.actions > ul > li.import > a,
 ul.actions > li.import > a {
-  background-image: url("img/import-24.svg");
-}
+  background-image: url("img/import-24.svg"); }
 li.action.install > a,
 li.actions > ul > li.install > a,
 ul.actions > li.install > a {
-  background-image: url("img/install-24.svg");
-}
+  background-image: url("img/install-24.svg"); }
 li.action.lock > a,
 li.actions > ul > li.lock > a,
 ul.actions > li.lock > a {
-  background-image: url("img/lock-24.svg");
-}
+  background-image: url("img/lock-24.svg"); }
 li.action.merge > a,
 li.actions > ul > li.merge > a,
 ul.actions > li.merge > a {
-  background-image: url("img/merge-24.svg");
-}
+  background-image: url("img/merge-24.svg"); }
 li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {
-  background-image: url("img/print-24.svg");
-}
+  background-image: url("img/print-24.svg"); }
 li.action.save > a,
 li.actions > ul > li.save > a,
 ul.actions > li.save > a {
-  background-image: url("img/save-24.svg");
-}
+  background-image: url("img/save-24.svg"); }
 li.action.send > a,
 li.actions > ul > li.send > a,
 ul.actions > li.send > a {
-  background-image: url("img/email-24.svg");
-}
+  background-image: url("img/email-24.svg"); }
 li.action.uninstall > a,
 li.actions > ul > li.uninstall > a,
 ul.actions > li.uninstall > a {
-  background-image: url("img/uninstall-24.svg");
-}
+  background-image: url("img/uninstall-24.svg"); }
 li.action.unlock > a,
 li.actions > ul > li.unlock > a,
 ul.actions > li.unlock > a {
-  background-image: url("img/unlock-24.svg");
-}
+  background-image: url("img/unlock-24.svg"); }
 
-.merge.confirm.message ul.actions > li.confirm > a {
-  background-image: url("img/merge-24.svg");
-}
+.merge.confirm.message .actions > .confirm > a {
+  background-image: url("img/merge-24.svg"); }

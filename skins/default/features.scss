@@ -27,6 +27,10 @@ ul.actions > li {
 		padding-left: 16px;
 	}
 
+	&.confirm > a {
+		background-image: url('img/valid-24.svg');
+	}
+
 	&.delete > a {
 		background-image: url('img/delete-24.svg');
 	}
@@ -88,6 +92,6 @@ ul.actions > li {
 	}
 }
 
-.merge.confirm.message ul.actions > li.confirm > a {
+.merge.confirm.message .actions > .confirm > a {
 	background-image: url('img/merge-24.svg');
 }
