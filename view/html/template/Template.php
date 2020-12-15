@@ -2126,16 +2126,16 @@ class Template
 
 		$i            = 0;
 		$replacements = false;
-		while (($i = strpos($content, 'data-begin="{', $i)) !== false) {
-			$i      += 13;
+		while (($i = strpos($content, ' data-begin="{', $i)) !== false) {
+			$i      += 14;
 			$j       = strpos($content, '}' . DQ, $i);
-			$content = substr($content, 0, $i - 13)
+			$content = substr($content, 0, $i - 14)
 				. '<!--' . substr($content, $i, $j - $i) . '-->'
 				. substr($content, $j + (($content[$j + 2] === SP) ? 2 : 1));
 			$replacements = true;
 		}
 		if ($replacements) {
-			$content = str_replace('data-end', '<!--end-->', $content);
+			$content = str_replace(' data-end', '<!--end-->', $content);
 		}
 
 		$i = 0;
