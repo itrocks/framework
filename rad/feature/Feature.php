@@ -15,7 +15,7 @@ use ITRocks\Framework\Tools\Namespaces;
  *
  * @after_read initModule
  * @business
- * @display_order title, description, status, tags
+ * @display_order title, module, description, status, tags
  * @list title, status
  * @representative title
  * @store_name rad_features
