@@ -311,7 +311,7 @@ class Functions
 	 * @param $display_full_path boolean If object is a property, returns 'the.full.property.path'
 	 * @return string
 	 */
-	public function getDisplay(Template $template, $display_full_path = false)
+	public function getDisplay(Template $template, $display_full_path = false) : string
 	{
 		$object = reset($template->objects);
 		if ($object instanceof Reflection_Property) {
@@ -329,9 +329,37 @@ class Functions
 		elseif (is_object($object)) {
 			return (new Displayable(get_class($object), Displayable::TYPE_CLASS))->display();
 		}
-		else {
-			return $object;
+		return strval($object);
+	}
+
+	//----------------------------------------------------------------------------------- getDisplays
+	/**
+	 * Return object's displays
+	 *
+	 * @param $template Template
+	 * @return string
+	 */
+	public function getDisplays(Template $template) : string
+	{
+		$object = reset($template->objects);
+		if ($object instanceof Reflection_Property) {
+			return Names::singleToSet(Names::propertyToDisplay($object->name));
 		}
+		elseif ($object instanceof Reflection_Class) {
+			return Names::classToDisplays($object->name);
+		}
+		elseif ($object instanceof Reflection_Method) {
+			return Names::singleToSet(Names::methodToDisplay($object->name));
+		}
+		elseif ($object instanceof Displayable) {
+			return Names::singleToSet($object->display());
+		}
+		elseif (is_object($object)) {
+			return Names::singleToSet(
+				(new Displayable(get_class($object), Displayable::TYPE_CLASS))->display()
+			);
+		}
+		return strval(Names::singleToSet($object));
 	}
 
 	//--------------------------------------------------------------------------------------- getDump
