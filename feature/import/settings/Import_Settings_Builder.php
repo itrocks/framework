@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Feature\Import\Settings;
 
 use ITRocks\Framework\Feature\Import\Import_Array;
-use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Identify_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -17,7 +17,7 @@ abstract class Import_Settings_Builder
 	//---------------------------------------------------------------------------------- autoIdentify
 	/**
 	 * If no property contains the character '*' in import file, automatically detects which property
-	 * names are used to identify records using the representative classes annotation
+	 * names are used to identify records using the identify/representative classes annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string
@@ -34,10 +34,10 @@ abstract class Import_Settings_Builder
 		$auto_identify = [];
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-			$class          = new Reflection_Class($class_name);
-			$representative = Representative_Annotation::of($class)->values();
+			$class     = new Reflection_Class($class_name);
+			$identify = Identify_Annotation::of($class)->values();
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
-				if (in_array($property_name, $representative)) {
+				if (in_array($property_name, $identify)) {
 					$auto_identify[$property_path][$pos] = true;
 				}
 				$property = $class->getProperty($property_name);
@@ -45,8 +45,8 @@ abstract class Import_Settings_Builder
 					$type = $property->getType();
 					if ($type->isClass()) {
 						/** @noinspection PhpUnhandledExceptionInspection type elements are valid */
-						$class          = new Reflection_Class($type->getElementTypeAsString());
-						$representative = Representative_Annotation::of($class)->values();
+						$class    = new Reflection_Class($type->getElementTypeAsString());
+						$identify = Identify_Annotation::of($class)->values();
 					}
 				}
 			}
