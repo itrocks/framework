@@ -36,7 +36,7 @@ abstract class Test extends Testable
 	 *
 	 * {@inheritdoc}
 	 */
-	protected function setUp()
+	protected function setUp() : void
 	{
 		parent::setUp();
 		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
@@ -57,7 +57,7 @@ abstract class Test extends Testable
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function tearDown()
+	protected function tearDown() : void
 	{
 		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
 			// Functional testing

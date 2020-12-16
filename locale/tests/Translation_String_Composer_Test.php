@@ -79,7 +79,7 @@ class Translation_String_Composer_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------------- setUp
-	public function setUp()
+	public function setUp() : void
 	{
 		parent::setUp();
 		if (!Translation_String_Composer::registered()) {

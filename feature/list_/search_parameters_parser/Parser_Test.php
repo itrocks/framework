@@ -36,7 +36,7 @@ class Parser_Test extends Test
 	 *
 	 * {@inheritdoc}
 	 */
-	protected function setUp()
+	protected function setUp() : void
 	{
 		parent::setUp();
 		if ($jokers = Implicit_Jokers::get(false)) {
@@ -55,7 +55,7 @@ class Parser_Test extends Test
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function setUpBeforeClass()
+	public static function setUpBeforeClass() : void
 	{
 		$date_format              = Locale::current()->date_format;
 		self::$date_format_backup = $date_format->format;
@@ -66,7 +66,7 @@ class Parser_Test extends Test
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function tearDownAfterClass()
+	public static function tearDownAfterClass() : void
 	{
 		Locale::current()->date_format->format = self::$date_format_backup;
 	}

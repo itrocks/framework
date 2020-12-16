@@ -55,7 +55,7 @@ class Validate_Test extends Test
 	 *
 	 * @throws ReflectionException
 	 */
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->subject   = new Test_Object();
 		$this->validator = new Validator();
@@ -79,7 +79,7 @@ class Validate_Test extends Test
 	/**
 	 * Reset after each test
 	 */
-	public function tearDown()
+	public function tearDown() : void
 	{
 		$this->subject   = null;
 		$this->validator = null;

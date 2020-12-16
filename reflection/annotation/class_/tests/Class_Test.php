@@ -31,7 +31,7 @@ class Class_Test extends Test
 	/**
 	 * Before each test.
 	 */
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->subject = new Test_Object();
 	}

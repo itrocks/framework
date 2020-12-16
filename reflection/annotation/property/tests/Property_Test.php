@@ -64,7 +64,7 @@ class Property_Test extends Test
 	}
 
 	//----------------------------------------------------------------------------------------- setUp
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->subject = new Test_Object();
 	}

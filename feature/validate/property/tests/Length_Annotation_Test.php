@@ -43,7 +43,7 @@ class Length_Annotation_Test extends Test
 	 *
 	 * @throws ReflectionException
 	 */
-	public function setUp()
+	public function setUp() : void
 	{
 		$this->reflection_object = new Reflection_Class(__CLASS__);
 	}
@@ -52,7 +52,7 @@ class Length_Annotation_Test extends Test
 	/**
 	 * After each test
 	 */
-	public function tearDown()
+	public function tearDown() : void
 	{
 		$this->reflection_object = null;
 	}

@@ -46,7 +46,7 @@ class Translator_Test extends Test
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function setUp()
+	protected function setUp() : void
 	{
 		$this->translator = new Translator();
 
@@ -63,7 +63,7 @@ class Translator_Test extends Test
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function tearDown()
+	protected function tearDown() : void
 	{
 		parent::tearDown();
 		Dao::rollback();

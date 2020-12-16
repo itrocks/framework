@@ -36,7 +36,7 @@ class Max_Length_Annotation_Test extends Test
 	/**
 	 * Before each test.
 	 */
-	public function setUp()
+	public function setUp() : void
 	{
 		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$this->reflection_object = new Reflection_Class(__CLASS__);
@@ -46,7 +46,7 @@ class Max_Length_Annotation_Test extends Test
 	/**
 	 * After each test.
 	 */
-	public function tearDown()
+	public function tearDown() : void
 	{
 		$this->reflection_object = null;
 	}
