@@ -15,7 +15,7 @@ trait Tokens_Parser
 	/**
 	 * @var integer[]
 	 */
-	public static $class_name_tokens = [314, T_NS_SEPARATOR, T_STRING];
+	public static $class_name_tokens = [312, 314, T_NS_SEPARATOR, T_STRING];
 
 	//------------------------------------------------------------------------------------ $namespace
 	/**
@@ -162,7 +162,8 @@ trait Tokens_Parser
 			else {
 				$continue = false;
 			}
-		} while ($continue && isset($this->tokens[$this->token_key + 1]));
+		}
+		while ($continue && isset($this->tokens[$this->token_key + 1]));
 		if ($token[0] === T_IMPLEMENTS) {
 			$this->token_key --;
 		}
