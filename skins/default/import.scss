@@ -1,16 +1,27 @@
 @import 'colors.scss';
 @import 'sizes.scss';
 
-article.import > .data {
-	display: grid;
-	grid-template-rows: min-content 1fr min-content;
-	overflow: hidden;
-}
+article.import.preview > form > .data {
 
-article.import section.preview {
-	overflow: auto;
+	.classes {
+		list-style: none;
+	}
 
-	li.block {
+	.block {
+		border-bottom: 1px solid #d8d8d8;
+		padding: 6px 10px;
+
+		> h3 {
+			margin: 1em 0;
+
+			> span {
+				display: inline-block;
+
+				&:before {
+					content: ' . ';
+				}
+			}
+		}
 
 		> .constants {
 			display: none;
@@ -23,7 +34,7 @@ article.import section.preview {
 				padding-top: 6px;
 			}
 
-			> h3 {
+			> h4 {
 				display: none;
 			}
 
@@ -40,6 +51,7 @@ article.import section.preview {
 					display: inline-block;
 					min-height: 16px;
 					padding-top: 4px;
+					position: relative;
 					vertical-align: middle;
 
 					&:first-child {
@@ -74,7 +86,7 @@ article.import section.preview {
 		}
 	}
 
-	table {
+	table.preview {
 		margin: 10px;
 
 		th {
@@ -85,6 +97,14 @@ article.import section.preview {
 			border: 1px solid #444;
 			padding: 4px;
 		}
+
+		td {
+			background: white;
+		}
 	}
 
+}
+
+article.import.execute > .data > p {
+	padding: 10px;
 }

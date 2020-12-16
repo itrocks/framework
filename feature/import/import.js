@@ -1,7 +1,7 @@
 $(document).ready(function()
 {
 	//------------------------------------------------------------------------ article.import.preview
-	$('body').build('each', 'article.import section.preview li.block', function()
+	$('body').build('each', 'article.import.preview .block', function()
 	{
 		var $this    = $(this);
 		var $section = $this.find('> section:has(ul)');
@@ -28,7 +28,7 @@ $(document).ready(function()
 				var new_val       = (',' + $input.val() + ',').repl(',' + property_name + ',', ',');
 				$input.val((new_val === ',') ? '' : new_val.substr(1, new_val.length - 2));
 				// move property
-				$draggable.removeAttr('style').appendTo($droppable.find('ul'));
+				$draggable.appendTo($droppable.find('ul')).removeAttr('style');
 				// new section value
 				$input = $($droppable.closest('section').find('input'));
 				$input.val($input.val() + ($input.val() ? ',' : '') + property_name);

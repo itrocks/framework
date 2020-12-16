@@ -1,12 +1,9 @@
-.properties > .block {
+.properties > li.block {
   background-color: #f8f8f8;
-  padding: 0 10px;
-}
+  padding: 0 10px; }
 
 article ul.data > li {
-  display: block;
-}
+  display: block; }
 
 article ul.data ul.data {
-  overflow: hidden;
-}
+  overflow: hidden; }

@@ -11,10 +11,20 @@
 <body>
 <!--BEGIN-->
 
-	<section class="{class_name.short.lower} import done window" id="/{class_name.path}/import/done">
-		<h2>|Import done|</h2>
-		<p>|Job done|.</p>
-	</section>
+	<article class="import execute" id="{class_name.path}/import/preview">
+		<header>
+			<ol class="breadcrumb">
+				<!--§module--><li class="module"><a href="app://(link)" target="#main">|{caption}|</a></li><!--end-->
+				<li class="parent"><a href="rel://list" target="#main">|{getClass.@displays.ucfirst}|</a></li>
+				<li class="parent"><a href="rel://import" target="#main">|import|</a></li>
+				<li class="current"><a href="#">{§title}</a></li>
+			</ol>
+			<h2>|¦{class_name.short}¦ {@class.lower}|</h2>
+		</header>
+		<div class="data">
+			<p>|Import done|.</p>
+		</div>
+	</article>
 
 <!--END-->
 </body>

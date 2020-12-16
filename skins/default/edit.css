@@ -1,23 +1,17 @@
 article > form {
-  background-color: #efefef;
-}
-article > form .properties > li > div > span.set {
-  display: inline-block;
-  max-width: 360px;
-  vertical-align: top;
-}
-article > form .properties > li > div > span.set label {
-  white-space: nowrap;
-}
-article > form .properties > li > div > span.set label:not(:last-child) {
-  margin-right: 10px;
-}
-article > form .properties > li.required > label:after {
-  content: "*";
-  padding-left: 2px;
-  position: absolute;
-}
-article > form input + .unit, article > form select + .unit,
-article > form li.value[data-property] {
-  padding: 8px;
-}
+  background-color: #efefef; }
+  article > form .properties > li > div > span.set {
+    display: inline-block;
+    max-width: 360px;
+    vertical-align: top; }
+    article > form .properties > li > div > span.set label {
+      white-space: nowrap; }
+      article > form .properties > li > div > span.set label:not(:last-child) {
+        margin-right: 10px; }
+  article > form .properties > li.required > label:after {
+    content: '*';
+    padding-left: 2px;
+    position: absolute; }
+  article > form input + .unit, article > form select + .unit,
+  article > form li.value[data-property] {
+    padding: 8px; }

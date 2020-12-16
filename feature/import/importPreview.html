@@ -9,126 +9,138 @@
 	<title>|¦{class_name.display}¦ import|</title>
 </head>
 <body>
-<article class="import preview window" id="/Class/Path/import/preview">
 <!--BEGIN-->
 
-	<header>
-		<h2>|Import preview|</h2>
-	</header>
-	<form action="app://(class_name.path)/import/preview" method="post" target="#main">
+	<article class="import preview form" id="{class_name.path}/import/preview">
+		<form action="rel:///import/execute" autocomplete="off" enctype="multipart/form-data" method="post" name="import-preview" target="#main">
 
-		<ul class="worksheets">
-		<!--worksheets-->
-			<li>
-				<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
-				<input type="hidden" name="worksheets[{name}][file]" value="{file.name}">
+			<header>
+				<ol class="breadcrumb">
+					<!--§module--><li class="module"><a href="app://(link)" target="#main">|{caption}|</a></li><!--end-->
+					<li class="parent"><a href="rel://list" target="#main">|{getClass.@displays.ucfirst}|</a></li>
+					<li class="parent"><a href="rel://import" target="#main">|import|</a></li>
+					<li class="current"><a href="#">{§title}</a></li>
+				</ol>
+				<h2>|¦{class_name.short}¦ {@class.lower}|</h2>
+			</header>
 
-				<!--errors?-->
-				<details class="errors">
-					<summary>|There were errors into your file| : |some data could not be imported|</summary>
-					<ul>
-						<!--errors-->
-						<li>{.}</li>
+			<div class="data">
+
+				<ul class="worksheets">
+				<!--worksheets-->
+					<li>
+						<input type="hidden" name="worksheets[{name}][name]" value="{settings.name}">
+						<input type="hidden" name="worksheets[{name}][file]" value="{file.name}">
+
+						<!--errors?-->
+						<details class="errors">
+							<summary>|There were errors into your file| : |some data could not be imported|</summary>
+							<ul>
+								<!--errors-->
+								<li>{.}</li>
+								<!--end-->
+							</ul>
+						</details>
 						<!--end-->
-					</ul>
-				</details>
-				<!--end-->
 
-				<ol class="{name} classes properties">
-				<!--settings.classes-->
-					<li class="block">
-						<label>
-							|{..settings.getClassName.short}|
-							<!--property_path--><span class="property">|{.}|</span><!--end-->
-						</label>
-						<ol class="constants">
-							<!--constants-->
-							<li>
-								<label>
-									{@propertySelect("worksheets[{....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][name]")}
-								</label>
-								<div>
-									{@edit("worksheets[....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][value]")}
-								</div>
-								<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
-									|Remove constant|
-								</a>
+						<ol class="{name} classes">
+						<!--settings.classes-->
+							<li class="block">
+								<h3>
+									|{..settings.getClassName.short}|
+									<!--property_path--><span>|{.}|</span><!--end-->
+								</h3>
+								<ol class="constants">
+									<!--constants-->
+									<li>
+										<label>
+											{@propertySelect("worksheets[{....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][name]")}
+										</label>
+										<div>
+											{@edit("worksheets[....name}][classes][..getPropertyPathValue.@escapeName}][constants][{#}][value]")}
+										</div>
+										<a class="constant remove submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_remove=(--getPropertyPathValue).(#)" target="#main">
+											|Remove constant|
+										</a>
+									</li>
+									<!--end-->
+									<li class="add action">
+										<a class="submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_add=(#)" target="#main">
+											|Add a constant|
+										</a>
+									</li>
+								</ol>
+								<section class="identify properties">
+									<h4>|Identify|</h4>
+									<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
+									|Identify each !<span>{name.@tr}</span>! by| <ul data-empty="|always create a new record|"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>
+									(|must be unique|).
+								</section>
+								<section class="none">
+									<h4>|No match|</h4>
+									|If no !<span>{name.@tr}</span>! match|,
+									{object_not_found_behaviour.@edit("worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
+								</section>
+								<section class="write properties">
+									<h4>|Write|</h4>
+									<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
+									|Update the value of| <ul data-empty="|no value to write|"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>.
+								</section>
+								<section class="ignore properties">
+									<h4>|Ignore|</h4>
+									<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
+									|Ignore the value of| <ul data-empty="|no value is ignored|"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>.
+								</section>
 							</li>
-							<!--end-->
-							<li class="add action">
-								<a class="submit" href="app://ITRocks/Framework/Feature/Import/preview?constant_add=(#)" target="#main">
-									|Add a constant|
-								</a>
-							</li>
+						<!--end-->
 						</ol>
-						<section class="identify properties">
-							<h3>|Identify|</h3>
-							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][identify]" value="{getIdentifyValue}">
-							|Identify each !<span>{name.@tr}</span>! by| <ul data-empty="|always create a new record|"><!--identify_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>
-							(|must be unique|).
-						</section>
-						<section class="none">
-							<h3>|No match|</h3>
-							|If no !<span>{name.@tr}</span>! match|,
-							{object_not_found_behaviour.@edit("worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][object_not_found_behaviour]")}
-						</section>
-						<section class="write properties">
-							<h3>|Write|</h3>
-							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][write]" value="{getWriteValue}">
-							|Update the value of| <ul data-empty="|no value to write|"><!--write_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>.
-						</section>
-						<section class="ignore properties">
-							<h3>|Ignore|</h3>
-							<input type="hidden" name="worksheets[{..name}][classes][{getPropertyPathValue.@escapeName}][ignore]" value="{getIgnoreValue}">
-							|Ignore the value of| <ul data-empty="|no value is ignored|"><!--ignore_properties--><li class="{name}">{name.@tr}</li><!--end--></ul>.
-						</section>
+
+						<!--preview-->
+						<table class="preview">
+							<tr>
+								<!--properties-->
+								<th title="{?aliases_property.{.}}">{.}</th>
+								<!--sample-->
+								<th>login</th>
+								<th>email</th>
+								<!--end-->
+							</tr>
+							<!--data:{first_row}-{last_row}-->
+							<tr>
+								<!--.:-{..last_column}-->
+								<td>{.}</td>
+								<!--sample-->
+								<td>baptiste.pillot</td>
+								<td>baptiste@pillot.fr</td>
+								<!--end-->
+							</tr>
+							<!--sample-->
+							<tr>
+								<td>line 2</td>
+								<td>jon.snow</td>
+								<td>jon@snow.re</td>
+							</tr>
+							<!--end-->
+						</table>
+						<!--end-->
+
 					</li>
 				<!--end-->
-				</ol>
+				</ul>
 
-				<!--preview-->
-				<table class="preview">
-					<tr>
-						<!--properties-->
-						<th title="{?aliases_property.{.}}">{.}</th>
-						<!--sample-->
-						<th>login</th>
-						<th>email</th>
-						<!--end-->
-					</tr>
-					<!--data:{first_row}-{last_row}-->
-					<tr>
-						<!--.:-{..last_column}-->
-						<td>{.}</td>
-						<!--sample-->
-						<td>baptiste.pillot</td>
-						<td>baptiste@pillot.fr</td>
-						<!--end-->
-					</tr>
-					<!--sample-->
-					<tr>
-						<td>line 2</td>
-						<td>jon.snow</td>
-						<td>jon@snow.re</td>
-					</tr>
-					<!--end-->
-				</table>
-				<!--end-->
+			</div>
 
-			</li>
-		<!--end-->
-		</ul>
+			<ul class="selection actions">
+				<li class="label">|Once you have verified above settings|, |you can|</li>
+				<li class="import execute">
+					<a class="submit" href="rel://import/execute" target="#main">|Execute import|</a>
+				</li>
+			</ul>
 
-		<p class="warning">
-			|Once you have verified above settings|, |you can|
-			<a class="import execute action submit" href="app://(class_name.path)/import/execute" target="#{class_name.path.idTag}-import-execute">
-				|Execute import|
-			</a>
-		</p>
+		</form>
+	</article>
 
-	</form>
 
 <!--END-->
-</article>
 </body>
 </html>

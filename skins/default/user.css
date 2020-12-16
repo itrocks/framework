@@ -3,202 +3,193 @@ article.user.login,
 article.user.register {
   background: #efefef;
   display: block;
-  text-align: center;
-}
-article.password.reset > h2,
-article.user.login > h2,
-article.user.register > h2 {
-  border-bottom: 1px solid #d8d8d8;
-  box-sizing: border-box;
-  font-size: 16px;
-  font-weight: 500;
-  height: 64px;
-  padding: 24px 10px 0 10px;
-}
-article.password.reset > form,
-article.user.login > form,
-article.user.register > form {
-  display: inline-block;
-  overflow: initial;
-  position: relative;
-  width: 256px;
-}
-@media screen and (min-height: 480px) {
+  text-align: center; }
+  article.password.reset > h2,
+  article.user.login > h2,
+  article.user.register > h2 {
+    border-bottom: 1px solid #d8d8d8;
+    box-sizing: border-box;
+    font-size: 16px;
+    font-weight: 500;
+    height: 64px;
+    padding: 24px 10px 0 10px; }
   article.password.reset > form,
-article.user.login > form,
-article.user.register > form {
-    padding-top: 82px;
-  }
-}
-article.password.reset > form > *,
-article.user.login > form > *,
-article.user.register > form > * {
-  display: block;
-}
-article.password.reset > form > * > li,
-article.user.login > form > * > li,
-article.user.register > form > * > li {
-  display: block;
-  margin: 0;
-  position: relative;
-}
-article.password.reset > form > .info,
-article.user.login > form > .info,
-article.user.register > form > .info {
-  background: lightsalmon;
-  font-size: 1.2em;
-  font-weight: 500;
-  line-height: 1.2em;
-  padding: 0.2em;
-}
-article.password.reset > form > ol.properties > li,
-article.user.login > form > ol.properties > li,
-article.user.register > form > ol.properties > li {
-  text-align: left;
-}
-article.password.reset > form > ol.properties > li:not(:first-child),
-article.user.login > form > ol.properties > li:not(:first-child),
-article.user.register > form > ol.properties > li:not(:first-child) {
-  margin-top: 14px;
-}
-article.password.reset > form > ol.properties > li > input,
-article.password.reset > form > ol.properties > li > label,
-article.user.login > form > ol.properties > li > input,
-article.user.login > form > ol.properties > li > label,
-article.user.register > form > ol.properties > li > input,
-article.user.register > form > ol.properties > li > label {
-  display: block;
-  width: calc(100% - 22px) !important;
-}
-article.password.reset > form > ol.properties > li > label,
-article.user.login > form > ol.properties > li > label,
-article.user.register > form > ol.properties > li > label {
-  color: #666;
-  font-weight: 500;
-  padding-bottom: 4px;
-}
-article.password.reset > form > ol.properties > li > label:after,
-article.user.login > form > ol.properties > li > label:after,
-article.user.register > form > ol.properties > li > label:after {
-  display: none;
-}
-article.password.reset > form > p,
-article.user.login > form > p,
-article.user.register > form > p {
-  line-height: 1.33;
-  margin-top: 1em;
-  text-align: left;
-}
-article.password.reset > form > p.message,
-article.user.login > form > p.message,
-article.user.register > form > p.message {
-  font-weight: 500;
-  position: absolute;
-  text-align: left;
-  top: 4px;
-}
-article.password.reset > form > p.message:before,
-article.user.login > form > p.message:before,
-article.user.register > form > p.message:before {
-  content: "";
-  display: inline-block;
-  position: absolute;
-  height: 32px;
-  left: -40px;
-  width: 32px;
-}
-article.password.reset > form > p.error.message:before,
-article.user.login > form > p.error.message:before,
-article.user.register > form > p.error.message:before {
-  background: url("img/warning-32.svg") center no-repeat;
-}
-article.password.reset > form > p.message:not(.error):before,
-article.user.login > form > p.message:not(.error):before,
-article.user.register > form > p.message:not(.error):before {
-  background: url("img/beware-32.svg") center no-repeat;
-}
-article.password.reset > form > ul.actions,
-article.user.login > form > ul.actions,
-article.user.register > form > ul.actions {
-  background: initial;
-  position: relative;
-}
-article.password.reset > form > ul.actions > li,
-article.user.login > form > ul.actions > li,
-article.user.register > form > ul.actions > li {
-  margin-top: 24px;
-}
-article.password.reset > form > ul.actions > li > a, article.password.reset > form > ul.actions > li > input,
-article.user.login > form > ul.actions > li > a,
-article.user.login > form > ul.actions > li > input,
-article.user.register > form > ul.actions > li > a,
-article.user.register > form > ul.actions > li > input {
-  padding-left: 0;
-  padding-right: 0;
-}
-article.password.reset > form > ul.actions > li.connect, article.password.reset > form > ul.actions > li.register, article.password.reset > form > ul.actions > li.reset,
-article.user.login > form > ul.actions > li.connect,
-article.user.login > form > ul.actions > li.register,
-article.user.login > form > ul.actions > li.reset,
-article.user.register > form > ul.actions > li.connect,
-article.user.register > form > ul.actions > li.register,
-article.user.register > form > ul.actions > li.reset {
-  border-color: #009def;
-}
-article.password.reset > form > ul.actions > li.connect > input, article.password.reset > form > ul.actions > li.register > input, article.password.reset > form > ul.actions > li.reset > input,
-article.user.login > form > ul.actions > li.connect > input,
-article.user.login > form > ul.actions > li.register > input,
-article.user.login > form > ul.actions > li.reset > input,
-article.user.register > form > ul.actions > li.connect > input,
-article.user.register > form > ul.actions > li.register > input,
-article.user.register > form > ul.actions > li.reset > input {
-  background: #009def;
-  color: white;
-  display: block;
-  font-size: 14px;
-  font-weight: 500;
-  height: 100%;
-  padding-top: 6px;
-  padding-bottom: 6px;
-  width: 100%;
-}
-article.password.reset > form > ul.actions > li.connect.disabled, article.password.reset > form > ul.actions > li.register.disabled, article.password.reset > form > ul.actions > li.reset.disabled,
-article.user.login > form > ul.actions > li.connect.disabled,
-article.user.login > form > ul.actions > li.register.disabled,
-article.user.login > form > ul.actions > li.reset.disabled,
-article.user.register > form > ul.actions > li.connect.disabled,
-article.user.register > form > ul.actions > li.register.disabled,
-article.user.register > form > ul.actions > li.reset.disabled {
-  border-color: #a8e8ff;
-}
-article.password.reset > form > ul.actions > li.connect.disabled > input, article.password.reset > form > ul.actions > li.register.disabled > input, article.password.reset > form > ul.actions > li.reset.disabled > input,
-article.user.login > form > ul.actions > li.connect.disabled > input,
-article.user.login > form > ul.actions > li.register.disabled > input,
-article.user.login > form > ul.actions > li.reset.disabled > input,
-article.user.register > form > ul.actions > li.connect.disabled > input,
-article.user.register > form > ul.actions > li.register.disabled > input,
-article.user.register > form > ul.actions > li.reset.disabled > input {
-  cursor: default;
-  background: #a0deff;
-}
-article.password.reset > form > ul.actions > li.connect:not(.disabled):hover, article.password.reset > form > ul.actions > li.register:not(.disabled):hover, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover,
-article.user.login > form > ul.actions > li.connect:not(.disabled):hover,
-article.user.login > form > ul.actions > li.register:not(.disabled):hover,
-article.user.login > form > ul.actions > li.reset:not(.disabled):hover,
-article.user.register > form > ul.actions > li.connect:not(.disabled):hover,
-article.user.register > form > ul.actions > li.register:not(.disabled):hover,
-article.user.register > form > ul.actions > li.reset:not(.disabled):hover {
-  border-color: #00aeff;
-}
-article.password.reset > form > ul.actions > li.connect:not(.disabled):hover > input, article.password.reset > form > ul.actions > li.register:not(.disabled):hover > input, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover > input,
-article.user.login > form > ul.actions > li.connect:not(.disabled):hover > input,
-article.user.login > form > ul.actions > li.register:not(.disabled):hover > input,
-article.user.login > form > ul.actions > li.reset:not(.disabled):hover > input,
-article.user.register > form > ul.actions > li.connect:not(.disabled):hover > input,
-article.user.register > form > ul.actions > li.register:not(.disabled):hover > input,
-article.user.register > form > ul.actions > li.reset:not(.disabled):hover > input {
-  background: #00aeff;
-}
+  article.user.login > form,
+  article.user.register > form {
+    display: inline-block;
+    overflow: initial;
+    position: relative;
+    width: 256px; }
+    @media screen and (min-height: 480px) {
+      article.password.reset > form,
+      article.user.login > form,
+      article.user.register > form {
+        padding-top: 82px; } }
+    article.password.reset > form > *,
+    article.user.login > form > *,
+    article.user.register > form > * {
+      display: block; }
+      article.password.reset > form > * > li,
+      article.user.login > form > * > li,
+      article.user.register > form > * > li {
+        display: block;
+        margin: 0;
+        position: relative; }
+    article.password.reset > form > .info,
+    article.user.login > form > .info,
+    article.user.register > form > .info {
+      background: lightsalmon;
+      font-size: 1.2em;
+      font-weight: 500;
+      line-height: 1.2em;
+      padding: .2em; }
+    article.password.reset > form > ol.properties > li,
+    article.password.reset > form > ul.properties > li,
+    article.user.login > form > ol.properties > li,
+    article.user.login > form > ul.properties > li,
+    article.user.register > form > ol.properties > li,
+    article.user.register > form > ul.properties > li {
+      text-align: left; }
+      article.password.reset > form > ol.properties > li:not(:first-child),
+      article.password.reset > form > ul.properties > li:not(:first-child),
+      article.user.login > form > ol.properties > li:not(:first-child),
+      article.user.login > form > ul.properties > li:not(:first-child),
+      article.user.register > form > ol.properties > li:not(:first-child),
+      article.user.register > form > ul.properties > li:not(:first-child) {
+        margin-top: 14px; }
+      article.password.reset > form > ol.properties > li > input,
+      article.password.reset > form > ol.properties > li > label,
+      article.password.reset > form > ul.properties > li > input,
+      article.password.reset > form > ul.properties > li > label,
+      article.user.login > form > ol.properties > li > input,
+      article.user.login > form > ol.properties > li > label,
+      article.user.login > form > ul.properties > li > input,
+      article.user.login > form > ul.properties > li > label,
+      article.user.register > form > ol.properties > li > input,
+      article.user.register > form > ol.properties > li > label,
+      article.user.register > form > ul.properties > li > input,
+      article.user.register > form > ul.properties > li > label {
+        display: block;
+        width: calc(100% - 22px) !important; }
+      article.password.reset > form > ol.properties > li > label,
+      article.password.reset > form > ul.properties > li > label,
+      article.user.login > form > ol.properties > li > label,
+      article.user.login > form > ul.properties > li > label,
+      article.user.register > form > ol.properties > li > label,
+      article.user.register > form > ul.properties > li > label {
+        color: #666;
+        font-weight: 500;
+        padding-bottom: 4px; }
+        article.password.reset > form > ol.properties > li > label:after,
+        article.password.reset > form > ul.properties > li > label:after,
+        article.user.login > form > ol.properties > li > label:after,
+        article.user.login > form > ul.properties > li > label:after,
+        article.user.register > form > ol.properties > li > label:after,
+        article.user.register > form > ul.properties > li > label:after {
+          display: none; }
+    article.password.reset > form > p,
+    article.user.login > form > p,
+    article.user.register > form > p {
+      line-height: 1.33;
+      margin-top: 1em;
+      text-align: left; }
+      article.password.reset > form > p.message,
+      article.user.login > form > p.message,
+      article.user.register > form > p.message {
+        font-weight: 500;
+        position: absolute;
+        text-align: left;
+        top: 4px; }
+        article.password.reset > form > p.message:before,
+        article.user.login > form > p.message:before,
+        article.user.register > form > p.message:before {
+          content: '';
+          display: inline-block;
+          position: absolute;
+          height: 32px;
+          left: -40px;
+          width: 32px; }
+      article.password.reset > form > p.error.message:before,
+      article.user.login > form > p.error.message:before,
+      article.user.register > form > p.error.message:before {
+        background: url("img/warning-32.svg") center no-repeat; }
+      article.password.reset > form > p.message:not(.error):before,
+      article.user.login > form > p.message:not(.error):before,
+      article.user.register > form > p.message:not(.error):before {
+        background: url("img/beware-32.svg") center no-repeat; }
+    article.password.reset > form > ul.actions,
+    article.user.login > form > ul.actions,
+    article.user.register > form > ul.actions {
+      background: initial;
+      position: relative; }
+      article.password.reset > form > ul.actions > li,
+      article.user.login > form > ul.actions > li,
+      article.user.register > form > ul.actions > li {
+        margin-top: 24px; }
+        article.password.reset > form > ul.actions > li > a, article.password.reset > form > ul.actions > li > input,
+        article.user.login > form > ul.actions > li > a,
+        article.user.login > form > ul.actions > li > input,
+        article.user.register > form > ul.actions > li > a,
+        article.user.register > form > ul.actions > li > input {
+          padding-left: 0;
+          padding-right: 0; }
+        article.password.reset > form > ul.actions > li.connect, article.password.reset > form > ul.actions > li.register, article.password.reset > form > ul.actions > li.reset,
+        article.user.login > form > ul.actions > li.connect,
+        article.user.login > form > ul.actions > li.register,
+        article.user.login > form > ul.actions > li.reset,
+        article.user.register > form > ul.actions > li.connect,
+        article.user.register > form > ul.actions > li.register,
+        article.user.register > form > ul.actions > li.reset {
+          border-color: #009def; }
+          article.password.reset > form > ul.actions > li.connect > input, article.password.reset > form > ul.actions > li.register > input, article.password.reset > form > ul.actions > li.reset > input,
+          article.user.login > form > ul.actions > li.connect > input,
+          article.user.login > form > ul.actions > li.register > input,
+          article.user.login > form > ul.actions > li.reset > input,
+          article.user.register > form > ul.actions > li.connect > input,
+          article.user.register > form > ul.actions > li.register > input,
+          article.user.register > form > ul.actions > li.reset > input {
+            background: #009def;
+            color: white;
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            height: 100%;
+            padding-top: 6px;
+            padding-bottom: 6px;
+            width: 100%; }
+          article.password.reset > form > ul.actions > li.connect.disabled, article.password.reset > form > ul.actions > li.register.disabled, article.password.reset > form > ul.actions > li.reset.disabled,
+          article.user.login > form > ul.actions > li.connect.disabled,
+          article.user.login > form > ul.actions > li.register.disabled,
+          article.user.login > form > ul.actions > li.reset.disabled,
+          article.user.register > form > ul.actions > li.connect.disabled,
+          article.user.register > form > ul.actions > li.register.disabled,
+          article.user.register > form > ul.actions > li.reset.disabled {
+            border-color: #a8e8ff; }
+            article.password.reset > form > ul.actions > li.connect.disabled > input, article.password.reset > form > ul.actions > li.register.disabled > input, article.password.reset > form > ul.actions > li.reset.disabled > input,
+            article.user.login > form > ul.actions > li.connect.disabled > input,
+            article.user.login > form > ul.actions > li.register.disabled > input,
+            article.user.login > form > ul.actions > li.reset.disabled > input,
+            article.user.register > form > ul.actions > li.connect.disabled > input,
+            article.user.register > form > ul.actions > li.register.disabled > input,
+            article.user.register > form > ul.actions > li.reset.disabled > input {
+              cursor: default;
+              background: #a0deff; }
+          article.password.reset > form > ul.actions > li.connect:not(.disabled):hover, article.password.reset > form > ul.actions > li.register:not(.disabled):hover, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover,
+          article.user.login > form > ul.actions > li.connect:not(.disabled):hover,
+          article.user.login > form > ul.actions > li.register:not(.disabled):hover,
+          article.user.login > form > ul.actions > li.reset:not(.disabled):hover,
+          article.user.register > form > ul.actions > li.connect:not(.disabled):hover,
+          article.user.register > form > ul.actions > li.register:not(.disabled):hover,
+          article.user.register > form > ul.actions > li.reset:not(.disabled):hover {
+            border-color: #00aeff; }
+            article.password.reset > form > ul.actions > li.connect:not(.disabled):hover > input, article.password.reset > form > ul.actions > li.register:not(.disabled):hover > input, article.password.reset > form > ul.actions > li.reset:not(.disabled):hover > input,
+            article.user.login > form > ul.actions > li.connect:not(.disabled):hover > input,
+            article.user.login > form > ul.actions > li.register:not(.disabled):hover > input,
+            article.user.login > form > ul.actions > li.reset:not(.disabled):hover > input,
+            article.user.register > form > ul.actions > li.connect:not(.disabled):hover > input,
+            article.user.register > form > ul.actions > li.register:not(.disabled):hover > input,
+            article.user.register > form > ul.actions > li.reset:not(.disabled):hover > input {
+              background: #00aeff; }
 
 article.password.reset form span.message {
   background-size: 32px;
@@ -209,73 +200,59 @@ article.password.reset form span.message {
   padding: 10px 0 0 28px;
   position: absolute;
   top: 16px;
-  white-space: nowrap;
-}
-article.password.reset form span.message.error {
-  background: url("img/error-24.svg") left center no-repeat;
-}
-article.password.reset form span.message.valid {
-  background: url("img/valid-24-green.svg") left center no-repeat;
-}
+  white-space: nowrap; }
+  article.password.reset form span.message.error {
+    background: url("img/error-24.svg") left center no-repeat; }
+  article.password.reset form span.message.valid {
+    background: url("img/valid-24-green.svg") left center no-repeat; }
 article.password.reset form li.password.error input,
 article.password.reset form li.password2.error input {
-  border-color: red;
-}
+  border-color: red; }
 article.password.reset form li.password.error label,
 article.password.reset form li.password2.error label {
   color: red;
-  font-weight: 500;
-}
+  font-weight: 500; }
 article.password.reset form li.password.error span.valid.message,
 article.password.reset form li.password2.error span.valid.message {
-  display: none;
-}
+  display: none; }
 article.password.reset form li.password:not(.error) .error.message,
 article.password.reset form li.password2:not(.error) .error.message {
-  display: none;
-}
+  display: none; }
 
 article.user.login form.error li.password input {
-  border-color: red;
-}
+  border-color: red; }
 article.user.login form.error li.password label {
   color: red;
-  font-weight: 500;
-}
+  font-weight: 500; }
 
 body.password.reset,
 body.user.login,
 body.user.register {
   grid-template-areas: "title main side" "menu main side";
-  grid-template-rows: 64px 1fr;
-}
-body.password.reset > .company.logo > a,
-body.user.login > .company.logo > a,
-body.user.register > .company.logo > a {
-  border: none;
-  border-top-right-radius: 0;
-}
-body.password.reset > .company.logo > a:after,
-body.user.login > .company.logo > a:after,
-body.user.register > .company.logo > a:after {
-  display: none;
-}
-body.password.reset > #favorites,
-body.password.reset > #notifications,
-body.password.reset > #quick-menu,
-body.user.login > #favorites,
-body.user.login > #notifications,
-body.user.login > #quick-menu,
-body.user.register > #favorites,
-body.user.register > #notifications,
-body.user.register > #quick-menu {
-  display: none;
-}
-body.password.reset > #menu,
-body.user.login > #menu,
-body.user.register > #menu {
-  border-right: none;
-}
+  grid-template-rows: 64px 1fr; }
+  body.password.reset > .company.logo > a,
+  body.user.login > .company.logo > a,
+  body.user.register > .company.logo > a {
+    border: none;
+    border-top-right-radius: 0; }
+    body.password.reset > .company.logo > a:after,
+    body.user.login > .company.logo > a:after,
+    body.user.register > .company.logo > a:after {
+      display: none; }
+  body.password.reset > #favorites,
+  body.password.reset > #notifications,
+  body.password.reset > #quick-menu,
+  body.user.login > #favorites,
+  body.user.login > #notifications,
+  body.user.login > #quick-menu,
+  body.user.register > #favorites,
+  body.user.register > #notifications,
+  body.user.register > #quick-menu {
+    display: none; }
+  body.password.reset > #menu,
+  body.user.login > #menu,
+  body.user.register > #menu {
+    border-right: none; }
 
 .user.mini > a {
   background: url("img/user-24.svg") center no-repeat;
@@ -283,8 +260,6 @@ body.user.register > #menu {
   font-size: 0;
   height: 100%;
   min-height: 24px;
-  min-width: 24px;
-}
+  min-width: 24px; }
 .user.mini > h3 {
-  display: none;
-}
+  display: none; }

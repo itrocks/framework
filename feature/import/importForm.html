@@ -11,36 +11,27 @@
 <body>
 <!--BEGIN-->
 
-	<article class="{class_name.short.lower} import" id="/{class_name.path}/import/form">
-		<header><h2>|¦{class_name.short}¦ {@class.lower}|</h2></header>
-		<div class="data">
-
-			<section class="form">
-				<form action="app://(class_name.path)/import/preview" method="post" enctype="multipart/form-data" target="#{class_name.path.idTag}-import-preview">
-
-					<ol class="data properties">
-						<li class="file field">
-							<label>|File|</label>
-							<div>{file.@edit}</div>
-						</li>
-					</ol>
-
-					<ul class="actions">
-						<li class="import preview"><input type="submit" value="|Preview|"></li>
-					</ul>
-
-				</form>
-			</section>
-
-			<section class="preview" id="{class_name.path.idTag}-import-preview">
-				<h2>|Import preview|</h2>
-			</section>
-
-			<section class="execute" id="{class_name.path.idTag}-import-execute">
-				<h2>|Import execute|</h2>
-			</section>
-
-		</div>
+	<article class="{class_name.short.lower} import form" id="/{class_name.path}/import/form">
+		<form action="rel://import/preview" autocomplete="off" enctype="multipart/form-data" method="post" name="import-form" target="#main">
+			<header>
+				<ol class="breadcrumb">
+					<!--§module--><li class="module"><a href="app://(link)" target="#main">|{caption}|</a></li><!--end-->
+					<li class="parent"><a href="rel://list" target="#main">|{getClass.@displays.ucfirst}|</a></li>
+					<li class="current"><a href="#">{§title}</a></li>
+				</ol>
+				<h2>|¦{class_name.short}¦ {@class.lower}|</h2>
+			</header>
+			<ul class="data properties">
+				<li class="file" data-property="file">
+					<label>|File|</label>
+					{file.@edit}
+				</li>
+				<li class="action import preview">
+					<label>|Then|</label>
+					<a class="submit" href="rel://import/preview" target="#main">|Preview|</a>
+				</li>
+			</ul>
+		</form>
 	</article>
 
 <!--END-->

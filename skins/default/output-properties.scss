@@ -2,18 +2,21 @@
 @import 'responsive.scss';
 @import 'sizes.scss';
 
-.properties:not(.tiny),
+ol.properties:not(.tiny),
+ul.properties:not(.tiny),
 .data.property,
 .property > table {
 	border-collapse: separate;
 	border-spacing: 10px;
 }
 
-.properties:not(.tiny) {
+ol.properties:not(.tiny),
+ul.properties:not(.tiny) {
 	display: block;
 }
 
-.properties:not(.tiny) li,
+ol.properties:not(.tiny) li,
+ul.properties:not(.tiny) li,
 .property:not(a):not(th):not(td):not(.tiny) {
 		position: relative;
 
@@ -22,7 +25,8 @@
 		}
 	}
 
-.properties:not(.tiny) > *,
+ol.properties:not(.tiny) > *,
+ul.properties:not(.tiny) > *,
 .property:not(a):not(th):not(td):not(.tiny) {
 
 	&:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
@@ -86,11 +90,13 @@
 	}
 }
 
-.properties.tiny {
+ol.properties.tiny,
+ul.properties.tiny {
 	padding: 10px;
 }
 
-.properties.tiny > *,
+ol.properties.tiny > *,
+ul.properties.tiny > *,
 .property.tiny {
 	display: block;
 
@@ -102,8 +108,10 @@
 }
 
 // output article
-article > .data .properties > * > div,
-article > .properties > * > div,
+article > .data ol.properties > * > div,
+article > .data ul.properties > * > div,
+article > ol.properties > * > div,
+article > ul.properties > * > div,
 .property:not(a):not(th):not(td) > div {
 	background: #efefef;
 	border-radius: 2px;

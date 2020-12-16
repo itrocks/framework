@@ -68,9 +68,24 @@ ul.selection.actions > li > ul {
   ul.selection.actions > li > ul > li {
     border-left: none; }
 
-ol.properties.tiny + ul.actions {
+ol.properties.tiny + ul.actions,
+ul.properties.tiny + ul.actions {
   background: transparent;
   padding: 0 10px 10px; }
+
+ol.properties > .action > a,
+ul.properties > .action > a {
+  border: 1px solid #d8d8d8;
+  padding: 9px 10px 9px 26px; }
+
+.actions > .label,
+.actions > .text {
+  border: none;
+  box-sizing: border-box;
+  padding: 7px 0; }
+
+.actions > .label:after {
+  content: ' :'; }
 
 li.actions > ul,
 ul.actions {

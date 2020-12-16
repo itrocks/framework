@@ -44,7 +44,8 @@ article.user.register {
 			padding: .2em;
 		}
 
-		> ol.properties > li {
+		> ol.properties > li,
+		> ul.properties > li, {
 			text-align: left;
 
 			&:not(:first-child) {

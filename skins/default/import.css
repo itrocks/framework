@@ -1,0 +1,59 @@
+article.import.preview > form > .data .classes {
+  list-style: none; }
+article.import.preview > form > .data .block {
+  border-bottom: 1px solid #d8d8d8;
+  padding: 6px 10px; }
+  article.import.preview > form > .data .block > h3 {
+    margin: 1em 0; }
+    article.import.preview > form > .data .block > h3 > span {
+      display: inline-block; }
+      article.import.preview > form > .data .block > h3 > span:before {
+        content: ' . '; }
+  article.import.preview > form > .data .block > .constants {
+    display: none; }
+  article.import.preview > form > .data .block > section {
+    min-height: 24px; }
+    article.import.preview > form > .data .block > section:not(.none) {
+      padding-top: 6px; }
+    article.import.preview > form > .data .block > section > h4 {
+      display: none; }
+    article.import.preview > form > .data .block > section > ul {
+      display: inline-block; }
+      article.import.preview > form > .data .block > section > ul[data-empty]:empty:after {
+        content: "(" attr(data-empty) ")";
+        font-style: italic; }
+      article.import.preview > form > .data .block > section > ul > li {
+        cursor: pointer;
+        display: inline-block;
+        min-height: 16px;
+        padding-top: 4px;
+        position: relative;
+        vertical-align: middle; }
+        article.import.preview > form > .data .block > section > ul > li:first-child {
+          padding-left: 4px; }
+        article.import.preview > form > .data .block > section > ul > li:last-child {
+          padding-right: 4px; }
+        article.import.preview > form > .data .block > section > ul > li:not(:last-child):after {
+          content: ',';
+          margin-right: .25em; }
+    article.import.preview > form > .data .block > section.identify li {
+      background-color: green;
+      color: white; }
+    article.import.preview > form > .data .block > section.ignore li {
+      background-color: #eee;
+      color: red; }
+    article.import.preview > form > .data .block > section.write li {
+      background-color: blue;
+      color: white; }
+article.import.preview > form > .data table.preview {
+  margin: 10px; }
+  article.import.preview > form > .data table.preview th {
+    background: #d8d8d8; }
+  article.import.preview > form > .data table.preview th, article.import.preview > form > .data table.preview td {
+    border: 1px solid #444;
+    padding: 4px; }
+  article.import.preview > form > .data table.preview td {
+    background: white; }
+
+article.import.execute > .data > p {
+  padding: 10px; }
