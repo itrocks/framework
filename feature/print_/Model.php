@@ -67,11 +67,8 @@ class Model extends PDF\Output
 	 */
 	protected function newPdf() : PDF
 	{
-		// TODO LOW This is for a warning in php 7.3. Remove it when tcpdf is compatible
-		$error_reporting = error_reporting(E_ALL & ~E_WARNING);
 		/** @var $pdf PDF|TCPDF */
 		$pdf = new PDF();
-		error_reporting($error_reporting);
 		$pdf->Open();
 		return $pdf;
 	}

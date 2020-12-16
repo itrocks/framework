@@ -7,6 +7,9 @@ use setasign\Fpdi\Tcpdf\Fpdi;
 use TCPDF;
 use TCPDF_STATIC;
 
+// TODO LOW This is for a warning in php 7.3+. Remove it when tcpdf is compatible
+$error_reporting = error_reporting(E_ALL & ~E_WARNING & ~E_DEPRECATED);
+
 // A patch because composer does not want to compile fpdi-pdf-parser's autoloader
 if (file_exists(__DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src')) {
 	require_once __DIR__ . '/../../../../../vendor/setasign/fpdi-pdf-parser/src/autoload.php';
@@ -261,3 +264,5 @@ class PDF extends Fpdi
 	}
 
 }
+
+error_reporting($error_reporting);
