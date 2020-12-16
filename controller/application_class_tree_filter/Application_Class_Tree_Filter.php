@@ -75,8 +75,10 @@ class Application_Class_Tree_Filter
 	public function defaultApplicationClasses()
 	{
 		$class_name = $this->class_name;
-		while (get_parent_class($class_name)) {
-			$class_name = get_parent_class($class_name);
+		if (class_exists($class_name)) {
+			while (get_parent_class($class_name)) {
+				$class_name = get_parent_class($class_name);
+			}
 		}
 
 		$default_application_classes    = [];
