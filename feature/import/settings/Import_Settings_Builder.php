@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\Import\Settings;
 
 use ITRocks\Framework\Feature\Import\Import_Array;
 use ITRocks\Framework\Reflection\Annotation\Class_\Identify_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
@@ -24,7 +25,7 @@ abstract class Import_Settings_Builder
 	 * @param $properties_path string[] $property_path = string[integer $column_number]
 	 * @return array $identified = boolean[string $property_path][integer $position]
 	 */
-	private static function autoIdentify($class_name, array $properties_path)
+	private static function autoIdentify(string $class_name, array $properties_path) : array
 	{
 		foreach ($properties_path as $property_path) {
 			if (strpos($property_path, '*') !== false) {
@@ -34,19 +35,19 @@ abstract class Import_Settings_Builder
 		$auto_identify = [];
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-			$class     = new Reflection_Class($class_name);
-			$identify = Identify_Annotation::of($class)->values();
+			$class = new Reflection_Class($class_name);
 			foreach (explode(DOT, $property_path) as $pos => $property_name) {
-				if (in_array($property_name, $identify)) {
+				if (
+					in_array($property_name, Identify_Annotation::of($class)->values())
+					|| in_array($property_name, Representative_Annotation::of($class)->values())
+				) {
 					$auto_identify[$property_path][$pos] = true;
 				}
 				$property = $class->getProperty($property_name);
 				if (isset($property)) {
 					$type = $property->getType();
 					if ($type->isClass()) {
-						/** @noinspection PhpUnhandledExceptionInspection type elements are valid */
-						$class    = new Reflection_Class($type->getElementTypeAsString());
-						$identify = Identify_Annotation::of($class)->values();
+						$class = $type->asReflectionClass();
 					}
 				}
 			}
@@ -63,10 +64,10 @@ abstract class Import_Settings_Builder
 	 * Other liens contain data, and are not used
 	 *
 	 * @param $array      array two dimensional array (keys are row, col)
-	 * @param $class_name string default class name (if not found into array)
+	 * @param $class_name string|null default class name (if not found into array)
 	 * @return Import_Settings
 	 */
-	public static function buildArray(array &$array, $class_name = null)
+	public static function buildArray(array &$array, string $class_name = null) : Import_Settings
 	{
 		$class_name = Import_Array::getClassNameFromArray($array) ?: $class_name;
 		$settings   = new Import_Settings($class_name);
@@ -133,7 +134,7 @@ abstract class Import_Settings_Builder
 	 * @return Import_Settings
 	 * @see Functions::escapeName()
 	 */
-	public static function buildForm(array $worksheet)
+	public static function buildForm(array $worksheet) : Import_Settings
 	{
 		$main_class_name = null;
 		$settings        = new Import_Settings();
@@ -171,7 +172,8 @@ abstract class Import_Settings_Builder
 	 * @param $class         array
 	 * @return Import_Class
 	 */
-	private static function buildFormClass($class_name, $property_path, array $class)
+	private static function buildFormClass(string $class_name, string $property_path, array $class)
+	: Import_Class
 	{
 		$property_path = $property_path ? explode(DOT, $property_path) : [];
 		$import_class  = new Import_Class(
