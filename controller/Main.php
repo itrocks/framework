@@ -613,6 +613,9 @@ class Main
 				upgradeTimeLimit(intval($get['time_limit']));
 				unset($get['time_limit']);
 			}
+			if ($post[session_name()] ?? false) {
+				session_id($post[session_name()]);
+			}
 			session_start();
 			if (isset($GLOBALS['X'])) {
 				$_SESSION = [];
