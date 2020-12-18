@@ -112,6 +112,7 @@ class Maintainer implements Registerable, Updatable
 	 */
 	public function installableToFeaturesUpdate()
 	{
+		Dao::createStorage(Module::class);
 		Dao::createStorage(Feature::class);
 		/** @var $features Feature[] */
 		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
