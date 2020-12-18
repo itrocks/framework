@@ -8,7 +8,6 @@ function cors()
 		return;
 	}
 	$already = true;
-	file_put_contents('/home/baptiste/test.' . uniqid(), print_r($_SERVER, true));
 	if (isset($_SERVER['HTTP_ORIGIN'])) {
 		header("Access-Control-Allow-Origin: $_SERVER[HTTP_ORIGIN]");
 		header('Access-Control-Allow-Credentials: true');
