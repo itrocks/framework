@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Http;
 
+use ITRocks\Framework\Tools\Paths;
+
 /**
  * Http toolbox class
  */
@@ -29,6 +31,23 @@ class Http
 			? self::HTTPS
 			: self::HTTP
 		);
+	}
+
+	//------------------------------------------------------------------------------------------ post
+	/**
+	 * @param $uri  string
+	 * @param $data array
+	 * @return string
+	 */
+	public function post(string $uri, array $data) : string
+	{
+		if (!beginsWith($uri, 'http')) {
+			$uri = Paths::absoluteBase() . ltrim($uri, SL);
+		}
+		$proxy = new Proxy(static::POST);
+		$proxy->retry_delay = 1;
+		$proxy->request($uri, $data, static::POST, 3);
+		return $proxy->getResponse();
 	}
 
 }
