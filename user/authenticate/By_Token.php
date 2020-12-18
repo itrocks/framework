@@ -6,6 +6,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
@@ -14,6 +15,9 @@ use ITRocks\Framework\User;
  */
 class By_Token implements Registerable
 {
+
+	//------------------------------------------------------------------------------------------- SID
+	const SID = 'getSID';
 
 	//----------------------------------------------------------------------------------------- TOKEN
 	const TOKEN = 'TOKEN';
@@ -27,11 +31,11 @@ class By_Token implements Registerable
 	 */
 	public function apply(&$get, &$post)
 	{
-		if (isset($get[static::TOKEN])) {
+		if ($get[static::TOKEN] ?? false) {
 			$token = $get[static::TOKEN];
 			unset($get[static::TOKEN]);
 		}
-		if (isset($post[static::TOKEN])) {
+		if ($post[static::TOKEN] ?? false) {
 			$token = $post[static::TOKEN];
 			unset($post[static::TOKEN]);
 		}
@@ -48,12 +52,15 @@ class By_Token implements Registerable
 		if ($token->single_use) {
 			Dao::delete($token);
 		}
+		if ($get[static::SID] ?? $post[static::SID] ?? false) {
+			echo '[' . Session::sid() . ']';
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- newToken
 	/**
-	 * @param $user       User
-	 * @param $prefix     string
+	 * @param $user   User|null
+	 * @param $prefix string
 	 * @return Token
 	 */
 	public function newToken(User $user = null, $prefix = '')
