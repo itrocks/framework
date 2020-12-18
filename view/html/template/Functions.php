@@ -138,9 +138,7 @@ class Functions
 	public function getApplication(
 		/** @noinspection PhpUnusedParameterInspection */ Template $template
 	) {
-		return new Displayable(
-			Session::current()->getApplicationName(), Displayable::TYPE_CLASS
-		);
+		return new Displayable(Session::current()->getApplicationName());
 	}
 
 	//-------------------------------------------------------------------------------------- getClass
