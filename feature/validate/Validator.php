@@ -450,7 +450,7 @@ class Validator implements Registerable
 	protected function validateAnnotations($object, array $annotations)
 	{
 		$result = true;
-		foreach ($annotations as $annotation_name => $annotation) {
+		foreach ($annotations as $annotation) {
 			if (is_array($annotation)) {
 				$result = Result::andResult($result, $this->validateAnnotations($object, $annotation));
 			}
@@ -596,7 +596,7 @@ class Validator implements Registerable
 				&& Reflection\Annotation\Class_\Link_Annotation::of($property)->value
 			) {
 				$result = Result::andResult($result, $this->validateAnnotations(
-					$object, [Mandatory_Annotation::of($property), Validate_Annotation::of($property)]
+					$object, [Mandatory_Annotation::of($property), Validate_Annotation::allOf($property)]
 				));
 				continue;
 			}
