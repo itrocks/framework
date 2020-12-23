@@ -84,7 +84,7 @@ class Include_Filter extends php_user_filter
 			}
 			// not a project file
 			else {
-				throw new Exception("file outside project is forbidden");
+				throw new Exception('file outside project is forbidden ' . $file_name);
 			}
 		}
 		// now we have relative file, check cache version, using canonical name to avoid /../

@@ -31,7 +31,10 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 		parent::__construct($value, $class_property, $annotation_name);
 
 		if (($pos = strpos($this->value, '::')) !== false) {
-			$class_name  = BS . substr($this->value, 0, $pos);
+			$class_name = substr($this->value, 0, $pos);
+			if ($class_name[0] !== BS) {
+				$class_name = BS . $class_name;
+			}
 			$method_name = substr($this->value, $pos + 2);
 			// value is a method
 			if (method_exists($class_name, $method_name)) {
