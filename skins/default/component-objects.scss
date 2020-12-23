@@ -129,30 +129,36 @@ article > .data.component-objects {
 	}
 }
 
-.component-objects > label {
-	background-color: #f8f8f8;
-	box-sizing: border-box;
-	color: var(--dark-color);
-	display: block;
-	font-size: 14px;
-	font-weight: bold;
-	height: 34px;
-	padding: 10px 0;
-	width: 100%;
+.component-objects {
 
-	&:first-letter {
-		text-transform: uppercase;
+	> h3, > h4, > h5, > label {
+		background-color: #f8f8f8;
+		box-sizing: border-box;
+		color: var(--dark-color);
+		display: block;
+		font-size: 14px;
+		font-weight: bold;
+		height: 34px;
+		padding: 10px 0;
+		width: 100%;
+
+		&:first-letter {
+			text-transform: uppercase;
+		}
 	}
 }
 
-article > form .component-objects > label {
-	cursor: pointer;
-	position: relative;
+article > form .component-objects {
 
-	&:after {
-		content: '+';
-		padding-right: .5em;
-		position: absolute;
-		right: 0;
+	> h3, > h4, > h5, > label {
+		cursor: pointer;
+		position: relative;
+
+		&:after {
+			content: '+';
+			padding-right: .5em;
+			position: absolute;
+			right: 0;
+		}
 	}
 }

@@ -1,145 +1,123 @@
 ul.component-objects, ol.component-objects, table.component-objects,
 .component-objects > ul, .component-objects > ol, .component-objects > table {
   border-collapse: collapse;
-  display: table;
-}
-ul.component-objects > *, ol.component-objects > *, table.component-objects > *,
-.component-objects > ul > *, .component-objects > ol > *, .component-objects > table > * {
-  display: table-row-group;
-}
-ul.component-objects > *:first-child > * > *, ol.component-objects > *:first-child > * > *, table.component-objects > *:first-child > * > *,
-.component-objects > ul > *:first-child > * > *, .component-objects > ol > *:first-child > * > *, .component-objects > table > *:first-child > * > * {
-  white-space: nowrap;
-}
-ul.component-objects > * > *, ol.component-objects > * > *, table.component-objects > * > *,
-.component-objects > ul > * > *, .component-objects > ol > * > *, .component-objects > table > * > * {
-  display: table-row;
-}
-ul.component-objects > * > * > *, ol.component-objects > * > * > *, table.component-objects > * > * > *,
-.component-objects > ul > * > * > *, .component-objects > ol > * > * > *, .component-objects > table > * > * > * {
-  display: table-cell;
-}
-ul.component-objects > * > * > *:not(.minus), ol.component-objects > * > * > *:not(.minus), table.component-objects > * > * > *:not(.minus),
-.component-objects > ul > * > * > *:not(.minus), .component-objects > ol > * > * > *:not(.minus), .component-objects > table > * > * > *:not(.minus) {
-  vertical-align: top;
-}
-ul.component-objects > * > * > * textarea, ol.component-objects > * > * > * textarea, table.component-objects > * > * > * textarea,
-.component-objects > ul > * > * > * textarea, .component-objects > ol > * > * > * textarea, .component-objects > table > * > * > * textarea {
-  margin: 0;
-}
+  display: table; }
+  ul.component-objects > *, ol.component-objects > *, table.component-objects > *,
+  .component-objects > ul > *, .component-objects > ol > *, .component-objects > table > * {
+    display: table-row-group; }
+    ul.component-objects > *:first-child > * > *, ol.component-objects > *:first-child > * > *, table.component-objects > *:first-child > * > *,
+    .component-objects > ul > *:first-child > * > *, .component-objects > ol > *:first-child > * > *, .component-objects > table > *:first-child > * > * {
+      white-space: nowrap; }
+    ul.component-objects > * > *, ol.component-objects > * > *, table.component-objects > * > *,
+    .component-objects > ul > * > *, .component-objects > ol > * > *, .component-objects > table > * > * {
+      display: table-row; }
+      ul.component-objects > * > * > *, ol.component-objects > * > * > *, table.component-objects > * > * > *,
+      .component-objects > ul > * > * > *, .component-objects > ol > * > * > *, .component-objects > table > * > * > * {
+        display: table-cell; }
+        ul.component-objects > * > * > *:not(.minus), ol.component-objects > * > * > *:not(.minus), table.component-objects > * > * > *:not(.minus),
+        .component-objects > ul > * > * > *:not(.minus), .component-objects > ol > * > * > *:not(.minus), .component-objects > table > * > * > *:not(.minus) {
+          vertical-align: top; }
+        ul.component-objects > * > * > * textarea, ol.component-objects > * > * > * textarea, table.component-objects > * > * > * textarea,
+        .component-objects > ul > * > * > * textarea, .component-objects > ol > * > * > * textarea, .component-objects > table > * > * > * textarea {
+          margin: 0; }
 
 .component-objects {
   background-color: #f8f8f8;
-  padding: 0 10px;
-}
-.component-objects > li,
-.component-objects > * > li,
-.component-objects > table > * > tr,
-.component-objects > * > tr {
-  border-bottom: 1px solid #d8d8d8;
-}
-.component-objects > * > li.head,
-.component-objects > li.head,
-.component-objects > table > thead,
-.component-objects > thead {
-  background-color: #efefef;
-  padding: 8px;
-}
-.component-objects > * > li.head > *,
-.component-objects > li.head > *,
-.component-objects > table > thead > *,
-.component-objects > thead > * {
-  box-shadow: inset 0 -1px #d8d8d8;
-}
-.component-objects > * > li.head > * > *,
-.component-objects > li.head > * > *,
-.component-objects > table > thead > * > *,
-.component-objects > thead > * > * {
-  color: #333;
-  font-weight: 500;
-  padding: 4px 10px;
-}
-.component-objects > * > li:not(.head):nth-child(even),
-.component-objects > li:not(.head):nth-child(even),
-.component-objects > table > tbody:nth-child(even),
-.component-objects > tbody:nth-child(even) {
-  background-color: #efefef;
-}
-.component-objects > * > li:not(.head):nth-child(odd),
-.component-objects > li:not(.head):nth-child(odd),
-.component-objects > table > tbody:nth-child(odd),
-.component-objects > tbody:nth-child(odd) {
-  background-color: #e8e8e8;
-}
-.component-objects > * > li:not(.head) > * > * > input, .component-objects > * > li:not(.head) > * > * > select, .component-objects > * > li:not(.head) > * > * > textarea,
-.component-objects > li:not(.head) > * > * > input,
-.component-objects > li:not(.head) > * > * > select,
-.component-objects > li:not(.head) > * > * > textarea,
-.component-objects > table > tbody > * > * > input,
-.component-objects > table > tbody > * > * > select,
-.component-objects > table > tbody > * > * > textarea,
-.component-objects > tbody > * > * > input,
-.component-objects > tbody > * > * > select,
-.component-objects > tbody > * > * > textarea {
-  border: none !important;
-  box-sizing: border-box;
-  color: black;
-  width: 100%;
-}
-.component-objects > * > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
-.component-objects > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]),
-.component-objects > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]),
-.component-objects > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
-.component-objects > table > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
-.component-objects > table > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
-.component-objects > table > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]),
-.component-objects > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
-.component-objects > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
-.component-objects > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]) {
-  min-height: 30px;
-}
-.component-objects > * > li:not(.head) > * > * > input[readonly], .component-objects > * > li:not(.head) > * > * > select[readonly], .component-objects > * > li:not(.head) > * > * > textarea[readonly],
-.component-objects > li:not(.head) > * > * > input[readonly],
-.component-objects > li:not(.head) > * > * > select[readonly],
-.component-objects > li:not(.head) > * > * > textarea[readonly],
-.component-objects > table > tbody > * > * > input[readonly],
-.component-objects > table > tbody > * > * > select[readonly],
-.component-objects > table > tbody > * > * > textarea[readonly],
-.component-objects > tbody > * > * > input[readonly],
-.component-objects > tbody > * > * > select[readonly],
-.component-objects > tbody > * > * > textarea[readonly] {
-  background: transparent;
-}
-.component-objects > * > li:not(.head) > * > * > input:not([readonly]), .component-objects > * > li:not(.head) > * > * > select:not([readonly]), .component-objects > * > li:not(.head) > * > * > textarea:not([readonly]),
-.component-objects > li:not(.head) > * > * > input:not([readonly]),
-.component-objects > li:not(.head) > * > * > select:not([readonly]),
-.component-objects > li:not(.head) > * > * > textarea:not([readonly]),
-.component-objects > table > tbody > * > * > input:not([readonly]),
-.component-objects > table > tbody > * > * > select:not([readonly]),
-.component-objects > table > tbody > * > * > textarea:not([readonly]),
-.component-objects > tbody > * > * > input:not([readonly]),
-.component-objects > tbody > * > * > select:not([readonly]),
-.component-objects > tbody > * > * > textarea:not([readonly]) {
-  background: white;
-}
-.component-objects > * > li:not(.head) > * > * > select,
-.component-objects > li:not(.head) > * > * > select,
-.component-objects > table > tbody > * > * > select,
-.component-objects > tbody > * > * > select {
-  min-width: 34px;
-}
-.component-objects .multiline.string {
-  white-space: pre-line;
-}
-.component-objects .component-objects {
-  background-color: inherit;
-  min-height: calc(1em + 16px);
-  padding: 0;
-}
-.component-objects ul.component-objects, .component-objects ol.component-objects, .component-objects table.component-objects,
-.component-objects .component-objects > ul, .component-objects .component-objects > ol, .component-objects .component-objects > table {
-  width: 100%;
-}
+  padding: 0 10px; }
+  .component-objects > li,
+  .component-objects > * > li,
+  .component-objects > table > * > tr,
+  .component-objects > * > tr {
+    border-bottom: 1px solid #d8d8d8; }
+  .component-objects > * > li.head,
+  .component-objects > li.head,
+  .component-objects > table > thead,
+  .component-objects > thead {
+    background-color: #efefef;
+    padding: 8px; }
+    .component-objects > * > li.head > *,
+    .component-objects > li.head > *,
+    .component-objects > table > thead > *,
+    .component-objects > thead > * {
+      box-shadow: inset 0 -1px #d8d8d8; }
+      .component-objects > * > li.head > * > *,
+      .component-objects > li.head > * > *,
+      .component-objects > table > thead > * > *,
+      .component-objects > thead > * > * {
+        color: #333;
+        font-weight: 500;
+        padding: 4px 10px; }
+  .component-objects > * > li:not(.head):nth-child(even),
+  .component-objects > li:not(.head):nth-child(even),
+  .component-objects > table > tbody:nth-child(even),
+  .component-objects > tbody:nth-child(even) {
+    background-color: #efefef; }
+  .component-objects > * > li:not(.head):nth-child(odd),
+  .component-objects > li:not(.head):nth-child(odd),
+  .component-objects > table > tbody:nth-child(odd),
+  .component-objects > tbody:nth-child(odd) {
+    background-color: #e8e8e8; }
+  .component-objects > * > li:not(.head) > * > * > input, .component-objects > * > li:not(.head) > * > * > select, .component-objects > * > li:not(.head) > * > * > textarea,
+  .component-objects > li:not(.head) > * > * > input,
+  .component-objects > li:not(.head) > * > * > select,
+  .component-objects > li:not(.head) > * > * > textarea,
+  .component-objects > table > tbody > * > * > input,
+  .component-objects > table > tbody > * > * > select,
+  .component-objects > table > tbody > * > * > textarea,
+  .component-objects > tbody > * > * > input,
+  .component-objects > tbody > * > * > select,
+  .component-objects > tbody > * > * > textarea {
+    border: none !important;
+    box-sizing: border-box;
+    color: black;
+    width: 100%; }
+    .component-objects > * > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
+    .component-objects > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]),
+    .component-objects > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]),
+    .component-objects > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
+    .component-objects > table > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
+    .component-objects > table > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
+    .component-objects > table > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]),
+    .component-objects > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
+    .component-objects > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
+    .component-objects > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]) {
+      min-height: 30px; }
+    .component-objects > * > li:not(.head) > * > * > input[readonly], .component-objects > * > li:not(.head) > * > * > select[readonly], .component-objects > * > li:not(.head) > * > * > textarea[readonly],
+    .component-objects > li:not(.head) > * > * > input[readonly],
+    .component-objects > li:not(.head) > * > * > select[readonly],
+    .component-objects > li:not(.head) > * > * > textarea[readonly],
+    .component-objects > table > tbody > * > * > input[readonly],
+    .component-objects > table > tbody > * > * > select[readonly],
+    .component-objects > table > tbody > * > * > textarea[readonly],
+    .component-objects > tbody > * > * > input[readonly],
+    .component-objects > tbody > * > * > select[readonly],
+    .component-objects > tbody > * > * > textarea[readonly] {
+      background: transparent; }
+    .component-objects > * > li:not(.head) > * > * > input:not([readonly]), .component-objects > * > li:not(.head) > * > * > select:not([readonly]), .component-objects > * > li:not(.head) > * > * > textarea:not([readonly]),
+    .component-objects > li:not(.head) > * > * > input:not([readonly]),
+    .component-objects > li:not(.head) > * > * > select:not([readonly]),
+    .component-objects > li:not(.head) > * > * > textarea:not([readonly]),
+    .component-objects > table > tbody > * > * > input:not([readonly]),
+    .component-objects > table > tbody > * > * > select:not([readonly]),
+    .component-objects > table > tbody > * > * > textarea:not([readonly]),
+    .component-objects > tbody > * > * > input:not([readonly]),
+    .component-objects > tbody > * > * > select:not([readonly]),
+    .component-objects > tbody > * > * > textarea:not([readonly]) {
+      background: white; }
+  .component-objects > * > li:not(.head) > * > * > select,
+  .component-objects > li:not(.head) > * > * > select,
+  .component-objects > table > tbody > * > * > select,
+  .component-objects > tbody > * > * > select {
+    min-width: 34px; }
+  .component-objects .multiline.string {
+    white-space: pre-line; }
+  .component-objects .component-objects {
+    background-color: inherit;
+    min-height: calc(1em + 16px);
+    padding: 0; }
+  .component-objects ul.component-objects, .component-objects ol.component-objects, .component-objects table.component-objects,
+  .component-objects .component-objects > ul, .component-objects .component-objects > ol, .component-objects .component-objects > table {
+    width: 100%; }
 
 article > .data .component-objects > * > li:not(.head) > * > :not(.component-objects),
 article > .data .component-objects > li:not(.head) > * > :not(.component-objects),
@@ -149,10 +127,9 @@ article > .data.component-objects > * > li:not(.head) > * > :not(.component-obje
 article > .data.component-objects > li:not(.head) > * > :not(.component-objects),
 article > .data.component-objects > table > tbody > * > :not(.component-objects),
 article > .data.component-objects > tbody > * > :not(.component-objects) {
-  padding: 8px;
-}
+  padding: 8px; }
 
-.component-objects > label {
+.component-objects > h3, .component-objects > h4, .component-objects > h5, .component-objects > label {
   background-color: #f8f8f8;
   box-sizing: border-box;
   color: var(--dark-color);
@@ -161,19 +138,15 @@ article > .data.component-objects > tbody > * > :not(.component-objects) {
   font-weight: bold;
   height: 34px;
   padding: 10px 0;
-  width: 100%;
-}
-.component-objects > label:first-letter {
-  text-transform: uppercase;
-}
+  width: 100%; }
+  .component-objects > h3:first-letter, .component-objects > h4:first-letter, .component-objects > h5:first-letter, .component-objects > label:first-letter {
+    text-transform: uppercase; }
 
-article > form .component-objects > label {
+article > form .component-objects > h3, article > form .component-objects > h4, article > form .component-objects > h5, article > form .component-objects > label {
   cursor: pointer;
-  position: relative;
-}
-article > form .component-objects > label:after {
-  content: "+";
-  padding-right: 0.5em;
-  position: absolute;
-  right: 0;
-}
+  position: relative; }
+  article > form .component-objects > h3:after, article > form .component-objects > h4:after, article > form .component-objects > h5:after, article > form .component-objects > label:after {
+    content: '+';
+    padding-right: .5em;
+    position: absolute;
+    right: 0; }

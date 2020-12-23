@@ -18,12 +18,12 @@ ul.properties:not(.tiny) {
 ol.properties:not(.tiny) li,
 ul.properties:not(.tiny) li,
 .property:not(a):not(th):not(td):not(.tiny) {
-		position: relative;
+	position: relative;
 
-		> div, > label {
-			position: relative;
-		}
+	> div, > h3, > h4, > h5, > label {
+		position: relative;
 	}
+}
 
 ol.properties:not(.tiny) > *,
 ul.properties:not(.tiny) > *,
@@ -33,7 +33,7 @@ ul.properties:not(.tiny) > *,
 		display: table-row;
 		position: relative;
 
-		> label {
+		> h3, > h4, > h5, > label {
 			font-weight: $medium;
 			padding: 9px 0;
 			text-align: right;
@@ -41,7 +41,7 @@ ul.properties:not(.tiny) > *,
 			white-space: nowrap;
 		}
 
-		> div, > label {
+		> h3, > h4, > h5, > div, > label {
 			box-sizing: border-box;
 			display: table-cell;
 			height: 32px;
@@ -68,7 +68,7 @@ ul.properties:not(.tiny) > *,
 	&.block {
 		margin-top: -1px;
 
-		> label {
+		> h3, > h4, > h5, > label {
 			background-color: #f8f8f8;
 			box-sizing: border-box;
 			color: var(--dark-color);
@@ -100,7 +100,7 @@ ul.properties.tiny > *,
 .property.tiny {
 	display: block;
 
-	label {
+	h3, h4, h5, label {
 		display: block;
 		font-weight: $medium;
 		padding: 4px 0;
