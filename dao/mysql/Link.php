@@ -993,7 +993,8 @@ class Link extends Dao\Sql\Link
 					$id = $element['id'];
 					unset($element['id']);
 					$values[$id] = reset($element);
-				} while ($element = $result->fetch_assoc());
+				}
+				while ($element = $result->fetch_assoc());
 			}
 			else {
 				do {
