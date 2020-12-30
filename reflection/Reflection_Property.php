@@ -557,6 +557,7 @@ class Reflection_Property extends ReflectionProperty
 			$class = $this->root_class;
 			$path  = explode(DOT, $this->path);
 			foreach ($path as $property_name) {
+				$found_object = false;
 				/** @var $property Reflection_Property */
 				if (isset($property)) {
 					$type_name = $property->getType()->getElementTypeAsString();
@@ -568,12 +569,17 @@ class Reflection_Property extends ReflectionProperty
 					$object = is_array($object)
 						? $property->getValues($object, $with_default)
 						: $property->getValue($object, $with_default);
+					$found_object = true;
 				}
 				if ($with_default && !$object && !is_array($object)) {
 					$type = $property->getType();
 					if ($type->isClass()) {
 						$object = $property->getType()->asReflectionClass()->newInstance();
+						$found_object = true;
 					}
+				}
+				if (!$found_object) {
+					return null;
 				}
 			}
 			return $object;
