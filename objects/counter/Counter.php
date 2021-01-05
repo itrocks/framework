@@ -65,7 +65,7 @@ class Counter
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $identifier string
+	 * @param $identifier string|null
 	 */
 	public function __construct($identifier = null)
 	{
@@ -81,7 +81,7 @@ class Counter
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->showIdentifier();
 	}
@@ -123,20 +123,29 @@ class Counter
 	 * @param $object object|null
 	 * @return string
 	 */
-	public function formatLastValue($object = null)
+	public function formatLastValue($object = null) : string
 	{
 		$format = $this->format;
+		$date   = ($object && property_exists($object, 'date')) ? $object->date : Date_Time::now();
+		$date   = $date->latest($this->last_update);
 		if (strpos($format, '{') !== false) {
-			$format = str_replace(
-				['{YEAR4}', '{YEAR}', '{MONTH}', '{DAY}', '{HOUR}', '{MINUTE}', '{SECOND}'],
-				[date('Y'), date('y'), date('m'), date('d'), date('H'), date('i'), date('s')],
+			$format = strReplace(
+				[
+					'{YEAR4}'  => $date->format('Y'),
+					'{YEAR}'   => $date->format('y'),
+					'{MONTH}'  => $date->format('m'),
+					'{DAY}'    => $date->format('d'),
+					'{HOUR}'   => $date->format('H'),
+					'{MINUTE}' => $date->format('i'),
+					'{SECOND}' => $date->format('s')
+				],
 				$format
 			);
-			if (is_object($object) && (strpos($format, '{') !== false)) {
+			if ($object && (strpos($format, '{') !== false)) {
 				$format = (new Template($object))->parseVars($format);
 			}
 		}
-		$this->last_update = Date_Time::now();
+		$this->last_update = $date;
 		return sprintf($format, $this->last_value);
 	}
 
@@ -145,10 +154,10 @@ class Counter
 	 * Load a counter linked to the class of an object from default data link and increment it
 	 *
 	 * @param $object     object The object to use to format the counter
-	 * @param $identifier string The identifier of the counter ; default is get_class($object)
+	 * @param $identifier string|null The identifier of the counter ; default is get_class($object)
 	 * @return string The new counter value
 	 */
-	public static function increment($object, $identifier = null)
+	public static function increment($object, string $identifier = null) : string
 	{
 		/** @var $dao Mysql\Link */
 		$dao = Dao::current();
@@ -177,7 +186,7 @@ class Counter
 	 * @param $identifier string The identifier of the counter ; default is get_class($object)
 	 * @return Lock
 	 */
-	protected static function lock($identifier)
+	protected static function lock(string $identifier) : Lock
 	{
 		/** @var $dao Mysql\Link */
 		$dao        = Dao::current();
@@ -195,13 +204,13 @@ class Counter
 	 * - This resets the value if the day / month / year changed since the last_update date
 	 * - This formats the value to get it "ready to print"
 	 *
-	 * @param $object object if set, use advanced formatting using object data ie {property.path}
+	 * @param $object object|null if set, use advanced formatting using object data ie {property.path}
 	 * @return string
 	 */
-	public function next($object = null)
+	public function next($object = null) : string
 	{
 		$this->last_value ++;
-		if ($this->resetValue()) {
+		if ($this->resetValue($object)) {
 			$this->last_value = 1;
 		}
 		return $this->formatLastValue($object);
@@ -214,11 +223,14 @@ class Counter
 	 * - if month changed and format contains {MONTH}
 	 * - if year changed and format contains {YEAR4} or {YEAR}
 	 *
+	 * @param $object object|null An object that can have a reference date (instead of now)
 	 * @return boolean true if the value should be reset
 	 */
-	public function resetValue()
+	public function resetValue($object = null) : bool
 	{
-		$date   = date('Y-m-d');
+		$date   = ($object && property_exists($object, 'date')) ? $object->date : Date_Time::now();
+		$date   = $date->latest($this->last_update);
+		$date   = $date->format('Y-m-d');
 		$format = $this->format;
 		$last   = $this->last_update;
 		return
@@ -232,7 +244,7 @@ class Counter
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	public function showIdentifier()
+	public function showIdentifier() : string
 	{
 		if (class_exists($this->identifier)) {
 			/** @noinspection PhpUnhandledExceptionInspection class_exists */

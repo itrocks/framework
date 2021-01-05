@@ -73,7 +73,7 @@ class Simple extends Counter
 	 * @param $object object|null
 	 * @return string
 	 */
-	public function formatLastValue($object = null)
+	public function formatLastValue($object = null) : string
 	{
 		if (!$this->last_value) {
 			$this->last_value = 1;
