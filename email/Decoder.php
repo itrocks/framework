@@ -53,22 +53,23 @@ class Decoder
 
 			switch ($data['content-type']) {
 				case 'multipart/alternative':
-					$main_headers = $data['headers'];
-					$main_content = $content;
+				case 'multipart/mixed':
+					if (!$main_headers && !$main_content) {
+						$main_headers = $data['headers'];
+						$main_content = $content;
+					}
 					break;
 				case 'text/plain':
-					if ($plain_headers || $plain_content) {
-						break;
+					if (!$plain_headers && !$plain_content) {
+						$plain_headers = $data['headers'];
+						$plain_content = $content;
 					}
-					$plain_headers = $data['headers'];
-					$plain_content = $content;
 					break;
 				case 'text/html':
-					if ($html_headers || $html_content) {
-						break;
+					if (!$html_headers && !$html_content) {
+						$html_headers = $data['headers'];
+						$html_content = $content;
 					}
-					$html_headers = $data['headers'];
-					$html_content = $content;
 					break;
 			}
 
