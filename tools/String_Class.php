@@ -229,6 +229,16 @@ class String_Class
 		return new String_Class(substr($this->value, -$length));
 	}
 
+	//----------------------------------------------------------------------------------------- round
+	/**
+	 * @param $decimals integer
+	 * @return float
+	 */
+	public function round(int $decimals = 0) : float
+	{
+		return round($this->value, $decimals);
+	}
+
 	//----------------------------------------------------------------------------------------- short
 	/**
 	 * @return String_Class
