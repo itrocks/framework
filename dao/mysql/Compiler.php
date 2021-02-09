@@ -51,6 +51,7 @@ class Compiler implements ICompiler
 	{
 		// Builder is disabled during the listing as we want to get the original linked class name when
 		// reading class annotation @link
+		$builder_enabled = Builder::current()->enabled;
 		Builder::current()->enabled = false;
 
 		$search = [
@@ -81,7 +82,7 @@ class Compiler implements ICompiler
 			}
 		}
 
-		Builder::current()->enabled = true;
+		Builder::current()->enabled = $builder_enabled;
 	}
 
 }

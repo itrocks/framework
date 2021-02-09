@@ -210,7 +210,7 @@ class Properties
 			if (isset($parent_class->getMethods([T_EXTENDS])['__aop'])) {
 				$parent_code = '
 
-		parent::__aop(false);';
+		if (method_exists(get_parent_class($this), \'__aop\')) parent::__aop(false);';
 			}
 			// kept this for patch of Built class that inherit a class with __aop,
 			// and classes that inherit a Built class (or they will not call parent::__aop)
@@ -227,7 +227,7 @@ class Properties
 					if ($match) {
 						$parent_code = '
 
-		parent::__aop(false);';
+		if (method_exists(get_parent_class($this), \'__aop\')) parent::__aop(false);';
 					}
 				}
 			}
