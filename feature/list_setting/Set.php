@@ -163,13 +163,16 @@ class Set extends Setting\Custom\Set
 			}
 		}
 		// sort
-		if ($this->sort) foreach ($this->sort->columns as $key => $property_path) {
-			if (
-				!isset($this->properties[$property_path])
-				|| !Reflection_Property::exists($class_name, $property_path)
-			) {
-				unset($this->sort->columns[$key]);
-				$changes_count ++;
+		if ($this->sort) {
+			$this->sort->class_name = Builder::className($this->sort->class_name);
+			foreach ($this->sort->columns as $key => $property_path) {
+				if (
+					!isset($this->properties[$property_path])
+					|| !Reflection_Property::exists($class_name, $property_path)
+				) {
+					unset($this->sort->columns[$key]);
+					$changes_count ++;
+				}
 			}
 		}
 		if ($this->maximum_displayed_lines_count < 10) {
@@ -324,6 +327,21 @@ class Set extends Setting\Custom\Set
 		if (!in_array($property_path, $this->sort->reverse)) {
 			$this->sort->reverse[] = $property_path;
 		}
+	}
+
+	//------------------------------------------------------------------------------------------ save
+	/**
+	 * In all cases : saves the Setting\Custom\Set object for current user and session
+	 * If $save_name is set : saves the Setting\Custom\Set object into the Settings set
+	 *
+	 * @param $save_name string
+	 */
+	public function save($save_name = null)
+	{
+		if ($this->sort) {
+			$this->sort->class_name = Builder::current()->sourceClassName($this->sort->class_name);
+		}
+		parent::save($save_name);
 	}
 
 	//---------------------------------------------------------------------------------------- search

@@ -100,7 +100,7 @@ class Sort implements Option
 	{
 		if (
 			isset($class_name)
-			&& ($class_name != $this->class_name)
+			&& ($class_name !== $this->class_name)
 			&& (isset($this->class_name) || !isset($this->columns))
 		) {
 			$class_name       = Builder::className($class_name);
