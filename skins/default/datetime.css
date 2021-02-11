@@ -11,7 +11,7 @@ input.datetime.show-time:not(.show-seconds) {
   width: 118px; }
 
 li.date_time.object:not(.show-seconds):not(.show-time) input.datetime {
-  width: 82px; }
+  width: 100px; }
 li.date_time.object.show-seconds input.datetime {
   width: 136px; }
 li.date_time.object.show-time:not(.show-seconds) input.datetime {
