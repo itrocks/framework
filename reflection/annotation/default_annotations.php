@@ -9,6 +9,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Type_Annotation;
 
 //-------------------------------------------------------------------- Parser::$default_annotations
 /**
@@ -217,6 +218,14 @@ Parser::$default_annotations = [
 	 * groups that are not into @groups_order will be the least important, sorted alphabetically
 	 */
 	Parser::T_CLASS . '@groups_order' => List_Annotation::class,
+
+	/**
+	 * @maintain Class_Name
+	 *
+	 * Declares which class should be needed by the dataset maintainer instead of current class
+	 * Used for alias classes
+	 */
+	Parser::T_CLASS . '@maintain' => Type_Annotation::class,
 
 	/**
 	 * @on_list onList

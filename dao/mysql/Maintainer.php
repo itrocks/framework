@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
+use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
@@ -171,6 +172,14 @@ class Maintainer implements Configurable, Registerable
 					$ids_index->addKey($column_name);
 					$index = Index::buildLink($column_name);
 					foreach ($context as $context_class) {
+						try {
+							$context_reflection_class = new Reflection_Class($context_class);
+							if ($maintain = $context_reflection_class->getAnnotation('maintain')->value) {
+								$context_class = $maintain;
+							}
+						}
+						catch (Exception $exception) {
+						}
 						$id_context_property = 'id_' . Names::classToProperty(
 								Names::setToSingle(Dao::storeNameOf($context_class))
 							);
@@ -515,6 +524,14 @@ class Maintainer implements Configurable, Registerable
 			$error_table_names = $this->parseNamesFromQuery($query);
 		}
 		foreach ($context as $key => $context_class) {
+			try {
+				$context_reflection_class = new Reflection_Class($context_class);
+				if ($maintain = $context_reflection_class->getAnnotation('maintain')->value) {
+					$context_class = $maintain;
+				}
+			}
+			catch (Exception $exception) {
+			}
 			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
 			if (in_array($context_table, $error_table_names) || !$mysqli->exists($context_table)) {
 				if (is_array($context_class)) {
