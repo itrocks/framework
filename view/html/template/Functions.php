@@ -1148,11 +1148,20 @@ class Functions
 	 */
 	public function getProperty(Template $template, $name = null)
 	{
-		foreach ($template->objects as $object) {
+		if ($name) {
+			$object = reset($template->objects);
+		}
+		else {
+			reset($template->objects);
+			$name   = reset($template->var_names);
+			$object = next($template->objects);
+		}
+		while (isset($template->objects)) {
 			if (is_object($object)) {
 				/** @noinspection PhpUnhandledExceptionInspection object, property name must exist */
 				return new Reflection_Property_Value($object, $name, $object, false, true);
 			}
+			$object = next($template->objects);
 		}
 		return null;
 	}
