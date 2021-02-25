@@ -134,10 +134,12 @@ class Default_List_Row implements List_Row
 	//--------------------------------------------------------------------------------- getOutputLink
 	/**
 	 * Returns link to the output feature for the object
+	 * May be null if link is deactivated, eg by an ACL feature
 	 *
-	 * @return string
+	 * @noinspection PhpUnused html
+	 * @return string|null
 	 */
-	public function getOutputLink() : string
+	public function getOutputLink() : ?string
 	{
 		return View::link(
 			is_object($this->object) ? $this->object : [$this->class_name, $this->object]
