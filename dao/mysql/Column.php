@@ -256,10 +256,11 @@ class Column implements Sql\Column
 	private function cleanupDefault()
 	{
 		if (isset($this->Default)) {
-			if ($this->getType()->isNumeric()) {
-				$this->Default = (strpos($this->Default, DOT) !== false)
-					? floatval($this->Default)
-					: intval($this->Default);
+			if ($this->getType()->isFloat()) {
+				$this->default = floatval($this->Default);
+			}
+			elseif ($this->getType()->isInteger()) {
+				$this->default = intval($this->Default);
 			}
 			elseif ($this->getType()->isString()) {
 				$this->Default = strval($this->Default);

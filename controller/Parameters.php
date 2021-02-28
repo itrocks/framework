@@ -178,9 +178,9 @@ class Parameters
 			}
 			if (isset($class_name) && class_exists($class_name)) {
 				// object parameter
-				$object = floatval($this->getRawParameter($parameter_name));
+				$object = intval($this->getRawParameter($parameter_name));
 				Mapper\Getter::getObject($object, $class_name);
-				if (empty($object) && floatval($this->getRawParameter($parameter_name))) {
+				if (empty($object) && intval($this->getRawParameter($parameter_name))) {
 					/** @noinspection PhpUnhandledExceptionInspection Useless for developers */
 					// This exception will be catch by the main controller : not to be managed by others
 					$this->throwException('The object does not exist anymore');
