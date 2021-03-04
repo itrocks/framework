@@ -4,7 +4,6 @@ namespace ITRocks\Framework\Tests\Objects;
 /**
  * An order class
  *
- * @extends Document
  * @store_name test_orders
  */
 class Order extends Document

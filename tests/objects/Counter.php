@@ -1,13 +1,9 @@
 <?php
 namespace ITRocks\Framework\Tests\Objects;
 
-use ITRocks\Framework\Traits\Has_Name;
-
 /**
  * A simple generic counter manager
  *
- * @extends Has_Name
- * @see Has_Name
  * @store_name test_counters
  */
 class Counter
