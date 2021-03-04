@@ -377,6 +377,7 @@ class Validator implements Registerable
 			'precision'  => Property\Precision_Annotation::class,
 			'regex'      => Property\Regex_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,
+			'unique'     => Property\Unique_Annotation::class,
 			'validate'   => Property\Validate_Annotation::class,
 			'values'     => Property\Values_Annotation::class,
 			'var'        => Property\Var_Annotation::class,
