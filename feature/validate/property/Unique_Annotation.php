@@ -1,12 +1,11 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
+use Exception;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
-use ITRocks\Framework\Tools\Mutex;
 
 /**
  * The unique annotation validator
@@ -35,31 +34,30 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * @param $object object
-	 * @return boolean
+	 * @return Boolean
+	 * @throws Exception
 	 */
 	public function validate($object): bool
 	{
 		$property_name = $this->property->getName();
-		if (!strlen($object->$property_name)) {
-			return true;
-		}
-		$search = [$property_name => $object->$property_name];
-		if (Dao::getObjectIdentifier($object)) {
-			$search[] = Func::notEqual($object);
+
+		if(!property_exists($object, $property_name)) {
+			throw new Exception(
+				sprintf(
+					'The %s property does not exist in %s object',
+					$property_name,
+					get_class($object)
+				)
+			);
 		}
 
-		// ensure that the mutual exclusion runs until the end of the script execution
-		global $persistent_mutex;
-		if (!$persistent_mutex) {
-			$persistent_mutex = [];
+		if(!$object->{$property_name}) {
+			return true;
 		}
-		$mutex_key = strUri(get_class($object)) . '.@unique';
-		if (!isset($persistent_mutex[$mutex_key])) {
-			$mutex = (new Mutex($mutex_key));
-			$mutex->lock();
-			$persistent_mutex[$mutex_key] = $mutex;
-		}
-		return !Dao::searchOne($search, get_class($object));
+
+		$search = Dao::searchOne([$property_name => $object->{$property_name}], get_class($object));
+
+		return $search === null;
 	}
 
 }

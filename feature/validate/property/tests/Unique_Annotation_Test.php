@@ -1,10 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property\Tests;
 
-use Exception;
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Dao\Data_Link;
-use ITRocks\Framework\Dao\Mysql;
+use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Feature\Validate\Property\Unique_Annotation;
 use ITRocks\Framework\PHP\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
@@ -16,27 +14,27 @@ class Unique_Annotation_Test extends Test
 
 	//------------------------------------------------------------------------------------- $dao_link
 	/**
-	 * @var Mysql\Link|MockObject|null
+	 * @var Link|MockObject
 	 */
-	private Mysql\Link|MockObject|null $dao_link;
+	private $dao_link;
 
 	//-------------------------------------------------------------------------------------- $old_dao
 	/**
-	 * @var Data_Link
+	 * @var Dao\Data_Link
 	 */
-	private Data_Link $old_dao;
+	private $old_dao;
 
 	//----------------------------------------------------------------------------------------- setUp
-	public function setUp() : void
+	public function setUp()
 	{
 		parent::setUp();
-		$this->dao_link = $this->createMock(Mysql\Link::class);
+		$this->dao_link = $this->createMock(Link::class);
 		$this->old_dao  = Dao::current();
 		Dao::current($this->dao_link);
 	}
 
 	//-------------------------------------------------------------------------------------- tearDown
-	public function tearDown() : void
+	public function tearDown()
 	{
 		parent::tearDown();
 		Dao::current($this->old_dao);
@@ -55,9 +53,6 @@ class Unique_Annotation_Test extends Test
 	}
 
 	//----------------------------------------------------------------- testValidateWithEmptyProperty
-	/**
-	 * @throws Exception
-	 */
 	public function testValidateWithEmptyProperty()
 	{
 		$this->dao_link->expects($this->never())->method('searchOne')->willReturn(null);
@@ -72,10 +67,25 @@ class Unique_Annotation_Test extends Test
 		$this->assertTrue($unique_annotation->validate($class));
 	}
 
+	//--------------------------------------------------------------- testValidateWithUnknownProperty
+	public function testValidateWithUnknownProperty()
+	{
+		$this->dao_link->expects($this->never())->method('searchOne')->willReturn(null);
+
+		$property_mock = $this->createMock(Reflection_Property::class);
+		$property_mock->expects($this->once())->method('getName')->willReturn('name');
+
+		$unique_annotation = new Unique_Annotation(true, $property_mock);
+
+		$class = new stdClass();
+		$class->foo = 'notname';
+
+		$this->expectException('Exception');
+		$this->expectExceptionMessage('The name property does not exist in stdClass object');
+		$unique_annotation->validate($class);
+	}
+
 	//------------------------------------------------------------------------- testWithValidateFalse
-	/**
-	 * @throws Exception
-	 */
 	public function testWithValidateFalse()
 	{
 		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(new stdClass());
@@ -91,9 +101,6 @@ class Unique_Annotation_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testWithValidateTrue
-	/**
-	 * @throws Exception
-	 */
 	public function testWithValidateTrue()
 	{
 		$property_mock = $this->createMock(Reflection_Property::class);
