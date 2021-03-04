@@ -526,7 +526,8 @@ class Reflection_Property extends ReflectionProperty
 		$type = new Type(Var_Annotation::of($this)->value);
 		if ($type->isNull()) {
 			trigger_error(
-				$this->class . '::$' . $this->name . ' type not set using @var annotation', E_USER_ERROR
+				$this->getDeclaringTrait() . '::$' . $this->name
+				. ' type not set using @var annotation', E_USER_ERROR
 			);
 		}
 		return $type;
