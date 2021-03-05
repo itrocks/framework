@@ -106,7 +106,9 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 				return false;
 			}
 			// simple
-			if (in_array($type, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER, Type::MIXED, Type::STRING])) {
+			if (in_array(
+				$type->asString(), [Type::BOOLEAN, Type::FLOAT, Type::INTEGER, Type::MIXED, Type::STRING]
+			)) {
 				switch ($type->asString()) {
 					case Type::BOOLEAN:
 						if (in_array($value, [null, false, true, 0, 1])) return true;

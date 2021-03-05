@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\PHP;
 
 use ITRocks\Framework\Reflection\Annotation\Annoted;
+use ITRocks\Framework\Reflection\Annotation\Property\Var_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Type;
 
@@ -244,7 +245,7 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 	 */
 	public function getType()
 	{
-		return new Type($this->getAnnotation('var')->value);
+		return Var_Annotation::of($this)->getType();
 	}
 
 	//-------------------------------------------------------------------------------------- getValue

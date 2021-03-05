@@ -523,7 +523,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getType()
 	{
-		$type = new Type(Var_Annotation::of($this)->value);
+		$type = Var_Annotation::of($this)->getType();
 		if ($type->isNull()) {
 			trigger_error(
 				$this->getDeclaringTrait() . '::$' . $this->name
