@@ -26,13 +26,10 @@ ul.properties:not(.tiny) li,
   .property:not(a):not(th):not(td):not(.tiny) > label {
     position: relative; }
 
-ol.properties:not(.tiny) > *:not(.hidden),
-ul.properties:not(.tiny) > *:not(.hidden),
-.property:not(a):not(th):not(td):not(.tiny):not(.hidden) {
-  display: table-row; }
 ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects),
 ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects),
 .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+  display: table-row;
   position: relative; }
   ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,

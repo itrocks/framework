@@ -29,11 +29,8 @@ ol.properties:not(.tiny) > *,
 ul.properties:not(.tiny) > *,
 .property:not(a):not(th):not(td):not(.tiny) {
 
-	&:not(.hidden) {
-		display: table-row;
-	}
-
 	&:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+		display: table-row;
 		position: relative;
 
 		> h3, > h4, > h5, > label {
