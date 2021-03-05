@@ -50,7 +50,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * @return string
 	 */
-	public function dateFormat()
+	public function dateFormat() : string
 	{
 		$date    = 'Y-m-d-H-i-s';
 		$date    = array_combine(explode('-', $date), explode('-', date($date)));
@@ -100,49 +100,82 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 			return true;
 		}
 		$type = $this->property->getType();
-		// []
-		if ($type->isMultiple() && !is_array($value)) return false;
-		// simple
-		switch ($type->asString()) {
-			case Type::INTEGER: return isStrictNumeric($value, false);       break;
-			case Type::FLOAT:   return isStrictNumeric($value);              break;
-			case Type::STRING:  return is_null($value) || is_string($value); break;
-		}
-		// object|object[]
-		if ($type->isClass()) {
-			$class_name = $type->getElementTypeAsString();
-			// object[]
-			if ($type->isMultiple()) {
-				foreach ($value as $object) {
-					if (!is_a($object, $class_name)) {
-						return false;
+		foreach (array_merge([$type], $type->alternatives) as $type) {
+			// []
+			if ($type->isMultiple() && !is_array($value)) {
+				return false;
+			}
+			// simple
+			if (in_array($type, [Type::BOOLEAN, Type::FLOAT, Type::INTEGER, Type::MIXED, Type::STRING])) {
+				switch ($type->asString()) {
+					case Type::BOOLEAN:
+						if (in_array($value, [null, false, true, 0, 1])) return true;
+						break;
+					case Type::FLOAT:
+						if (isStrictNumeric($value)) return true;
+						break;
+					case Type::INTEGER:
+						if (isStrictNumeric($value, false)) return true;
+						break;
+					case Type::MIXED:
+						return true;
+					case Type::STRING:
+						if (is_null($value) || is_string($value)) return true;
+						break;
+				}
+			}
+			// object|object[]
+			elseif ($type->isClass()) {
+				$class_name = $type->getElementTypeAsString();
+				// object[]
+				if ($type->isMultiple()) {
+					$all_are_ok = true;
+					foreach ($value as $object) {
+						if (!is_a($object, $class_name)) {
+							$all_are_ok = false;
+							break;
+						}
+					}
+					if ($all_are_ok) {
+						return true;
 					}
 				}
-				return true;
-			}
-			// object
-			else {
-				return
-					// - accepts null if not mandatory
-					(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
-					// - accepts a string if @store allows a string
-					|| (is_string($value) && Store_Annotation::of($this->property)->isString())
-					// - accepts an object if is an instance of the class
-					|| is_a($value, $class_name)
-					// - accepts an object if @var object
-					|| (is_object($value) && ($class_name === 'object'));
-			}
-		}
-		// string[]
-		elseif ($type->isMultipleString()) {
-			foreach ($value as $string) {
-				if (!is_string($string)) {
-					return false;
+				// object
+				else {
+					if (
+						// - accepts null if not mandatory
+						(is_null($value) && !Mandatory_Annotation::of($this->property)->value)
+						// - accepts a string if @store allows a string
+						|| (is_string($value) && Store_Annotation::of($this->property)->isString())
+						// - accepts an object if is an instance of the class
+						|| is_a($value, $class_name)
+						// - accepts an object if @var object
+						|| (is_object($value) && ($class_name === 'object'))
+					) {
+						return true;
+					}
 				}
 			}
+			// string[]
+			elseif ($type->isMultipleString()) {
+				$all_are_ok = true;
+				foreach ($value as $string) {
+					if (!is_string($string)) {
+						$all_are_ok = false;
+						break;
+					}
+				}
+				if ($all_are_ok) {
+					return true;
+				}
+			}
+			// other cases are not tested : valid is the default
+			else {
+				trigger_error('Untested @var type ' . $type->asString(), E_USER_NOTICE);
+				return true;
+			}
 		}
-		// other cases are not tested : valid is the default
-		return true;
+		return false;
 	}
 
 }

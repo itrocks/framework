@@ -63,6 +63,14 @@ class Type
 	 */
 	private $absolute;
 
+	//--------------------------------------------------------------------------------- $alternatives
+	/**
+	 * Alternative types
+	 *
+	 * @var static[]
+	 */
+	public $alternatives = [];
+
 	//---------------------------------------------------------------------------------- $can_be_null
 	/**
 	 * true if the type accepts null values
@@ -126,6 +134,11 @@ class Type
 			else {
 				$this->type = $type_string;
 			}
+			foreach (array_slice(explode('|', $type_string), 1) as $alternative) {
+				$this->alternatives[] = new static(
+					trim($alternative), isset($can_be_null) ? $can_be_null : $this->can_be_null
+				);
+			}
 		}
 		if (isset($can_be_null)) {
 			$this->can_be_null = $can_be_null;
@@ -143,7 +156,7 @@ class Type
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->type;
 	}
@@ -158,7 +171,7 @@ class Type
 	 * @param $use       string[]
 	 * @return string
 	 */
-	public function applyNamespace($namespace, array $use = [])
+	public function applyNamespace(string $namespace, array $use = []) : string
 	{
 		if (!$this->absolute && $this->isClass()) {
 			$class_name = $this->getElementTypeAsString(false);
@@ -187,7 +200,7 @@ class Type
 	 *
 	 * @return Link_Class
 	 */
-	public function asLinkClass()
+	public function asLinkClass() : Link_Class
 	{
 		return $this->asReflectionClass(Link_Class::class);
 	}
@@ -200,7 +213,7 @@ class Type
 	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
 	 * @return Interfaces\Reflection_Class|Link_Class|PHP\Reflection_Class|Reflection_Class
 	 */
-	public function asReflectionClass($reflection_class_name = null)
+	public function asReflectionClass($reflection_class_name = null) : Interfaces\Reflection_Class
 	{
 		if ($reflection_class_name) {
 			/** @noinspection PhpUnhandledExceptionInspection reflection class name must be valid */
@@ -226,7 +239,7 @@ class Type
 	 * @example 'string', 'ITRocks\Framework\Tools\Date_Time'
 	 * @return string
 	 */
-	public function asString()
+	public function asString() : string
 	{
 		return $this->type;
 	}
@@ -237,7 +250,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function canBeNull()
+	public function canBeNull() : bool
 	{
 		return $this->can_be_null;
 	}
@@ -273,7 +286,7 @@ class Type
 	 *
 	 * @return Type
 	 */
-	public function getElementType()
+	public function getElementType() : Type
 	{
 		return ($this->isMultiple())
 			? new Type($this->getElementTypeAsString())
@@ -287,7 +300,7 @@ class Type
 	 * @param $build boolean false if you need to keep the original name of the class, without Build
 	 * @return string
 	 */
-	public function getElementTypeAsString($build = true)
+	public function getElementTypeAsString(bool $build = true) : string
 	{
 		$i = strpos($this->type, '[');
 		// TODO NORMAL Builder : look where it is really useful, and remove it from all other places
@@ -301,7 +314,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function hasSize()
+	public function hasSize() : bool
 	{
 		return in_array($this->type, self::$sized_types);
 	}
@@ -313,7 +326,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isAbstractClass()
+	public function isAbstractClass() : bool
 	{
 		return beginsWith($this->type, static::MIXED)
 			|| beginsWith($this->type, static::OBJECT)
@@ -324,7 +337,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isArray()
+	public function isArray() : bool
 	{
 		return $this->type === self::_ARRAY;
 	}
@@ -341,7 +354,7 @@ class Type
 	 * @param $include_multiple_string boolean if false, string[] is not considered as a basic type
 	 * @return boolean
 	 */
-	public function isBasic($include_multiple_string = true)
+	public function isBasic(bool $include_multiple_string = true) : bool
 	{
 		return $this->isStrictlyBasic()
 			|| $this->isDateTime()
@@ -354,7 +367,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isBoolean()
+	public function isBoolean() : bool
 	{
 		return $this->type === self::BOOLEAN;
 	}
@@ -365,7 +378,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isClass()
+	public function isClass() : bool
 	{
 		return !$this->getElementType()->isStrictlyBasic();
 	}
@@ -374,7 +387,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isDateTime()
+	public function isDateTime() : bool
 	{
 		return $this->isInstanceOf(DateTime::class);
 	}
@@ -383,7 +396,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isFloat()
+	public function isFloat() : bool
 	{
 		return $this->type === self::FLOAT;
 	}
@@ -397,7 +410,7 @@ class Type
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public function isInstanceOf($class_name)
+	public function isInstanceOf(string $class_name) : bool
 	{
 		if ($this->isClass()) {
 			if ($class_name === static::OBJECT) {
@@ -413,7 +426,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isInteger()
+	public function isInteger() : bool
 	{
 		return $this->type === self::INTEGER;
 	}
@@ -422,7 +435,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isMixed()
+	public function isMixed() : bool
 	{
 		return $this->type === self::MIXED;
 	}
@@ -448,7 +461,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isMultipleClass()
+	public function isMultipleClass() : bool
 	{
 		return $this->isMultiple() && $this->isClass();
 	}
@@ -457,7 +470,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isMultipleString()
+	public function isMultipleString() : bool
 	{
 		return $this->type === self::STRING_ARRAY;
 	}
@@ -466,7 +479,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isNull()
+	public function isNull() : bool
 	{
 		return in_array($this->type, [self::NULL, self::null]);
 	}
@@ -477,7 +490,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isNumeric()
+	public function isNumeric() : bool
 	{
 		return in_array($this->type, self::$numeric_types);
 	}
@@ -486,7 +499,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isObject()
+	public function isObject() : bool
 	{
 		return ($this->type === static::OBJECT);
 	}
@@ -497,7 +510,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isSingleClass()
+	public function isSingleClass() : bool
 	{
 		return !($this->isMultiple()) && $this->isClass();
 	}
@@ -511,7 +524,7 @@ class Type
 	 *
 	 * @return boolean
 	 */
-	public function isStrictlyBasic()
+	public function isStrictlyBasic() : bool
 	{
 		return in_array($this->type, self::$strictly_basic_types);
 	}
@@ -520,7 +533,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isString()
+	public function isString() : bool
 	{
 		return $this->type === self::STRING;
 	}
@@ -529,7 +542,7 @@ class Type
 	/**
 	 * @return boolean
 	 */
-	public function isStringable()
+	public function isStringable() : bool
 	{
 		return (
 			$this->isClass()
@@ -547,7 +560,7 @@ class Type
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public function isSubClassOf($class_name)
+	public function isSubClassOf(string $class_name) : bool
 	{
 		return $this->isClass() && is_subclass_of($this->getElementTypeAsString(), $class_name);
 	}
@@ -559,7 +572,7 @@ class Type
 	 * @param $can_be_null boolean
 	 * @return Type
 	 */
-	public function multiple($can_be_null = false)
+	public function multiple(bool $can_be_null = false) : Type
 	{
 		return new Type($this->type . '[]', $can_be_null);
 	}
@@ -573,7 +586,7 @@ class Type
 	 * @param $trait_name string
 	 * @return boolean
 	 */
-	public function usesTrait($trait_name)
+	public function usesTrait(string $trait_name) : bool
 	{
 		return $this->isClass() && isA($this->getElementTypeAsString(), $trait_name);
 	}
