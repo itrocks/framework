@@ -785,6 +785,7 @@ class Link extends Dao\Sql\Link
 	 * The lock is linked to the current mysql thread : if a thread is not active anymore, the
 	 * matching stored locks are considered as done and unlocked
 	 *
+	 * @deprecated UNLOCK cause transactions to COMMIT : this is a problem
 	 * @param $table_name        string
 	 * @param $record_identifier integer
 	 * @param $options           string[] @values Lock::const
@@ -1204,6 +1205,7 @@ class Link extends Dao\Sql\Link
 
 	//---------------------------------------------------------------------------------------- unlock
 	/**
+	 * @deprecated UNLOCK cause transactions to COMMIT : this is a problem
 	 * @param $lock Lock
 	 * @see lockRecord
 	 */
