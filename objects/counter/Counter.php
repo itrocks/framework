@@ -4,11 +4,11 @@ namespace ITRocks\Framework\Objects;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
-use ITRocks\Framework\Dao\Mysql\Lock;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
+use ITRocks\Framework\Tools\Mutex;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -98,7 +98,7 @@ class Counter
 	{
 		$class_name = is_object($object) ? get_class($object) : $object;
 		$class_name = Builder::current()->sourceClassName($class_name);
-		$lock       = static::lock($class_name);
+		$mutex      = static::lock($class_name);
 		/** @var $counter Counter */
 		$counter = Dao::searchOne(['identifier' => $class_name], Counter::class);
 		if ($counter) {
@@ -113,7 +113,7 @@ class Counter
 				Dao::write($counter, Dao::only('last_value'));
 			}
 		}
-		static::unlock($lock);
+		static::unlock($mutex);
 	}
 
 	//------------------------------------------------------------------------------- formatLastValue
@@ -165,7 +165,7 @@ class Counter
 		if (empty($identifier)) {
 			$identifier = Builder::current()->sourceClassName(get_class($object));
 		}
-		$lock = static::lock($identifier);
+		$mutex   = static::lock($identifier);
 		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
 			?: new static($identifier);
 		$next_value = $counter->next($object);
@@ -173,7 +173,7 @@ class Counter
 			$counter,
 			Dao::getObjectIdentifier($counter) ? Dao::only('last_update', 'last_value') : null
 		);
-		static::unlock($lock);
+		static::unlock($mutex);
 		$dao->commit();
 		return $next_value;
 	}
@@ -183,18 +183,18 @@ class Counter
 	 * Locks database access for only one simultaneous access to the counter
 	 * Don't forget to call unlock when done !
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $identifier string The identifier of the counter ; default is get_class($object)
-	 * @return Lock
+	 * @return Mutex
 	 */
-	protected static function lock(string $identifier) : Lock
+	protected static function lock(string $identifier) : Mutex
 	{
-		/** @var $dao Mysql\Link */
-		$dao        = Dao::current();
-		$table_name = $dao->storeNameOf(__CLASS__);
-		return $dao->lockRecord(
-			$table_name,
-			Dao::getObjectIdentifier(Dao::searchOne(['identifier' => $identifier], static::class)) ?: 0
-		);
+		$identifier = strUri($identifier);
+		$table_name = Dao::storeNameOf(__CLASS__);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$mutex = Builder::create(Mutex::class, [$table_name . DOT . $identifier]);
+		$mutex->lock();
+		return $mutex;
 	}
 
 	//------------------------------------------------------------------------------------------ next
@@ -255,13 +255,11 @@ class Counter
 
 	//---------------------------------------------------------------------------------------- unlock
 	/**
-	 * @param $lock Lock
+	 * @param $mutex Mutex
 	 */
-	protected static function unlock(Lock $lock)
+	protected static function unlock(Mutex $mutex)
 	{
-		/** @var $dao Mysql\Link */
-		$dao = Dao::current();
-		$dao->unlock($lock);
+		$mutex->unlock();
 
 	}
 
