@@ -100,12 +100,27 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @param $annotation_name  string
 	 * @param $annotation_value mixed
+	 * @param $flags            string[] private, protected, static, or public=visible=empty
 	 * @return Reflection_Property[]
 	 */
-	public function getAnnotedProperties($annotation_name, $annotation_value = null)
+	public function getAnnotedProperties(
+		string $annotation_name, mixed $annotation_value = null,
+		array $flags = [Access::PRIVATE, Access::PROTECTED, Access::STATIC]
+	) : array
 	{
+		$include_private   = in_array(Access::PRIVATE,   $flags);
+		$include_protected = in_array(Access::PROTECTED, $flags);
+		$include_static    = in_array(Access::STATIC,    $flags);
+
 		$properties = [];
 		foreach ($this->getProperties([T_EXTENDS, T_USE]) as $property) {
+			if (
+				(!$include_private      && $property->isPrivate())
+				|| (!$include_protected && $property->isProtected())
+				|| (!$include_static    && $property->isStatic())
+			) {
+				continue;
+			}
 			$annotation = $property->getAnnotation($annotation_name);
 			if (
 				(isset($annotation_value) && ($annotation->value == $annotation_value))
@@ -124,9 +139,10 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @param $annotation_name  string
 	 * @param $annotation_value mixed
-	 * @return Reflection_Property|null
+	 * @return ?Reflection_Property
 	 */
-	public function getAnnotedProperty($annotation_name, $annotation_value = null)
+	public function getAnnotedProperty(string $annotation_name, mixed $annotation_value = null)
+	: ?Reflection_Property
 	{
 		foreach (array_reverse($this->getProperties([T_EXTENDS, T_USE])) as $property) {
 			/** @var $property Reflection_Property */
