@@ -15,7 +15,6 @@ ini_set( 'max_execution_time',              30      );
 ini_set( 'max_input_vars',                  1000000 );
 ini_set( 'memory_limit',                    '2G'    );
 ini_set( 'session.use_cookies',             true    );
-ini_set( 'xdebug.collect_params',           4       );
 ini_set( 'xdebug.max_nesting_level',        255     );
 ini_set( 'xdebug.var_display_max_children', 10      );
 ini_set( 'xdebug.var_display_max_data',     150     );
