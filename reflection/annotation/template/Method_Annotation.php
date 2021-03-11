@@ -63,7 +63,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
-	public function call($object, array $arguments = [])
+	public function call(object|string $object, array $arguments = []) : mixed
 	{
 		if ($this->static || is_string($object)) {
 			if (($object !== $this->value) && !(reset($arguments) instanceof Event)) {
@@ -81,7 +81,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $arguments   array
 	 * @return boolean false if calls chain was interrupted, true if every call were ok
 	 */
-	public static function callAll(array $annotations, $object, array $arguments = [])
+	public static function callAll(array $annotations, $object, array $arguments = []) : bool
 	{
 		foreach ($annotations as $annotation) {
 			if ($annotation->call($object, $arguments) === false) {
@@ -142,7 +142,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 						Dependency::class
 					);
 				}
-				catch (Exception $exception) {
+				catch (Exception) {
 					$dependencies = [];
 				}
 				$use = [];
@@ -180,7 +180,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 			try {
 				$this->static = (new Reflection_Method($class_name, $method_name))->isStatic();
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				$this->static = true;
 			}
 		}

@@ -18,7 +18,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	/**
 	 * @var boolean
 	 */
-	protected $is_method;
+	protected bool $is_method;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -39,13 +39,6 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 			// value is a method
 			if (method_exists($class_name, $method_name)) {
 				$this->is_method = true;
-				// value is not callable (private or protected?)
-				if (!is_callable([$class_name, $method_name])) {
-					$this->value = '';
-					trigger_error(
-						"method $class_name::$method_name is not callable. Please review.", E_USER_ERROR
-					);
-				}
 			}
 			// value is a string to display prefixed by a class name to remove (method_name is the string)
 			else {
@@ -65,9 +58,18 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
-	public function call($object, array $arguments = [])
+	public function call(object|string $object, array $arguments = []) : mixed
 	{
-		return $this->is_method ? parent::call($object, $arguments) : Loc::tr($this->value);
+		if ($this->is_method) {
+			if (!is_callable([$object, $this->value])) {
+				trigger_error(
+					'method ' . get_class($object) . '::$this->value is not callable. Please review.',
+					E_USER_ERROR
+				);
+			}
+			return parent::call($object, $arguments);
+		}
+		return Loc::tr($this->value);
 	}
 
 	//---------------------------------------------------------------------------------- callProperty

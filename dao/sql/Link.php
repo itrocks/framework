@@ -368,7 +368,7 @@ abstract class Link extends Identifier_Map implements Transactional
 			try {
 				$properties[$property_path] = new Reflection_Property($object_class, $property_path);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				// nothing : no property, period
 			}
 			$functions[$property_path]  = ($column instanceof Dao_Function) ? $column : null;
@@ -378,7 +378,7 @@ abstract class Link extends Identifier_Map implements Transactional
 
 	//--------------------------------------------------------------------------------- selectOptions
 	/**
-	 * @param $options Option[] some options for advanced search
+	 * @param $options Option[]|callable[] some options for advanced search
 	 * @param $columns string[]|Column[] the list of the columns names : only those properties will be
 	 *                 read. You can use 'column.sub_column' to get values from linked objects from
 	 *                 the same data source. You can use Dao\Func\Column sub-classes to get result of

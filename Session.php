@@ -151,9 +151,9 @@ class Session implements Serializable
 	 * @param $class_name     string
 	 * @param $create_default boolean|callable Create a default object for the class name if does not
 	 *        exist. Can be callable that creates the default object
-	 * @return object|null
+	 * @return ?object
 	 */
-	public function get($class_name, $create_default = false)
+	public function get(string $class_name, bool|callable $create_default = false) : ?object
 	{
 		if (isset($this->current[$class_name])) {
 			$current = $this->current[$class_name];
