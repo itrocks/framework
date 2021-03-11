@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Template;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Method;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 
 /**
@@ -39,6 +40,14 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 			// value is a method
 			if (method_exists($class_name, $method_name)) {
 				$this->is_method = true;
+				// value is not a method
+				/** @noinspection PhpUnhandledExceptionInspection method_exists */
+				if (!(new Reflection_Method($class_name, $method_name))->isPublic()) {
+					$this->value = '';
+					trigger_error(
+						"method $class_name::$method_name is not callable. Please review.", E_USER_ERROR
+					);
+				}
 			}
 			// value is a string to display prefixed by a class name to remove (method_name is the string)
 			else {
@@ -60,16 +69,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 */
 	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
-		if ($this->is_method) {
-			if (!is_callable([$object, $this->value])) {
-				trigger_error(
-					'method ' . get_class($object) . '::$this->value is not callable. Please review.',
-					E_USER_ERROR
-				);
-			}
-			return parent::call($object, $arguments);
-		}
-		return Loc::tr($this->value);
+		return $this->is_method ? parent::call($object, $arguments) : Loc::tr($this->value);
 	}
 
 	//---------------------------------------------------------------------------------- callProperty
