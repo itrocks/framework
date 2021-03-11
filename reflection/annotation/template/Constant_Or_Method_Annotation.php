@@ -54,11 +54,11 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 
 	//------------------------------------------------------------------------------------------ call
 	/**
-	 * @param $object    object|string the object will be the first. If string, this is a class name
+	 * @param $object    object|string|null the object will be the first. string = a class name
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
-	public function call(object|string $object, array $arguments = []) : mixed
+	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
 		if ($this->is_method) {
 			if (!is_callable([$object, $this->value])) {
