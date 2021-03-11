@@ -40,7 +40,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 			// value is a method
 			if (method_exists($class_name, $method_name)) {
 				$this->is_method = true;
-				// value is not a method
+				// is the methode accessible ? (public)
 				/** @noinspection PhpUnhandledExceptionInspection method_exists */
 				if (!(new Reflection_Method($class_name, $method_name))->isPublic()) {
 					$this->value = '';
