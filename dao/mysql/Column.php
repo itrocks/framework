@@ -296,11 +296,21 @@ class Column implements Sql\Column
 		if (is_object($this_default) || is_numeric($this_default)) {
 			$this_default = strval($this_default);
 		}
+		$type1 = $column->Type;
+		$type2 = $this->Type;
+		if ($type1 !== $type2) {
+			if (strpos($type1, '(') && !strpos($type2, '(')) {
+				$type1 = lParse($type1, '(') . rParse($type1, ')');
+			}
+			elseif (strpos($type2, '(') && !strpos($type1, '(')) {
+				$type2 = lParse($type2, '(') . rParse($type2, ')');
+			}
+		}
 		return ($this_default === $column_default)
 			&& ($this->Extra === $column->Extra)
 			&& ($this->Field === $column->Field)
 			&& ($this->Null  === $column->Null)
-			&& ($this->Type  === $column->Type);
+			&& ($type1       === $type2);
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
