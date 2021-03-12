@@ -59,11 +59,11 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * - If the first argument is an Event object, only $arguments will be sent
 	 * - If the value is a method for the current object, only $arguments will be sent
 	 *
-	 * @param $object    object|string the object will be the first. If string, this is a class name
+	 * @param $object    object|string|null the object will be the first. If string, this is a class name
 	 * @param $arguments array
 	 * @return mixed the value returned by the called method
 	 */
-	public function call(object|string $object, array $arguments = []) : mixed
+	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
 		if ($this->static || is_string($object)) {
 			if (($object !== $this->value) && !(reset($arguments) instanceof Event)) {
