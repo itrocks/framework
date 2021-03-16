@@ -151,9 +151,9 @@ class Session implements Serializable
 	 * @param $class_name     string
 	 * @param $create_default boolean|callable Create a default object for the class name if does not
 	 *        exist. Can be callable that creates the default object
-	 * @return ?object
+	 * @return mixed
 	 */
-	public function get(string $class_name, bool|callable $create_default = false) : ?object
+	public function get(string $class_name, bool|callable $create_default = false) : mixed
 	{
 		if (isset($this->current[$class_name])) {
 			$current = $this->current[$class_name];
@@ -284,7 +284,7 @@ class Session implements Serializable
 	 * @param $object object|mixed can be null (then nothing is set)
 	 * @param $class_name string if not set, object class is be the object identifier. Can be a free string too
 	 */
-	public function set($object, $class_name = null)
+	public function set(mixed $object, $class_name = null)
 	{
 		if (isset($object)) {
 			$class_name = Builder::current()->sourceClassName(
