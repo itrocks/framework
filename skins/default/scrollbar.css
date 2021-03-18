@@ -1,28 +1,21 @@
 .scrollbar {
   background: #d8d8d8;
-  border: 1px solid #f2f2f2;
-}
-.scrollbar.angle {
-  background: #f2f2f2;
-}
-.scrollbar.horizontal {
-  border-bottom-width: 8px;
-  border-top-width: 8px;
-}
-.scrollbar.vertical {
-  border-left-width: 8px;
-  border-right-width: 8px;
-}
-.scrollbar .bar {
-  background: #999;
-  border-radius: 2px;
-}
-.scrollbar .bar.hover {
-  background: #666;
-}
-.scrollbar .bar.moving {
-  background: #2a76c6;
-}
+  border: 1px solid #f2f2f2; }
+  .scrollbar.angle {
+    background: #f2f2f2; }
+  .scrollbar.horizontal {
+    border-bottom-width: 8px;
+    border-top-width: 8px; }
+  .scrollbar.vertical {
+    border-left-width: 8px;
+    border-right-width: 8px; }
+  .scrollbar .bar {
+    background: #999;
+    border-radius: 2px; }
+    .scrollbar .bar.hover {
+      background: #666; }
+    .scrollbar .bar.moving {
+      background: #2a76c6; }
 
 .scrollbar {
   --weight: 20px;
@@ -30,47 +23,32 @@
   display: none;
   height: 100%;
   width: 100%;
-  position: relative;
-}
-.scrollbar, .scrollbar * {
-  position: absolute;
-}
-.scrollbar.angle {
-  grid-area: angle;
-}
-.scrollbar.horizontal {
-  grid-area: horizontal;
-}
-.scrollbar.horizontal * {
-  height: 100%;
-}
-.scrollbar.horizontal > .next, .scrollbar.horizontal > .previous {
-  width: 18px;
-}
-.scrollbar.horizontal > .next {
-  right: 0;
-}
-.scrollbar.horizontal > .previous {
-  left: 0;
-}
-.scrollbar.horizontal > .scroll {
-  width: calc(100% - 36px);
-}
-.scrollbar.vertical {
-  grid-area: vertical;
-}
-.scrollbar.vertical * {
-  width: 100%;
-}
-.scrollbar.vertical > .next, .scrollbar.vertical > .previous {
-  height: 18px;
-}
-.scrollbar.vertical > .next {
-  bottom: 0;
-}
-.scrollbar.vertical > .previous {
-  top: 0;
-}
-.scrollbar.vertical > .scroll {
-  height: calc(100% - 36px);
-}
+  position: relative; }
+  .scrollbar, .scrollbar * {
+    position: absolute; }
+  .scrollbar.angle {
+    grid-area: angle; }
+  .scrollbar.horizontal {
+    grid-area: horizontal; }
+    .scrollbar.horizontal * {
+      height: 100%; }
+    .scrollbar.horizontal > .next, .scrollbar.horizontal > .previous {
+      width: 18px; }
+    .scrollbar.horizontal > .next {
+      right: 0; }
+    .scrollbar.horizontal > .previous {
+      left: 0; }
+    .scrollbar.horizontal > .scroll {
+      width: calc(100% - 36px); }
+  .scrollbar.vertical {
+    grid-area: vertical; }
+    .scrollbar.vertical * {
+      width: 100%; }
+    .scrollbar.vertical > .next, .scrollbar.vertical > .previous {
+      height: 18px; }
+    .scrollbar.vertical > .next {
+      bottom: 0; }
+    .scrollbar.vertical > .previous {
+      top: 0; }
+    .scrollbar.vertical > .scroll {
+      height: calc(100% - 36px); }

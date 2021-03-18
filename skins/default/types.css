@@ -5,15 +5,12 @@
 .integer > a,
 .integer > div > input {
   text-align: right;
-  white-space: nowrap;
-}
+  white-space: nowrap; }
 .float > div,
 .integer > div {
-  text-align: initial;
-}
+  text-align: initial; }
 
 article > .data .float > div,
 article > .data .integer > div {
   text-align: right;
-  white-space: nowrap;
-}
+  white-space: nowrap; }

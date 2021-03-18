@@ -3,35 +3,28 @@ select,
 textarea {
   background: white;
   border: 1px solid #d8d8d8;
-  border-radius: 2px;
-}
-input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not(.auto_width):not(.datetime),
-select:not(.auto_width):not(.datetime),
-textarea:not(.auto_width):not(.datetime) {
-  width: 100px;
-}
-input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
-select:not([type=file]):not(select):not(textarea),
-textarea:not([type=file]):not(select):not(textarea) {
-  height: 10px;
-  padding: 10px;
-}
-input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],
-select[readonly],
-textarea[readonly] {
-  background: transparent;
-}
+  border-radius: 2px; }
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not(.auto_width):not(.datetime),
+  select:not(.auto_width):not(.datetime),
+  textarea:not(.auto_width):not(.datetime) {
+    width: 100px; }
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
+  select:not([type=file]):not(select):not(textarea),
+  textarea:not([type=file]):not(select):not(textarea) {
+    height: 10px;
+    padding: 10px; }
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],
+  select[readonly],
+  textarea[readonly] {
+    background: transparent; }
 
 select {
-  height: 30px;
-}
+  height: 30px; }
 
 input[type=checkbox], input[type=radio] {
-  margin: 8px 4px 8px 0;
-}
+  margin: 8px 4px 8px 0; }
 
 textarea {
   height: 21px;
   line-height: 1.5em;
-  padding: 10px;
-}
+  padding: 10px; }
