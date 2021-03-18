@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\User;
 
+use ITRocks\Framework\Access\IP;
+use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
@@ -315,6 +317,18 @@ class Access_Control implements Configurable, Registerable
 		);
 	}
 
+	//-------------------------------------------------------------------------- disableIPcheckAccess
+	/**
+	 * @param $joinpoint Before_Method
+	 */
+	public function disableIPCheckAccess(Before_Method $joinpoint)
+	{
+		if (User::current()) {
+			$joinpoint->result = true;
+			$joinpoint->stop   = true;
+		}
+	}
+
 	//----------------------------------------------------------------------------------- hasAccessTo
 	/**
 	 * Call this to know if an object|class has access to a feature
@@ -409,6 +423,7 @@ class Access_Control implements Configurable, Registerable
 		$aop->beforeMethod([Main::class, 'doRunInnerController'], [$this, 'checkAccess']);
 		$aop->beforeMethod([Menu::class, 'constructBlock'], [$this, 'menuCheckAccess']);
 		$aop->beforeMethod([View::class, 'run'], [$this, 'removeButtonsWithNoLink']);
+		$aop->beforeMethod([IP::class, 'checkAccess'], [$this, 'disableIPCheckAccess']);
 	}
 
 	//----------------------------------------------------------------------- removeButtonsWithNoLink
