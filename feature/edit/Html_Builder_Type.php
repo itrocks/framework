@@ -635,18 +635,24 @@ class Html_Builder_Type
 	//----------------------------------------------------------------------- makeTextInputOrTextarea
 	/**
 	 * @param $multiline boolean
-	 * @param $value     string
+	 * @param $value     string|string[]
 	 * @return Input
 	 */
 	private function makeTextInputOrTextarea($multiline, $value)
 	{
 		if ($multiline) {
+			if (is_array($value)) {
+				$value = join(LF, $value);
+			}
 			$input = new Textarea($this->getFieldName(), $value);
 			if ($this->auto_height) {
 				$input->addClass('auto_height');
 			}
 		}
 		else {
+			if (is_array($value)) {
+				$value = join(',', $value);
+			}
 			$input = new Input($this->getFieldName(), $value);
 		}
 		if ($this->auto_width) {
