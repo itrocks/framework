@@ -47,7 +47,7 @@ trait Temporary_Path
 			clearstatcache(true, $path);
 			if (!is_dir($path)) {
 				$error = error_get_last();
-				trigger_error($error['message'], E_USER_ERROR);
+				trigger_error($path . ' : ' . $error['message'], E_USER_ERROR);
 			}
 		}
 		// Init the folder only if has been created by this process
