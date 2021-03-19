@@ -221,7 +221,11 @@ class Collection
 		) {
 			$value = str_replace('|', '&#124;', $value);
 		}
-		if (strlen($value) && !Conditions_Annotation::of($property)->applyTo($object)) {
+		if (
+			!is_array($value)
+			&& strlen($value)
+			&& !Conditions_Annotation::of($property)->applyTo($object)
+		) {
 			$value = null;
 		}
 		$cell = new Item($value);
