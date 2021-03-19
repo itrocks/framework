@@ -120,6 +120,15 @@ class String_Class
 		return new String_Class(htmlentities($this->value, ENT_QUOTES|ENT_HTML5));
 	}
 
+	//------------------------------------------------------------------------------ htmlSpecialChars
+	/**
+	 * @return static
+	 */
+	public function htmlSpecialChars() : static
+	{
+		return new String_Class(htmlspecialchars($this->value));
+	}
+
 	//----------------------------------------------------------------------------------------- idTag
 	/**
 	 * Format the value so that it can be used into an id="" HTML tag
