@@ -30,6 +30,8 @@
 		"ext-zlib":                              "*",
 		"html2text/html2text":                   "4.*",
 		"intelogie/pdf.js":                      "dev-master",
+		"itrocks/quill":                         "2.0.*",
+		"itrocks/quill-better-table":            "0.1.*",
 		"jquery/jquery-mousewheel":              "3.*",
 		"jquery-form/form":                      "3.*",
 		"kensnyder/quill-image-resize-module":   "1.0.0",
@@ -41,8 +43,6 @@
 		"pear/net_smtp":                         "1.*",
 		"php":                                   "^8.0.0",
 		"phpunit/phpunit":                       "9.*",
-		"itrocks/quill":                         "2.0.*",
-		"itrocks/quill-better-table":            "0.1.*",
 		"setasign/fpdi":                         "^2.3",
 		"tecnickcom/tcpdf":                      "^6.3"
 	},
