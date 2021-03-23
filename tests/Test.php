@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Tests;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
-use PHPUnit\Framework\Error\Notice;
 
 /**
  * All unit test classes must extend this, to access its begin(), end() and assume() methods
@@ -23,7 +22,7 @@ abstract class Test extends Testable
 	 * @param $check       mixed the checked value
 	 * @param $test        string the name of the test (ie 'Method_Name[.test_name]')
 	 */
-	protected function assume($test, $check, $assume)
+	protected function assume(mixed $test, mixed $check, string $assume)
 	{
 		$check  = $this->toArray($check);
 		$assume = $this->toArray($assume);
@@ -43,7 +42,6 @@ abstract class Test extends Testable
 			// Functional testing
 
 			// There will be notice when modifying/creating table
-			Notice::$enabled = false;
 			Dao::begin();
 		}
 		else {
@@ -77,7 +75,7 @@ abstract class Test extends Testable
 	 * @param $already object[] objects hash table to avoid recursion
 	 * @return mixed
 	 */
-	private function toArray($array, array $already = [])
+	private function toArray($array, array $already = []) : mixed
 	{
 		if (is_object($array)) {
 			if (isset($already[md5(spl_object_hash($array))])) {
