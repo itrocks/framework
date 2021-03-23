@@ -1,8 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
-use Exception;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
@@ -34,30 +34,19 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * @param $object object
-	 * @return Boolean
-	 * @throws Exception
+	 * @return boolean
 	 */
 	public function validate($object): bool
 	{
-		$property_name = $this->property->getName();
-
-		if(!property_exists($object, $property_name)) {
-			throw new Exception(
-				sprintf(
-					'The %s property does not exist in %s object',
-					$property_name,
-					get_class($object)
-				)
-			);
-		}
-
-		if(!$object->{$property_name}) {
+		$property_name = $this->property->name;
+		if (!strlen($object->$property_name)) {
 			return true;
 		}
-
-		$search = Dao::searchOne([$property_name => $object->{$property_name}], get_class($object));
-
-		return $search === null;
+		$search = [$property_name => $object->$property_name];
+		if (Dao::getObjectIdentifier($object)) {
+			$search[] = Func::notEqual($object);
+		}
+		return !Dao::searchOne($search, get_class($object));
 	}
 
 }
