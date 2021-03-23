@@ -87,7 +87,7 @@ class Asynchronous
 		}
 
 		$process = $this->run(
-			'itrocks/framework/console' . SP . rawurldecode($uri) . $parameters,
+			getcwd() . '/itrocks/framework/console' . SP . rawurldecode($uri) . $parameters,
 			$then,
 			$needs_session
 		);
