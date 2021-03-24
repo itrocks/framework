@@ -4,7 +4,7 @@ namespace ITRocks\Framework;
 use Exception;
 
 /**
- * Call with php itrocks/framework/console.php
+ * Call with itrocks/framework/console
  *
  * Call this script from command line / scheduled tasks to call features from the software
  * - Will be considered like running under HTTPS
