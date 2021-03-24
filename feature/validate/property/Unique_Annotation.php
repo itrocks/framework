@@ -39,7 +39,7 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	 */
 	public function validate($object): bool
 	{
-		$property_name = $this->property->name;
+		$property_name = $this->property->getName();
 		if (!strlen($object->$property_name)) {
 			return true;
 		}

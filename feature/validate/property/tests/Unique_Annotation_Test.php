@@ -72,24 +72,6 @@ class Unique_Annotation_Test extends Test
 		$this->assertTrue($unique_annotation->validate($class));
 	}
 
-	//--------------------------------------------------------------- testValidateWithUnknownProperty
-	public function testValidateWithUnknownProperty()
-	{
-		$this->dao_link->expects($this->never())->method('searchOne')->willReturn(null);
-
-		$property_mock = $this->createMock(Reflection_Property::class);
-		$property_mock->expects($this->once())->method('getName')->willReturn('name');
-
-		$unique_annotation = new Unique_Annotation(true, $property_mock);
-
-		$class = new stdClass();
-		$class->foo = 'notname';
-
-		$this->expectException('Exception');
-		$this->expectExceptionMessage('The name property does not exist in stdClass object');
-		$unique_annotation->validate($class);
-	}
-
 	//------------------------------------------------------------------------- testWithValidateFalse
 	/**
 	 * @throws Exception
