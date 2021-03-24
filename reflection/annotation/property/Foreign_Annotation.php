@@ -34,8 +34,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
-			$link      = Link_Annotation::of($property);
-			$possibles = null;
+			$link = Link_Annotation::of($property);
 			if ($link->isCollection()) {
 				$possibles = $this->defaultCollection($property);
 			}
@@ -45,7 +44,10 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 			elseif ($link->isObject()) {
 				$possibles = $this->defaultObject($property);
 			}
-			if (is_array($possibles) && count($possibles) == 1) {
+			else {
+				$possibles = [];
+			}
+			if (count($possibles) === 1) {
 				$this->value = reset($possibles);
 			}
 			elseif (count($possibles) > 1) {
