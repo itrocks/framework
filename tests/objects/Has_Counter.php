@@ -6,6 +6,10 @@ use ITRocks\Framework\Dao;
 
 /**
  * For any class that has counter
+ * Conception to extends Document, for testing use
+ *
+ * @extends Document
+ * @see Document
  */
 trait Has_Counter
 {
@@ -18,7 +22,6 @@ trait Has_Counter
 
 	//------------------------------------------------------------------------------------- setNumber
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @before ITRocks\Framework\Dao\Data_Link::write($this)
 	 */
 	public function setNumber()

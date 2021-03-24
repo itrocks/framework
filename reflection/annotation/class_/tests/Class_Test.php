@@ -5,12 +5,11 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Reflection\Annotation\Class_\Extends_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Store_Name_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use ITRocks\Framework\Tests\Objects\Counter;
+use ITRocks\Framework\Tests\Objects\A_Trait;
 use ITRocks\Framework\Tests\Objects\Document;
-use ITRocks\Framework\Tests\Objects\Order;
+use ITRocks\Framework\Tests\Objects\Has_Counter;
 use ITRocks\Framework\Tests\Objects\Quote;
 use ITRocks\Framework\Tests\Test;
-use ITRocks\Framework\Traits\Has_Name;
 use ReflectionException;
 
 /**
@@ -62,12 +61,12 @@ class Class_Test extends Test
 	 */
 	public function testExtendsExtendsParentExtends()
 	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(Order::class));
+		$extends = Extends_Annotation::allOf(new Reflection_Class(A_Trait::class));
 		$values  = [];
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		static::assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
+		static::assertEquals(print_r($values, true), print_r([[Has_Counter::class]], true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsWithoutParent
@@ -79,12 +78,12 @@ class Class_Test extends Test
 	 */
 	public function testExtendsExtendsWithoutParent()
 	{
-		$extends = Extends_Annotation::allOf(new Reflection_Class(Counter::class));
+		$extends = Extends_Annotation::allOf(new Reflection_Class(Has_Counter::class));
 		$values  = [];
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		static::assertEquals(print_r($values, true), print_r([[Has_Name::class]], true), __METHOD__);
+		static::assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
