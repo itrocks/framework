@@ -39,7 +39,7 @@ class Select_Test extends Test
 	 * @see    testEverything
 	 * @throws ReflectionException
 	 */
-	public function everythingProvider()
+	public function everythingProvider() : array
 	{
 		upgradeTimeLimit(0);
 		$classes = [];
@@ -88,7 +88,7 @@ class Select_Test extends Test
 	 * @return string[]
 	 * @throws ReflectionException
 	 */
-	private function propertyNames(Reflection_Class $class, $depth = 1)
+	private function propertyNames(Reflection_Class $class, $depth = 1) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection comes from Reflection_Class */
 		$properties = Class_\Link_Annotation::of($class)->value
@@ -139,7 +139,7 @@ class Select_Test extends Test
 	 * @param        $query   string
 	 * @param        $builder Select
 	 */
-	public function testEverything($query, Select $builder)
+	public function testEverything(string $query, Select $builder)
 	{
 		/** @var $dao Mysql\Link */
 		$dao                      = Dao::current();

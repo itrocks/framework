@@ -65,33 +65,51 @@ class Tests_Command extends Command
 
 		$output = new Text_Output();
 		$output->log('Running tests with options : ');
-		$line        = '';
+
+		$class_name  = '';
+		$file_path   = '';
+		$method_name = '';
+		$previous    = '';
 		$run_options = [];
-		foreach ($options as $option) {
-			$run_options[] = $option;
-			if (substr($option, 0, 2) === '--') {
-				$output->log(TAB . $line);
-				$line = '';
+		foreach ($options as $key => $option) {
+			if (($previous === '--configuration') || !$key) {
+				$option = realpath($option);
 			}
-			$line .= SP . $option;
+			/** @noinspection PhpUnhandledExceptionInspection options must be valid class names */
 			if (
 				strlen($option)
 				&& ctype_upper($option[0])
 				&& ($option !== Tests_Html_ResultPrinter::class)
 				&& class_exists($option)
+				&& ($file_path = (new ReflectionClass($option))->getFileName())
 			) {
-				/** @noinspection PhpUnhandledExceptionInspection options must be valid class names */
-				$file_path = (new ReflectionClass($option))->getFileName();
-				if ($file_path) {
-					$run_options[] = $file_path;
-					$line         .= SP . $file_path;
-				}
+				$class_name = $option;
 			}
+			elseif (
+				$class_name
+				&& strlen($option)
+				&& ctype_lower($option[0])
+				&& method_exists($class_name, $option)
+			) {
+				$method_name = $option;
+			}
+			else {
+				$run_options[] = $option;
+			}
+			$previous = $option;
 		}
-		$output->log(TAB . $line);
 
+		if ($method_name) {
+			$run_options[] = '--filter';
+			$run_options[] = $class_name . '::' . $method_name;
+		}
+		elseif ($class_name) {
+			$run_options[] = '--filter';
+			$run_options[] = $class_name;
+		}
+
+		$output->log(str_replace('--', "\n--", join(SP, $run_options)));
 		$this->run($run_options);
-
 		$output->end();
 	}
 
