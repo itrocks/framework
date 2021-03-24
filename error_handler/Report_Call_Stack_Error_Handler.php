@@ -210,7 +210,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 		$link = Dao::current();
 		if ($link instanceof Link) {
 			/** $link Link */
-			$result .= ' ; mysql-thread-id = ' . $link->getConnection()->thread_id;
+			$result .= ' ; mysql-thread-id = ' . ($link->getConnection()->thread_id ?? null);
 		}
 		$result .= ' ; ' . session_name() . ' = ' . session_id();
 		return $result . LF;
