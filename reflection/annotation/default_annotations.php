@@ -370,7 +370,7 @@ Parser::$default_annotations = [
 	 * Identifies a method that gets the default value for the property
 	 * The Property will be sent as an argument to this callable
 	 */
-	Parser::T_PROPERTY . '@default' => Method_Annotation::class,
+	Parser::T_PROPERTY . '@default' => Constant_Or_Method_Annotation::class,
 
 	/**
 	 * @delete_constraint cascade|initial|restrict|set_null
