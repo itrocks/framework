@@ -11,18 +11,29 @@ use stdClass;
 class Phone_Annotation_Test extends Test
 {
 
+	//-------------------------------------------------------------------- messagePhoneNumberProvider
+	/**
+	 * @return array[]
+	 */
+	public function messagePhoneNumberProvider() : array
+	{
+		return [
+			['061203', 'This phone number is not correct', 6],
+			['zgre', 'This is not a number', 1],
+			['062235', 'Number is too short', 2],
+			['06223556291', 'Number is too long', 4]
+		];
+	}
+
 	//------------------------------------------------------------------------------ testErrorMessage
 	/**
+	 * @dataProvider messagePhoneNumberProvider
 	 * @param $phone_number  string
 	 * @param $error_message string
-	 * @param $error_code    int
-	 * @dataProvider messagePhoneNumberProvider
+	 * @param $error_code    integer
 	 */
-	public function testErrorMessage(
-		string $phone_number,
-		string $error_message,
-		int $error_code
-	) {
+	public function testErrorMessage(string $phone_number, string $error_message, int $error_code)
+	{
 		$property_mock     = $this->createMock(Reflection_Property::class);
 		$phone_format_mock = $this->createMock(Phone_Format::class);
 
@@ -45,17 +56,14 @@ class Phone_Annotation_Test extends Test
 
 	//----------------------------------------------------------------------- testValidatePhoneNumber
 	/**
-	 * @param $phone_number  string
-	 * @param $country_code  string|null
-	 * @param $is_valid      bool
-	 * @param $expected      bool
 	 * @dataProvider validatePhoneNumberProvider
+	 * @param $phone_number string
+	 * @param $country_code ?string
+	 * @param $is_valid     boolean
+	 * @param $expected     boolean
 	 */
 	public function testValidatePhoneNumber(
-		string $phone_number,
-		?string $country_code,
-		bool $is_valid,
-		bool $expected
+		string $phone_number, ?string $country_code, bool $is_valid, bool $expected
 	) {
 		$property_mock     = $this->createMock(Reflection_Property::class);
 		$phone_format_mock = $this->createMock(Phone_Format::class);
@@ -67,13 +75,17 @@ class Phone_Annotation_Test extends Test
 		$phone_annotation = new Phone_Annotation(true ,$property_mock);
 		$phone_annotation->phone_format = $phone_format_mock;
 
-		$class             = new stdClass();
+		$class = new stdClass();
 		$class->foo_number = $phone_number;
 
 		$this->assertEquals($expected, $phone_annotation->validate($class));
 	}
 
-	public function validatePhoneNumberProvider(): array
+	//------------------------------------------------------------------- validatePhoneNumberProvider
+	/**
+	 * @return array[]
+	 */
+	public function validatePhoneNumberProvider() : array
 	{
 		return [
 			['0622355629', '', true, true],
@@ -82,16 +94,6 @@ class Phone_Annotation_Test extends Test
 			['zgre', '', false, false],
 			['062235', '', false, false],
 			['06223556291', '', false, false]
-		];
-	}
-
-	public function messagePhoneNumberProvider(): array
-	{
-		return [
-			['061203', 'This phone number is not correct', 6],
-			['zgre', 'This is not a number', 1],
-			['062235', 'Number is too short', 2],
-			['06223556291', 'Number is too long', 4]
 		];
 	}
 

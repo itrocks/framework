@@ -5,7 +5,11 @@ use Exception;
 
 class Phone_Number_Exception extends Exception
 {
-	//----------------------------------------------- Different error type when adding a phone number
+
+	//----------------------------------------------------------------------------------- ERROR_TYPES
+	/**
+	 * Different error types when a phone number is validated
+	 */
 	public const ERROR_TYPES = [
 		'Invalid country code',
 		'This is not a number',
@@ -16,11 +20,15 @@ class Phone_Number_Exception extends Exception
 
 	//----------------------------------------------------------------------------------- $error_type
 	/**
-	 * @var int
+	 * @var integer
 	 */
-	private $error_type;
+	private int $error_type;
 
 	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $error_type integer
+	 * @param $message    string
+	 */
 	public function __construct(int $error_type, string $message)
 	{
 		parent::__construct($message);
@@ -28,8 +36,12 @@ class Phone_Number_Exception extends Exception
 	}
 
 	//---------------------------------------------------------------------------------- getErrorType
+	/**
+	 * @return ?string
+	 */
 	public function getErrorType(): ?string
 	{
 		return self::ERROR_TYPES[$this->error_type] ?? null;
 	}
+
 }

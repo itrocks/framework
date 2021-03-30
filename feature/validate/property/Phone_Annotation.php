@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
-use Exception;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
 use ITRocks\Framework\Reflection\Annotation\Template\Boolean_Annotation;
@@ -12,17 +11,17 @@ class Phone_Annotation extends Boolean_Annotation implements Property_Context_An
 {
 	use Annotation;
 
-	//--------------------------------------------------------------------------------- $phone_format
-	/**
-	 * @var Phone_Format|null
-	 */
-	public $phone_format;
-
 	//-------------------------------------------------------------------------------- $error_message
 	/**
 	 * @var string
 	 */
 	private $error_message;
+
+	//--------------------------------------------------------------------------------- $phone_format
+	/**
+	 * @var Phone_Format|null
+	 */
+	public $phone_format;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -32,32 +31,34 @@ class Phone_Annotation extends Boolean_Annotation implements Property_Context_An
 	public function __construct($value, Reflection_Property $property)
 	{
 		parent::__construct($value);
-		$this->property     = $property;
-		$this->phone_format = Phone_Format::get();
+		if ($this->value) {
+			$this->phone_format = Phone_Format::get();
+			$this->property     = $property;
+		}
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
+	/**
+	 * @return string
+	 */
 	public function reportMessage(): string
 	{
-		return !empty($this->error_message)
-			? $this->error_message
-			: 'This phone number is not correct';
+		return $this->error_message ?? 'This phone number is not correct';
 	}
 
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * @param $object object
-	 * @return Boolean
-	 * @throws Exception
+	 * @return boolean
 	 */
 	public function validate($object): bool
 	{
-		if (!$this->phone_format) {
+		if (!$this->value) {
 			return true;
 		}
 		try {
 			return $this->phone_format->isValid(
-				$object->{$this->property->getName()},
+				$object->{$this->property->name},
 				$this->phone_format->getCountryCode($object)
 			);
 		}

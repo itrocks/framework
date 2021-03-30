@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Phone;
 
 use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Country;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -18,9 +19,11 @@ class Phone_Format implements Configurable
 
 	//-------------------------------------------------------------------------------- $country_class
 	/**
+	 * Country class name
+	 *
 	 * @var string
 	 */
-	public $country_class;
+	public $country_class = Country::class;
 
 	//---------------------------------------------------------------------------- $phone_number_util
 	/**
@@ -29,40 +32,45 @@ class Phone_Format implements Configurable
 	private $phone_number_util;
 
 	//----------------------------------------------------------------------------------- __construct
-	public function __construct($configuration)
+	/**
+	 * @param $configuration string[]
+	 */
+	public function __construct($configuration = [])
 	{
 		foreach ($configuration as $property_name => $value) {
-			$this->{$property_name} = $value;
+			$this->$property_name = $value;
 		}
 		$this->phone_number_util = PhoneNumberUtil::getInstance();
 	}
 
 	//-------------------------------------------------------------------------------- getCountryCode
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @return string|null
-	 * @throws \ReflectionException
 	 */
-	public function getCountryCode($object) : ?string
+	public function getCountryCode(object $object) : ?string
 	{
-		$country          = null;
-		$country_class    = $this->country_class;
+		$country_code  = null;
+		$country_class = $this->country_class;
+		/** @noinspection PhpUnhandledExceptionInspection object */
 		$reflection_class = new Reflection_Class($object);
 
 		foreach ($reflection_class->getProperties() as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection getProperties */
 			$property_value = $property->getValue($object);
-			if(
-				$property_value instanceof $country_class
+			if (
+				($property_value instanceof $country_class)
 				&& isA($property_value, Has_Code::class)
 			) {
-				$country = $property_value->code;
+				$country_code = $property_value->code;
 			}
-			else if(is_object($property_value)) {
-				$country = $this->getCountryCode($property_value);
+			elseif (is_object($property_value)) {
+				$country_code = $this->getCountryCode($property_value);
 			}
 		}
 
-		return $country;
+		return $country_code;
 	}
 
 	//--------------------------------------------------------------------------------------- isValid
@@ -70,17 +78,16 @@ class Phone_Format implements Configurable
 	 * Check if the phone number is valid with the country code
 	 *
 	 * @param $phone_number string
-	 * @param $country      string|null
-	 * @return bool
+	 * @param $country_code string|null
+	 * @return boolean
 	 * @throws Phone_Number_Exception
 	 */
-	public function isValid(string $phone_number, ?string $country) : bool
+	public function isValid(string $phone_number, ?string $country_code) : bool
 	{
-
-		$country = $country ?? Locale::get()->language;
+		$country_code = $country_code ?: Locale::get()->language;
 
 		try {
-			$phone_number = $this->phone_number_util->parse($phone_number, strtoupper($country));
+			$phone_number = $this->phone_number_util->parse($phone_number, strtoupper($country_code));
 			return $this->phone_number_util->isValidNumber($phone_number);
 		}
 		catch (NumberParseException $exception) {
