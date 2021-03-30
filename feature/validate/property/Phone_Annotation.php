@@ -52,6 +52,9 @@ class Phone_Annotation extends Boolean_Annotation implements Property_Context_An
 	 */
 	public function validate($object): bool
 	{
+		if (!$this->phone_format) {
+			return true;
+		}
 		try {
 			return $this->phone_format->isValid(
 				$object->{$this->property->getName()},
