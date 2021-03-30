@@ -374,6 +374,7 @@ class Validator implements Registerable
 			'max_value'  => Property\Max_Value_Annotation::class,
 			'min_length' => Property\Min_Length_Annotation::class,
 			'min_value'  => Property\Min_Value_Annotation::class,
+			'phone'      => Property\Phone_Annotation::class,
 			'precision'  => Property\Precision_Annotation::class,
 			'regex'      => Property\Regex_Annotation::class,
 			'signed'     => Property\Signed_Annotation::class,

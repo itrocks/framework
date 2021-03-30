@@ -28,6 +28,7 @@
 		"ext-simplexml":                         "*",
 		"ext-yaml":                              "*",
 		"ext-zlib":                              "*",
+		"giggsey/libphonenumber-for-php":        "^8.12",
 		"html2text/html2text":                   "4.*",
 		"intelogie/pdf.js":                      "dev-master",
 		"itrocks/quill":                         "2.0.*",
