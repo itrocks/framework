@@ -177,24 +177,20 @@ class Object_Builder_Array
 	 * @param $property Reflection_Property
 	 * @param $value    boolean|integer|float|string|array
 	 * @return boolean|integer|float|string|array
+	 * @throws \ITRocks\Framework\View\User_Error_Exception
 	 */
-	private function buildBasicValue(Reflection_Property $property, $value)
+	private function buildBasicValue(Reflection_Property $property, mixed $value)
 	{
 		if (!is_null($value) || !Null_Annotation::of($property)->value) {
 			if (is_string($value)) {
 				$value = trim($value);
 			}
-			switch ($property->getType()->asString()) {
-				case Type::BOOLEAN:
-					$value = !(empty($value) || ($value === _FALSE));
-					break;
-				case Type::INTEGER:
-					$value = isStrictInteger($value) ? intval($value) : $value;
-					break;
-				case Type::FLOAT:
-					$value = isStrictNumeric($value) ? floatval($value) : $value;
-					break;
-			}
+			$value = match($property->getType()->asString()) {
+				Type::BOOLEAN => !(empty($value) || in_array($value, [_FALSE, .0, 0, '0'], true)),
+				Type::INTEGER => Loc::integerToIso($value),
+				Type::FLOAT   => Loc::floatToIso($value),
+				default       => $value
+			};
 		}
 		return $value;
 	}
@@ -530,7 +526,7 @@ class Object_Builder_Array
 			}
 		}
 		// the property value is set only for official properties, if not default and not empty
-		if (($value !== '') || !$property->getType()->isClass()) {
+		if (($value !== '') || !$type->isClass()) {
 			if (
 				!isset($object->$property_name) || ($value != $object->$property_name) || $build->fast_add
 			) {

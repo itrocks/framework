@@ -15,6 +15,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template\Functions;
+use ITRocks\Framework\View\User_Error_Exception;
 use ReflectionException;
 use Reflector;
 
@@ -194,10 +195,11 @@ class Loc implements Registerable
 
 	//------------------------------------------------------------------------------------ floatToIso
 	/**
-	 * @param $float string
-	 * @return float
+	 * @param $float ?string
+	 * @return ?float
+	 * @throws User_Error_Exception
 	 */
-	public static function floatToIso($float)
+	public static function floatToIso(?string $float) : ?float
 	{
 		return Locale::current()->number_format->floatToIso($float);
 	}
@@ -207,13 +209,14 @@ class Loc implements Registerable
 	 * Takes a float number and make it locale
 	 *
 	 * @param $float                 float ie 1000 1000.28 1000.2148
-	 * @param $decimal_minimal_count integer if set, overrides decimal minimal count
-	 * @param $decimal_maximal_count integer if set, overrides decimal maximal count
+	 * @param $decimal_minimal_count integer|null if set, overrides decimal minimal count
+	 * @param $decimal_maximal_count integer|null if set, overrides decimal maximal count
 	 * @return string ie '1 000,00' '1 000,28' '1 000,2148'
 	 */
 	public static function floatToLocale(
-		$float, $decimal_minimal_count = null, $decimal_maximal_count = null
-	) {
+		float $float, int $decimal_minimal_count = null, int $decimal_maximal_count = null
+	) : string
+	{
 		return Locale::current()->number_format->floatToLocale(
 			$float, $decimal_minimal_count, $decimal_maximal_count
 		);
@@ -260,10 +263,11 @@ class Loc implements Registerable
 
 	//---------------------------------------------------------------------------------- integerToIso
 	/**
-	 * @param $integer  string
-	 * @return integer
+	 * @param $integer ?string
+	 * @return ?integer
+	 * @throws User_Error_Exception
 	 */
-	public static function integerToIso($integer)
+	public static function integerToIso(?string $integer) : ?int
 	{
 		return Locale::current()->number_format->integerToIso($integer);
 	}
@@ -275,7 +279,7 @@ class Loc implements Registerable
 	 * @param $integer integer ie 1000
 	 * @return string ie '1 000'
 	 */
-	public static function integerToLocale($integer)
+	public static function integerToLocale(int $integer) : string
 	{
 		return Locale::current()->number_format->integerToLocale($integer);
 	}
