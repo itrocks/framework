@@ -220,9 +220,9 @@ class Maintainer implements Configurable, Registerable
 	 * Create a table in database, using a data class structure
 	 *
 	 * @param $class_name string
-	 * @param $mysqli     Contextual_Mysqli
+	 * @param $mysqli     Contextual_Mysqli|null
 	 */
-	private function createTable($class_name, Contextual_Mysqli $mysqli = null)
+	private function createTable(string $class_name, Contextual_Mysqli $mysqli = null)
 	{
 		if (!$mysqli) {
 			$data_link = Dao::current();
@@ -257,7 +257,9 @@ class Maintainer implements Configurable, Registerable
 	 * @param $query      string
 	 * @return boolean
 	 */
-	private function createTableWithoutContext(Contextual_Mysqli $mysqli, $table_name, $query)
+	private function createTableWithoutContext(
+		Contextual_Mysqli $mysqli, string $table_name, string $query
+	) : bool
 	{
 		$query = str_replace(LF, SP, $query);
 		// if a class name exists for the table name, use it as context and create table from class
@@ -344,9 +346,9 @@ class Maintainer implements Configurable, Registerable
 	 * Create a table in database, using a data class structure
 	 *
 	 * @param $class_name string
-	 * @param $mysqli     Contextual_Mysqli
+	 * @param $mysqli     Contextual_Mysqli|null
 	 */
-	private function createView($class_name, Contextual_Mysqli $mysqli = null)
+	private function createView(string $class_name, Contextual_Mysqli $mysqli = null)
 	{
 		if (!$mysqli) {
 			$data_link = Dao::current();
@@ -375,9 +377,9 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * @param $query  string
 	 * @param $mysqli Contextual_Mysqli
-	 * @return string[]|null
+	 * @return ?string[]
 	 */
-	private function guessContext($query, Contextual_Mysqli $mysqli)
+	private function guessContext(string $query, Contextual_Mysqli $mysqli) : ?array
 	{
 		$context = [];
 		if ($mysqli->isSelect($query) || $mysqli->isExplainSelect($query)) {
@@ -419,7 +421,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $query  string
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 */
-	private function onCantCreateTableError(Contextual_Mysqli $mysqli, $query)
+	private function onCantCreateTableError(Contextual_Mysqli $mysqli, string $query) : bool
 	{
 		$retry             = false;
 		$error_table_names = $this->parseNamesFromQuery($query);
@@ -441,8 +443,9 @@ class Maintainer implements Configurable, Registerable
 	 * @param $query     string
 	 * @param $joinpoint Before_Method
 	 */
-	public function onMysqliQueryError(Contextual_Mysqli $object, $query, Before_Method $joinpoint)
-	{
+	public function onMysqliQueryError(
+		Contextual_Mysqli $object, string $query, Before_Method $joinpoint
+	) {
 		$mysqli     = $object;
 		$last_errno = $mysqli->last_errno;
 		$last_error = $mysqli->last_error;
@@ -548,9 +551,9 @@ class Maintainer implements Configurable, Registerable
 		}
 		if (!$retry) {
 			foreach ($error_table_names as $error_table_name) {
+				/** @noinspection PhpExpressionAlwaysConstantInspection Inspector is wrong */
 				$retry = $retry || $this->createTableWithoutContext($mysqli, $error_table_name, $query);
 			}
-			return $retry;
 		}
 		return $retry;
 	}
@@ -564,7 +567,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $error string
 	 * @return string
 	 */
-	private function parseNameFromError($error)
+	private function parseNameFromError(string $error) : string
 	{
 		$i    = strpos($error, Q) + 1;
 		$j    = strpos($error, Q, $i);
@@ -585,7 +588,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $query string
 	 * @return string[]
 	 */
-	private function parseNamesFromQuery($query)
+	private function parseNamesFromQuery(string $query) : array
 	{
 		$tables = [];
 		$i      = 0;
@@ -607,7 +610,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $query  string
 	 * @return boolean|mysqli_result
 	 */
-	public function query(Contextual_Mysqli $mysqli, $query)
+	public function query(Contextual_Mysqli $mysqli, string $query) : bool|mysqli_result
 	{
 		$this->requests[] = $query;
 		if ($this->simulation) {
@@ -659,7 +662,7 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @return string[]
 	 */
-	public function simulationStop()
+	public function simulationStop() : array
 	{
 		$this->simulation = false;
 		return $this->requests;
@@ -708,7 +711,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $mysqli  Contextual_Mysqli
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 */
-	private function updateContextTables(Contextual_Mysqli $mysqli)
+	private function updateContextTables(Contextual_Mysqli $mysqli) : bool
 	{
 		$context = end($mysqli->contexts);
 		if (!is_array($context)) {
@@ -730,7 +733,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $mysqli             Contextual_Mysqli
 	 */
 	private function updateImplicitTable(
-		Reflection_Property $property, $exclude_class_name, Contextual_Mysqli $mysqli
+		Reflection_Property $property, string $exclude_class_name, Contextual_Mysqli $mysqli
 	) {
 		$link_table          = new Link_Table($property);
 		$column_name         = $link_table->masterColumn();
@@ -784,7 +787,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $mysqli             Contextual_Mysqli
 	 */
 	private function updateImplicitTables(
-		Reflection_Class $class, $exclude_class_name, Contextual_Mysqli $mysqli
+		Reflection_Class $class, string $exclude_class_name, Contextual_Mysqli $mysqli
 	) {
 		if (Class_\Link_Annotation::of($class)->value) {
 			/** @noinspection PhpUnhandledExceptionInspection class is valid */
@@ -808,11 +811,13 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
-	 * @param $mysqli     Contextual_Mysqli If null, Dao::current()->getConnection() will be taken
+	 * @param $mysqli     Contextual_Mysqli|null If null, Dao::current()->getConnection() will be taken
 	 * @param $implicit   boolean if true, update linked implicit tables (anti-recursion)
 	 * @return boolean true if an update query has been generated and executed
 	 */
-	public function updateTable($class_name, Contextual_Mysqli $mysqli = null, $implicit = true)
+	public function updateTable(
+		string $class_name, Contextual_Mysqli $mysqli = null, bool $implicit = true
+	) : bool
 	{
 		if (in_array($class_name, $this->exclude_classes) || (new Type($class_name))->isAbstractClass()) {
 			return false;
@@ -859,7 +864,8 @@ class Maintainer implements Configurable, Registerable
 	private function updateTableStructure(
 		Table $class_table, Table_Builder_Class $table_builder_class,
 		Contextual_Mysqli $mysqli, $class_name = null
-	) {
+	) : bool
+	{
 		$table_name  = $class_table->getName();
 		$mysql_table = Table_Builder_Mysqli::build($mysqli, $table_name);
 		// create table
