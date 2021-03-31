@@ -45,7 +45,8 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 				if (!(new Reflection_Method($class_name, $method_name))->isPublic()) {
 					$this->value = '';
 					trigger_error(
-						"method $class_name::$method_name is not callable. Please review.", E_USER_ERROR
+						"method $class_name::$method_name is not callable or public. Please review.",
+						E_USER_ERROR
 					);
 				}
 			}

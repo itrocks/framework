@@ -37,7 +37,7 @@ class Token
 	 * @noinspection PhpUnused @default
 	 * @return Date_Time
 	 */
-	protected function defaultValidityEndDate()
+	public function defaultValidityEndDate()
 	{
 		return Date_Time::now()->add(1, Date_Time::MINUTE);
 	}
