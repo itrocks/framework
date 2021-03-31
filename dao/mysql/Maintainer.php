@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Dao\Mysql;
 
-use Exception;
 use ITRocks\Framework\AOP\Joinpoint\Before_Method;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
@@ -147,6 +146,7 @@ class Maintainer implements Configurable, Registerable
 	/**
 	 * Create a table in database, which has no associated class, using fields names
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $mysqli       Contextual_Mysqli
 	 * @param $table_name   string
 	 * @param $column_names string[]
@@ -154,7 +154,9 @@ class Maintainer implements Configurable, Registerable
 	 * @todo mysqli context should contain sql builder (ie Select) in order to know if this was
 	 *       an implicit link table. If then : only one unique index should be built
 	 */
-	private function createImplicitTable(Contextual_Mysqli $mysqli, $table_name, array $column_names)
+	private function createImplicitTable(
+		Contextual_Mysqli $mysqli, string $table_name, array $column_names
+	) : bool
 	{
 		$only_ids  = true;
 		$table     = new Table($table_name);
@@ -172,13 +174,12 @@ class Maintainer implements Configurable, Registerable
 					$ids_index->addKey($column_name);
 					$index = Index::buildLink($column_name);
 					foreach ($context as $context_class) {
-						try {
+						if (is_string($context_class) && class_exists($context_class)) {
+							/** @noinspection PhpUnhandledExceptionInspection class_exists */
 							$context_reflection_class = new Reflection_Class($context_class);
 							if ($maintain = $context_reflection_class->getAnnotation('maintain')->value) {
 								$context_class = $maintain;
 							}
-						}
-						catch (Exception $exception) {
 						}
 						$id_context_property = 'id_' . Names::classToProperty(
 								Names::setToSingle(Dao::storeNameOf($context_class))
@@ -322,11 +323,10 @@ class Maintainer implements Configurable, Registerable
 				);
 			}
 			elseif ($mysqli->isTruncate($query)) {
-				trigger_error(
+				return trigger_error(
 					"Mysql maintainer can't create table $table_name from a TRUNCATE query without context",
 					E_USER_ERROR
-				);
-				return false;
+				) && false;
 			}
 			elseif ($mysqli->isUpdate($query)) {
 				// TODO create table without context UPDATE columns detection
@@ -507,12 +507,13 @@ class Maintainer implements Configurable, Registerable
 
 	//---------------------------------------------------------------------------- onNoSuchTableError
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $mysqli Contextual_Mysqli
 	 * @param $query  string
 	 * @return boolean true if the query with an error can be retried after this error was dealt with
 	 * @see Contextual_Mysqli::$contexts
 	 */
-	private function onNoSuchTableError(Contextual_Mysqli $mysqli, $query)
+	private function onNoSuchTableError(Contextual_Mysqli $mysqli, string $query) : bool
 	{
 		$context = end($mysqli->contexts);
 		if (!is_array($context)) {
@@ -524,13 +525,12 @@ class Maintainer implements Configurable, Registerable
 			$error_table_names = $this->parseNamesFromQuery($query);
 		}
 		foreach ($context as $key => $context_class) {
-			try {
+			if (is_string($context_class) && class_exists($context_class)) {
+				/** @noinspection PhpUnhandledExceptionInspection class_exists */
 				$context_reflection_class = new Reflection_Class($context_class);
 				if ($maintain = $context_reflection_class->getAnnotation('maintain')->value) {
 					$context_class = $maintain;
 				}
-			}
-			catch (Exception $exception) {
 			}
 			$context_table = is_array($context_class) ? $key : Dao::storeNameOf($context_class);
 			if (in_array($context_table, $error_table_names) || !$mysqli->exists($context_table)) {
