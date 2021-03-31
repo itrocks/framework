@@ -234,12 +234,27 @@ class Call_Stack
 	 *
 	 * This use reflection to get the argument names : so beware, this may be slow !
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $argument_name string
 	 * @param $non_empty     boolean if true, jump to the first function with non-empty value
 	 * @return mixed
 	 */
-	public function getArgumentValue($argument_name, $non_empty = false)
+	public function getArgumentValue(string $argument_name, bool $non_empty = false) : mixed
+	{
+		return $this->getArgumentsValue([$argument_name], $non_empty);
+	}
+
+	//----------------------------------------------------------------------------- getArgumentsValue
+	/**
+	 * Returns the value of a function / method parameter that matches any of argument names
+	 *
+	 * This use reflection to get the argument names : so beware, this may be slow !
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $argument_names string[]
+	 * @param $non_empty      boolean if true, jump to the first function with non-empty value
+	 * @return mixed
+	 */
+	public function getArgumentsValue(array $argument_names, bool $non_empty = false) : mixed
 	{
 		foreach ($this->stack as $stack) {
 			$function = null;
@@ -255,14 +270,19 @@ class Call_Stack
 					$function = new Reflection_Function($stack['function']);
 				}
 			}
-			if ($function && $function->hasParameter($argument_name)) {
-				$arguments = $function->getParametersNames(false);
-				$argument  = array_search($argument_name, $arguments);
-				if (
-					($non_empty && !empty($stack['args'][$argument]))
-					|| (!$non_empty && !isset($stack['args'][$argument]))
-				) {
-					return $stack['args'][$argument];
+			if (!$function) {
+				continue;
+			}
+			foreach ($argument_names as $argument_name) {
+				if ($function->hasParameter($argument_name)) {
+					$arguments = $function->getParametersNames(false);
+					$argument  = array_search($argument_name, $arguments);
+					if (
+						($non_empty && !empty($stack['args'][$argument]))
+						|| (!$non_empty && !isset($stack['args'][$argument]))
+					) {
+						return $stack['args'][$argument];
+					}
 				}
 			}
 		}
