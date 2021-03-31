@@ -24,6 +24,18 @@ class Error_Handlers implements Activable, Configurable
 	 */
 	private static $instance;
 
+	//------------------------------------------------------------------- $last_handled_error_message
+	/**
+	 * @var string
+	 */
+	public string $last_handled_error_message = '';
+
+	//-------------------------------------------------------------------- $last_handled_error_number
+	/**
+	 * @var integer
+	 */
+	public int $last_handled_error_number = 0;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $configuration array
@@ -71,19 +83,6 @@ class Error_Handlers implements Activable, Configurable
 		$this->error_handlers[$err_no][$priority][] = $error_handler;
 		ksort($this->error_handlers[$err_no]);
 		return $this;
-	}
-
-	//-------------------------------------------------------------------- allowedMemorySizeExhausted
-	/**
-	 * This method is called when the maximum allowed memory size exhausted
-	 *
-	 * It has 10 more MB allowed for management of the error, you can add more using
-	 * upgradeMemoryLimit()
-	 */
-	public function allowedMemorySizeExhausted()
-	{
-		// TODO what could we do here ? Useful for AOP but nothing else for now
-		echo 'allowed memory size exhausted';
 	}
 
 	//--------------------------------------------------------------------------------------- current
@@ -161,6 +160,8 @@ class Error_Handlers implements Activable, Configurable
 					foreach ($handlers as $priority_handler) {
 						/** @var $priority_handler Error_Handler[] */
 						foreach ($priority_handler as $handler) {
+							$this->last_handled_error_message = $err_msg;
+							$this->last_handled_error_number  = $err_no;
 							$handler->handle($handled_error);
 							if (!$handled_error->areNextErrorHandlersCalled()) {
 								break 2;
@@ -174,19 +175,6 @@ class Error_Handlers implements Activable, Configurable
 		else {
 			return false;
 		}
-	}
-
-	//------------------------------------------------------------------ maximumExecutionTimeExceeded
-	/**
-	 * This method is called when the maximum execution time exceeded
-	 *
-	 * It has 10 more seconds allowed for management of the error, you can add more using
-	 * set_time_limit()
-	 */
-	protected function maximumExecutionTimeExceeded()
-	{
-		// TODO what could we do here ? Useful for AOP but nothing else for now
-		echo 'maximum execution time exceeded';
 	}
 
 	//-------------------------------------------------------------------------------------------- on
@@ -214,16 +202,21 @@ class Error_Handlers implements Activable, Configurable
 	 */
 	public function shutdown()
 	{
-		if (($error = error_get_last()) && ($error['type'] === E_ERROR)) {
-			if (substr($error['message'], 0, 25) === 'Maximum execution time of') {
-				// 10 more seconds to manage the error
-				set_time_limit(10);
-				$this->maximumExecutionTimeExceeded();
-			}
-			elseif (substr($error['message'], 0, 22) === 'Allowed memory size of') {
+		if (
+			($error = error_get_last())
+			&& ($error['message'] !== $this->last_handled_error_message)
+			&& in_array($error['type'], [E_CORE_ERROR, E_COMPILE_ERROR, E_ERROR, E_PARSE])
+		) {
+			// increase memory / time limit to manage the error
+			if (substr($error['message'], 0, 22) === 'Allowed memory size of') {
 				ini_set('memory_limit', memory_get_peak_usage(true) + 10000000);
-				$this->allowedMemorySizeExhausted();
 			}
+			elseif (substr($error['message'], 0, 25) === 'Maximum execution time of') {
+				set_time_limit(10);
+			}
+			(new Report_Call_Stack_Error_Handler())->handle(
+				new Handled_Error($error['type'], $error['message'], $error['file'], $error['line'])
+			);
 		}
 	}
 
