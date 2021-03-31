@@ -14,13 +14,13 @@ class View_Exception extends Exception
 	/**
 	 * @var string
 	 */
-	public $view_result;
+	public string $view_result;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $result string The alternative view result (if set)
+	 * @param $result string|null The alternative view result (if set)
 	 */
-	public function __construct($result = null)
+	public function __construct(string $result = null)
 	{
 		parent::__construct();
 		if (isset($result)) $this->view_result = $result;
