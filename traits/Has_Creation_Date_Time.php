@@ -24,15 +24,15 @@ trait Has_Creation_Date_Time
 	//--------------------------------------------------------------------- calculateCreationDateTime
 	/**
 	 * @noinspection PhpUnused @before_write
-	 * @return string[]|null
+	 * @return ?string[]
 	 */
 	public function calculateCreationDateTime() : ?array
 	{
 		if (!isset($this->creation) || $this->creation->isEmpty()) {
 			$this->creation = Date_time::now();
-			$only[]         = 'creation';
+			return ['creation'];
 		}
-		return isset($only) ? $only : null;
+		return null;
 	}
 
 }
