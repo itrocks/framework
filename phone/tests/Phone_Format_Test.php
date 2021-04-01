@@ -9,6 +9,16 @@ use ITRocks\Framework\Tests\Test;
 
 class Phone_Format_Test extends Test
 {
+
+	//--------------------------------------------------------------------------- phoneNumberProvider
+	public function phoneNumberProvider() : Iterator
+	{
+		yield ['0622355629', 'FR', true];
+		yield ['0622355629', '', true];
+		yield ['06223556291', '', false];
+		yield ['062235562', '', false];
+	}
+
 	//------------------------------------------------------------ testGetCountryCodeWithDefaultClass
 	public function testGetCountryCodeWithDefaultClass()
 	{
@@ -19,15 +29,6 @@ class Phone_Format_Test extends Test
 		$phone->country->code = 'FR';
 
 		$this->assertEquals('FR', $phone_format->getCountryCode($phone));
-	}
-
-	//--------------------------------------------------------------------------- phoneNumberProvider
-	public function phoneNumberProvider() : Iterator
-	{
-		yield ['0622355629', 'FR', true];
-		yield ['0622355629', '', true];
-		yield ['06223556291', '', false];
-		yield ['062235562', '', false];
 	}
 
 	//-------------------------------------------------------------- testGetCountryCodeWithReturnNull
