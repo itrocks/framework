@@ -276,10 +276,10 @@ class Loc implements Registerable
 	/**
 	 * Takes an integer and make it locale
 	 *
-	 * @param $integer integer ie 1000
+	 * @param $integer ?integer ie 1000
 	 * @return string ie '1 000'
 	 */
-	public static function integerToLocale(int $integer) : string
+	public static function integerToLocale(?int $integer) : string
 	{
 		return Locale::current()->number_format->integerToLocale($integer);
 	}
