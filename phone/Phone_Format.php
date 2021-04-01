@@ -23,13 +23,13 @@ class Phone_Format implements Configurable
 	 *
 	 * @var string
 	 */
-	public $country_class = Country::class;
+	public string $country_class = Country::class;
 
 	//---------------------------------------------------------------------------- $phone_number_util
 	/**
 	 * @var PhoneNumberUtil
 	 */
-	private $phone_number_util;
+	private PhoneNumberUtil $phone_number_util;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
