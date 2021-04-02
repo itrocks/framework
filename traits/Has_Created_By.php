@@ -23,7 +23,7 @@ trait Has_Created_By
 	//---------------------------------------------------------------------------------- setCreatedBy
 	/**
 	 * @noinspection PhpUnused @before_write
-	 * @return string[]|null
+	 * @return ?string[]
 	 */
 	public function setCreatedBy() : ?array
 	{
