@@ -1,34 +1,26 @@
 <?php
-namespace ITRocks\Framework\Traits;
+namespace ITRocks\Framework\Objects\Phone;
 
-use Exception;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
+use ITRocks\Framework\Reflection\Reflection_Property;
 
-/**
- * @validate validateNumber
- */
 trait Has_Phone_Number
 {
 
 	//-------------------------------------------------------------------------------- validateNumber
 	/**
-	 * @param $object object
+	 * @param $property Reflection_Property
 	 * @return string|bool
-	 * @throws Exception
+	 * @throws \Exception
 	 */
-	public static function validateNumber(object $object): bool|string
+	public function validateNumber(Reflection_Property $property) : bool|string
 	{
 		try {
-			if (!isA($object, Has_Number::class)) {
-				throw new Exception(
-					sprintf('This %s doesn\'t contains %s', get_class($object), Has_Number::class)
-				);
-			}
 			$valid = Phone_Format::get()->isValid(
-				$object->number,
-				Phone_Format::get()->getCountryCode($object)
+				$property->getValue($this),
+				Phone_Format::get()->getCountryCode($this)
 			);
 
 			return $valid === false ? Loc::tr('This phone number is not correct') : true;
