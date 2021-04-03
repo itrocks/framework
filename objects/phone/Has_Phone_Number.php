@@ -5,15 +5,19 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ReflectionException;
 
+/**
+ * For classes that embed a phone number
+ */
 trait Has_Phone_Number
 {
 
 	//-------------------------------------------------------------------------------- validateNumber
 	/**
 	 * @param $property Reflection_Property
-	 * @return string|bool
-	 * @throws \Exception
+	 * @return string|boolean
+	 * @throws ReflectionException
 	 */
 	public function validateNumber(Reflection_Property $property) : bool|string
 	{
@@ -23,7 +27,7 @@ trait Has_Phone_Number
 				Phone_Format::get()->getCountryCode($this)
 			);
 
-			return $valid === false ? Loc::tr('This phone number is not correct') : true;
+			return ($valid === false) ? Loc::tr('This phone number is not correct') : true;
 		}
 		catch (Phone_Number_Exception $exception) {
 			return $exception->getErrorType();
