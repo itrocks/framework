@@ -36,6 +36,7 @@ abstract class Feature
 	const F_JSON          = 'json';
 	const F_LIST          = 'list';
 	const F_LOGIN         = 'login';
+	const F_MESSAGE       = 'message';
 	const F_MODELS        = 'models';
 	const F_OUTPUT        = 'output';
 	const F_PRINT         = 'print';
