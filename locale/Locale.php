@@ -291,10 +291,16 @@ class Locale implements Configurable
 				return $this->date_format->toLocale($value);
 			}
 			elseif ($type->isFloat()) {
-				return $this->number_format->floatToLocale($value);
+				if (!isStrictNumeric($value)) {
+					trigger_error('Not a float ' . $value, E_USER_WARNING);
+				}
+				return $this->number_format->floatToLocale(floatval($value));
 			}
 			elseif ($type->isInteger()) {
-				return $this->number_format->integerToLocale($value);
+				if (!isStrictNumeric($value, false)) {
+					trigger_error('Not an integer ' . $value, E_USER_WARNING);
+				}
+				return $this->number_format->integerToLocale(intval($value));
 			}
 		}
 		return $value;
