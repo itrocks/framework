@@ -261,7 +261,7 @@ class Reflection_Class extends ReflectionClass
 		}
 		// if only one property asked
 		if ($property_name) {
-			$defaults = [$property_name => $defaults[$property_name]];
+			$defaults = [$property_name => $defaults[$property_name] ?? null];
 		}
 		// scan for @default and use them
 		if ($use_annotation) {
