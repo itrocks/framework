@@ -12,7 +12,7 @@
 <!--BEGIN-->
 
 	<article class="{class_name.short.lower} import form" id="/{class_name.path}/import/form">
-		<form action="rel://import/preview" autocomplete="off" enctype="multipart/form-data" method="post" name="import-form" target="#main">
+		<form action="rel://import/(next_step)" autocomplete="off" enctype="multipart/form-data" method="post" name="import-form" target="{target}">
 			<header>
 				<ol class="breadcrumb">
 					<!--§module--><li class="module"><a href="app://(link)" target="#main">|{caption}|</a></li><!--end-->
@@ -26,9 +26,11 @@
 					<label>|File|</label>
 					{file.@edit}
 				</li>
-				<li class="action import preview">
+				<li class="action import {next_step}">
 					<label>|Then|</label>
-					<a class="submit" href="rel://import/preview" target="#main">|Preview|</a>
+					<a class="submit" href="rel://import/(next_step)" target="{target}">
+						|{next_step.ucfirst}|
+					</a>
 				</li>
 			</ul>
 		</form>
