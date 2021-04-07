@@ -192,10 +192,10 @@ class Cache implements Configurable, Registerable
 		}
 		$class_name      = Builder::className($class_name);
 		$value_to_search = $identifier;
-//		if (is_object($identifier)) {
-//			$value_to_search = Dao::getObjectIdentifier($identifier);
-//		}
-		if (!is_object($identifier) && isset($this->cache[$class_name][$value_to_search])) {
+		if (is_object($identifier)) {
+			$value_to_search = Dao::getObjectIdentifier($identifier);
+		}
+		if (isset($this->cache[$class_name][$value_to_search])) {
 			if (isset($GLOBALS['D'])) {
 				echo "CACHE get $class_name.$value_to_search" . BRLF;
 			}
