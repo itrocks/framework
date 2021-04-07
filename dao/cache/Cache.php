@@ -182,7 +182,7 @@ class Cache implements Configurable, Registerable
 	 * Get cached object
 	 *
 	 * @param $class_name string
-	 * @param $identifier integer
+	 * @param $identifier integer|object identifier for the object, or an object to re-read
 	 * @return object the cached object, null if none
 	 */
 	public function getCachedObject($class_name, $identifier)
@@ -190,18 +190,13 @@ class Cache implements Configurable, Registerable
 		if (!$this->enabled) {
 			return null;
 		}
-		$class_name      = Builder::className($class_name);
-		$value_to_search = $identifier;
+		$class_name = Builder::className($class_name);
 		if (is_object($identifier)) {
-			$value_to_search = Dao::getObjectIdentifier($identifier);
+			$identifier = Dao::getObjectIdentifier($identifier);
 		}
-		if (isset($this->cache[$class_name][$value_to_search])) {
-			if (isset($GLOBALS['D'])) {
-				echo "CACHE get $class_name.$value_to_search" . BRLF;
-			}
-			return $this->cache[$class_name][$value_to_search]->object;
+		if (isset($this->cache[$class_name][$identifier])) {
+			return $this->cache[$class_name][$identifier]->object;
 		}
-
 		return null;
 	}
 
