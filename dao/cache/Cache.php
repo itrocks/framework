@@ -190,11 +190,18 @@ class Cache implements Configurable, Registerable
 		if (!$this->enabled) {
 			return null;
 		}
-		$class_name = Builder::className($class_name);
-		if (isset($this->cache[$class_name][$identifier])) {
-			if (isset($GLOBALS['D'])) echo "CACHE get $class_name.$identifier" . BRLF;
-			return $this->cache[$class_name][$identifier]->object;
+		$class_name      = Builder::className($class_name);
+		$value_to_search = $identifier;
+//		if (is_object($identifier)) {
+//			$value_to_search = Dao::getObjectIdentifier($identifier);
+//		}
+		if (isset($this->cache[$class_name][$value_to_search])) {
+			if (isset($GLOBALS['D'])) {
+				echo "CACHE get $class_name.$value_to_search" . BRLF;
+			}
+			return $this->cache[$class_name][$value_to_search]->object;
 		}
+
 		return null;
 	}
 
@@ -218,7 +225,7 @@ class Cache implements Configurable, Registerable
 		krsort($list);
 		$threshold = $this->maximum - $this->purge;
 		for (reset($list); $counter > $threshold; next($list)) {
-			list($class_name, $identifier) = current($list);
+			[$class_name, $identifier] = current($list);
 			if (isset($GLOBALS['D'])) echo "CACHE purge $class_name.$identifier" . BRLF;
 			unset($this->cache[$class_name][$identifier]);
 			$this->count--;
