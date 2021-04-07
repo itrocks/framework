@@ -8,15 +8,16 @@ use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\MockObject\MockObject;
+use ReflectionException;
 
 class Phone_Number_Test extends Test
 {
 
-	//----------------------------------------------------------------------------- $phone_format_old
-	private Phone_Format|Plugin|null $phone_format_old;
-
 	//--------------------------------------------------------------------------------- $phone_format
 	private Phone_Format|MockObject|null $phone_format;
+
+	//----------------------------------------------------------------------------- $phone_format_old
+	private Phone_Format|Plugin|null $phone_format_old;
 
 	//-------------------------------------------------------------------------- $reflection_property
 	private MockObject|Reflection_Property $reflection_property;
@@ -40,6 +41,9 @@ class Phone_Number_Test extends Test
 	}
 
 	//--------------------------------------------------------------------- testPhoneNumberIsNotValid
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testPhoneNumberIsNotValid()
 	{
 		$phone_number = '';
@@ -56,6 +60,9 @@ class Phone_Number_Test extends Test
 	}
 
 	//-------------------------------------------------------------------- testWithPhoneNumberIsValid
+	/**
+	 * @throws ReflectionException
+	 */
 	public function testWithPhoneNumberIsValid()
 	{
 		$phone_number = '0622355629';
