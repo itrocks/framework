@@ -277,6 +277,7 @@ class Locale implements Configurable
 	 * @param $type  Type
 	 * @param $value string
 	 * @return string
+	 * @todo When hard typing will be enabled on all properties, simplify numeric tests (no string)
 	 */
 	public function toLocale($value, Type $type = null)
 	{
@@ -292,13 +293,24 @@ class Locale implements Configurable
 			}
 			elseif ($type->isFloat()) {
 				if (!isStrictNumeric($value)) {
-					trigger_error('Not a float ' . $value, E_USER_WARNING);
+					if (in_array($value, ['', null], true)) {
+						return '';
+					}
+					else {
+						trigger_error('Not a float ' . $value, E_USER_WARNING);
+					}
 				}
 				return $this->number_format->floatToLocale(floatval($value));
 			}
 			elseif ($type->isInteger()) {
 				if (!isStrictNumeric($value, false)) {
-					trigger_error('Not an integer ' . $value, E_USER_WARNING);
+					if (in_array($value, ['', null], true)) {
+						return '';
+					}
+					else {
+						trigger_error('Not an integer ' . $value, E_USER_WARNING);
+					}
+
 				}
 				return $this->number_format->integerToLocale(intval($value));
 			}
