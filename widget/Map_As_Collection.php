@@ -21,7 +21,7 @@ class Map_As_Collection extends Property
 	/**
 	 * @var string
 	 */
-	public $pre_path = null;
+	public string $pre_path = '';
 
 	//------------------------------------------------------------------------------------- buildHtml
 	/**

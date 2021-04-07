@@ -19,13 +19,13 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	/**
 	 * @var string
 	 */
-	public $pre_path;
+	public string $pre_path;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
-	 * @var Html_Template
+	 * @var ?Html_Template
 	 */
-	private $template = null;
+	private ?Html_Template $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -33,8 +33,9 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	 * @param $collection array
 	 * @param $pre_path   string
 	 */
-	public function __construct(Reflection_Property $property, array $collection, $pre_path = null)
-	{
+	public function __construct(
+		Reflection_Property $property, array $collection, string $pre_path = ''
+	) {
 		parent::__construct($property, $collection);
 		$this->pre_path = $pre_path;
 	}

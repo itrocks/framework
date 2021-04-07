@@ -111,7 +111,7 @@ class Html_Builder_Type
 	/**
 	 * @var string
 	 */
-	public $pre_path;
+	public string $pre_path = '';
 
 	//------------------------------------------------------------------------------------- $readonly
 	/**
@@ -167,13 +167,14 @@ class Html_Builder_Type
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name     string
-	 * @param $type     Type
-	 * @param $value    mixed
-	 * @param $pre_path string
+	 * @param $name     string|null
+	 * @param $type     Type|null
+	 * @param $value    mixed|null
+	 * @param $pre_path string|null
 	 */
-	public function __construct($name = null, Type $type = null, $value = null, $pre_path = null)
-	{
+	public function __construct(
+		string $name = null, Type $type = null, mixed $value = null, string $pre_path = null
+	) {
 		if (isset($name))     $this->name    = $name;
 		if (isset($type))     $this->type    = $type;
 		if (isset($value))    $this->value   = $value;
@@ -446,7 +447,7 @@ class Html_Builder_Type
 				$html_filters   = [];
 				$old_name       = $this->name;
 				$old_pre_path   = $this->pre_path;
-				$this->pre_path = lLastParse($this->pre_path, DOT, 1, false) ?: null;
+				$this->pre_path = lLastParse($this->pre_path, DOT, 1, false) ?: '';
 				foreach ($filters as $filter_name => $filter_value) {
 					if (
 						is_numeric($filter_value)
@@ -586,7 +587,7 @@ class Html_Builder_Type
 		if (empty($this->name) && $this->pre_path) {
 			$prefix = '';
 		}
-		if (!isset($this->pre_path)) {
+		if (!strlen($this->pre_path)) {
 			$field_name = $prefix . $this->name;
 		}
 		elseif (substr($this->pre_path, -2) === '[]') {
@@ -599,9 +600,9 @@ class Html_Builder_Type
 			$field_name .= '[' . $count . ']';
 		}
 		elseif (strlen($prefix . $this->name)) {
-			$field_name = (strpos($this->pre_path, '[]') !== false)
+			$field_name = str_contains($this->pre_path, '[]')
 				? $this->getRepetitiveFieldName($prefix, $counter_increment)
-				: $this->pre_path . '[' . $prefix . $this->name . ']';
+				: ($this->pre_path . '[' . $prefix . $this->name . ']');
 		}
 		else {
 			$count      = $this->template->nextCounter($this->pre_path, $counter_increment);
@@ -722,7 +723,7 @@ class Html_Builder_Type
 		if ($template instanceof Html_Template) {
 			$this->template = $template;
 			if (!$this->pre_path) {
-				$this->pre_path = $this->template->getParameter(Parameter::PROPERTIES_PREFIX);
+				$this->pre_path = $this->template->getParameter(Parameter::PROPERTIES_PREFIX) ?: '';
 			}
 		}
 		return $this;

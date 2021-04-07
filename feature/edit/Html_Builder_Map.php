@@ -41,7 +41,7 @@ class Html_Builder_Map extends Map
 	 *
 	 * @var string
 	 */
-	public $pre_path;
+	public string $pre_path;
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
@@ -61,9 +61,9 @@ class Html_Builder_Map extends Map
 	/**
 	 * @param $property Reflection_Property
 	 * @param $map      object[]
-	 * @param $pre_path  string
+	 * @param $pre_path string
 	 */
-	public function __construct(Reflection_Property $property, array $map, $pre_path = null)
+	public function __construct(Reflection_Property $property, array $map, string $pre_path = '')
 	{
 		parent::__construct($property, $map);
 		$this->pre_path = $pre_path;

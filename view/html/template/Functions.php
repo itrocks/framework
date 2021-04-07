@@ -447,7 +447,7 @@ class Functions
 		$property_edit             = new Html_Builder_Property($property, $value);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property_path;
-		$property_edit->pre_path   = null;
+		$property_edit->pre_path   = '';
 		if ($ignore_user) {
 			$property_edit->readonly = false;
 		}
@@ -507,7 +507,7 @@ class Functions
 		$property_edit             = new Html_Builder_Property($property);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property->path;
-		$property_edit->pre_path   = null;
+		$property_edit->pre_path   = '';
 		if ($ignore_user) {
 			$property_edit->readonly = false;
 		}
@@ -1070,7 +1070,7 @@ class Functions
 	 * @param $template Template
 	 * @return Reflection_Property_Value[]
 	 */
-	public function getProperties(Template $template)
+	public function getProperties(Template $template) : array
 	{
 		$object             = reset($template->objects);
 		$properties_filter  = $template->getParameter(Parameter::PROPERTIES_FILTER);

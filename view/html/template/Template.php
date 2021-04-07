@@ -121,7 +121,7 @@ class Template
 	/**
 	 * @var boolean
 	 */
-	public  $link_objects = true;
+	public $link_objects = true;
 
 	//-------------------------------------------------------------------------------- $main_template
 	/**

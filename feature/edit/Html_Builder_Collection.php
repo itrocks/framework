@@ -58,7 +58,7 @@ class Html_Builder_Collection extends Collection
 	/**
 	 * @var string
 	 */
-	public $pre_path;
+	public string $pre_path;
 
 	//------------------------------------------------------------------------------------ $read_only
 	/**
@@ -84,7 +84,8 @@ class Html_Builder_Collection extends Collection
 	 * @param $pre_path        string
 	 */
 	public function __construct(
-		Reflection_Property $property, array $collection, $link_properties = false, $pre_path = null
+		Reflection_Property $property, array $collection, bool $link_properties = false,
+		string $pre_path = ''
 	) {
 		parent::__construct($property, $collection, $link_properties);
 		$this->pre_path = $pre_path;
@@ -159,7 +160,7 @@ class Html_Builder_Collection extends Collection
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
 		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
 		$value = $property_value->value();
-		if (strpos($this->pre_path, '[]')) {
+		if (str_contains($this->pre_path, '[]')) {
 			$property_builder = new Html_Builder_Property();
 			$property_builder->setTemplate($this->template);
 			$pre_path_to_count = lParse($this->pre_path, '[]');
