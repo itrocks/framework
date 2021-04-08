@@ -11,37 +11,37 @@ class Node
 	/**
 	 * @var boolean true if the node is a checkpoint
 	 */
-	public $checked = false;
+	public bool $checked = false;
 
 	//------------------------------------------------------------------------------------- $children
 	/**
 	 * @var Node[]
 	 */
-	public $children = [];
+	public array $children = [];
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var string
 	 */
-	public $class;
+	public string $class;
 
 	//-------------------------------------------------------------------------------- $closed_routes
 	/**
 	 * @var Route[] The routes closed by this node
 	 */
-	public $closed_routes = [];
+	public array $closed_routes = [];
 
 	//-------------------------------------------------------------------------------------- $parents
 	/**
 	 * @var Node[]
 	 */
-	public $parents = [];
+	public array $parents = [];
 
 	//---------------------------------------------------------------------------------------- $route
 	/**
 	 * @var Route The route where the node is in
 	 */
-	public $route;
+	public Route $route;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -49,7 +49,7 @@ class Node
 	 *
 	 * @param $class string
 	 */
-	public function __construct($class)
+	public function __construct(string $class)
 	{
 		$this->class = $class;
 	}
@@ -58,7 +58,7 @@ class Node
 	/**
 	 * @return boolean true if all routes were closed
 	 */
-	public function allRoutesClosed()
+	public function allRoutesClosed() : bool
 	{
 		return count($this->children) === count($this->closed_routes);
 	}
@@ -67,7 +67,7 @@ class Node
 	/**
 	 * @return boolean true if the node closes multiple routes (closing crossroads)
 	 */
-	public function closes()
+	public function closes() : bool
 	{
 		return count($this->children) > 1;
 	}
@@ -76,7 +76,7 @@ class Node
 	/**
 	 * @return boolean true if at least one closed route is checked
 	 */
-	public function hasCheckedClosedRoutes()
+	public function hasCheckedClosedRoutes() : bool
 	{
 		foreach ($this->closed_routes as $closed_route) {
 			if ($closed_route->checked) {
@@ -90,7 +90,7 @@ class Node
 	/**
 	 * @return boolean true if the node opens multiple routes (initial crossroads)
 	 */
-	public function opens()
+	public function opens() : bool
 	{
 		return count($this->parents) > 1;
 	}

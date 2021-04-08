@@ -17,23 +17,23 @@ class Route
 	 *
 	 * @var boolean
 	 */
-	public $checked = false;
+	public bool $checked = false;
 
 	//---------------------------------------------------------------------------------------- $child
 	/**
 	 * The route starts from a source crossroads node (child application class)
 	 *
-	 * @var Node|null
+	 * @var ?Node
 	 */
-	public $child;
+	public ?Node $child;
 
 	//---------------------------------------------------------------------------------------- $first
 	/**
 	 * The first parent application class of $crossroads that starts the route
 	 *
-	 * @var Node
+	 * @var ?Node
 	 */
-	public $first;
+	public ?Node $first;
 
 	//---------------------------------------------------------------------------------------- $nodes
 	/**
@@ -41,7 +41,7 @@ class Route
 	 *
 	 * @var Node[]|Route[]
 	 */
-	public $nodes = [];
+	public array $nodes = [];
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
@@ -49,14 +49,14 @@ class Route
 	 *
 	 * @var Node
 	 */
-	public $parent;
+	public Node $parent;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Route constructor
 	 *
-	 * @param $child      Node|null
-	 * @param $first      Node
+	 * @param $child Node|null
+	 * @param $first Node|null
 	 */
 	public function __construct(Node $child = null, Node $first = null)
 	{
@@ -93,7 +93,7 @@ class Route
 	/**
 	 * @return string what is identifying a route as unique : '$child>$first'
 	 */
-	public function identifier()
+	public function identifier() : string
 	{
 		return ($this->child ? $this->child->class : '-')
 			. '>' . ($this->first ? $this->first->class : '-');

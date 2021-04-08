@@ -17,7 +17,7 @@ class Application_Class_Tree_Filter
 	 *
 	 * @var string
 	 */
-	protected $class_name;
+	protected string $class_name;
 
 	//---------------------------------------------------------------------------------------- $nodes
 	/**
@@ -25,13 +25,13 @@ class Application_Class_Tree_Filter
 	 *
 	 * @var Node[] key is the application class name
 	 */
-	protected $nodes = [];
+	protected array $nodes = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
 	 */
-	public function __construct($class_name)
+	public function __construct(string $class_name)
 	{
 		$this->class_name = $class_name;
 	}
@@ -40,7 +40,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * @return string[] Application classes prepared by prepare() that were not filtered by filter()
 	 */
-	public function classes()
+	public function classes() : array
 	{
 		return array_keys($this->nodes);
 	}
@@ -72,7 +72,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * @return string[] Application classes from classes() where we look only for defaults
 	 */
-	public function defaultApplicationClasses()
+	public function defaultApplicationClasses() : array
 	{
 		$class_name = $this->class_name;
 		if (class_exists($class_name)) {
@@ -102,11 +102,12 @@ class Application_Class_Tree_Filter
 	 *
 	 * @return static
 	 */
-	public function filter()
+	public function filter() : static
 	{
 		$node  = reset($this->nodes);
 		$route = new Route(null, $node);
 		$this->follow($route, $node);
+
 		return $this;
 	}
 
@@ -150,7 +151,7 @@ class Application_Class_Tree_Filter
 	/**
 	 * @return static
 	 */
-	public function prepare()
+	public function prepare() : static
 	{
 		$this->prepareNodes();
 		$this->prepareCheckpoints();

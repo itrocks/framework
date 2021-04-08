@@ -36,7 +36,7 @@ abstract class Getter
 	 * @param $class_name string
 	 * @return string
 	 */
-	static public function classNameWithoutVendorProject($class_name)
+	static public function classNameWithoutVendorProject(string $class_name) : string
 	{
 		if (!substr_count($class_name, BS)) {
 			return $class_name;
@@ -63,8 +63,9 @@ abstract class Getter
 	 * @param $extension string
 	 * @param $what      string
 	 */
-	static protected function debug($step, $path, $method, $extension, $what = 'try')
-	{
+	static protected function debug(
+		string $step, string $path, string $method, string $extension, string $what = 'try'
+	) {
 		echo "- $what $step : $path" . (($extension === 'html') ? '' : "::$method") . BR;
 	}
 
@@ -79,8 +80,10 @@ abstract class Getter
 	 * @return string[] [$class, $method]
 	 */
 	static public function get(
-		$base_class, $feature_name, $suffix = 'Controller', $extension = 'php', $class_form = true
-	) {
+		string $base_class, string $feature_name, string $suffix = 'Controller',
+		string $extension = 'php', bool $class_form = true
+	) : array
+	{
 		// $feature_class : 'featureName' transformed into 'Feature_Name'
 		// $feature_what : is $feature_class or $feature_name depending on $class_name
 		$_suffix = $suffix ? ('_' . $suffix) : '';
@@ -340,7 +343,7 @@ abstract class Getter
 			if (
 				empty($class)
 				&& (
-					(strpos($suffix, 'View') === false)
+					!str_contains($suffix, 'View')
 					&& ($extension !== 'html')
 					&& (
 						($last_controller_class  !== $base_class)
@@ -348,7 +351,7 @@ abstract class Getter
 					)
 				)
 			) {
-				if (strpos($suffix, 'Controller') !== false) {
+				if (str_contains($suffix, 'Controller')) {
 					$last_controller_class  = $base_class;
 					$last_controller_method = $feature_name;
 				}
@@ -417,7 +420,7 @@ abstract class Getter
 	 * @param $class_name string
 	 * @return string[] key is the full name of each class, value is it without 'Vendor/Project/
 	 */
-	static private function getClasses($class_name)
+	static private function getClasses(string $class_name) : array
 	{
 		$classes = [];
 
@@ -454,7 +457,7 @@ abstract class Getter
 	 * @param $class Reflection_Class
 	 * @return string[] key is the full name of each interface, value is it without 'Vendor/Project/'
 	 */
-	static private function getInterfacesRecursive(Reflection_Class $class)
+	static private function getInterfacesRecursive(Reflection_Class $class) : array
 	{
 		$interfaces = [];
 		foreach ($class->getInterfaces() as $interface) {
@@ -472,7 +475,7 @@ abstract class Getter
 	 * @param $class Reflection_Class
 	 * @return string[] key is the full name of each trait, value is it without 'Vendor/Project/'
 	 */
-	static private function getTraitsRecursive(Reflection_Class $class)
+	static private function getTraitsRecursive(Reflection_Class $class) : array
 	{
 		$traits = [];
 		foreach ($class->getTraits() as $trait) {
@@ -487,7 +490,7 @@ abstract class Getter
 	 * @param $feature string
 	 * @return string
 	 */
-	static protected function reservedFeatures($feature)
+	static protected function reservedFeatures(string $feature) : string
 	{
 		return in_array($feature, ['List', 'Print'])
 			? ($feature . '_')
