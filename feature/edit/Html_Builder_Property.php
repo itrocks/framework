@@ -198,7 +198,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			if (!($property instanceof Reflection_Property_Value)) {
 				/** @noinspection PhpUnhandledExceptionInspection valid $property */
 				$property = new Reflection_Property_Value(
-					$property->class, $property->name, $this->value, true
+					$property->final_class, $property->name, $this->value, true
 				);
 			}
 			$value = strlen($this->value) ? $this->value : null;
