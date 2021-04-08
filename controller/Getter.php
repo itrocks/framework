@@ -105,6 +105,7 @@ abstract class Getter
 
 		// $classes : the controller class name and its parents and traits
 		// ['Vendor\Application\Module\Class_Name' => '\Module\Class_Name']
+		// $classes are removed when their source class namespace is reached
 		$classes = self::getClasses($class_name);
 
 		// Looking for specific controller for each application
@@ -116,7 +117,7 @@ abstract class Getter
 			$namespace = Namespaces::of($application_class);
 
 			// for the controller class and its parents
-			foreach ($classes as $short_class_name) {
+			foreach ($classes as $full_class_name => $short_class_name) {
 				$class_name = $namespace . BS . $short_class_name;
 				$path       = strtolower(str_replace(BS, SL, $class_name));
 				if (isset($GLOBALS['D'])) {
@@ -202,7 +203,16 @@ abstract class Getter
 				}
 			}
 
-		} while ($application_class = next($application_classes));
+			// do not scan classes further if on its declaration application
+			$starts_with = $namespace . BS;
+			foreach ($classes as $full_class_name => $short_class_name) {
+				if (str_starts_with($full_class_name, $starts_with)) {
+					unset($classes[$full_class_name]);
+				}
+			}
+
+		}
+		while ($classes && ($application_class = next($application_classes)));
 
 		// Looking for default controller for each application
 		if (empty($class)) {
@@ -335,7 +345,8 @@ abstract class Getter
 					break;
 				}
 				// next application is the parent one
-			} while ($application_class = next($application_classes));
+			}
+			while ($application_class = next($application_classes));
 
 			// Looking for direct feature call, without using any controller
 			static $last_controller_class  = '';
@@ -445,7 +456,8 @@ abstract class Getter
 			else {
 				$class_name = null;
 			}
-		} while ($class_name);
+		}
+		while ($class_name);
 
 		return $classes;
 	}
