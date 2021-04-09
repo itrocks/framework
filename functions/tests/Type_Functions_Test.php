@@ -40,7 +40,11 @@ class Type_Functions_Test extends Test
 			'string'       => ['string'     ,[false,   false,   false,            false           ]],
 			'0'            => ['0'          ,[true ,   true ,   true ,            true            ]],
 			'(integer)0'   => [0            ,[true ,   true ,   true ,            true            ]],
-			'(float)0.0'   => [0.0          ,[false,   true ,   false,            true            ]],
+			'.0'           => ['.0'         ,[false,   true ,   false,            true            ]],
+			'0.0'          => ['0.0'        ,[false,   true ,   false,            true            ]],
+			'101.0'        => ['101.0'      ,[false,   true ,   false,            true            ]],
+			'(float).0'    => [.0           ,[false,   true ,   false,            true            ]],
+			'(float)101.0' => [101.0        ,[false,   true ,   false,            true            ]],
 			'01'           => ['01'         ,[false,   false,   false,            false           ]],
 			'-01'          => ['-01'        ,[false,   false,   false,            false           ]],
 			'(float)-.1'   => [-.1          ,[false,   true ,   false,            false           ]],
@@ -86,7 +90,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictInteger($value, $array_expected )
+	function testIsStrictInteger($value, $array_expected)
 	{
 		static::assertEquals($array_expected[0], isStrictInteger($value));
 	}
@@ -97,7 +101,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictNumeric($value, $array_expected )
+	function testIsStrictNumeric($value, $array_expected)
 	{
 		static::assertEquals($array_expected[1], isStrictNumeric($value));
 	}
@@ -108,7 +112,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedInteger($value, $array_expected )
+	function testIsStrictUnsignedInteger($value, $array_expected)
 	{
 		static::assertEquals($array_expected[2], isStrictUnsignedInteger($value));
 	}
@@ -119,7 +123,7 @@ class Type_Functions_Test extends Test
 	 * @param $value          mixed
 	 * @param $array_expected boolean[]
 	 */
-	function testIsStrictUnsignedNumeric($value, $array_expected )
+	function testIsStrictUnsignedNumeric($value, $array_expected)
 	{
 		static::assertEquals($array_expected[3], isStrictNumeric($value, true, false));
 	}

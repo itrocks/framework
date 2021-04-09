@@ -152,26 +152,41 @@ function isStrictInteger($value)
  * - if decimal not allowed, must not have '.' char
  * - if signed not allowed, must not start with '-' char
  *
- * @param $value           string
+ * @param $value           mixed
  * @param $decimal_allowed boolean
  * @param $signed_allowed  boolean
  * @return boolean
  */
-function isStrictNumeric($value, $decimal_allowed = true, $signed_allowed = true)
+function isStrictNumeric(mixed $value, bool $decimal_allowed = true, bool $signed_allowed = true)
+	: bool
 {
-	$result = (is_float($value) && $decimal_allowed && ($signed_allowed || ($value >= 0)))
-		|| (is_integer($value) && ($signed_allowed || ($value >= 0)))
-		|| ($value === '0')
-		|| ($decimal_allowed && is_numeric($value) && (substr($value, 0, 2) === '0.'))
-		|| (
-			is_numeric($value)
-			&& (substr($value, 0, 2) !== '-0')
-			&& (strpos('0+', substr($value, 0, 1)) === false)
-			&& (stripos($value, 'E') === false)
-			&& ($decimal_allowed ?: (strpos($value, '.') === false))
-			&& ($signed_allowed  ?: (strpos(substr($value, 0, 1), '-') === false))
-		);
-	return $result;
+	if (is_integer($value) || ($decimal_allowed && is_float($value))) {
+		return $signed_allowed || ($value >= 0);
+	}
+	if (
+		(is_float($value) && !$decimal_allowed)
+		|| !is_numeric($value)
+	) {
+		return false;
+	}
+	$has_decimal = str_contains($value, '.');
+	if ($has_decimal) {
+		if (str_starts_with($value, '.')) {
+			$value = '0' . $value;
+		}
+		elseif (str_starts_with($value, '-.')) {
+			$value = '-0' . substr($value, 1);
+		}
+		$decimal_position = strpos($value, '.');
+		if (str_ends_with($value, '.' . str_repeat('0', strlen($value) - $decimal_position - 1))) {
+			$value = substr($value, 0, $decimal_position);
+		}
+	}
+	$numeric = $decimal_allowed ? floatval($value) : intval($value);
+
+	return !strcmp($value, $numeric)
+		&& ($decimal_allowed || !$has_decimal)
+		&& ($signed_allowed || !str_starts_with($value, '-'));
 }
 
 //------------------------------------------------------------------------- isStrictUnsignedInteger
