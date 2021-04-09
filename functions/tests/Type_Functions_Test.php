@@ -47,6 +47,8 @@ class Type_Functions_Test extends Test
 			'(float)101.0' => [101.0        ,[false,   true ,   false,            true            ]],
 			'01'           => ['01'         ,[false,   false,   false,            false           ]],
 			'-01'          => ['-01'        ,[false,   false,   false,            false           ]],
+			'-0.64'        => ['-0.64'      ,[false,   true ,   false,            false           ]],
+			'(float)-.64'  => [-.64         ,[false,   true ,   false,            false           ]],
 			'(float)-.1'   => [-.1          ,[false,   true ,   false,            false           ]],
 			'(integer)-1'  => [-1           ,[true,    true ,   false,            false           ]],
 			'(float).1'    => [.1           ,[false,   true ,   false,            true            ]],
