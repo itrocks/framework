@@ -106,7 +106,7 @@ trait Tools
 					$class_names[$class_name] = $class_name;
 				}
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 			}
 		}
 		foreach ($children as $child) {
