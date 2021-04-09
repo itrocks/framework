@@ -1,16 +1,19 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property\Tests;
 
-use Exception;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Feature\Validate\Property\Unique_Annotation;
-use ITRocks\Framework\PHP\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\MockObject\MockObject;
-use stdClass;
 
+/**
+ * @todo testSimultaneousWriteOfDifferentValue
+ * @todo testSimultaneousWriteOfSameValue
+ * @todo testWriteMyself : when I write an existing value into a stored object which has the same id
+ */
 class Unique_Annotation_Test extends Test
 {
 
@@ -43,85 +46,37 @@ class Unique_Annotation_Test extends Test
 		$this->dao_link = null;
 	}
 
-	//------------------------------------------------------------------------------ testErrorMessage
-	public function testErrorMessage()
-	{
-		$property_mock = $this->createMock(Reflection_Property::class);
-
-		$unique_annotation = new Unique_Annotation(false, $property_mock);
-
-		$this->assertEquals('This value already exist', $unique_annotation->reportMessage());
-
-	}
-
 	//----------------------------------------------------------------- testValidateWithEmptyProperty
-	/**
-	 * @throws Exception
-	 */
 	public function testValidateWithEmptyProperty()
 	{
-		$this->dao_link->expects($this->never())->method('searchOne')->willReturn(null);
-
-		$property_mock = $this->createMock(Reflection_Property::class);
-		$property_mock->expects($this->once())->method('getName')->willReturn('name');
-
-		$unique_annotation = new Unique_Annotation(true, $property_mock);
-
-		$class = new stdClass();
-		$class->name = null;
-		$this->assertTrue($unique_annotation->validate($class));
-	}
-
-	//--------------------------------------------------------------- testValidateWithUnknownProperty
-	public function testValidateWithUnknownProperty()
-	{
-		$this->dao_link->expects($this->never())->method('searchOne')->willReturn(null);
-
-		$property_mock = $this->createMock(Reflection_Property::class);
-		$property_mock->expects($this->once())->method('getName')->willReturn('name');
-
-		$unique_annotation = new Unique_Annotation(true, $property_mock);
-
-		$class = new stdClass();
-		$class->foo = 'notname';
-
-		$this->expectException('Exception');
-		$this->expectExceptionMessage('The name property does not exist in stdClass object');
-		$unique_annotation->validate($class);
+		$this->dao_link->expects($this->never())->method('searchOne');
+		$object                  = new Test_Class();
+		$object->unique_property = null;
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$property = new Reflection_Property($object, 'unique_property');
+		$this->assertTrue(Unique_Annotation::of($property)->validate($object));
 	}
 
 	//------------------------------------------------------------------------- testWithValidateFalse
-	/**
-	 * @throws Exception
-	 */
 	public function testWithValidateFalse()
 	{
-		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(new stdClass());
-
-		$property_mock = $this->createMock(Reflection_Property::class);
-		$property_mock->expects($this->once())->method('getName')->willReturn('name');
-
-		$unique_annotation = new Unique_Annotation(true, $property_mock);
-
-		$class = new stdClass();
-		$class->name = 'foo';
-		$this->assertFalse($unique_annotation->validate($class));
+		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(new Test_Class());
+		$object                  = new Test_Class();
+		$object->unique_property = 'value';
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$property = new Reflection_Property($object, 'unique_property');
+		$this->assertFalse(Unique_Annotation::of($property)->validate($object));
 	}
 
 	//-------------------------------------------------------------------------- testWithValidateTrue
-	/**
-	 * @throws Exception
-	 */
 	public function testWithValidateTrue()
 	{
-		$property_mock = $this->createMock(Reflection_Property::class);
-		$property_mock->expects($this->once())->method('getName')->willReturn('name');
-
-		$unique_annotation = new Unique_Annotation(true, $property_mock);
-
-		$class = new stdClass();
-		$class->name = null;
-		$this->assertTrue($unique_annotation->validate($class));
+		$this->dao_link->expects($this->once())->method('searchOne')->willReturn(null);
+		$object                  = new Test_Class();
+		$object->unique_property = 'value';
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$property = new Reflection_Property($object, 'unique_property');
+		$this->assertTrue(Unique_Annotation::of($property)->validate($object));
 	}
 
 }
