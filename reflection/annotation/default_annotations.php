@@ -393,7 +393,7 @@ Parser::$default_annotations = [
 
 	/**
 	 * @duplicate [true]
-	 * Identifies a property which value should not be duplicated by the duplicate feature
+	 * Identifies a property which value should be duplicated by the duplicate feature (default yes)
 	 */
 	Parser::T_PROPERTY . '@duplicate' => Default_True_Boolean_Annotation::class,
 
@@ -580,6 +580,12 @@ Parser::$default_annotations = [
 	 * This tells that the property should be rendered using textile parsing
 	 */
 	Parser::T_PROPERTY . '@textile' => Boolean_Annotation::class,
+
+	/**
+	 * @transform [true]
+	 * Identifies a property which value should be transferred to a transformed object (default yes)
+	 */
+	Parser::T_PROPERTY . '@transform' => Default_True_Boolean_Annotation::class,
 
 	/**
 	 * @translate [common]
