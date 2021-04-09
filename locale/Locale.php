@@ -297,7 +297,7 @@ class Locale implements Configurable
 						return '';
 					}
 					else {
-						trigger_error('Not a float ' . $value, E_USER_WARNING);
+						trigger_error('Not a float ' . $value, E_USER_ERROR);
 					}
 				}
 				return $this->number_format->floatToLocale(floatval($value));
@@ -308,7 +308,7 @@ class Locale implements Configurable
 						return '';
 					}
 					else {
-						trigger_error('Not an integer ' . $value, E_USER_WARNING);
+						trigger_error('Not an integer ' . $value, E_USER_ERROR);
 					}
 
 				}
