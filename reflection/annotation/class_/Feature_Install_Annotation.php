@@ -20,6 +20,14 @@ class Feature_Install_Annotation extends Method_Annotation implements Do_Not_Inh
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'feature_install';
 
+	//---------------------------------------------------------------------------------------- $delay
+	/**
+	 * If to be executed later : called with a delay of n user clicks
+	 *
+	 * @var integer
+	 */
+	public int $delay = 0;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $value           string
@@ -28,6 +36,10 @@ class Feature_Install_Annotation extends Method_Annotation implements Do_Not_Inh
 	 */
 	public function __construct($value, Reflection $class, $annotation_name)
 	{
+		if (strpos($value, SP)) {
+			[$value, $delay] = explode(SP, $value);
+			$this->delay = intval($delay);
+		}
 		if (static::$context) {
 			$class = static::$context;
 		}

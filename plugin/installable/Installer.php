@@ -28,6 +28,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Feature_Uninstall_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\Updater\Will_Call;
 
 /**
  * Installer
@@ -196,10 +197,15 @@ class Installer
 			(new Installed\Dependency($plugin_class_name))->add($dependency_class_name);
 		}
 		foreach (Feature_Install_Annotation::allOf($plugin_class) as $feature_install) {
-			$feature_install->call(
-				$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
-				[__METHOD__]
-			);
+			if ($feature_install->delay) {
+				Will_Call::add(explode('::', $feature_install->value), $feature_install->delay);
+			}
+			else {
+				$feature_install->call(
+					$plugin_class->isAbstract() ? $plugin_class_name : $plugin_class->newInstance(),
+					[__METHOD__]
+				);
+			}
 		}
 		// menu items : only the highest level feature menu for each /Class/Path/featureName is kept
 		$menu_items = [];
