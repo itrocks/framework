@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Reflection\Interfaces;
 
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Multiple_Annotation;
 
 /**
@@ -30,6 +31,15 @@ interface Reflection
 	 * @return Annotation[]|Multiple_Annotation[]
 	 */
 	public function getAnnotations($annotation_name = null);
+
+	//----------------------------------------------------------------------------- getListAnnotation
+	/**
+	 * Gets a List_Annotation for the reflected property
+	 *
+	 * @param $annotation_name string
+	 * @return List_Annotation
+	 */
+	public function getListAnnotation($annotation_name);
 
 	//--------------------------------------------------------------------------------------- getName
 	/**

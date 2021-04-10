@@ -207,32 +207,27 @@ class Html_Template extends Template
 					)
 				) {
 					$this->cache[self::PARSED_ID][$this->getFormId()][$prefix] = true;
-					if ($property instanceof Reflection_Property_Value) {
-						$parent_object   = $property->getObject();
-						$id              = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
-						$property_prefix = $this->properties_prefix
-							? $this->functions->getPropertyPrefix($this)
-							: '';
-						$property_prefix = ($property_prefix && $prefix)
-							? (
-								$property_prefix . (
-									strpos($prefix, '[')
-										? ('[' . lParse($prefix, '[') . '][' . rParse($prefix, '['))
-										: ('[' . $prefix . ']')
-								)
+					$parent_object   = $property->getObject();
+					$id              = $parent_object ? Dao::getObjectIdentifier($parent_object) : null;
+					$property_prefix = $this->properties_prefix
+						? $this->functions->getPropertyPrefix($this)
+						: '';
+					$property_prefix = ($property_prefix && $prefix)
+						? (
+							$property_prefix . (
+								strpos($prefix, '[')
+									? ('[' . lParse($prefix, '[') . '][' . rParse($prefix, '['))
+									: ('[' . $prefix . ']')
 							)
-							: $prefix;
-						$html_builder_type = new Html_Builder_Type('id', null, $id, $property_prefix);
-						$parent_property   = $property->getParentProperty();
-						if ($parent_property) {
-							// TODO HIGHER properties via widgets must transmit their context (property path)
-							$html_builder_type->required = Mandatory_Annotation::of($parent_property)->value;
-						}
-						$id_value = $html_builder_type->setTemplate($this)->build();
+						)
+						: $prefix;
+					$html_builder_type = new Html_Builder_Type('id', null, $id, $property_prefix);
+					$parent_property   = $property->getParentProperty();
+					if ($parent_property) {
+						// TODO HIGHER properties via widgets must transmit their context (property path)
+						$html_builder_type->required = Mandatory_Annotation::of($parent_property)->value;
 					}
-					else {
-						$id_value = '';
-					}
+					$id_value = $html_builder_type->setTemplate($this)->build();
 				}
 				else {
 					$id_value = '';
