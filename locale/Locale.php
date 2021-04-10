@@ -144,8 +144,13 @@ class Locale implements Configurable
 	 */
 	public function propertyToLocale(Reflection_Property $property, $value = null)
 	{
-		if (($property instanceof Reflection_Property_Value) && !isset($value)) {
-			$value = $property->value();
+		if ($property instanceof Reflection_Property_Value) {
+			if (!isset($value)) {
+				$value = $property->value();
+			}
+			if ($property->user && $property->getAnnotation('user_getter')->value) {
+				return $value;
+			}
 		}
 		$type = $property->getUserType();
 		if (is_null($value) && Null_Annotation::of($property)->value) {

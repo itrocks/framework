@@ -58,7 +58,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var boolean
 	 */
-	private $user;
+	public $user;
 
 	//------------------------------------------------------------------------------------ $view_path
 	/**
