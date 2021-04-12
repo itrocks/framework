@@ -129,7 +129,7 @@ class Locale implements Configurable
 		) {
 			return Date_Time::max();
 		}
-		return (is_null($value) && $property->getAnnotation('null')->value)
+		return (is_null($value) && Null_Annotation::of($property)->value)
 			? $value
 			: $this->toIso($value, $type);
 	}
@@ -140,16 +140,17 @@ class Locale implements Configurable
 	 *
 	 * @param $property Reflection_Property
 	 * @param $value    string
-	 * @return string
+	 * @return mixed
 	 */
-	public function propertyToLocale(Reflection_Property $property, $value = null)
+	public function propertyToLocale(Reflection_Property $property, $value = null) : mixed
 	{
+		$called_user_getter = false;
 		if ($property instanceof Reflection_Property_Value) {
 			if (!isset($value)) {
 				$value = $property->value();
 			}
 			if ($property->user && $property->getAnnotation('user_getter')->value) {
-				return $value;
+				$called_user_getter = true;
 			}
 		}
 		$type = $property->getUserType();
@@ -162,11 +163,11 @@ class Locale implements Configurable
 		if (Encrypt_Annotation::of($property)->value ?: Password_Annotation::of($property)->value) {
 			$value = strlen($value) ? str_repeat('*', strlen(Password::UNCHANGED)) : '';
 		}
-		elseif ($type->isDateTime()) {
+		elseif ($type->isDateTime() && (($value instanceof Date_Time) || !$called_user_getter)) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 			$this->date_format->show_time    = $property->getAnnotation('show_time')->value;
 		}
-		elseif ($type->isFloat()) {
+		elseif ($type->isFloat() && (isStrictNumeric($value) || !$called_user_getter)) {
 			$decimals = explode(
 				',',
 				str_replace([CR, LF, SP, TAB], '', $property->getAnnotation('decimals')->value)
@@ -185,7 +186,7 @@ class Locale implements Configurable
 				) = $decimals;
 			}
 		}
-		if (is_null($value) && $property->getAnnotation('null')->value) {
+		if (is_null($value) && Null_Annotation::of($property)->value) {
 			$result = $value;
 		}
 		elseif (
@@ -205,8 +206,11 @@ class Locale implements Configurable
 		elseif (in_array($property->getAnnotation('translate')->value, ['', 'data'], true)) {
 			$result = (new Translation\Data\Set)->translate($property, $value);
 		}
-		else {
+		elseif (!$called_user_getter) {
 			$result = $this->toLocale($value, $type);
+		}
+		else {
+			$result = $value;
 		}
 		if (isset($save_decimals)) {
 			list(

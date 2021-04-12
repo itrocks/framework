@@ -192,7 +192,7 @@ class Html_Builder_Collection extends Collection
 			$content = $value;
 		}
 		else {
-			$builder         = (new Html_Builder_Property($property, $value, $pre_path . '[]'));
+			$builder         = (new Html_Builder_Property($property_value, $value, $pre_path . '[]'));
 			$builder->object = $object;
 			$input           = $builder->setTemplate($this->template)->build();
 			if ($property->name === reset($this->properties)->name) {
