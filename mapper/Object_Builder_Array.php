@@ -16,6 +16,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Builder\Property;
+use ITRocks\Framework\View\User_Error_Exception;
 
 /**
  * Build an object and it's property values from data stored into a recursive array
@@ -177,7 +178,7 @@ class Object_Builder_Array
 	 * @param $property Reflection_Property
 	 * @param $value    boolean|integer|float|string|array
 	 * @return boolean|integer|float|string|array
-	 * @throws \ITRocks\Framework\View\User_Error_Exception
+	 * @throws User_Error_Exception
 	 */
 	private function buildBasicValue(Reflection_Property $property, mixed $value)
 	{
