@@ -66,6 +66,9 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 				) {
 					$filters[$filter] = $filter_value_name;
 				}
+				elseif (in_array($filter_value_name , ['!null', 'null'])) {
+					$filters[$filter] = $filter_value_name;
+				}
 				elseif (property_exists($class_name, $filter_value_name)) {
 					/** @noinspection PhpUnhandledExceptionInspection property_exists */
 					$property = new Reflection\Reflection_Property($class_name, $filter_value_name);

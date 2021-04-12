@@ -63,12 +63,12 @@ $(document).ready(function()
 		if (filters !== undefined) {
 			filters = filters.split(',');
 			for (var key in filters) if (filters.hasOwnProperty(key)) {
-				var filter      = filters[key].split('=');
-				var is_constant = filter[1].match(/$[0-9]+^/)
-					|| (
-						((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
-						&& (filter[1].substr(0, 1) === filter[1].substr(-1))
-					);
+				var filter = filters[key].split('=');
+				var is_string_constant = ((filter[1].substr(0, 1) === DQ) || (filter[1].substr(0, 1) === Q))
+					&& (filter[1].substr(0, 1) === filter[1].substr(-1));
+				var is_constant = is_string_constant
+					|| (filter[1] === 'null') || (filter[1] === '!null')
+					|| filter[1].match(/$[0-9]+^/);
 				if (!is_constant) {
 					var combo_name = $element.prev().attr('name');
 					if (combo_name.indexOf(']') && $element.closest('.component-objects').length) {
@@ -88,7 +88,7 @@ $(document).ready(function()
 				}
 				else {
 					request['filters[' + filter[0] + ']']
-						= is_constant ? filter[1].substr(1, filter[1].length - 2) : filter[1];
+						= is_string_constant ? filter[1].substr(1, filter[1].length - 2) : filter[1];
 				}
 			}
 		}

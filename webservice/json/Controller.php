@@ -60,7 +60,9 @@ class Controller implements Default_Feature_Controller
 		}
 		foreach ($filters as $filter_name => $filter_value) {
 			if (is_string($filter_value) && strlen($filter_value) && ($filter_value[0] == '!')) {
-				$filter_value = Func::notEqual(substr($filter_value, 1));
+				$filter_value = ($filter_value === 'null')
+					? Func::isNotNull()
+					: Func::notEqual(substr($filter_value, 1));
 			}
 			elseif (substr($filter_name, -1) === '<') {
 				$filter_name  = substr($filter_name, 0, -1);
@@ -78,6 +80,9 @@ class Controller implements Default_Feature_Controller
 			}
 			elseif ($this->isMultipleValues($filter_name)) {
 				$filter_value = Func::inSet($filter_value);
+			}
+			elseif ($filter_value === 'null') {
+				$filter_value = Func::isNull();
 			}
 			$property = $this->class->getProperty($filter_name);
 			if ($property->getType()->isDateTime()) {
