@@ -166,6 +166,8 @@ class Locale implements Configurable
 		elseif ($type->isDateTime() && (($value instanceof Date_Time) || !$called_user_getter)) {
 			$this->date_format->show_seconds = $property->getAnnotation('show_seconds')->value;
 			$this->date_format->show_time    = $property->getAnnotation('show_time')->value;
+			// force call of toLocale(), needed for date-times
+			$called_user_getter = false;
 		}
 		elseif ($type->isFloat() && (isStrictNumeric($value) || !$called_user_getter)) {
 			$decimals = explode(
