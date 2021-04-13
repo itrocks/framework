@@ -35,7 +35,6 @@ use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
-use ITRocks\Framework\View\View_Exception;
 
 /**
  * The object validator links validation processes to objects
@@ -91,12 +90,12 @@ class Validator implements Registerable
 	//---------------------------------------------------------------------- afterSaveControllerWrite
 	/**
 	 * @param $write_objects array
-	 * @throws View_Exception
+	 * @throws Exception
 	 */
 	public function afterSaveControllerWrite($write_objects)
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
-			throw new View_Exception($this->notValidated(reset($write_objects)->object));
+			throw new Exception($this->notValidated(reset($write_objects)->object));
 		}
 	}
 
@@ -113,7 +112,7 @@ class Validator implements Registerable
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection ReflectionException
 	 * @param $joinpoint Before_Method
-	 * @throws View_Exception
+	 * @throws Exception
 	 */
 	public function beforePropertyStoreString(Before_Method $joinpoint)
 	{
@@ -149,11 +148,11 @@ class Validator implements Registerable
 	 * @param  $object                  object
 	 * @param  $options                 Option[]
 	 * @param  $before_write_annotation string
-	 * @throws View_Exception
+	 * @throws Exception
 	 */
 	public function beforeWrite($object, array $options, $before_write_annotation)
 	{
-		if (($before_write_annotation === 'before_writes') || ($object instanceof Exception)) {
+		if (($before_write_annotation === 'before_writes') || ($object instanceof Except)) {
 			return;
 		}
 		if ($this->validator_on) {
@@ -176,7 +175,7 @@ class Validator implements Registerable
 				}
 			}
 			if (!isset($skip) && !Result::isValid($this->validate($object, $only, $exclude), true)) {
-				throw new View_Exception($this->notValidated($object, $only, $exclude));
+				throw new Exception($this->notValidated($object, $only, $exclude));
 			}
 		}
 	}
