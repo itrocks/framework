@@ -11,7 +11,7 @@ use ITRocks\Framework\Mapper\Component;
  * @business
  * @set Logs_Data
  */
-class Data implements Validate\Exception
+class Data implements Validate\Except
 {
 	use Component;
 

@@ -23,7 +23,7 @@ use ITRocks\Framework\User;
  * @sort -start, uri
  * @store_name logs
  */
-class Entry implements Validate\Exception
+class Entry implements Validate\Except
 {
 
 	//---------------------------------------------------------------------------------- CONSOLE_USER

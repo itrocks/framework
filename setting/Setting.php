@@ -12,7 +12,7 @@ use ITRocks\Framework\Tools\Names;
  *
  * @before_write invalidateValueSetting
  */
-class Setting implements Validate\Exception
+class Setting implements Validate\Except
 {
 
 	//----------------------------------------------------------------------------------------- $code
