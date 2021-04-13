@@ -1,7 +1,6 @@
 <?php
-namespace ITRocks\Framework\Objects\Phone;
+namespace ITRocks\Framework\Objects\Phone\Tests;
 
-use ITRocks\Framework\Objects\Phone\Tests\Phone_Dummy;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Property\Reflection_Property;
