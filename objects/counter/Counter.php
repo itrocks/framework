@@ -37,7 +37,7 @@ class Counter
 	//----------------------------------------------------------------------------------- $identifier
 	/**
 	 * @mandatory
-	 * @user readonly
+	 * @user add_only
 	 * @user_getter showIdentifier
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ class Counter
 	/**
 	 * @param $identifier string|null
 	 */
-	public function __construct($identifier = null)
+	public function __construct(string $identifier = null)
 	{
 		if (isset($identifier)) {
 			$this->identifier = $identifier;
@@ -94,7 +94,7 @@ class Counter
 	 * @param $object        object|string object or class name
 	 * @param $property_name string The name of the property containing the counter value
 	 */
-	public static function autoDecrement($object, $property_name = 'number')
+	public static function autoDecrement(object|string $object, string $property_name = 'number')
 	{
 		$class_name = is_object($object) ? get_class($object) : $object;
 		$class_name = Builder::current()->sourceClassName($class_name);
@@ -123,12 +123,12 @@ class Counter
 	 * @param $object object|null
 	 * @return string
 	 */
-	public function formatLastValue($object = null) : string
+	public function formatLastValue(object $object = null) : string
 	{
 		$format = $this->format;
 		$date   = ($object && property_exists($object, 'date')) ? $object->date : Date_Time::now();
 		$date   = $date->latest($this->last_update);
-		if (strpos($format, '{') !== false) {
+		if (str_contains($format, '{')) {
 			$format = strReplace(
 				[
 					'{YEAR4}'  => $date->format('Y'),
@@ -141,7 +141,7 @@ class Counter
 				],
 				$format
 			);
-			if ($object && (strpos($format, '{') !== false)) {
+			if ($object && str_contains($format, '{')) {
 				$format = (new Template($object))->parseVars($format);
 			}
 		}
@@ -157,7 +157,7 @@ class Counter
 	 * @param $identifier string|null The identifier of the counter ; default is get_class($object)
 	 * @return string The new counter value
 	 */
-	public static function increment($object, string $identifier = null) : string
+	public static function increment(object $object, string $identifier = null) : string
 	{
 		/** @var $dao Mysql\Link */
 		$dao = Dao::current();
@@ -207,7 +207,7 @@ class Counter
 	 * @param $object object|null if set, use advanced formatting using object data ie {property.path}
 	 * @return string
 	 */
-	public function next($object = null) : string
+	public function next(object $object = null) : string
 	{
 		$this->last_value ++;
 		if ($this->resetValue($object)) {
@@ -226,7 +226,7 @@ class Counter
 	 * @param $object object|null An object that can have a reference date (instead of now)
 	 * @return boolean true if the value should be reset
 	 */
-	public function resetValue($object = null) : bool
+	public function resetValue(object $object = null) : bool
 	{
 		$date   = ($object && property_exists($object, 'date')) ? $object->date : Date_Time::now();
 		$date   = $date->latest($this->last_update);
@@ -234,9 +234,9 @@ class Counter
 		$format = $this->format;
 		$last   = $this->last_update;
 		return
-			((strpos($format, '{DAY}') !== false) && ($date > $last->format('Y-m-d')))
-			|| ((strpos($format, '{MONTH}') !== false) && (substr($date, 0, 7) > $last->format('Y-m')))
-			|| ((strpos($format, '{YEAR') !== false) && (substr($date, 0, 4) > $last->format('Y')));
+			(str_contains($format, '{DAY}') && ($date > $last->format('Y-m-d')))
+			|| (str_contains($format, '{MONTH}') && (substr($date, 0, 7) > $last->format('Y-m')))
+			|| (str_contains($format, '{YEAR') && (substr($date, 0, 4) > $last->format('Y')));
 	}
 
 	//-------------------------------------------------------------------------------- showIdentifier
@@ -246,6 +246,9 @@ class Counter
 	 */
 	public function showIdentifier() : string
 	{
+		if (!$this->identifier) {
+			return '';
+		}
 		if (class_exists($this->identifier)) {
 			/** @noinspection PhpUnhandledExceptionInspection class_exists */
 			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->identifier))->value);
