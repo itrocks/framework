@@ -6,7 +6,6 @@ use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tests\Test;
 use PHPUnit\Framework\Assert;
-use ReflectionException;
 
 /**
  * Validate widget testing
@@ -16,15 +15,15 @@ class Validate_Test extends Test
 
 	//-------------------------------------------------------------------------------------- $subject
 	/**
-	 * @var Test_Object
+	 * @var ?Test_Object
 	 */
-	private $subject;
+	private ?Test_Object $subject;
 
 	//------------------------------------------------------------------------------------ $validator
 	/**
-	 * @var Validator
+	 * @var ?Validator
 	 */
-	private $validator;
+	private ?Validator $validator;
 
 	//------------------------------------------------------------------- buildAnnotationsInformation
 	/**
@@ -33,7 +32,7 @@ class Validate_Test extends Test
 	 * @param $report Reflection\Annotation[]|Annotation[] of annotation objects
 	 * @return array
 	 */
-	private function buildAnnotationsInformation(array $report)
+	private function buildAnnotationsInformation(array $report) : array
 	{
 		$info = [];
 
@@ -52,8 +51,6 @@ class Validate_Test extends Test
 	//----------------------------------------------------------------------------------------- setUp
 	/**
 	 * Before each test
-	 *
-	 * @throws ReflectionException
 	 */
 	protected function setUp() : void
 	{

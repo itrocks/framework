@@ -14,6 +14,6 @@ trait Has_Report
 	 * @read_only
 	 * @var Annotation[]
 	 */
-	public $report = [];
+	public array $report = [];
 
 }

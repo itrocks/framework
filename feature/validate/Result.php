@@ -28,7 +28,8 @@ abstract class Result
 	 * @param $and_result string|null|true
 	 * @return string|null|true
 	 */
-	public static function andResult($result, $and_result)
+	public static function andResult(bool|string|null $result, bool|string|null $and_result)
+		: bool|string|null
 	{
 		$levels = [self::VALID, self::NONE, self::INFORMATION, self::WARNING, self::ERROR];
 		$result_level     = array_search($result,     $levels, true);

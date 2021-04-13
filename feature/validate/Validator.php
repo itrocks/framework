@@ -52,28 +52,28 @@ class Validator implements Registerable
 	 *
 	 * @var Reflection\Annotation[]|Annotation[]|Property\Annotation[]
 	 */
-	public $report = [];
+	public array $report = [];
 
 	//---------------------------------------------------------------------------------------- $valid
 	/**
 	 * true if the last validated object was valid, else false
 	 *
 	 * @read_only
-	 * @var boolean
+	 * @var string|null|true
 	 */
-	public $valid;
+	public bool|string|null $valid;
 
 	//--------------------------------------------------------------------------------- $validator_on
 	/**
 	 * @var boolean
 	 */
-	public $validator_on = false;
+	public bool $validator_on = false;
 
 	//----------------------------------------------------------------------------------- $warning_on
 	/**
 	 * @var boolean
 	 */
-	public $warning_on = false;
+	public bool $warning_on = false;
 
 	//------------------------------------------------------------------------ afterMainControllerRun
 	public function afterMainControllerRun()
@@ -92,7 +92,7 @@ class Validator implements Registerable
 	 * @param $write_objects array
 	 * @throws Exception
 	 */
-	public function afterSaveControllerWrite($write_objects)
+	public function afterSaveControllerWrite(array $write_objects)
 	{
 		if ($this->warningEnabled() && $this->getWarnings()) {
 			throw new Exception($this->notValidated(reset($write_objects)->object));
@@ -150,7 +150,7 @@ class Validator implements Registerable
 	 * @param  $before_write_annotation string
 	 * @throws Exception
 	 */
-	public function beforeWrite($object, array $options, $before_write_annotation)
+	public function beforeWrite(object $object, array $options, string $before_write_annotation)
 	{
 		if (($before_write_annotation === 'before_writes') || ($object instanceof Except)) {
 			return;
@@ -187,13 +187,14 @@ class Validator implements Registerable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object   object
 	 * @param $property Reflection_Property
-	 * @return object|Component
+	 * @return Component
 	 */
-	private function createSubObject($object, Reflection_Property $property)
+	private function createSubObject(object $object, Reflection_Property $property) : Component
 	{
 		/** @noinspection PhpUnhandledExceptionInspection var annotation values must be valid */
 		$link_class = new Reflection\Reflection_Class($property->getType()->getElementTypeAsString());
 		/** @var $sub_object Component */
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$sub_object = $link_class->newInstance();
 		// we attach composite object, but we do not set the sub_object in its parent property
 		// we simply want to validate the new object, not to save it !
@@ -207,7 +208,7 @@ class Validator implements Registerable
 	 *
 	 * @return boolean true if was enabled, false if was disabled
 	 */
-	public function disable()
+	public function disable() : bool
 	{
 		$validator_on       = $this->validator_on;
 		$this->validator_on = false;
@@ -220,7 +221,7 @@ class Validator implements Registerable
 	 *
 	 * @return boolean true if was enabled, false if was disabled
 	 */
-	public function enable()
+	public function enable() : bool
 	{
 		$validator_on       = $this->validator_on;
 		$this->validator_on = true;
@@ -229,19 +230,20 @@ class Validator implements Registerable
 
 	//-------------------------------------------------------------------------------- getConfirmLink
 	/**
+	 * @noinspection PhpUnused not_validated.html
 	 * @return string
 	 */
-	public function getConfirmLink()
+	public function getConfirmLink() : string
 	{
 		$uri = lParse(SL . rParse($_SERVER['REQUEST_URI'], SL, 2), '?', 1, true);
-		return $uri . ((strpos($uri, '?') !== false) ? '&' : '?') . 'confirm=1';
+		return $uri . (str_contains($uri, '?') ? '&' : '?') . 'confirm=1';
 	}
 
 	//------------------------------------------------------------------------------------- getErrors
 	/**
 	 * @return Annotation[]
 	 */
-	public function getErrors()
+	public function getErrors() : array
 	{
 		$errors = [];
 		foreach ($this->report as $annotation) {
@@ -258,7 +260,7 @@ class Validator implements Registerable
 	 *
 	 * @return Annotation[]
 	 */
-	public function getMessages()
+	public function getMessages() : array
 	{
 		return array_merge($this->getWarnings(), $this->getErrors());
 	}
@@ -269,7 +271,7 @@ class Validator implements Registerable
 	 *
 	 * @return string[]
 	 */
-	public function getPostProperties()
+	public function getPostProperties() : array
 	{
 		return $this->getPropertiesToString($_POST);
 	}
@@ -282,7 +284,7 @@ class Validator implements Registerable
 	 * @param $base_path string
 	 * @return string[]
 	 */
-	private function getPropertiesToString(array $elements = [], $base_path = '')
+	private function getPropertiesToString(array $elements = [], string $base_path = '') : array
 	{
 		$properties = [];
 		foreach ($elements as $key => $element) {
@@ -303,7 +305,7 @@ class Validator implements Registerable
 	/**
 	 * @return Annotation[]
 	 */
-	public function getWarnings()
+	public function getWarnings() : array
 	{
 		$warning = [];
 		foreach ($this->report as $annotation) {
@@ -321,7 +323,7 @@ class Validator implements Registerable
 	 * @param $exclude string[] excluded property names
 	 * @return string
 	 */
-	private function notValidated($object, array $only = [], array $exclude = [])
+	private function notValidated(object $object, array $only = [], array $exclude = []) : string
 	{
 		$parameters = [
 			$this,
@@ -394,8 +396,10 @@ class Validator implements Registerable
 	 * @return string|null|true @values Result::const
 	 */
 	public function validate(
-		$object, array $only_properties = [], array $exclude_properties = [], $component = false
-	) {
+		object $object, array $only_properties = [], array $exclude_properties = [],
+		bool $component = false
+	) : bool|string|null
+	{
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Link_Class($object);
 		/** @var $properties Reflection_Property[] */
@@ -421,7 +425,9 @@ class Validator implements Registerable
 	 * @param $annotation Reflection\Annotation|Annotation
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateAnnotation($object, Reflection\Annotation $annotation)
+	protected function validateAnnotation(
+		object $object, Reflection\Annotation|Annotation $annotation
+	) : bool|string|null
 	{
 		$annotation->object = $object;
 		$annotation->valid  = $annotation->validate($object);
@@ -447,7 +453,7 @@ class Validator implements Registerable
 	 * @param $annotations Reflection\Annotation[]|Annotation[]
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateAnnotations($object, array $annotations)
+	protected function validateAnnotations(object $object, array $annotations) : bool|string|null
 	{
 		$result = true;
 		foreach ($annotations as $annotation) {
@@ -471,11 +477,12 @@ class Validator implements Registerable
 	 * @return string|null|true @values Result::const
 	 */
 	private function validateComponent(
-		$object,
+		object $object,
 		array $only_properties,
 		array $exclude_properties,
 		Reflection_Property $property
-	) {
+	) : bool|string|null
+	{
 		$result = true;
 		$type   = $property->getType();
 		if ($type->isClass()) {
@@ -533,7 +540,7 @@ class Validator implements Registerable
 	 * @param $class  Reflection_Class
 	 * @return string|null|true @values Result::const
 	 */
-	protected function validateObject($object, Reflection_Class $class)
+	protected function validateObject(object $object, Reflection_Class $class) : bool|string|null
 	{
 		return $this->validateAnnotations($object, $class->getAnnotations());
 	}
@@ -549,13 +556,15 @@ class Validator implements Registerable
 	 * @return string|null|true @values Result::const
 	 */
 	protected function validateProperties(
-		$object, array $properties, array $only_properties, array $exclude_properties,
-		$component = false
-	) {
+		object $object, array $properties, array $only_properties, array $exclude_properties,
+		bool $component = false
+	) : bool|string|null
+	{
 		$result             = true;
 		$exclude_properties = array_flip($exclude_properties);
 		$only_properties    = array_flip($only_properties);
 		foreach ($properties as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property->getValue must be valid */
 			if (!(
 				(
 					!$property->isStatic()
@@ -626,7 +635,7 @@ class Validator implements Registerable
 	 *
 	 * @return boolean
 	 */
-	public function warningEnabled()
+	public function warningEnabled() : bool
 	{
 		return $this->validator_on && $this->warning_on;
 	}
