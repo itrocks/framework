@@ -46,7 +46,7 @@ class Import_Execute_Controller implements Default_Feature_Controller
 				$import_array->importArray($array);
 			}
 			catch (Import_Exception $exception) {
-				$parameters['detail']           = $exception->getMessage() ?: $exception->view_result;
+				$parameters['detail']           = $exception->getMessage() ?: $exception->outputHtml();
 				$parameters[Template::TEMPLATE] = 'importError';
 			}
 		}

@@ -28,7 +28,7 @@ ul.properties:not(.tiny) li,
 
 ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects),
 ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects),
-.property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
+.property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
   display: table-row;
   position: relative; }
   ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5, ol.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
@@ -36,10 +36,10 @@ ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):n
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
     font-weight: 500;
     padding: 9px 0;
     text-align: right;
@@ -51,11 +51,11 @@ ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):n
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
   ul.properties:not(.tiny) > *:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
-  .property:not(a):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h3,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h4,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > h5,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > div,
+  .property:not(a):not(span):not(th):not(td):not(.tiny):not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) > label {
     box-sizing: border-box;
     display: table-cell;
     height: 32px; }
@@ -63,37 +63,37 @@ ol.properties:not(.tiny) > *.after, ol.properties:not(.tiny) > *.before, ol.prop
 ul.properties:not(.tiny) > *.after,
 ul.properties:not(.tiny) > *.before,
 ul.properties:not(.tiny) > *.block,
-.property:not(a):not(th):not(td):not(.tiny).after,
-.property:not(a):not(th):not(td):not(.tiny).before,
-.property:not(a):not(th):not(td):not(.tiny).block {
+.property:not(a):not(span):not(th):not(td):not(.tiny).after,
+.property:not(a):not(span):not(th):not(td):not(.tiny).before,
+.property:not(a):not(span):not(th):not(td):not(.tiny).block {
   display: block; }
 ol.properties:not(.tiny) > *.after, ol.properties:not(.tiny) > *.before,
 ul.properties:not(.tiny) > *.after,
 ul.properties:not(.tiny) > *.before,
-.property:not(a):not(th):not(td):not(.tiny).after,
-.property:not(a):not(th):not(td):not(.tiny).before {
+.property:not(a):not(span):not(th):not(td):not(.tiny).after,
+.property:not(a):not(span):not(th):not(td):not(.tiny).before {
   line-height: 1.5em;
   padding: 0 10px;
   white-space: pre-line; }
   ol.properties:not(.tiny) > *.after > div, ol.properties:not(.tiny) > *.before > div,
   ul.properties:not(.tiny) > *.after > div,
   ul.properties:not(.tiny) > *.before > div,
-  .property:not(a):not(th):not(td):not(.tiny).after > div,
-  .property:not(a):not(th):not(td):not(.tiny).before > div {
+  .property:not(a):not(span):not(th):not(td):not(.tiny).after > div,
+  .property:not(a):not(span):not(th):not(td):not(.tiny).before > div {
     display: block; }
 ol.properties:not(.tiny) > *.block,
 ul.properties:not(.tiny) > *.block,
-.property:not(a):not(th):not(td):not(.tiny).block {
+.property:not(a):not(span):not(th):not(td):not(.tiny).block {
   margin-top: -1px; }
   ol.properties:not(.tiny) > *.block > h3, ol.properties:not(.tiny) > *.block > h4, ol.properties:not(.tiny) > *.block > h5, ol.properties:not(.tiny) > *.block > label,
   ul.properties:not(.tiny) > *.block > h3,
   ul.properties:not(.tiny) > *.block > h4,
   ul.properties:not(.tiny) > *.block > h5,
   ul.properties:not(.tiny) > *.block > label,
-  .property:not(a):not(th):not(td):not(.tiny).block > h3,
-  .property:not(a):not(th):not(td):not(.tiny).block > h4,
-  .property:not(a):not(th):not(td):not(.tiny).block > h5,
-  .property:not(a):not(th):not(td):not(.tiny).block > label {
+  .property:not(a):not(span):not(th):not(td):not(.tiny).block > h3,
+  .property:not(a):not(span):not(th):not(td):not(.tiny).block > h4,
+  .property:not(a):not(span):not(th):not(td):not(.tiny).block > h5,
+  .property:not(a):not(span):not(th):not(td):not(.tiny).block > label {
     background-color: #f8f8f8;
     box-sizing: border-box;
     color: var(--dark-color);
@@ -108,14 +108,14 @@ ul.properties:not(.tiny) > *.block,
     ul.properties:not(.tiny) > *.block > h4:first-letter,
     ul.properties:not(.tiny) > *.block > h5:first-letter,
     ul.properties:not(.tiny) > *.block > label:first-letter,
-    .property:not(a):not(th):not(td):not(.tiny).block > h3:first-letter,
-    .property:not(a):not(th):not(td):not(.tiny).block > h4:first-letter,
-    .property:not(a):not(th):not(td):not(.tiny).block > h5:first-letter,
-    .property:not(a):not(th):not(td):not(.tiny).block > label:first-letter {
+    .property:not(a):not(span):not(th):not(td):not(.tiny).block > h3:first-letter,
+    .property:not(a):not(span):not(th):not(td):not(.tiny).block > h4:first-letter,
+    .property:not(a):not(span):not(th):not(td):not(.tiny).block > h5:first-letter,
+    .property:not(a):not(span):not(th):not(td):not(.tiny).block > label:first-letter {
       text-transform: uppercase; }
 ol.properties:not(.tiny) > *.multiline.string > div,
 ul.properties:not(.tiny) > *.multiline.string > div,
-.property:not(a):not(th):not(td):not(.tiny).multiline.string > div {
+.property:not(a):not(span):not(th):not(td):not(.tiny).multiline.string > div {
   white-space: pre-line; }
 
 ol.properties.tiny,

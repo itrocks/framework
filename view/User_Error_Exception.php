@@ -13,14 +13,25 @@ use ITRocks\Framework\View\Html\Dom\List_\Item;
 class User_Error_Exception extends View_Exception
 {
 
-	//----------------------------------------------------------------------------------- __construct
+	//------------------------------------------------------------------------------- $error_messages
 	/**
-	 * @param $result string|null The alternative view result (if set)
+	 * Additional error messages, added to view result
+	 *
+	 * @var string[]
 	 */
-	public function __construct(string $result = null)
-	{
-		parent::__construct($result);
-		$this->view_result = Target::to(Target::QUERY, new Item($this->view_result));
-	}
+	public array $error_messages = [];
 
+	//------------------------------------------------------------------------------------ outputHtml
+	/**
+	 * @return string
+	 */
+	public function outputHtml() : string
+	{
+		$output = [new Item($this->view_result)];
+		foreach ($this->error_messages as $error_message) {
+			$output[] = new Item($error_message);
+		}
+		return Target::to(Target::QUERY, join(LF, $output));
+	}
+	
 }

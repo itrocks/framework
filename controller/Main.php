@@ -231,7 +231,7 @@ class Main
 		}
 		/** @noinspection PhpRedundantCatchClauseInspection may be thrown by controllers */
 		catch (View_Exception $exception) {
-			return $exception->view_result;
+			return $exception->outputHtml();
 		}
 	}
 

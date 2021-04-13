@@ -27,7 +27,7 @@ ul.properties:not(.tiny) li,
 
 ol.properties:not(.tiny) > *,
 ul.properties:not(.tiny) > *,
-.property:not(a):not(th):not(td):not(.tiny) {
+.property:not(a):not(span):not(th):not(td):not(.tiny) {
 
 	&:not(.after):not(.before):not(.block):not(.hidden):not(.component-objects) {
 		display: table-row;

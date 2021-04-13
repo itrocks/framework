@@ -10,46 +10,46 @@
 </head>
 <body>
 <ul id="#query">
+<li class="not_validated">
 <!--BEGIN-->
 
-	<li class="not_validated">
-		|<span class="class">¦{object.@class.display.ucfirst}¦</span>
-		!<span class="object">{object}</span>!
-		<span class="state">¦is¦ ¦invalid¦</span>| :
+	|<span class="class">¦{object.@class.display.ucfirst}¦</span>
+	!<span class="object">{object}</span>!
+	<span class="state">¦is¦ ¦invalid¦</span>| :
 
-		<ul class="invalid_properties">
-			<!--getMessages-->
-			<li class="{valid}">
-				<!--~property?-->
-				<span class="property" data-property="{property.name}">|{property.aliased_path}|</span>
-				<span class="value">{?getPropertyValue}</span>&nbsp;:
-				<!--reportMessage--><span class="message">|{.}|</span> -<!--end-->
-				<span class="expected">|expected !{.}!|</span>
-				<!--else-->
-				<span class="message">{reportMessage}</span>
-				<!--end-->
-			</li>
+	<ul class="invalid_properties">
+		<!--getMessages-->
+		<li class="{valid}">
+			<!--~property?-->
+			<span class="property" data-property="{property.name}">|{property.aliased_path}|</span>
+			<span class="value">{?getPropertyValue}</span>&nbsp;:
+			<!--reportMessage--><span class="message">|{.}|</span> -<!--end-->
+			<span class="expected">|expected !{.}!|</span>
+			<!--else-->
+			<span class="message">{reportMessage}</span>
 			<!--end-->
-		</ul>
-
-		<!--!getErrors?-->
-		<form class="invalid_properties_warning" method="post">
-			<!--getPostProperties-->
-			<input type="hidden" name="{@key}" value="{value.htmlSpecialChars}">
-			<!--end-->
-			<ul class="general actions">
-				<li class="cancel">
-					<a href="app://edit">|Cancel|</a>
-				</li>
-				<li class="save">
-					<a class="submit" href="app://(getConfirmLink)" target="#responses">|Ignore and confirm|</a>
-				</li>
-			</ul>
-		</form>
+		</li>
 		<!--end-->
-	</li>
+	</ul>
+
+	<!--!getErrors?-->
+	<form class="invalid_properties_warning" method="post">
+		<!--getPostProperties-->
+		<input type="hidden" name="{@key}" value="{value.htmlSpecialChars}">
+		<!--end-->
+		<ul class="general actions">
+			<li class="cancel">
+				<a href="app://edit">|Cancel|</a>
+			</li>
+			<li class="save">
+				<a class="submit" href="app://(getConfirmLink)" target="#responses">|Ignore and confirm|</a>
+			</li>
+		</ul>
+	</form>
+	<!--end-->
 
 <!--END-->
+</li>
 </ul>
 </body>
 </html>

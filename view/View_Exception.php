@@ -26,4 +26,15 @@ class View_Exception extends Exception
 		if (isset($result)) $this->view_result = $result;
 	}
 
+	//------------------------------------------------------------------------------------ outputHtml
+	/**
+	 * Output the messages as HTML
+	 *
+	 * @return string
+	 */
+	public function outputHtml() : string
+	{
+		return $this->view_result;
+	}
+	
 }
