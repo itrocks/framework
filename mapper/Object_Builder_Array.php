@@ -449,8 +449,9 @@ class Object_Builder_Array
 		) {
 			/** @noinspection PhpUnhandledExceptionInspection widget builder class name must be valid */
 			/** @var $builder Property */
-			$builder = Builder::create($builder, [$property, $value]);
-			$value2  = $builder->buildValue($object, $null_if_empty);
+			$builder             = Builder::create($builder, [$property, $value]);
+			$value2              = $builder->buildValue($object, $null_if_empty);
+			$this->built_objects = array_merge($this->built_objects, $builder->built_objects);
 			if ($value2 !== Property::DONT_BUILD_VALUE) {
 				$value = $value2;
 				$done  = true;

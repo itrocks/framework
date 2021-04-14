@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\View\Html\Builder;
 
 use ITRocks\Framework\Controller\Parameter;
+use ITRocks\Framework\Mapper\Built_Object;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\View\Html\Template;
 
@@ -18,6 +19,14 @@ abstract class Property
 	 */
 	const DONT_BUILD_VALUE = 'çeàfdsnzOFfjapzjfsdgrT2è§édsvp-f';
 
+	//-------------------------------------------------------------------------------- $built_objects
+	/**
+	 * Built objects to add to Object_Builder_Array's built_objects after calling buildValue()
+	 *
+	 * @var Built_Object[]
+	 */
+	public array $built_objects = [];
+
 	//----------------------------------------------------------------------------------- $parameters
 	/**
 	 * Additional parameters for html template or as options.
@@ -25,37 +34,38 @@ abstract class Property
 	 *
 	 * @var array
 	 */
-	public $parameters = [ Parameter::IS_INCLUDED => true ];
+	public array $parameters = [Parameter::IS_INCLUDED => true];
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//------------------------------------------------------------------------------------- $template
 	/**
-	 * @var Template
+	 * @var ?Template
 	 */
-	public $template;
+	public ?Template $template;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var mixed
 	 */
-	public $value;
+	public mixed $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $property Reflection_Property
 	 * @param $value    mixed
-	 * @param $template Template
+	 * @param $template Template|null
 	 */
-	public function __construct(Reflection_Property $property, $value, Template $template = null)
-	{
+	public function __construct(
+		Reflection_Property $property, mixed $value, Template $template = null
+	) {
 		$this->property = $property;
-		$this->value    = $value;
 		$this->template = $template;
+		$this->value    = $value;
 	}
 
 	//------------------------------------------------------------------------------------- buildHtml
