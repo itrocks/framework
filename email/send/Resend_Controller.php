@@ -35,7 +35,7 @@ class Resend_Controller extends Controller implements Registerable
 		}
 		/** @var $email Email */
 		$email = $joinpoint->parameters['object'];
-		if (!$email->send_message) {
+		if ($email->uidl && !$email->send_message) {
 			return;
 		}
 		$email->date = Date_Time::now();
@@ -45,6 +45,9 @@ class Resend_Controller extends Controller implements Registerable
 	}
 
 	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $register Register
+	 */
 	public function register(Register $register)
 	{
 		$register->aop->afterMethod(
