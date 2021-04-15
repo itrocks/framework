@@ -2291,8 +2291,15 @@ class Template
 	 */
 	protected function replaceLink($link)
 	{
-		if (strpos($link, '://')) {
-			return $link;
+		if (
+			str_contains($link, '://')
+			|| str_contains($link, 'callto:')
+			|| str_contains($link, 'data:')
+			|| str_contains($link, 'fax:')
+			|| str_contains($link, 'mailto:')
+			|| str_contains($link, 'tel:')
+		) {
+			return str_starts_with($link, SL) ? substr($link, 1) : $link;
 		}
 		$base = isset($this->parameters[static::ABSOLUTE_LINKS])
 			? Paths::absoluteBase()
@@ -2368,8 +2375,15 @@ class Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (strpos($uri, '://') || (strpos($uri, 'data:') === 0)) {
-			return $uri;
+		if (
+			str_contains($uri, '://')
+			|| str_contains($uri, 'callto:')
+			|| str_contains($uri, 'data:')
+			|| str_contains($uri, 'fax:')
+			|| str_contains($uri, 'mailto:')
+			|| str_contains($uri, 'tel:')
+		) {
+			return str_starts_with($uri, SL) ? substr($uri, 1) : $uri;
 		}
 		if (
 			in_array(rLastParse($uri, DOT), ['gif', 'jpg', 'png'])
