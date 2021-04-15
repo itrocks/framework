@@ -263,6 +263,29 @@ class PDF extends Fpdi
 		return static::MILLIMETERS_TO_POINTS_RATIO * $millimeters;
 	}
 
+	//--------------------------------------------------------------------------------------- toColor
+	/**
+	 * @param $color string
+	 * @return integer[] [$red, $green, $blue]
+	 */
+	public static function toColor(string $color) : array
+	{
+		if (str_starts_with($color, '#')) {
+			if (strlen($color) === 4) {
+				$color = '#' . $color[1] . $color[1] . $color[2] . $color[2] . $color[3] . $color[3];
+			}
+			if (strlen($color) === 7) {
+				$color = hexdec(substr($color, 1));
+				$color = [
+					($color & 0xff0000) >> 16,
+					($color & 0x00ff00) >> 8,
+					($color & 0x0000ff)
+				];
+			}
+		}
+		return $color;
+	}
+
 }
 
 error_reporting($error_reporting);
