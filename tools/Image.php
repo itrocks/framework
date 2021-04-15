@@ -365,7 +365,7 @@ class Image
 
 		switch ($type) {
 			case IMAGETYPE_BMP:
-				image2wbmp($this->resource, $filename);
+				imagebmp($this->resource, $filename);
 				break;
 			case IMAGETYPE_GIF:
 				imagegif($this->resource, $filename);
