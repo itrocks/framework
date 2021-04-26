@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\User;
 use ITRocks\Framework\View;
@@ -62,7 +63,7 @@ class Controller implements Feature_Controller
 			}
 		}
 		$login = trim($form['login'] ?? '');
-		$parameters->set('error', 'error');
+		$parameters->set('error', Loc::tr('The password does not match the entered login'));
 		$parameters->set('focus', boolval(strlen($login)));
 		$parameters->set('login', $login);
 		$parameters->set('url',   $this->reserved($form['url'] ?? Uri::previous()));
