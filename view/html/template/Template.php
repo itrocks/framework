@@ -9,6 +9,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\File;
+use ITRocks\Framework\Http\Uri;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
@@ -2073,7 +2074,7 @@ class Template
 	 */
 	protected function prepareW3Links($content)
 	{
-		foreach (['abs', 'app', 'rel'] as $protocol) {
+		foreach (['abs', 'app', 'dyn', 'rel'] as $protocol) {
 			$i = 0;
 			while ($i = strpos($content, $protocol . '://', $i)) {
 				$delimiter = $content[$i - 1];
@@ -2165,11 +2166,8 @@ class Template
 	{
 		$content = str_replace(['abs:///', 'abs://'], Paths::absoluteBase() . SL, $content);
 		$content = str_replace(['app:///', 'app://'], SL, $content);
-		$content = str_replace(['rel:///', 'rel://'], '', $content);
+		$content = str_replace(['dyn:///', 'dyn://', 'rel:///', 'rel://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
-		$content = str_replace(
-			['href="/http://', 'href="/https://'], ['href="http://', 'href="https://'], $content
-		);
 		return $content;
 	}
 
@@ -2291,14 +2289,7 @@ class Template
 	 */
 	protected function replaceLink($link)
 	{
-		if (
-			str_contains($link, '://')
-			|| str_contains($link, 'callto:')
-			|| str_contains($link, 'data:')
-			|| str_contains($link, 'fax:')
-			|| str_contains($link, 'mailto:')
-			|| str_contains($link, 'tel:')
-		) {
+		if (Uri::startsWithProtocol($link)) {
 			return str_starts_with($link, SL) ? substr($link, 1) : $link;
 		}
 		$base = isset($this->parameters[static::ABSOLUTE_LINKS])
@@ -2375,14 +2366,7 @@ class Template
 	 */
 	protected function replaceUri($uri)
 	{
-		if (
-			str_contains($uri, '://')
-			|| str_contains($uri, 'callto:')
-			|| str_contains($uri, 'data:')
-			|| str_contains($uri, 'fax:')
-			|| str_contains($uri, 'mailto:')
-			|| str_contains($uri, 'tel:')
-		) {
+		if (Uri::startsWithProtocol($uri)) {
 			return str_starts_with($uri, SL) ? substr($uri, 1) : $uri;
 		}
 		if (

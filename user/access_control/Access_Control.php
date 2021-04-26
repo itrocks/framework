@@ -13,8 +13,8 @@ use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameter;
-use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Http\Uri;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -226,7 +226,7 @@ class Access_Control implements Configurable, Registerable
 	 */
 	private function checkFeatures(&$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
-		if (beginsWith($uri, ['http://', 'https://'])) {
+		if (Uri::startsWithProtocol($uri)) {
 			return true;
 		}
 		$last_protect  = self::$protect;
@@ -248,7 +248,7 @@ class Access_Control implements Configurable, Registerable
 				$accessible = false;
 			}
 			elseif (!pregMatchArray($this->exceptions, $uri)) {
-				$uri_object = new Uri($uri);
+				$uri_object = new Controller\Uri($uri);
 				if (
 					($uri_object->feature_name === Controller\Feature::F_EDIT)
 					&& Dao::getObjectIdentifier($object = $uri_object->parameters->getMainObject())
@@ -309,7 +309,7 @@ class Access_Control implements Configurable, Registerable
 			list($uri, $get) = array_pad(explode('?', $uri, 2), 2, '');
 			$get ? parse_str($get, $get) : ($get = []);
 		}
-		$uri = new Uri($uri, $get);
+		$uri = new Controller\Uri($uri, $get);
 		return substr(
 			View::link(Names::setToClass($uri->controller_name, false), $uri->feature_name, ['full']),
 			0,
