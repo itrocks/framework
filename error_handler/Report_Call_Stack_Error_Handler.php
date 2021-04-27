@@ -115,6 +115,10 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 */
 	static public function getUserInformationMessage()
 	{
+		if (http_response_code() === 500) {
+			// makes sure the user information message will be displayed by the browser
+			http_response_code(200);
+		}
 		return Loc::tr('An error occurred') . DOT
 		. SP . Loc::tr('The software maintainer has been informed and will fix it soon') . DOT
 		. SP . Loc::tr('Please check your data for bad input') . DOT;
