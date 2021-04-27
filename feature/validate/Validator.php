@@ -147,10 +147,10 @@ class Validator implements Registerable
 	 *
 	 * @param  $object                  object
 	 * @param  $options                 Option[]
-	 * @param  $before_write_annotation string
+	 * @param  $before_write_annotation ?string
 	 * @throws Exception
 	 */
-	public function beforeWrite(object $object, array $options, string $before_write_annotation)
+	public function beforeWrite(object $object, array $options, ?string $before_write_annotation)
 	{
 		if (($before_write_annotation === 'before_writes') || ($object instanceof Except)) {
 			return;
