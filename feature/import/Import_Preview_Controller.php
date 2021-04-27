@@ -67,20 +67,21 @@ class Import_Preview_Controller implements Default_Feature_Controller, Has_Gener
 		// convert form files to worksheets and session files
 		if ($files) {
 			$errors = [];
-			$form   = (new Post_Files)->appendToForm($form, $files, true);
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$form   = Builder::create(Post_Files::class)->appendToForm($form, $files, true);
 			$import = $parameters->getMainObject(Import::class);
 			$import->class_name = $class_name;
 			foreach ($form as $file) {
 				if ($file instanceof File) {
 					if (!isset($session_files)) {
-						/** @noinspection PhpUnhandledExceptionInspection constant */
+						/** @noinspection PhpUnhandledExceptionInspection class */
 						$session_files = Builder::create(Files::class);
 					}
 					$excel = (new Spreadsheet_File)->fileToArray($file->temporary_file_name, $errors);
 					$worksheet_number = 0;
 					foreach ($excel as $temporary_file_name => $worksheet) {
 						if (filesize($temporary_file_name) > 1) {
-							/** @noinspection PhpUnhandledExceptionInspection constant */
+							/** @noinspection PhpUnhandledExceptionInspection class */
 							$import_worksheet = Builder::create(Import_Worksheet::class, [
 								$worksheet_number ++,
 								Import_Settings_Builder::buildArray($worksheet, $class_name),
