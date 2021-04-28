@@ -286,7 +286,7 @@ class Import_Array
 					$property               = new Reflection_Property($class_name, $path);
 					$properties_link[$path] = Link_Annotation::of($property)->value;
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					$properties_link[$path] = '';
 				}
 			}
@@ -391,7 +391,6 @@ class Import_Array
 					throw new Import_Exception(
 						'Component objects import not implemented (' . $property_path . ')'
 					);
-					break;
 				case Link_Annotation::MAP:
 					$object = $this->importSearchObject($search, $row, $class, $class_properties_column);
 					$array[key($array)][$property_path][] = $object;
@@ -473,7 +472,7 @@ class Import_Array
 				try {
 					$property = new Reflection_Property($property_class_name, $property_name);
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					$source_property_names = Loc::rtr($property_name, $property_class_name);
 					if (!is_array($source_property_names)) {
 						$source_property_names = [$source_property_names];
@@ -485,7 +484,7 @@ class Import_Array
 							$property_name = $translated_property_name;
 							break;
 						}
-						catch (ReflectionException $exception) {
+						catch (ReflectionException) {
 							// TODO do not catch without at least reporting the problem
 						}
 					}
@@ -605,11 +604,12 @@ class Import_Array
 	 *
 	 * @return Import_Class[]
 	 */
-	protected function sortedClasses()
+	protected function sortedClasses() : array
 	{
-		uksort($this->settings->classes, function ($class_path_1, $class_path_2) {
-			return ($class_path_1 == '')
-				|| (substr_count($class_path_1, DOT) < substr_count($class_path_2, DOT));
+		uksort($this->settings->classes, function(string $class_path_1, string $class_path_2) : int {
+			return $class_path_1
+				? (substr_count($class_path_2, DOT) - substr_count($class_path_1, DOT))
+				: 1;
 		});
 		return $this->settings->classes;
 	}
