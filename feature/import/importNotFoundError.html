@@ -11,21 +11,22 @@
 <body>
 <!--BEGIN-->
 
-	<div class="import error">
-		<div class="top message">
-			|No ¦{display}¦ matching this search criteria was found| :
+	<article class="import execute error" id="{class_name.path}/import/error">
+		<header><h2>|Import error|</h2></header>
+		<div class="data import error">
+			<div class="top message">
+				|No ¦{display}¦ matching this search criteria was found| :
+			</div>
+			<ul class="search">
+			<!--search-->
+				<li><span class="property">|{@key}|</span> <span class="value">{.}</span></li>
+			<!--end-->
+			</ul>
+			<div class="bottom message">
+				|Please enable create new values or make sur that all imported items identity already exist before trying again|.
+			</div>
 		</div>
-
-		<ul class="search">
-		<!--search-->
-			<li><span class="property">|{@key}|</span> <span class="value">{.}</span></li>
-		<!--end-->
-		</ul>
-
-		<div class="bottom message">
-			|Please enable create new values or make sur that all imported items identity already exist before trying again|.
-		</div>
-	</div>
+	</article>
 
 <!--END-->
 </body>

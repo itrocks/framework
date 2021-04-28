@@ -11,15 +11,17 @@
 <body>
 <!--BEGIN-->
 
-	<section class="{class_name.short.lower} import error window" id="/{class_name.path}/{@feature}">
-		<h2>|Import error|</h2>
-		<p>|An error has occurred during import| : |no data was saved| !</p>
-		<!--detail?-->
-		<p class="detail">
-			{detail}
-		</p>
-		<!--end-->
-	</section>
+	<article class="import execute error" id="{class_name.path}/import/error">
+		<header><h2>|Import error|</h2></header>
+		<div class="data">
+			<p>|An error has occurred during import| : |no data was saved| !</p>
+			<!--detail?-->
+			<p class="detail">
+				{detail}
+			</p>
+			<!--end-->
+		</div>
+	</article>
 
 <!--END-->
 </body>
