@@ -38,13 +38,10 @@
 		"kensnyder/quill-image-resize-module":   "1.0.0",
 		"netcarver/textile":                     "3.*",
 		"oomphinc/composer-installers-extender": "^2.0",
-		"pear/mail":                             "1.*",
-		"pear/mail_mime":                        "1.*",
-		"pear/net_pop3":                         "1.*",
-		"pear/net_smtp":                         "1.*",
 		"php":                                   "^8.0.0",
 		"phpunit/phpunit":                       "9.*",
 		"setasign/fpdi":                         "^2.3",
+		"swiftmailer/swiftmailer":               "^6.0",
 		"tecnickcom/tcpdf":                      "^6.3"
 	},
 	"type": "itrocks"

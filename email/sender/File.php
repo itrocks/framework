@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Sender;
+use ReflectionException;
 
 /**
  * Sends an email to a file
@@ -18,7 +19,7 @@ class File extends Sender
 	 *
 	 * @var string
 	 */
-	public $path;
+	public string $path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -37,17 +38,14 @@ class File extends Sender
 
 	//------------------------------------------------------------------------------------------ send
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $email Email
-	 * @return boolean|string
+	 * @return boolean
+	 * @throws ReflectionException
 	 */
-	public function send(Email $email)
+	public function send(Email $email): bool
 	{
-		// mime encode of email (for html, images and attachments)
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$encoder = Builder::create(Encoder::class, [$email]);
-		$content = $encoder->encode();
-		$headers = $encoder->encodeHeaders();
+		$message = $encoder->toString();
 
 		if (!is_dir($this->path)) {
 			mkdir($this->path, 0700);
@@ -55,7 +53,7 @@ class File extends Sender
 		}
 
 		$file_path = $this->path . SL . str_replace(DOT, '-', uniqid('', true)) . '.eml';
-		file_put_contents($file_path, $headers . LF . LF . $content);
+		file_put_contents($file_path, $message);
 
 		return true;
 	}

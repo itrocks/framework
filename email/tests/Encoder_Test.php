@@ -1,66 +1,156 @@
 <?php
 namespace ITRocks\Framework\Email\Tests;
 
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
-use ITRocks\Framework\Email\Attachment;
 use ITRocks\Framework\Email\Encoder;
-use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Tests\Test;
+use Swift_Message;
 
 /**
  * Email\Encoder tests
+ *
+ * TODO test more headers: Reply-To, ...
+ * TODO test attachments
  */
 class Encoder_Test extends Test
 {
 
-	//------------------------------------------------------------------------------- testParseImages
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
-	public function testParseImages()
+	//---------------------------------------------------------------------------------------- $email
+	private Email $email;
+
+	//----------------------------------------------------------------------------------------- setUp
+	protected function setUp(): void
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
-		$email = Builder::create(Email::class);
-		$email->attachments = [
-			'file1.txt' => new Attachment('file1.txt', 'first file'),
-			'file2.txt' => new Attachment('file2.txt', 'second file')
-		];
-		$delete_text = Loc::tr('delete');
-		$email->content = 'Contains an image :' . LF
-			. '<img alt="' . $delete_text . '" src="itrocks/framework/skins/default/img/delete.png">';
+		parent::setUp();
+		$this->email = new Email();
+		$this->email->content = '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
+	}
 
-		$assume  = file_get_contents(__DIR__ . '/testParseImage.eml');
-		$encoded = str_replace(CR, '', (new Encoder($email))->encode());
+	//------------------------------------------------------------------------------- testConstructor
+	public function testConstructor(): void
+	{
+		$encoder = new Encoder($this->email);
+		$this->assertEquals($encoder->email, $this->email);
+	}
 
-		// use the same boundaries in $assume than into the encoded file
-		$boundary_tag = 'boundary="=';
-		$assume       = str_replace(
-			'=' . mParse($assume, '--=', LF), '=' . mParse($encoded, '--=', LF), $assume
-		);
-		foreach (
-			array_slice(
-				array_combine(explode($boundary_tag, $assume), explode($boundary_tag, $encoded)), 1
-			)
-			as $assumed_boundary => $encoded_boundary
-		) {
-			$assumed_boundary = lParse($assumed_boundary, DQ . LF);
-			$encoded_boundary = lParse($encoded_boundary, DQ . LF);
-			$assume           = str_replace($assumed_boundary, $encoded_boundary, $assume);
-		}
+	//----------------------------------------------------------------------------- testCreateMessage
+	public function testCreateMessage(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$this->assertInstanceOf(Swift_Message::class, $message);
+	}
 
-		// use the same embedded images identifiers in $assume than into the encoded file
-		$image_tag = 'src=3D"cid:';
-		foreach (
-			array_slice(array_combine(explode($image_tag, $assume), explode($image_tag, $encoded)), 1)
-			as $assumed_image => $encoded_image
-		) {
-			$assumed_image = lParse($assumed_image, DQ);
-			$encoded_image = lParse($encoded_image, DQ);
-			$assume        = str_replace($assumed_image, $encoded_image, $assume);
-		}
+	//------------------------------------------------------------------------------- testEmbedImages
+	public function testEmbedImages(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		// Image should be embedded as the first MIME child
+		$this->assertNotEmpty($message->getChildren());
+		$embedded_image = $message->getChildren()[0];
+		$cid = $embedded_image->getId();
+		$this->assertMatchesRegularExpression('/[[:xdigit:]]{32}@swift.generated/', $cid);
+		// Embedded image should be referenced in html mail body
+		$body = $message->getBody();
+		$this->assertEquals("<p>Image: <img alt=\"\" src=\"cid:$cid\"></p>", $body);
+	}
 
-		static::assertEquals(explode(LF, $assume), explode(LF, $encoded));
+	//------------------------------------------------------------------------------- testEmptyHeader
+	public function testEmptyHeader(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$from = $message->getFrom();
+		$this->assertEmpty($from);
+		$headers = $message->getHeaders()->toString();
+		$this->assertMatchesRegularExpression('/^From: \R/m', $headers);
+	}
+
+	//------------------------------------------------------------------------------- testNoBccHeader
+	public function testNoBccHeader(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$bcc = $message->getBcc();
+		$this->assertEmpty($bcc);
+		$headers = $message->getHeaders()->toString();
+		$this->assertDoesNotMatchRegularExpression('/^Bcc: /m', $headers);
+	}
+
+	//-------------------------------------------------------------------------------- testNoCcHeader
+	public function testNoCcHeader(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$cc = $message->getCc();
+		$this->assertEmpty($cc);
+		$headers = $message->getHeaders()->toString();
+		$this->assertDoesNotMatchRegularExpression('/^Cc: /m', $headers);
+	}
+
+	//-------------------------------------------------------------------------------- testNoToHeader
+	public function testNoToHeader(): void
+	{
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$to = $message->getTo();
+		$this->assertEmpty($to);
+		$headers = $message->getHeaders()->toString();
+		$this->assertDoesNotMatchRegularExpression('/^To: /m', $headers);
+	}
+
+	//--------------------------------------------------------------------------- testSingleBccHeader
+	public function testSingleBccHeader()
+	{
+		$this->email->blind_copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$bcc = $message->getBcc();
+		$this->assertArrayHasKey('foo@example.org', $bcc);
+		$this->assertCount(1, $bcc);
+		$headers = $message->getHeaders()->toString();
+		$this->assertMatchesRegularExpression('/^Bcc: Foo Bar <foo@example.org>\R/m', $headers);
+	}
+
+	//---------------------------------------------------------------------------- testSingleCcHeader
+	public function testSingleCcHeader()
+	{
+		$this->email->copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$cc = $message->getCc();
+		$this->assertArrayHasKey('foo@example.org', $cc);
+		$this->assertCount(1, $cc);
+		$headers = $message->getHeaders()->toString();
+		$this->assertMatchesRegularExpression('/^Cc: Foo Bar <foo@example.org>\R/m', $headers);
+	}
+
+	//-------------------------------------------------------------------------- testSingleFromHeader
+	public function testSingleFromHeader()
+	{
+		$this->email->from = new Recipient('foo@example.org', 'Foo Bar');
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$from = $message->getFrom();
+		$this->assertArrayHasKey('foo@example.org', $from);
+		$this->assertCount(1, $from);
+		$headers = $message->getHeaders()->toString();
+		$this->assertMatchesRegularExpression('/^From: Foo Bar <foo@example.org>\R/m', $headers);
+	}
+
+	//---------------------------------------------------------------------------- testSingleToHeader
+	public function testSingleToHeader()
+	{
+		$this->email->to = [new Recipient('foo@example.org', 'Foo Bar')];
+		$encoder = new Encoder($this->email);
+		$message = $encoder->createSwiftMessage();
+		$to = $message->getTo();
+		$this->assertArrayHasKey('foo@example.org', $to);
+		$this->assertCount(1, $to);
+		$headers = $message->getHeaders()->toString();
+		$this->assertMatchesRegularExpression('/^To: Foo Bar <foo@example.org>\R/m', $headers);
 	}
 
 }

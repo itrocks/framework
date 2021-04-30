@@ -1,30 +1,23 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use ITRocks\Framework\Builder;
+use Exception;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
-use ITRocks\Framework\Tools\Date_Time;
-use Mail;
-use Mail_smtp;
-use PEAR_Error;
+use Swift_Transport;
 
 /**
  * Sends emails
  *
- * This offers a ITRocks interface to the PHP PEAR Mail package
+ * This offers a ITRocks interface to the SwiftMailer package
  */
-class Sender implements Configurable, Sender_Interface
+abstract class Sender implements Configurable, Sender_Interface
 {
 	use Has_Get;
 
 	//----------------------------------------------------------------------- Configuration constants
 	const BCC      = 'bcc';
-	const HOST     = 'host';
-	const LOGIN    = 'login';
-	const PASSWORD = 'password';
-	const PORT     = 'port';
 	const TO       = 'to';
 
 	//------------------------------------------------------------------------------------------ $bcc
@@ -34,13 +27,7 @@ class Sender implements Configurable, Sender_Interface
 	 *
 	 * @var string|string[]
 	 */
-	public $bcc;
-
-	//------------------------------------------------------------------------- $default_smtp_account
-	/**
-	 * @var Smtp_Account
-	 */
-	public $default_smtp_account;
+	public string|array $bcc;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -50,25 +37,47 @@ class Sender implements Configurable, Sender_Interface
 	 *
 	 * @var string|string[]
 	 */
-	public $to;
+	public string|array $to;
+
+	//------------------------------------------------------------------------------------ $transport
+	/**
+	 * Transport used to send the mail
+	 */
+	public Swift_Transport $transport;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor of the Sender plugin stores the configuration into the object properties.
 	 *
-	 * @param $configuration string[]|integer[]
+	 * @param $configuration string[]
 	 */
 	public function __construct($configuration = [])
 	{
 		if ($configuration) {
-			$this->default_smtp_account = new Smtp_Account(
-				isset($configuration[self::HOST])     ? $configuration[self::HOST]     : '',
-				isset($configuration[self::LOGIN])    ? $configuration[self::LOGIN]    : '',
-				isset($configuration[self::PASSWORD]) ? $configuration[self::PASSWORD] : '',
-				isset($configuration[self::PORT])     ? $configuration[self::PORT]     : null
-			);
 			if (isset($configuration[self::BCC])) $this->bcc = $configuration[self::BCC];
 			if (isset($configuration[self::TO]))  $this->to  = $configuration[self::TO];
+		}
+	}
+
+	//------------------------------------------------------------------------------------------ call
+	/**
+	 * Factory used to create a specialized sender
+	 *
+	 * @param $transport string
+	 * @param $sender_configuration string[]
+	 * @return Sender
+	 * @throws Exception
+	 */
+	public static function call(string $transport, array $sender_configuration = []): Sender
+	{
+		// Ensure we have a valid classname
+		$transport = ucfirst(strtolower($transport));
+		// We need to fully qualify with the namespace to load the class
+		$transport_class = __NAMESPACE__ . BS . 'Sender' . BS . $transport;
+		if (class_exists($transport_class)) {
+			return new $transport_class($sender_configuration);
+		} else {
+			throw new Exception("Class $transport_class not found");
 		}
 	}
 
@@ -77,65 +86,20 @@ class Sender implements Configurable, Sender_Interface
 	 * Send an email using its account connection information
 	 * or the default SMTP account configuration.
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $email Email
 	 * @return boolean|string true if sent, error message if string
 	 */
-	public function send(Email $email)
-	{
-		// email send configuration
-		$params = $this->sendConfiguration($email);
-
-		// mime encode of email (for html, images and attachments)
-		/** @noinspection PhpUnhandledExceptionInspection constant */
-		$encoder = Builder::create(Encoder::class, [$email]);
-		$content = $encoder->encode();
-
-		// send email using PEAR Mail and Net_SMTP features
-		/** @var $mail Mail_smtp */
-		$mail            = Mail::factory('smtp', $params);
-		$error_reporting = error_reporting(E_ALL & ~E_DEPRECATED & ~E_STRICT);
-		$send_result     = $mail->send(
-			$email->getRecipientsAsStrings(), $email->getHeadersAsStrings(), $content
-		);
-		$mail->disconnect();
-		error_reporting($error_reporting);
-
-		// user error when errors
-		$email->send_message = '';
-		if ($send_result instanceof PEAR_Error) {
-			return $email->send_message = (strval($send_result) ?: 'Send error : unknown');
-		}
-		$email->send_date = new Date_Time();
-		if (isset($mail->queued_as)) {
-			$email->uidl = $mail->queued_as;
-		}
-		return true;
-	}
+	abstract public function send(Email $email): bool|string;
 
 	//----------------------------------------------------------------------------- sendConfiguration
 	/**
-	 * Configure email send process : prepares the email recipients and get smtp server connection
-	 * parameters.
+	 * Configure email send process : prepares the email recipients
 	 *
 	 * @param $email Email email account is used, email recipients may be changed by the configuration
-	 * @return string[] PEAR Net_SMTP parameters : host, port, auth, username, password
 	 */
-	private function sendConfiguration(Email $email)
+	protected function sendConfiguration(Email $email): void
 	{
-		// get connection parameters from email account or default smtp account
-		$account = ($email->account && $email->account->smtp_accounts)
-			? $email->account->smtp_accounts[0]
-			: $this->default_smtp_account;
-		$params['host'] = $account->host;
-		$params['port'] = $account->port;
-		if ($account->login) {
-			$params['auth']     = true;
-			$params['username'] = $account->login;
-			$params['password'] = $account->password;
-		}
-
-		// dev / pre-production parameters to override 'To' and/or 'Bcc' mime headers
+		// dev / pre-production parameters to override 'To' and/or 'Bcc' headers
 		if (isset($this->to)) {
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];
@@ -155,8 +119,6 @@ class Sender implements Configurable, Sender_Interface
 				array_push($email->blind_copy_to, new Recipient($bcc));
 			}
 		}
-
-		return $params;
 	}
 
 }

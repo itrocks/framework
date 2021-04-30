@@ -1,14 +1,18 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use DOMDocument;
 use Html2Text\Html2Text;
-use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
+use Swift_Attachment;
+use Swift_Image;
+use Swift_Message;
+use Swift_Mime_SimpleMessage;
 
 /**
- * Encodes MIME emails
+ * Encodes emails
  *
- * This offers a ITRocks interface to the PHP PEAR Mail_Mime package
+ * This offers a ITRocks interface to the SwiftMailer package
  */
 class Encoder
 {
@@ -17,7 +21,7 @@ class Encoder
 	/**
 	 * @var Email
 	 */
-	public $email;
+	public Email $email;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -28,110 +32,104 @@ class Encoder
 		$this->email = $email;
 	}
 
-	//-------------------------------------------------------------------------------- addAttachments
+	//---------------------------------------------------------------------------- createSwiftMessage
 	/**
-	 * @param $mail Mime
-	 */
-	protected function addAttachments(Mime $mail)
-	{
-		foreach ($this->email->attachments as $attachment) {
-			$mail->addAttachment(
-				$attachment->temporary_file_name, 'application/octet-stream', $attachment->name
-			);
-		}
-	}
-
-	//---------------------------------------------------------------------------------------- encode
-	/**
-	 * Encodes the email into MIME format
+	 * Create a message that can be sent from an Email object
 	 *
-	 * Returns the MIME Multipart string
-	 * If the mail is plain text without attachment, the plain text is returned without any change
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string
+	 * @return Swift_Message
 	 */
-	public function encode()
+	public function createSwiftMessage(): Swift_Message
 	{
-		if ($this->email->attachments || (strpos($this->email->content, '<body') !== false)) {
-
-			/** @noinspection PhpUnhandledExceptionInspection constant */
-			$mail = Builder::create(Mime::class);
-
-			$body = $this->parseImages($mail, $this->email->content);
-
-			$error_reporting = error_reporting(E_ALL & ~E_WARNING);
-			$mail->setTXTBody((new Html2Text($this->email->content))->getText());
-			error_reporting($error_reporting);
-
-			$mail->setHTMLBody($body);
-
-			$this->addAttachments($mail);
-
-			$mime_params = [
-				'text_encoding' => '8bit',
-				'text_charset'  => 'UTF-8',
-				'html_charset'  => 'UTF-8',
-				'head_charset'  => 'UTF-8'
-			];
-			$body                 = $mail->get($mime_params);
-			$this->email->headers = $mail->headers($this->email->getHeadersAsStrings());
-			return $body;
-
+		$message = new Swift_Message();
+		// Headers
+		$message->setSubject($this->email->subject);
+		$message->setFrom($this->email->from->email, $this->email->from->name);
+		foreach ($this->email->to as $recipient) {
+			$message->addTo($recipient->email, $recipient->name);
 		}
-		return $this->email->content;
-	}
+		foreach ($this->email->copy_to as $recipient) {
+			$message->addCc($recipient->email, $recipient->name);
+		}
+		foreach ($this->email->blind_copy_to as $recipient) {
+			$message->addBcc($recipient->email, $recipient->name);
+		}
+		if ($this->email->reply_to) {
+			$message->setReplyTo($this->email->reply_to->email, $this->email->reply_to->name);
+		}
+		if ($this->email->return_path) {
+			$message->setReturnPath($this->email->return_path->email);
+		}
+		// TODO: handle extra headers in $this->email->headers
 
-	//--------------------------------------------------------------------------------- encodeHeaders
-	/**
-	 * @return string
-	 */
-	public function encodeHeaders()
-	{
-		return $this->email->getHeadersString();
-	}
+		// Body -- we assume email->content is some html
+		// We also process this html to embed any local image it references
+		$html_part = $this->embedImages($message, $this->email->content);
+		$message->setBody($html_part, 'text/html', 'utf-8');
+		$message->addPart((new Html2Text($this->email->content))->getText(), 'text/plain', 'utf-8');
 
-	//----------------------------------------------------------------------------------- parseImages
-	/**
-	 * @param $mail   Mime
-	 * @param $buffer string
-	 * @return string
-	 */
-	protected function parseImages(Mime $mail, $buffer)
-	{
-		$parent      = '';
-		$slash_count = substr_count(__DIR__, SL);
-		while (!is_dir($parent . 'images')) {
-			$parent .= '../';
-			if (substr_count($parent, SL) > $slash_count) {
-				$parent = '';
-				break;
+		// Attachments
+		foreach ($this->email->attachments as $a) {
+			$attachment = Swift_Attachment::fromPath($a->temporary_file_name);
+			$attachment->setFilename($a->name);
+			if ($a->embedded) {
+				$attachment->setDisposition('inline');
 			}
+			$message->attach($attachment);
 		}
-		$buffer = strReplace(
-			[
-				'src=' . DQ . '/images/' => 'src=' . DQ . $parent . 'images/',
-				'src=' . Q . '/images/'  => 'src=' . Q . $parent . 'images/',
-				'(url=/images/'          => '(url=' . $parent . 'images/)'
-			],
-			$buffer
-		);
-		foreach (['(' => ')', Q => Q, DQ => DQ] as $open => $close) {
-			$pattern = '%\\' . $open . '([\\w\\.\\/\\-\\_]+\\.(?:gif|jpg|png))\\' . $close . '%';
-			preg_match_all($pattern, $buffer, $matches);
-			foreach ($matches[1] as $match) {
-				$mail->addHTMLImage($match);
-				$html_images = $mail->getHtmlImages();
-				foreach ($html_images as $key => $image) {
-					if ($image['name'] == $match) {
-						$html_images[$key]['c_type'] = 'image/' . rLastParse($match, DOT);
-						$buffer                      = str_replace($match, 'cid:' . $image['cid'], $buffer);
-					}
+
+		return $message;
+	}
+
+	//----------------------------------------------------------------------------------- embedImages
+	/**
+	 * Parse an html string  using DOM traversal, and modify img tags so that they embed the image
+	 * they refer to as an inline mime part
+	 *
+	 * @param $message Swift_Mime_SimpleMessage
+	 * @param $content string
+	 * @return string
+	 */
+	protected function embedImages(Swift_Mime_SimpleMessage $message, string $content): string
+	{
+		$dom = new DOMDocument('1.0');
+		$dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
+
+		$images = $dom->getElementsByTagName('img');
+		foreach ($images as $image) {
+			$src = $image->getAttribute('src');
+
+			if (!str_contains($src, 'cid:')) {
+				if ($this->fileExists($src)) {
+					// we mutate the $message
+					$cid = $message->embed(Swift_Image::fromPath($src));
+					$image->setAttribute('src', $cid);
 				}
-				$mail->setHtmlImages($html_images);
 			}
 		}
-		return $buffer;
+
+		return utf8_decode($dom->saveHTML($dom->documentElement));
+	}
+
+	//------------------------------------------------------------------------------------ fileExists
+	protected function fileExists(string $path) : bool
+	{
+		if (filter_var($path, FILTER_VALIDATE_URL)) {
+			// this is an url, it exists if it has a size
+			return (bool) @getimagesize($path);
+		} else {
+			return file_exists($path);
+		}
+	}
+
+	//-------------------------------------------------------------------------------------- toString
+	/**
+	 * Render an email as a string
+	 *
+	 * @return string
+	 */
+	public function toString(): string
+	{
+		return $this->createSwiftMessage()->toString();
 	}
 
 }
