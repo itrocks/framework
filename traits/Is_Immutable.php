@@ -26,7 +26,8 @@ trait Is_Immutable
 	 * - If it is a new object, it will created
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $link Data_Link
+	 * @noinspection PhpUnused @before_write
+	 * @param $link Data_Link|null
 	 */
 	public function beforeWriteOfImmutable(Data_Link $link = null)
 	{
@@ -45,9 +46,9 @@ trait Is_Immutable
 				!$property->isStatic()
 				&& !Store_Annotation::of($property)->isFalse()
 				&& $property->getAnnotation('immutable')->value
-				&& ($value = $property->getValue($this))
+				&& !is_null($value = $property->getValue($this))
 			) {
-				$property->setValue($search, is_null($value) ? Func::isNull() : Func::equal($value));
+				$property->setValue($search, Func::equal($value));
 			}
 		}
 
