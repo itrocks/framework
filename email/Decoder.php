@@ -118,7 +118,7 @@ class Decoder
 		$email->subject = iconv_mime_decode($headers['subject'], 0, 'UTF-8');
 		$email->to      = [$this->headerToRecipient($headers['to'])];
 		if (isset($headers['message-id'])) {
-			$email->headers['Message-ID'] = $headers['message-id'];
+			$email->headers['Message-ID'] = trim($headers['message-id'], '<>');
 		}
 	}
 
