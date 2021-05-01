@@ -75,10 +75,6 @@ class Smtp extends Sender
 
 		$encoder = Builder::create(Encoder::class, [$email]);
 		$message = $encoder->toSwiftMessage();
-		/** @noinspection PhpPossiblePolymorphicInvocationInspection I'm sure */
-		$message->getHeaders()->get('Message-ID')->setId(
-			date('YmdHis') . DOT . uniqid() . AT . $_SERVER['SERVER_NAME']
-		);
 
 		$send_result = $mailer->send($message, $failures);
 

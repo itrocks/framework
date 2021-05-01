@@ -4,9 +4,12 @@ namespace ITRocks\Framework\Email;
 use DOMDocument;
 use Html2Text\Html2Text;
 use ITRocks\Framework\Email;
+use ITRocks\Framework\Tools\Date_Time;
 use Swift_Attachment;
 use Swift_Image;
 use Swift_Message;
+use Swift_Mime_Headers_DateHeader;
+use Swift_Mime_Headers_IdentificationHeader;
 use Swift_Mime_SimpleMessage;
 
 /**
@@ -82,6 +85,35 @@ class Encoder
 		return $this->toSwiftMessage()->toString();
 	}
 
+	//-------------------------------------------------------------------------------- toSwiftHeaders
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $message Swift_Message
+	 * @param $headers string[]
+	 */
+	protected function toSwiftHeaders(Swift_Message $message, array $headers)
+	{
+		$swift_headers = $message->getHeaders();
+		foreach ($headers as $header_name => $header_value) {
+			$header = $swift_headers->get($header_name);
+			if ($header instanceof Swift_Mime_Headers_IdentificationHeader) {
+				/** @noinspection PhpUnhandledExceptionInspection Swift_Mime_Headers_IdentificationHeader::setId */
+				$header->setId($header_value);
+			}
+			if ($header instanceof Swift_Mime_Headers_DateHeader) {
+				/** @noinspection PhpUnhandledExceptionInspection would be a programming error */
+				$header->setDateTime(new Date_Time($header_value));
+			}
+			// TODO handle other header classes (btw a Swift::fromString() would be the simplest)
+		}
+		if (!isset($this->email->headers['Message-ID'])) {
+			/** @noinspection PhpPossiblePolymorphicInvocationInspection I'm sure */
+			$message->getHeaders()->get('Message-ID')->setId(
+				date('YmdHis') . DOT . uniqid() . AT . $_SERVER['SERVER_NAME']
+			);
+		}
+	}
+
 	//-------------------------------------------------------------------------------- toSwiftMessage
 	/**
 	 * Create a message that can be sent from an Email object
@@ -110,7 +142,7 @@ class Encoder
 		if ($this->email->return_path) {
 			$message->setReturnPath($this->email->return_path->email);
 		}
-		// TODO handle extra headers in $this->email->headers
+		$this->toSwiftHeaders($message, $this->email->headers);
 
 		// Body
 		$html_part = $this->swiftEmbedImages($message, $this->email->content);
