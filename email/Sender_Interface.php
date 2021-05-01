@@ -16,6 +16,6 @@ interface Sender_Interface
 	 * @param $email Email
 	 * @return boolean|string true if sent, error message if string, false if not send without error
 	 */
-	public function send(Email $email): bool|string;
+	public function send(Email $email) : bool|string;
 
 }

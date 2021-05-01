@@ -32,15 +32,66 @@ class Encoder
 		$this->email = $email;
 	}
 
-	//---------------------------------------------------------------------------- createSwiftMessage
+	//------------------------------------------------------------------------------------ fileExists
+	/**
+	 * @param $path string local file path or web file URL
+	 * @return boolean
+	 */
+	protected function fileExists(string $path) : bool
+	{
+		// this is an url, it exists if it has a size
+		return filter_var($path, FILTER_VALIDATE_URL)
+			? (bool)@getimagesize($path)
+			: file_exists($path);
+	}
+
+	//------------------------------------------------------------------------------ swiftEmbedImages
+	/**
+	 * Parse an html string  using DOM traversal, and modify img tags so that they embed the image
+	 * they refer to as an inline mime part
+	 *
+	 * @param $message Swift_Mime_SimpleMessage
+	 * @param $content string
+	 * @return string
+	 */
+	protected function swiftEmbedImages(Swift_Mime_SimpleMessage $message, string $content) : string
+	{
+		$dom = new DOMDocument('1.0');
+		$dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
+
+		$images = $dom->getElementsByTagName('img');
+		foreach ($images as $image) {
+			$src = $image->getAttribute('src');
+			if (!str_contains($src, 'cid:') && $this->fileExists($src)) {
+				$cid = $message->embed(Swift_Image::fromPath($src));
+				$image->setAttribute('src', $cid);
+			}
+		}
+
+		return utf8_decode($dom->saveHTML($dom->documentElement));
+	}
+
+	//-------------------------------------------------------------------------------------- toString
+	/**
+	 * Render an email as a string
+	 *
+	 * @return string
+	 */
+	public function toString() : string
+	{
+		return $this->toSwiftMessage()->toString();
+	}
+
+	//-------------------------------------------------------------------------------- toSwiftMessage
 	/**
 	 * Create a message that can be sent from an Email object
 	 *
 	 * @return Swift_Message
 	 */
-	public function createSwiftMessage(): Swift_Message
+	public function toSwiftMessage() : Swift_Message
 	{
 		$message = new Swift_Message();
+
 		// Headers
 		$message->setSubject($this->email->subject);
 		$message->setFrom($this->email->from->email, $this->email->from->name);
@@ -59,11 +110,10 @@ class Encoder
 		if ($this->email->return_path) {
 			$message->setReturnPath($this->email->return_path->email);
 		}
-		// TODO: handle extra headers in $this->email->headers
+		// TODO handle extra headers in $this->email->headers
 
-		// Body -- we assume email->content is some html
-		// We also process this html to embed any local image it references
-		$html_part = $this->embedImages($message, $this->email->content);
+		// Body
+		$html_part = $this->swiftEmbedImages($message, $this->email->content);
 		$message->setBody($html_part, 'text/html', 'utf-8');
 		$message->addPart((new Html2Text($this->email->content))->getText(), 'text/plain', 'utf-8');
 
@@ -78,58 +128,6 @@ class Encoder
 		}
 
 		return $message;
-	}
-
-	//----------------------------------------------------------------------------------- embedImages
-	/**
-	 * Parse an html string  using DOM traversal, and modify img tags so that they embed the image
-	 * they refer to as an inline mime part
-	 *
-	 * @param $message Swift_Mime_SimpleMessage
-	 * @param $content string
-	 * @return string
-	 */
-	protected function embedImages(Swift_Mime_SimpleMessage $message, string $content): string
-	{
-		$dom = new DOMDocument('1.0');
-		$dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
-
-		$images = $dom->getElementsByTagName('img');
-		foreach ($images as $image) {
-			$src = $image->getAttribute('src');
-
-			if (!str_contains($src, 'cid:')) {
-				if ($this->fileExists($src)) {
-					// we mutate the $message
-					$cid = $message->embed(Swift_Image::fromPath($src));
-					$image->setAttribute('src', $cid);
-				}
-			}
-		}
-
-		return utf8_decode($dom->saveHTML($dom->documentElement));
-	}
-
-	//------------------------------------------------------------------------------------ fileExists
-	protected function fileExists(string $path) : bool
-	{
-		if (filter_var($path, FILTER_VALIDATE_URL)) {
-			// this is an url, it exists if it has a size
-			return (bool) @getimagesize($path);
-		} else {
-			return file_exists($path);
-		}
-	}
-
-	//-------------------------------------------------------------------------------------- toString
-	/**
-	 * Render an email as a string
-	 *
-	 * @return string
-	 */
-	public function toString(): string
-	{
-		return $this->createSwiftMessage()->toString();
 	}
 
 }

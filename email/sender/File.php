@@ -13,6 +13,9 @@ use ReflectionException;
 class File extends Sender
 {
 
+	//------------------------------------------------------------------------------------- TRANSPORT
+	const TRANSPORT = 'file';
+
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * The directory path where the email MIME files will be written when sent
@@ -42,7 +45,7 @@ class File extends Sender
 	 * @return boolean
 	 * @throws ReflectionException
 	 */
-	public function send(Email $email): bool
+	public function send(Email $email) : bool
 	{
 		$encoder = Builder::create(Encoder::class, [$email]);
 		$message = $encoder->toString();

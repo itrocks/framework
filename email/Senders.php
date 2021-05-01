@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Email;
 
 use Exception;
+use ITRocks\Framework\Email\Sender\Smtp;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 
@@ -11,6 +12,9 @@ use ITRocks\Framework\Plugin\Has_Get;
 class Senders implements Configurable
 {
 	use Has_Get;
+
+	//------------------------------------------------------------------------------------- TRANSPORT
+	const TRANSPORT = 'transport';
 
 	//-------------------------------------------------------------------------------------- $senders
 	/**
@@ -29,7 +33,7 @@ class Senders implements Configurable
 	{
 		if ($configuration) {
 			foreach ($configuration as $identifier => $sender_configuration) {
-				$transport = $sender_configuration['transport'] ?? 'Smtp';
+				$transport = $sender_configuration[static::TRANSPORT] ?? Smtp::TRANSPORT;
 				$this->senders[$identifier] = Sender::call($transport, $sender_configuration);
 			}
 		}
@@ -42,7 +46,7 @@ class Senders implements Configurable
 	 * @param $identifier string
 	 * @return Sender|null null if identifier is not set in configuration
 	 */
-	public function sender(string $identifier): ?Sender
+	public function sender(string $identifier) : ?Sender
 	{
 		return $this->senders[$identifier] ?? null;
 	}

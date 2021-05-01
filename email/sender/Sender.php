@@ -5,7 +5,7 @@ use Exception;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
-use Swift_Transport;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * Sends emails
@@ -17,8 +17,8 @@ abstract class Sender implements Configurable, Sender_Interface
 	use Has_Get;
 
 	//----------------------------------------------------------------------- Configuration constants
-	const BCC      = 'bcc';
-	const TO       = 'to';
+	const BCC = 'bcc';
+	const TO  = 'to';
 
 	//------------------------------------------------------------------------------------------ $bcc
 	/**
@@ -27,7 +27,7 @@ abstract class Sender implements Configurable, Sender_Interface
 	 *
 	 * @var string|string[]
 	 */
-	public string|array $bcc;
+	public array|string $bcc;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -37,13 +37,7 @@ abstract class Sender implements Configurable, Sender_Interface
 	 *
 	 * @var string|string[]
 	 */
-	public string|array $to;
-
-	//------------------------------------------------------------------------------------ $transport
-	/**
-	 * Transport used to send the mail
-	 */
-	public Swift_Transport $transport;
+	public array|string $to;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -63,21 +57,19 @@ abstract class Sender implements Configurable, Sender_Interface
 	/**
 	 * Factory used to create a specialized sender
 	 *
-	 * @param $transport string
-	 * @param $sender_configuration string[]
+	 * @param $transport     string @example 'smtp'
+	 * @param $configuration string[]
 	 * @return Sender
 	 * @throws Exception
 	 */
-	public static function call(string $transport, array $sender_configuration = []): Sender
+	public static function call(string $transport, array $configuration = []) : Sender
 	{
-		// Ensure we have a valid classname
-		$transport = ucfirst(strtolower($transport));
-		// We need to fully qualify with the namespace to load the class
-		$transport_class = __NAMESPACE__ . BS . 'Sender' . BS . $transport;
-		if (class_exists($transport_class)) {
-			return new $transport_class($sender_configuration);
-		} else {
-			throw new Exception("Class $transport_class not found");
+		$transport_class_name = static::class . BS . Names::propertyToClass($transport);
+		if (class_exists($transport_class_name)) {
+			return new $transport_class_name($configuration);
+		}
+		else {
+			throw new Exception("Class $transport_class_name not found");
 		}
 	}
 
@@ -89,7 +81,7 @@ abstract class Sender implements Configurable, Sender_Interface
 	 * @param $email Email
 	 * @return boolean|string true if sent, error message if string
 	 */
-	abstract public function send(Email $email): bool|string;
+	abstract public function send(Email $email) : bool|string;
 
 	//----------------------------------------------------------------------------- sendConfiguration
 	/**
@@ -97,9 +89,9 @@ abstract class Sender implements Configurable, Sender_Interface
 	 *
 	 * @param $email Email email account is used, email recipients may be changed by the configuration
 	 */
-	protected function sendConfiguration(Email $email): void
+	protected function sendConfiguration(Email $email)
 	{
-		// dev / pre-production parameters to override 'To' and/or 'Bcc' headers
+		// development / test parameters to override 'To' and/or 'Bcc' headers
 		if (isset($this->to)) {
 			$email->blind_copy_to = [];
 			$email->copy_to       = [];
@@ -111,6 +103,7 @@ abstract class Sender implements Configurable, Sender_Interface
 				array_push($email->to, new Recipient($to_email, is_numeric($to_name) ? null : $to_name));
 			}
 		}
+		// bcc is useful in production too
 		if (isset($this->bcc)) {
 			if (!is_array($this->bcc)) {
 				$this->bcc = [$this->bcc];

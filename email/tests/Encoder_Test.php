@@ -20,33 +20,34 @@ class Encoder_Test extends Test
 	private Email $email;
 
 	//----------------------------------------------------------------------------------------- setUp
-	protected function setUp(): void
+	protected function setUp() : void
 	{
 		parent::setUp();
 		$this->email = new Email();
-		$this->email->content = '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
+		$this->email->content
+			= '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
 	}
 
 	//------------------------------------------------------------------------------- testConstructor
-	public function testConstructor(): void
+	public function testConstructor()
 	{
 		$encoder = new Encoder($this->email);
 		$this->assertEquals($encoder->email, $this->email);
 	}
 
 	//----------------------------------------------------------------------------- testCreateMessage
-	public function testCreateMessage(): void
+	public function testCreateMessage()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$this->assertInstanceOf(Swift_Message::class, $message);
 	}
 
 	//------------------------------------------------------------------------------- testEmbedImages
-	public function testEmbedImages(): void
+	public function testEmbedImages()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		// Image should be embedded as the first MIME child
 		$this->assertNotEmpty($message->getChildren());
 		$embedded_image = $message->getChildren()[0];
@@ -58,10 +59,10 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testEmptyHeader
-	public function testEmptyHeader(): void
+	public function testEmptyHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$from = $message->getFrom();
 		$this->assertEmpty($from);
 		$headers = $message->getHeaders()->toString();
@@ -69,10 +70,10 @@ class Encoder_Test extends Test
 	}
 
 	//------------------------------------------------------------------------------- testNoBccHeader
-	public function testNoBccHeader(): void
+	public function testNoBccHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$bcc = $message->getBcc();
 		$this->assertEmpty($bcc);
 		$headers = $message->getHeaders()->toString();
@@ -80,10 +81,10 @@ class Encoder_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testNoCcHeader
-	public function testNoCcHeader(): void
+	public function testNoCcHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$cc = $message->getCc();
 		$this->assertEmpty($cc);
 		$headers = $message->getHeaders()->toString();
@@ -91,10 +92,10 @@ class Encoder_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------------- testNoToHeader
-	public function testNoToHeader(): void
+	public function testNoToHeader()
 	{
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$to = $message->getTo();
 		$this->assertEmpty($to);
 		$headers = $message->getHeaders()->toString();
@@ -106,7 +107,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->blind_copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$bcc = $message->getBcc();
 		$this->assertArrayHasKey('foo@example.org', $bcc);
 		$this->assertCount(1, $bcc);
@@ -119,7 +120,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->copy_to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$cc = $message->getCc();
 		$this->assertArrayHasKey('foo@example.org', $cc);
 		$this->assertCount(1, $cc);
@@ -132,7 +133,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->from = new Recipient('foo@example.org', 'Foo Bar');
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$from = $message->getFrom();
 		$this->assertArrayHasKey('foo@example.org', $from);
 		$this->assertCount(1, $from);
@@ -145,7 +146,7 @@ class Encoder_Test extends Test
 	{
 		$this->email->to = [new Recipient('foo@example.org', 'Foo Bar')];
 		$encoder = new Encoder($this->email);
-		$message = $encoder->createSwiftMessage();
+		$message = $encoder->toSwiftMessage();
 		$to = $message->getTo();
 		$this->assertArrayHasKey('foo@example.org', $to);
 		$this->assertCount(1, $to);

@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Tests;
 
+use Exception;
 use Generator;
 use ITRocks\Framework\Email\Sender;
 use ITRocks\Framework\Email\Sender\File;
@@ -11,7 +12,7 @@ final class Sender_Test extends Test
 {
 
 	//-------------------------------------------------------------------------------- callOkProvider
-	public function callOkProvider(): Generator
+	public function callOkProvider() : Generator
 	{
 		yield ['smtp', Smtp::class];
 		yield ['Smtp', Smtp::class];
@@ -25,16 +26,16 @@ final class Sender_Test extends Test
 	 * @dataProvider callOkProvider
 	 * @param $transport_name string
 	 * @param $expected_class string
-	 * @throws \Exception
+	 * @throws Exception
 	 */
-	public function testCallOk(string $transport_name, string $expected_class): void
+	public function testCallOk(string $transport_name, string $expected_class)
 	{
 		$sender = Sender::call($transport_name);
 		$this->assertInstanceOf($expected_class, $sender);
 	}
 
 	//------------------------------------------------------- testCallWithUnknownClassRaisesException
-	public function testCallWithUnknownClassRaisesException(): void
+	public function testCallWithUnknownClassRaisesException()
 	{
 		$this->expectException('Exception');
 		$this->expectErrorMessage('Class ITRocks\Framework\Email\Sender\Foo not found');
