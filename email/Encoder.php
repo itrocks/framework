@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Email;
 
-use DOMDocument;
 use Html2Text\Html2Text;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Tools\Date_Time;
@@ -10,7 +9,6 @@ use Swift_Image;
 use Swift_Message;
 use Swift_Mime_Headers_DateHeader;
 use Swift_Mime_Headers_IdentificationHeader;
-use Swift_Mime_SimpleMessage;
 
 /**
  * Encodes emails
@@ -26,13 +24,22 @@ class Encoder
 	 */
 	public Email $email;
 
+	//---------------------------------------------------------------------------- $working_directory
+	/**
+	 * You need this to embed images stored as files
+	 *
+	 * @var string
+	 */
+	public string $working_directory;
+	
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $email Email
 	 */
-	public function __construct(Email $email)
+	public function __construct(Email $email, string $working_directory = '')
 	{
-		$this->email = $email;
+		$this->email             = $email;
+		$this->working_directory = $working_directory;
 	}
 
 	//------------------------------------------------------------------------------------ fileExists
@@ -48,30 +55,48 @@ class Encoder
 			: file_exists($path);
 	}
 
-	//------------------------------------------------------------------------------ swiftEmbedImages
+	//----------------------------------------------------------------------------------- parseImages
 	/**
-	 * Parse an html string  using DOM traversal, and modify img tags so that they embed the image
-	 * they refer to as an inline mime part
+	 * Parse an HTML message : replace images references by MIME cid.
 	 *
-	 * @param $message Swift_Mime_SimpleMessage
-	 * @param $content string
+	 * @param $content  string   The message HTML content
+	 * @param $callback callable Called for each image path (as parameter) found into content
+	 *                           This must return the replacement cid, eg 'cid:205b068bb92'
 	 * @return string
 	 */
-	protected function swiftEmbedImages(Swift_Mime_SimpleMessage $message, string $content) : string
+	protected function parseImages(string $content, callable $callback) : string
 	{
-		$dom = new DOMDocument('1.0');
-		$dom->loadHTML($content, LIBXML_HTML_NOIMPLIED);
-
-		$images = $dom->getElementsByTagName('img');
-		foreach ($images as $image) {
-			$src = $image->getAttribute('src');
-			if (!str_contains($src, 'cid:') && $this->fileExists($src)) {
-				$cid = $message->embed(Swift_Image::fromPath($src));
-				$image->setAttribute('src', $cid);
+		$parent      = '';
+		$slash_count = substr_count(__DIR__, SL);
+		while (!is_dir($parent . 'images')) {
+			$parent .= '../';
+			if (substr_count($parent, SL) > $slash_count) {
+				$parent = '';
+				break;
 			}
 		}
-
-		return utf8_decode($dom->saveHTML($dom->documentElement));
+		$content = strReplace(
+			[
+				'src=' . DQ . '/images/' => 'src=' . DQ . $parent . 'images/',
+				'src=' . Q  . '/images/' => 'src=' . Q  . $parent . 'images/',
+				'(url=/images/'          => '(url=' . $parent . 'images/)'
+			],
+			$content
+		);
+		foreach (['(' => ')', Q => Q, DQ => DQ] as $open => $close) {
+			$pattern = SL . BS . $open . '([\\w\\.\\/\\-\\_]+\\.(?:gif|jpg|png|svg))' . BS . $close . SL;
+			preg_match_all($pattern, $content, $matches);
+			foreach ($matches[1] as $file_name) {
+				$file_path = $this->working_directory
+					? ($this->working_directory . SL . $file_name)
+					: $file_name;
+				if (!str_contains($file_name, 'cid:') && $this->fileExists($file_path)) {
+					$cid     = call_user_func($callback, $file_path);
+					$content = str_replace($open . $file_name . $close, $open . $cid . $close, $content);
+				}
+			}
+		}
+		return $content;
 	}
 
 	//-------------------------------------------------------------------------------------- toString
@@ -109,7 +134,7 @@ class Encoder
 		if (!isset($this->email->headers['Message-ID'])) {
 			/** @noinspection PhpPossiblePolymorphicInvocationInspection I'm sure */
 			$message->getHeaders()->get('Message-ID')->setId(
-				date('YmdHis') . DOT . uniqid() . AT . $_SERVER['SERVER_NAME']
+				date('YmdHis') . DOT . uniqid() . AT . ($_SERVER['SERVER_NAME'] ?? 'console')
 			);
 		}
 	}
@@ -145,7 +170,12 @@ class Encoder
 		$this->toSwiftHeaders($message, $this->email->headers);
 
 		// Body
-		$html_part = $this->swiftEmbedImages($message, $this->email->content);
+		$html_part = $this->parseImages(
+			$this->email->content,
+			function($image_path) use($message) : string {
+				return $message->embed(Swift_Image::fromPath($image_path));
+			}
+		);
 		$message->setBody($html_part, 'text/html', 'utf-8');
 		$message->addPart((new Html2Text($this->email->content))->getText(), 'text/plain', 'utf-8');
 

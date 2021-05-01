@@ -21,7 +21,6 @@
 		"ext-gd":                                "*",
 		"ext-iconv":                             "*",
 		"ext-json":                              "*",
-		"ext-libxml":                            "*",
 		"ext-mailparse":                         "*",
 		"ext-mysqli":                            "*",
 		"ext-openssl":                           "*",

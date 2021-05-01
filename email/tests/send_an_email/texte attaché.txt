@@ -1,0 +1,3 @@
+This is an example text file.
+The name is in french, with an accent : "texte attaché".
+This is for utf-8 testing.

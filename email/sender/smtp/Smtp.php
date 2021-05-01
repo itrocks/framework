@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Email\Sender;
 
-use Exception;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
@@ -33,6 +32,12 @@ class Smtp extends Sender
 	 */
 	public Smtp_Account $default_smtp_account;
 
+	//---------------------------------------------------------------------------- $working_directory
+	/**
+	 * @var string
+	 */
+	public string $working_directory = '';
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * The constructor of the Smtp plugin creates a smtp transport.
@@ -55,9 +60,9 @@ class Smtp extends Sender
 	 * Send an email using its account connection information
 	 * or the default SMTP account configuration.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $email Email
 	 * @return boolean|string true if sent, error message if string
-	 * @throws Exception
 	 */
 	public function send(Email $email) : bool|string
 	{
@@ -71,9 +76,11 @@ class Smtp extends Sender
 			$transport->setPassword($smtp_account->password);
 		}
 		$mailer = new Swift_Mailer($transport);
+		/** @noinspection PhpUnhandledExceptionInspection class */
 		$mailer->registerPlugin(Builder::create(Swift_Smtp_UIDL::class));
 
-		$encoder = Builder::create(Encoder::class, [$email]);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$encoder = Builder::create(Encoder::class, [$email, $this->working_directory]);
 		$message = $encoder->toSwiftMessage();
 
 		$send_result = $mailer->send($message, $failures);
@@ -81,6 +88,7 @@ class Smtp extends Sender
 		if ($send_result === 0) {
 			return $email->send_message = 'Send error : ' . join(' ; ', $failures);
 		}
+		/** @noinspection PhpUnhandledExceptionInspection valid */
 		$email->send_date    = new Date_Time($message->getDate()->getTimestamp());
 		$email->send_message = '';
 		if ($transport->last_uidl) {
