@@ -40,7 +40,7 @@ class Send_An_Email
 			'texte attaché.txt', file_get_contents(__DIR__ . '/texte attaché.txt')
 		);
 		$email->attachments[] = new Email\Attachment(
-			'itr attaché.svg', file_get_contents(__DIR__ . '/itr.svg')
+			'itr attaché.svg', file_get_contents(__DIR__ . '/itr.png')
 		);
 		$smtp->working_directory = __DIR__;
 		$smtp->send($email);
