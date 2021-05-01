@@ -39,14 +39,30 @@ class Phone_Number_Test extends Test
 		parent::tearDown();
 	}
 
+	//------------------------------------------------------------------- testEmptyPhoneNumberIsValid
+	/**
+	 * @throws ReflectionException
+	 */
+	public function testEmptyPhoneNumberIsValid()
+	{
+		$phone_number = '';
+		$phone        = new Phone_Dummy($phone_number);
+
+		$this->reflection_property->expects($this->once())
+			->method('getValue')
+			->willReturn($phone_number);
+
+		$this->assertEquals(true, $phone->validateNumber($this->reflection_property));
+	}
+
 	//--------------------------------------------------------------------- testPhoneNumberIsNotValid
 	/**
 	 * @throws ReflectionException
 	 */
 	public function testPhoneNumberIsNotValid()
 	{
-		$phone_number = '';
-		$phone = new Phone_Dummy($phone_number);
+		$phone_number = '15345A';
+		$phone        = new Phone_Dummy($phone_number);
 
 		$this->reflection_property->expects($this->once())
 			->method('getValue')
