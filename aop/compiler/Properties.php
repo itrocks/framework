@@ -194,15 +194,16 @@ class Properties
 				&& ((count($property_advices) > 1) || !isset($property_advices['default']))
 			) {
 				$code .= '
-		';
+		if (!isset($this->_[' . Q . $property_name . Q . '])) {';
 				if (!isset($property_advices['replaced'])) {
 					$code .= '
-		$this->' . $property_name . '_ = isset($this->' . $property_name . ')'
+			$this->' . $property_name . '_ = isset($this->' . $property_name . ')'
 						. ' ? $this->' . $property_name . ' : null;';
 				}
 				$code .= '
-		unset($this->' . $property_name . ');
-		$this->_[' . Q . $property_name . Q . '] = true;';
+			unset($this->' . $property_name . ');
+			$this->_[' . Q . $property_name . Q . '] = true;
+		}';
 			}
 		}
 		// TODO  not all cases are threat by this first easy code without the patch next : found why
