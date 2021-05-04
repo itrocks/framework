@@ -2,7 +2,6 @@
 namespace ITRocks\Framework\Locale;
 
 use ITRocks\Framework\AOP\Joinpoint\Around_Method;
-use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 
@@ -19,7 +18,6 @@ use ITRocks\Framework\Plugin\Registerable;
  */
 class Translation_String_Composer implements Registerable
 {
-	use Has_Get;
 
 	//------------------------------------------------------------------------------------- holePipes
 	/**
@@ -120,30 +118,27 @@ class Translation_String_Composer implements Registerable
 
 	//----------------------------------------------------------------------------------- onTranslate
 	/**
-	 * @param $text      string|string[]
+	 * @param $text      string|string[] type string[] is deprecated (to be removed)
 	 * @param $object    Translator
 	 * @param $context   string
-	 * @param $joinpoint Around_Method
-	 * @return string|string[]
+	 * @param $joinpoint mixed @deprecated
+	 * @return ?string
 	 */
-	public function onTranslate($text, Translator $object, $context, Around_Method $joinpoint)
+	public function onTranslate($text, Translator $object, $context, Around_Method $joinpoint = null)
+		: ?string
 	{
-		if (is_array($text)) {
+		if ($joinpoint instanceof Around_Method) {
 			return $joinpoint->process($text, $context);
 		}
 		static $top_call = true;
 		$context = isset($context) ? $context : '';
 		if (
 			$top_call
-			&& (
-				(strpos($text, '¦') !== false)
-				|| (strpos($text, '!') !== false)
-				|| (strpos($text, '<') !== false)
-			)
+			&& (str_contains($text, '¦') || str_contains($text, '!') || str_contains($text, '<'))
 		) {
-			$capital         = strIsCapitals($text[0]);
-			$full_capital    = strIsCapitals($text);
-			$translator      = $object;
+			$capital      = strIsCapitals($text[0]);
+			$full_capital = strIsCapitals($text);
+			$translator   = $object;
 
 			$top_call        = false;
 			$ignore_elements = $this->ignore($text);
@@ -164,18 +159,19 @@ class Translation_String_Composer implements Registerable
 			}
 		}
 		else {
-			$translation = $joinpoint->process($text, $context);
+			return null;
 		}
 		return $translation;
 	}
 
 	//-------------------------------------------------------------------------------------- register
 	/**
+	 * @deprecated
 	 * @param $register Register
 	 */
 	public function register(Register $register)
 	{
-		$register->aop->aroundMethod([Translator::class, 'translate'], [$this, 'onTranslate']);
+		// TODO : implements Registerable and register() have to be removed
 	}
 
 }

@@ -27,6 +27,12 @@ class Translator
 	 */
 	protected $cache = [];
 
+	//------------------------------------------------------------------------------------- $composer
+	/**
+	 * @var Translation_String_Composer
+	 */
+	public $composer;
+
 	//------------------------------------------------------------------------------------- $language
 	/**
 	 * @var string
@@ -43,6 +49,7 @@ class Translator
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $language string
 	 */
 	public function __construct($language = null)
@@ -50,6 +57,8 @@ class Translator
 		if (isset($language)) {
 			$this->language = $language;
 		}
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$this->composer = Builder::create(Translation_String_Composer::class);
 	}
 
 	//----------------------------------------------------------------------------------- applyPlural
@@ -61,14 +70,14 @@ class Translator
 	 */
 	protected function applyPlural(array &$translations, &$translation, &$context)
 	{
-		$plural = (strpos($context, '*') !== false);
+		$plural = str_contains($context, '*');
 		if ($plural) {
 			if (isset($translations['*'])) {
 				$translation = $translations['*'];
 			}
 			$filter_translations = false;
 			foreach (array_keys($translations) as $translation_context) {
-				if (strpos($translation_context, '*') !== false) {
+				if (str_contains($translation_context, '*')) {
 					$filter_translations = true;
 					break;
 				}
@@ -76,7 +85,7 @@ class Translator
 			if ($filter_translations) {
 				$filtered_translations = [];
 				foreach ($translations as $translation_context => $translation_text) {
-					if (strpos($translation_context, '*') !== false) {
+					if (str_contains($translation_context, '*')) {
 						$filtered_translations[str_replace('*', '', $translation_context)] = $translation_text;
 					}
 				}
@@ -194,7 +203,7 @@ class Translator
 		if (!trim($translation) || is_numeric($translation)) {
 			return $translation;
 		}
-		elseif (strpos($translation, DOT) !== false) {
+		elseif (str_contains($translation, DOT)) {
 			$text = [];
 			foreach (explode(DOT, $translation) as $sentence) {
 				$text[] = $this->reverse($sentence, $context, $context_property_path);
@@ -215,7 +224,7 @@ class Translator
 			$texts             = Dao::search($search, Translation::class);
 			foreach ($texts as $text) if ($text->translation === $translation) break;
 		}
-		if (!isset($text) && strpos($translation, ', ')) {
+		if (!isset($text) && str_contains($translation, ', ')) {
 			$text_parts = [];
 			foreach (explode(', ', $translation) as $translation_part) {
 				$text_parts[] = $this->reverse($translation_part, $context, $context_property_path);
@@ -375,9 +384,13 @@ class Translator
 		if (!trim($text) || is_numeric($text)) {
 			$translation = $text;
 		}
+		// composite translation
+		elseif (!is_null($translation = $this->composer->onTranslate($text, $this, $context))) {
+			return $translation;
+		}
 		else {
 			// different texts separated by dots : translate each part between dots
-			if (strpos($text, DOT) !== false) {
+			if (str_contains($text, DOT)) {
 				$translation = $this->separatedTranslations($text, DOT, $context);
 			}
 			else {
@@ -393,7 +406,7 @@ class Translator
 					}
 					$translations = $this->cache[$lower_text];
 					// no translation found and separated by commas : translate each part between commas
-					if (!$translations && (strpos($text, ', ') !== false)) {
+					if (!$translations && str_contains($text, ', ')) {
 						return $this->separatedTranslations($text, ', ', $context);
 					}
 					// no translation found : store original text to cache and database, then return it

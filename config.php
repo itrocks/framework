@@ -10,7 +10,6 @@ use ITRocks\Framework\Locale\Html_Translator;
 use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Locale\Number_Format;
-use ITRocks\Framework\Locale\Translation_String_Composer;
 use ITRocks\Framework\PHP\Compiler;
 use ITRocks\Framework\Plugin\Priority;
 use ITRocks\Framework\Tests\Tests_Configurator;
@@ -112,7 +111,6 @@ $config['ITRocks/Framework'] = [
 				'printer'       => Tests_Html_ResultPrinter::class
 			]
 		],
-		Translation_String_Composer::class,
 		View::class => [
 			Configuration::CLASS_NAME => View\Html\Engine::class,
 			View\Html\Engine::CSS     => View\Html\Engine::CSS_DEFAULT
