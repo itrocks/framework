@@ -8,6 +8,8 @@ use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
+use ITRocks\Framework\Plugin\Register;
+use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Reflection\Annotation\Property\Encrypt_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
@@ -18,11 +20,13 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Password;
+use ITRocks\Framework\Updater\Application_Updater;
+use ITRocks\Framework\Updater\Updatable;
 
 /**
  * A Locale object has all locale features, useful for specific locale conversions
  */
-class Locale implements Configurable
+class Locale implements Configurable, Registerable, Updatable
 {
 	use Current { current as private pCurrent; }
 	use Has_Get;
@@ -223,6 +227,15 @@ class Locale implements Configurable
 		return $result;
 	}
 
+	//-------------------------------------------------------------------------------------- register
+	/**
+	 * @param $register Register
+	 */
+	public function register(Register $register)
+	{
+		Application_Updater::get()->addUpdatable($this);
+	}
+
 	//--------------------------------------------------------------------------------- setDateFormat
 	/**
 	 * @param $date_format Date_Format|string if string, must be a date format (ie 'd/m/Y')
@@ -327,6 +340,20 @@ class Locale implements Configurable
 			}
 		}
 		return $value;
+	}
+
+	//---------------------------------------------------------------------------------------- update
+	/**
+	 * @param $last_time integer
+	 */
+	public function update($last_time)
+	{
+		// too slow to be executed on development environment
+		// TODO bring it back when there will not be bad translation entries anymore
+		if (Session::current()->environment === Configuration\Environment::DEVELOPMENT) {
+			return;
+		}
+		$this->translations->deleteEmpty();
 	}
 
 }

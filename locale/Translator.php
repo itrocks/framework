@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Locale;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Sql;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Wildcard;
 
 /**
@@ -140,6 +141,29 @@ class Translator
 	private function defaultTranslation($text)
 	{
 		return endsWith($text, AT) ? strUri(rtrim($text, AT)) : str_replace('_', SP, $text);
+	}
+
+	//----------------------------------------------------------------------------------- deleteEmpty
+	/**
+	 * Delete empty translations from storage
+	 */
+	public function deleteEmpty()
+	{
+		$dao = Dao::current();
+		Dao::begin();
+		if ($dao instanceof Sql\Link) {
+			/** @optimization */
+			$dao->query(strReplace(
+				['translations' => $dao->storeNameOf(Translation::class)],
+				"DELETE FROM `translations` WHERE translation = ''"
+			));
+		}
+		else {
+			foreach (Dao::search(['translation' => ''], Translation::class) as $translation) {
+				Dao::delete($translation);
+			}
+		}
+		Dao::commit();
 	}
 
 	//--------------------------------------------------------------------------------------- reverse
