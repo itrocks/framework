@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools\Tests;
 
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tests\Test;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Period;
@@ -106,7 +107,9 @@ class Period_Test extends Test
 	 */
 	public function testFormat($period, $format, $expected_result)
 	{
+		$loc_enabled = Loc::enable(false);
 		static::assertEquals($expected_result, $period->format($format));
+		Loc::enable($loc_enabled);
 	}
 
 	//---------------------------------------------------------------------------------------- testIn

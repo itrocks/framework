@@ -48,15 +48,16 @@ class Loc implements Registerable
 	 *
 	 * @var string[]
 	 */
-	public static $contexts_stack = [];
+	public static array $contexts_stack = [];
 
-	//------------------------------------------------------------------------------------- $disabled
+	//-------------------------------------------------------------------------------------- $enabled
 	/**
 	 * If true, translation features are disabled
 	 *
+	 * @see enable()
 	 * @var boolean
 	 */
-	public static $disabled = false;
+	public static bool $enabled = true;
 
 	//------------------------------------------------- afterHtmlTemplateFunctionsToEditPropertyExtra
 	/**
@@ -171,6 +172,18 @@ class Loc implements Registerable
 	public static function dateToLocale($date)
 	{
 		return Locale::current()->date_format->toLocale($date);
+	}
+
+	//---------------------------------------------------------------------------------------- enable
+	/**
+	 * @param $enabled boolean true to enable, false to disable
+	 * @return boolean
+	 */
+	public static function enable(bool $enabled) : bool
+	{
+		$old_enabled     = static::$enabled;
+		static::$enabled = $enabled;
+		return $old_enabled;
 	}
 
 	//---------------------------------------------------------------------------------- enterContext
@@ -386,7 +399,7 @@ class Loc implements Registerable
 	public static function rtr(
 		$translation, $context = '', $context_property_path = '', array $limit_to = null
 	) {
-		if (static::$disabled) {
+		if (!static::$enabled) {
 			return $translation;
 		}
 		if (!$context) {
@@ -414,7 +427,7 @@ class Loc implements Registerable
 		if (!is_array($options)) {
 			$options = [$options];
 		}
-		if (static::$disabled) {
+		if (!static::$enabled) {
 			$translation = $text;
 		}
 		else {

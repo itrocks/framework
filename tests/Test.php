@@ -40,14 +40,8 @@ abstract class Test extends Testable
 		parent::setUp();
 		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
 			// Functional testing
-
 			// There will be notice when modifying/creating table
 			Dao::begin();
-		}
-		else {
-			// Disabling translation
-			Loc::$disabled = true;
-			// TODO Mocking database
 		}
 	}
 
@@ -59,12 +53,7 @@ abstract class Test extends Testable
 	{
 		if (array_key_exists(static::FUNCTIONAL_GROUP, array_flip($this->getGroups()))) {
 			// Functional testing
-
 			Dao::rollback();
-		}
-		else {
-			// Enabled translation
-			Loc::$disabled = false;
 		}
 		parent::tearDown();
 	}

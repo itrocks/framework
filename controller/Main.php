@@ -533,10 +533,8 @@ class Main
 	{
 		$result = null;
 		try {
-			Loc::$disabled = true;
 			$this->sessionStart($get, $post);
 			$this->applicationUpdate();
-			Loc::$disabled = false;
 			// TODO NORMAL replace by runController call when AOP after-around-before priority is resolved
 			$result = $this->doRunController($uri, $get, $post, $files);
 			if (isset($this->redirection)) {

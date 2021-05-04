@@ -367,14 +367,11 @@ class Feature
 			}
 			// default name
 			elseif (isset($this->path)) {
-				$loc_disabled  = Loc::$disabled;
-				Loc::$disabled = false;
-				$this->name    = Loc::tr(
+				$this->name = Loc::tr(
 					HOLE_PIPE . Names::classToDisplays($this->getClassName()) . HOLE_PIPE
 					. SP . HOLE_PIPE . Names::methodToDisplay($this->getFeatureName()) . HOLE_PIPE,
 					static::class
 				);
-				Loc::$disabled = $loc_disabled;
 			}
 			if (Dao::getObjectIdentifier($this)) {
 				Dao::write($this, Dao::only('name'));
@@ -489,8 +486,6 @@ class Feature
 		if (strpos($name, '$') !== false) {
 			$class_name    = $this->getClassName();
 			$feature_name  = $this->getFeatureName();
-			$loc_disabled  = Loc::$disabled;
-			Loc::$disabled = false;
 			$name = Loc::tr(
 				$name,
 				[static::class, Loc::replace([
@@ -498,7 +493,6 @@ class Feature
 					'feature' => Loc::tr(Names::methodToDisplay($feature_name), $class_name)
 				])]
 			);
-			Loc::$disabled = $loc_disabled;
 		}
 		else {
 			$name = Loc::tr($name);
