@@ -11,3 +11,9 @@ input + button {
 	position: absolute;
 	width: $font-size * 1.5;
 }
+
+.isDisabled {
+	cursor: not-allowed;
+	opacity: 0.5;
+	text-decoration: none;
+}
