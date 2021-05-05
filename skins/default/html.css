@@ -36,5 +36,14 @@ a.auto-redirect, button.auto-refresh {
 b, strong, th {
   font-weight: 500; }
 
+.disabled {
+  opacity: .5;
+  text-decoration: none; }
+  .disabled:not(.progress) {
+    cursor: not-allowed; }
+
 .hidden {
   display: none; }
+
+.progress {
+  cursor: progress; }

@@ -50,6 +50,19 @@ b, strong, th {
 	font-weight: $medium;
 }
 
+.disabled {
+	opacity: .5;
+	text-decoration: none;
+
+	&:not(.progress) {
+		cursor: not-allowed;
+	}
+}
+
 .hidden {
 	display: none;
+}
+
+.progress {
+	cursor: progress;
 }

@@ -244,7 +244,6 @@ var requestTargetHeaders = function($element)
 			//------------------------------------------------------------------------------ ajax.success
 			success: function(data, status, xhr)
 			{
-				const from       = xhr.from;
 				var target       = xhr.from.target;
 				var focus        = (xhr.from.href ? xhr.from.href : xhr.from.action).rParse('#');
 				var $from        = $(xhr.from);
@@ -337,8 +336,8 @@ var requestTargetHeaders = function($element)
 				if (on_success !== undefined) {
 					on_success.call(target, data, status, xhr);
 				}
-				if(from.classList.contains('isDisabled')) {
-					from.classList.remove('isDisabled')
+				if ($from.hasClass('disabled')) {
+					$from.removeClass('disabled progress')
 				}
 			}
 		};
@@ -440,7 +439,7 @@ var requestTargetHeaders = function($element)
 					var xhr = undefined;
 					requestTargetHeaders($anchor);
 					if ($anchor.hasClass(settings.submit)) {
-						anchor.classList.add('isDisabled');
+						$anchor.addClass('disabled progress');
 						var $parent_form = $anchor.closest('form');
 						if ($parent_form.length) {
 							/*

@@ -8,8 +8,3 @@ input + button {
   margin-top: 1px !important;
   position: absolute;
   width: 18px; }
-
-.isDisabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-  text-decoration: none; }
