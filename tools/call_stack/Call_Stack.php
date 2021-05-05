@@ -279,7 +279,7 @@ class Call_Stack
 					$argument  = array_search($argument_name, $arguments);
 					if (
 						($non_empty && !empty($stack['args'][$argument]))
-						|| (!$non_empty && !isset($stack['args'][$argument]))
+						|| (!$non_empty && isset($stack['args'][$argument]))
 					) {
 						return $stack['args'][$argument];
 					}
