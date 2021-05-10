@@ -1030,11 +1030,23 @@ class Template
 	 */
 	protected function parseLoop(&$content, $i, $j)
 	{
-		$end_j              = $j;
-		$loop               = new Loop();
-		$loop->use_end      = strpos($content, '<!--end-->', $j);
-		$loop->var_name     = substr($content, $i, $j - $i);
-		$length             = strlen($loop->var_name);
+		$end_j          = $j;
+		$loop           = new Loop();
+		$loop->use_end  = strpos($content, '<!--end-->', $j);
+		$loop->var_name = substr($content, $i, $j - $i);
+		$length         = strlen($loop->var_name);
+		if (
+			str_starts_with($loop->var_name, 'foreach ')
+			|| str_starts_with($loop->var_name, 'with ')
+		) {
+			$loop->var_name = substr($loop->var_name, strpos($loop->var_name, SP) + 1);
+		}
+		if (str_starts_with($loop->var_name, 'if ')) {
+			$loop->var_name = substr($loop->var_name, strpos($loop->var_name, SP) + 1);
+			if (!str_ends_with($loop->var_name, '?')) {
+				$loop->var_name .= '?';
+			}
+		}
 		$length_end         = $this->parseLoopVarName($loop, $content, $else_j, $end_j);
 		$i                 += $length + 3;
 		$is_target          = false;
@@ -1298,6 +1310,7 @@ class Template
 	protected function parseLoopVarName(Loop $loop, &$content, &$else_j, &$end_j)
 	{
 		$search_var_name = $loop->var_name;
+
 		if (substr($loop->var_name, -1) == '>') {
 			$end_last       = true;
 			$loop->var_name = substr($loop->var_name, 0, -1);
