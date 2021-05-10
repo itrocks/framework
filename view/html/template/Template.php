@@ -836,6 +836,7 @@ class Template
 	 */
 	public function parseContent($content)
 	{
+		$content = $this->removeComments($content);
 		$content = $this->removeAppAttributes($content);
 		$content = $this->prepareW3Links($content);
 		$content = $this->parseVars($content);
@@ -2168,6 +2169,23 @@ class Template
 		$content = str_replace(['app:///', 'app://'], SL, $content);
 		$content = str_replace(['dyn:///', 'dyn://', 'rel:///', 'rel://'], '', $content);
 		$content = str_replace("url('http://{", "url('{", $content);
+		return $content;
+	}
+
+	//-------------------------------------------------------------------------------- removeComments
+	/**
+	 * @param $content string
+	 * @return string
+	 */
+	protected function removeComments(string $content) : string
+	{
+		foreach (['//', '#'] as $comment_tag) {
+			$i = 0;
+			while (($i = strpos($content, '<!--' . $comment_tag, $i)) !== false) {
+				$j = strpos($content, '-->', $i) + 3;
+				$content = substr($content, 0, $i) . substr($content, $j);
+			}
+		}
 		return $content;
 	}
 
