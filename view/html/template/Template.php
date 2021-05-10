@@ -2182,7 +2182,7 @@ class Template
 		foreach (['//', '#'] as $comment_tag) {
 			$i = 0;
 			while (($i = strpos($content, '<!--' . $comment_tag, $i)) !== false) {
-				$j = strpos($content, '-->', $i) + 3;
+				$j       = strpos($content, '-->', $i) + 3;
 				$content = substr($content, 0, $i) . substr($content, $j);
 			}
 		}
