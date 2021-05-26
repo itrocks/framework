@@ -8,6 +8,9 @@ use ITRocks\Framework\Trigger\Action\Status;
 use ITRocks\Framework\Trigger\Schedule;
 use ITRocks\Framework\User\Banned_Controller;
 
+/**
+ * Class Action
+ */
 class Action extends Trigger
 {
 
@@ -21,24 +24,18 @@ class Action extends Trigger
 	}
 
 	//--------------------------------------------------------------------------------------- execute
-	/**
-	 *
-	 */
 	public function execute()
 	{
-		$action = new Trigger\Action();
-		$action->action = $this->getAction();
-		$action->status = Status::STATIC;
-		$schedule = new Schedule();
-		$schedule->name  = 'Ban User';
+		$action            = new Trigger\Action();
+		$action->action    = $this->getAction();
+		$action->status    = Status::STATIC;
+		$schedule          = new Schedule();
+		$schedule->name    = 'Ban User';
 		$schedule->actions = [$action];
 		Dao::write($schedule);
 	}
 
 	//------------------------------------------------------------------------------------------ stop
-	/**
-	 *
-	 */
 	public function stop()
 	{
 		Dao::begin();

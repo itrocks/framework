@@ -23,7 +23,7 @@ trait Has_Active
 	 */
 	public function isActive() : bool
 	{
-		return $this->active === true;
+		return $this->active;
 	}
 
 }

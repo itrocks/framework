@@ -19,6 +19,9 @@ use ITRocks\Framework\User\Authenticate\Controller;
 use ITRocks\Framework\User\Has_Active;
 use ITRocks\Framework\View;
 
+/**
+ * Class Authorize_Activated_User
+ */
 class Authorize_Activated_User implements Registerable
 {
 
@@ -29,9 +32,7 @@ class Authorize_Activated_User implements Registerable
 	 */
 	private function disconnectDisabledUser(?User $user) : bool
 	{
-		if($user === null) {
-			return false;
-		}
+		if ($user === null || $user->isActive()) {return false;}
 
 		if (!$user->isActive()) {
 			Authentication::disconnect();
@@ -52,7 +53,7 @@ class Authorize_Activated_User implements Registerable
 		$current  = User::current();
 
 		if ($this->disconnectDisabledUser($current) === true) {
-			/** Can't do it with Redirect */
+			/** Can't do it with Redirect (redirect to the connection page) */
 			echo '<script> location = ' . Q . Paths::$uri_base . Q . '; </script>';
 			$joinpoint->stop = true;
 		}

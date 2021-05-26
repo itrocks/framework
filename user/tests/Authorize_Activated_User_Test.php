@@ -16,6 +16,12 @@ use ITRocks\Framework\User;
 use ITRocks\Framework\User\Access_Control\Authorize_Activated_User;
 use PHPUnit\Framework\MockObject\MockObject;
 
+/**
+ * Class Authorize_Activated_User_Test
+ * Only test
+ *
+ * @store false
+ */
 class Authorize_Activated_User_Test extends Test
 {
 
@@ -109,7 +115,7 @@ class Authorize_Activated_User_Test extends Test
 	 * @param $method   string
 	 * @param $expected boolean
 	 */
-	public function testSuccess(string $login, string $password, string $method, bool $expected)
+	public function testSuccess(string $login, string $password, string $method, bool $expected) : void
 	{
 		$user = new User();
 		$user->login    = $login;
@@ -117,8 +123,8 @@ class Authorize_Activated_User_Test extends Test
 
 		$this->joinpoint_mock->parameters = ['parameters' => new Parameters(), 'form' => ['login' => $login, 'password' => $password]];
 
-		$this->link_mock->expects($this->never())->method('search')->willReturn([$user]);
-		$this->link_mock->expects($this->never())->method('searchOne')->willReturn($user);
+		$this->link_mock->expects($this->never())->method('search');
+		$this->link_mock->expects($this->never())->method('searchOne');
 
 		$loc_enabled = Loc::enable(false);
 		$this->authorize->$method($this->joinpoint_mock);

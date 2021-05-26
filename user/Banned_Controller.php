@@ -4,6 +4,7 @@ namespace ITRocks\Framework\User;
 use Bappli\Company\Employee;
 use Bappli\Company\Employee\Has_Dates;
 use Bappli\Company\Employee\User\Has_User;
+use Exception;
 use ITRocks\Framework\Controller;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Tools\Date_Time;
@@ -17,11 +18,11 @@ class Banned_Controller implements Controller
 	//------------------------------------------------------------------------------------------- run
 	/**
 	 * @return mixed|void
-	 * @throws \Exception
+	 * @throws Exception
 	 */
 	public function run()
 	{
-		/** @var $employees Has_Dates[]|Has_User[] */
+		/** @var $employees Employee|Has_Dates[]|Has_User[] */
 		$employees = Dao::search(
 			['date_of_exit' => [Dao\Func::notNull(), Dao\Func::lessOrEqual(Date_Time::now())]],
 			Employee::class
