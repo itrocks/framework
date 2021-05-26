@@ -14,6 +14,7 @@ use ITRocks\Framework\User\Group;
 use ITRocks\Framework\User\Group\Has_Default;
 use ITRocks\Framework\User\Group\Has_Groups;
 use ITRocks\Framework\User\Group\Low_Level_Features_Cache;
+use ITRocks\Framework\User\Has_Active;
 
 /**
  * The user authentication class gives direct access to login, register and disconnect user features
@@ -161,7 +162,10 @@ abstract class Authentication
 		$users = (strpos($login, AT) ? Dao::search(['email' => $login], User::class) : null)
 			?: Dao::search(['login' => $login], User::class);
 		foreach ($users as $user) {
-			if ($user->password === $password) {
+			if (isA($user, Has_Active::class) && $user->active !== true) {
+				return null;
+			}
+			elseif ($user->password === $password) {
 				return $user;
 			}
 		}
