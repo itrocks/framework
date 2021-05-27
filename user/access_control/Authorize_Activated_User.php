@@ -32,7 +32,9 @@ class Authorize_Activated_User implements Registerable
 	 */
 	private function disconnectDisabledUser(?User $user) : bool
 	{
-		if ($user === null || $user->isActive()) {return false;}
+		if ($user === null || $user->isActive()) {
+			return false;
+		}
 
 		if (!$user->isActive()) {
 			Authentication::disconnect();

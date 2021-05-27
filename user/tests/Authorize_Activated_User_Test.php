@@ -19,8 +19,6 @@ use PHPUnit\Framework\MockObject\MockObject;
 /**
  * Class Authorize_Activated_User_Test
  * Only test
- *
- * @store false
  */
 class Authorize_Activated_User_Test extends Test
 {
