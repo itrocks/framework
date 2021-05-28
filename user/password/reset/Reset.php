@@ -85,20 +85,26 @@ trait Reset
 		if ($this->password !== $this->password2) {
 			return;
 		}
-		$identifier = str_replace(DOT, '', uniqid('', true));
-		$emails     = [];
 		foreach ($users as $user) {
-			if (!$user->email) {
-				continue;
-			}
-			$token = new Token();
-			$token->identifier    = $identifier;
-			$token->new_password  = $this->password;
-			$token->user          = $user;
-			$emails[$user->email] = $user->email;
-			Dao::write($token);
-			$this->sendEmail($this->prepareEmail($user, $identifier));
+			$this->resetUser($user);
 		}
+	}
+
+	//------------------------------------------------------------------------------------- resetUser
+	/**
+	 * @param $user User
+	 */
+	public function resetUser(User $user)
+	{
+		if (!$user->email) {
+			return;
+		}
+		$token = new Token();
+		$token->identifier   = str_replace(DOT, '', uniqid('', true));
+		$token->new_password = $this->password;
+		$token->user         = $user;
+		Dao::write($token);
+		$this->sendEmail($this->prepareEmail($user, $token->identifier));
 	}
 
 	//------------------------------------------------------------------------------------- sendEmail
