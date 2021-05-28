@@ -210,7 +210,7 @@ class Reflection_Source
 		if (!$bigger_than || (count($this->requires)     > $bigger_than)) $this->requires     = null;
 		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
 
-		if (isset($this->file_name) && !$this->changed) {
+		if (isset($this->file_name) && is_file($this->file_name) && !$this->changed) {
 			$this->source = null;
 		}
 
@@ -856,7 +856,10 @@ class Reflection_Source
 					: $this->file_name;
 				$this->source = isset($this->lines)
 					? join(LF, $this->lines)
-					: file_get_contents($file_name);
+					: ($file_name ? file_get_contents($file_name) : '');
+				if (!$this->source && (!$file_name || !file_exists($file_name))) {
+					trigger_error('Could not get source', E_USER_WARNING);
+				}
 			}
 			else {
 				$this->source = '';
