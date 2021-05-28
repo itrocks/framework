@@ -5,7 +5,6 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Sender;
-use ReflectionException;
 
 /**
  * Sends an email to a file
@@ -41,12 +40,13 @@ class File extends Sender
 
 	//------------------------------------------------------------------------------------------ send
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $email Email
 	 * @return boolean
-	 * @throws ReflectionException
 	 */
 	public function send(Email $email) : bool
 	{
+		/** @noinspection PhpUnhandledExceptionInspection class */
 		$encoder = Builder::create(Encoder::class, [$email]);
 		$message = $encoder->toString();
 
