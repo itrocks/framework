@@ -13,9 +13,9 @@ use ITRocks\Framework\Trigger\Schedule\Hour_Range;
  *
  * @after_write calculateActionsNextLaunchDateTime
  * @display_order name, hours, days_of_month, months, years, days_of_weeks
- * @override actions @set_store_name schedule_trigger_actions @var Schedule\Action[]
+ * @override actions @set_store_name trigger_schedule_actions @var Schedule\Action[]
  * @property Schedule\Action[] actions
- * @store_name schedule_triggers
+ * @store_name trigger_schedules
  */
 class Schedule extends Trigger
 {
@@ -39,7 +39,7 @@ class Schedule extends Trigger
 	 * @values self::DAYS_OF_WEEK
 	 * @var string[]
 	 */
-	public $days_of_week;
+	public $days_of_week = [];
 
 	//---------------------------------------------------------------------------------- $hour_ranges
 	/**
@@ -47,7 +47,7 @@ class Schedule extends Trigger
 	 * @user hide_empty
 	 * @var Hour_Range[]
 	 */
-	public $hour_ranges;
+	public $hour_ranges = [];
 
 	//---------------------------------------------------------------------------------------- $hours
 	/**
