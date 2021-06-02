@@ -6,7 +6,7 @@ use ITRocks\Framework\Configuration\File;
 /**
  * Common code for all configuration file writers
  */
-class Writer
+abstract class Writer
 {
 
 	//-------------------------------------------- White lines after configuration sections constants
@@ -99,6 +99,9 @@ class Writer
 		$this->writeUse($buffer);
 		$this->writeNamespace($buffer);
 		$buffer = '<?php' . LF . $buffer;
+		if (static::CONFIGURATION_ENDS_WHITE) {
+			$buffer .= LF;
+		}
 		$this->removeMultipleWhiteLines($buffer);
 		$this->writeBuffer($buffer);
 	}
@@ -134,18 +137,7 @@ class Writer
 	/**
 	 * Configuration into $this->lines[]
 	 */
-	protected function writeConfiguration()
-	{
-		if ($this instanceof Has_Configuration_Accessors) {
-			$configuration_lines = $this->getConfigurationLines();
-			if ($configuration_lines) {
-				$this->lines   = array_merge($this->lines,  $configuration_lines);
-				if (static::CONFIGURATION_ENDS_WHITE) {
-					$this->lines[] = '';
-				}
-			}
-		}
-	}
+	abstract protected function writeConfiguration();
 
 	//--------------------------------------------------------------------------------- writeEndLines
 	/**

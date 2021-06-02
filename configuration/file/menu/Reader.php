@@ -8,7 +8,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Menu;
 
 /**
- * Builder configuration file reader
+ * Menu configuration file reader
  *
  * @override file @var Menu
  * @property Menu file

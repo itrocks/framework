@@ -5,7 +5,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Source;
 
 /**
- * Builder class source file writer
+ * Class source file writer
  *
  * @override file @var Source
  * @property Source file
@@ -13,8 +13,9 @@ use ITRocks\Framework\Configuration\File\Source;
 class Writer extends File\Writer
 {
 
-	//------------------------------------------------------------------------------ BEGIN_ENDS_WHITE
-	const BEGIN_ENDS_WHITE = false;
+	//-------------------------------------------- White lines after configuration sections constants
+	const BEGIN_ENDS_WHITE         = false;
+	const CONFIGURATION_ENDS_WHITE = false;
 
 	//------------------------------------------------------------- Line length calculation constants
 	const MAX_LINE_LENGTH = 100;

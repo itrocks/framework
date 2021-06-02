@@ -60,7 +60,6 @@ class Writer extends File\Writer
 		}
 		$this->writeInsertLines();
 		$this->lines[] = '];';
-		$this->lines[] = '';
 	}
 
 }

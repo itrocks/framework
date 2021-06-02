@@ -6,7 +6,7 @@ use ITRocks\Framework\Configuration\File\Config;
 use ITRocks\Framework\Configuration\File\Writer\Namespace_White_Lines;
 
 /**
- * Builder configuration file writer
+ * Config configuration file writer
  *
  * @override file @var Config
  * @property Config file
@@ -65,7 +65,6 @@ class Writer extends File\Writer
 			}
 		}
 		$this->lines[] = '];';
-		$this->lines[] = '';
 	}
 
 }

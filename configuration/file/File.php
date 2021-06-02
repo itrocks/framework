@@ -3,8 +3,6 @@ namespace ITRocks\Framework\Configuration;
 
 use ITRocks\Framework\Application;
 use ITRocks\Framework\Configuration\File\Has_File_Name;
-use ITRocks\Framework\Configuration\File\Reader;
-use ITRocks\Framework\Configuration\File\Writer;
 use ITRocks\Framework\Controller\Getter;
 use ITRocks\Framework\Reflection\Type;
 
@@ -116,10 +114,7 @@ abstract class File
 	/**
 	 * Read from file
 	 */
-	public function read()
-	{
-		(new Reader($this))->read();
-	}
+	abstract public function read();
 
 	//------------------------------------------------------------------------------ shortClassNameOf
 	/**
@@ -177,9 +172,6 @@ abstract class File
 	/**
 	 * Write to file
 	 */
-	public function write()
-	{
-		(new Writer($this))->write();
-	}
+	abstract public function write();
 
 }

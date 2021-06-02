@@ -6,7 +6,7 @@ use ITRocks\Framework\Configuration\File;
 /**
  * Common code for all configuration file readers
  */
-class Reader
+abstract class Reader
 {
 
 	//----------------------------------------------------------------------------------------- $file
@@ -84,18 +84,7 @@ class Reader
 	/**
 	 * Read configuration : the main part of the file
 	 */
-	protected function readConfiguration()
-	{
-		$line = current($this->lines);
-		for ($ended = false; ($line !== false) && !$ended; $line = next($this->lines)) {
-			if ($this->isEndLine($line)) {
-				$ended = true;
-			}
-			elseif ($this instanceof Has_Configuration_Accessors) {
-				$this->addToConfiguration($line);
-			}
-		}
-	}
+	abstract protected function readConfiguration();
 
 	//---------------------------------------------------------------------------------- readEndLines
 	/**

@@ -5,7 +5,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Source;
 
 /**
- * Builder class source file reader
+ * Class source file reader
  *
  * @override file @var Source
  * @property Source file

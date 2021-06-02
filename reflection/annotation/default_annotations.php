@@ -210,6 +210,12 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@duplicate' => Method_Annotation::class,
 
 	/**
+	 * @feature_local_access Class_Path[/featureName]
+	 * The installation of the features will allow this local access entry
+	 */
+	Parser::T_CLASS . '@feature_local_access' => Annotation::class,
+
+	/**
 	 * @groups_order Group1, Group2, ...
 	 * This is a Multiple_Annotation
 	 *

@@ -5,7 +5,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Config;
 
 /**
- * Builder configuration file reader
+ * Config configuration file reader
  *
  * @override file @var Config
  * @property Config file

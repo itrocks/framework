@@ -6,6 +6,7 @@ use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
 use ITRocks\Framework\Configuration\File\Config;
+use ITRocks\Framework\Configuration\File\Local_Access;
 use ITRocks\Framework\Configuration\File\Menu;
 use ITRocks\Framework\Configuration\File\Source;
 use ITRocks\Framework\Dao;
@@ -55,6 +56,16 @@ class Installer
 	 * @var string
 	 */
 	public $plugin_class_name;
+
+	//-------------------------------------------------------------------------------- addLocalAccess
+	/**
+	 * @param $local_access string
+	 */
+	public function addLocalAccess(string $local_access)
+	{
+		$file = $this->openFile(Local_Access::class);
+		$file->add($local_access);
+	}
 
 	//--------------------------------------------------------------------------------------- addMenu
 	/**
@@ -188,6 +199,9 @@ class Installer
 		$features[$plugin_class_name] = true;
 
 		Dao::begin();
+		foreach ($plugin_class->getAnnotations('feature_local_access') as $feature_local_access) {
+			$this->addLocalAccess($feature_local_access->value);
+		}
 		foreach (Feature_Exclude_Annotation::allOf($plugin_class) as $feature_exclude) {
 			$this->uninstall(Builder::current()->sourceClassName($feature_exclude->value));
 		}
@@ -272,6 +286,7 @@ class Installer
 	{
 		if (!$file_name) {
 			/** @noinspection PhpUndefinedMethodInspection File::defaultFileName */
+			/** @see File::defaultFileName() */
 			$file_name = $file_class::defaultFileName();
 		}
 		if (!isset($this->files[$file_name])) {
@@ -350,6 +365,16 @@ class Installer
 				'Found class ' . $base_class_name . ' should be Assembled or Replaced', E_USER_ERROR
 			);
 		}
+	}
+
+	//----------------------------------------------------------------------------- removeLocalAccess
+	/**
+	 * @param $local_access string
+	 */
+	public function removeLocalAccess(string $local_access)
+	{
+		$file = $this->openFile(Local_Access::class);
+		$file->remove($local_access);
 	}
 
 	//------------------------------------------------------------------------------------ removeMenu
@@ -484,6 +509,11 @@ class Installer
 					$installed_menu->item_link => $installed_menu->item_caption
 				]
 			]);
+		}
+
+		// remove local access installed by this plugin
+		foreach ($plugin_class->getAnnotations('feature_local_access') as $feature_local_access) {
+			$this->removeLocalAccess($feature_local_access->value);
 		}
 
 		if ($feature = Dao::searchOne(['plugin_class_name' => $plugin_class_name], Feature::class)) {
