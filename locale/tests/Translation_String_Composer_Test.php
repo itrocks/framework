@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Locale\Tests;
 
-use ITRocks\Framework\Locale\Translation_String_Composer;
 use ITRocks\Framework\Locale\Translator;
 use ITRocks\Framework\Tests\Test;
 
@@ -42,14 +41,14 @@ class Translation_String_Composer_Test extends Test
 	/**
 	 * @var Translator
 	 */
-	public $translator;
+	public Translator $translator;
 
 	//----------------------------------------------------------------------------- providerTranslate
 	/**
 	 * @return array
 	 * @see testTranslate
 	 */
-	public function providerTranslate()
+	public function providerTranslate() : array
 	{
 		return [
 			'direct'                              => ['bonjour monde', 'hello world'],
@@ -82,10 +81,6 @@ class Translation_String_Composer_Test extends Test
 	public function setUp() : void
 	{
 		parent::setUp();
-		if (!Translation_String_Composer::registered()) {
-			static::markTestSkipped(Translation_String_Composer::class . ' plugin is not activated');
-		}
-
 		$this->translator = new Translator();
 		foreach (static::TRANSLATIONS as $source => $translation) {
 			$this->translator->setTranslation($source, $translation);
@@ -98,7 +93,7 @@ class Translation_String_Composer_Test extends Test
 	 * @param $expected string
 	 * @param $source   string
 	 */
-	public function testTranslate($expected, $source)
+	public function testTranslate(string $expected, string $source)
 	{
 		static::assertEquals($expected, $this->translator->translate($source));
 	}
