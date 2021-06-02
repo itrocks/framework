@@ -174,9 +174,48 @@ function maxRowLength($string)
 	return $length;
 }
 
+//-------------------------------------------------------------------------------------- mLastParse
+/**
+ * Returns the middle part of the string, between first $begin_separator and last $end_separator
+ *
+ * If separators are arrays, it will search the first separator, then the next one, etc.
+ *
+ * @example echo mParse('He eats, drinks and then sleep', [', ', SP], ' then ')
+ *          Will result in 'and'
+ *          It looks what is after ', ' and then what is after the next space
+ *          The returned value stops before ' then '
+ * @param $string          string
+ * @param $begin_separator string|string[]
+ * @param $end_separator   string|string[]
+ * @param $count           integer
+ * @return string
+ */
+function mLastParse($string, $begin_separator, $end_separator, $count = 1)
+{
+	// if $begin_separator is an array, rParse each $begin_separator element
+	if (is_array($begin_separator)) {
+		$separator = array_pop($begin_separator);
+		foreach ($begin_separator as $begin) {
+			$string = rParse($string, $begin, $count);
+			$count  = 1;
+		}
+		$begin_separator = $separator;
+	}
+	// if $end_separator is an array, lParse each $end_separator element, starting from the last one
+	if (is_array($end_separator)) {
+		$end_separator = array_reverse($end_separator);
+		$separator     = array_pop($end_separator);
+		foreach ($end_separator as $end) {
+			$string = lLastParse($string, $end);
+		}
+		$end_separator = $separator;
+	}
+	return lLastParse(rParse($string, $begin_separator, $count), $end_separator);
+}
+
 //------------------------------------------------------------------------------------------ mParse
 /**
- * Returns the middle part of the string, between $begin_separator and $end_separator
+ * Returns the middle part of the string, between first $begin_separator and first $end_separator
  *
  * If separators are arrays, it will search the first separator, then the next one, etc.
  *
