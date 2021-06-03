@@ -14,6 +14,6 @@ trait Has_Active
 	/**
 	 * @var boolean
 	 */
-	public bool $active = true;
+	public $active = true;
 
 }
