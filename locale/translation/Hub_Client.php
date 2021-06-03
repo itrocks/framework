@@ -23,7 +23,7 @@ class Hub_Client implements Registerable
 	{
 		if (!$result) {
 
-			$https_context = stream_context_create(['https' => ['timeout' => 1]]);
+			$https_context = stream_context_create(['http' => ['timeout' => 1]]);
 			/** @noinspection PhpUsageOfSilenceOperatorInspection Don't care if doesn't work */
 			$translations = @file_get_contents(
 				'https://hub.itrocks.org/hub/ITRocks/Framework/Locale/translations'
