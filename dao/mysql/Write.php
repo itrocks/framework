@@ -239,6 +239,7 @@ class Write extends Data_Link\Write
 				}
 			} while (
 				$class
+				// TODO This will not work with objects containing properties with non-null default
 				&& !Null_Object::isNull($this->object, function($properties) use ($class) {
 					return Store_Annotation::storedPropertiesOnly(
 						Reflection_Property::filter($properties, $class->name)
