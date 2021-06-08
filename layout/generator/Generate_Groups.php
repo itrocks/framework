@@ -123,7 +123,10 @@ class Generate_Groups
 				$property_path .= DOT;
 			}
 			$property_path .= $property_name;
-			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
+			if (!property_exists($class_name, $property_name)) {
+				return false;
+			}
+			/** @noinspection PhpUnhandledExceptionInspection property_exists */
 			$type = (new Reflection_Property($class_name, $property_name))->getType();
 			if ($type->isMultiple()) {
 				$group = $this->propertyGroup($property, $property_path);
@@ -210,7 +213,10 @@ class Generate_Groups
 					$property_path .= DOT;
 				}
 				$property_path .= $property_name;
-				/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
+				if (!property_exists($class_name, $property_name)) {
+					return false;
+				}
+				/** @noinspection PhpUnhandledExceptionInspection property_exists */
 				$type = (new Reflection_Property($class_name, $property_name))->getType();
 				if ($type->isMultiple()) {
 					$group = $this->propertyGroup($text, $property_path);

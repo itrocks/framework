@@ -113,9 +113,8 @@ class Parser
 					$property = new Reflection_Property($object, $property_name);
 					$object   = $property->getValue($object);
 				}
-				catch (ReflectionException $exception) {
-					$object = '{' . $property_path . ' : ' . 'unknown ' . $property_name . '}';
-					break;
+				catch (ReflectionException) {
+					return '';
 				}
 				if (is_null($object)) {
 					break;

@@ -237,15 +237,18 @@ class Property_To_Text
 	/**
 	 * Process a Property element
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection getValue
 	 * @param $property Property
 	 */
 	protected function property(Property $property)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid object */
-		$reflection_property = new Reflection_Property(
-			get_class($this->object), $property->property_path
-		);
+		try {
+			$reflection_property = new Reflection_Property(
+				get_class($this->object), $property->property_path
+			);
+		}
+		catch (ReflectionException) {
+			return;
+		}
 		foreach ($this->values($property->property_path) as $iteration_number => $value) {
 			$final_element = $this->propertyToFinal(
 				$property, Loc::propertyToLocale($reflection_property, $value)
@@ -343,7 +346,7 @@ class Property_To_Text
 			try {
 				$objects = $this->nextObjects($objects, $property_name);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				// bad property.path : no data, ignore the element
 				return [];
 			}
