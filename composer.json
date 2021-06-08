@@ -42,7 +42,11 @@
 		"phpunit/phpunit":                       "9.*",
 		"setasign/fpdi":                         "^2.3",
 		"swiftmailer/swiftmailer":               "^6.0",
-		"tecnickcom/tcpdf":                      "^6.3"
+		"tecnickcom/tcpdf":                      "^6.3",
+		"symfony/http-client": "5.3.x-dev",
+		"symfony/http-client-contracts": "2.4.x-dev",
+		"psr/http-client": "1.0.x-dev",
+		"nyholm/psr7": "1.4.x-dev"
 	},
 	"type": "itrocks"
 }
