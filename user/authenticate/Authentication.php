@@ -4,6 +4,7 @@ namespace ITRocks\Framework\User\Authenticate;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Input;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -151,9 +152,9 @@ abstract class Authentication
 		if (!($login && $password)) {
 			return null;
 		}
-		$match = static::arrayToUser(['login' => $login, 'password' => $password]);
+		$match = static::arrayToUser(['email' => $login, 'login' => $login, 'password' => $password]);
 		/** @var $users User[] */
-		$users = Dao::search([(str_contains($login, AT) ? 'email' : 'login') => $login], User::class);
+		$users = Dao::search(Func::orOp(['email' => $login, 'login' => $login]), User::class);
 		foreach ($users as $user) {
 			if (static::userMatch($user, $match)) {
 				return $user;
@@ -190,7 +191,9 @@ abstract class Authentication
 	 */
 	protected static function userMatch(User $user, User $match) : bool
 	{
-		return ($user->login === $match->login) && ($user->password === $match->password);
+		return
+			(($user->email === $match->email) || ($user->login === $match->login))
+			&& ($user->password === $match->password);
 	}
 
 }
