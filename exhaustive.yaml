@@ -14,3 +14,11 @@ ITRocks\Framework\Component\Menu:
     - /ITRocks/Framework/Layout/Display_Models
     - /ITRocks/Framework/Locale/Translations
     - /ITRocks/Framework/RAD/Features
+ITRocks\Framework\Objects\Counter:
+  display_order:
+    - identifier
+    - format
+    - random
+    - property_name
+    - last_update
+    - last_value
