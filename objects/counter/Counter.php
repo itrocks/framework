@@ -102,18 +102,28 @@ class Counter
 		/** @var $counter Counter */
 		$counter = Dao::searchOne(['identifier' => $class_name], Counter::class);
 		if ($counter) {
-			$old_value = $counter->last_value;
-			while (
-				($counter->last_value > 0)
-				&& !Dao::searchOne([$property_name => $counter->formatLastValue()], $class_name)
-			) {
-				$counter->last_value --;
-			}
-			if ($old_value !== $counter->last_value) {
-				Dao::write($counter, Dao::only('last_value'));
-			}
+			$counter->decrement($class_name, $property_name);
 		}
 		static::unlock($mutex);
+	}
+
+	//------------------------------------------------------------------------------------- decrement
+	/**
+	 * @param $class_name    string
+	 * @param $property_name string
+	 */
+	protected function decrement(string $class_name, string $property_name)
+	{
+		$old_value = $this->last_value;
+		while (
+			($this->last_value > 0)
+			&& !Dao::searchOne([$property_name => $this->formatLastValue()], $class_name)
+		) {
+			$this->last_value --;
+		}
+		if ($old_value !== $this->last_value) {
+			Dao::write($this, Dao::only('last_value'));
+		}
 	}
 
 	//------------------------------------------------------------------------------- formatLastValue
@@ -214,6 +224,18 @@ class Counter
 			$this->last_value = 1;
 		}
 		return $this->formatLastValue($object);
+	}
+
+	//---------------------------------------------------------------------------------------- length
+	/**
+	 * @example format = '{MONTH}%03d' => 3
+	 * @example format = '{YEAR}%3d'   => 1
+	 * @return integer The counter number initial length
+	 */
+	public function numberLength() : int
+	{
+		preg_match('/%(\d+)d/', $this->format, $match);
+		return ($match && str_starts_with($match[1], '0')) ? $match[1] : 1;
 	}
 
 	//------------------------------------------------------------------------------------ resetValue
