@@ -130,7 +130,7 @@ abstract class Data_Link
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	abstract public function count($what, $class_name = null, $options = []);
+	abstract public function count($what, $class_name = null, $options = []) : int;
 
 	//--------------------------------------------------------------------------------- createStorage
 	/**

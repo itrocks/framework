@@ -59,7 +59,7 @@ class Link extends Identifier_Map
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public function count($what, $class_name = null, $options = [])
+	public function count($what, $class_name = null, $options = []) : int
 	{
 		// TODO: Implement count() method.
 		return 0;

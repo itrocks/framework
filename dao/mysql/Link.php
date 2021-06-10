@@ -230,7 +230,7 @@ class Link extends Dao\Sql\Link
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public function count($what, $class_name = null, $options = [])
+	public function count($what, $class_name = null, $options = []) : int
 	{
 		if (is_string($what)) {
 			$class_name = $what;

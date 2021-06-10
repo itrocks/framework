@@ -131,7 +131,7 @@ class Dao implements Configurable
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public static function count($what, $class_name = null, $options = [])
+	public static function count($what, $class_name = null, $options = []) : int
 	{
 		return self::current()->count($what, $class_name, $options);
 	}
