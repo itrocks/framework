@@ -12,6 +12,13 @@ use ITRocks\Framework\Objects\Counter;
 trait Random
 {
 
+	//-------------------------------------------------------------------------------- $property_name
+	/**
+	 * @conditions random=true
+	 * @var string
+	 */
+	public $property_name = 'number';
+
 	//--------------------------------------------------------------------------------------- $random
 	/**
 	 * @var boolean
@@ -66,7 +73,7 @@ trait Random
 			$this->last_value = rand(1, $max_value);
 			$formatted_value  = $this->formatLastValue();
 		}
-		while (Dao::searchOne(['number' => $formatted_value], get_class($object)));
+		while (Dao::searchOne([$this->property_name => $formatted_value], get_class($object)));
 		return $formatted_value;
 	}
 
