@@ -178,7 +178,7 @@ class Property_To_Text
 				/** @var $getter Method_Annotation */
 				$object
 					= ($this->print && ($getter = $reflection_property->getAnnotation('print_getter'))->value)
-					? $getter->call($object)
+					? $getter->call($object, [$this->object])
 					: $reflection_property->getValue($object);
 				if (is_array($object)) {
 					// TODO sub-arrays wont work at all : only one level of array values

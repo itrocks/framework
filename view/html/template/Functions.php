@@ -1059,7 +1059,7 @@ class Functions
 		if (!$getter->value) {
 			return $value;
 		}
-		return $getter->call($object);
+		return $getter->call($object, [end($template->objects)]);
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
