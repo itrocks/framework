@@ -4,7 +4,15 @@ article header > ol.breadcrumb {
 	> li:not(:last-child) {
 		display: inline-block;
 
-		&:after {
+		&.back_link {
+			> a {
+				background-position: center center;
+				background-image: url('img/arrow-back-small-24.svg');
+				background-repeat: no-repeat;
+			}
+		}
+
+		&:not(.back_link):after  {
 			content: '>';
 		}
 
