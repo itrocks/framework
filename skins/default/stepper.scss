@@ -1,0 +1,46 @@
+@import 'colors.scss';
+
+article div.stepper-container {
+  border-top: 1px solid $very-light-pink-six;
+  background-image: linear-gradient(to bottom, $white-two 50%, $very-light-pink-three);
+  ul.stepper-progressbar {
+    padding: 11px;
+    display: flex;
+    justify-content: center;
+
+    li {
+      width: 150px;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: top;
+      background-image: url('img/progress-indicator-next-step.svg');
+      padding-top: 28px;
+      color: $brown-grey;
+      position: relative;
+
+      display: flex;
+      justify-content: center;
+
+      &.step-active {
+        background-image: url('img/progress-indicator-current-step-blue.svg');
+        font-weight: bold;
+        color: $ocean-blue;
+      }
+
+      &.step-done {
+        background-image: url('img/progress-indicator-previous-step-gray.svg');
+      }
+
+      &:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 80%;
+        height: 2px;
+        left: 60%;
+        top: 12px;
+        background-color: $brown-grey;
+      }
+    }
+  }
+}

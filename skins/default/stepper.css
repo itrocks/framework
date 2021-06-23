@@ -1,0 +1,33 @@
+article div.stepper-container {
+  border-top: 1px solid #cccccc;
+  background-image: linear-gradient(to bottom, #f8f8f8 50%, #efefef); }
+  article div.stepper-container ul.stepper-progressbar {
+    padding: 11px;
+    display: flex;
+    justify-content: center; }
+    article div.stepper-container ul.stepper-progressbar li {
+      width: 150px;
+      list-style: none;
+      background-repeat: no-repeat;
+      background-position: top;
+      background-image: url("img/progress-indicator-next-step.svg");
+      padding-top: 28px;
+      color: #999999;
+      position: relative;
+      display: flex;
+      justify-content: center; }
+      article div.stepper-container ul.stepper-progressbar li.step-active {
+        background-image: url("img/progress-indicator-current-step-blue.svg");
+        font-weight: bold;
+        color: #0076b3; }
+      article div.stepper-container ul.stepper-progressbar li.step-done {
+        background-image: url("img/progress-indicator-previous-step-gray.svg"); }
+      article div.stepper-container ul.stepper-progressbar li:not(:last-child)::before {
+        content: '';
+        position: absolute;
+        display: block;
+        width: 80%;
+        height: 2px;
+        left: 60%;
+        top: 12px;
+        background-color: #999999; }
