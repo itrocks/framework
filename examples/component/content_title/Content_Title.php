@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Examples\View\Html\Dom;
+namespace ITRocks\Framework\Examples\Component;
 
 /**
  * Class Content_Title

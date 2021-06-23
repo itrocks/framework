@@ -1,14 +1,14 @@
 <?php
-namespace ITRocks\Framework\Examples\View\Html\Dom\Content_Title;
+namespace ITRocks\Framework\Examples\Component\Content_Title;
 
+use ITRocks\Framework\Component\Content_Title;
 use ITRocks\Framework\Controller\Default_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\View;
-use ITRocks\Framework\View\Html\Dom\Content_Title;
 
 /**
  * Class Example_Controller
- * /ITRocks/Framework/Examples/View/Html/Dom/Content_Title/example
+ * /ITRocks/Framework/Examples/Component/Content_Title/example
  */
 class Example_Controller extends Default_Controller
 {
@@ -26,7 +26,7 @@ class Example_Controller extends Default_Controller
 	{
 		$content_title = new Content_Title('Hello');
 		return View::run(
-			[Content_Title::ELEMENT_NAME => $content_title], [], [], $class_name, $feature_name
+			[Content_Title::COMPONENT_NAME => $content_title], [], [], $class_name, $feature_name
 		);
 	}
 
