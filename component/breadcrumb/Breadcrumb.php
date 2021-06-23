@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Component;
 
+use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -56,7 +57,11 @@ class Breadcrumb
 	{
 		$template = new Template(null, static::TEMPLATE_PATH);
 		$template->setParameters(
-			['title' => $this->title, 'buttons' => $this->buttons, 'back_link' => $this->back_link]
+			[
+				Parameter::IS_INCLUDED => true,
+				'title'                => $this->title,
+				'buttons'              => $this->buttons,
+				'back_link'            => $this->back_link]
 		);
 		return $template->parse();
 	}

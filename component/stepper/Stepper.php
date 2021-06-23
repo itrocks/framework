@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Component;
 
 use ITRocks\Framework\Component\Stepper\Step;
+use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\View\Html\Template;
 
@@ -30,7 +31,7 @@ class Stepper
 	public function __toString() : string
 	{
 		$template = new Template(null, static::TEMPLATE_PATH);
-		$template->setParameters(['steps' => $this->getSortedSteps()]);
+		$template->setParameters([Parameter::IS_INCLUDED => true, 'steps' => $this->getSortedSteps()]);
 		return $template->parse();
 	}
 
