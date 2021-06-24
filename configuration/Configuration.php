@@ -27,6 +27,9 @@ class Configuration
 	//----------------------------------------------------------------------------------- EXTENDS_APP
 	const EXTENDS_APP = 'extends';
 
+	//-------------------------------------------------------------------------------------- HUB_URIS
+	const HUB_URIS = 'hub_uris';
+
 	//--------------------------------------------------------------------------- TEMPORARY_DIRECTORY
 	const TEMPORARY_DIRECTORY = 'temporary_directory';
 
