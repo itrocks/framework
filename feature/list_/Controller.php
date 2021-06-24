@@ -31,6 +31,7 @@ use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
@@ -874,7 +875,14 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function readDataSelect($class_name, array $properties_path, $search, array $options)
 	{
-		return Dao::select($class_name, $properties_path, $search, $options);
+		/** @noinspection PhpUnhandledExceptionInspection */
+		$class     = new Reflection_Class($class_name);
+		$dao_value = $class->getAnnotation('dao')->value;
+		$dao = ($dao_value)
+			? Dao::get($dao_value)
+			: Dao::current();
+		$data = $dao->select($class_name, $properties_path, $search, $options);
+		return $data;
 	}
 
 	//-------------------------------------------------------------------------- readDataSelectSearch
