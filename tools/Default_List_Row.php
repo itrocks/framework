@@ -25,13 +25,13 @@ class Default_List_Row implements List_Row
 	/**
 	 * @var List_Data
 	 */
-	private $list;
+	public $list;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object|mixed Object or object identifier
 	 */
-	private $object;
+	public $object;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
@@ -144,6 +144,12 @@ class Default_List_Row implements List_Row
 		return View::link(
 			is_object($this->object) ? $this->object : [$this->class_name, $this->object]
 		);
+	}
+
+	//------------------------------------------------------------------------------------- getUrlApp
+	public function getUrlApp() : ?string
+	{
+		return 'app://';
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
