@@ -12,6 +12,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\Set;
 
@@ -283,7 +284,12 @@ class Selection
 	{
 		$search  = $this->getSearchFilter($search);
 		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
-		return Dao::search($search, $this->class_name, $options);
+		$class     = new Reflection_Class($this->class_name);
+		$dao_value = $class->getAnnotation('dao')->value;
+		$dao = ($dao_value)
+			? Dao::get($dao_value)
+			: Dao::current();
+		return $dao->search($search, $this->class_name, $options);
 	}
 
 	//--------------------------------------------------------------------------- removeSearchOptions
