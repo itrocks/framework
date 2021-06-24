@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Tools;
 
+use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
@@ -119,6 +120,12 @@ class Default_List_Row implements List_Row
 	public function getClassName() : string
 	{
 		return $this->class_name;
+	}
+
+	//----------------------------------------------------------------------------- getDataListTarget
+	public function getDataListTarget() : string
+	{
+		return Target::MAIN;
 	}
 
 	//------------------------------------------------------------------------------------- getObject
