@@ -1,0 +1,20 @@
+article table.static-table {
+  display: block; }
+  article table.static-table > thead > tr {
+    background-color: #efefef;
+    font-weight: 500; }
+  article table.static-table > tbody > tr:nth-child(2n) {
+    background-color: #f8f8f8; }
+  article table.static-table > tbody > tr:nth-child(2n+1) {
+    background-color: white; }
+  article table.static-table > tbody > tr > td:not(:first-child) {
+    text-align: right; }
+  article table.static-table > thead > tr, article table.static-table > tbody > tr {
+    align-items: center;
+    border-bottom: 1px solid #cccccc; }
+    article table.static-table > thead > tr > td, article table.static-table > thead > tr > th, article table.static-table > tbody > tr > td, article table.static-table > tbody > tr > th {
+      text-align: left;
+      padding: 10px 6px; }
+      article table.static-table > thead > tr > td:last-child, article table.static-table > thead > tr > th:last-child, article table.static-table > tbody > tr > td:last-child, article table.static-table > tbody > tr > th:last-child {
+        width: 0;
+        padding: 0; }

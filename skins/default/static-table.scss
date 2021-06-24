@@ -1,0 +1,41 @@
+@import 'colors.scss';
+
+$header-font-weight: 500;
+
+article table.static-table {
+  display: block;
+
+  > thead > tr {
+    background-color: $very-light-pink-three;
+    font-weight: $header-font-weight;
+  }
+
+  > tbody > tr {
+    &:nth-child(2n) {
+      background-color: $white-two;
+    }
+
+    &:nth-child(2n+1) {
+      background-color: white;
+    }
+
+    > td:not(:first-child) {
+      text-align: right;
+    }
+  }
+
+  > thead > tr, > tbody > tr {
+    align-items: center;
+    border-bottom: 1px solid $very-light-pink-six;
+
+    > td, > th {
+      text-align: left;
+      padding: 10px 6px;
+
+      &:last-child {
+        width: 0;
+        padding: 0;
+      }
+    }
+  }
+}
