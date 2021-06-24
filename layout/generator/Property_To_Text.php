@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Layout\Generator\Text_Templating\Parser;
 use ITRocks\Framework\Layout\Structure;
@@ -272,6 +273,7 @@ class Property_To_Text
 
 	//-------------------------------------------------------------------------- propertyToFinalImage
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Field
 	 * @param $value    File
 	 * @return Final_Image
@@ -279,7 +281,8 @@ class Property_To_Text
 	protected function propertyToFinalImage(Field $property, File $value) : Final_Image
 	{
 		// change property to final image
-		$final_image = new Final_Image($property->page);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$final_image = Builder::create(Final_Image::class, [$property->page]);
 		foreach (get_object_vars($property) as $property_name => $property_value) {
 			if (property_exists($final_image, $property_name)) {
 				$final_image->$property_name = $property_value;
@@ -292,14 +295,16 @@ class Property_To_Text
 
 	//--------------------------------------------------------------------------- propertyToFinalText
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property Field|Property|Text
 	 * @param $value    string
 	 * @return Final_Text
 	 */
-	protected function propertyToFinalText(Field $property, string $value) : Final_Text
+	protected function propertyToFinalText(Field|Property|Text $property, string $value) : Final_Text
 	{
 		// change property to final text
-		$final_text = new Final_Text($property->page);
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$final_text = Builder::create(Final_Text::class, [$property->page]);
 		foreach (get_object_vars($property) as $property_name => $property_value) {
 			if (property_exists($final_text, $property_name)) {
 				$final_text->$property_name = $property_value;
