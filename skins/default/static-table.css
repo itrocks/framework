@@ -9,12 +9,18 @@ article table.static-table {
     background-color: white; }
   article table.static-table > tbody > tr > td:not(:first-child) {
     text-align: right; }
-  article table.static-table > thead > tr, article table.static-table > tbody > tr {
+  article table.static-table > tfoot > tr {
+    background-color: #efefef; }
+    article table.static-table > tfoot > tr > td {
+      text-align: right; }
+  article table.static-table > thead > tr, article table.static-table > tbody > tr, article table.static-table tfoot > tr {
     align-items: center;
-    border-bottom: 1px solid #cccccc; }
-    article table.static-table > thead > tr > td, article table.static-table > thead > tr > th, article table.static-table > tbody > tr > td, article table.static-table > tbody > tr > th {
-      text-align: left;
+    border-bottom: 1px solid #cccccc;
+    text-align: left; }
+    article table.static-table > thead > tr > td, article table.static-table > thead > tr > th, article table.static-table > tbody > tr > td, article table.static-table > tbody > tr > th, article table.static-table tfoot > tr > td, article table.static-table tfoot > tr > th {
       padding: 10px 6px; }
-      article table.static-table > thead > tr > td:last-child, article table.static-table > thead > tr > th:last-child, article table.static-table > tbody > tr > td:last-child, article table.static-table > tbody > tr > th:last-child {
+      article table.static-table > thead > tr > td.bold-cell, article table.static-table > thead > tr > th.bold-cell, article table.static-table > tbody > tr > td.bold-cell, article table.static-table > tbody > tr > th.bold-cell, article table.static-table tfoot > tr > td.bold-cell, article table.static-table tfoot > tr > th.bold-cell {
+        font-weight: bold; }
+      article table.static-table > thead > tr > td:last-child, article table.static-table > thead > tr > th:last-child, article table.static-table > tbody > tr > td:last-child, article table.static-table > tbody > tr > th:last-child, article table.static-table tfoot > tr > td:last-child, article table.static-table tfoot > tr > th:last-child {
         width: 0;
         padding: 0; }

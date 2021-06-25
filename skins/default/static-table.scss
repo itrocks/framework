@@ -24,13 +24,24 @@ article table.static-table {
     }
   }
 
-  > thead > tr, > tbody > tr {
+  > tfoot > tr  {
+    background-color: $very-light-pink-three;
+    > td {
+      text-align: right;
+    }
+  }
+
+  > thead > tr, > tbody > tr, tfoot > tr {
     align-items: center;
     border-bottom: 1px solid $very-light-pink-six;
+    text-align: left;
 
     > td, > th {
-      text-align: left;
       padding: 10px 6px;
+
+      &.bold-cell {
+        font-weight: bold;
+      }
 
       &:last-child {
         width: 0;

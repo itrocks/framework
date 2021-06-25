@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\View\Html\Dom;
 
 use ITRocks\Framework\View\Html\Dom\Table\Body;
+use ITRocks\Framework\View\Html\Dom\Table\Footer;
 use ITRocks\Framework\View\Html\Dom\Table\Head;
 
 /**
@@ -16,6 +17,12 @@ class Table extends Element
 	 */
 	public $body;
 
+	//--------------------------------------------------------------------------------------- $footer
+	/**
+	 * @var Footer
+	 */
+	public $footer;
+	
 	//----------------------------------------------------------------------------------------- $head
 	/**
 	 * @var Head
@@ -37,8 +44,9 @@ class Table extends Element
 	public function __toString()
 	{
 		$content = '';
-		if (isset($this->head)) $content .= LF . $this->head;
-		if (isset($this->body)) $content .= LF . $this->body;
+		if (isset($this->head)) $content   .= LF . $this->head;
+		if (isset($this->body)) $content   .= LF . $this->body;
+		if (isset($this->footer)) $content .= LF . $this->footer;
 		$this->setContent($content . LF);
 		return parent::__toString();
 	}

@@ -22,16 +22,17 @@ class Static_Table
 	/**
 	 * Static_Table constructor.
 	 *
-	 * @param $header_values array
-	 * @param $body_rows     array
+	 * @param $header_cells Table\Header_Cell[]
+	 * @param $body_rows    Table\Standard_Cell[][]
+	 * @param $footer_rows  Table\Standard_Cell[][]
 	 */
-	public function __construct(array $header_values, array $body_rows)
+	public function __construct(array $header_cells, array $body_rows, array $footer_rows = [])
 	{
 		$this->table = new Table();
 		$this->table->addClass('static-table');
-
-		$this->table->head = $this->buildHeader($header_values);
-		$this->table->body = $this->buildBody($body_rows);
+		$this->table->head   = $this->buildHeader($header_cells);
+		$this->table->body   = $this->buildBody($body_rows);
+		$this->table->footer = $this->buildFooter($footer_rows);
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -45,7 +46,7 @@ class Static_Table
 
 	//------------------------------------------------------------------------------------- buildBody
 	/**
-	 * @param $body_rows string[][]
+	 * @param $body_rows Table\Standard_Cell[][]
 	 * @return Table\Body
 	 */
 	protected function buildBody(array $body_rows) : Table\Body
@@ -53,8 +54,8 @@ class Static_Table
 		$body = new Table\Body();
 		foreach ($body_rows as $body_row) {
 			$row = new Table\Row();
-			foreach ($body_row as $row_value) {
-				$row->addCell(new Table\Standard_Cell($row_value));
+			foreach ($body_row as $row_cell) {
+				$row->addCell($row_cell);
 			}
 			$row->addCell(new Table\Standard_Cell(''));
 			$body->addRow($row);
@@ -62,16 +63,35 @@ class Static_Table
 		return $body;
 	}
 
+	//----------------------------------------------------------------------------------- buildFooter
+	/**
+	 * @param $footer_rows Table\Standard_Cell[][]
+	 * @return string
+	 */
+	protected function buildFooter(array $footer_rows) : string
+	{
+		$footer = new Table\Footer();
+		foreach ($footer_rows as $footer_row) {
+			$row = new Table\Row();
+			foreach ($footer_row as $row_cell) {
+				$row->addCell($row_cell);
+			}
+			$row->addCell(new Table\Standard_Cell(''));
+			$footer->addRow($row);
+		}
+		return $footer;
+	}
+
 	//----------------------------------------------------------------------------------- buildHeader
 	/**
-	 * @param $header_values string[]
+	 * @param $header_values Table\Header_Cell[]
 	 * @return Table\Head
 	 */
 	protected function buildHeader(array $header_values) : Table\Head
 	{
 		$header_row = new Table\Row();
-		foreach ($header_values as $header_value) {
-			$header_row->addCell(new Table\Header_Cell($header_value));
+		foreach ($header_values as $header_cell) {
+			$header_row->addCell($header_cell);
 		}
 		$header_row->addCell(new Table\Header_Cell(''));
 
