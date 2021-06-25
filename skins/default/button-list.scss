@@ -1,0 +1,29 @@
+@import 'colors';
+article ul.button-list {
+  display: flex;
+  justify-content: flex-start;
+  padding: 6px;
+
+  > li {
+    list-style: none;
+    margin: 10px 5px;
+
+    > a {
+      display: block;
+      padding: 12px 12px;
+      border-radius: 2px;
+      min-width: 80px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500;
+
+      &.color-very-light-pink-four {
+        background-color: $very-light-pink-four;
+      }
+      &.color-azure {
+        color: white;
+        background-color: $azure;
+      }
+    }
+  }
+}

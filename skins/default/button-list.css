@@ -1,0 +1,20 @@
+article ul.button-list {
+  display: flex;
+  justify-content: flex-start;
+  padding: 6px; }
+  article ul.button-list > li {
+    list-style: none;
+    margin: 10px 5px; }
+    article ul.button-list > li > a {
+      display: block;
+      padding: 12px 12px;
+      border-radius: 2px;
+      min-width: 80px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 500; }
+      article ul.button-list > li > a.color-very-light-pink-four {
+        background-color: #e8e8e8; }
+      article ul.button-list > li > a.color-azure {
+        color: white;
+        background-color: #009def; }
