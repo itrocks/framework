@@ -239,7 +239,8 @@ class Link extends Dao\Data_Link
 		$http_service = new Http_Service();
 		$array_ids = $what['id']->values;
 		$headers = ['Content-Type' => 'application/json'];
-		$uri = $this->uris[$class_name];
+		$uri = $this->uris[$class_name]['json'];
+		$base_url = $this->uris[Link::BASE_URL];
 		$properties = ['search[id]' => null];
 
 		$array_http_response = [];
@@ -249,7 +250,7 @@ class Link extends Dao\Data_Link
 				'headers' => $headers,
 				'query'   => $properties
 			];
-			$uri = urldecode($uri);
+			$uri = urldecode($base_url.$uri);
 			$http_service->get($uri, $options_request);
 			$http_response = $http_service->getResponse();
 			$http_response_content = $http_response->getContent();
