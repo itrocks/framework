@@ -26,10 +26,14 @@ trait Person
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$result = trim($this->first_name . SP . $this->last_name);
-		if (empty($result) && method_exists(get_parent_class($this), '__toString')) {
+		if (
+			empty($result)
+			&& get_parent_class($this)
+			&& method_exists(get_parent_class($this), '__toString')
+		) {
 			/** @noinspection PhpUndefinedClassInspection all method_exists */
 			$result = parent::__toString();
 		}
