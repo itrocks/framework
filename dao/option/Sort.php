@@ -18,25 +18,25 @@ class Sort implements Option
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
-	 * @var string
+	 * @var string|null
 	 */
-	public $class_name;
+	public ?string $class_name =  null;
 
 	//-------------------------------------------------------------------------------------- $columns
 	/**
 	 * Columns names for objects collection sorting
 	 *
-	 * @var string[]|Reverse[]
+	 * @var string[]|Reverse[]|null
 	 */
-	public $columns;
+	public ?array $columns = null;
 
 	//-------------------------------------------------------------------------------------- $reverse
 	/**
 	 * These are columns names which use reverse sort
 	 *
-	 * @var string[]
+	 * @var string[]|null
 	 */
-	public $reverse;
+	public ?array $reverse;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -54,7 +54,7 @@ class Sort implements Option
 	 * to apply each column name can be followed by ' reverse' into the string for reverse order sort
 	 * If null, the value of annotations 'sort' or 'representative' of the class will be taken.
 	 */
-	public function __construct($columns = null)
+	public function __construct(array|string $columns = null)
 	{
 		if (is_string($columns) && ctype_upper($columns[0])) {
 			$this->applyClassName($columns);
@@ -70,7 +70,7 @@ class Sort implements Option
 	 * @param $property_path      string
 	 * @param $sort_columns_count integer number of sort columns to keep after adding
 	 */
-	public function addSortColumn($property_path, $sort_columns_count = 3)
+	public function addSortColumn(string $property_path, int $sort_columns_count = 3)
 	{
 		if (in_array($property_path, $this->columns)) {
 			unset($this->columns[array_search($property_path, $this->columns)]);
@@ -96,7 +96,7 @@ class Sort implements Option
 	 * @noinspection PhpDocMissingThrowsInspection $class_name must be valid
 	 * @param $class_name string
 	 */
-	private function applyClassName($class_name)
+	private function applyClassName(string $class_name)
 	{
 		if (
 			isset($class_name)
@@ -127,7 +127,7 @@ class Sort implements Option
 					$this->reverse[$column_name] = $column_name;
 					$this->columns[$key]         = $column_name;
 				}
-				elseif (strpos(SP . $column_name . SP, SP . 'reverse' . SP) !== false) {
+				elseif (str_contains(SP . $column_name . SP, SP . 'reverse' . SP)) {
 					$column_name = trim(str_replace(SP . 'reverse' . SP, '', SP . $column_name . SP));
 					$this->reverse[$column_name] = $column_name;
 					$this->columns[$key]         = $column_name;
@@ -138,11 +138,11 @@ class Sort implements Option
 
 	//------------------------------------------------------------------------------------ getColumns
 	/**
-	 * @param $class_name string the contextual class name :
+	 * @param $class_name string|null the contextual class name :
 	 *                    needed if the constructor was called without columns
 	 * @return string[] the column names
 	 */
-	public function getColumns($class_name = null)
+	public function getColumns(string $class_name = null) : array
 	{
 		if (isset($class_name)) {
 			$this->applyClassName($class_name);
@@ -153,11 +153,11 @@ class Sort implements Option
 	//--------------------------------------------------------------------------------- getProperties
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string the contextual class name :
-	 *                           needed if the constructor was called without columns
+	 * @param $class_name string|null the contextual class name :
+	 *                    needed if the constructor was called without columns
 	 * @return Reflection_Property[] the properties
 	 */
-	public function getProperties($class_name = null)
+	public function getProperties(string $class_name = null) : array
 	{
 		$properties = [];
 		foreach ($this->getColumns($class_name) as $column) {
@@ -174,7 +174,7 @@ class Sort implements Option
 	 * @param $property_path string
 	 * @return boolean
 	 */
-	public function isReverse($property_path)
+	public function isReverse(string $property_path) : bool
 	{
 		if (in_array($property_path, $this->reverse)) {
 			return true;
@@ -194,7 +194,7 @@ class Sort implements Option
 	 * @param $objects object[]
 	 * @return object[]
 	 */
-	public function sortObjects(array &$objects)
+	public function sortObjects(array &$objects) : array
 	{
 		$comparator                     = new Comparator($this->class_name, $this->columns);
 		$comparator->use_compare_method = false;
