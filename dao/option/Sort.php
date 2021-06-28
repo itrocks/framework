@@ -155,7 +155,11 @@ class Sort implements Option
 			$type     = $property->getType();
 			if ($type->isClass()) {
 				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
-					$columns[] = $property_name . DOT . $sub_column;
+					$column    = $property_name . DOT . $sub_column;
+					$columns[] = $column;
+					if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
+						$this->reverse[] = $column;
+					}
 				}
 			}
 			else {
