@@ -278,10 +278,10 @@ class Console
 			try {
 				foreach (scandir("$path/$pid") as $file) {
 					if ($file[0] !== '.') {
-						unlink("$path/$pid/$file");
+						@unlink("$path/$pid/$file");
 					}
 				}
-				rmdir("$path/$pid");
+				@rmdir("$path/$pid");
 			}
 			catch (Exception $exception) {
 				// ignore files created by another user : this user will purge them
