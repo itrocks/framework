@@ -138,6 +138,7 @@ class Sort implements Option
 
 	//------------------------------------------------------------------------------------ getColumns
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string|null the contextual class name :
 	 *                    needed if the constructor was called without columns
 	 * @return string[] the column names
@@ -147,7 +148,21 @@ class Sort implements Option
 		if (isset($class_name)) {
 			$this->applyClassName($class_name);
 		}
-		return $this->columns;
+		$columns = [];
+		foreach ($this->columns as $property_name) {
+			/** @noinspection PhpUnhandledExceptionInspection must be valid */
+			$property = new Reflection_Property($this->class_name, $property_name);
+			$type     = $property->getType();
+			if ($type->isClass()) {
+				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
+					$columns[] = $property_name . DOT . $sub_column;
+				}
+			}
+			else {
+				$columns[] = $property_name;
+			}
+		}
+		return $columns;
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
