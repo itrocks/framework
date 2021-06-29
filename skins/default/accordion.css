@@ -1,0 +1,26 @@
+article div.accordion:not(last-child) {
+  margin-top: 10px; }
+article div.accordion div.accordion-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+  background-color: white;
+  min-height: 28px;
+  max-width: 600px;
+  padding: 10px; }
+  article div.accordion div.accordion-header > .icons {
+    position: absolute;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: center; }
+    article div.accordion div.accordion-header > .icons > object.icon {
+      height: 48px;
+      width: 48px;
+      margin-right: 10px;
+      background-repeat: no-repeat;
+      background-size: cover; }
+article div.accordion div.accordion-container {
+  margin: 15px 10px; }
+  article div.accordion div.accordion-container.accordion-hide {
+    display: none; }
