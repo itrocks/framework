@@ -62,21 +62,31 @@ class Button
 	 */
 	public string $target = '';
 
+	//-------------------------------------------------------------------------------------- $url_app
+	/**
+	 * The method used to generate link. Default is app:// -> <a href="app://(link)>
+	 *
+	 * @var string
+	 */
+	public string $url_app;
+
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Button constructor.
 	 *
-	 * @param  $content            string
-	 * @param  $hint               string
-	 * @param  $link               string
-	 * @param  $target             string
-	 * @param  $data_post          array
-	 * @param  $color              string
-	 * @param  $additional_classes array
+	 * @param $content            string
+	 * @param $hint               string
+	 * @param $link               string
+	 * @param $target             string
+	 * @param $data_post          array
+	 * @param $color              string
+	 * @param $additional_classes array
+	 * @param $url_app            string
 	 */
 	public function __construct(
 		string $content = '', string $hint = '', string $link = '', string $target = Target::MAIN,
-		array $data_post = [], string $color = '', array $additional_classes = []
+		array $data_post = [], string $color = '', array $additional_classes = [],
+		string $url_app = 'app://'
 	) {
 		$this->content            = $content;
 		$this->hint               = $hint;
@@ -86,6 +96,7 @@ class Button
 		$this->data_post          = $data_post;
 		$this->color              = $color ?? static::COLOR_SECONDARY;
 		$this->additional_classes = $additional_classes;
+		$this->url_app            = $url_app;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -102,7 +113,7 @@ class Button
 		$template->setParameters(
 			[
 				Parameter::IS_INCLUDED => true,
-				'additional_classes'     => join(' ', $this->additional_classes),
+				'additional_classes'   => join(' ', $this->additional_classes),
 				'color'                => $this->color,
 				'content'              => $this->content,
 				'data-post'            => join(',', $data_post_array),
