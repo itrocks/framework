@@ -151,7 +151,7 @@ class Sort implements Option
 		$columns = [];
 		foreach ($this->columns as $property_name) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
-			$property = new Reflection_Property($this->class_name, $property_name);
+			$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
 			$type     = $property->getType();
 			if ($type->isClass() && !$type->isDateTime()) {
 				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
