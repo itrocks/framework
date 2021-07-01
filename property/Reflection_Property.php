@@ -16,6 +16,14 @@ use ReflectionException;
 class Reflection_Property extends Reflection\Reflection_Property
 {
 
+	//------------------------------------------------------------------------------- $all_expandable
+	/**
+	 * Force this to true to set all structure properties expandable
+	 *
+	 * @var boolean
+	 */
+	static bool $all_expandable = false;
+
 	//-------------------------------------------------------------------------------------- $display
 	/**
 	 * Translated display for the property
@@ -119,6 +127,9 @@ class Reflection_Property extends Reflection\Reflection_Property
 	{
 		$annotation = Store_Annotation::of($this);
 		$type       = $this->getType();
+		if (static::$all_expandable) {
+			return $type->isBasic() ? '' : 'expandable';
+		}
 		return ($annotation->isString() || $type->isBasic() || $type->isStringable())
 			? '' : 'expandable';
 	}

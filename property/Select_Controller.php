@@ -265,7 +265,11 @@ class Select_Controller implements Feature_Controller
 		 * first        Property the property object (with selected property name, or not)
 		 * 'properties' Reflection_Property[] all properties from the reference class
 		 */
-		return View::run($objects, $form, $files, Property::class, 'select');
+		$all_expandable = Reflection_Property::$all_expandable;
+		Reflection_Property::$all_expandable = true;
+		$output = View::run($objects, $form, $files, Property::class, 'select');
+		Reflection_Property::$all_expandable = $all_expandable;
+		return $output;
 	}
 
 	//-------------------------------------------------------------------------------- sortProperties
@@ -276,11 +280,8 @@ class Select_Controller implements Feature_Controller
 	{
 		uasort($properties, function(Reflection_Property $p1, Reflection_Property $p2)
 		{
-			$basic_diff = $p2->getType()->isBasic() - $p1->getType()->isBasic();
-			if ($basic_diff) {
-				return $basic_diff;
-			}
-			return strcmp(Loc::tr(Names::propertyToDisplay($p1)), Loc::tr(Names::propertyToDisplay($p2)));
+			return ($p2->getType()->isBasic() - $p1->getType()->isBasic())
+				?: strcmp(Loc::tr(Names::propertyToDisplay($p1)), Loc::tr(Names::propertyToDisplay($p2)));
 		});
 	}
 
