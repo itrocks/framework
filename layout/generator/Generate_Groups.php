@@ -28,7 +28,7 @@ class Generate_Groups
 	 *
 	 * @var float
 	 */
-	public $bottom_margin = 5;
+	public $bottom_margin = .5;
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
