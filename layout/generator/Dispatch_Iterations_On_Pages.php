@@ -33,7 +33,6 @@ class Dispatch_Iterations_On_Pages
 	protected function group(Group $group)
 	{
 		$iterations        = $group->iterations;
-		$group->iterations = [];
 		$page_number       = 0;
 		$page_group        = $this->nextPageGroup($group, $page_number);
 		$shift_top         = $group->top - $page_group->top;
@@ -94,6 +93,9 @@ class Dispatch_Iterations_On_Pages
 		// create page by cloning
 		else {
 			$page = $model_page->cloneWithNumber($page_number);
+			foreach ($page->groups as $group) {
+				$group->iterations = [];
+			}
 		}
 		$this->pages[$page->number] = $page;
 		return $page;
