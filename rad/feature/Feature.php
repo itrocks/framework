@@ -132,7 +132,6 @@ class Feature
 		Dao::begin();
 		$installer = new Installer();
 		$installer->install($this->plugin_class_name);
-		$installer->saveFiles();
 		Dao::commit();
 		return true;
 	}
@@ -146,7 +145,6 @@ class Feature
 		Dao::begin();
 		$installer = new Installer();
 		$installer->uninstall($this->plugin_class_name);
-		$installer->saveFiles();
 		Dao::commit();
 		return true;
 	}

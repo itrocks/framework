@@ -17,7 +17,7 @@ class Manager
 	{
 		exec($this->command(), $output);
 		if (join('', $output) !== 'OK') {
-			trigger_error('Could not activate trigger server : ' . $output, E_USER_WARNING);
+			trigger_error('Could not activate trigger server : ' . LF . join(LF, $output), E_USER_WARNING);
 		}
 		(new Asynchronous_Task($this->command()))->add();
 	}

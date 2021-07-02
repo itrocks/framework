@@ -29,7 +29,6 @@ class Install_Controller implements Feature_Controller
 		$plugin    = $parameters->getMainObject();
 		$installer = new Installer();
 		$installer->install($plugin);
-		$installer->saveFiles();
 		return 'Installed';
 	}
 

@@ -199,8 +199,13 @@ class Installer
 		$features[$plugin_class_name] = true;
 
 		Dao::begin();
+		$should_save_files = false;
 		foreach ($plugin_class->getAnnotations('feature_local_access') as $feature_local_access) {
 			$this->addLocalAccess($feature_local_access->value);
+			$should_save_files = true;
+		}
+		if ($should_save_files) {
+			$this->saveFiles();
 		}
 		foreach (Feature_Exclude_Annotation::allOf($plugin_class) as $feature_exclude) {
 			$this->uninstall(Builder::current()->sourceClassName($feature_exclude->value));
@@ -272,6 +277,7 @@ class Installer
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 		Dao::commit();
+		$this->saveFiles();
 	}
 
 	//-------------------------------------------------------------------------------------- openFile
@@ -431,13 +437,15 @@ class Installer
 	 */
 	public function saveFiles()
 	{
-		if ($this->files) {
-			$this->buildAnnotations();
-			foreach ($this->files as $file) {
-				$file->write();
-			}
-			touch(Application_Updater::UPDATE_FILE);
+		if (!$this->files) {
+			return;
 		}
+		$this->buildAnnotations();
+		foreach ($this->files as $file) {
+			$file->write();
+		}
+		$this->files = [];
+		touch(Application_Updater::UPDATE_FILE);
 	}
 
 	//------------------------------------------------------------------------------------- uninstall
@@ -525,6 +533,7 @@ class Installer
 
 		$this->plugin_class_name = $stacked_plugin_class_name;
 		Dao::commit();
+		$this->saveFiles();
 	}
 
 	//----------------------------------------------------------------------------------- willInstall
