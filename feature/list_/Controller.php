@@ -967,7 +967,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$message = Loc::tr('Something wrong happened') . '. ' . Loc::tr('nothing serious') . ' : '
 				. $exception->getMessage();
 		}
-		$this->errors = new Exception('', $message);
+		$this->errors[] = new Exception('', $message);
 	}
 
 	//------------------------------------------------------------------------------------------- run
