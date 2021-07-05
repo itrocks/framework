@@ -40,22 +40,31 @@ trait Use_Counter
 	 */
 	public function incrementCounterPropertyValue(Data_Link $link)
 	{
+		static $increments = [];
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$property_name = (new Reflection_Class($this))->getAnnotation('counter_property')->value
 			?: 'number';
-		if (empty($this->$property_name)) {
-			if (($link instanceof Identifier_Map) && $link->getObjectIdentifier($this)) {
-				$this->$property_name = Counter::increment(
-					$this,
-					($property_name === 'number')
-						? null
-						: Builder::current()->sourceClassName(get_class($this)) . DOT . $property_name
-				);
-				$link->write($this, Dao::only($property_name));
-			}
-			else {
-				throw new View_Exception(Loc::tr($property_name) . ' : ' . Loc::tr('mandatory'));
-			}
+		if ($this->$property_name) {
+			return;
+		}
+		$identifier = $link->getObjectIdentifier($this);
+		if (isset($increments[get_class($this)][$identifier][$property_name])) {
+			$this->$property_name = $increments[get_class($this)][$identifier][$property_name];
+			return;
+		}
+		if (($link instanceof Identifier_Map) && $identifier) {
+			$counter_value = Counter::increment(
+				$this,
+				($property_name === 'number')
+					? null
+					: Builder::current()->sourceClassName(get_class($this)) . DOT . $property_name
+			);
+			$increments[get_class($this)][$identifier][$property_name] = $counter_value;
+			$this->$property_name = $counter_value;
+			$link->write($this, Dao::only($property_name));
+		}
+		else {
+			throw new View_Exception(Loc::tr($property_name) . ' : ' . Loc::tr('mandatory'));
 		}
 	}
 
