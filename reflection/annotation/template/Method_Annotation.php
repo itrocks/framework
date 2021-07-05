@@ -77,7 +77,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	//--------------------------------------------------------------------------------------- callAll
 	/**
 	 * @param $annotations static[]
-	 * @param $object      object
+	 * @param $object      object|string
 	 * @param $arguments   array
 	 * @return boolean false if calls chain was interrupted, true if every call were ok
 	 */

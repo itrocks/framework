@@ -11,6 +11,10 @@
 <body>
 <!--BEGIN-->
 
+	<!--errors_summary?-->
+	{/feature/list_/errors.html}
+	<!--end-->
+
 	<!--use ITRocks\Framework\Html\Engine-->
 	<article class="form {class.short.lower} list" data-class="{class}" data-feature="{@feature}" data-set="{@class}" id="{settings.setting.code}.{settings.setting.id}">
 		<form action="app://(@class.path)/(@feature)" autocomplete="off" method="post" target="#main">

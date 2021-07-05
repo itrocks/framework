@@ -315,11 +315,8 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		foreach ($search as $property_path => &$search_value) {
 			if ($search_value instanceof Exception) {
 				$this->errors[$property_path] = $search_value;
-				// reset result value to a valid empty expression that can be given to readData() to work
-				// properly
-				$search_value = '';
-				// reset settings value to a valid empty expression that can be saved
-				$list_settings->search[$property_path] = '';
+				unset($search[$property_path]);
+				unset($list_settings->search[$property_path]);
 			}
 		}
 		return $search;
@@ -393,28 +390,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	public function getErrors()
 	{
 		return $this->errors;
-	}
-
-	//------------------------------------------------------------------------------ getErrorsSummary
-	/**
-	 * @return string
-	 */
-	public function getErrorsSummary()
-	{
-		$summary = '';
-		if (isset($this->errors) && is_array($this->errors)) {
-			$first = true;
-			foreach ($this->errors as $property_path => $error) {
-				if ($first) $first = false; else $summary .= ',';
-				// TODO I should not see any HTML code inside the PHP code
-				$summary .= SP . '<span class="error">' . $error->getMessage();
-				if ($error instanceof Exception) {
-					$summary .= SP . '(' . $error->getExpression() . ')';
-				}
-				$summary .= '</span>';
-			}
-		}
-		return $summary;
 	}
 
 	//----------------------------------------------------------------------------- getGeneralButtons
@@ -615,21 +590,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				$list_settings->save();
 			}
 		}
-		/** @noinspection PhpRedundantCatchClauseInspection Dao may be Mysql\Link */
-		catch (Mysql_Error_Exception $exception) {
-			if (Time_Limit::isErrorCodeTimeout($exception->getCode())) {
-				$error = new Exception(
-					Loc::tr('Maximum statement execution time exceeded') . ', '
-					. Loc::tr('please enter more acute search criteria') . DOT
-				);
-				$this->errors[] = $error;
-			}
-			else {
-				$this->reportError($exception);
-			}
-		}
 		catch (\Exception $exception) {
-			$this->errors[] = $exception;
 			$this->reportError($exception);
 		}
 		finally {
@@ -659,7 +620,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'display_start'                 => $list_settings->start_display_line_number,
 				'displayed_lines_count'         => $displayed_lines_count,
 				'displayed_lines_count_gap'     => $this->displayed_lines_count_gap,
-				'errors_summary'                => $this->getErrorsSummary(),
+				'errors_summary'                => $this->errors,
 				'less_twenty'                   => $less_twenty,
 				'load_time'                     => $load_time,
 				'lock_columns'                  => $lock_columns,
@@ -986,15 +947,27 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	protected function reportError(\Exception $exception)
 	{
-		$handled = new Handled_Error(
-			$exception->getCode(),
-			$exception->getMessage(),
-			$exception->getFile(),
-			$exception->getLine()
-		);
-		$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
-		$handler->displayError($handled);
-		$handler->logError($handled);
+		if (
+			($exception instanceof Mysql_Error_Exception)
+			&& Time_Limit::isErrorCodeTimeout($exception->getCode())
+		) {
+			$message = Loc::tr('Maximum statement execution time exceeded') . ', '
+				. Loc::tr('please enter more acute search criteria') . DOT;
+		}
+		else {
+			$handled = new Handled_Error(
+				$exception->getCode(),
+				$exception->getMessage(),
+				$exception->getFile(),
+				$exception->getLine()
+			);
+			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+			$handler->displayError($handled);
+			$handler->logError($handled);
+			$message = Loc::tr('Something wrong happened') . '. ' . Loc::tr('nothing serious') . ' : '
+				. $exception->getMessage();
+		}
+		$this->errors = new Exception('', $message);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -1045,7 +1018,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			try {
 				$property = new Reflection_Property($class_name, $property_path);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				continue;
 			}
 			$property_type = $property->getType();
