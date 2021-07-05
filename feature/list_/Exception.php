@@ -14,16 +14,18 @@ class Exception extends \Exception
 
 	//----------------------------------------------------------------------------------- $expression
 	/**
+	 * Bad typed expression
+	 *
 	 * @var string
 	 */
-	protected $expression;
+	protected string $expression;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $expression string
 	 * @param $message string
 	 */
-	public function __construct($expression, $message = '')
+	public function __construct(string $expression, string $message = '')
 	{
 		parent::__construct($message);
 		$this->expression = $expression;
@@ -33,7 +35,7 @@ class Exception extends \Exception
 	/**
 	 * @return string
 	 */
-	public function getExpression()
+	public function getExpression() : string
 	{
 		return $this->expression;
 	}
