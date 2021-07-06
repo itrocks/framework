@@ -53,7 +53,9 @@ trait Use_Counter
 			return;
 		}
 		if (($link instanceof Identifier_Map) && $identifier) {
-			$counter_value = Counter::increment(
+			/** @var $counter_class_name Counter|string */
+			$counter_class_name = Builder::className(Counter::class);
+			$counter_value      = $counter_class_name::increment(
 				$this,
 				($property_name === 'number')
 					? null
