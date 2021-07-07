@@ -37,8 +37,10 @@ class Model extends PDF\Output
 			$class_name  = Builder::current()->sourceClassName(get_class(reset($objects)));
 			$print_model = Dao::searchOne(['class_name' => $class_name], Print_Model::class, Dao::sort());
 		}
-		foreach ($objects as $object) {
-			$this->appendObject($pdf, $object, $print_model);
+		if ($print_model) {
+			foreach ($objects as $object) {
+				$this->appendObject($pdf, $object, $print_model);
+			}
 		}
 	}
 
@@ -93,7 +95,7 @@ class Model extends PDF\Output
 
 		$file_name = ($first_object instanceof Has_Print_File_Name)
 			? $first_object->printFileName($objects)
-			: Names::classToDisplay($print_model->class_name) . '.pdf';
+			: Names::classToDisplay($print_model->class_name ?? '') . '.pdf';
 
 		$pdf = $this->newPdf();
 		$this->append($pdf, $objects, $print_model);
