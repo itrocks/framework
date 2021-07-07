@@ -12,18 +12,14 @@ use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Sql;
-use ITRocks\Framework\Http\Http;
-use ITRocks\Framework\Http\Proxy;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Default_List_Data;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework;
+use Psr\Http\Client\ClientExceptionInterface;
 use ReflectionException;
-use Symfony\Component\HttpClient\HttpClient;
-use Symfony\Component\HttpClient\Psr18Client;
-
-
+use Symfony\Contracts\HttpClient\Exception\TransportExceptionInterface;
 
 /**
  * Class Link
@@ -35,7 +31,7 @@ class Link extends Dao\Data_Link
 	public const BASE_URL = 'base_url';
 
 	//------------------------------------------------------------------------------------------ $uri
-	private array $uris = [];
+	private array $uris;
 
 	//----------------------------------------------------------------------------------- __construct
 	public function __construct(array $parameters = null)
@@ -52,9 +48,10 @@ class Link extends Dao\Data_Link
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return integer
 	 */
-	public function count($what, $class_name = null, $options = [])
+	public function count($what, $class_name = null, $options = []): int
 	{
 		// TODO: Implement count() method.
+		return 0;
 	}
 
 	//--------------------------------------------------------------------------------- createStorage
@@ -64,9 +61,10 @@ class Link extends Dao\Data_Link
 	 * @param $class_name string
 	 * @return boolean true if storage was created or updated, false if it was already up to date
 	 */
-	public function createStorage($class_name)
+	public function createStorage($class_name): bool
 	{
 		// TODO: Implement createStorage() method.
+		return false;
 	}
 
 	//---------------------------------------------------------------------------------------- delete
@@ -79,9 +77,10 @@ class Link extends Dao\Data_Link
 	 * @param $object object object to delete from data source
 	 * @return boolean true if deleted
 	 */
-	public function delete($object)
+	public function delete($object): bool
 	{
 		// TODO: Implement delete() method.
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------ disconnect
@@ -98,7 +97,10 @@ class Link extends Dao\Data_Link
 	}
 
 	//-------------------------------------------------------------------------------- filterResponse
-	private function filterResponse(&$response)
+	/**
+	 * @param string $response
+	 */
+	private function filterResponse(string &$response): void
 	{
 		$pattern = "/array\([0-9]\)\s\{(.*?)\}/s";
 		$response = preg_replace($pattern, '', $response);
@@ -115,16 +117,17 @@ class Link extends Dao\Data_Link
 	 * @param $class string|Reflection_Class
 	 * @return Reflection_Property[]|Sql\Column[]
 	 */
-	public function getStoredProperties($class)
+	public function getStoredProperties($class): array
 	{
 		// TODO: Implement getStoredProperties() method.
+		return [];
 	}
 
 	//--------------------------------------------------------------------------------------- getUris
 	/**
-	 * @return array|mixed
+	 * @return mixed
 	 */
-	public function getUris()
+	public function getUris(): mixed
 	{
 		return $this->uris;
 	}
@@ -138,9 +141,10 @@ class Link extends Dao\Data_Link
 	 * @param $strict  boolean if true, will consider @link object and non-@link object as different
 	 * @return boolean
 	 */
-	public function is($object1, $object2, $strict = false)
+	public function is($object1, $object2, $strict = false): bool
 	{
 		// TODO: Implement is() method.
+		return false;
 	}
 
 	//------------------------------------------------------------------------------------------ read
@@ -151,7 +155,7 @@ class Link extends Dao\Data_Link
 	 * @param $class_name string class for read object
 	 * @return object an object of class objectClass, read from data source, or null if nothing found
 	 */
-	public function read($identifier, $class_name = null)
+	public function read($identifier, $class_name = null): object
 	{
 		// TODO: Implement read() method.
 	}
@@ -164,9 +168,10 @@ class Link extends Dao\Data_Link
 	 * @param $options    Option|Option[] some options for advanced read
 	 * @return object[] a collection of read objects
 	 */
-	public function readAll($class_name, $options = [])
+	public function readAll($class_name, $options = []): array
 	{
 		// TODO: Implement readAll() method.
+		return [];
 	}
 
 	//---------------------------------------------------------------------------------- readProperty
@@ -178,9 +183,10 @@ class Link extends Dao\Data_Link
 	 * @param $property_name string the name of the property
 	 * @return mixed the read value for the property read from the data link. null if no value stored
 	 */
-	public function readProperty($object, $property_name)
+	public function readProperty($object, $property_name): mixed
 	{
 		// TODO: Implement readProperty() method.
+		return null;
 	}
 
 	//--------------------------------------------------------------------------------------- replace
@@ -198,7 +204,7 @@ class Link extends Dao\Data_Link
 	 * @param $write       boolean true if the destination object must be immediately written
 	 * @return object the resulting $destination object
 	 */
-	public function replace($destination, $source, $write = true)
+	public function replace($destination, $source, $write = true): object
 	{
 		// TODO: Implement replace() method.
 	}
@@ -212,11 +218,13 @@ class Link extends Dao\Data_Link
 	 * @param $replacement object
 	 * @return boolean true if replacement has been done, false if something went wrong
 	 */
-	public function replaceReferences($replaced, $replacement)
+	public function replaceReferences($replaced, $replacement): bool
 	{
 		// TODO: Implement replaceReferences() method.
+		return false;
 	}
 
+	//---------------------------------------------------------------------------------------- search
 	/**
 	 * Search objects from data source
 	 *
@@ -234,7 +242,7 @@ class Link extends Dao\Data_Link
 	 * @param $options    Option|Option[] array some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	public function search($what, $class_name = null, $options = [])
+	public function search($what, $class_name = null, $options = []): array
 	{
 		$http_service = new Http_Service();
 		$array_ids = $what['id']->values;
@@ -242,6 +250,9 @@ class Link extends Dao\Data_Link
 		$uri = $this->uris[$class_name]['json'];
 		$base_url = $this->uris[Link::BASE_URL];
 		$properties = ['search[id]' => null];
+		if ($options['full']) {
+			$properties = array_merge(['full' => 1], $properties);
+		}
 
 		$array_http_response = [];
 		foreach ($array_ids as $id) {
@@ -250,14 +261,26 @@ class Link extends Dao\Data_Link
 				'headers' => $headers,
 				'query'   => $properties
 			];
-			$uri = urldecode($base_url.$uri);
-			$http_service->get($uri, $options_request);
+			$url = urldecode($base_url.$uri);
+			$http_service->get($url, $options_request);
 			$http_response = $http_service->getResponse();
 			$http_response_content = $http_response->getContent();
-			$http_response_decoded = json_decode($http_response_content);
-			$array_http_response[] = $http_response_decoded;
+			$array_http_response[] = json_decode($http_response_content);
 		}
 		return $array_http_response;
+	}
+
+	//------------------------------------------------------------------------------------ searchById
+	/**
+	 * @param mixed   $id
+	 * @param null  $class_name
+	 * @param array $options
+	 * @return object[]
+	 */
+	public function searchById(mixed $id, $class_name = null, array $options = []): array
+	{
+		$search = ['id' => Func::in($id)];
+		return $this->search($search, $class_name, $options);
 	}
 
 	//---------------------------------------------------------------------------------------- select
@@ -274,17 +297,17 @@ class Link extends Dao\Data_Link
 	 * @param $options       Option|Option[] some options for advanced search
 	 * @return List_Data a list of read records. Each record values (may be objects) are stored in
 	 *                   the same order than columns.
+	 * @throws ClientExceptionInterface
+	 * @throws TransportExceptionInterface
 	 */
-	public function select($object_class, $properties, $filter_object = null, $options = [])
+	public function select($object_class, $properties, $filter_object = null, $options = []): List_Data|Default_List_Data
 	{
-		$test = 0;
-		array_walk($properties, function(&$val, $key) {
+		array_walk($properties, static function(/* @noinspection PhpUnusedParameterInspection */&$val, $key) {
 			$properties_str_pattern = 'properties';
 			$val  = $properties_str_pattern.LBRACKET.$val.RBRACKET;
 		});
 		$properties = array_flip($properties);
-		$uri_parameters_array = [];
-		$uri_parameters = http_build_query($properties, '', '&');
+		//$uri_parameters = http_build_query($properties, '', '&');
 		$uri = $this->uris[self::BASE_URL].$this->uris[$object_class]['json'];
 		//$uri .= '?'.$uri_parameters;
 		$uri = urldecode($uri);
@@ -333,7 +356,7 @@ class Link extends Dao\Data_Link
 	 *                      to get result of functions.
 	 * @return Default_List_Data
 	 */
-	private function selectList($object_class, array $columns)
+	private function selectList($object_class, array $columns): List_Data
 	{
 		$functions  = [];
 		$properties = [];
@@ -369,7 +392,7 @@ class Link extends Dao\Data_Link
 	 *                 functions.
 	 * @return array [boolean $double_pass, array $list]
 	 */
-	private function selectOptions(array $options, array $columns)
+	private function selectOptions(array $options, array $columns): array
 	{
 		$double_pass = false;
 		$list        = null;
@@ -433,7 +456,7 @@ class Link extends Dao\Data_Link
 	 * @param $options Option|Option[] some options for advanced write
 	 * @return object the written object
 	 */
-	public function write($object, $options = [])
+	public function write($object, $options = []): object
 	{
 		// TODO: Implement write() method.
 	}
