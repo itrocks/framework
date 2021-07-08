@@ -823,6 +823,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//-------------------------------------------------------------------------------- readDataSelect
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string Class name for the read object
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
@@ -836,14 +837,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function readDataSelect($class_name, array $properties_path, $search, array $options)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection */
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$class     = new Reflection_Class($class_name);
 		$dao_value = $class->getAnnotation('dao')->value;
-		$dao = ($dao_value)
-			? Dao::get($dao_value)
-			: Dao::current();
-		$data = $dao->select($class_name, $properties_path, $search, $options);
-		return $data;
+		$dao       = $dao_value ? Dao::get($dao_value) : Dao::current();
+		return $dao->select($class_name, $properties_path, $search, $options);
 	}
 
 	//-------------------------------------------------------------------------- readDataSelectSearch

@@ -276,6 +276,7 @@ class Selection
 	 * Beware : this may consume a lot of time and memory if many objects are selected
 	 * Do use only with limited sets
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $search  object|array    optional additional filters
 	 * @param $options Option|Option[] optional options for advanced search
 	 * @return object[]
@@ -284,11 +285,10 @@ class Selection
 	{
 		$search  = $this->getSearchFilter($search);
 		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
+		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		$class     = new Reflection_Class($this->class_name);
 		$dao_value = $class->getAnnotation('dao')->value;
-		$dao = ($dao_value)
-			? Dao::get($dao_value)
-			: Dao::current();
+		$dao       = $dao_value ? Dao::get($dao_value) : Dao::current();
 		return $dao->search($search, $this->class_name, $options);
 	}
 

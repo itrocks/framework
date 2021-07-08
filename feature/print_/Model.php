@@ -21,7 +21,7 @@ class Model extends PDF\Output
 	 * @values static::const
 	 * @var string
 	 */
-	public $output = self::INLINE;
+	public string $output = self::INLINE;
 
 	//---------------------------------------------------------------------------------------- append
 	/**
@@ -31,7 +31,7 @@ class Model extends PDF\Output
 	 * @param $objects     object[]         Objects to print, all must be of the same class
 	 * @param $print_model Print_Model|null If not set, the first available print model will be taken
 	 */
-	public function append(PDF $pdf, array $objects, Print_Model $print_model = null)
+	public function append(PDF|TCPDF $pdf, array $objects, Print_Model $print_model = null)
 	{
 		if (!$print_model) {
 			$class_name  = Builder::current()->sourceClassName(get_class(reset($objects)));
@@ -48,11 +48,11 @@ class Model extends PDF\Output
 	/**
 	 * Print object into an existing $pdf object : pages are appended
 	 *
-	 * @param $pdf         PDF|TCPDF   The already instantiated and opened PDF object
+	 * @param $pdf         TCPDF|PDF   The already instantiated and opened PDF object
 	 * @param $object      object      Object to print
 	 * @param $print_model Print_Model If not set, the first available print model will be taken
 	 */
-	protected function appendObject(PDF $pdf, $object, Print_Model $print_model)
+	protected function appendObject(TCPDF|PDF $pdf, object $object, Print_Model $print_model)
 	{
 		$exporter            = new Exporter();
 		$exporter->pdf       = $pdf;
@@ -67,7 +67,7 @@ class Model extends PDF\Output
 	/**
 	 * @return PDF|TCPDF
 	 */
-	protected function newPdf() : PDF
+	protected function newPdf() : PDF|TCPDF
 	{
 		/** @var $pdf PDF|TCPDF */
 		$pdf = new PDF();
