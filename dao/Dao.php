@@ -9,6 +9,7 @@ use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Current;
 use ITRocks\Framework\Tools\List_Data;
 use ITRocks\Framework\Tools\List_Row;
@@ -233,6 +234,48 @@ class Dao implements Configurable
 	public static function exclude($properties)
 	{
 		return new Option\Exclude(func_get_args());
+	}
+
+	//--------------------------------------------------------------------------------------- exhaust
+	/**
+	 * Ensure that the ORM loads all linked objects from the default data link
+	 * This gets the value of all properties of the object
+	 * This gets the value of all component sub-objects too, but not of linked objects, as it may be
+	 * huge and get out of hand
+	 *
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $object         array|object
+	 * @param $keep_composite bool if false, composite objects are set to null, to avoid recursions
+	 */
+	public static function exhaust(array|object $object, bool $keep_composite = true)
+	{
+		if (is_array($object)) {
+			foreach ($object as $one_object) {
+				static::exhaust($one_object, $keep_composite);
+			}
+			return;
+		}
+		$set_accessible_false = false;
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		foreach ((new Reflection_Class($object))->getProperties() as $property) {
+			if (!$keep_composite && $property->getAnnotation('composite')->value) {
+				unset($object->$property);
+				continue;
+			}
+			if (!$property->isPublic()) {
+				$property->setAccessible(true);
+				$set_accessible_false = true;
+			}
+			/** @noinspection PhpUnhandledExceptionInspection comes from getProperties, is accessible */
+			$value = $property->getValue($object);
+			if ($set_accessible_false) {
+				$property->setAccessible(false);
+				$set_accessible_false = false;
+			}
+			if ($property->isComponent()) {
+				static::exhaust($value, $keep_composite);
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------------- get
