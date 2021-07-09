@@ -31,7 +31,6 @@ use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
@@ -823,7 +822,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 	//-------------------------------------------------------------------------------- readDataSelect
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name      string Class name for the read object
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
@@ -837,11 +835,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function readDataSelect($class_name, array $properties_path, $search, array $options)
 	{
-		/** @noinspection PhpUnhandledExceptionInspection must be valid */
-		$class     = new Reflection_Class($class_name);
-		$dao_value = $class->getAnnotation('dao')->value;
-		$dao       = $dao_value ? Dao::get($dao_value) : Dao::current();
-		return $dao->select($class_name, $properties_path, $search, $options);
+		return Dao::select($class_name, $properties_path, $search, $options);
 	}
 
 	//-------------------------------------------------------------------------- readDataSelectSearch
@@ -961,15 +955,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				. Loc::tr('please enter more acute search criteria') . DOT;
 		}
 		else {
-			$handled = new Handled_Error(
-				$exception->getCode(),
-				$exception->getMessage(),
-				$exception->getFile(),
-				$exception->getLine()
-			);
-			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
-			$handler->displayError($handled);
-			$handler->logError($handled);
+		$handled = new Handled_Error(
+			$exception->getCode(),
+			$exception->getMessage(),
+			$exception->getFile(),
+			$exception->getLine()
+		);
+		$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+		$handler->displayError($handled);
+		$handler->logError($handled);
 			$message = Loc::tr('Something wrong happened') . '. ' . Loc::tr('nothing serious') . ' : '
 				. $exception->getMessage();
 		}
