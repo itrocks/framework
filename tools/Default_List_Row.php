@@ -122,12 +122,6 @@ class Default_List_Row implements List_Row
 		return $this->class_name;
 	}
 
-	//----------------------------------------------------------------------------- getDataListTarget
-	public function getDataListTarget() : string
-	{
-		return Target::MAIN;
-	}
-
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * @return object
@@ -153,10 +147,24 @@ class Default_List_Row implements List_Row
 		);
 	}
 
-	//------------------------------------------------------------------------------------- getUrlApp
-	public function getUrlApp() : ?string
+	//------------------------------------------------------------------------- getOutputLinkProtocol
+	/**
+	 * @noinspection PhpUnused list_/body.html
+	 * @return string
+	 */
+	public function getOutputLinkProtocol() : string
 	{
 		return 'app://';
+	}
+
+	//--------------------------------------------------------------------------- getOutputLinkTarget
+	/**
+	 * @noinspection PhpUnused list_/body.html
+	 * @return string
+	 */
+	public function getOutputLinkTarget() : string
+	{
+		return Target::MAIN;
 	}
 
 	//-------------------------------------------------------------------------------------- getValue
