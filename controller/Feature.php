@@ -17,6 +17,7 @@ abstract class Feature
 	const F_ADMIN         = 'admin';
 	const F_API           = 'api';
 	const F_AUTHENTICATE  = 'authenticate';
+	const F_BACK          = 'back';
 	const F_BLANK         = 'blank';
 	const F_CANCEL        = 'cancel';
 	const F_CARDS         = 'cards';
