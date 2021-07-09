@@ -26,17 +26,15 @@ abstract class Model
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
-	 * @getter
 	 * @mandatory
 	 * @setter
 	 * @user invisible
 	 * @var string
 	 */
-	public $class_name;
+	public $class_name = '';
 
 	//------------------------------------------------------------------------------------- $document
 	/**
-	 * @getter
 	 * @link Object
 	 * @setter
 	 * @user readonly
@@ -84,34 +82,6 @@ abstract class Model
 		return new Reflection_Class($this->class_name);
 	}
 
-	//---------------------------------------------------------------------------------- getClassName
-	/**
-	 * @return string
-	 */
-	protected function getClassName()
-	{
-		if (!$this->class_name) {
-			$this->class_name = $this->document ? $this->document->class_name : null;
-		}
-		return $this->class_name;
-	}
-
-	//----------------------------------------------------------------------------------- getDocument
-	/**
-	 * @return Feature_Class
-	 */
-	protected function getDocument()
-	{
-		if (!$this->document && $this->class_name) {
-			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
-			if (!$this->document) {
-				$this->document = new Feature_Class($this->class_name);
-				Dao::write($this->document);
-			}
-		}
-		return $this->document;
-	}
-
 	//--------------------------------------------------------------------------------------- getName
 	/**
 	 * @return string
@@ -136,7 +106,7 @@ abstract class Model
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
 		$property   = new Reflection_Property($this, 'pages');
 		$page_class = $property->getType()->getElementTypeAsString();
-		/** @noinspection PhpUnhandledExceptionInspection Valid class used */
+		/** @noinspection PhpParamsInspection valid params given to Page::sort() */
 		$this->pages = Page::sort(Getter::getCollection($this->pages, $page_class, $this));
 		return $this->pages;
 	}
@@ -161,23 +131,25 @@ abstract class Model
 	/**
 	 * @param $value string
 	 */
-	protected function setClassName($value)
+	protected function setClassName(string $value)
 	{
 		if ($this->class_name = $value) {
-			$this->document = null;
-			$this->document;
+			$this->document = Dao::searchOne(['class_name' => $this->class_name], Feature_Class::class);
+			if (!$this->document) {
+				$this->document = new Feature_Class($this->class_name);
+				Dao::write($this->document);
+			}
 		}
 	}
 
 	//----------------------------------------------------------------------------------- setDocument
 	/**
-	 * @param $value Feature_Class
+	 * @param $value Feature_Class|null
 	 */
 	protected function setDocument(Feature_Class $value = null)
 	{
-		if ($this->document = $value) {
-			$this->class_name = '';
-			$this->class_name;
+		if (($this->document = $value) && ($this->class_name !== $value->class_name)) {
+			$this->class_name = $value->class_name;
 		}
 	}
 
