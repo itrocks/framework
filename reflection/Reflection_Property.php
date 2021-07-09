@@ -639,22 +639,30 @@ class Reflection_Property extends ReflectionProperty
 		return $sub_objects;
 	}
 
+	//----------------------------------------------------------------------------------- isComponent
+	/**
+	 * @return boolean
+	 */
+	public function isComponent() : bool
+	{
+		return $this->getType()->isClass()
+			&& ($this->getAnnotation('component')->value || Link_Annotation::of($this)->isCollection());
+	}
+
 	//------------------------------------------------------------------------- isComponentObjectHtml
 	/**
 	 * An helper that returns information about the property containing a component, objects, etc.
 	 *
 	 * @return string @values component-object, component-objects, object, objects
 	 */
-	public function isComponentObjectHtml()
+	public function isComponentObjectHtml() : string
 	{
 		$type = $this->getType();
-
 		if (!$type->isClass()) {
 			return '';
 		}
-
 		$html = $type->isMultiple() ? 'objects' : 'object';
-		if ($this->getAnnotation('component')->value || Link_Annotation::of($this)->isCollection()) {
+		if ($this->isComponent()) {
 			$html = 'component-' . $html;
 		}
 		return $html;
@@ -684,7 +692,7 @@ class Reflection_Property extends ReflectionProperty
 				try {
 					$object1 = new Date_Time($object1);
 				}
-				catch (Exception $exception) {
+				catch (Exception) {
 					$object1 = Date_Time_Error::fromError($object1);
 				}
 			}
@@ -692,7 +700,7 @@ class Reflection_Property extends ReflectionProperty
 				try {
 					$object2 = new Date_Time($object2);
 				}
-				catch (Exception $exception) {
+				catch (Exception) {
 					$object2 = Date_Time_Error::fromError($object2);
 				}
 			}
