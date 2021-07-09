@@ -138,9 +138,8 @@ class Manager implements IManager, Serializable
 			$serialized = $plugin;
 			// configuration
 			if (is_array($serialized)) {
-				/** @noinspection PhpUnhandledExceptionInspection */
+				/** @noinspection PhpUnhandledExceptionInspection must be valid */
 				$plugin = Builder::create($class_name, [$serialized]);
-				/** @noinspection PhpUndefinedFieldInspection */
 				$plugin->plugin_configuration = $serialized;
 			}
 			// serialized object or configuration or configuration constant
@@ -149,10 +148,17 @@ class Manager implements IManager, Serializable
 					$plugin = unserialize($serialized);
 				}
 				else {
-					$configuration = strpos($serialized, ':') ? unserialize($serialized) : $serialized;
+					if (str_contains($serialized, ':')) {
+						$configuration = @unserialize($serialized);
+						if ($configuration === false) {
+							$configuration = $serialized;
+						}
+					}
+					else {
+						$configuration = $serialized;
+					}
 					/** @noinspection PhpUnhandledExceptionInspection */
 					$plugin = Builder::create($class_name, [$configuration]);
-					/** @noinspection PhpUndefinedFieldInspection */
 					$plugin->plugin_configuration = $configuration;
 				}
 			}
