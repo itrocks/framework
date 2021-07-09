@@ -2178,6 +2178,10 @@ class Template
 	 */
 	protected function removeAppLinks($content)
 	{
+		$content = str_replace(['abs://http://', 'abs://https://'], ['http://', 'https://'], $content);
+		$content = str_replace(['app://http://', 'app://https://'], ['http://', 'https://'], $content);
+		$content = str_replace(['dyn://http://', 'dyn://https://'], ['http://', 'https://'], $content);
+		$content = str_replace(['rel://http://', 'rel://https://'], ['http://', 'https://'], $content);
 		$content = str_replace(['abs:///', 'abs://'], Paths::absoluteBase() . SL, $content);
 		$content = str_replace(['app:///', 'app://'], SL, $content);
 		$content = str_replace(['dyn:///', 'dyn://', 'rel:///', 'rel://'], '', $content);
