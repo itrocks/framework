@@ -17,6 +17,10 @@ ul.actions > li {
 		background-image: url('img/archive-24.svg');
 	}
 
+	&.back > a {
+		background-image: url('img/back-24.svg');
+	}
+
 	&.close > a {
 		background-image: url('img/close-24.svg');
 	}
