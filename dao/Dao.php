@@ -246,12 +246,14 @@ class Dao implements Configurable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object         array|object
 	 * @param $keep_composite bool if false, composite objects are set to null, to avoid recursions
+	 * @param $disconnect     bool if true, all id are deleted
 	 */
-	public static function exhaust(array|object $object, bool $keep_composite = true)
-	{
+	public static function exhaust(
+		array|object $object, bool $keep_composite = true, bool $disconnect = false
+	) {
 		if (is_array($object)) {
 			foreach ($object as $one_object) {
-				static::exhaust($one_object, $keep_composite);
+				static::exhaust($one_object, $keep_composite, $disconnect);
 			}
 			return;
 		}
@@ -260,21 +262,31 @@ class Dao implements Configurable
 		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (!$keep_composite && $property->getAnnotation('composite')->value) {
 				unset($object->$property);
-				continue;
 			}
-			if (!$property->isPublic()) {
-				$property->setAccessible(true);
-				$set_accessible_false = true;
+			else {
+				if (!$property->isPublic()) {
+					$property->setAccessible(true);
+					$set_accessible_false = true;
+				}
+				/** @noinspection PhpUnhandledExceptionInspection comes from getProperties, is accessible */
+				$value = $property->getValue($object);
+				if ($set_accessible_false) {
+					$property->setAccessible(false);
+					$set_accessible_false = false;
+				}
+				if ($property->isComponent()) {
+					static::exhaust($value, $keep_composite, $disconnect);
+				}
+				elseif ($disconnect && is_object($value) && isset($value->id)) {
+					unset($value->id);
+				}
 			}
-			/** @noinspection PhpUnhandledExceptionInspection comes from getProperties, is accessible */
-			$value = $property->getValue($object);
-			if ($set_accessible_false) {
-				$property->setAccessible(false);
-				$set_accessible_false = false;
+			if ($disconnect && isset($object->{"id_$property"})) {
+				unset($object->{"id_$property"});
 			}
-			if ($property->isComponent()) {
-				static::exhaust($value, $keep_composite);
-			}
+		}
+		if ($disconnect && isset($object->id)) {
+			unset($object->id);
 		}
 	}
 
