@@ -235,6 +235,12 @@ class Builder implements Activable, Serializable
 	{
 		$object = self::create($class_name, $constructor_arguments);
 		foreach ($array as $property_name => $value) {
+			if ($property_name === '_') {
+				continue;
+			}
+			elseif (str_ends_with($property_name, '_')) {
+				$property_name = substr($property_name, 0, -1);
+			}
 			if (is_array($value)) {
 				$property = new Reflection_Property($class_name, $property_name);
 				$type     = $property->getType();

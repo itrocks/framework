@@ -22,15 +22,34 @@ class Json
 	//---------------------------------------------------------------------------------- decodeObject
 	/**
 	 * @param $encoded_string string
-	 * @param $class_name     string
+	 * @param $class_name     string|null
 	 * @return array|object
 	 * @throws ReflectionException
 	 */
-	public function decodeObject($encoded_string, $class_name = null)
+	public function decodeObject(string $encoded_string, string $class_name = null) : array|object
 	{
 		return isset($class_name)
 			? Builder::fromArray($class_name, json_decode($encoded_string, true))
 			: json_decode($encoded_string);
+	}
+
+	//--------------------------------------------------------------------------------- decodeObjects
+	/**
+	 * @param $encoded_string string
+	 * @param $class_name     string|null
+	 * @return array|object[]
+	 * @throws ReflectionException
+	 */
+	public function decodeObjects(string $encoded_string, string $class_name = null) : array
+	{
+		$data = json_decode($encoded_string, true);
+		if (!isset($class_name)) {
+			return $data;
+		}
+		foreach ($data as $key => $object) {
+			$data[$key] = Builder::fromArray($class_name, $object);
+		}
+		return $data;
 	}
 
 	//---------------------------------------------------------------------------------- encodeObject
