@@ -124,6 +124,7 @@ class Type
 				'jpeg' => 'image/jpeg',
 				'jpg'  => 'image/jpeg',       // default extension. So last ordered for same value
 				'js'   => 'text/javascript',
+				'json' => 'application/json',
 				'ods'  => 'application/vnd.oasis.opendocument.spreadsheet',
 				'pdf'  => 'application/pdf',
 				'png'  => 'image/png',
