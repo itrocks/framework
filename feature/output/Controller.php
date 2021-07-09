@@ -377,6 +377,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$output_settings->initProperties($this->getPropertiesList($class_name));
 		$parameters['customized_lists']            = $customized_list;
 		$parameters['default_title']               = ucfirst(Names::classToDisplay($class_name));
+		$parameters['is_output']                   = ($feature === Feature::F_OUTPUT);
 		$parameters[Parameter::PROPERTIES_FILTER]  = array_keys($output_settings->properties);
 		$parameters[Parameter::PROPERTIES_TITLE]   = $output_settings->propertiesParameter('display');
 		$parameters[Parameter::PROPERTIES_TOOLTIP] = $output_settings->propertiesParameter('tooltip');
