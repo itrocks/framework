@@ -167,7 +167,14 @@ var requestTargetHeaders = function($element)
 				}
 				// history
 				last_history_entry = xhr.from.href;
-				window.history.pushState({reload: true}, title, history_entry);
+				try {
+					window.history.pushState({reload: true}, title, history_entry);
+				}
+				// known cases :
+				// - cross-domain : a page loaded from another domain
+				catch (exception) {
+					// no way : forget about it
+				}
 			},
 
 			//-------------------------------------------------------------------------------- ajax.popup
