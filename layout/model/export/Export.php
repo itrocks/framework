@@ -23,7 +23,7 @@ class Export
 	{
 		// array_values ensure that keys are 0..n, and that the json structure will be an array
 		$models = array_values($models);
-		Dao::exhaust($models, false);
+		Dao::exhaust($models, false, true);
 		foreach ($models as $model) {
 			foreach ($model->pages as $page) {
 				if ($page->background->content ?? false) {
