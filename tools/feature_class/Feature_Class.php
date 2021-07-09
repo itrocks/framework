@@ -5,6 +5,7 @@ use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Traits\Has_Name;
+use ITRocks\Framework\Traits\Is_Immutable;
 
 /**
  * Feature class
@@ -15,6 +16,7 @@ use ITRocks\Framework\Traits\Has_Name;
 class Feature_Class
 {
 	use Has_Name;
+	use Is_Immutable;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
