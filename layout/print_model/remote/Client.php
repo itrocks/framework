@@ -74,7 +74,7 @@ class Client implements Configurable, Registerable
 			Print_Model::class, Feature::F_LIST, arguments: ['callback' => Paths::getUrl(), 'X' => 'X']
 		);
 		$buttons[static::DOWNLOAD_REMOTE_FEATURE] = new Button(
-			'download other print models',
+			'Download other print models',
 			$this->remote_url . $link,
 			static::DOWNLOAD_REMOTE_FEATURE,
 			Target::MAIN
