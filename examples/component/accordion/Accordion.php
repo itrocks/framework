@@ -1,5 +1,5 @@
 <?php
-namespace ITRocks\Framework\Examples;
+namespace ITRocks\Framework\Examples\Component;
 
 /**
  * Class Accordion
