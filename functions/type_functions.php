@@ -177,11 +177,11 @@ function isStrictNumeric(mixed $value, bool $decimal_allowed = true, bool $signe
 		elseif (str_starts_with($value, '-.')) {
 			$value = '-0' . substr($value, 1);
 		}
+		$value = rtrim($value, '0');
 		$decimal_position = strpos($value, '.');
 		if (str_ends_with($value, '.' . str_repeat('0', strlen($value) - $decimal_position - 1))) {
 			$value = substr($value, 0, $decimal_position);
 		}
-		$value = rtrim($value, '0');
 	}
 	$numeric = $decimal_allowed ? floatval($value) : intval($value);
 

@@ -2,8 +2,11 @@
 namespace ITRocks\Framework\Locale\Tests;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale;
+use ITRocks\Framework\Locale\Number_Format;
 use ITRocks\Framework\Locale\Translation;
 use ITRocks\Framework\Locale\Translator;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Tests\Objects\Order;
 use ITRocks\Framework\Tests\Objects\Quote;
@@ -126,6 +129,35 @@ class Translator_Test extends Test
 			// when no plural : prefer using the parent plural than getting the current class singular
 			'inherited not set'   => ['the document texts', Quote::class . '*']
 		];
+	}
+
+	public function toLocalProvider(): array
+	{
+			return [
+				['91,85', '91.8500', new Type(Type::FLOAT)]
+			];
+	}
+
+	/**
+	 * @dataProvider toLocalProvider
+	 * @param $expected string
+	 * @param $value mixed
+	 * @param $type Type|null
+	 */
+	public function testToLocale($expected, $value, Type $type = null)
+	{
+		$local = new Locale([
+			Locale::DATE     => 'd/m/Y',
+			Locale::LANGUAGE => 'fr',
+			Locale::NUMBER   => [
+				Number_Format::DECIMAL_MINIMAL_COUNT => 2,
+				Number_Format::DECIMAL_MAXIMAL_COUNT => 2,
+				Number_Format::DECIMAL_SEPARATOR     => ',',
+				Number_Format::THOUSAND_SEPARATOR    => ' ',
+			]
+		]);
+		$locale_value = $local->toLocale($value, $type);
+		$this->assertEquals($expected, $locale_value);
 	}
 
 }

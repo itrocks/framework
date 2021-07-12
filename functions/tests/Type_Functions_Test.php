@@ -52,7 +52,8 @@ class Type_Functions_Test extends Test
 			'(float)-.1'   => [-.1          ,[false,   true ,   false,            false           ]],
 			'(integer)-1'  => [-1           ,[true,    true ,   false,            false           ]],
 			'(float).1'    => [.1           ,[false,   true ,   false,            true            ]],
-			'(integer)1'   => [1            ,[true,    true ,   true,             true            ]]
+			'(integer)1'   => [1            ,[true,    true ,   true,             true            ]],
+			'91.85'   =>    ['91.8500'      ,[false,   true ,   false,            true            ]],
 		];
 	}
 
