@@ -258,7 +258,7 @@ class Html_Builder_Collection extends Collection
 		$row = parent::buildRow($object);
 		if (!$this->readOnly() && !$this->noDelete()) {
 			$cell = new Item('-');
-			$cell->setAttribute('title', '|remove line|');
+			$cell->setAttribute('title', Loc::tr('remove line'));
 			$cell->addClass('minus');
 			$row->addItem($cell);
 		}

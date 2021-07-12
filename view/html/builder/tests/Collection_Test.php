@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Parameter;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
 use ITRocks\Framework\Feature\Edit;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Tests\Objects\Vehicle;
 use ITRocks\Framework\Tests\Objects\Vehicle_Door;
 use ITRocks\Framework\Tests\Objects\Vehicle_Door_Piece;
@@ -127,6 +128,17 @@ class Collection_Test extends Test
 		$input_names    = $this->getInputNames($html);
 		$expected_names = $this->getAssumedNames();
 		static::assertEquals($expected_names, $input_names);
+	}
+
+	//------------------------------------------------------------ testRemoveLineIsCorrectlyTranslate
+	public function testRemoveLineIsCorrectlyTranslate() : void
+	{
+		$loc_state = Loc::enable(false);
+		$object    = $this->buildObject();
+		$html      = $this->callEditController($object);
+		$this->assertStringNotContainsString('title="&#124;remove line&#124;"', $html);
+		$this->assertStringContainsString('title="remove line"', $html);
+		Loc::enable($loc_state);
 	}
 
 }
