@@ -77,7 +77,7 @@ class Client implements Configurable, Registerable
 			'Download other print models',
 			$this->remote_url . $link,
 			static::DOWNLOAD_REMOTE_FEATURE,
-			Target::MAIN
+			[View::TARGET => Target::TOP]
 		);
 	}
 
