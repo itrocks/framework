@@ -148,27 +148,28 @@ class Sort implements Option
 		if (isset($class_name)) {
 			$this->applyClassName($class_name);
 		}
-		if ($class_name === null && $this->class_name === null) {
+		if (!$class_name && !$this->class_name) {
 			return [];
 		}
 		$columns = [];
 		foreach ($this->columns as $property_name) {
+			if (!property_exists($class_name ?: $this->class_name, $property_name)) {
+				continue;
+			}
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
-			if (property_exists($class_name ?: $this->class_name, $property_name)) {
-				$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
-				$type     = $property->getType();
-				if ($type->isClass() && !$type->isDateTime()) {
-					foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
-						$column    = $property_name . DOT . $sub_column;
-						$columns[] = $column;
-						if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
-							$this->reverse[] = $column;
-						}
+			$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
+			$type     = $property->getType();
+			if ($type->isClass() && !$type->isDateTime()) {
+				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
+					$column    = $property_name . DOT . $sub_column;
+					$columns[] = $column;
+					if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
+						$this->reverse[] = $column;
 					}
 				}
-				else {
-					$columns[] = $property_name;
-				}
+			}
+			else {
+				$columns[] = $property_name;
 			}
 		}
 		return $columns;
