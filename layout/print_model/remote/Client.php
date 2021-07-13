@@ -46,7 +46,7 @@ class Client implements Configurable, Registerable
 	/**
 	 * @param $configuration string|string[] The key is the local property name
 	 */
-	public function __construct($configuration)
+	public function __construct($configuration = [])
 	{
 		if (!$configuration) {
 			return;
