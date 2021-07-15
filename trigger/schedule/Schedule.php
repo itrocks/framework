@@ -34,6 +34,7 @@ class Schedule extends Trigger
 
 	//--------------------------------------------------------------------------------- $days_of_week
 	/**
+	 * @getter
 	 * @ordered_values
 	 * @user hide_empty
 	 * @values self::DAYS_OF_WEEK
@@ -92,6 +93,21 @@ class Schedule extends Trigger
 	public function getDaysOfMonth()
 	{
 		return $this->rangesListToArray($this->days_of_month, 31);
+	}
+
+	//--------------------------------------------------------------------------------- getDaysOfWeek
+	/**
+	 * Fix static schedule write
+	 * TODO HIGH Remove this patch when days of week with one value will return an array too
+	 *
+	 * @return string[]
+	 */
+	public function getDaysOfWeek() : array
+	{
+		if (is_string($this->days_of_week)) {
+			$this->days_of_week = $this->days_of_week ? explode(',', $this->days_of_week) : [];
+		}
+		return $this->days_of_week ?: [];
 	}
 
 	//------------------------------------------------------------------------- getExtendedHourRanges
@@ -197,15 +213,15 @@ class Schedule extends Trigger
 
 		foreach ($list as $element) {
 			if (strpos($element, '-') === false) {
-				$value = str_pad($element, $max_length, '0', STR_PAD_LEFT);
+				$value          = str_pad($element, $max_length, '0', STR_PAD_LEFT);
 				$values[$value] = $value;
 			}
 			else {
 				list($start, $stop) = explode('-', $element);
 				$start = intval($start) ?: 1;
-				$stop  = intval($stop)  ?: $max_value;
-				for ($element = $start; $element <= $stop; $element ++) {
-					$value = str_pad($element, $max_length, '0', STR_PAD_LEFT);
+				$stop  = intval($stop) ?: $max_value;
+				for ($element = $start; $element <= $stop; $element++) {
+					$value          = str_pad($element, $max_length, '0', STR_PAD_LEFT);
 					$values[$value] = $value;
 				}
 			}
