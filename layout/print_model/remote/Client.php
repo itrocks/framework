@@ -8,6 +8,7 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Http\Http;
 use ITRocks\Framework\Layout\Print_Model;
+use ITRocks\Framework\Layout\Print_Model\Status;
 use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Plugin\Register;
@@ -112,6 +113,7 @@ class Client implements Configurable, Registerable
 					$page->background->content = base64_decode($page->background->content);
 				}
 			}
+			$print_model->status = Status::DOWNLOADED;
 			Dao::write($print_model);
 		}
 		return $print_models;

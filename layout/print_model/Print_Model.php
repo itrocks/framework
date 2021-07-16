@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Layout;
 
 use ITRocks\Framework\Layout\Print_Model\Page;
+use ITRocks\Framework\Layout\Print_Model\Status;
 
 /**
  * Print model
@@ -15,6 +16,25 @@ use ITRocks\Framework\Layout\Print_Model\Page;
 class Print_Model extends Model
 {
 
+	//--------------------------------------------------------------------------------------- $status
+	/**
+	 * @default defaultStatus
+	 * @user readonly
+	 * @values Status::const
+	 * @var string
+	 */
+	public $status;
+
+	//--------------------------------------------------------------------------------- defaultStatus
+	/**
+	 * @noinspection PhpUnused @default
+	 * @return string
+	 * @return_constant
+	 */
+	public function defaultStatus() : string
+	{
+		return Status::CUSTOMIZED;
+	}
 	//-------------------------------------------------------------------------------------- getPages
 	/**
 	 * @return Page[]
