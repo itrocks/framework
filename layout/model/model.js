@@ -303,6 +303,34 @@ $(document).ready(function()
 		});
 	});
 
+	//------------------------------------------------------ article.layout-model li.copy-pages click
+	$body.build('click', 'article.layout-model li.copy-pages', function()
+	{
+		//Get the content under the 'unique page' section (only div)
+		var $uniquePage = $('#unique-page')
+		var content_unique_page = $uniquePage.children('div')
+
+		var copyPage = function (selectorSource, selectorTarget)
+		{
+			var $source_page = $(selectorSource)
+			var content_source_page = $source_page.children('div')
+
+			var $target_page = $(selectorTarget)
+			var content_page = $target_page.children('div')
+			$(content_page).remove()
+			var $last_child_page = $target_page.children().last()
+			$(content_source_page).clone().insertAfter($last_child_page)
+		}
+
+
+		if (window.confirm(tr("Warning : this action will erase all your drawing elements in the 3 pages"))) {
+			copyPage('#unique-page', '#first-page')
+			copyPage('#unique-page', '#middle-page')
+			copyPage('#unique-page', '#last-page')
+		}
+
+	});
+
 });
 
 //----------------------------------------------------------------------------------- window scroll
