@@ -320,7 +320,7 @@ $(document).ready(function()
 
 		let activePage = $('section.page.ui-tabber-page.active')
 		let idActivePage = $(activePage).attr('id')
-		console.log(idActivePage)
+
 		if (idActivePage !== 'first-page'
 			&& idActivePage !== 'middle-page'
 			&& idActivePage !== 'last-page') {
@@ -331,6 +331,55 @@ $(document).ready(function()
 				tr('Warning : this action will erase all your drawing elements in the current page')))
 			{
 				copyPage('#unique-page', '#'+idActivePage)
+			}
+		}
+	});
+
+	//----------------------------------------------------- article.layout-model li.empty-pages click
+	$body.build('click', 'article.layout-model li.empty-pages', function()
+	{
+		let emptyPage = function (selector)
+		{
+			let $page = $(selector)
+			let $document_designer = $page.children('.scrollable').find('div.ui-document-designer')
+			let content_page = $document_designer.find('div')
+			$(content_page).remove()
+
+			$document_designer.css("background-image", "");
+
+			let html_empty_page = ''
+				+ '<div class="horizontal snap line ui-draggable" '
+				+ 'style="top: 40px;font-size:40px;text-align:left;"data-format="text" title="">\n'
+				+ '\t<div class="handle ui-draggable-handle"></div>\n'
+				+ '</div>\n'
+				+ '<div class="horizontal snap line ui-draggable" '
+				+ 'style="top: 1148px; font-size: 40px; text-align: left;" data-format="text" title="">\n'
+				+ '\t<div class="handle ui-draggable-handle"></div>\n'
+				+ '</div>\n'
+				+ '<div class="vertical snap line ui-draggable" '
+				+ 'style="left: 40px; font-size: 40px; text-align: left;" data-format="text" title="">\n'
+				+ '\t<div class="handle ui-draggable-handle"></div>\n'
+				+ '</div>\n'
+				+ '<div class="vertical snap line ui-draggable" '
+				+ 'style="left: 800px; font-size: 40px; text-align: left;" data-format="text" title="">\n'
+				+ '\t<div class="handle ui-draggable-handle"></div>\n'
+				+ '</div>'
+			$document_designer.append(html_empty_page)
+
+		}
+
+		let activePage = $('section.page.ui-tabber-page.active')
+		let idActivePage = $(activePage).attr('id')
+		if (idActivePage !== 'first-page'
+			&& idActivePage !== 'middle-page'
+			&& idActivePage !== 'last-page') {
+			window.alert(tr('You must select a page to empty it'))
+		}
+		else {
+			if (confirm(
+				tr('Warning : this action will erase all your drawing elements in the current page')))
+			{
+				emptyPage('#'+idActivePage)
 			}
 		}
 	});

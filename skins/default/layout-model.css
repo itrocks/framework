@@ -59,6 +59,8 @@ article.layout-model .buttons.toolbox ul > li {
       background-image: url("img/align-right-24-white.svg"); }
   article.layout-model .buttons.toolbox ul > li.copy-pages {
     background: #f7f7f7 url("img/duplicate-24.svg") center no-repeat; }
+  article.layout-model .buttons.toolbox ul > li.empty-pages {
+  background: #f7f7f7 url("img/delete-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.free-text {
     background: #f7f7f7 url("img/free-text-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.horizontal.line {
