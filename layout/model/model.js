@@ -306,29 +306,33 @@ $(document).ready(function()
 	//------------------------------------------------------ article.layout-model li.copy-pages click
 	$body.build('click', 'article.layout-model li.copy-pages', function()
 	{
-		//Get the content under the 'unique page' section (only div)
-		var $uniquePage = $('#unique-page')
-		var content_unique_page = $uniquePage.children('div')
-
-		var copyPage = function (selectorSource, selectorTarget)
+		let copyPage = function (selectorSource, selectorTarget)
 		{
-			var $source_page = $(selectorSource)
-			var content_source_page = $source_page.children('div')
+			let $source_page = $(selectorSource)
+			let content_source_page = $source_page.children('div')
 
-			var $target_page = $(selectorTarget)
-			var content_page = $target_page.children('div')
+			let $target_page = $(selectorTarget)
+			let content_page = $target_page.children('div')
 			$(content_page).remove()
-			var $last_child_page = $target_page.children().last()
+			let $last_child_page = $target_page.children().last()
 			$(content_source_page).clone().insertAfter($last_child_page)
 		}
 
-
-		if (window.confirm(tr("Warning : this action will erase all your drawing elements in the 3 pages"))) {
-			copyPage('#unique-page', '#first-page')
-			copyPage('#unique-page', '#middle-page')
-			copyPage('#unique-page', '#last-page')
+		let activePage = $('section.page.ui-tabber-page.active')
+		let idActivePage = $(activePage).attr('id')
+		console.log(idActivePage)
+		if (idActivePage !== 'first-page'
+			&& idActivePage !== 'middle-page'
+			&& idActivePage !== 'last-page') {
+			window.alert(tr('You must select a page to copy content to it'))
 		}
-
+		else {
+			if (confirm(
+				tr('Warning : this action will erase all your drawing elements in the current page')))
+			{
+				copyPage('#unique-page', '#'+idActivePage)
+			}
+		}
 	});
 
 });
