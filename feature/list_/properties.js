@@ -5,27 +5,28 @@ $(document).ready(function()
 	//----------------------------------------------------------------------------------- addProperty
 	var addProperty = function($object, property_name, before_after, before_after_property_name)
 	{
-		var $window    = $object.closest('article.list');
+		var $article   = $object.closest('article.list');
 		var app        = window.app;
-		var class_name = $window.data('class').repl(BS, SL);
+		var class_name = $article.data('class').repl(BS, SL);
 		var uri        = app.uri_base + SL + class_name + SL + 'listSetting'
 			+ '?add_property=' + property_name;
 		if (before_after_property_name !== undefined) {
 			uri += '&' + before_after + '=' + before_after_property_name;
 		}
 		uri += '&as_widget' + app.andSID();
-		$.ajax({ url: uri, success: function()
+		$.ajax({ url: uri, success: function(answer)
 		{
-			var class_name   = $window.data('class').repl(BS, SL);
-			var feature_name = $window.data('feature');
+			var class_name   = $article.data('class').repl(BS, SL);
+			var feature_name = $article.data('feature');
 			var url          = app.uri_base + SL + class_name + SL + feature_name
 				+ '?as_widget' + window.app.andSID();
-			$.ajax({ url: url, success: function(data)
+			$.ajax({ url: url, success: function(article_container_content)
 			{
-				var $container = $window.parent();
-				$container.html(data);
+				var $container = $article.parent();
+				$container.html(article_container_content);
 				$container.children().build();
 			}});
+			$('#responses').html(answer);
 		}});
 	};
 
