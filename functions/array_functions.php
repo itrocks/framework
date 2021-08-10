@@ -165,6 +165,39 @@ function arrayFormRevert($array, $case_3 = true)
 	}
 }
 
+//------------------------------------------------------------------------------------- arrayInsert
+/**
+ * Insert array between keys
+ *
+ * The inserted sub-array will be inserted after the first found $after_keys, if any is found.
+ * If no $after_keys matches, it will be inserted before the first found $before_keys.
+ * If no $before_keys matches, it will be appended to the array.
+ *
+ * @param $array        array
+ * @param $array_insert array
+ * @param $after_keys   array|string
+ * @param $before_keys  array|string
+ */
+function arrayInsert(
+	array &$array, array $array_insert, array|string $after_keys = [], array|string $before_keys = []
+) {
+	if (!is_array($after_keys))  $after_keys  = [$after_keys];
+	if (!is_array($before_keys)) $before_keys = [$before_keys];
+	foreach ($after_keys as $key) {
+		if (isset($array[$key])) {
+			arrayInsertAfter($array, $array_insert, $key);
+			return;
+		}
+	}
+	foreach ($before_keys as $key) {
+		if (isset($array[$key])) {
+			arrayInsertBefore($array, $array_insert, $key);
+			return;
+		}
+	}
+	$array = array_merge($array, $array_insert);
+}
+
 //-------------------------------------------------------------------------------- arrayInsertAfter
 /**
  * Insert array after key
@@ -181,6 +214,27 @@ function arrayInsertAfter(array &$array, array $array_insert, $key = false)
 		$key_position = array_search($key, array_keys($array));
 		if ($key_position !== false) {
 			$second_array = array_splice($array, $key_position + 1);
+		}
+	}
+	$array = array_merge($array, $array_insert, $second_array);
+}
+
+//------------------------------------------------------------------------------- arrayInsertBefore
+/**
+ * Insert array before key
+ * if key not exist : insert array to the end
+ *
+ * @param $array        array
+ * @param $array_insert array
+ * @param $key          string|boolean
+ */
+function arrayInsertBefore(array &$array, array $array_insert, $key = false)
+{
+	$second_array = [];
+	if ($key !== false) {
+		$key_position = array_search($key, array_keys($array));
+		if ($key_position !== false) {
+			$second_array = array_splice($array, $key_position);
 		}
 	}
 	$array = array_merge($array, $array_insert, $second_array);
