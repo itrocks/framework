@@ -57,10 +57,10 @@ article.layout-model .buttons.toolbox ul > li {
     background: #f7f7f7 url("img/align-right-24.svg") center no-repeat; }
     article.layout-model .buttons.toolbox ul > li.align.right.selected {
       background-image: url("img/align-right-24-white.svg"); }
-  article.layout-model .buttons.toolbox ul > li.copy-pages {
-    background: #f7f7f7 url("img/duplicate-24.svg") center no-repeat; }
-  article.layout-model .buttons.toolbox ul > li.empty-pages {
-  background: #f7f7f7 url("img/delete-24.svg") center no-repeat; }
+  article.layout-model .buttons.toolbox ul > li.copy-page {
+    background: #f7f7f7 url("img/copy-page-24.svg") center no-repeat; }
+  article.layout-model .buttons.toolbox ul > li.empty-page {
+    background: #f7f7f7 url("img/delete-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.free-text {
     background: #f7f7f7 url("img/free-text-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.horizontal.line {
@@ -73,6 +73,8 @@ article.layout-model .buttons.toolbox ul > li {
     background: #f7f7f7 url("img/page-number-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.page-number, article.layout-model .buttons.toolbox ul > li.pages-count {
     display: none; }
+  article.layout-model .buttons.toolbox ul > li.paste-page {
+    background: #f7f7f7 url("img/paste-page-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.rectangle {
     background: #f7f7f7 url("img/rectangle-24.svg") center no-repeat; }
   article.layout-model .buttons.toolbox ul > li.size.bigger {

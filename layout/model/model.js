@@ -1,12 +1,12 @@
 $(document).ready(function()
 {
-	var $body = $('body');
+	let $body = $('body');
 
 	//-------------------------------------------------------------------------------- dragCallback
-	var dragCallback = function()
+	let dragCallback = function()
 	{
-		var $dragged = this;
-		var text     = $dragged.text();
+		let $dragged = this;
+		let text     = $dragged.text();
 		// remove property.path from text
 		if ($dragged.hasClass('property') && (text.indexOf(DOT) > -1)) {
 			$dragged.text(text.substr(text.lastIndexOf(DOT) + 1));
@@ -14,9 +14,9 @@ $(document).ready(function()
 	};
 
 	//-------------------------------------------------------------------------------- dropCallback
-	var dropCallback = function()
+	let dropCallback = function()
 	{
-		var $dropped = this;
+		let $dropped = this;
 		// default format to text for field
 		if ($dropped.attr('data-field')) {
 			if (!$dropped.attr('data-format')) {
@@ -38,7 +38,7 @@ $(document).ready(function()
 	 * @param $page jQuery the page
 	 * @returns jQuery the <input name="page[layout][.]"> of the page
 	 */
-	var pageLayoutInput = function($page)
+	let pageLayoutInput = function($page)
 	{
 		return $page.children('input[name^="pages[layout]["][name$="]"]');
 	};
@@ -48,20 +48,20 @@ $(document).ready(function()
 	 * @param $tools   jQuery
 	 * @param settings object
 	 */
-	var register = function($tools, settings)
+	let register = function($tools, settings)
 	{
 		this.register({ attribute: 'title' });
 		this.register($tools.find('#align'), 'style', 'text-align', null, settings.default.align);
 	};
 
 	//------------------------------------------------------------------------------ selectCallback
-	var selectCallback = function()
+	let selectCallback = function()
 	{
-		var $selected  = this;
-		var $editor    = $selected.closest('.layout-model');
-		var $tools     = $editor.find('.selected.tools');
-		var $free_text = $tools.find('#free-text');
-		var old_text   = $free_text.val();
+		let $selected  = this;
+		let $editor    = $selected.closest('.layout-model');
+		let $tools     = $editor.find('.selected.tools');
+		let $free_text = $tools.find('#free-text');
+		let old_text   = $free_text.val();
 		// draw field
 		if ($selected.hasClass('line') || $selected.hasClass('rectangle')) {
 			$free_text.val('');
@@ -86,8 +86,8 @@ $(document).ready(function()
 			$free_text.val('');
 		}
 		// title
-		var $title = $tools.children('h5');
-		var title  = $selected.text();
+		let $title = $tools.children('h5');
+		let title  = $selected.text();
 		if (title.length > 30) {
 			title = '...' + title.substr(title.length - 30);
 		}
@@ -98,46 +98,55 @@ $(document).ready(function()
 	//----------------------------------------------- article.layout-model .designer documentDesigner
 	$body.build({ priority: 500, selector: 'article.layout-model', callback: function()
 	{
-		var $editor       = this;
-		var $model_window = this.closest('article.layout-model');
-		var $designer     = $editor.find('.designer');
-		var $free_text    = $model_window.find('#free-text');
-		var $size         = $model_window.find('#size');
+		let $editor       = this;
+		let $model_window = this.closest('article.layout-model');
+		let $designer     = $editor.find('.designer');
+		let $free_text    = $model_window.find('#free-text');
+		let $size         = $model_window.find('#size');
 
 		setTimeout(function() { $designer.each(function()
 		{
-			var $designer = $(this);
-			var $page     = $designer.closest('.page');
-			var $input    = pageLayoutInput($page);
-			var fields    = [
+			let $designer = $(this);
+			let $page     = $designer.closest('.page');
+			let $input    = pageLayoutInput($page);
+			let fields    = [
 				'article.layout-model.edit',
 				'.buttons.toolbox .add.tools li, .page > .snap.tool, .property-select .property'
 			];
 
-			var $elements = $page.find('[data-style]');
+			let $elements = $page.find('[data-style]');
 			if ($page.data('style')) {
 				$elements = $elements.add($page);
 			}
 			$elements.each(function() {
-				var $element = $(this);
-				var style    = $element.attr('style');
+				let $element = $(this);
+				let style    = $element.attr('style');
 				style = (style === undefined) ? '' : (style + SP);
 				$element.attr('style', style + $element.data('style'));
 				$element.removeAttr('data-style');
 				$element.removeData('style');
 			});
-			var css_height = $designer.css('height').repl('px', '');
-			var css_width  = $designer.css('width').repl('px', '');
-			var height = $designer.data('height') ? $designer.data('height') : css_height;
-			var size   = $designer.data('size')   ? $designer.data('size')   : 10;
-			var width  = $designer.data('width')  ? $designer.data('width')  : css_width;
+			let css_height = $designer.css('height').repl('px', '');
+			let css_width  = $designer.css('width').repl('px', '');
+			let height = $designer.data('height') ? $designer.data('height') : css_height;
+			let size   = $designer.data('size')   ? $designer.data('size')   : 10;
+			let width  = $designer.data('width')  ? $designer.data('width')  : css_width;
 
 			$designer.documentDesigner({
-				default:      { align: 'left', size: size },
-				drag:         dragCallback,
-				drop:         dropCallback,
-				fields:       { element: fields, name_data: 'property' },
-				ratio:        { height: height, width: width },
+				default: {
+					align: 'left',
+					size:  size
+				},
+				drag:   dragCallback,
+				drop:   dropCallback,
+				fields: {
+					element:   fields,
+					name_data: 'property'
+				},
+				ratio: {
+					height: height,
+					width:  width
+				},
 				register:     register,
 				remove_class: 'tool',
 				select:       selectCallback,
@@ -147,8 +156,8 @@ $(document).ready(function()
 				.width(css_width);
 
 			if ($input.val()) {
-				var json_data = $('<textarea>').html($input.val()).text();
-				var data      = JSON.parse(json_data.toString());
+				let json_data = $('<textarea>').html($input.val()).text();
+				let data      = JSON.parse(json_data.toString());
 				$designer.documentDesigner('setData', data);
 			}
 			$designer.fileUpload();
@@ -160,9 +169,9 @@ $(document).ready(function()
 		 * This is a patch because the template engine does not support {text} typing
 		 */
 		$editor.find('.field:contains(#)').each(function() {
-			var $field = $(this);
+			let $field = $(this);
 			if ($field.text().startsWith('#') && ($field.text().length > 3)) {
-				$field.text($field.text().replace(/#([\.\w]+)/g, '{$1}'));
+				$field.text($field.text().replace(/#([.\w]+)/g, '{$1}'));
 			}
 		});
 
@@ -174,7 +183,7 @@ $(document).ready(function()
 		 */
 		$free_text.blur(function()
 		{
-			var $free_text = $(this);
+			let $free_text = $(this);
 			$free_text.data('focus', true);
 			setTimeout(function() { $free_text.data('focus', false); }, 0);
 		});
@@ -182,12 +191,12 @@ $(document).ready(function()
 		//----------------------------------------------------------------- $model_window #size keydown
 		$size.keydown(function(event)
 		{
-			var $size = $(this);
+			let $size = $(this);
 
-			var DOWN = 40;
-			var UP   = 38;
+			let DOWN = 40;
+			let UP   = 38;
 
-			var distance = event.ctrlKey ? 1 : .2;
+			let distance = event.ctrlKey ? 1 : .2;
 
 			// up / down arrows increment / decrement the size from .1
 			if (event.keyCode === DOWN) {
@@ -222,13 +231,13 @@ $(document).ready(function()
 		selector: 'article.layout-model .general.actions > .save > a',
 		callback: function()
 		{
-			var $designer = $(this).closest('article.layout-model').find('.designer');
-			var $active   = $designer.closest('.active.page');
-			var $pages    = $designer.closest('.page');
+			let $designer = $(this).closest('article.layout-model').find('.designer');
+			let $active   = $designer.closest('.active.page');
+			let $pages    = $designer.closest('.page');
 			$pages.addClass('active');
 			$designer.each(function() {
-				var $designer = $(this);
-				var $input    = pageLayoutInput($designer.closest('.page'));
+				let $designer = $(this);
+				let $input    = pageLayoutInput($designer.closest('.page'));
 				$input.val(JSON.stringify($designer.documentDesigner('getData').fields));
 			});
 			$pages.removeClass('active');
@@ -239,9 +248,9 @@ $(document).ready(function()
 	//------------------------------------------------------- article.layout-model input#align change
 	$body.build('change', 'article.layout-model input#align', function()
 	{
-		var $this  = $(this);
-		var $align = $this.closest('article.layout-model').find('li.align');
-		var value  = $this.val();
+		let $this  = $(this);
+		let $align = $this.closest('article.layout-model').find('li.align');
+		let value  = $this.val();
 		$align.removeClass('selected');
 		$align.filter(DOT + value).addClass('selected');
 	});
@@ -249,9 +258,9 @@ $(document).ready(function()
 	//------------------------------------------------------ article.layout-model input#format change
 	$body.build('change', 'article.layout-model input#format', function()
 	{
-		var $this  = $(this);
-		var $align = $this.closest('article.layout-model').find('li.format');
-		var value  = $this.val();
+		let $this  = $(this);
+		let $align = $this.closest('article.layout-model').find('li.format');
+		let value  = $this.val();
 		$align.removeClass('selected');
 		$align.filter(DOT + value).addClass('selected');
 	});
@@ -259,8 +268,8 @@ $(document).ready(function()
 	//----------------------------------------------------------- article.layout-model li.align click
 	$body.build('click', 'article.layout-model li.align', function()
 	{
-		var $this = $(this);
-		var value = 'left';
+		let $this = $(this);
+		let value = 'left';
 		if      ($this.is('.center')) value = 'center';
 		else if ($this.is('.left'))   value = 'left';
 		else if ($this.is('.right'))  value = 'right';
@@ -270,8 +279,8 @@ $(document).ready(function()
 	//---------------------------------------------------------- article.layout-model li.format click
 	$body.build('click', 'article.layout-model li.format', function()
 	{
-		var $this = $(this);
-		var value = 'text';
+		let $this = $(this);
+		let value = 'text';
 		if      ($this.is('.image'))   value = 'image';
 		else if ($this.is('.text'))    value = 'text';
 		else if ($this.is('.text-cr')) value = 'text-cr';
@@ -281,9 +290,9 @@ $(document).ready(function()
 	//------------------------------------------------------------ article.layout-model li.size click
 	$body.build('click', 'article.layout-model li.size', function()
 	{
-		var $this = $(this);
-		var $size = $this.closest('form').find('input#size');
-		var value = parseFloat($size.val());
+		let $this = $(this);
+		let $size = $this.closest('form').find('input#size');
+		let value = parseFloat($size.val());
 		if      ($this.is('.bigger'))  value += ((value >= 6) ? 1 : .2);
 		else if ($this.is('.smaller')) value -= ((value <= 6) ? .2 : 1);
 		value = (Math.round(Math.max(1, value) * 10) / 10);
@@ -303,53 +312,46 @@ $(document).ready(function()
 		});
 	});
 
-	//------------------------------------------------------ article.layout-model li.copy-pages click
-	$body.build('click', 'article.layout-model li.copy-pages', function()
+	//------------------------------------------------------- article.layout-model li.copy-page click
+	$body.build('click', 'article.layout-model li.copy-page', function()
 	{
-		let copyPage = function (selectorSource, selectorTarget)
-		{
-			let $source_page = $(selectorSource)
-			let content_source_page = $source_page.children('div')
-
-			let $target_page = $(selectorTarget)
-			let content_page = $target_page.children('div')
-			$(content_page).remove()
-			let $last_child_page = $target_page.children().last()
-			$(content_source_page).clone().insertAfter($last_child_page)
-		}
-
-		let activePage = $('section.page.ui-tabber-page.active')
-		let idActivePage = $(activePage).attr('id')
-
-		if (idActivePage !== 'first-page'
-			&& idActivePage !== 'middle-page'
-			&& idActivePage !== 'last-page') {
-			window.alert(tr('You must select a page to copy content to it'))
-		}
-		else {
-			if (confirm(
-				tr('Warning : this action will erase all your drawing elements in the current page')))
-			{
-				copyPage('#unique-page', '#'+idActivePage)
-			}
-		}
+		let $editor      = $(this).closest('article.layout-model')
+		let $active_page = $editor.find('.active.page')
+		$editor.data('$copy_page', $active_page)
 	});
 
-	//----------------------------------------------------- article.layout-model li.empty-pages click
-	$body.build('click', 'article.layout-model li.empty-pages', function()
+	//------------------------------------------------------ article.layout-model li.paste-page click
+	$body.build('click', 'article.layout-model li.paste-page', function()
 	{
-		let emptyPage = function (selector)
+		let $editor      = $(this).closest('article.layout-model')
+		let $source_page = $editor.data('$copy_page')
+
+		if (!$source_page) {
+			confirm(tr('Unable to paste') + ' : ' + tr('You must copy a page first'))
+			return
+		}
+		if (!confirm(
+			tr('Warning') + ' : '
+			+ tr('this action will erase all your drawing elements in the current page')
+		)) {
+			return
+		}
+		let $active_page     = $editor.find('.active.page')
+		let $source_designer = $source_page.find('.designer')
+		let $target_designer = $active_page.find('.designer')
+		$target_designer.empty().append($source_designer.children())
+	})
+
+	//------------------------------------------------------ article.layout-model li.empty-page click
+	$body.build('click', 'article.layout-model li.empty-page', function()
+	{
+		let $editor = $(this).closest('article.layout-model')
+
+		let emptyPage = function($page)
 		{
-			let $page = $(selector)
-			let $document_designer = $page.children('.scrollable').find('div.ui-document-designer')
-			let content_page = $document_designer.find('div')
-			$(content_page).remove()
-
-			$document_designer.css("background-image", "");
-
-			let html_empty_page = ''
+			let empty_page_layout = ''
 				+ '<div class="horizontal snap line ui-draggable" '
-				+ 'style="top: 40px;font-size:40px;text-align:left;"data-format="text" title="">\n'
+				+ 'style="top: 40px;font-size:40px;text-align:left;" data-format="text" title="">\n'
 				+ '\t<div class="handle ui-draggable-handle"></div>\n'
 				+ '</div>\n'
 				+ '<div class="horizontal snap line ui-draggable" '
@@ -364,23 +366,17 @@ $(document).ready(function()
 				+ 'style="left: 800px; font-size: 40px; text-align: left;" data-format="text" title="">\n'
 				+ '\t<div class="handle ui-draggable-handle"></div>\n'
 				+ '</div>'
-			$document_designer.append(html_empty_page)
-
+			$page.find('.designer')
+				.css('background-image', '')
+				.html(empty_page_layout)
 		}
 
-		let activePage = $('section.page.ui-tabber-page.active')
-		let idActivePage = $(activePage).attr('id')
-		if (idActivePage !== 'first-page'
-			&& idActivePage !== 'middle-page'
-			&& idActivePage !== 'last-page') {
-			window.alert(tr('You must select a page to empty it'))
-		}
-		else {
-			if (confirm(
-				tr('Warning : this action will erase all your drawing elements in the current page')))
-			{
-				emptyPage('#'+idActivePage)
-			}
+		let $active_page = $editor.find('.active.page')
+		if (confirm(
+			tr('Warning') + ' : '
+			+ tr('this action will erase all your drawing elements in the current page')
+		)) {
+			emptyPage($active_page)
 		}
 	});
 
@@ -390,10 +386,10 @@ $(document).ready(function()
 $(window).scroll(function()
 {
 
-	var $toolbox = $('article.layout-model.edit > form .toolbox');
+	let $toolbox = $('article.layout-model.edit > form .toolbox');
 	if (!$toolbox.length) return;
-	var $pages = $toolbox.next('.pages');
-	var $stay_top = $('article.layout-model.edit > form .fixed.stay-top');
+	let $pages = $toolbox.next('.pages');
+	let $stay_top = $('article.layout-model.edit > form .fixed.stay-top');
 	// reset position
 	if (!$stay_top.length && $toolbox.hasClass('stay-top')) {
 		$pages.attr('style', '');
@@ -402,7 +398,7 @@ $(window).scroll(function()
 	}
 	// fixed position
 	if ($stay_top.length) {
-		var $parent = $toolbox.parent();
+		let $parent = $toolbox.parent();
 		if (!$toolbox.hasClass('stay-top')) {
 			$pages.css('margin-left', $pages.offset().left - $pages.parent().offset().left);
 			$toolbox.addClass('fixed stay-top');

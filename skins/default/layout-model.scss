@@ -97,6 +97,14 @@ article.layout-model {
 			}
 		}
 
+		&.copy-page {
+			background: #f7f7f7 url('img/copy-page-24.svg') center no-repeat;
+		}
+
+		&.empty-page {
+			background: #f7f7f7 url('img/delete-24.svg') center no-repeat;
+		}
+
 		&.free-text {
 			background: #f7f7f7 url('img/free-text-24.svg') center no-repeat;
 		}
@@ -119,6 +127,10 @@ article.layout-model {
 
 		&.page-number, &.pages-count {
 			display: none;
+		}
+
+		&.paste-page {
+			background: #f7f7f7 url('img/paste-page-24.svg') center no-repeat;
 		}
 
 		&.rectangle {
