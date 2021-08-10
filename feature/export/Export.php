@@ -12,6 +12,7 @@ use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Integrated_Properties;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Session;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
 
@@ -25,27 +26,28 @@ class Export
 	/**
 	 * @var boolean
 	 */
-	public $all_properties = false;
+	public bool $all_properties = false;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//------------------------------------------------------------------------------------ $selection
 	/**
 	 * @var Selection
 	 */
-	public $selection;
+	public Selection $selection;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
+	 * @noinspection PhpDocSignatureInspection $object object|Parameters is informative for doc
 	 * @param $class_name string
 	 * @param $object     object|Parameters object or Parameters with a main object
 	 * @param $form       array
 	 */
-	public function __construct(string $class_name, $object, array $form)
+	public function __construct(string $class_name, object $object, array $form)
 	{
 		$this->class_name = $class_name;
 		$this->selection  = new Selection($object, $form);
@@ -124,11 +126,12 @@ class Export
 		}
 
 		// write data
+		$min_max_dates = [Date_Time::min()->toISO(false), Date_Time::max()->toISO(false)];
 		foreach ($data->getRows() as $row) {
 			$write = [];
 			foreach ($row->getValues() as $property_path => $value) {
 				if (isset($date_times[$property_path])) {
-					if ($value === '0000-00-00 00:00:00') {
+					if (in_array($value, $min_max_dates)) {
 						$value = null;
 					}
 					elseif (substr($value, -8) === '00:00:00') {
