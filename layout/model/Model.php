@@ -56,7 +56,7 @@ abstract class Model
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return trim(
 			($this->document ? Loc::tr($this->document->name) : $this->class_name) . SP . $this->name
@@ -65,9 +65,10 @@ abstract class Model
 
 	//--------------------------------------------------------------------------------- classNamePath
 	/**
+	 * @noinspection PhpUnused output.html
 	 * @return string
 	 */
-	public function classNamePath()
+	public function classNamePath() : string
 	{
 		return (new String_Class($this->class_name))->path();
 	}
@@ -77,7 +78,7 @@ abstract class Model
 	 * @return Reflection_Class
 	 * @throws ReflectionException
 	 */
-	public function getClass()
+	public function getClass() : Reflection_Class
 	{
 		return new Reflection_Class($this->class_name);
 	}
@@ -86,7 +87,7 @@ abstract class Model
 	/**
 	 * @return string
 	 */
-	protected function getName()
+	protected function getName() : string
 	{
 		if (!$this->name && $this->document) {
 			$this->name = $this->document->name;
@@ -101,7 +102,7 @@ abstract class Model
 	 * @noinspection PhpDocMissingThrowsInspection only valid classes : no exception
 	 * @return Page[]
 	 */
-	protected function getPages()
+	protected function getPages() : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
 		$property   = new Reflection_Property($this, 'pages');
@@ -117,7 +118,7 @@ abstract class Model
 	 * @param $position string @values $pages::const
 	 * @return Page
 	 */
-	public function newPage($position)
+	public function newPage(string $position) : Page
 	{
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
 		$property    = new Reflection_Property($this, 'pages');

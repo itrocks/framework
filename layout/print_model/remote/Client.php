@@ -24,6 +24,8 @@ use ITRocks\Framework\View;
  * This feature needs to be manually installed, as there are technical configuration settings
  *
  * @feature-off Download remote print models from a hub
+ * @feature_build Print_Model + Status\Has
+ * @see Print_Model, Status
  */
 class Client implements Configurable, Registerable
 {
@@ -113,7 +115,10 @@ class Client implements Configurable, Registerable
 					$page->background->content = base64_decode($page->background->content);
 				}
 			}
-			$print_model->status = Status::DOWNLOADED;
+			if (isA($print_model, Status\Has::class)) {
+				/** @var $print_model Status\Has */
+				$print_model->status = Status::DOWNLOADED;
+			}
 			Dao::write($print_model);
 		}
 		return $print_models;
