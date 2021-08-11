@@ -5,6 +5,7 @@ use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Null_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
 
 /**
@@ -20,15 +21,15 @@ abstract class Words
 	 * If expression is a word meaning "empty", convert to corresponding dao search condition
 	 *
 	 * @param $expression string
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @return Func\Where|null
 	 */
-	public static function applyWordMeaningEmpty($expression, Reflection_Property $property)
+	public static function applyWordMeaningEmpty($expression, ?Reflection_Property $property)
 	{
 		if (self::meansEmpty($expression)) {
-			$type = $property->getType();
+			$type = $property ? $property->getType() : new Type(Type::STRING);
 			if ($type->isString() || $type->isMultipleString()) {
-				if ($property->path || Null_Annotation::of($property)->value) {
+				if ($property && ($property->path || Null_Annotation::of($property)->value)) {
 					return Func::orOp([Func::isNull(), Func::equal('')]);
 				}
 				return Func::equal('');

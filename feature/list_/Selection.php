@@ -116,7 +116,6 @@ class Selection
 	protected function allButExcludedFilter()
 	{
 		$search = $this->getListController()->applySearchParameters($this->getListSettings());
-		$search = $this->getListController()->searchObjectsToRepresentative($this->class_name, $search);
 		if ($this->excluded_selection) {
 			$search[]['id'] = Func::notIn($this->excluded_selection);
 		}

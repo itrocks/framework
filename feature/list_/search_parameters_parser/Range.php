@@ -33,13 +33,13 @@ abstract class Range
 	 * Apply a range expression on search string. The range is supposed to exist !
 	 *
 	 * @param $expression string|Option
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @return Func\Range
 	 * @throws Exception
 	 */
-	public static function applyRange($expression, Reflection_Property $property)
+	public static function applyRange($expression, ?Reflection_Property $property)
 	{
-		if ($property->getType()->isDateTime() && (substr_count($expression, '-') > 1)) {
+		if ($property && $property->getType()->isDateTime() && (substr_count($expression, '-') > 1)) {
 			if (
 				preg_match('/[a-z]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
 				?: preg_match('/[0-9]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
@@ -67,14 +67,15 @@ abstract class Range
 	//------------------------------------------------------------------------------- applyRangeValue
 	/**
 	 * @param $expression string|Option
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @param $range_side integer  Range::MIN | Range::MAX | Range::NONE
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected static function applyRangeValue($expression, Reflection_Property $property,	$range_side)
-	{
-		$type_string = $property->getType()->asString();
+	protected static function applyRangeValue(
+		$expression, ?Reflection_Property $property, $range_side
+	) {
+		$type_string = $property ? $property->getType()->asString() : new Type(Type::STRING);
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class:
@@ -105,12 +106,12 @@ abstract class Range
 	 * Check if expression is a range expression
 	 *
 	 * @param $expression string
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @return boolean
 	 */
-	public static function isRange($expression, Reflection_Property $property)
+	public static function isRange($expression, ?Reflection_Property $property)
 	{
-		$type_string = $property->getType()->asString();
+		$type_string = $property ? $property->getType()->asString() : new Type(Type::STRING);
 		switch ($type_string) {
 			// Date_Time type
 			case Date_Time::class: {
@@ -139,20 +140,21 @@ abstract class Range
 	/**
 	 * Checks if a property has right to have range in search string
 	 *
-	 * @param $property Reflection_Property
+	 * @param $property ?Reflection_Property
 	 * @return boolean true if range supported and authorized
 	 */
-	public static function supportsRange(Reflection_Property $property)
+	public static function supportsRange(?Reflection_Property $property)
 	{
-		$type_string  = $property->getType()->asString();
-		$search_range = $property->getAnnotation('search_range')->value;
+		$type         = $property ? $property->getType() : new Type(Type::STRING);
+		$type_string  = $type->asString();
+		$search_range = $property ? $property->getAnnotation('search_range')->value : null;
 		$search_range = isset($search_range)
 			? (new Boolean_Annotation($search_range))->value
-			: ($property->getType()->isNumeric() || $property->getType()->isDateTime());
+			: ($type->isNumeric() || $type->isDateTime());
 		return ($search_range !== false)
 			&& in_array($type_string, [Date_Time::class, Type::FLOAT, Type::INTEGER, Type::STRING])
 			// TODO NORMAL search range with @values crashes now, but it could be done
-			&& !Values_Annotation::of($property)->value;
+			&& (!$property || !Values_Annotation::of($property)->value);
 	}
 
 }

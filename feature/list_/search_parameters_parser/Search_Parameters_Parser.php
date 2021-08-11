@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Date;
@@ -119,11 +120,11 @@ class Search_Parameters_Parser
 	//-------------------------------------------------------------------------------------- applyAnd
 	/**
 	 * @param $search_value string
-	 * @param $property     Reflection_Property
+	 * @param $property     ?Reflection_Property
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyAnd(string $search_value, Reflection_Property $property)
+	protected function applyAnd(string $search_value, ?Reflection_Property $property)
 	{
 		if (strpos($search_value, '&') !== false) {
 			$and = [];
@@ -143,11 +144,11 @@ class Search_Parameters_Parser
 	 * Apply a Comparison expression on search string. The Comparison is supposed to exist !
 	 *
 	 * @param $expression string|Option
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @return Func\Comparison
 	 * @throws Exception
 	 */
-	protected function applyComparison($expression, Reflection_Property $property)
+	protected function applyComparison($expression, ?Reflection_Property $property)
 	{
 		$comparison = null;
 		$expression = ltrim($expression);
@@ -157,7 +158,7 @@ class Search_Parameters_Parser
 		elseif (in_array($sign = substr($expression, 0, 1), ['<', '>', '='])) {
 			$comparison = new Func\Comparison($sign, ltrim(substr($expression, 1)));
 		}
-		if ($comparison && $property->getType()->isDateTime()) {
+		if ($comparison && $property && $property->getType()->isDateTime()) {
 			$applied = $this->applyDateValue($comparison->than_value, $property);
 			if ($applied instanceof Func\Range) {
 				switch ($comparison->sign) {
@@ -191,11 +192,11 @@ class Search_Parameters_Parser
 	//----------------------------------------------------------------------------- applyComplexValue
 	/**
 	 * @param $search_value string
-	 * @param $property     Reflection_Property
+	 * @param $property     ?Reflection_Property
 	 * @return mixed        a range, dao func or scalar
 	 * @throws Exception
 	 */
-	protected function applyComplexValue(string $search_value, Reflection_Property $property)
+	protected function applyComplexValue(string $search_value, ?Reflection_Property $property)
 	{
 		$search = $this->applyComparison($search_value, $property);
 		if (!$search) {
@@ -212,11 +213,11 @@ class Search_Parameters_Parser
 	//-------------------------------------------------------------------------------- applyDateValue
 	/**
 	 * @param $date_time string locale formatted date-time
-	 * @param $property  Reflection_Property
+	 * @param $property  ?Reflection_Property
 	 * @return string|Func\Range|mixed Date::applyDateValue is incompletly documented : I don't know !
 	 * @throws Exception
 	 */
-	protected function applyDateValue(string $date_time, Reflection_Property $property)
+	protected function applyDateValue(string $date_time, ?Reflection_Property $property)
 	{
 		return Date::applyDateValue($date_time, $property);
 	}
@@ -224,11 +225,11 @@ class Search_Parameters_Parser
 	//-------------------------------------------------------------------------------------- applyNot
 	/**
 	 * @param $search_value string
-	 * @param $property     Reflection_Property
+	 * @param $property     ?Reflection_Property
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyNot(string $search_value, Reflection_Property $property)
+	protected function applyNot(string $search_value, ?Reflection_Property $property)
 	{
 		if (substr(trim($search_value), 0, 1) === '!') {
 			$search_value = substr(trim($search_value), 1);
@@ -249,16 +250,16 @@ class Search_Parameters_Parser
 	//--------------------------------------------------------------------------------------- applyOr
 	/**
 	 * @param $search_value string
-	 * @param $property     Reflection_Property
+	 * @param $property     ?Reflection_Property
 	 * @return Logical
 	 * @throws Exception
 	 */
-	protected function applyOr(string $search_value, Reflection_Property $property)
+	protected function applyOr(string $search_value, ?Reflection_Property $property)
 	{
 		if (strpos($search_value, ',') === false) {
 			return $this->applyAnd($search_value, $property);
 		}
-		if ($property->getType()->isFloat()) {
+		if ($property && $property->getType()->isFloat()) {
 			$number_format     = Locale::current()->number_format;
 			$is_thousand_float = ($number_format->thousand_separator === ',');
 			if ($is_thousand_float) {
@@ -289,13 +290,13 @@ class Search_Parameters_Parser
 	//------------------------------------------------------------------------------ applySingleValue
 	/**
 	 * @param $search_value string|Option
-	 * @param $property     Reflection_Property
+	 * @param $property     ?Reflection_Property
 	 * @return mixed
 	 * @throws Exception
 	 */
-	protected function applySingleValue($search_value, Reflection_Property $property)
+	protected function applySingleValue($search_value, ?Reflection_Property $property)
 	{
-		$type_string = $property->getType()->asString();
+		$type_string = $property ? $property->getType()->asString() : new Type(Type::STRING);
 		switch ($type_string) {
 			// boolean type
 			case Type::BOOLEAN: {
@@ -313,8 +314,11 @@ class Search_Parameters_Parser
 			// String types with @values : translate
 			case Type::STRING:
 			case Type::STRING_ARRAY: {
-				$property_values = Values_Annotation::of($property)->values();
-				if ($property_values || ($property->getAnnotation('translate')->value === 'common')) {
+				$property_values = $property ? Values_Annotation::of($property)->values() : [];
+				if (
+					$property_values
+					|| ($property && $property->getAnnotation('translate')->value === 'common')
+				) {
 					if (trim($search_value) === '') {
 						$search = Func::equal($search_value);
 						break;
@@ -418,14 +422,24 @@ class Search_Parameters_Parser
 	{
 		$search   = $this->search;
 		$to_unset = [];
-		foreach ($search as $property_path => &$search_value) {
-			/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
-			$property = new Reflection_Property($this->class->name, $property_path);
-			if (strlen($search_value)) {
-				$this->parseField($search_value, $property);
-				// if search has been transformed to empty string, we cancel search for this column
-				if (is_string($search_value) && !strlen($search_value)) {
-					$to_unset[] = $property_path;
+		foreach ($search as $search_property_path => &$search_entry) {
+			if ($search_entry instanceof Logical) {
+				$search_values =& $search_entry->arguments;
+			}
+			else {
+				$search_values = [$search_property_path => &$search_entry];
+			}
+			foreach ($search_values as $property_path => &$search_value) {
+				/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
+				$property = str_starts_with($property_path, Expressions::MARKER)
+					? null
+					: new Reflection_Property($this->class->name, $property_path);
+				if (strlen($search_value)) {
+					$this->parseField($search_value, $property);
+					// if search has been transformed to empty string, we cancel search for this column
+					if (is_string($search_value) && !strlen($search_value)) {
+						$to_unset[] = $property_path;
+					}
 				}
 			}
 		}
@@ -438,9 +452,9 @@ class Search_Parameters_Parser
 	//------------------------------------------------------------------------------------ parseField
 	/**
 	 * @param $search_value string
-	 * @param $property Reflection_Property
+	 * @param $property ?Reflection_Property
 	 */
-	protected function parseField(string &$search_value, Reflection_Property $property)
+	protected function parseField(string &$search_value, ?Reflection_Property $property)
 	{
 		try {
 			$search_value = $this->applyOr($search_value, $property);

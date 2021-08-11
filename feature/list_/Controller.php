@@ -304,10 +304,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function applySearchParameters(List_Setting\Set $list_settings)
 	{
-		$class = $list_settings->getClass();
+		$class  = $list_settings->getClass();
+		$search = $this->searchObjectsToRepresentative($class->name, $list_settings->search);
 		/** @noinspection PhpUnhandledExceptionInspection ::class */
 		$search_parameters_parser = Builder::create(
-			Search_Parameters_Parser::class, [$class->name, $list_settings->search]
+			Search_Parameters_Parser::class, [$class->name, $search]
 		);
 		$search = $search_parameters_parser->parse();
 		// check if we have errors in search expressions
@@ -854,7 +855,6 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$class_name, array $properties_path, array $search, array $options
 	) {
 		$options[] = Dao::translate();
-		$search    = $this->searchObjectsToRepresentative($class_name, $search);
 		if ($filters = Filter_Annotation::apply($class_name, $options, Filter_Annotation::FOR_VIEW)) {
 			$search = $search ? Func::andOp([$filters, $search]) : $filters;
 		}
@@ -1038,7 +1038,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			unset($search[$property_path]);
 			$add_search = [];
 			$values     = ($search_value instanceof Logical) ? $search_value->arguments : [$search_value];
-			foreach ($values as $key => $value) {
+			foreach ($values as $value) {
 				$sub_search            = [];
 				$sub_search_properties = [];
 				foreach ($representative_property_names as $property_name) {

@@ -341,13 +341,13 @@ abstract class Date
 	//--------------------------------------------------------------------------- applyDateRangeValue
 	/**
 	 * @param $expression Option|string
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
 	 * @throws Exception
 	 */
 	public static function applyDateRangeValue(
-		$expression, Reflection_Property $property, $range_side
+		$expression, ?Reflection_Property $property, $range_side
 	) {
 		if (Wildcard::hasWildcard($expression)) {
 			throw new Exception(
@@ -375,13 +375,13 @@ abstract class Date
 	//-------------------------------------------------------------------------------- applyDateValue
 	/**
 	 * @param $expression string
-	 * @param $property   Reflection_Property
+	 * @param $property   ?Reflection_Property
 	 * @param $range_side integer @values Range::MAX, Range::MIN, Range::NONE
 	 * @return mixed
 	 * @throws Exception
 	 */
 	public static function applyDateValue(
-		$expression, Reflection_Property $property, $range_side = Range::NONE
+		$expression, ?Reflection_Property $property, $range_side = Range::NONE
 	) {
 		return self::applyDateSingleWildcard($expression)
 			?: self::applyDateWord($expression, $range_side)
