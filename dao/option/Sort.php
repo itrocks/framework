@@ -8,6 +8,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Sort_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ReflectionException;
 
 /**
  * A DAO sort option
@@ -138,7 +139,6 @@ class Sort implements Option
 
 	//------------------------------------------------------------------------------------ getColumns
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string|null the contextual class name :
 	 *                    needed if the constructor was called without columns
 	 * @return string[] the column names
@@ -153,11 +153,12 @@ class Sort implements Option
 		}
 		$columns = [];
 		foreach ($this->columns as $property_name) {
-			if (!property_exists($class_name ?: $this->class_name, $property_name)) {
+			try {
+				$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
+			}
+			catch (ReflectionException) {
 				continue;
 			}
-			/** @noinspection PhpUnhandledExceptionInspection must be valid */
-			$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
 			$type     = $property->getType();
 			if ($type->isClass() && !$type->isDateTime()) {
 				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
