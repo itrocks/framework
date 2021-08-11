@@ -151,7 +151,8 @@ class Sort implements Option
 		if (!$class_name && !$this->class_name) {
 			return [];
 		}
-		$columns = [];
+		$columns      = [];
+		$lock_reverse = [];
 		foreach ($this->columns as $property_name) {
 			try {
 				$property = new Reflection_Property($class_name ?: $this->class_name, $property_name);
@@ -159,18 +160,25 @@ class Sort implements Option
 			catch (ReflectionException) {
 				continue;
 			}
-			$type     = $property->getType();
+			$type = $property->getType();
 			if ($type->isClass() && !$type->isDateTime()) {
 				foreach ((new static($type->getElementTypeAsString()))->getColumns() as $sub_column) {
 					$column    = $property_name . DOT . $sub_column;
 					$columns[] = $column;
-					if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
-						$this->reverse[] = $column;
+					if (!isset($lock_reverse[$column])) {
+						if (in_array($property_name, $this->reverse) && !in_array($column, $this->reverse)) {
+							$this->reverse[] = $column;
+						}
+						elseif (in_array($column, $this->reverse) && !in_array($property_name, $this->reverse)) {
+							unset($this->reverse[array_search($column, $this->reverse)]);
+						}
 					}
+					$lock_reverse[$column] = true;
 				}
 			}
 			else {
 				$columns[] = $property_name;
+				$lock_reverse[$property_name] = true;
 			}
 		}
 		return $columns;
