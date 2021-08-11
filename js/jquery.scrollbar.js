@@ -64,15 +64,16 @@
 		if (!$scrollbar) {
 			return false
 		}
-		let $bar             = $scrollbar.find('.bar')
-		let $body            = scrollbar.$body
-		let $scroll          = $bar.parent()
-		let bar_size         = $bar[size].call($bar)
-		let body_scroll_size = $body[0]['scroll' + size.ucfirst()]
-		let body_size        = $body[size].call($body)
-		let scroll_size      = $scroll[size].call($scroll)
-		// bar size
-		let percentage = Math.round(1000 * body_size / body_scroll_size) / 10
+		let $bar     = $scrollbar.find('.bar')
+		let $content = (size === 'width') ? scrollbar.$content : scrollbar.$body
+		let $scroll  = $bar.parent()
+		// sizes
+		let bar_size            = $bar[size].call($bar)
+		let content_scroll_size = maxScroll($content, size)
+		let content_size        = $content[size].call($content)
+		let scroll_size         = $scroll[size].call($scroll)
+		// percentage bar size calculation
+		let percentage = Math.round(1000 * content_size / content_scroll_size) / 10
 		$bar.css(size, percentage.toString() + '%')
 		if (scrollbar.dont_move) {
 			return true
@@ -85,8 +86,10 @@
 		}
 		if (new_position !== null) {
 			$bar.css(position, new_position.toString() + 'px')
-			let body_max_position = body_scroll_size - body_size
-			drawContentScrollPosition(scrollbar, position, new_position, max_position, body_max_position)
+			let content_max_position = content_scroll_size - content_size
+			drawContentScrollPosition(
+				scrollbar, position, new_position, max_position, content_max_position
+			)
 		}
 		return true
 	}
@@ -140,11 +143,11 @@
 	let drawFixedColumnHeaders = function($table)
 	{
 		let scrollbar = $table.data('scrollbar')
-		let $thead    = scrollbar.$head
+		let $head     = scrollbar.$head
 		let columns   = scrollbar.columns
-		let left      = scrollbar.$body.scrollLeft()
+		let left      = $head.scrollLeft()
 		let previous  = 0
-		let right     = left + $thead.width() - $thead[0].scrollWidth
+		let right     = left + $head.width() - maxScroll($head, 'width')
 		for (let index in columns) if (columns.hasOwnProperty(index)) {
 			let $column = columns[index]
 			// left
@@ -365,6 +368,23 @@
 		return $element && $element.is(':visible')
 	}
 
+	//------------------------------------------------------------------------------------- maxScroll
+	/**
+	 * Returns the maximum value for scrollHeight or scrollWidth of $elements
+	 *
+	 * @param $elements jQuery
+	 * @param size      string @values height, width
+	 * @returns float|number
+	 */
+	let maxScroll = function($elements, size)
+	{
+		let max_scroll = 0
+		$elements.each(function() {
+			max_scroll = Math.max(max_scroll, this['scroll' + size.ucfirst()])
+		})
+		return max_scroll
+	}
+
 	//-------------------------------------------------------------------------------- mouseClickMove
 	/**
 	 * @param event      object
@@ -580,9 +600,9 @@
 		let $body            = scrollbar.$body
 		let $content         = scrollbar.$content
 		let bar_size         = $bar[size].call($bar)
-		let body_position    = $body[0]['scroll' + position.ucfirst()]
+		let body_position    = maxScroll($body, position)
 		let body_size        = $body[size].call($body)
-		let body_scroll_size = $body[0]['scroll' + size.ucfirst()]
+		let body_scroll_size = maxScroll($body, size)
 		let scrollPosition   = $body['scroll' + position.ucfirst()]
 
 		body_position  = (distance < 0)
@@ -655,13 +675,12 @@
 
 	//------------------------------------------------------------------------------------ visibleBar
 	/**
-	 * @param $body        jQuery
 	 * @param $scrollbar   jQuery|null
 	 * @param total_size   integer
 	 * @param visible_size integer
 	 * @return boolean
 	 */
-	let visibleBar = function($body, $scrollbar, total_size, visible_size)
+	let visibleBar = function($scrollbar, total_size, visible_size)
 	{
 		if (!$scrollbar) {
 			return false
@@ -679,8 +698,8 @@
 	let visibleHorizontal = function($element)
 	{
 		let scrollbar = $element.data('scrollbar')
-		let $body     = scrollbar.$body
-		return visibleBar($body, scrollbar.$horizontal, $body[0].scrollWidth, $body.width())
+		let $content  = scrollbar.$content
+		return visibleBar(scrollbar.$horizontal, maxScroll($content, 'width'), $content.width())
 	}
 
 	//------------------------------------------------------------------------------- visibleVertical
@@ -692,7 +711,7 @@
 	{
 		let scrollbar = $element.data('scrollbar')
 		let $body     = scrollbar.$body
-		return visibleBar($body, scrollbar.$vertical, $body[0].scrollHeight, $body.height())
+		return visibleBar(scrollbar.$vertical, maxScroll($body, 'height'), $body.height())
 	}
 
 	//------------------------------------------------------------------- plugin common data & events
@@ -801,3 +820,17 @@ window.scrollbar = {
 	}
 
 }
+
+/**
+ * scrollbar object class structure :
+ *
+ * @property $angle      jQuery the angle between horizontal and vertical scrollbar
+ * @property $body       jQuery the table body
+ * @property $content    jQuery the table content, cumulating thead, tbody and tfoot
+ * @property $foot       jQuery the table foot (fixed rows)
+ * @property $head       jQuery the table head (fixed rows)
+ * @property $horizontal jQuery the horizontal scrollbar
+ * @property $scrollbars jQuery the horizontal + vertical scrollbars
+ * @property $vertical   jQuery the vertical scrollbar
+ * @property columns     jQuery[] the table head column cells (td or th)
+ */
