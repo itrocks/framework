@@ -7,12 +7,12 @@
 	/**
 	 * @param $element jQuery
 	 */
-	var createScrollBarsDOM = function($element)
+	let createScrollBarsDOM = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
-		var settings  = scrollbar.settings;
-		var arrows    = settings.arrows;
-		var direction = settings.direction;
+		let scrollbar = $element.data('scrollbar');
+		let settings  = scrollbar.settings;
+		let arrows    = settings.arrows;
+		let direction = settings.direction;
 		scrollbar.$angle = (direction === 'both')
 			? $('<div class="scrollbar angle"/>').appendTo($element)
 			: null;
@@ -28,7 +28,7 @@
 	};
 
 	//---------------------------------------------------------------------------------- createEvents
-	var createEvents = function($scrollbar)
+	let createEvents = function($scrollbar)
 	{
 		return $scrollbar.mousedown(mouseDown).mouseout(mouseOutStyle).mousemove(mouseMoveStyle);
 	};
@@ -37,9 +37,9 @@
 	/**
 	 * @param $element jQuery
 	 */
-	var draw = function($element)
+	let draw = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
+		let scrollbar = $element.data('scrollbar');
 		drawVisibleBars($element);
 		drawBar(scrollbar, 'vertical', 'top', 'height');
 		if (drawBar(scrollbar, 'horizontal', 'left', 'width') && scrollbar.is_table) {
@@ -58,34 +58,34 @@
 	 * @param size      string @values height, width
 	 * @return boolean
 	 */
-	var drawBar = function(scrollbar, direction, position, size)
+	let drawBar = function(scrollbar, direction, position, size)
 	{
-		var $scrollbar = scrollbar['$' + direction];
+		let $scrollbar = scrollbar['$' + direction];
 		if (!$scrollbar) {
 			return false;
 		}
-		var $bar             = $scrollbar.find('.bar');
-		var $body            = scrollbar.$body;
-		var $scroll          = $bar.parent();
-		var bar_size         = $bar[size].call($bar);
-		var body_scroll_size = $body[0]['scroll' + size.ucfirst()];
-		var body_size        = $body[size].call($body);
-		var scroll_size      = $scroll[size].call($scroll);
+		let $bar             = $scrollbar.find('.bar');
+		let $body            = scrollbar.$body;
+		let $scroll          = $bar.parent();
+		let bar_size         = $bar[size].call($bar);
+		let body_scroll_size = $body[0]['scroll' + size.ucfirst()];
+		let body_size        = $body[size].call($body);
+		let scroll_size      = $scroll[size].call($scroll);
 		// bar size
-		var percentage = Math.round(1000 * body_size / body_scroll_size) / 10;
+		let percentage = Math.round(1000 * body_size / body_scroll_size) / 10;
 		$bar.css(size, percentage.toString() + '%');
 		if (scrollbar.dont_move) {
 			return true;
 		}
 		// bar position
-		var max_position = scroll_size - bar_size;
-		var new_position = drawBarGetPosition($scroll, $bar, direction, position, size, max_position);
+		let max_position = scroll_size - bar_size;
+		let new_position = drawBarGetPosition($scroll, $bar, direction, position, size, max_position);
 		if (!new_position && !scrollbar.initialized) {
 			new_position = 0;
 		}
 		if (new_position !== null) {
 			$bar.css(position, new_position.toString() + 'px');
-			var body_max_position = body_scroll_size - body_size;
+			let body_max_position = body_scroll_size - body_size;
 			drawContentScrollPosition(scrollbar, position, new_position, max_position, body_max_position);
 		}
 		return true;
@@ -101,18 +101,18 @@
 	 * @param max_position integer
 	 * @return integer|number|null
 	 */
-	var drawBarGetPosition = function($scroll, $bar, direction, position, size, max_position)
+	let drawBarGetPosition = function($scroll, $bar, direction, position, size, max_position)
 	{
-		var bar_position          = $bar.offset()[position];
-		var scroll_position       = $scroll.offset()[position];
-		var border_position_width = 'border' + position.ucfirst() + 'Width';
-		var scroll_style          = window.getComputedStyle($scroll[0]);
-		var border_width          = parseInt(scroll_style[border_position_width]);
-		var old_top               = bar_position - scroll_position - border_width;
+		let bar_position          = $bar.offset()[position];
+		let scroll_position       = $scroll.offset()[position];
+		let border_position_width = 'border' + position.ucfirst() + 'Width';
+		let scroll_style          = window.getComputedStyle($scroll[0]);
+		let border_width          = parseInt(scroll_style[border_position_width]);
+		let old_top               = bar_position - scroll_position - border_width;
 		if (!moving || (moving.direction !== direction)) {
 			return (old_top > max_position) ? max_position : null;
 		}
-		var difference         = moving.mouse[position] - moving.from[position];
+		let difference         = moving.mouse[position] - moving.from[position];
 		moving.from[position] += difference;
 		return Math.max(0, Math.min(max_position, old_top + difference));
 	};
@@ -125,11 +125,11 @@
 	 * @param max_position      integer
 	 * @param body_max_position integer
 	 */
-	var drawContentScrollPosition = function(
+	let drawContentScrollPosition = function(
 		scrollbar, position, new_position, max_position, body_max_position
 	) {
-		var body_position         = Math.round(body_max_position * new_position / max_position);
-		var contentScrollPosition = scrollbar.$content['scroll' + position.ucfirst()];
+		let body_position         = Math.round(body_max_position * new_position / max_position);
+		let contentScrollPosition = scrollbar.$content['scroll' + position.ucfirst()];
 		contentScrollPosition.call(scrollbar.$content, body_position);
 	};
 
@@ -137,16 +137,16 @@
 	/**
 	 * @param $table jQuery
 	 */
-	var drawFixedColumnHeaders = function($table)
+	let drawFixedColumnHeaders = function($table)
 	{
-		var scrollbar = $table.data('scrollbar');
-		var $thead    = scrollbar.$head;
-		var columns   = scrollbar.columns;
-		var left      = scrollbar.$body.scrollLeft();
-		var previous  = 0;
-		var right     = left + $thead.width() - $thead[0].scrollWidth;
-		for (var index in columns) if (columns.hasOwnProperty(index)) {
-			var $column = columns[index];
+		let scrollbar = $table.data('scrollbar');
+		let $thead    = scrollbar.$head;
+		let columns   = scrollbar.columns;
+		let left      = scrollbar.$body.scrollLeft();
+		let previous  = 0;
+		let right     = left + $thead.width() - $thead[0].scrollWidth;
+		for (let index in columns) if (columns.hasOwnProperty(index)) {
+			let $column = columns[index];
 			// left
 			if (parseInt(index) === ++previous) {
 				$column.css('transform', 'translateX(' + left + 'px)');
@@ -166,30 +166,30 @@
 	 *
 	 * @param $element jQuery
 	 */
-	var drawVisibleBars = function($element)
+	let drawVisibleBars = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
+		let scrollbar = $element.data('scrollbar');
 
-		var visibility = isVisible(scrollbar.$horizontal).toString()
+		let visibility = isVisible(scrollbar.$horizontal).toString()
 			+ isVisible(scrollbar.$vertical).toString();
 		visibleVertical($element);
-		var horizontal = visibleHorizontal($element);
-		var vertical   = visibleVertical($element);
+		let horizontal = visibleHorizontal($element);
+		let vertical   = visibleVertical($element);
 		visibleAngle($element);
 		if (scrollbar.initialized && ((horizontal.toString() + vertical.toString()) === visibility)) {
 			return;
 		}
 
-		var columns  = scrollbar.grid.columns.slice(0);
-		var rows     = scrollbar.grid.rows.slice(0);
-		var template = scrollbar.grid.template.slice(0);
+		let columns  = scrollbar.grid.columns.slice(0);
+		let rows     = scrollbar.grid.rows.slice(0);
+		let template = scrollbar.grid.template.slice(0);
 		if (!horizontal) {
 			rows.pop();
 			template.pop();
 		}
 		if (!vertical) {
 			columns.pop();
-			for (var index in template) if (template.hasOwnProperty(index)) {
+			for (let index in template) if (template.hasOwnProperty(index)) {
 				template[index] = template[index].lParse(SP);
 			}
 		}
@@ -205,13 +205,13 @@
 	 * Calculates the cumulative width of fixed columns
 	 *
 	 * @param columns jQuery[]
-	 * @return integer
+	 * @return integer|number
 	 */
-	var fixedColumnsWidth = function(columns)
+	let fixedColumnsWidth = function(columns)
 	{
-		var total_width = 0;
-		for (var index in columns) if (columns.hasOwnProperty(index)) {
-			var $column = columns[index];
+		let total_width = 0;
+		for (let index in columns) if (columns.hasOwnProperty(index)) {
+			let $column = columns[index];
 			total_width += $column.width();
 		}
 		return total_width;
@@ -222,10 +222,10 @@
 	 * @param $element jQuery
 	 * @return object
 	 */
-	var gridTemplate = function($element)
+	let gridTemplate = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
-		var weight    = parseInt(scrollbar.$scrollbars.css('--weight'));
+		let scrollbar = $element.data('scrollbar');
+		let weight    = parseInt(scrollbar.$scrollbars.css('--weight'));
 		return {
 			columns:  ['1fr', weight.toString() + 'px'],
 			rows:     ['1fr', weight.toString() + 'px'],
@@ -241,13 +241,13 @@
 	 * @param $element jQuery
 	 * @return object
 	 */
-	var gridTemplateTable = function($element)
+	let gridTemplateTable = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
-		var near      = scrollbar.settings.vertical_scrollbar_near;
-		var near_foot = (['both', 'foot'].indexOf(near) > -1) ? 'vertical' : 'foot';
-		var near_head = (['both', 'head'].indexOf(near) > -1) ? 'vertical' : 'head';
-		var weight    = parseInt(scrollbar.$scrollbars.css('--weight'));
+		let scrollbar = $element.data('scrollbar');
+		let near      = scrollbar.settings.vertical_scrollbar_near;
+		let near_foot = (['both', 'foot'].indexOf(near) > -1) ? 'vertical' : 'foot';
+		let near_head = (['both', 'head'].indexOf(near) > -1) ? 'vertical' : 'head';
+		let weight    = parseInt(scrollbar.$scrollbars.css('--weight'));
 
 		return {
 			columns: ['1fr', weight.toString() + 'px'],
@@ -270,9 +270,9 @@
 	/**
 	 * @param $element jQuery
 	 */
-	var init = function($element)
+	let init = function($element)
 	{
-		var scrollbar  = $element.data('scrollbar');
+		let scrollbar  = $element.data('scrollbar');
 		scrollbar.grid = $element.is('table')
 			? gridTemplateTable($element, scrollbar.settings)
 			: gridTemplate($element);
@@ -291,7 +291,7 @@
 	/**
 	 * @param $table jQuery
 	 */
-	var initTableAfter = function($table)
+	let initTableAfter = function($table)
 	{
 		initTableFixedColumns($table);
 		$table.children('tbody, tfoot, thead').css({ display: 'block', overflow: 'hidden' });
@@ -301,7 +301,7 @@
 	/**
 	 * @param $table jQuery
 	 */
-	var initTableBefore = function($table)
+	let initTableBefore = function($table)
 	{
 		initTableColumnWidths($table);
 	};
@@ -310,23 +310,23 @@
 	/**
 	 * @param $table jQuery
 	 */
-	var initTableColumnWidths = function($table)
+	let initTableColumnWidths = function($table)
 	{
-		var $tbody    = $table.children('tbody');
-		var $tfoot    = $table.children('tfoot');
-		var $thead    = $table.children('thead');
-		var $tbody_tr = $tbody.children('tr:first-child');
-		var $tfoot_tr = $tfoot.children('tr:first-child');
-		var $thead_tr = $thead.children('tr:first-child');
-		var $tr       = $thead_tr.length ? $thead_tr : ($tbody_tr.length ? $tbody_tr : $tfoot_tr);
-		var trs       = [$tbody_tr, $tfoot_tr, $thead_tr];
-		var widths    = [];
+		let $tbody    = $table.children('tbody');
+		let $tfoot    = $table.children('tfoot');
+		let $thead    = $table.children('thead');
+		let $tbody_tr = $tbody.children('tr:first-child');
+		let $tfoot_tr = $tfoot.children('tr:first-child');
+		let $thead_tr = $thead.children('tr:first-child');
+		let $tr       = $thead_tr.length ? $thead_tr : ($tbody_tr.length ? $tbody_tr : $tfoot_tr);
+		let trs       = [$tbody_tr, $tfoot_tr, $thead_tr];
+		let widths    = [];
 
 		$tr.children().each(function() {
 			widths.push($(this).width());
 		});
-		for (var tr in trs) if (trs.hasOwnProperty(tr)) {
-			var key = 0;
+		for (let tr in trs) if (trs.hasOwnProperty(tr)) {
+			let key = 0;
 			trs[tr].children().each(function() {
 				$(this).css('min-width', widths[key++]);
 			});
@@ -337,17 +337,17 @@
 	/**
 	 * @param $table jQuery
 	 */
-	var initTableFixedColumns = function($table)
+	let initTableFixedColumns = function($table)
 	{
-		var scrollbar     = $table.data('scrollbar');
-		var settings      = scrollbar.settings;
-		var fixed_columns = settings.fixed_columns;
-		var tr_selector   = 'tr' + settings.tr_filter;
+		let scrollbar     = $table.data('scrollbar');
+		let settings      = scrollbar.settings;
+		let fixed_columns = settings.fixed_columns;
+		let tr_selector   = 'tr' + settings.tr_filter;
 		scrollbar.columns = {};
 		if (fixed_columns) {
 			$table.find(fixed_columns).each(function() {
-				var $fixed = $(this);
-				var index  = $fixed.prevAll().length + 1;
+				let $fixed = $(this);
+				let index  = $fixed.prevAll().length + 1;
 				if (scrollbar.columns[index] === undefined) {
 					scrollbar.columns[index] = $table.find(tr_selector + ' > :nth-child(' + index + ')');
 				}
@@ -360,7 +360,7 @@
 	 * @param $element jQuery|null
 	 * @return boolean
 	 */
-	var isVisible = function($element)
+	let isVisible = function($element)
 	{
 		return $element && $element.is(':visible');
 	};
@@ -371,12 +371,12 @@
 	 * @param $scrollbar jQuery
 	 * @return boolean
 	 */
-	var mouseClickMove = function(event, $scrollbar)
+	let mouseClickMove = function(event, $scrollbar)
 	{
-		var $element  = $scrollbar.parent();
-		var scrollbar = $element.data('scrollbar');
+		let $element  = $scrollbar.parent();
+		let scrollbar = $element.data('scrollbar');
 
-		var direction,  fixed_columns_size, mouse_position, position, size;
+		let direction,  fixed_columns_size, mouse_position, position, size;
 		if ($scrollbar.is('.horizontal')) {
 			direction          = 'horizontal';
 			fixed_columns_size = fixedColumnsWidth(scrollbar.columns);
@@ -392,18 +392,18 @@
 			size               = 'height';
 		}
 
-		var $bar     = $scrollbar.find('.bar');
-		var bar_size = $bar[size].call($bar);
-		var offset   = $bar.offset();
-		var start    = offset[position];
-		var stop     = start + bar_size - 1;
+		let $bar     = $scrollbar.find('.bar');
+		let bar_size = $bar[size].call($bar);
+		let offset   = $bar.offset();
+		let start    = offset[position];
+		let stop     = start + bar_size - 1;
 		if ((mouse_position >= start) && (mouse_position <= stop)) {
 			return false;
 		}
 
-		var $body     = scrollbar.$body;
-		var body_size = $body[size].call($body);
-		var body_move = body_size - fixed_columns_size;
+		let $body     = scrollbar.$body;
+		let body_size = $body[size].call($body);
+		let body_move = body_size - fixed_columns_size;
 
 		if (mouse_position < start) {
 			body_move = -body_move;
@@ -417,13 +417,13 @@
 	/**
 	 * @param event object
 	 */
-	var mouseDown = function(event)
+	let mouseDown = function(event)
 	{
 		if (moving) {
 			return;
 		}
-		var $scrollbar = $(this);
-		var $bar       = $scrollbar.find('.bar');
+		let $scrollbar = $(this);
+		let $bar       = $scrollbar.find('.bar');
 		$bar.addClass('moving');
 		if (mouseClickMove(event, $scrollbar)) {
 			setTimeout(function() { $bar.removeClass('moving'); }, 100);
@@ -443,7 +443,7 @@
 	/**
 	 * @param event object
 	 */
-	var mouseMove = function(event)
+	let mouseMove = function(event)
 	{
 		if (!event.which) {
 			return window.scrollbar.mouseup(event);
@@ -456,11 +456,11 @@
 	/**
 	 * @param event object
 	 */
-	var mouseMoveStyle = function(event)
+	let mouseMoveStyle = function(event)
 	{
-		var $scrollbar = $(this);
-		var $bar       = $scrollbar.find('.bar');
-		var mouse, start, stop;
+		let $scrollbar = $(this);
+		let $bar       = $scrollbar.find('.bar');
+		let mouse, start, stop;
 		if ($scrollbar.is('.horizontal')) {
 			mouse = event.pageX;
 			start = $bar.offset().left;
@@ -482,9 +482,9 @@
 	};
 
 	//--------------------------------------------------------------------------------- mouseOutStyle
-	var mouseOutStyle = function()
+	let mouseOutStyle = function()
 	{
-		var $scrollbar = $(this);
+		let $scrollbar = $(this);
 		if (moving) {
 			return;
 		}
@@ -492,7 +492,7 @@
 	};
 
 	//--------------------------------------------------------------------------------------- mouseUp
-	var mouseUp = function()
+	let mouseUp = function()
 	{
 		if (!moving) {
 			return;
@@ -503,15 +503,15 @@
 	};
 
 	//------------------------------------------------------------------------------------ mouseWheel
-	var mouseWheel = function(event)
+	let mouseWheel = function(event)
 	{
-		var $element = $(this);
+		let $element = $(this);
 		// noinspection JSUnresolvedVariable deltaFactor exists
-		var until = Math.abs(event.deltaFactor * (event.deltaY ? event.deltaY : event.deltaX));
-		var speed = Math.round(until / 12);
+		let until = Math.abs(event.deltaFactor * (event.deltaY ? event.deltaY : event.deltaX));
+		let speed = Math.round(until / 12);
 		event.deltaX /= -Math.abs(event.deltaX);
 		event.deltaY /= -Math.abs(event.deltaY);
-		var animate  = function()
+		let animate  = function()
 		{
 			speed = Math.min(speed, until);
 			if (event.deltaX) {
@@ -529,12 +529,12 @@
 	};
 
 	//---------------------------------------------------------------------------------------- remove
-	var remove = function()
+	let remove = function()
 	{
-		var element_identifier = $(this).data('scrollbar').identifier.toString();
-		var old_elements       = elements;
+		let element_identifier = $(this).data('scrollbar').identifier.toString();
+		let old_elements       = elements;
 		elements               = {};
-		for (var identifier in old_elements) if (old_elements.hasOwnProperty(identifier)) {
+		for (let identifier in old_elements) if (old_elements.hasOwnProperty(identifier)) {
 			if (identifier !== element_identifier) {
 				elements[identifier] = old_elements[identifier];
 			}
@@ -542,12 +542,12 @@
 	};
 
 	//---------------------------------------------------------------------------------------- resize
-	var resize = function()
+	let resize = function()
 	{
-		for(var index in elements) if (elements.hasOwnProperty(index)) {
-			var $element  = elements[index];
-			var scrollbar = $element.data('scrollbar');
-			var distance  = parseInt(scrollbar.$horizontal.children('div').css('left'));
+		for(let index in elements) if (elements.hasOwnProperty(index)) {
+			let $element  = elements[index];
+			let scrollbar = $element.data('scrollbar');
+			let distance  = parseInt(scrollbar.$horizontal.children('div').css('left'));
 			scroll($element, 'horizontal', -distance);
 			draw($element);
 			scroll($element, 'horizontal', distance);
@@ -562,9 +562,9 @@
 	 * @param direction string @values horizontal, vertical
 	 * @param distance  integer
 	 */
-	var scroll = function($element, direction, distance)
+	let scroll = function($element, direction, distance)
 	{
-		var position, size;
+		let position, size;
 		if (direction === 'horizontal') {
 			position = 'left';
 			size     = 'width';
@@ -574,21 +574,21 @@
 			size     = 'height';
 		}
 
-		var scrollbar        = $element.data('scrollbar');
-		var $scrollbar       = scrollbar['$' + direction];
-		var $bar             = $scrollbar.find('.bar');
-		var $body            = scrollbar.$body;
-		var $content         = scrollbar.$content;
-		var bar_size         = $bar[size].call($bar);
-		var body_position    = $body[0]['scroll' + position.ucfirst()];
-		var body_size        = $body[size].call($body);
-		var body_scroll_size = $body[0]['scroll' + size.ucfirst()];
-		var scrollPosition   = $body['scroll' + position.ucfirst()];
+		let scrollbar        = $element.data('scrollbar');
+		let $scrollbar       = scrollbar['$' + direction];
+		let $bar             = $scrollbar.find('.bar');
+		let $body            = scrollbar.$body;
+		let $content         = scrollbar.$content;
+		let bar_size         = $bar[size].call($bar);
+		let body_position    = $body[0]['scroll' + position.ucfirst()];
+		let body_size        = $body[size].call($body);
+		let body_scroll_size = $body[0]['scroll' + size.ucfirst()];
+		let scrollPosition   = $body['scroll' + position.ucfirst()];
 
 		body_position  = (distance < 0)
 			? Math.max(body_position + distance, 0)
 			: Math.min(body_position + distance, body_scroll_size - body_size);
-		var bar_left = Math.round(body_position * bar_size / body_size);
+		let bar_left = Math.round(body_position * bar_size / body_size);
 		scrollPosition.call($content, body_position);
 		$bar.css(position, bar_left.toString() + 'px');
 
@@ -607,7 +607,7 @@
 	 * @param arrows    boolean
 	 * @return jQuery
 	 */
-	var scrollBar = function(direction, arrows)
+	let scrollBar = function(direction, arrows)
 	{
 		return $(
 			'<div class="' + (arrows ? 'arrows ' : '') + direction + ' scrollbar">'
@@ -625,14 +625,14 @@
 	 * @param $element jQuery
 	 * @return boolean
 	 */
-	var visibleAngle = function($element)
+	let visibleAngle = function($element)
 	{
-		var scrollbar  = $element.data('scrollbar');
-		var $scrollbar = scrollbar.$angle;
+		let scrollbar  = $element.data('scrollbar');
+		let $scrollbar = scrollbar.$angle;
 		if (!$scrollbar) {
 			return false;
 		}
-		var is_visible = (scrollbar.$horizontal.is(':visible') && scrollbar.$vertical.is(':visible'));
+		let is_visible = (scrollbar.$horizontal.is(':visible') && scrollbar.$vertical.is(':visible'));
 		visibleToCss($scrollbar, is_visible);
 		return is_visible;
 	};
@@ -642,9 +642,9 @@
 	 * @param $scrollbar jQuery
 	 * @param is_visible boolean
 	 */
-	var visibleToCss = function($scrollbar, is_visible)
+	let visibleToCss = function($scrollbar, is_visible)
 	{
-		var was_visible = $scrollbar.is(':visible');
+		let was_visible = $scrollbar.is(':visible');
 		if (is_visible && !was_visible) {
 			$scrollbar.show();
 		}
@@ -661,12 +661,12 @@
 	 * @param visible_size integer
 	 * @return boolean
 	 */
-	var visibleBar = function($body, $scrollbar, total_size, visible_size)
+	let visibleBar = function($body, $scrollbar, total_size, visible_size)
 	{
 		if (!$scrollbar) {
 			return false;
 		}
-		var is_visible = (total_size > Math.ceil(visible_size));
+		let is_visible = (total_size > Math.ceil(visible_size));
 		visibleToCss($scrollbar, is_visible);
 		return is_visible;
 	};
@@ -676,10 +676,10 @@
 	 * @param $element jQuery
 	 * @return boolean
 	 */
-	var visibleHorizontal = function($element)
+	let visibleHorizontal = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
-		var $body     = scrollbar.$body;
+		let scrollbar = $element.data('scrollbar');
+		let $body     = scrollbar.$body;
 		return visibleBar($body, scrollbar.$horizontal, $body[0].scrollWidth, $body.width());
 	};
 
@@ -688,17 +688,17 @@
 	 * @param $element jQuery
 	 * @return boolean
 	 */
-	var visibleVertical = function($element)
+	let visibleVertical = function($element)
 	{
-		var scrollbar = $element.data('scrollbar');
-		var $body     = scrollbar.$body;
+		let scrollbar = $element.data('scrollbar');
+		let $body     = scrollbar.$body;
 		return visibleBar($body, scrollbar.$vertical, $body[0].scrollHeight, $body.height());
 	};
 
 	//------------------------------------------------------------------- plugin common data & events
-	var elements        = {};
-	var moving          = null;
-	var next_identifier = 0;
+	let elements        = {};
+	let moving          = null;
+	let next_identifier = 0;
 
 	$(window).resize(resize);
 
@@ -732,8 +732,8 @@
 			vertical_scrollbar_near: 'both'  // both, foot, head
 		}, settings);
 
-		var is_table  = this.is('table');
-		var scrollbar = {
+		let is_table  = this.is('table');
+		let scrollbar = {
 			$body:      is_table ? this.children('tbody') : this,
 			$content:   is_table ? this.children('tbody, tfoot, thead') : this,
 			$foot:      (is_table && this.children('tfoot').length) ? this.children('tfoot') : null,
@@ -769,11 +769,11 @@ window.scrollbar = {
 	//------------------------------------------------------------------------- window.scrollbar.left
 	/**
 	 * @param set_left integer
-	 * @return integer
+	 * @return integer|number
 	 */
 	left: function(set_left)
 	{
-		var $body = $('body');
+		let $body = $('body');
 		if (set_left !== undefined) {
 			document.documentElement.scrollLeft = set_left;
 			$body.scrollLeft(set_left);
@@ -786,11 +786,11 @@ window.scrollbar = {
 	//-------------------------------------------------------------------------- window.scrollbar.top
 	/**
 	 * @param set_top integer
-	 * @return integer
+	 * @return integer|number
 	 */
 	top: function(set_top)
 	{
-		var $body = $('body');
+		let $body = $('body');
 		if (set_top !== undefined) {
 			document.documentElement.scrollTop = set_top;
 			$body.scrollTop(set_top);
