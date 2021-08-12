@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Date;
@@ -21,6 +20,7 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
+use ReflectionException;
 
 /**
  * Search parameters parser
@@ -415,10 +415,9 @@ class Search_Parameters_Parser
 
 	//----------------------------------------------------------------------------------------- parse
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return array search-compatible search array
 	 */
-	public function parse()
+	public function parse() : array
 	{
 		$search   = $this->search;
 		$to_unset = [];
@@ -430,10 +429,13 @@ class Search_Parameters_Parser
 				$search_values = [$search_property_path => &$search_entry];
 			}
 			foreach ($search_values as $property_path => &$search_value) {
-				/** @noinspection PhpUnhandledExceptionInspection property path must be valid */
-				$property = str_starts_with($property_path, Expressions::MARKER)
-					? null
-					: new Reflection_Property($this->class->name, $property_path);
+				// property path can be an Expressions::MARKER or 'representative' view field name
+				try {
+					$property = new Reflection_Property($this->class->name, $property_path);
+				}
+				catch (ReflectionException) {
+					$property = null;
+				}
 				if (strlen($search_value)) {
 					$this->parseField($search_value, $property);
 					// if search has been transformed to empty string, we cancel search for this column

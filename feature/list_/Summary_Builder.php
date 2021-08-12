@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Expressions;
 use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Sql\Link;
 use ITRocks\Framework\Locale;
@@ -21,6 +20,7 @@ use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
+use ReflectionException;
 
 /**
  * The Summary section of search filter on a List
@@ -348,11 +348,10 @@ class Summary_Builder
 	/**
 	 * get the property of a path
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $path string
-	 * @return Reflection_Property|null
+	 * @return ?Reflection_Property
 	 */
-	public function getProperty($path)
+	public function getProperty(string $path) : ?Reflection_Property
 	{
 		// old way to do. keep for backward compatibility
 		// TODO check if we should keep or if it's buggy and so we could keep only new way to do
@@ -360,9 +359,13 @@ class Summary_Builder
 		$properties = $this->joins->getProperties($master_path);
 		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
 		// if null, new way to do
-		if (is_null($property) && !beginsWith($path, Expressions::MARKER)) {
-			/** @noinspection PhpUnhandledExceptionInspection root class and property must be valid */
-			$property = new Reflection_Property($this->joins->getClass(''), $path);
+		if (is_null($property)) {
+			// property path can be an Expressions::MARKER or 'representative' view field name
+			try {
+				$property = new Reflection_Property($this->joins->getClass(''), $path);
+			}
+			catch (ReflectionException) {
+			}
 		}
 		return $property;
 	}
