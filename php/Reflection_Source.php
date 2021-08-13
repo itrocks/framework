@@ -30,7 +30,7 @@ class Reflection_Source
 	 *
 	 * @var boolean
 	 */
-	private $accept_compiled_source;
+	private bool $accept_compiled_source;
 
 	//---------------------------------------------------------------------------------------- $cache
 	/**
@@ -42,7 +42,7 @@ class Reflection_Source
 	 *
 	 * @var Reflection_Source[] key is file_name and class_name
 	 */
-	private static $cache = [];
+	private static array $cache = [];
 
 	//-------------------------------------------------------------------------------------- $changed
 	/**
@@ -52,67 +52,67 @@ class Reflection_Source
 	 *
 	 * @var boolean
 	 */
-	private $changed;
+	private bool $changed;
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
-	 * @var Reflection_Class[] the key is the full name of each class
+	 * @var ?Reflection_Class[] the key is the full name of each class
 	 */
-	private $classes;
+	private ?array $classes;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
-	 * @var Dependency[]
+	 * @var ?Dependency[]
 	 */
-	private $dependencies;
+	private ?array $dependencies;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public $file_name;
+	public ?string $file_name = null;
 
 	//--------------------------------------------------------------------------------- $instantiates
 	/**
-	 * @var Dependency[]
+	 * @var ?Dependency[]
 	 */
-	private $instantiates;
+	private ?array $instantiates;
 
 	//------------------------------------------------------------------------------------- $internal
 	/**
 	 * @var boolean
 	 */
-	private $internal;
+	private bool $internal;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * @var string[]
+	 * @var ?string[]
 	 */
-	private $lines;
+	private ?array $lines;
 
 	//----------------------------------------------------------------------------------- $namespaces
 	/**
-	 * @var integer[] key is the namespace, value is the line number where it is declared
+	 * @var ?integer[] key is the namespace, value is the line number where it is declared
 	 */
-	private $namespaces;
+	private ?array $namespaces;
 
 	//------------------------------------------------------------------------------------- $requires
 	/**
-	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
+	 * @var ?integer[] key is a string PHP file path, value is the line number where it is declared
 	 */
-	public $requires;
+	public ?array $requires;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	private $source;
+	private ?string $source;
 
 	//----------------------------------------------------------- $token_id_to_dependency_declaration
 	/**
 	 * @var string[] key is the declaration token id, value is the Dependency::$declaration value
 	 */
-	private static $token_id_to_dependency_declaration = [
+	private static array $token_id_to_dependency_declaration = [
 		T_CLASS     => Dependency::T_CLASS_DECLARATION,
 		T_INTERFACE => Dependency::T_INTERFACE_DECLARATION,
 		T_TRAIT     => Dependency::T_TRAIT_DECLARATION
@@ -195,7 +195,7 @@ class Reflection_Source
 	 *
 	 * @param $bigger_than integer
 	 */
-	public function free($bigger_than = 1)
+	public function free(int $bigger_than = 1)
 	{
 		if (isset($this->classes)) {
 			foreach ($this->classes as $class) {
@@ -251,8 +251,6 @@ class Reflection_Source
 		$class_depth = -1;
 		// how deep we are in {
 		$depth = 0;
-		// where did the last } come
-		$last_stop = null;
 		// level for the T_USE clause : T_NAMESPACE, T_CLASS or T_FUNCTION (T_NULL if outside any level)
 		$use_what = null;
 
@@ -298,10 +296,10 @@ class Reflection_Source
 					[Q . lLastParse($this->file_name, SL) . Q, Q . $this->file_name . Q],
 					$this->scanRequireFilePath()
 				);
-				if (strpos($eval, '$') !== false) {
+				if (str_contains($eval, '$')) {
 					$require_name = $eval;
 				}
-				elseif ((strpos($eval, '::') === false) && (strpos($eval, '->') === false)) {
+				elseif (!str_contains($eval, '::') && !str_contains($eval, '->')) {
 					/** @var $require_name string */
 					eval('$require_name = ' . $eval . ';');
 					if (!isset($require_name)) {
@@ -457,7 +455,7 @@ class Reflection_Source
 					foreach ($matches as $match) {
 						list($class_names, $pos) = $match[2];
 						if ($class_names[0] === '$') {
-							list($class_names, $pos) = isset($match[3]) ? $match[3] : ['', $match[2][1]];
+							list($class_names, $pos) = $match[3] ?? ['', $match[2][1]];
 						}
 						$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
 						if (strlen($class_names)) {
@@ -650,7 +648,7 @@ class Reflection_Source
 	 *
 	 * @return array
 	 */
-	public function getAll()
+	public function getAll() : array
 	{
 		$filters = [self::DEPENDENCIES];
 		if (!isset($this->classes))      $filters[] = self::CLASSES;
@@ -670,12 +668,10 @@ class Reflection_Source
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
-	public function getClass(string $class_name)
+	public function getClass(string $class_name) : Reflection_Class
 	{
 		$classes = $this->getClasses();
-		return isset($classes[$class_name])
-			? $classes[$class_name]
-			: new Reflection_Class($this, $class_name);
+		return $classes[$class_name] ?? new Reflection_Class($this, $class_name);
 	}
 
 	//-------------------------------------------------------------------------- getClassDependencies
@@ -684,7 +680,7 @@ class Reflection_Source
 	 * @param $instantiates boolean if true, searches for '::class' and 'new' too
 	 * @return Dependency[]
 	 */
-	public function getClassDependencies(Reflection_Class $class, $instantiates = false)
+	public function getClassDependencies(Reflection_Class $class, bool $instantiates = false) : array
 	{
 		$dependencies = [];
 		foreach ($this->getDependencies($instantiates) as $dependency) {
@@ -705,7 +701,7 @@ class Reflection_Source
 	 *
 	 * @return Reflection_Class[]
 	 */
-	public function getClasses()
+	public function getClasses() : array
 	{
 		if (!isset($this->classes)) {
 			$this->getFilters([self::CLASSES, self::DEPENDENCIES]);
@@ -721,7 +717,7 @@ class Reflection_Source
 	 * @param $instantiates boolean if true, searches for '::class' and 'new' too
 	 * @return Dependency[]
 	 */
-	public function getDependencies($instantiates = false)
+	public function getDependencies(bool $instantiates = false) : array
 	{
 		if (!isset($this->dependencies) || ($instantiates && !isset($this->instantiates))) {
 			$filters = [self::DEPENDENCIES];
@@ -749,9 +745,9 @@ class Reflection_Source
 	/**
 	 * Gets the first class into source (null if none)
 	 *
-	 * @return Reflection_Class
+	 * @return ?Reflection_Class
 	 */
-	public function getFirstClass()
+	public function getFirstClass() : ?Reflection_Class
 	{
 		$classes = $this->getClasses();
 		return $classes ? reset($classes) : null;
@@ -761,9 +757,9 @@ class Reflection_Source
 	/**
 	 * Gets the name of the first class into source (null if none)
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function getFirstClassName()
+	public function getFirstClassName() : ?string
 	{
 		$class = $this->getFirstClass();
 		return $class ? $class->name : null;
@@ -776,7 +772,7 @@ class Reflection_Source
 	 *
 	 * @return array key is the full class name
 	 */
-	public function getInstantiates()
+	public function getInstantiates() : array
 	{
 		if (!isset($this->instantiates)) {
 			$this->getFilters([self::DEPENDENCIES, self::INSTANTIATES]);
@@ -788,7 +784,7 @@ class Reflection_Source
 	/**
 	 * @return string[]
 	 */
-	public function getLines()
+	public function getLines() : array
 	{
 		if (!isset($this->lines)) {
 			$this->lines = isset($this->source)
@@ -807,7 +803,7 @@ class Reflection_Source
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
-	public function getOutsideClass(string $class_name)
+	public function getOutsideClass(string $class_name) : Reflection_Class
 	{
 		if (substr($class_name, 0, 1) === BS) {
 			$class_name = substr($class_name, 1);
@@ -833,7 +829,7 @@ class Reflection_Source
 	/**
 	 * @return integer[] the key is the required file path, the value is the line number
 	 */
-	public function getRequires()
+	public function getRequires() : array
 	{
 		if (!isset($this->requires)) {
 			$this->getAll();
@@ -846,7 +842,7 @@ class Reflection_Source
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	public function getSource()
+	public function getSource() : string
 	{
 		if (!isset($this->source)) {
 			if ($this->file_name) {
@@ -858,6 +854,7 @@ class Reflection_Source
 					? join(LF, $this->lines)
 					: ($file_name ? file_get_contents($file_name) : '');
 				if (!$this->source && (!$file_name || !file_exists($file_name))) {
+					echo PRE . print_r(get_declared_classes(), true) . _PRE;
 					trigger_error('Could not get source', E_USER_WARNING);
 				}
 			}
@@ -872,7 +869,7 @@ class Reflection_Source
 	/**
 	 * @return array
 	 */
-	public function & getTokens()
+	public function & getTokens() : array
 	{
 		if (!isset($this->tokens)) {
 			$this->tokens = token_get_all($this->getSource());
@@ -884,7 +881,7 @@ class Reflection_Source
 	/**
 	 * @return boolean
 	 */
-	public function hasChanged()
+	public function hasChanged() : bool
 	{
 		return $this->changed;
 	}
@@ -893,7 +890,7 @@ class Reflection_Source
 	/**
 	 * @return boolean
 	 */
-	public function isInternal()
+	public function isInternal() : bool
 	{
 		return $this->internal;
 	}
@@ -905,7 +902,7 @@ class Reflection_Source
 	 * @param $token_id integer
 	 * @return string
 	 */
-	private function nameOf(int $token_id)
+	private function nameOf(int $token_id) : string
 	{
 		return strtolower(substr(token_name($token_id), 2));
 	}
@@ -915,7 +912,7 @@ class Reflection_Source
 	 * @param $class_name string
 	 * @return Reflection_Source
 	 */
-	public static function ofClass(string $class_name)
+	public static function ofClass(string $class_name) : Reflection_Source
 	{
 		if (isset(self::$cache[$class_name])) {
 			$result = self::$cache[$class_name];
@@ -938,7 +935,7 @@ class Reflection_Source
 	 * @param $class_name string|null
 	 * @return Reflection_Source
 	 */
-	public static function ofFile(string $file_name, string $class_name = null)
+	public static function ofFile(string $file_name, string $class_name = null) : Reflection_Source
 	{
 		if (isset(self::$cache[$file_name])) {
 			$result = self::$cache[$file_name];
@@ -981,7 +978,7 @@ class Reflection_Source
 	 * @param $files      string[] The possible files that may contain the class definition
 	 * @return boolean true if the file has been found, else false
 	 */
-	public function searchFile(string $class_name, array $files)
+	public function searchFile(string $class_name, array $files) : bool
 	{
 		static $already = [];
 
@@ -1025,7 +1022,7 @@ class Reflection_Source
 	 * @param $reset  boolean
 	 * @return Reflection_Source
 	 */
-	public function setSource(string $source, bool $reset = true)
+	public function setSource(string $source, bool $reset = true) : Reflection_Source
 	{
 		$this->changed = true;
 		if ($reset) {
