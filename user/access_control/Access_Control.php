@@ -336,10 +336,10 @@ class Access_Control implements Configurable, Registerable
 	 * @param $callable array|callable
 	 * @return boolean
 	 */
-	public function hasAccessTo(array $callable)
+	public function hasAccessTo(array|callable $callable) : bool
 	{
 		$uri = View::link($callable[0], [$callable[1]]);
-		return $this->checkFeatures($uri);
+		return isset($uri) && $this->checkFeatures($uri);
 	}
 
 	//--------------------------------------------------------------------------------------- isBlank

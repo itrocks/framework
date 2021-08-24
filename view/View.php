@@ -121,14 +121,19 @@ class View implements Configurable
 	/**
 	 * Generates a link for to an object and feature, using parameters if needed
 	 *
-	 * @param $object     object|string|array linked object or class name
+	 * @param $object     object|string|array|null linked object or class name
 	 *                    Some internal calls may all this with [$class_name, $id]
-	 * @param $feature    string|string[] linked feature name. Forced if in array
-	 * @param $parameters string|string[]|object|object[] optional parameters list
-	 * @param $arguments  string|string[] optional arguments list
-	 * @return string
+	 * @param $feature    string|string[]|null linked feature name. Forced if in array
+	 * @param $parameters string|string[]|object|object[]|null optional parameters list
+	 * @param $arguments  string|string[]|null optional arguments list
+	 * @return ?string
 	 */
-	public static function link($object, $feature = null, $parameters = null, $arguments = null)
+	public static function link(
+		array|object|string|null $object,
+		array|string             $feature    = null,
+		array|object|string      $parameters = null,
+		array|string             $arguments  = null
+	) : ?string
 	{
 		return self::current()->link($object, $feature, $parameters, $arguments);
 	}
