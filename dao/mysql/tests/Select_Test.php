@@ -88,7 +88,7 @@ class Select_Test extends Test
 	 * @return string[]
 	 * @throws ReflectionException
 	 */
-	private function propertyNames(Reflection_Class $class, $depth = 1) : array
+	private function propertyNames(Reflection_Class $class, int $depth = 1) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection comes from Reflection_Class */
 		$properties = Class_\Link_Annotation::of($class)->value
@@ -143,7 +143,7 @@ class Select_Test extends Test
 	{
 		/** @var $dao Mysql\Link */
 		$dao                      = Dao::current();
-		Maintainer::get()->notice = false;
+		Maintainer::get()->notice = '';
 		$mysqli                   = $dao->getConnection();
 		array_push($mysqli->contexts, $builder->getJoins()->getClassNames());
 		$dao->query($query);

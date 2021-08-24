@@ -15,7 +15,7 @@ class Mysql_Error_Exception extends Exception
 	/**
 	 * @var string
 	 */
-	public $query;
+	public string $query;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

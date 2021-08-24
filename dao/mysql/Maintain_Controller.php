@@ -24,20 +24,20 @@ class Maintain_Controller implements Feature_Controller
 	 *
 	 * @var boolean
 	 */
-	protected $create_empty_tables;
+	protected bool $create_empty_tables;
 
 	//-------------------------------------------------------------------------------------- $verbose
 	/**
 	 * @var boolean
 	 */
-	protected $verbose;
+	protected bool $verbose;
 
 	//------------------------------------------------------------------------------------ classNamed
 	/**
 	 * @param $class_name string
-	 * @return Reflection_Class|null
+	 * @return ?Reflection_Class
 	 */
-	protected function classNamed($class_name)
+	protected function classNamed(string $class_name) : ?Reflection_Class
 	{
 		static $reflection_classes = [];
 		if (isset($reflection_classes[$class_name])) {
@@ -46,7 +46,7 @@ class Maintain_Controller implements Feature_Controller
 		try {
 			$class = new Reflection_Class($class_name);
 		}
-		catch (ReflectionException $exception) {
+		catch (ReflectionException) {
 			if ($this->verbose && ($class_name !== Console::class)) {
 				echo "! ignore $class_name : NOT FOUND" . BRLF;
 			}
@@ -62,14 +62,12 @@ class Maintain_Controller implements Feature_Controller
 	 *
 	 * @return Reflection_Class[] key is the name of the class
 	 */
-	protected function getClasses()
+	protected function getClasses() : array
 	{
 		// cache hierarchy
 		$children = [];
-		$parents  = [];
 		foreach (Dao::search(['type' => Dependency::T_EXTENDS], Dependency::class) as $dependency) {
 			$children[$dependency->dependency_name][$dependency->class_name] = $dependency->class_name;
-			$parents[$dependency->class_name] = $dependency->dependency_name;
 		}
 		// tables
 		/** @var $mysql Mysql\Link */
@@ -127,9 +125,9 @@ class Maintain_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		upgradeTimeLimit(7200);
 
@@ -157,8 +155,7 @@ class Maintain_Controller implements Feature_Controller
 			$maintainer->simulationStop();
 		}
 
-		echo '<h4>Maintenance done</h4>';
-		return;
+		return 'Maintenance done';
 	}
 
 	//------------------------------------------------------------------------------- updateAllTables
@@ -166,13 +163,13 @@ class Maintain_Controller implements Feature_Controller
 	 * @param $classes    Reflection_Class[]
 	 * @param $simulation boolean
 	 */
-	protected function updateAllTables(array $classes, $simulation)
+	protected function updateAllTables(array $classes, bool $simulation)
 	{
 		foreach ($classes as $class) {
 			$class_name = $class->name;
 			$maintainer = Maintainer::get();
 			$maintainer->verbose = $this->verbose;
-			$maintainer->updateTable($class_name, null);
+			$maintainer->updateTable($class_name);
 			if (count($maintainer->requests)) {
 				echo '<h4>'
 					. ($simulation ? '[Simulation] Requests' : 'Updated') . SP . $class_name

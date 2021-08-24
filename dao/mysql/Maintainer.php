@@ -70,7 +70,7 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @var integer[]
 	 */
-	private static $MAX_RETRY = [
+	private static array $MAX_RETRY = [
 		Errors::ER_DUP_ENTRY     => 5,
 		Errors::ER_NO_SUCH_TABLE => 2
 	];
@@ -84,7 +84,7 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @var array integer[string $query][integer $last_error] value is the solved / retries counter
 	 */
-	private $already = [];
+	private array $already = [];
 
 	//-------------------------------------------------------------------------- $create_empty_tables
 	/**
@@ -92,13 +92,13 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	public $create_empty_tables = false;
+	public bool $create_empty_tables = false;
 
 	//------------------------------------------------------------------------------ $exclude_classes
 	/**
 	 * @var string[] Class names
 	 */
-	public $exclude_classes = [];
+	public array $exclude_classes = [];
 
 	//--------------------------------------------------------------------------------------- $notice
 	/**
@@ -107,7 +107,7 @@ class Maintainer implements Configurable, Registerable
 	 * @values self::const local
 	 * @var string
 	 */
-	public $notice = false;
+	public string $notice = '';
 
 	//------------------------------------------------------------------------------------- $requests
 	/**
@@ -115,7 +115,7 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	public $requests = [];
+	public array $requests = [];
 
 	//----------------------------------------------------------------------------------- $simulation
 	/**
@@ -123,13 +123,13 @@ class Maintainer implements Configurable, Registerable
 	 *
 	 * @var boolean
 	 */
-	private $simulation = false;
+	private bool $simulation = false;
 
 	//-------------------------------------------------------------------------------------- $verbose
 	/**
 	 * @var boolean
 	 */
-	public $verbose = false;
+	public bool $verbose = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -328,10 +328,12 @@ class Maintainer implements Configurable, Registerable
 				);
 			}
 			elseif ($mysqli->isTruncate($query)) {
-				return trigger_error(
+				trigger_error(
 					"Mysql maintainer can't create table $table_name from a TRUNCATE query without context",
 					E_USER_ERROR
-				) && false;
+				);
+				/** @noinspection PhpUnreachableStatementInspection Error may be caught and ignored */
+				return false;
 			}
 			elseif ($mysqli->isUpdate($query)) {
 				// TODO create table without context UPDATE columns detection
@@ -415,7 +417,7 @@ class Maintainer implements Configurable, Registerable
 				}
 			}
 		}
-		return $context ? $context : null;
+		return $context ?: null;
 	}
 
 	//------------------------------------------------------------------------ onCantCreateTableError
@@ -452,7 +454,7 @@ class Maintainer implements Configurable, Registerable
 		$mysqli     = $object;
 		$last_errno = $mysqli->last_errno;
 		$last_error = $mysqli->last_error;
-		$max_retry  = isset(static::$MAX_RETRY[$last_errno]) ? static::$MAX_RETRY[$last_errno] : 1;
+		$max_retry  = static::$MAX_RETRY[$last_errno] ?? 1;
 		if (!isset($this->already[$query][$last_error])) {
 			$this->already[$query][$last_error] = 0;
 		}
@@ -461,7 +463,7 @@ class Maintainer implements Configurable, Registerable
 			$this->already[$query][$last_error] ++;
 			if (!end($mysqli->contexts)) {
 				$key                    = ($mysqli->contexts ? key($mysqli->contexts) : 0);
-				$pop_context            = ($mysqli->contexts ? true : false);
+				$pop_context            = boolval($mysqli->contexts);
 				$mysqli->contexts[$key] = $this->guessContext($query, $mysqli);
 			}
 			$retry = false;
@@ -554,7 +556,6 @@ class Maintainer implements Configurable, Registerable
 		}
 		if (!$retry) {
 			foreach ($error_table_names as $error_table_name) {
-				/** @noinspection PhpExpressionAlwaysConstantInspection Inspector is wrong */
 				$retry = $retry || $this->createTableWithoutContext($mysqli, $error_table_name, $query);
 			}
 		}
@@ -687,7 +688,7 @@ class Maintainer implements Configurable, Registerable
 	 * @param $class_name string the name of the class to exclude from updates (main query class)
 	 */
 	private function updateContextAfterCreate(
-		Contextual_Mysqli $mysqli, $query = null, $class_name = null
+		Contextual_Mysqli $mysqli, string $query, string $class_name
 	) {
 		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
 			if ($context = end($mysqli->contexts)) foreach ($context as $context_class_name) {
@@ -861,12 +862,12 @@ class Maintainer implements Configurable, Registerable
 	 * @param $class_table         Table
 	 * @param $table_builder_class Table_Builder_Class
 	 * @param $mysqli              Contextual_Mysqli
-	 * @param $class_name          string
+	 * @param $class_name          string|null
 	 * @return boolean
 	 */
 	private function updateTableStructure(
 		Table $class_table, Table_Builder_Class $table_builder_class,
-		Contextual_Mysqli $mysqli, $class_name = null
+		Contextual_Mysqli $mysqli, string $class_name = null
 	) : bool
 	{
 		$table_name  = $class_table->getName();
@@ -892,7 +893,6 @@ class Maintainer implements Configurable, Registerable
 		else {
 			$alter_primary_key  = true;
 			$builder            = new Alter_Table($mysql_table);
-			$foreign_keys       = null;
 			$mysql_columns      = $mysql_table->getColumns();
 			$mysql_foreign_keys = $mysql_table->getForeignKeys();
 
