@@ -181,6 +181,9 @@ class Maintainer implements Configurable, Registerable
 								$context_class = $maintain;
 							}
 						}
+						if (!is_string($context_class)) {
+							continue;
+						}
 						$id_context_property = 'id_' . Names::classToProperty(
 								Names::setToSingle(Dao::storeNameOf($context_class))
 							);
