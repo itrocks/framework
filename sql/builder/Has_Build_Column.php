@@ -78,7 +78,7 @@ trait Has_Build_Column
 			);
 			if (isset($this->translate[$path])) {
 				$path = $this->translate[$path];
-				$sql  = 'IFNULL(' . $sql . ', ' . $join->masterSql() . ')';
+				$sql  = 'IFNULL(NULLIF(' . $sql . ', ""), ' . $join->masterSql() . ')';
 			}
 			if (
 				($column_name === $path)
