@@ -16,7 +16,7 @@ class Translator
 {
 
 	//------------------------------------------------------------- MAX_WILDCARD_REVERSE_TRANSLATIONS
-	const MAX_WILDCARD_REVERSE_TRANSLATIONS = 100;
+	const MAX_WILDCARD_REVERSE_TRANSLATIONS = 10000;
 
 	//------------------------------------------------------------- TOO_MANY_RESULTS_MATCH_YOUR_INPUT
 	const TOO_MANY_RESULTS_MATCH_YOUR_INPUT = 'too many results match your input';
