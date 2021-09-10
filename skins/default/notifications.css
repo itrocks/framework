@@ -1,46 +1,68 @@
-#notifications > #query,
-#notifications > #responses {
-  font-size: 11px;
-  margin: 10px 0;
-  overflow: hidden auto;
-  padding: 0 10px 0 52px; }
-  #notifications > #query > li,
-  #notifications > #responses > li {
-    border-radius: 2px;
-    display: block;
-    line-height: 1.5em;
-    padding: 3px 8px; }
-    #notifications > #query > li h3,
-    #notifications > #responses > li h3 {
-      font-weight: 500; }
-    #notifications > #query > li li,
-    #notifications > #responses > li li {
-      list-style: disc;
-      margin-left: 1em; }
-  #notifications > #query:empty:after,
-  #notifications > #responses:empty:after {
-    color: #7c7c7c;
-    content: attr(data-empty);
-    display: block;
-    position: relative;
-    top: calc(50% - 6px);
-    text-align: center; }
-#notifications > #query {
-  box-shadow: inset -1px 0 #d8d8d8; }
-  #notifications > #query:empty {
-    background: url("img/warning-32-inactive.svg") 10px top no-repeat; }
-  #notifications > #query:not(:empty) {
-    background: url("img/warning-32.svg") 10px top no-repeat; }
-  #notifications > #query > li {
-    background: #f9d4d4; }
-#notifications > #responses {
-  box-shadow: inset 1px 0 #d8d8d8; }
-  #notifications > #responses:empty {
-    background: url("img/information-32-inactive.svg") 10px top no-repeat; }
-  #notifications > #responses:not(:empty) {
-    background: url("img/information-32.svg") 10px top no-repeat; }
-  #notifications > #responses > li {
-    background: #e8e8e8; }
+#notifications {
+  position: relative; }
+  #notifications > .drop-on {
+    background: white;
+    border: 1px solid #ddd;
+    left: 10px;
+    list-style: none;
+    position: absolute;
+    top: 3px; }
+    #notifications > .drop-on > li {
+      border: 1px solid transparent;
+      display: inline-block;
+      height: 40px;
+      padding: 4px;
+      vertical-align: top;
+      width: 40px; }
+      #notifications > .drop-on > li:not(:first-child) {
+        margin-left: 10px; }
+      #notifications > .drop-on > li:not(:last-child) {
+        margin-right: 10px; }
+      #notifications > .drop-on > li:hover {
+        border: 1px solid red; }
+  #notifications > #query,
+  #notifications > #responses {
+    font-size: 11px;
+    margin: 10px 0;
+    overflow: hidden auto;
+    padding: 0 10px 0 52px; }
+    #notifications > #query > li,
+    #notifications > #responses > li {
+      border-radius: 2px;
+      display: block;
+      line-height: 1.5em;
+      padding: 3px 8px; }
+      #notifications > #query > li h3,
+      #notifications > #responses > li h3 {
+        font-weight: 500; }
+      #notifications > #query > li li,
+      #notifications > #responses > li li {
+        list-style: disc;
+        margin-left: 1em; }
+    #notifications > #query:empty:after,
+    #notifications > #responses:empty:after {
+      color: #7c7c7c;
+      content: attr(data-empty);
+      display: block;
+      position: relative;
+      top: calc(50% - 6px);
+      text-align: center; }
+  #notifications > #query {
+    box-shadow: inset -1px 0 #d8d8d8; }
+    #notifications > #query:empty {
+      background: url("img/warning-32-inactive.svg") 10px top no-repeat; }
+    #notifications > #query:not(:empty) {
+      background: url("img/warning-32.svg") 10px top no-repeat; }
+    #notifications > #query > li {
+      background: #f9d4d4; }
+  #notifications > #responses {
+    box-shadow: inset 1px 0 #d8d8d8; }
+    #notifications > #responses:empty {
+      background: url("img/information-32-inactive.svg") 10px top no-repeat; }
+    #notifications > #responses:not(:empty) {
+      background: url("img/information-32.svg") 10px top no-repeat; }
+    #notifications > #responses > li {
+      background: #e8e8e8; }
 
 #notifications {
   display: grid;

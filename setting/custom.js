@@ -34,14 +34,16 @@ $(document).ready(function()
 	$body.build('call', [article_header, '.custom.select li[data-class][data-id]'], function()
 	{
 		this.draggable({
-			appendTo: 'body',
+			appendTo:    'body',
 			containment: 'body',
-			cursorAt: { left: 10, top: 10 },
-			scroll: false,
-			drag: function(event, ui) {
+			cursorAt:    { left: 10, top: 10 },
+			scroll:      false,
+
+			drag: function(event, ui)
+			{
 				let $helper = $(ui.helper)
 				let $inside = undefined
-				$('article').add('nav#menu').each(function() {
+				$('article, nav#menu, #notifications > .drop-on > li').each(function() {
 					let $element  = $(this)
 					let offset    = $element.offset()
 					offset.right  = offset.left + $element.width()
@@ -54,33 +56,84 @@ $(document).ready(function()
 						return false
 					}
 				})
-				$inside
-					? $helper.addClass('inside').removeClass('outside')
-					: $helper.addClass('outside').removeClass('inside')
-				$helper.data('inside', $inside)
-			},
-			stop: function(event, ui) {
-				let $li = $(this)
-				let $helper = $(ui.helper)
-				if ($helper.hasClass('outside')) {
-					let href = app.uri_base
-						+ SL + $li.data('class').repl(BS, SL)
-						+ SL + $li.data('id')
-						+ SL + 'delete'
-						+ '?confirm=1'
-					redirectLight(href, '#responses')
+				if (
+					$inside
+					&& (
+						!$helper.data('inside')
+						|| ($helper.data('inside').attr('class') !== $inside.attr('class'))
+					)
+				) {
+					if ($helper.data('inside')) {
+						$helper.removeClass('inside-' + $helper.data('inside').attr('class'))
+					}
+					$helper
+						.addClass('inside')
+						.addClass('inside-' + $inside.attr('class'))
+						.removeClass('outside')
+					$helper.data('inside', $inside)
 				}
-				else if ($helper.data('inside').is('article')) {
-					$li.find('a').click()
+				else if ($helper.data('inside') && !$inside) {
+					$helper
+						.addClass('outside')
+						.removeClass('inside')
+						.removeClass('inside-' + $helper.data('inside').attr('class'))
+					$helper.removeData('inside')
+				}
+			},
+
+			start: function()
+			{
+				$('#notifications').append(
+					$('<ul class="drop-on"></ul>')
+						// todo dashboard (and other targets) should be separated into their feature code : be more extensible
+						.append(
+							'<li class="dashboard" data-href="app://ITRocks/Framework/Report/Dashboard/append/(class)/(id)" data-target="#main">'
+							+ tr('to') + SP + tr('dashboard')
+							+ '</li>'
+						)
+						// todo trashcan could be into trashcan feature source code too
+						.append(
+							'<li class="trashcan" data-href="app://(class)/(id)/delete?confirm=true">'
+							+ tr('to') + SP + tr('trashcan')
+							+ '</li>'
+						)
+						.css('top', '-64px')
+				)
+				$('#notifications > .drop-on').animate({ top: '3px' }, 200).build()
+			},
+
+			stop: function(event, ui)
+			{
+				$('#notifications .drop-on').animate({ top: '-64px' }, 200)
+				setTimeout(() => { $('ul.drop-on').remove() }, 200)
+
+				let $helper = $(ui.helper)
+				let $inside = $helper.data('inside')
+				if ($inside) {
+					let $li  = $(this)
+					let href = $inside.data('href')
+					if (href) {
+						href = href
+							.repl('app:/', app.uri_base)
+							.repl('(class)', $li.data('class').repl(BS, SL))
+							.repl('(id)', $li.data('id'))
+						redirectLight(href, $inside.data('target') ? $inside.data('target') : '#responses')
+					}
+					else if ($inside.is('article')) {
+						$li.find('a').click()
+					}
 				}
 				$('body').click()
 			},
-			helper: function() {
+
+			helper: function()
+			{
 				let $this = $(this)
 				return $('<div class="custom select helper">')
 					.css('z-index', zIndexInc())
 					.text($this.text())
 			}
+
 		})
 	})
 

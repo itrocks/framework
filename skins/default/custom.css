@@ -34,8 +34,9 @@ article header {
   border: 1px solid #d0d0d0;
   box-shadow: 0 0 3px 3px rgba(216, 216, 216, 0.4);
   padding: 10px;
+  pointer-events: none;
   position: relative; }
-  .custom.helper.select.outside:before {
+  .custom.helper.select.inside-trashcan:before {
     background: url("img/delete-24-red.svg") center no-repeat;
     content: '';
     height: 32px;

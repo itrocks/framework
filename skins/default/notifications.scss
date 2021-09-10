@@ -3,6 +3,37 @@
 //------------------------------------------------------------------------------------------- Style
 
 #notifications {
+	position: relative;
+
+	> .drop-on {
+		background: white;
+		border: 1px solid #ddd;
+		left: 10px;
+		list-style: none;
+		position: absolute;
+		top: 3px;
+
+		> li {
+			border: 1px solid transparent;
+			display: inline-block;
+			height: 40px;
+			padding: 4px;
+			vertical-align: top;
+			width: 40px;
+
+			&:not(:first-child) {
+				margin-left: 10px;
+			}
+
+			&:not(:last-child) {
+				margin-right: 10px;
+			}
+
+			&:hover {
+				border: 1px solid red;
+			}
+		}
+	}
 
 	> #query,
 	> #responses {
