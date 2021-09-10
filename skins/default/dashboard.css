@@ -1,0 +1,22 @@
+article.dashboard .block .indicator {
+  border: 1px solid #ddd;
+  display: inline-block;
+  margin: 10px 0 0 10px;
+  position: relative; }
+  article.dashboard .block .indicator a {
+    display: grid;
+    grid-template-areas: 'image text' 'value value';
+    grid-template-columns: 32px auto;
+    grid-template-rows: 32px auto;
+    height: 64px;
+    width: 200px; }
+    article.dashboard .block .indicator a img {
+      grid-area: image;
+      width: 32px; }
+    article.dashboard .block .indicator a .text {
+      grid-area: text;
+      margin: auto auto; }
+    article.dashboard .block .indicator a .value {
+      font-size: 200%;
+      grid-area: value;
+      text-align: center; }

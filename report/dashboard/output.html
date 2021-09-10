@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<script src="../../../../vendor/components/jquery/jquery.js"></script>
+	<script> path = "../../../../"; </script>
+	<script src="../../js/all.js"></script>
+	<style> @import "../../skins/default/all.css"; </style>
+	<title>{title}</title>
+</head>
+<body>
+<!--BEGIN-->
+
+	<article class="dashboard output" data-class="{@class}" data-feature="output" data-id="{?~id}">
+		<header><h2>{title}</h2></header>
+		<ul class="blocks data">
+			<li>
+				<ul class="block">
+					<!--indicators-->
+					<li class="indicator">
+						<a href="app://(link)" target="#main">
+							<img alt="|icon|" src="app://(icon.link)">
+							<span class="text">{setting.value.name}</span>
+							<span class="value">{formattedValue}</span>
+						</a>
+					</li>
+					<!--end-->
+				</ul>
+			</li>
+		</ul>
+	</article>
+
+<!--END-->
+</body>
+</html>
