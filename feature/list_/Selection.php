@@ -7,7 +7,6 @@ use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
-use ITRocks\Framework\Dao\Func\Logical;
 use ITRocks\Framework\Dao\Option;
 use ITRocks\Framework\Dao\Option\Limit;
 use ITRocks\Framework\Feature\List_Setting;
@@ -27,7 +26,7 @@ class Selection
 	/**
 	 * @var string
 	 */
-	protected $class_name;
+	protected string $class_name;
 
 	//--------------------------------------------------------------------------- $excluded_selection
 	/**
@@ -36,42 +35,42 @@ class Selection
 	 *
 	 * @var integer[]
 	 */
-	protected $excluded_selection = [];
+	protected array $excluded_selection = [];
 
 	//------------------------------------------------------------------------------ $list_controller
 	/**
 	 * Data list controller cache, set by getListController
 	 *
 	 * @see getListController
-	 * @var Controller
+	 * @var ?Controller
 	 */
-	private $list_controller;
+	private ?Controller $list_controller = null;
 
 	//-------------------------------------------------------------------------------- $list_settings
 	/**
 	 * Data list settings cache, set by getListSettings
 	 *
 	 * @see getListSettings
-	 * @var List_Setting\Set
+	 * @var ?List_Setting\Set
 	 */
-	private $list_settings;
+	private ?List_Setting\Set $list_settings = null;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * Read options cache, set by getSearchOptions
 	 *
 	 * @see getSearchOptions
-	 * @var Option[]
+	 * @var ?Option[]
 	 */
-	private $options;
+	private ?array $options = null;
 
 	//--------------------------------------------------------------------------------------- $search
 	/**
 	 * Search filters cache, set by getSearchFilter
 	 *
-	 * @var array
+	 * @var ?array
 	 */
-	private $search;
+	private ?array $search = null;
 
 	//----------------------------------------------------------------------------------- $select_all
 	/**
@@ -80,7 +79,7 @@ class Selection
 	 *
 	 * @var boolean
 	 */
-	protected $select_all = false;
+	protected bool $select_all = false;
 
 	//------------------------------------------------------------------------------------ $selection
 	/**
@@ -89,14 +88,14 @@ class Selection
 	 *
 	 * @var integer[]
 	 */
-	protected $selection = [];
+	protected array $selection = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $object_class object|string object or class name. If Set, will be decoded as element
+	 * @param $object_class object|string|null object or class name. If Set, will be decoded as element
 	 * @param $form         string[]
 	 */
-	public function __construct($object_class = null, array $form = null)
+	public function __construct(object|string $object_class = null, array $form = null)
 	{
 		if (isset($form)) {
 			$this->setFormData($form);
@@ -113,13 +112,29 @@ class Selection
 	 *
 	 * @return array
 	 */
-	protected function allButExcludedFilter()
+	protected function allButExcludedFilter() : array
 	{
 		$search = $this->getListController()->applySearchParameters($this->getListSettings());
 		if ($this->excluded_selection) {
 			$search[]['id'] = Func::notIn($this->excluded_selection);
 		}
 		return $search;
+	}
+
+	//--------------------------------------------------------------------------- allFromListSettings
+	/**
+	 * Call this to prepare read for all results of given list settings
+	 *
+	 * @example
+	 * $selection = new Selection($class_name);
+	 * $selection->allFromListSettings($list_settings);
+	 * return $selection->readDataSelect();
+	 * @param $list_settings List_Setting\Set
+	 */
+	public function allFromListSettings(List_Setting\Set $list_settings)
+	{
+		$this->setFormData(['select_all' => true]);
+		$this->list_settings = $list_settings;
 	}
 
 	//----------------------------------------------------------------------------------------- flush
@@ -144,7 +159,7 @@ class Selection
 	 * @return string
 	 * @see setObject
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		return $this->class_name;
 	}
@@ -156,10 +171,11 @@ class Selection
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Controller
 	 */
-	public function getListController()
+	public function getListController() : Controller
 	{
 		if (!isset($this->list_controller)) {
 			$list_controllers = Main::$current->getController($this->class_name, Feature::F_LIST);
+			/** @noinspection PhpFieldAssignmentTypeMismatchInspection must match */
 			/** @noinspection PhpUnhandledExceptionInspection a controller is always a valid callable */
 			$this->list_controller = Builder::create($list_controllers[0]);
 		}
@@ -172,7 +188,7 @@ class Selection
 	 *
 	 * @return List_Setting\Set
 	 */
-	public function getListSettings()
+	public function getListSettings() : List_Setting\Set
 	{
 		if (!isset($this->list_settings)) {
 			$this->list_settings = List_Setting\Set::current($this->class_name);
@@ -188,10 +204,10 @@ class Selection
 	 * - the search criterion in the current data list for the object
 	 * - the excluded_selection, select_all and selection selected elements from the form
 	 *
-	 * @param $search object|array Search array for filter, additional to filters get from data list
-	 * @return array|Logical
+	 * @param $search object|array|null Search array for filter, additional to filters get from data list
+	 * @return array|object
 	 */
-	public function getSearchFilter($search = null)
+	public function getSearchFilter(object|array $search = null) : array|object
 	{
 		if (!isset($this->search)) {
 			$this->search = $this->select_all
@@ -212,7 +228,7 @@ class Selection
 	 * @param $options Option|Option[] options to merge with the calculated filter options
 	 * @return Option[]
 	 */
-	public function getSearchOptions(array $options = [])
+	public function getSearchOptions(array $options = []) : array
 	{
 		if (!is_array($options)) {
 			$options = $options ? [$options] : [];
@@ -238,14 +254,16 @@ class Selection
 	 * @param $properties_path string[] the list of the columns names : only those properties
 	 *                         will be read. There are 'column.sub_column' to get values from linked
 	 *                         objects from the same data source
-	 * @param $search          object|array Search array for filter, associating properties names to
-	 *                         matching search value too
+	 * @param $search          object|array|null Search array for filter, associating properties names
+	 *                         to matching search value too
 	 * @param $options         Option|Option[]|string|string[] some options for advanced search
 	 * @return List_Data A list of read records. Each record values (may be objects) are
 	 *         stored in the same order than columns.
 	 * @return List_Data[]
 	 */
-	public function readDataSelect(array $properties_path = null, $search = null, $options = [])
+	public function readDataSelect(
+		array $properties_path = null, object|array $search = null, array|Option|string $options = []
+	) : List_Data
 	{
 		$search  = $this->getSearchFilter($search);
 		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
@@ -274,11 +292,11 @@ class Selection
 	 * Beware : this may consume a lot of time and memory if many objects are selected
 	 * Do use only with limited sets
 	 *
-	 * @param $search  object|array    optional additional filters
-	 * @param $options Option|Option[] optional options for advanced search
+	 * @param $search  object|array|null optional additional filters
+	 * @param $options Option|Option[]   optional options for advanced search
 	 * @return object[]
 	 */
-	public function readObjects($search = null, $options = [])
+	public function readObjects(array|object $search = null, array $options = []) : array
 	{
 		$search  = $this->getSearchFilter($search);
 		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
@@ -313,7 +331,7 @@ class Selection
 	 *
 	 * @return array
 	 */
-	protected function selectedFilter()
+	protected function selectedFilter() : array
 	{
 		return ['id' => $this->selection ? Func::in($this->selection) : 0];
 	}
@@ -332,10 +350,8 @@ class Selection
 		$this->excluded_selection = empty($form['excluded_selection'])
 			? []
 			: explode(',', $form['excluded_selection']);
-		$this->select_all = empty($form['select_all'])
-			? false
-			: true;
-		$this->selection = empty($form['selection'])
+		$this->select_all = !empty($form['select_all']);
+		$this->selection  = empty($form['selection'])
 			? []
 			: explode(',', $form['selection']);
 		$this->flush();
@@ -348,7 +364,7 @@ class Selection
 	 *
 	 * @param $object object|string object or class name
 	 */
-	public function setObject($object)
+	public function setObject(object|string $object)
 	{
 		if ($object instanceof Parameters) {
 			$object = $object->getMainObject();
