@@ -21,3 +21,6 @@ article.dashboard .block .indicator {
       font-size: 200%;
       grid-area: value;
       text-align: center; }
+
+#notifications .drop-on > .dashboard {
+  background-image: url("img/dashboard-24.svg"); }

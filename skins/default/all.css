@@ -26,8 +26,7 @@
 @import 'file-input.css';
 @import 'fonts/roboto.css';
 @import 'history.css';
-@import 'import-form.css';
-@import 'import-preview.css';
+@import 'import.css';
 @import 'input.css';
 @import 'input-button.css';
 @import 'layout-model.css';
@@ -42,7 +41,6 @@
 @import 'modal.css';
 @import 'modifiers.css';
 @import 'notifications.css';
-@import 'output-objects.css';
 @import 'output-properties.css';
 @import 'output-value.css';
 @import 'property-select.css';
@@ -50,5 +48,4 @@
 @import 'quill.css';
 @import 'tabber.css';
 @import 'tooltip.css';
-@import 'trashcan.css';
 @import 'user.css';

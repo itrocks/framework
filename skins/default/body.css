@@ -61,8 +61,6 @@ body {
     body > .company.logo > a {
       display: block;
       height: 100%; }
-  body > .trashcan {
-    display: none; }
   body > #favorites {
     display: none;
     grid-area: favorites; }
