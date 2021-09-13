@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Report\Dashboard;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\File;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Feature\List_Setting;
@@ -82,6 +83,13 @@ class Indicator
 		}
 		elseif (!isset($this->dashboard)) {
 			$this->dashboard = Dashboard::current();
+			if (!Dao::getObjectIdentifier($this->dashboard)) {
+				$dao = Dao::current();
+				if ($dao instanceof Identifier_Map) {
+					$dao->setObjectIdentifier($this->dashboard, 1);
+				}
+				Dao::write($this->dashboard, Dao::add());
+			}
 		}
 	}
 

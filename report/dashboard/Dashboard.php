@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Report;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Report\Dashboard\Indicator;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Traits\Has_Name;
@@ -23,6 +24,17 @@ class Dashboard
 	 */
 	public $indicators;
 
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $name string|null
+	 */
+	public function __construct(string $name = null)
+	{
+		if (isset($name)) {
+			$this->name = $name;
+		}
+	}
+
 	//--------------------------------------------------------------------------------------- current
 	/**
 	 * Gets the session current / default dashboard. If none : initialized to dashboard Nr 1.
@@ -37,7 +49,7 @@ class Dashboard
 		/** @noinspection PhpUnhandledExceptionInspection create static */
 		return Session::current()->get(static::class)
 			?: Dao::read(1, static::class)
-			?: Builder::create(static::class);
+			?: Builder::create(static::class, [Loc::tr('main')]);
 	}
 
 	//------------------------------------------------------------------------------------ setCurrent
