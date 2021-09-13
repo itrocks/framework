@@ -720,20 +720,34 @@ class Functions
 	/**
 	 * Check if current user access to the given feature.
 	 *
+	 * @example 'output'.@hasAccessTo
+	 * @example '/ITRocks/Framework/Report/Dashboard/output'.@hasAccessTo
 	 * @param $template   Template The current template object
 	 * @param $feature    string   The feature to check access to
 	 * @param $class_name string   The object class concerned by the feature (optional).
 	 *                             By default, the current context class is used.
 	 * @return boolean
+	 * @todo resolve <!--use ITRocks\Framework\Report--> for 'Report/Dashboard/output' notation too
+	 * @todo '\ITRocks\Framework\Report\Dashboard::output'.@hasAccessTo (resolve <!--use too)
 	 */
 	public function getHasAccessTo(Template $template, $feature = null, $class_name = null)
 	{
 		$access_control = Access_Control::get(false);
-		if (!$access_control) return false;
+		if (!$access_control) {
+			return false;
+		}
 		reset($template->objects);
 		if (!$feature) {
 			$feature = current($template->objects);
-			next($template->objects);
+			if (str_contains($feature, SL)) {
+				if (!$class_name) {
+					$class_name = Names::pathToClass(ltrim(lLastParse($feature, SL), SL));
+				}
+				$feature = rLastParse($feature, SL);
+			}
+			elseif (!$class_name) {
+				next($template->objects);
+			}
 		}
 		if (!$class_name) {
 			$class_name = $this->displayableClassNameOf(current($template->objects))->value;
