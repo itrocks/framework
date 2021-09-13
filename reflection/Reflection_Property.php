@@ -632,7 +632,7 @@ class Reflection_Property extends ReflectionProperty
 		}
 		// final value
 		$sub_objects = [];
-		foreach ($objects as $key => $object) {
+		foreach ($objects as $object) {
 			$value           = $this->getValue($object, $with_default);
 			$sub_objects[$value] = $value;
 		}
@@ -742,13 +742,18 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function isValueEmpty($value)
 	{
-		return (empty($value) && (is_object($value) || is_array($value) || (strval($value) !== '0')))
+		return (
+			(
+				empty($value)
+				&& (is_object($value) || is_array($value) || !in_array(strval($value), ['0', '-0'], true))
+			)
 			|| (is_object($value) && Empty_Object::isEmpty($value))
 			|| (
 				is_string($value) && (substr($value, 0, 10) === '0000-00-00')
 				&& $this->getType()->isDateTime()
 			)
-			|| (($value instanceof Can_Be_Empty) && $value->isEmpty());
+			|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
+		);
 	}
 
 	//------------------------------------------------------------------------- isValueEmptyOrDefault
