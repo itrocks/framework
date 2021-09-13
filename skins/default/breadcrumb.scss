@@ -6,8 +6,8 @@ article header > ol.breadcrumb {
 
 		&.back_link {
 			> a {
+				background-image: url('img/back-24.svg');
 				background-position: center center;
-				background-image: url('img/arrow-back-small-24.svg');
 				background-repeat: no-repeat;
 			}
 		}
