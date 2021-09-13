@@ -28,10 +28,14 @@ class Indicator
 {
 	use Component;
 
+	//----------------------------------------------------------------------------------------- COUNT
+	const COUNT = '@count';
+
 	//------------------------------------------------------------------------------------ $dashboard
 	/**
 	 * @composite
 	 * @link Object
+	 * @mandatory
 	 * @var Dashboard
 	 */
 	public $dashboard;
@@ -39,9 +43,9 @@ class Indicator
 	//----------------------------------------------------------------------------------------- $icon
 	/**
 	 * @link Object
-	 * @var File
+	 * @var File|null
 	 */
-	public $icon;
+	public $icon = null;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
@@ -49,7 +53,7 @@ class Indicator
 	 *
 	 * @var string
 	 */
-	public $property_path;
+	public $property_path = self::COUNT;
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
@@ -58,9 +62,28 @@ class Indicator
 	 * setting and drop it into the 'home-page' icon that appears.
 	 *
 	 * @link Object
+	 * @mandatory
 	 * @var Setting
 	 */
 	public $setting;
+
+	//----------------------------------------------------------------------------------- __construct
+	/**
+	 * @param $setting   Setting|null
+	 * @param $dashboard Dashboard|null
+	 */
+	public function __construct(Setting $setting = null, Dashboard $dashboard = null)
+	{
+		if (isset($setting)) {
+			$this->setting = $setting;
+		}
+		if (isset($dashboard)) {
+			$this->dashboard = $dashboard;
+		}
+		elseif (!isset($this->dashboard)) {
+			$this->dashboard = Dashboard::current();
+		}
+	}
 
 	//------------------------------------------------------------------------------------ __toString
 	/**

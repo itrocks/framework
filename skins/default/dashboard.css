@@ -2,7 +2,8 @@ article.dashboard .block .indicator {
   border: 1px solid #ddd;
   display: inline-block;
   margin: 10px 0 0 10px;
-  position: relative; }
+  position: relative;
+  vertical-align: top; }
   article.dashboard .block .indicator a {
     display: grid;
     grid-template-areas: 'image text' 'value value';
