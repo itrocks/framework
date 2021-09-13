@@ -10,18 +10,18 @@
     top: 3px; }
     #notifications > .drop-on > li {
       background: white center no-repeat;
-      background-size: 48px;
+      background-size: 36px;
       border: 1px solid transparent;
       display: inline-block;
       font-size: 0;
-      height: 40px;
+      height: 32px;
       padding: 4px;
       vertical-align: top;
-      width: 40px; }
+      width: 32px; }
       #notifications > .drop-on > li:not(:first-child) {
-        margin-left: 10px; }
+        margin-left: 5px; }
       #notifications > .drop-on > li:not(:last-child) {
-        margin-right: 10px; }
+        margin-right: 5px; }
       #notifications > .drop-on > li:hover {
         background-color: #efefef;
         border: 1px solid #d0d0d0; }
