@@ -79,6 +79,7 @@ $(document).ready(function()
 						.removeClass('inside-' + $helper.data('inside').attr('class'))
 					$helper.removeData('inside')
 				}
+				$helper.fadeIn(200);
 			},
 
 			start: function()

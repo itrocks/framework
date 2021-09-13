@@ -31,9 +31,10 @@ article header {
 
 .custom.helper.select {
   background: white;
-  opacity: .9;
   border: 1px solid #d0d0d0;
   box-shadow: 0 0 3px 3px rgba(216, 216, 216, 0.4);
+  display: none;
+  opacity: .9;
   padding: 10px;
   pointer-events: none;
   position: relative; }
