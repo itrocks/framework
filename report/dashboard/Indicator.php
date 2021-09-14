@@ -99,7 +99,9 @@ class Indicator
 	 */
 	public function __toString() : string
 	{
-		return $this->setting->code ?? Loc::tr('new $1', Loc::replace([1 => Loc::tr('indicator')]));
+		return $this->setting
+			? $this->setting->value->name
+			: Loc::tr('new $1', Loc::replace([1 => Loc::tr('indicator')]));
 	}
 
 	//-------------------------------------------------------------------------------- formattedValue

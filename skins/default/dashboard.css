@@ -1,9 +1,15 @@
 article.dashboard .block .indicator {
+  background: white;
   border: 1px solid #ddd;
   display: inline-block;
   margin: 10px 0 0 10px;
   position: relative;
   vertical-align: top; }
+  article.dashboard .block .indicator.ui-draggable-dragging {
+    display: inline-block;
+    opacity: .9;
+    position: absolute;
+    z-index: 1; }
   article.dashboard .block .indicator a {
     display: grid;
     grid-template-areas: 'image text' 'value value';
@@ -22,5 +28,7 @@ article.dashboard .block .indicator {
       grid-area: value;
       text-align: center; }
 
-#notifications .drop-on > .dashboard {
+#notifications .drop_on > .dashboard {
   background-image: url("img/dashboard-add-24.svg"); }
+#notifications .drop_on > .edit {
+  background-image: url("img/edit-24.svg"); }

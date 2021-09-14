@@ -5,7 +5,7 @@
 #notifications {
 	position: relative;
 
-	> .drop-on {
+	> .drop_on {
 		background: white;
 		border: 1px solid #d0d0d0;
 		left: 10px;
@@ -20,10 +20,8 @@
 			border: 1px solid transparent;
 			display: inline-block;
 			font-size: 0;
-			height: 32px;
 			padding: 4px;
 			vertical-align: top;
-			width: 32px;
 
 			&:not(:first-child) {
 				margin-left: 5px;
@@ -38,12 +36,18 @@
 				border: 1px solid #d0d0d0;
 			}
 
-			&.trashcan {
+			&.delete {
 				background-image: url('img/delete-24-red.svg');
 
 				&:hover {
 					background-color: #ffd0d0;
 				}
+			}
+
+			> a {
+				display: inline-block;
+				height: 32px;
+				width: 32px;
 			}
 		}
 	}

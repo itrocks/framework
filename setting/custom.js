@@ -36,13 +36,13 @@ $(document).ready(function()
 		this.draggable({
 			appendTo:    'body',
 			containment: 'body',
-			cursorAt:    { left: 10, top: 10 },
+			cursorAt:    { left: -10, top: -10 },
 			scroll:      false,
 
 			drag: function(event, ui)
 			{
-				let $helper = $(ui.helper)
-				let $inside = undefined
+				let $helper    = $(ui.helper)
+				let $inside    = undefined
 				$('article, nav#menu, #notifications > .drop-on > li').each(function() {
 					let $element  = $(this)
 					let offset    = $element.offset()
@@ -59,70 +59,43 @@ $(document).ready(function()
 				if (
 					$inside
 					&& (
-						!$helper.data('inside')
-						|| ($helper.data('inside').attr('class') !== $inside.attr('class'))
+						!$helper.data('$inside')
+						|| ($helper.data('$inside').attr('class') !== $inside.attr('class'))
 					)
 				) {
-					if ($helper.data('inside')) {
-						$helper.removeClass('inside-' + $helper.data('inside').attr('class'))
+					if ($helper.data('$inside')) {
+						$helper.removeClass('inside-' + $helper.data('$inside').attr('class'))
 					}
 					$helper
 						.addClass('inside')
 						.addClass('inside-' + $inside.attr('class'))
 						.removeClass('outside')
-					$helper.data('inside', $inside)
+					$helper.data('$inside', $inside)
 				}
-				else if ($helper.data('inside') && !$inside) {
+				else if ($helper.data('$inside') && !$inside) {
 					$helper
 						.addClass('outside')
 						.removeClass('inside')
-						.removeClass('inside-' + $helper.data('inside').attr('class'))
-					$helper.removeData('inside')
+						.removeClass('inside-' + $helper.data('$inside').attr('class'))
+					$helper.removeData('$inside')
 				}
 				$helper.fadeIn(200);
 			},
 
 			start: function()
 			{
-				$('#notifications').append(
-					$('<ul class="drop-on"></ul>')
-						// todo dashboard (and other targets) should be separated into their feature code : be more extensible
-						.append(
-							'<li class="dashboard" data-href="app://ITRocks/Framework/Report/Dashboard/append/(class)/(id)" data-target="#main">'
-							+ tr('to') + SP + tr('dashboard')
-							+ '</li>'
-						)
-						// todo trashcan could be into trashcan feature source code too
-						.append(
-							'<li class="trashcan" data-href="app://(class)/(id)/delete?confirm=true">'
-							+ tr('to') + SP + tr('trashcan')
-							+ '</li>'
-						)
-						.css('top', '-64px')
-				)
-				$('#notifications > .drop-on').animate({ top: '3px' }, 200).build()
+				$(this).dropOn({
+					id:    'custom',
+					zones: [{ action: 'delete', text: tr('remove') + SP + tr('custom list') }]
+				})
 			},
 
 			stop: function(event, ui)
 			{
-				$('#notifications .drop-on').animate({ top: '-64px' }, 200)
-				setTimeout(() => { $('ul.drop-on').remove() }, 200)
-
-				let $helper = $(ui.helper)
-				let $inside = $helper.data('inside')
-				if ($inside) {
-					let $li  = $(this)
-					let href = $inside.data('href')
-					if (href) {
-						href = href
-							.repl('app:/', app.uri_base)
-							.repl('(class)', $li.data('class').repl(BS, SL))
-							.repl('(id)', $li.data('id'))
-						redirectLight(href, $inside.data('target') ? $inside.data('target') : '#responses')
-					}
-					else if ($inside.is('article')) {
-						$li.find('a').click()
-					}
+				$(this).dropOn('stop')
+				let $inside = ui.helper.data('$inside')
+				if ($inside && $inside.is('article')) {
+					$(this).find('a').click()
 				}
 				$('body').click()
 			},

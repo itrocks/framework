@@ -3,11 +3,19 @@ article.dashboard {
 	.block {
 
 		.indicator {
+			background: white;
 			border: 1px solid #ddd;
 			display: inline-block;
 			margin: 10px 0 0 10px;
 			position: relative;
 			vertical-align: top;
+
+			&.ui-draggable-dragging {
+				display: inline-block;
+				opacity: .9;
+				position: absolute;
+				z-index: 1;
+			}
 
 			a {
 				display: grid;
@@ -38,6 +46,13 @@ article.dashboard {
 
 }
 
-#notifications .drop-on > .dashboard {
-	background-image: url('img/dashboard-add-24.svg');
+#notifications .drop_on {
+
+	> .dashboard {
+		background-image: url('img/dashboard-add-24.svg');
+	}
+
+	> .edit {
+		background-image: url('img/edit-24.svg');
+	}
 }
