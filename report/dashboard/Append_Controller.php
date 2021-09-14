@@ -34,6 +34,7 @@ class Append_Controller implements Feature_Controller
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$indicator = Builder::create(Indicator::class, [$setting]);
+		$indicator->placeOnGrid();
 		Dao::write($indicator);
 		Main::$current->redirect(View::link($indicator->dashboard));
 		return View::run($parameters->getObjects(), $form, $files, Indicator::class, static::FEATURE);

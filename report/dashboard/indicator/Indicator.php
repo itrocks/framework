@@ -22,6 +22,8 @@ use ReflectionException;
 /**
  * The dashboard indicator
  *
+ * @feature
+ * @feature move
  * @representative setting.code
  * @store_name dashboard_indicators
  */
@@ -32,6 +34,9 @@ class Indicator
 	//----------------------------------------------------------------------------------------- COUNT
 	const COUNT = '@count';
 
+	//------------------------------------------------------------------------------------ GRID_WIDTH
+	const GRID_WIDTH = 6;
+
 	//------------------------------------------------------------------------------------ $dashboard
 	/**
 	 * @composite
@@ -40,6 +45,26 @@ class Indicator
 	 * @var Dashboard
 	 */
 	public $dashboard;
+
+	//--------------------------------------------------------------------------------------- $grid_x
+	/**
+	 * horizontal coordinate on the dashboard grid, from 0 to 5
+	 *
+	 * @mandatory
+	 * @user invisible
+	 * @var integer
+	 */
+	public $grid_x;
+
+	//--------------------------------------------------------------------------------------- $grid_y
+	/**
+	 * vertical coordinate on the dashboard grid, from 0 to n
+	 *
+	 * @mandatory
+	 * @user invisible
+	 * @var integer
+	 */
+	public $grid_y;
 
 	//----------------------------------------------------------------------------------------- $icon
 	/**
@@ -133,7 +158,49 @@ class Indicator
 			['load_name' => $this->setting->value->name]
 		);
 	}
-	
+
+	//---------------------------------------------------------------------------------------- moveTo
+	/**
+	 * Move the indicator to this destination on the grid
+	 *
+	 * - If already contains an indicator : exchange places
+	 *
+	 * @param $grid_x integer
+	 * @param $grid_y integer
+	 */
+	public function moveTo(int $grid_x, int $grid_y)
+	{
+		$grid = $this->dashboard->fullHeightGrid();
+		if ($swap_indicator = $grid[$grid_y][$grid_x]) {
+			$swap_indicator->grid_x = $this->grid_x;
+			$swap_indicator->grid_y = $this->grid_y;
+			Dao::write($swap_indicator, Dao::only('grid_x', 'grid_y'));
+		}
+		$this->grid_x = $grid_x;
+		$this->grid_y = $grid_y;
+		Dao::write($this, Dao::only('grid_x', 'grid_y'));
+	}
+
+	//----------------------------------------------------------------------------------- placeOnGrid
+	/**
+	 * Places the current indicator into the dashboard grid, at the first available place
+	 */
+	public function placeOnGrid()
+	{
+		$grid = $this->dashboard->grid();
+		foreach ($grid as $grid_y => $row) {
+			foreach ($row as $grid_x => $indicator) {
+				if (!$indicator) {
+					$this->grid_x = $grid_x;
+					$this->grid_y = $grid_y;
+					return;
+				}
+			}
+		}
+		$this->grid_x = 0;
+		$this->grid_y = count($grid);
+	}
+
 	//----------------------------------------------------------------------------------------- value
 	/**
 	 * Calculates and returns the value of the indicator

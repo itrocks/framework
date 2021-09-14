@@ -3,35 +3,7 @@ $(document).ready(function()
 
 	let $body = $('body')
 
-	//-------------------------------------------------- article.dashboard .data .indicator draggable
-	$body.build('call', 'article.dashboard .data .indicator', function()
-	{
-		$(this).draggable({
-			appendTo:    'body',
-			containment: 'body',
-			cursorAt:    { left: -10, top: -10 },
-			scroll:      false,
-
-			start: function()
-			{
-				$(this).dropOn({
-					class: 'ITRocks\\Framework\\Report\\Dashboard\\Indicator',
-					id:    'dashboard',
-					zones: ['delete', 'edit']
-				})
-			},
-
-			stop: function()
-			{
-				$(this).dropOn('stop')
-				$(this).css({ position: 'absolute' })
-				setTimeout(() => { $(this).css({ left: '', position: '', top: '' }) }, 200)
-			}
-
-		})
-	})
-
-	//---------------------------------------------------------------------- enhance custom.js dropOn
+	//--------------------------------------------------------------------- dropOn.enhance(custom.js)
 	$body.dropOn('enhance', {
 		custom: {
 			action: 'append',
@@ -39,6 +11,55 @@ $(document).ready(function()
 			link:   'app://ITRocks/Framework/Report/Dashboard/append/(class)/(id)',
 			text:   tr('to') + SP + tr('dashboard')
 		}
+	})
+
+	//-------------------------------------------------- article.dashboard .data .indicator draggable
+	$body.build('call', 'article.dashboard .data .indicator', function()
+	{
+		$(this).draggable({
+			appendTo:    'body',
+			containment: 'body',
+			cursorAt:    { left: -10, top: -10 },
+			helper:      'clone',
+			scroll:      false,
+
+			start: function(event, ui)
+			{
+				$(this).dropOn({
+					class: 'ITRocks\\Framework\\Report\\Dashboard\\Indicator',
+					id:    'dashboard',
+					zones: ['delete', 'edit']
+				})
+				ui.helper.addClass('dashboard')
+			},
+
+			stop: function()
+			{
+				$(this).dropOn('stop')
+			}
+
+		})
+	})
+
+	$body.build('call', ['article.dashboard .data', '.free, .indicator'], function()
+	{
+		$(this).droppable({
+			accepts:   '.indicator',
+			tolerance: 'pointer',
+
+			drop: function(event, ui)
+			{
+				const $source = ui.draggable
+				const $target = $(this)
+				const grid_x  = $target.prevAll('li').length
+				const grid_y  = $target.parent().closest('li').prevAll('li').length
+				redirectLight(
+					['', $source.data('class').repl(BS, SL), $source.data('id'), 'move'].join(SL)
+						+ '?x=' + grid_x + '&y=' + grid_y,
+					'#responses'
+				)
+			}
+		})
 	})
 
 })

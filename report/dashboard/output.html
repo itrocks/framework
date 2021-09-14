@@ -13,10 +13,14 @@
 
 	<article class="dashboard output" data-class="{@class}" data-feature="output" data-id="{?~id}">
 		<header><h2>{title}</h2></header>
-		<ul class="blocks data">
+		<ol class="data" data-delete-replace-by="<li class='free'>">
+			<!--fullHeightGrid-->
 			<li>
-				<ul class="block">
-					<!--indicators-->
+				<ol class="row">
+					<!--.-->
+					<!--@empty?-->
+					<li class="free"></li>
+					<!--else-->
 					<li class="indicator" data-class="{@class}" data-id="{id}">
 						<a href="app://(link)" target="#main">
 							<!--icon?-->
@@ -27,9 +31,11 @@
 						</a>
 					</li>
 					<!--end-->
-				</ul>
+					<!--end-->
+				</ol>
 			</li>
-		</ul>
+			<!--end-->
+		</ol>
 	</article>
 
 <!--END-->
