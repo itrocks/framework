@@ -1,36 +1,5 @@
 #notifications {
   position: relative; }
-  #notifications > .drop_on {
-    background: white;
-    border: 1px solid #d0d0d0;
-    left: 10px;
-    list-style: none;
-    padding: 2px;
-    position: absolute;
-    top: 3px; }
-    #notifications > .drop_on > li {
-      background: white center no-repeat;
-      background-size: 36px;
-      border: 1px solid transparent;
-      display: inline-block;
-      font-size: 0;
-      padding: 4px;
-      vertical-align: top; }
-      #notifications > .drop_on > li:not(:first-child) {
-        margin-left: 5px; }
-      #notifications > .drop_on > li:not(:last-child) {
-        margin-right: 5px; }
-      #notifications > .drop_on > li:hover {
-        background-color: #efefef;
-        border: 1px solid #d0d0d0; }
-      #notifications > .drop_on > li.delete {
-        background-image: url("img/delete-24-red.svg"); }
-        #notifications > .drop_on > li.delete:hover {
-          background-color: #ffd0d0; }
-      #notifications > .drop_on > li > a {
-        display: inline-block;
-        height: 32px;
-        width: 32px; }
   #notifications > #query,
   #notifications > #responses {
     font-size: 11px;

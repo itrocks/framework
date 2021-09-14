@@ -1,58 +1,70 @@
-article.dashboard {
+@import 'sizes.scss';
 
-	.block {
+article.dashboard .row {
+	font-size: 0;
 
-		.indicator {
-			background: white;
-			border: 1px solid #ddd;
-			display: inline-block;
-			margin: 10px 0 0 10px;
-			position: relative;
-			vertical-align: top;
+	> li {
+		font-size: $font-size;
 
-			&.ui-draggable-dragging {
-				display: inline-block;
-				opacity: .9;
-				position: absolute;
-				z-index: 1;
-			}
+		&.free {
+			border-color: transparent;
 
-			a {
-				display: grid;
-				grid-template-areas: 'image text' 'value value';
-				grid-template-columns: 32px auto;
-				grid-template-rows: 32px auto;
-				height: 64px;
-				width: 200px;
-
-				img {
-					grid-area: image;
-					width: 32px;
-				}
-
-				.text {
-					grid-area: text;
-					margin: auto auto;
-				}
-
-				.value {
-					font-size: 200%;
-					grid-area: value;
-					text-align: center;
-				}
+			&.ui-droppable-hover {
+				background: #ddd;
 			}
 		}
 	}
-
 }
 
-#notifications .drop_on {
+article.dashboard .free, article.dashboard .indicator, .dashboard.indicator.ui-draggable-dragging {
+	border: 1px solid #ddd;
+	display: inline-block;
+	height: 64px;
+	margin: 8px 0 0 8px;
+	vertical-align: top;
+	width: 166px;
 
-	> .dashboard {
-		background-image: url('img/dashboard-add-24.svg');
-	}
+	&.indicator {
+		background: #f8f8f8;
 
-	> .edit {
-		background-image: url('img/edit-24.svg');
+		&.ui-draggable-dragging {
+			display: inline-block;
+			opacity: .9;
+			position: absolute;
+			z-index: 1;
+		}
+
+		a {
+			display: grid;
+			grid-template-areas: 'image text' 'value value';
+			grid-template-columns: 32px auto;
+			grid-template-rows: 32px auto;
+			height: 64px;
+			width: 166px;
+
+			&:hover {
+				background: #efefef;
+			}
+
+			img {
+				grid-area: image;
+				width: 32px;
+			}
+
+			.text {
+				grid-area: text;
+				margin: auto auto;
+			}
+
+			.value {
+				font-size: 200%;
+				grid-area: value;
+				text-align: center;
+			}
+		}
 	}
+}
+
+#notifications > .drop_on > .dashboard {
+	background-image: url('img/dashboard-add-24.svg');
 }
