@@ -31,8 +31,27 @@ $(document).ready(function()
 
 		// close all articles, popup windows, items matching data-class and data-id
 		if (selector.includes('[data-id=')) {
-			$(selector + ':not(.deleted)').remove()
-			$(selector.repl('][data-id=', '] > [data-id=')).remove()
+			const $sources = [
+				$(selector + ':not(.deleted)'),
+				$(selector.repl('][data-id=', '] > [data-id='))
+			]
+			for (let $source of $sources) {
+				const $replace = $source.closest('[data-delete-replace-by]')
+				if ($replace.length) {
+					const $element = $($replace.data('delete-replace-by'))
+					$source.each(function() {
+						const $source = $(this);
+						if ($source.next().length) {
+							$element.insertBefore($source.next());
+						}
+						else {
+							$source.parent().append($element);
+						}
+						$element.build()
+					})
+				}
+				$source.remove()
+			}
 		}
 	}
 
