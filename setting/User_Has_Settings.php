@@ -1,27 +1,16 @@
 <?php
 namespace ITRocks\Framework\Setting;
 
-use ITRocks\Framework;
-use ITRocks\Framework\Setting;
+use ITRocks\Framework\Setting\User\Has;
 
 /**
- * For users that have settings
+ * Compatibility trait, to avoid crash of the software during this moved trait update
  *
- * @business
- * @extends Framework\User
- * @implements Has_Settings
- * @see Framework\User
+ * @deprecated
+ * @todo When all instances is updated, remove this trait
  */
 trait User_Has_Settings
 {
-
-	//------------------------------------------------------------------------------------- $settings
-	/**
-	 * @link Collection
-	 * @override
-	 * @user invisible
-	 * @var Setting\User[]
-	 */
-	public $settings;
+	use Has;
 
 }
