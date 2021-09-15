@@ -13,14 +13,14 @@ class Replaced extends Built
 	 *
 	 * @var string
 	 */
-	public $replacement;
+	public string $replacement;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name  string
-	 * @param $replacement string
+	 * @param $class_name  string|null
+	 * @param $replacement string|null
 	 */
-	public function __construct($class_name = null, $replacement = null)
+	public function __construct(string $class_name = null, string $replacement = null)
 	{
 		parent::__construct($class_name);
 		if (isset($replacement)) {

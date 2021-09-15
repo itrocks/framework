@@ -16,14 +16,14 @@ class Assembled extends Built
 	 *
 	 * @var string[]
 	 */
-	public $components = [];
+	public array $components = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
-	 * @param $components string[]
+	 * @param $class_name string|null
+	 * @param $components string[]|null
 	 */
-	public function __construct($class_name = null, array $components = null)
+	public function __construct(string $class_name = null, array $components = null)
 	{
 		parent::__construct($class_name);
 		if (isset($components)) {
@@ -36,7 +36,7 @@ class Assembled extends Built
 	 * @param $interfaces_traits string|string[]
 	 * @param $builder           Builder
 	 */
-	public function add($interfaces_traits, Builder $builder)
+	public function add(array|string $interfaces_traits, Builder $builder)
 	{
 		$compatibility  = new Compatibility_Class();
 		$all_components = $compatibility->allComponents($this->components);
@@ -75,7 +75,7 @@ class Assembled extends Built
 	 * @param $interface_trait string
 	 * @param $builder         Builder
 	 */
-	public function insertSorted($interface_trait, Builder $builder)
+	public function insertSorted(string $interface_trait, Builder $builder)
 	{
 		$this->components = arrayInsertSorted(
 			$this->components,
@@ -95,7 +95,7 @@ class Assembled extends Built
 	 * @param $interfaces_traits string|string[]
 	 * @param $builder           Builder
 	 */
-	public function remove($interfaces_traits, Builder $builder)
+	public function remove(array|string $interfaces_traits, Builder $builder)
 	{
 		$compatibility  = new Compatibility_Class();
 		$all_components = $compatibility->allComponents($this->components);
@@ -130,7 +130,7 @@ class Assembled extends Built
 	 *
 	 * @param $interface_trait string
 	 */
-	protected function simpleRemove($interface_trait)
+	protected function simpleRemove(string $interface_trait)
 	{
 		$key = array_search($interface_trait, $this->components);
 		if ($key > -1) {

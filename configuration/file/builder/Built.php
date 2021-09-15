@@ -11,13 +11,13 @@ abstract class Built
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 */
-	public function __construct($class_name = null)
+	public function __construct(string $class_name = null)
 	{
 		if (isset($class_name)) {
 			$this->class_name = $class_name;

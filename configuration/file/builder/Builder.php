@@ -17,7 +17,7 @@ class Builder extends File
 	/**
 	 * @var Built[]|string[] Built classes, or comments if trim begins with '/', or empty lines ''
 	 */
-	public $classes = [];
+	public array $classes = [];
 
 	//------------------------------------------------------------------------------------------- add
 	/**
@@ -27,10 +27,9 @@ class Builder extends File
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class                   Built|string
 	 * @param $class_interfaces_traits string|string[]
-
-	 * @return Assembled|null
+	 * @return Built
 	 */
-	public function add($class, $class_interfaces_traits)
+	public function add(Built|string $class, array|string $class_interfaces_traits) : Built
 	{
 		// create Assembled / Replaced Built class
 		if (is_string($class)) {
@@ -104,7 +103,7 @@ class Builder extends File
 	 * @param $class Built|string
 	 * @return boolean true if removed, false if not found
 	 */
-	public function remove($class)
+	public function remove(Built|string $class) : bool
 	{
 		$class_name = ($class instanceof Built) ? $class->class_name : $class;
 		// remove class name
@@ -124,7 +123,7 @@ class Builder extends File
 	 * @param $class_name string
 	 * @return Built|null
 	 */
-	public function search($class_name)
+	public function search(string $class_name) : Built|null
 	{
 		foreach ($this->classes as $built) {
 			if (($built instanceof Built) && ($built->class_name === $class_name)) {
