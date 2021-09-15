@@ -22,3 +22,12 @@ ITRocks\Framework\Objects\Counter:
     - property_name
     - last_update
     - last_value
+ITRocks\Framework\User:
+  display_order:
+    - login
+    - password
+    - email
+    - active
+    - last_connection
+    - reset_lists
+    - groups
