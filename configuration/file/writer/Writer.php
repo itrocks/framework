@@ -17,13 +17,13 @@ abstract class Writer
 	/**
 	 * @var $file File
 	 */
-	protected $file;
+	protected File $file;
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
 	 * @var string[]
 	 */
-	protected $lines;
+	protected array $lines;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -40,7 +40,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function removeMultipleWhiteLines(&$buffer)
+	protected function removeMultipleWhiteLines(string &$buffer)
 	{
 		while (strpos($buffer, LF . LF . LF)) {
 			$buffer = str_replace(LF . LF . LF, LF . LF, $buffer);
@@ -54,38 +54,40 @@ abstract class Writer
 	 * @param $buffer string
 	 * @return string[]
 	 */
-	protected function usedUses($buffer)
+	protected function usedUses(string $buffer) : array
 	{
-		$buffer_length = strlen($buffer);
-		$used_uses     = [];
-		foreach ($this->file->use as $use_key => $use) {
-			$position    = 0;
-			$short_name  = rLastParse($use, BS, 1, true);
-			$name_length = strlen($short_name);
-			while (($position !== false) && ($position < $buffer_length)) {
-				$position = strpos($buffer, $short_name, $position);
-				if ($position !== false) {
-					$previous = substr($buffer, $position - 5, 5);
-					if ($previous === (TAB . 'use' . SP)) {
+		$ignore_next_class = false;
+		$in_class          = false;
+		$unused_uses = $used_uses = [];
+		foreach ($this->file->use as $use) {
+			$short_use = rLastParse($use, BS, 1, true);
+			$unused_uses[$short_use] = $used_uses[$short_use] = $use;
+		}
+		foreach (token_get_all('<?php ' . $buffer) as $token) {
+			$token_id = $token[0];
+			if (($token_id === T_USE) && !$in_class) {
+				$ignore_next_class = true;
+			}
+			elseif (in_array($token_id, [311, 312, 314])) {
+				$class_name = lParse($token[1], BS);
+				if ($ignore_next_class) {
+					$ignore_next_class = false;
+				}
+				elseif (isset($unused_uses[$class_name])) {
+					unset($unused_uses[$class_name]);
+					if (!$unused_uses) {
 						break;
 					}
-					$previous = $buffer[$position - 1];
-					$next     = $buffer[$position + $name_length];
-					if (
-						!ctype_alnum($previous)
-						&& ($previous !== BS)
-						&& in_array($next, [BS, ':'], true)
-					) {
-						break;
-					}
-					$position ++;
 				}
 			}
-			if ($position) {
-				$used_uses[] = $use;
+			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
+				$in_class = true;
 			}
 		}
-		return $used_uses;
+		foreach (array_keys($unused_uses) as $short_use) {
+			unset($used_uses[$short_use]);
+		}
+		return array_values($used_uses);
 	}
 
 	//----------------------------------------------------------------------------------------- write
@@ -126,7 +128,7 @@ abstract class Writer
 	 *
 	 * @param $write_buffer string
 	 */
-	protected function writeBuffer($write_buffer)
+	protected function writeBuffer(string $write_buffer)
 	{
 		if (file_get_contents($this->file->file_name) !== $write_buffer) {
 			script_put_contents($this->file->file_name, $write_buffer);
@@ -156,7 +158,7 @@ abstract class Writer
 	 *
 	 * @return string
 	 */
-	protected function writeLines()
+	protected function writeLines() : string
 	{
 		return join(LF, $this->lines);
 	}
@@ -167,7 +169,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function writeNamespace(&$buffer)
+	protected function writeNamespace(string &$buffer)
 	{
 		if ($this->file->namespace) {
 			$buffer = 'namespace ' . $this->file->namespace . ';' . LF . LF . $buffer;
@@ -180,7 +182,7 @@ abstract class Writer
 	 *
 	 * @param $buffer string
 	 */
-	protected function writeUse(&$buffer)
+	protected function writeUse(string &$buffer)
 	{
 		if ($this->file->use) {
 			$uses = [];
