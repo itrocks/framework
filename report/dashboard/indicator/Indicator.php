@@ -14,6 +14,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_\Representative_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Report\Dashboard;
+use ITRocks\Framework\Report\Dashboard\Indicator\Property_Path\Widget;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -77,7 +78,9 @@ class Indicator
 	/**
 	 * The indicator property path. Can also be '@count' for an objects counter
 	 *
+	 * @see Widget
 	 * @var string
+	 * @widget Widget
 	 */
 	public $property_path = self::COUNT;
 
