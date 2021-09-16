@@ -25,7 +25,10 @@ $(document).ready(function()
 
 			start: function(event, ui)
 			{
-				$(this).dropOn({
+				const $draggable = $(this)
+				const $anchor    = $draggable.find('a')
+				$anchor.data('href', $anchor.attr('href')).removeAttr('href')
+				$draggable.dropOn({
 					class: 'ITRocks\\Framework\\Report\\Dashboard\\Indicator',
 					id:    'dashboard',
 					zones: ['delete', 'edit']
@@ -35,9 +38,13 @@ $(document).ready(function()
 
 			stop: function()
 			{
-				$(this).dropOn('stop')
+				const $draggable = $(this)
+				$draggable.dropOn('stop')
+				setTimeout(() => {
+					const $anchor = $draggable.find('a')
+					$anchor.attr('href', $anchor.data('href')).removeData('href')
+				})
 			}
-
 		})
 	})
 
