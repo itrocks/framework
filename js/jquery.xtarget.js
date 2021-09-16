@@ -167,6 +167,11 @@ var requestTargetHeaders = function($element)
 				}
 				// history
 				last_history_entry = xhr.from.href;
+				if (settings.url_append) {
+					history_entry = history_entry
+						.repl('?' + settings.url_append, '')
+						.repl('&' + settings.url_append)
+				}
 				try {
 					window.history.pushState({reload: true}, title, history_entry);
 				}

@@ -212,6 +212,9 @@ redirect = function(uri, target, after, callback, history)
 					}
 					document.title = title;
 					if ((history === undefined) || history) {
+						uri = uri.repl('?as_widget=true', '').repl('&as_widget=true', '')
+							.repl('?as_widget=1', '').repl('&as_widget=1', '')
+							.repl('?as_widget', '').repl('&as_widget', '')
 						window.history.pushState({reload: true}, title, uri);
 					}
 				}
@@ -240,7 +243,7 @@ redirectLight = function(uri, target, condition)
 	var app  = window.app;
 	var more = (
 		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
-	) ? (((uri.indexOf('?') > -1) ? '&' : '?') + 'as_widget') : '';
+	) ? app.askAnd(uri, 'as_widget') : '';
 	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
 		uri = app.uri_base + uri;
 	}
