@@ -110,9 +110,15 @@ class Exporter implements Output
 					$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
 					$this->current_font_size = $element->font_size;
 				}
+				if ($element->font_weight) {
+					$pdf->SetFont($pdf->getFontFamily(), 'B');
+				}
 				$pdf->SetXY($element->left, $position);
 				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
 				$position += $element->font_size;
+				if ($element->font_weight) {
+					$pdf->SetFont($pdf->getFontFamily());
+				}
 			}
 		}
 

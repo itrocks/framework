@@ -97,12 +97,20 @@ article.layout-model {
 			}
 		}
 
+		&.bold {
+			background: #f7f7f7 url('img/bold-24.svg') center no-repeat;
+		}
+
 		&.copy-page {
 			background: #f7f7f7 url('img/copy-page-24.svg') center no-repeat;
 		}
 
 		&.empty-page {
 			background: #f7f7f7 url('img/delete-24.svg') center no-repeat;
+		}
+
+		&.font-color {
+			background: #f7f7f7 url('img/text-color-24.svg') center no-repeat;
 		}
 
 		&.free-text {

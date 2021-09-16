@@ -276,6 +276,16 @@ $(document).ready(function()
 		$this.closest('form').find('input#align').val(value).change();
 	});
 
+	//------------------------------------------------------------ article.layout-model li.bold click
+	$body.build('click', 'article.layout-model li.bold', function()
+	{
+		const $this = $(this);
+		const $bold = $this.closest('form').find('input#bold');
+		let   value = $bold.val();
+		value = (value === '') ? 'bold' : '';
+		$bold.val(value).change();
+	});
+
 	//---------------------------------------------------------- article.layout-model li.format click
 	$body.build('click', 'article.layout-model li.format', function()
 	{
