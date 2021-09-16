@@ -1344,7 +1344,6 @@ class Template
 			$loop->to = (($loop->to == '') ? null : $loop->to);
 		}
 		else {
-			$expr       = null;
 			$loop->from = 0;
 			$loop->to   = null;
 		}
@@ -1598,6 +1597,7 @@ class Template
 	 */
 	protected function parseSingleValue($property_name, $format_value = true)
 	{
+		$add_div       = false;
 		$source_object = $object = reset($this->objects);
 		if (substr($property_name, 0, 1) === '~') {
 			$ignore_undefined_property = true;
@@ -1688,7 +1688,6 @@ class Template
 			(is_object($object) || (is_string($object) && !empty($object) && ctype_upper($object[0])))
 			&& method_exists($object, $property_name)
 		) {
-			$add_div = false;
 			/** @var $object Reflection_Property|mixed */
 			$is_property_value = ($property_name === 'value') && ($object instanceof Reflection_Property);
 			if (
@@ -1737,13 +1736,6 @@ class Template
 				else {
 					$object = $this->parseMethod($object, $property_name);
 				}
-				if ($add_div) {
-					$div = new Div($object);
-					if (property_exists($property, 'tooltip') && $property->tooltip) {
-						$div->setData('tooltip', $property->tooltip());
-					}
-					$object = strval($div);
-				}
 			}
 		}
 		elseif (isset($object->$property_name)) {
@@ -1761,6 +1753,17 @@ class Template
 			&& ($property_name == 'value')
 		) {
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
+		}
+		if ($add_div && isset($property) && ($property instanceof Reflection_Property)) {
+			$div = new Div($object);
+			if (
+				method_exists($property, 'tooltip')
+				&& property_exists($property, 'tooltip')
+				&& $property->tooltip
+			) {
+				$div->setData('tooltip', $property->tooltip());
+			}
+			$object = strval($div);
 		}
 		return $object;
 	}
