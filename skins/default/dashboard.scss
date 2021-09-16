@@ -16,7 +16,12 @@ article.dashboard .row {
 	}
 }
 
-article.dashboard .free, article.dashboard .indicator, .dashboard.indicator.ui-draggable-dragging {
+.indicator.ui-draggable-dragging:not(.dashboard) {
+	display: none;
+}
+
+article.dashboard .free, article.dashboard .indicator,
+.dashboard.indicator.ui-draggable-dragging {
 	border: 1px solid #ddd;
 	display: inline-block;
 	height: 64px;

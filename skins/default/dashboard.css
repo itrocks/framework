@@ -7,36 +7,47 @@ article.dashboard .row {
       article.dashboard .row > li.free.ui-droppable-hover {
         background: #ddd; }
 
-article.dashboard .free, article.dashboard .indicator, .dashboard.indicator.ui-draggable-dragging {
+.indicator.ui-draggable-dragging:not(.dashboard) {
+  display: none; }
+
+article.dashboard .free, article.dashboard .indicator,
+.dashboard.indicator.ui-draggable-dragging {
   border: 1px solid #ddd;
   display: inline-block;
   height: 64px;
   margin: 8px 0 0 8px;
   vertical-align: top;
   width: 166px; }
-  article.dashboard .free.indicator, article.dashboard .indicator.indicator, .dashboard.indicator.ui-draggable-dragging.indicator {
+  article.dashboard .free.indicator, article.dashboard .indicator.indicator,
+  .dashboard.indicator.ui-draggable-dragging.indicator {
     background: #f8f8f8; }
-    article.dashboard .free.indicator.ui-draggable-dragging, article.dashboard .indicator.indicator.ui-draggable-dragging, .dashboard.indicator.ui-draggable-dragging.indicator.ui-draggable-dragging {
+    article.dashboard .free.indicator.ui-draggable-dragging, article.dashboard .indicator.indicator.ui-draggable-dragging,
+    .dashboard.indicator.ui-draggable-dragging.indicator.ui-draggable-dragging {
       display: inline-block;
       opacity: .9;
       position: absolute;
       z-index: 1; }
-    article.dashboard .free.indicator a, article.dashboard .indicator.indicator a, .dashboard.indicator.ui-draggable-dragging.indicator a {
+    article.dashboard .free.indicator a, article.dashboard .indicator.indicator a,
+    .dashboard.indicator.ui-draggable-dragging.indicator a {
       display: grid;
       grid-template-areas: 'image text' 'value value';
       grid-template-columns: 32px auto;
       grid-template-rows: 32px auto;
       height: 64px;
       width: 166px; }
-      article.dashboard .free.indicator a:hover, article.dashboard .indicator.indicator a:hover, .dashboard.indicator.ui-draggable-dragging.indicator a:hover {
+      article.dashboard .free.indicator a:hover, article.dashboard .indicator.indicator a:hover,
+      .dashboard.indicator.ui-draggable-dragging.indicator a:hover {
         background: #efefef; }
-      article.dashboard .free.indicator a img, article.dashboard .indicator.indicator a img, .dashboard.indicator.ui-draggable-dragging.indicator a img {
+      article.dashboard .free.indicator a img, article.dashboard .indicator.indicator a img,
+      .dashboard.indicator.ui-draggable-dragging.indicator a img {
         grid-area: image;
         width: 32px; }
-      article.dashboard .free.indicator a .text, article.dashboard .indicator.indicator a .text, .dashboard.indicator.ui-draggable-dragging.indicator a .text {
+      article.dashboard .free.indicator a .text, article.dashboard .indicator.indicator a .text,
+      .dashboard.indicator.ui-draggable-dragging.indicator a .text {
         grid-area: text;
         margin: auto auto; }
-      article.dashboard .free.indicator a .value, article.dashboard .indicator.indicator a .value, .dashboard.indicator.ui-draggable-dragging.indicator a .value {
+      article.dashboard .free.indicator a .value, article.dashboard .indicator.indicator a .value,
+      .dashboard.indicator.ui-draggable-dragging.indicator a .value {
         font-size: 200%;
         grid-area: value;
         text-align: center; }
