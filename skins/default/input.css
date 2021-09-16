@@ -4,9 +4,9 @@ textarea {
   background: white;
   border: 1px solid #d8d8d8;
   border-radius: 2px; }
-  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not(.auto_width):not(.datetime),
-  select:not(.auto_width):not(.datetime),
-  textarea:not(.auto_width):not(.datetime) {
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not(select):not(.auto_width):not(.datetime),
+  select:not(select):not(.auto_width):not(.datetime),
+  textarea:not(select):not(.auto_width):not(.datetime) {
     width: 100px; }
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
   select:not([type=file]):not(select):not(textarea),
