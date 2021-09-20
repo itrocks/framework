@@ -195,3 +195,6 @@ article.layout-model > form {
   article.layout-model:not(.form) > .property-select,
   article.layout-model > form > .property-select {
     grid-area: properties; }
+
+.colpick {
+  z-index: 999999; }

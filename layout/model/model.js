@@ -286,6 +286,32 @@ $(document).ready(function()
 		$bold.val(value).change();
 	});
 
+	//------------------------------------------------------ article.layout-model li.font-color click
+	$body.build('click', 'article.layout-model li.font-color', function()
+	{
+		const $this = $(this)
+		let color = $this.closest('article').find('.designer .selected').css('color')
+		color = color.substring(color.indexOf('(') + 1, color.indexOf(')'))
+		color = color.repl(' ', '').split(',')
+		color = '#'
+			+ parseInt(color[0]).toString(16)
+			+ parseInt(color[1]).toString(16)
+			+ parseInt(color[2]).toString(16)
+		if ($this.data('colpick')) {
+			$this.colpickSetColor(color, true)
+			return
+		}
+		const change = (hsb, hex) => {
+			$this.closest('article').find('.designer .selected').css({ 'color': '#' + hex })
+		}
+		const submit = function() {
+			this.selector.closest('.colpick').hide()
+		}
+		$this.colpick({ color: color, onChange: change, onSubmit: submit })
+			.data('colpick', true)
+			.click()
+	});
+
 	//---------------------------------------------------------- article.layout-model li.format click
 	$body.build('click', 'article.layout-model li.format', function()
 	{
