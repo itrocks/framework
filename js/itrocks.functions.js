@@ -243,7 +243,7 @@ redirectLight = function(uri, target, condition)
 	var app  = window.app;
 	var more = (
 		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
-	) ? app.askAnd(uri, 'as_widget') : '';
+	) ? (((uri.indexOf('?') > -1) ? '&' : '?') + 'as_widget') : '';
 	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
 		uri = app.uri_base + uri;
 	}
