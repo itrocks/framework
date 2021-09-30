@@ -38,7 +38,7 @@ body {
   --z-index: 0;
   display: grid;
   grid-template-areas: "title notifications side" "menu  favorites     side" "menu  main          side" "quick main          side";
-  grid-template-columns: 256px 1fr min-content;
+  grid-template-columns: 232px 1fr min-content;
   grid-template-rows: 64px auto 1fr min-content;
   height: 100vh;
   overflow: hidden;
