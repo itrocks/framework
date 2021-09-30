@@ -1,29 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="10px" height="33px" viewBox="0 0 10 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
-    <title>908BA97F-6CD1-491B-BDD8-C891AF2F62BE</title>
-    <defs>
-        <radialGradient cx="50%" cy="0%" fx="50%" fy="0%" r="174.712644%" gradientTransform="translate(0.500000,0.000000),scale(1.000000,0.286184),rotate(90.000000),translate(-0.500000,-0.000000)" id="radialGradient-1">
-            <stop stop-color="#FFFFFF" stop-opacity="0.2" offset="0%"></stop>
-            <stop stop-color="#FFFFFF" stop-opacity="0.199332192" offset="0%"></stop>
-            <stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
-        </radialGradient>
-    </defs>
-    <g id="Module-CRM" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
-        <g id="ERP-v3/CRM/campagne/edition" transform="translate(-792.000000, -852.000000)">
-            <g id="panneau/ligne/CRM/campagne/édition" transform="translate(256.000000, 91.000000)">
-                <g id="Tableau/CRM_campaign_tab_list_activities_édition" transform="translate(0.000000, 512.000000)">
-                    <g id="Group-2-Copy-6" transform="translate(535.000000, 0.000000)">
-                        <g id="Group-44" transform="translate(1.000000, 249.000000)">
-                            <g id="color/blue/official" fill="#009DEF">
-                                <polygon id="Fill-15-Copy" points="0 32 9.15789474 32 9.15789474 0 0 0"></polygon>
-                            </g>
-                            <rect id="bg-gradient" fill="url(#radialGradient-1)" x="0" y="0" width="9.15789474" height="32"></rect>
-                            <path d="M9.15789474,0 L0,0 L9.15789474,32 C9.15789474,10.6666667 9.15789474,0 9.15789474,0 Z" id="Path" fill="#FFFFFF" fill-rule="nonzero" opacity="0.15"></path>
-                            <path d="M0,0 C0,0 0,10.6666667 0,32 L4.57894737,16 L0,0 Z" id="Path" fill="#FFFFFF" fill-rule="nonzero" opacity="0.08"></path>
-                        </g>
-                    </g>
-                </g>
-            </g>
-        </g>
-    </g>
+<svg width="10px" height="33px" viewBox="0 0 10 32" version="1.1" xmlns="http://www.w3.org/2000/svg">
+<defs>
+<radialGradient cx="50%" cy="0%" fx="50%" fy="0%" r="174.712644%" gradientTransform="translate(0.500000,0.000000),scale(1.000000,0.286184),rotate(90.000000),translate(-0.500000,-0.000000)" id="radialGradient-1">
+<stop stop-color="#FFFFFF" stop-opacity="0.2" offset="0%"></stop>
+<stop stop-color="#FFFFFF" stop-opacity="0.199332192" offset="0%"></stop>
+<stop stop-color="#FFFFFF" stop-opacity="0" offset="100%"></stop>
+</radialGradient>
+</defs>
+<polygon fill="#009DEF" points="0 32 9.15789474 32 9.15789474 0 0 0"></polygon>
+<rect fill="url(#radialGradient-1)" x="0" y="0" width="9.15789474" height="32"></rect>
+<path d="M9.15789474,0 L0,0 L9.15789474,32 C9.15789474,10.6666667 9.15789474,0 9.15789474,0 Z" fill="#FFFFFF" opacity="0.15"></path>
+<path d="M0,0 C0,0 0,10.6666667 0,32 L4.57894737,16 L0,0 Z" id="Path" fill="#FFFFFF" opacity="0.08"></path>
 </svg>
