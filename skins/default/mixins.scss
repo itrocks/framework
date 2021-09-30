@@ -5,7 +5,7 @@
 	article[data-module=#{$module}],
 	#favorites > li[data-module=#{$module}],
 	#menu > ul > li##{$module} {
-		--dark-color:  #{$color1};
+		--dark-color: #{$color1};
 		--light-color: #{$color2};
 	}
 
@@ -13,26 +13,28 @@
 	body:not(.min-left) > #menu > ul > li##{$module}:focus,
 	body:not(.min-left) > #menu > ul > li##{$module}:hover {
 
-		> h3:not(.active) > a {
+		> h3:not(.expanded) > a {
 			background: url('img/#{$module}-24-hilight.svg') 10px center no-repeat,
 				url('img/#{$module}-expand-more-24.svg') right no-repeat;
 		}
 
-        > h3.active > a {
-          background: url('img/#{$module}-24-hilight.svg') 10px center no-repeat,
-          url('img/#{$module}-expand-less-24.svg') right no-repeat;
-        }
+		> h3.expanded > a {
+			background: url('img/#{$module}-24-hilight.svg') 10px center no-repeat,
+				url('img/#{$module}-expand-less-24.svg') right no-repeat;
+		}
 	}
 
-	body:not(.min-left) > #menu > ul > li##{$module}  {
-      > h3:not(.active) > a {
-        background: url('img/#{$module}-24.svg') 10px center no-repeat,
-        url('img/expand-more-24.svg') right no-repeat;
-      }
-      > h3.active > a {
-        background: url('img/#{$module}-24.svg') 10px center no-repeat,
-        url('img/expand-less-24.svg') right no-repeat;
-      }
+	body:not(.min-left) > #menu > ul > li##{$module} {
+
+		> h3:not(.expanded) > a {
+			background: url('img/#{$module}-24.svg') 10px center no-repeat,
+				url('img/expand-more-24.svg') right no-repeat;
+		}
+
+		> h3.expanded > a {
+			background: url('img/#{$module}-24.svg') 10px center no-repeat,
+				url('img/expand-less-24.svg') right no-repeat;
+		}
 	}
 
 	body.min-left[data-module=#{$module}] > #menu > ul > li##{$module},
