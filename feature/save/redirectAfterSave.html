@@ -12,19 +12,11 @@
 <!--BEGIN-->
 
 	<!--~fill_combo?-->
-	<script>
-		var $fill_combo = $('[name="{fill_combo}"]');
-		if ($fill_combo.length) {
-			$fill_combo.val('{id}');
-			$fill_combo.next().val('{.}').focus().keyup();
-		}
-	</script>
+	<button class="after-save" data-fill-combo="{fill_combo}" data-id="{id}" data-value="{.}">|fill combo| {fill_combo}</button>
 	<!--end-->
 
 	<!--~close?-->
-	<script>
-		$('#{close}').remove();
-	</script>
+	<button class="after-save" data-close="{close}">|close| {close}</button>
 	<!--end-->
 
 	<!--~then?-->
@@ -32,20 +24,7 @@
 	<!--end-->
 
 	<!--!~close?--><!--!~then?-->
-	<script>
-		(function() {
-			var $window = $('main > article');
-			if (
-				($window.data('class') === '{@class.escape}')
-				&& (
-					($window.data('id') && ($window.data('id').toString() === '{id}'))
-					|| ('{new_object}' && !$window.data('id'))
-				)
-			) {
-				redirect('{@link}', '#main');
-			}
-		})();
-	</script>
+	<a class="after-save" data-class="{@class}" data-id="{id}" data-new-object="{?new_object}" href="app://(@link)" target="#main">{@link}</a>
 	<!--end--><!--end-->
 
 <!--END-->

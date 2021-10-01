@@ -20,6 +20,7 @@
 <link rel="stylesheet" href="email/output/email_output.css">
 <link rel="stylesheet" href="skins/default/accordion.css">
 <link rel="stylesheet" href="skins/default/actions.css">
+<link rel="stylesheet" href="skins/default/after-save.css">
 <link rel="stylesheet" href="skins/default/article.css">
 <link rel="stylesheet" href="skins/default/body.css">
 <link rel="stylesheet" href="skins/default/body-responsive.css">
@@ -72,6 +73,7 @@
 <link rel="stylesheet" href="skins/default/types.css">
 <link rel="stylesheet" href="skins/default/user.css">
 
+<!-- first : vendor scripts -->
 <script src="../../vendor/apache/incubator-echarts/dist/echarts-en.min.js"></script>
 <script src="../../vendor/bappli/html-links/html_links.js"></script>
 <script src="../../vendor/bappli/document-designer/designer.js"></script>
@@ -83,6 +85,7 @@
 <script src="../../vendor/jquery/jquery-mousewheel/jquery.mousewheel.min.js"></script>
 <script src="../../vendor/itrocks/quill/dist/quill.min.js"></script>
 
+<!-- then jquery generic plugins -->
 <script src="js/jquery.aform.js"></script>
 <script src="js/jquery.autofocus.js"></script>
 <script src="js/jquery.autoheight.js"></script>
@@ -104,8 +107,10 @@
 <script src="js/jquery.tree.js"></script>
 <script src="js/jquery.verticalscrollbar.js"></script>
 <script src="js/jquery-ui.tabber.js"></script>
+<!-- then generic javascript libraries -->
 <script src="js/caret-position.js"></script>
 <script src="js/colpick.js"></script>
+<!-- then it.rocks scripts -->
 <script src="js/itrocks.app.js"></script>
 <script src="js/itrocks.array.js"></script>
 <script src="js/itrocks.file.js"></script>
@@ -120,7 +125,7 @@
 <script src="js/itrocks.static-table.js"></script>
 <script src="js/itrocks.string.js"></script>
 <script src="js/itrocks.zindex.js"></script>
-
+<!-- then application scripts -->
 <script src="js/app.a_disable.js"></script>
 <script src="js/app.auto_redirect.js"></script>
 <script src="js/app.accordion.js"></script>
@@ -139,20 +144,21 @@
 <script src="js/app.select_sort.js"></script>
 <script src="js/app.tr.js"></script>
 <script src="js/app.translate.js"></script>
-
+<!-- then component/feature/widget/etc. application scripts -->
 <script src="component/button/button.js"></script>
 <script src="component/favorites/favorites.js"></script>
 <script src="component/menu/menu.js"></script>
+<script src="component/trashcan/trashcan.js"></script>
 <script src="debug/debug.js"></script>
 <script src="dao/file/session_file/image.js"></script>
 <script src="email/edit/email_edit.js"></script>
 <script src="feature/condition/condition.js"></script>
+<script src="feature/delete/delete.js"></script>
+<script src="feature/import/import.js"></script>
 <script src="feature/list_/modifiable.js"></script>
 <script src="feature/list_/properties.js"></script>
 <script src="feature/list_/selection.js"></script>
-<script src="feature/delete/delete.js"></script>
-<script src="feature/import/import.js"></script>
-<script src="component/trashcan/trashcan.js"></script>
+<script src="feature/save/after_save.js"></script>
 <script src="feature/validate/not_validated.js"></script>
 <script src="layout/model/model.js"></script>
 <script src="objects/counter/assistant-configuration.js"></script>
@@ -161,12 +167,11 @@
 <script src="rad/output.js"></script>
 <script src="rad/rad.js"></script>
 <script src="report/dashboard/dashboard.js"></script>
-<script src="tools/has_ordering/has_ordering.js"></script>
 <script src="tools/encryption/sensitive_data/sensitive_data.js"></script>
+<script src="tools/has_ordering/has_ordering.js"></script>
 <script src="user/password/reset/password-reset.js"></script>
 <script src="widget/collection_map.js"></script>
-
-<!-- must be after list because of modifiable -->
+<!-- must be after modifiable.js -->
 <script src="../../itrocks/framework/setting/custom.js"></script>
 
 <!-- last -->
