@@ -9,6 +9,7 @@ use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Html\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Namespaces;
@@ -118,6 +119,17 @@ class Html_Template extends Template
 	private function nextFormCounter()
 	{
 		return uniqid();
+	}
+
+	//----------------------------------------------------------------------------- originValueAddDiv
+	/**
+	 * @param $value mixed
+	 * @param $property Reflection_Property
+	 * @return mixed
+	 */
+	protected function originValueAddDiv(mixed $value, Reflection_Property $property) : mixed
+	{
+		return $value;
 	}
 
 	//----------------------------------------------------------------------------------------- parse

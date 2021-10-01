@@ -633,6 +633,25 @@ class Template
 		return $functions;
 	}
 
+	//----------------------------------------------------------------------------- originValueAddDiv
+	/**
+	 * @param $value mixed
+	 * @param $property Reflection_Property
+	 * @return mixed
+	 */
+	protected function originValueAddDiv(mixed $value, Reflection_Property $property) : mixed
+	{
+		$div = new Div($value);
+		if (
+			method_exists($property, 'tooltip')
+			&& property_exists($property, 'tooltip')
+			&& $property->tooltip
+		) {
+			$div->setData('tooltip', $property->tooltip());
+		}
+		return strval($div);
+	}
+
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * Parse the template replacing templating codes by object's properties and functions results
@@ -1755,15 +1774,7 @@ class Template
 			$object = (new Reflection_Property_View($source_object))->formatValue($object);
 		}
 		if ($add_div && isset($property) && ($property instanceof Reflection_Property)) {
-			$div = new Div($object);
-			if (
-				method_exists($property, 'tooltip')
-				&& property_exists($property, 'tooltip')
-				&& $property->tooltip
-			) {
-				$div->setData('tooltip', $property->tooltip());
-			}
-			$object = strval($div);
+			$object = $this->originValueAddDiv($object, $property);
 		}
 		return $object;
 	}
