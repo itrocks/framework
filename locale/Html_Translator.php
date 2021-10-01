@@ -12,6 +12,18 @@ use ITRocks\Framework\View\Html\Template;
 class Html_Translator implements Registerable
 {
 
+	//---------------------------------------------------------------------- doNotTranslateEmptyValue
+	/**
+	 * @param $content string
+	 * @param $result  integer
+	 */
+	public function doNotTranslateEmptyValue(string &$content, int &$result)
+	{
+		if (substr($content, $result - 2, 2) === PIPE . PIPE) {
+			$content = substr($content, 0, $result - 2) . substr($content, $result);
+		}
+	}
+
 	//-------------------------------------------------------------------------------------- register
 	/**
 	 * Registers translation of [terms] in HTML templates
@@ -21,15 +33,10 @@ class Html_Translator implements Registerable
 	public function register(Register $register)
 	{
 		$aop = $register->aop;
-		$aop->afterMethod(
-			[Template::class, 'parse'], [$this, 'translatePage']
-		);
-		$aop->beforeMethod(
-			[Template::class, 'parseString'], [$this, 'translateString']
-		);
-		$aop->afterMethod(
-			[Dom\Option::class, 'getContent'], [$this, 'translateOptionContent']
-		);
+		$aop->afterMethod ([Dom\Option::class, 'getContent'],  [$this, 'translateOptionContent']);
+		$aop->afterMethod ([Template::class,   'parse'],       [$this, 'translatePage']);
+		$aop->afterMethod ([Template::class,   'parseVar'],    [$this, 'doNotTranslateEmptyValue']);
+		$aop->beforeMethod([Template::class,   'parseString'], [$this, 'translateString']);
 	}
 
 	//------------------------------------------------------------------------------ translateContent
