@@ -3,14 +3,14 @@ $(document).ready(function()
 	const $body = $('body')
 
 	//--------------------------------------------------------------------------- a[after-save] click
-	$body.build('each', 'a.after-save', function(event)
+	$body.build('each', 'a.after-save', function()
 	{
 		let $anchor = $(this)
 
 		const $window    = $('main > article')
 		const class_name = $anchor.data('class')
 		const id         = $anchor.data('id')
-		const new_object = $anchor.data('new_object')
+		const new_object = $anchor.data('new-object')
 		if (
 			($window.data('class') === class_name)
 			&& (
@@ -23,7 +23,7 @@ $(document).ready(function()
 	})
 
 	//--------------------------------------------------------- button[after-save] close / fill combo
-	$body.build('each', 'button.after-save', function(event)
+	$body.build('each', 'button.after-save', function()
 	{
 		let $button = $(this)
 
