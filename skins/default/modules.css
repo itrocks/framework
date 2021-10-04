@@ -2,22 +2,21 @@ article[data-module=administration],
 #favorites > li[data-module=administration],
 #menu > ul > li#administration {
   --dark-color: #8b8075;
-  --light-color: #d8d5d1;
-  --light-hover-color: #efefef; }
+  --light-color: #d8d5d1; }
 
 body:not(.min-left)[data-module=administration] > #menu > ul > li#administration > h3:not(.expanded) > a,
 body:not(.min-left) > #menu > ul > li#administration:focus > h3:not(.expanded) > a,
 body:not(.min-left) > #menu > ul > li#administration:hover > h3:not(.expanded) > a {
-  background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/expand-more-24.svg") right no-repeat; }
+  background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/administration-expand-more-24.svg") right no-repeat; }
 body:not(.min-left)[data-module=administration] > #menu > ul > li#administration > h3.expanded > a,
 body:not(.min-left) > #menu > ul > li#administration:focus > h3.expanded > a,
 body:not(.min-left) > #menu > ul > li#administration:hover > h3.expanded > a {
-  background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/expand-less-24.svg") right no-repeat; }
+  background: url("img/administration-24-hilight.svg") 10px center no-repeat, url("img/administration-expand-less-24.svg") right no-repeat; }
 
 body:not(.min-left) > #menu > ul > li#administration > h3:not(.expanded) > a {
-  background: url("img/administration-24.svg") 10px center no-repeat; }
-body:not(.min-left) > #menu > ul > li#administration > h3.expanded > a {
   background: url("img/administration-24.svg") 10px center no-repeat, url("img/expand-more-24.svg") right no-repeat; }
+body:not(.min-left) > #menu > ul > li#administration > h3.expanded > a {
+  background: url("img/administration-24.svg") 10px center no-repeat, url("img/expand-less-24.svg") right no-repeat; }
 
 body.min-left[data-module=administration] > #menu > ul > li#administration > h3 > a,
 body.min-left > #menu > ul > li#administration:focus > h3 > a,

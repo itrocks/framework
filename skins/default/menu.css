@@ -52,21 +52,11 @@ nav#menu {
       margin: 1px 0;
       width: 100%; }
       nav#menu > ul > li > ul > li > a {
+        display: table-cell;
         padding-left: 54px;
-        vertical-align: middle;
-        background-repeat: no-repeat;
-        background-position: 35px; }
-      nav#menu > ul > li > ul > li > ul {
-        padding-left: 74px;
-        display: none; }
+        vertical-align: middle; }
       nav#menu > ul > li > ul > li:focus, nav#menu > ul > li > ul > li:hover, nav#menu > ul > li > ul > li.selected {
         background: var(--light-color); }
-        nav#menu > ul > li > ul > li:focus:hover, nav#menu > ul > li > ul > li:hover:hover, nav#menu > ul > li > ul > li.selected:hover {
-          background: var(--light-hover-color); }
-      nav#menu > ul > li > ul > li > ul > li:has(ul) > a:not(.expanded) {
-        background-image: url("../../../../bappli/crm/skins/img/icon-add-small-16-px.svg"); }
-      nav#menu > ul > li > ul > li > ul > li:has(ul) > a.expanded {
-        background-image: url("../../../../bappli/crm/skins/img/icon-less-small-16-px.svg"); }
 
 body.min-left > nav#menu > .actions > .filter {
   display: none; }
