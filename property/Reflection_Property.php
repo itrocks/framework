@@ -54,7 +54,7 @@ class Reflection_Property extends Reflection\Reflection_Property
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name    string
+	 * @param $class_name    object|string
 	 * @param $property_name string
 	 * @param $display       string @values name, path,
 	 * @throws ReflectionException
