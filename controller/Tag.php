@@ -8,14 +8,8 @@ namespace ITRocks\Framework\Controller;
 abstract class Tag
 {
 
-	//--------------------------------------------------------------------------- BUTTON_WITHOUT_TEXT
-	const BUTTON_WITHOUT_TEXT = '.button_without_text';
-
 	//-------------------------------------------------------------------------------------- DISABLED
 	const DISABLED = '.disabled';
-
-	//----------------------------------------------------------------------------------------- RIGHT
-	const PUSH_RIGHT = '.push_right';
 
 	//---------------------------------------------------------------------------------------- SUBMIT
 	const SUBMIT = '.submit';
