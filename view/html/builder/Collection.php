@@ -178,7 +178,7 @@ class Collection
 			&& !($value instanceof Stringable)
 			&& $type->isSingleClass()
 			&& $type->asReflectionClass()->getAnnotation('business')->value
-			&& Dao::getObjectIdentifier($value)
+			&& Dao::getObjectIdentifier($value, 'id')
 		) {
 			$anchor = new Anchor(View::link($value), strval($value));
 			$anchor->setAttribute('target', Target::MAIN);
@@ -312,7 +312,7 @@ class Collection
 				$row->addItem($this->buildCell($object, $property, $property_path));
 			}
 		}
-		$row->setData('id', Dao::getObjectIdentifier($object));
+		$row->setData('id', Dao::getObjectIdentifier($object, 'id'));
 		return $row;
 	}
 
@@ -325,7 +325,7 @@ class Collection
 	{
 		$expand_properties = [];
 		foreach ($properties as $property_path => $property) {
-			if (($integrated = Integrated_Annotation::of($property))->value) {
+			if (Integrated_Annotation::of($property)->value) {
 				if (!isset($expand)) {
 					$expand = (new Integrated_Properties())->expandUsingClassName($property->class);
 				}

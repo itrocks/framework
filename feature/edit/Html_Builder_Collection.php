@@ -5,14 +5,12 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Component;
-use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Tooltip_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Target_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
@@ -199,17 +197,12 @@ class Html_Builder_Collection extends Collection
 				$property_builder = new Html_Builder_Property();
 				$property_builder->setTemplate($this->template);
 				$next_counter = $property_builder->template->nextCounter($pre_path . '[id][]');
-				/** @noinspection PhpUnhandledExceptionInspection $this->class_name must be valid */
-				if (!Link_Annotation::of(new Reflection_Class($this->class_name))->value) {
-					$id_input = new Input(
-						$pre_path . '[id][' . $next_counter . ']',
-						isset($object->id) ? $object->id : null
-					);
-					$id_input->setAttribute('type', 'hidden');
-					$property_builder->readonly = $this->readOnly();
-					$property_builder->setInputAsReadOnly($id_input);
-					$input = $id_input . $input;
-				}
+
+				$id_input = new Input($pre_path . '[id][' . $next_counter . ']', $object->id ?? null);
+				$id_input->setAttribute('type', 'hidden');
+				$property_builder->readonly = $this->readOnly();
+				$property_builder->setInputAsReadOnly($id_input);
+				$input = $id_input . $input;
 			}
 			$content = $input;
 		}
