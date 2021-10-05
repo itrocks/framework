@@ -3,7 +3,9 @@ namespace ITRocks\Framework\Dao\Data_Link;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao\Data_Link;
+use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Widget_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
@@ -44,6 +46,9 @@ abstract class Identifier_Map extends Data_Link
 				&& !is_a(Widget_Annotation::of($property)->value, Collection_As_Map::class, true)
 			) {
 				$value = $object->$property_name;
+				if (Store_Annotation::of($property)->isJson() && is_string($value)) {
+					$value = Getter::getLink($object, $property_name);
+				}
 				if (is_array($value)) {
 					foreach ($value as $element) {
 						$this->disconnect($element);
