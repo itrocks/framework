@@ -7,6 +7,15 @@ namespace ITRocks\Framework\Layout;
 interface Output
 {
 
+	//------------------------------------------------------------------------------------ htmlHeight
+	/**
+	 * @param $text  string     the HTML text
+	 * @param $width float|null the allowed width for the HTML text zone (null if unlimited)
+	 * @param $size  float|null the font size
+	 * @return float
+	 */
+	public function htmlHeight(string $text, float $width = null, float $size = null) : float;
+
 	//------------------------------------------------------------------------------------- textWidth
 	/**
 	 * Get text width calculated by the output generator

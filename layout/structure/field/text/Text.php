@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Layout\Structure\Field;
 
 use ITRocks\Framework\Layout\Structure\Element\Has_Init;
 use ITRocks\Framework\Layout\Structure\Field;
+use ITRocks\Framework\Layout\Structure\Field\Text\Formatted;
 use ITRocks\Framework\Layout\Structure\Field\Text\Templating;
 
 /**
@@ -10,6 +11,7 @@ use ITRocks\Framework\Layout\Structure\Field\Text\Templating;
  */
 class Text extends Field implements Has_Init
 {
+	use Formatted;
 	use Templating;
 
 	//----------------------------------------------------------------------------------------- $text

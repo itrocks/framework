@@ -24,13 +24,13 @@ class Exporter implements Output
 	/**
 	 * @var float
 	 */
-	public $current_font_size;
+	public float $current_font_size = .0;
 
 	//------------------------------------------------------------------------------------------ $pdf
 	/**
 	 * @var PDF|TCPDF
 	 */
-	public $pdf;
+	public PDF|TCPDF $pdf;
 
 	//----------------------------------------------------------------------------------- appendToPdf
 	/**
@@ -68,8 +68,9 @@ class Exporter implements Output
 	{
 		if ($page->background) {
 			$pdf = $this->pdf;
-			/** @noinspection PhpUnhandledExceptionInspection Will work */
+			/** @noinspection PhpUnhandledExceptionInspection Will work... or corrupted data ? */
 			$pdf->setSourceFile($page->background->temporary_file_name);
+			/** @noinspection PhpUnhandledExceptionInspection Should not happen... or corrupted data ? */
 			$import_page = $pdf->importPage(1);
 			$pdf->useTemplate($import_page);
 		}
@@ -141,6 +142,28 @@ class Exporter implements Output
 		}
 	}
 
+	//------------------------------------------------------------------------------------ htmlHeight
+	/**
+	 * @param $text  string     the HTML text
+	 * @param $width float|null the allowed width for the HTML text zone (null if unlimited)
+	 * @param $size  float|null the font size
+	 * @return float
+	 */
+	public function htmlHeight(string $text, float $width = null, float $size = null) : float
+	{
+		$pdf = clone $this->pdf;
+		if ($size && ($this->current_font_size !== $size)) {
+			$pdf->SetFontSize($pdf->millimetersToPoints($size));
+		}
+		if (!$pdf->getNumPages()) {
+			$pdf->SetCellPadding(0);
+			$pdf->SetAutoPageBreak(false);
+			$pdf->AddPage();
+		}
+		$pdf->writeHTMLCell($width, 0, 0, 0, $text);
+		return $pdf->last_cell_max_y;
+	}
+
 	//------------------------------------------------------------------------------------------ page
 	/**
 	 * Create a new page and draw page elements into it
@@ -178,32 +201,42 @@ class Exporter implements Output
 	{
 		$pdf      = $this->pdf;
 		$position = $element->top;
-		foreach (explode(LF, $element->text) as $text) {
+
+		if ($element->font_size !== $this->current_font_size) {
+			$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
+			$this->current_font_size = $element->font_size;
+		}
+		if (
+			$element->color
+			&& ($element->color !== '000000')
+			&& ($element->color !== 'rgb(0, 0, 0)')
+		) {
+			$color = explode(',', mParse($element->color, '(', ')'));
+			$pdf->SetTextColor(trim($color[0]), trim($color[1]), trim($color[2]));
+		}
+		if ($element->font_weight) {
+			$pdf->SetFont($pdf->getFontFamily(), 'B');
+		}
+
+		if ($element->isFormatted()) {
+			$pdf->writeHTMLCell(
+				$element->width, $element->height, $element->left, $element->top, $element->text
+			);
+		}
+		else {
 			$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
-			if ($element->font_size !== $this->current_font_size) {
-				$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
-				$this->current_font_size = $element->font_size;
+			foreach (explode(LF, $element->text) as $text) {
+				$pdf->SetXY($element->left, $position);
+				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
+				$position += $element->font_size;
 			}
-			if (
-				$element->color
-				&& ($element->color !== '000000')
-				&& ($element->color !== 'rgb(0, 0, 0)')
-			) {
-				$color = explode(',', mParse($element->color, '(', ')'));
-				$pdf->SetTextColor(trim($color[0]), trim($color[1]), trim($color[2]));
-			}
-			if ($element->font_weight) {
-				$pdf->SetFont($pdf->getFontFamily(), 'B');
-			}
-			$pdf->SetXY($element->left, $position);
-			$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
-			$position += $element->font_size;
-			if ($element->color && ($element->color !== '#000000')) {
-				$pdf->SetTextColor();
-			}
-			if ($element->font_weight) {
-				$pdf->SetFont($pdf->getFontFamily());
-			}
+		}
+
+		if ($element->color && ($element->color !== '#000000')) {
+			$pdf->SetTextColor();
+		}
+		if ($element->font_weight) {
+			$pdf->SetFont($pdf->getFontFamily());
 		}
 	}
 

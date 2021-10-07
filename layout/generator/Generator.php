@@ -8,6 +8,7 @@ use ITRocks\Framework\Layout\Generator\Count_Pages;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations_On_Pages;
 use ITRocks\Framework\Layout\Generator\Generate_Groups;
+use ITRocks\Framework\Layout\Generator\Html_Text_Height;
 use ITRocks\Framework\Layout\Generator\Link_Groups;
 use ITRocks\Framework\Layout\Generator\Page_All_Elements;
 use ITRocks\Framework\Layout\Generator\Property_To_Text;
@@ -36,7 +37,7 @@ class Generator
 	 *
 	 * @var Model
 	 */
-	public $model;
+	public Model $model;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -45,7 +46,7 @@ class Generator
 	 *
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//--------------------------------------------------------------------------------------- $output
 	/**
@@ -53,7 +54,7 @@ class Generator
 	 *
 	 * @var Output
 	 */
-	public $output;
+	public Output $output;
 
 	//------------------------------------------------------------------------------------ $precision
 	/**
@@ -61,7 +62,7 @@ class Generator
 	 *
 	 * @var float
 	 */
-	public static $precision = .25;
+	public static float $precision = .25;
 
 	//---------------------------------------------------------------------------------------- $print
 	/**
@@ -69,7 +70,7 @@ class Generator
 	 *
 	 * @var boolean
 	 */
-	public $print = false;
+	public bool $print = false;
 
 	//------------------------------------------------------------------------------------ $structure
 	/**
@@ -80,7 +81,7 @@ class Generator
 	 *
 	 * @var Structure
 	 */
-	public $structure;
+	public Structure $structure;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -104,7 +105,7 @@ class Generator
 	 * @param $object object
 	 * @return Structure
 	 */
-	public function generate($object) : Structure
+	public function generate(object $object) : Structure
 	{
 		$this->object    = $object;
 		$this->structure = new Structure(Builder::className($this->model->class_name));
@@ -118,6 +119,7 @@ class Generator
 		(new Link_Groups($this->structure))->run();
 		(new Property_To_Text($this->structure, $this->print))->run($this->object);
 		(new Automatic_Line_Feed($this->structure))->run($this->output);
+		(new Html_Text_Height($this->structure))->run($this->output);
 		(new Dispatch_Iterations($this->structure))->run();
 		(new Count_Pages($this->structure))->run();
 		(new Dispatch_Iterations_On_Pages($this->structure))->run();
@@ -174,7 +176,7 @@ class Generator
 	/**
 	 * @param $properties boolean
 	 */
-	public function sortPageElements($properties = true)
+	public function sortPageElements(bool $properties = true)
 	{
 		foreach ($this->structure->pages as $page) {
 			$this->sortElements($page->elements);

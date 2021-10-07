@@ -33,6 +33,44 @@ class PDF extends Fpdi
 	//------------------------------------------------------------------- MILLIMETERS_TO_POINTS_RATIO
 	const MILLIMETERS_TO_POINTS_RATIO = 2.5;
 
+	//------------------------------------------------------------------------------ $last_cell_max_y
+	/**
+	 * After a MultiCell / writeHTMLCell, you may know until which y position the writing went, and
+	 * calculate the rendered cell height.
+	 *
+	 * @var float
+	 */
+	public float $last_cell_max_y = .0;
+
+	//-------------------------------------------------------------------------------------------- Ln
+	/**
+	 * @inheritdoc
+	 */
+	public function Ln($h = '', $cell = false)
+	{
+		parent::Ln($h, $cell);
+		if ($this->y > $this->last_cell_max_y) {
+			$this->last_cell_max_y = $this->y;
+		}
+	}
+
+	//------------------------------------------------------------------------------------- MultiCell
+	/**
+	 * @inheritdoc
+	 */
+	public function MultiCell(
+		$w, $h, $txt, $border = 0, $align = 'J', $fill = false, $ln = 1, $x = '', $y = '',
+		$reseth = true, $stretch = 0, $ishtml = false, $autopadding = true, $maxh = 0, $valign = 'T',
+		$fitcell = false
+	) : int
+	{
+		$this->last_cell_max_y = $y ?: $this->y;
+		return parent::MultiCell(
+			$w, $h, $txt, $border, $align, $fill, $ln, $x, $y, $reseth, $stretch, $ishtml, $autopadding,
+			$maxh, $valign, $fitcell
+		);
+	}
+
 	//---------------------------------------------------------------------------------------- Output
 	/**
 	 * Overrides TCPDF::Output
