@@ -21,7 +21,7 @@ abstract class Field extends Element
 
 	//------------------------------------------------------------------------------------ $font_size
 	/**
-	 * @var integer
+	 * @var float
 	 */
 	public $font_size;
 

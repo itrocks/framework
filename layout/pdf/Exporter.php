@@ -103,34 +103,7 @@ class Exporter implements Output
 		}
 
 		elseif ($element instanceof Text) {
-			$position = $element->top;
-			foreach (explode(LF, $element->text) as $text) {
-				$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
-				if ($element->font_size !== $this->current_font_size) {
-					$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
-					$this->current_font_size = $element->font_size;
-				}
-				if (
-					$element->color
-					&& ($element->color !== '000000')
-					&& ($element->color !== 'rgb(0, 0, 0)')
-				) {
-					$color = explode(',', mParse($element->color, '(', ')'));
-					$pdf->SetTextColor(trim($color[0]), trim($color[1]), trim($color[2]));
-				}
-				if ($element->font_weight) {
-					$pdf->SetFont($pdf->getFontFamily(), 'B');
-				}
-				$pdf->SetXY($element->left, $position);
-				$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
-				$position += $element->font_size;
-				if ($element->color && ($element->color !== '#000000')) {
-					$pdf->SetTextColor();
-				}
-				if ($element->font_weight) {
-					$pdf->SetFont($pdf->getFontFamily());
-				}
-			}
+			$this->textElement($element);
 		}
 
 		elseif ($element instanceof Draw\Horizontal_Line) {
@@ -197,6 +170,43 @@ class Exporter implements Output
 		}
 	}
 
+	//----------------------------------------------------------------------------------- textElement
+	/**
+	 * @param $element Text
+	 */
+	protected function textElement(Text $element)
+	{
+		$pdf      = $this->pdf;
+		$position = $element->top;
+		foreach (explode(LF, $element->text) as $text) {
+			$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';
+			if ($element->font_size !== $this->current_font_size) {
+				$pdf->SetFontSize($pdf->millimetersToPoints($element->font_size));
+				$this->current_font_size = $element->font_size;
+			}
+			if (
+				$element->color
+				&& ($element->color !== '000000')
+				&& ($element->color !== 'rgb(0, 0, 0)')
+			) {
+				$color = explode(',', mParse($element->color, '(', ')'));
+				$pdf->SetTextColor(trim($color[0]), trim($color[1]), trim($color[2]));
+			}
+			if ($element->font_weight) {
+				$pdf->SetFont($pdf->getFontFamily(), 'B');
+			}
+			$pdf->SetXY($element->left, $position);
+			$pdf->Cell($element->width, $element->font_size, $text, 0, 0, $align);
+			$position += $element->font_size;
+			if ($element->color && ($element->color !== '#000000')) {
+				$pdf->SetTextColor();
+			}
+			if ($element->font_weight) {
+				$pdf->SetFont($pdf->getFontFamily());
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------------- textWidth
 	/**
 	 * Get text width calculated by the output generator
@@ -204,13 +214,15 @@ class Exporter implements Output
 	 * Value of $pdf must have been set before calling this
 	 * Apply a ratio to the calculated width, to fix a width error into PDF libraries
 	 *
-	 * @param $text  string the text
-	 * @param $font  string the font name
-	 * @param $style string the font style
-	 * @param $size  float  the font size, in millimeters
+	 * @param $text  string      the text
+	 * @param $font  string|null the font name
+	 * @param $style string|null the font style
+	 * @param $size  float|null  the font size, in millimeters
 	 * @return float
 	 */
-	public function textWidth($text, $font = '', $style = null, $size = null)
+	public function textWidth(
+		string $text, string $font = null, string $style = null, float $size = null
+	) : float
 	{
 		$pdf = $this->pdf;
 		if ($size && ($this->current_font_size !== $size)) {
