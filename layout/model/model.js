@@ -375,7 +375,7 @@ $(document).ready(function()
 		let $active_page     = $editor.find('.active.page')
 		let $source_designer = $source_page.find('.designer')
 		let $target_designer = $active_page.find('.designer')
-		$target_designer.empty().append($source_designer.children())
+		$target_designer.empty().append($source_designer.children().clone())
 	})
 
 	//------------------------------------------------------ article.layout-model li.empty-page click
