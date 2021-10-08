@@ -23,7 +23,7 @@ input.datetime {
 li.date_time.object {
 
 	&:not(.show-seconds):not(.show-time) input.datetime {
-		width: 100px;
+		width: 82px;
 	}
 
 	&.show-seconds input.datetime {
