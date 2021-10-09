@@ -61,12 +61,18 @@ article:not(.list) ul.general.actions {
     padding-top: 6px;
     top: 25px; }
 
-ul.selection.actions > li > ul {
-  border-left: 1px solid #d8d8d8;
-  padding-bottom: 6px;
-  bottom: 25px; }
-  ul.selection.actions > li > ul > li {
-    border-left: none; }
+ul.selection.actions {
+  transition: margin-bottom var(--transition-duration) linear; }
+  ul.selection.actions:not(.visible) {
+    margin-bottom: -37px; }
+  ul.selection.actions.visible {
+    margin-bottom: 0; }
+  ul.selection.actions > li > ul {
+    border-left: 1px solid #d8d8d8;
+    padding-bottom: 6px;
+    bottom: 25px; }
+    ul.selection.actions > li > ul > li {
+      border-left: none; }
 
 ol.properties.tiny + ul.actions,
 ul.properties.tiny + ul.actions {

@@ -69,6 +69,15 @@ article:not(.list) ul.general.actions {
 }
 
 ul.selection.actions {
+	transition: margin-bottom var(--transition-duration) linear;
+
+	&:not(.visible) {
+		margin-bottom: -37px;
+	}
+
+	&.visible {
+		margin-bottom: 0;
+	}
 
 	> li > ul {
 		border-left: 1px solid #d8d8d8;

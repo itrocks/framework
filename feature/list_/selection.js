@@ -64,6 +64,14 @@ $(document).ready(function()
 		$selector.children('input[name=selection]')         .val(selection_content)
 		$selection_checkbox.parent().attr('title', title)
 		selection_checkbox.indeterminate = count_elements && (count_elements < total)
+
+		const $selection_actions = $article_list.find('.selection.actions')
+		if (count_elements) {
+			$selection_actions.addClass('visible')
+		}
+		else {
+			$selection_actions.removeClass('visible')
+		}
 	}
 
 	//---------------------------------------------------------------------------------- article.list
