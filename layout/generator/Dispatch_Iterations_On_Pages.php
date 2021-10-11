@@ -32,17 +32,21 @@ class Dispatch_Iterations_On_Pages
 	 */
 	protected function group(Group $group)
 	{
-		$iterations        = $group->iterations;
+		$first_iteration   = true;
 		$page_number       = 0;
 		$page_group        = $this->nextPageGroup($group, $page_number);
 		$shift_top         = $group->top - $page_group->top;
 		$page_group_bottom = $page_group->bottom();
 
-		foreach ($iterations as $iteration) {
+		foreach ($group->iterations as $iteration) {
 			$iteration_bottom = $iteration->top + $iteration->height - $shift_top;
-			if ($iteration_bottom > $page_group_bottom) {
-				$page_group = $this->nextPageGroup($group, $page_number);
-				$shift_top  = $iteration->top - $page_group->top;
+			if (($iteration_bottom > $page_group_bottom) && !$first_iteration) {
+				$page_group      = $this->nextPageGroup($group, $page_number);
+				$shift_top       = $iteration->top - $page_group->top;
+				$first_iteration = true;
+			}
+			else {
+				$first_iteration = false;
 			}
 			$iteration->up($shift_top);
 			$page_group->iterations[] = $iteration;

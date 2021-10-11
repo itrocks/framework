@@ -20,13 +20,15 @@ class Count_Pages
 	 */
 	protected function group(Group $group)
 	{
+		$first_iteration  = true;
 		$structure        = $this->structure;
 		$page_number      = 1;
 		$pages_count      = $structure->pages_count;
 		$page             = $structure->page($page_number, $pages_count);
 		$page_height      = $group->heightOnPage($page);
 		$available_height = $page_height;
-		foreach ($group->iterations as $iteration_key => $iteration) {
+
+		foreach ($group->iterations as $iteration) {
 			if (($available_height < $iteration->height) && ($page_number === $pages_count)) {
 				$pages_count      ++;
 				$page             = $structure->page($page_number, $pages_count);
@@ -34,14 +36,19 @@ class Count_Pages
 				$available_height = $available_height - $page_height + $new_page_height;
 				$page_height      = $new_page_height;
 			}
-			if ($available_height < $iteration->height) {
+			if (($available_height < $iteration->height) && !$first_iteration) {
 				$page_number      ++;
 				$page             = $structure->page($page_number, $pages_count);
 				$page_height      = $group->heightOnPage($page);
 				$available_height = $page_height;
+				$first_iteration  = true;
+			}
+			else {
+				$first_iteration = false;
 			}
 			$available_height -= ($iteration->height + $group->iteration_spacing);
 		}
+
 		$structure->pages_count = $pages_count;
 	}
 
