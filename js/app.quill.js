@@ -52,7 +52,7 @@ $(document).ready(function()
 		$this.hide().after($quill)
 		$this.parent().addClass('ql')
 
-		$quill.keyup(function() {
+		$quill.keyup(() => {
 			// TODO later depending on data-store-format $this.text(JSON.stringify(quill.getContents()))
 			$this.text($quill.find('.ql-editor').html())
 		})
@@ -80,8 +80,8 @@ $(document).ready(function()
 		const $editor    = $container.children('.ql-editor')
 
 		// keyboard / click outside of the table tools remove them
-		$(document).click  (function() { $('.ql-table-tools').remove() })
-		$(document).keydown(function() { $('.ql-table-tools').remove() })
+		$(document).click  (() => { $('.ql-table-tools').remove() })
+		$(document).keydown(() => { $('.ql-table-tools').remove() })
 
 		//------------------------------------------------------------------------- $editor contextmenu
 		/**
@@ -114,13 +114,13 @@ $(document).ready(function()
 			// - button positions
 			let   $actions = $table_tools.children('li')
 			const $row     = $cell.closest('tr')
-			const $table   = $row.closest('table')
-			(function() {
+			const $table   = $row.closest('table');
+			(() => {
 				const cell   = $cell.offset()
 				const offset = $quill.offset()
 				const table  = $table.offset()
-				const left = function(left) { return (left - offset.left).toString() + 'px' }
-				const top  = function(top)  { return (top - offset.top).toString() + 'px' }
+				const left = (left) => { return (left - offset.left).toString() + 'px' }
+				const top  = (top)  => { return (top - offset.top).toString() + 'px' }
 				// delete table
 				$($actions[0]).css({
 					left: left(table.left + $table.width() - 32),
@@ -168,31 +168,31 @@ $(document).ready(function()
 
 			// - link clicked buttons to quill actions on table
 			$actions = $actions.children('button').attr('type', 'button')
-			$($actions[0]).click(function() { table.deleteTable() })
-			$($actions[1]).click(function() { table.deleteColumn() })
-			$($actions[2]).click(function() { table.deleteRow() })
-			$($actions[3]).click(function() { table.insertColumnLeft() })
-			$($actions[4]).click(function() { table.insertColumnRight() })
-			$($actions[5]).click(function() { table.insertRowAbove() })
-			$($actions[6]).click(function() { table.insertRowBelow() })
+			$($actions[0]).click(() => { table.deleteTable() })
+			$($actions[1]).click(() => { table.deleteColumn() })
+			$($actions[2]).click(() => { table.deleteRow() })
+			$($actions[3]).click(() => { table.insertColumnLeft() })
+			$($actions[4]).click(() => { table.insertColumnRight() })
+			$($actions[5]).click(() => { table.insertRowAbove() })
+			$($actions[6]).click(() => { table.insertRowBelow() })
 
 			// - delete buttons highlights column / row / table in red for deletion
 			$($actions[0]).hover(
-				function() { $table.css('background', '#fcc') },
-				function() { $table.css('background', '') }
+				() => { $table.css('background', '#fcc') },
+				() => { $table.css('background', '') }
 			)
 			$($actions[1]).hover(
-				function() {
+				() => {
 					const $tds = $table.find('td:nth-child(' + ($cell.prevAll().length + 1) + ')')
 					$tds.css('background', '#fcc')
 				},
-				function() {
+				() => {
 					$table.find('td').css('background', '')
 				}
 			)
 			$($actions[2]).hover(
-				function() { $row.css('background', '#fcc') },
-				function() { $row.css('background', '') }
+				() => { $row.css('background', '#fcc') },
+				() => { $row.css('background', '') }
 			)
 
 			// - disable the browsers context menu
