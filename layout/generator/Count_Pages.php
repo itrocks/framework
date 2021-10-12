@@ -46,7 +46,7 @@ class Count_Pages
 			else {
 				$first_iteration = false;
 			}
-			$available_height -= ($iteration->height + $group->iteration_spacing);
+			$available_height -= ($iteration->height + $iteration->spacing());
 		}
 
 		$structure->pages_count = $pages_count;

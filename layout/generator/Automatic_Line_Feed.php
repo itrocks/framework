@@ -1,25 +1,21 @@
 <?php
 namespace ITRocks\Framework\Layout\Generator;
 
-use ITRocks\Framework\Layout\Output;
 use ITRocks\Framework\Layout\Structure\Element;
 use ITRocks\Framework\Layout\Structure\Field\Final_Text;
 use ITRocks\Framework\Layout\Structure\Field\Property;
 use ITRocks\Framework\Layout\Structure\Field\Text;
+use ITRocks\Framework\Layout\Structure\Group;
+use ITRocks\Framework\Layout\Structure\Group\Iteration;
 use ITRocks\Framework\Layout\Structure\Has_Structure;
 
 /**
  * Automatic line feed (aka carriage return)
  */
-class Automatic_Line_Feed extends Shift_Top
+class Automatic_Line_Feed
 {
+	use Has_Output;
 	use Has_Structure;
-
-	//--------------------------------------------------------------------------------------- $output
-	/**
-	 * @var Output
-	 */
-	protected $output;
 
 	//--------------------------------------------------------------------------------------- element
 	/**
@@ -33,6 +29,11 @@ class Automatic_Line_Feed extends Shift_Top
 			&& !(($element instanceof Final_Text) && ($element->property instanceof Property\Resizable))
 		) {
 			return 0;
+		}
+
+		if ($element->isFormatted()) {
+			$element_height = $element->height;
+			return $element->calculateHeight($this->output) - $element_height;
 		}
 
 		$changed_text  = false;
@@ -69,10 +70,59 @@ class Automatic_Line_Feed extends Shift_Top
 		if ($changed_text) {
 			$element_height = $element->height;
 			$element->text  = join(LF, $element_texts);
-			$element->calculateHeight();
-			return $element->height - $element_height;
+			return $element->calculateHeight() - $element_height;
 		}
 		return 0;
+	}
+
+	//----------------------------------------------------------------------------------------- group
+	/**
+	 * @param $group Group
+	 */
+	protected function group(Group $group)
+	{
+		foreach ($group->elements as $element) {
+			$this->element($element);
+		}
+		foreach ($group->groups as $sub_group) {
+			$this->group($sub_group);
+		}
+		foreach ($group->iterations as $iteration) {
+			$this->iteration($iteration);
+		}
+	}
+
+	//------------------------------------------------------------------------------------- iteration
+	/**
+	 * @param $iteration Iteration
+	 */
+	protected function iteration(Iteration $iteration)
+	{
+		$shift     = 0;
+		$shift_top = 0;
+		$top       = -1;
+		foreach ($iteration->elements as $element) {
+			if ($element->top > $top) {
+				$shift_top += $shift;
+				$shift      = 0;
+				$top        = $element->top;
+			}
+			$element->top += $shift_top;
+			$shift         = max($shift, $this->element($element));
+		}
+	}
+
+	//------------------------------------------------------------------------------------------- run
+	public function run()
+	{
+		foreach ($this->structure->pages as $page) {
+			foreach ($page->elements as $element) {
+				$this->element($element);
+			}
+			foreach ($page->groups as $group) {
+				$this->group($group);
+			}
+		}
 	}
 
 }

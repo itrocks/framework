@@ -29,12 +29,12 @@ trait Formatted
 		if (!$this->isFormatted()) {
 			return str_replace(CR, '', $this->text);
 		}
-		$text = str_replace([CR, '<p><br></p>'], ['', '<br>'], $this->text);
-		$text = str_replace(['<p>', '</p>', LF], ['', '<br>', ' '], $text);
-		if (substr($text, -4) === '<br>') {
+		$text = str_replace([CR, P . BR . _P], ['', BR], $this->text);
+		$text = str_replace([P, _P, LF], ['', BR, ' '], $text);
+		if (substr($text, -4) === BR) {
 			$text = substr($text, 0, -4);
 		}
-		return '<p>' . $text . '</p>';
+		return P . $text . _P;
 	}
 
 	//----------------------------------------------------------------------------------- isFormatted
@@ -43,7 +43,7 @@ trait Formatted
 	 */
 	public function isFormatted() : bool
 	{
-		return str_starts_with($this->text, '<p>') && str_ends_with($this->text, '</p>');
+		return str_starts_with($this->text, P) && str_ends_with($this->text, _P);
 	}
 
 }

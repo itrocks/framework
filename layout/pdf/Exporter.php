@@ -160,8 +160,11 @@ class Exporter implements Output
 			$pdf->SetAutoPageBreak(false);
 			$pdf->AddPage();
 		}
-		$pdf->writeHTMLCell($width, 0, 0, 0, $text);
-		return $pdf->last_cell_max_y;
+		if (str_starts_with($text, P) && str_ends_with($text, _P)) {
+			$text = substr($text, 3, -4);
+		}
+		$pdf->writeHTMLCell($width, 0, 0, 10, $text);
+		return $pdf->last_cell_max_y - 10;
 	}
 
 	//------------------------------------------------------------------------------------------ page
@@ -219,9 +222,11 @@ class Exporter implements Output
 		}
 
 		if ($element->isFormatted()) {
-			$pdf->writeHTMLCell(
-				$element->width, $element->height, $element->left, $element->top, $element->text
-			);
+			$text = $element->text;
+			if (str_starts_with($text, P) && str_ends_with($text, _P)) {
+				$text = substr($text, 3, -4);
+			}
+			$pdf->writeHTMLCell($element->width, $element->height, $element->left, $element->top, $text);
 		}
 		else {
 			$align = ucfirst(substr($element->text_align, 0, 1)) ?: '';

@@ -34,7 +34,7 @@ class Property_To_Text
 	 *
 	 * @var Iteration[][] Iteration[string $group_property_path][integer $iteration_number]
 	 */
-	protected $iterations;
+	protected array $iterations;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -42,7 +42,7 @@ class Property_To_Text
 	 *
 	 * @var object
 	 */
-	protected $object;
+	protected object $object;
 
 	//---------------------------------------------------------------------------------------- $print
 	/**
@@ -50,7 +50,7 @@ class Property_To_Text
 	 *
 	 * @var boolean
 	 */
-	protected $print = false;
+	protected bool $print = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -66,10 +66,11 @@ class Property_To_Text
 	//---------------------------------------------------------------------------------------- append
 	/**
 	 * @param $final_element    Element|Final_Image|Final_Text
-	 * @param $iteration_number integer
+	 * @param $iteration_number integer|null
 	 */
-	protected function append(Element $final_element, int $iteration_number = null)
-	{
+	protected function append(
+		Element|Final_Image|Final_Text $final_element, int $iteration_number = null
+	) {
 		// append element to the group iteration / page
 		if ($final_element->group) {
 			$iteration                = $this->iteration($final_element->group, $iteration_number);
@@ -111,7 +112,7 @@ class Property_To_Text
 	 *
 	 * @param $text Element|Image|Text
 	 */
-	protected function groupElement(Element $text)
+	protected function groupElement(Element|Image|Text $text)
 	{
 		$property_path = $text->group->property_path;
 		$values        = $this->values($property_path);
@@ -210,7 +211,7 @@ class Property_To_Text
 			$this->group($group);
 		}
 		foreach ($page->elements as $element_key => $element) {
-			if (($element instanceof Text) && (strpos($element->text, '{') !== false)) {
+			if (($element instanceof Text) && str_contains($element->text, '{')) {
 				$this->pageText($element);
 				unset($page->elements[$element_key]);
 			}
@@ -264,7 +265,9 @@ class Property_To_Text
 	 * @param $value    mixed
 	 * @return Element|Final_Image|Final_Text
 	 */
-	protected function propertyToFinal(Field $property, $value) : Element
+	protected function propertyToFinal(
+		Field|Image|Property|Text $property, mixed $value
+	) : Element|Final_Image|Final_Text
 	{
 		return ($value instanceof File)
 			? $this->propertyToFinalImage($property, $value)
@@ -312,6 +315,7 @@ class Property_To_Text
 		}
 		$final_text->property = $property;
 		$final_text->text     = $value;
+		$final_text->text     = $final_text->formatTextForPrint();
 
 		// initialize final text, force height calculation
 		$final_text->height = 0;
@@ -328,7 +332,7 @@ class Property_To_Text
 	 *
 	 * @param $object object
 	 */
-	public function run($object)
+	public function run(object $object)
 	{
 		$this->object = $object;
 		foreach ($this->structure->pages as $page) {

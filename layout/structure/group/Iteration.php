@@ -19,7 +19,7 @@ class Iteration extends Element
 	 * @mandatory
 	 * @var Element[]
 	 */
-	public $elements;
+	public array $elements;
 
 	//--------------------------------------------------------------------------------------- $number
 	/**
@@ -27,7 +27,46 @@ class Iteration extends Element
 	 *
 	 * @var integer
 	 */
-	public $number;
+	public int $number;
+
+	//-------------------------------------------------------------------------------------- $spacing
+	/**
+	 * Apply group iteration spacing ?
+	 *
+	 * @var boolean
+	 */
+	public bool $spacing = true;
+
+	//------------------------------------------------------------------------------- calculateHeight
+	/**
+	 * Calculate the maximum height occupied by included elements
+	 *
+	 * This takes care of the top position of the highest element : this this the total height of the
+	 * line
+	 *
+	 * @output $height
+	 * @return float
+	 */
+	public function calculateHeight() : float
+	{
+		$iteration_bottom = .0;
+		$iteration_margin = .0;
+		$iteration_top    = reset($this->elements)->top;
+		$line_bottom      = .0;
+		$line_top         = .0;
+		foreach ($this->elements as $element) {
+			if ($element->top > $line_top) {
+				if ($line_bottom) {
+					$iteration_margin = max($iteration_margin, $element->top - $line_bottom);
+					$line_bottom      = .0;
+				}
+				$line_top = $element->top;
+			}
+			$line_bottom      = max($line_bottom, $element->top + $element->height);
+			$iteration_bottom = max($iteration_bottom, $line_bottom);
+		}
+		return $this->height = $iteration_bottom + $iteration_margin - $iteration_top;
+	}
 
 	//------------------------------------------------------------------------------ cloneWithContext
 	/**
@@ -36,7 +75,9 @@ class Iteration extends Element
 	 * @param $iteration Iteration|null
 	 * @return static
 	 */
-	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+	public function cloneWithContext(
+		Page $page, Group $group = null, Iteration $iteration = null
+	) : static
 	{
 		/** @var $iteration Iteration PhpStorm bug */
 		$iteration = parent::cloneWithContext($page, $group, $iteration);
@@ -50,12 +91,24 @@ class Iteration extends Element
 		return $iteration;
 	}
 
+	//------------------------------------------------------------------------------------------ down
+	/**
+	 * Move the iteration and all contained elements down
+	 *
+	 * @param $height        float The distance to move (mm)
+	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
+	 */
+	public function down(float $height, bool $elements_only = false)
+	{
+		$this->up(-$height, $elements_only);
+	}
+
 	//------------------------------------------------------------------------------------------ dump
 	/**
 	 * @param $level integer
 	 * @return string
 	 */
-	public function dump($level = 0)
+	public function dump($level = 0) : string
 	{
 		$dump = parent::dump($level) . SP . '(' . $this->number . ')' . LF;
 		foreach ($this->elements as $element) {
@@ -64,15 +117,27 @@ class Iteration extends Element
 		return $dump;
 	}
 
+	//--------------------------------------------------------------------------------------- spacing
+	/**
+	 * @return float
+	 */
+	public function spacing() : float
+	{
+		return $this->spacing ? $this->group->iteration_spacing : .0;
+	}
+
 	//-------------------------------------------------------------------------------------------- up
 	/**
 	 * Move the iteration and all contained elements up
 	 *
-	 * @param $height float The distance to move (mm)
+	 * @param $height        float The distance to move (mm)
+	 * @param $elements_only boolean   If true, the iteration does not go up : only elements
 	 */
-	public function up($height)
+	public function up(float $height, bool $elements_only = false)
 	{
-		$this->top -= $height;
+		if (!$elements_only) {
+			$this->top -= $height;
+		}
 		foreach ($this->elements as $element) {
 			$element->top -= $height;
 		}

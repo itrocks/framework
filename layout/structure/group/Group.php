@@ -31,7 +31,7 @@ class Group extends Element
 	 * @values self::const local
 	 * @var string
 	 */
-	public $direction = self::VERTICAL;
+	public string $direction = self::VERTICAL;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
@@ -41,7 +41,7 @@ class Group extends Element
 	 *
 	 * @var Element[]
 	 */
-	public $elements = [];
+	public array $elements = [];
 
 	//--------------------------------------------------------------------------------------- $groups
 	/**
@@ -49,7 +49,7 @@ class Group extends Element
 	 *
 	 * @var Group[]
 	 */
-	public $groups = [];
+	public array $groups = [];
 
 	//---------------------------------------------------------------------------- $iteration_spacing
 	/**
@@ -57,13 +57,13 @@ class Group extends Element
 	 *
 	 * @var float
 	 */
-	public $iteration_spacing = .5;
+	public float $iteration_spacing = .5;
 
 	//----------------------------------------------------------------------------------- $iterations
 	/**
 	 * @var Iteration[]
 	 */
-	public $iterations = [];
+	public array $iterations = [];
 
 	//---------------------------------------------------------------------------------------- $links
 	/**
@@ -74,13 +74,13 @@ class Group extends Element
 	 *
 	 * @var Group[] Group[string $page_number] page number must always be a string
 	 */
-	public $links = [];
+	public array $links = [];
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Property[]
 	 */
-	public $properties = [];
+	public array $properties = [];
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
@@ -90,13 +90,13 @@ class Group extends Element
 	 *
 	 * @var string
 	 */
-	public $property_path;
+	public string $property_path;
 
 	//----------------------------------------------------------------------------------- allElements
 	/**
 	 * @return Element[]
 	 */
-	public function allElements()
+	public function allElements() : array
 	{
 		return array_merge($this->elements, $this->groups, $this->iterations, $this->properties);
 	}
@@ -108,7 +108,9 @@ class Group extends Element
 	 * @param $iteration Iteration|null
 	 * @return static
 	 */
-	public function cloneWithContext(Page $page, Group $group = null, Iteration $iteration = null)
+	public function cloneWithContext(
+		Page $page, Group $group = null, Iteration $iteration = null
+	) : static
 	{
 		/** @var $group static PhpStorm bug */
 		$group = parent::cloneWithContext($page, $group, $iteration);
@@ -132,7 +134,7 @@ class Group extends Element
 	 * @param $detail boolean
 	 * @return string
 	 */
-	public function dump($level = 0, $detail = true)
+	public function dump($level = 0, bool $detail = true) : string
 	{
 		if ($detail) {
 			$dump = parent::dump($level) . LF;
@@ -156,11 +158,9 @@ class Group extends Element
 	 * @param $page Page
 	 * @return float
 	 */
-	public function heightOnPage(Page $page)
+	public function heightOnPage(Page $page) : float
 	{
-		return isset($this->links[strval($page->number)])
-			? $this->links[strval($page->number)]->height
-			: 0;
+		return $this->links[strval($page->number)]->height ?? .0;
 	}
 
 	//------------------------------------------------------------------------------------ linkOnPage
@@ -170,11 +170,9 @@ class Group extends Element
 	 * @param $page Page
 	 * @return Group|null
 	 */
-	public function linkOnPage(Page $page)
+	public function linkOnPage(Page $page) : Group|null
 	{
-		return isset($this->links[strval($page->number)])
-			? $this->links[strval($page->number)]
-			: null;
+		return $this->links[strval($page->number)] ?? null;
 	}
 
 }
