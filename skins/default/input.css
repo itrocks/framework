@@ -28,3 +28,7 @@ textarea {
   height: 21px;
   line-height: 1.5em;
   padding: 10px; }
+
+.quill.string,
+.ql.string {
+  min-width: 500px; }

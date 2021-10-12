@@ -35,3 +35,8 @@ textarea {
 	line-height: 1.5em;
 	padding: $input-padding;
 }
+
+.quill.string,
+.ql.string {
+	min-width: 500px;
+}

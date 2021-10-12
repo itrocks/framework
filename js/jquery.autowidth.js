@@ -58,7 +58,9 @@
 	 */
 	const blockColumnWidth = function(settings, $cell, width)
 	{
-		if ($cell.hasClass('no-autowidth')) return
+		if ($cell.hasClass('no-autowidth')) {
+			return
+		}
 		$cell.data('max-width', width)
 		const calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'))
 		const setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple'

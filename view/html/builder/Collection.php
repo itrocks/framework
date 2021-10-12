@@ -288,6 +288,10 @@ class Collection
 				if ($property->getAnnotation('no_autowidth')->value) {
 					$cell->addClass('no-autowidth');
 				}
+				if ($editor = $property->getAnnotation('editor')->value) {
+					$cell->addClass(lParse($editor, SP));
+					$cell->addClass('no-autowidth');
+				}
 				$cell->setData('property', $property->path);
 				$cell->setData('title',    Loc::tr($property->path));
 				$header->addItem($cell);
