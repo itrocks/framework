@@ -27,25 +27,25 @@ class Empty_Columns_Remover implements Registerable
 	/**
 	 * @var boolean[]
 	 */
-	public $set;
+	public array $set;
 
 	//--------------------------------------------------------------------------------------- $shifts
 	/**
 	 * @var float[] float[$column: integer]
 	 */
-	public $shifts;
+	public array $shifts;
 
 	//---------------------------------------------------------------------------------------- $unset
 	/**
 	 * @var Property[]
 	 */
-	public $unset;
+	public array $unset;
 
 	//--------------------------------------------------------------------------------------- $widths
 	/**
-	 * @var float[] float[$column: integer
+	 * @var float[] float[$column: integer]
 	 */
-	public $widths;
+	public array $widths;
 
 	//----------------------------------------------------------------------------- applyShiftsWidths
 	/**
@@ -87,9 +87,16 @@ class Empty_Columns_Remover implements Registerable
 	 */
 	protected function emptyColumns(Group $group, array $properties)
 	{
+		if (!$group->iterations) {
+			return;
+		}
+		$elements_count   = count(reset($group->iterations)->elements);
 		$properties_count = count($properties);
 		$this->set        = [];
 		foreach ($group->iterations as $iteration) {
+			if (count($iteration->elements) < min($elements_count, $properties_count)) {
+				continue;
+			}
 			usort($iteration->elements, function(Field $element1, Field $element2) {
 				return (abs($element1->top - $element2->top) >= Generator::$precision)
 					? cmp($element1->top, $element2->top)
@@ -125,7 +132,7 @@ class Empty_Columns_Remover implements Registerable
 	 * @param $alter      boolean if true, headers are removed. Not if false.
 	 * @return Text[][]
 	 */
-	public function headers(Group $group, array $properties, $alter = false) : array
+	public function headers(Group $group, array $properties, bool $alter = false) : array
 	{
 		$headers = [];
 		foreach ($group->links ?: [$group] as $group) {
@@ -163,6 +170,7 @@ class Empty_Columns_Remover implements Registerable
 
 	//------------------------------------------------------------------------------------ properties
 	/**
+	 * @noinspection PhpDocSignatureInspection @return inspector bug
 	 * @param $group Group
 	 * @return Element[]|Property[]
 	 */
@@ -175,7 +183,7 @@ class Empty_Columns_Remover implements Registerable
 				$properties[$column] = $property;
 			}
 		}
-		foreach ($group->elements as $column => $element) {
+		foreach ($group->elements as $element) {
 			if (abs($element->top - $top) < Generator::$precision) {
 				$properties[]   = $element;
 				$added_elements = true;
@@ -269,10 +277,10 @@ class Empty_Columns_Remover implements Registerable
 		$this->widths = [];
 		do {
 			$shift        += ($right - $property->left);
-			$right        = $property->left;
+			$right         = $property->left;
 			$column       --;
-			$property     = prev($this->unset);
-			$unset_column = key($this->unset) ?: -1;
+			$property      = prev($this->unset);
+			$unset_column  = key($this->unset) ?: -1;
 			while ($column > $unset_column) {
 				$set_property = $properties[$column];
 				$right        = $set_property->left;

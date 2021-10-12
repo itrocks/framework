@@ -23,7 +23,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	 *
 	 * @var string[] [$removed caption => $replacement caption]
 	 */
-	protected $rename;
+	protected array $rename;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -46,18 +46,22 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	 */
 	public function identicalColumns(Empty_Columns_Remover $object, Group $group, array $properties)
 	{
-		if (!$object->unset) {
+		if (!$group->iterations || !$object->unset) {
 			return;
 		}
 		reset($object->set);
-		$columns      = array_slice(array_keys($object->set), 1);
-		$first_column = key($object->set);
-		$different    = [$first_column => true];
-		$set_count    = count($object->set);
-		$headers      = $object->headers($group, $properties);
-		$headers      = reset($headers);
+		$columns        = array_slice(array_keys($object->set), 1);
+		$first_column   = key($object->set);
+		$different      = [$first_column => true];
+		$elements_count = count(reset($group->iterations)->elements);
+		$set_count      = count($object->set);
+		$headers        = $object->headers($group, $properties);
+		$headers        = reset($headers);
 
 		foreach ($group->iterations as $iteration) {
+			if (count($iteration->elements) < $elements_count) {
+				continue;
+			}
 			/** @var $previous_element Text */
 			$previous_column = $first_column;
 			foreach ($columns as $column) {
@@ -116,7 +120,7 @@ class Identical_Columns_Remover implements Configurable, Registerable
 		}
 		foreach ($result as $headers) {
 			$replacements = [];
-			foreach ($headers as $key => $header) {
+			foreach ($headers as $header) {
 				if (isset($this->rename[$header->text])) {
 					$replacements[$this->rename[$header->text]]
 						= ($replacements[$this->rename[$header->text]] ?? 0) + 1;
