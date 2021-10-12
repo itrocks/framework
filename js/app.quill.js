@@ -3,7 +3,7 @@ $(document).ready(function()
 {
 
 	//-------------------------------------------------------------------------------------- toolbars
-	var toolbars = {
+	const toolbars = {
 		'simple': [
 			[ 'bold', 'italic', 'underline' ],
 			[{ color: [] }, { background: [] }],
@@ -33,55 +33,55 @@ $(document).ready(function()
 	 * @param $element jQuery textarea
 	 * @return string
 	 */
-	var quillModule = function($element)
+	const quillModule = function($element)
 	{
-		var classes = $element.attr('class').split(/\s+/);
-		for (var i = 0; i < classes.length; i++) {
+		const classes = $element.attr('class').split(/\s+/)
+		for (let i = 0; i < classes.length; i++) {
 			if (classes[i].startsWith('quill-')) {
-				return classes[i].substr(6);
+				return classes[i].substr(6)
 			}
 		}
-		return 'standard';
+		return 'standard'
 	}
 
 	//------------------------------------------------------------------------- textarea.quill-* each
 	$('body').build('each', 'textarea[class*=quill-]', function()
 	{
-		var $this  = $(this);
-		var $quill = $('<div>');
-		$this.hide().after($quill);
-		$this.parent().addClass('ql');
+		const $this  = $(this)
+		let   $quill = $('<div>')
+		$this.hide().after($quill)
+		$this.parent().addClass('ql')
 
 		$quill.keyup(function() {
 			// TODO later depending on data-store-format $this.text(JSON.stringify(quill.getContents()))
-			$this.text($quill.find('.ql-editor').html());
-		});
+			$this.text($quill.find('.ql-editor').html())
+		})
 
-		var options = {
+		const options = {
 			modules: { table: true, toolbar: toolbars[quillModule($this)] },
 			theme: 'snow'
-		};
-		var quill = new Quill($quill.get(0), options);
-		var table = quill.getModule('table');
+		}
+		const quill = new Quill($quill.get(0), options)
+		const table = quill.getModule('table')
 
 		if ($this.text().startsWith('{')) {
-			quill.setContents(JSON.parse($this.text()));
+			quill.setContents(JSON.parse($this.text()))
 		}
 		else if ($this.text().trimStart().startsWith('<')) {
-			$quill.find('.ql-editor').html($this.text().repl(LF, '').repl(TAB, '').repl(BR, LF)).keyup();
+			$quill.find('.ql-editor').html($this.text().repl(LF, '').repl(TAB, '').repl(BR, LF)).keyup()
 		}
 		else {
-			$quill.find('.ql-editor').html($this.text().repl(LF, BR)).keyup();
+			$quill.find('.ql-editor').html($this.text().repl(LF, BR)).keyup()
 		}
 
-		$quill = $quill.parent();
-		var $toolbar   = $quill.children('.ql-toolbar');
-		var $container = $quill.children('.ql-container');
-		var $editor    = $container.children('.ql-editor');
+		$quill = $quill.parent()
+		const $toolbar   = $quill.children('.ql-toolbar')
+		const $container = $quill.children('.ql-container')
+		const $editor    = $container.children('.ql-editor')
 
 		// keyboard / click outside of the table tools remove them
-		$(document).click  (function() { $('.ql-table-tools').remove(); });
-		$(document).keydown(function() { $('.ql-table-tools').remove(); });
+		$(document).click  (function() { $('.ql-table-tools').remove() })
+		$(document).keydown(function() { $('.ql-table-tools').remove() })
 
 		//------------------------------------------------------------------------- $editor contextmenu
 		/**
@@ -89,43 +89,43 @@ $(document).ready(function()
 		 */
 		$editor.contextmenu(function(event)
 		{
-			var $cell = $(event.target).closest('td');
+			const $cell = $(event.target).closest('td')
 			if (!$cell.length) {
-				return;
+				return
 			}
-			var $quill = $cell.closest('.ql-container').parent();
-			var $table_tools = $quill.children('.ql-table-tools');
+			const $quill = $cell.closest('.ql-container').parent()
+			let   $table_tools = $quill.children('.ql-table-tools')
 			if ($table_tools.length) {
-				$table_tools.remove();
-				return false;
+				$table_tools.remove()
+				return false
 			}
 
 			// - create table tools button bar
-			$table_tools = $('<ul class="ql-table-tools">');
-			$table_tools.append('<li class="ql-table-delete"><button>delete table');
-			$table_tools.append('<li class="ql-table-delete-column"><button>delete column');
-			$table_tools.append('<li class="ql-table-delete-row"><button>delete row');
-			$table_tools.append('<li class="ql-table-insert-column-left"><button>insert column left');
-			$table_tools.append('<li class="ql-table-insert-column-right"><button>insert column right');
-			$table_tools.append('<li class="ql-table-insert-row-above"><button>insert row above');
-			$table_tools.append('<li class="ql-table-insert-row-below"><button>insert row below');
-			$table_tools.appendTo($quill).build();
+			$table_tools = $('<ul class="ql-table-tools">')
+			$table_tools.append('<li class="ql-table-delete"><button>delete table')
+			$table_tools.append('<li class="ql-table-delete-column"><button>delete column')
+			$table_tools.append('<li class="ql-table-delete-row"><button>delete row')
+			$table_tools.append('<li class="ql-table-insert-column-left"><button>insert column left')
+			$table_tools.append('<li class="ql-table-insert-column-right"><button>insert column right')
+			$table_tools.append('<li class="ql-table-insert-row-above"><button>insert row above')
+			$table_tools.append('<li class="ql-table-insert-row-below"><button>insert row below')
+			$table_tools.appendTo($quill).build()
 
 			// - button positions
-			var $actions = $table_tools.children('li');
-			var $row     = $cell.closest('tr');
-			var $table   = $row.closest('table');
+			let   $actions = $table_tools.children('li')
+			const $row     = $cell.closest('tr')
+			const $table   = $row.closest('table')
 			(function() {
-				var cell   = $cell.offset();
-				var offset = $quill.offset();
-				var table  = $table.offset();
-				var left = function(left) { return (left - offset.left).toString() + 'px'; };
-				var top  = function(top)  { return (top - offset.top).toString() + 'px'; };
+				const cell   = $cell.offset()
+				const offset = $quill.offset()
+				const table  = $table.offset()
+				const left = function(left) { return (left - offset.left).toString() + 'px' }
+				const top  = function(top)  { return (top - offset.top).toString() + 'px' }
 				// delete table
 				$($actions[0]).css({
 					left: left(table.left + $table.width() - 32),
 					top:  top(table.top + $table.height())
-				});
+				})
 				// delete column
 				$($actions[1]).css(
 					($row.prev().length || $row.next().length)
@@ -134,7 +134,7 @@ $(document).ready(function()
 						top:  top($row.prev().length ? (table.top - 24) : (table.top + $table.height()))
 					}
 					: { display: 'none' }
-				);
+				)
 				// delete row
 				$($actions[2]).css(
 					($cell.prev().length || $cell.next().length)
@@ -143,61 +143,61 @@ $(document).ready(function()
 						top:  top(cell.top + $cell.height() / 2 - 9)
 					}
 					: { display: 'none' }
-				);
+				)
 				// insert column left
 				$($actions[3]).css({
 					left: left(cell.left - 20),
 					top:  top(cell.top + $cell.height() / 2 - 9)
-				});
+				})
 				// insert column right
 				$($actions[4]).css({
 					left: left(cell.left + $cell.width() + 8),
 					top:  top(cell.top + $cell.height() / 2 - 9)
-				});
+				})
 				// insert row above
 				$($actions[5]).css({
 					left: left(cell.left + $cell.width() / 2 - 9),
 					top:  top(cell.top - 20)
-				});
+				})
 				// insert row below
 				$($actions[6]).css({
 					left: left(cell.left + $cell.width() / 2 - 9),
 					top:  top(cell.top + $cell.height() + 2)
-				});
-			})();
+				})
+			})()
 
 			// - link clicked buttons to quill actions on table
-			$actions = $actions.children('button').attr('type', 'button');
-			$($actions[0]).click(function() { table.deleteTable(); });
-			$($actions[1]).click(function() { table.deleteColumn(); });
-			$($actions[2]).click(function() { table.deleteRow(); });
-			$($actions[3]).click(function() { table.insertColumnLeft(); });
-			$($actions[4]).click(function() { table.insertColumnRight(); });
-			$($actions[5]).click(function() { table.insertRowAbove(); });
-			$($actions[6]).click(function() { table.insertRowBelow(); });
+			$actions = $actions.children('button').attr('type', 'button')
+			$($actions[0]).click(function() { table.deleteTable() })
+			$($actions[1]).click(function() { table.deleteColumn() })
+			$($actions[2]).click(function() { table.deleteRow() })
+			$($actions[3]).click(function() { table.insertColumnLeft() })
+			$($actions[4]).click(function() { table.insertColumnRight() })
+			$($actions[5]).click(function() { table.insertRowAbove() })
+			$($actions[6]).click(function() { table.insertRowBelow() })
 
 			// - delete buttons highlights column / row / table in red for deletion
 			$($actions[0]).hover(
-				function() { $table.css('background', '#fcc'); },
-				function() { $table.css('background', ''); }
-			);
+				function() { $table.css('background', '#fcc') },
+				function() { $table.css('background', '') }
+			)
 			$($actions[1]).hover(
 				function() {
-					var $tds = $table.find('td:nth-child(' + ($cell.prevAll().length + 1) + ')');
-					$tds.css('background', '#fcc');
+					const $tds = $table.find('td:nth-child(' + ($cell.prevAll().length + 1) + ')')
+					$tds.css('background', '#fcc')
 				},
 				function() {
-					$table.find('td').css('background', '');
+					$table.find('td').css('background', '')
 				}
-			);
+			)
 			$($actions[2]).hover(
-				function() { $row.css('background', '#fcc'); },
-				function() { $row.css('background', ''); }
-			);
+				function() { $row.css('background', '#fcc') },
+				function() { $row.css('background', '') }
+			)
 
 			// - disable the browsers context menu
-			return false;
-		});
+			return false
+		})
 
 		//----------------------------------------------------------------------- scrollParent() scroll
 		/**
@@ -205,24 +205,24 @@ $(document).ready(function()
 		 */
 		$this.scrollParent().scroll(function()
 		{
-			var $this = $(this);
-			var top   = ($quill.offset().top - $this.offset().top);
+			const $this = $(this)
+			const top   = ($quill.offset().top - $this.offset().top)
 			if (top < 0) {
 				if (!$toolbar.attr('style')) {
-					var container_shift = ($container.offset().top - $toolbar.offset().top);
-					$quill.css('padding-top', container_shift.toString() + 'px');
-					$toolbar.css({ position: 'fixed', top: $this.offset().top, 'z-index': 1 });
+					const container_shift = ($container.offset().top - $toolbar.offset().top)
+					$quill.css('padding-top', container_shift.toString() + 'px')
+					$toolbar.css({ position: 'fixed', top: $this.offset().top, 'z-index': 1 })
 				}
-				var width = $quill.width();
+				const width = $quill.width()
 				if (width !== $toolbar.width()) {
-					$toolbar.css({ width: width.toString() + 'px' });
+					$toolbar.css({ width: width.toString() + 'px' })
 				}
 			}
 			else if ($toolbar.attr('style')) {
-				$quill.css('padding-top', '');
-				$toolbar.attr('style', '');
+				$quill.css('padding-top', '')
+				$toolbar.attr('style', '')
 			}
-		});
+		})
 
 		//----------------------------------------------------------------------------- .ql-table click
 		/**
@@ -230,18 +230,18 @@ $(document).ready(function()
 		 */
 		$toolbar.find('.ql-table').click(function()
 		{
-			table.insertColumnRight();
-			table.insertColumnRight();
-			table.insertColumnRight();
-			table.insertRowBelow();
-			table.insertRowBelow();
-			table.insertRowBelow();
-		});
+			table.insertColumnRight()
+			table.insertColumnRight()
+			table.insertColumnRight()
+			table.insertRowBelow()
+			table.insertRowBelow()
+			table.insertRowBelow()
+		})
 
-	});
+	})
 
 	//-------------------------------------------------------------------------------------- language
-	var uri = app.project_uri + '/itrocks/framework/js/quill/quill-' + app.language + '.css';
-	$('head').append($('<link rel="stylesheet" href="' + uri + '">'));
+	const uri = app.project_uri + '/itrocks/framework/js/quill/quill-' + app.language + '.css'
+	$('head').append($('<link rel="stylesheet" href="' + uri + '">'))
 
-});
+})
