@@ -53,19 +53,16 @@ class Cut_Iterations
 	{
 		$iterations = [];
 		foreach ($iteration->elements as $element) {
-			if (!(
-				($element instanceof Text)
-				&& (str_contains($element->text, BR) || str_contains($element->text, LF))
-			)) {
+			if (!(($element instanceof Text) && str_contains($element->text, BR))) {
 				continue;
 			}
 			$has_line_empty     = false;
 			$last_line_empty    = true;
 			$next_element       = null;
 			$next_iteration     = null;
-			[$text, $separator] = $element->isFormatted()
-				? [substr($element->text, 3, -4), BR]
-				: [$element->text, LF];
+			[$text, $separator, $begin, $end] = $element->isFormatted()
+				? [substr($element->text, 3, -4), BR, P, _P]
+				: [$element->text, LF, '', ''];
 			foreach (array_slice(explode($separator, $text), 1) as $element_text) {
 				$last_line_empty = !strlen(trim($element_text));
 				if ($last_line_empty) {
@@ -76,7 +73,7 @@ class Cut_Iterations
 				$next_element               = clone $element;
 				$next_element->iteration    = $next_iteration;
 				$next_iteration->spacing    = false;
-				$next_element->text         = P . $element_text . _P;
+				$next_element->text         = $begin . $element_text . $end;
 				$next_iteration->elements[] = $next_element;
 				$next_iteration->up($next_element->top - $next_iteration->top, true);
 				$iterations[] = $next_iteration;
@@ -84,9 +81,9 @@ class Cut_Iterations
 			$iteration->spacing      = false;
 			$next_iteration->spacing = true;
 			if ($has_line_empty && !$last_line_empty && $next_element) {
-				$next_element->text = substr($next_element->text, 0, -4) . BR . _P;
+				$next_element->text = substr($next_element->text, 0, -4) . $separator . $end;
 			}
-			$element->text = lParse($element->text, $separator) . _P;
+			$element->text = lParse($element->text, $separator) . $end;
 		}
 		return $iterations;
 	}
