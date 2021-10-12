@@ -5,6 +5,7 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Layout\Generator\Associate_Groups;
 use ITRocks\Framework\Layout\Generator\Automatic_Line_Feed;
 use ITRocks\Framework\Layout\Generator\Count_Pages;
+use ITRocks\Framework\Layout\Generator\Cut_Iterations_Late;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations;
 use ITRocks\Framework\Layout\Generator\Dispatch_Iterations_On_Pages;
 use ITRocks\Framework\Layout\Generator\Generate_Groups;
@@ -121,6 +122,7 @@ class Generator
 		(new Automatic_Line_Feed($this->structure))->run($this->output);
 		(new Html_Text_Height($this->structure))->run($this->output);
 		(new Dispatch_Iterations($this->structure))->run();
+		(new Cut_Iterations_Late($this->structure))->setOutput($this->output);//->run();
 		(new Count_Pages($this->structure))->run();
 		(new Dispatch_Iterations_On_Pages($this->structure))->run();
 		(new Text_Templating($this->structure))->run();
