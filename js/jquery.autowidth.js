@@ -10,18 +10,18 @@
 	 * @param margins  object margins settings { string jquery_selector: integer margin }
 	 * @return string
 	 */
-	var addMargin = function($element, text, margins)
+	const addMargin = function($element, text, margins)
 	{
-		text = text.split("\n");
-		for (var selector in margins) if (margins.hasOwnProperty(selector)) {
+		text = text.split("\n")
+		for (const selector in margins) if (margins.hasOwnProperty(selector)) {
 			if ((typeof margins[selector] === 'string') && $element.is(selector)) {
-				for (var i = 0; i < text.length; i ++) {
-					text[i] = text[i] + margins[selector];
+				for (let i = 0; i < text.length; i ++) {
+					text[i] = text[i] + margins[selector]
 				}
 			}
 		}
-		return text.join("\n");
-	};
+		return text.join("\n")
+	}
 
 	//----------------------------------------------------------------------------------- blockColumn
 	/**
@@ -32,23 +32,23 @@
 	 * @param input_position integer the position of the input element into each data cell
 	 * @return jQuery
 	 */
-	var blockColumn = function(settings, $block, $cell, cell_position, input_position)
+	const blockColumn = function(settings, $block, $cell, cell_position, input_position)
 	{
-		var table   = $block.is('table');
-		var child   = (cell_position || table) ? ':nth-child(' + cell_position + ')' : '';
-		var descend = (cell_position && !table) ? ' > ol > li' : '';
+		const table   = $block.is('table')
+		const child   = (cell_position || table) ? ':nth-child(' + cell_position + ')' : ''
+		const descend = (cell_position && !table) ? ' > ol > li' : ''
 		// the element was the widest element : grow or shorten
-		var $input = $block.find((table ? 'tr > td' : '> li:not(.head)') + descend + child)
+		const $input = $block.find((table ? 'tr > td' : '> li:not(.head)') + descend + child)
 			.find(
 				'> input:nth-child(' + input_position + '), > textarea:nth-child(' + input_position + ')'
-			);
-		var width = Math.max(
+			)
+		const width = Math.max(
 			getTextWidth(settings, $block.find((table ? 'tr > th' : '> li.head') + descend + child)),
 			getTextWidth(settings, $input)
-		);
-		blockColumnWidth(settings, $cell, width);
-		return this;
-	};
+		)
+		blockColumnWidth(settings, $cell, width)
+		return this
+	}
 
 	//------------------------------------------------------------------------------ blockColumnWidth
 	/**
@@ -56,19 +56,19 @@
 	 * @param $cell    jQuery the head cell for the column
 	 * @param width    number the size to set
 	 */
-	var blockColumnWidth = function(settings, $cell, width)
+	const blockColumnWidth = function(settings, $cell, width)
 	{
-		if ($cell.hasClass('no-autowidth')) return;
-		$cell.data('max-width', width);
-		var calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'));
-		var setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple';
+		if ($cell.hasClass('no-autowidth')) return
+		$cell.data('max-width', width)
+		const calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'))
+		const setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple'
 		if (!$cell.data('max-width') || !$cell.data('min-width')) {
-			$cell.data('max-width', $cell.css('max-width'));
-			$cell.data('min-width', $cell.css('min-width'));
+			$cell.data('max-width', $cell.css('max-width'))
+			$cell.data('min-width', $cell.css('min-width'))
 		}
-		width = limitWidth($cell, calc, settings, setting);
-		$cell.css({ 'max-width': width + 'px', 'min-width': width + 'px', 'width': width + 'px'	});
-	};
+		width = limitWidth($cell, calc, settings, setting)
+		$cell.css({ 'max-width': width + 'px', 'min-width': width + 'px', 'width': width + 'px'	})
+	}
 
 	//-------------------------------------------------------------------------------- calculateEvent
 	/**
@@ -78,63 +78,63 @@
 	 * @param now             boolean
 	 * @param additional_text string
 	 */
-	var calculateEvent = function(now, additional_text)
+	const calculateEvent = function(now, additional_text)
 	{
 		if (additional_text === undefined) {
-			additional_text = '';
+			additional_text = ''
 		}
 		if (now === undefined) {
-			now = true;
+			now = true
 		}
-		var $element = $(this);
-		var settings = $element.data('settings');
-		var calculate = function()
+		const $element = $(this)
+		const settings = $element.data('settings')
+		const calculate = function()
 		{
-			var previous_width = parseInt($element.data('text-width'));
-			var new_width      = getTextWidth(settings, $element, false, true, additional_text)
-				+ parseInt($element.css('padding-left')) + parseInt($element.css('padding-right'));
+			const previous_width = parseInt($element.data('text-width'))
+			const new_width      = getTextWidth(settings, $element, false, true, additional_text)
+				+ parseInt($element.css('padding-left')) + parseInt($element.css('padding-right'))
 			if (new_width !== previous_width) {
-				$element.data('text-width', new_width);
-				var $parent = $element.parent();
-				var $block  = $parent.closest('.auto_width');
+				$element.data('text-width', new_width)
+				const $parent = $element.parent()
+				const $block  = $parent.closest('.auto_width')
 				// single element
 				if (!$block.length) {
-					$element.width(limitWidth($element, new_width, settings, 'simple'));
+					$element.width(limitWidth($element, new_width, settings, 'simple'))
 				}
 				// element into an autowidth block
 				else {
 					// calculate first cell of the column previous max width
-					var $cell;
-					var position;
+					let $cell
+					let position
 					if ($element.closest('li').parent().is('.auto_width')) {
-						position = -1;
-						$cell    = $element.closest('ul').children().first();
+						position = -1
+						$cell    = $element.closest('ul').children().first()
 					}
 					else {
-						position = $element.closest('li, td, th').prevAll('li, td, th').length;
-						$cell    = $(firstRowCells(firstRowsGroup($block))[position]);
+						position = $element.closest('li, td, th').prevAll('li, td, th').length
+						$cell    = $(firstRowCells(firstRowsGroup($block))[position])
 					}
-					var previous_max_width = $cell.data('max-width');
+					const previous_max_width = $cell.data('max-width')
 					if (previous_max_width === undefined) {
-						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1)
 					}
 					if (new_width > previous_max_width) {
 						// the element became wider than the widest element
-						blockColumnWidth(settings, $cell, new_width);
+						blockColumnWidth(settings, $cell, new_width)
 					}
 					else if (previous_width === previous_max_width) {
-						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1)
 					}
 					else {
-						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1);
+						blockColumn(settings, $block, $cell, position + 1, $element.prevAll().length + 1)
 					}
 				}
 			}
-		};
+		}
 		// patched with setTimeout to allow moved controls on right of the input to be clicked
 		// eg combo's down arrow won't work sometimes if I do not do that.
-		now ? calculate() : setTimeout(calculate, 100);
-	};
+		now ? calculate() : setTimeout(calculate, 100)
+	}
 
 	//------------------------------------------------------------------------------- calculateMargin
 	/**
@@ -146,24 +146,24 @@
 	 * @param margins  object margins settings { string jquery_selector: integer margin }
 	 * @return number
 	 */
-	var calculateMargin = function($element, margins)
+	const calculateMargin = function($element, margins)
 	{
 		if ($.isNumeric(margins)) {
-			return margins;
+			return margins
 		}
-		var found_margin = false;
-		var margin       = 0;
-		for (var selector in margins) if (margins.hasOwnProperty(selector)) {
+		let found_margin = false
+		let margin       = 0
+		for (const selector in margins) if (margins.hasOwnProperty(selector)) {
 			if ((typeof margins[selector] !== 'string') && $element.is(selector)) {
-				margin += margins[selector];
-				found_margin = true;
+				margin += margins[selector]
+				found_margin = true
 			}
 		}
 		if ((margins.default !== undefined) && !found_margin) {
-			margin = margins.default;
+			margin = margins.default
 		}
-		return margin;
-	};
+		return margin
+	}
 
 	//--------------------------------------------------------------------------------------- cssCopy
 	/**
@@ -173,20 +173,20 @@
 	 * @param $to   jQuery
 	 * @return object $from
 	 */
-	var cssCopy = function($from, $to)
+	const cssCopy = function($from, $to)
 	{
-		var tab = [
+		const tab = [
 			'font', 'font-family', 'font-size', 'font-weight',
 			'letter-spacing', 'line-height',
 			'border', 'border-bottom-width', 'border-left-width', 'border-top-width', 'border-right-width',
 			'margin', 'margin-bottom', 'margin-left', 'margin-right', 'margin-top',
 			'text-rendering', 'word-spacing', 'word-wrap'
-		];
-		for (var i = 0; i < tab.length; i++) {
-			$to.css(tab[i], $from.css(tab[i]));
+		]
+		for (let i = 0; i < tab.length; i++) {
+			$to.css(tab[i], $from.css(tab[i]))
 		}
-		return $from;
-	};
+		return $from
+	}
 
 	//--------------------------------------------------------------------------------- firstRowCells
 	/**
@@ -195,16 +195,16 @@
 	 * @param $group jQuery a jquery groups object : matches <thead>, <tbody> or <colgroup>
 	 * @return object[] a set of jquery <td> / <th> objects
 	 */
-	var firstRowCells = function($group)
+	const firstRowCells = function($group)
 	{
-		var $row_cells = $group.is('ul')
+		let $row_cells = $group.is('ul')
 			? $group.find('> li.head > ol > li')
-			: $group.find('tr:first th, tr:first td');
+			: $group.find('tr:first th, tr:first td')
 		if (!$row_cells.length && $group.is('ul')) {
-			$row_cells = $group.children().first();
+			$row_cells = $group.children().first()
 		}
-		return $row_cells;
-	};
+		return $row_cells
+	}
 
 	//-------------------------------------------------------------------------------- firstRowsGroup
 	/**
@@ -214,13 +214,13 @@
 	 * @param $block jQuery a jquery .auto_width block object
 	 * @return object the first <thead>, <tbody>, <colgroup> object into the table, or the <table>
 	 */
-	var firstRowsGroup = function($block)
+	const firstRowsGroup = function($block)
 	{
-		var $group = $block.is('table')
+		const $group = $block.is('table')
 			? $block.find('thead:not(:empty), tbody:not(:empty), colgroup:not(:empty)').first()
-			: $block;
-		return $group.length ? $group : $block;
-	};
+			: $block
+		return $group.length ? $group : $block
+	}
 
 	//---------------------------------------------------------------------------------- getTextWidth
 	/**
@@ -233,69 +233,69 @@
 	 * @param additional_text string
 	 * @return number
 	 */
-	var getTextWidth = function(settings, $elements, read_cache, write_cache, additional_text)
+	const getTextWidth = function(settings, $elements, read_cache, write_cache, additional_text)
 	{
 		if (additional_text === undefined) {
-			additional_text = '';
+			additional_text = ''
 		}
-		read_cache  = (read_cache  === undefined) || read_cache;
-		write_cache = (write_cache === undefined) || write_cache;
-		var max_width = 0;
-		var $span = $('<span>').css({ left: 0, position: 'absolute', top: 0, 'white-space': 'pre' });
-		cssCopy($elements, $span);
-		$span.appendTo('body');
+		read_cache  = (read_cache  === undefined) || read_cache
+		write_cache = (write_cache === undefined) || write_cache
+		const $span = $('<span>').css({ left: 0, position: 'absolute', top: 0, 'white-space': 'pre' })
+		let   max_width = 0
+		cssCopy($elements, $span)
+		$span.appendTo('body')
 		$elements.each(function() {
-			var $element = $(this);
-			var width    = read_cache ? $element.data('text-width') : undefined;
+			const $element = $(this)
+			let   width    = read_cache ? $element.data('text-width') : undefined
 			if (width === undefined) {
-				var val = $element.val();
+				let val = $element.val()
 				if (!val.length) {
-					val = $element.text();
+					val = $element.text()
 				}
 				if (!val.length) {
-					val = $element.attr('placeholder');
+					val = $element.attr('placeholder')
 					if (val === undefined) {
-						val = '';
+						val = ''
 					}
 				}
-				$span.text(addMargin($element, val + additional_text, settings.margin_right));
-				width = $span.width();
+				$span.text(addMargin($element, val + additional_text, settings.margin_right))
+				width = $span.width()
 				if (write_cache) {
-					$element.data('text-width', width);
+					$element.data('text-width', width)
 				}
 			}
 			if (width !== 'auto') {
-				width    += calculateMargin($element, settings.margin_right);
-				max_width = Math.max(max_width, width);
+				width    += calculateMargin($element, settings.margin_right)
+				max_width = Math.max(max_width, width)
 			}
-		});
-		$span.remove();
-		return max_width;
-	};
+		})
+		$span.remove()
+		return max_width
+	}
 
 	//------------------------------------------------------------------------------------ limitWidth
 	/**
 	 * Read max-width and min-width from $element's data (if set) or css
 	 * If defined, replace the max-width / min-width coming from the settings by the css / data value
 	 *
-	 * @var $element jQuery
-	 * @var width    number
-	 * @var settings array
-	 * @var context  string @values multiple, simple
+	 * @const $element jQuery
+	 * @const width    number
+	 * @const settings array
+	 * @const context  string @values multiple, simple
 	 * @return number
 	 */
-	var limitWidth = function($element, width, settings, context)
+	const limitWidth = function($element, width, settings, context)
 	{
-		var max_width = Math.min(settings[context].maximum, $element.data('max-calculated-width'));
-		var min_width = settings[context].minimum;
+		let max_width = Math.min(settings[context].maximum, $element.data('max-calculated-width'))
+		let min_width = settings[context].minimum
 		if (settings[context].use_max_width) {
-			max_width = limitWidthRead($element, 'max-width', max_width);
+			max_width = limitWidthRead($element, 'max-width', max_width)
 		}
 		if (settings[context].use_min_width) {
-			min_width = limitWidthRead($element, 'min-width', min_width);
+			min_width = limitWidthRead($element, 'min-width', min_width)
 		}
-		return Math.min(Math.max(min_width, width), max_width);
-	};
+		return Math.min(Math.max(min_width, width), max_width)
+	}
 
 	//-------------------------------------------------------------------------------- limitWidthRead
 	/**
@@ -307,56 +307,56 @@
 	 * @param width          number
 	 * @return number
 	 */
-	var limitWidthRead = function($element, css_width_name, width)
+	const limitWidthRead = function($element, css_width_name, width)
 	{
-		var css_width = parseInt($element.data(css_width_name));
+		let css_width = parseInt($element.data(css_width_name))
 		if (!css_width) {
-			css_width = parseInt($element.css(css_width_name));
+			css_width = parseInt($element.css(css_width_name))
 		}
 		if (css_width) {
-			width = css_width;
+			width = css_width
 		}
-		return width;
-	};
+		return width
+	}
 
 	//-------------------------------------------------------------------------------------- maxWidth
 	/**
 	 * Calculate max width for an input, and store it into its data('max-calculated-width')
 	 */
-	var maxWidth = function()
+	const maxWidth = function()
 	{
-		var $element = $(this);
+		let $element = $(this)
 		if (!$element.is('input')) {
-			$element.data('max-calculated-width', 9999);
-			return;
+			$element.data('max-calculated-width', 9999)
+			return
 		}
-		var $input = $element;
-		var min    = parseInt(
+		const $input = $element
+		let   min    = parseInt(
 			$element.css('padding-left') + $element.css('border-left')
 			+ $element.css('padding-right') + $element.css('border-right')
-		);
+		)
 		while ($element.css('overflow').lParse(SP).toString() !== 'hidden') {
-			$element = $element.parent();
+			$element = $element.parent()
 			if ($element.is(document) || !$element.length) {
-				$input.data('max-calculated-width', 9999);
-				return;
+				$input.data('max-calculated-width', 9999)
+				return
 			}
 			min += parseInt(
 				$element.css('padding-left') + $element.css('border-left')
 				+ $element.css('padding-right') + $element.css('border-right')
-			);
+			)
 		}
-		var max_width = $element.innerWidth() - ($input.offset().left - $element.offset().left) - min;
+		const max_width = $element.innerWidth() - ($input.offset().left - $element.offset().left) - min
 
-		$input.data('max-calculated-width', max_width);
-	};
+		$input.data('max-calculated-width', max_width)
+	}
 
 	//------------------------------------------------------------------------------------- autoWidth
 	$.fn.autoWidth = function(options)
 	{
 
 		//------------------------------------------------------------------------------------ settings
-		var settings = $.extend({
+		const settings = $.extend({
 			margin_right: {
 				'input':     0,
 				'textarea':  16,
@@ -375,35 +375,35 @@
 				use_max_width: true,
 				use_min_width: true
 			}
-		}, options);
-		this.data('settings', settings);
+		}, options)
+		this.data('settings', settings)
 
 		//------------------------------------------------------------------------- autoWidth on events
-		maxWidth.call(this);
-		this.blur(calculateEvent);
-		this.change(calculateEvent);
-		this.focus(calculateEvent);
-		this.keyup(calculateEvent);
+		maxWidth.call(this)
+		this.blur(calculateEvent)
+		this.change(calculateEvent)
+		this.focus(calculateEvent)
+		this.keyup(calculateEvent)
 
 		this.keypress(function(event)
 		{
 			if (event.keyCode >= 32) {
-				calculateEvent.call(this, true, String.fromCharCode(event.charCode));
+				calculateEvent.call(this, true, String.fromCharCode(event.charCode))
 			}
-		});
+		})
 
 		//------------------------------------------------------------------------------ autoWidth init
 		this.each(function() {
-			calculateEvent.call(this, true);
-		});
+			calculateEvent.call(this, true)
+		})
 
-		return this;
-	};
+		return this
+	}
 
 	//------------------------------------------------------------------------------ $(window).resize
 	$(window).resize(function()
 	{
-		$('.auto_width:visible').each(function() { $(this).keyup(); });
-	});
+		$('.auto_width:visible').each(function() { $(this).keyup() })
+	})
 
-})( jQuery );
+})( jQuery )
