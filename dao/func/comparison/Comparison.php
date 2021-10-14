@@ -173,8 +173,15 @@ class Comparison implements Negate, Where
 		) {
 			return $column . SP . $this->sign . SP . $identifier;
 		}
-		return $column . SP . $this->sign
+		$sql = $column . SP . $this->sign
 			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+		if (
+			str_contains($property_path, DOT)
+			&& in_array($this->sign, [static::NOT_EQUAL, static::NOT_LIKE])
+		) {
+			$sql = '(' . $sql . ' OR ' . $column . ' IS NULL)';
+		}
+		return $sql;
 	}
 
 	//-------------------------------------------------------------------------------------- whereSql
