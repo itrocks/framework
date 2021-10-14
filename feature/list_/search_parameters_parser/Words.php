@@ -30,12 +30,12 @@ abstract class Words
 			$type = $property ? $property->getType() : new Type(Type::STRING);
 			if ($type->isString() || $type->isMultipleString()) {
 				if ($property && ($property->path || Null_Annotation::of($property)->value)) {
-					return Func::orOp([Func::isNull(), Func::equal('')]);
+					return Func::orOp([Func::equal(''), Func::isNull()]);
 				}
 				return Func::equal('');
 			}
 			elseif ($type->isDateTime()) {
-				return Func::orOp([Date_Time::min(), Date_Time::max()]);
+				return Func::orOp([Date_Time::min(), Date_Time::max(), Func::isNull()]);
 			}
 			else {
 				return Func::isNull();
