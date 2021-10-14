@@ -70,13 +70,7 @@ abstract class Words
 	 */
 	public static function meansEmpty($word)
 	{
-		if (!Wildcard::containsWildcards($word)) {
-			$word = Loc::rtr($word);
-		}
-		// TODO iconv with //TRANSLIT requires that locale is different than C or Posix. To Do: a better support !!
-		// See: http://php.net/manual/en/function.iconv.php#74101
-		$word = preg_replace('/\s|\'/', '', strtolower(iconv('UTF-8', 'ASCII//TRANSLIT', $word)));
-		return in_array($word, ['empty', 'none', 'null']);
+		return in_array($word, [Loc::tr('empty'), Loc::tr('none'), Loc::tr('null')]);
 	}
 
 }
