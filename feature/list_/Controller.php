@@ -24,6 +24,7 @@ use ITRocks\Framework\Dao\Option\Time_Limit;
 use ITRocks\Framework\Error_Handler\Handled_Error;
 use ITRocks\Framework\Error_Handler\Report_Call_Stack_Error_Handler;
 use ITRocks\Framework\Feature\Export;
+use ITRocks\Framework\Feature\List_\Search_Parameters_Parser\Words;
 use ITRocks\Framework\Feature\List_Setting;
 use ITRocks\Framework\Feature\Output;
 use ITRocks\Framework\History;
@@ -1047,19 +1048,28 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 					$sub_search_properties[]   = $sub_property;
 				}
 				$sub_search = $this->searchObjectsToRepresentative($class_name, $sub_search, true);
-				// concatenated search
-				if ((count($sub_search) > 1) && !$recurse) {
-					$sub_search[Func::concat($sub_search_properties, true)] = $value;
-				}
 				if (count($sub_search) === 1) {
 					$add_search = array_merge($add_search, $sub_search);
 				}
 				else {
-					$not_equal_comparison = ($value instanceof Comparison)
-						&& in_array($value->sign, [Comparison::NOT_EQUAL, Comparison::NOT_LIKE]);
-					$add_search[] = $not_equal_comparison
-						? Func::andOp($sub_search)
-						: Func::orOp($sub_search);
+					$means_empty     = Words::meansEmpty($value);
+					$object_argument = $recurse ? [] : [Func::concat($sub_search_properties, true) => $value];
+					if (
+						$means_empty
+						|| (
+							($value instanceof Comparison)
+							&& in_array($value->sign, [Comparison::NOT_EQUAL, Comparison::NOT_LIKE])
+						)
+					) {
+						$add = Func::andOp($sub_search);
+						if ($object_argument && !$means_empty) {
+							$add = Func::orOp(array_merge([$add], $object_argument));
+						}
+					}
+					else {
+						$add = Func::orOp(array_merge($sub_search, $object_argument));
+					}
+					$add_search[] = $add;
 				}
 			}
 			if ($search_value instanceof Logical) {
