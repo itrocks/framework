@@ -1,7 +1,9 @@
 <?php
 namespace ITRocks\Framework\Layout\Structure\Group;
 
+use ITRocks\Framework\Layout\Generator;
 use ITRocks\Framework\Layout\Structure\Element;
+use ITRocks\Framework\Layout\Structure\Field;
 use ITRocks\Framework\Layout\Structure\Group;
 use ITRocks\Framework\Layout\Structure\Page;
 
@@ -115,6 +117,19 @@ class Iteration extends Element
 			$dump .= $element->dump($level + 1) . LF;
 		}
 		return $dump;
+	}
+
+	//------------------------------------------------------------------------------- sortElementsByY
+	/**
+	 * Sort elements from upper to lower position, then from left to right
+	 */
+	public function sortElementsByY()
+	{
+		usort($this->elements, function(Field $element1, Field $element2) {
+			return (abs($element1->top - $element2->top) >= Generator::$precision)
+				? cmp($element1->top, $element2->top)
+				: cmp($element1->hotX(), $element2->hotX());
+		});
 	}
 
 	//--------------------------------------------------------------------------------------- spacing

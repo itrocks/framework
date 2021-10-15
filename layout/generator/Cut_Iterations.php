@@ -52,10 +52,13 @@ class Cut_Iterations
 	protected function iteration(Iteration $iteration) : array
 	{
 		$iterations = [];
-		foreach ($iteration->elements as $element) {
+		$iteration->sortElementsByY();
+		$element = reset($iteration->elements);
+		while ($element) {
 			if (!(
 				($element instanceof Text) && $element->isFormatted() && str_contains($element->text, BR)
 			)) {
+				$element = next($iteration->elements);
 				continue;
 			}
 			$has_line_empty     = false;
@@ -70,13 +73,12 @@ class Cut_Iterations
 				if ($last_line_empty) {
 					$has_line_empty = true;
 				}
-				$next_iteration             = clone $iteration;
-				$next_iteration->elements   = [];
 				$next_element               = clone $element;
+				$next_iteration             = clone $iteration;
 				$next_element->iteration    = $next_iteration;
+				$next_iteration->elements   = [$next_element];
 				$next_iteration->spacing    = false;
 				$next_element->text         = $begin . $element_text . $end;
-				$next_iteration->elements[] = $next_element;
 				$next_iteration->up($next_element->top - $next_iteration->top, true);
 				$iterations[] = $next_iteration;
 			}
@@ -86,6 +88,18 @@ class Cut_Iterations
 				$next_element->text = substr($next_element->text, 0, -4) . $separator . $end;
 			}
 			$element->text = lParse($element->text, $separator) . $end;
+			// move all elements below the original element into the original iteration as a new iteration
+			foreach ($iteration->elements as $key => $other_element) {
+				if ($other_element->top > $element->top) {
+					$next_iteration             = clone $iteration;
+					$next_iteration->elements   = [$other_element];
+					$other_element->iteration   = $next_iteration;
+					$next_iteration->up($other_element->top - $next_iteration->top, true);
+					unset($iteration->elements[$key]);
+					$iterations[] = $next_iteration;
+				}
+			}
+			$element = next($iteration->elements);
 		}
 		return $iterations;
 	}

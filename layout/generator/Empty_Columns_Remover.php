@@ -97,11 +97,7 @@ class Empty_Columns_Remover implements Registerable
 			if (count($iteration->elements) < min($elements_count, $properties_count)) {
 				continue;
 			}
-			usort($iteration->elements, function(Field $element1, Field $element2) {
-				return (abs($element1->top - $element2->top) >= Generator::$precision)
-					? cmp($element1->top, $element2->top)
-					: cmp($element1->hotX(), $element2->hotX());
-			});
+			$iteration->sortElementsByY();
 			for ($column = 0; $column < $properties_count; $column ++) {
 				if (isset($this->set[$column])) {
 					continue;
