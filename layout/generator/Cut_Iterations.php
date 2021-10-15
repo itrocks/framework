@@ -53,7 +53,9 @@ class Cut_Iterations
 	{
 		$iterations = [];
 		foreach ($iteration->elements as $element) {
-			if (!(($element instanceof Text) && str_contains($element->text, BR))) {
+			if (!(
+				($element instanceof Text) && $element->isFormatted() && str_contains($element->text, BR)
+			)) {
 				continue;
 			}
 			$has_line_empty     = false;
