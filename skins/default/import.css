@@ -54,6 +54,12 @@ article.import.preview > form > .data table.preview {
     padding: 4px; }
   article.import.preview > form > .data table.preview td {
     background: white; }
+article.import.preview > form > .data .then {
+  border-top: 1px solid #d8d8d8;
+  padding: 6px 10px; }
+  article.import.preview > form > .data .then .label {
+    list-style: none;
+    padding: 6px; }
 
 article.import.execute > .data > p {
   padding: 10px; }
