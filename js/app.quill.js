@@ -52,17 +52,16 @@ $(document).ready(function()
 		$this.hide().after($quill)
 		$this.parent().addClass('ql')
 
-		$quill.keyup(() => {
-			// TODO later depending on data-store-format $this.text(JSON.stringify(quill.getContents()))
-			$this.text($quill.find('.ql-editor').html())
-		})
-
 		const options = {
 			modules: { table: true, toolbar: toolbars[quillModule($this)] },
 			theme: 'snow'
 		}
 		const quill = new Quill($quill.get(0), options)
 		const table = quill.getModule('table')
+
+		quill.on('text-change', () => {
+			$this.text($quill.find('.ql-editor').html())
+		})
 
 		if ($this.text().startsWith('{')) {
 			quill.setContents(JSON.parse($this.text()))
