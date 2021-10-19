@@ -59,6 +59,7 @@ abstract class Identifier_Map extends Data_Link
 				}
 			}
 			elseif ($load_linked_objects && $link_annotation->isMap()) {
+				/** @noinspection PhpExpressionResultUnusedInspection need to call @getter */
 				$object->$property_name;
 			}
 		}
@@ -141,7 +142,11 @@ abstract class Identifier_Map extends Data_Link
 	 */
 	public function replace($destination, $source, $write = true)
 	{
-		$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source));
+		$identifier = $this->getObjectIdentifier($source);
+		$this->setObjectIdentifier($destination, $identifier);
+		if (!isStrictNumeric($identifier, false, false)) {
+			$this->setObjectIdentifier($destination, $this->getObjectIdentifier($source, 'id'));
+		}
 		if ($write) {
 			$this->write($destination);
 		}

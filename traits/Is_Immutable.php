@@ -1,12 +1,15 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Data_Link;
 use ITRocks\Framework\Dao\Data_Link\Identifier_Map;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Mapper\Search_Object;
+use ITRocks\Framework\Reflection\Annotation\Class_\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 
 /**
@@ -53,8 +56,22 @@ trait Is_Immutable
 		}
 
 		$link->disconnect($this);
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		$link_class = new Link_Class($this);
+		if (
+			Link_Annotation::of($link_class)->value
+			&& ($composite_property = $link_class->getCompositeProperty())
+		) {
+			$composite_property->setValue($this, null);
+		}
 		if ($existing = $link->searchOne($search)) {
 			$link->replace($this, $existing, false);
+		}
+		if (isset($composite_property)) {
+			/** @noinspection PhpUnhandledExceptionInspection valid */
+			$composite_property->setValue(
+				$this, Builder::createClone($this, $link_class->getLinkedClassName())
+			);
 		}
 	}
 
