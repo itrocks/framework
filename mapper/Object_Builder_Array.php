@@ -180,13 +180,13 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------- buildBasicValue
 	/**
 	 * @param $property Reflection_Property
-	 * @param $value    array|boolean|float|integer|string
-	 * @return array|boolean|float|integer|string
+	 * @param $value    array|boolean|float|integer|null|string
+	 * @return array|boolean|float|integer|null|string
 	 * @throws User_Error_Exception
 	 */
 	private function buildBasicValue(
-		Reflection_Property $property, array|bool|float|int|string $value
-	) : array|bool|float|int|string
+		Reflection_Property $property, array|bool|float|int|null|string $value
+	) : array|bool|float|int|null|string
 	{
 		if (!is_null($value) || !Null_Annotation::of($property)->value) {
 			if (is_string($value)) {
