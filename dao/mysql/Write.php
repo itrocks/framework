@@ -423,6 +423,9 @@ class Write extends Data_Link\Write
 				if ($is_component) {
 					$element->setComposite($this->object, $foreign_property_name);
 				}
+				$id = $element_link->value
+					? $this->link->getLinkObjectIdentifier($element, $element_link)
+					: $this->link->getObjectIdentifier($element);
 				$old_element = ($id && isset($old_collection[$id])) ? $old_collection[$id] : null;
 				if (!$old_element) {
 					$property_add_event = new Property_Add(
