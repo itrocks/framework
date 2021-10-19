@@ -30,7 +30,7 @@ class Object_Builder_Array
 	/**
 	 * @var Object_Builder_Array[] key is the property name
 	 */
-	private $builders;
+	private array $builders;
 
 	//-------------------------------------------------------------------------------- $built_objects
 	/**
@@ -38,21 +38,21 @@ class Object_Builder_Array
 	 *
 	 * @var Built_Object[]
 	 */
-	private $built_objects = [];
+	private array $built_objects = [];
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var Reflection_Class
 	 */
-	private $class;
+	private Reflection_Class $class;
 
 	//------------------------------------------------------------------------------------ $composite
 	/**
 	 * Store composite object to attach the @composite property of a Component built object
 	 *
-	 * @var object
+	 * @var object|null
 	 */
-	public $composite = null;
+	public ?object $composite = null;
 
 	//------------------------------------------------------------------------------------ $from_form
 	/**
@@ -63,7 +63,7 @@ class Object_Builder_Array
 	 *
 	 * @var boolean
 	 */
-	private $from_form;
+	private bool $from_form;
 
 	//-------------------------------------------------------------------- $ignore_unknown_properties
 	/**
@@ -74,13 +74,13 @@ class Object_Builder_Array
 	 *
 	 * @var boolean|null
 	 */
-	public $ignore_unknown_properties = false;
+	public ?bool $ignore_unknown_properties = false;
 
 	//-------------------------------------------------------------------- $null_if_empty_sub_objects
 	/**
 	 * @var boolean set sub-objects null if empty, even if main object accepts null if empty
 	 */
-	public $null_if_empty_sub_objects = false;
+	public bool $null_if_empty_sub_objects = false;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -88,7 +88,7 @@ class Object_Builder_Array
 	 *
 	 * @var Reflection_Property[]
 	 */
-	private $properties;
+	private array $properties;
 
 	//-------------------------------------------------------------------------------------- $started
 	/**
@@ -96,18 +96,19 @@ class Object_Builder_Array
 	 *
 	 * @var boolean
 	 */
-	private $started = false;
+	private bool $started = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 * @param $from_form  boolean Set this to false to disable interpretation of arrays coming from
 	 *                    forms : arrayFormRevert, widgets. You should always set this to false if
 	 *                    your array does not come from an input form.
 	 * @param $composite  object|null Reference to the composite object if we build a Component
 	 */
-	public function __construct($class_name = null, $from_form = true, $composite = null)
-	{
+	public function __construct(
+		string $class_name = null, bool $from_form = true, object $composite = null
+	) {
 		$this->from_form = $from_form;
 		$this->composite = $composite;
 		if (isset($class_name)) {
@@ -126,18 +127,21 @@ class Object_Builder_Array
 	//----------------------------------------------------------------------------------------- build
 	/**
 	 * @param $array                array
-	 * @param $object               object
+	 * @param $object               object|null
 	 * @param $null_if_empty        boolean
-	 * @param $ignore_property_name string
-	 * @return object
+	 * @param $ignore_property_name string|null
+	 * @return ?object
+	 * @throws User_Error_Exception
 	 */
 	public function build(
-		array $array, $object = null, $null_if_empty = false, $ignore_property_name = null
-	) {
+		array $array, object $object = null, bool $null_if_empty = false,
+		string $ignore_property_name = null
+	) : ?object
+	{
 		// first "null-if-empty" pass : on raw data
 		if ($null_if_empty) {
 			$ok = false;
-			foreach ($array as $key => $value) {
+			foreach ($array as $value) {
 				if ($value) {
 					$ok = true;
 					break;
@@ -176,11 +180,13 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------- buildBasicValue
 	/**
 	 * @param $property Reflection_Property
-	 * @param $value    boolean|integer|float|string|array
-	 * @return boolean|integer|float|string|array
+	 * @param $value    array|boolean|float|integer|string
+	 * @return array|boolean|float|integer|string
 	 * @throws User_Error_Exception
 	 */
-	private function buildBasicValue(Reflection_Property $property, mixed $value)
+	private function buildBasicValue(
+		Reflection_Property $property, array|bool|float|int|string $value
+	) : array|bool|float|int|string
 	{
 		if (!is_null($value) || !Null_Annotation::of($property)->value) {
 			if (is_string($value)) {
@@ -193,6 +199,7 @@ class Object_Builder_Array
 				default       => $value
 			};
 		}
+		/** @noinspection PhpExpressionAlwaysNullInspection inspector bug */
 		return $value;
 	}
 
@@ -207,12 +214,14 @@ class Object_Builder_Array
 	 * @param $old_collection object[] the value of the collection, read from the object
 	 * @param $array          array
 	 * @param $null_if_empty  boolean
-	 * @param $composite      object the composite object, if linked
+	 * @param $composite      object|null the composite object, if linked
 	 * @return object[]
+	 * @throws User_Error_Exception
 	 */
 	public function buildCollection(
-		$class_name, $old_collection, array $array, $null_if_empty = false, $composite = null
-	) {
+		string $class_name, array $old_collection, array $array, bool $null_if_empty = false, object $composite = null
+	) : array
+	{
 		$collection = [];
 		if ($array) {
 			$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
@@ -260,12 +269,12 @@ class Object_Builder_Array
 	 * @param $pos           integer The position of the DOT into the $property_name
 	 */
 	private function buildDottedProperty(
-		Object_Builder_Array_Tool $build, $property_name, $value, $pos
+		Object_Builder_Array_Tool $build, string $property_name, mixed $value, int $pos
 	) {
 		$property_path = substr($property_name, $pos + 1);
 		$property_name = substr($property_name, 0, $pos);
 		$this->extractAsterisk($property_name);
-		$property = isset($this->properties[$property_name]) ? $this->properties[$property_name] : null;
+		$property = $this->properties[$property_name] ?? null;
 		if (isset($property)) {
 			$build->objects[$property->name][$property_path] = $value;
 		}
@@ -279,11 +288,13 @@ class Object_Builder_Array
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object        object
 	 * @param $property_name string must start with 'id_'
-	 * @param $value         integer
+	 * @param $value         string
 	 * @param $null_if_empty boolean
 	 * @return boolean
 	 */
-	private function buildIdProperty($object, $property_name, $value, $null_if_empty)
+	private function buildIdProperty(
+		object $object, string $property_name, string $value, bool $null_if_empty
+	) : bool
 	{
 		$is_null            = $null_if_empty;
 		$real_property_name = substr($property_name, 3);
@@ -328,8 +339,9 @@ class Object_Builder_Array
 	 * @param $array      array
 	 * @param $class_name string the name of the class to build each element
 	 * @return integer[]
+	 * @throws User_Error_Exception
 	 */
-	public function buildMap(array $array, $class_name)
+	public function buildMap(array $array, string $class_name) : array
 	{
 		$map = [];
 		// file identifiers are copied to array values
@@ -391,13 +403,16 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------ buildObjectValue
 	/**
 	 * @param $class_name    string the class name of the object to build
-	 * @param $object        object the value of the object before build (may be null if no object)
+	 * @param $object        ?object the value of the object before build (may be null if no object)
 	 * @param $array         array  the values of the properties to be replaced into the object
 	 * @param $null_if_empty boolean
-	 * @param $composite     object The composite object (set it only if property is a @component)
-	 * @return object
+	 * @param $composite     ?object The composite object (set it only if property is a @component)
+	 * @return ?object
+	 * @throws User_Error_Exception
 	 */
-	private function buildObjectValue($class_name, $object, array $array, $null_if_empty, $composite)
+	private function buildObjectValue(
+		string $class_name, ?object $object, array $array, bool $null_if_empty, ?object $composite
+	) : ?object
 	{
 		$builder = new Object_Builder_Array($class_name, $this->from_form, $composite);
 		$object  = $builder->build($array, $object, $this->null_if_empty_sub_objects || $null_if_empty)
@@ -412,6 +427,7 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------- buildProperties
 	/**
 	 * @param $build Object_Builder_Array_Tool
+	 * @throws User_Error_Exception
 	 */
 	private function buildProperties(Object_Builder_Array_Tool $build)
 	{
@@ -430,12 +446,14 @@ class Object_Builder_Array
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $build    Object_Builder_Array_Tool
 	 * @param $property Reflection_Property
-	 * @param $value    string
+	 * @param $value    mixed
 	 * @return boolean true if property value is null
+	 * @throws User_Error_Exception
 	 */
 	private function buildProperty(
-		Object_Builder_Array_Tool $build, Reflection_Property $property, $value
-	) {
+		Object_Builder_Array_Tool $build, Reflection_Property $property, mixed $value
+	) : bool
+	{
 		$null_if_empty = $build->null_if_empty;
 		$object        = $build->object;
 		$is_null       = $null_if_empty;
@@ -551,11 +569,13 @@ class Object_Builder_Array
 	 * @param $build         Object_Builder_Array_Tool
 	 * @param $property_name string
 	 * @param $value         mixed
+	 * @throws User_Error_Exception
 	 */
-	private function buildSimpleProperty(Object_Builder_Array_Tool $build, $property_name, $value)
-	{
+	private function buildSimpleProperty(
+		Object_Builder_Array_Tool $build, string $property_name, mixed $value
+	) {
 		$asterisk = $this->extractAsterisk($property_name);
-		$property = isset($this->properties[$property_name]) ? $this->properties[$property_name] : null;
+		$property = $this->properties[$property_name] ?? null;
 		if (
 			!$property
 			&& (substr($property_name, -1) === '_')
@@ -604,8 +624,11 @@ class Object_Builder_Array
 	 * @param $value         mixed
 	 * @param $null_if_empty boolean
 	 * @return boolean
+	 * @throws User_Error_Exception
 	 */
-	private function buildSubObject($object, Reflection_Property $property, $value, $null_if_empty)
+	private function buildSubObject(
+		object $object, Reflection_Property $property, mixed $value, bool $null_if_empty
+	) : bool
 	{
 		$is_null       = $null_if_empty;
 		$property_name = $property->name;
@@ -641,10 +664,13 @@ class Object_Builder_Array
 	 * @param $property_name string
 	 * @param $value         mixed
 	 * @return boolean
+	 * @throws User_Error_Exception
 	 */
 	private function buildSubObjectMultiple(
-		$object, $property_name, $value, $null_if_empty, Object_Builder_Array $builder
-	) {
+		object $object, string $property_name, mixed $value, bool $null_if_empty,
+		Object_Builder_Array $builder
+	) : bool
+	{
 		$is_null = $null_if_empty;
 		if (is_array($value)) {
 			// keys are numeric : multiple values case
@@ -665,7 +691,7 @@ class Object_Builder_Array
 			foreach ($values as $element) {
 				$element = $builder->build($element, null, $null_if_empty);
 				if (isset($element)) {
-					// call property getter if exist (do not remove this !)
+					/** @noinspection PhpExpressionResultUnusedInspection Call property getter if exist */
 					$object->$property_name;
 					array_push($object->$property_name, $element);
 					$is_null = false;
@@ -678,6 +704,7 @@ class Object_Builder_Array
 	//------------------------------------------------------------------------------- buildSubObjects
 	/**
 	 * @param $build Object_Builder_Array_Tool
+	 * @throws User_Error_Exception
 	 */
 	private function buildSubObjects(Object_Builder_Array_Tool $build)
 	{
@@ -694,7 +721,7 @@ class Object_Builder_Array
 	 * @param $property_name string may end with a '*' : if so, this last character will be removed
 	 * @return boolean true if there is an '*', false if not
 	 */
-	private function extractAsterisk(&$property_name)
+	private function extractAsterisk(string &$property_name) : bool
 	{
 		if ($asterisk = (substr($property_name, -1) === '*')) {
 			$property_name = substr($property_name, 0, -1);
@@ -708,7 +735,7 @@ class Object_Builder_Array
 	 *
 	 * @return Built_Object[]
 	 */
-	public function getBuiltObjects()
+	public function getBuiltObjects() : array
 	{
 		return $this->built_objects;
 	}
@@ -717,10 +744,11 @@ class Object_Builder_Array
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array  array
-	 * @param $object object
-	 * @return array
+	 * @param $object ?object
+	 * @return array|null
+	 * @throws User_Error_Exception
 	 */
-	private function initLinkObject(array &$array, &$object)
+	private function initLinkObject(array &$array, ?object &$object) : array|null
 	{
 		$link = Class_\Link_Annotation::of($this->class);
 		if ($link->value) {
@@ -737,9 +765,7 @@ class Object_Builder_Array
 					}
 					$property_class_name = $property->getType()->asString();
 					if (is_a($property_class_name, $link->value, true)) {
-						$id_property_value = isset($array[$id_property_name])
-							? $array[$id_property_name]
-							: null;
+						$id_property_value = $array[$id_property_name] ?? null;
 						$linked_class_name = $property_class_name;
 						if (!isset($array[$id_property_name]) && !isset($array[$property_name])) {
 							$linked_array = $array;
@@ -792,14 +818,16 @@ class Object_Builder_Array
 	 * - if the object is a Component with a known composite, initializes its composite object to
 	 *   $this->composite
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $array  array  the source array
-	 * @param $object object the object to complete (if set) or to build (if null)
+	 * @param $object ?object the object to complete (if set) or to build (if null)
 	 *                This object is always set at the end of execution of initObject()
-	 * @return array if read from a link object, this is the search properties that identify it
+	 * @return array|null if read from a link object, this is the search properties that identify it
+	 * @throws User_Error_Exception
 	 */
-	private function initObject(array &$array, &$object)
+	private function initObject(array &$array, ?object &$object) : array|null
 	{
-		if (!isset($object)) {
+		if (!$object) {
 			if (isset($array['id']) && $array['id']) {
 				$object = Dao::read($array['id'], $this->class->name);
 				// if the object has been removed from the database : we will create a new one
@@ -810,6 +838,7 @@ class Object_Builder_Array
 			if (!(isset($array['id']) && $array['id'])) {
 				$link_search = $this->initLinkObject($array, $object);
 				if (!isset($object)) {
+					/** @noinspection PhpUnhandledExceptionInspection Must be valid */
 					$object = $this->class->newInstance();
 				}
 			}
@@ -823,7 +852,7 @@ class Object_Builder_Array
 		foreach ($this->class->getAnnotations('before_build_array') as $before) {
 			call_user_func_array([$object, $before->value], [&$array]);
 		}
-		return isset($link_search) ? $link_search : null;
+		return $link_search ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ readObject
@@ -833,7 +862,7 @@ class Object_Builder_Array
 	 * @param $read_properties string[] properties names
 	 * @return object
 	 */
-	public function readObject($object, array $read_properties)
+	public function readObject(object $object, array $read_properties) : object
 	{
 		$objects = Dao::search($read_properties, get_class($object));
 		if (count($objects) > 1) {
@@ -862,7 +891,7 @@ class Object_Builder_Array
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 */
-	public function setClass($class_name)
+	public function setClass(string $class_name)
 	{
 		if ($this->started) {
 			$this->stop();
@@ -873,9 +902,9 @@ class Object_Builder_Array
 
 	//----------------------------------------------------------------------------------------- start
 	/**
-	 * @param $class_name string
+	 * @param $class_name string|null
 	 */
-	public function start($class_name = null)
+	public function start(string $class_name = null)
 	{
 		if (isset($class_name)) {
 			$this->setClass($class_name);

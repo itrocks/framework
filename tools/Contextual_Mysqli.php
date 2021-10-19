@@ -10,8 +10,6 @@ use mysqli_result;
 /**
  * Contextual mysqli class : this enables storage of context name for mysqli queries calls
  */
-
-/** @noinspection PhpDocSignatureInspection Inspector bug on query that returns a value ! */
 class Contextual_Mysqli extends mysqli
 {
 
