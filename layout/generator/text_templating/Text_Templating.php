@@ -27,9 +27,9 @@ class Text_Templating
 	/**
 	 * @param $property_path string
 	 * @param $element       Text
-	 * @return mixed|null
+	 * @return int|null|string
 	 */
-	protected function pageProperty(string $property_path, Text $element)
+	protected function pageProperty(string $property_path, Text $element) : int|null|string
 	{
 		switch ($property_path) {
 			case 'page.number': return $element->page->number;
@@ -48,7 +48,7 @@ class Text_Templating
 			foreach ($page->elements as $element) {
 				if (
 					($element instanceof Text)
-					&& ((strpos($element->text, '{') !== false) || (substr($element->text, 0, 1) === '#'))
+					&& (str_contains($element->text, '{') || str_starts_with($element->text, '#'))
 				) {
 					$this->text($element);
 				}
@@ -58,7 +58,7 @@ class Text_Templating
 					foreach ($iteration->elements as $element) {
 						if (
 							($element instanceof Text)
-							&& ((strpos($element->text, '{') !== false) || (substr($element->text, 0, 1) === '#'))
+							&& (str_contains($element->text, '{') || str_starts_with($element->text, '#'))
 						) {
 							$this->text($element);
 						}
@@ -83,7 +83,7 @@ class Text_Templating
 		}
 		foreach (static::PAGE_PROPERTY_PATHS as $property_path) {
 			$search = '{' . Names::propertyToDisplay($property_path) . '}';
-			if (strpos($element->text, $search) !== false) {
+			if (str_contains($element->text, $search)) {
 				$element->text = str_replace(
 					$search, $this->pageProperty($property_path, $element), $element->text
 				);

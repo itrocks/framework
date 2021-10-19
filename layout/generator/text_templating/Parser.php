@@ -19,28 +19,29 @@ class Parser
 	/**
 	 * @var object
 	 */
-	protected $object;
+	protected object $object;
 
 	//-------------------------------------------------------------------------------- $property_path
 	/**
 	 * @var string
 	 */
-	protected $property_path;
+	protected string $property_path;
 
 	//---------------------------------------------------------------------------------- $root_object
 	/**
-	 * @var object
+	 * @var ?object
 	 */
-	protected $root_object;
+	protected ?object $root_object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $object        object
-	 * @param $root_object   object
+	 * @param $root_object   object|null
 	 * @param $property_path string reference property path
 	 */
-	public function __construct($object, $root_object = null, string $property_path = '')
-	{
+	public function __construct(
+		object $object, object $root_object = null, string $property_path = ''
+	) {
 		$this->object        = $object;
 		$this->root_object   = $root_object;
 		$this->property_path = $property_path;
@@ -61,7 +62,7 @@ class Parser
 			$end_position        = strpos($text, '}', $position);
 			$property_expression = substr($text, $position, $end_position - $position);
 			$value = $this->propertyExpression($property_expression, $iteration_number);
-			if (!$value && strpos($property_expression, '?') !== false) {
+			if (!$value && str_contains($property_expression, '?')) {
 				return '';
 			}
 			$text      = substr($text, 0, $position - 1) . $value . substr($text, $end_position + 1);
