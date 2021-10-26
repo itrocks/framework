@@ -289,7 +289,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 				foreach ($block->items as $item) {
 					if (beginsWith($item->link, View::link($link_class_name))) {
 						$module = new Button($block->title, $block->title_link);
-						break;
+						break 3;
 					}
 				}
 			}
@@ -305,22 +305,22 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	protected function getParent(string $class_name) : Button|string
 	{
 		$class_names = Names::classToSet($class_name);
-		$module = '';
+		$parent = '';
 		if (!Menu::registered()) {
-			return $module;
+			return $parent;
 		}
 		$menu = Menu::get();
 		foreach ([$class_names, $class_name] as $link_class_name) {
 			foreach ($menu->blocks as $block) {
 				foreach ($block->items as $item) {
 					if (beginsWith($item->link, View::link($link_class_name))) {
-						$module = new Button($item->caption, $item->link);
-						break;
+						$parent = new Button($item->caption, $item->link);
+						break 3;
 					}
 				}
 			}
 		}
-		return $module;
+		return $parent;
 	}
 
 	//----------------------------------------------------------------------------- getPropertiesList

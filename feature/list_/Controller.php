@@ -640,6 +640,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'more'                          => $more,
 				'more_hundred'                  => $more_hundred,
 				'more_thousand'                 => $more_thousand,
+				'parent'                        => $this->getParent($class_name),
 				'properties'                    => $this->getProperties($list_settings_before_read),
 				'rows_count'                    => $count->count,
 				'search_summary'                => $search_summary,
