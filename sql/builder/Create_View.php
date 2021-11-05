@@ -35,7 +35,7 @@ class Create_View
 	{
 		$queries[] = 'CREATE VIEW' . LF . BQ . $this->view->getName() . BQ . LF
 			. 'AS' . SP
-			. join(LF . 'UNION ', $this->view->select_queries);
+			. join(LF . 'UNION ALL ', $this->view->select_queries);
 		return $queries;
 	}
 
