@@ -18,10 +18,11 @@ class Smtp extends Sender
 {
 
 	//----------------------------------------------------------------------- Configuration constants
-	const HOST     = 'host';
-	const LOGIN    = 'login';
-	const PASSWORD = 'password';
-	const PORT     = 'port';
+	const ENCRYPTION = 'encryption';
+	const HOST       = 'host';
+	const LOGIN      = 'login';
+	const PASSWORD   = 'password';
+	const PORT       = 'port';
 
 	//------------------------------------------------------------------------------------- TRANSPORT
 	const TRANSPORT = 'smtp';
@@ -48,10 +49,11 @@ class Smtp extends Sender
 	{
 		parent::__construct($configuration);
 		$this->default_smtp_account = new Smtp_Account(
-			isset($configuration[self::HOST])     ? $configuration[self::HOST]     : '',
-			isset($configuration[self::LOGIN])    ? $configuration[self::LOGIN]    : '',
-			isset($configuration[self::PASSWORD]) ? $configuration[self::PASSWORD] : '',
-			isset($configuration[self::PORT])     ? $configuration[self::PORT]     : null
+			$configuration[self::HOST]       ?? '',
+			$configuration[self::LOGIN]      ?? '',
+			$configuration[self::PASSWORD]   ?? '',
+			$configuration[self::PORT]       ?? null,
+			$configuration[self::ENCRYPTION] ?? ''
 		);
 	}
 
@@ -70,7 +72,9 @@ class Smtp extends Sender
 		$smtp_account = $this->smtpAccount($email);
 		$this->sendConfiguration($email);
 
-		$transport = new Swift_Smtp_Transport($smtp_account->host, $smtp_account->port);
+		$transport = new Swift_Smtp_Transport(
+			$smtp_account->host, $smtp_account->port, $smtp_account->encryption
+		);
 		if ($smtp_account->login) {
 			$transport->setUsername($smtp_account->login);
 			$transport->setPassword($smtp_account->password);

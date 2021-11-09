@@ -17,8 +17,9 @@ abstract class Sender implements Configurable, Sender_Interface
 	use Has_Get;
 
 	//----------------------------------------------------------------------- Configuration constants
-	const BCC = 'bcc';
-	const TO  = 'to';
+	const BCC  = 'bcc';
+	const FROM = 'from';
+	const TO   = 'to';
 
 	//------------------------------------------------------------------------------------------ $bcc
 	/**
@@ -28,6 +29,15 @@ abstract class Sender implements Configurable, Sender_Interface
 	 * @var string|string[]
 	 */
 	public array|string $bcc;
+
+	//------------------------------------------------------------------------------------------- $to
+	/**
+	 * Use this to force sender to this one, whatever is the sending address mail coming from the
+	 * application.
+	 *
+	 * @var string|string[]
+	 */
+	public array|string $from;
 
 	//------------------------------------------------------------------------------------------- $to
 	/**
@@ -48,8 +58,9 @@ abstract class Sender implements Configurable, Sender_Interface
 	public function __construct($configuration = [])
 	{
 		if ($configuration) {
-			if (isset($configuration[self::BCC])) $this->bcc = $configuration[self::BCC];
-			if (isset($configuration[self::TO]))  $this->to  = $configuration[self::TO];
+			if (isset($configuration[self::BCC]))  $this->bcc  = $configuration[self::BCC];
+			if (isset($configuration[self::FROM])) $this->from = $configuration[self::FROM];
+			if (isset($configuration[self::TO]))   $this->to   = $configuration[self::TO];
 		}
 	}
 
@@ -91,6 +102,15 @@ abstract class Sender implements Configurable, Sender_Interface
 	 */
 	protected function sendConfiguration(Email $email)
 	{
+		// force sender : all mails coming from the application will use this sender (from)
+		if (isset($this->from)) {
+			if (!is_array($this->from)) {
+				$this->from = [$this->from];
+			}
+			foreach ($this->from as $from_name => $from_email) {
+				$email->from = new Recipient($from_email, is_numeric($from_name) ? null : $from_name);
+			}
+		}
 		// development / test parameters to override 'To' and/or 'Bcc' headers
 		if (isset($this->to)) {
 			$email->blind_copy_to = [];
