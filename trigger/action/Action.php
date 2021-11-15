@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Trigger;
 
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Logger\Entry;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Trigger\Action\Status;
@@ -88,10 +89,10 @@ class Action
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $action string
+	 * @param $action string|null
 	 * @param $next   Date_Time|null
 	 */
-	public function __construct($action = null, $next = null)
+	public function __construct(string $action = null, Date_Time|null $next = null)
 	{
 		if (isset($action)) {
 			$this->action = $action;
@@ -105,9 +106,9 @@ class Action
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
-		return strval($this->action);
+		return $this->action;
 	}
 
 	//--------------------------------------------------------------------------------------- execute
@@ -116,10 +117,10 @@ class Action
 	 *
 	 * To really launch planned actions, you must make /ITRocks/Framework/Trigger/Server/run as daemon
 	 *
-	 * @param $object object|string object or class name
+	 * @param $object object|string|null object or class name
 	 * @return static|null scheduled action
 	 */
-	public function execute($object = null)
+	public function execute(object|string $object = null) : static|null
 	{
 		// can execute an action twice only if it is not running nor planned for now at this time
 		$now = Date_Time::now();
@@ -144,7 +145,7 @@ class Action
 		if (
 			!$this->keep_user
 			&& ($this->status !== Action\Status::STATIC)
-			&& (strpos($this->action, '{') === false)
+			&& !str_contains($this->action, '{')
 		) {
 			Dao::write($this, Dao::only('next'));
 		}
@@ -184,6 +185,16 @@ class Action
 		return $this;
 	}
 
+	//----------------------------------------------------------------------------------- getLogEntry
+	/**
+	 * @return Entry
+	 */
+	public function getLogEntry() : Entry
+	{
+		/** @noinspection PhpIncompatibleReturnTypeInspection inspector mismatch */
+		return Dao::searchOne(['data.request_identifier' => $this->request_identifier], Entry::class);
+	}
+
 	//------------------------------------------------------------------------------------------ next
 	/**
 	 * call this when action launch is validated (its execution may not be effective, and come later)
@@ -191,10 +202,10 @@ class Action
 	 * - scheduled action : calculate and update next execution time
 	 * - one-shot action : delete the action
 	 *
-	 * @param $last       Date_Time the last execution time @default Date_Time::now
+	 * @param $last       Date_Time|null the last execution time @default Date_Time::now
 	 * @param $write_last boolean update last execution time using $last / now
 	 */
-	public function next(Date_Time $last = null, $write_last = false)
+	public function next(Date_Time $last = null, bool $write_last = false)
 	{
 		if ($write_last && $last && $last->isAfter($this->last)) {
 			$this->last = $last;
@@ -221,10 +232,10 @@ class Action
 	 *
 	 * This does not change the value of $next
 	 *
-	 * @param $last Date_Time the reference date time for calculation @default Date_Time::now
+	 * @param $last Date_Time|null the reference date time for calculation @default Date_Time::now
 	 * @return Date_Time|null null if its not a scheduled action : then it will never execute again
 	 */
-	protected function nextExecutionTime($last = null)
+	protected function nextExecutionTime(Date_Time $last = null) : Date_Time|null
 	{
 		if (!$last) {
 			$last = Date_Time::now();
@@ -243,6 +254,32 @@ class Action
 			|| Dao::search(['actions' => $this], Feature::class);
 
 		return $linked ? $next : null;
+	}
+
+	//------------------------------------------------------------------------------------------ wait
+	/**
+	 * Wait for an action execution to be complete
+	 *
+	 * @param $timeout         integer
+	 * @param $pending_timeout integer
+	 * @return boolean|string true if done, or Timeout status @values execution, pending
+	 */
+	public function wait(int $timeout = 30, int $pending_timeout = 5) : bool|string
+	{
+		$time = time();
+		while (Dao::read($this)->status === Status::PENDING) {
+			usleep(100000);
+			if ((time() - $time) > $pending_timeout) {
+				return 'pending';
+			}
+		}
+		while (!in_array(Dao::read($this)->status, Status::COMPLETE_STATUSES)) {
+			usleep(100000);
+			if ((time() - $time) > $timeout) {
+				return 'execution';
+			}
+		}
+		return true;
 	}
 
 }
