@@ -18,7 +18,6 @@ use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Names;
@@ -186,10 +185,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$buttons[Feature::F_EDIT] = new Button(
 			'Edit', View::link($object, Feature::F_EDIT, null, $follows), Feature::F_EDIT
 		);
-		/** @noinspection PhpUnhandledExceptionInspection object */
-		if (
-			($object instanceof Duplicate) || (new Reflection_Class($object))->getAnnotations('duplicate')
-		) {
+		if ($object instanceof Duplicate) {
 			$buttons[Feature::F_DUPLICATE] = new Button(
 				'Duplicate', View::link($object, Feature::F_DUPLICATE, null, $follows), Feature::F_DUPLICATE
 			);
