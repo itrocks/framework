@@ -45,10 +45,10 @@ trait Current
 	/**
 	 * Gets/sets current environment's object
 	 *
-	 * @param $set_current static
-	 * @return static
+	 * @param $set_current object|null
+	 * @return object|null
 	 */
-	public static function current($set_current = null)
+	public static function current(object $set_current = null) : object|null
 	{
 		$called_class = static::class;
 

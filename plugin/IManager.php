@@ -38,12 +38,14 @@ interface IManager
 	/**
 	 * Gets a plugin object
 	 *
-	 * @param $class_name string
-	 * @param $level      string
+	 * @param $class_name class-string<T>
+	 * @param $level      string|null
 	 * @param $register   boolean
-	 * @return Plugin
+	 * @return T|null
+	 * @template T
 	 */
-	public function get($class_name, $level = null, $register = false);
+	public function get(string $class_name, string $level = null, bool $register = false)
+		: object|null;
 
 	//-------------------------------------------------------------------------------------- register
 	/**

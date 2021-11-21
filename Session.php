@@ -148,10 +148,11 @@ class Session implements Serializable
 	 * Get the object of class $class_name from session
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name     string
+	 * @param $class_name     class-string<T>|string
 	 * @param $create_default boolean|callable Create a default object for the class name if does not
 	 *        exist. Can be callable that creates the default object
-	 * @return mixed
+	 * @return mixed|T
+	 * @template T
 	 */
 	public function get(string $class_name, bool|callable $create_default = false) : mixed
 	{

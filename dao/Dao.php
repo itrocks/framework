@@ -162,10 +162,10 @@ class Dao implements Configurable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Data_Link
-	 * @return Data_Link
+	 * @param $set_current Data_Link|null
+	 * @return Data_Link|null
 	 */
-	public static function current(Data_Link $set_current = null)
+	public static function current(Data_Link $set_current = null) : Data_Link|null
 	{
 		/** @var $data_link Data_Link */
 		$data_link = self::pCurrent($set_current);
@@ -488,12 +488,13 @@ class Dao implements Configurable
 	/**
 	 * Read an object from current data link
 	 *
-	 * @param $identifier integer|object identifier for the object, or an object to re-read
-	 * @param $class_name string class for read object. Useless if $identifier is an object
-	 * @return object an object of class objectClass, read from data source, or null if nothing found
+	 * @param $identifier integer|T identifier for the object, or an object to re-read
+	 * @param $class_name class-string<T>|null class for read object. Useless if $identifier is object
+	 * @return ?object an object of class objectClass, read from data source, or null if nothing found
 	 * @see Data_Link::read()
+	 * @template T
 	 */
-	public static function read($identifier, $class_name = null)
+	public static function read(int|object $identifier, string $class_name = null) : ?object
 	{
 		return self::current()->read($identifier, $class_name);
 	}
@@ -502,12 +503,13 @@ class Dao implements Configurable
 	/**
 	 * Read all objects of a given class from current data link
 	 *
-	 * @param $class_name string class name of read objects
+	 * @param $class_name class-string<T> class name of read objects
 	 * @param $options    Option|Option[] some options for advanced read
-	 * @return object[] a collection of read objects
+	 * @return T[] a collection of read objects
 	 * @see Data_Link::readAll()
+	 * @template T
 	 */
-	public static function readAll($class_name, $options = [])
+	public static function readAll(string $class_name, array|Option $options = []) : array
 	{
 		return self::current()->readAll($class_name, $options);
 	}
@@ -516,9 +518,9 @@ class Dao implements Configurable
 	/**
 	 * Removes a data link which identifier is a string from the list of available data links
 	 *
-	 * @param $dao_identifier string
+	 * @param $dao_identifier int|string
 	 */
-	public static function remove($dao_identifier)
+	public static function remove(int|string $dao_identifier)
 	{
 		if (isset(self::$list[$dao_identifier])) {
 			unset(self::$list[$dao_identifier]);
@@ -531,17 +533,18 @@ class Dao implements Configurable
 	 *
 	 * The source object overwrites the destination object into the data source, even if the source
 	 * object was not originally read from the data source.
-	 * Warning: as destination object will stay independent from source object but also linked to the
+	 * Warning: as destination object will stay independent of source object but also linked to the
 	 * same data source identifier. You will still be able to write() either source or destination
 	 * after call to replace().
 	 *
-	 * @param $destination object destination object
-	 * @param $source      object source object
+	 * @param $destination T destination object
+	 * @param $source      T source object
 	 * @param $write       boolean true if the destination object must be immediately written
-	 * @return object the resulting $destination object
+	 * @return T the resulting $destination object
 	 * @see Data_Link::replace()
+	 * @template T
 	 */
-	public static function replace($destination, $source, $write = true)
+	public static function replace(object $destination, object $source, bool $write = true) : object
 	{
 		return self::current()->replace($destination, $source, $write);
 	}
@@ -551,11 +554,12 @@ class Dao implements Configurable
 	 * Replace all references to $replaced by references to $replacement into the database.
 	 * Already loaded objects will not be changed.
 	 *
-	 * @param $replaced    object
-	 * @param $replacement object
+	 * @param $replaced    T
+	 * @param $replacement T
 	 * @return boolean true if replacement has been done, false if something went wrong
+	 * @template T
 	 */
-	public static function replaceReferences($replaced, $replacement)
+	public static function replaceReferences(object $replaced, object $replacement) : bool
 	{
 		return self::current()->replaceReferences($replaced, $replacement);
 	}
@@ -572,7 +576,7 @@ class Dao implements Configurable
 	 * @param $column_name string A single column name which we will reverse order.
 	 * @return Option\Reverse
 	 */
-	public static function reverse($column_name)
+	public static function reverse(string $column_name) : Option\Reverse
 	{
 		return new Option\Reverse($column_name);
 	}
@@ -631,10 +635,11 @@ class Dao implements Configurable
 	 *
 	 * @param $what       object|array source object for filter, only set properties will be used for
 	 *                    search
-	 * @param $class_name string must be set if is not a filter array
+	 * @param $class_name class-string<T> must be set if is not a filter array
 	 * @param $options    Option|Option[] some options for advanced search
-	 * @return object | null the found object, or null if no object was found
+	 * @return T|null the found object, or null if no object was found
 	 * @see Data_Link::searchOne()
+	 * @template T
 	 */
 	public static function searchOne($what, $class_name = null, $options = [])
 	{
@@ -761,12 +766,13 @@ class Dao implements Configurable
 	 * If object was not originally read from data source nor linked to it using replace(), a new
 	 * record will be written into data source using this object's data.
 	 *
-	 * @param $object  object object to write into data source
+	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return object the written object
+	 * @return T the written object
 	 * @see Data_Link::write()
+	 * @template T
 	 */
-	public static function write($object, $options = [])
+	public static function write(object $object, array|Option $options = []) : object
 	{
 		return self::current()->write($object, $options);
 	}

@@ -16,10 +16,11 @@ abstract class Null_Object
 	 * Returns a new instance of an object, but sets all its properties values to null
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string
-	 * @return object
+	 * @param $class_name class-string<T>
+	 * @return T
+	 * @template T
 	 */
-	public static function create($class_name)
+	public static function create(string $class_name) : object
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$object = Builder::create($class_name);

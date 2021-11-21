@@ -166,11 +166,14 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Executes an SQL query and returns the inserted record identifier (if applicable)
 	 *
 	 * @param $query      string
-	 * @param $class_name string if set, the result will be object[] with read data
-	 * @param $result_set mixed The result set associated to the data link, if $class_name is constant
-	 * @return mixed depends on $class_name specific constants used
+	 * @param $class_name class-string<T>|null if set, the result will be object[] with read data
+	 * @param $result     mixed The result set associated to the data link, if $class_name is constant
+	 *        Call $query with $result = true to store the result set into $result
+	 * @return mixed|T[] depends on $class_name specific constants used
+	 * @template T
 	 */
-	abstract public function query($query, $class_name = null, &$result_set = null);
+	abstract public function query(string $query, string $class_name = null, mixed &$result = null)
+		: mixed;
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**

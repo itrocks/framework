@@ -11,10 +11,11 @@ abstract class Replaces_Annotations
 
 	//---------------------------------------------------------------------- removeReplacedProperties
 	/**
-	 * @param $properties Reflection_Property[] key must be the name of the property
-	 * @return Reflection_Property[] all properties but those that are replaced
+	 * @param $properties Reflection_Property[]|T[] key must be the name of the property
+	 * @return T[] all properties but those that are replaced
+	 * @template T
 	 */
-	public static function removeReplacedProperties(array $properties)
+	public static function removeReplacedProperties(array $properties) : array
 	{
 		foreach ($properties as $property) {
 			$replaced_property_name = $property->getAnnotation('replaces')->value;

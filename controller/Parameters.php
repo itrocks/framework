@@ -120,11 +120,13 @@ class Parameters
 	 * of the parameters list.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name           string|object
+	 * @param $class_name           class-string<T>|T|null
 	 * @param $search_by_properties string[]
-	 * @return object
+	 * @return T
+	 * @template T
 	 */
-	public function getMainObject($class_name = null, array $search_by_properties = [])
+	public function getMainObject(string $class_name = null, array $search_by_properties = [])
+		: object
 	{
 		if (is_object($class_name)) {
 			$default_object = $class_name;
@@ -145,7 +147,7 @@ class Parameters
 		}
 		if (!$object || !is_object($object) || (isset($class_name) && !is_a($object, $class_name))) {
 			/** @noinspection PhpUnhandledExceptionInspection class_exists */
-			$object = isset($default_object) ? $default_object : (
+			$object = $default_object ?? (
 				(isset($class_name) && class_exists($class_name))
 				? Builder::create($class_name)
 				: Set::instantiate($class_name)
@@ -163,10 +165,11 @@ class Parameters
 	 * value as identifier.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $parameter_name string
-	 * @return object
+	 * @param $parameter_name class-string<T>|null
+	 * @return mixed|T
+	 * @template T
 	 */
-	public function getObject($parameter_name)
+	public function getObject(string $parameter_name = null) : mixed
 	{
 		if (isset($this->objects[$parameter_name])) {
 			// parameter is in cache

@@ -43,11 +43,9 @@ class Manager implements IManager, Serializable
 	 * @param $class_name string
 	 * @return Activable
 	 */
-	public function activate($class_name)
+	public function activate($class_name) : Activable
 	{
-		/** @var $plugin Plugin|Activable */
-		$plugin = $this->get($class_name);
-		return $plugin;
+		return $this->get($class_name);
 	}
 
 	//------------------------------------------------------------------------------- activatePlugins
@@ -93,13 +91,16 @@ class Manager implements IManager, Serializable
 	 * If no plugin of this class name exists, the class is instantiated and the plugin registered
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $class_name must be a valid class name
-	 * @param $class_name string
-	 * @param $level      string
+	 * @param $class_name class-string<T>
+	 * @param $level      string|null
 	 * @param $register   boolean
 	 * @param $activate   boolean
-	 * @return Plugin
+	 * @return T|null
+	 * @template T
 	 */
-	public function get($class_name, $level = null, $register = false, $activate = false)
+	public function get(
+		string $class_name, string $level = null, bool $register = false, bool $activate = false
+	) : object|null
 	{
 		/** @var $plugin Plugin|boolean|string */
 		if (isset($this->plugins[$class_name])) {
@@ -184,12 +185,8 @@ class Manager implements IManager, Serializable
 		}
 		// register plugin
 		if ($register && ($plugin instanceof Registerable)) {
-			$weaver = isset($this->plugins[Weaver::class])
-				? $this->plugins[Weaver::class]
-				: null;
-			$plugin->register(new Register(
-					isset($plugin->plugin_configuration) ? $plugin->plugin_configuration : null, $weaver)
-			);
+			$weaver = $this->plugins[Weaver::class] ?? null;
+			$plugin->register(new Register($plugin->plugin_configuration ?? null, $weaver));
 			$activate = true;
 		}
 		// activate plugin

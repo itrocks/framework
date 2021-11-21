@@ -887,13 +887,14 @@ class Link extends Dao\Sql\Link
 	 * - if $query is an 'INSERT' returned value will be the last insert id
 	 * - other cases : returned value make no sense : do not use it ! (may be null or last insert id)
 	 *
-	 * @param $query string
-	 * @param $class_name string if set, the result will be object[] with read data
-	 * @param $result mixed The result set associated to the data link, if $class_name is constant
+	 * @param $query      string
+	 * @param $class_name class-string<T>|null if set, the result will be object[] with read data
+	 * @param $result     mixed The result set associated to the data link, if $class_name is constant
 	 *        Call $query with $result = true to store the result set into $result
-	 * @return mixed|mysqli_result depends on $class_name specific constants used
+	 * @return mixed|mysqli_result|T[] depends on $class_name specific constants used
+	 * @template T
 	 */
-	public function query($query, $class_name = null, &$result = null)
+	public function query(string $query, string $class_name = null, mixed &$result = null) : mixed
 	{
 		$get_result = $result;
 		if ($query) {

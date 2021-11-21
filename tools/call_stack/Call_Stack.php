@@ -342,10 +342,11 @@ class Call_Stack
 	/**
 	 * Get top object that is an instance of $class_name from the call stack
 	 *
-	 * @param $class_name string Can be a the name of a class, interface or trait
-	 * @return object|null
+	 * @param $class_name class-string<T> Can be a the name of a class, interface or trait
+	 * @return T|null
+	 * @template T
 	 */
-	public function getObject($class_name)
+	public function getObject(string $class_name) : object|null
 	{
 		foreach ($this->stack as $stack) {
 			if (isset($stack['object']) && isA($stack['object'], $class_name)) {
@@ -359,10 +360,11 @@ class Call_Stack
 	/**
 	 * Get top object that is the value of an argument of $class_name
 	 *
-	 * @param $class_name string Can be the name of a class, interface or trait
+	 * @param $class_name class-string<T> Can be the name of a class, interface or trait
 	 * @return object|null
+	 * @template T
 	 */
-	public function getObjectArgument($class_name)
+	public function getObjectArgument(string $class_name) : object|null
 	{
 		foreach ($this->stack as $stack) {
 			if (isset($stack['args'])) {

@@ -99,12 +99,13 @@ class Builder implements Activable, Serializable
 
 	//---------------------------------------------------------------------------------------- create
 	/**
-	 * @param $class_name string
+	 * @param $class_name class-string<T>
 	 * @param $arguments  array some arguments into an array
-	 * @return object
+	 * @return T
+	 * @template T
 	 * @throws ReflectionException
 	 */
-	public static function create($class_name, array $arguments = [])
+	public static function create(string $class_name, array $arguments = []) : object
 	{
 		return $arguments
 			? self::current()->newInstanceArgs($class_name, $arguments)
@@ -225,13 +226,16 @@ class Builder implements Activable, Serializable
 	 *
 	 * You should set only public and non-static properties values
 	 *
-	 * @param $class_name            string
+	 * @param $class_name            class-string<T>
 	 * @param $array                 array
 	 * @param $constructor_arguments array
-	 * @return object
+	 * @return T
 	 * @throws ReflectionException
+	 * @template T
 	 */
-	public static function fromArray($class_name, array $array, array $constructor_arguments = [])
+	public static function fromArray(
+		string $class_name, array $array, array $constructor_arguments = []
+	) : object
 	{
 		$object = self::create($class_name, $constructor_arguments);
 		foreach ($array as $property_name => $value) {

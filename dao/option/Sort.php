@@ -100,8 +100,7 @@ class Sort implements Option
 	private function applyClassName(string $class_name)
 	{
 		if (
-			isset($class_name)
-			&& ($class_name !== $this->class_name)
+			($class_name !== $this->class_name)
 			&& (isset($this->class_name) || !isset($this->columns))
 		) {
 			$class_name       = Builder::className($class_name);
@@ -225,8 +224,9 @@ class Sort implements Option
 	/**
 	 * Sort a collection of objects using current sort columns configuration
 	 *
-	 * @param $objects object[]
-	 * @return object[]
+	 * @param $objects T[]
+	 * @return T[]
+	 * @template T
 	 */
 	public function sortObjects(array &$objects) : array
 	{

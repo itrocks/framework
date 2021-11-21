@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Plugin\Installable;
 
 use ITRocks\Framework\Builder;
+use ITRocks\Framework\Component\Tab;
 use ITRocks\Framework\Configuration\File;
 use ITRocks\Framework\Configuration\File\Builder\Assembled;
 use ITRocks\Framework\Configuration\File\Builder\Replaced;
@@ -284,14 +285,14 @@ class Installer
 	/**
 	 * Open the configuration file (if not already opened), and return it
 	 *
-	 * @param $file_class string
-	 * @param $file_name  null
-	 * @return File
+	 * @param $file_class class-string<T>
+	 * @param $file_name  string|null
+	 * @return T
+	 * @template T
 	 */
-	protected function openFile($file_class, $file_name = null)
+	protected function openFile(string $file_class, string $file_name = null) : object
 	{
 		if (!$file_name) {
-			/** @noinspection PhpUndefinedMethodInspection File::defaultFileName */
 			/** @see File::defaultFileName() */
 			$file_name = $file_class::defaultFileName();
 		}

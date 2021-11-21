@@ -516,10 +516,11 @@ class Template
 	/**
 	 * Gets the first parent of current (last) object that is an object
 	 *
-	 * @param $instance_of string class name
-	 * @return object|null
+	 * @param $instance_of class-string<T>|null class name
+	 * @return T|null
+	 * @template T
 	 */
-	public function getParentObject($instance_of = null)
+	public function getParentObject(string $instance_of = null) : object|null
 	{
 		$object = null;
 		if (reset($this->objects)) {

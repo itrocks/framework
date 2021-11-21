@@ -34,76 +34,7 @@ $STATIC_METHOD_TYPES = [
 	mysqli_result::fetch_object('') => [
 		'' == '@'
 	],
-	Builder::create('') => [
-		'' == '@'
-	],
-	Builder::fromArray('') => [
-		'' == '@'
-	],
-	Call_Stack::getObject('') => [
-		'' == '@'
-	],
-	Call_Stack::getObjectArgument('') => [
-		'' == '@'
-	],
-	Current::current('') => [
-		'' == '@'
-	],
-	Dao::read('') => [
-		'' == '@'
-	],
-	Dao::readAll('') => [
-		'' == '@[]'
-	],
-	Dao::replace('') => [
-		'' == '@'
-	],
-	Dao::searchOne('') => [
-		'' == '@'
-	],
-	Dao::search('') => [
-		'' == '@[]'
-	],
-	Dao::write('') => [
-		'' == '@'
-	],
-	Mysql\Link::query('') => [
-		'' == '@[]'
-	],
-	Null_Object::create('') => [
-		'' == '@'
-	],
-	Parameters::getMainObject('') => [
-		'' == '@'
-	],
-	Parameters::getObject('') => [
-		'' == '@'
-	],
-	Plugin\Installable\Installer::openFile('') => [
-		'' == '@'
-	],
-	Plugin\Manager::get('') => [
-		'' == '@'
-	],
-	Replaces_Annotations::removeReplacedProperties('') => [
-		'' == '@'
-	],
-	Search_Object::create('') => [
-		'' == '@'
-	],
-	Session::get('') => [
-		'' == '@'
-	],
-	Sort::sortObject('') => [
-		'' == '@'
-	],
-	Template::getParentObject('') => [
-		'' == '@'
-	],
 	TestCase::createMock('') => [
-		'' == '@',
-	],
-	TestCase::getMock('') => [
 		'' == '@',
 	],
 	TestCase::getMockBuilder('') => [
