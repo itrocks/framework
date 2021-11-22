@@ -768,11 +768,11 @@ class Dao implements Configurable
 	 *
 	 * @param $object  T object to write into data source
 	 * @param $options Option|Option[] some options for advanced write
-	 * @return T the written object
+	 * @return T|null the written object, if has been written
 	 * @see Data_Link::write()
 	 * @template T
 	 */
-	public static function write(object $object, array|Option $options = []) : object
+	public static function write(object $object, array|Option $options = []) : object|null
 	{
 		return self::current()->write($object, $options);
 	}
