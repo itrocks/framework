@@ -60,7 +60,17 @@ $(document).ready(function()
 		const table = quill.getModule('table')
 
 		quill.on('text-change', () => {
+			$this.data('quill-text-change', true);
 			$this.text($quill.find('.ql-editor').html())
+			$this.removeData('quill-text-change');
+		})
+
+		$this.change(function() {
+			const $this = $(this);
+			if ($this.data('quill-text-change')) {
+				return;
+			}
+			quill.root.innerHTML = $(this).text();
 		})
 
 		if ($this.text().startsWith('{')) {
