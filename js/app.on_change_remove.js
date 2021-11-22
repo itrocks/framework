@@ -183,7 +183,7 @@ $(document).ready(function()
 		}
 
 		if (
-			$input.val().length
+			($input.val().length || $input.text().trim().length)
 			&& ($input.is(':focus') || $input.next().is(':focus'))
 			&& ($input.is(':visible') || $input.next().is(':visible'))
 			&& (!$input.is('[readonly]') && !$input.next().is('[readonly]'))
@@ -192,7 +192,12 @@ $(document).ready(function()
 		}
 
 		if (do_change) {
-			$input.attr('value', value).val(value);
+			if ($input.is('textarea')) {
+				$input.text(value);
+			}
+			else {
+				$input.attr('value', value).val(value);
+			}
 			if ((string_value !== null)) {
 				$input.next().attr('value', string_value).val(string_value).change();
 			}
