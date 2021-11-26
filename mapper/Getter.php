@@ -8,6 +8,7 @@ use ITRocks\Framework\PHP\Dependency;
 use ITRocks\Framework\Reflection\Annotation\Property\Foreign_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Template\Representative;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -133,6 +134,11 @@ abstract class Getter
 						}
 						if ($link_properties_names) {
 							$options[] = Dao::key($link_properties_names);
+						}
+						// TODO Heavy patch, but client consultation crashes into CRM without this
+						if ($class_name === 'Neopolia\Factures\Built\Sales\Client\Address\Contact') {
+							$class = new Reflection_Class($class_name);
+							$class->setAnnotation('representative', new Representative('name', $class));
 						}
 						$stored = $dao->search($search_element, null, $options);
 					}
