@@ -9,6 +9,7 @@ use ITRocks\Framework\Mapper\Getter;
 use ITRocks\Framework\Property\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Feature_Class;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\String_Class;
 use ITRocks\Framework\Traits\Has_Name;
 use ReflectionException;
@@ -58,9 +59,10 @@ abstract class Model
 	 */
 	public function __toString() : string
 	{
-		return trim(
-			($this->document ? Loc::tr($this->document->name) : $this->class_name) . SP . $this->name
-		);
+		$document_name = $this->document
+			? Loc::tr($this->document->name)
+			: Names::classToDisplay($this->class_name);
+		return trim($document_name . SP . $this->name);
 	}
 
 	//--------------------------------------------------------------------------------- classNamePath
@@ -92,7 +94,7 @@ abstract class Model
 		if (!$this->name && $this->document) {
 			$this->name = $this->document->name;
 		}
-		return Loc::tr($this->name);
+		return $this->name ? Loc::tr($this->name) : '';
 	}
 
 	//-------------------------------------------------------------------------------------- getPages
@@ -123,7 +125,6 @@ abstract class Model
 		/** @noinspection PhpUnhandledExceptionInspection get_class of a valid object */
 		$property    = new Reflection_Property($this, 'pages');
 		$pages_class = $property->getType()->getElementTypeAsString();
-		/** @noinspection PhpIncompatibleReturnTypeInspection pages class type must be valid */
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
 		return Builder::create($pages_class, [$position]);
 	}
