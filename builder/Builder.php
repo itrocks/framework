@@ -189,16 +189,16 @@ class Builder implements Activable, Serializable
 					$destination_class->getLinkProperty()->setValue($clone, $object);
 				}
 			}
-			// identify destination object = source object, or disconnect destination object
-			if ($same_identifier && Dao::getObjectIdentifier($object)) {
-				Dao::replace($clone, $object, false);
-			}
-			else {
-				Dao::disconnect($clone);
-			}
 		}
 		else {
 			$clone = clone $object;
+		}
+		// identify destination object = source object, or disconnect destination object
+		if ($same_identifier && Dao::getObjectIdentifier($object)) {
+			Dao::replace($clone, $object, false);
+		}
+		else {
+			Dao::disconnect($clone);
 		}
 		// copy added properties values to the cloned object
 		if ($properties_values) {
