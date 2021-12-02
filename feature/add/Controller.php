@@ -82,13 +82,15 @@ class Controller extends Edit\Controller
 	 * @param $object     object
 	 * @param $properties Reflection_Property[]
 	 */
-	protected function initializeSubObjects($object, array $properties)
+	protected function initializeSubObjects(object $object, array $properties)
 	{
 		foreach ($properties as $property) {
+			/** @noinspection PhpUnhandledExceptionInspection $property->getValue($object) */
 			if (
 				$property->getAnnotation('component')->value
 				&& Mandatory_Annotation::of($property)->value
 				&& ($type = $property->getType())->isSingleClass()
+				&& !$property->getValue($object)
 			) {
 				/** @noinspection PhpUnhandledExceptionInspection @var */
 				$property->setValue($object, Builder::create($type->getElementTypeAsString()));
