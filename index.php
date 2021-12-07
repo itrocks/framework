@@ -45,7 +45,6 @@ Paths::register();
 include_once __DIR__ . '/aop/include_filter/Include_Filter.php';
 Include_Filter::register();
 // enable autoloader
-/** @noinspection PhpIncludeInspection more static than dynamic */
 /** @noinspection PhpUnhandledExceptionInspection valid file */
 include_once Include_Filter::file(__DIR__ . '/Autoloader.php');
 (new Autoloader)->register();
