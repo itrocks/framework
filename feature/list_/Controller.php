@@ -861,6 +861,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			return [];
 		}
 		$foot = $this->readDataSelect($class_name, $select, $search, $options);
+		if (!$foot->elements || !reset($foot->elements)->values) {
+			return [];
+		}
 		foreach (reset($foot->elements)->values as $property_path => $value) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$foot_property_values[$property_path]
