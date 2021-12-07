@@ -59,18 +59,22 @@ $(document).ready(function()
 		const quill = new Quill($quill.get(0), options)
 		const table = quill.getModule('table')
 
-		quill.on('text-change', () => {
-			$this.data('quill-text-change', true);
+		//------------------------------------------------------------------------- / quill text-change
+		quill.on('text-change', () =>
+		{
+			$this.data('quill-text-change', true)
 			$this.text($quill.find('.ql-editor').html())
-			$this.removeData('quill-text-change');
+			$this.removeData('quill-text-change')
 		})
 
-		$this.change(function() {
-			const $this = $(this);
+		//------------------------------------------------------------------- / textarea.quill-* change
+		$this.change(function()
+		{
+			const $this = $(this)
 			if ($this.data('quill-text-change')) {
-				return;
+				return
 			}
-			quill.root.innerHTML = $(this).text();
+			quill.root.innerHTML = $(this).text()
 		})
 
 		if ($this.text().startsWith('{')) {
