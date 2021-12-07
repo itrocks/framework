@@ -36,6 +36,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
+use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -100,6 +101,12 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @var \Exception[]
 	 */
 	protected $errors = [];
+
+	//------------------------------------------------------------------------- $foot_property_values
+	/**
+	 * @var Reflection_Property_Value[]
+	 */
+	protected $foot_property_values = [];
 
 	//------------------------------------------------------------------------------ $load_more_lines
 	/**
@@ -623,6 +630,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				'displayed_lines_count'         => $displayed_lines_count,
 				'displayed_lines_count_gap'     => $this->displayed_lines_count_gap,
 				'errors_summary'                => $this->errors,
+				'foot_property_values'          => $this->foot_property_values,
 				'less_twenty'                   => $less_twenty,
 				'load_time'                     => $load_time,
 				'lock_columns'                  => $lock_columns,
@@ -792,6 +800,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$options[] = $group_by;
 			$this->groupConcat($properties_path, $group_by);
 		}
+		$this->foot_property_values = $this->readFootPropertyValues(
+			$class_name, $properties_path, $search, $options
+		);
 		$data = $this->readDataSelectSearch($class_name, $properties_path, $search, $options);
 		if (isset($limit) && isset($count)) {
 			if (!$this->load_more_lines && ($data->length() < $limit->count) && ($limit->from > 1)) {
@@ -820,6 +831,42 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		}
 
 		return $data;
+	}
+
+	//------------------------------------------------------------------------ readFootPropertyValues
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $class_name      string
+	 * @param $properties_path string[]
+	 * @param $search          array search-compatible search array
+	 * @param $options         Option[]
+	 * @return Reflection_Property_Value[]
+	 */
+	protected function readFootPropertyValues(
+		string $class_name, array $properties_path, array $search, array $options
+	) : array
+	{
+		$foot_property_values = [];
+		$select               = [];
+		foreach ($properties_path as $property_path) {
+			/** @noinspection PhpUnhandledExceptionInspection must be valid */
+			$property_value  = new Reflection_Property_Value($class_name, $property_path, null, null);
+			$list_annotation = Annotation\Property\List_Annotation::of($property_value);
+			if ($list_annotation->has(Annotation\Property\List_Annotation::SUM)) {
+				$select[$property_path] = Func::sum();
+			}
+			$foot_property_values[$property_path] = $property_value;
+		}
+		if (!$select) {
+			return [];
+		}
+		$foot = $this->readDataSelect($class_name, $select, $search, $options);
+		foreach (reset($foot->elements)->values as $property_path => $value) {
+			/** @noinspection PhpUnhandledExceptionInspection must be valid */
+			$foot_property_values[$property_path]
+				= new Reflection_Property_Value($class_name, $property_path, floatval($value), true);
+		}
+		return $foot_property_values;
 	}
 
 	//-------------------------------------------------------------------------------- readDataSelect
@@ -956,15 +1003,15 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 				. Loc::tr('please enter more acute search criteria') . DOT;
 		}
 		else {
-		$handled = new Handled_Error(
+			$handled = new Handled_Error(
 			$exception->getCode(),
 			$exception->getMessage(),
 			$exception->getFile(),
 			$exception->getLine()
-		);
-		$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
-		$handler->displayError($handled);
-		$handler->logError($handled);
+			);
+			$handler = new Report_Call_Stack_Error_Handler(new Call_Stack($exception));
+			$handler->displayError($handled);
+			$handler->logError($handled);
 			$message = Loc::tr('Something wrong happened') . '. ' . Loc::tr('nothing serious') . ' : '
 				. $exception->getMessage();
 		}

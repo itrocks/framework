@@ -1,0 +1,23 @@
+@import 'colors.scss';
+@import 'sizes.scss';
+
+article.list > form > table > tfoot {
+	background: #efefef;
+	border-top: 1px solid #ccc;
+
+	th {
+
+		&.fix:first-child {
+			min-width: 32px !important;
+			text-align: center;
+		}
+
+		&.hover {
+			background-color: #f5e6d1 !important;
+		}
+
+		> span {
+			padding: 0 .75em 0 .5em;
+		}
+	}
+}
