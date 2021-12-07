@@ -48,3 +48,8 @@
     background-color: #23241f; }
     .ql-toolbar .ql-code-block > svg line, .ql-toolbar .ql-code-block > svg polyline {
       stroke: #f0f0f0; }
+
+li.multiline.string > ol {
+  padding-left: 3em; }
+  li.multiline.string > ol > li[data-list="bullet"] {
+    list-style: disc; }

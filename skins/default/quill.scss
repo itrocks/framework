@@ -87,3 +87,11 @@
 		}
 	}
 }
+
+li.multiline.string > ol {
+	padding-left: 3em;
+
+	> li[data-list="bullet"] {
+		list-style: disc;
+	}
+}
