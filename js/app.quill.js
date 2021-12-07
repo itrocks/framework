@@ -4,6 +4,13 @@ $(document).ready(function()
 
 	//-------------------------------------------------------------------------------------- toolbars
 	const toolbars = {
+		'printable': [
+			[ 'bold', 'italic', 'underline' ],
+			[{ color: [] }, { background: [] }],
+			[ 'link' ],
+			[{ header: [false, 1, 2, 3] }],
+			[{ list: 'bullet' }, { list: 'ordered' }]
+		],
 		'simple': [
 			[ 'bold', 'italic', 'underline' ],
 			[{ color: [] }, { background: [] }],
