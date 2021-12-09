@@ -28,6 +28,12 @@ class Type
 	//----------------------------------------------------------------------------------------- FLOAT
 	const FLOAT = 'float';
 
+	//--------------------------------------------------------------------------------- FLOAT_EPSILON
+	/**
+	 * Used by floatEqual() to compare two float numbers
+	 */
+	const FLOAT_EPSILON = .000000001;
+
 	//--------------------------------------------------------------------------------------- INTEGER
 	const INTEGER = 'integer';
 
@@ -253,6 +259,17 @@ class Type
 	public function canBeNull() : bool
 	{
 		return $this->can_be_null;
+	}
+
+	//------------------------------------------------------------------------------------ floatEqual
+	/**
+	 * @param $float1 float
+	 * @param $float2 float
+	 * @return boolean
+	 */
+	public static function floatEqual(float $float1, float $float2) : bool
+	{
+		return abs($float1 - $float2) < static::FLOAT_EPSILON;
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
