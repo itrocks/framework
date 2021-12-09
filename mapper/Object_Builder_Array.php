@@ -548,7 +548,7 @@ class Object_Builder_Array
 		// the property value is set only for official properties, if not default and not empty
 		if (($value !== '') || !$type->isClass()) {
 			if (
-				!isset($object->$property_name) || ($value != $object->$property_name) || $build->fast_add
+				!isset($object->$property_name) || ($value !== $object->$property_name) || $build->fast_add
 			) {
 				$object->$property_name = $value;
 			}
