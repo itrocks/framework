@@ -2,6 +2,8 @@
 namespace ITRocks\Framework\Traits;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Names;
 
 /**
  * For class that want a customizable default object
@@ -13,6 +15,7 @@ use ITRocks\Framework\Dao;
  * TODO move @user_default from property to class annotation
  *
  * @after_write onlyOneDefault
+ * @validate doNotRemoveDefault
  */
 trait Has_Default
 {
@@ -23,6 +26,29 @@ trait Has_Default
 	 */
 	public $default = false;
 
+	//---------------------------------------------------------------------------- doNotRemoveDefault
+	/**
+	 * @return boolean|string
+	 */
+	public function doNotRemoveDefault() : bool|string
+	{
+		if ($this->default || !Dao::getObjectIdentifier($this)) {
+			return true;
+		}
+		$before = Dao::read($this);
+		if (!$before->default) {
+			return true;
+		}
+		foreach (Dao::search(['default' => true], get_class($this)) as $object) {
+			if (!Dao::is($object, $this)) {
+				return true;
+			}
+		}
+		$name = Loc::tr(Names::classToDisplay(get_class($this)));
+		return Loc::tr('To change the default :name', Loc::replace(['name' => $name])) . ', '
+			. Loc::tr('please set another one as default');
+	}
+	
 	//------------------------------------------------------------------------------------ getDefault
 	/**
 	 * @return static|null
