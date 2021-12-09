@@ -9,13 +9,13 @@ article.list > form > table > tbody > tr:nth-child(odd) > th {
 article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > td {
   background: #f9f1e6; }
 article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > th {
-  box-shadow: inset 0 -1px #a8a8a8; }
+  border-bottom: 1px solid #a8a8a8; }
   article.list > form > table > tbody > tr:hover:nth-child(even):not(.selected) > th:not(:hover) {
     background: #bbb; }
 article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > td {
   background: #fcf7f1; }
 article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > th {
-  box-shadow: inset 0 -1px #b8b8b8; }
+  border-bottom: 1px solid #b8b8b8; }
   article.list > form > table > tbody > tr:hover:nth-child(odd):not(.selected) > th:not(:hover) {
     background: #ccc; }
 article.list > form > table > tbody > tr:nth-child(even):not(.selected) > .hover {
@@ -46,7 +46,7 @@ article.list > form > table > tbody > tr.more {
   font-size: 0;
   text-align: center; }
   article.list > form > table > tbody > tr.more > td {
-    box-shadow: none;
+    border: none;
     display: block;
     height: 30px; }
     article.list > form > table > tbody > tr.more > td > .loading {
