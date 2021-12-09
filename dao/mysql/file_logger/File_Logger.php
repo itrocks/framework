@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
+use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use mysqli_result;
@@ -181,7 +182,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 		$duration = strpos($duration, 'E-')
 			? 0
 			: ((substr($duration, 0, 2) == '0.') ? substr($duration, 1, 4) : substr($duration, 0, 5));
-		if (!floatval($duration)) {
+		if (Type::floatEqual($duration, .0)) {
 			$duration = '';
 		}
 		return [$now, $duration];
