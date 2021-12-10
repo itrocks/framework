@@ -263,13 +263,14 @@ class Type
 
 	//------------------------------------------------------------------------------------ floatEqual
 	/**
-	 * @param $float1 float
-	 * @param $float2 float
+	 * @param $float1 ?float
+	 * @param $float2 ?float
 	 * @return boolean
 	 */
-	public static function floatEqual(float $float1, float $float2) : bool
+	public static function floatEqual(?float $float1, ?float $float2) : bool
 	{
-		return abs($float1 - $float2) < static::FLOAT_EPSILON;
+		return (!isset($float1) && !isset($float2))
+			|| (isset($float1) && isset($float2) && (abs($float1 - $float2) < static::FLOAT_EPSILON));
 	}
 
 	//------------------------------------------------------------------------------- getDefaultValue
