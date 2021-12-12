@@ -14,7 +14,6 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Current_With_Default;
 use ReflectionClass;
 use ReflectionException;
-use Serializable;
 
 /**
  * The Builder plugin replaces 'new Class_Name' calls by 'Builder::create('Class_Name')' in order to
@@ -24,7 +23,7 @@ use Serializable;
  *
  * @todo remove dependencies
  */
-class Builder implements Activable, Serializable
+class Builder implements Activable
 {
 	use Current_With_Default { current as private dCurrent; }
 
@@ -81,6 +80,24 @@ class Builder implements Activable, Serializable
 		}
 	}
 
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array the array representation of the object or null
+	 */
+	public function __serialize() : array
+	{
+		return [$this->compositions, $this->replacements];
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		list($this->compositions, $this->replacements) = $serialized;
+	}
+
 	//-------------------------------------------------------------------------------------- activate
 	public function activate()
 	{
@@ -117,11 +134,12 @@ class Builder implements Activable, Serializable
 	 * Create a clone of the object, using a built class if needed
 	 *
 	 * @param $object            object
-	 * @param $class_name        string if set, the new object will use the matching built class
+	 * @param $class_name        class-string<T> the new object will use the matching built class
 	 *                           this class name must inherit from the object's class
 	 * @param $properties_values array some properties values for the cloned object
 	 * @param $same_identifier   boolean
-	 * @return object
+	 * @return T
+	 * @template T
 	 * @throws ReflectionException
 	 */
 	public static function createClone(
@@ -501,15 +519,6 @@ class Builder implements Activable, Serializable
 			: $result;
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string the string representation of the object or null
-	 */
-	public function serialize()
-	{
-		return serialize([$this->compositions, $this->replacements]);
-	}
-
 	//-------------------------------------------------------------------------------- setReplacement
 	/**
 	 * Sets a new replacement
@@ -550,15 +559,6 @@ class Builder implements Activable, Serializable
 		}
 		$found = array_search($class_name, $this->replacements);
 		return ($found === false) ? $class_name : $this->sourceClassName($found);
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		list($this->compositions, $this->replacements) = unserialize($serialized);
 	}
 
 }

@@ -2004,7 +2004,7 @@ class Template
 		if (is_array($value)) {
 			$value = $value ? join(', ', $value) : '';
 		}
-		if ($auto_remove && !strlen($value)) {
+		if ($auto_remove && (is_null($value) || !strlen($value))) {
 			$this->parseVarRemove($content, $i, $j);
 		}
 		if ($html_entities && ($var_name[0] !== SL) && !($value instanceof No_Escape)) {

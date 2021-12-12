@@ -14,13 +14,11 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Register;
 use ITRocks\Framework\Plugin\Registerable;
 use ITRocks\Framework\Tools\Namespaces;
-use Serializable;
 
 /**
  * Automatic routing class
  */
-class Router implements
-	Class_File_Name_Getter, Configurable, IAutoloader, ICompiler, Registerable, Serializable
+class Router implements Class_File_Name_Getter, Configurable, IAutoloader, ICompiler, Registerable
 {
 
 	//-------------------------------------------------------------------------------------- $changes
@@ -98,12 +96,30 @@ class Router implements
 		$script_name = substr($_SERVER['SCRIPT_NAME'], strrpos($_SERVER['SCRIPT_NAME'], SL) + 1, -4);
 		$this->routes_file = getcwd() . SL . $script_name . SL . $script_name . '/cache/routes.php';
 		if (file_exists($this->routes_file)) {
-			/** @noinspection PhpIncludeInspection */
 			include $this->routes_file;
 		}
 
 		Namespaces::$router = $this;
 		//spl_autoload_register([$this, 'autoload']);
+	}
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize()
+	{
+		return [];
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array
+	 * @see Router::__construct()
+	 */
+	public function __unserialize(array $serialized)
+	{
+		// routes file is read into __construct()
 	}
 
 	//---------------------------------------------------------------------------------- addClassPath
@@ -451,15 +467,6 @@ class Router implements
 		*/
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return '';
-	}
-
 	//--------------------------------------------------------------------- setPossibleControllerCall
 	/**
 	 * @param $uri         Uri
@@ -526,16 +533,6 @@ class Router implements
 			$this->view_calls[$class_name][$features] = [$view, $view_method_name];
 			$this->changes = true;
 		}
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string
-	 * @see Router::__construct()
-	 */
-	public function unserialize($serialized)
-	{
-		// routes file is read into __construct()
 	}
 
 }

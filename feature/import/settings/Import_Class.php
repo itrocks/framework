@@ -6,12 +6,11 @@ use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Traits\Has_Name;
-use Serializable;
 
 /**
  * Import class
  */
-class Import_Class implements Serializable
+class Import_Class
 {
 	use Has_Name;
 
@@ -95,6 +94,27 @@ class Import_Class implements Serializable
 		}
 	}
 
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize() : array
+	{
+		$serialize = get_object_vars($this);
+		if (isset($serialize['constants']) && is_array($serialize['constants'])) {
+			foreach ($serialize['constants'] as $key => $value) {
+				/** @var $value Reflection_Property_Value */
+				$serialize['constants'][$key] = [
+					'class'        => $value->class,
+					'name'         => $value->name,
+					'value'        => $value->value(),
+					'final_object' => true
+				];
+			}
+		}
+		return $serialize;
+	}
+
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
@@ -102,6 +122,31 @@ class Import_Class implements Serializable
 	public function __toString()
 	{
 		return $this->getPropertyPathValue();
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		foreach ($serialized as $key => $value) {
+			if ($key === 'constants') {
+				foreach ($value as $constant_key => $constant_value) {
+					/** @noinspection PhpUnhandledExceptionInspection constants must be valid */
+					$this->constants[$constant_key] = new Reflection_Property_Value(
+						$constant_value['class'],
+						$constant_value['name'],
+						$constant_value['value'],
+						$constant_value['final_object']
+					);
+				}
+			}
+			else {
+				$this->$key = $value;
+			}
+		}
 	}
 
 	//----------------------------------------------------------------------------------- addConstant
@@ -234,52 +279,6 @@ class Import_Class implements Serializable
 	{
 		if (isset($this->constants[$property_name])) {
 			unset($this->constants[$property_name]);
-		}
-	}
-
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		$serialize = get_object_vars($this);
-		if (isset($serialize['constants']) && is_array($serialize['constants'])) {
-			foreach ($serialize['constants'] as $key => $value) {
-				/** @var $value Reflection_Property_Value */
-				$serialize['constants'][$key] = [
-					'class'        => $value->class,
-					'name'         => $value->name,
-					'value'        => $value->value(),
-					'final_object' => true
-				];
-			}
-		}
-		return serialize($serialize);
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		foreach (unserialize($serialized) as $key => $value) {
-			if ($key === 'constants') {
-				foreach ($value as $constant_key => $constant_value) {
-					/** @noinspection PhpUnhandledExceptionInspection constants must be valid */
-					$this->constants[$constant_key] = new Reflection_Property_Value(
-						$constant_value['class'],
-						$constant_value['name'],
-						$constant_value['value'],
-						$constant_value['final_object']
-					);
-				}
-			}
-			else {
-				$this->$key = $value;
-			}
 		}
 	}
 

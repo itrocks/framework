@@ -8,12 +8,11 @@ use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Sql\Builder;
 use ITRocks\Framework\Tools\Contextual_Mysqli;
 use mysqli_result;
-use Serializable;
 
 /**
  * A logger for mysql queries : logs queries in files, and give information about their results
  */
-class File_Logger extends Framework\Logger\File_Logger implements Registerable, Serializable
+class File_Logger extends Framework\Logger\File_Logger implements Registerable
 {
 
 	//-------------------------------------------------------------------------------- FILE_EXTENSION
@@ -64,6 +63,24 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 			$this->writeBuffer('Flush buffer' . LF);
 		}
 		parent::__destruct();
+	}
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize() : array
+	{
+		return [$this->path];
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		$this->path = reset($serialized);
 	}
 
 	//------------------------------------------------------------------------------------ afterQuery
@@ -152,15 +169,6 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'beforeQueryError']);
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->path;
-	}
-
 	//---------------------------------------------------------------------------------- timeDuration
 	/**
 	 * Get actual time and duration since the last call of beforeQuery()
@@ -186,15 +194,6 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable, 
 			$duration = '';
 		}
 		return [$now, $duration];
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		$this->path = $serialized;
 	}
 
 	//----------------------------------------------------------------------------------- writeBuffer

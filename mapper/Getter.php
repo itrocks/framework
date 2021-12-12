@@ -17,7 +17,6 @@ use ITRocks\Framework\Sql\Builder\Link_Property_Name;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Date_Time_Error;
 use ITRocks\Framework\Tools\Stringable;
-use Serializable;
 
 /**
  * Getter default methods are common getters for Dao linked objects
@@ -381,7 +380,7 @@ abstract class Getter
 							if (is_a($property_class_name, Stringable::class, true)) {
 								$stored = call_user_func([$property_class_name, 'fromString'], $stored);
 							}
-							elseif (is_a($property_class_name, Serializable::class, true)) {
+							elseif (method_exists($property_class_name, '__unserialize')) {
 								$stored = unserialize($stored);
 							}
 							break;

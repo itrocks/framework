@@ -26,7 +26,7 @@ class Store_Name_Annotation extends Annotation
 	 */
 	public function __construct($value, Reflection_Class $class)
 	{
-		parent::__construct(strtolower($value));
+		parent::__construct(strtolower(strval($value)));
 		if (!$this->value) {
 			$this->value = strtolower(Namespaces::shortClassName(Set_Annotation::of($class)->value));
 			if ($class->isAbstract()) {

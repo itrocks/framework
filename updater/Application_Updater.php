@@ -9,7 +9,6 @@ use ITRocks\Framework\Plugin\Configurable;
 use ITRocks\Framework\Plugin\Has_Get;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Asynchronous;
-use Serializable;
 
 /**
  * The application updater plugin detects if the application needs to be updated, and launch updates
@@ -21,7 +20,7 @@ use Serializable;
  *
  * TODO LOW see why this object is created several times during updates : should be only one of it
  */
-class Application_Updater implements Configurable, Serializable
+class Application_Updater implements Configurable
 {
 	use Has_Get;
 
@@ -119,6 +118,33 @@ class Application_Updater implements Configurable, Serializable
 			}
 			touch(self::UPDATE_FILE);
 		}
+	}
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array the serialized representation of the object : only class names are kept
+	 */
+	public function __serialize() : array
+	{
+		$updatables = [];
+		foreach (self::$updatables as $updatable) {
+			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
+		}
+		$configuration = [
+			self::DELAY_BETWEEN_TWO_LOCK_TRIES => self::$delay_between_two_lock_tries,
+			self::NB_MAX_LOCK_RETRIES          => self::$nb_max_lock_retries,
+			self::UPDATABLES                   => $updatables
+		];
+		return $configuration;
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array the string representation of the object
+	 */
+	public function __unserialize(array $serialized)
+	{
+		$this->setConfiguration($serialized);
 	}
 
 	//---------------------------------------------------------------------------------- addUpdatable
@@ -329,24 +355,6 @@ class Application_Updater implements Configurable, Serializable
 		return $this;
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string the string representation of the object : only class names are kept
-	 */
-	public function serialize()
-	{
-		$updatables = [];
-		foreach (self::$updatables as $updatable) {
-			$updatables[] = is_object($updatable) ? get_class($updatable) : $updatable;
-		}
-		$configuration = [
-			self::DELAY_BETWEEN_TWO_LOCK_TRIES => self::$delay_between_two_lock_tries,
-			self::NB_MAX_LOCK_RETRIES          => self::$nb_max_lock_retries,
-			self::UPDATABLES                   => $updatables
-		];
-		return serialize($configuration);
-	}
-
 	//------------------------------------------------------------------------------ setConfiguration
 	/**
 	 * @param $configuration array
@@ -383,15 +391,6 @@ class Application_Updater implements Configurable, Serializable
 		touch($updated, $update_time);
 		/** @noinspection PhpUsageOfSilenceOperatorInspection may have been created by another one */
 		@file_put_contents(Application::getCacheDir() . SL . '.htaccess', 'Deny From All');
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string the string representation of the object
-	 */
-	public function unserialize($serialized)
-	{
-		$this->setConfiguration(unserialize($serialized));
 	}
 
 	//---------------------------------------------------------------------------------------- update

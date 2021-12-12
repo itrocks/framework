@@ -2,12 +2,11 @@
 namespace ITRocks\Framework;
 
 use ITRocks\Framework\Plugin\Manager;
-use Serializable;
 
 /**
  * A class to manage variables and objects that are kept for the session time
  */
-class Session implements Serializable
+class Session
 {
 
 	//----------------------------------------------------- PLUGINS Serialize / unserialize constants
@@ -78,6 +77,46 @@ class Session implements Serializable
 	 * @var string
 	 */
 	public $temporary_directory;
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize() : array
+	{
+		$data = [
+			self::CONFIGURATION_FILE_NAME      => $this->configuration_file_name,
+			self::CURRENT                      => [],
+			self::PLUGINS                      => $this->plugins,
+			Configuration::DOMAIN              => $this->domain,
+			Configuration::ENVIRONMENT         => $this->environment,
+			Configuration::TEMPORARY_DIRECTORY => $this->temporary_directory
+		];
+		if (isset($this->current)) {
+			foreach ($this->current as $class_name => $object) {
+				if (is_object($object)) {
+					$object = [$class_name, Dao::getObjectIdentifier($object) ?: serialize($object)];
+				}
+				$data[self::CURRENT][$class_name] = $object;
+			}
+		}
+		return $data;
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		$data = $serialized;
+		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
+		$this->current                 = $data[self::CURRENT];
+		$this->domain                  = $data[Configuration::DOMAIN] ?? null;
+		$this->environment             = $data[Configuration::ENVIRONMENT];
+		$this->plugins                 = $data[self::PLUGINS];
+		$this->temporary_directory     = $data[Configuration::TEMPORARY_DIRECTORY];
+	}
 
 	//-------------------------------------------------------------------------------- cloneSessionId
 	/**
@@ -253,31 +292,6 @@ class Session implements Serializable
 		}
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		$data = [
-			self::CONFIGURATION_FILE_NAME      => $this->configuration_file_name,
-			self::CURRENT                      => [],
-			self::PLUGINS                      => $this->plugins,
-			Configuration::DOMAIN              => $this->domain,
-			Configuration::ENVIRONMENT         => $this->environment,
-			Configuration::TEMPORARY_DIRECTORY => $this->temporary_directory
-		];
-		if (isset($this->current)) {
-			foreach ($this->current as $class_name => $object) {
-				if (is_object($object)) {
-					$object = [$class_name, Dao::getObjectIdentifier($object) ?: serialize($object)];
-				}
-				$data[self::CURRENT][$class_name] = $object;
-			}
-		}
-		return serialize($data);
-	}
-
 	//------------------------------------------------------------------------------------------- set
 	/**
 	 * Set a session's object
@@ -326,21 +340,6 @@ class Session implements Serializable
 		}
 		session_destroy();
 		$this->stopped = true;
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		$data = unserialize($serialized);
-		$this->configuration_file_name = $data[self::CONFIGURATION_FILE_NAME];
-		$this->current                 = $data[self::CURRENT];
-		$this->domain                  = $data[Configuration::DOMAIN] ?? null;
-		$this->environment             = $data[Configuration::ENVIRONMENT];
-		$this->plugins                 = $data[self::PLUGINS];
-		$this->temporary_directory     = $data[Configuration::TEMPORARY_DIRECTORY];
 	}
 
 }

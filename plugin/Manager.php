@@ -5,12 +5,11 @@ use ITRocks\Framework\AOP\Weaver;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Reflection\Reflection_Class;
-use Serializable;
 
 /**
  * Plugins manager
  */
-class Manager implements IManager, Serializable
+class Manager implements IManager
 {
 
 	//------------------------------------------------------------------------------------ $activated
@@ -34,6 +33,19 @@ class Manager implements IManager, Serializable
 	 * @var array
 	 */
 	private $plugins_tree = [];
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		$this->plugins      = [];
+		$this->plugins_tree = $serialized;
+		foreach ($this->plugins_tree as $plugins) {
+			$this->plugins = array_merge($this->plugins, $plugins);
+		}
+	}
 
 	//-------------------------------------------------------------------------------------- activate
 	/**
@@ -145,7 +157,7 @@ class Manager implements IManager, Serializable
 			}
 			// serialized object or configuration or configuration constant
 			elseif (is_string($serialized) || is_numeric($serialized)) {
-				if ((is_a($class_name, Serializable::class, true))) {
+				if ((method_exists($class_name, '__unserialize'))) {
 					$plugin = unserialize($serialized);
 				}
 				else {
@@ -265,18 +277,18 @@ class Manager implements IManager, Serializable
 		return $this->get($class_name, $level, $register, $register);
 	}
 
-	//------------------------------------------------------------------------------------- serialize
+	//----------------------------------------------------------------------------------- __serialize
 	/**
-	 * @return string
+	 * @return array
 	 */
-	public function serialize()
+	public function __serialize() : array
 	{
 		$data = [];
 		foreach ($this->plugins_tree as $level => $plugins) {
 			if ($level != 'top_core') {
 				foreach ($plugins as $class_name => $object) {
 					if (is_object($object)) {
-						if ($object instanceof Serializable) {
+						if (method_exists($object, '__serialize')) {
 							$data[$level][$class_name] = serialize($object);
 						}
 						elseif (isset($object->plugin_configuration)) {
@@ -320,19 +332,6 @@ class Manager implements IManager, Serializable
 			unset($this->plugins[$class_name]);
 		}
 		return $old_plugin;
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		$this->plugins      = [];
-		$this->plugins_tree = unserialize($serialized);
-		foreach ($this->plugins_tree as $plugins) {
-			$this->plugins = array_merge($this->plugins, $plugins);
-		}
 	}
 
 }

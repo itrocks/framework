@@ -22,7 +22,6 @@ use ITRocks\Framework\Tools\Files;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Updater\Application_Updater;
 use ITRocks\Framework\Updater\Updatable;
-use Serializable;
 
 /**
  * Php compiler : the php scripts compilers manager
@@ -40,7 +39,7 @@ use Serializable;
  * To reverse source file we just have to check existence of both case file.
  */
 class Compiler extends Cache
-	implements Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
+	implements Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Updatable
 {
 
 	//-------------------------------------------------------------------------------- CACHE_DIR_NAME
@@ -158,6 +157,42 @@ class Compiler extends Cache
 			}
 		}
 		parent::manageCacheDirReset();
+	}
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize() : array
+	{
+		$serialized_compilers = [];
+		foreach ($this->compilers as $wave_number => $compilers) {
+			foreach ($compilers as $compiler) {
+				$serialized_compilers[$wave_number][] = is_object($compiler)
+					? get_class($compiler)
+					: $compiler;
+			}
+		}
+		return $serialized_compilers;
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $serialized array
+	 */
+	public function __unserialize(array $serialized)
+	{
+		$this->compilers = [];
+		foreach ($serialized as $wave_number => $compilers) {
+			foreach ($compilers as $class_name) {
+				/** @noinspection PhpUnhandledExceptionInspection valid compiler class name */
+				$this->compilers[$wave_number][] = Session::current()->plugins->has($class_name)
+					? Session::current()->plugins->get($class_name)
+					: Builder::create($class_name);
+			}
+		}
+		$this->text_output = new Text_Output(!isset($_POST['verbose']));
 	}
 
 	//----------------------------------------------------------------------------------- addCompiler
@@ -572,21 +607,6 @@ class Compiler extends Cache
 		}
 	}
 
-	//------------------------------------------------------------------------------------- serialize
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		$serialized_compilers = [];
-		foreach ($this->compilers as $wave_number => $compilers) {
-			foreach ($compilers as $compiler) {
-				$serialized_compilers[$wave_number][] = is_object($compiler) ? get_class($compiler) : $compiler;
-			}
-		}
-		return serialize($serialized_compilers);
-	}
-
 	//----------------------------------------------------------------------------- setMainController
 	/**
 	 * @param $main_controller Main
@@ -666,25 +686,6 @@ class Compiler extends Cache
 	public static function sourceFileToCacheFileName($file_name)
 	{
 		return Include_Filter::cacheFile($file_name);
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $serialized string
-	 */
-	public function unserialize($serialized)
-	{
-		$this->compilers = [];
-		foreach (unserialize($serialized) as $wave_number => $compilers) {
-			foreach ($compilers as $class_name) {
-				/** @noinspection PhpUnhandledExceptionInspection valid compiler class name */
-				$this->compilers[$wave_number][] = Session::current()->plugins->has($class_name)
-					? Session::current()->plugins->get($class_name)
-					: Builder::create($class_name);
-			}
-		}
-		$this->text_output = new Text_Output(!isset($_POST['verbose']));
 	}
 
 	//---------------------------------------------------------------------------------------- update

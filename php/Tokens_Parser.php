@@ -15,7 +15,7 @@ trait Tokens_Parser
 	/**
 	 * @var integer[]
 	 */
-	public static $class_name_tokens = [312, 314, T_NS_SEPARATOR, T_STRING];
+	public static $class_name_tokens = [265, 312, 314, T_NS_SEPARATOR, T_STRING];
 
 	//------------------------------------------------------------------------------------ $namespace
 	/**

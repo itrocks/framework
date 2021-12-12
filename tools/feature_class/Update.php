@@ -77,11 +77,11 @@ class Update implements Registerable, Updatable
 			if ($feature === 'true') {
 				$feature = true;
 			}
-			if (is_bool($feature) || ctype_lower(substr($feature, 0, 1))) {
+			if (is_bool($feature) || (!is_null($feature) && ctype_lower(substr($feature, 0, 1)))) {
 				break;
 			}
 		}
-		if (($feature === true) || ctype_lower(substr($feature, 0, 1))) {
+		if (($feature === true) || (!is_null($feature) && ctype_lower(substr($feature, 0, 1)))) {
 			$class_name = Builder::current()->sourceClassName($class_name);
 			$name       = Display_Annotation::of($class)->value;
 			// update name

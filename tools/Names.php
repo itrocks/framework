@@ -404,12 +404,12 @@ abstract class Names
 			return self::$sets[$class_name];
 		}
 		// if $class_name is explicitely declared as 'singular' : return it
-		if (Dependency\Tools::hasSet($class_name)) {
+		if (Dependency::hasSet($class_name)) {
 			self::$sets[$class_name] = $class_name;
 			return $class_name;
 		}
 		// explicitely declared as 'plural of ...' : return the matching class name
-		if ($dependency_class_name = Dependency\Tools::dependencyToClass($class_name)) {
+		if ($dependency_class_name = Dependency::dependencyToClass($class_name)) {
 			self::$sets[$class_name] = $dependency_class_name;
 			return $dependency_class_name;
 		}

@@ -10,7 +10,7 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
  * Sets the storage format of the property into the data set
  * - string to store any object as a string.
  * > Uses __toString() and fromString() if Stringable
- * > Stores serialized object if not Stringable (serialize() and unserialize())
+ * > Stores serialized object if not Stringable (__serialize() and __unserialize())
  * - hex to use hexadecimal storage functions : same as string, but tells the Dao to store using
  * hexadecimal access.
  *
