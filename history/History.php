@@ -12,7 +12,7 @@ use ITRocks\Framework\Tools\Date_Time;
  *
  * @representative object, date, property_name, old_value, new_value
  * @set            History
- * @sort           date
+ * @sort           date, user
  */
 abstract class History
 {
