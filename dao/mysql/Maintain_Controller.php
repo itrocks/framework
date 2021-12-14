@@ -141,8 +141,6 @@ class Maintain_Controller implements Feature_Controller
 		$this->create_empty_tables = $create_empty_tables && ($create_empty_tables !== 'implicit');
 		$this->verbose             = $verbose;
 
-		$classes = $this->getClasses();
-
 		$maintainer                      = Maintainer::get();
 		$maintainer->create_empty_tables = $create_empty_tables;
 		$maintainer->notice              = $verbose ? Maintainer::VERBOSE : Maintainer::OUTPUT;
@@ -154,6 +152,7 @@ class Maintain_Controller implements Feature_Controller
 			$maintainer->removeEmptyTables($simulation);
 		}
 
+		$classes = $this->getClasses();
 		$this->updateAllTables($classes, $simulation);
 
 		if ($simulation) {
