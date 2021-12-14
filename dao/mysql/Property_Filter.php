@@ -40,7 +40,13 @@ trait Property_Filter
 				)
 			)
 			&& !$property->isStatic()
-			&& !$property->getAnnotation('component')->value
+			&& (
+				!$property->getAnnotation('component')->value
+				|| in_array(
+					$property->getAnnotation(Store_Annotation::ANNOTATION)->value,
+					[Store_Annotation::GZ, Store_Annotation::JSON, Store_Annotation::STRING]
+				)
+			)
 			&& !Store_Annotation::of($property)->isFalse();
 	}
 
