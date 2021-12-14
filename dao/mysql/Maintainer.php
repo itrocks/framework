@@ -650,6 +650,48 @@ class Maintainer implements Configurable, Registerable
 		$aop->beforeMethod([Contextual_Mysqli::class, 'queryError'], [$this, 'onMysqliQueryError']);
 	}
 
+	//----------------------------------------------------------------------------- removeEmptyTables
+	/**
+	 * Remove all empty tables than can be removed
+	 * Retry removals until no table can be removed at all (capture constraint errors)
+	 *
+	 * @param $simulation boolean
+	 */
+	public function removeEmptyTables(bool $simulation = false)
+	{
+		$dropped = 1;
+		/** @var $link Link */
+		$link   = Dao::current();
+		$mysqli = $link->getConnection();
+		while ($dropped) {
+			$dropped = 0;
+			foreach ($mysqli->getTables() as $table_name) {
+				if ($mysqli->query("SELECT COUNT(*) FROM `$table_name`")->fetch_row()[0]) {
+					continue;
+				}
+				try {
+					if (!$simulation) {
+						$mysqli->drop($table_name);
+					}
+					if ($mysqli->last_errno) {
+						echo "! Cannot remove empty table $table_name : $mysqli->last_error" . BRLF;
+					}
+					else {
+						$dropped ++;
+						if ($this->notice) {
+							echo "- Removed table $table_name" . BRLF;
+						}
+
+					}
+				}
+				/** @noinspection PhpRedundantCatchClauseInspection throw was ignored, but exists */
+				catch (Mysql_Error_Exception) {
+					echo "! Cannot remove empty table $table_name : $mysqli->last_error" . BRLF;
+				}
+			}
+		}
+	}
+
 	//------------------------------------------------------------------------------- simulationStart
 	/**
 	 * Starts maintainer simulation

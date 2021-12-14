@@ -133,6 +133,8 @@ class Maintain_Controller implements Feature_Controller
 
 		$create_empty_tables = $parameters->getRawParameter('create_empty_tables')
 			?: isset($parameters->getRawParameters()['create_empty_tables']);
+		$remove_empty_tables = $parameters->getRawParameter('remove_empty_tables')
+			|| isset($parameters->getRawParameters()['remove_empty_tables']);
 		$simulation = !isset($parameters->getRawParameters()['valid']);
 		$verbose    = isset($parameters->getRawParameters()['verbose']);
 
@@ -147,6 +149,9 @@ class Maintain_Controller implements Feature_Controller
 
 		if ($simulation) {
 			$maintainer->simulationStart();
+		}
+		elseif ($remove_empty_tables) {
+			$maintainer->removeEmptyTables($simulation);
 		}
 
 		$this->updateAllTables($classes, $simulation);
@@ -166,8 +171,8 @@ class Maintain_Controller implements Feature_Controller
 	protected function updateAllTables(array $classes, bool $simulation)
 	{
 		foreach ($classes as $class) {
-			$class_name = $class->name;
-			$maintainer = Maintainer::get();
+			$class_name          = $class->name;
+			$maintainer          = Maintainer::get();
 			$maintainer->verbose = $this->verbose;
 			$maintainer->updateTable($class_name);
 			if (count($maintainer->requests)) {
