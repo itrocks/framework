@@ -150,7 +150,7 @@ class Maintain_Controller implements Feature_Controller
 		if ($simulation) {
 			$maintainer->simulationStart();
 		}
-		elseif ($remove_empty_tables) {
+		if ($remove_empty_tables) {
 			$maintainer->removeEmptyTables($simulation);
 		}
 
