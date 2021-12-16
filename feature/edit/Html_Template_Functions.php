@@ -30,11 +30,12 @@ class Html_Template_Functions extends Functions
 	 * Return the current data as a field : editable in this case
 	 *
 	 * @param $template Template
+	 * @param $name     string|null The name of the field
 	 * @return mixed
 	 */
-	public function getField(Template $template)
+	public function getField(Template $template, string $name = null)
 	{
-		return $this->getEdit($template);
+		return $this->getEdit($template, $name);
 	}
 
 	//----------------------------------------------------------------------------- isPropertyVisible
