@@ -3,7 +3,6 @@ article.list > form {
   article.list > form > table {
     border-bottom: 1px solid #ccc;
     border-collapse: separate;
-    border-spacing: 0;
     border-top: 1px solid #ccc;
     overflow: hidden;
     white-space: nowrap; }
