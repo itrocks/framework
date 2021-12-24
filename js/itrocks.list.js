@@ -157,6 +157,7 @@ $(document).ready(function()
 						}
 					});
 					// recalculate and redraw vertical scrollbar
+					$table.scrollBar('refreshFixedColumns');
 					$table.scrollBar('draw');
 					// unlock "more lines loading"
 					$more.find('.loading').css('display', 'none');

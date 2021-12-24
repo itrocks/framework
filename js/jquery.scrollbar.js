@@ -736,6 +736,10 @@
 			scroll(this, 'vertical',   0)
 			return this
 		}
+		if (settings === 'refreshFixedColumns') {
+			initTableFixedColumns(this)
+			return this
+		}
 		if (settings === 'scroll') {
 			if (arguments[1]) scroll(this, 'horizontal', arguments[1])
 			if (arguments[2]) scroll(this, 'vertical',   arguments[1])
