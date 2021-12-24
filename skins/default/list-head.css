@@ -18,6 +18,9 @@ article.list > form > table > thead {
         left: 0;
         position: absolute;
         top: -1px; }
+    article.list > form > table > thead > tr.title > th:first-child {
+      position: relative;
+      z-index: 1; }
     article.list > form > table > thead > tr.title > th.visible.lines {
       padding: 0 .83em 0 .75em; }
       article.list > form > table > thead > tr.title > th.visible.lines > input {

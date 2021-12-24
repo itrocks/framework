@@ -35,6 +35,11 @@ article.list > form > table > thead {
 					}
 				}
 
+				&:first-child {
+					position: relative;
+					z-index: 1;
+				}
+
 				&.visible.lines {
 					padding: 0 .83em 0 .75em;
 
