@@ -421,34 +421,40 @@ class Search_Parameters_Parser
 	{
 		$search   = $this->search;
 		$to_unset = [];
-		foreach ($search as $search_property_path => &$search_entry) {
-			if ($search_entry instanceof Logical) {
-				$search_values =& $search_entry->arguments;
-			}
-			else {
-				$search_values = [$search_property_path => &$search_entry];
-			}
-			foreach ($search_values as $property_path => &$search_value) {
-				// property path can be an Expressions::MARKER or 'representative' view field name
-				try {
-					$property = new Reflection_Property($this->class->name, $property_path);
-				}
-				catch (ReflectionException) {
-					$property = null;
-				}
-				if (strlen($search_value)) {
-					$this->parseField($search_value, $property);
-					// if search has been transformed to empty string, we cancel search for this column
-					if (is_string($search_value) && !strlen($search_value)) {
-						$to_unset[] = $property_path;
-					}
-				}
-			}
-		}
+		$this->parseArray($search, $to_unset);
 		foreach ($to_unset as $property_path) {
 			unset($search[$property_path]);
 		}
 		return $search;
+	}
+
+	//------------------------------------------------------------------------------------ parseArray
+	/**
+	 * @param $search_values array An array of search values
+	 * @param $to_unset      string[] property paths for which values must be unset
+	 */
+	public function parseArray(array& $search_values, array& $to_unset)
+	{
+		foreach ($search_values as $property_path => &$search_value) {
+			if ($search_value instanceof Logical) {
+				$this->parseArray($search_value->arguments, $to_unset);
+				continue;
+			}
+			// property path can be an Expressions::MARKER or 'representative' view field name
+			try {
+				$property = new Reflection_Property($this->class->name, $property_path);
+			}
+			catch (ReflectionException) {
+				$property = null;
+			}
+			if (strlen($search_value)) {
+				$this->parseField($search_value, $property);
+				// if search has been transformed to empty string, we cancel search for this column
+				if (is_string($search_value) && !strlen($search_value)) {
+					$to_unset[] = $property_path;
+				}
+			}
+		}
 	}
 
 	//------------------------------------------------------------------------------------ parseField
