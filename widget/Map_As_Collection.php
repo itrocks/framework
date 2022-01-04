@@ -53,7 +53,7 @@ class Map_As_Collection extends Property
 				$collection = new Html_Builder_Collection(
 					$this->property, $this->value, true, $this->pre_path
 				);
-				$collection->setTemplate($this->template);
+				$collection->template = $this->template;
 			}
 			// - output
 			else {

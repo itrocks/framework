@@ -92,7 +92,7 @@ class Collection
 	/**
 	 * @var Template
 	 */
-	protected $template = null;
+	public $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -439,17 +439,6 @@ class Collection
 			}
 		}
 		return false;
-	}
-
-	//----------------------------------------------------------------------------------- setTemplate
-	/**
-	 * @param $template Template
-	 * @return static
-	 */
-	public function setTemplate(Template $template)
-	{
-		$this->template = $template;
-		return $this;
 	}
 
 }

@@ -99,6 +99,9 @@ class Html_Builder_Collection extends Collection
 	 */
 	public function build()
 	{
+		if (!isset($this->template)) {
+			$this->template = new Html_Template();
+		}
 		$table = parent::build();
 
 		if ($this->readOnly() || $this->noAdd()) {
@@ -131,6 +134,21 @@ class Html_Builder_Collection extends Collection
 		$body = parent::buildBody();
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		$add_row = Builder::create($this->class_name);
+		if (isA($add_row, Component::class)) {
+			/** @var $add_row Component */
+			$class_name = get_class($add_row);
+			/** @noinspection PhpUndefinedMethodInspection */
+			/** @see Component::getCompositeProperty */
+			/** @var $composite_property Reflection_Property */
+			$composite_property   = $class_name::getCompositeProperty();
+			$composite_class_name = $composite_property->getType()->asString();
+			foreach ($this->template->objects as $object) {
+				if (is_a($object, $composite_class_name)) {
+					$add_row->setComposite($object);
+					break;
+				}
+			}
+		}
 		if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
 			/** @var $add_row Component */
 			$property = $this->property->getParentProperty();
@@ -152,9 +170,6 @@ class Html_Builder_Collection extends Collection
 	 */
 	protected function buildCell($object, Reflection_Property $property, $property_path = null)
 	{
-		if (!isset($this->template)) {
-			$this->template = new Html_Template();
-		}
 		/** @noinspection PhpUnhandledExceptionInspection valid $object-$property couple */
 		$property_value = new Reflection_Property_Value($object, $property_path, $object, false, true);
 		$value = $property_value->value();
