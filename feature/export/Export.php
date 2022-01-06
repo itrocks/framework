@@ -8,9 +8,11 @@ use ITRocks\Framework\Dao\Option\Translate;
 use ITRocks\Framework\Feature\List_\Selection;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Integrated_Properties;
-use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Interfaces;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Files;
@@ -55,19 +57,51 @@ class Export
 
 	//--------------------------------------------------------------------------------- allProperties
 	/**
-	 * @return Reflection_Property[] The key is the property path
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return Interfaces\Reflection_Property[] The key is the property path
 	 */
 	protected function allProperties() : array
 	{
+		$already    = [];
 		$class_name = Builder::className(Names::setToClass($this->class_name));
 		$properties = [];
 		foreach ((new Integrated_Properties)->expandUsingClassName($class_name) as $property) {
-			if (
-				!$property->isStatic()
-				&& !Link_Annotation::of($property)->isCollection()
-				&& !Link_Annotation::of($property)->isMap()
-				&& !User_Annotation::of($property)->has(User_Annotation::INVISIBLE)
-			) {
+			$keep_property   = $property;
+			$export_property = true;
+			while (true) {
+				$link_annotation  = Link_Annotation::of($property);
+				$store_annotation = Store_Annotation::of($property);
+				$user_annotation  = User_Annotation::of($property);
+				if (
+					$property->isStatic()
+					|| $link_annotation->isCollection()
+					|| $link_annotation->isMap()
+					|| $store_annotation->isFalse()
+					|| $store_annotation->isGz()
+					|| $user_annotation->has(User_Annotation::INVISIBLE)
+					|| $user_annotation->has(User_Annotation::INVISIBLE_OUTPUT)
+				) {
+					$already[$property->path] = $export_property = false;
+					break;
+				}
+				if (str_contains($property->path, DOT)) {
+					/** @noinspection PhpUnhandledExceptionInspection valid */
+					$property = new Reflection_Property($class_name, lLastParse($property->path, DOT));
+					if (isset($already[$property->path])) {
+						$export_property = $already[$property->path];
+						break;
+					}
+				}
+				else {
+					break;
+				}
+			}
+			if ($export_property) {
+				$property = $keep_property;
+				$position = 0;
+				while ($position = strpos($property->path, DOT, $position + 1)) {
+					$already[substr($keep_property->path, 0, $position)] = true;
+				}
 				$properties[$property->path] = $property;
 			}
 		}
