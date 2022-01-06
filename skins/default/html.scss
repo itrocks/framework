@@ -50,7 +50,7 @@ b, strong, th {
 	font-weight: $medium;
 }
 
-.disabled {
+.disabled:not(form) {
 	opacity: .5;
 	text-decoration: none;
 

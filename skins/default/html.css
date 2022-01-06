@@ -36,10 +36,10 @@ a.auto-redirect, button.auto-refresh {
 b, strong, th {
   font-weight: 500; }
 
-.disabled {
+.disabled:not(form) {
   opacity: .5;
   text-decoration: none; }
-  .disabled:not(.progress) {
+  .disabled:not(form):not(.progress) {
     cursor: not-allowed; }
 
 .hidden {
