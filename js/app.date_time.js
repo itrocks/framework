@@ -8,65 +8,65 @@ $(document).ready(function()
 	 * @param separator string @values '/', ':'
 	 * @return string will return this : '2803', '2803', '0928'
 	 */
-	var padWithZero = function(value, separator)
+	const padWithZero = (value, separator) =>
 	{
 		if (value === undefined) {
-			return '';
+			return ''
 		}
-		var split = value.split(separator);
-		if (split[0] && (split[0].length < 2)) split[0] = split[0].padStart(2, 0);
-		if (split[1] && (split[1].length < 2)) split[1] = split[1].padStart(2, 0);
-		if (split[2] && (split[2].length < 2)) split[2] = split[2].padStart(2, 0);
-		return split.join('');
-	};
+		const split = value.split(separator)
+		if (split[0] && (split[0].length < 2)) split[0] = split[0].padStart(2, 0)
+		if (split[1] && (split[1].length < 2)) split[1] = split[1].padStart(2, 0)
+		if (split[2] && (split[2].length < 2)) split[2] = split[2].padStart(2, 0)
+		return split.join('')
+	}
 
 	//---------------------------------------------------------------------------------- reformatDate
-	var reformatDate = function($datetime)
+	const reformatDate = ($datetime) =>
 	{
-		var datetime = $datetime.val();
+		let datetime = $datetime.val()
 		if (datetime === '') {
-			return;
+			return
 		}
-		var date, time;
-		[date, time] = datetime.split(SP, 2);
-		date = padWithZero(date, '/');
-		time = padWithZero(time, ':');
-		var now = $.datepicker
+		let date, time
+		[date, time] = datetime.split(SP, 2)
+		date = padWithZero(date, '/')
+		time = padWithZero(time, ':')
+		const now = $.datepicker
 			.formatDate($datetime.datepicker('option', 'dateFormat'), new Date())
 			.replace(/\D/g, '')
-			.lParse(SP);
+			.lParse(SP)
 		if (date.length < now.length) {
 			date = (date.length === 6)
 				? (date.substr(0, 4) + now.substr(4, 2) + date.substr(4))
-				: (date + now.substr(date.length));
+				: (date + now.substr(date.length))
 		}
 		if (time.length && (time.length < 4)) {
-			time += '0000'.substr(time.length);
+			time += '0000'.substr(time.length)
 		}
-		datetime = date.substr(0, 2) + SL + date.substr(2, 2) + SL + date.substr(4, 4);
+		datetime = date.substr(0, 2) + SL + date.substr(2, 2) + SL + date.substr(4, 4)
 		if (time.length) {
-			datetime += SP + time.substr(0, 2);
+			datetime += SP + time.substr(0, 2)
 			if (time.length > 2) {
-				datetime += ':' + time.substr(2, 2);
+				datetime += ':' + time.substr(2, 2)
 				if (time.length > 4) {
-					datetime += ':' + time.substr(4);
+					datetime += ':' + time.substr(4)
 				}
 			}
 		}
-		$datetime.val(datetime);
-	};
+		$datetime.val(datetime)
+	}
 
 	//--------------------------------------------------------------- input.datetime datepicker/keyup
-	$.datepicker.setDefaults($.datepicker.regional[window.app.language]);
+	$.datepicker.setDefaults($.datepicker.regional[window.app.language])
 	$('body').build('call', 'input.datetime', function()
 	{
 		// if comes from a cloned datepicker, reinitialize it to avoid bugs and id mismatches
 		if (this.hasClass('hasDatepicker')) {
-			this.nextAll('button.ui-datepicker-trigger[type=button]').remove();
-			this.removeClass('hasDatepicker');
-			this.removeData();
-			this.removeAttr('data-kpxc-id');
-			this.removeAttr('id');
+			this.nextAll('button.ui-datepicker-trigger[type=button]').remove()
+			this.removeClass('hasDatepicker')
+			this.removeData()
+			this.removeAttr('data-kpxc-id')
+			this.removeAttr('id')
 		}
 
 		this.datepicker({
@@ -77,26 +77,26 @@ $(document).ready(function()
 			showOtherMonths: true,
 			selectOtherMonths: true,
 			showWeek: true
-		});
+		})
 
 		this.blur(function()
 		{
-			reformatDate($(this));
-		});
+			reformatDate($(this))
+		})
 
 		this.keyup(function(event)
 		{
 			if (!event.ctrlKey) {
 				if (event.keyCode === 38) {
-					$(this).datepicker('hide');
+					$(this).datepicker('hide')
 				}
 				if (event.keyCode === 40) {
-					$(this).datepicker('show');
+					$(this).datepicker('show')
 				}
 			}
-		});
+		})
 
-		this.nextAll('button.ui-datepicker-trigger').attr('tabindex', -1);
-	});
+		this.nextAll('button.ui-datepicker-trigger').attr('tabindex', -1)
+	})
 
-});
+})
