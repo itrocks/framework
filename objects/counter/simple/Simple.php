@@ -26,6 +26,7 @@ class Simple extends Counter
 	/**
 	 * @store false
 	 * @user_change applySimpleForm
+	 * @user_change_realtime
 	 * @var boolean
 	 */
 	public $complete_with_zeros = true;
@@ -38,6 +39,7 @@ class Simple extends Counter
 	 * @store false
 	 * @unit per year
 	 * @user_change applySimpleForm
+	 * @user_change_realtime
 	 * @var integer
 	 */
 	public $documents_count = 9999;
@@ -56,6 +58,7 @@ class Simple extends Counter
 	 * @conditions yearly_reset=true
 	 * @store false
 	 * @user_change applySimpleForm
+	 * @user_change_realtime
 	 * @var boolean
 	 */
 	public $year_with_4_characters = false;
@@ -64,6 +67,7 @@ class Simple extends Counter
 	/**
 	 * @store false
 	 * @user_change applySimpleForm
+	 * @user_change_realtime
 	 * @var boolean
 	 */
 	public $yearly_reset = true;
