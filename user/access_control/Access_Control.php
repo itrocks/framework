@@ -85,6 +85,7 @@ class Access_Control implements Configurable, Registerable
 	public $exceptions = [
 		'/ITRocks/Framework/Application/blank',
 		'/ITRocks/Framework/Tests/run',
+		'/ITRocks/Framework/User/Access_Control/denied',
 		'/ITRocks/Framework/User/authenticate',
 		'/ITRocks/Framework/User/Password/reset',
 		'/ITRocks/Framework/User/login',
