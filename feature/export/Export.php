@@ -79,7 +79,6 @@ class Export
 					|| $store_annotation->isFalse()
 					|| $store_annotation->isGz()
 					|| $user_annotation->has(User_Annotation::INVISIBLE)
-					|| $user_annotation->has(User_Annotation::INVISIBLE_OUTPUT)
 				) {
 					$already[$property->path] = $export_property = false;
 					break;
