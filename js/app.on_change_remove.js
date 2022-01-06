@@ -223,14 +223,19 @@ $(document).ready(() =>
 		}
 	})
 
+	const selector3 = 'input[data-on-change][data-realtime-change][type=checkbox]'
+	$body.build('click', selector3, function()
+	{
+		setTimeout(() => { onEvent.call(this, 'on-change') })
+	})
+
 	//---------------------------------------------------------------- input[realtime-change] .change
-	const selector2 = 'input[data-realtime-change], select[data-realtime-change],'
-		+ ' textarea[data-realtime-change]'
+	const selector2 = 'input[data-on-change][data-realtime-change],'
+		+ ' select[data-on-change][data-realtime-change],'
+		+ ' textarea[data-on-change][data-realtime-change]'
 	$body.build('keyup', selector2, function()
 	{
-		if ($(this).data('on-change')) {
-			onEvent.call(this, 'on-change')
-		}
+		setTimeout(() => { onEvent.call(this, 'on-change') })
 	})
 
 	//--------------------------------------------------------- table[data-on-remove] td.minus .click
