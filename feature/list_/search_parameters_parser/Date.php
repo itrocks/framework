@@ -745,10 +745,10 @@ abstract class Date
 			$month      = '(?:[' . $m_letters . '](?:[-+]\d+)?) | (?:[0-1*?%_]?[0-9*?%_])';
 			$month_only = '(?:[' . $m_letters . '](?:[-+]\d+)?)';
 
-			// formula | 4 digits | 3 to 4 digit with wildcard if preceded by '/'
-			$year = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=\\/)[0-9*?%_]{3,4} '
+			// formula | 4 digits | 2 to 4 digit with wildcard if preceded by '/'
+			$year = '(?:[' . $y_letters . '](?:[-+]\d+)?) | [0-9]{4} | (?<=\\/)[0-9*?%_]{2,4} '
 				// | 3 to 4 digit with wildcard if followed by '/'
-				. '| [0-9*?%_]{3,4}(?=\\/) '
+				. '| [0-9*?%_]{2,4}(?=\\/) '
 				// | 1 to 4 wildcards | 1 to 4 '0' only if preceded by '/'
 				. '| [*?%_]{1,4} | (?<=\\/)0{1,4}';
 
