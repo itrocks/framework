@@ -132,31 +132,33 @@ class Html_Builder_Collection extends Collection
 	protected function buildBody()
 	{
 		$body = parent::buildBody();
-		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-		$add_row = Builder::create($this->class_name);
-		if (isA($add_row, Component::class)) {
-			/** @var $add_row Component */
-			$class_name = get_class($add_row);
-			/** @noinspection PhpUndefinedMethodInspection */
-			/** @see Component::getCompositeProperty */
-			/** @var $composite_property Reflection_Property */
-			$composite_property   = $class_name::getCompositeProperty();
-			$composite_class_name = $composite_property->getType()->asString();
-			foreach ($this->template->objects as $object) {
-				if (is_a($object, $composite_class_name)) {
-					$add_row->setComposite($object);
-					break;
+		if (!($this->no_add || $this->read_only)) {
+			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
+			$add_row = Builder::create($this->class_name);
+			if (isA($add_row, Component::class)) {
+				/** @var $add_row Component */
+				$class_name = get_class($add_row);
+				/** @noinspection PhpUndefinedMethodInspection */
+				/** @see Component::getCompositeProperty */
+				/** @var $composite_property Reflection_Property */
+				$composite_property = $class_name::getCompositeProperty();
+				$composite_class_name = $composite_property->getType()->asString();
+				foreach ($this->template->objects as $object) {
+					if (is_a($object, $composite_class_name)) {
+						$add_row->setComposite($object);
+						break;
+					}
 				}
 			}
+			if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
+				/** @var $add_row Component */
+				$property = $this->property->getParentProperty();
+				$add_row->setComposite($property ? $property->value() : $this->property->getObject());
+			}
+			$row = new Item($this->buildRow($add_row));
+			$row->addClass('new');
+			$body[] = $row;
 		}
-		if (($this->property instanceof Reflection_Property_Value) && isA($add_row, Component::class)) {
-			/** @var $add_row Component */
-			$property = $this->property->getParentProperty();
-			$add_row->setComposite($property ? $property->value() : $this->property->getObject());
-		}
-		$row = new Item($this->buildRow($add_row));
-		$row->addClass('new');
-		$body[] = $row;
 		return $body;
 	}
 
