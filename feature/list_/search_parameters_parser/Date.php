@@ -124,9 +124,9 @@ abstract class Date
 		self::DATE_HOUR_MINUTE,
 		self::DATE_HOUR_ONLY,
 		self::DATE,
+		self::DAY_MONTH,
 		self::MONTH_YEAR,
 		self::YEAR_MONTH,
-		self::DAY_MONTH,
 		self::YEAR_ONLY,
 		self::DAY_ONLY,
 		self::MONTH_ONLY, // can only be a formula like "m-1"
