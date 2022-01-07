@@ -84,7 +84,11 @@ class Phone_Format implements Configurable
 	 */
 	public function isValid(string $phone_number, ?string $country_code) : bool
 	{
+		// TODO We do not wait for a language, but for a country code, here
 		$country_code = $country_code ?: Locale::get()->language;
+		if ($country_code === 'en') {
+			$country_code = 'gb';
+		}
 
 		try {
 			$phone_number = $this->phone_number_util->parse($phone_number, strtoupper($country_code));

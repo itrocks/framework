@@ -14,7 +14,7 @@ class Phone_Format_Test extends Test
 	public function phoneNumberProvider() : Iterator
 	{
 		yield ['0622355629', 'FR', true];
-		yield ['0622355629', '', true];
+		yield ['0622355629', '', false];
 		yield ['06223556291', '', false];
 		yield ['062235562', '', false];
 	}
