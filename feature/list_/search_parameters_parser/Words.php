@@ -71,7 +71,10 @@ abstract class Words
 	 */
 	public static function meansEmpty($word)
 	{
-		return in_array(trim($word), [Loc::tr('empty'), Loc::tr('none'), Loc::tr('null')]);
+		return in_array(
+			trim($word),
+			['empty', 'none', 'null', Loc::tr('empty'), Loc::tr('none'), Loc::tr('null')]
+		);
 	}
 
 }
