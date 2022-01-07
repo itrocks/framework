@@ -33,7 +33,7 @@ class Encoder_Test extends Test
 	public function testConstructor()
 	{
 		$encoder = new Encoder($this->email);
-		$this->assertEquals($encoder->email, $this->email);
+		static::assertEquals($encoder->email, $this->email);
 	}
 
 	//----------------------------------------------------------------------------- testCreateMessage
@@ -41,7 +41,7 @@ class Encoder_Test extends Test
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
-		$this->assertInstanceOf(Swift_Message::class, $message);
+		static::assertInstanceOf(Swift_Message::class, $message);
 	}
 
 	//------------------------------------------------------------------------------- testEmbedImages
@@ -50,13 +50,13 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		// Image should be embedded as the first MIME child
-		$this->assertNotEmpty($message->getChildren());
+		static::assertNotEmpty($message->getChildren());
 		$embedded_image = $message->getChildren()[0];
 		$cid = $embedded_image->getId();
-		$this->assertMatchesRegularExpression('/[[:xdigit:]]{32}@swift.generated/', $cid);
+		static::assertMatchesRegularExpression('/[[:xdigit:]]{32}@swift.generated/', $cid);
 		// Embedded image should be referenced in html mail body
 		$body = $message->getBody();
-		$this->assertEquals("<p>Image: <img alt=\"\" src=\"cid:$cid\"></p>", $body);
+		static::assertEquals("<p>Image: <img alt=\"\" src=\"cid:$cid\"></p>", $body);
 	}
 
 	//------------------------------------------------------------------------------- testEmptyHeader
@@ -64,10 +64,10 @@ class Encoder_Test extends Test
 	{
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
-		$from = $message->getFrom();
-		$this->assertEmpty($from);
+		$from    = $message->getFrom();
+		static::assertNotEquals([], $from);
 		$headers = $message->getHeaders()->toString();
-		$this->assertMatchesRegularExpression('/^From: \R/m', $headers);
+		static::assertMatchesRegularExpression('/^From: Test recipient <test@email.co>\R/m', $headers);
 	}
 
 	//------------------------------------------------------------------------------- testNoBccHeader
@@ -76,9 +76,9 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$bcc = $message->getBcc();
-		$this->assertEmpty($bcc);
+		static::assertEmpty($bcc);
 		$headers = $message->getHeaders()->toString();
-		$this->assertDoesNotMatchRegularExpression('/^Bcc: /m', $headers);
+		static::assertDoesNotMatchRegularExpression('/^Bcc: /m', $headers);
 	}
 
 	//-------------------------------------------------------------------------------- testNoCcHeader
@@ -87,9 +87,9 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$cc = $message->getCc();
-		$this->assertEmpty($cc);
+		static::assertEmpty($cc);
 		$headers = $message->getHeaders()->toString();
-		$this->assertDoesNotMatchRegularExpression('/^Cc: /m', $headers);
+		static::assertDoesNotMatchRegularExpression('/^Cc: /m', $headers);
 	}
 
 	//-------------------------------------------------------------------------------- testNoToHeader
@@ -98,9 +98,9 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$to = $message->getTo();
-		$this->assertEmpty($to);
+		static::assertEmpty($to);
 		$headers = $message->getHeaders()->toString();
-		$this->assertDoesNotMatchRegularExpression('/^To: /m', $headers);
+		static::assertDoesNotMatchRegularExpression('/^To: /m', $headers);
 	}
 
 	//--------------------------------------------------------------------------- testSingleBccHeader
@@ -110,10 +110,10 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$bcc = $message->getBcc();
-		$this->assertArrayHasKey('foo@example.org', $bcc);
-		$this->assertCount(1, $bcc);
+		static::assertArrayHasKey('foo@example.org', $bcc);
+		static::assertCount(1, $bcc);
 		$headers = $message->getHeaders()->toString();
-		$this->assertMatchesRegularExpression('/^Bcc: Foo Bar <foo@example.org>\R/m', $headers);
+		static::assertMatchesRegularExpression('/^Bcc: Foo Bar <foo@example.org>\R/m', $headers);
 	}
 
 	//---------------------------------------------------------------------------- testSingleCcHeader
@@ -123,10 +123,10 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$cc = $message->getCc();
-		$this->assertArrayHasKey('foo@example.org', $cc);
-		$this->assertCount(1, $cc);
+		static::assertArrayHasKey('foo@example.org', $cc);
+		static::assertCount(1, $cc);
 		$headers = $message->getHeaders()->toString();
-		$this->assertMatchesRegularExpression('/^Cc: Foo Bar <foo@example.org>\R/m', $headers);
+		static::assertMatchesRegularExpression('/^Cc: Foo Bar <foo@example.org>\R/m', $headers);
 	}
 
 	//-------------------------------------------------------------------------- testSingleFromHeader
@@ -136,10 +136,10 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$from = $message->getFrom();
-		$this->assertArrayHasKey('foo@example.org', $from);
-		$this->assertCount(1, $from);
+		static::assertArrayHasKey('foo@example.org', $from);
+		static::assertCount(1, $from);
 		$headers = $message->getHeaders()->toString();
-		$this->assertMatchesRegularExpression('/^From: Foo Bar <foo@example.org>\R/m', $headers);
+		static::assertMatchesRegularExpression('/^From: Foo Bar <foo@example.org>\R/m', $headers);
 	}
 
 	//---------------------------------------------------------------------------- testSingleToHeader
@@ -149,10 +149,10 @@ class Encoder_Test extends Test
 		$encoder = new Encoder($this->email);
 		$message = $encoder->toSwiftMessage();
 		$to = $message->getTo();
-		$this->assertArrayHasKey('foo@example.org', $to);
-		$this->assertCount(1, $to);
+		static::assertArrayHasKey('foo@example.org', $to);
+		static::assertCount(1, $to);
 		$headers = $message->getHeaders()->toString();
-		$this->assertMatchesRegularExpression('/^To: Foo Bar <foo@example.org>\R/m', $headers);
+		static::assertMatchesRegularExpression('/^To: Foo Bar <foo@example.org>\R/m', $headers);
 	}
 
 }
