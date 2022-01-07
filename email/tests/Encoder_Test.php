@@ -26,6 +26,7 @@ class Encoder_Test extends Test
 		$this->email = new Email();
 		$this->email->content
 			= '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
+		$this->email->from = new Recipient('test@email.co', 'Test recipient');
 	}
 
 	//------------------------------------------------------------------------------- testConstructor

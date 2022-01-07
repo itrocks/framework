@@ -34,7 +34,8 @@ class Encoder
 	
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $email Email
+	 * @param $email             Email
+	 * @param $working_directory string
 	 */
 	public function __construct(Email $email, string $working_directory = '')
 	{
