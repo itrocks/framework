@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Phone\Tests;
 
 use Iterator;
 use ITRocks\Framework\Locale\Country;
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Phone\Phone_Number_Exception;
 use ITRocks\Framework\Tests\Test;
@@ -14,7 +15,7 @@ class Phone_Format_Test extends Test
 	public function phoneNumberProvider() : Iterator
 	{
 		yield ['0622355629', 'FR', true];
-		yield ['0622355629', '', false];
+		yield ['0622355629', '', (Loc::language() === 'fr')];
 		yield ['06223556291', '', false];
 		yield ['062235562', '', false];
 	}

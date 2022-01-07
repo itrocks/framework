@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Objects\Phone\Tests;
 
+use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Phone\Phone_Format;
 use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Property\Reflection_Property;
@@ -69,7 +70,7 @@ class Phone_Number_Test extends Test
 			->willReturn($phone_number);
 
 		$this->assertEquals(
-			'This phone number is not correct',
+			Loc::tr('This phone number is not correct'),
 			$phone->validateNumber($this->reflection_property)
 		);
 	}
