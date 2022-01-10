@@ -19,7 +19,7 @@ class Svg extends Element
 			$this->setAttribute('height', $height);
 		}
 		if (isset($width)) {
-			$this->setAttribute('with', $width);
+			$this->setAttribute('width', $width);
 		}
 	}
 
