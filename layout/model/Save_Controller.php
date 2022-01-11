@@ -27,9 +27,13 @@ class Save_Controller extends Save\Controller
 		$form          = $builder->appendToForm($form, $files);
 		// this patch because we must save the new background as a new file
 		// (existing file should not be replaced, and is not written if an id is already set)
-		foreach ($form['pages']['background'] as $background_key => $background_data) {
-			if (!$background_data) continue;
-			Dao::disconnect($object->pages[$background_key]->background);
+		if (isset($form['pages'])) {
+			foreach ($form['pages']['background'] as $background_key => $background_data) {
+				if (!$background_data) {
+					continue;
+				}
+				Dao::disconnect($object->pages[$background_key]->background);
+			}
 		}
 		return $built_objects;
 	}
