@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection\Annotation\Property;
 use ITRocks\Framework\Reflection\Annotation\Template\Constant_Or_Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use ITRocks\Framework\Reflection\Type;
 
 /**
  * Property annotation default
@@ -27,7 +28,7 @@ class Default_Annotation extends Constant_Or_Method_Annotation
 	{
 		if (!$value) {
 			$type = $class_property->getType();
-			if ($type->isClass()) {
+			if ($type->isClass() && ($type->getElementTypeAsString() !== Type::OBJECT)) {
 				$class = $type->asReflectionClass();
 				$value = $class->getAnnotation('default')->value;
 			}
