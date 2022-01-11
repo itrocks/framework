@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Display_Order_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
+use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Interfaces;
@@ -269,7 +270,7 @@ class Reflection_Class extends ReflectionClass
 				$property = $this->getProperty($default_property_name);
 				/** @var $default_annotation Method_Annotation */
 				if (
-					($default_annotation = $property->getAnnotation('default'))->value
+					($default_annotation = Default_Annotation::of($property))->value
 					&& (
 						($use_annotation !== 'constant')
 						|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value

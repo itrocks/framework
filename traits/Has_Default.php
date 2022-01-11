@@ -15,6 +15,7 @@ use ITRocks\Framework\Tools\Names;
  * TODO move @user_default from property to class annotation
  *
  * @after_write onlyOneDefault
+ * @default getDefault
  * @validate doNotRemoveDefault
  */
 trait Has_Default

@@ -11,6 +11,7 @@ use ITRocks\Framework\Reflection\Annotation\Annoted;
 use ITRocks\Framework\Reflection\Annotation\Class_\Override_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
@@ -313,7 +314,7 @@ class Reflection_Property extends ReflectionProperty
 		/** @var $default_annotation Method_Annotation */
 		if (
 			$use_annotation
-			&& ($default_annotation = $this->getAnnotation('default'))->value
+			&& ($default_annotation = Default_Annotation::of($this))->value
 			&& (
 				($use_annotation !== 'constant')
 				|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
