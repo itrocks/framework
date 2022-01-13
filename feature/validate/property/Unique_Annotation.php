@@ -27,7 +27,10 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
-	public function reportMessage(): string
+	/**
+	 * @return string
+	 */
+	public function reportMessage() : string
 	{
 		return 'This value already exist';
 	}
@@ -37,8 +40,11 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function validate($object): bool
+	public function validate($object) : bool
 	{
+		if (!$this->value) {
+			return true;
+		}
 		$property_name = $this->property->name;
 		if (!strlen($object->$property_name)) {
 			return true;
