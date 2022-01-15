@@ -25,7 +25,7 @@ class Html_Builder_Abstract_Collection extends Abstract_Collection
 	/**
 	 * @var ?Html_Template
 	 */
-	private ?Html_Template $template = null;
+	public ?Html_Template $template = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
