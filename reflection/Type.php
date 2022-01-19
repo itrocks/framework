@@ -32,7 +32,7 @@ class Type
 	/**
 	 * Used by floatEqual() to compare two float numbers
 	 */
-	const FLOAT_EPSILON = .000000001;
+	const FLOAT_EPSILON = .0000001;
 
 	//--------------------------------------------------------------------------------------- INTEGER
 	const INTEGER = 'integer';
