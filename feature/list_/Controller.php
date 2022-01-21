@@ -773,6 +773,13 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$class = $list_settings->getClass();
 		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
 
+		$properties = array_keys($list_settings->properties);
+		list($properties_path, $search) = $this->removeInvisibleProperties(
+			$class_name, $properties, $search
+		);
+
+		$this->foot_property_values = $this->readFootPropertyValues($class_name, $properties, $search);
+
 		if (!$options) {
 			$options = [Dao::doublePass(), $list_settings->sort, Dao::timeLimit($this->time_limit)];
 		}
@@ -791,18 +798,11 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			);
 			$options[] = $limit;
 		}
-		$properties = array_keys($list_settings->properties);
-		list($properties_path, $search) = $this->removeInvisibleProperties(
-			$class_name, $properties, $search
-		);
 		// TODO : an automation to make the group by only when it is useful
 		if ($group_by = $this->groupBy($list_settings->properties)) {
 			$options[] = $group_by;
 			$this->groupConcat($properties_path, $group_by);
 		}
-		$this->foot_property_values = $this->readFootPropertyValues(
-			$class_name, $properties_path, $search, $options
-		);
 		$data = $this->readDataSelectSearch($class_name, $properties_path, $search, $options);
 		if (isset($limit) && isset($count)) {
 			if (!$this->load_more_lines && ($data->length() < $limit->count) && ($limit->from > 1)) {
@@ -839,35 +839,41 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $class_name      string
 	 * @param $properties_path string[]
 	 * @param $search          array search-compatible search array
-	 * @param $options         Option[]
 	 * @return Reflection_Property_Value[]
 	 */
 	protected function readFootPropertyValues(
-		string $class_name, array $properties_path, array $search, array $options
+		string $class_name, array $properties_path, array $search
 	) : array
 	{
+		/** @var $foot_property_values Reflection_Property_Value[] value is sum result */
 		$foot_property_values = [];
-		$select               = [];
+		/** @var $select_by_path Group_By[][] [$parent_property_path => [$property_path => Func::sum()]] */
+		$select_by_path = [];
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
 			$property_value  = new Reflection_Property_Value($class_name, $property_path, null, null);
 			$list_annotation = Annotation\Property\List_Annotation::of($property_value);
 			if ($list_annotation->has(Annotation\Property\List_Annotation::SUM)) {
-				$select[$property_path] = Func::sum();
+				$parent_property_path = lLastParse($property_path, DOT);
+				if (!isset($select_by_path[$parent_property_path])) {
+					$select_by_path[$parent_property_path] = [];
+				}
+				$select_by_path[$parent_property_path][$property_path] = Func::sum();
 			}
 			$foot_property_values[$property_path] = $property_value;
 		}
-		if (!$select) {
+		if (!$select_by_path) {
 			return [];
 		}
-		$foot = $this->readDataSelect($class_name, $select, $search, $options);
-		if (!$foot->elements || !reset($foot->elements)->values) {
-			return [];
-		}
-		foreach (reset($foot->elements)->values as $property_path => $value) {
-			/** @noinspection PhpUnhandledExceptionInspection must be valid */
-			$foot_property_values[$property_path]
-				= new Reflection_Property_Value($class_name, $property_path, floatval($value), true);
+		foreach ($select_by_path as $select) {
+			$foot = $this->readDataSelect(
+				$class_name, $select, $search, [Dao::timeLimit($this->time_limit)]
+			);
+			foreach (reset($foot->elements)->values as $property_path => $value) {
+				/** @noinspection PhpUnhandledExceptionInspection must be valid */
+				$foot_property_values[$property_path]
+					= new Reflection_Property_Value($class_name, $property_path, floatval($value), true);
+			}
 		}
 		return $foot_property_values;
 	}
