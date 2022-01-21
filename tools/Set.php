@@ -239,6 +239,17 @@ class Set implements Iterator
 		return $this->elements ? reset($this->elements) : $this->elementClass();
 	}
 
+	//---------------------------------------------------------------------------------------- remove
+	/**
+	 * Get the element associated to the key from the set
+	 *
+	 * @param $key string|integer
+	 */
+	public function remove($key)
+	{
+		unset($this->elements[$key]);
+	}
+
 	//---------------------------------------------------------------------------------------- rewind
 	/**
 	 * Set the pointer of the set to its first element and return this element (alias for first)
