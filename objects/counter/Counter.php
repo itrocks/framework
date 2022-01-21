@@ -5,10 +5,10 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql;
 use ITRocks\Framework\Locale\Loc;
-use ITRocks\Framework\Reflection\Annotation\Class_\Display_Annotation;
-use ITRocks\Framework\Reflection\Reflection_Class;
+use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Mutex;
+use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View\Html\Template;
 
 /**
@@ -195,7 +195,7 @@ class Counter
 	 * @param $object object
 	 * @return string
 	 */
-	protected static function incrementIdentifier(object $object) : string
+	public static function incrementIdentifier(object $object) : string
 	{
 		return Builder::current()->sourceClassName(get_class($object));
 	}
@@ -274,20 +274,48 @@ class Counter
 	}
 
 	//-------------------------------------------------------------------------------- showIdentifier
+
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
+	 * @throws \ReflectionException
 	 */
 	public function showIdentifier() : string
 	{
-		if (!$this->identifier) {
+		$identifier = $this->identifier;
+		if (!$identifier) {
 			return '';
 		}
-		if (class_exists($this->identifier)) {
-			/** @noinspection PhpUnhandledExceptionInspection class_exists */
-			return Loc::tr(Display_Annotation::of(new Reflection_Class($this->identifier))->value);
+		if (!strpos($identifier, BS)) {
+			return Loc::tr($identifier);
 		}
-		return Loc::tr($this->identifier);
+		if (str_contains($identifier, '[')) {
+			$identifier_parts = explode('[', $identifier);
+			$class_name       = array_shift($identifier_parts);
+		}
+		else {
+			$identifier_parts = [];
+			$class_name       = lParse($identifier, '[');
+		}
+		$class_name = lParse($class_name, DOT);
+		if (!class_exists($class_name)) {
+			return $identifier;
+		}
+		$class_display = Loc::tr(Names::classToDisplay($class_name));
+		if (!$identifier_parts) {
+			return $class_display;
+		}
+		$identifiers = [];
+		foreach ($identifier_parts as $identifier_part) {
+			[$property_name, $property_identifier] = explode('=', $identifier_part);
+			$property_identifier                   = substr($property_identifier, 0, -1);
+			$property                              = new Reflection_Property($class_name, $property_name);
+			$property_class_name                   = $property->getType()->asString();
+			if (class_exists($property_class_name)) {
+				$identifiers[$property_name] = Dao::read($property_identifier, $property_class_name);
+			}
+		}
+		return $class_display . SP . join(SP, $identifiers);
 	}
 
 	//---------------------------------------------------------------------------------------- unlock
@@ -297,7 +325,6 @@ class Counter
 	protected static function unlock(Mutex $mutex)
 	{
 		$mutex->unlock();
-
 	}
 
 }

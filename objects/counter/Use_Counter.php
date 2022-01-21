@@ -42,8 +42,7 @@ trait Use_Counter
 	{
 		static $increments = [];
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		$property_name = (new Reflection_Class($this))->getAnnotation('counter_property')->value
-			?: 'number';
+		$property_name = $this->incrementPropertyName();
 		if ($this->$property_name) {
 			return;
 		}
@@ -69,20 +68,28 @@ trait Use_Counter
 
 	//--------------------------------------------------------------------------- incrementIdentifier
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $property_name string|null internally used for optimisation purpose
 	 * @return ?string
 	 */
 	protected function incrementIdentifier(string $property_name = null) : ?string
 	{
 		if (!isset($property_name)) {
-			/** @noinspection PhpUnhandledExceptionInspection object */
-			$property_name = (new Reflection_Class($this))->getAnnotation('counter_property')->value
-				?: 'number';
+			$property_name = $this->incrementPropertyName();
 		}
 		return ($property_name === 'number')
-			? null
+			? Counter::incrementIdentifier($this)
 			: Builder::current()->sourceClassName(get_class($this)) . DOT . $property_name;
+	}
+
+	//------------------------------------------------------------------------- incrementPropertyName
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string
+	 */
+	protected function incrementPropertyName() : string
+	{
+		/** @noinspection PhpUnhandledExceptionInspection object */
+		return (new Reflection_Class($this))->getAnnotation('counter_property')->value ?: 'number';
 	}
 	
 }
