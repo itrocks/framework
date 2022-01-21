@@ -56,10 +56,7 @@ trait Use_Counter
 			/** @var $counter_class_name Counter|string */
 			$counter_class_name = Builder::className(Counter::class);
 			$counter_value      = $counter_class_name::increment(
-				$this,
-				($property_name === 'number')
-					? null
-					: Builder::current()->sourceClassName(get_class($this)) . DOT . $property_name
+				$this, $this->incrementIdentifier($property_name)
 			);
 			$increments[get_class($this)][$identifier][$property_name] = $counter_value;
 			$this->$property_name = $counter_value;
@@ -70,4 +67,22 @@ trait Use_Counter
 		}
 	}
 
+	//--------------------------------------------------------------------------- incrementIdentifier
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $property_name string|null internally used for optimisation purpose
+	 * @return ?string
+	 */
+	protected function incrementIdentifier(string $property_name = null) : ?string
+	{
+		if (!isset($property_name)) {
+			/** @noinspection PhpUnhandledExceptionInspection object */
+			$property_name = (new Reflection_Class($this))->getAnnotation('counter_property')->value
+				?: 'number';
+		}
+		return ($property_name === 'number')
+			? null
+			: Builder::current()->sourceClassName(get_class($this)) . DOT . $property_name;
+	}
+	
 }

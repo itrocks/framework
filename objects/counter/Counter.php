@@ -163,6 +163,7 @@ class Counter
 	/**
 	 * Load a counter linked to the class of an object from default data link and increment it
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object The object to use to format the counter
 	 * @param $identifier string|null The identifier of the counter ; default is get_class($object)
 	 * @return string The new counter value
@@ -173,11 +174,12 @@ class Counter
 		$dao = Dao::current();
 		$dao->begin();
 		if (empty($identifier)) {
-			$identifier = Builder::current()->sourceClassName(get_class($object));
+			$identifier = static::incrementIdentifier($object);
 		}
 		$mutex   = static::lock($identifier);
+		/** @noinspection PhpUnhandledExceptionInspection class */
 		$counter = Dao::searchOne(['identifier' => $identifier], static::class)
-			?: new static($identifier);
+			?: Builder::create(Counter::class, [$identifier]);
 		$next_value = $counter->next($object);
 		$dao->write(
 			$counter,
@@ -186,6 +188,16 @@ class Counter
 		static::unlock($mutex);
 		$dao->commit();
 		return $next_value;
+	}
+
+	//--------------------------------------------------------------------------- incrementIdentifier
+	/**
+	 * @param $object object
+	 * @return string
+	 */
+	protected static function incrementIdentifier(object $object) : string
+	{
+		return Builder::current()->sourceClassName(get_class($object));
 	}
 
 	//------------------------------------------------------------------------------------------ lock
@@ -226,7 +238,7 @@ class Counter
 		return $this->formatLastValue($object);
 	}
 
-	//---------------------------------------------------------------------------------------- length
+	//---------------------------------------------------------------------------------- numberLength
 	/**
 	 * @example format = '{MONTH}%03d' => 3
 	 * @example format = '{YEAR}%3d'   => 1
