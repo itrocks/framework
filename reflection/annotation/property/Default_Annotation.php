@@ -31,6 +31,9 @@ class Default_Annotation extends Constant_Or_Method_Annotation
 			if ($type->isClass() && ($type->getElementTypeAsString() !== Type::OBJECT)) {
 				$class = $type->asReflectionClass();
 				$value = $class->getAnnotation('default')->value;
+				if (str_contains($value, '::') && !str_starts_with($value, BS)) {
+					$value = BS . $value;
+				}
 			}
 		}
 		parent::__construct($value, $class_property, $annotation_name);
