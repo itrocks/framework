@@ -258,6 +258,14 @@ Parser::$default_annotations = [
 	Parser::T_CLASS . '@stored' => Boolean_Annotation::class,
 
 	/**
+	 * @test_condition testCondition
+	 * This is a Multiple_Annotation
+	 * Declare one or several methods to call in order to decide if massive tests (eg testEverything)
+	 * should be run for this class
+	 */
+	Parser::T_CLASS . '@test_condition' => Method_Annotation::class,
+
+	/**
 	 * @unique property1, property2, ...
 	 * Identifies a list of property that are the unique tuple of data that identify a record.
 	 * Used with @link classes to allow the same object multiple times with different link property

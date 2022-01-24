@@ -13,6 +13,7 @@ use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Sets\Replaces_Annotations;
+use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Link_Class;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Reflection\Reflection_Property;
@@ -61,6 +62,7 @@ class Select_Test extends Test
 					&& $class->getAnnotation('business')->value
 					&& !strpos($class->name, BS . 'Sub0')
 					&& !strpos($class->name, BS . 'Tests' . BS)
+					&& $this->testConditions($class)
 				) {
 					$properties = $this->propertyNames($class);
 					$builder    = new Select($class->name, $properties);
@@ -129,6 +131,22 @@ class Select_Test extends Test
 			}
 		}
 		return array_keys($properties);
+	}
+
+	//-------------------------------------------------------------------------------- testConditions
+	/**
+	 * @param $class Reflection_Class
+	 * @return boolean
+	 */
+	protected function testConditions(Reflection_Class $class) : bool
+	{
+		/** @var $annotation Method_Annotation */
+		foreach ($class->getAnnotations('test_condition') as $annotation) {
+			if (!$annotation->call(null)) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	//-------------------------------------------------------------------------------- testEverything
