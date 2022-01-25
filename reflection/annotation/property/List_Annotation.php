@@ -10,6 +10,9 @@ use ITRocks\Framework\Reflection\Annotation\Template;
 class List_Annotation extends Template\List_Annotation
 {
 
+	//--------------------------------------------------------------------------------------- AVERAGE
+	const AVERAGE = 'average';
+
 	//------------------------------------------------------------------------------------------- SUM
 	const SUM = 'sum';
 
