@@ -515,6 +515,13 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@override' => Boolean_Annotation::class,
 
 	/**
+	 * @parent_documents [false]
+	 * @todo Should be into the bappli application, has this is non-standard and used here only
+	 * Enable or disable parent documents hierarchy for this property
+	 */
+	Parser::T_PROPERTY . '@parent_documents' => Boolean_Annotation::class,
+
+	/**
 	 * @precision 4
 	 * Tells how many decimals are stored/displayed on a float number, ie 0.5513 in ok in this case
 	 */
