@@ -105,8 +105,8 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 				($class_property instanceof Framework\Reflection\Reflection_Property)
 				&& strpos($class_property->path, DOT)
 			)
-				? $class_property->getRootClass()
-				: $class_property->getFinalClass();
+				? $class_property->getFinalClass()
+				: $class_property->getRootClass();
 		}
 		else {
 			$class = $class_property;
