@@ -169,7 +169,7 @@ class Maintainer implements Configurable, Registerable
 					? Column::buildId()
 					: Column::buildLink($column_name)
 			);
-			if (substr($column_name, 0, 3) === 'id_') {
+			if (str_starts_with($column_name, 'id_')) {
 				if (($mysqli instanceof Contextual_Mysqli) && is_array($context = end($mysqli->contexts))) {
 					$ids_index->addKey($column_name);
 					$index = Index::buildLink($column_name);
@@ -185,11 +185,11 @@ class Maintainer implements Configurable, Registerable
 							continue;
 						}
 						$id_context_property = 'id_' . Names::classToProperty(
-								Names::setToSingle(Dao::storeNameOf($context_class))
-							);
+							Names::setToSingle(Dao::storeNameOf($context_class))
+						);
 						$id_context_property_2 = 'id_' . Names::classToProperty(
-								Names::setToSingle(Namespaces::shortClassName($context_class))
-							);
+							Names::setToSingle(Namespaces::shortClassName($context_class))
+						);
 						if (in_array($column_name, [$id_context_property, $id_context_property_2])) {
 							$table->addForeignKey(Foreign_Key::buildLink(
 								$table_name, $column_name, $context_class
@@ -240,8 +240,8 @@ class Maintainer implements Configurable, Registerable
 		$build   = $builder->build($class_name);
 		foreach ($build as $table) {
 			if (!$mysqli->exists($table->getName())) {
-				$queries = (new Create_Table($table))->build();
-				array_push($mysqli->contexts, array_merge($builder->dependencies_context, [$class_name]));
+				$queries            = (new Create_Table($table))->build();
+				$mysqli->contexts[] = array_merge($builder->dependencies_context, [$class_name]);
 				foreach ($queries as $query) {
 					$this->updateContextAfterCreate($mysqli, $query, $class_name);
 					$this->query($mysqli, $query);
@@ -368,8 +368,8 @@ class Maintainer implements Configurable, Registerable
 		$build   = $builder->build($class_name, $mysqli);
 		foreach ($build as $view) {
 			if (!$mysqli->exists($view->getName())) {
-				$queries = (new Create_View($view))->build();
-				array_push($mysqli->contexts, array_keys($view->select_queries));
+				$queries            = (new Create_View($view))->build();
+				$mysqli->contexts[] = array_keys($view->select_queries);
 				foreach ($queries as $query) {
 					$this->query($mysqli, $query);
 				}
@@ -819,7 +819,7 @@ class Maintainer implements Configurable, Registerable
 		// do not create empty implicit table if does not already exist
 		// will be automatically created on first needed use
 		if ($this->create_empty_tables || $mysqli->exists($table_name)) {
-			array_push($mysqli->contexts, [$class_name, $foreign_class_name]);
+			$mysqli->contexts[] = [$class_name, $foreign_class_name];
 			$this->updateTableStructure($table, new Table_Builder_Class(), $mysqli);
 			array_pop($mysqli->contexts);
 		}
@@ -917,12 +917,9 @@ class Maintainer implements Configurable, Registerable
 		// create table
 		if (!$mysql_table) {
 			$queries = (new Create_Table($class_table))->build();
-			array_push(
-				$mysqli->contexts,
-				$class_name
-					? array_merge($table_builder_class->dependencies_context, [$class_name])
-					: $table_builder_class->dependencies_context
-			);
+			$mysqli->contexts[] = $class_name
+				? array_merge($table_builder_class->dependencies_context, [$class_name])
+				: $table_builder_class->dependencies_context;
 			foreach ($queries as $query) {
 				$this->updateContextAfterCreate($mysqli, $query, $class_name);
 				$this->query($mysqli, $query);
@@ -1018,12 +1015,9 @@ class Maintainer implements Configurable, Registerable
 				}
 			}
 			if ($builder->isReady()) {
-				array_push(
-					$mysqli->contexts,
-					$class_name
-						? array_merge($table_builder_class->dependencies_context, [$class_name])
-						: $table_builder_class->dependencies_context
-				);
+				$mysqli->contexts = $class_name
+					? array_merge($table_builder_class->dependencies_context, [$class_name])
+					: $table_builder_class->dependencies_context;
 				if ($builder->check($mysqli, $this->notice)) {
 					foreach ($builder->build(true, $alter_primary_key) as $query) {
 						$this->query($mysqli, $query);
