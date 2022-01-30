@@ -77,19 +77,6 @@ class Manager implements IManager
 		}
 	}
 
-	//--------------------------------------------------------------------------------- __unserialize
-	/**
-	 * @param $serialized array
-	 */
-	public function __unserialize(array $serialized)
-	{
-		$this->plugins      = [];
-		$this->plugins_tree = $serialized;
-		foreach ($this->plugins_tree as $plugins) {
-			$this->plugins = array_merge($this->plugins, $plugins);
-		}
-	}
-
 	//-------------------------------------------------------------------------------------- activate
 	/**
 	 * Activates a plugin : at session creation, at session resuming for already loaded classes and

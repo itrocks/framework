@@ -73,9 +73,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
-	 * @var ?string The name of the class
+	 * @var string The name of the class
 	 */
-	public ?string $name = null;
+	public string $name;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
@@ -183,7 +183,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name   string|null The name of the class.
 	 *                If not set, the first class in source will be reflected.
 	 */
-	public function __construct(Reflection_Source $source, string $name = null)
+	public function __construct(Reflection_Source $source, string $name = '')
 	{
 		$this->source = $source;
 
@@ -221,7 +221,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		elseif ($property_name === 'stop') {
 			$this->scanUntilClassEnds();
 		}
-		return $this->$property_name;
+		return $this->$property_name ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -525,9 +525,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
-	 * @return ?string
+	 * @return string
 	 */
-	public function getName() : ?string
+	public function getName() : string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -611,7 +611,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if ($this->parent) {
 			$this->parentReplacement();
 		}
-		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : null;
+		return $this->parent
+			? (is_string($this->parent) ? $this->parent : $this->parent->name)
+			: null;
 	}
 
 	//-------------------------------------------------------------------- getParentOriginalClassName
@@ -696,9 +698,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------- getSetClassName
 	/**
-	 * @return ?string
+	 * @return string
 	 */
-	public function getSetClassName() : ?string
+	public function getSetClassName() : string
 	{
 		$expr = '%'
 			. '\n\s+\*\s+'     // each line beginning by '* '
@@ -713,9 +715,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//---------------------------------------------------------------------------------- getShortName
 	/**
-	 * @retun ?string
+	 * @retun string
 	 */
-	public function getShortName() : ?string
+	public function getShortName() : string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -1310,7 +1312,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$class_name = $this->fullClassName($this->scanClassName(), false);
 
 			if (
-					($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))
+					isset($this->name)
+					&& ($class_name !== $this->name)
+					&& (strtolower($class_name) === strtolower($this->name))
 			) {
 				$this->wrongCaseError($class_name, $this->name);
 			}

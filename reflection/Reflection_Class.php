@@ -483,18 +483,18 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
-	 * @param $final_class ?string force the final class to this name (mostly for internal use)
+	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @param $visibility_flags integer|null filter parents visibility @values ReflectionProperty::const
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function getProperties(
-		$flags = null, ?string $final_class = null, int $visibility_flags = null
+		$flags = null, string $final_class = '', int $visibility_flags = null
 	) : array
-	{
+	) {
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
 		}
-		if (!isset($final_class)) {
+		if (!$final_class) {
 			$final_class = $this->name;
 		}
 		$extends               = in_array(T_EXTENDS, $flags);

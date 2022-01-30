@@ -836,7 +836,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
-	public function setValue(mixed $object, mixed $value = null) : void
+	public function setValue(mixed $object, mixed $value = null)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);

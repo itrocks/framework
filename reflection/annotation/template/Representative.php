@@ -55,7 +55,7 @@ class Representative extends List_Annotation
 	 */
 	public function getProperties() : array
 	{
-		if (!isset($this->properties)) {
+		if (!$this->properties) {
 			$this->properties = [];
 			$properties       = $this->class->getProperties([T_EXTENDS, T_USE]);
 			foreach ($this->values() as $property_path) {
@@ -91,7 +91,7 @@ class Representative extends List_Annotation
 	public function remove(string $value) : bool
 	{
 		if (parent::remove($value)) {
-			unset($this->properties);
+			$this->properties = [];
 			return true;
 		}
 		return false;
