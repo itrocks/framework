@@ -11,10 +11,10 @@ class Constant_Or_Type_Annotation extends Type_Annotation implements Class_Conte
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class The contextual Reflection_Class object
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (strpos($value, '::')) {
 			[$scope, $constant_name] = explode('::', $value);

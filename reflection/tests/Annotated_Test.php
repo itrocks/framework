@@ -15,12 +15,10 @@ class Annotated_Test extends Test
 	//----------------------------------------------------------------------------- testSetAnnotation
 	public function testSetAnnotation()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property1       = new Reflection_Property(User::class, 'login');
 		$user_annotation = new User_Annotation(User_Annotation::INVISIBLE);
 		$property1->setAnnotation($user_annotation);
 
-		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property2 = new reflection_Property(User::class, 'login');
 
 		static::assertTrue(
@@ -38,12 +36,10 @@ class Annotated_Test extends Test
 	//------------------------------------------------------------------------ testSetAnnotationLocal
 	public function testSetAnnotationLocal()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property1       = new Reflection_Property(User::class, 'login');
 		$user_annotation = User_Annotation::local($property1);
 		$user_annotation->add(User_Annotation::INVISIBLE);
 
-		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$property2 = new reflection_Property(User::class, 'login');
 		static::assertTrue(
 			User_Annotation::of($property1)->has(User_Annotation::INVISIBLE), 'modifiedProperty'

@@ -18,9 +18,9 @@ class Widget_Annotation extends Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		$this->constructOptions($value);
 		parent::__construct($value);

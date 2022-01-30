@@ -35,7 +35,7 @@ class Option extends Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$content = $this->getContent();
 		if (!strlen($content)) {

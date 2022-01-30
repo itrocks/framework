@@ -21,7 +21,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterFunction($joinpoint, $advice);
+	public function afterFunction($joinpoint, $advice) : IHandler;
 
 	//----------------------------------------------------------------------------------- afterMethod
 	/**
@@ -38,7 +38,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterMethod($joinpoint, $advice);
+	public function afterMethod($joinpoint, $advice) : IHandler;
 
 	//-------------------------------------------------------------------------------- aroundFunction
 	/**
@@ -53,7 +53,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundFunction($joinpoint, $advice);
+	public function aroundFunction($joinpoint, $advice) : IHandler;
 
 	//---------------------------------------------------------------------------------- aroundMethod
 	/**
@@ -69,7 +69,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundMethod($joinpoint, $advice);
+	public function aroundMethod($joinpoint, $advice) : IHandler;
 
 	//-------------------------------------------------------------------------------- beforeFunction
 	/**
@@ -85,7 +85,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeFunction($joinpoint, $advice);
+	public function beforeFunction($joinpoint, $advice) : IHandler;
 
 	//---------------------------------------------------------------------------------- beforeMethod
 	/**
@@ -101,7 +101,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeMethod($joinpoint, $advice);
+	public function beforeMethod($joinpoint, $advice) : IHandler;
 
 	//------------------------------------------------------------------------------- defaultFileName
 	/**
@@ -113,7 +113,7 @@ interface IWeaver
 	/**
 	 * @param $file_name string
 	 */
-	public function loadJoinpoints($file_name);
+	public function loadJoinpoints(string $file_name);
 
 	//---------------------------------------------------------------------------------- readProperty
 	/**
@@ -123,7 +123,7 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function readProperty(array $joinpoint, $advice);
+	public function readProperty(array $joinpoint, $advice) : IHandler;
 
 	//---------------------------------------------------------------------------------------- remove
 	/**
@@ -137,7 +137,7 @@ interface IWeaver
 	/**
 	 * @param $file_name string
 	 */
-	public function saveJoinpoints($file_name);
+	public function saveJoinpoints(string $file_name);
 
 	//--------------------------------------------------------------------------------- writeProperty
 	/**
@@ -147,6 +147,6 @@ interface IWeaver
 	 *        ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function writeProperty(array $joinpoint, $advice);
+	public function writeProperty(array $joinpoint, $advice) : IHandler;
 
 }

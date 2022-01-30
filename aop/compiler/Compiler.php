@@ -37,11 +37,11 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	/**
 	 * @var Weaver
 	 */
-	private $weaver;
+	private Weaver $weaver;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $weaver IWeaver If not set, the current weaver plugin is used
+	 * @param $weaver IWeaver|null If not set, the current weaver plugin is used
 	 */
 	public function __construct(IWeaver $weaver = null)
 	{
@@ -56,7 +56,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 * @param $handler_filter string[] @values after, around, before
 	 */
 	private function addPointcuts(
-		array &$methods, array &$properties, $class_name, array $handler_filter = null
+		array &$methods, array &$properties, string $class_name, array $handler_filter = null
 	) {
 		foreach ($this->weaver->getJoinpoints($class_name) as $method_or_property => $pointcuts2) {
 			foreach ($pointcuts2 as $pointcut) {
@@ -80,10 +80,10 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source
-	 * @param $compiler PHP\Compiler
+	 * @param $compiler PHP\Compiler|null
 	 * @return boolean
 	 */
-	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null) : bool
 	{
 		$classes = $source->getClasses();
 		if ($class = reset($classes)) {
@@ -99,7 +99,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 	 * @param $class Reflection_Class
 	 * @return boolean
 	 */
-	public function compileClass(Reflection_Class $class)
+	public function compileClass(Reflection_Class $class) : bool
 	{
 		if (self::DEBUG) { echo '<h2>' . $class->name . '</h2>'; flush(); }
 

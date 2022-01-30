@@ -62,7 +62,7 @@ class Translation
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->language
 			? ('[' . $this->language . ']' . SP . $this->text . SP . ':' . SP . $this->translation)

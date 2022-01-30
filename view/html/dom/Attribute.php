@@ -54,7 +54,7 @@ class Attribute
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		// boolean attributes are returned as 'here' / 'not here'
 		if (is_bool($this->value) && in_array(strtolower($this->name), static::BOOLEAN_ATTRIBUTES)) {

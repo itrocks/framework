@@ -20,12 +20,13 @@ class Default_Annotation extends Constant_Or_Method_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $class_property  Reflection|Reflection_Property
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection|Reflection_Property $class_property, $annotation_name)
-	{
+	public function __construct(
+		?string $value, Reflection|Reflection_Property $class_property, string $annotation_name
+	) {
 		if (!$value) {
 			$type = $class_property->getType();
 			if ($type->isClass() && ($type->getElementTypeAsString() !== Type::OBJECT)) {

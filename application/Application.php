@@ -90,7 +90,7 @@ class Application
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->name);
 	}

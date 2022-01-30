@@ -25,7 +25,7 @@ class Include_Filter extends php_user_filter
 	/**
 	 * @var boolean
 	 */
-	public static $active = true;
+	public static bool $active = true;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -34,7 +34,7 @@ class Include_Filter extends php_user_filter
 	 *
 	 * @var string
 	 */
-	private static $file_name;
+	private static string $file_name;
 
 	//------------------------------------------------------------------------------------- cacheFile
 	/**
@@ -46,7 +46,7 @@ class Include_Filter extends php_user_filter
 	 * @param $file_name string
 	 * @return string
 	 */
-	public static function cacheFile($file_name)
+	public static function cacheFile(string $file_name) : string
 	{
 		$dot_pos          = strrpos($file_name, '.');
 		$file_name_no_ext = $dot_pos ? substr($file_name, 0, $dot_pos) : $file_name;
@@ -69,16 +69,16 @@ class Include_Filter extends php_user_filter
 	 * @return string
 	 * @throws Exception
 	 */
-	public static function file($file_name, $path_prefix = '')
+	public static function file(string $file_name, string $path_prefix = '') : string
 	{
 		$path_prefix .= (strlen($path_prefix) && (substr($path_prefix, -1)) != SL) ? SL : '';
 		// if absolute path given
 		if (substr($file_name, 0, 1) === SL) {
 			// if project root file, remove this part
-			if (strpos($file_name, Paths::$project_root) === 0) {
+			if (str_starts_with($file_name, Paths::$project_root)) {
 				$file_name = substr($file_name, strlen(Paths::$project_root) + 1);
 				// if path_prefix file, remove this part
-				if ($path_prefix && strpos($file_name, $path_prefix) === 0) {
+				if ($path_prefix && str_starts_with($file_name, $path_prefix)) {
 					$file_name = substr($file_name, strlen($path_prefix));
 				}
 			}
@@ -109,7 +109,7 @@ class Include_Filter extends php_user_filter
 	 * @param $closing  boolean
 	 * @return integer
 	 */
-	public function filter($in, $out, &$consumed, $closing)
+	public function filter($in, $out, &$consumed, bool $closing) : int
 	{
 		while ($bucket = stream_bucket_make_writeable($in)) {
 			$consumed = $bucket->datalen;
@@ -119,7 +119,6 @@ class Include_Filter extends php_user_filter
 				}
 				$bucket->data    = file_get_contents(self::$file_name);
 				$bucket->datalen = strlen($bucket->data);
-				/** @noinspection PhpParamsInspection inspector bug */
 				stream_bucket_append($out, $bucket);
 				self::$file_name = null;
 			}
@@ -133,7 +132,7 @@ class Include_Filter extends php_user_filter
 	 *
 	 * @return string
 	 */
-	public static function getCacheDir()
+	public static function getCacheDir() : string
 	{
 		return self::CACHE_DIR;
 	}
@@ -142,7 +141,7 @@ class Include_Filter extends php_user_filter
 	/**
 	 * @return boolean true if well registered
 	 */
-	public static function register()
+	public static function register() : bool
 	{
 		return stream_filter_register(self::ID, __CLASS__) or die('Failed to register filter');
 	}

@@ -21,14 +21,15 @@ class Getter_Annotation extends Method_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $property        Reflection|Reflection_Property
 	 * @param $annotation_name string
 	 */
 	public function __construct(
-		$value,
-		Reflection $property,
-		/** @noinspection PhpUnusedParameterInspection */ $annotation_name = self::ANNOTATION
+		/** @noinspection PhpUnusedParameterInspection */
+		string|null $value,
+		Reflection|Reflection_Property $property,
+		string $annotation_name = self::ANNOTATION
 	) {
 		parent::__construct($value, $property, self::ANNOTATION);
 		if (empty($this->value)) {

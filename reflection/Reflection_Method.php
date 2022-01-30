@@ -19,7 +19,7 @@ class Reflection_Method extends ReflectionMethod
 	/**
 	 * @return string[]
 	 */
-	protected function getAnnotationCachePath()
+	protected function getAnnotationCachePath() : array
 	{
 		return [$this->class, $this->name . '()'];
 	}
@@ -30,7 +30,7 @@ class Reflection_Method extends ReflectionMethod
 	 *
 	 * @return string
 	 */
-	public function getDeclaringClassName()
+	public function getDeclaringClassName() : string
 	{
 		return $this->class;
 	}
@@ -39,10 +39,10 @@ class Reflection_Method extends ReflectionMethod
 	/**
 	 * TODO LOWEST parent methods read
 	 *
-	 * @param $flags integer[]
+	 * @param $flags integer[]|null
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [])
+	public function getDocComment(array|null $flags = []) : string
 	{
 		return parent::getDocComment();
 	}
@@ -54,7 +54,7 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $by_name boolean
 	 * @return Reflection_Parameter[]
 	 */
-	public function getMandatoryParameters($by_name = true)
+	public function getMandatoryParameters(bool $by_name = true) : array
 	{
 		$parameters = [];
 		foreach ($this->getParameters($by_name) as $key => $parameter) {
@@ -70,7 +70,7 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $parameter_name string
 	 * @return Reflection_Parameter
 	 */
-	public function getParameter($parameter_name)
+	public function getParameter(string $parameter_name) : Reflection_Parameter
 	{
 		return $this->getParameters()[$parameter_name];
 	}
@@ -81,11 +81,10 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $by_name boolean
 	 * @return Reflection_Parameter[]
 	 */
-	public function getParameters($by_name = true)
+	public function getParameters(bool $by_name = true) : array
 	{
 		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
-			/** @noinspection PhpParamsInspection callable is accepted instead of string */
 			/** @noinspection PhpUnhandledExceptionInspection from parent::getParameters */
 			$parameters[$by_name ? $parameter->name : $key] = new Reflection_Parameter(
 				[$this->class, $this->name], $parameter->name
@@ -100,7 +99,7 @@ class Reflection_Method extends ReflectionMethod
 	 *
 	 * @return string ie '$param1, $param2, $param3'
 	 */
-	public function getParametersCall()
+	public function getParametersCall() : string
 	{
 		$parameters_names = $this->getParametersNames();
 		return $parameters_names ? ('$' . join(', $', $this->getParametersNames())) : '';
@@ -111,7 +110,7 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames($by_name = true)
+	public function getParametersNames(bool $by_name = true) : array
 	{
 		$parameter_names = array_keys($this->getParameters());
 		return $by_name ? array_combine($parameter_names, $parameter_names) : $parameter_names;
@@ -124,7 +123,7 @@ class Reflection_Method extends ReflectionMethod
 	 *
 	 * @return string
 	 */
-	public function getPrototypeString()
+	public function getPrototypeString() : string
 	{
 		$parameters = $this->getParameters();
 		return ($this->isAbstract() ? 'abstract ' : '')
@@ -142,7 +141,7 @@ class Reflection_Method extends ReflectionMethod
 	 * @param $parameter_name string
 	 * @return boolean
 	 */
-	public function hasParameter($parameter_name)
+	public function hasParameter(string $parameter_name) : bool
 	{
 		foreach (parent::getParameters() as $parameter) {
 			if ($parameter->name === $parameter_name) {
@@ -156,7 +155,7 @@ class Reflection_Method extends ReflectionMethod
 	/**
 	 * @return string
 	 */
-	public function returns()
+	public function returns() : string
 	{
 		return $this->getAnnotation('return')->value;
 	}

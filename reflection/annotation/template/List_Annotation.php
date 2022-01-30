@@ -7,17 +7,11 @@ use ITRocks\Framework\Reflection\Annotation;
  * A list annotation can store multiple values, separated by commas
  *
  * @example annotation value 1, value 2,'value 3', 'value 4'
+ * @override value @var ?string[]
+ * @property ?string[] value
  */
 class List_Annotation extends Annotation
 {
-
-	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * Annotation value
-	 *
-	 * @var string[]
-	 */
-	public $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -25,12 +19,13 @@ class List_Annotation extends Annotation
 	 * Spaces before and after commas are ignored.
 	 *
 	 * @example '@values First value, Second one, etc'
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
+		parent::__construct($value);
 		$values   = [];
-		$value    = trim($value);
+		$value    = trim(strval($value));
 		$length   = strlen($value);
 		$in_quote = ($length && (($value[0] === Q) || ($value[0] === DQ))) ? $value[0] : false;
 		$start    = ($in_quote ? 1 : 0);
@@ -76,17 +71,16 @@ class List_Annotation extends Annotation
 		if (($position == $length) && ($values || ($position > $start))) {
 			$values[] = substr($value, $start, $position - $start);
 		}
-		/** @noinspection PhpParamsInspection $values is now a string[] */
-		parent::__construct($values);
+		$this->value = $values;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
-		return '[' . strval(join(',', $this->value)) . ']';
+		return '[' . join(',', $this->value) . ']';
 	}
 
 	//------------------------------------------------------------------------------------------- add
@@ -95,7 +89,7 @@ class List_Annotation extends Annotation
 	 *
 	 * @param $value string
 	 */
-	public function add($value)
+	public function add(string $value)
 	{
 		if (!$this->has($value)) {
 			$this->value[] = $value;
@@ -109,7 +103,7 @@ class List_Annotation extends Annotation
 	 * @param $value string
 	 * @return boolean
 	 */
-	public function has($value)
+	public function has(string $value) : bool
 	{
 		return in_array($value, $this->value);
 	}
@@ -122,7 +116,7 @@ class List_Annotation extends Annotation
 	 * @param $value string
 	 * @return boolean
 	 */
-	public function remove($value)
+	public function remove(string $value) : bool
 	{
 		$key = array_search($value, $this->value);
 		if ($key !== false) {
@@ -136,7 +130,7 @@ class List_Annotation extends Annotation
 	/**
 	 * @return string[]
 	 */
-	public function values()
+	public function values() : array
 	{
 		return $this->value;
 	}

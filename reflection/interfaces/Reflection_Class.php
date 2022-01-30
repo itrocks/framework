@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Reflection\Interfaces;
 
 /**
- * An interface for all reflection class classes
+ * An interface for all reflection classes
  */
 interface Reflection_Class extends Reflection
 {
@@ -14,7 +14,7 @@ interface Reflection_Class extends Reflection
 	/**
 	 * @return string The name of the class
 	 */
-	public function __toString();
+	public function __toString() : string;
 
 	//----------------------------------------------------------------------------------- getConstant
 	/**
@@ -23,24 +23,24 @@ interface Reflection_Class extends Reflection
 	 * @param $name string
 	 * @return mixed
 	 */
-	public function getConstant(string $name);
+	public function getConstant(string $name) : mixed;
 
 	//---------------------------------------------------------------------------------- getConstants
 	/**
 	 * Gets defined constants from a class
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_USE
-	 * @return mixed[] Constant name in key, constant value in value
+	 * @return array Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE]);
+	public function getConstants($flags = [T_EXTENDS, T_USE]) : array;
 
 	//-------------------------------------------------------------------------------- getConstructor
 	/**
 	 * Gets the constructor of the reflected class
 	 *
-	 * @return Reflection_Method
+	 * @return ?Reflection_Method
 	 */
-	public function getConstructor();
+	public function getConstructor() : ?Reflection_Method;
 
 	//-------------------------------------------------------------------------- getDefaultProperties
 	/**
@@ -49,15 +49,15 @@ interface Reflection_Class extends Reflection
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */
-	public function getDefaultProperties(array $flags = []);
+	public function getDefaultProperties(array $flags = []) : array;
 
 	//----------------------------------------------------------------------------------- getFileName
 	/**
 	 * Gets the filename of the file in which the class has been defined
 	 *
-	 * @return string
+	 * @return string|false
 	 */
-	public function getFileName();
+	public function getFileName() : string|false;
 
 	//----------------------------------------------------------------------------- getInterfaceNames
 	/**
@@ -65,7 +65,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return string[]
 	 */
-	public function getInterfaceNames();
+	public function getInterfaceNames() : array;
 
 	//--------------------------------------------------------------------------------- getInterfaces
 	/**
@@ -73,7 +73,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return Reflection_Class[]
 	 */
-	public function getInterfaces();
+	public function getInterfaces() : array;
 
 	//------------------------------------------------------------------------------------ getMethods
 	/**
@@ -82,11 +82,11 @@ interface Reflection_Class extends Reflection
 	 * Only methods visible for current class are retrieved, not the privates ones from parents or
 	 * traits.
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the method name
 	 * integer
 	 */
-	public function getMethods($flags = null);
+	public function getMethods($flags = null) : array;
 
 	//------------------------------------------------------------------------------ getNamespaceName
 	/**
@@ -94,15 +94,15 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return string
 	 */
-	public function getNamespaceName();
+	public function getNamespaceName() : string;
 
 	//-------------------------------------------------------------------------------- getParentClass
 	/**
 	 * Gets parent class
 	 *
-	 * @return Reflection_Class
+	 * @return ?Reflection_Class
 	 */
-	public function getParentClass();
+	public function getParentClass() : ?Reflection_Class;
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
@@ -112,12 +112,11 @@ interface Reflection_Class extends Reflection
 	 * retrieved but if you set T_EXTENDS and T_USE to get them.
 	 * If you set self::T_SORT properties will be sorted by (@)display_order class annotation
 	 *
-	 * @param $flags       integer[] Restriction.
+	 * @param $flags       integer[]|null Restriction.
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
-	 * @param $final_class string force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null, $final_class = null);
+	public function getProperties($flags = null) : array;
 
 	//----------------------------------------------------------------------------------- getProperty
 	/**
@@ -127,17 +126,17 @@ interface Reflection_Class extends Reflection
 	 * classes or traits.
 	 *
 	 * @param $name string The name of the property to get
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
-	public function getProperty($name);
+	public function getProperty(string $name) : ?Reflection_Property;
 
 	//---------------------------------------------------------------------------------- getStartLine
 	/**
 	 * Gets starting line number
 	 *
-	 * @return integer
+	 * @return integer|false
 	 */
-	public function getStartLine();
+	public function getStartLine() : int|false;
 
 	//--------------------------------------------------------------------------------- getTraitNames
 	/**
@@ -145,7 +144,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return string[]
 	 */
-	public function getTraitNames();
+	public function getTraitNames() : array;
 
 	//------------------------------------------------------------------------------------- getTraits
 	/**
@@ -153,7 +152,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return Reflection_Class[]
 	 */
-	public function getTraits();
+	public function getTraits() : array;
 
 	//----------------------------------------------------------------------------------- inNamespace
 	/**
@@ -161,7 +160,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function inNamespace();
+	public function inNamespace() : bool;
 
 	//------------------------------------------------------------------------------------------- isA
 	/**
@@ -171,7 +170,7 @@ interface Reflection_Class extends Reflection
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
 	 */
-	public function isA($name, array $flags = []);
+	public function isA(string $name, array $flags = []) : bool;
 
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
@@ -179,7 +178,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isAbstract();
+	public function isAbstract() : bool;
 
 	//--------------------------------------------------------------------------------------- isClass
 	/**
@@ -187,7 +186,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isClass();
+	public function isClass() : bool;
 
 	//--------------------------------------------------------------------------------------- isFinal
 	/**
@@ -195,7 +194,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isFinal();
+	public function isFinal() : bool;
 
 	//------------------------------------------------------------------------------------ isInstance
 	/**
@@ -204,7 +203,7 @@ interface Reflection_Class extends Reflection
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function isInstance(object $object);
+	public function isInstance(object $object) : bool;
 
 	//----------------------------------------------------------------------------------- isInterface
 	/**
@@ -212,7 +211,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isInterface();
+	public function isInterface() : bool;
 
 	//------------------------------------------------------------------------------------ isInternal
 	/**
@@ -220,7 +219,7 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isInternal();
+	public function isInternal() : bool;
 
 	//--------------------------------------------------------------------------------- isUserDefined
 	/**
@@ -228,6 +227,6 @@ interface Reflection_Class extends Reflection
 	 *
 	 * @return boolean
 	 */
-	public function isUserDefined();
+	public function isUserDefined() : bool;
 
 }

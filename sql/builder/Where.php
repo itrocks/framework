@@ -86,7 +86,7 @@ class Where implements With_Build_Column
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->build();
 	}

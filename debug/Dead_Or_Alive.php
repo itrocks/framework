@@ -56,7 +56,7 @@ class Dead_Or_Alive
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->file . ':' . $this->line . ':' . $this->identifier;
 	}

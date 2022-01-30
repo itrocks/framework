@@ -16,7 +16,7 @@ class Reflection_Function extends ReflectionFunction
 	 * @param $parameter_name string
 	 * @return Reflection_Parameter
 	 */
-	public function getParameter($parameter_name)
+	public function getParameter(string $parameter_name) : Reflection_Parameter
 	{
 		return $this->getParameters()[$parameter_name];
 	}
@@ -27,7 +27,7 @@ class Reflection_Function extends ReflectionFunction
 	 * @param $by_name boolean
 	 * @return Reflection_Parameter[]
 	 */
-	public function getParameters($by_name = true)
+	public function getParameters(bool $by_name = true) : array
 	{
 		$parameters = [];
 		foreach (parent::getParameters() as $key => $parameter) {
@@ -44,7 +44,7 @@ class Reflection_Function extends ReflectionFunction
 	 * @param $parameter_name string
 	 * @return boolean
 	 */
-	public function hasParameter($parameter_name)
+	public function hasParameter(string $parameter_name) : bool
 	{
 		foreach (parent::getParameters() as $parameter) {
 			if ($parameter->name === $parameter_name) {

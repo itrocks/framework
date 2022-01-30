@@ -18,19 +18,21 @@ trait Feature_Annotation
 	/**
 	 * @var Reflection_Class
 	 */
-	protected static $context;
+	protected static Reflection_Class $context;
 
 	//----------------------------------------------------------------------------------------- allOf
 	/**
 	 * @param $reflection_object Reflection|Reflection_Class
-	 * @param $context           Reflection|Reflection_Class for internal use
+	 * @param $context           Reflection|Reflection_Class|null for internal use
 	 * @return static[]
 	 */
-	public static function allOf(Reflection $reflection_object, Reflection $context = null)
+	public static function allOf(
+		Reflection|Reflection_Class $reflection_object, Reflection|Reflection_Class $context = null
+	) : array
 	{
 		static::$context = $context ?: $reflection_object;
 
-		/** @noinspection PhpUndefinedClassInspection */
+		/** @noinspection PhpMultipleClassDeclarationsInspection */
 		/** @see Annotation::allOf */
 		/** @var $this Annotation|static */
 		$annotations = parent::allOf($reflection_object);
@@ -56,7 +58,7 @@ trait Feature_Annotation
 	 * @param $reflection_object Reflection_Class
 	 * @return boolean
 	 */
-	private static function hasFeatureAnnotation(Reflection_Class $reflection_object)
+	private static function hasFeatureAnnotation(Reflection_Class $reflection_object) : bool
 	{
 		foreach (Class_\Feature_Annotation::allOf($reflection_object) as $feature_annotation) {
 			if (ctype_upper(substr($feature_annotation->value, 0, 1))) {

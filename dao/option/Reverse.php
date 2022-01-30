@@ -30,7 +30,7 @@ class Reverse implements Option
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->column . SP . 'reverse';
 	}

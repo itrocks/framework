@@ -27,10 +27,10 @@ class Sort_Annotation extends Template\List_Annotation implements Class_Context_
 	 * Default representative is the list of non-static properties of the class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct($value);
 		// default sort : all representative values but links

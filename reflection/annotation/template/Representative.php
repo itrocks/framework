@@ -14,22 +14,22 @@ class Representative extends List_Annotation
 	/**
 	 * @var Reflection_Class
 	 */
-	private $class;
+	private Reflection_Class $class;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Reflection_Property[]
 	 */
-	protected $properties;
+	protected array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Builds representative annotation content
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct($value);
 		$this->class = $class;
@@ -41,11 +41,11 @@ class Representative extends List_Annotation
 	 *
 	 * @param $value string
 	 */
-	public function add($value)
+	public function add(string $value)
 	{
 		if (!$this->has($value)) {
 			parent::add($value);
-			$this->properties = null;
+			$this->properties = [];
 		}
 	}
 
@@ -53,9 +53,9 @@ class Representative extends List_Annotation
 	/**
 	 * @return Reflection_Property[]
 	 */
-	public function getProperties()
+	public function getProperties() : array
 	{
-		if (!isset($this->properties)) {
+		if (!$this->properties) {
 			$this->properties = [];
 			$properties       = $this->class->getProperties([T_EXTENDS, T_USE]);
 			foreach ($this->values() as $property_path) {
@@ -75,7 +75,7 @@ class Representative extends List_Annotation
 	/**
 	 * @return string[]
 	 */
-	public function getPropertyNames()
+	public function getPropertyNames() : array
 	{
 		return $this->value;
 	}
@@ -88,10 +88,10 @@ class Representative extends List_Annotation
 	 * @param $value string
 	 * @return boolean
 	 */
-	public function remove($value)
+	public function remove(string $value) : bool
 	{
 		if (parent::remove($value)) {
-			$this->properties = null;
+			$this->properties = [];
 			return true;
 		}
 		return false;

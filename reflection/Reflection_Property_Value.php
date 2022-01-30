@@ -23,9 +23,9 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Keep this null to calculate automatically, fill this only to force display
 	 * The display stored here must already be translated
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	public $display = null;
+	public string $display = '';
 
 	//---------------------------------------------------------------------------------- $final_value
 	/**
@@ -34,7 +34,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var boolean
 	 */
-	private $final_value;
+	private bool $final_value;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
@@ -42,15 +42,15 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var object
 	 */
-	private $object;
+	private object $object;
 
 	//-------------------------------------------------------------------------------------- $tooltip
 	/**
 	 *  What will be displayed by the tooltip() function
 	 *
-	 * @var string|null
+	 * @var string
 	 */
-	public $tooltip = null;
+	public string $tooltip = '';
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
@@ -58,7 +58,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var boolean
 	 */
-	public $user;
+	public bool $user;
 
 	//------------------------------------------------------------------------------------ $view_path
 	/**
@@ -67,7 +67,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var string
 	 */
-	public $view_path;
+	public string $view_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -86,7 +86,8 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @throws ReflectionException
 	 */
 	public function __construct(
-		$class_name, $property_name, $object = null, $final_value = false, $user = false
+		object|string $class_name, string $property_name, mixed $object = null,
+		bool $final_value = false, bool $user = false
 	) {
 		parent::__construct($class_name, $property_name);
 		$this->final_value = $final_value;
@@ -353,17 +354,6 @@ class Reflection_Property_Value extends Reflection_Property
 			}
 		}
 		return $path;
-	}
-
-	//--------------------------------------------------------------------------------------- tooltip
-	/**
-	 * Returns the reflection property tooltip
-	 *
-	 * @return string
-	 */
-	public function tooltip()
-	{
-		return $this->tooltip;
 	}
 
 	//------------------------------------------------------------------------------------------ unit

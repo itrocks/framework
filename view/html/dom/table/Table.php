@@ -41,7 +41,7 @@ class Table extends Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$content = '';
 		if (isset($this->head)) $content   .= LF . $this->head;

@@ -20,7 +20,7 @@ trait Has_Number
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->number);
 	}

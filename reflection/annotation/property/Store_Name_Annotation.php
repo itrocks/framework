@@ -16,10 +16,10 @@ class Store_Name_Annotation extends Annotation implements Property_Context_Annot
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value               string
+	 * @param $value               ?string
 	 * @param $reflection_property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_property)
+	public function __construct(?string $value, Reflection_Property $reflection_property)
 	{
 		if (!$value) {
 			$value = $reflection_property->getName();

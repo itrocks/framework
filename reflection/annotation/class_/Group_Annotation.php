@@ -26,15 +26,16 @@ class Group_Annotation extends Template\List_Annotation implements Multiple_Anno
 	 *
 	 * @var string
 	 */
-	public $name;
+	public string $name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
-		$i = strpos($value, ',');
+		$value = strval($value);
+		$i     = strpos($value, ',');
 		if ($i === false) {
 			$i = strlen($value);
 		}
@@ -52,9 +53,9 @@ class Group_Annotation extends Template\List_Annotation implements Multiple_Anno
 	 *
 	 * @param $groups static[]
 	 * @param $name   string
-	 * @return static|null
+	 * @return ?static
 	 */
-	public static function searchGroup(array $groups, $name)
+	public static function searchGroup(array $groups, string $name) : ?static
 	{
 		foreach ($groups as $group) {
 			if ($group->name === $name) {
@@ -70,9 +71,11 @@ class Group_Annotation extends Template\List_Annotation implements Multiple_Anno
 	 *
 	 * @param $groups   static[]
 	 * @param $property string|Reflection_Property
-	 * @return static|null
+	 * @return ?static
 	 */
-	public static function searchProperty(array $groups, $property)
+	public static function searchProperty(
+		array $groups, string|Reflection_Property $property
+	) : ?static
 	{
 		$property_name = is_object($property) ? $property->getName() : $property;
 		foreach ($groups as $group) {

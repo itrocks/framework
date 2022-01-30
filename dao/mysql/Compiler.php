@@ -29,10 +29,10 @@ class Compiler implements ICompiler
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source the PHP source file object
-	 * @param $compiler PHP\Compiler the main compiler
+	 * @param $compiler PHP\Compiler|null the main compiler
 	 * @return boolean false as compilation do never change source
 	 */
-	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null) : bool
 	{
 		return false;
 	}

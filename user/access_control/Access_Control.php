@@ -119,7 +119,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return 'Controlled access';
 	}

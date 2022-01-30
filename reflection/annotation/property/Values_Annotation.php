@@ -22,10 +22,10 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		if (count($this->values()) === 1) {
@@ -35,11 +35,11 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 		}
 		if (isset($value)) {
 			$type = $property->getType();
-			switch ($type->getElementTypeAsString()) {
-				case Type::FLOAT:   $function = 'floatval'; break;
-				case Type::INTEGER: $function = 'intval';   break;
-				default:            $function = 'strval';
-			}
+			$function = match($type->getElementTypeAsString()) {
+				Type::FLOAT   => 'floatval',
+				Type::INTEGER => 'intval',
+				default       => 'strval'
+			};
 			foreach ($this->values() as $key => $value) {
 				$this->value[$key] = $function($value);
 			}
@@ -51,7 +51,7 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 	 * @param $from     string
 	 * @param $property Reflection_Property
 	 */
-	private function importValues($from, Reflection_Property $property)
+	private function importValues(string $from, Reflection_Property $property)
 	{
 		list($value, $option)    = strpos($from, SP) ? explode(SP, $from, 2) : [$from, null];
 		list($class_name, $what) = explode(

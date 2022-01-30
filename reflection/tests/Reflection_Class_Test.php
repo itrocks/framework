@@ -19,14 +19,12 @@ class Reflection_Class_Test extends Test
 
 	//------------------------------------------------------------------------------------ properties
 	/**
-	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $date   Reflection_Property
 	 * @param $number Reflection_Property
 	 * @return Reflection_Property[]
 	 */
-	private function properties(Reflection_Property $date, Reflection_Property $number)
+	private function properties(Reflection_Property $date, Reflection_Property $number) : array
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant properties of Order */
 		return [
 			'date'            => $date,
 			'number'          => $number,
@@ -44,14 +42,14 @@ class Reflection_Class_Test extends Test
 	 * @param $class      Reflection_Class
 	 * @param $test_order Order
 	 */
-	private function shouldBeInaccessible($method, Reflection_Class $class, Order $test_order)
+	private function shouldBeInaccessible(string $method, Reflection_Class $class, Order $test_order)
 	{
 		$check = [];
 		foreach ($class->getProperties([T_EXTENDS, T_USE]) as $property) {
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				$check[$property->name] = self::INACCESSIBLE;
 			}
 		}
@@ -71,12 +69,8 @@ class Reflection_Class_Test extends Test
 	}
 
 	//-------------------------------------------------------------------------- testAccessProperties
-	/**
-	 * @noinspection PhpDocMissingThrowsInspection
-	 */
 	public function testAccessProperties()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		$class                    = new Reflection_Class(Order::class);
 		$today                    = date('Y-m-d');
 		$test_order               = new Order($today, 'CDE001');
@@ -86,9 +80,7 @@ class Reflection_Class_Test extends Test
 		$this->shouldBeInaccessible(__METHOD__ . '.1 (getAllProperties)', $class, $test_order);
 
 		// does access properties return properties list ?
-		/** @noinspection PhpUnhandledExceptionInspection valid constant property name */
-		$date = new Reflection_Property(Document::class, 'date');
-		/** @noinspection PhpUnhandledExceptionInspection valid constant property name */
+		$date   = new Reflection_Property(Document::class, 'date');
 		$number = new Reflection_Property(Document::class, 'number');
 
 		$date->final_class = $number->final_class = Order::class;
@@ -104,7 +96,7 @@ class Reflection_Class_Test extends Test
 			try {
 				$check[$property->name] = $property->getValue($test_order);
 			}
-			catch (ReflectionException $e) {
+			catch (ReflectionException) {
 				$check[$property->name] = 'inaccessible';
 			}
 		}
@@ -130,12 +122,9 @@ class Reflection_Class_Test extends Test
 	//---------------------------------------------------------------------- testAccessPropertiesDone
 	/**
 	 * Test access properties done
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testAccessPropertiesDone()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		$class                    = new Reflection_Class(Order::class);
 		$test_order               = new Order(date('Y-m-d'), 'CDE001');
 		$test_order->has_workflow = true;
@@ -148,18 +137,13 @@ class Reflection_Class_Test extends Test
 	//-------------------------------------------------------------------------- testGetAllProperties
 	/**
 	 * Test get all properties
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testGetAllProperties()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant property */
-		$date = new Reflection_Property(Document::class, 'date');
-		/** @noinspection PhpUnhandledExceptionInspection constant property */
+		$date   = new Reflection_Property(Document::class, 'date');
 		$number = new Reflection_Property(Document::class, 'number');
 
 		$date->final_class = $number->final_class = Order::class;
-		/** @noinspection PhpUnhandledExceptionInspection constant class name */
 		static::assertEquals(
 			$this->properties($date, $number),
 			(new Reflection_Class(Order::class))->getProperties([T_EXTENDS, T_USE])

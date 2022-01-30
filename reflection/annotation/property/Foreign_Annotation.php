@@ -26,11 +26,11 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 * @throws ReflectionException
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
@@ -72,7 +72,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 * @return string[] Possibles properties names
 	 * @throws ReflectionException
 	 */
-	private function defaultCollection(Reflection_Property $property)
+	private function defaultCollection(Reflection_Property $property) : array
 	{
 		$possibles        = [];
 		$foreign_class    = $this->getForeignClass($property);
@@ -99,7 +99,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 * @return string[] Possibles properties names
 	 * @throws ReflectionException
 	 */
-	private function defaultMap(Reflection_Property $property)
+	private function defaultMap(Reflection_Property $property) : array
 	{
 		$possibles = [];
 		$foreign_class = $this->getForeignClass($property);
@@ -134,7 +134,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 * @return string[] Possibles properties names
 	 * @throws ReflectionException
 	 */
-	private function defaultObject(Reflection_Property $property)
+	private function defaultObject(Reflection_Property $property) : array
 	{
 		$possibles     = [];
 		$foreign_class = $this->getForeignClass($property);
@@ -162,7 +162,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 * @return Reflection_Class
 	 * @throws ReflectionException
 	 */
-	private function getForeignClass(Reflection_Property $property)
+	private function getForeignClass(Reflection_Property $property) : Reflection_Class
 	{
 		$type               = $property->getType();
 		$foreign_class_name = Builder::className($type->getElementTypeAsString());
@@ -186,7 +186,7 @@ class Foreign_Annotation extends Documented_Type_Annotation implements Property_
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[]
 	 */
-	private function reduceToComposites(array $properties)
+	private function reduceToComposites(array $properties) : array
 	{
 		if (count($properties) > 1) {
 			$composite_properties = [];

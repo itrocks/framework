@@ -139,7 +139,7 @@ class Join
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->toSql() . ' [' . $this->type . ']';
 	}

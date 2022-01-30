@@ -21,19 +21,20 @@ class Annotation
 	/**
 	 * Annotation value
 	 *
-	 * @var string
+	 * @var array|bool|null|string
 	 */
-	public $value;
+	public array|bool|null|string $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Default annotation constructor receive the full doc text content
 	 *
-	 * Annotation class will have to parse it ie for several parameters or specific syntax, or if they want to store specific typed or calculated value
+	 * Annotation class will have to parse it ie for several parameters or specific syntax,
+	 * or if they want to store specific typed or calculated value
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		$this->value = $value;
 	}
@@ -42,7 +43,7 @@ class Annotation
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->value);
 	}
@@ -55,7 +56,7 @@ class Annotation
 	 * @return static[]
 	 * @see Annoted::getAnnotation
 	 */
-	public static function allOf(Reflection $reflection_object)
+	public static function allOf(Reflection $reflection_object) : array
 	{
 		return $reflection_object->getAnnotations(
 			static::ANNOTATION ?: strtolower(lLastParse(static::class, '_Annotation'))
@@ -67,7 +68,7 @@ class Annotation
 	 * @param $class_name string
 	 * @return string
 	 */
-	private static function classNameToAnnotationName($class_name)
+	private static function classNameToAnnotationName(string $class_name) : string
 	{
 		return Names::classToDisplay(
 			lLastParse(Namespaces::shortClassName($class_name), '_Annotation')
@@ -81,6 +82,7 @@ class Annotation
 	 * @return boolean
 	 */
 	public static function equals(Reflection $reflection_object, Reflection $other_reflection_object)
+		: bool
 	{
 		return (static::of($reflection_object)->value === static::of($other_reflection_object)->value);
 	}
@@ -91,7 +93,7 @@ class Annotation
 	 *
 	 * @return string
 	 */
-	public function getAnnotationName()
+	public function getAnnotationName() : string
 	{
 		return self::classNameToAnnotationName(get_class($this));
 	}
@@ -104,7 +106,7 @@ class Annotation
 	 * @return static
 	 * @see Annoted::setAnnotationLocal
 	 */
-	public static function local(Reflection $reflection_object)
+	public static function local(Reflection $reflection_object) : static
 	{
 		return $reflection_object->setAnnotationLocal(
 			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)
@@ -117,7 +119,7 @@ class Annotation
 	 * @return static
 	 * @see Annoted::getAnnotation
 	 */
-	public static function of(Reflection $reflection_object)
+	public static function of(Reflection $reflection_object) : static
 	{
 		return $reflection_object->getAnnotation(
 			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)
@@ -130,7 +132,7 @@ class Annotation
 	 * @param $reflection_object Reflection
 	 * @return static
 	 */
-	public static function setLocal(Reflection $reflection_object)
+	public static function setLocal(Reflection $reflection_object) : static
 	{
 		return $reflection_object->setAnnotationLocal(
 			static::ANNOTATION ?: self::classNameToAnnotationName(static::class)

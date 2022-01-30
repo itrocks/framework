@@ -26,7 +26,7 @@ class Filter_Annotation extends Method_Annotation
 	 *
 	 * @var boolean
 	 */
-	public $for_use;
+	public bool $for_use;
 
 	//------------------------------------------------------------------------------------- $for_view
 	/**
@@ -34,7 +34,7 @@ class Filter_Annotation extends Method_Annotation
 	 *
 	 * @var boolean
 	 */
-	public $for_view;
+	public bool $for_view;
 
 	//--------------------------------------------------------------------------------- $none_for_all
 	/**
@@ -43,22 +43,25 @@ class Filter_Annotation extends Method_Annotation
 	 *
 	 * @var boolean
 	 */
-	public $none_for_all;
+	public bool $none_for_all;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var string[]
 	 */
-	public $properties = [];
+	public array $properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
-	 * @param $class           Interfaces\Reflection_Class|Interfaces\Reflection
+	 * @param $value           ?string
+	 * @param $class           Interfaces\Reflection|Interfaces\Reflection_Class
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Interfaces\Reflection $class, $annotation_name = null)
-	{
+	public function __construct(
+		?string $value,
+		Interfaces\Reflection|Interfaces\Reflection_Class $class,
+		string $annotation_name = ''
+	) {
 		if (strpos($value, SP)) {
 			list($value, $options) = explode(SP, $value, 2);
 		}
@@ -96,9 +99,11 @@ class Filter_Annotation extends Method_Annotation
 	 * @param $class   string|Reflection_Class
 	 * @param $options array search options
 	 * @param $for     string null means 'for any' @values for_use, for_view
-	 * @return object
+	 * @return ?object
 	 */
-	public static function apply($class, array &$options, $for = null)
+	public static function apply(
+		string|Reflection_Class $class, array &$options, string $for = ''
+	) : ?object
 	{
 		if (is_string($class)) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -138,10 +143,7 @@ class Filter_Annotation extends Method_Annotation
 					}
 				}
 			}
-			$search = (count($search) > 1)
-				? Func::andOp($search)
-				: ($search ? reset($search) : null);
-			return $search;
+			return (count($search) > 1) ? Func::andOp($search) : ($search ? reset($search) : null);
 		}
 		return null;
 	}

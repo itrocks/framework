@@ -97,7 +97,7 @@ abstract class Link extends Identifier_Map implements Transactional
 	 * Fetch a result from a result set to an array
 	 *
 	 * @param $result_set mixed The result set : in most cases, will come from query()
-	 * @return mixed[]
+	 * @return array
 	 */
 	public abstract function fetchRow($result_set);
 

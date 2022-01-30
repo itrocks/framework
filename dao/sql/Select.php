@@ -294,7 +294,7 @@ class Select
 	 * - If $object is an array, it keeps and replaces Reflection_Property_Value element by its value
 	 *
 	 * @param $object array|object|null if already an array, nothing will be done
-	 * @return mixed[] keys are properties paths
+	 * @return array keys are properties paths
 	 */
 	private function objectToProperties($object)
 	{

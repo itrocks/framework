@@ -76,7 +76,7 @@ class Logical implements Negate, Where
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return Names::classToDisplay(static::class) . SP . static::HUMAN[$this->operator];
 	}

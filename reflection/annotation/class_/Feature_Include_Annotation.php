@@ -18,10 +18,10 @@ class Feature_Include_Annotation extends Constant_Or_Type_Annotation implements 
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class The contextual Reflection_Class object
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (static::$context) {
 			$class = static::$context;

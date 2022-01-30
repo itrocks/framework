@@ -31,7 +31,7 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return Loc::tr('valid value');
 	}

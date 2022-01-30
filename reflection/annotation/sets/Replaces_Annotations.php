@@ -37,7 +37,7 @@ abstract class Replaces_Annotations
 	 * @param $properties Reflection_Property[] key must be the name of the property
 	 * @return Reflection_Property[] all replaced properties has been replaced
 	 */
-	public static function replaceProperties(array $properties = null)
+	public static function replaceProperties(array $properties = null) : array
 	{
 		if ($properties) {
 			// replace properties with their replacement properties (key is still the old property name)

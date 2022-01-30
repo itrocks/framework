@@ -16,14 +16,14 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 	/**
 	 * @var Reflection_Property
 	 */
-	protected $property;
+	protected Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -35,7 +35,7 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 	 * @param $final_object object The referent object where to take values from (property path root)
 	 * @return string[]
 	 */
-	public function parse($final_object)
+	public function parse(object $final_object) : array
 	{
 		$filters        = [];
 		$filters_values = $this->values();

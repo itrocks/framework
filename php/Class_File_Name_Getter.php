@@ -13,8 +13,8 @@ interface Class_File_Name_Getter
 	 * Implemented by autoloaders.
 	 *
 	 * @param $class_name string
-	 * @return Reflection_Source|string
+	 * @return Reflection_Source|string|null
 	 */
-	public function getClassFileName($class_name);
+	public function getClassFileName(string $class_name) : Reflection_Source|string|null;
 
 }

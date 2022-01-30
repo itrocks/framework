@@ -16,8 +16,6 @@ class Doc_Comment_Annotations_Test extends Test
 	 * Test case :
 	 * A class implements an interface and inherits a class that implements the same interface
 	 * Will the annotation coming from the annotation be implemented once or twice ? Should once.
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testSameInterfaceTwice()
 	{

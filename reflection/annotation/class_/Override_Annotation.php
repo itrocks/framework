@@ -19,14 +19,14 @@ class Override_Annotation extends Template\List_Annotation implements Multiple_A
 	/**
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @noinspection PhpMissingParentConstructorInspection This does all the wark itself
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		foreach (explode(SP . AT, $value) as $override_annotation) {
 			$override_annotation = trim($override_annotation);
@@ -38,7 +38,7 @@ class Override_Annotation extends Template\List_Annotation implements Multiple_A
 					list($annotation_name, $annotation_value) = explode(SP, $override_annotation, 2);
 				}
 				else {
-					$annotation_name = $override_annotation;
+					$annotation_name  = $override_annotation;
 					$annotation_value = '';
 				}
 				$this->value[$annotation_name] = $annotation_value;

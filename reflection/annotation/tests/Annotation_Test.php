@@ -24,10 +24,10 @@ class Annotation_Test extends Test
 
 	//--------------------------------------------------------------------------- providerBeforeWrite
 	/**
-	 * @return array
+	 * @return string[][]
 	 * @see testBeforeWrite
 	 */
-	public function providerBeforeWrite()
+	public function providerBeforeWrite() : array
 	{
 		return [
 			'parsed' => [Item::class, Item::class . '::beforeWrite', 'before_write'],
@@ -40,7 +40,7 @@ class Annotation_Test extends Test
 	 * @return array
 	 * @see testBeforeWrite
 	 */
-	public function providerForeign()
+	public function providerForeign() : array
 	{
 		return [
 			'object'                             => [Order_Line::class, 'client', null], // 1A
@@ -65,9 +65,9 @@ class Annotation_Test extends Test
 
 	//--------------------------------------------------------------------------- providerForeignlink
 	/**
-	 * @return array
+	 * @return string[][]
 	 */
-	public function providerForeignlink()
+	public function providerForeignlink() : array
 	{
 		return [
 			'object'                             => [Order_Line::class, 'client', 'client'], // 1A
@@ -98,7 +98,7 @@ class Annotation_Test extends Test
 	 * @param $annotation_name string
 	 * @throws ReflectionException
 	 */
-	public function testBeforeWrite($class_name, $assumed_value, $annotation_name)
+	public function testBeforeWrite(string $class_name, mixed $assumed_value, string $annotation_name)
 	{
 		$class      = new Reflection_Class($class_name);
 		$annotation = $class->getAnnotation($annotation_name);
@@ -120,13 +120,14 @@ class Annotation_Test extends Test
 	 * @param $assumed_class   string
 	 */
 	public function testForeign(
-		$class_name, $property_name, $assumed_value, $annotation_name = null, $assumed_class = null
+		string $class_name, string $property_name, mixed $assumed_value, string $annotation_name = '',
+		string $assumed_class = ''
 	) {
-		if (!isset($annotation_name)) {
-			$annotation_name = Foreign_Annotation::ANNOTATION;
-		}
-		if (!isset($assumed_class)) {
+		if (!$assumed_class) {
 			$assumed_class = Foreign_Annotation::class;
+		}
+		if (!$annotation_name) {
+			$annotation_name = Foreign_Annotation::ANNOTATION;
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);
@@ -149,13 +150,14 @@ class Annotation_Test extends Test
 	 * @param $assumed_class   string
 	 */
 	public function testForeignlink(
-		$class_name, $property_name, $assumed_value, $annotation_name = null, $assumed_class = null
+		string $class_name, string $property_name, mixed $assumed_value, string $annotation_name = '',
+		string $assumed_class = ''
 	) {
-		if (!isset($annotation_name)) {
-			$annotation_name = 'foreignlink';
-		}
-		if (!isset($assumed_class)) {
+		if (!$assumed_class) {
 			$assumed_class = Foreignlink_Annotation::class;
+		}
+		if (!$annotation_name) {
+			$annotation_name = 'foreignlink';
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
 		$property   = new Reflection_Property($class_name, $property_name);

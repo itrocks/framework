@@ -1192,9 +1192,7 @@ class Link extends Dao\Sql\Link
 			$objects = $this->fetchAll($class_name, $options, $result_set);
 			array_pop($this->connection->contexts);
 			// store result in cache
-			if ($cache_result) {
-				$cache_result->cacheResult($what, $class_name, $options, $objects);
-			}
+			$cache_result?->cacheResult($what, $class_name, $options, $objects);
 		}
 
 		// after read

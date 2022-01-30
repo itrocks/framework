@@ -46,7 +46,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var string
 	 */
-	public $alias;
+	public string $alias;
 
 	//--------------------------------------------------------------------------------- $aliased_path
 	/**
@@ -55,7 +55,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @see $path
 	 * @var string
 	 */
-	public $aliased_path;
+	public string $aliased_path;
 
 	//------------------------------------------------------------------------------ $declaring_trait
 	/**
@@ -63,7 +63,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var Reflection_Class
 	 */
-	private $declaring_trait;
+	private Reflection_Class $declaring_trait;
 
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
@@ -71,7 +71,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var string
 	 */
-	private $doc_comment;
+	private string $doc_comment;
 
 	//---------------------------------------------------------------------------------- $final_class
 	/**
@@ -80,16 +80,16 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var string
 	 */
-	public $final_class;
+	public string $final_class;
 
 	//-------------------------------------------------------------------------- $overridden_property
 	/**
 	 * Only if the property is declared into a parent class as well as into the child class.
 	 * If not, this will be false.
 	 *
-	 * @var Reflection_Property|boolean
+	 * @var Reflection_Property|false
 	 */
-	private $overridden_property;
+	private Reflection_Property|false $overridden_property;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -97,7 +97,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var string
 	 */
-	public $path;
+	public string $path;
 
 	//----------------------------------------------------------------------------------- $root_class
 	/**
@@ -107,7 +107,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @var string
 	 */
-	public $root_class;
+	public string $root_class;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -115,7 +115,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $property_name string
 	 * @throws ReflectionException
 	 */
-	public function __construct($class_name, $property_name)
+	public function __construct(object|string $class_name, string $property_name)
 	{
 		if (is_object($class_name)) {
 			$object     = $class_name;
@@ -124,7 +124,7 @@ class Reflection_Property extends ReflectionProperty
 		if (strpos($property_name, ')')) {
 			$class_property = (new Path($class_name, $property_name))->toPropertyClassName();
 			if (count($class_property) === 2) {
-				list($class_name, $property_name) = $class_property;
+				[$class_name, $property_name] = $class_property;
 			}
 			// else : do nothing here, but it is not sure it this the right thing to do...
 		}
@@ -165,7 +165,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return string The name of the property
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->name;
 	}
@@ -177,13 +177,13 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $property_name string a property name or a property path starting from the class
 	 * @return boolean true if the property exists
 	 */
-	public static function exists($class_name, $property_name)
+	public static function exists(string $class_name, string $property_name) : bool
 	{
 		if (strpos($property_name, ')')) {
 			list($class_name, $property_name)
 				= (new Path($class_name, $property_name))->toPropertyClassName();
 		}
-		if (strpos($property_name, DOT) !== false) {
+		if (str_contains($property_name, DOT)) {
 			$properties_name = explode(DOT, $property_name);
 			foreach (array_slice($properties_name, 0, -1) as $property_name) {
 				if (!property_exists($class_name, $property_name)) {
@@ -208,7 +208,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @return Reflection_Property[]
 	 * @throws ReflectionException
 	 */
-	public static function filter(array $properties, $class_name)
+	public static function filter(array $properties, string $class_name) : array
 	{
 		$class_properties = (new Reflection_Class($class_name))->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $key => $property) {
@@ -223,7 +223,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return string[]
 	 */
-	protected function getAnnotationCachePath()
+	protected function getAnnotationCachePath() : array
 	{
 		return [$this->final_class, $this->name];
 	}
@@ -235,7 +235,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
-	public function getDeclaringClass()
+	public function getDeclaringClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->class is always valid */
 		return new Reflection_Class($this->class);
@@ -247,7 +247,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return string
 	 */
-	public function getDeclaringClassName()
+	public function getDeclaringClassName() : string
 	{
 		return $this->class;
 	}
@@ -259,7 +259,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return Reflection_Class
 	 */
-	public function getDeclaringTrait()
+	public function getDeclaringTrait() : Reflection_Class
 	{
 		if (!isset($this->declaring_trait)) {
 			$this->declaring_trait = $this->getDeclaringTraitInternal($this->getDeclaringClass())
@@ -271,9 +271,9 @@ class Reflection_Property extends ReflectionProperty
 	//--------------------------------------------------------------------- getDeclaringTraitInternal
 	/**
 	 * @param $class Reflection_Class
-	 * @return Reflection_Class
+	 * @return ?Reflection_Class
 	 */
-	private function getDeclaringTraitInternal(Reflection_Class $class)
+	private function getDeclaringTraitInternal(Reflection_Class $class) : ?Reflection_Class
 	{
 		$traits = $class->getTraits();
 		foreach ($traits as $trait) {
@@ -292,7 +292,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return string
 	 */
-	public function getDeclaringTraitName()
+	public function getDeclaringTraitName() : string
 	{
 		return $this->getDeclaringTrait()->getName();
 	}
@@ -306,10 +306,12 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
 	 *                        Set this to 'constant' to accept @default if @return_constant is set
-	 * @param $default_object object INTERNAL, DO NOT USE ! An empty object for optimization purpose
+	 * @param $default_object object|null INTERNAL, DO NOT USE ! Empty object for optimization purpose
 	 * @return mixed
 	 */
-	public function getDefaultValue($use_annotation = true, &$default_object = null)
+	public function getDefaultValue(
+		bool|string $use_annotation = true, object &$default_object = null
+	) : mixed
 	{
 		/** @var $default_annotation Method_Annotation */
 		if (
@@ -334,11 +336,11 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * TODO LOW use $flags ?
 	 *
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @param $cache boolean true if save cache
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [T_USE], $cache = true)
+	public function getDocComment(array|null $flags = [T_USE], bool $cache = true) : string
 	{
 		if (!isset($this->doc_comment) || !$cache) {
 			$overridden_property  = $this->getOverriddenProperty();
@@ -366,18 +368,18 @@ class Reflection_Property extends ReflectionProperty
 
 	//--------------------------------------------------------------------------------- getEmptyValue
 	/**
-	 * @return mixed
+	 * @return array|bool|float|int|null|string
 	 */
-	public function getEmptyValue()
+	public function getEmptyValue() : array|bool|float|int|null|string
 	{
-		switch ($this->getType()->asString()) {
-			case Type::_ARRAY:  return [];
-			case Type::BOOLEAN: return false;
-			case Type::FLOAT:   return .0;
-			case Type::INTEGER: return 0;
-			case Type::STRING:  return '';
-		}
-		return null;
+		return match($this->getType()->asString()) {
+			Type::_ARRAY  => [],
+			Type::BOOLEAN => false,
+			Type::FLOAT   => .0,
+			Type::INTEGER => 0,
+			Type::STRING  => '',
+			default       => null
+		};
 	}
 
 	//--------------------------------------------------------------------------------- getFinalClass
@@ -387,7 +389,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
-	public function getFinalClass()
+	public function getFinalClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->final_class is valid */
 		return new Reflection_Class($this->final_class);
@@ -399,7 +401,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return string
 	 */
-	public function getFinalClassName()
+	public function getFinalClassName() : string
 	{
 		return $this->final_class;
 	}
@@ -412,7 +414,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
-	public function getFinalProperty()
+	public function getFinalProperty() : Reflection_Property
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this is valid */
 		return strpos($this->path, DOT) ? new static($this->final_class, $this->name) : $this;
@@ -422,9 +424,9 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets the parent property overridden by the current one from the parent class
 	 *
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
-	public function getOverriddenProperty()
+	public function getOverriddenProperty() : ?Reflection_Property
 	{
 		if (!isset($this->overridden_property)) {
 			$parent                    = $this->getDeclaringClass()->getParentClass();
@@ -440,7 +442,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	private function getOverrideDocComment()
+	private function getOverrideDocComment() : string
 	{
 		$comment = '';
 		/** @noinspection PhpUnhandledExceptionInspection $this->final_class is always valid */
@@ -468,7 +470,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return string
 	 */
-	private function getOverrideRootDocComment()
+	private function getOverrideRootDocComment() : string
 	{
 		$comment = '';
 		/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
@@ -494,9 +496,9 @@ class Reflection_Property extends ReflectionProperty
 	 * Gets the parent property for a $property.path
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $this->root_class is always valid
-	 * @return Reflection_Property|null
+	 * @return ?Reflection_Property
 	 */
-	public function getParentProperty()
+	public function getParentProperty() : ?Reflection_Property
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
 			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
@@ -510,7 +512,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Class
 	 */
-	public function getRootClass()
+	public function getRootClass() : Reflection_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid */
 		return new Reflection_Class($this->root_class);
@@ -522,7 +524,7 @@ class Reflection_Property extends ReflectionProperty
 	 *
 	 * @return Type
 	 */
-	public function getType()
+	public function getType() : Type
 	{
 		$type = Var_Annotation::of($this)->getType();
 		if ($type->isNull()) {
@@ -538,7 +540,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return Type
 	 */
-	public function getUserType()
+	public function getUserType() : Type
 	{
 		$user_var_annotation_value = User_Var_Annotation::of($this)->value;
 		return $user_var_annotation_value ? new Type($user_var_annotation_value) : $this->getType();
@@ -548,19 +550,19 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * Gets value
 	 *
-	 * @param $object       object
+	 * @param $object       object|null
 	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed
 	 * @throws ReflectionException
 	 */
-	public function getValue($object = null, $with_default = false)
+	public function getValue($object = null, bool $with_default = false) : mixed
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$class = $this->root_class;
 			$path  = explode(DOT, $this->path);
+			/** @var $property Reflection_Property */
 			foreach ($path as $property_name) {
 				$found_object = false;
-				/** @var $property Reflection_Property */
 				if (isset($property)) {
 					$type_name = $property->getType()->getElementTypeAsString();
 					$class     = is_object($object) ? get_class($object) : Builder::className($type_name);
@@ -616,7 +618,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @return object[]
 	 * @throws ReflectionException
 	 */
-	protected function getValues(array $object, $with_default)
+	protected function getValues(array $object, bool $with_default) : array
 	{
 		// stored object
 		$objects = $object;
@@ -672,20 +674,20 @@ class Reflection_Property extends ReflectionProperty
 	//---------------------------------------------------------------------------- isEquivalentObject
 	/**
 	 * Return true if the both objects match.
-	 * If one is an object and the other is an integer, compare $objectX->id with $objectY
+	 * If one is an object and the other is a string identifier, compare $objectX->id with $objectY
 	 *
-	 * @param $object1 object|integer
-	 * @param $object2 object|integer
+	 * @param $object1 object|string
+	 * @param $object2 object|string
 	 * @return boolean
 	 * @throws Exception You compare a Date_Time with stuff that could not be converted to a Date_Time
 	 */
-	private function isEquivalentObject($object1, $object2)
+	private function isEquivalentObject(object|string $object1, object|string $object2) : bool
 	{
 		if (is_object($object1) && isset($object1->id)) {
-			$object1 = $object1->id;
+			$object1 = strval($object1->id);
 		}
 		if (is_object($object2) && isset($object2->id)) {
-			$object2 = $object2->id;
+			$object2 = strval($object2->id);
 		}
 		// two Date_Time which differ of 1 hour or less are equivalent
 		if (($object1 instanceof Date_Time) || ($object2 instanceof Date_Time)) {
@@ -713,23 +715,23 @@ class Reflection_Property extends ReflectionProperty
 		) {
 			return true;
 		}
-		return ($object1 == $object2);
+		return ($object1 === $object2);
 	}
 
 	//----------------------------------------------------------------------------------- isMandatory
 	/**
-	 * @return boolean|string
+	 * @return string
 	 */
-	public function isMandatory()
+	public function isMandatory() : string
 	{
 		return Mandatory_Annotation::of($this)->value ? 'mandatory' : '';
 	}
 
 	//----------------------------------------------------------------------------------- isMultiline
 	/**
-	 * @return boolean|string
+	 * @return string
 	 */
-	public function isMultiline()
+	public function isMultiline() : string
 	{
 		return $this->getAnnotation('multiline')->value ? 'multiline' : '';
 	}
@@ -741,7 +743,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $value mixed
 	 * @return boolean
 	 */
-	public function isValueEmpty($value)
+	public function isValueEmpty(mixed $value) : bool
 	{
 		return (
 			(
@@ -750,7 +752,7 @@ class Reflection_Property extends ReflectionProperty
 			)
 			|| (is_object($value) && Empty_Object::isEmpty($value))
 			|| (
-				is_string($value) && (substr($value, 0, 10) === '0000-00-00')
+				is_string($value) && str_starts_with($value, '0000-00-00')
 				&& $this->getType()->isDateTime()
 			)
 			|| (($value instanceof Can_Be_Empty) && $value->isEmpty())
@@ -767,7 +769,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $value mixed
 	 * @return boolean
 	 */
-	public function isValueEmptyOrDefault($value)
+	public function isValueEmptyOrDefault(mixed $value) : bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection same type : if one is Date_Time, the other too */
 		return $this->isValueEmpty($value)
@@ -779,11 +781,13 @@ class Reflection_Property extends ReflectionProperty
 	 * Calculate if the property is visible
 	 *
 	 * @param $hide_empty_test boolean If false, will be visible even if @user hide_empty is set
-	 * @param $hidden_test boolean If false, will be visible event if @user hidden is set
-	 * @param $invisible_test boolean If false, will be visible event if @user invisible is set
+	 * @param $hidden_test     boolean If false, will be visible event if @user hidden is set
+	 * @param $invisible_test  boolean If false, will be visible event if @user invisible is set
 	 * @return boolean
 	 */
-	public function isVisible($hide_empty_test = true, $hidden_test = true, $invisible_test = true)
+	public function isVisible(
+		bool $hide_empty_test = true, bool $hidden_test = true, bool $invisible_test = true
+	) : bool
 	{
 		$user_annotation = $this->getListAnnotation(User_Annotation::ANNOTATION);
 		return !$this->isStatic()
@@ -800,7 +804,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $class_with_id boolean if true, will append [id] or prepend id_ for class fields
 	 * @return string
 	 */
-	public function pathAsField($class_with_id = false)
+	public function pathAsField(bool $class_with_id = false) : string
 	{
 		$path = Names::propertyPathToField($this->path);
 		if ($class_with_id && ($type = $this->getType()) && $type->isClass() && !$type->isDateTime()) {
@@ -818,9 +822,9 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return string
 	 */
-	public function pathIfDifferent()
+	public function pathIfDifferent() : string
 	{
-		return ($this->path === $this->name) ? null : $this->path;
+		return ($this->path === $this->name) ? '' : $this->path;
 	}
 
 	//-------------------------------------------------------------------------------------- setValue
@@ -831,7 +835,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
-	public function setValue($object, $value = self::EMPTY_VALUE)
+	public function setValue(mixed $object, mixed $value = self::EMPTY_VALUE)
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
@@ -864,7 +868,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return string
 	 */
-	public function showSeconds()
+	public function showSeconds() : string
 	{
 		if (!$this->getType()->isDateTime()) {
 			return '';
@@ -876,7 +880,7 @@ class Reflection_Property extends ReflectionProperty
 	/**
 	 * @return string
 	 */
-	public function showTime()
+	public function showTime() : string
 	{
 		if (!$this->getType()->isDateTime()) {
 			return '';
@@ -892,7 +896,8 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $user   boolean
 	 * @return Reflection_Property_Value
 	 */
-	public function toReflectionPropertyValue($object, $user = false)
+	public function toReflectionPropertyValue(object $object, bool $user = false)
+		: Reflection_Property_Value
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->class and $this->root_class valid */
 		return new Reflection_Property_Value(

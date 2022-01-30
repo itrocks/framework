@@ -69,7 +69,7 @@ class Yaml
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return yaml_emit($this->data);
 	}

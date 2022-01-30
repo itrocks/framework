@@ -15,6 +15,6 @@ interface Multiple_Annotation
 	 * @param $reflection_object Reflection
 	 * @return static[]
 	 */
-	public static function allOf(Reflection $reflection_object);
+	public static function allOf(Reflection $reflection_object) : array;
 
 }

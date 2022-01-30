@@ -16,7 +16,7 @@ trait Has_Is
 	 * @param $array string|string[]
 	 * @return boolean
 	 */
-	public function is($array)
+	public function is(array|string $array) : bool
 	{
 		/** @var $this Annotation|self */
 		return in_array($this->value, is_array($array) ? $array : func_get_args());

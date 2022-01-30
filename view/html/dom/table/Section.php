@@ -19,7 +19,7 @@ abstract class Section extends Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$this->setContent(LF . join(LF, $this->rows) . LF);
 		return parent::__toString();

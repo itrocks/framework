@@ -58,7 +58,7 @@ class Controller extends Edit\Controller
 	 * @param $parameters Parameters The parameters sent to the add controller
 	 * @param $form       array      The form sent by the caller (if POST call)
 	 * @param $class_name string     The name of the class of the added object
-	 * @return mixed[] The parameters for the view
+	 * @return array The parameters for the view
 	 * @see Edit_Controller::getViewParameters
 	 * @see initializeValues
 	 */

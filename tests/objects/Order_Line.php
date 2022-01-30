@@ -77,7 +77,7 @@ class Order_Line
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->number) . ' : ' . $this->item;
 	}

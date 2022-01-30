@@ -24,16 +24,16 @@ abstract class Cache
 	/**
 	 * @var boolean if true, it's a full compile
 	 */
-	public $full = false;
+	public bool $full = false;
 
 	//----------------------------------------------------------------------------------- getCacheDir
 	/**
 	 * Returns the relative or absolute generator cache dir path (default relative)
 	 *
-	 * @param $absolute boolean true if want to get absolute path
+	 * @param $absolute boolean true if you want to get absolute path
 	 * @return string
 	 */
-	public static function getCacheDir($absolute = false)
+	public static function getCacheDir(bool $absolute = false) : string
 	{
 		if (!static::CACHE_DIR_NAME) {
 			trigger_error('You must override const CACHE_DIR_NAME in ' . static::class, E_USER_ERROR);

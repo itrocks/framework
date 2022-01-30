@@ -23,7 +23,7 @@ trait Types_Annotation
 	/**
 	 * @var boolean
 	 */
-	protected $build_class_name = true;
+	protected bool $build_class_name = true;
 
 	//------------------------------------------------------------------------- $declared_class_names
 	/**
@@ -34,7 +34,7 @@ trait Types_Annotation
 	 *
 	 * @var string[]
 	 */
-	public $declared_class_names = [];
+	public array $declared_class_names = [];
 
 	//-------------------------------------------------------------------------------- applyNamespace
 	/**
@@ -45,7 +45,7 @@ trait Types_Annotation
 	 * @param $namespace string
 	 * @param $use       string[]
 	 */
-	public function applyNamespace($namespace, array $use = [])
+	public function applyNamespace(string $namespace, array $use = [])
 	{
 		/** @var $this Annotation|Types_Annotation */
 
@@ -55,7 +55,7 @@ trait Types_Annotation
 		$values = is_array($this->value) ? $this->value : [$this->value];
 
 		foreach ($values as $key => $class_name) {
-			if (substr($class_name, -2) == '[]') {
+			if (str_ends_with($class_name, '[]')) {
 				$class_name = substr($class_name, 0, -2);
 				$multiple   = '[]';
 			}

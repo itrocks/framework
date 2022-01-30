@@ -56,6 +56,7 @@ interface IManager
 	 * @param $configuration array|boolean
 	 * @return Plugin
 	 */
-	public function register($class_name, $level, $configuration = true);
+	public function register(string $class_name, string $level, array|bool $configuration = true)
+		: Plugin;
 
 }

@@ -13,7 +13,7 @@ trait Has_To_String
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return Names::classToDisplay(static::class);
 	}

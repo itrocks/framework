@@ -7,7 +7,7 @@ namespace ITRocks\Framework\PHP;
 interface Done_Compiler
 {
 
-	//------------------------------------------------------------------------------------------ done
+	//----------------------------------------------------------------------------------- doneCompile
 	public function doneCompile();
 
 }

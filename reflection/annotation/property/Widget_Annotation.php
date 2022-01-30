@@ -21,10 +21,10 @@ class Widget_Annotation extends Annotation implements Property_Context_Annotatio
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		$this->constructOptions($value);
 		parent::__construct($value);

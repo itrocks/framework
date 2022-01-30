@@ -15,7 +15,7 @@ trait Has_Number_And_Name
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return trim($this->number . SP . $this->name);
 	}

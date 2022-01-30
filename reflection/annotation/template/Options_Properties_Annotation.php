@@ -32,7 +32,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 *
 	 * @var string[]
 	 */
-	public $properties = [];
+	public array $properties = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -40,12 +40,12 @@ class Options_Properties_Annotation extends List_Annotation
 	 *
 	 * Can be empty (eq full) contain 'full', 'simple', 'block' (implicitly 'simple')
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 * @see List_Annotation::__construct()
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
-		if (isset($value)) {
+		if (strlen($value)) {
 			if ($value) {
 				$excluded = [];
 				$values   = [];
@@ -88,7 +88,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 *
 	 * @param $property string
 	 */
-	public function addProperty($property)
+	public function addProperty(string $property)
 	{
 		if (!$this->hasProperty($property)) {
 			$this->properties[] = $property;
@@ -102,7 +102,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 * @param $property string
 	 * @return boolean
 	 */
-	public function hasProperty($property)
+	public function hasProperty(string $property) : bool
 	{
 		return in_array($property, $this->properties);
 	}
@@ -114,7 +114,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 * @param $property string
 	 * @return boolean
 	 */
-	public function removeProperty($property)
+	public function removeProperty(string $property) : bool
 	{
 		$key = array_search($property, $this->properties);
 		if ($key !== false) {

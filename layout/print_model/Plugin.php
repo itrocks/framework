@@ -17,7 +17,7 @@ class Plugin implements Installable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return 'Customizable print models';
 	}

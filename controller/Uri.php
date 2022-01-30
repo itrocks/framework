@@ -65,7 +65,7 @@ class Uri
 	/**
 	 * Gets the URI back as string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->uri;
 	}

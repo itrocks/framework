@@ -28,9 +28,9 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		$this->build_class_name = false;
 		$this->constructOptions($value);
@@ -46,7 +46,7 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	 * @return static[]
 	 * @see Annoted::getAnnotation
 	 */
-	public static function allNotOf(Reflection $reflection_object, $option)
+	public static function allNotOf(Reflection $reflection_object, string $option) : array
 	{
 		$annotations = [];
 		foreach (parent::allOf($reflection_object) as $annotation) {
@@ -66,7 +66,7 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	 * @return static[]
 	 * @see Annoted::getAnnotation
 	 */
-	public static function allOf(Reflection $reflection_object, $option = null)
+	public static function allOf(Reflection $reflection_object, string $option = '') : array
 	{
 		$annotations = parent::allOf($reflection_object);
 		if (!$annotations || !$option) {
@@ -88,7 +88,7 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	 * @return static
 	 * @see Annoted::getAnnotation
 	 */
-	public static function notOf(Reflection $reflection_object, $option)
+	public static function notOf(Reflection $reflection_object, string $option) : static
 	{
 		$annotations = static::allNotOf($reflection_object, $option);
 		return reset($annotations) ?: new static(null);
@@ -101,7 +101,7 @@ class Extends_Annotation extends Template\List_Annotation implements Do_Not_Inhe
 	 * @return static
 	 * @see Annoted::getAnnotation
 	 */
-	public static function of(Reflection $reflection_object, $option = null)
+	public static function of(Reflection $reflection_object, string $option = '') : static
 	{
 		if ( !$option) {
 			return parent::of($reflection_object);

@@ -4,6 +4,7 @@ namespace ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Reflection\Type;
 use ITRocks\Framework\Tools\Call_Stack;
+use JetBrains\PhpStorm\NoReturn;
 
 /**
  * These are helpers functions to parse tokens
@@ -15,7 +16,7 @@ trait Tokens_Parser
 	/**
 	 * @var integer[]
 	 */
-	public static $class_name_tokens = [265, 312, 314, T_NS_SEPARATOR, T_STRING];
+	public static array $class_name_tokens = [265, 312, 314, T_NS_SEPARATOR, T_STRING];
 
 	//------------------------------------------------------------------------------------ $namespace
 	/**
@@ -23,7 +24,7 @@ trait Tokens_Parser
 	 *
 	 * @var string
 	 */
-	private $namespace;
+	private string $namespace;
 
 	//---------------------------------------------------------------------------------- $token_debug
 	/**
@@ -31,7 +32,7 @@ trait Tokens_Parser
 	 *
 	 * @var integer
 	 */
-	private $token_debug;
+	private int $token_debug;
 
 	//------------------------------------------------------------------------------------ $token_key
 	/**
@@ -39,30 +40,30 @@ trait Tokens_Parser
 	 *
 	 * @var integer
 	 */
-	private $token_key;
+	private int $token_key;
 
 	//--------------------------------------------------------------------------------------- $tokens
 	/**
 	 * PHP tokens array
 	 *
 	 * @see token_get_all()
-	 * @var array
+	 * @var ?array
 	 */
-	private $tokens;
+	private ?array $tokens;
 
 	//------------------------------------------------------------------------------------------ $use
 	/**
 	 * Namespaces and class names used by current namespace
 	 *
-	 * @var integer[] key is the used class name or namespace, value is the declaration line number
+	 * @var ?integer[] key is the used class name or namespace, value is the declaration line number
 	 */
-	private $use;
+	private ?array $use;
 
 	//-------------------------------------------------------------------------------------- eofError
 	/**
 	 * @param $method string
 	 */
-	private function eofError($method)
+	private function eofError(string $method)
 	{
 		// display current object to know more about the execution context (ie which file ?)
 		echo '<PRE>';
@@ -97,7 +98,7 @@ trait Tokens_Parser
 	 * @param $use        boolean use the 'use' clause linked to the namespace
 	 * @return string
 	 */
-	public function fullClassName($class_name, $use = true)
+	public function fullClassName(string $class_name, bool $use = true) : string
 	{
 		return (new Type($class_name))->applyNamespace(
 			$this->namespace, $use ? array_keys($this->use) : []
@@ -111,10 +112,10 @@ trait Tokens_Parser
 	 *
 	 * @return string
 	 */
-	private function scanClassName()
+	private function scanClassName() : string
 	{
 		$this->token_debug = $this->token_key;
-		$class_name = '';
+		$class_name        = '';
 		do {
 			$token = $this->tokens[++$this->token_key];
 		}
@@ -124,7 +125,7 @@ trait Tokens_Parser
 		}
 		while (in_array($token[0], static::$class_name_tokens)) {
 			$class_name .= $token[1];
-			$token = $this->tokens[++$this->token_key];
+			$token       = $this->tokens[++$this->token_key];
 		}
 		return $class_name;
 	}
@@ -136,17 +137,17 @@ trait Tokens_Parser
 	 *
 	 * @return string[]
 	 */
-	private function scanClassNames()
+	private function scanClassNames() : array
 	{
 		$this->token_debug = $this->token_key;
-		$class_names = [];
-		$line = 0;
-		$used = '';
+		$class_names       = [];
+		$line              = 0;
+		$used              = '';
 		do {
 			$token = $this->tokens[++$this->token_key];
 			if (is_array($token)) {
 				if (in_array($token[0], static::$class_name_tokens)) {
-					$line = $token[2];
+					$line  = $token[2];
 					$used .= $token[1];
 					$continue = true;
 				}
@@ -156,8 +157,8 @@ trait Tokens_Parser
 			}
 			elseif ($token === ',') {
 				$class_names[$used] = $line;
-				$used = '';
-				$continue = true;
+				$used               = '';
+				$continue           = true;
 			}
 			else {
 				$continue = false;
@@ -183,11 +184,11 @@ trait Tokens_Parser
 	 *
 	 * @return string
 	 */
-	private function scanRequireFilePath()
+	private function scanRequireFilePath() : string
 	{
 		$this->token_debug = $this->token_key;
-		$file_path = '';
-		$this->token_key++;
+		$file_path         = '';
+		$this->token_key   ++;
 		do {
 			$token = $this->tokens[$this->token_key++];
 			if ($token !== ';') {
@@ -207,25 +208,25 @@ trait Tokens_Parser
 	 *
 	 * @return integer[] key is the trait name, value is the line number it was declared
 	 */
-	private function scanTraitNames()
+	private function scanTraitNames() : array
 	{
 		$this->token_debug = $this->token_key;
-		$trait_names = [];
-		$trait_name = '';
-		$depth = 0;
-		$line = 0;
+		$trait_names       = [];
+		$trait_name        = '';
+		$depth             = 0;
+		$line              = 0;
 		do {
 			$token = $this->tokens[++$this->token_key];
 			if ($token === ',') {
 				$trait_names[$trait_name] = $line;
-				$trait_name = '';
+				$trait_name               = '';
 			}
 			else {
 				$token_id = $token[0];
-				if ($token_id == '{') {
+				if ($token_id === '{') {
 					$depth ++;
 				}
-				elseif ($token_id == '}') {
+				elseif ($token_id === '}') {
 					$depth --;
 					if (!$depth) {
 						break;
@@ -233,7 +234,7 @@ trait Tokens_Parser
 				}
 				elseif (in_array($token_id, static::$class_name_tokens) && !$depth) {
 					$trait_name .= $token[1];
-					$line = $token[2];
+					$line        = $token[2];
 				}
 			}
 		} while (

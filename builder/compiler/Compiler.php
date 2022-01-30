@@ -22,17 +22,17 @@ class Compiler implements ICompiler, Needs_Main
 	/**
 	 * @var $main_controller Main
 	 */
-	private $main_controller;
+	private Main $main_controller;
 
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * Compile built classes
 	 *
 	 * @param $source   Reflection_Source
-	 * @param $compiler PHP\Compiler
+	 * @param $compiler PHP\Compiler|null
 	 * @return boolean
 	 */
-	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null) : bool
 	{
 		$builder        = Builder::current();
 		$builder->build = false;
@@ -67,12 +67,12 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $sources Reflection_Source[] key is $class_name, or $file_path if no class
 	 * @return boolean
 	 */
-	protected function hasConfigurationFile(array $sources)
+	protected function hasConfigurationFile(array $sources) : bool
 	{
 		foreach ($sources as $file_path => $source) {
 			if (
 				// TODO replace all this 'if' by rLastParse($file_path) === '/builder.php') when cut done
-				(strpos($file_path, SL) !== false)
+				str_contains($file_path, SL)
 				&& ctype_lower(substr(rLastParse($file_path, SL), 0, 1))
 			) {
 				return true;
@@ -86,7 +86,7 @@ class Compiler implements ICompiler, Needs_Main
 	 * @param $class_name   string
 	 * @param $more_sources More_Sources
 	 */
-	protected function moreSourcesAdd($class_name, More_Sources $more_sources)
+	protected function moreSourcesAdd(string $class_name, More_Sources $more_sources)
 	{
 		$dependency = Dao::searchOne(
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
@@ -166,9 +166,7 @@ class Compiler implements ICompiler, Needs_Main
 		More_Sources $more_sources, array $old_compositions, array $new_compositions
 	) {
 		foreach ($new_compositions as $class_name => $new_composition) {
-			$old_composition = isset($old_compositions[$class_name])
-				? $old_compositions[$class_name]
-				: null;
+			$old_composition = $old_compositions[$class_name] ?? null;
 			if (
 				($new_composition != $old_composition)
 				|| (

@@ -11,7 +11,7 @@ trait Options_Annotation
 	/**
 	 * @var array
 	 */
-	public $options = [];
+	public array $options = [];
 
 	//------------------------------------------------------------------------------ constructOptions
 	/**
@@ -20,9 +20,9 @@ trait Options_Annotation
 	 *
 	 * This initialises the $options property and remove the options from the value string
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	protected function constructOptions(&$value)
+	protected function constructOptions(?string &$value)
 	{
 		if (strpos($value, SP)) {
 			[$value, $options] = explode(SP, $value, 2);
@@ -35,7 +35,7 @@ trait Options_Annotation
 	 * @param $option string
 	 * @return boolean
 	 */
-	public function hasOption($option)
+	public function hasOption(string $option) : bool
 	{
 		return isset($this->options[$option]);
 	}
@@ -48,7 +48,7 @@ trait Options_Annotation
 	 * @param $default mixed value to return if the option is not set
 	 * @return mixed the value of the option
 	 */
-	public function option($option, $default = null)
+	public function option(string $option, mixed $default = null) : mixed
 	{
 		return $this->options[$option] ?? $default;
 	}

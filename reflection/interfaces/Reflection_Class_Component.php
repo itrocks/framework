@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Interfaces;
 
+use ReflectionClass;
+
 /**
  * An interface for all reflection class component
  */
@@ -12,9 +14,9 @@ interface Reflection_Class_Component extends Reflection
 	 * Gets the declaring class for the reflected property.
 	 * If the property has been declared into a trait, returns the class that uses this trait.
 	 *
-	 * @return Reflection_Class
+	 * @return Reflection_Class|ReflectionClass
 	 */
-	public function getDeclaringClass();
+	public function getDeclaringClass() : Reflection_Class|ReflectionClass;
 
 	//------------------------------------------------------------------------- getDeclaringClassName
 	/**
@@ -23,7 +25,7 @@ interface Reflection_Class_Component extends Reflection
 	 *
 	 * @return string
 	 */
-	public function getDeclaringClassName();
+	public function getDeclaringClassName() : string;
 
 	//--------------------------------------------------------------------------------- getDocComment
 	/**
@@ -31,6 +33,6 @@ interface Reflection_Class_Component extends Reflection
 	 *
 	 * @return string
 	 */
-	public function getDocComment();
+	public function getDocComment() : string;
 
 }

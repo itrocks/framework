@@ -24,7 +24,7 @@ class Plugin implements Installable, Registerable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return 'Display your documents into an interactive multiple dimensional cards viewer';
 	}

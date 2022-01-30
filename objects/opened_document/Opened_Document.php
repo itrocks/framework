@@ -51,7 +51,7 @@ class Opened_Document
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->class_name
 			? (Names::classToDisplay($this->class_name) . SP . $this->identifier)

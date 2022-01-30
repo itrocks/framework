@@ -52,7 +52,7 @@ class Note
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$text = lParse(strval($this->text), LF);
 		return $this->title

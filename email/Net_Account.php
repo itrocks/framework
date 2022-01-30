@@ -52,7 +52,7 @@ abstract class Net_Account
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->host . ':' . $this->login;
 	}

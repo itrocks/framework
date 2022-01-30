@@ -28,7 +28,7 @@ trait Annoted
 	 *
 	 * @var array
 	 */
-	private $annotations = [];
+	private array $annotations = [];
 
 	//---------------------------------------------------------------------------- $annotations_cache
 	/**
@@ -40,7 +40,7 @@ trait Annoted
 	 *
 	 * @var array
 	 */
-	private static $annotations_cache = [];
+	private static array $annotations_cache = [];
 
 	//--------------------------------------------------------------------------------- addAnnotation
 	/**
@@ -51,7 +51,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation
 	 */
-	public function addAnnotation($annotation_name, Annotation $annotation)
+	public function addAnnotation(string $annotation_name, Annotation $annotation)
 	{
 		$path = $this->getAnnotationCachePath();
 		$this->getAnnotations($annotation_name);
@@ -65,16 +65,16 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @return Annotation
 	 */
-	public function getAnnotation($annotation_name)
+	public function getAnnotation(string $annotation_name) : Annotation
 	{
 		return $this->getCachedAnnotation($annotation_name, false);
 	}
 
 	//------------------------------------------------------------------------ getAnnotationCachePath
 	/**
-	 * @return string[]
+	 * @return ?string[]
 	 */
-	protected function getAnnotationCachePath()
+	protected function getAnnotationCachePath() : ?array
 	{
 		return null;
 	}
@@ -87,11 +87,11 @@ trait Annoted
 	 * If no annotation name is given, all annotations will be read for the reflected property
 	 *
 	 * @param $annotation_name string
-	 * @return Annotation[]|array
+	 * @return Annotation[]|Annotation[][]
 	 */
-	public function getAnnotations($annotation_name = null)
+	public function getAnnotations(string $annotation_name = '') : array
 	{
-		if (isset($annotation_name)) {
+		if ($annotation_name) {
 			return $this->getCachedAnnotation($annotation_name, true);
 		}
 		else {
@@ -116,7 +116,7 @@ trait Annoted
 	 * @param $multiple        boolean
 	 * @return Annotation|Annotation[] depending on $multiple value
 	 */
-	private function getCachedAnnotation($annotation_name, $multiple)
+	private function getCachedAnnotation(string $annotation_name, bool $multiple) : Annotation|array
 	{
 		if (isset($this->annotations[$annotation_name])) {
 			return $this->annotations[$annotation_name];
@@ -143,7 +143,7 @@ trait Annoted
 	/**
 	 * @return array [$annotation_name => [$annotation, $multiple, $annotation_name]]
 	 */
-	public function getCachedAnnotations()
+	public function getCachedAnnotations() : array
 	{
 		$cached_annotations = [];
 		$path = $this->getAnnotationCachePath();
@@ -164,7 +164,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @return List_Annotation
 	 */
-	public function getListAnnotation($annotation_name)
+	public function getListAnnotation(string $annotation_name) : List_Annotation
 	{
 		$annotation = $this->getCachedAnnotation($annotation_name, false);
 		if (!($annotation instanceof List_Annotation)) {
@@ -182,7 +182,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @return List_Annotation[]
 	 */
-	public function getListAnnotations($annotation_name)
+	public function getListAnnotations(string $annotation_name) : array
 	{
 		$annotations = $this->getCachedAnnotation($annotation_name, true);
 		if ($annotations && !(reset($annotations) instanceof List_Annotation)) {
@@ -202,7 +202,7 @@ trait Annoted
 	 * @param $multiple boolean
 	 * @return boolean
 	 */
-	public function isAnnotationCached($annotation_name, $multiple)
+	public function isAnnotationCached(string $annotation_name, bool $multiple) : bool
 	{
 		$path = $this->getAnnotationCachePath();
 		return isset($path)
@@ -218,7 +218,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotation      Annotation|null if null : annotation / all annotations from list
 	 */
-	public function removeAnnotation($annotation_name, Annotation $annotation = null)
+	public function removeAnnotation(string $annotation_name, Annotation $annotation = null)
 	{
 		$path = $this->getAnnotationCachePath();
 		if (!$annotation) {
@@ -259,9 +259,9 @@ trait Annoted
 	 * Default value for $annotation_name will be $annotation::ANNOTATION.
 	 *
 	 * @param $annotation_name string|Annotation optional forced name for the annotation
-	 * @param $annotation      Annotation the forced value for the annotation
+	 * @param $annotation      Annotation|null the forced value for the annotation
 	 */
-	public function setAnnotation($annotation_name, Annotation $annotation = null)
+	public function setAnnotation(string|Annotation $annotation_name, Annotation $annotation = null)
 	{
 		if ($annotation_name instanceof Annotation) {
 			$annotation      = $annotation_name;
@@ -282,11 +282,10 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @return Annotation
 	 */
-	public function setAnnotationLocal($annotation_name)
+	public function setAnnotationLocal(string $annotation_name) : Annotation
 	{
-		return isset($this->annotations[$annotation_name])
-			? $this->annotations[$annotation_name]
-			: ($this->annotations[$annotation_name] = clone $this->getAnnotation($annotation_name));
+		return $this->annotations[$annotation_name]
+			?? ($this->annotations[$annotation_name] = clone $this->getAnnotation($annotation_name));
 	}
 
 	//-------------------------------------------------------------------------------- setAnnotations
@@ -300,7 +299,7 @@ trait Annoted
 	 * @param $annotation_name string
 	 * @param $annotations     Annotation[]
 	 */
-	public function setAnnotations($annotation_name, array $annotations)
+	public function setAnnotations(string $annotation_name, array $annotations)
 	{
 		$path = $this->getAnnotationCachePath();
 		self::$annotations_cache[$path[0]][$path[1]][$annotation_name][true] = $annotations;
@@ -309,17 +308,17 @@ trait Annoted
 	//--------------------------------------------------------------------------- setAnnotationsLocal
 	/**
 	 * Sets a multiple annotations to local and return the local annotations objects.
-	 * This enable to get a copy of the annotations visible into this reflection object only,
+	 * This enables to get a copy of the annotations visible into this reflection object only,
 	 * that you can change without affecting others equivalent reflection objects.
 	 *
 	 * If the annotations were already set to local, these local annotations are returned without
 	 * reset.
 	 *
 	 * @param $annotation_name string
-	 * @param $annotations     Multiple_Annotation[] Optional : force the new annotations
+	 * @param $annotations     Multiple_Annotation[]|null Optional : force the new annotations
 	 * @return Annotation[]
 	 */
-	public function & setAnnotationsLocal($annotation_name, array $annotations = null)
+	public function & setAnnotationsLocal(string $annotation_name, array $annotations = null) : array
 	{
 		if (isset($annotations)) {
 			$this->annotations[$annotation_name] = $annotations;

@@ -21,16 +21,16 @@ class Integrated_Properties
 	 *
 	 * @var object
 	 */
-	protected $object;
+	protected object $object;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $object object referent root object is optional : can be used for each call to
-	 *                       expandUsingProperty
+	 * @param $object object|null referent root object is optional : can be used for each call to
+	 *                            expandUsingProperty
 	 */
-	public function __construct($object = null)
+	public function __construct(object $object = null)
 	{
-		if (isset($object)) {
+		if ($object) {
 			$this->object = $object;
 		}
 	}
@@ -43,7 +43,7 @@ class Integrated_Properties
 	 * @param $property Reflection_Property
 	 * @return object
 	 */
-	protected function defaultValue(Reflection_Property $property)
+	protected function defaultValue(Reflection_Property $property) : object
 	{
 		// force creation of a default object value for the property, if empty
 		/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
@@ -64,11 +64,11 @@ class Integrated_Properties
 	 * Expand all integrated properties and sub-properties starting from the current object class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string|null
+	 * @param $class_name string
 	 * @return Reflection_Property[]|Reflection_Property_Value[] all properties of the object class,
-	 *         and integrated sub-objects
+	 *                                                           and integrated sub-objects
 	 */
-	public function expandUsingClassName($class_name = null)
+	public function expandUsingClassName(string $class_name = '') : array
 	{
 		$expanded   = [];
 		/** @noinspection PhpUnhandledExceptionInspection get_class */
@@ -89,14 +89,15 @@ class Integrated_Properties
 	 *
 	 * @param $properties_list Reflection_Property[] new indices will be 'property.sub_property'
 	 * @param $property        Reflection_Property
-	 * @param $object          object if set, replaces the referent root object for all next calls
+	 * @param $object          object|null if set, replaces the referent root object for all next calls
 	 * @return Reflection_Property[]|Reflection_Property_Value[] added properties list
 	 *         (empty if none applies) keys are 'property.sub_property'
 	 */
 	public function expandUsingProperty(
-		array &$properties_list, Reflection_Property $property, $object = null
-	) {
-		if (isset($object)) {
+		array &$properties_list, Reflection_Property $property, object $object = null
+	) : array
+	{
+		if ($object) {
 			$this->object = $object;
 		}
 		return $this->expandUsingPropertyInternal($properties_list, $property);
@@ -112,8 +113,10 @@ class Integrated_Properties
 	 *         empty if none applies) keys are 'property.sub_property'
 	 */
 	protected function expandUsingPropertyInternal(
-		array &$properties_list, Reflection_Property $property, $display_prefix = '', array $blocks = []
-	) {
+		array &$properties_list, Reflection_Property $property, string $display_prefix = '',
+		array $blocks = []
+	) : array
+	{
 		$expanded   = [];
 		$integrated = Integrated_Annotation::of($property);
 		if (
@@ -146,7 +149,8 @@ class Integrated_Properties
 	 */
 	protected function getExplicitIntegratedProperties(
 		Reflection_Property $property, Integrated_Annotation $integrated
-	) {
+	) : array
+	{
 		$expand_properties = [];
 		$type              = $property->getType();
 		/** @noinspection PhpUnhandledExceptionInspection never call this with an abstract class and without property value */
@@ -156,7 +160,7 @@ class Integrated_Properties
 			: $property->getType()->asReflectionClass();
 		foreach ($integrated->properties as $integrated_property_path) {
 			// 'all but' mode
-			if (substr($integrated_property_path, 0, 1) === '-') {
+			if (str_starts_with($integrated_property_path, '-')) {
 				if (!$expand_properties) {
 					$expand_properties = $this->getImplicitIntegratedProperties($property);
 				}
@@ -168,7 +172,7 @@ class Integrated_Properties
 					$expand_properties[$property->path . DOT . $integrated_property_path]
 						= new Reflection_Property($sub_properties_class->name, $integrated_property_path);
 				}
-				catch (ReflectionException $exception) {
+				catch (ReflectionException) {
 					// nothing : we can reserve room for future properties into @integrated
 				}
 			}
@@ -184,7 +188,7 @@ class Integrated_Properties
 	 * @param $property Reflection_Property
 	 * @return Reflection_Property[]
 	 */
-	protected function getImplicitIntegratedProperties(Reflection_Property $property)
+	protected function getImplicitIntegratedProperties(Reflection_Property $property) : array
 	{
 		$expand_properties = [];
 		/** @noinspection PhpUnhandledExceptionInspection will be valid */
@@ -222,9 +226,10 @@ class Integrated_Properties
 	 * @return Reflection_Property[]|Reflection_Property_Value[]
 	 */
 	protected function prepareExpandedProperties(
-		array &$properties_list, $display_prefix, array $blocks, array $expand_properties,
+		array &$properties_list, string $display_prefix, array $blocks, array $expand_properties,
 		Reflection_Property $property, Integrated_Annotation $integrated
-	) {
+	) : array
+	{
 		$expanded          = [];
 		$integrated_alias  = $integrated->has(Integrated_Annotation::ALIAS);
 		$integrated_parent = $integrated->has(Integrated_Annotation::PARENT);
@@ -274,9 +279,10 @@ class Integrated_Properties
 	 * @return Reflection_Property|Reflection_Property_Value
 	 */
 	protected function prepareExpandedProperty(
-		array $blocks, $integrated_alias, $integrated_simple, Reflection_Property $sub_property,
-		$display
-	) {
+		array $blocks, bool $integrated_alias, bool $integrated_simple,
+		Reflection_Property $sub_property, string $display
+	) : Reflection_Property|Reflection_Property_Value
+	{
 		/** @noinspection PhpUnhandledExceptionInspection root class and sub property path must valid */
 		$sub_property = $this->object
 			? new Reflection_Property_Value($this->object, $sub_property->path, $this->object, false, true)

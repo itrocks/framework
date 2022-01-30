@@ -22,13 +22,13 @@ class Condition_Test extends Test
 	 * @param $text string
 	 * @return string[]
 	 */
-	private function norm($text)
+	private function norm(string $text) : array
 	{
 		$result = [];
 		foreach (explode('>', $text) as $line) {
 			if (
-				((strpos($line, '<input') !== false) || (strpos($line, '<select') !== false))
-				&& (strpos($line, SP . 'name=' . DQ) !== false)
+				(str_contains($line, '<input') || str_contains($line, '<select'))
+				&& str_contains($line, SP . 'name=' . DQ)
 			) {
 				$result[] = mParse($line, SP . 'name=' . DQ, DQ);
 			}
@@ -47,7 +47,6 @@ class Condition_Test extends Test
 		$line2  = new Conditions_Collection();
 		$line2->boolean = true;
 		$object->lines  = [$line1, $line2];
-		/** @noinspection PhpUnhandledExceptionInspection constants */
 		$builder = new Html_Builder_Property(
 			new Reflection_Property(Conditions::class, 'lines'), $object->lines
 		);

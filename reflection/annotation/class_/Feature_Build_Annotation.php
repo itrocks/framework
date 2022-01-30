@@ -14,8 +14,8 @@ use ITRocks\Framework\Reflection\Interfaces\Reflection_Class;
  * - the first is the class to extend
  * - the next ones are the traits / interfaces used to extend the class
  *
- * @override $value @var string[]
- * @property string[] value
+ * @override $value @var ?string[]
+ * @property ?string[] value
  */
 class Feature_Build_Annotation extends Template\List_Annotation
 	implements Class_Context_Annotation, Do_Not_Inherit
@@ -30,7 +30,7 @@ class Feature_Build_Annotation extends Template\List_Annotation
 	/**
 	 * @var boolean
 	 */
-	public $build_first = false;
+	public bool $build_first = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -45,10 +45,10 @@ class Feature_Build_Annotation extends Template\List_Annotation
 	 * @example
 	 * If in interface or trait :
 	 * Class_Name <=> Class_Name, Current_Interface_Or_Trait_Name
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (static::$context) {
 			$class = static::$context;

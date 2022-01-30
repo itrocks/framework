@@ -10,8 +10,8 @@ use ITRocks\Framework\Reflection\Annotation\Template\Types_Annotation;
  *
  * The property $value contains a list of plugin classes
  *
- * @override $value @var string[]
- * @property string[] value
+ * @override $value @var ?string[]
+ * @property ?string[] value
  */
 class Feature_Plugin_Annotation extends Template\List_Annotation implements Do_Not_Inherit
 {

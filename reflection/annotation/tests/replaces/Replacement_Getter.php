@@ -11,7 +11,7 @@ class Replacement_Getter
 	/**
 	 * @var string
 	 */
-	public $replaced;
+	public string $replaced;
 
 	//---------------------------------------------------------------------------------- $replacement
 	/**
@@ -25,7 +25,7 @@ class Replacement_Getter
 	/**
 	 * @return string
 	 */
-	protected function getReplacement()
+	protected function getReplacement() : string
 	{
 		return $this->replacement . '(get)';
 	}

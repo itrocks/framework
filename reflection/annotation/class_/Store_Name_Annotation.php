@@ -21,10 +21,10 @@ class Store_Name_Annotation extends Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct(strtolower(strval($value)));
 		if (!$this->value) {

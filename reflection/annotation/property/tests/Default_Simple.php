@@ -38,7 +38,7 @@ class Default_Simple extends Default_Extended
 	/**
 	 * @return integer
 	 */
-	public static function defaultAge()
+	public static function defaultAge() : int
 	{
 		return 43;
 	}
@@ -48,7 +48,7 @@ class Default_Simple extends Default_Extended
 	 * @return string
 	 * @return_constant
 	 */
-	public function defaultName()
+	public function defaultName() : string
 	{
 		return 'Robert';
 	}

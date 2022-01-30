@@ -63,7 +63,7 @@ class Vehicle_Door
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return Loc::tr(strval($this->side));
 	}

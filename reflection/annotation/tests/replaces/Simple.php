@@ -11,7 +11,7 @@ class Simple
 	/**
 	 * @var string
 	 */
-	public $replaced;
+	public string $replaced;
 
 	//---------------------------------------------------------------------------------- $replacement
 	/**

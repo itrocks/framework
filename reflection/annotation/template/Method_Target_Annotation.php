@@ -15,30 +15,30 @@ class Method_Target_Annotation extends Method_Annotation
 
 	//--------------------------------------------------------------------------------------- $target
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public $target = null;
+	public ?string $target = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class_property, $annotation_name)
+	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
 	{
 		if (strpos($value, SP)) {
-			list($value, $this->target) = explode(SP, $value, 2);
+			[$value, $this->target] = explode(SP, $value, 2);
 		}
 		parent::__construct($value, $class_property, $annotation_name);
 	}
 
 	//------------------------------------------------------------------------------------ asHtmlData
 	/**
-	 * @param $object object The reference object, if set
+	 * @param $object object|null The reference object, if set
 	 * @return string
 	 */
-	public function asHtmlData($object = null)
+	public function asHtmlData(object $object = null) : string
 	{
 		if (strpos($this->value, SL) && !strpos($this->value, '::')) {
 			return $this->value;

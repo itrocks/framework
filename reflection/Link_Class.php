@@ -22,13 +22,13 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @var string
 	 */
-	public $link_property_name;
+	public string $link_property_name;
 
 	//------------------------------------------------------------------------ getCompositeProperties
 	/**
 	 * @return Reflection_Property[]
 	 */
-	public function getCompositeProperties()
+	public function getCompositeProperties() : array
 	{
 		return call_user_func([$this->name, 'getCompositeProperties']);
 	}
@@ -42,9 +42,11 @@ class Link_Class extends Reflection_Class
 	 * @param $component_object     boolean Can be false to ignore warning on multiple composites
 	 * @return Reflection_Property
 	 */
-	public function getCompositeProperty($composite_class_name = null, $component_object = null)
+	public function getCompositeProperty(
+		string $composite_class_name = '', bool $component_object = true
+	) : Reflection_Property
 	{
-		if (!isset($composite_class_name)) {
+		if (!$composite_class_name) {
 			$composite_object = $this;
 			$link = Link_Annotation::of($composite_object);
 			while ($link->value) {
@@ -58,7 +60,7 @@ class Link_Class extends Reflection_Class
 			[$this->name, 'getCompositeProperties'], $composite_class_name
 		);
 		if (count($composite_properties) > 1) {
-			if ($component_object === false) {
+			if (!$component_object) {
 				$composite_properties = [];
 			}
 			elseif ($this->link_property_name) {
@@ -82,11 +84,9 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return Reflection_Property[] The key contains the name of the property
 	 */
-	public function getLinkProperties()
+	public function getLinkProperties() : array
 	{
-		/** @var $link_properties Reflection_Property[] */
-		$link_properties = Link_Annotation::of($this)->getLinkProperties();
-		return $link_properties;
+		return Link_Annotation::of($this)->getLinkProperties();
 	}
 
 	//------------------------------------------------------------------------ getLinkPropertiesNames
@@ -97,7 +97,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return string[] key and value are the name of each link property
 	 */
-	public function getLinkPropertiesNames()
+	public function getLinkPropertiesNames() : array
 	{
 		return array_keys(Link_Annotation::of($this)->getLinkProperties());
 	}
@@ -107,9 +107,9 @@ class Link_Class extends Reflection_Class
 	 * Returns the property of the class that make the link with the object of the parent class
 	 *
 	 * @param $class_name string
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
-	public function getLinkProperty($class_name = null)
+	public function getLinkProperty(string $class_name = '') : ?Reflection_Property
 	{
 		if (!$class_name) {
 			$class_name = Link_Annotation::of($this)->value;
@@ -128,7 +128,7 @@ class Link_Class extends Reflection_Class
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
-	public function getLinkedClass()
+	public function getLinkedClass() : Link_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection linked class name is always valid */
 		return new Link_Class($this->getLinkedClassName());
@@ -138,7 +138,7 @@ class Link_Class extends Reflection_Class
 	/**
 	 * @return string
 	 */
-	public function getLinkedClassName()
+	public function getLinkedClassName() : string
 	{
 		return Link_Annotation::of($this)->value;
 	}
@@ -149,7 +149,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return Reflection_Property[]
 	 */
-	public function getLinkedProperties()
+	public function getLinkedProperties() : array
 	{
 		return $this->getLinkedClass()->getProperties([T_EXTENDS, T_USE]);
 	}
@@ -161,7 +161,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return Reflection_Property[]
 	 */
-	public function getLocalProperties()
+	public function getLocalProperties() : array
 	{
 		$properties = [];
 		$exclude    = $this->getLinkedProperties();
@@ -183,7 +183,7 @@ class Link_Class extends Reflection_Class
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
-	public function getRootLinkedClass()
+	public function getRootLinkedClass() : Link_Class
 	{
 		$linked_class = $this;
 		do {
@@ -205,7 +205,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return string
 	 */
-	public function getRootLinkedClassName()
+	public function getRootLinkedClassName() : string
 	{
 		return $this->getRootLinkedClass()->name;
 	}
@@ -216,7 +216,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getUniqueProperties()
+	public function getUniqueProperties() : array
 	{
 		$unique = $this->getListAnnotation('unique')->values();
 		if ($unique) {
@@ -237,7 +237,7 @@ class Link_Class extends Reflection_Class
 	 *
 	 * @return string[] key and value are the name of each link property
 	 */
-	public function getUniquePropertiesNames()
+	public function getUniquePropertiesNames() : array
 	{
 		return $this->getListAnnotation('unique')->values() ?: $this->getLinkPropertiesNames();
 	}
@@ -252,10 +252,10 @@ class Link_Class extends Reflection_Class
 	 * TODO LOW Works with one level linked classes only
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $class_name string|object The link or linked class name
+	 * @param $class_name object|string The link or linked class name
 	 * @return string The root linked class name
 	 */
-	public static function linkedClassNameOf($class_name)
+	public static function linkedClassNameOf(object|string $class_name) : string
 	{
 		if (is_object($class_name)) {
 			$class_name = get_class($class_name);
@@ -274,13 +274,13 @@ class Link_Class extends Reflection_Class
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
 	 * @param $strict boolean
-	 * @return object|null The search object matching $object, with only identifiers set
+	 * @return ?object The search object matching $object, with only identifiers set
 	 */
-	public static function searchObject($object, $strict = true)
+	public static function searchObject(object $object, bool $strict = true) : ?object
 	{
 		$search = Search_Object::create(get_class($object));
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		$link   = new Link_Class($object);
+		$link = new Link_Class($object);
 		foreach ($link->getUniqueProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from object must be accessible */
 			$value = $property->getValue($object);

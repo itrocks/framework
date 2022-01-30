@@ -17,61 +17,67 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @var $class Reflection_Class
 	 */
-	public $class;
+	public Reflection_Class $class;
 
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * @var string
 	 */
-	private $doc_comment;
+	private string $doc_comment;
 
 	//---------------------------------------------------------------------------------- $is_abstract
 	/**
 	 * @var boolean
 	 */
-	private $is_abstract;
+	private bool $is_abstract;
 
 	//------------------------------------------------------------------------------------- $is_final
 	/**
 	 * @var boolean
 	 */
-	private $is_final;
+	private bool $is_final;
 
 	//------------------------------------------------------------------------------------ $is_static
 	/**
 	 * @var boolean
 	 */
-	private $is_static;
+	private bool $is_static;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
 	 * @var integer
 	 */
-	public $line;
+	public int $line;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string
 	 */
-	public $name;
+	public string $name;
+
+	//--------------------------------------------------------------------------------------- $parent
+	/**
+	 * @var Reflection_Method|false|null
+	 */
+	public Reflection_Method|false|null $parent;
 
 	//----------------------------------------------------------------------------- $prototype_string
 	/**
 	 * @var string
 	 */
-	private $prototype_string;
+	private string $prototype_string;
 
 	//-------------------------------------------------------------------------------------- $returns
 	/**
 	 * @var boolean
 	 */
-	private $returns;
+	private bool $returns;
 
 	//---------------------------------------------------------------------------- $returns_reference
 	/**
 	 * @var boolean
 	 */
-	private $returns_reference;
+	private bool $returns_reference;
 
 	//------------------------------------------------------------------------------------ $token_key
 	/**
@@ -79,14 +85,14 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 *
 	 * @var integer
 	 */
-	private $token_key;
+	private int $token_key;
 
 	//----------------------------------------------------------------------------------- $visibility
 	/**
 	 * @values T_PUBLIC, T_PROTECTED, T_PRIVATE
 	 * @var integer
 	 */
-	public $visibility;
+	public int $visibility;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -96,8 +102,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $token_key  integer
 	 * @param $visibility integer
 	 */
-	public function __construct(Reflection_Class $class, $name, $line, $token_key, $visibility)
-	{
+	public function __construct(
+		Reflection_Class $class, string $name, int $line, int $token_key, int $visibility
+	) {
 		$this->class      = $class;
 		$this->line       = $line;
 		$this->name       = $name;
@@ -109,7 +116,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return Reflection_Class
 	 */
-	public function getDeclaringClass()
+	public function getDeclaringClass() : Reflection_Class
 	{
 		return $this->class;
 	}
@@ -120,7 +127,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 *
 	 * @return string
 	 */
-	public function getDeclaringClassName()
+	public function getDeclaringClassName() : string
 	{
 		return $this->class->name;
 	}
@@ -129,10 +136,10 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * TODO LOWEST parent methods read
 	 *
-	 * @param $flags integer[]|boolean T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [])
+	public function getDocComment(array|null $flags = []) : string
 	{
 		if (!isset($this->doc_comment)) {
 			$this->doc_comment =  '';
@@ -151,13 +158,13 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return string
 	 */
-	public function getIndent()
+	public function getIndent() : string
 	{
 		if (!isset($this->indent)) {
 			$tokens    =& $this->class->source->getTokens();
 			$token_key =  $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection not really empty (--) */
-			while (is_array($token = $tokens[--$token_key]) && (strpos($token[1], LF) === false));
+			while (is_array($token = $tokens[--$token_key]) && !str_contains($token[1], LF));
 			$this->indent = is_array($token) ? $token[1] : '';
 		}
 		return $this->indent;
@@ -167,7 +174,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return $this->name;
 	}
@@ -178,7 +185,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 *
 	 * @return string ie '$param1, $param2, $param3'
 	 */
-	public function getParametersCall()
+	public function getParametersCall() : string
 	{
 		$parameters_names = $this->getParametersNames();
 		return $parameters_names ? ('$' . join(', $', $this->getParametersNames())) : '';
@@ -189,7 +196,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames($by_name = true)
+	public function getParametersNames(bool $by_name = true) : array
 	{
 		$counter = 0;
 		if (!isset($this->parameters_names)) {
@@ -197,7 +204,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			$tokens                 =& $this->class->source->getTokens();
 			$token_key              =  $this->token_key;
 			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (($token = $tokens[++$token_key]) !== '(');
+			while (($tokens[++$token_key]) !== '(');
 			while (($token = $tokens[++$token_key]) !== ')') {
 				if ($token[0] === T_VARIABLE) {
 					$parameter_name = substr($token[1], 1);
@@ -210,9 +217,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 
 	//------------------------------------------------------------------------------------- getParent
 	/**
-	 * @return Reflection_Method
+	 * @return ?Reflection_Method
 	 */
-	public function getParent()
+	public function getParent() : ?Reflection_Method
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;
@@ -243,7 +250,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 *
 	 * @return string
 	 */
-	public function getPrototypeString()
+	public function getPrototypeString() : string
 	{
 		if (!isset($this->prototype_string)) {
 			$this->prototype_string = '';
@@ -268,7 +275,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isAbstract()
+	public function isAbstract() : bool
 	{
 		if (!isset($this->is_abstract)) {
 			$this->is_abstract = ($this->class->type === T_INTERFACE);
@@ -283,7 +290,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isConstructor()
+	public function isConstructor() : bool
 	{
 		return ($this->name === '__construct')
 			|| ($this->name === rLastParse($this->class->name, BS, 1, true));
@@ -293,7 +300,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isDestructor()
+	public function isDestructor() : bool
 	{
 		return ($this->name === '__destruct');
 	}
@@ -302,7 +309,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isFinal()
+	public function isFinal() : bool
 	{
 		if (!isset($this->is_final)) {
 			$this->scanBefore();
@@ -314,7 +321,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isInternal()
+	public function isInternal() : bool
 	{
 		return false;
 	}
@@ -323,7 +330,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isPrivate()
+	public function isPrivate() : bool
 	{
 		return $this->visibility === T_PRIVATE;
 	}
@@ -332,7 +339,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isProtected()
+	public function isProtected() : bool
 	{
 		return $this->visibility === T_PROTECTED;
 	}
@@ -341,7 +348,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isPublic()
+	public function isPublic() : bool
 	{
 		return $this->visibility === T_PUBLIC;
 	}
@@ -350,7 +357,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isStatic()
+	public function isStatic() : bool
 	{
 		if (!isset($this->is_static)) {
 			$this->scanBefore();
@@ -362,7 +369,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return boolean
 	 */
-	public function isUserDefined()
+	public function isUserDefined() : bool
 	{
 		return true;
 	}
@@ -374,7 +381,8 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $flags       integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method
 	 */
-	public static function of($class_name, $method_name, array $flags = [])
+	public static function of(string $class_name, string $method_name, array $flags = [])
+		: Reflection_Method
 	{
 		$class   = Reflection_Class::of($class_name);
 		$methods = $class->getMethods($flags);
@@ -382,7 +390,7 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 			do {
 				$extends = Extends_Annotation::of($class)->values();
 				$class   = $extends ? $class->source->getOutsideClass($extends[0]) : null;
-				$methods = $class   ? $class->getMethods($flags)                   : null;
+				$methods = $class?->getMethods($flags);
 			}
 			while ($class && !isset($methods[$method_name]));
 			if (!isset($methods[$method_name])) {
@@ -412,9 +420,9 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	 * @param $method_name string
 	 * @return string
 	 */
-	public static function regex($method_name = null)
+	public static function regex(string $method_name = '') : string
 	{
-		$name = isset($method_name) ? $method_name : '\w+';
+		$name = $method_name ?: '\w+';
 		return '%'
 			. '(\n\s*)?'                            // 1 : indent
 			. '(/\*\*\n(?:\s*\*.*\n)*\s*\*/\n\s*)?' // 2 : documentation
@@ -434,23 +442,23 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	/**
 	 * @return string
 	 */
-	public function returns()
+	public function returns() : string
 	{
 		if (!isset($this->returns)) {
 			$expr = '%'
-				. '\n\s*\*\s+\@return\s+([\\\\\w]+)'
+				. '\n\s*\*\s+@return\s+([\\\\\w]+)'
 				. '%';
 			preg_match($expr, $this->getDocComment(), $match);
-			$this->returns = $match ? $match[1] : false;
+			$this->returns = $match ? $match[1] : '';
 		}
-		return $this->returns ?: null;
+		return $this->returns;
 	}
 
 	//------------------------------------------------------------------------------ returnsReference
 	/**
 	 * @return boolean
 	 */
-	public function returnsReference()
+	public function returnsReference() : bool
 	{
 		if (!isset($this->returns_reference)) {
 			$tokens    =& $this->class->source->getTokens();

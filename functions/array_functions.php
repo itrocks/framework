@@ -361,7 +361,7 @@ function arrayMergeRecursive(array $array1, array $array2, $clear = null)
  * Returns only values which key is not numeric
  *
  * @param $array array
- * @return mixed[]
+ * @return array
  */
 function arrayNamedValues(array $array)
 {
@@ -430,7 +430,7 @@ function arraySumRecursive($array)
  *
  * @param $array   array
  * @param $recurse boolean
- * @return mixed[]
+ * @return array
  */
 function arrayToTree(array $array, $recurse = true)
 {
@@ -456,7 +456,7 @@ function arrayToTree(array $array, $recurse = true)
  * Returns only values which key is numeric
  *
  * @param $array array
- * @return mixed[]
+ * @return array
  */
 function arrayUnnamedValues(array $array)
 {
@@ -635,7 +635,7 @@ function objectToArray($object, $get_private = false)
  *
  * @param $array      array
  * @param $ignore_key string if set, this key is ignored and set as the 'main' value of a node
- * @return mixed[]
+ * @return array
  */
 function treeToArray(array $array, $ignore_key = null)
 {

@@ -18,7 +18,7 @@ class Documented_Type_Annotation extends Annotation
 	 *
 	 * @var string
 	 */
-	public $documentation;
+	public string $documentation;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -26,22 +26,24 @@ class Documented_Type_Annotation extends Annotation
 	 *
 	 * @example '@var Class_Name A documentation text can come after that'
 	 * @example '@var An_Array[]|Another[]|array Documentation will begin at "Another[]"'
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
-		$i = strpos($value, SP);
-		$j = strpos($value, '|');
-		if (($i === false) || ($j !== false) && ($j < $i)) {
-			$i = $j;
+		$value        = strval($value);
+		$position     = strpos($value, SP);
+		$end_position = strpos($value, '|');
+		if (($position === false) || ($end_position !== false) && ($end_position < $position)) {
+			$position = $end_position;
 		}
-		if ($i === false) {
+		/** @noinspection PhpStrictComparisonWithOperandsOfDifferentTypesInspection inspector bug */
+		if ($position === false) {
 			parent::__construct($value);
 			$this->documentation = '';
 		}
 		else {
-			parent::__construct(substr($value, 0, $i));
-			$this->documentation = trim(substr($value, $i + 1));
+			parent::__construct(substr($value, 0, $position));
+			$this->documentation = trim(substr($value, $position + 1));
 		}
 	}
 

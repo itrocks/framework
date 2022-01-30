@@ -114,7 +114,7 @@ abstract class Page
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->model) . SP . strval($this->ordering);
 	}

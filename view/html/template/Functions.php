@@ -1608,7 +1608,7 @@ class Functions
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
 	 * @param $property   Reflection_Property_Value|Reflection_Property|string
-	 * @return mixed[] Reflection_Property $property, string $property path, mixed $value
+	 * @return array Reflection_Property $property, string $property path, mixed $value
 	 */
 	protected function toEditPropertyExtra($class_name, $property)
 	{

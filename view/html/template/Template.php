@@ -648,7 +648,7 @@ class Template
 			&& property_exists($property, 'tooltip')
 			&& $property->tooltip
 		) {
-			$div->setData('tooltip', $property->tooltip());
+			$div->setData('tooltip', $property->tooltip);
 		}
 		return strval($div);
 	}

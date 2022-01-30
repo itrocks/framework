@@ -39,7 +39,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return ($this->property->getType()->isDateTime() && Locale::current())
 			? $this->dateFormat()

@@ -82,7 +82,7 @@ abstract class Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		if ($this->styles) {
 			ksort($this->styles);

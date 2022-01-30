@@ -128,7 +128,7 @@ class Authentication
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->action = $this->login . SP . $this->action . AT . $this->request_time_float;
 	}

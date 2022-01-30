@@ -36,7 +36,7 @@ class Multiple
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval(count($this->objects));
 	}

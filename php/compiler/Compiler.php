@@ -55,7 +55,7 @@ class Compiler extends Cache
 	 *
 	 * @var array true[integer $compilers_key][string $compiled_file_name]
 	 */
-	private $compiled = [];
+	private array $compiled = [];
 
 	//------------------------------------------------------------------------------------- $compiler
 	/**
@@ -63,7 +63,7 @@ class Compiler extends Cache
 	 *
 	 * @var ICompiler
 	 */
-	private $compiler;
+	private ICompiler $compiler;
 
 	//------------------------------------------------------------------------------------ $compilers
 	/**
@@ -74,7 +74,7 @@ class Compiler extends Cache
 	 *
 	 * @var array ICompiler[integer $wave_number][string $class_name]
 	 */
-	private $compilers = [];
+	private array $compilers = [];
 
 	//---------------------------------------------------------------------------------- $has_changed
 	/**
@@ -82,7 +82,7 @@ class Compiler extends Cache
 	 *
 	 * @var array true[string $file_name]
 	 */
-	private $has_changed = [];
+	private array $has_changed = [];
 
 	//------------------------------------------------------------------------------------ $last_wave
 	/**
@@ -91,7 +91,7 @@ class Compiler extends Cache
 	 *
 	 * @var boolean
 	 */
-	private $last_wave;
+	private bool $last_wave;
 
 	//------------------------------------------------------------------------------ $main_controller
 	/**
@@ -99,7 +99,7 @@ class Compiler extends Cache
 	 *
 	 * @var Main
 	 */
-	public $main_controller;
+	public Main $main_controller;
 
 	//--------------------------------------------------------------------------------- $more_sources
 	/**
@@ -107,7 +107,7 @@ class Compiler extends Cache
 	 *
 	 * @var Reflection_Source[]
 	 */
-	private $more_sources = [];
+	private array $more_sources = [];
 
 	//-------------------------------------------------------------------------------- $saved_sources
 	/**
@@ -116,7 +116,7 @@ class Compiler extends Cache
 	 *
 	 * @var Reflection_Source[]
 	 */
-	private $saved_sources = [];
+	private array $saved_sources = [];
 
 	//-------------------------------------------------------------------------------------- $sources
 	/**
@@ -126,13 +126,13 @@ class Compiler extends Cache
 	 *
 	 * @var Reflection_Source[]
 	 */
-	private array $sources;
+	private array|null $sources;
 
 	//---------------------------------------------------------------------------------- $text_output
 	/**
 	 * @var Text_Output
 	 */
-	private $text_output;
+	private Text_Output $text_output;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -208,7 +208,7 @@ class Compiler extends Cache
 	/**
 	 * @param $class_name string
 	 */
-	protected function addMoreDependentSources($class_name)
+	protected function addMoreDependentSources(string $class_name)
 	{
 		$more_sources = new More_Sources($this->more_sources);
 		// add removed class descendants
@@ -310,7 +310,7 @@ class Compiler extends Cache
 	 * @return string
 	 * @see Compiler::classToPath()
 	 */
-	public static function cacheFileNameToClass($path)
+	public static function cacheFileNameToClass(string $path) : string
 	{
 		return Names::pathToClass(str_replace('-', SL, $path));
 	}
@@ -338,7 +338,7 @@ class Compiler extends Cache
 	 * @return string
 	 * @see Compiler::pathToClass()
 	 */
-	public static function classToCacheFilePath($class_name)
+	public static function classToCacheFilePath(string $class_name) : string
 	{
 		return self::getCacheDir() . SL . str_replace('/', '-', Names::classToPath($class_name));
 	}
@@ -347,7 +347,7 @@ class Compiler extends Cache
 	/**
 	 * @param $last_time integer compile only files modified since this time
 	 */
-	public function compile($last_time = 0)
+	public function compile(int $last_time = 0)
 	{
 		$this->text_output->log('<h1>Starting ' . ($this->full ? 'full' : '') . ' compile</h1>');
 		upgradeTimeLimit(900);
@@ -398,7 +398,7 @@ class Compiler extends Cache
 	 * @param $compilers_stop integer
 	 * @param $cache_dir      string
 	 */
-	private function compileSource(Reflection_Source $source, $compilers_stop, $cache_dir)
+	private function compileSource(Reflection_Source $source, int $compilers_stop, string $cache_dir)
 	{
 		$source->refuseCompiledSource();
 		$class_name = $source->getFirstClassName();
@@ -454,7 +454,7 @@ class Compiler extends Cache
 	 * @param $compilers_stop integer
 	 * @param $cache_dir string
 	 */
-	private function compileSources($compilers_stop, $cache_dir)
+	private function compileSources(int $compilers_stop, string $cache_dir)
 	{
 		$this->sortSourcesByParentsCount();
 		$counter = 0;
@@ -481,14 +481,16 @@ class Compiler extends Cache
 	 * @param $class_name string
 	 * @return Reflection_Source
 	 */
-	public function getClassFileName($class_name)
+	public function getClassFileName(string $class_name) : Reflection_Source
 	{
 		if (isset($this->saved_sources[$class_name])) {
 			return $this->saved_sources[$class_name];
 		}
+		/** @var $router Router */
+		$router    = Session::current()->plugins->get(Router::class);
 		$file_name = Class_Builder::isBuilt($class_name)
 			? self::classToCacheFilePath($class_name)
-			: Session::current()->plugins->get(Router::class)->getClassFileName($class_name);
+			: $router->getClassFileName($class_name);
 		return Reflection_Source::ofFile($file_name, $class_name);
 	}
 
@@ -499,7 +501,7 @@ class Compiler extends Cache
 	 * @param $last_time integer scan only files modified since this time
 	 * @return Reflection_Source[] key is full file path, value is file name
 	 */
-	private function getFilesToCompile($last_time = 0)
+	private function getFilesToCompile(int $last_time = 0) : array
 	{
 		$source_files = Application::current()->include_path->getSourceFiles();
 		foreach (scandir(DOT) as $file_name) {
@@ -507,7 +509,7 @@ class Compiler extends Cache
 		}
 		$files = [];
 		foreach ($source_files as $file_path) {
-			if ((substr($file_path, -4) == '.php') && (filemtime($file_path) > $last_time)) {
+			if (str_ends_with($file_path, '.php') && (filemtime($file_path) > $last_time)) {
 				$source = Reflection_Source::ofFile($file_path);
 				$files[$source->getFirstClassName() ?: $file_path] = $source;
 			}
@@ -632,8 +634,7 @@ class Compiler extends Cache
 			$parent_classes = $source->getClasses();
 			$parent_class   = reset($parent_classes);
 			while (
-				$parent_class
-				&& ($parent_class instanceof Reflection_Class)
+				($parent_class instanceof Reflection_Class)
 				&& !$parent_class->isInternal()
 			) {
 				$parents_count ++;
@@ -645,12 +646,10 @@ class Compiler extends Cache
 					}
 					else {
 						$file_name = $this->getClassFileName($parent_name);
-						if ($file_name instanceof Reflection_Source) {
-							if ($file_name->isInternal()) {
-								break;
-							}
-							$file_name = $file_name->file_name;
+						if ($file_name->isInternal()) {
+							break;
 						}
+						$file_name = $file_name->file_name;
 						if (isset($this->saved_sources[$file_name])) {
 							$parent_classes = $this->saved_sources[$file_name]->getClasses();
 							$parent_class   = reset($parent_classes);
@@ -683,7 +682,7 @@ class Compiler extends Cache
 	 * @return string
 	 * @see cacheFileNameToSourceFile()
 	 */
-	public static function sourceFileToCacheFileName($file_name)
+	public static function sourceFileToCacheFileName(string $file_name) : string
 	{
 		return Include_Filter::cacheFile($file_name);
 	}

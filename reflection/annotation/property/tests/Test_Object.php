@@ -76,7 +76,7 @@ class Test_Object
 	 * @param $property Interfaces\Reflection_Property
 	 * @return string
 	 */
-	public function getDefaultPropertyValue(Interfaces\Reflection_Property $property)
+	public function getDefaultPropertyValue(Interfaces\Reflection_Property $property) : string
 	{
 		return 'default value for ' . $property->getName();
 	}
@@ -85,7 +85,7 @@ class Test_Object
 	/**
 	 * @return string
 	 */
-	public function getSimple()
+	public function getSimple() : string
 	{
 		return $this->getter_simple . ' with getter simple';
 	}
@@ -95,7 +95,7 @@ class Test_Object
 	 * @param $value string
 	 * @return string
 	 */
-	public static function getStatic($value)
+	public static function getStatic(string $value) : string
 	{
 		return $value . ' with getter static';
 	}
@@ -104,7 +104,7 @@ class Test_Object
 	/**
 	 * @param $setter_simple string
 	 */
-	public function setSimple($setter_simple)
+	public function setSimple(string $setter_simple)
 	{
 		$this->setter_simple = $setter_simple . ' with setter simple';
 	}
@@ -114,7 +114,7 @@ class Test_Object
 	 * @param $value string
 	 * @return string
 	 */
-	public static function setStatic($value)
+	public static function setStatic(string $value) : string
 	{
 		return $value . ' with setter static';
 	}

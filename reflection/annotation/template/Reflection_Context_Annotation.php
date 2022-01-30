@@ -15,10 +15,10 @@ interface Reflection_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $class_property  Reflection contextual Reflection_Class or Reflection_Property object
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class_property, $annotation_name);
+	public function __construct(?string $value, Reflection $class_property, string $annotation_name);
 
 }

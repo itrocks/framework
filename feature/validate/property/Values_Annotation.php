@@ -34,7 +34,7 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$result = [];
 		foreach ($this->value as $value) {

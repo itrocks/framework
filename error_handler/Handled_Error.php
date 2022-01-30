@@ -207,7 +207,7 @@ class Handled_Error
 	/**
 	 * Gets the variables active when the error occured
 	 *
-	 * @return mixed[]
+	 * @return array
 	 */
 	public function getVariables()
 	{

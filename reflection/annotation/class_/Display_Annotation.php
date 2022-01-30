@@ -14,10 +14,10 @@ class Display_Annotation extends Annotation implements Class_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct($value);
 		if (!$this->value) {

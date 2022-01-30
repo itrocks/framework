@@ -18,7 +18,7 @@ interface Reflection
 	 * @param $annotation_name string
 	 * @return Annotation
 	 */
-	public function getAnnotation($annotation_name);
+	public function getAnnotation(string $annotation_name) : Annotation;
 
 	//-------------------------------------------------------------------------------- getAnnotations
 	/**
@@ -30,7 +30,7 @@ interface Reflection
 	 * @param $annotation_name string
 	 * @return Annotation[]|Multiple_Annotation[]
 	 */
-	public function getAnnotations($annotation_name = null);
+	public function getAnnotations(string $annotation_name = '') : array;
 
 	//----------------------------------------------------------------------------- getListAnnotation
 	/**
@@ -39,7 +39,7 @@ interface Reflection
 	 * @param $annotation_name string
 	 * @return List_Annotation
 	 */
-	public function getListAnnotation($annotation_name);
+	public function getListAnnotation(string $annotation_name) : List_Annotation;
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
@@ -47,7 +47,7 @@ interface Reflection
 	 *
 	 * @return string
 	 */
-	public function getName();
+	public function getName() : string;
 
 	//---------------------------------------------------------------------------- setAnnotationLocal
 	/**
@@ -60,6 +60,6 @@ interface Reflection
 	 * @param $annotation_name string
 	 * @return Annotation
 	 */
-	public function setAnnotationLocal($annotation_name);
+	public function setAnnotationLocal(string $annotation_name) : Annotation;
 
 }

@@ -88,7 +88,7 @@ class Summary_Builder
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->build();
 	}

@@ -64,7 +64,7 @@ class Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$document = new DOMDocument();
 		$clone    = $this->element->cloneNode(true);

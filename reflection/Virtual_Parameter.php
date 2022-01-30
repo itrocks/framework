@@ -62,7 +62,7 @@ class Virtual_Parameter
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$default = $this->default;
 		return ($this->reference ? '&' : '') . '$' . $this->name

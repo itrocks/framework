@@ -64,10 +64,10 @@ class Integrated_Annotation extends Options_Properties_Annotation
 	/**
 	 * Can be empty (eq full) contain 'full', 'simple', 'block' (implicitly 'simple')
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 * @see List_Annotation::__construct()
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		parent::__construct($value);
 

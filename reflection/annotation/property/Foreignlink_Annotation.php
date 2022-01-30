@@ -20,10 +20,10 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
@@ -49,7 +49,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultCollection(Reflection_Property $property)
+	private function defaultCollection(Reflection_Property $property) : array
 	{
 		return [$property->getName()];
 	}
@@ -59,7 +59,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultMap(Reflection_Property $property)
+	private function defaultMap(Reflection_Property $property) : array
 	{
 		return [Names::setToSingle($property->getName())];
 	}
@@ -69,7 +69,7 @@ class Foreignlink_Annotation extends Documented_Type_Annotation
 	 * @param $property Reflection_Property
 	 * @return string[]
 	 */
-	private function defaultObject(Reflection_Property $property)
+	private function defaultObject(Reflection_Property $property) : array
 	{
 		return [$property->getName()];
 	}

@@ -23,10 +23,10 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		if (is_null($this->value)) {
@@ -46,7 +46,7 @@ class Group_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $class         Reflection_Class
 	 * @param $property_path string
 	 */
-	public function replaceByClass(Reflection_Class $class, $property_path)
+	public function replaceByClass(Reflection_Class $class, string $property_path)
 	{
 		$class_group_annotation = Class_\Group_Annotation::searchProperty(
 			Class_\Group_Annotation::allOf($class), $property_path

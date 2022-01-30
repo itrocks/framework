@@ -13,7 +13,7 @@ trait Conditions_Trait
 	/**
 	 * @var boolean
 	 */
-	public $boolean;
+	public bool $boolean;
 
 	//-------------------------------------------------------------------- $boolean_false_conditioned
 	/**

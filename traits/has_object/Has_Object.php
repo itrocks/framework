@@ -22,7 +22,7 @@ trait Has_Object
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->object);
 	}

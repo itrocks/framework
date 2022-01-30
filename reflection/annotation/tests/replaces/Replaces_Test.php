@@ -13,28 +13,21 @@ class Replaces_Test extends Test
 	/**
 	 * @param $method string
 	 * @param $object object
-	 * @param $append string|string[]
 	 */
-	private function allTests($method, $object, $append = null)
+	private function allTests(string $method, object $object)
 	{
-		if (is_string($append)) {
-			$append = [$append, $append];
-		}
-		elseif (!isset($append)) {
-			$append = ['', ''];
-		}
-
-		$object->replaced = 'to_replaced';
+		$append              = ['', ''];
+		$object->replaced    = 'to_replaced';
 		$object->replacement = 'to_replacement';
 		static::assertEquals(
 			['replaced' => 'to_replacement' . $append[0], 'replacement' => 'to_replacement' . $append[1]],
-			$this->values($object, ['replaced', 'replacement']), $method . DOT . 'set_replacement'
+			$this->values($object), $method . DOT . 'set_replacement'
 		);
 
 		$object->replaced = 'to_replaced';
 		static::assertEquals(
 			['replaced' => 'to_replaced' . $append[0], 'replacement' => 'to_replaced' . $append[1]],
-			$this->values($object, ['replaced', 'replacement']), $method . DOT . 'set_replaced'
+			$this->values($object), $method . DOT . 'set_replaced'
 		);
 	}
 
@@ -74,14 +67,13 @@ class Replaces_Test extends Test
 
 	//---------------------------------------------------------------------------------------- values
 	/**
-	 * @param $object         object
-	 * @param $property_names string[]
+	 * @param $object object
 	 * @return array
 	 */
-	private function values($object, array $property_names)
+	private function values(object $object) : array
 	{
 		$values = [];
-		foreach ($property_names as $property_name) {
+		foreach (['replaced', 'replacement'] as $property_name) {
 			$values[$property_name] = $object->$property_name;
 		}
 		return $values;

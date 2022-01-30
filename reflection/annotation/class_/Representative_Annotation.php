@@ -26,10 +26,10 @@ class Representative_Annotation extends Representative implements Class_Context_
 	 *
 	 * Default representative is the list of non-static properties of the class
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct($value, $class);
 		if (!$this->value) {

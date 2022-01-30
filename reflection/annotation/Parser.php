@@ -36,7 +36,7 @@ class Parser
 	/**
 	 * @var string[]
 	 */
-	public static $default_annotations;
+	public static array $default_annotations;
 
 	//-------------------------------------------------------------------------------- allAnnotations
 	/**
@@ -44,9 +44,9 @@ class Parser
 	 * Warning : only returns annotation in doc comments (not default annotations)
 	 *
 	 * @param $reflection_object Has_Doc_Comment|Annoted
-	 * @return Annotation[]|array
+	 * @return Annotation[]
 	 */
-	public static function allAnnotations(Has_Doc_Comment $reflection_object)
+	public static function allAnnotations(Has_Doc_Comment $reflection_object) : array
 	{
 		$doc_comment = $reflection_object->getDocComment([T_EXTENDS, T_IMPLEMENTS, T_USE]);
 		$annotations = [];
@@ -103,8 +103,10 @@ class Parser
 	 * @return Annotation|Annotation[]
 	 */
 	public static function byName(
-		Has_Doc_Comment $reflection_object, $annotation_name, $multiple = null, $local = false
-	) {
+		Has_Doc_Comment $reflection_object, string $annotation_name, bool $multiple = null,
+		bool $local = false
+	) : Annotation|array
+	{
 		$annotation_class = static::getAnnotationClassName(
 			get_class($reflection_object), $annotation_name
 		);
@@ -142,10 +144,9 @@ class Parser
 				}
 			}
 		}
-		$annotation = $multiple ? self::multipleRemove($annotations) : (
-			$annotation ? $annotation : new $annotation_class(null, $reflection_object, $annotation_name)
-		);
-		return $annotation;
+		return $multiple
+			? self::multipleRemove($annotations)
+			: ($annotation ?: new $annotation_class(null, $reflection_object, $annotation_name));
 	}
 
 	//------------------------------------------------------------------------ getAnnotationClassName
@@ -156,7 +157,8 @@ class Parser
 	 * @param $annotation_name string
 	 * @return string
 	 */
-	public static function getAnnotationClassName($class_name, $annotation_name)
+	public static function getAnnotationClassName(string $class_name, string $annotation_name)
+		: string
 	{
 		static $cache = [];
 		while (!in_array(
@@ -200,7 +202,7 @@ class Parser
 	 */
 	private static function initDefaultAnnotations()
 	{
-		if (!self::$default_annotations) {
+		if (!isset(self::$default_annotations)) {
 			if (is_dir(Application::getCacheDir())) {
 				$default_annotations_file = Application::getCacheDir() . SL . 'default_annotations.php';
 				clearstatcache(true, $default_annotations_file);
@@ -214,7 +216,6 @@ class Parser
 			else {
 				$default_annotations_file = __DIR__ . SL . 'default_annotations.php';
 			}
-			/** @noinspection PhpIncludeInspection dynamic */
 			include_once $default_annotations_file;
 		}
 	}
@@ -226,12 +227,12 @@ class Parser
 	 * @param $annotations Annotation[]
 	 * @return Annotation[]
 	 */
-	private static function multipleRemove(array $annotations)
+	private static function multipleRemove(array $annotations) : array
 	{
 		$remove = [];
 		foreach ($annotations as $key => $annotation) {
 			if (is_string($annotation->value)) {
-				if (substr($annotation->value, 0, 1) === '!') {
+				if (str_starts_with($annotation->value, '!')) {
 					$remove[$annotation->value] = true;
 					unset($annotations[$key]);
 				}
@@ -250,12 +251,14 @@ class Parser
 	 * @param $i                 integer
 	 * @param $annotation_class  string
 	 * @param $reflection_object Has_Doc_Comment|Reflection
-	 * @return Annotation
+	 * @return ?Annotation
 	 */
 	private static function parseAnnotationValue(
-		$doc_comment, $annotation_name, &$i, $annotation_class, Reflection $reflection_object
-	) {
-		$i += strlen($annotation_name) + 1;
+		string $doc_comment, string $annotation_name, int &$i, string $annotation_class,
+		Has_Doc_Comment|Reflection $reflection_object
+	) : ?Annotation
+	{
+		$i        += strlen($annotation_name) + 1;
 		$next_char = $doc_comment[$i];
 		switch ($next_char) {
 			case SP:
@@ -268,9 +271,6 @@ class Parser
 				if (($next_annotation !== false) && ($next_annotation < $j)) $j = $next_annotation;
 				if (($end_doc_comment !== false) && ($end_doc_comment < $j)) $j = $end_doc_comment;
 				if (($next_in         !== false) && ($next_in         < $j)) $j = $next_in;
-				if ($j === false) {
-					trigger_error('Missing doc_comment end', E_USER_ERROR);
-				}
 				$value = trim(preg_replace('%\s*\n\s+\*\s*%', SP, substr($doc_comment, $i, $j - $i)));
 				break;
 			case CR:
@@ -282,8 +282,8 @@ class Parser
 		}
 
 		// accept private values only if on the first main class : all @private after a *IN are ignored
-		if (substr($value, 0, 6) === '@local') {
-			if (strpos(substr($doc_comment, 0, $i), self::DOC_COMMENT_IN) !== false) {
+		if (str_starts_with($value, '@local')) {
+			if (str_contains(substr($doc_comment, 0, $i), self::DOC_COMMENT_IN)) {
 				return null;
 			}
 			$value = trim(substr($value, 6));
@@ -359,8 +359,8 @@ class Parser
 
 		if (
 			is_a($annotation_class, Do_Not_Inherit::class, true)
-			&& (strpos($doc_comment, self::DOC_COMMENT_IN) !== false)
-			&& ($i > strpos($doc_comment, self::DOC_COMMENT_IN))
+			&& (($j = strpos($doc_comment, self::DOC_COMMENT_IN)) !== false)
+			&& ($i > $j)
 		) {
 			return null;
 		}

@@ -34,7 +34,7 @@ class Block
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->property_name;
 	}

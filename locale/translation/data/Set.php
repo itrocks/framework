@@ -68,7 +68,7 @@ class Set
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return trim($this->object . SP . Names::propertyToDisplay($this->property_name))
 			. SP . Loc::tr('translations');

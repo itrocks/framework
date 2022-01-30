@@ -19,7 +19,7 @@ class Controller extends Edit\Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
-	 * @return mixed[]
+	 * @return array
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{

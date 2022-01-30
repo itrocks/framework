@@ -18,10 +18,10 @@ class Identify_Annotation extends Representative_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (!$value) {
 			$value = join(',', Representative_Annotation::of($class)->values());

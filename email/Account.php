@@ -33,7 +33,7 @@ class Account
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return str_replace(['<', '>'], '', $this->name) . ' <' . $this->email . '>';
 	}

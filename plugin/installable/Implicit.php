@@ -52,7 +52,7 @@ class Implicit implements Installable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval(Feature_Annotation::of($this->class)->value);
 	}

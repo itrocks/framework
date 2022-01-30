@@ -16,7 +16,7 @@ class Manager implements IManager
 	/**
 	 * @var boolean[] key is the plugin class name, value is always true when set here
 	 */
-	private $activated = [];
+	private array $activated = [];
 
 	//-------------------------------------------------------------------------------------- $plugins
 	/**
@@ -24,7 +24,7 @@ class Manager implements IManager
 	 *
 	 * @var array
 	 */
-	private $plugins = [];
+	private array $plugins = [];
 
 	//--------------------------------------------------------------------------------- $plugins_tree
 	/**
@@ -32,7 +32,37 @@ class Manager implements IManager
 	 *
 	 * @var array
 	 */
-	private $plugins_tree = [];
+	private array $plugins_tree = [];
+
+	//----------------------------------------------------------------------------------- __serialize
+	/**
+	 * @return array
+	 */
+	public function __serialize() : array
+	{
+		$data = [];
+		foreach ($this->plugins_tree as $level => $plugins) {
+			if ($level != 'top_core') {
+				foreach ($plugins as $class_name => $object) {
+					if (is_object($object)) {
+						if (method_exists($object, '__serialize')) {
+							$data[$level][$class_name] = serialize($object);
+						}
+						elseif (isset($object->plugin_configuration)) {
+							$data[$level][$class_name] = serialize($object->plugin_configuration);
+						}
+						else {
+							$data[$level][$class_name] = true;
+						}
+					}
+					else {
+						$data[$level][$class_name] = $object;
+					}
+				}
+			}
+		}
+		return $data;
+	}
 
 	//--------------------------------------------------------------------------------- __unserialize
 	/**
@@ -225,7 +255,7 @@ class Manager implements IManager
 	 * @param $tree boolean If true, return plugins list as a tree where first key is priority level
 	 * @return array plugins list
 	 */
-	public function getAll($tree = false)
+	public function getAll(bool $tree = false) : array
 	{
 		return $tree ? $this->plugins_tree : $this->plugins;
 	}
@@ -233,14 +263,12 @@ class Manager implements IManager
 	//------------------------------------------------------------------------------ getConfiguration
 	/**
 	 * @param $class_name string the plugin class name
-	 * @return array the plugin configuration, if set
+	 * @return ?array the plugin configuration, if set
 	 */
-	public function getConfiguration($class_name)
+	public function getConfiguration(string $class_name) : ?array
 	{
 		$plugin = $this->get($class_name);
-		return isset($plugin->plugin_configuration)
-			? $plugin->plugin_configuration
-			: null;
+		return $plugin->plugin_configuration ?? null;
 	}
 
 	//------------------------------------------------------------------------------------------- has
@@ -250,7 +278,7 @@ class Manager implements IManager
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public function has($class_name)
+	public function has(string $class_name) : bool
 	{
 		return isset($this->plugins[$class_name]);
 	}
@@ -265,7 +293,9 @@ class Manager implements IManager
 	 * @param $register      boolean
 	 * @return Plugin
 	 */
-	public function register($class_name, $level, $configuration = true, $register = true)
+	public function register(
+		string $class_name, string $level, array|bool $configuration = true, bool $register = true
+	) : Plugin
 	{
 		if (!isset($this->plugins[$class_name])) {
 			if (empty($configuration)) {
@@ -275,36 +305,6 @@ class Manager implements IManager
 			$this->plugins[$class_name]              = $configuration;
 		}
 		return $this->get($class_name, $level, $register, $register);
-	}
-
-	//----------------------------------------------------------------------------------- __serialize
-	/**
-	 * @return array
-	 */
-	public function __serialize() : array
-	{
-		$data = [];
-		foreach ($this->plugins_tree as $level => $plugins) {
-			if ($level != 'top_core') {
-				foreach ($plugins as $class_name => $object) {
-					if (is_object($object)) {
-						if (method_exists($object, '__serialize')) {
-							$data[$level][$class_name] = serialize($object);
-						}
-						elseif (isset($object->plugin_configuration)) {
-							$data[$level][$class_name] = serialize($object->plugin_configuration);
-						}
-						else {
-							$data[$level][$class_name] = true;
-						}
-					}
-					else {
-						$data[$level][$class_name] = $object;
-					}
-				}
-			}
-		}
-		return serialize($data);
 	}
 
 	//------------------------------------------------------------------------------------------- set
@@ -319,7 +319,7 @@ class Manager implements IManager
 	 * @param $class_name string default is the class of $plugin
 	 * @return object the replaced plugin if there was one for the given class name
 	 */
-	public function set($plugin, $class_name = null)
+	public function set(object $plugin, string $class_name = '') : object
 	{
 		if (!$class_name) {
 			$class_name = get_class($plugin);

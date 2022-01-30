@@ -27,7 +27,7 @@ class Row extends Element
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		if (count($this->cells) > 1) {
 			$this->setContent(LF . join(LF, $this->cells) . LF);

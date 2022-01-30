@@ -32,7 +32,7 @@ class Link_Property_Name implements Option
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->link_property_name;
 	}

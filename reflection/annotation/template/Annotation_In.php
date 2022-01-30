@@ -11,6 +11,6 @@ trait Annotation_In
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 }

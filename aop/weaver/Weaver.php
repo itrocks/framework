@@ -5,12 +5,13 @@ use ITRocks\Framework\AOP\Weaver\Handler;
 use ITRocks\Framework\AOP\Weaver\IHandler;
 use ITRocks\Framework\AOP\Weaver\IWeaver;
 use ITRocks\Framework\Application;
+use ITRocks\Framework\Plugin;
 use ITRocks\Framework\Session;
 
 /**
  * The Aop class is an interface to the Aop calls manager
  */
-class Weaver implements IWeaver
+class Weaver implements IWeaver, Plugin
 {
 
 	//------------------------------------------------------------------------------------ $file_name
@@ -20,7 +21,7 @@ class Weaver implements IWeaver
 	 * @see loadJoinpoints
 	 * @var string
 	 */
-	private $file_name;
+	private string $file_name;
 
 	//----------------------------------------------------------------------------------- $joinpoints
 	/**
@@ -29,7 +30,7 @@ class Weaver implements IWeaver
 	 * @var array array[$function][$index] = [$type, callback $advice)
 	 * @var array array[$class][$method][$index] = [$type, callback $advice]
 	 */
-	private $joinpoints = [];
+	private array $joinpoints = [];
 
 	//--------------------------------------------------------------------------------- afterFunction
 	/**
@@ -45,11 +46,8 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterFunction($joinpoint, $advice)
+	public function afterFunction($joinpoint, $advice) : IHandler
 	{
-		if (!is_string($joinpoint)) {
-			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
-		}
 		$this->joinpoints[$joinpoint][] = [Handler::AFTER, $advice];
 		return new Handler(Handler::AFTER, $joinpoint, count($this->joinpoints[$joinpoint]) - 1);
 	}
@@ -69,7 +67,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function afterMethod($joinpoint, $advice)
+	public function afterMethod($joinpoint, $advice) : IHandler
 	{
 		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
@@ -93,7 +91,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundFunction($joinpoint, $advice)
+	public function aroundFunction($joinpoint, $advice) : IHandler
 	{
 		if (!is_string($joinpoint)) {
 			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
@@ -116,7 +114,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function aroundMethod($joinpoint, $advice)
+	public function aroundMethod($joinpoint, $advice) : IHandler
 	{
 		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
@@ -156,7 +154,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeFunction($joinpoint, $advice)
+	public function beforeFunction($joinpoint, $advice) : IHandler
 	{
 		if (!is_string($joinpoint)) {
 			trigger_error('Joinpoint must be a function name', E_USER_ERROR);
@@ -179,7 +177,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function beforeMethod($joinpoint, $advice)
+	public function beforeMethod($joinpoint, $advice) : IHandler
 	{
 		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
@@ -194,7 +192,7 @@ class Weaver implements IWeaver
 	/**
 	 * @return string[] class names of changed joinpoints since before call of saveJoinpoints()
 	 */
-	public function changedClassNames()
+	public function changedClassNames() : array
 	{
 		$changed_class_names = [];
 
@@ -222,7 +220,7 @@ class Weaver implements IWeaver
 	/**
 	 * @return string
 	 */
-	public function defaultFileName()
+	public function defaultFileName() : string
 	{
 		return Application::getCacheDir() . SL . 'weaver.php';
 	}
@@ -235,7 +233,7 @@ class Weaver implements IWeaver
 	 * @param $array array
 	 * @return string
 	 */
-	private function dumpArray(array $array)
+	private function dumpArray(array $array) : string
 	{
 		$lf1 = LF . TAB;
 		$lf2 = $lf1 . TAB;
@@ -295,7 +293,7 @@ class Weaver implements IWeaver
 	 * @param $file_name string
 	 * @return string[] key is the name of the class, value is its raw configuration into weaver.php
 	 */
-	private function fileClassesAsText($file_name)
+	private function fileClassesAsText(string $file_name) : array
 	{
 		$classes = [];
 		$parts   = explode("\n\t'", file_exists($file_name) ? file_get_contents($file_name) : '');
@@ -316,7 +314,7 @@ class Weaver implements IWeaver
 	 * @param $joinpoint callable A class method or property name
 	 * @return array [$index] = [$type, callback $advice]
 	 */
-	public function getJoinpoint($joinpoint)
+	public function getJoinpoint($joinpoint) : array
 	{
 		if (isset($this->joinpoints[$joinpoint[0]][$joinpoint[1]])) {
 			return $this->joinpoints[$joinpoint[0]][$joinpoint[1]];
@@ -331,10 +329,10 @@ class Weaver implements IWeaver
 	 * @param $joinpoint_name string joinpoint class or function name
 	 * @return array [$method][$index] = [$type, callback $advice]
 	 */
-	public function getJoinpoints($joinpoint_name = null)
+	public function getJoinpoints(string $joinpoint_name = '') : array
 	{
-		return isset($joinpoint_name)
-			? (isset($this->joinpoints[$joinpoint_name]) ? $this->joinpoints[$joinpoint_name] : [])
+		return $joinpoint_name
+			? ($this->joinpoints[$joinpoint_name] ?? [])
 			: $this->joinpoints;
 	}
 
@@ -342,7 +340,7 @@ class Weaver implements IWeaver
 	/**
 	 * @return boolean
 	 */
-	public function hasJoinpoints()
+	public function hasJoinpoints() : bool
 	{
 		return $this->joinpoints ? true : false;
 	}
@@ -351,10 +349,9 @@ class Weaver implements IWeaver
 	/**
 	 * @param $file_name string
 	 */
-	public function loadJoinpoints($file_name)
+	public function loadJoinpoints(string $file_name)
 	{
-		$this->file_name = $file_name;
-		/** @noinspection PhpIncludeInspection */
+		$this->file_name  = $file_name;
 		$this->joinpoints = file_exists($file_name) ? (include $file_name) : [];
 	}
 
@@ -366,7 +363,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function readProperty(array $joinpoint, $advice)
+	public function readProperty(array $joinpoint, $advice) : IHandler
 	{
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::READ, $advice];
 		return new Handler(
@@ -395,7 +392,7 @@ class Weaver implements IWeaver
 	/**
 	 * @param $file_name string
 	 */
-	public function saveJoinpoints($file_name)
+	public function saveJoinpoints(string $file_name)
 	{
 		$this->file_name = $file_name;
 		// write new weaver.php file content
@@ -415,7 +412,7 @@ class Weaver implements IWeaver
 	 *                   ['class_name', 'methodName'], [$object, 'methodName'], 'functionName'
 	 * @return IHandler
 	 */
-	public function writeProperty(array $joinpoint, $advice)
+	public function writeProperty(array $joinpoint, $advice) : IHandler
 	{
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::WRITE, $advice];
 		return new Handler(

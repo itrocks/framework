@@ -27,10 +27,10 @@ class List_Annotation extends Options_Properties_Annotation implements Class_Con
 	/**
 	 * Constructor : the default value is @representative
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class The contextual Reflection_Class object
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if ($value) {
 			parent::__construct($value);

@@ -21,14 +21,14 @@ class Property_Test extends Test
 	/**
 	 * @var Test_Object
 	 */
-	private $subject;
+	private Test_Object $subject;
 
 	//--------------------------------------------------------- providerIntegratedAnnotationConstruct
 	/**
-	 * @return array
+	 * @return array[] string[][]|string[][][]
 	 * @see testIntegratedAnnotationConstruct
 	 */
-	public function providerIntegratedAnnotationConstruct()
+	public function providerIntegratedAnnotationConstruct() : array
 	{
 		return [
 			// simple declarations
@@ -72,8 +72,6 @@ class Property_Test extends Test
 	//------------------------------------------------------------------------- testDefaultAnnotation
 	/**
 	 * Test default annotation
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testDefaultAnnotation()
 	{
@@ -85,8 +83,6 @@ class Property_Test extends Test
 	//----------------------------------------------------------------------------- testDefaultSimple
 	/**
 	 * Test @default annotation into the simplest context : no AOP
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testDefaultSimple()
 	{
@@ -149,8 +145,6 @@ class Property_Test extends Test
 	//----------------------------------------------------------------------- testGetterAnnotationSet
 	/**
 	 * Test property @getter : setting annotation value
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testGetterAnnotationSet()
 	{
@@ -197,8 +191,9 @@ class Property_Test extends Test
 	 * @param $expected_value       string[]
 	 * @param $expected_properties  string[]
 	 */
-	public function testIntegratedAnnotationConstruct($init, $expected_value, $expected_properties)
-	{
+	public function testIntegratedAnnotationConstruct(
+		string $init, array $expected_value, array $expected_properties
+	) {
 		$integrated = new Integrated_Annotation($init);
 		static::assertEquals($expected_value, $integrated->value);
 		static::assertEquals($expected_properties, $integrated->properties);
@@ -220,8 +215,6 @@ class Property_Test extends Test
 	//-------------------------------------------------------------------------------- testWithValues
 	/**
 	 * Test annotation with multi-lines values
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testWithValues()
 	{

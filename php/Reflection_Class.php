@@ -27,64 +27,64 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @var double[]|integer[]|string[] Constant name in key, constant value in value
 	 */
-	private $constants;
+	private array $constants;
 
 	//---------------------------------------------------------------------------------- $doc_comment
 	/**
 	 * @var string
 	 */
-	private $doc_comment;
+	private string $doc_comment;
 
 	//----------------------------------------------------------------------------------- $interfaces
 	/**
 	 * @var Reflection_Class[]|string[]
 	 */
-	private $interfaces;
+	private array $interfaces;
 
 	//--------------------------------------------------------------------------- $interfaces_methods
 	/**
 	 * @var Reflection_Method[]
 	 */
-	private $interfaces_methods;
+	private array $interfaces_methods;
 
 	//---------------------------------------------------------------------------------- $is_abstract
 	/**
 	 * @var boolean
 	 */
-	private $is_abstract;
+	private bool $is_abstract;
 
 	//------------------------------------------------------------------------------------- $is_final
 	/**
 	 * @var boolean
 	 */
-	private $is_final;
+	private bool $is_final;
 
 	//----------------------------------------------------------------------------------------- $line
 	/**
 	 * @var integer the line where the class declaration starts into source
 	 */
-	public $line;
+	public int $line;
 
 	//-------------------------------------------------------------------------------------- $methods
 	/**
 	 * @var Reflection_Method[]
 	 */
-	private $methods;
+	private array $methods;
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
 	 * @var string The name of the class
 	 */
-	public $name = null;
+	public string $name;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * This parent is originally set as the parent class name, but is replaced by the replacement
 	 * class name from Builder if there is one by getParent() and getParentName()
 	 *
-	 * @var Reflection_Class|string
+	 * @var Reflection_Class|string|null
 	 */
-	private $parent;
+	private Reflection_Class|string|null $parent;
 
 	//---------------------------------------------------------------------------- $parent_class_name
 	/**
@@ -92,43 +92,43 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @var string
 	 */
-	private $parent_class_name;
+	private string $parent_class_name;
 
 	//----------------------------------------------------------------------------- $parent_constants
 	/**
 	 * @var double[]|integer[]|string[]
 	 */
-	private $parent_constants;
+	private array $parent_constants;
 
 	//------------------------------------------------------------------------------- $parent_methods
 	/**
 	 * @var Reflection_Method[]
 	 */
-	private $parent_methods;
+	private array $parent_methods;
 
 	//---------------------------------------------------------------------------- $parent_properties
 	/**
 	 * @var Reflection_Property[]
 	 */
-	private $parent_properties;
+	private array $parent_properties;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Reflection_Property[]
 	 */
-	private $properties;
+	private array $properties;
 
 	//------------------------------------------------------------------------------------- $requires
 	/**
 	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
 	 */
-	public $requires;
+	public array $requires;
 
 	//---------------------------------------------------------------------------- $short_trait_names
 	/**
 	 * @var string[] key is the full name of the class, value is the short name as in source code
 	 */
-	public $short_trait_names;
+	public array $short_trait_names;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
@@ -136,44 +136,44 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @var Reflection_Source
 	 */
-	public $source;
+	public Reflection_Source $source;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
 	 * @var integer the line where the class declaration stops into source
 	 */
-	public $stop;
+	public int $stop;
 
 	//------------------------------------------------------------------------------ $trait_constants
 	/**
 	 * @var double[]|integer[]|string[]
 	 */
-	private $trait_constants;
+	private array $trait_constants;
 
 	//--------------------------------------------------------------------------------------- $traits
 	/**
 	 * @var Reflection_Class[]|string[]
 	 */
-	private $traits;
+	private array $traits;
 
 	//------------------------------------------------------------------------------- $traits_methods
 	/**
 	 * @var Reflection_Method[]
 	 */
-	private $traits_methods;
+	private array $traits_methods;
 
 	//---------------------------------------------------------------------------- $traits_properties
 	/**
 	 * @var Reflection_Property[]
 	 */
-	private $traits_properties;
+	private array $traits_properties;
 
 	//----------------------------------------------------------------------------------------- $type
 	/**
 	 * @values T_CLASS, T_INTERFACE, T_TRAIT
-	 * @var integer|null
+	 * @var ?integer
 	 */
-	public $type = null;
+	public ?int $type = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -183,7 +183,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name   string The name of the class.
 	 *                If not set, the first class in source will be reflected.
 	 */
-	public function __construct(Reflection_Source $source, $name = null)
+	public function __construct(Reflection_Source $source, string $name = '')
 	{
 		$this->source = $source;
 
@@ -213,7 +213,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $property_name string
 	 * @return mixed
 	 */
-	public function __get($property_name)
+	public function __get(string $property_name) : mixed
 	{
 		if (in_array($property_name, ['line', 'name', 'type'])) {
 			$this->scanUntilClassName();
@@ -221,14 +221,14 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		elseif ($property_name === 'stop') {
 			$this->scanUntilClassEnds();
 		}
-		return $this->$property_name;
+		return $this->$property_name ?? null;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
 	 * @return string The name of the class
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->name;
 	}
@@ -259,9 +259,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Gets defined constant value
 	 *
 	 * @param $name string
-	 * @return mixed
+	 * @return boolean|float|integer|string
 	 */
-	public function getConstant(string $name)
+	public function getConstant(string $name) : bool|float|int|string
 	{
 		$constants = $this->getConstants([]);
 		if (!isset($constants[$name])) {
@@ -278,9 +278,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Gets defined constants from a class
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_USE
-	 * @return mixed[] Constant name in key, constant value in value
+	 * @return array Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_USE])
+	public function getConstants($flags = [T_EXTENDS, T_USE]) : array
 	{
 		if (!$this->constants) {
 			$this->scanUntilClassEnds();
@@ -317,9 +317,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Gets the constructor of the reflected class
 	 *
-	 * @return Reflection_Method
+	 * @return ?Reflection_Method
 	 */
-	public function getConstructor()
+	public function getConstructor() : ?Reflection_Method
 	{
 		$methods = $this->getMethods();
 		if (isset($methods['__construct'])) {
@@ -343,7 +343,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $flags integer[] T_EXTENDS, T_USE
 	 * @return array
 	 */
-	public function getDefaultProperties(array $flags = [])
+	public function getDefaultProperties(array $flags = []) : array
 	{
 		return [];
 	}
@@ -352,11 +352,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * Accumulates documentations of parents and the class itself
 	 *
-	 * @param $flags   integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags   integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment(array $flags = null, array &$already = [])
+	public function getDocComment(array|null $flags = null, array &$already = []) : string
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
@@ -399,11 +399,11 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------- getDocExtends
 	/**
-	 * Gets the classes that are into @extends instead of use to allow diamond multiple inheritance
+	 * Gets the classes matching extends annotation instead of use to allow diamond multiple inheritance
 	 *
 	 * @return Reflection_Class[]
 	 */
-	public function getDocExtends()
+	public function getDocExtends() : array
 	{
 		$extends = [];
 		$expr    = '%'
@@ -425,7 +425,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return string
 	 */
-	public function getFileName()
+	public function getFileName() : string
 	{
 		return $this->source->file_name;
 	}
@@ -434,7 +434,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string[]
 	 */
-	public function getInterfaceNames()
+	public function getInterfaceNames() : array
 	{
 		if (!isset($this->interfaces)) {
 			$this->scanUntilClassBegins();
@@ -446,7 +446,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return Reflection_Class[]
 	 */
-	public function getInterfaces()
+	public function getInterfaces() : array
 	{
 		if (!isset($this->interfaces)) {
 			$this->scanUntilClassBegins();
@@ -467,10 +467,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------------ getMethods
 	/**
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE, self::T_DOCEXTENDS
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = null)
+	public function getMethods($flags = null) : array
 	{
 		if (!isset($this->methods)) {
 			$this->scanUntilClassEnds();
@@ -522,7 +522,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -536,7 +536,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return string
 	 */
-	public function getNamespaceName()
+	public function getNamespaceName() : string
 	{
 		if (!isset($this->namespace)) {
 			$this->scanUntilClassName();
@@ -548,7 +548,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string[]
 	 */
-	public function getNamespaceUse()
+	public function getNamespaceUse() : array
 	{
 		if (!isset($this->use)) {
 			$this->scanUntilClassName();
@@ -563,9 +563,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * If parent is an internal class, of if there is no parent : will return null.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return Reflection_Class
+	 * @return ?Reflection_Class
 	 */
-	public function getParentClass()
+	public function getParentClass() : ?Reflection_Class
 	{
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
@@ -578,8 +578,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			if ($parent->source->isInternal()) {
 				if (!class_exists($parent->name, false)) {
 					foreach (array_keys($this->source->requires) as $require) {
-						/** @noinspection PhpIncludeInspection is dynamic */
-						/** @noinspection PhpUsageOfSilenceOperatorInspection Some requires have @ */
 						@include_once $require;
 					}
 				}
@@ -597,7 +595,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string
 	 */
-	public function getParentName()
+	public function getParentName() : string
 	{
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
@@ -608,14 +606,14 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if ($this->parent) {
 			$this->parentReplacement();
 		}
-		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : null;
+		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : '';
 	}
 
 	//-------------------------------------------------------------------- getParentOriginalClassName
 	/**
 	 * @return string
 	 */
-	public function getParentOriginalClassName()
+	public function getParentOriginalClassName() : string
 	{
 		if (!isset($this->parent)) {
 			$this->getParentName();
@@ -630,10 +628,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @param $flags       integer[]|string[] Restriction. self::T_SORT has no effect (never applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE
-	 * @param $final_class Reflection_Class force the final class to this name (mostly for internal use)
+	 * @param $final_class Reflection_Class|null force the final class to this name (mostly for internal use)
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null, $final_class = null)
+	public function getProperties($flags = null, Reflection_Class $final_class = null) : array
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
@@ -684,9 +682,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * level property (from child class) will be returned
 	 *
 	 * @param $name string The name of the property to get
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
-	public function getProperty($name)
+	public function getProperty(string $name) : ?Reflection_Property
 	{
 		return $this->getProperties()[$name];
 	}
@@ -695,7 +693,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string
 	 */
-	public function getSetClassName()
+	public function getSetClassName() : string
 	{
 		$expr = '%'
 			. '\n\s+\*\s+'     // each line beginning by '* '
@@ -712,7 +710,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @retun string
 	 */
-	public function getShortName()
+	public function getShortName() : string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -728,7 +726,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return integer
 	 */
-	public function getStartLine()
+	public function getStartLine() : int
 	{
 		if (!isset($this->line)) {
 			$this->scanUntilClassName();
@@ -740,7 +738,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return integer
 	 */
-	public function getStopLine()
+	public function getStopLine() : int
 	{
 		if (!isset($this->stop)) {
 			$this->scanUntilClassEnds();
@@ -752,7 +750,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return array
 	 */
-	public function & getTokens()
+	public function & getTokens() : array
 	{
 		if (!isset($this->tokens)) {
 			$this->tokens =& $this->source->getTokens();
@@ -764,7 +762,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return string[]
 	 */
-	public function getTraitNames()
+	public function getTraitNames() : array
 	{
 		if (!isset($this->traits)) {
 			$this->scanUntilClassEnds();
@@ -776,7 +774,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return Reflection_Class[]
 	 */
-	public function getTraits()
+	public function getTraits() : array
 	{
 		if (!isset($this->traits)) {
 			$this->scanUntilClassEnds();
@@ -799,7 +797,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return integer
 	 */
-	public function getType()
+	public function getType() : int
 	{
 		if (!$this->type) {
 			$this->scanUntilClassName();
@@ -816,7 +814,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
 	 */
-	public function implementsMethod($method_name, $include_traits = true)
+	public function implementsMethod(string $method_name, bool $include_traits = true) : bool
 	{
 		$methods = $this->getMethods($include_traits ? [T_USE] : []);
 		return isset($methods[$method_name]) && !$methods[$method_name]->isAbstract();
@@ -831,7 +829,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $include_traits boolean if false, look in class only
 	 * @return boolean
 	 */
-	public function implementsProperty($property_name, $include_traits = true)
+	public function implementsProperty(string $property_name, bool $include_traits = true) : bool
 	{
 		$properties = $this->getProperties($include_traits ? [T_USE] : []);
 		return isset($properties[$property_name]);
@@ -843,12 +841,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function inNamespace()
+	public function inNamespace() : bool
 	{
 		if (!isset($this->namespace)) {
 			$this->scanUntilClassName();
 		}
-		return $this->namespace ? true : false;
+		return boolval($this->namespace);
 	}
 
 	//------------------------------------------------------------------------------------------- isA
@@ -860,9 +858,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @return boolean
 	 * @todo works only with parents : add interfaces and traits
 	 */
-	public function isA($name, array $flags = [])
+	public function isA(string $name, array $flags = []) : bool
 	{
-		if ($name == $this->name) {
+		if ($name === $this->name) {
 			return true;
 		}
 		$parent_name = $this->getParentName();
@@ -880,7 +878,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function isAbstract()
+	public function isAbstract() : bool
 	{
 		if (!isset($this->is_abstract)) {
 			$this->scanUntilClassName();
@@ -892,7 +890,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return boolean
 	 */
-	public function isClass()
+	public function isClass() : bool
 	{
 		return $this->type === T_CLASS;
 	}
@@ -903,7 +901,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function isFinal()
+	public function isFinal() : bool
 	{
 		if (!isset($this->is_final)) {
 			$this->scanUntilClassName();
@@ -918,7 +916,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function isInstance(object $object)
+	public function isInstance(object $object) : bool
 	{
 		return is_a($object, $this->name, true);
 	}
@@ -929,7 +927,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function isInterface()
+	public function isInterface() : bool
 	{
 		return $this->type === T_INTERFACE;
 	}
@@ -940,7 +938,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function isInternal()
+	public function isInternal() : bool
 	{
 		return false;
 	}
@@ -949,7 +947,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @return boolean
 	 */
-	public function isTrait()
+	public function isTrait() : bool
 	{
 		return $this->type === T_TRAIT;
 	}
@@ -960,7 +958,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return boolean
 	 */
-	public function isUserDefined()
+	public function isUserDefined() : bool
 	{
 		return true;
 	}
@@ -970,7 +968,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $class_name string
 	 * @return Reflection_Class
 	 */
-	public static function of($class_name)
+	public static function of(string $class_name) : Reflection_Class
 	{
 		if (str_starts_with($class_name, BS)) {
 			$class_name = substr($class_name, 1);
@@ -1030,7 +1028,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @return string
 	 */
-	public static function regex()
+	public static function regex() : string
 	{
 		return '%'
 		. 'namespace\s+([\\\\\w]+)\s*?[\{\;]'       // 1 : namespace
@@ -1236,8 +1234,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	private function scanUntilClassName()
 	{
 		if (isset($this->use)) {
+			if (!isset($this->name)) {
+				$this->name = '';
+			}
 			return;
 		}
+
 		$this->getTokens();
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
@@ -1300,14 +1302,19 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$class_name = $this->fullClassName($this->scanClassName(), false);
 
 			if (
-				isset($this->name) && ($class_name !== $this->name)
-				&& (strtolower($class_name) === strtolower($this->name))
+					isset($this->name)
+					&& ($class_name !== $this->name)
+					&& (strtolower($class_name) === strtolower($this->name))
 			) {
 				$this->wrongCaseError($class_name, $this->name);
 			}
 
 		} while (!isset($this->name) || ($class_name !== $this->name));
 		$this->name = $class_name;
+
+		if (!isset($this->name)) {
+			$this->name = '';
+		}
 	}
 
 	//-------------------------------------------------------------------------------- wrongCaseError
@@ -1315,7 +1322,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $class_name       string
 	 * @param $wrong_class_name string
 	 */
-	private function wrongCaseError($class_name, $wrong_class_name)
+	private function wrongCaseError(string $class_name, string $wrong_class_name)
 	{
 		// look for the source class where the class name is wrong
 		foreach ((new Call_Stack())->lines() as $line) {

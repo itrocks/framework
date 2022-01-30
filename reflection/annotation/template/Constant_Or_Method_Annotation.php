@@ -23,20 +23,22 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @param $value           ?string
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class_property, $annotation_name)
+	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
 	{
 		parent::__construct($value, $class_property, $annotation_name);
+		$value = strval($this->value);
 
-		if (($pos = strpos($this->value, '::')) !== false) {
-			$class_name = substr($this->value, 0, $pos);
+		if (($pos = strpos($value, '::')) !== false) {
+			$class_name = substr($value, 0, $pos);
 			if ($class_name[0] !== BS) {
 				$class_name = BS . $class_name;
 			}
-			$method_name = substr($this->value, $pos + 2);
+			$method_name = substr($value, $pos + 2);
 			// value is a method
 			if (method_exists($class_name, $method_name)) {
 				$this->is_method = true;
@@ -81,9 +83,9 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 *
 	 * @param $property  Reflection_Property
 	 * @param $arguments array arguments for method call
-	 * @return string|null
+	 * @return ?string
 	 */
-	public function callProperty(Reflection_Property $property, array $arguments = [])
+	public function callProperty(Reflection_Property $property, array $arguments = []) : ?string
 	{
 		if ($this->value) {
 			$object = ($property instanceof Reflection_Property_Value) ? $property->getObject() : null;
@@ -110,7 +112,7 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 *
 	 * @param $text string
 	 */
-	public function setText($text)
+	public function setText(string $text)
 	{
 		$this->is_method = false;
 		$this->value     = $text;

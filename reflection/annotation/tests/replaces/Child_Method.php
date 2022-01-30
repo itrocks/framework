@@ -12,14 +12,14 @@ class Child_Method extends Parent_Method
 	 * @replaces replaced_object
 	 * @var Son
 	 */
-	public $replacement_object;
+	public Son $replacement_object;
 
 	//--------------------------------------------------------------------------- $replacement_string
 	/**
 	 * @replaces replaced_string
 	 * @var string
 	 */
-	public $replacement_string;
+	public string $replacement_string;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

@@ -29,21 +29,21 @@ class Feature_Menu_Annotation extends Annotation
 	/**
 	 * @var string
 	 */
-	public $block_caption;
+	public string $block_caption;
 
 	//--------------------------------------------------------------------------------- $item_caption
 	/**
 	 * @var string
 	 */
-	public $item_caption;
+	public string $item_caption;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 * @throws ReflectionException
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		if (static::$context) {
 			$class = static::$context;

@@ -19,7 +19,7 @@ trait Person_Set_Default_Name
 	 *
 	 * @returns string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		/** @var $self self|Has_Name */
 		$self   = $this;

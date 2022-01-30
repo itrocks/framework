@@ -363,7 +363,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
-	 * @return mixed[]
+	 * @return array
 	 */
 	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{

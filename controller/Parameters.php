@@ -223,7 +223,7 @@ class Parameters
 	/**
 	 * Gets parameters list as objects
 	 *
-	 * @return mixed[] key is the parameter name
+	 * @return array key is the parameter name
 	 */
 	public function getObjects()
 	{
@@ -253,7 +253,7 @@ class Parameters
 	/**
 	 * Gets URI parameters raw values, as they were on original URI
 	 *
-	 * @return mixed[] key is the parameter name
+	 * @return array key is the parameter name
 	 */
 	public function getRawParameters()
 	{

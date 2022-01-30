@@ -57,7 +57,7 @@ class Type
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->type . SL . $this->subtype;
 	}

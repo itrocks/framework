@@ -19,13 +19,13 @@ class Replaced_Getter
 	 * @replaces replaced
 	 * @var string
 	 */
-	public $replacement;
+	public string $replacement;
 
 	//----------------------------------------------------------------------------------- getReplaced
 	/**
 	 * @return string
 	 */
-	protected function getReplaced()
+	protected function getReplaced() : string
 	{
 		return $this->replaced . '(get)';
 	}

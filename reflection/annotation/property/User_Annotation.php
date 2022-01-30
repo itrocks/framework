@@ -5,6 +5,26 @@ use ITRocks\Framework\Reflection\Annotation\Template\List_Annotation;
 
 /**
  * User annotation : a list of parameters concerning the accessibility of the property for the user
+ *
+ * Annotation value
+ * - hidden : the property will be generated into lists or output forms, but with a 'hidden' class
+ * - hide_empty : the property will not be displayed into output views if value is empty,
+ *   but will be still visible into edit views
+ * - invisible : the property will not be displayed (nor exist) into lists, output forms, property
+ *   selector, etc. any user template
+ * - readonly : the property will be displayed but will not be accessible for modification
+ * Value that only works for basic type (not supported on collection and map)
+ * - if_empty : the property will be displayed editable if value is empty, read_only otherwise
+ *   notes: incompatible with @user_default, incompatible with "hide_empty" value.
+ * Value that only works for collection/map
+ * - no_add : forbids user to add a new element
+ * - no_delete : forbids user to delete any element
+ *
+ * @override value @values hidden, hide_empty, if_empty, invisible, no_add, no_delete, readonly
+ * @override value @var ?string[]
+ * @property ?string[] value
+ * @todo readonly should be implicitly set when @read_only is enabled
+ * @todo readonly should be replaced by two-words read_only
  */
 class User_Annotation extends List_Annotation
 {
@@ -25,6 +45,12 @@ class User_Annotation extends List_Annotation
 	//------------------------------------------------------------------------------------ ANNOTATION
 	const ANNOTATION = 'user';
 
+	//-------------------------------------------------------------------------------- NOT_MODIFIABLE
+	const NOT_MODIFIABLE = [
+		self::ADD_ONLY, self::HIDDEN, self::HIDE_EDIT, self::INVISIBLE, self::INVISIBLE_EDIT,
+		self::READONLY, self::STRICT_READ_ONLY
+	];
+
 	//-------------------------------------------------------------------------------------- READONLY
 	/**
 	 * read-only : displayed into an <input readonly> : you will be able to use it with js but
@@ -42,40 +68,11 @@ class User_Annotation extends List_Annotation
 	//--------------------------------------------------------------------------------------- TOOLTIP
 	const TOOLTIP = 'tooltip';
 
-	//-------------------------------------------------------------------------------- NOT_MODIFIABLE
-	const NOT_MODIFIABLE = [
-		self::ADD_ONLY, self::HIDDEN, self::HIDE_EDIT, self::INVISIBLE, self::INVISIBLE_EDIT,
-		self::READONLY, self::STRICT_READ_ONLY
-	];
-
-	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * Annotation value
-	 * - hidden : the property will be generated into lists or output forms, but with a 'hidden' class
-	 * - hide_empty : the property will not be displayed into output views if value is empty,
-	 *   but will be still visible into edit views
-	 * - invisible : the property will not be displayed (nor exist) into lists, output forms, property
-	 *   selector, etc. any user template
-	 * - readonly : the property will be displayed but will not be accessible for modification
-	 * Value that only works for basic type (not supported on collection and map)
-	 * - if_empty : the property will be displayed editable if value is empty, read_only otherwise
-	 *   notes: incompatible with @user_default, incompatible with "hide_empty" value.
-	 * Value that only works for collection/map
-	 * - no_add : forbids user to add a new element
-	 * - no_delete : forbids user to delete any element
-	 *
-	 * @todo readonly should be implicitly set when @read_only is enabled
-	 * @todo readonly should be replaced by two-words read_only
-	 * @values hidden, hide_empty, if_empty, invisible, no_add, no_delete, readonly
-	 * @var string[]
-	 */
-	public $value;
-
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		parent::__construct($value);
 		$this->validate();
@@ -88,7 +85,7 @@ class User_Annotation extends List_Annotation
 	 * @param $value string
 	 * @return boolean
 	 */
-	public function add($value)
+	public function add(string $value) : bool
 	{
 		parent::add($value);
 		return $this->validate();
@@ -108,7 +105,7 @@ class User_Annotation extends List_Annotation
 	 * @param $value string
 	 * @return boolean
 	 */
-	public function remove($value)
+	public function remove(string $value) : bool
 	{
 		return parent::remove($value) && $this->validate();
 	}
@@ -119,14 +116,13 @@ class User_Annotation extends List_Annotation
 	 *
 	 * @return boolean
 	 */
-	protected function validate()
+	protected function validate() : bool
 	{
 		if ($this->has(self::HIDE_EMPTY) && $this->has(self::IF_EMPTY)) {
 			trigger_error(
 				self::IF_EMPTY . ' and ' . self::HIDE_EMPTY . ' values are incompatible',
 				E_USER_ERROR
 			);
-			return false;
 		}
 		return true;
 	}

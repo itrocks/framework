@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Reflection\Interfaces;
 
+use ReflectionClass;
+
 /**
  * An interface for all reflection method classes
  */
@@ -17,9 +19,9 @@ interface Reflection_Method extends Reflection_Class_Component
 
 	//----------------------------------------------------------------------------- getDeclaringClass
 	/**
-	 * @return Reflection_Class
+	 * @return Reflection_Class|ReflectionClass
 	 */
-	public function getDeclaringClass();
+	public function getDeclaringClass() : Reflection_Class|ReflectionClass;
 
 	//----------------------------------------------------------------------------- getParametersCall
 	/**
@@ -27,14 +29,14 @@ interface Reflection_Method extends Reflection_Class_Component
 	 *
 	 * @return string ie '$param1, $param2, $param3'
 	 */
-	public function getParametersCall();
+	public function getParametersCall() : string;
 
 	//---------------------------------------------------------------------------- getParametersNames
 	/**
 	 * @param $by_name boolean
 	 * @return string[] key and value are both the parameter name
 	 */
-	public function getParametersNames($by_name = true);
+	public function getParametersNames(bool $by_name = true) : array;
 
 	//---------------------------------------------------------------------------- getPrototypeString
 	/**
@@ -43,78 +45,78 @@ interface Reflection_Method extends Reflection_Class_Component
 	 *
 	 * @return string
 	 */
-	public function getPrototypeString();
+	public function getPrototypeString() : string;
 
 	//------------------------------------------------------------------------------------ isAbstract
 	/**
 	 * @return boolean
 	 */
-	public function isAbstract();
+	public function isAbstract() : bool;
 
 	//--------------------------------------------------------------------------------- isConstructor
 	/**
 	 * @return boolean
 	 */
-	public function isConstructor();
+	public function isConstructor() : bool;
 
 	//---------------------------------------------------------------------------------- isDestructor
 	/**
 	 * @return boolean
 	 */
-	public function isDestructor();
+	public function isDestructor() : bool;
 
 	//--------------------------------------------------------------------------------------- isFinal
 	/**
 	 * @return boolean
 	 */
-	public function isFinal();
+	public function isFinal() : bool;
 
 	//------------------------------------------------------------------------------------ isInternal
 	/**
 	 * @return boolean
 	 */
-	public function isInternal();
+	public function isInternal() : bool;
 
 	//------------------------------------------------------------------------------------- isPrivate
 	/**
 	 * @return boolean
 	 */
-	public function isPrivate();
+	public function isPrivate() : bool;
 
 	//----------------------------------------------------------------------------------- isProtected
 	/**
 	 * @return boolean
 	 */
-	public function isProtected();
+	public function isProtected() : bool;
 
 	//-------------------------------------------------------------------------------------- isPublic
 	/**
 	 * @return boolean
 	 */
-	public function isPublic();
+	public function isPublic() : bool;
 
 	//-------------------------------------------------------------------------------------- isStatic
 	/**
 	 * @return boolean
 	 */
-	public function isStatic();
+	public function isStatic() : bool;
 
 	//--------------------------------------------------------------------------------- isUserDefined
 	/**
 	 * @return boolean
 	 */
-	public function isUserDefined();
+	public function isUserDefined() : bool;
 
 	//--------------------------------------------------------------------------------------- returns
 	/**
 	 * @return string
 	 */
-	public function returns();
+	public function returns() : string;
 
 	//------------------------------------------------------------------------------ returnsReference
 	/**
 	 * @return boolean
 	 */
-	public function returnsReference();
+	public function returnsReference() : bool;
 
 }

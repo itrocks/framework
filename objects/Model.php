@@ -22,7 +22,7 @@ class Model
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->brand ? ($this->brand . SP . $this->name) : strval($this->name);
 	}

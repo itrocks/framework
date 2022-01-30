@@ -25,61 +25,61 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	/**
 	 * @var boolean
 	 */
-	public $changes = false;
+	public bool $changes = false;
 
 	//----------------------------------------------------------------------------------- $class_name
 	/**
 	 * @var string when set : the class name used for possible html templates indexing
 	 */
-	private $class_name;
+	private string $class_name;
 
 	//---------------------------------------------------------------------------------- $class_paths
 	/**
 	 * @var string[] key is full class name, value is file path
 	 */
-	public $class_paths = [];
+	public array $class_paths = [];
 
 	//----------------------------------------------------------------------------- $controller_calls
 	/**
 	 * @var array keys are controller and method name, value is [$class_name, $method)
 	 */
-	public $controller_calls = [];
+	public array $controller_calls = [];
 
 	//-------------------------------------------------------------------------- $element_class_names
 	/**
 	 * @var string[] key is set class name, value is matching element class name
 	 */
-	public $element_class_names = [];
+	public array $element_class_names = [];
 
 	//-------------------------------------------------------------------------------------- $exclude
 	/**
 	 * @var string
 	 */
-	public $exclude = '';
+	public string $exclude = '';
 
 	//----------------------------------------------------------------------------- $full_class_names
 	/**
 	 * @var string[] key is short class name, value is full class name
 	 */
-	public $full_class_names = [];
+	public array $full_class_names = [];
 
 	//------------------------------------------------------------------------------- $html_templates
 	/**
 	 * @var array
 	 */
-	public $html_templates = [];
+	public array $html_templates = [];
 
 	//---------------------------------------------------------------------------------- $routes_file
 	/**
 	 * @var string
 	 */
-	public $routes_file;
+	public string $routes_file;
 
 	//----------------------------------------------------------------------------------- $view_calls
 	/**
 	 * @var array
 	 */
-	public $view_calls = [];
+	public array $view_calls = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -107,7 +107,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	/**
 	 * @return array
 	 */
-	public function __serialize()
+	public function __serialize() : array
 	{
 		return [];
 	}
@@ -127,7 +127,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $class_name string
 	 * @return string
 	 */
-	private function addClassPath($class_name)
+	private function addClassPath(string $class_name) : string
 	{
 		$result = '';
 		foreach ($this->filesFor(Namespaces::shortClassName($class_name)) as $file_name) {
@@ -149,7 +149,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $short_class_name string
 	 * @return string
 	 */
-	private function addFullClassName($short_class_name)
+	private function addFullClassName(string $short_class_name) : string
 	{
 		$result = '';
 		foreach ($this->filesFor($short_class_name) as $file_name) {
@@ -171,11 +171,10 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @return string
 	 * @throws Include_Filter\Exception
 	 */
-	public function autoload($class_name)
+	public function autoload(string $class_name) : string
 	{
 		$file_path = $this->getClassFileName($class_name);
 		if ($file_path) {
-			/** @noinspection PhpIncludeInspection dynamic */
 			include_once Include_Filter::file($file_path);
 			// if included file does not contain the good class : will need to scan for the right file
 			if (
@@ -197,10 +196,10 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * Compile source file into its class path
 	 *
 	 * @param $source   Reflection_Source
-	 * @param $compiler Compiler
+	 * @param $compiler Compiler|null
 	 * @return boolean false as this compilation does not modify the class source
 	 */
-	public function compile(Reflection_Source $source, Compiler $compiler = null)
+	public function compile(Reflection_Source $source, Compiler $compiler = null) : bool
 	{
 		foreach ($source->getClasses() as $class) {
 			// class name to file path
@@ -251,7 +250,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $file_name string
 	 * @return string
 	 */
-	private function fileToClassName($file_name)
+	private function fileToClassName(string $file_name) : string
 	{
 		$buffer = file_get_contents($file_name);
 		$expr = '%\n\s*(?:namespace\s+)([\w\\\\]+)%s';
@@ -259,10 +258,9 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 		$in_namespace = $match ? $match[1] : '';
 		$expr = '%\n\s*(?:final\s+)?(?:abstract\s+)?(?:class|interface|trait)\s+(\w+)%s';
 		preg_match($expr, $buffer, $match);
-		$class_name = $match
+		return $match
 			? ($in_namespace ? ($in_namespace . BS . $match[1]) : $match[1])
-			: null;
-		return $class_name;
+			: '';
 	}
 
 	//-------------------------------------------------------------------------------------- filesFor
@@ -270,10 +268,10 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $short_class_name string
 	 * @return string[] files path
 	 */
-	private function filesFor($short_class_name)
+	private function filesFor(string $short_class_name) : array
 	{
 		$result = [];
-		$match = null;
+		$match  = null;
 		foreach (explode(':', get_include_path()) as $path) {
 			if ($this->exclude) preg_match($this->exclude, $path, $match);
 			if (!$match) {
@@ -292,16 +290,16 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $class_name string
 	 * @return ?string
 	 */
-	public function getClassFileName($class_name)
+	public function getClassFileName(string $class_name) : string
 	{
-		if (isset($this->class_paths[$class_name])) {
-			$class_path = $this->class_paths[$class_name];
-			if (!file_exists($class_path)) {
-				$class_path = $this->addClassPath($class_name);
-			}
-			return $class_path ?: null;
+		if (!isset($this->class_paths[$class_name])) {
+			return $this->addClassPath($class_name);
 		}
-		return $this->addClassPath($class_name);
+		$class_path = $this->class_paths[$class_name];
+		if (!file_exists($class_path)) {
+			$class_path = $this->addClassPath($class_name);
+		}
+		return $class_path;
 	}
 
 	//------------------------------------------------------------------------- getElementClassNameOf
@@ -309,9 +307,9 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $class_name string
 	 * @return ?string
 	 */
-	public function getElementClassNameOf(string $class_name) : ?string
+	public function getElementClassNameOf(string $class_name) : string
 	{
-		return $this->element_class_names[$class_name] ?? null;
+		return $this->element_class_names[$class_name] ?? '';
 	}
 
 	//------------------------------------------------------------------------------ getFullClassName
@@ -321,21 +319,19 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $short_class_name string
 	 * @return string
 	 */
-	public function getFullClassName($short_class_name)
+	public function getFullClassName(string $short_class_name) : string
 	{
-		if (strpos($short_class_name, BS)) {
+		if (str_contains($short_class_name, BS)) {
 			trigger_error('Full class name given', E_USER_ERROR);
 		}
-		if (isset($this->full_class_names[$short_class_name])) {
-			$class_name = $this->full_class_names[$short_class_name];
-			if (!class_exists($class_name)) {
-				$class_name = $this->addFullClassName($short_class_name);
-			}
-			return $class_name;
-		}
-		else {
+		if (!isset($this->full_class_names[$short_class_name])) {
 			return $this->addFullClassName($short_class_name);
 		}
+		$class_name = $this->full_class_names[$short_class_name];
+		if (!class_exists($class_name)) {
+			$class_name = $this->addFullClassName($short_class_name);
+		}
+		return $class_name;
 	}
 
 	//-------------------------------------------------------------------- getPossibleControllerCalls
@@ -344,7 +340,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $joinpoint Around_Method
 	 * @return callable[]
 	 */
-	public function getPossibleControllerCalls(Uri $object, Around_Method $joinpoint)
+	public function getPossibleControllerCalls(Uri $object, Around_Method $joinpoint) : array
 	{
 		if (
 			isset($this->controller_calls[$object->controller_name][$object->feature_name])
@@ -380,15 +376,16 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @return string[]
 	 */
 	public function getPossibleHtmlTemplates(
-		$class_name, $feature_names, Around_Method $joinpoint
-	) {
+		string $class_name, array|string $feature_names, Around_Method $joinpoint
+	) : array
+	{
 		if (is_array($feature_names)) {
 			$feature_names = join(DOT, $feature_names);
 		}
 		if (isset($this->html_templates[$class_name][$feature_names])) {
 			$html_template = $this->html_templates[$class_name][$feature_names];
 			if (file_exists($html_template)) {
-				unset($this->class_name);
+				$this->class_name = '';
 				return [$html_template];
 			}
 		}
@@ -404,8 +401,9 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @return callable[]
 	 */
 	public function getPossibleViewCalls(
-		$class_name, $feature_names, Around_Method $joinpoint
-	) {
+		string $class_name, array|string $feature_names, Around_Method $joinpoint
+	) : array
+	{
 		if (is_array($feature_names)) {
 			$feature_names = join(DOT, $feature_names);
 		}
@@ -473,7 +471,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $controller  string
 	 * @param $method_name string
 	 */
-	public function setPossibleControllerCall(Uri $uri, $controller, $method_name)
+	public function setPossibleControllerCall(Uri $uri, string $controller, string $method_name)
 	{
 		if (isset($this->controller_calls[$uri->controller_name][$uri->feature_name])) {
 			list($check_controller, $check_method_name)
@@ -497,15 +495,17 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $parameters    array
 	 * @param $feature_name  string
 	 */
-	public function setPossibleHtmlTemplate($template_file, array $parameters, $feature_name)
-	{
-		if (isset($this->class_name)) {
-			$features = isset($parameters[Feature::FEATURE])
-				? ($parameters[Feature::FEATURE] . DOT . $feature_name)
-				: $feature_name;
-			$this->html_templates[$this->class_name][$features] = $template_file;
-			$this->changes = true;
+	public function setPossibleHtmlTemplate(
+		string $template_file, array $parameters, string $feature_name
+	) {
+		if (!$this->class_name) {
+			return;
 		}
+		$features = isset($parameters[Feature::FEATURE])
+			? ($parameters[Feature::FEATURE] . DOT . $feature_name)
+			: $feature_name;
+		$this->html_templates[$this->class_name][$features] = $template_file;
+		$this->changes = true;
 	}
 
 	//--------------------------------------------------------------------------- setPossibleViewCall
@@ -517,7 +517,8 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	 * @param $view_method_name string
 	 */
 	public function setPossibleViewCall(
-		$class_name, $feature_name, array $parameters, $view, $view_method_name
+		string $class_name, string $feature_name, array $parameters, string $view,
+		string $view_method_name
 	) {
 		$features = isset($parameters[Feature::FEATURE])
 			? ($parameters[Feature::FEATURE] . DOT . $feature_name)

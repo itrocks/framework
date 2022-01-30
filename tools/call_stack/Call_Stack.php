@@ -68,7 +68,7 @@ class Call_Stack
 				$line->line
 			];
 			foreach ($line_data as $data) {
-				$result_line .= '<td>' . htmlentities($data, ENT_QUOTES|ENT_HTML5) . '</td>';
+				$result_line .= '<td>' . htmlentities(strval($data), ENT_QUOTES|ENT_HTML5) . '</td>';
 			}
 			$result_line .= '</tr>';
 			$result[] = $result_line;

@@ -52,7 +52,7 @@ class Reflection_Parameter extends ReflectionParameter
 	 * @example $parameter_name = 10
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$optional = $this->isOptional();
 		if ($optional) {

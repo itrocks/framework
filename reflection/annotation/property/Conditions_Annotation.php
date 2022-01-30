@@ -29,10 +29,10 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 
@@ -90,7 +90,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function applyTo($object)
+	public function applyTo(object $object) : bool
 	{
 		if (!$object) {
 			return false;
@@ -125,7 +125,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 * @return string
 	 * @todo NORMAL should take care of a given property path prefix (as argument)
 	 */
-	public function asHtmlAttributeValue()
+	public function asHtmlAttributeValue() : string
 	{
 		$html_conditions = [];
 		foreach ($this->value as $condition_name => $condition_value) {
@@ -141,7 +141,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 * @param $property_name string
 	 * @return Type
 	 */
-	protected function typeOf(Reflection_Property $property, $property_name)
+	protected function typeOf(Reflection_Property $property, string $property_name) : Type
 	{
 		return $property->getFinalClass()->getProperty($property_name)->getType();
 	}

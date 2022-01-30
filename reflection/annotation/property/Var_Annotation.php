@@ -21,10 +21,10 @@ class Var_Annotation extends Documented_Type_Annotation implements Property_Cont
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value               string
+	 * @param $value               ?string
 	 * @param $reflection_property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $reflection_property)
+	public function __construct(?string $value, Reflection_Property $reflection_property)
 	{
 		parent::__construct($value);
 		if (!$this->value) {

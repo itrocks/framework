@@ -35,7 +35,7 @@ class Parent_Method
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->replaced_string . DOT . $this->replaced_object->replaced;
 	}
@@ -44,7 +44,7 @@ class Parent_Method
 	/**
 	 * @return Parent_Class
 	 */
-	public function getReplacedObject()
+	public function getReplacedObject() : Parent_Class
 	{
 		return $this->replaced_object;
 	}
@@ -53,7 +53,7 @@ class Parent_Method
 	/**
 	 * @return string
 	 */
-	public function getReplacedString()
+	public function getReplacedString() : string
 	{
 		return $this->replaced_string . '.get';
 	}

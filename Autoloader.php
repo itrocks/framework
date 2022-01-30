@@ -18,7 +18,7 @@ class Autoloader
 	 * @param $class_name string class name (with or without namespace)
 	 * @throws Include_Filter\Exception
 	 */
-	public function autoload($class_name)
+	public function autoload(string $class_name)
 	{
 		$this->tryToLoad($class_name);
 	}
@@ -29,9 +29,9 @@ class Autoloader
 	 *
 	 * @param $class_name  string
 	 * @param $path_prefix string
-	 * @return string|boolean the matching file path, relative to the project root, false if not found
+	 * @return boolean|string the matching file path, relative to the project root, false if not found
 	 */
-	public static function getFilePath($class_name, $path_prefix = '')
+	public static function getFilePath(string $class_name, string $path_prefix = '') : bool|string
 	{
 		$path_prefix .= (strlen($path_prefix) && substr($path_prefix, -1) != SL) ? SL : '';
 		if ($i = strrpos($class_name, BS)) {
@@ -73,20 +73,18 @@ class Autoloader
 	//------------------------------------------------------------------------------------- tryToLoad
 	/**
 	 * @param $class_name string class name (with or without namespace)
-	 * @return integer|boolean
+	 * @return boolean|integer
 	 * @throws Include_Filter\Exception
 	 */
-	public function tryToLoad($class_name)
+	public function tryToLoad(string $class_name) : bool|int
 	{
 		$file_name = self::getFilePath($class_name);
 		if ($file_name !== false) {
-			/** @noinspection PhpIncludeInspection dynamic include */
 			$result = include_once(Include_Filter::file($file_name));
 		}
 		if ((!isset($result) || !$result) && Class_Builder::isBuilt($class_name)) {
 			$built_file_name = PHP\Compiler::classToCacheFilePath($class_name);
 			if (file_exists(Paths::$project_root . SL . $built_file_name)) {
-				/** @noinspection PhpIncludeInspection dynamic include */
 				$result = include_once(Paths::$project_root . SL . $built_file_name);
 			}
 		}

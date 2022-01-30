@@ -28,42 +28,42 @@ class Feature_Annotation
 	/**
 	 * @var string
 	 */
-	public $path;
+	public string $path;
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
 	 */
-	public $title;
+	public string $title;
 
 	//------------------------------------------------------------------------------ $value_as_string
 	/**
 	 * @var string
 	 */
-	private $value_as_string;
+	private string $value_as_string;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Feature_Annotation constructor
 	 *
 	 * @noinspection PhpMissingParentConstructorInspection This does all the work itself
-	 * @param $value string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		// path : The/Full/Class/Name/featureName
-		$i = strpos($value, SP);
-		$this->path = substr($value, 0, $i);
+		$position   = strpos($value, SP);
+		$this->path = substr($value, 0, $position);
 		if (!strpos($this->path, SL)) {
 			$this->path = str_replace(BS, SL, $property->getFinalClassName()) . SL . $this->path;
 		}
-		$value = trim(substr($value, $i + 1));
+		$value = trim(substr($value, $position + 1));
 
 		// feature title (a text readable by a human)
-		if ($i = strpos($value, AT)) {
-			$this->title = trim(substr($value, 0, $i));
-			$value = substr($value, $i);
+		if ($position = strpos($value, AT)) {
+			$this->title = trim(substr($value, 0, $position));
+			$value       = substr($value, $position);
 		}
 
 		// property override is stored as a raw string (fastest constructor)
@@ -78,7 +78,7 @@ class Feature_Annotation
 	 * @example Full\Class_Name
 	 * @return string
 	 */
-	public function getClassName()
+	public function getClassName() : string
 	{
 		return Names::pathToClass(lLastParse($this->path, SL));
 	}
@@ -90,7 +90,7 @@ class Feature_Annotation
 	 * @example featureName
 	 * @return string
 	 */
-	public function getFeatureName()
+	public function getFeatureName() : string
 	{
 		return rLastParse($this->path, SL);
 	}
@@ -101,7 +101,7 @@ class Feature_Annotation
 	 *
 	 * @return string[]
 	 */
-	public function values()
+	public function values() : array
 	{
 		if (empty($this->value)) {
 			$this->value = [];
@@ -110,7 +110,7 @@ class Feature_Annotation
 					list($annotation_name, $annotation_value) = explode(SP, $override_annotation, 2);
 				}
 				else {
-					$annotation_name = $override_annotation;
+					$annotation_name  = $override_annotation;
 					$annotation_value = '';
 				}
 				$this->value[$annotation_name] = trim($annotation_value);

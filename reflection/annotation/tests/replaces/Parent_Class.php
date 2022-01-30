@@ -11,6 +11,6 @@ class Parent_Class
 	/**
 	 * @var string
 	 */
-	public $replaced;
+	public string $replaced;
 
 }

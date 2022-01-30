@@ -12,17 +12,16 @@ interface ICompiler
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source the PHP source file object
-	 * @param $compiler Compiler the main compiler
+	 * @param $compiler Compiler|null the main compiler
 	 * @return boolean true if compilation process did something, else false
 	 */
-	public function compile(Reflection_Source $source, Compiler $compiler = null);
+	public function compile(Reflection_Source $source, Compiler $compiler = null) : bool;
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
 	 * Extends the list of sources to compile
 	 *
 	 * @param $more_sources More_Sources
-	 * @return Reflection_Source[] added sources list
 	 */
 	public function moreSourcesToCompile(More_Sources $more_sources);
 

@@ -119,7 +119,7 @@ class Import_Class
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->getPropertyPathValue();
 	}

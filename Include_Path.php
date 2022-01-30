@@ -15,7 +15,7 @@ class Include_Path
 	/**
 	 * @var string
 	 */
-	private $application_class;
+	private string $application_class;
 
 	//-------------------------------------------------------------------------- $origin_include_path
 	/**
@@ -23,13 +23,13 @@ class Include_Path
 	 *
 	 * @var string
 	 */
-	private static $origin_include_path;
+	private static string $origin_include_path;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $application_class string
 	 */
-	public function __construct($application_class)
+	public function __construct(string $application_class)
 	{
 		$this->application_class = $application_class;
 	}
@@ -41,21 +41,19 @@ class Include_Path
 	 * @param $path string base path
 	 * @return string[] an array of directories names
 	 */
-	private function getDirectories($path)
+	private function getDirectories(string $path) : array
 	{
 		if (file_exists($path . '/exclude')) {
-			return $directories = [];
+			return [];
 		}
-		else {
-			$directories[$path] = $path;
-			$dir = dir($path);
-			while ($entry = $dir->read()) if ($entry[0] !== DOT) {
-				if (is_dir($path . SL . $entry) && ($entry !== 'vendor') && ($entry !== 'cache')) {
-					$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
-				}
+		$directories[$path] = $path;
+		$dir                = dir($path);
+		while ($entry = $dir->read()) if ($entry[0] !== DOT) {
+			if (is_dir($path . SL . $entry) && ($entry !== 'vendor') && ($entry !== 'cache')) {
+				$directories = array_merge($directories, $this->getDirectories($path . SL . $entry));
 			}
-			$dir->close();
 		}
+		$dir->close();
 		return $directories;
 	}
 
@@ -63,7 +61,7 @@ class Include_Path
 	/**
 	 * @return string
 	 */
-	public function getIncludePath()
+	public function getIncludePath() : string
 	{
 		if (!isset($this->include_path)) {
 			$include_path = join(OS::$include_separator, $this->getSourceDirectories(true));
@@ -79,9 +77,9 @@ class Include_Path
 	 *
 	 * @return string
 	 */
-	public static function getOriginIncludePath()
+	public static function getOriginIncludePath() : string
 	{
-		if (!self::$origin_include_path) {
+		if (!isset(self::$origin_include_path)) {
 			self::$origin_include_path = get_include_path();
 		}
 		return self::$origin_include_path;
@@ -103,15 +101,16 @@ class Include_Path
 	 * @return string[]
 	 */
 	public function getSourceDirectories(
-		$include_subdirectories = false, $application_class = null, array &$already = []
-	) {
-		if (!isset($application_class)) {
+		bool $include_subdirectories = false, string $application_class = '', array &$already = []
+	) : array
+	{
+		if (!$application_class) {
 			$application_class = $this->application_class;
 		}
 		$already[$application_class] = true;
-		$app_dir = $this->getSourceDirectory($application_class);
-		$directories = [];
-		$app_dir_begin = '';
+		$app_dir                     = $this->getSourceDirectory($application_class);
+		$directories                 = [];
+		$app_dir_begin               = '';
 		foreach (explode(SL, $app_dir) as $app_dir_part) {
 			$app_dir_begin .= ($app_dir_begin ? SL : '') . $app_dir_part;
 			$directories[$app_dir_begin] = $app_dir_begin;
@@ -146,9 +145,9 @@ class Include_Path
 	 * @param $application_class string
 	 * @return string
 	 */
-	public function getSourceDirectory($application_class = null)
+	public function getSourceDirectory(string $application_class = '') : string
 	{
-		if (!isset($application_class)) {
+		if (!$application_class) {
 			$application_class = $this->application_class;
 		}
 		return strtolower(
@@ -167,7 +166,7 @@ class Include_Path
 	 *
 	 * @return string[]
 	 */
-	public function getSourceFiles()
+	public function getSourceFiles() : array
 	{
 		$files = [];
 		foreach ($this->getSourceDirectories(true) as $directory) {

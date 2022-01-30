@@ -11,12 +11,12 @@ class Default_Extended
 	/**
 	 * @var integer
 	 */
-	public $age = 18;
+	public int $age = 18;
 
 	//------------------------------------------------------------------------------------- $null_age
 	/**
-	 * @var integer
+	 * @var ?integer
 	 */
-	public $null_age = null;
+	public ?int $null_age = null;
 
 }

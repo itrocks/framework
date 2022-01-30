@@ -10,7 +10,6 @@ use ITRocks\Framework\Tests\Objects\Document;
 use ITRocks\Framework\Tests\Objects\Has_Counter;
 use ITRocks\Framework\Tests\Objects\Quote;
 use ITRocks\Framework\Tests\Test;
-use ReflectionException;
 
 /**
  * Class annotations unit tests
@@ -24,7 +23,7 @@ class Class_Test extends Test
 	/**
 	 * @var Test_Object
 	 */
-	private $subject;
+	private Test_Object $subject;
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
@@ -39,8 +38,6 @@ class Class_Test extends Test
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has no @extends, parent has a @extends : must result in empty
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExtendsEmptyParentExtends()
 	{
@@ -49,15 +46,13 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		static::assertEquals(print_r($values, true), print_r([], true), __METHOD__);
+		static::assertEquals(print_r([], true), print_r($values, true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsParentExtends
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, parent has an @extends : must return the class @extends alone
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExtendsExtendsParentExtends()
 	{
@@ -66,15 +61,13 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		static::assertEquals(print_r($values, true), print_r([[Has_Counter::class]], true), __METHOD__);
+		static::assertEquals(print_r([[Has_Counter::class]], true), print_r($values, true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testExtendsExtendsWithoutParent
 	/**
 	 * Test read of @extends (annotation that does not inherit)
 	 * class has @extends, no parent : must return the @extends
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testExtendsExtendsWithoutParent()
 	{
@@ -83,21 +76,19 @@ class Class_Test extends Test
 		foreach ($extends as $extend) {
 			$values[] = $extend->values();
 		}
-		static::assertEquals(print_r($values, true), print_r([[Document::class]], true), __METHOD__);
+		static::assertEquals(print_r([[Document::class]], true), print_r($values, true), __METHOD__);
 	}
 
 	//--------------------------------------------------------------- testStoreNameWithParentAndTrait
 	/**
 	 * Gets the @store_name from a parent and a trait : the trait must override the parent
-	 *
-	 * @throws ReflectionException
 	 */
 	public function testStoreNameWithParentAndTrait()
 	{
 		$store_name = Store_Name_Annotation::of(new Reflection_Class(
 			Class_With_Trait_And_Parent::class
 		));
-		static::assertEquals($store_name->value, 'test_trait_for_class_store_name', __METHOD__);
+		static::assertEquals('test_trait_for_class_store_name', $store_name->value, __METHOD__);
 	}
 
 	//-------------------------------------------------------------------- testWriteAnnotationsCommit

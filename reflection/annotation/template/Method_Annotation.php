@@ -31,21 +31,21 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	/**
 	 * @var boolean
 	 */
-	public $is_composite = false;
+	public bool $is_composite = false;
 
 	//--------------------------------------------------------------------------------------- $static
 	/**
 	 * @var boolean
 	 */
-	public $static = false;
+	public bool $static = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class_property, $annotation_name)
+	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
 	{
 		if (!empty($value)) {
 			$value = $this->completeValue($value, $class_property, $annotation_name);
@@ -81,7 +81,9 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $arguments   array
 	 * @return boolean false if calls chain was interrupted, true if every call were ok
 	 */
-	public static function callAll(array $annotations, $object, array $arguments = []) : bool
+	public static function callAll(
+		array $annotations, object|string $object, array $arguments = []
+	) : bool
 	{
 		foreach ($annotations as $annotation) {
 			if ($annotation->call($object, $arguments) === false) {
@@ -93,12 +95,14 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 
 	//--------------------------------------------------------------------------------- completeValue
 	/**
-	 * @param $value           string
+	 * @param $value           boolean|string
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 * @return string
 	 */
-	protected function completeValue($value, Reflection $class_property, $annotation_name)
+	protected function completeValue(
+		bool|string $value, Reflection $class_property, string $annotation_name
+	) : string
 	{
 		if ($class_property instanceof Reflection_Property) {
 			$class = (
@@ -192,7 +196,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Method
 	 */
-	public function getReflectionMethod()
+	public function getReflectionMethod() : Reflection_Method
 	{
 		[$class, $method] = explode('::', $this->value);
 		/** @noinspection PhpUnhandledExceptionInspection Must exist */
@@ -209,7 +213,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $pos             integer
 	 */
 	private function searchIntoDeclaringTrait(
-		Reflection $class_property, Type_Annotation $type_annotation, $value, $pos
+		Reflection $class_property, Type_Annotation $type_annotation, string $value, int $pos
 	) {
 		if ($class_property instanceof Reflection_Property) {
 			$php_class = Reflection_Class::of($class_property->getDeclaringTraitName());
@@ -230,7 +234,7 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 	 * @param $pos             integer
 	 */
 	private function searchIntoFinalClass(
-		Reflection $class_property, Type_Annotation $type_annotation, $value, $pos
+		Reflection $class_property, Type_Annotation $type_annotation, string $value, int $pos
 	) {
 		$class = ($class_property instanceof Reflection_Property)
 			? $class_property->getFinalClass()

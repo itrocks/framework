@@ -44,10 +44,10 @@ class Reflection_Class extends ReflectionClass
 	 * If class properties are set to accessible several times, they will become non-accessible after
 	 * the same number of done() calls.
 	 *
-	 * @param $flags string[] @values self::T_SORT, T_EXTENDS, T_USE
+	 * @param $flags string[]|null @values self::T_SORT, T_EXTENDS, T_USE
 	 * @return Reflection_Property[]
 	 */
-	public function accessProperties($flags = null)
+	public function accessProperties(array $flags = null) : array
 	{
 		$properties = $this->getProperties($flags);
 		foreach ($properties as $property) {
@@ -64,7 +64,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @return Reflection_Property[]
 	 */
-	public function accessPropertiesDone()
+	public function accessPropertiesDone() : array
 	{
 		$properties = $this->getProperties([T_EXTENDS, T_USE]);
 		foreach ($properties as $property) {
@@ -90,7 +90,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * @return string[]
 	 */
-	protected function getAnnotationCachePath()
+	protected function getAnnotationCachePath() : array
 	{
 		return [$this->name, AT];
 	}
@@ -143,7 +143,7 @@ class Reflection_Class extends ReflectionClass
 	 * @return ?Reflection_Property
 	 */
 	public function getAnnotedProperty(string $annotation_name, mixed $annotation_value = null)
-	: ?Reflection_Property
+		: ?Reflection_Property
 	{
 		foreach (array_reverse($this->getProperties([T_EXTENDS, T_USE])) as $property) {
 			/** @var $property Reflection_Property */
@@ -165,9 +165,9 @@ class Reflection_Class extends ReflectionClass
 	 * TODO Problem with this implementation : if a interface/parent/trait constant is overridden in current class, this will remove it. No problem for [T_EXTENDS, T_USE] default use.
 	 *
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
-	 * @return mixed[] Constant name in key, constant value in value
+	 * @return array Constant name in key, constant value in value
 	 */
-	public function getConstants($flags = [T_EXTENDS, T_IMPLEMENTS, T_USE])
+	public function getConstants($flags = [T_EXTENDS, T_IMPLEMENTS, T_USE]) : array
 	{
 		$constants = parent::getConstants();
 		$flags     = array_flip($flags);
@@ -200,9 +200,9 @@ class Reflection_Class extends ReflectionClass
 	 * Gets the constructor of the reflected class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $constructor has been tested for existing
-	 * @return Reflection_Method
+	 * @return ?Reflection_Method
 	 */
-	public function getConstructor()
+	public function getConstructor() : ?Reflection_Method
 	{
 		$constructor = parent::getConstructor();
 		/** @noinspection PhpUnhandledExceptionInspection $constructor has been tested for existing */
@@ -218,7 +218,7 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection $class_name is a declared class
 	 * @return Reflection_Class[]
 	 */
-	public function getDeclaredClassesUsingTrait()
+	public function getDeclaredClassesUsingTrait() : array
 	{
 		$classes = [];
 		foreach (get_declared_classes() as $class_name) {
@@ -241,11 +241,12 @@ class Reflection_Class extends ReflectionClass
 	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
 	 *                        Set this to 'constant' to accept @default if @return_constant is set
 	 * @param $property_name  string for optimization purpose : only get defaults for this property
-	 * @return mixed[]
+	 * @return array
 	 */
 	public function getDefaultProperties(
-		array $flags = [], $use_annotation = true, $property_name = null
-	) {
+		array $flags = [], bool $use_annotation = true, string $property_name = ''
+	) : array
+	{
 		// list default values
 		$defaults = parent::getDefaultProperties();
 		if ($flags) {
@@ -289,11 +290,11 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * Accumulates documentations of parents and the class itself
 	 *
-	 * @param $flags   integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags   integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment(array $flags = [], array &$already = [])
+	public function getDocComment(array|null $flags = [], array &$already = []) : string
 	{
 		$doc_comment = parent::getDocComment();
 		if ($flags) {
@@ -331,7 +332,7 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection $interface from parent::getInterfaces()
 	 * @return Reflection_Class[]
 	 */
-	public function getInterfaces()
+	public function getInterfaces() : array
 	{
 		$interfaces = [];
 		foreach (parent::getInterfaces() as $interface) {
@@ -347,13 +348,13 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * Only a method of current class can be retrieved, not one from parent classes or traits.
 	 *
-	 * @param $method_name string
-	 * @return Reflection_Method
+	 * @param $name string
+	 * @return ?Reflection_Method
 	 * @throws ReflectionException method does not exist
 	 */
-	public function getMethod($method_name)
+	public function getMethod(string $name) : ?Reflection_Method
 	{
-		$method = parent::getMethod($method_name);
+		$method = parent::getMethod($name);
 		/** @noinspection PhpUnhandledExceptionInspection $method from parent::getMethods() */
 		return $method ? new Reflection_Method($this->name, $method->name) : null;
 	}
@@ -366,10 +367,10 @@ class Reflection_Class extends ReflectionClass
 	 * traits. If you set flags, this will override this limitation.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $method from parent::getMethods()
-	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
+	 * @param $flags integer[]|null T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return Reflection_Method[] key is the name of the method
 	 */
-	public function getMethods($flags = null)
+	public function getMethods($flags = null) : array
 	{
 		$methods = [];
 		foreach (parent::getMethods() as $method) {
@@ -424,9 +425,9 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @param $object object
 	 * @param $aop    boolean if false, AOP is not applied and the actual values are get
-	 * @return mixed[]
+	 * @return array
 	 */
-	public static function getObjectVars($object, $aop = true)
+	public static function getObjectVars(object $object, bool $aop = true) : array
 	{
 		$vars = get_object_vars($object);
 		if (isset($vars['_'])) {
@@ -446,9 +447,9 @@ class Reflection_Class extends ReflectionClass
 	 * Gets parent class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $parent_class from parent::getParentClass()
-	 * @return Reflection_Class
+	 * @return ?Reflection_Class
 	 */
-	public function getParentClass()
+	public function getParentClass() : ?Reflection_Class
 	{
 		$parent_class = parent::getParentClass();
 		/** @noinspection PhpUnhandledExceptionInspection $parent_class from parent::getParentClass() */
@@ -461,10 +462,10 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @return string
 	 */
-	public function getParentClassName()
+	public function getParentClassName() : string
 	{
 		$parent_class = parent::getParentClass();
-		return $parent_class ? $parent_class->name : null;
+		return $parent_class->name ?? '';
 	}
 
 	//--------------------------------------------------------------------------------- getProperties
@@ -479,15 +480,17 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
 	 * @param $final_class string force the final class to this name (mostly for internal use)
-	 * @param $visibility_flags integer filter parents visibility @values ReflectionProperty::const
+	 * @param $visibility_flags integer|null filter parents visibility @values ReflectionProperty::const
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function getProperties($flags = null, $final_class = null, $visibility_flags = null)
+	public function getProperties(
+		$flags = null, string $final_class = '', int $visibility_flags = null
+	) : array
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
 		}
-		if (!isset($final_class)) {
+		if (!$final_class) {
 			$final_class = $this->name;
 		}
 		$extends               = in_array(T_EXTENDS, $flags);
@@ -541,16 +544,16 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperty()
 	 * @param $name string The name of the property to get, or a property.path
-	 * @return Reflection_Property
+	 * @return ?Reflection_Property
 	 */
-	public function getProperty($name)
+	public function getProperty(string $name) : ?Reflection_Property
 	{
 		// property.path
 		if (strpos($name, DOT)) {
 			try {
 				return new Reflection_Property($this->name, $name);
 			}
-			catch (ReflectionException $exception) {
+			catch (ReflectionException) {
 				return null;
 			}
 		}
@@ -572,7 +575,7 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection from parent::getTraits()
 	 * @return Reflection_Class[]
 	 */
-	public function getTraits()
+	public function getTraits() : array
 	{
 		$traits = [];
 		foreach (parent::getTraits() as $trait) {
@@ -590,7 +593,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $flags integer[] T_EXTENDS, T_IMPLEMENTS, T_USE
 	 * @return boolean
 	 */
-	public function isA($name, array $flags = [])
+	public function isA(string $name, array $flags = []) : bool
 	{
 		if ($flags) {
 			$flip = array_flip($flags);
@@ -619,7 +622,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @return boolean
 	 */
-	public function isAbstract()
+	public function isAbstract() : bool
 	{
 		return parent::isAbstract() || $this->isInterface() || $this->isTrait();
 	}
@@ -630,7 +633,7 @@ class Reflection_Class extends ReflectionClass
 	 *
 	 * @return boolean
 	 */
-	public function isClass()
+	public function isClass() : bool
 	{
 		return !$this->isInterface() && !$this->isTrait();
 	}
@@ -643,7 +646,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $display_orders List_Annotation[]|string[][] additional display order annotations
 	 * @return Reflection_Property[] key is the name of the property
 	 */
-	public function sortProperties(array $properties, array $display_orders = [])
+	public function sortProperties(array $properties, array $display_orders = []) : array
 	{
 		/** @var $annotations Display_Order_Annotation[] */
 		$annotations = array_merge(

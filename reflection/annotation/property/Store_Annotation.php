@@ -65,7 +65,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $value    string @values gz, hex, string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		if (empty($this->value)) {
@@ -82,7 +82,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isFalse()
+	public function isFalse() : bool
 	{
 		return $this->value === self::FALSE;
 	}
@@ -91,7 +91,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isGz()
+	public function isGz() : bool
 	{
 		return $this->value === self::GZ;
 	}
@@ -100,7 +100,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isHex()
+	public function isHex() : bool
 	{
 		return $this->value === self::HEX;
 	}
@@ -109,7 +109,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isJson()
+	public function isJson() : bool
 	{
 		return $this->value === self::JSON;
 	}
@@ -120,7 +120,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 *
 	 * @return boolean
 	 */
-	public function isString()
+	public function isString() : bool
 	{
 		return in_array($this->value, [self::GZ, self::HEX, self::JSON, self::STRING], true);
 	}
@@ -132,7 +132,7 @@ class Store_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $properties Reflection_Property[]
 	 * @return Reflection_Property[] filtered properties list
 	 */
-	public static function storedPropertiesOnly(array $properties)
+	public static function storedPropertiesOnly(array $properties) : array
 	{
 		foreach ($properties as $key => $property) {
 			if ($property->isStatic() || static::of($property)->isFalse()) {

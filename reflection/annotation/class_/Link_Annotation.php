@@ -30,15 +30,15 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
-	 * @var Reflection_Class|Annoted
+	 * @var Reflection_Class|Annoted|null
 	 */
-	public $class;
+	public Reflection_Class|null $class;
 
 	//------------------------------------------------------------------------------ $link_properties
 	/**
 	 * Finally will be string[], once you called getLinkProperties()
 	 *
-	 * Before : contains data to help getting them :
+	 * Before : contains data to help to get them :
 	 * - if a string : contains the properties names, separated by spaces
 	 * - if a Reflection_Class : this will be the class to be scanned for @composite properties
 	 *
@@ -46,19 +46,20 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * @var string[]|string
 	 */
-	private $link_properties;
+	private array|string $link_properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Annotation string value is a class name followed by the two property names that do the link
 	 *
 	 * @example '@var Class_Name property_1 property_2'
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class The contextual Reflection_Class object
 	 */
-	public function __construct($value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
-		if ($value && (substr($value, 0, 4) !== 'http')) {
+		$value = strval($value);
+		if ($value && str_starts_with($value, 'http')) {
 			$this->class           = $class;
 			$this->link_properties = [];
 			if (trim($value)) {
@@ -73,11 +74,11 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 				}
 			}
 			else {
-				parent::__construct(null);
+				parent::__construct('');
 			}
 		}
 		else {
-			parent::__construct(null);
+			parent::__construct('');
 		}
 	}
 
@@ -86,7 +87,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Link_Class
 	 */
-	public function getLinkClass()
+	public function getLinkClass() : Link_Class
 	{
 		/** @noinspection PhpUnhandledExceptionInspection valid $this->class->getName() */
 		return new Link_Class($this->class->getName());
@@ -98,13 +99,17 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * @return Reflection_Property[] The key contains the name of the property
 	 */
-	public function getLinkProperties()
+	public function getLinkProperties() : array
 	{
 		if (!is_array($this->link_properties)) {
 			$text_link_properties  = $this->link_properties;
 			$this->link_properties = [];
-			if (is_string($text_link_properties)) {
-				$this->setLinkPropertiesByNames(explode(SP, $text_link_properties));
+			if ($text_link_properties) {
+				$this->setLinkPropertiesByNames(
+					is_string($text_link_properties)
+						? explode(SP, $text_link_properties)
+						: $text_link_properties
+				);
 			}
 			elseif ($this->class) {
 				$this->setLinkPropertiesByClass($this->class);
@@ -150,13 +155,13 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * @param $link_properties string[]
 	 */
-	protected function setLinkPropertiesByNames($link_properties)
+	protected function setLinkPropertiesByNames(array $link_properties)
 	{
 		$properties = $this->class->getProperties([T_EXTENDS, T_USE]);
-		foreach (explode(SP, $link_properties) as $property_name) {
+		foreach ($link_properties as $property_name) {
 			if ($property_name) {
+				$this->class = null;
 				$this->link_properties[$property_name] = $properties[$property_name];
-				$class = null;
 			}
 		}
 	}

@@ -93,7 +93,7 @@ class Data implements Validate\Except
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return json_encode($this, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 	}

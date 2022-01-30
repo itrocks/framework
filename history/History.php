@@ -94,7 +94,7 @@ abstract class History
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return empty($this->date) ? '' : Loc::dateToLocale($this->date);
 	}

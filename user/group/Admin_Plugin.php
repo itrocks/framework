@@ -26,7 +26,7 @@ class Admin_Plugin implements Installable, Registerable, Updatable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return 'Features user access control';
 	}

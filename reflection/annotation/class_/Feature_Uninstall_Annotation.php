@@ -22,12 +22,13 @@ class Feature_Uninstall_Annotation extends Method_Annotation implements Do_Not_I
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
+	 * @param $value           ?string
 	 * @param $class           Reflection|Reflection_Class The contextual Reflection_Class object
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $class, $annotation_name)
-	{
+	public function __construct(
+		?string $value, Reflection|Reflection_Class $class, string $annotation_name
+	) {
 		if (static::$context) {
 			$class = static::$context;
 		}

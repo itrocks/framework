@@ -20,13 +20,13 @@ class Feature_Annotate_Annotation extends Template\List_Annotation implements Do
 	/**
 	 * @var string
 	 */
-	public $annotation;
+	public string $annotation;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
 		list($value, $annotation) = explode(SP, $value, 2);
 		$this->annotation = trim($annotation);

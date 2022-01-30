@@ -88,7 +88,7 @@ class Controller extends List_\Controller implements Has_Selection_Buttons
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
-	 * @return mixed[]
+	 * @return array
 	 */
 	public function getViewParameters(Parameters $parameters, array $form, $class_name)
 	{

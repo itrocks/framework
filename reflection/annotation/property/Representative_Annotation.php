@@ -24,10 +24,10 @@ class Representative_Annotation extends Representative implements Property_Conte
 	 *
 	 * Default representative is empty
 	 *
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		parent::__construct($value, $property->getType()->asReflectionClass());
 		$this->properties = Replaces_Annotations::replaceProperties($this->getProperties());

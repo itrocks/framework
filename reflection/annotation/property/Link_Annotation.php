@@ -27,16 +27,16 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Reflection_Property
 	 */
-	public function __construct($value, Reflection_Property $property)
+	public function __construct(?string $value, Reflection_Property $property)
 	{
 		$possibles = [self::ALL, self::COLLECTION, self::DATETIME, self::MAP, self::OBJECT];
 		if (
 			empty($value)
 			&& $property->getType()->isClass()
-			&& ($stored = $property->getFinalClass()->getAnnotation('stored')->value)
+			&& $property->getFinalClass()->getAnnotation('stored')->value
 		) {
 			$value = $this->guessValue($property);
 		}
@@ -45,7 +45,6 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 				'@link ' . $value . ' is a bad value : only ' . join(', ', $possibles) . ' can be used',
 				E_USER_ERROR
 			);
-			$value = '';
 		}
 		parent::__construct($value);
 	}
@@ -68,7 +67,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	 * @param $property Reflection_Property
 	 * @return string returned guessed value for @link
 	 */
-	private function guessValue(Reflection_Property $property)
+	private function guessValue(Reflection_Property $property) : string
 	{
 		if ($property->getType()->isMultiple()) {
 			/** @var $var_annotation Var_Annotation */
@@ -91,7 +90,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isAll()
+	public function isAll() : bool
 	{
 		return $this->value === self::ALL;
 	}
@@ -100,7 +99,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isCollection()
+	public function isCollection() : bool
 	{
 		return $this->value === self::COLLECTION;
 	}
@@ -109,7 +108,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isDateTime()
+	public function isDateTime() : bool
 	{
 		return $this->value === self::DATETIME;
 	}
@@ -118,7 +117,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isMap()
+	public function isMap() : bool
 	{
 		return $this->value === self::MAP;
 	}
@@ -127,7 +126,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isMultiple()
+	public function isMultiple() : bool
 	{
 		return $this->is(self::ALL, self::COLLECTION, self::MAP);
 	}
@@ -136,7 +135,7 @@ class Link_Annotation extends Annotation implements Property_Context_Annotation
 	/**
 	 * @return boolean
 	 */
-	public function isObject()
+	public function isObject() : bool
 	{
 		return $this->value === self::OBJECT;
 	}

@@ -8,18 +8,12 @@ use ITRocks\Framework\Reflection\Annotation;
  * Default value of these annotations are always false.
  * When the annotation is set without value, the value is true.
  * To set the value explicitly to false, annotate @annotation false or @annotation 0.
+ *
+ * @override value @var boolean
+ * @property boolean value
  */
 class Boolean_Annotation extends Annotation
 {
-
-	//---------------------------------------------------------------------------------------- $value
-	/**
-	 * For boolean annotations, values are boolean and not string
-	 *
-	 * @override
-	 * @var boolean
-	 */
-	public $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -27,13 +21,12 @@ class Boolean_Annotation extends Annotation
 	 *
 	 * If a boolean annotation has no value or is not 'false' or zero, annotation's value will be true
 	 *
-	 * @param $value string
+	 * @param $value ?string
 	 */
-	public function __construct($value)
+	public function __construct(?string $value)
 	{
-		parent::__construct(
-			($value !== null) && ($value !== 0) && ($value !== false) && ($value !== _FALSE)
-		);
+		parent::__construct($value);
+		$this->value = ($value !== _FALSE) && !empty($value);
 	}
 
 }
