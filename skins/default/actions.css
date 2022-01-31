@@ -14,6 +14,12 @@ ul.actions > li {
   height: 25px;
   margin: 5px 6px 5px 4px;
   white-space: nowrap; }
+  li.action[data-align=center], li.action[data-align=right],
+  li.actions > ul > li[data-align=center],
+  li.actions > ul > li[data-align=right],
+  ul.actions > li[data-align=center],
+  ul.actions > li[data-align=right] {
+    margin-left: auto; }
   li.action > a, li.action > ul > li > a,
   li.actions > ul > li > a,
   li.actions > ul > li > ul > li > a,

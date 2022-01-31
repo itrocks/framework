@@ -23,6 +23,10 @@ ul.actions > li {
 	margin: 5px 6px 5px 4px;
 	white-space: nowrap;
 
+	&[data-align=center], &[data-align=right] {
+		margin-left: auto;
+	}
+
 	> a, > ul > li > a {
 		background: #f8f8f8 1px center no-repeat;
 		box-sizing: border-box;

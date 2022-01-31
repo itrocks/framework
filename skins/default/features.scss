@@ -75,6 +75,18 @@ ul.actions > li {
 		background-image: url('img/merge-24.svg');
 	}
 
+	&.outputnext > a {
+		background-image: url('img/next-16.svg');
+		font-size: 0;
+		padding-left: 8px;
+	}
+
+	&.outputprevious > a {
+		background-image: url('img/previous-16.svg');
+		font-size: 0;
+		padding-left: 8px;
+	}
+
 	&.print > a {
 		background-image: url('img/print-24.svg');
 	}

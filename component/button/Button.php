@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Component;
 
+use ITRocks\Framework\Component\Button\Align;
 use ITRocks\Framework\Component\Button\Code;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Target;
@@ -35,6 +36,14 @@ class Button
 	//----------------------------------------------------------------------------------- SUB_BUTTONS
 	const SUB_BUTTONS = 'sub_buttons';
 
+	//---------------------------------------------------------------------------------------- $align
+	/**
+	 * @see Align
+	 * @values Align::const
+	 * @var string
+	 */
+	public string $align = '';
+	
 	//--------------------------------------------------------------------------------- $cancel_label
 	/**
 	 * Label of the cancel button in the confirm dialog
@@ -220,13 +229,16 @@ class Button
 	/**
 	 * Add an option to the button
 	 *
-	 * @param $option string Single option
+	 * @param $option array|string Single option
 	 * @param $key    string Key name of the option
 	 */
 	public function addOption($option, $key = '')
 	{
 		if ($option instanceof Tools\Color) {
 			$this->color = $option;
+		}
+		elseif (in_array($option, [Align::CENTER, Align::LEFT, Align::RIGHT])) {
+			$this->align = $option;
 		}
 		elseif ($key === self::COLOR) {
 			$this->color = new Tools\Color($option);

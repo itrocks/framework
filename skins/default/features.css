@@ -70,6 +70,18 @@ li.action.merge > a,
 li.actions > ul > li.merge > a,
 ul.actions > li.merge > a {
   background-image: url("img/merge-24.svg"); }
+li.action.outputnext > a,
+li.actions > ul > li.outputnext > a,
+ul.actions > li.outputnext > a {
+  background-image: url("img/next-16.svg");
+  font-size: 0;
+  padding-left: 8px; }
+li.action.outputprevious > a,
+li.actions > ul > li.outputprevious > a,
+ul.actions > li.outputprevious > a {
+  background-image: url("img/previous-16.svg");
+  font-size: 0;
+  padding-left: 8px; }
 li.action.print > a,
 li.actions > ul > li.print > a,
 ul.actions > li.print > a {

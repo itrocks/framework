@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\Output;
 
 use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Component\Button\Align;
 use ITRocks\Framework\Component\Button\Code;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
 use ITRocks\Framework\Component\Menu;
@@ -39,6 +40,30 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * Parameter for Reflection_Property::isVisible (for tabs)
 	 */
 	const HIDE_EMPTY_TEST = true;
+
+	//---------------------------------------------------------------------------------- alignButtons
+	/**
+	 * @param $buttons Button[]
+	 */
+	protected function alignButtons(array &$buttons)
+	{
+		$found = [Align::LEFT => true, Align::CENTER => false, Align::RIGHT => false];
+		$more  = [Align::LEFT => [],   Align::CENTER => [],    Align::RIGHT => []];
+		foreach ($buttons as $key => $button) {
+			if (!$button->align) {
+				continue;
+			}
+			unset($buttons[$key]);
+			$more[$button->align][$key] = $button;
+			// patch for css : only the first button will get data-align="right"
+			if (!$found[$button->align]) {
+				$found[$button->align] = true;
+				continue;
+			}
+			$button->align = '';
+		}
+		$buttons = array_merge($more[Align::LEFT], $buttons, $more[Align::CENTER], $more[Align::RIGHT]);
+	}
 
 	//--------------------------------------------------------------------------- applyOutputSettings
 	/**
@@ -205,6 +230,20 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			);
 		}
 
+		$buttons['outputPrevious'] = new Button(
+			Feature::F_OUTPUT,
+			View::link($object, Feature::F_OUTPUT, 'previous'),
+			'outputPrevious',
+			[Align::RIGHT, Target::MAIN]
+		);
+
+		$buttons['outputNext'] = new Button(
+			Feature::F_OUTPUT,
+			View::link($object, Feature::F_OUTPUT, 'next'),
+			'outputNext',
+			[Align::RIGHT, Target::MAIN]
+		);
+
 		if ($settings && $settings->actions) {
 			// default buttons on settings are false : get the default buttons from getGeneralButtons
 			// whet they are set into output settings
@@ -287,8 +326,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @return ?string[] property names list
 	 */
 	protected function getPropertiesList(
-		/** @noinspection PhpUnusedParameterInspection */
-		$class_name
+		/** @noinspection PhpUnusedParameterInspection */ $class_name
 	) {
 		return null;
 	}
@@ -328,9 +366,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	{
 		$object     = $parameters->getMainObject($class_name);
 		$parameters = $parameters->getObjects();
-		$feature    = isset($parameters[Feature::FEATURE])
-			? $parameters[Feature::FEATURE]
-			: static::FEATURE;
+		$feature    = $parameters[Feature::FEATURE] ?? static::FEATURE;
 
 		// apply parameters / form to current output settings
 		$output_settings = $this->outputSettings($class_name, $feature);
@@ -340,7 +376,6 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		// apply conditions to automatically load output settings
 		//$parameters['force'] = true; // TODO uncomment this when you create your conditional forms
 		if (!isset($parameters['force'])) {
-			/** @var $output_settings_list Output_Setting\Set[] */
 			$output_settings_list = $output_settings->selectedSettingsToCustomSettings($customized_list);
 			/** @var $new_settings Output_Setting\Set */
 			$new_settings = Output_Setting\Set::conditionalOutputSettings($output_settings_list, $object);
@@ -386,6 +421,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 		$parameters[self::GENERAL_BUTTONS] = $this->getGeneralButtons(
 			$object, $parameters, $output_settings
 		);
+		$this->alignButtons($parameters[self::GENERAL_BUTTONS]);
 		if (isset($parameters['only'])) {
 			$this->onlyProperties(
 				$object, $parameters[Parameter::PROPERTIES_FILTER], Parameters::toArray($parameters['only'])
