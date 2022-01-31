@@ -79,18 +79,17 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 *
 	 * @param $output_settings Output_Setting\Set
 	 * @param $parameters      array
-	 * @param $form            array
-	 * @return Output_Setting\Set set if parameters did change
+	 * @param $form            array|null
+	 * @return ?Output_Setting\Set set if parameters did change
 	 */
 	public function applyParametersToOutputSettings(
 		Output_Setting\Set &$output_settings, array $parameters, array $form = null
-	) {
+	) : ?Output_Setting\Set
+	{
 		if (isset($form)) {
 			$parameters = array_merge($parameters, $form);
 		}
-		$did_change = isset($parameters[Parameter::DID_CHANGE])
-			? $parameters[Parameter::DID_CHANGE]
-			: false;
+		$did_change = $parameters[Parameter::DID_CHANGE] ?? false;
 		if (isset($parameters['add_action'])) {
 			if (!$output_settings->actions) {
 				$output_settings->actions = $this->getGeneralButtons(
@@ -100,18 +99,16 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			$output_settings->addAction(
 				$parameters['add_action'],
 				isset($parameters['before']) ? 'before' : 'after',
-				isset($parameters['before']) ? $parameters['before'] : $parameters['after']
+				$parameters['before'] ?? $parameters['after']
 			);
 			$did_change = true;
 		}
 		if (isset($parameters['add_property'])) {
 			$output_settings->addProperty(
 				$parameters['add_property'],
-				isset($parameters['tab']) ? $parameters['tab'] : '',
+				$parameters['tab'] ?? '',
 				isset($parameters['before']) ? 'before' : 'after',
-				isset($parameters['before'])
-					? $parameters['before']
-					: (isset($parameters['after']) ? $parameters['after'] : '')
+				$parameters['before'] ?? ($parameters['after'] ?? '')
 			);
 			$did_change = true;
 		}
@@ -173,7 +170,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object     object|string object or class name
 	 * @param $parameters array parameters
-	 * @param $settings   Setting\Custom\Set|Output_Setting\Set
+	 * @param $settings   Setting\Custom\Set|Output_Setting\Set|null
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
@@ -237,7 +234,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function getModule($class_name)
+	protected function getModule(string $class_name) : string
 	{
 		$class_names = Names::classToSet($class_name);
 		$module      = '';
@@ -263,7 +260,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function getParent($class_name)
+	protected function getParent(string $class_name) : string
 	{
 		$class_names = Names::classToSet($class_name);
 		$module = '';
@@ -287,7 +284,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//----------------------------------------------------------------------------- getPropertiesList
 	/**
 	 * @param $class_name string
-	 * @return string[] property names list
+	 * @return ?string[] property names list
 	 */
 	protected function getPropertiesList(
 		/** @noinspection PhpUnusedParameterInspection */
@@ -304,7 +301,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $output_settings Output_Setting\Set
 	 * @return Tab
 	 */
-	protected function getTab($object, $output_settings)
+	protected function getTab(object $object, Output_Setting\Set $output_settings) : Tab
 	{
 		if (isset($output_settings->tab)) {
 			$properties_display = $output_settings->propertiesParameter('display');
@@ -404,7 +401,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $properties_filter string[]
 	 * @param $only              string[]
 	 */
-	protected function onlyProperties($object, array &$properties_filter, array $only)
+	protected function onlyProperties(object $object, array &$properties_filter, array $only)
 	{
 		$auto = [];
 		foreach ($only as $key => $property_name) {
@@ -451,7 +448,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $feature    string
 	 * @return Output_Setting\Set
 	 */
-	protected function outputSettings($class_name, $feature)
+	protected function outputSettings(string $class_name, string $feature) : Output_Setting\Set
 	{
 		$settings = Output_Setting\Set::current($class_name, $feature);
 		$settings->cleanup();
@@ -467,10 +464,12 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * Then use $close_link and $follows as needed
 	 * @param $object             object|string object or class name
 	 * @param $parameters         array
-	 * @param $default_close_link string
+	 * @param $default_close_link string|null
 	 * @return array first element is the close link, second element is an array of a link parameter
 	 */
-	protected function prepareThen($object, array $parameters, $default_close_link = null)
+	protected function prepareThen(
+		object|string $object, array $parameters, string $default_close_link = null
+	) : array
 	{
 		if (isset($parameters[Parameter::THEN])) {
 			$close_link = $parameters[Parameter::THEN];
