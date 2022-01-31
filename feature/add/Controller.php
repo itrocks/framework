@@ -32,6 +32,7 @@ class Controller extends Edit\Controller
 	 * @return Button[]
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
+		: array
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 
@@ -61,7 +62,7 @@ class Controller extends Edit\Controller
 	 * @see Edit_Controller::getViewParameters
 	 * @see initializeValues
 	 */
-	protected function getViewParameters(Parameters $parameters, array $form, $class_name)
+	protected function getViewParameters(Parameters $parameters, array $form, $class_name) : array
 	{
 		$object = $parameters->getMainObject($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
@@ -110,7 +111,7 @@ class Controller extends Edit\Controller
 	 * @param $objects    array  The values that where sent as parameters to the add controller
 	 * @param $properties Reflection_Property[] The properties of $object (all are accessible here)
 	 */
-	protected function initializeValues($object, array $objects, array $properties)
+	protected function initializeValues(object $object, array $objects, array $properties)
 	{
 		foreach (array_slice($objects, 1) as $property_name => $value) {
 			// the previous object was the name of a property : the value is the matching object
@@ -149,9 +150,9 @@ class Controller extends Edit\Controller
 	 *
 	 * @param $class_name string The name of the class for search
 	 * @param $properties Reflection_Property[] The list of properties to search into
-	 * @return string|null The name of the matching property, null if not found
+	 * @return ?string The name of the matching property, null if not found
 	 */
-	protected function matchingProperty(string $class_name, array $properties)
+	protected function matchingProperty(string $class_name, array $properties) : ?string
 	{
 		foreach ($properties as $property) {
 			$type = $property->getType();
