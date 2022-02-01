@@ -15,11 +15,13 @@ use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Target;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Duplicate;
+use ITRocks\Framework\Feature\List_\Navigation;
 use ITRocks\Framework\Feature\Output_Setting;
 use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Reflection\Annotation\Property\Group_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\View;
@@ -523,6 +525,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	/**
 	 * Default run method for default output view controller
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -531,6 +534,14 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		if ($parameters->has('next', true)) {
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			Session::current()->get(Navigation::class, true)->navigate($parameters, 1);
+		}
+		elseif ($parameters->has('previous', true)) {
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			Session::current()->get(Navigation::class, true)->navigate($parameters, -1);
+		}
 		$parameters = $this->getViewParameters($parameters, $form, $class_name);
 		return View::run($parameters, $form, $files, $class_name, static::FEATURE);
 	}

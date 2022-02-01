@@ -132,6 +132,15 @@ class Default_List_Row implements List_Row
 		return $this->object;
 	}
 
+	//--------------------------------------------------------------------------- getObjectIdentifier
+	/**
+	 * @return mixed
+	 */
+	public function getObjectIdentifier() : mixed
+	{
+		return is_object($this->object) ? Dao::getObjectIdentifier($this->object) : $this->object;
+	}
+
 	//--------------------------------------------------------------------------------- getOutputLink
 	/**
 	 * Returns link to the output feature for the object
