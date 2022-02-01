@@ -232,19 +232,20 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 			);
 		}
 
-		$buttons['outputPrevious'] = new Button(
-			Feature::F_OUTPUT,
-			View::link($object, Feature::F_OUTPUT, 'previous'),
-			'outputPrevious',
-			[Align::RIGHT, Target::MAIN]
-		);
-
-		$buttons['outputNext'] = new Button(
-			Feature::F_OUTPUT,
-			View::link($object, Feature::F_OUTPUT, 'next'),
-			'outputNext',
-			[Align::RIGHT, Target::MAIN]
-		);
+		if (is_object($object) && Dao::getObjectIdentifier($object)) {
+			$buttons['outputPrevious'] = new Button(
+				Feature::F_OUTPUT,
+				View::link($object, Feature::F_OUTPUT, 'previous'),
+				'outputPrevious',
+				[Align::RIGHT, Target::MAIN]
+			);
+			$buttons['outputNext'] = new Button(
+				Feature::F_OUTPUT,
+				View::link($object, Feature::F_OUTPUT, 'next'),
+				'outputNext',
+				[Align::RIGHT, Target::MAIN]
+			);
+		}
 
 		if ($settings && $settings->actions) {
 			// default buttons on settings are false : get the default buttons from getGeneralButtons
@@ -534,11 +535,13 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
-		if ($parameters->has('next', true)) {
+		if ($parameters->has('next', true) && Dao::getObjectIdentifier($parameters->getMainObject())) {
 			/** @noinspection PhpUnhandledExceptionInspection class */
 			Session::current()->get(Navigation::class, true)->navigate($parameters, 1);
 		}
-		elseif ($parameters->has('previous', true)) {
+		elseif (
+			$parameters->has('previous', true) && Dao::getObjectIdentifier($parameters->getMainObject())
+		) {
 			/** @noinspection PhpUnhandledExceptionInspection class */
 			Session::current()->get(Navigation::class, true)->navigate($parameters, -1);
 		}
