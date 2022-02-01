@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Feature\List_\Navigation;
 
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\List_Setting;
 
 /**
@@ -20,7 +21,7 @@ class Class_
 	/**
 	 * @var integer
 	 */
-	public int $count = 5;
+	public int $count = 100;
 
 	//----------------------------------------------------------------------------------------- $from
 	/**
@@ -37,7 +38,7 @@ class Class_
 	//-------------------------------------------------------------------------------------- navigate
 	/**
 	 * @param $object    T
-	 * @param $direction integer @values -1, 1
+	 * @param $direction integer @values -1, 0, 1
 	 * @return T
 	 * @template T
 	 */
@@ -46,31 +47,33 @@ class Class_
 		$current_identifier = strval(Dao::getObjectIdentifier($object));
 		$list_settings      = List_Setting\Set::current($this->class_name);
 		$list_settings->cleanup();
-		$last_identifier = 0;
 		$next_identifier = false;
+		$search          = (new List_\Controller)->applySearchParameters($list_settings);
 		do {
 			$options = [
 				Dao::groupBy(), Dao::limit($this->from, $this->count), $list_settings->sort
 			];
-			$data = Dao::select($this->class_name, [], $list_settings->search, $options);
+			$data = Dao::select($this->class_name, [], $search, $options);
 			$rows = $data->getRows();
+			if ($direction < 0) {
+				$rows = array_reverse($rows);
+			}
 			foreach ($rows as $row) {
 				$identifier = strval($row->getObjectIdentifier());
 				if ($next_identifier) {
 					return Dao::read($identifier, $this->class_name);
 				}
 				if ($identifier === $current_identifier) {
-					if ($direction < 0) {
-						return Dao::read($last_identifier ?: $identifier, $this->class_name);
+					if ($direction === 0) {
+						return $object;
 					}
 					$next_identifier = true;
 				}
-				$last_identifier = $identifier;
 			}
 			if (($direction < 0) && ($this->from > 1)) {
 				$this->from = max(1, $this->from - $this->count);
 			}
-			elseif (($direction > 0) && $rows) {
+			elseif (($direction >= 0) && $rows) {
 				$this->from += $this->count;
 			}
 			else {

@@ -32,11 +32,11 @@ use ITRocks\Framework\Layout\Print_Model\Buttons_Generator;
 use ITRocks\Framework\Locale;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Mapper\Getter;
+use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_;
 use ITRocks\Framework\Reflection\Annotation\Class_\Filter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\List_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Class_\Set_Annotation;
-use ITRocks\Framework\Reflection\Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Getter_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Representative_Annotation;
@@ -48,6 +48,7 @@ use ITRocks\Framework\Reflection\Annotation\Template\Method_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Property_Value;
 use ITRocks\Framework\Reflection\Type;
+use ITRocks\Framework\Session;
 use ITRocks\Framework\Setting;
 use ITRocks\Framework\Tools\Call_Stack;
 use ITRocks\Framework\Tools\Color;
@@ -1046,6 +1047,9 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 */
 	public function run(Parameters $parameters, array $form, array $files, $class_name)
 	{
+		if (Session::current()->get(Navigation::class)) {
+			Session::current()->remove(Navigation::class);
+		}
 		$this->class_names = $class_name;
 		$main_object       = $parameters->getMainObject();
 		$class_name = (($main_object instanceof Set) && $main_object->element_class_name)

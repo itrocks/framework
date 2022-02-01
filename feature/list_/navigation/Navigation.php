@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Dao;
+use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\List_\Navigation\Class_;
 use ITRocks\Framework\Feature\List_Setting;
 use Serializable;
@@ -24,19 +25,19 @@ class Navigation implements Serializable
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $class_name string
+	 * @param $object     object
 	 */
-	protected function addClass(string $class_name)
+	protected function addClass(string $class_name, object $object)
 	{
 		$list_settings = List_Setting\Set::current($class_name);
-		$total_count   = Dao::count($list_settings->search, $class_name, Dao::groupBy());
-
+		$search        = (new List_\Controller)->applySearchParameters($list_settings);
+		$total_count   = Dao::count($search, $class_name, Dao::groupBy());
 		/** @noinspection PhpUnhandledExceptionInspection class */
-		$class = Builder::create(Class_::class);
-
+		$class              = Builder::create(Class_::class);
 		$class->class_name  = $class_name;
 		$class->total_count = $total_count;
-
 		$this->classes[$class_name] = $class;
+		$class->navigate($object, 0);
 	}
 
 	//-------------------------------------------------------------------------------------- navigate
@@ -50,7 +51,7 @@ class Navigation implements Serializable
 		$object     = $parameters->getMainObject();
 		$class_name = Builder::current()->sourceClassName(get_class($object));
 		if (!isset($this->classes[$class_name])) {
-			$this->addClass($class_name);
+			$this->addClass($class_name, $object);
 		}
 		$class = $this->classes[$class_name];
 		$parameters->set($class_name, $object = $class->navigate($object, $direction));
