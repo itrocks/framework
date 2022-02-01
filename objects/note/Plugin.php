@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Objects\Note;
 
 use ITRocks\Framework\Component\Button;
+use ITRocks\Framework\Component\Button\Align;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\Edit;
 use ITRocks\Framework\Feature\Output;
@@ -44,7 +45,7 @@ class Plugin implements Registerable
 			'Notes',
 			View::link(Note::class, Summary\Controller::FEATURE, [$object]),
 			static::FEATURE,
-			['#notes-summary', Button::DATA => ['count' => $count]]
+			['#notes-summary', Align::RIGHT, Button::DATA => ['count' => $count]]
 		);
 	}
 

@@ -2,15 +2,11 @@
 
 .general.actions > .notes[data-count] {
 	border: none;
-	margin-left: auto;
 
 	&:after {
 		content: attr(data-count);
 		font-size: 12px;
 		font-weight: $medium;
-		position: absolute;
-		left: 26px;
-		top: -2px;
 	}
 
 	> a {

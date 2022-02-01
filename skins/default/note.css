@@ -1,13 +1,9 @@
 .general.actions > .notes[data-count] {
-  border: none;
-  margin-left: auto; }
+  border: none; }
   .general.actions > .notes[data-count]:after {
     content: attr(data-count);
     font-size: 12px;
-    font-weight: 500;
-    position: absolute;
-    left: 26px;
-    top: -2px; }
+    font-weight: 500; }
   .general.actions > .notes[data-count] > a {
     background: url("img/note-24.svg") center no-repeat;
     font-size: 0; }
