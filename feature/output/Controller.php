@@ -274,9 +274,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//------------------------------------------------------------------------------------- getModule
 	/**
 	 * @param $class_name string
-	 * @return string
+	 * @return Button|string
 	 */
-	protected function getModule(string $class_name) : string
+	protected function getModule(string $class_name) : Button|string
 	{
 		$class_names = Names::classToSet($class_name);
 		$module      = '';
@@ -300,9 +300,9 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	//------------------------------------------------------------------------------------- getParent
 	/**
 	 * @param $class_name string
-	 * @return string
+	 * @return Button|string
 	 */
-	protected function getParent(string $class_name) : string
+	protected function getParent(string $class_name) : Button|string
 	{
 		$class_names = Names::classToSet($class_name);
 		$module = '';
