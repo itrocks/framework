@@ -36,10 +36,10 @@ class Controller extends Output\Controller
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
 	{
-		list($close_link, $follows) = $this->prepareThen(
+		[$close_link, $follows] = $this->prepareThen(
 			$object,
 			$parameters,
-			View::link(Names::classToSet(is_object($object) ? get_class($object) : $object))
+			View::link(is_object($object) ? $object : Names::classToSet(is_object($object)))
 		);
 		if ($settings && $settings->actions) {
 			$buttons = parent::getGeneralButtons($object, $parameters, $settings);
