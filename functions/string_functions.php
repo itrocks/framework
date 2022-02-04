@@ -43,9 +43,7 @@ function beginsWith($haystack, $needle)
 		foreach ($needle as $choice) if (beginsWith($haystack, $choice)) return true;
 		return false;
 	}
-	$needle_length = strlen($needle);
-	return (strlen($haystack) >= $needle_length)
-		&& (substr($haystack, 0, $needle_length) === $needle);
+	return str_starts_with($haystack, $needle);
 }
 
 //------------------------------------------------------------------------------------- cleanSpaces
@@ -96,9 +94,7 @@ function endsWith($haystack, $needle)
 		foreach ($needle as $choice) if (endsWith($haystack, $choice)) return true;
 		return false;
 	}
-	$needle_length = strlen($needle);
-	return (strlen($haystack) >= $needle_length)
-		&& (substr($haystack, -$needle_length) === $needle);
+	return str_ends_with($haystack, $needle);
 }
 
 //------------------------------------------------------------------------- htmlSpecialCharsRecurse
