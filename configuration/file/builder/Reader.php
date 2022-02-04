@@ -22,6 +22,7 @@ class Reader extends File\Reader
 		$built              = null;
 		$built_on_next_line = false;
 		$class_name         = null;
+		$in_comment         = false;
 		$line               = current($this->lines);
 		while (!trim($line)) {
 			$line = next($this->lines);
@@ -36,12 +37,23 @@ class Reader extends File\Reader
 					$built_on_next_line = false;
 					$line               = TAB . $class_name . $line;
 				}
-				if (beginsWith($line, TAB . TAB)) {
-					if ($built instanceof Assembled) {
-						if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+				$trim_line = trim($line);
+				if (str_starts_with($line, TAB . TAB)) {
+					if ($in_comment) {
+						$built->components[array_key_last($built->components)] .= LF . $line;
+						if (str_contains($line, '*/')) {
+							$in_comment = false;
+						}
+					}
+					elseif ($built instanceof Assembled) {
+						if (str_starts_with($trim_line, '//') || !$trim_line) {
 							$built->components[] = $line;
 						}
-						elseif (beginsWith(trim($line), [DQ, Q]) || !trim($line)) {
+						elseif (str_starts_with($trim_line, '/*')) {
+							$built->components[] = $line;
+							$in_comment          = true;
+						}
+						elseif (beginsWith($trim_line, [DQ, Q])) {
 							$component = trim(rtrim($line, ','));
 							if (substr($component, 1, 1) === AT) {
 								$component = trim($component, DQ . Q);
@@ -66,11 +78,21 @@ class Reader extends File\Reader
 					}
 				}
 				// add built class
-				elseif (beginsWith($line, TAB)) {
-					if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+				elseif (str_starts_with($line, TAB)) {
+					if ($in_comment) {
+						$this->file->classes[array_key_last($this->file->classes)] .= LF . $line;
+						if (str_contains($line, '*/')) {
+							$in_comment = false;
+						}
+					}
+					elseif (str_starts_with($trim_line, '//') || !$trim_line) {
 						$this->file->classes[] = $line;
 					}
-					elseif (in_array(trim($line), [']', '],'])) {
+					elseif (str_starts_with($trim_line, '/*')) {
+						$this->file->classes[] = $line;
+						$in_comment = true;
+					}
+					elseif (in_array($trim_line, [']', '],'])) {
 						$built = null;
 					}
 					else {
