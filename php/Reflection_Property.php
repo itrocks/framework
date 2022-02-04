@@ -59,9 +59,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
-	 * @var Reflection_Property|boolean|null
+	 * @var Interfaces\Reflection_Property|boolean|null
 	 */
-	protected Reflection_Property|bool|null $parent;
+	protected Interfaces\Reflection_Property|bool|null $parent;
 
 	//------------------------------------------------------------------------------------ $token_key
 	/**
@@ -221,9 +221,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//------------------------------------------------------------------------------------- getParent
 	/**
-	 * @return ?Reflection_Property
+	 * @return ?Interfaces\Reflection_Property
 	 */
-	public function getParent() : ?Reflection_Property
+	public function getParent() : ?Interfaces\Reflection_Property
 	{
 		if (!isset($this->parent)) {
 			$this->parent = false;

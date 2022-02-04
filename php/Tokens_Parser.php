@@ -34,16 +34,16 @@ trait Tokens_Parser
 	 *
 	 * @var integer
 	 */
-	private int $token_key = 0;
+	private int $token_key;
 
 	//--------------------------------------------------------------------------------------- $tokens
 	/**
 	 * PHP tokens array
 	 *
 	 * @see token_get_all()
-	 * @var ?array
+	 * @var array
 	 */
-	private ?array $tokens;
+	private array $tokens;
 
 	//------------------------------------------------------------------------------------------ $use
 	/**

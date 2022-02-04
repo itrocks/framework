@@ -84,7 +84,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 *
 	 * @var Interfaces\Reflection_Class|string|null
 	 */
-	private Interfaces\Reflection_Class|string|null $parent = null;
+	private Interfaces\Reflection_Class|string|null $parent;
 
 	//---------------------------------------------------------------------------- $parent_class_name
 	/**
@@ -189,7 +189,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 		unset($this->line);
 		unset($this->name);
-		unset($this->namespace);
 		unset($this->stop);
 		$this->name = null;
 
@@ -217,7 +216,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function __get(string $property_name) : mixed
 	{
-		if (in_array($property_name, ['line', 'name', 'namespace', 'type'])) {
+		if (in_array($property_name, ['line', 'name', 'type'])) {
 			$this->scanUntilClassName();
 		}
 		elseif ($property_name === 'stop') {
@@ -580,7 +579,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if ($this->parent) {
 			$this->parentReplacement();
 		}
-		if (is_string($this->parent)) {
+		if (is_string($this->parent) && $this->parent) {
 			$parent = $this->source->getOutsideClass($this->parent);
 			if ($parent->source->isInternal()) {
 				if (!class_exists($parent->name, false)) {
@@ -689,9 +688,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * level property (from child class) will be returned
 	 *
 	 * @param $name string The name of the property to get
-	 * @return ?Reflection_Property
+	 * @return Reflection_Property
 	 */
-	public function getProperty(string $name) : ?Reflection_Property
+	public function getProperty(string $name) : Reflection_Property
 	{
 		return $this->getProperties()[$name];
 	}
@@ -925,7 +924,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function isInstance(object $object) : bool
 	{
-		return $this->name && is_a($object, $this->name, true);
+		return is_a($object, $this->name, true);
 	}
 
 	//----------------------------------------------------------------------------------- isInterface
@@ -1066,9 +1065,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		}
 		$this->scanUntilClassName();
 
-		$this->interfaces = [];
-		$this->parent     = null;
-		$this->requires   = [];
+		$this->interfaces        = [];
+		$this->parent            = null;
+		$this->parent_class_name = null;
+		$this->requires          = [];
 
 		$this->getTokens();
 		if (!$this->tokens) return;
@@ -1228,7 +1228,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			}
 
 			if (!isset($this->stop)) {
-				$token = $this->tokens[++$this->token_key] ?? ($this->stop = true);
+				$token = $this->tokens[++$this->token_key];
 			}
 
 		} while (!isset($this->stop));
@@ -1253,7 +1253,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
-			$this->name      = null;
 		$this->namespace = '';
 		$this->use       = [];
 		do {
@@ -1312,9 +1311,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			$class_name = $this->fullClassName($this->scanClassName(), false);
 
 			if (
-					isset($this->name)
-					&& ($class_name !== $this->name)
-					&& (strtolower($class_name) === strtolower($this->name))
+					($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))
 			) {
 				$this->wrongCaseError($class_name, $this->name);
 			}

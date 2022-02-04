@@ -62,15 +62,15 @@ class Reflection_Source
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
-	 * @var ?Reflection_Class[] the key is the full name of each class
+	 * @var Reflection_Class[] the key is the full name of each class
 	 */
-	private ?array $classes;
+	private array $classes;
 
 	//--------------------------------------------------------------------------------- $dependencies
 	/**
-	 * @var ?Dependency[]
+	 * @var Dependency[]
 	 */
-	private ?array $dependencies;
+	private array $dependencies;
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
@@ -80,9 +80,9 @@ class Reflection_Source
 
 	//--------------------------------------------------------------------------------- $instantiates
 	/**
-	 * @var ?Dependency[]
+	 * @var Dependency[]
 	 */
-	private ?array $instantiates;
+	private array $instantiates;
 
 	//------------------------------------------------------------------------------------- $internal
 	/**
@@ -92,27 +92,27 @@ class Reflection_Source
 
 	//---------------------------------------------------------------------------------------- $lines
 	/**
-	 * @var ?string[]
+	 * @var string[]
 	 */
-	private ?array $lines;
+	private array $lines;
 
 	//----------------------------------------------------------------------------------- $namespaces
 	/**
-	 * @var ?integer[] key is the namespace, value is the line number where it is declared
+	 * @var integer[] key is the namespace, value is the line number where it is declared
 	 */
-	private ?array $namespaces;
+	private array $namespaces;
 
 	//------------------------------------------------------------------------------------- $requires
 	/**
-	 * @var ?integer[] key is a string PHP file path, value is the line number where it is declared
+	 * @var integer[] key is a string PHP file path, value is the line number where it is declared
 	 */
-	public ?array $requires;
+	public array $requires;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
-	 * @var ?string
+	 * @var string
 	 */
-	private ?string $source;
+	private string $source;
 
 	//----------------------------------------------------------- $token_id_to_dependency_declaration
 	/**
@@ -187,29 +187,29 @@ class Reflection_Source
 		}
 
 		if (isset($this->classes) && (!$bigger_than || (count($this->classes) > $bigger_than))) {
-			$this->classes = null;
+			unset($this->classes);
 		}
 		if (isset($this->dependencies) && (!$bigger_than || (count($this->dependencies) > $bigger_than))) {
-			$this->dependencies = null;
+			unset($this->dependencies);
 		}
 		if (isset($this->instantiates) && (!$bigger_than || (count($this->instantiates) > $bigger_than))) {
-			$this->instantiates = null;
+			unset($this->instantiates);
 		}
 		if (isset($this->namespaces) && (!$bigger_than || (count($this->namespaces) > $bigger_than))) {
-			$this->namespaces = null;
+			unset($this->namespaces);
 		}
 		if (isset($this->requires) && (!$bigger_than || (count($this->requires) > $bigger_than))) {
-			$this->requires = null;
+			unset($this->requires);
 		}
 		if (isset($this->use) && (!$bigger_than || (count($this->use) > $bigger_than))) {
-			$this->use = null;
+			unset($this->use);
 		}
 		if (isset($this->file_name) && is_file($this->file_name) && !$this->changed) {
-			$this->source = null;
+			unset($this->source);
 		}
 
-		$this->lines  = null;
-		$this->tokens = null;
+		unset($this->lines);
+		unset($this->tokens);
 	}
 
 	//------------------------------------------------------------------------------------------- get
