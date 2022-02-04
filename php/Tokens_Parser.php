@@ -12,12 +12,6 @@ use JetBrains\PhpStorm\NoReturn;
 trait Tokens_Parser
 {
 
-	//---------------------------------------------------------------------------- $class_name_tokens
-	/**
-	 * @var integer[]
-	 */
-	public static array $class_name_tokens = [265, 312, 314, T_NS_SEPARATOR, T_STRING];
-
 	//------------------------------------------------------------------------------------ $namespace
 	/**
 	 * The current namespace name
@@ -40,7 +34,7 @@ trait Tokens_Parser
 	 *
 	 * @var integer
 	 */
-	private int $token_key;
+	private int $token_key = 0;
 
 	//--------------------------------------------------------------------------------------- $tokens
 	/**
@@ -69,7 +63,7 @@ trait Tokens_Parser
 		echo '<PRE>';
 		foreach (get_object_vars($this) as $key => $value) {
 			if (!is_array($value) && !is_object($value)) {
-				echo $key . ' = ' . htmlentities($value) . LF;
+				echo $key . ' = ' . htmlentities(strval($value)) . LF;
 			}
 		}
 		echo '</PRE>';
@@ -84,7 +78,8 @@ trait Tokens_Parser
 		// trigger error
 		foreach ((new Call_Stack())->lines() as $line) {
 			if ($line->object instanceof Interfaces\Reflection_Class) {
-				echo '! You may check your class ' . $line->object->getName() . BR . LF;
+				echo '! You may check your class ' . $line->object->getName()
+					. ' / file ' . $this->file_name . BR . LF;
 			}
 		}
 		trigger_error('EOF during ' . $method . '() after [' . lParse($where, LF) . ']', E_USER_ERROR);
@@ -123,7 +118,7 @@ trait Tokens_Parser
 		if ($token[0] === T_WHITESPACE) {
 			$this->eofError('scanClassName');
 		}
-		while (in_array($token[0], static::$class_name_tokens)) {
+		while (in_array($token[0], CLASS_NAME_TOKENS)) {
 			$class_name .= $token[1];
 			$token       = $this->tokens[++$this->token_key];
 		}
@@ -146,7 +141,7 @@ trait Tokens_Parser
 		do {
 			$token = $this->tokens[++$this->token_key];
 			if (is_array($token)) {
-				if (in_array($token[0], static::$class_name_tokens)) {
+				if (in_array($token[0], CLASS_NAME_TOKENS)) {
 					$line  = $token[2];
 					$used .= $token[1];
 					$continue = true;
@@ -232,7 +227,7 @@ trait Tokens_Parser
 						break;
 					}
 				}
-				elseif (in_array($token_id, static::$class_name_tokens) && !$depth) {
+				elseif (in_array($token_id, CLASS_NAME_TOKENS) && !$depth) {
 					$trait_name .= $token[1];
 					$line        = $token[2];
 				}
@@ -252,6 +247,7 @@ trait Tokens_Parser
 
 }
 
-if (PHP_VERSION < '8') {
-	Tokens_Parser::$class_name_tokens = [T_NS_SEPARATOR, T_STRING];
-}
+define('CLASS_NAME_TOKENS', (PHP_VERSION < '8')
+	? [T_NS_SEPARATOR, T_STRING]
+	: [265, 312, 314, T_NS_SEPARATOR, T_STRING]
+);

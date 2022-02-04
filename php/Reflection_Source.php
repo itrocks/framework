@@ -593,7 +593,7 @@ class Reflection_Source
 							$class_name = $this->tokens[$tk][1] . $class_name;
 							$tk --;
 						}
-						while (in_array($this->tokens[$tk][0], Tokens_Parser::$class_name_tokens));
+						while (in_array($this->tokens[$tk][0], CLASS_NAME_TOKENS));
 						$class_name = in_array($token[1], ['__CLASS__', 'self', 'static'])
 							? $class->name
 							: $this->fullClassName($class_name);

@@ -91,6 +91,10 @@ class Compiler implements ICompiler, Needs_Main
 		$dependency = Dao::searchOne(
 			['class_name' => $class_name, 'dependency_name' => $class_name], Dependency::class
 		);
+		if (!$dependency) {
+			echo "missing dependency for $class_name<br>";
+			return;
+		}
 		if (!isset($more_sources->sources[$dependency->file_name])) {
 			$source = Reflection_Source::ofFile($dependency->file_name, $class_name);
 			$more_sources->add($source, $class_name, null, true);

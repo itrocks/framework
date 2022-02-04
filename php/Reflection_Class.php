@@ -73,26 +73,26 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
-	 * @var string The name of the class
+	 * @var ?string The name of the class
 	 */
-	public string $name;
+	public ?string $name;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
 	 * This parent is originally set as the parent class name, but is replaced by the replacement
 	 * class name from Builder if there is one by getParent() and getParentName()
 	 *
-	 * @var Reflection_Class|string|null
+	 * @var Interfaces\Reflection_Class|string|null
 	 */
-	private Reflection_Class|string|null $parent;
+	private Interfaces\Reflection_Class|string|null $parent = null;
 
 	//---------------------------------------------------------------------------- $parent_class_name
 	/**
 	 * This is the parent class name written into the source code
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	private string $parent_class_name;
+	private ?string $parent_class_name;
 
 	//----------------------------------------------------------------------------- $parent_constants
 	/**
@@ -180,14 +180,16 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * Constructs a reflection class object using PHP source code
 	 *
 	 * @param $source Reflection_Source The PHP source code object that contains the class
-	 * @param $name   string The name of the class.
+	 * @param $name   string|null The name of the class.
 	 *                If not set, the first class in source will be reflected.
 	 */
-	public function __construct(Reflection_Source $source, string $name = '')
+	public function __construct(Reflection_Source $source, string $name = null)
 	{
 		$this->source = $source;
 
 		unset($this->line);
+		unset($this->name);
+		unset($this->namespace);
 		unset($this->stop);
 		$this->name = null;
 
@@ -215,13 +217,13 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function __get(string $property_name) : mixed
 	{
-		if (in_array($property_name, ['line', 'name', 'type'])) {
+		if (in_array($property_name, ['line', 'name', 'namespace', 'type'])) {
 			$this->scanUntilClassName();
 		}
 		elseif ($property_name === 'stop') {
 			$this->scanUntilClassEnds();
 		}
-		return $this->$property_name ?? null;
+		return $this->$property_name;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -249,7 +251,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		unset($property_defaults['source']);
 		foreach ($property_defaults as $property_name => $default_value) {
 			if (!isset(static::$$property_name)) {
-				$this->$property_name = $default_value;
+				if (is_null($default_value)) {
+					unset($this->$property_name);
+				}
+				else {
+					$this->$property_name = $default_value;
+				}
 			}
 		}
 	}
@@ -356,7 +363,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $already boolean[] for internal use (recursion) : already got those classes (keys)
 	 * @return string
 	 */
-	public function getDocComment(array|null $flags = null, array &$already = []) : string
+	public function getDocComment(array $flags = null, array &$already = []) : string
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_IMPLEMENTS, T_USE];
@@ -520,9 +527,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getName() : string
+	public function getName() : ?string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -563,9 +570,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * If parent is an internal class, of if there is no parent : will return null.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return ?Reflection_Class
+	 * @return ?Interfaces\Reflection_Class
 	 */
-	public function getParentClass() : ?Reflection_Class
+	public function getParentClass() : ?Interfaces\Reflection_Class
 	{
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
@@ -593,9 +600,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------- getParentName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getParentName() : string
+	public function getParentName() : ?string
 	{
 		if (!isset($this->parent)) {
 			$this->scanUntilClassBegins();
@@ -606,14 +613,14 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if ($this->parent) {
 			$this->parentReplacement();
 		}
-		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : '';
+		return $this->parent ? (is_string($this->parent) ? $this->parent : $this->parent->name) : null;
 	}
 
 	//-------------------------------------------------------------------- getParentOriginalClassName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getParentOriginalClassName() : string
+	public function getParentOriginalClassName() : ?string
 	{
 		if (!isset($this->parent)) {
 			$this->getParentName();
@@ -691,9 +698,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------- getSetClassName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getSetClassName() : string
+	public function getSetClassName() : ?string
 	{
 		$expr = '%'
 			. '\n\s+\*\s+'     // each line beginning by '* '
@@ -708,9 +715,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//---------------------------------------------------------------------------------- getShortName
 	/**
-	 * @retun string
+	 * @retun ?string
 	 */
-	public function getShortName() : string
+	public function getShortName() : ?string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -864,7 +871,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			return true;
 		}
 		$parent_name = $this->getParentName();
-		return (($parent_name == $name) || ($parent_name && $this->getParentClass()->isA($name)));
+		return (($parent_name === $name) || ($parent_name && $this->getParentClass()->isA($name)));
 	}
 
 	//------------------------------------------------------------------------------------ isAbstract
@@ -918,7 +925,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function isInstance(object $object) : bool
 	{
-		return is_a($object, $this->name, true);
+		return $this->name && is_a($object, $this->name, true);
 	}
 
 	//----------------------------------------------------------------------------------- isInterface
@@ -1054,40 +1061,41 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private function scanUntilClassBegins()
 	{
-		if (!isset($this->interfaces)) {
-			$this->scanUntilClassName();
-
-			$this->interfaces = [];
-			$this->parent     = null;
-			$this->requires   = [];
-
-			$this->getTokens();
-			if (!$this->tokens) return;
-			$token = $this->tokens[$this->token_key];
-			while ($token !== '{') {
-				if (is_array($token) && in_array($token[0], [T_EXTENDS, T_IMPLEMENTS])) {
-					foreach ($this->scanClassNames() as $class_name => $line) {
-						$class_name = $this->fullClassName($class_name);
-						if ($token[0] === T_IMPLEMENTS) {
-							$this->interfaces[$class_name] = $class_name;
-						}
-						else {
-							$this->parent_class_name = $class_name;
-							$this->parent            = $class_name;
-						}
-					}
-					$token = $this->tokens[$this->token_key];
-				}
-				else {
-					$token = $this->tokens[++$this->token_key];
-				}
-			}
-
-			if ($this->parent) {
-				$this->parentReplacement();
-			}
-
+		if (isset($this->interfaces)) {
+			return;
 		}
+		$this->scanUntilClassName();
+
+		$this->interfaces = [];
+		$this->parent     = null;
+		$this->requires   = [];
+
+		$this->getTokens();
+		if (!$this->tokens) return;
+		$token = $this->tokens[$this->token_key];
+		while ($token !== '{') {
+			if (is_array($token) && in_array($token[0], [T_EXTENDS, T_IMPLEMENTS])) {
+				foreach ($this->scanClassNames() as $class_name => $line) {
+					$class_name = $this->fullClassName($class_name);
+					if ($token[0] === T_IMPLEMENTS) {
+						$this->interfaces[$class_name] = $class_name;
+					}
+					else {
+						$this->parent_class_name = $class_name;
+						$this->parent            = $class_name;
+					}
+				}
+				$token = $this->tokens[$this->token_key];
+			}
+			else {
+				$token = $this->tokens[++$this->token_key];
+			}
+		}
+
+		if ($this->parent) {
+			$this->parentReplacement();
+		}
+
 	}
 
 	//---------------------------------------------------------------------------- scanUntilClassEnds
@@ -1096,134 +1104,135 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private function scanUntilClassEnds()
 	{
-		if (!isset($this->methods)) {
-			$this->scanUntilClassBegins();
-
-			$this->constants         = [];
-			$this->methods           = [];
-			$this->properties        = [];
-			$this->short_trait_names = [];
-			$this->traits            = [];
-			unset($this->stop);
-
-			$depth = 0;
-			$visibility_token = null;
-
-			$this->getTokens();
-			if (!$this->tokens) return;
-			$token = $this->tokens[$this->token_key];
-			do {
-
-				switch ($token[0]) {
-
-					case T_USE:
-						if ($depth === 1) {
-							foreach ($this->scanTraitNames() as $short_trait_name => $line) {
-								$trait_name                           = $this->fullClassName($short_trait_name);
-								$this->short_trait_names[$trait_name] = $short_trait_name;
-								$this->traits[$trait_name]            = $trait_name;
-							}
-						}
-						break;
-
-					case T_CONST:
-						$const_name = $equal = null;
-						while (($token = $this->tokens[++$this->token_key]) !== ';') {
-							if (is_array($token)) {
-								if ($token[0] === T_STRING) {
-									$const_name = $token[1];
-								}
-								elseif ($const_name && $equal) {
-									$const_value = $token[1];
-									if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
-										if (($const_value[0] === Q) && ($const_value[strlen($const_value) - 1] === Q)) {
-											$const_value = substr($const_value, 1, -1);
-										}
-										$this->constants[$const_name] = $const_value;
-									}
-									elseif ($token[0] === T_DNUMBER) {
-										$this->constants[$const_name] = (double)$const_value;
-									}
-									elseif ($token[0] === T_LNUMBER) {
-										$this->constants[$const_name] = (integer)$const_value;
-									}
-								}
-							}
-							elseif ($token === '=') {
-								$equal = true;
-							}
-						}
-						break;
-
-					case T_PRIVATE:
-					case T_PROTECTED:
-					case T_PUBLIC:
-					case T_VAR:
-						if ($depth === 1) {
-							$visibility_token = $this->token_key;
-						}
-						break;
-
-					case T_VARIABLE:
-						if (($depth === 1) && isset($visibility_token)) {
-							$property_name = substr($token[1], 1);
-							$visibility = $this->tokens[$visibility_token][0];
-							$property = new Reflection_Property(
-								$this,
-								$property_name,
-								$this->tokens[$visibility_token][2],
-								$visibility_token,
-								($visibility === T_VAR) ? T_PUBLIC : $visibility
-							);
-							$this->properties[$property_name] = $property;
-						}
-						$visibility_token = null;
-						break;
-
-					case T_FUNCTION:
-						if ($depth === 1) {
-							$line = $token[2];
-							$token_key = $this->token_key;
-							/** @noinspection PhpStatementHasEmptyBodyInspection ++ inside */
-							while ($this->tokens[++$this->token_key][0] !== T_STRING);
-							$token = $this->tokens[$this->token_key];
-							$this->methods[$token[1]] = new Reflection_Method(
-								$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC
-							);
-							$visibility_token = null;
-						}
-						break;
-
-					case T_CURLY_OPEN:
-					case T_DOLLAR_OPEN_CURLY_BRACES:
-					case T_STRING_VARNAME:
-					case '{':
-						$depth ++;
-						$visibility_token = null;
-						break;
-
-					case '}':
-						$depth --;
-						if (!$depth) {
-							/** @noinspection PhpStatementHasEmptyBodyInspection -- inside */
-							while (!is_array($token = $this->tokens[--$this->token_key]));
-							$this->stop = $token[2];
-							if ($token[0] === T_WHITESPACE) {
-								$this->stop += substr_count($token[1], LF);
-							}
-						}
-						$visibility_token = null;
-						break;
-
-				}
-
-				if (!isset($this->stop)) {
-					$token = $this->tokens[++$this->token_key];
-				}
-
-			} while (!isset($this->stop));
-
+		if (isset($this->methods)) {
+			return;
 		}
+		$this->scanUntilClassBegins();
+
+		$this->constants         = [];
+		$this->methods           = [];
+		$this->properties        = [];
+		$this->short_trait_names = [];
+		$this->traits            = [];
+		unset($this->stop);
+
+		$depth = 0;
+		$visibility_token = null;
+
+		$this->getTokens();
+		if (!$this->tokens) return;
+		$token = $this->tokens[$this->token_key];
+		do {
+
+			switch ($token[0]) {
+
+				case T_USE:
+					if ($depth === 1) {
+						foreach ($this->scanTraitNames() as $short_trait_name => $line) {
+							$trait_name                           = $this->fullClassName($short_trait_name);
+							$this->short_trait_names[$trait_name] = $short_trait_name;
+							$this->traits[$trait_name]            = $trait_name;
+						}
+					}
+					break;
+
+				case T_CONST:
+					$const_name = $equal = null;
+					while (($token = $this->tokens[++$this->token_key]) !== ';') {
+						if (is_array($token)) {
+							if ($token[0] === T_STRING) {
+								$const_name = $token[1];
+							}
+							elseif ($const_name && $equal) {
+								$const_value = $token[1];
+								if ($token[0] === T_CONSTANT_ENCAPSED_STRING) {
+									if (($const_value[0] === Q) && ($const_value[strlen($const_value) - 1] === Q)) {
+										$const_value = substr($const_value, 1, -1);
+									}
+									$this->constants[$const_name] = $const_value;
+								}
+								elseif ($token[0] === T_DNUMBER) {
+									$this->constants[$const_name] = (double)$const_value;
+								}
+								elseif ($token[0] === T_LNUMBER) {
+									$this->constants[$const_name] = (integer)$const_value;
+								}
+							}
+						}
+						elseif ($token === '=') {
+							$equal = true;
+						}
+					}
+					break;
+
+				case T_PRIVATE:
+				case T_PROTECTED:
+				case T_PUBLIC:
+				case T_VAR:
+					if ($depth === 1) {
+						$visibility_token = $this->token_key;
+					}
+					break;
+
+				case T_VARIABLE:
+					if (($depth === 1) && isset($visibility_token)) {
+						$property_name = substr($token[1], 1);
+						$visibility = $this->tokens[$visibility_token][0];
+						$property = new Reflection_Property(
+							$this,
+							$property_name,
+							$this->tokens[$visibility_token][2],
+							$visibility_token,
+							($visibility === T_VAR) ? T_PUBLIC : $visibility
+						);
+						$this->properties[$property_name] = $property;
+					}
+					$visibility_token = null;
+					break;
+
+				case T_FUNCTION:
+					if ($depth === 1) {
+						$line = $token[2];
+						$token_key = $this->token_key;
+						/** @noinspection PhpStatementHasEmptyBodyInspection ++ inside */
+						while ($this->tokens[++$this->token_key][0] !== T_STRING);
+						$token = $this->tokens[$this->token_key];
+						$this->methods[$token[1]] = new Reflection_Method(
+							$this, $token[1], $line, $token_key, $visibility_token ?: T_PUBLIC
+						);
+						$visibility_token = null;
+					}
+					break;
+
+				case T_CURLY_OPEN:
+				case T_DOLLAR_OPEN_CURLY_BRACES:
+				case T_STRING_VARNAME:
+				case '{':
+					$depth ++;
+					$visibility_token = null;
+					break;
+
+				case '}':
+					$depth --;
+					if (!$depth) {
+						/** @noinspection PhpStatementHasEmptyBodyInspection -- inside */
+						while (!is_array($token = $this->tokens[--$this->token_key]));
+						$this->stop = $token[2];
+						if ($token[0] === T_WHITESPACE) {
+							$this->stop += substr_count($token[1], LF);
+						}
+					}
+					$visibility_token = null;
+					break;
+
+			}
+
+			if (!isset($this->stop)) {
+				$token = $this->tokens[++$this->token_key] ?? ($this->stop = true);
+			}
+
+		} while (!isset($this->stop));
+
 	}
 
 	//---------------------------------------------------------------------------- scanUntilClassName
@@ -1244,6 +1253,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
+			$this->name      = null;
 		$this->namespace = '';
 		$this->use       = [];
 		do {
