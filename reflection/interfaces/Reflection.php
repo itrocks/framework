@@ -45,9 +45,9 @@ interface Reflection
 	/**
 	 * Gets class name
 	 *
-	 * @return string
+	 * @return ?string
 	 */
-	public function getName() : string;
+	public function getName() : ?string;
 
 	//---------------------------------------------------------------------------- setAnnotationLocal
 	/**

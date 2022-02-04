@@ -3,9 +3,9 @@ namespace ITRocks\Framework\Component\Button\Code\Command;
 
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Button\Code\Command;
-use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Locale\Loc;
 use ITRocks\Framework\Reflection\Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Tools\Names;
 

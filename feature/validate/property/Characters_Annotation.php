@@ -20,14 +20,14 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 	/**
 	 * @var string
 	 */
-	protected $user_value;
+	protected string $user_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -37,7 +37,7 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 	/**
 	 * @return string
 	 */
-	protected function firstInvalidCharacter()
+	protected function firstInvalidCharacter() : string
 	{
 		$length = strlen($this->user_value);
 		for ($i = 0; $i < $length; $i ++) {
@@ -54,7 +54,7 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 	 * @param $value string
 	 * @return boolean
 	 */
-	protected function match($value)
+	protected function match(string $value) : bool
 	{
 		$pattern = '';
 		foreach ($this->values() as $character) {
@@ -62,7 +62,7 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 		}
 		$pattern = '^[' . $pattern . ']+$';
 		foreach (Regex_Annotation::REGEX_DELIMITERS as $delimiter) {
-			if (strpos($pattern, $delimiter) === false) {
+			if (!str_contains($pattern, $delimiter)) {
 				$pattern = $delimiter . $pattern . $delimiter;
 				break;
 			}
@@ -77,7 +77,7 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		if ($this->value && ($this->valid === Result::ERROR)) {
 			return 'has an invalid character !' . $this->firstInvalidCharacter() . '!';
@@ -92,7 +92,7 @@ class Characters_Annotation extends List_Annotation implements Property_Context_
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : bool
 	{
 		$this->user_value = $this->property->getValue($object);
 		return $this->match($this->user_value);

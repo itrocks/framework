@@ -34,7 +34,7 @@ class Length_Annotation extends Reflection\Annotation implements Property_Contex
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
@@ -51,9 +51,9 @@ class Length_Annotation extends Reflection\Annotation implements Property_Contex
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this->property from $object and accessible */
 		return ($this->property instanceof Reflection_Property)

@@ -20,13 +20,13 @@ class Length_Annotation_Test extends Test
 	 * @length 5
 	 * @var string
 	 */
-	public $fail_property = '1';
+	public string $fail_property = '1';
 
 	//---------------------------------------------------------------------------- $reflection_object
 	/**
-	 * @var Reflection_Class
+	 * @var ?Reflection_Class
 	 */
-	private $reflection_object;
+	private ?Reflection_Class $reflection_object;
 
 	//----------------------------------------------------------------------------- $success_property
 	/**
@@ -35,13 +35,11 @@ class Length_Annotation_Test extends Test
 	 * @length 10
 	 * @var string
 	 */
-	public $success_property = '1234567890';
+	public string $success_property = '1234567890';
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
 	 * Before each test
-	 *
-	 * @throws ReflectionException
 	 */
 	public function setUp() : void
 	{

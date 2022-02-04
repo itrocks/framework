@@ -23,7 +23,7 @@ trait Annotation
 	 *
 	 * @var Reflection_Property
 	 */
-	public $property;
+	public Reflection_Property $property;
 
 	//------------------------------------------------------------------------------ getPropertyValue
 	/**
@@ -32,7 +32,7 @@ trait Annotation
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return mixed
 	 */
-	public function getPropertyValue()
+	public function getPropertyValue() : mixed
 	{
 		$property = $this->property;
 		/** @noinspection PhpUnhandledExceptionInspection property is always valid for object */

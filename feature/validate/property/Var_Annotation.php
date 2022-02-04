@@ -21,15 +21,15 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * @var string
 	 */
-	protected $report_message;
+	protected string $report_message;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 *
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value, $property);
 		$this->property = $property;
@@ -56,23 +56,22 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 		$date    = array_combine(explode('-', $date), explode('-', date($date)));
 		$format  = Locale::current()->date_format->format;
 		$format .= ' H:i' . ($this->property->getAnnotation('show_seconds')->value ? ':s' : '');
-		$format  = strReplace($date, $format);
-		return $format;
+		return strReplace($date, $format);
 	}
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
 	 * Gets the last validate() call resulting report message
 	 *
-	 * @param $report_message string
+	 * @param $report_message string|null
 	 * @return string
 	 */
-	public function reportMessage($report_message = null)
+	public function reportMessage(string $report_message = null) : string
 	{
 		if (isset($report_message)) {
 			$this->report_message = $report_message;
 		}
-		return strval($this->report_message);
+		return $this->report_message;
 	}
 
 	//-------------------------------------------------------------------------------------- validate
@@ -81,9 +80,9 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		if (
 			!($this->property instanceof Reflection_Property)

@@ -22,7 +22,7 @@ abstract class Validate_Annotation extends Method_Annotation
 	 *
 	 * @return null
 	 */
-	public function getValue()
+	public function getValue() : mixed
 	{
 		return null;
 	}

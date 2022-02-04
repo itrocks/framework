@@ -19,10 +19,10 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -32,7 +32,7 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 	/**
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
@@ -49,9 +49,9 @@ class Precision_Annotation extends Reflection\Annotation implements Property_Con
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean
+	 * @return ?boolean
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		if ($this->property instanceof Reflection_Property) {
 			if ($this->value) {

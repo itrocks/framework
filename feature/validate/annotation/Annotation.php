@@ -13,7 +13,7 @@ trait Annotation
 	 *
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//---------------------------------------------------------------------------------------- $valid
 	/**
@@ -28,7 +28,7 @@ trait Annotation
 	 *      but they will be changed into Validate::ERROR for true and Validate::INFORMATION for false
 	 *      immediately after the internal call to Annotation::validate()
 	 */
-	public $valid;
+	public bool|string $valid;
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
@@ -36,15 +36,15 @@ trait Annotation
 	 *
 	 * @return string
 	 */
-	abstract public function reportMessage();
+	abstract public function reportMessage() : string;
 
 	//-------------------------------------------------------------------------------------- validate
 	/**
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	abstract public function validate($object);
+	abstract public function validate(object $object) : ?bool;
 
 }

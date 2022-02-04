@@ -12,7 +12,7 @@ class Default_True_Boolean_Annotation extends Boolean_Annotation
 	 * @override
 	 * @var boolean
 	 */
-	public $value = true;
+	public array|bool|null|string $value = true;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

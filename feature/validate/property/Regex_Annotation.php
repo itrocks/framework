@@ -23,10 +23,10 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -38,7 +38,7 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 *
 	 * @return null
 	 */
-	public function getValue()
+	public function getValue() : mixed
 	{
 		return null;
 	}
@@ -49,14 +49,11 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
-		if (strlen($this->value)) {
-			switch ($this->valid) {
-				case Result::ERROR: return 'has invalid format';
-			}
-		}
-		return '';
+		return (strlen($this->value) && ($this->valid == Result::ERROR))
+			? 'has invalid format'
+			: '';
 	}
 
 	//-------------------------------------------------------------------------------------- validate
@@ -64,14 +61,14 @@ class Regex_Annotation extends Reflection\Annotation implements Property_Context
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		$pattern = $this->value;
-		if (strpos(substr($pattern, -2), $pattern[0]) === false) {
+		if (!str_contains(substr($pattern, -2), $pattern[0])) {
 			foreach (static::REGEX_DELIMITERS as $delimiter) {
-				if (strpos($pattern, $delimiter) === false) {
+				if (!str_contains($pattern, $delimiter)) {
 					$pattern = $delimiter . $pattern . $delimiter;
 					break;
 				}

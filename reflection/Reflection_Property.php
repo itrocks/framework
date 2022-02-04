@@ -3,7 +3,6 @@ namespace ITRocks\Framework\Reflection;
 
 use Exception;
 use ITRocks\Framework\Builder;
-use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
 use ITRocks\Framework\Mapper\Empty_Object;
 use ITRocks\Framework\Mapper\Map;
 use ITRocks\Framework\Property\Path;
@@ -13,6 +12,7 @@ use ITRocks\Framework\Reflection\Annotation\Parser;
 use ITRocks\Framework\Reflection\Annotation\Property\Alias_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Default_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Link_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\User_Var_Annotation;

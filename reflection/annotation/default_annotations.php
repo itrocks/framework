@@ -455,12 +455,6 @@ Parser::$default_annotations = [
 	Parser::T_PROPERTY . '@link_composite' => Boolean_Annotation::class,
 
 	/**
-	 * @mandatory [false]
-	 * Set this annotation to tell the data controllers that the property value is mandatory
-	 */
-	Parser::T_PROPERTY . '@mandatory' => Boolean_Annotation::class,
-
-	/**
 	 * @max_length 100
 	 * Tells what maximal count of characters can have the value of the property
 	 */

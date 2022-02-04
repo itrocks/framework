@@ -18,9 +18,9 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		$result        = $this->call($object);
 		$this->message = is_string($result) ? $result : null;

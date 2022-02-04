@@ -16,48 +16,46 @@ class Regex_Annotation_Test extends Test
 	 * @regex #^[0-3]*$#
 	 * @var string
 	 */
-	public $result_ko_with_delimiter = '4567';
+	public string $result_ko_with_delimiter = '4567';
 
 	//-------------------------------------------------- $result_ko_with_delimiter_and_case_sensitive
 	/**
 	 * @regex /php/
 	 * @var string
 	 */
-	public $result_ko_with_delimiter_and_case_sensitive = 'PHP';
+	public string $result_ko_with_delimiter_and_case_sensitive = 'PHP';
 
 	//------------------------------------------------------------------ $result_ko_without_delimiter
 	/**
 	 * @regex ^[0-3]*$
 	 * @var string
 	 */
-	public $result_ko_without_delimiter = '4567';
+	public string $result_ko_without_delimiter = '4567';
 
 	//--------------------------------------------------------------------- $result_ok_with_delimiter
 	/**
 	 * @regex #^[0-3]*$#
 	 * @var string
 	 */
-	public $result_ok_with_delimiter = '0123';
+	public string $result_ok_with_delimiter = '0123';
 
 	//------------------------------------------------ $result_ok_with_delimiter_and_case_insensitive
 	/**
 	 * @regex /php/i
 	 * @var string
 	 */
-	public $result_ok_with_delimiter_and_case_insensitive = 'PHP';
+	public string $result_ok_with_delimiter_and_case_insensitive = 'PHP';
 
 	//------------------------------------------------------------------ $result_ok_without_delimiter
 	/**
 	 * @regex ^[0-3]*$
 	 * @var string
 	 */
-	public $result_ok_without_delimiter = '0123';
+	public string $result_ok_without_delimiter = '0123';
 
 	//------------------------------------------------------------------------------------------ test
 	/**
 	 * Regex annotation test
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function test()
 	{

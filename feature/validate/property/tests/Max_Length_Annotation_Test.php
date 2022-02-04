@@ -17,20 +17,20 @@ class Max_Length_Annotation_Test extends Test
 	 * @max_length 3
 	 * @var string
 	 */
-	public $fail_property = 'abcdefg';
+	public string $fail_property = 'abcdefg';
 
 	//---------------------------------------------------------------------------- $reflection_object
 	/**
-	 * @var Reflection_Class
+	 * @var ?Reflection_Class
 	 */
-	private $reflection_object;
+	private ?Reflection_Class $reflection_object;
 
 	//----------------------------------------------------------------------------- $success_property
 	/**
 	 * @max_length 5
 	 * @var string
 	 */
-	public $success_property = 'abc';
+	public string $success_property = 'abc';
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
@@ -38,7 +38,6 @@ class Max_Length_Annotation_Test extends Test
 	 */
 	public function setUp() : void
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$this->reflection_object = new Reflection_Class(__CLASS__);
 	}
 
@@ -79,7 +78,6 @@ class Max_Length_Annotation_Test extends Test
 			$this->reflection_object->getProperty('fail_property')
 		);
 		$actual = $annotation->validate($this);
-		$annotation->reportMessage();
 
 		static::assertFalse($actual);
 	}

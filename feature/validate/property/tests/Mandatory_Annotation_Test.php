@@ -1,7 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property\Tests;
 
-use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
@@ -17,19 +17,19 @@ class Mandatory_Annotation_Test extends Test
 	/**
 	 * @mandatory
 	 */
-	public $empty_property;
+	public mixed $empty_property;
 
 	//------------------------------------------------------------------------------ $filled_property
 	/**
 	 * @mandatory true
 	 */
-	public $filled_property = 'foo';
+	public string $filled_property = 'foo';
 
 	//---------------------------------------------------------------------------- $reflection_object
 	/**
-	 * @var Reflection_Class
+	 * @var ?Reflection_Class
 	 */
-	private $reflection_object;
+	private ?Reflection_Class $reflection_object;
 
 	//----------------------------------------------------------------------------------------- setUp
 	/**
@@ -37,7 +37,6 @@ class Mandatory_Annotation_Test extends Test
 	 */
 	public function setUp() : void
 	{
-		/** @noinspection PhpUnhandledExceptionInspection constant */
 		$this->reflection_object = new Reflection_Class(__CLASS__);
 	}
 

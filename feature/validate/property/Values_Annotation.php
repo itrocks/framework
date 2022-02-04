@@ -14,17 +14,16 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 
 	//--------------------------------------------------------------------------------- $object_value
 	/**
-	 * @var string
+	 * @var string|string[]
 	 */
-	protected $object_value;
+	protected array|string $object_value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 *
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value, $property);
 		$this->property = $property;
@@ -52,7 +51,7 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		return 'unauthorized value';
 	}
@@ -64,7 +63,7 @@ class Values_Annotation extends Reflection\Annotation\Property\Values_Annotation
 	 * @param $object object
 	 * @return boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : bool
 	{
 		$values = $this->value;
 		if (!$values) {

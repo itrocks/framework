@@ -20,10 +20,10 @@ class Min_Value_Annotation extends Reflection\Annotation implements Property_Con
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    string
+	 * @param $value    ?string
 	 * @param $property Interfaces\Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct($value, Interfaces\Reflection_Property $property)
+	public function __construct(?string $value, Interfaces\Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
@@ -35,7 +35,7 @@ class Min_Value_Annotation extends Reflection\Annotation implements Property_Con
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
@@ -55,9 +55,9 @@ class Min_Value_Annotation extends Reflection\Annotation implements Property_Con
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		if ($this->property instanceof Reflection_Property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */

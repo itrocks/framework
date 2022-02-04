@@ -1,6 +1,8 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Annotation;
 
+use ITRocks\Framework\Feature\Validate\Validator;
+
 /**
  * For validator that get a specific message
  *
@@ -13,7 +15,7 @@ trait Has_Message
 	/**
 	 * @var string
 	 */
-	protected $message;
+	protected string $message;
 
 	//--------------------------------------------------------------------------------- reportMessage
 	/**
@@ -21,7 +23,7 @@ trait Has_Message
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		return $this->message;
 	}

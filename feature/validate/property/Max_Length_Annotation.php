@@ -35,7 +35,7 @@ class Max_Length_Annotation extends Reflection\Annotation implements Property_Co
 	 *
 	 * @return string
 	 */
-	public function reportMessage()
+	public function reportMessage() : string
 	{
 		if (strlen($this->value)) {
 			switch ($this->valid) {
@@ -55,9 +55,9 @@ class Max_Length_Annotation extends Reflection\Annotation implements Property_Co
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		if ($this->property instanceof Reflection_Property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */

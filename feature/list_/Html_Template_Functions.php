@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Feature\List_;
 
 use ITRocks\Framework\Feature\Edit;
-use ITRocks\Framework\Feature\Validate\Property\Mandatory_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Annotation\Property\Store_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 

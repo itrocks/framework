@@ -17,12 +17,13 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           string
-	 * @param $property        Reflection|Reflection_Property the contextual Reflection_Property
+	 * @param $value           ?string
+	 * @param $property        Reflection_Property the contextual Reflection_Property
 	 * @param $annotation_name string
 	 */
-	public function __construct($value, Reflection $property, $annotation_name = self::ANNOTATION)
-	{
+	public function __construct(
+		?string $value, Reflection $property, string $annotation_name = self::ANNOTATION
+	) {
 		parent::__construct($value, $property, $annotation_name);
 		$this->property = $property;
 	}
@@ -41,9 +42,9 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return boolean true if validated, false if not validated, null if could not be validated
+	 * @return ?boolean true if validated, false if not validated, null if could not be validated
 	 */
-	public function validate($object)
+	public function validate(object $object) : ?bool
 	{
 		if (!$this->value) {
 			return true;
