@@ -18,13 +18,13 @@ class Set implements Iterator
 	 *
 	 * @var string
 	 */
-	public $element_class_name;
+	public string $element_class_name;
 
 	//------------------------------------------------------------------------------------- $elements
 	/**
 	 * @var object[]
 	 */
-	public $elements;
+	public array $elements;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -54,10 +54,10 @@ class Set implements Iterator
 	/**
 	 * Adds an element into the set, if not already present (same key)
 	 *
-	 * @param $key     string|integer|object identity of the element in the set, or element if is null
-	 * @param $element object $element element to add to the set (null if no or in key)
+	 * @param $key     integer|object|string identity of the element in the set, or element if is null
+	 * @param $element object|null $element element to add to the set (null if no or in key)
 	 */
-	public function add($key, $element = null)
+	public function add(int|object|string $key, object $element = null)
 	{
 		if (isset($element)) {
 			$this->elements[$key] = $element;
@@ -73,7 +73,7 @@ class Set implements Iterator
 	 *
 	 * @return object
 	 */
-	public function current()
+	public function current() : object
 	{
 		return current($this->elements);
 	}
@@ -134,9 +134,9 @@ class Set implements Iterator
 	/**
 	 * Set the pointer of the set to its first element and return this element (alias for rewind)
 	 *
-	 * @return object
+	 * @return ?object
 	 */
-	public function first()
+	public function first() : ?object
 	{
 		return reset($this->elements);
 	}
@@ -145,12 +145,12 @@ class Set implements Iterator
 	/**
 	 * Get the element associated to the key from the set
 	 *
-	 * @param $key string|integer
-	 * @return object
+	 * @param $key integer|string
+	 * @return ?object
 	 */
-	public function get($key)
+	public function get(int|string $key) : ?object
 	{
-		return isset($this->elements[$key]) ? $this->elements[$key] : null;
+		return $this->elements[$key] ?? null;
 	}
 
 	//----------------------------------------------------------------------------------- instantiate
@@ -167,7 +167,7 @@ class Set implements Iterator
 	 */
 	public static function instantiate(string $class_name, array $elements = []) : Set
 	{
-		if (class_exists($class_name) && ($class_name instanceof Set)) {
+		if (class_exists($class_name) && is_a($class_name, Set::class, true)) {
 			return new $class_name($elements);
 		}
 		/** @noinspection PhpUnhandledExceptionInspection trait $class_name exists tested */
@@ -188,9 +188,9 @@ class Set implements Iterator
 	/**
 	 * Return the key of the current element designed by the pointer of the set
 	 *
-	 * @return int|string
+	 * @return int|null|string
 	 */
-	public function key()
+	public function key() : int|null|string
 	{
 		return key($this->elements);
 	}
@@ -199,9 +199,9 @@ class Set implements Iterator
 	/**
 	 * Set the pointer of the set into the last element and return this element
 	 *
-	 * @return object
+	 * @return ?object
 	 */
-	public function last()
+	public function last() : ?object
 	{
 		return end($this->elements);
 	}
@@ -220,21 +220,19 @@ class Set implements Iterator
 	//------------------------------------------------------------------------------------------ next
 	/**
 	 * Set the pointer of the set into the next element and return this element
-	 *
-	 * @return object
 	 */
-	public function next()
+	public function next() : void
 	{
-		return next($this->elements);
+		next($this->elements);
 	}
 
 	//---------------------------------------------------------------------------------------- object
 	/**
 	 * Get the first object, or a Reflection_Class of the object's class if no element
 	 *
-	 * @return object|Reflection_Class
+	 * @return object
 	 */
-	public function object()
+	public function object() : object
 	{
 		return $this->elements ? reset($this->elements) : $this->elementClass();
 	}
@@ -243,9 +241,9 @@ class Set implements Iterator
 	/**
 	 * Get the element associated to the key from the set
 	 *
-	 * @param $key string|integer
+	 * @param $key integer|string
 	 */
-	public function remove($key)
+	public function remove(int|string $key)
 	{
 		unset($this->elements[$key]);
 	}
@@ -253,12 +251,10 @@ class Set implements Iterator
 	//---------------------------------------------------------------------------------------- rewind
 	/**
 	 * Set the pointer of the set to its first element and return this element (alias for first)
-	 *
-	 * @return object
 	 */
-	public function rewind()
+	public function rewind() : void
 	{
-		return reset($this->elements);
+		reset($this->elements);
 	}
 
 	//----------------------------------------------------------------------------------------- valid
@@ -269,7 +265,7 @@ class Set implements Iterator
 	 */
 	public function valid() : bool
 	{
-		return !empty(current($this->elements));
+		return (bool)current($this->elements);
 	}
 
 }

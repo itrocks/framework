@@ -18,13 +18,13 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * @var Dao_Function[]
 	 */
-	private $functions;
+	private array $functions;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
 	 * @var Reflection_Property[] The key is the the path of the property
 	 */
-	private $properties;
+	private array $properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -37,16 +37,6 @@ class Default_List_Data extends Set implements List_Data
 		parent::__construct($element_class_name);
 		$this->functions  = $functions;
 		$this->properties = $properties;
-	}
-
-	//------------------------------------------------------------------------------------------- add
-	/**
-	 * @param $row     List_Row a row element
-	 * @param $element null The element should always be null, we only need the row
-	 */
-	public function add($row, $element = null)
-	{
-		parent::add($row, null);
 	}
 
 	//----------------------------------------------------------------------------------------- count
@@ -62,7 +52,7 @@ class Default_List_Data extends Set implements List_Data
 	/**
 	 * @return mixed
 	 */
-	public function firstValue()
+	public function firstValue() : mixed
 	{
 		if (!$this->elements) {
 			return null;
@@ -92,9 +82,9 @@ class Default_List_Data extends Set implements List_Data
 	//------------------------------------------------------------------------------------- getObject
 	/**
 	 * @param $row_index integer
-	 * @return object
+	 * @return ?object
 	 */
-	public function getObject(int $row_index)
+	public function getObject(int $row_index) : ?object
 	{
 		return $this->getRow($row_index)->getObject();
 	}
@@ -117,9 +107,8 @@ class Default_List_Data extends Set implements List_Data
 	 */
 	public function getRow(int $row_index) : List_Row
 	{
-		/** @var $list_row List_Row */
-		$list_row = $this->get($row_index);
-		return $list_row;
+		/** @noinspection PhpIncompatibleReturnTypeInspection only List_Row accepted here */
+		return $this->get($row_index);
 	}
 
 	//--------------------------------------------------------------------------------------- getRows
@@ -137,7 +126,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $property  string
 	 * @return mixed
 	 */
-	public function getValue(int $row_index, string $property)
+	public function getValue(int $row_index, string $property) : mixed
 	{
 		return $this->getRow($row_index)->getValue($property);
 	}
@@ -151,7 +140,7 @@ class Default_List_Data extends Set implements List_Data
 	 * @param $values     array  The values to store into the row
 	 * @return List_Row
 	 */
-	public function newRow(string $class_name, $object, array $values) : List_Row
+	public function newRow(string $class_name, object $object, array $values) : List_Row
 	{
 		return new Default_List_Row($class_name, $object, $values, $this);
 	}

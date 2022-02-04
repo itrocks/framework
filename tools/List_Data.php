@@ -17,7 +17,7 @@ interface List_Data extends Iterator
 	 *
 	 * @param $row List_Row
 	 */
-	public function add($row);
+	public function add(List_Row $row);
 
 	//----------------------------------------------------------------------------------------- count
 	/**
@@ -31,7 +31,7 @@ interface List_Data extends Iterator
 	/**
 	 * @return mixed
 	 */
-	public function firstValue();
+	public function firstValue() : mixed;
 
 	//-------------------------------------------------------------------------------------- getClass
 	/**
@@ -46,9 +46,9 @@ interface List_Data extends Iterator
 	 * Gets object associated to a row index
 	 *
 	 * @param $row_index integer 0..n
-	 * @return object
+	 * @return ?object
 	 */
-	public function getObject(int $row_index);
+	public function getObject(int $row_index) : ?object;
 
 	//--------------------------------------------------------------------------------- getProperties
 	/**
@@ -81,7 +81,7 @@ interface List_Data extends Iterator
 	 * @param $property string
 	 * @return mixed
 	 */
-	public function getValue(int $row_index, string $property);
+	public function getValue(int $row_index, string $property) : mixed;
 
 	//---------------------------------------------------------------------------------------- length
 	/**
@@ -100,6 +100,6 @@ interface List_Data extends Iterator
 	 * @param $values     array  The values to store into the row
 	 * @return List_Row
 	 */
-	public function newRow(string $class_name, $object, array $values) : List_Row;
+	public function newRow(string $class_name, object $object, array $values) : List_Row;
 
 }

@@ -32,9 +32,9 @@ class Include_Filter extends php_user_filter
 	 * The name of the file currently being included
 	 * Set by file(), used by filter().
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	private static string $file_name;
+	private static ?string $file_name;
 
 	//------------------------------------------------------------------------------------- cacheFile
 	/**
