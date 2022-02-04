@@ -73,9 +73,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//----------------------------------------------------------------------------------------- $name
 	/**
-	 * @var string The name of the class
+	 * @var ?string The name of the class
 	 */
-	public string $name;
+	public ?string $name;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
@@ -183,11 +183,13 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * @param $name   string|null The name of the class.
 	 *                If not set, the first class in source will be reflected.
 	 */
-	public function __construct(Reflection_Source $source, string $name = '')
+	public function __construct(Reflection_Source $source, string $name = null)
 	{
 		$this->source = $source;
 
 		unset($this->line);
+		unset($this->name);
+		unset($this->namespace);
 		unset($this->stop);
 		$this->name = null;
 
@@ -215,13 +217,13 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function __get(string $property_name) : mixed
 	{
-		if (in_array($property_name, ['line', 'name', 'type'])) {
+		if (in_array($property_name, ['line', 'name', 'namespace', 'type'])) {
 			$this->scanUntilClassName();
 		}
 		elseif ($property_name === 'stop') {
 			$this->scanUntilClassEnds();
 		}
-		return $this->$property_name ?? null;
+		return $this->$property_name;
 	}
 
 	//------------------------------------------------------------------------------------ __toString
@@ -525,9 +527,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getName() : string
+	public function getName() : ?string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -698,9 +700,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//------------------------------------------------------------------------------- getSetClassName
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	public function getSetClassName() : string
+	public function getSetClassName() : ?string
 	{
 		$expr = '%'
 			. '\n\s+\*\s+'     // each line beginning by '* '
@@ -715,9 +717,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 
 	//---------------------------------------------------------------------------------- getShortName
 	/**
-	 * @retun string
+	 * @retun ?string
 	 */
-	public function getShortName() : string
+	public function getShortName() : ?string
 	{
 		if (!isset($this->name)) {
 			$this->scanUntilClassName();
@@ -925,7 +927,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public function isInstance(object $object) : bool
 	{
-		return is_a($object, $this->name, true);
+		return $this->name && is_a($object, $this->name, true);
 	}
 
 	//----------------------------------------------------------------------------------- isInterface
@@ -1066,10 +1068,10 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		}
 		$this->scanUntilClassName();
 
-		$this->interfaces        = [];
-		$this->parent            = null;
+		$this->interfaces = [];
+		$this->parent     = null;
 		$this->parent_class_name = null;
-		$this->requires          = [];
+		$this->requires   = [];
 
 		$this->getTokens();
 		if (!$this->tokens) return;
@@ -1229,7 +1231,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 			}
 
 			if (!isset($this->stop)) {
-				$token = $this->tokens[++$this->token_key];
+				$token = $this->tokens[++$this->token_key] ?? ($this->stop = true);
 			}
 
 		} while (!isset($this->stop));
@@ -1254,6 +1256,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		if (!$this->tokens) return;
 		$token = $this->tokens[$this->token_key = 0];
 
+			$this->name      = null;
 		$this->namespace = '';
 		$this->use       = [];
 		do {
