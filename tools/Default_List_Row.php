@@ -20,25 +20,25 @@ class Default_List_Row implements List_Row
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//----------------------------------------------------------------------------------------- $list
 	/**
 	 * @var List_Data
 	 */
-	public $list;
+	public List_Data $list;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object|mixed Object or object identifier
+	 * @var mixed Object or object identifier
 	 */
-	public $object;
+	public mixed $object;
 
 	//--------------------------------------------------------------------------------------- $values
 	/**
-	 * @var string[]
+	 * @var array
 	 */
-	public $values;
+	public array $values;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -47,7 +47,7 @@ class Default_List_Row implements List_Row
 	 * @param $values     string[]
 	 * @param $list       List_Data
 	 */
-	public function __construct(string $class_name, $object, array $values, List_Data $list)
+	public function __construct(string $class_name, mixed $object, array $values, List_Data $list)
 	{
 		$this->class_name = $class_name;
 		$this->list       = $list;
@@ -78,12 +78,10 @@ class Default_List_Row implements List_Row
 		static $cache = [];
 		foreach ($this->values as $property_path => $value) {
 			/** @noinspection PhpUnhandledExceptionInspection class and property must be valid */
-			$property_view = isset($cache[$this->class_name][$property_path])
-				? $cache[$this->class_name][$property_path]
-				: (
-					$cache[$this->class_name][$property_path] = new Reflection_Property_View(
-						new Reflection_Property($this->class_name, $property_path)
-					)
+			$property_view = $cache[$this->class_name][$property_path] ?? (
+				$cache[$this->class_name][$property_path] = new Reflection_Property_View(
+					new Reflection_Property($this->class_name, $property_path)
+				)
 				);
 			$values[$property_path] = $property_view->formatValue($value);
 		}
@@ -126,7 +124,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * @return object
 	 */
-	public function getObject()
+	public function getObject() : object
 	{
 		Getter::getObject($this->object, $this->class_name);
 		return $this->object;
@@ -181,7 +179,7 @@ class Default_List_Row implements List_Row
 	 * @param $property string
 	 * @return mixed
 	 */
-	public function getValue(string $property)
+	public function getValue(string $property) : mixed
 	{
 		return $this->values[$property];
 	}
@@ -199,7 +197,7 @@ class Default_List_Row implements List_Row
 	/**
 	 * @return mixed
 	 */
-	public function id()
+	public function id() : mixed
 	{
 		return is_object($this->object) ? Dao::getObjectIdentifier($this->object) : $this->object;
 	}
@@ -223,7 +221,7 @@ class Default_List_Row implements List_Row
 	 * @param $property string the path of the property
 	 * @param $value    mixed the new value
 	 */
-	public function setValue(string $property, $value)
+	public function setValue(string $property, mixed $value)
 	{
 		$this->values[$property] = $value;
 	}

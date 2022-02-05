@@ -28,7 +28,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	/**
 	 * @var string
 	 */
-	public $buffer = '';
+	public string $buffer = '';
 
 	//-------------------------------------------------------------------------------------- $counter
 	/**
@@ -36,25 +36,25 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 *
 	 * @var integer
 	 */
-	public $counter = 0;
+	public int $counter = 0;
 
 	//------------------------------------------------------------------------------------- $database
 	/**
 	 * @var string
 	 */
-	private $database = '';
+	private string $database = '';
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
 	 * @var string
 	 */
-	protected $prefix = '# ';
+	protected string $prefix = '# ';
 
 	//----------------------------------------------------------------------------------------- $time
 	/**
 	 * @var float
 	 */
-	private $time;
+	private float $time;
 
 	//------------------------------------------------------------------------------------ __destruct
 	public function __destruct()
@@ -89,9 +89,9 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 *
 	 * @param $object Contextual_Mysqli
 	 * @param $query string
-	 * @param $result mysqli_result|boolean
+	 * @param $result boolean|mysqli_result
 	 */
-	public function afterQuery(Contextual_Mysqli $object, $query, $result)
+	public function afterQuery(Contextual_Mysqli $object, string $query, bool|mysqli_result $result)
 	{
 		$this->counter ++;
 		$log = '#' . $this->counter . SP . rtrim(join(SP, $this->timeDuration())) . LF;
@@ -122,7 +122,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 * @param $object Contextual_Mysqli
 	 * @param $query  string
 	 */
-	public function beforeQueryError(Contextual_Mysqli $object, $query)
+	public function beforeQueryError(Contextual_Mysqli $object, string $query)
 	{
 		$mysqli = $object;
 		$log    = str_replace(
@@ -137,24 +137,26 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	/**
 	 * @param $mysqli Contextual_Mysqli
 	 * @param $query  string
-	 * @param $result mysqli_result|boolean
+	 * @param $result boolean|mysqli_result
 	 * @return string
 	 */
-	private function queryResult(Contextual_Mysqli $mysqli, $query, $result)
+	private function queryResult(Contextual_Mysqli $mysqli, string $query, bool|mysqli_result $result)
+		: string
 	{
-		switch (substr(ltrim($query), 0, 6)) {
-			case Builder::DELETE:
-			case substr(Builder::REPLACE, 0, 6):
-			case Builder::UPDATE:
-				return '#> ' . $mysqli->affected_rows . LF;
-			case Builder::INSERT:
-				return (($mysqli->affected_rows == 1) && $mysqli->insert_id)
+		return match (substr(ltrim($query), 0, 6)) {
+			Builder::DELETE,
+			substr(Builder::REPLACE, 0, 6),
+			Builder::UPDATE
+				=> '#> ' . $mysqli->affected_rows . LF,
+			Builder::INSERT
+				=> (($mysqli->affected_rows == 1) && $mysqli->insert_id)
 					? '#+ ' . $mysqli->insert_id . LF
-					: '#> ' . $mysqli->affected_rows . LF;
-			case Builder::SELECT:
-				return '#> ' . $result->num_rows . LF;
-		}
-		return '';
+					: '#> ' . $mysqli->affected_rows . LF,
+			Builder::SELECT
+				=> '#> ' . $result->num_rows . LF,
+			default
+				=> ''
+		};
 	}
 
 	//-------------------------------------------------------------------------------------- register
@@ -179,17 +181,17 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 *
 	 * @return array [$time, $duration]
 	 */
-	private function timeDuration()
+	private function timeDuration() : array
 	{
 		$microtime = microtime(true);
 		// the time when the query ends
-		list($time, $ms) = strpos($microtime, DOT) ? explode(DOT, $microtime) : [$microtime, 0];
-		$now = date('H:i:s', $time) . DOT . str_pad(substr($ms, 0, 3), 3, '0');
+		[$time, $ms] = str_contains($microtime, DOT) ? explode(DOT, $microtime) : [$microtime, 0];
+		$now = date('H:i:s', (int)$time) . DOT . str_pad(substr($ms, 0, 3), 3, '0');
 		// the query duration
 		$duration = $microtime - $this->time;
 		$duration = strpos($duration, 'E-')
 			? 0
-			: ((substr($duration, 0, 2) == '0.') ? substr($duration, 1, 4) : substr($duration, 0, 5));
+			: (str_starts_with($duration, '0.') ? substr($duration, 1, 4) : substr($duration, 0, 5));
 		if (Type::floatEqual($duration, .0)) {
 			$duration = '';
 		}
@@ -203,7 +205,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 	 * @param $log string
 	 * @return boolean true if written directly into file, false if it made $this->buffer grow
 	 */
-	public function writeBuffer($log)
+	public function writeBuffer(string $log) : bool
 	{
 		if ($f = $this->file()) {
 			if ($this->buffer) {

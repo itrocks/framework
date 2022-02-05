@@ -136,11 +136,11 @@ class Default_List_Data extends Set implements List_Data
 	 * Creates a new row
 	 *
 	 * @param $class_name string The class name of the main business object stored into the row
-	 * @param $object     object The main business object stored into the row
+	 * @param $object     mixed  The main business object stored into the row
 	 * @param $values     array  The values to store into the row
 	 * @return List_Row
 	 */
-	public function newRow(string $class_name, object $object, array $values) : List_Row
+	public function newRow(string $class_name, mixed $object, array $values) : List_Row
 	{
 		return new Default_List_Row($class_name, $object, $values, $this);
 	}

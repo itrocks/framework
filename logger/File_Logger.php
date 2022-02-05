@@ -34,21 +34,21 @@ class File_Logger implements Configurable
 
 	//------------------------------------------------------------------------------------ $file_name
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	protected $file_name = null;
+	protected ?string $file_name = null;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
 	 * @var string
 	 */
-	protected $path;
+	protected string $path;
 
 	//--------------------------------------------------------------------------------------- $prefix
 	/**
 	 * @var string
 	 */
-	protected $prefix = '# ';
+	protected string $prefix = '# ';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -107,10 +107,10 @@ class File_Logger implements Configurable
 	/**
 	 * Caching only when there is no $identifier
 	 *
-	 * @param $entry Entry if set, forces the file name to match to an existing entry
-	 * @return string
+	 * @param $entry Entry|null if set, forces the file name to match to an existing entry
+	 * @return ?string
 	 */
-	protected function fileName(Entry $entry = null)
+	protected function fileName(Entry $entry = null) : ?string
 	{
 		if ($entry) {
 			$identifier = Dao::getObjectIdentifier($entry);
@@ -141,7 +141,7 @@ class File_Logger implements Configurable
 	 * @param $entry Entry
 	 * @return string
 	 */
-	public function readFileContent(Entry $entry)
+	public function readFileContent(Entry $entry) : string
 	{
 		$filename = $this->fileName($entry);
 		// file may have been gzipped outside of the default static::GZ behaviour
@@ -151,7 +151,7 @@ class File_Logger implements Configurable
 		// get file content
 		return file_exists($filename)
 			? (
-				(substr($filename, -3) == '.gz')
+				str_ends_with($filename, '.gz')
 					? join('', gzfile($filename))
 					: file_get_contents($filename)
 			)
@@ -166,7 +166,7 @@ class File_Logger implements Configurable
 	 * @param $text      string  The text to write into the log file
 	 * @param $date_time boolean If true (default), an ISO date-time is added
 	 */
-	public function write($text, $date_time = true)
+	public function write(string $text, bool $date_time = true)
 	{
 		if ($date_time) {
 			$text = date('Y-m-d H:i:s') . SP . $text;
