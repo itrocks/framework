@@ -13,6 +13,8 @@ use ITRocks\Framework\Tools\Stringable;
 use ITRocks\Framework\Tools\Value_Lists;
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
+use ReturnTypeWillChange;
 
 /**
  * A rich extension of the PHP ReflectionClass class, adding :
@@ -352,6 +354,7 @@ class Reflection_Class extends ReflectionClass
 	 * @return ?Reflection_Method
 	 * @throws ReflectionException method does not exist
 	 */
+	#[ReturnTypeWillChange]
 	public function getMethod(string $name) : ?Reflection_Method
 	{
 		$method = parent::getMethod($name);
@@ -449,6 +452,7 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection $parent_class from parent::getParentClass()
 	 * @return ?Reflection_Class
 	 */
+	#[ReturnTypeWillChange]
 	public function getParentClass() : ?Reflection_Class
 	{
 		$parent_class = parent::getParentClass();
@@ -479,18 +483,18 @@ class Reflection_Class extends ReflectionClass
 	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperties()
 	 * @param $flags       integer[]|string[] Restriction. T_USE has no effect (always applied).
 	 *                     flags @default [T_EXTENDS, T_USE] @values T_EXTENDS, T_USE, self::T_SORT
-	 * @param $final_class string force the final class to this name (mostly for internal use)
+	 * @param $final_class ?string force the final class to this name (mostly for internal use)
 	 * @param $visibility_flags integer|null filter parents visibility @values ReflectionProperty::const
 	 * @return Reflection_Property[] key is the name of the property
 	 */
 	public function getProperties(
-		$flags = null, string $final_class = '', int $visibility_flags = null
+		$flags = null, ?string $final_class = null, int $visibility_flags = null
 	) : array
 	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
 		}
-		if (!$final_class) {
+		if (!isset($final_class)) {
 			$final_class = $this->name;
 		}
 		$extends               = in_array(T_EXTENDS, $flags);
@@ -546,6 +550,7 @@ class Reflection_Class extends ReflectionClass
 	 * @param $name string The name of the property to get, or a property.path
 	 * @return ?Reflection_Property
 	 */
+	#[ReturnTypeWillChange]
 	public function getProperty(string $name) : ?Reflection_Property
 	{
 		// property.path

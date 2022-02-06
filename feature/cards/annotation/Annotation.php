@@ -21,26 +21,26 @@ abstract class Annotation extends List_Annotation implements Class_Context_Annot
 	/**
 	 * @var Reflection_Class
 	 */
-	public $class;
+	public Reflection_Class $class;
 
 	//------------------------------------------------------------------------------- $property_names
 	/**
 	 * @var string[] key = value = name or path of a property
 	 */
-	public $property_names = [];
+	public array $property_names = [];
 
 	//---------------------------------------------------------------------------------------- $rules
 	/**
 	 * @var string[] key is the name (path) of the property, the value describes the rules
 	 */
-	public $rules = [];
+	public array $rules = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value ?string
 	 * @param $class Reflection_Class
 	 */
-	public function __construct(string $value, Reflection_Class $class)
+	public function __construct(?string $value, Reflection_Class $class)
 	{
 		parent::__construct($value);
 		$this->class = $class;
@@ -61,7 +61,7 @@ abstract class Annotation extends List_Annotation implements Class_Context_Annot
 	 * @param $property_name string property name or path
 	 * @param $rules_string  string the rule described into a string
 	 */
-	protected function addRule($property_name, $rules_string)
+	protected function addRule(string $property_name, string $rules_string)
 	{
 		$this->rules[$property_name] = $rules_string;
 	}
@@ -72,7 +72,7 @@ abstract class Annotation extends List_Annotation implements Class_Context_Annot
 	 *
 	 * @return Property[]
 	 */
-	public function properties()
+	public function properties() : array
 	{
 		$properties = [];
 		foreach ($this->rules as $property_name => $rule) {

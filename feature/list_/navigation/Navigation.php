@@ -7,12 +7,11 @@ use ITRocks\Framework\Dao;
 use ITRocks\Framework\Feature\List_;
 use ITRocks\Framework\Feature\List_\Navigation\Class_;
 use ITRocks\Framework\Feature\List_Setting;
-use Serializable;
 
 /**
  * Previous / next object on list
  */
-class Navigation implements Serializable
+class Navigation
 {
 
 	//-------------------------------------------------------------------------------------- $classes
@@ -20,6 +19,18 @@ class Navigation implements Serializable
 	 * @var Class_[] [string $class_name => Class_]
 	 */
 	protected array $classes = [];
+
+	//----------------------------------------------------------------------------------- __serialize
+	public function __serialize() : array
+	{
+		return ['classes' => $this->classes];
+	}
+
+	//--------------------------------------------------------------------------------- __unserialize
+	public function __unserialize(array $data)
+	{
+		$this->classes = $data['classes'];
+	}
 
 	//-------------------------------------------------------------------------------------- addClass
 	/**
@@ -56,19 +67,6 @@ class Navigation implements Serializable
 		$class = $this->classes[$class_name];
 		$parameters->set($class_name, $object = $class->navigate($object, $direction));
 		return $object;
-	}
-
-	//------------------------------------------------------------------------------------- serialize
-	public function serialize() : string
-	{
-		return serialize(['classes' => $this->classes]);
-	}
-
-	//----------------------------------------------------------------------------------- unserialize
-	public function unserialize(string $data)
-	{
-		$data = unserialize($data);
-		$this->classes = $data['classes'];
 	}
 
 }

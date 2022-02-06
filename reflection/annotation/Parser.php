@@ -43,7 +43,7 @@ class Parser
 	 * Parses all annotations of a reflection object
 	 * Warning : only returns annotation in doc comments (not default annotations)
 	 *
-	 * @param $reflection_object Has_Doc_Comment|Annoted
+	 * @param $reflection_object Has_Doc_Comment&Annoted
 	 * @return Annotation[]
 	 */
 	public static function allAnnotations(Has_Doc_Comment $reflection_object) : array
@@ -231,7 +231,7 @@ class Parser
 	{
 		$remove = [];
 		foreach ($annotations as $key => $annotation) {
-			if (is_string($annotation->value)) {
+			if (isset($annotation->value) && is_string($annotation->value)) {
 				if (str_starts_with($annotation->value, '!')) {
 					$remove[$annotation->value] = true;
 					unset($annotations[$key]);
@@ -282,7 +282,7 @@ class Parser
 		}
 
 		// accept private values only if on the first main class : all @private after a *IN are ignored
-		if (str_starts_with($value, '@local')) {
+		if ($value && str_starts_with($value, '@local')) {
 			if (str_contains(substr($doc_comment, 0, $i), self::DOC_COMMENT_IN)) {
 				return null;
 			}

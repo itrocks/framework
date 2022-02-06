@@ -44,9 +44,9 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 *
 	 * This is for optimization purpose : no calculation will be done if you don't need this data
 	 *
-	 * @var string[]|string
+	 * @var string[]|string|null
 	 */
-	private array|string $link_properties;
+	private array|string|null $link_properties;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -59,7 +59,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	public function __construct(?string $value, Reflection_Class $class)
 	{
 		$value = strval($value);
-		if ($value && str_starts_with($value, 'http')) {
+		if ($value && !str_starts_with($value, 'http')) {
 			$this->class           = $class;
 			$this->link_properties = [];
 			if (trim($value)) {

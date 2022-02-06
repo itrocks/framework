@@ -18,7 +18,7 @@ class Code implements Stringable
 	 * @user invisible
 	 * @var string
 	 */
-	public $feature;
+	public string $feature;
 
 	//--------------------------------------------------------------------------------------- $source
 	/**
@@ -27,7 +27,7 @@ class Code implements Stringable
 	 * @multiline
 	 * @var string
 	 */
-	public $source;
+	public string $source;
 
 	//----------------------------------------------------------------------------------------- $when
 	/**
@@ -35,15 +35,15 @@ class Code implements Stringable
 	 * @values after, before
 	 * @var string
 	 */
-	public $when;
+	public string $when;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $source  string
-	 * @param $when    string @values after, before
-	 * @param $feature string
+	 * @param $source  string|null
+	 * @param $when    string|null @values after, before
+	 * @param $feature string|null
 	 */
-	public function __construct($source = null, $when = null, $feature = null)
+	public function __construct(string $source = null, string $when = null, string $feature = null)
 	{
 		if (isset($source)) {
 			$this->source = $source;
@@ -62,7 +62,7 @@ class Code implements Stringable
 	 */
 	public function __toString() : string
 	{
-		return strval($this->source);
+		return $this->source;
 	}
 
 	//--------------------------------------------------------------------------------------- execute
@@ -71,13 +71,13 @@ class Code implements Stringable
 	 * @param $condition boolean
 	 * @return boolean true if all the commands returned a non-empty value
 	 */
-	public function execute($object, $condition = false)
+	public function execute(object $object, bool $condition = false) : bool
 	{
 		$result = true;
 		foreach (explode(LF, $this->source) as $command) {
 			if ($command = Parser::parse($command, $condition)) {
 				// execute() before $result, because each command must be executed
-				$more = $command->execute($object);
+				$more   = $command->execute($object);
 				$result = $more && $result;
 			}
 		}

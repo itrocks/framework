@@ -114,7 +114,6 @@ class Maintainer implements Registerable, Updatable
 	{
 		Dao::createStorage(Module::class);
 		Dao::createStorage(Feature::class);
-		/** @var $features Feature[] */
 		$features = array_merge($this->installableToFeatures(), $this->featureAnnotationsToFeatures());
 		(new Set)->replace($features, Feature::class);
 		foreach ($features as $feature) {
@@ -178,7 +177,7 @@ class Maintainer implements Registerable, Updatable
 	 */
 	public function update($last_time)
 	{
-		$this->installableToFeaturesUpdate();
+		//$this->installableToFeaturesUpdate();
 	}
 
 }

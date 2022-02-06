@@ -26,13 +26,13 @@ class Color implements Stringable
 	 *
 	 * @var string
 	 */
-	public $value = 'white';
+	public string $value = 'white';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value string
+	 * @param $value string|null
 	 */
-	public function __construct($value = null)
+	public function __construct(string $value = null)
 	{
 		if (isset($value)) {
 			$this->value = $value;
@@ -66,7 +66,7 @@ class Color implements Stringable
 	 *
 	 * @return float
 	 */
-	public function getBrightness()
+	public function getBrightness() : float
 	{
 		$rgb = new RGB($this);
 		return sqrt(
@@ -80,11 +80,11 @@ class Color implements Stringable
 	/**
 	 * Return "white" if the complementary color is more white than black, "black" else.
 	 *
-	 * @return Color
+	 * @return static
 	 */
-	public function whiteOrBlack()
+	public function whiteOrBlack() : static
 	{
-		return new Color(($this->getBrightness() < 130) ? self::WHITE : self::BLACK);
+		return new static(($this->getBrightness() < 130) ? self::WHITE : self::BLACK);
 	}
 
 }

@@ -32,11 +32,11 @@ class Settings extends Set
 	/**
 	 * Sets a value for a given setting
 	 *
-	 * @param $code  string|integer|Setting
-	 * @param $value string|Setting
+	 * @param $code  integer|Setting|string
+	 * @param $value Setting|string
 	 * @return Setting
 	 */
-	public function add($code, $value = null)
+	public function add(int|object|string $code, object|string $value = null) : Setting
 	{
 		if ($code instanceof Setting) {
 			parent::add($code->code, $code);
@@ -60,10 +60,10 @@ class Settings extends Set
 
 	//------------------------------------------------------------------------------------------- get
 	/**
-	 * @param $code string
-	 * @return Setting
+	 * @param $code int|string
+	 * @return ?Setting
 	 */
-	public function get($code)
+	public function get(int|string $code) : ?Setting
 	{
 		/** @var $setting Setting */
 		$setting = parent::get($code);

@@ -30,17 +30,17 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 *
 	 * @example 'property'
 	 * @example 'class (property)'
-	 * @var string
+	 * @var ?string
 	 */
-	public $display = null;
+	public ?string $display = null;
 
 	//----------------------------------------------------------------------------------- $link_class
 	/**
 	 * Class for the link : always the root class name
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public $link_class = null;
+	public ?string $link_class = null;
 
 	//------------------------------------------------------------------------------------ $link_path
 	/**
@@ -48,19 +48,20 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 *
 	 * @example 'Class\Name(property)'
 	 * @example 'main.class.property.Class\Name(property).path'
-	 * @var string
+	 * @var ?string
 	 */
-	public $link_path = null;
+	public ?string $link_path = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name    object|string
 	 * @param $property_name string
-	 * @param $display       string @values name, path,
+	 * @param $display       string|null @values name, path,
 	 * @throws ReflectionException
 	 */
-	public function __construct($class_name, $property_name, $display = null)
-	{
+	public function __construct(
+		object|string $class_name, string $property_name, string $display = null
+	) {
 		parent::__construct($class_name, $property_name);
 		switch ($display) {
 			case 'name': $this->display = $this->name; break;
@@ -75,9 +76,10 @@ class Reflection_Property extends Reflection\Reflection_Property
 	/**
 	 * Check if the property should be automatically expanded
 	 *
+	 * @noinspection PhpUnused select.html
 	 * @return string @values auto-expand,
 	 */
-	public function autoExpand()
+	public function autoExpand() : string
 	{
 		return (
 			$this->getAnnotation('component')->value
@@ -91,9 +93,10 @@ class Reflection_Property extends Reflection\Reflection_Property
 
 	//------------------------------------------------------------------------------------- classHtml
 	/**
+	 * @noinspection PhpUnused select.html
 	 * @return string
 	 */
-	public function classHtml()
+	public function classHtml() : string
 	{
 		return $this->isExpandable() ? 'class' : '';
 	}
@@ -102,11 +105,12 @@ class Reflection_Property extends Reflection\Reflection_Property
 	/**
 	 * Tells if the property type is a basic type or not, with an HTML result if yes
 	 *
+	 * @noinspection PhpUnused select.html
 	 * @param $include_multiple_string boolean if false, string[] is not considered as a basic type
-	 * @return string|null 'basic'
+	 * @return ?string 'basic'
 	 * @see Type::isBasic
 	 */
-	public function isBasicHtml($include_multiple_string = true)
+	public function isBasicHtml(bool $include_multiple_string = true) : ?string
 	{
 		return $this->getType()->isBasic($include_multiple_string) ? 'basic' : null;
 	}
@@ -123,7 +127,7 @@ class Reflection_Property extends Reflection\Reflection_Property
 	 *
 	 * @return string can be dealt-with as if it is a boolean @values expandable,
 	 */
-	public function isExpandable()
+	public function isExpandable() : string
 	{
 		$annotation = Store_Annotation::of($this);
 		$type       = $this->getType();
@@ -136,9 +140,10 @@ class Reflection_Property extends Reflection\Reflection_Property
 
 	//------------------------------------------------------------------------------ isStringableHtml
 	/**
-	 * @return string|null 'stringable' if stringable
+	 * @noinspection PhpUnused select.html
+	 * @return ?string 'stringable' if stringable
 	 */
-	public function isStringableHtml()
+	public function isStringableHtml() : ?string
 	{
 		return $this->getType()->isStringable() ? 'stringable' : null;
 	}

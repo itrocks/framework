@@ -107,7 +107,7 @@ class Feature_Annotation
 			$this->value = [];
 			foreach (explode(LF . '* @', $this->value_as_string) as $override_annotation) {
 				if (strpos($override_annotation, SP)) {
-					list($annotation_name, $annotation_value) = explode(SP, $override_annotation, 2);
+					[$annotation_name, $annotation_value] = explode(SP, $override_annotation, 2);
 				}
 				else {
 					$annotation_name  = $override_annotation;

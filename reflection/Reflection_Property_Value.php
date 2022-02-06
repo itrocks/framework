@@ -116,11 +116,11 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @param $key string
 	 * @return mixed
 	 */
-	public function __get($key)
+	public function __get(string $key) : mixed
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
 		$property = new Reflection_Property($this->class, $this->name);
-		$value    = isset($property->$key) ? $property->$key : null;
+		$value    = $property->$key ?? null;
 		trigger_error(
 			'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !',
 			E_USER_WARNING
@@ -137,7 +137,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @param $key   string
 	 * @param $value mixed
 	 */
-	public function __set($key, $value)
+	public function __set(string $key, mixed $value)
 	{
 		trigger_error(
 			'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !',
@@ -154,28 +154,26 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @return string
 	 */
-	public function display()
+	public function display() : string
 	{
 		return $this->display
-			?: Loc::tr(
-				Names::propertyToDisplay($this->aliased_path ? $this->aliased_path : $this->alias)
-			);
+			?: Loc::tr(Names::propertyToDisplay($this->aliased_path ?: $this->alias));
 	}
 
 	//------------------------------------------------------------------------------------ finalValue
 	/**
 	 * @return boolean
 	 */
-	public function finalValue()
+	public function finalValue() : bool
 	{
 		return $this->final_value;
 	}
 
 	//---------------------------------------------------------------------------------------- format
 	/**
-	 * @return mixed
+	 * @return string
 	 */
-	public function format()
+	public function format() : string
 	{
 		return (new Reflection_Property_View($this))->getFormattedValue(
 			$this->object, $this->final_value
@@ -188,9 +186,9 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $with_default boolean false
-	 * @return object|null
+	 * @return ?object
 	 */
-	public function getObject($with_default = false)
+	public function getObject(bool $with_default = false) : ?object
 	{
 		if ($this->final_value) {
 			return null;
@@ -226,9 +224,9 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Gets the parent property for a $property.path
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection $this->root_class is always valid
-	 * @return Reflection_Property_Value|null
+	 * @return ?Reflection_Property_Value
 	 */
-	public function getParentProperty()
+	public function getParentProperty() : ?Reflection_Property_Value
 	{
 		if (!empty($this->path) && ($i = strrpos($this->path, DOT))) {
 			/** @noinspection PhpUnhandledExceptionInspection $this->root_class is always valid */
@@ -252,7 +250,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @return mixed
 	 * @throws ReflectionException
 	 */
-	public function getValue($object = null, $with_default = false)
+	public function getValue($object = null, bool $with_default = false) : mixed
 	{
 		if ($this->user && !$this->final_value) {
 			$user_getter = $this->getAnnotation('user_getter');
@@ -267,20 +265,20 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * @return string
 	 */
-	public function getWidgetClassesString()
+	public function getWidgetClassesString() : string
 	{
 		$widget_classes = [];
 		foreach ($this->getListAnnotations('widget_class') as $annotation) {
 			$widget_classes = array_merge($widget_classes, $annotation->values());
 		}
-		return JOIN(SP, $widget_classes);
+		return join(SP, $widget_classes);
 	}
 
 	//-------------------------------------------------------------------------------------- isHidden
 	/**
-	 * @return string|boolean 'hidden' if user annotation has 'hidden', else false
+	 * @return string|false 'hidden' if user annotation has 'hidden', else false
 	 */
-	public function isHidden()
+	public function isHidden() : string|false
 	{
 		return $this->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::HIDDEN)
 			? 'hidden'
@@ -294,7 +292,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @param $value mixed
 	 * @return boolean
 	 */
-	public function isValueEmpty($value = null)
+	public function isValueEmpty(mixed $value = null) : bool
 	{
 		return parent::isValueEmpty(func_num_args() ? $value : $this->value());
 	}
@@ -304,11 +302,13 @@ class Reflection_Property_Value extends Reflection_Property
 	 * Calculate if the property is visible
 	 *
 	 * @param $hide_empty_test boolean If false, will be visible even if @user hide_empty is set
-	 * @param $hidden_test boolean If false, will be visible event if @user hidden is set
-	 * @param $invisible_test boolean If false, will be visible event if @user invisible is set
+	 * @param $hidden_test     boolean If false, will be visible event if @user hidden is set
+	 * @param $invisible_test  boolean If false, will be visible event if @user invisible is set
 	 * @return boolean
 	 */
-	public function isVisible($hide_empty_test = true, $hidden_test = false, $invisible_test = true)
+	public function isVisible(
+		bool $hide_empty_test = true, bool $hidden_test = false, bool $invisible_test = true
+	) : bool
 	{
 		$user_annotation = User_Annotation::of($this);
 		if (
@@ -342,7 +342,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @param $class_with_id boolean if true, will append [id] or prepend id_ for class fields
 	 * @return string
 	 */
-	public function pathAsField($class_with_id = false)
+	public function pathAsField(bool $class_with_id = false) : string
 	{
 		$path = Names::propertyPathToField($this->view_path ?: $this->path);
 		if ($class_with_id && $this->getType()->isClass()) {
@@ -360,7 +360,7 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * @return string
 	 */
-	public function unit()
+	public function unit() : string
 	{
 		/** @var $annotation Constant_Or_Method_Annotation */
 		$annotation = $this->getAnnotation('unit');
@@ -371,10 +371,10 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * Gets @user_getter value
 	 *
-	 * @param $user_getter Annotation
+	 * @param $user_getter Annotation|null
 	 * @return mixed
 	 */
-	public function userGetterValue(Annotation $user_getter = null)
+	public function userGetterValue(Annotation $user_getter = null) : mixed
 	{
 		if (!isset($user_getter)) {
 			$user_getter = $this->getAnnotation('user_getter');
@@ -400,7 +400,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 * @param $with_default boolean if true and property.path, will instantiate objects to get default
 	 * @return mixed
 	 */
-	public function value($value = null, $with_default = false)
+	public function value(mixed $value = null, bool $with_default = false) : mixed
 	{
 		if ($value !== null) {
 			if ($this->final_value) {

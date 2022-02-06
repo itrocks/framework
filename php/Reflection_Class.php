@@ -82,9 +82,9 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * This parent is originally set as the parent class name, but is replaced by the replacement
 	 * class name from Builder if there is one by getParent() and getParentName()
 	 *
-	 * @var Interfaces\Reflection_Class|string|null
+	 * @var Interfaces\Reflection_Class|bool|string|null
 	 */
-	private Interfaces\Reflection_Class|string|null $parent;
+	private Interfaces\Reflection_Class|bool|string|null $parent;
 
 	//---------------------------------------------------------------------------- $parent_class_name
 	/**

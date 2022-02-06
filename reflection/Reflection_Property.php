@@ -835,7 +835,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @param $object object|mixed object or static property value
 	 * @param $value  mixed
 	 */
-	public function setValue(mixed $object, mixed $value = self::EMPTY_VALUE)
+	public function setValue(mixed $object, mixed $value = null) : void
 	{
 		if (isset($this->root_class) && strpos($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
@@ -849,15 +849,7 @@ class Reflection_Property extends ReflectionProperty
 					$property->getType()->getElementTypeAsString(), $property_name
 				);
 			}
-			if ($value === self::EMPTY_VALUE) {
-				$property->setValue($object);
-			}
-			else {
-				$property->setValue($object, $value);
-			}
-		}
-		elseif ($value === self::EMPTY_VALUE) {
-			parent::setValue($object);
+			$property->setValue($object, $value);
 		}
 		else {
 			parent::setValue($object, $value);

@@ -35,9 +35,9 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 
 	//---------------------------------------------------------------------------------- $final_class
 	/**
-	 * @var Reflection_Class
+	 * @var Reflection_Class|string
 	 */
-	public Reflection_Class $final_class;
+	public Reflection_Class|string $final_class;
 
 	//------------------------------------------------------------------------------------ $is_static
 	/**
