@@ -16,21 +16,21 @@ class Cookie implements Stringable
 	/**
 	 * @var string[]
 	 */
-	public $properties;
+	public array $properties;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var string
 	 */
-	public $value;
+	public string $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $name       string
-	 * @param $value      string
-	 * @param $properties string[]
+	 * @param $name       string|null
+	 * @param $value      string|null
+	 * @param $properties string[]|null
 	 */
-	public function __construct($name = null, $value = null, array $properties = null)
+	public function __construct(string $name = null, string $value = null, array $properties = null)
 	{
 		if (isset($name))              $this->name       = $name;
 		if (isset($value))             $this->value      = $value;
@@ -42,7 +42,7 @@ class Cookie implements Stringable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		$string = $this->name . '=' . $this->value;
 		foreach ($this->properties as $key => $value) {
@@ -57,7 +57,7 @@ class Cookie implements Stringable
 	 * @param $string string
 	 * @return static
 	 */
-	public static function fromString($string)
+	public static function fromString(string $string) : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		$cookie = Builder::create(static::class);

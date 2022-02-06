@@ -368,7 +368,7 @@ class Date_Time extends DateTime implements Can_Be_Empty, Stringable
 	 * @return static
 	 * @throws Exception
 	 */
-	public static function fromString($string) : Date_Time
+	public static function fromString(string $string) : static
 	{
 		return static::fromISO($string);
 	}

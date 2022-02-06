@@ -60,7 +60,7 @@ class Code implements Stringable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return strval($this->source);
 	}
@@ -90,7 +90,7 @@ class Code implements Stringable
 	 * @param $source string
 	 * @return static
 	 */
-	public static function fromString($source)
+	public static function fromString(string $source) : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		return Builder::create(static::class, [$source]);

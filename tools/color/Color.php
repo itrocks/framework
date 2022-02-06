@@ -43,7 +43,7 @@ class Color implements Stringable
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->value;
 	}
@@ -54,7 +54,7 @@ class Color implements Stringable
 	 * @param $color string
 	 * @return static
 	 */
-	public static function fromString($color)
+	public static function fromString(string $color) : static
 	{
 		/** @noinspection PhpUnhandledExceptionInspection static */
 		return Builder::create(static::class, [$color]);

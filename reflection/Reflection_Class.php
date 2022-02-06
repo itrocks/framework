@@ -29,7 +29,7 @@ class Reflection_Class extends ReflectionClass
 	/**
 	 * @return string The name of the class
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return $this->name;
 	}
@@ -81,7 +81,7 @@ class Reflection_Class extends ReflectionClass
 	 * @return static
 	 * @throws ReflectionException
 	 */
-	public static function fromString($string)
+	public static function fromString(string $string) : static
 	{
 		return new Reflection_Class($string);
 	}

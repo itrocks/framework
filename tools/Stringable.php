@@ -11,13 +11,13 @@ interface Stringable
 	/**
 	 * @return string
 	 */
-	public function __toString();
+	public function __toString() : string;
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
 	 * @return static
 	 */
-	public static function fromString($string);
+	public static function fromString(string $string) : static;
 
 }
