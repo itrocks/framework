@@ -148,10 +148,10 @@ class Engine implements Registerable, View\Engine
 	 * Generate code for the current view to set the current location without redirecting to it
 	 *
 	 * @param $uri   string
-	 * @param $title string
-	 * @return string
+	 * @param $title ?string
+	 * @return ?string
 	 */
-	public function setLocation($uri, $title)
+	public function setLocation(string $uri, ?string $title) : ?string
 	{
 		return null;
 	}

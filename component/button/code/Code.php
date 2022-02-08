@@ -74,7 +74,7 @@ class Code implements Stringable
 	public function execute(object $object, bool $condition = false) : bool
 	{
 		$result = true;
-		foreach (explode(LF, $this->source) as $command) {
+		foreach (explode(LF, $this->source ?? '') as $command) {
 			if ($command = Parser::parse($command, $condition)) {
 				// execute() before $result, because each command must be executed
 				$more   = $command->execute($object);

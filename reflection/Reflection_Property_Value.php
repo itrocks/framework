@@ -40,9 +40,9 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * The object ($final_value = false) or the value ($final_value = true) of the property
 	 *
-	 * @var object
+	 * @var ?object
 	 */
-	private object $object;
+	private ?object $object;
 
 	//-------------------------------------------------------------------------------------- $tooltip
 	/**

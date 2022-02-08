@@ -232,15 +232,15 @@ class Engine implements Configurable, Framework\View\Engine
 	 * Generate code for the current view to set the current location without redirecting to it
 	 *
 	 * @param $uri   string
-	 * @param $title string
+	 * @param $title ?string
 	 * @return string
 	 */
-	public function setLocation($uri, $title)
+	public function setLocation(string $uri, ?string $title) : string
 	{
-		if (strpos($title, '<') !== false) {
+		if ($title && str_contains($title, '<')) {
 			$title = (new Template)->getHeadTitle($title);
 		}
-		if (strpos($title, '<') !== false) {
+		if ($title && str_contains($title, '<')) {
 			$title = trim(mParse($title, '>', '<'));
 		}
 		$uri = Paths::$uri_base . $uri;

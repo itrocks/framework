@@ -129,6 +129,35 @@ function isA($object, $class_name)
 	return false;
 }
 
+//----------------------------------------------------------------------------------- isInitialized
+/**
+ * @noinspection PhpDocMissingThrowsInspection
+ * @param $object        object
+ * @param $property_name string
+ * @param $access        boolean if true, force accessibility to true to avoid exception
+ * @return boolean
+ */
+function isInitialized(object $object, string $property_name, bool $access = false) : bool
+{
+	/** @noinspection PhpUnhandledExceptionInspection should be called with a valid property */
+	$property = new ReflectionProperty($object, $property_name);
+	if ($access) {
+		if ($property->isPublic()) {
+			$access = false;
+		}
+		else {
+			/** @noinspection PhpExpressionResultUnusedInspection isInitialized needs this */
+			$property->setAccessible(true);
+		}
+	}
+	$is_initialized = $property->isInitialized($object);
+	if ($access) {
+		/** @noinspection PhpExpressionResultUnusedInspection isInitialized needs this */
+		$property->setAccessible(false);
+	}
+	return $is_initialized;
+}
+
 //--------------------------------------------------------------------------------- isStrictInteger
 /**
  * Returns true if $value is a strict integer.

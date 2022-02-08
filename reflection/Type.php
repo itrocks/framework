@@ -6,11 +6,12 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\PHP;
 use ITRocks\Framework\Reflection\Interfaces;
 use ITRocks\Framework\Tools\Stringable;
+use ReflectionType;
 
 /**
  * PHP types manager
  */
-class Type
+class Type extends ReflectionType
 {
 
 	//---------------------------------------------------------------------------------------- _ARRAY

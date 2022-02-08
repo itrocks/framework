@@ -101,8 +101,8 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 	 */
 	public function getLinkProperties() : array
 	{
-		if (!is_array($this->link_properties)) {
-			$text_link_properties  = $this->link_properties;
+		if (!isset($this->link_properties) || !is_array($this->link_properties)) {
+			$text_link_properties  = $this->link_properties ?? null;
 			$this->link_properties = [];
 			if ($text_link_properties) {
 				$this->setLinkPropertiesByNames(
@@ -111,7 +111,7 @@ class Link_Annotation extends Annotation implements Class_Context_Annotation
 						: $text_link_properties
 				);
 			}
-			elseif ($this->class) {
+			elseif (isset($this->class)) {
 				$this->setLinkPropertiesByClass($this->class);
 			}
 		}
