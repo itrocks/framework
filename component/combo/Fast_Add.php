@@ -13,8 +13,8 @@ interface Fast_Add
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string
-	 * @return static
+	 * @return ?static
 	 */
-	public static function fromString($string);
+	public static function fromString(string $string) : ?static;
 
 }
