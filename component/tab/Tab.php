@@ -21,9 +21,9 @@ class Tab
 	/**
 	 * Group multiple contents collections into some columns
 	 *
-	 * @var mixed[]
+	 * @var array
 	 */
-	public $columns = [];
+	public array $columns = [];
 
 	//-------------------------------------------------------------------------------------- $content
 	/**
@@ -31,16 +31,15 @@ class Tab
 	 *
 	 * @var mixed
 	 */
-	public $content;
+	public mixed $content;
 
 	//------------------------------------------------------------------------------------- $includes
 	/**
 	 * Included sub-tabs collection
 	 *
-	 * @link Collection
 	 * @var Tab[]
 	 */
-	public $includes = [];
+	public array $includes = [];
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
@@ -48,14 +47,14 @@ class Tab
 	 *
 	 * @var string
 	 */
-	public $title;
+	public string $title;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $title string
+	 * @param $title string|null
 	 * @param $content mixed
 	 */
-	public function __construct($title = null, $content = null)
+	public function __construct(string $title = null, mixed $content = null)
 	{
 		if (isset($title)) {
 			$this->title = $title;
@@ -68,9 +67,9 @@ class Tab
 	//----------------------------------------------------------------------------------------- __get
 	/**
 	 * @param $key string
-	 * @return Tab
+	 * @return ?Tab
 	 */
-	public function __get($key)
+	public function __get(string $key) : ?Tab
 	{
 		return $this->includes[$key];
 	}
@@ -80,7 +79,7 @@ class Tab
 	 * @param $key string
 	 * @return boolean
 	 */
-	public function __isset($key)
+	public function __isset(string $key) : bool
 	{
 		return isset($this->includes[$key]);
 	}
@@ -98,7 +97,7 @@ class Tab
 	/**
 	 * @param $key string
 	 */
-	public function __unset($key)
+	public function __unset(string $key)
 	{
 		unset($this->includes[$key]);
 	}
@@ -110,7 +109,7 @@ class Tab
 	 * @param $content mixed
 	 * @return Tab
 	 */
-	public function add($content)
+	public function add(mixed $content) : Tab
 	{
 		if (is_array($this->content) && is_array($content)) {
 			$this->content = array_merge($this->content, $content);
@@ -125,9 +124,9 @@ class Tab
 	/**
 	 * @param $hide_empty_test boolean If false, will be shown even if HIDE_EMPTY is set
 	 */
-	public function filterVisibleProperties($hide_empty_test = true)
+	public function filterVisibleProperties(bool $hide_empty_test = true)
 	{
-		if ($this->content) {
+		if (isset($this->content) && $this->content) {
 			foreach ($this->content as $key => $element) {
 				if (($element instanceof Reflection_Property) && method_exists($element, 'isVisible')) {
 					if (!$element->isVisible($hide_empty_test)) {
@@ -143,9 +142,9 @@ class Tab
 
 	//--------------------------------------------------------------------------------------- getName
 	/**
-	 * return @string
+	 * @return string
 	 */
-	public function getName()
+	public function getName() : string
 	{
 		return Names::displayToProperty($this->title);
 	}
@@ -154,7 +153,7 @@ class Tab
 	/**
 	 * Return a calculated id for the tab, calculated from its title
 	 */
-	public function id()
+	public function id() : string
 	{
 		return Names::displayToProperty($this->title);
 	}
@@ -166,11 +165,11 @@ class Tab
 	 *
 	 * @return Tab[]
 	 */
-	public function included()
+	public function included() : array
 	{
 		$list = [];
 		foreach ($this->includes as $key => $tab) {
-			if ((substr($key, 0, 1) != '_') && ($tab->content || $tab->columns || $tab->includes)) {
+			if (!str_starts_with($key, '_') && ($tab->content || $tab->columns || $tab->includes)) {
 				$list[$key] = $tab;
 			}
 		}
@@ -186,7 +185,7 @@ class Tab
 	 * @param $properties_title string[] key is the property path, value is the property display (tr)
 	 * @return Tab
 	 */
-	public function propertiesToValues($object, array $properties_title)
+	public function propertiesToValues(object $object, array $properties_title) : Tab
 	{
 		$class_name = get_class($object);
 		foreach ($this->columns as $key => $column) {

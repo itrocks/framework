@@ -34,7 +34,7 @@ class Filter_Annotation extends Method_Annotation
 	 *
 	 * @var boolean
 	 */
-	public bool $for_view;
+	public bool $for_view = false;
 
 	//--------------------------------------------------------------------------------- $none_for_all
 	/**
@@ -99,11 +99,11 @@ class Filter_Annotation extends Method_Annotation
 	 * @param $class   string|Reflection_Class
 	 * @param $options array search options
 	 * @param $for     string null means 'for any' @values for_use, for_view
-	 * @return ?object
+	 * @return array|object|null
 	 */
 	public static function apply(
 		string|Reflection_Class $class, array &$options, string $for = ''
-	) : ?object
+	) : array|object|null
 	{
 		if (is_string($class)) {
 			/** @noinspection PhpUnhandledExceptionInspection class name must be valid */

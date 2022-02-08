@@ -176,7 +176,7 @@ class Locale implements Configurable, Registerable, Updatable
 		elseif ($type->isFloat() && (isStrictNumeric($value) || !$called_user_getter)) {
 			$decimals = explode(
 				',',
-				str_replace([CR, LF, SP, TAB], '', $property->getAnnotation('decimals')->value)
+				str_replace([CR, LF, SP, TAB], '', strval($property->getAnnotation('decimals')->value))
 			);
 			if (!isset($decimals[1])) {
 				$decimals[1] = $decimals[0];
@@ -205,9 +205,11 @@ class Locale implements Configurable, Registerable, Updatable
 			if ($values && (count($values) === 2) && $type->isBoolean()) {
 				$value = $value ? $values[0] : $values[1];
 			}
-			$result = $this->translations->translate(
-				$value, $type->isClass() ? $type->getElementTypeAsString() : $property->final_class
-			);
+			$result = $value
+				? $this->translations->translate(
+					$value, $type->isClass() ? $type->getElementTypeAsString() : $property->final_class
+				)
+				: '';
 		}
 		elseif (in_array($property->getAnnotation('translate')->value, ['', 'data'], true)) {
 			$result = (new Translation\Data\Set)->translate($property, $value);

@@ -152,7 +152,7 @@ class Html_Template extends Template
 	 * @param $else boolean
 	 * @return string
 	 */
-	protected function parseLoopElement(Loop $loop, $else = false)
+	protected function parseLoopElement(Loop $loop, bool $else = false) : string
 	{
 		if ($loop->has_id && $loop->counter) {
 			if (
@@ -164,7 +164,7 @@ class Html_Template extends Template
 				}
 				$form_id = $this->getFormId();
 				foreach ($this->cache[self::PARSED_ID][$form_id] as $key => $value) {
-					if (substr($key, 0, strlen($expand_property_path)) === $expand_property_path) {
+					if (str_starts_with($key, $expand_property_path)) {
 						unset($this->cache[self::PARSED_ID][$form_id][$key]);
 					}
 				}

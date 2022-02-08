@@ -371,7 +371,7 @@ class Translator
 	 * @param $context string
 	 * @return string|string[]
 	 */
-	public function translate($text, $context = '')
+	public function translate(array|string $text, string $context = '') : array|string
 	{
 		if (is_array($text)) {
 			$translations = [];

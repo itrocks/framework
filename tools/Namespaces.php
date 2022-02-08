@@ -15,16 +15,16 @@ abstract class Namespaces
 	/**
 	 * @var Router
 	 */
-	public static $router;
+	public static Router $router;
 
 	//-------------------------------------------------------------------------- applicationNamespace
 	/**
 	 * Gets the namespace of the application where the class is stored
 	 *
 	 * @param $class_name string
-	 * @return string|null
+	 * @return ?string
 	 */
-	public static function applicationNamespace($class_name)
+	public static function applicationNamespace(string $class_name) : ?string
 	{
 		$application_namespaces = Application::current()->getNamespaces();
 		// priority to long namespaces, before short namespaces
@@ -47,7 +47,7 @@ abstract class Namespaces
 	 * @return boolean
 	 * @todo regexp to make this faster
 	 */
-	public static function checkFilePath($class_name, $file_path)
+	public static function checkFilePath(string $class_name, string $file_path) : bool
 	{
 		$file_space = explode(SL, substr($file_path, strlen(getcwd()) + 1));
 		$name_space = explode(BS, strtolower($class_name));
@@ -74,9 +74,9 @@ abstract class Namespaces
 	 * @param $model_class_name string
 	 * @return string
 	 */
-	public static function defaultFullClassName($class_name, $model_class_name)
+	public static function defaultFullClassName(string $class_name, string $model_class_name) : string
 	{
-		if (strpos($class_name, BS) === false) {
+		if (!str_contains($class_name, BS)) {
 			if (($i = strrpos($model_class_name, BS)) !== false) {
 				$class_name = substr($model_class_name, 0, $i + 1) . $class_name;
 			}
@@ -94,12 +94,12 @@ abstract class Namespaces
 	 * @param $error            boolean
 	 * @return string
 	 */
-	public static function fullClassName($short_class_name, $error = true)
+	public static function fullClassName(string $short_class_name, bool $error = true) : string
 	{
 		if (!$short_class_name) {
 			trigger_error('Missing class name', E_USER_ERROR);
 		}
-		if (strpos($short_class_name, BS) === false) {
+		if (!str_contains($short_class_name, BS)) {
 			$full_class_name = isset(self::$router)
 				? self::$router->getFullClassName($short_class_name)
 				: '';
@@ -125,9 +125,9 @@ abstract class Namespaces
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public static function isFullClassName($class_name)
+	public static function isFullClassName(string $class_name) : bool
 	{
-		return strpos($class_name, BS) !== false;
+		return str_contains($class_name, BS);
 	}
 
 	//------------------------------------------------------------------------------ isShortClassName
@@ -137,9 +137,9 @@ abstract class Namespaces
 	 * @param $class_name string
 	 * @return boolean
 	 */
-	public static function isShortClassName($class_name)
+	public static function isShortClassName(string $class_name) : bool
 	{
-		return strpos($class_name, BS) === false;
+		return !str_contains($class_name, BS);
 	}
 
 	//---------------------------------------------------------------------------------------- module
@@ -163,7 +163,7 @@ abstract class Namespaces
 	 * @param $class_name object|string
 	 * @return string
 	 */
-	public static function of($class_name)
+	public static function of(object|string $class_name) : string
 	{
 		if (is_object($class_name)) {
 			$class_name = get_class($class_name);
@@ -171,9 +171,7 @@ abstract class Namespaces
 		if ($i = strrpos($class_name, BS)) {
 			return substr($class_name, 0, $i);
 		}
-		else {
-			return '';
-		}
+		return '';
 	}
 
 	//--------------------------------------------------------------------------------------- project
@@ -192,9 +190,9 @@ abstract class Namespaces
 	 * Slower than stream_resolve_include_path() but checks namespace
 	 *
 	 * @param $class_name string
-	 * @return string
+	 * @return ?string
 	 */
-	public static function resolveFilePath($class_name)
+	public static function resolveFilePath(string $class_name) : ?string
 	{
 		$namespace = substr($class_name, strpos($class_name, BS) + 1);
 		$short_class_name = substr($class_name, strrpos($class_name, BS) + 1);
@@ -220,7 +218,7 @@ abstract class Namespaces
 	 * @param $class_name string
 	 * @return string
 	 */
-	public static function shortClassName($class_name)
+	public static function shortClassName(string $class_name) : string
 	{
 		$i = strrpos($class_name, BS);
 		if ($i !== false) {
@@ -236,7 +234,7 @@ abstract class Namespaces
 	 * @param $class_name string
 	 * @return string[] [$namespace, $short_class_name]
 	 */
-	public static function split($class_name)
+	public static function split(string $class_name) : array
 	{
 		$i = strrpos($class_name, BS);
 		return ($i === false)

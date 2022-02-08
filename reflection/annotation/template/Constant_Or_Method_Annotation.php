@@ -72,7 +72,9 @@ class Constant_Or_Method_Annotation extends Method_Annotation
 	 */
 	public function call(object|string|null $object, array $arguments = []) : mixed
 	{
-		return $this->is_method ? parent::call($object, $arguments) : Loc::tr($this->value);
+		return $this->is_method
+			? parent::call($object, $arguments)
+			: ($this->value ? Loc::tr($this->value) : '');
 	}
 
 	//---------------------------------------------------------------------------------- callProperty

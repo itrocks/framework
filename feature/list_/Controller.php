@@ -827,7 +827,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 
 		foreach ($data->getRows() as $row) {
 			foreach ($row->getValues() as $property_name => $value) {
-				$row->setValue($property_name, htmlSpecialCharsRecurse($value));
+				$row->setValue($property_name, htmlSpecialCharsRecurse(strval($value)));
 			}
 		}
 
@@ -852,7 +852,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		$select_by_path = [];
 		foreach ($properties_path as $property_path) {
 			/** @noinspection PhpUnhandledExceptionInspection must be valid */
-			$property_value  = new Reflection_Property_Value($class_name, $property_path, null, null);
+			$property_value  = new Reflection_Property_Value($class_name, $property_path);
 			$list_annotation = Annotation\Property\List_Annotation::of($property_value);
 			if ($list_annotation->has(Annotation\Property\List_Annotation::AVERAGE)) {
 				$parent_property_path = lLastParse($property_path, DOT);

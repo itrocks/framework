@@ -40,9 +40,9 @@ class Reflection_Property_Value extends Reflection_Property
 	/**
 	 * The object ($final_value = false) or the value ($final_value = true) of the property
 	 *
-	 * @var ?object
+	 * @var mixed
 	 */
-	private ?object $object;
+	private mixed $object;
 
 	//-------------------------------------------------------------------------------------- $tooltip
 	/**
@@ -67,7 +67,7 @@ class Reflection_Property_Value extends Reflection_Property
 	 *
 	 * @var string
 	 */
-	public string $view_path;
+	public string $view_path = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

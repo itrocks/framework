@@ -11,7 +11,7 @@ use ITRocks\Framework\View;
  */
 class Engine implements Registerable, View\Engine
 {
-	use Current;
+	use Current { current as private parentCurrent; }
 
 	//--------------------------------------------------------------------------------- JSON_TEMPLATE
 	/**
@@ -34,15 +34,15 @@ class Engine implements Registerable, View\Engine
 	 * Keep a backup of configured current view before we replace by json view for,
 	 * in order to restore it after processing
 	 *
-	 * @var View\Engine
+	 * @var ?View\Engine
 	 */
-	private static $view_backup;
+	private static ?View\Engine $view_backup;
 
 	//------------------------------------------------------------------------------------ acceptJson
 	/**
 	 * @return boolean true if request wants json response
 	 */
-	public static function acceptJson()
+	public static function acceptJson() : bool
 	{
 		static $accept_json = null;
 		if (!isset($accept_json)) {
@@ -56,8 +56,6 @@ class Engine implements Registerable, View\Engine
 	}
 
 	//-------------------------------------------------------------------------------------- afterRun
-	/**
-	 */
 	public function afterRun()
 	{
 		if (static::acceptJson() && isset(self::$view_backup)) {
@@ -67,14 +65,25 @@ class Engine implements Registerable, View\Engine
 	}
 
 	//------------------------------------------------------------------------------------- beforeRun
-	/**
-	 */
 	public function beforeRun()
 	{
 		if (static::acceptJson()) {
 			self::$view_backup = View::current();
 			View::current(static::current());
 		}
+	}
+
+	//--------------------------------------------------------------------------------------- current
+	/**
+	 * Gets/sets current environment's object
+	 *
+	 * @param $set_current object|null
+	 * @return static|null
+	 */
+	public static function current(object $set_current = null) : View\Engine|null
+	{
+		/** @noinspection PhpIncompatibleReturnTypeInspection View\Engine */
+		return static::parentCurrent($set_current);
 	}
 
 	//------------------------------------------------------------------------------- getTemplateFile
@@ -88,9 +97,10 @@ class Engine implements Registerable, View\Engine
 	 * @todo HIGH View\Html\Engine::getTemplateFile() should be factorized in a View\Engine class
 	 */
 	public static function getTemplateFile(
-		$class_name, array $feature_names, $template = '',
-		$template_file_type = self::JSON_TEMPLATE_FILE_EXTENSION
-	) {
+		string $class_name, array $feature_names, string $template = '',
+		string $template_file_type = self::JSON_TEMPLATE_FILE_EXTENSION
+	) : string
+	{
 		return View\Html\Engine::getTemplateFile(
 			$class_name, $feature_names, ($template ?: self::JSON_TEMPLATE), $template_file_type
 		);
@@ -126,7 +136,7 @@ class Engine implements Registerable, View\Engine
 	 * @param $options array|string Single or multiple options eg Target::MAIN
 	 * @return string
 	 */
-	public function redirect($link, $options)
+	public function redirect(string $link, array|string $options) : string
 	{
 		// TODO: Implement redirect() method.
 		return '';

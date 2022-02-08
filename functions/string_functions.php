@@ -102,7 +102,7 @@ function endsWith($haystack, $needle)
  * @param $value string|string[]
  * @return string|string[]
  */
-function htmlSpecialCharsRecurse($value)
+function htmlSpecialCharsRecurse(array|string $value) : array|string
 {
 	return is_array($value)
 		? array_map('htmlSpecialCharsRecurse', $value)

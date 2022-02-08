@@ -50,7 +50,7 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $cancel_label;
+	public string $cancel_label = '';
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
@@ -58,7 +58,7 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $caption;
+	public string $caption = '';
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
@@ -68,7 +68,7 @@ class Button
 	 * @user hidden
 	 * @var string
 	 */
-	public $class;
+	public string $class = '';
 
 	//----------------------------------------------------------------------------------------- $code
 	/**
@@ -86,9 +86,9 @@ class Button
 	 * The color of the button
 	 *
 	 * @user invisible
-	 * @var Tools\Color
+	 * @var ?Tools\Color
 	 */
-	public $color;
+	public ?Tools\Color $color;
 
 	//----------------------------------------------------------------------------------- $conditions
 	/**
@@ -98,7 +98,7 @@ class Button
 	 * @multiline
 	 * @var string
 	 */
-	public $conditions;
+	public string $conditions = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label
 	/**
@@ -106,7 +106,7 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $confirm_label;
+	public string $confirm_label = '';
 
 	//------------------------------------------------------------------------------ $confirm_message
 	/**
@@ -114,21 +114,21 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $confirm_message;
+	public string $confirm_message = '';
 
 	//----------------------------------------------------------------------------------------- $data
 	/**
 	 * @var float[]|integer[]|string[]
 	 */
-	public $data = [];
+	public array $data = [];
 
 	//---------------------------------------------------------------------------------- $data_object
 	/**
 	 * Object data linked to the button (optional)
 	 *
-	 * @var integer
+	 * @var mixed
 	 */
-	public $data_object;
+	public mixed $data_object;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -137,7 +137,7 @@ class Button
 	 * @user hidden
 	 * @var string
 	 */
-	public $feature;
+	public string $feature = '';
 
 	//----------------------------------------------------------------------------------------- $hint
 	/**
@@ -145,7 +145,7 @@ class Button
 	 *
 	 * @var string
 	 */
-	public $hint;
+	public string $hint = '';
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
@@ -162,7 +162,7 @@ class Button
 	 * @user invisible
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//---------------------------------------------------------------------------------- $sub_buttons
 	/**
@@ -183,17 +183,18 @@ class Button
 	 * @user hidden
 	 * @var string
 	 */
-	public $target = '#main';
+	public string $target = '#main';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $caption string Displayed caption
-	 * @param $link    string Link URL
-	 * @param $feature string Feature name
+	 * @param $caption string|null Displayed caption
+	 * @param $link    string|null Link URL
+	 * @param $feature string|null Feature name
 	 * @param $options array|string Single or multiple options
 	 */
-	public function __construct($caption = null, $link = null, $feature = null, $options = [])
-	{
+	public function __construct(
+		string $caption = null, string $link = null, string $feature = null, array|string $options = []
+	) {
 		if ($caption != null) $this->caption = $caption;
 		if ($link    != null) $this->link    = $link;
 		if ($feature != null) $this->feature = $feature;
@@ -208,7 +209,7 @@ class Button
 			$this->cancel_label  = $this->cancel_label  ?: Loc::tr('Cancel');
 			$this->confirm_label = $this->confirm_label ?: Loc::tr('Confirm');
 
-			$this->class .= (isset($this->class) ? SP : '') . 'confirm';
+			$this->class .= (strlen($this->class) ? SP : '') . 'confirm';
 		}
 
 		if (!isset($this->color)) {
@@ -222,17 +223,17 @@ class Button
 	 */
 	public function __toString() : string
 	{
-		return strval($this->caption);
+		return $this->caption;
 	}
 
 	//------------------------------------------------------------------------------------- addOption
 	/**
 	 * Add an option to the button
 	 *
-	 * @param $option array|string Single option
+	 * @param $option array|object|string Single option
 	 * @param $key    string Key name of the option
 	 */
-	public function addOption($option, $key = '')
+	public function addOption(array|object|string $option, string $key = '')
 	{
 		if ($option instanceof Tools\Color) {
 			$this->color = $option;
@@ -273,7 +274,7 @@ class Button
 		elseif ($key === Confirm::MESSAGE) {
 			$this->confirm_message = $option;
 		}
-		elseif (($key === View::TARGET) || (is_numeric($key) && substr($option, 0, 1) == '#')) {
+		elseif (($key === View::TARGET) || (is_numeric($key) && str_starts_with($option, '#'))) {
 			$this->target = ($option === Target::NONE) ? null : $option;
 		}
 	}
@@ -285,23 +286,26 @@ class Button
 	 * @param $object object
 	 * @return boolean
 	 */
-	public function conditionsApplyTo($object)
+	public function conditionsApplyTo(object $object) : bool
 	{
 		return (new Code($this->conditions))->execute($object, true);
 	}
 
 	//--------------------------------------------------------------------------------------- getLink
 	/**
-	 * @return string
+	 * @return ?string
 	 */
-	protected function getLink()
+	protected function getLink() : ?string
 	{
-		if (!isset($this->link)) {
+		if (isset($this->object) && !isset($this->link)) {
 			$parameters = [];
 			if ($this->code && $this->code->source) {
 				$parameters[] = $this->code;
 			}
 			$this->link = View::link($this->object, $this->feature, $parameters);
+		}
+		else {
+			$this->link = null;
 		}
 		return $this->link;
 	}
@@ -310,7 +314,7 @@ class Button
 	/**
 	 * @param $object object
 	 */
-	public function setObjectContext($object)
+	public function setObjectContext(object $object)
 	{
 		$this->object = $object;
 		// insert object identifier between the class path and the feature, if missing and if

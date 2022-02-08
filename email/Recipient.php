@@ -39,7 +39,7 @@ class Recipient implements Fast_Add
 	{
 		return sprintf(
 			$this->name ? '%s <%s>' : '%s%s',
-			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name),
+			str_replace([DQ, '<', '>'], [BS . DQ, '', ''], $this->name ?? ''),
 			$this->email
 		);
 	}
@@ -56,7 +56,7 @@ class Recipient implements Fast_Add
 		}
 		$string    = cleanSpaces($string);
 		$recipient = Search_Object::create(static::class);
-		if ((str_contains($string, '<')) && strpos($string, '>')) {
+		if (str_contains($string, '<') && strpos($string, '>')) {
 			$recipient->name  = noQuotes(trim(lParse($string, '<')));
 			$recipient->email = trim(mParse($string, '<', '>'));
 		}

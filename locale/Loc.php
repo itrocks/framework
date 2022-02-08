@@ -422,7 +422,7 @@ class Loc implements Registerable
 	 *        translation
 	 * @return string The translated text
 	 */
-	public static function tr($text, $options = [])
+	public static function tr(string $text, array|object|string $options = []) : string
 	{
 		if (!is_array($options)) {
 			$options = [$options];

@@ -1177,20 +1177,20 @@ class Template
 	/**
 	 * @param $loop Loop
 	 * @param $else boolean
-	 * @return string|null
+	 * @return ?string
 	 */
-	protected function parseLoopElement(Loop $loop, $else = false)
+	protected function parseLoopElement(Loop $loop, bool $else = false) : ?string
 	{
 		if (is_numeric($loop->key)) {
 			if (!$this->properties_prefix) {
 				reset($this->objects);
 				$object = next($this->objects);
 				if (is_object($object) && property_exists($object, $loop->var_name)) {
-					array_push($this->properties_prefix, $loop->var_name);
+					$this->properties_prefix[] = $loop->var_name;
 					$pop_properties_prefix = true;
 				}
 			}
-			array_push($this->properties_prefix, $loop->key);
+			$this->properties_prefix[] = $loop->key;
 		}
 		$loop->counter ++;
 		$loop_insert   = '';
@@ -1218,7 +1218,7 @@ class Template
 				array_pop($this->properties_prefix);
 			}
 		}
-		if ((substr($loop_insert, 0, 1) === LF) && (substr($loop_insert, -1) === LF)) {
+		if ($loop_insert && str_starts_with($loop_insert, LF) && str_ends_with($loop_insert, LF)) {
 			$loop_insert = substr($loop_insert, 1);
 		}
 		return $loop_insert;

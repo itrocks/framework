@@ -33,7 +33,7 @@ interface Engine
 	 * @param $options array|string Single or multiple options eg Target::MAIN
 	 * @return string
 	 */
-	public function redirect($link, $options);
+	public function redirect(string $link, array|string $options) : string;
 
 	//----------------------------------------------------------------------------------- setLocation
 	/**

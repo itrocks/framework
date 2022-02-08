@@ -1473,7 +1473,7 @@ class Functions
 		$class_name = $this->getClass($template);
 		array_unshift($template->objects, $value);
 		array_unshift($template->var_names, $var_name);
-		return Loc::tr($value, $class_name);
+		return Loc::tr($value, $class_name ?: []);
 	}
 
 	//------------------------------------------------------------------------------------ getTypeCss
