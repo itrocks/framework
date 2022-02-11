@@ -40,15 +40,19 @@ class Menu_Update extends Update
 		/** @var $feature_classes Keep[] */
 		/** @var $write           Keep[] */
 		[$class_names, $feature_classes, $write] = $this->updateInit();
-		$links             = array_keys(Menu::get()->configuration_items);
+		$links = array_keys(Menu::get()->configuration_items);
 		try {
 			$print_model_links = array_keys(Dao::readAll(Print_Model::class, Dao::key('class_name')));
 		}
-		catch (Exception $exception) {
+		catch (Exception) {
 			$print_model_links = [];
 		}
 		foreach ($print_model_links as $print_model_link) {
-			$links[] = View::link($print_model_link, Feature::F_PRINT);
+			$link = View::link($print_model_link, Feature::F_PRINT);
+			if (!$link) {
+				continue;
+			}
+			$links[] = $link;
 		}
 		foreach ($links as $menu_item_link) {
 			/** @noinspection PhpUnhandledExceptionInspection class */

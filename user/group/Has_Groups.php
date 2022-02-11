@@ -31,10 +31,10 @@ trait Has_Groups
 	 * Returns the options of an access, or null if the user has no access to this path
 	 *
 	 * @param $uri string The uri (path of the feature)
-	 * @return array|null If the object has access to the $uri, returns the active options. Else null.
+	 * @return ?array If the object has access to the $uri, returns the active options. Else null.
 	 * Beware : the returned array may be [] if the user has the access but if there are no options.
 	 */
-	public function getAccessOptions($uri)
+	public function getAccessOptions(string $uri) : ?array
 	{
 		$cache    = Low_Level_Features_Cache::current();
 		$features = $cache ? $cache->features : [];
@@ -60,7 +60,7 @@ trait Has_Groups
 	 *
 	 * @return Low_Level_Feature[]
 	 */
-	public function getLowLevelFeatures()
+	public function getLowLevelFeatures() : array
 	{
 		$features = [];
 		if ($this->groups) foreach ($this->groups as $group) {
@@ -74,12 +74,12 @@ trait Has_Groups
 	 * Returns true if the user has access to the $uri
 	 * $uri is checked into path
 	 *
-	 * @param $uri string
+	 * @param $uri ?string
 	 * @return boolean Returns true if the user has access to this uri
 	 */
-	public function hasAccessTo($uri)
+	public function hasAccessTo(?string $uri) : bool
 	{
-		return !is_null($this->getAccessOptions($uri));
+		return !$uri || !is_null($this->getAccessOptions($uri));
 	}
 
 	//-------------------------------------------------------------------------------------- hasGroup
@@ -89,7 +89,7 @@ trait Has_Groups
 	 * @param $group Group|integer|string
 	 * @return boolean
 	 */
-	public function hasGroup($group)
+	public function hasGroup(Group|int|string $group) : bool
 	{
 		$identifier = null;
 		// Group

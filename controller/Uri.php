@@ -52,7 +52,7 @@ class Uri
 	 * @param $uri string ie '/Order/3/Line/2/output', or 'User/login'
 	 * @param $get array
 	 */
-	public function __construct($uri, array $get = [])
+	public function __construct(string $uri, array $get = [])
 	{
 		$this->uri = $uri;
 		$uri       = self::uriToArray($uri);
@@ -248,7 +248,7 @@ class Uri
 	 * @param $uri string
 	 * @return string[]
 	 */
-	public static function uriToArray($uri)
+	public static function uriToArray(string $uri) : array
 	{
 		$uri = explode(SL, str_replace(',', SL, $uri));
 		array_shift($uri);

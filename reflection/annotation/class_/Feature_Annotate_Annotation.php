@@ -28,8 +28,8 @@ class Feature_Annotate_Annotation extends Template\List_Annotation implements Do
 	 */
 	public function __construct(?string $value)
 	{
-		list($value, $annotation) = explode(SP, $value, 2);
-		$this->annotation = trim($annotation);
+		[$value, $annotation] = explode(SP, $value, 2);
+		$this->annotation     = trim($annotation);
 		parent::__construct($value);
 	}
 

@@ -16,9 +16,9 @@ trait Feature_Annotation
 
 	//-------------------------------------------------------------------------------------- $context
 	/**
-	 * @var Reflection_Class
+	 * @var ?Reflection_Class
 	 */
-	protected static Reflection_Class $context;
+	protected static ?Reflection_Class $context = null;
 
 	//----------------------------------------------------------------------------------------- allOf
 	/**
