@@ -1048,7 +1048,7 @@ class Template
 	 * @param $j       integer
 	 * @return integer
 	 */
-	protected function parseLoop(&$content, $i, $j)
+	protected function parseLoop(string &$content, int $i, int $j) : int
 	{
 		$end_j          = $j;
 		$loop           = new Loop();
@@ -1075,7 +1075,7 @@ class Template
 			? ''
 			: substr($content, $else_j + 11, $end_j - $else_j - 11);
 		$this->parseLoopContentSections($loop);
-		if (substr($loop->var_name, 0, 7) === 'target ') {
+		if (str_starts_with($loop->var_name, 'target ')) {
 			$elements = null;
 			if (isset($this->parameters[Parameter::AS_WIDGET])) {
 				$is_target = true;
@@ -1895,14 +1895,14 @@ class Template
 	 *
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
-	 * @return string|object var value after reading value / executing specs
+	 * @return object|string var value after reading value / executing specs
 	 */
-	public function parseValue($var_name, $as_string = false)
+	public function parseValue(string $var_name, bool $as_string = false) : object|string
 	{
 		if ($var_name === DOT) {
 			return reset($this->objects);
 		}
-		elseif ($var_name == '') {
+		elseif ($var_name === '') {
 			return '';
 		}
 		elseif ($var_name[0] === SL) {
@@ -1912,11 +1912,11 @@ class Template
 			$not      = true;
 			$var_name = substr($var_name, 1);
 		}
-		if (substr($var_name, -1) == '*') {
+		if (str_ends_with($var_name, '*')) {
 			$group    = true;
 			$var_name = substr($var_name, 0, -1);
 		}
-		if (strpos('-+', $var_name[0]) !== false) {
+		if (str_contains('-+', $var_name[0])) {
 			$context     = $this->backupContext();
 			$descendants = $this->backupDescendants();
 			$var_name    = $this->parseNavigate($var_name);
@@ -1925,7 +1925,7 @@ class Template
 		if ($var_name === DOT) {
 			$object = reset($this->objects);
 		}
-		elseif (strpos($var_name, DOT) !== false) {
+		elseif (str_contains($var_name, DOT)) {
 			if (!isset($context)) {
 				$context = $this->backupContext();
 			}
