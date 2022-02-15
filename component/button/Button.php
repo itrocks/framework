@@ -128,7 +128,7 @@ class Button
 	 *
 	 * @var mixed
 	 */
-	public mixed $data_object;
+	public mixed $data_object = null;
 
 	//-------------------------------------------------------------------------------------- $feature
 	/**
@@ -303,9 +303,6 @@ class Button
 				$parameters[] = $this->code;
 			}
 			$this->link = View::link($this->object, $this->feature, $parameters);
-		}
-		else {
-			$this->link = null;
 		}
 		return $this->link;
 	}

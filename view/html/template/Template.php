@@ -1556,9 +1556,11 @@ class Template
 	 * @param $object                  object
 	 * @param $property_name           string
 	 * @param $ignore_unknown_property boolean
-	 * @return string
+	 * @return mixed
 	 */
-	protected function parseProperty($object, $property_name, $ignore_unknown_property = false)
+	protected function parseProperty(
+		object $object, string $property_name, bool $ignore_unknown_property = false
+	) : mixed
 	{
 		$class_name = get_class($object);
 		if (property_exists($class_name, $property_name)) {
@@ -1570,11 +1572,20 @@ class Template
 				return $callable->call($property);
 			}
 		}
-		/** @noinspection PhpUsageOfSilenceOperatorInspection */
-		$value = $ignore_unknown_property ? @$object->$property_name : $object->$property_name;
+		if ($ignore_unknown_property) {
+			$value = (
+				property_exists($object, $property_name)
+				|| property_exists($object, $property_name . '_')
+			)
+				? $object->$property_name
+				: null;
+		}
+		else {
+			$value = $object->$property_name;
+		}
 		if (
 			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
-			&& (strpos($value, '|') !== false)
+			&& str_contains($value, '|')
 		) {
 			$value = str_replace('|', '&#124;', $value);
 		}
@@ -1895,9 +1906,9 @@ class Template
 	 *
 	 * @param $var_name  string can be an unique var or path.of.vars
 	 * @param $as_string boolean if true, returned value will always be a string
-	 * @return object|string var value after reading value / executing specs
+	 * @return mixed var value after reading value / executing specs
 	 */
-	public function parseValue(string $var_name, bool $as_string = false) : object|string
+	public function parseValue(string $var_name, bool $as_string = false) : mixed
 	{
 		if ($var_name === DOT) {
 			return reset($this->objects);
