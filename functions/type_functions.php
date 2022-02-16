@@ -139,6 +139,9 @@ function isA($object, $class_name)
  */
 function isInitialized(object $object, string $property_name, bool $access = false) : bool
 {
+	if (isset($object->_[$property_name])) {
+		return property_exists($object, $property_name . '_');
+	}
 	/** @noinspection PhpUnhandledExceptionInspection should be called with a valid property */
 	$property = new ReflectionProperty($object, $property_name);
 	if ($access) {

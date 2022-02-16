@@ -197,8 +197,9 @@ class Properties
 		if (!isset($this->_[' . Q . $property_name . Q . '])) {';
 				if (!isset($property_advices['replaced'])) {
 					$code .= '
-			$this->' . $property_name . '_ = isset($this->' . $property_name . ')'
-						. ' ? $this->' . $property_name . ' : null;';
+			if (isInitialized($this, ' . Q . $property_name . Q . ')) {
+				$this->' . $property_name . '_ = $this->' . $property_name . ';
+			}';
 				}
 				$code .= '
 			unset($this->' . $property_name . ');
@@ -322,14 +323,14 @@ class Properties
 		}';
 		if ($over['cases']) {
 			$switch = true;
-			$code .= '
+			$code  .= '
 		switch ($property_name) {';
 		}
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['replaced'])) {
 				if (!isset($switch)) {
 					$switch = true;
-					$code .= '
+					$code  .= '
 		switch ($property_name) {';
 				}
 				if ($property_advices['replaced'] == 'this') {
@@ -437,13 +438,19 @@ class Properties
 	private function & _' . $property_name . '_read()
 	{
 		unset($this->_[' . Q . $property_name . Q . ']);
-		' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
+		if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
+			' . $last . '$value = $this->' . $property_name . ' =& $this->' . $property_name . '_;
+		}
+		else {
+			unset($this->' . $property_name . ');
+			$last = $value = \'-AOP-UNINITIALIZED-\';
+		}
 ';
 				}
 				$code .= $this->compileAdvice($property_name, Handler::READ, $advice, $init);
 				if ($last) {
 					$code .= '
-		if ($this->' . $property_name . ' !== $last) {
+		if (isInitialized($this, ' . Q . $property_name . Q . ') && ($this->' . $property_name . ' !== $last)) {
 			$this->_' . $property_name . '_write($this->' . $property_name . ');
 			$last = $this->' . $property_name . ';
 		}';
@@ -635,13 +642,18 @@ class Properties
 	{
 		if (isset($this->_[' . Q . $property_name . Q . '])) {
 			unset($this->_[' . Q . $property_name . Q . ']);
-			$this->' . $property_name . ' = $this->' . $property_name . '_;
+			if (property_exists($this, ' . Q . $property_name . '_' . Q . ')) {
+				$this->' . $property_name . ' = $this->' . $property_name . '_;
+			}
+			else {
+				unset($this->' . $property_name . ');
+			}
 			$writer = true;
 		}
 ';
 				}
 				$advice_code = $this->compileAdvice($property_name, Handler::WRITE, $advice, $init);
-				if (strpos($advice_code, '$value = ') !== false) {
+				if (str_contains($advice_code, '$value = ')) {
 					$advice_code .= LF . TAB . TAB . '$this->' . $property_name . ' = $value;';
 				}
 				$code .= $advice_code;
@@ -651,7 +663,12 @@ class Properties
 			return $prototype . $this->initCode($init) . $code . '
 
 		if (isset($writer)) {
-			$this->' . $property_name . '_ = $this->' . $property_name . ';
+			if (isInitialized($this, ' . Q . $property_name . Q . ')) {
+				$this->' . $property_name . '_ = $this->' . $property_name . ';
+			}
+			else {
+				unset($this->' . $property_name . '_);
+			}
 			unset($this->' . $property_name . ');
 			$this->_[' . Q . $property_name . Q . '] = true;
 		}
