@@ -35,14 +35,13 @@ class View implements Configurable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current View\Engine
+	 * @param $set_current View\Engine|null
 	 * @return View\Engine
 	 */
-	public static function current(View\Engine $set_current = null)
+	public static function current(View\Engine $set_current = null) : View\Engine
 	{
-		/** @var $view_engine View\Engine */
-		$view_engine = self::pCurrent($set_current);
-		return $view_engine;
+		/** @noinspection PhpIncompatibleReturnTypeInspection */
+		return self::pCurrent($set_current);
 	}
 
 	//----------------------------------------------------------------------------------- executeView
@@ -58,9 +57,10 @@ class View implements Configurable
 	 * @return mixed
 	 */
 	private static function executeView(
-		$view, $view_method_name, array $parameters, array $form, array $files, $class_name,
-		$feature_name
-	) {
+		string $view, string $view_method_name, array $parameters, array $form, array $files,
+		string $class_name, string $feature_name
+	) : mixed
+	{
 		$object = reset($parameters);
 		/** @noinspection PhpUnhandledExceptionInspection must call with a right $view class */
 		$view_object = (is_object($object) && isA($object, $view))
@@ -73,13 +73,14 @@ class View implements Configurable
 
 	//--------------------------------------------------------------------------------------- getView
 	/**
-	 * @param $view_name     string   the view name is the associated data class name
-	 * @param $feature_names string[] feature and inherited feature which view will be searched
-	 * @param $template      string   if a specific template is set, the view named with it will be
-	 *                       searched into the view / feature namespace first
-	 * @return callable
+	 * @param $view_name     string      the view name is the associated data class name
+	 * @param $feature_names string[]    feature and inherited feature which view will be searched
+	 * @param $template      string|null if a specific template is set, the view named with it will be
+	 *                                   searched into the view / feature namespace first
+	 * @return string[] callable
 	 */
-	private static function getView($view_name, $feature_names, $template = null)
+	private static function getView(string $view_name, array $feature_names, string $template = null)
+		: array
 	{
 		$view_engine_name = get_class(View::current());
 		$view_engine_name = Namespaces::shortClassName(Namespaces::of($view_engine_name));
@@ -90,8 +91,8 @@ class View implements Configurable
 				: Names::methodToClass($template);
 			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
 				foreach ($feature_names as $feature_name) {
-					list($class, $method) = Getter::get(
-						$view_name, $feature_name, $search . '_' . $suffix, 'php'
+					[$class, $method] = Getter::get(
+						$view_name, $feature_name, $search . '_' . $suffix
 					);
 					if (isset($class)) break 2;
 				}
@@ -101,8 +102,8 @@ class View implements Configurable
 		if (!isset($class)) {
 			foreach ([$view_engine_name . '_View', 'View'] as $suffix) {
 				foreach ($feature_names as $feature_name) {
-					list($class, $method) = $view_name
-						? Getter::get($view_name, $feature_name, $suffix, 'php')
+					[$class, $method] = $view_name
+						? Getter::get($view_name, $feature_name, $suffix)
 						: [null, null];
 					if (isset($class)) break 2;
 				}
@@ -110,7 +111,7 @@ class View implements Configurable
 		}
 
 		if (!isset($class)) {
-			list($class, $method) = [__CLASS__ . BS . $view_engine_name . BS . 'Default_View', 'run'];
+			[$class, $method] = [__CLASS__ . BS . $view_engine_name . BS . 'Default_View', 'run'];
 		}
 
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */
@@ -126,14 +127,14 @@ class View implements Configurable
 	 * @param $feature    string|string[]|null linked feature name. Forced if in array
 	 * @param $parameters string|string[]|object|object[]|null optional parameters list
 	 * @param $arguments  string|string[]|null optional arguments list
-	 * @return ?string
+	 * @return string
 	 */
 	public static function link(
 		array|object|string|null $object,
 		array|string             $feature    = null,
 		array|object|string      $parameters = null,
 		array|string             $arguments  = null
-	) : ?string
+	) : string
 	{
 		return self::current()->link($object, $feature, $parameters, $arguments);
 	}
@@ -146,7 +147,7 @@ class View implements Configurable
 	 * @param $options array|string Single or multiple options eg Target::MAIN
 	 * @return string
 	 */
-	public static function redirect($link, $options = [])
+	public static function redirect(string $link, array|string $options = []) : string
 	{
 		return self::current()->redirect($link, $options);
 	}
@@ -161,16 +162,15 @@ class View implements Configurable
 	 * @return mixed
 	 */
 	public static function run(
-		array $parameters, array $form, array $files, $class_name, $feature_name
-	) {
+		array $parameters, array $form, array $files, string $class_name, string $feature_name
+	) : mixed
+	{
 		$feature_names
 			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] != $feature_name))
 			? [$parameters[Feature::FEATURE], $feature_name]
 			: [$feature_name];
-		list($view_name, $view_method_name) = self::getView(
-			$class_name,
-			$feature_names,
-			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null
+		[$view_name, $view_method_name] = self::getView(
+			$class_name, $feature_names, $parameters[Template::TEMPLATE] ?? null
 		);
 		return self::executeView(
 			$view_name, $view_method_name, $parameters, $form, $files, $class_name, $feature_name
@@ -185,7 +185,7 @@ class View implements Configurable
 	 * @param $title string
 	 * @return string
 	 */
-	public static function setLocation($uri, $title)
+	public static function setLocation(string $uri, string $title) : string
 	{
 		return self::current()->setLocation($uri, $title);
 	}

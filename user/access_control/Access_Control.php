@@ -56,7 +56,7 @@ class Access_Control implements Configurable, Registerable
 	 *
 	 * @var array
 	 */
-	public $all_users = [
+	public array $all_users = [
 		'/',
 		'/ITRocks/Framework/Component/Menu/output',
 		'/ITRocks/Framework/Locale/translate',
@@ -69,7 +69,7 @@ class Access_Control implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	public $blank = [
+	public array $blank = [
 		'/ITRocks/Framework/Component/Menu/output',
 		'/ITRocks/Framework/Environment/output',
 		'/ITRocks/Framework/User/miniDisplay'
@@ -82,7 +82,7 @@ class Access_Control implements Configurable, Registerable
 	 *
 	 * @var string[]
 	 */
-	public $exceptions = [
+	public array $exceptions = [
 		'/ITRocks/Framework/Application/blank',
 		'/ITRocks/Framework/Tests/run',
 		'/ITRocks/Framework/User/Access_Control/denied',
@@ -96,7 +96,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @var boolean
 	 */
-	private static $protect = false;
+	private static bool $protect = false;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -128,7 +128,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result string
 	 */
-	public function afterTemplateReplaceLink(&$result)
+	public function afterTemplateReplaceLink(string &$result)
 	{
 		if (!beginsWith($result, Paths::$uri_base)) {
 			return;
@@ -149,7 +149,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri string
 	 * @return boolean
 	 */
-	private function allUsers($uri)
+	private function allUsers(string $uri) : bool
 	{
 		// could use preg_grep, but I don't want to ask delimiters into exceptions array
 		foreach ($this->all_users as $exception) {
@@ -167,7 +167,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $post  array
 	 * @param $files array[]
 	 */
-	public function checkAccess(&$uri, array &$get = [], array &$post = [], array &$files = [])
+	public function checkAccess(string &$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
 		$origin_uri = $uri;
 		$this->checkUser($uri, $get, $post, $files);
@@ -181,7 +181,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result string The link (result of View::link())
 	 */
-	public function checkAccessToLink(&$result)
+	public function checkAccessToLink(string &$result)
 	{
 		if (self::$protect) {
 			return;
@@ -190,7 +190,7 @@ class Access_Control implements Configurable, Registerable
 		if (!$user || !isA($user, Has_Groups::class)) {
 			return;
 		}
-		list($uri, $arguments) = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
+		[$uri, $arguments] = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
 		if ($this->checkFeatures($uri)) {
 			$result = $uri;
 			if (!is_null($arguments)) {
@@ -198,7 +198,7 @@ class Access_Control implements Configurable, Registerable
 			}
 		}
 		else {
-			$result = null;
+			$result = '';
 		}
 	}
 
@@ -206,7 +206,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @param $result Item
 	 */
-	public function checkAccessToMenuItem(&$result)
+	public function checkAccessToMenuItem(Item &$result)
 	{
 		if (!isset($result)) {
 			return;
@@ -225,7 +225,9 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files array[]
 	 * @return boolean
 	 */
-	private function checkFeatures(&$uri, array &$get = [], array &$post = [], array &$files = [])
+	private function checkFeatures(
+		string &$uri, array &$get = [], array &$post = [], array &$files = []
+	) : bool
 	{
 		if (Uri::startsWithProtocol($uri)) {
 			return true;
@@ -276,7 +278,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $files array[]
 	 * @todo HIGHEST private (@ next deployment) + return false if no user is logged in
 	 */
-	public function checkUser(&$uri, array &$get, array &$post, array &$files)
+	public function checkUser(string &$uri, array &$get, array &$post, array &$files)
 	{
 		if (User::current()) {
 			return;
@@ -303,11 +305,11 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri string
 	 * @return string
 	 */
-	private function cleanupUri($uri)
+	private function cleanupUri(string $uri) : string
 	{
 		$get = [];
-		if (strpos($uri, '?') !== false) {
-			list($uri, $get) = array_pad(explode('?', $uri, 2), 2, '');
+		if (str_contains($uri, '?')) {
+			[$uri, $get] = array_pad(explode('?', $uri, 2), 2, '');
 			$get ? parse_str($get, $get) : ($get = []);
 		}
 		$uri = new Controller\Uri($uri, $get);
@@ -318,7 +320,7 @@ class Access_Control implements Configurable, Registerable
 		);
 	}
 
-	//-------------------------------------------------------------------------- disableIPcheckAccess
+	//-------------------------------------------------------------------------- disableIPCheckAccess
 	/**
 	 * @param $joinpoint Before_Method
 	 */
@@ -340,7 +342,7 @@ class Access_Control implements Configurable, Registerable
 	public function hasAccessTo(array|callable $callable) : bool
 	{
 		$uri = View::link($callable[0], [$callable[1]]);
-		return isset($uri) && $this->checkFeatures($uri);
+		return ($uri !== '') && $this->checkFeatures($uri);
 	}
 
 	//--------------------------------------------------------------------------------------- isBlank
@@ -350,7 +352,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $uri string
 	 * @return boolean
 	 */
-	private function isBlank($uri)
+	private function isBlank(string $uri) : bool
 	{
 		// could use preg_grep, but I don't want to ask delimiters into blank array
 		foreach ($this->blank as $blank) {
@@ -365,7 +367,7 @@ class Access_Control implements Configurable, Registerable
 	/**
 	 * @return boolean|null null if should call the original method, false to simply return false
 	 */
-	public function menuCheckAccess()
+	public function menuCheckAccess() : bool|null
 	{
 		return User::current() ? null : false;
 	}
@@ -378,7 +380,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $object Reflection_Property
 	 * @return string The doc-comment with access control override options
 	 */
-	public function overridePropertyDocComment($result, Reflection_Property $object)
+	public function overridePropertyDocComment(string $result, Reflection_Property $object) : string
 	{
 		static $anti_loop;
 		if (empty($anti_loop)) {
@@ -466,7 +468,7 @@ class Access_Control implements Configurable, Registerable
 	 * @param $post    array
 	 * @param $files   array[]
 	 */
-	public function setUri($new_uri, &$uri, array &$get, array &$post, array &$files)
+	public function setUri(string $new_uri, string &$uri, array &$get, array &$post, array &$files)
 	{
 		$uri  = $new_uri;
 		$_get = [];

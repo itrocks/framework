@@ -16,14 +16,14 @@ interface Engine
 	 * @param $feature    string|string[]|null linked feature name, forced if in array
 	 * @param $parameters string|string[]|object|object[]|null optional parameters list
 	 * @param $arguments  string|string[]|null optional arguments list
-	 * @return ?string
+	 * @return string
 	 */
 	public function link(
 		array|object|string|null $object,
 		array|string             $feature    = null,
 		array|object|string      $parameters = null,
 		array|string             $arguments  = null
-	) : ?string;
+	) : string;
 
 	//-------------------------------------------------------------------------------------- redirect
 	/**

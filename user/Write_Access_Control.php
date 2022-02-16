@@ -31,7 +31,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @return string
 	 */
-	protected function blankUri()
+	protected function blankUri() : string
 	{
 		return View::link(Application::class, Feature::F_BLANK);
 	}
@@ -43,7 +43,7 @@ class Write_Access_Control implements Registerable
 	 * @param $post  array
 	 * @param $files array[]
 	 */
-	public function checkAccess(&$uri, array &$get = [], array &$post = [], array &$files = [])
+	public function checkAccess(string &$uri, array &$get = [], array &$post = [], array &$files = [])
 	{
 		if (User::current() || ($uri === '/ITRocks/Framework/User/Password/reset')) {
 			return;
@@ -60,7 +60,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @param $result string The link (result of View::link())
 	 */
-	public function checkAccessToLink(&$result)
+	public function checkAccessToLink(string &$result)
 	{
 		if (User::current() || ($result === '/ITRocks/Framework/User/Password/reset')) {
 			return;
@@ -73,7 +73,7 @@ class Write_Access_Control implements Registerable
 
 	//------------------------------------------------------------------------- checkAccessToMenuItem
 	/**
-	 * @param $result Item
+	 * @param $result ?Item
 	 */
 	public function checkAccessToMenuItem(Item &$result = null)
 	{
@@ -90,7 +90,7 @@ class Write_Access_Control implements Registerable
 	/**
 	 * @return string[]
 	 */
-	public function readFeatures()
+	public function readFeatures() : array
 	{
 		return static::READ_FEATURES;
 	}
