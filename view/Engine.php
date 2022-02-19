@@ -40,9 +40,9 @@ interface Engine
 	 * Generate code for the current view to set the current location without redirecting to it
 	 *
 	 * @param $uri   string
-	 * @param $title ?string
-	 * @return ?string
+	 * @param $title string
+	 * @return string
 	 */
-	public function setLocation(string $uri, ?string $title) : ?string;
+	public function setLocation(string $uri, string $title) : string;
 
 }

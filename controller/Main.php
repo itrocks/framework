@@ -550,11 +550,11 @@ class Main
 					$get = [];
 				}
 				$post = [];
-				if (($query_position = strpos($uri, '?')) !== false) {
-					list($uri, $query) = explode('?', $uri, 2);
+				if (str_contains($uri, '?')) {
+					[$uri, $query] = explode('?', $uri, 2);
 					parse_str(str_replace('&amp;', '&', $query), $get);
 				}
-				$result = $this->run($uri, $get, $post, $files) . View::setLocation($uri, $result);
+				$result = $this->run($uri, $get, $post, $files) . View::setLocation($uri, $result ?: '');
 			}
 			foreach ($this->redirects as $target => $redirection) {
 				$result .= View::redirect($redirection, [View::TARGET => $target]);
