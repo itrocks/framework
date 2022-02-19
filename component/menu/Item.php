@@ -14,49 +14,49 @@ class Item
 	/**
 	 * @var string
 	 */
-	public $cancel_label;
+	public string $cancel_label = '';
 
 	//-------------------------------------------------------------------------------------- $caption
 	/**
 	 * @var string
 	 */
-	public $caption;
+	public string $caption = '';
 
 	//---------------------------------------------------------------------------------------- $class
 	/**
 	 * @var string
 	 */
-	public $class;
+	public string $class = '';
 
 	//-------------------------------------------------------------------------------- $confirm_label
 	/**
 	 * @var string
 	 */
-	public $confirm_label;
+	public string $confirm_label = '';
 
 	//------------------------------------------------------------------------------ $confirm_message
 	/**
 	 * @var string
 	 */
-	public $confirm_message;
+	public string $confirm_message = '';
 
 	//----------------------------------------------------------------------------------------- $link
 	/**
 	 * @var string
 	 */
-	public $link;
+	public string $link = '';
 
 	//---------------------------------------------------------------------------------- $link_target
 	/**
 	 * @var string
 	 */
-	public $link_target;
+	public string $link_target = '';
 
 	//------------------------------------------------------------------------------------- linkClass
 	/**
 	 * @return string
 	 */
-	public function linkClass()
+	public function linkClass() : string
 	{
 		$uri = new Uri($this->link);
 		return Names::setToClass($uri->controller_name, false);

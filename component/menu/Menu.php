@@ -38,7 +38,7 @@ class Menu implements Configurable
 	/**
 	 * @var Block[]
 	 */
-	public $blocks = [];
+	public array $blocks = [];
 
 	//-------------------------------------------------------------------------- $configuration_items
 	/**
@@ -46,13 +46,13 @@ class Menu implements Configurable
 	 *
 	 * @var string[]
 	 */
-	public $configuration_items = [];
+	public array $configuration_items = [];
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
 	 */
-	public $title;
+	public string $title = '';
 
 	//----------------------------------------------------------------------------------- $title_link
 	/**
@@ -60,7 +60,7 @@ class Menu implements Configurable
 	 *
 	 * @var string
 	 */
-	public $title_link;
+	public string $title_link = '';
 
 	//---------------------------------------------------------------------------- $title_link_target
 	/**
@@ -68,11 +68,11 @@ class Menu implements Configurable
 	 *
 	 * @var string
 	 */
-	public $title_link_target;
+	public string $title_link_target = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $configuration array
+	 * @param $configuration array|null
 	 */
 	public function __construct($configuration = null)
 	{
@@ -108,7 +108,7 @@ class Menu implements Configurable
 	 *                      If object, will build a configuration to access this object.
 	 * @return string[] key is the URI to call the feature, value if the caption of the menu item
 	 */
-	public static function configurationOf($class_names)
+	public static function configurationOf(array|object|string ...$class_names) : array
 	{
 		$configuration_items = [];
 		foreach (func_get_args() as $class_names) {
@@ -149,9 +149,9 @@ class Menu implements Configurable
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $block_key string
 	 * @param $items     array
-	 * @return Block
+	 * @return ?Block
 	 */
-	protected function constructBlock($block_key, array $items)
+	protected function constructBlock(string $block_key, array $items) : ?Block
 	{
 		/** @noinspection PhpUnhandledExceptionInspection */
 		$block = Builder::create(Block::class);

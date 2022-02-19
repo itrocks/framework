@@ -14,9 +14,9 @@ trait Construct_Item
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $item_key string
 	 * @param $item     string[]|string
-	 * @return Item
+	 * @return ?Item
 	 */
-	protected function constructItem($item_key, $item)
+	protected function constructItem(string $item_key, array|string $item) : ?Item
 	{
 		if ($item === static::CLEAR) {
 			return null;

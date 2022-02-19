@@ -20,7 +20,7 @@ class Output_Controller implements Feature_Controller
 	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : mixed
 	{
 		$parameters = $parameters->getObjects();
 		if (!(reset($parameters)) instanceof Menu) {

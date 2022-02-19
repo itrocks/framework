@@ -11,7 +11,7 @@ class Block
 	/**
 	 * @var Item[]
 	 */
-	public $items;
+	public array $items = [];
 
 	//--------------------------------------------------------------------------------------- $module
 	/**
@@ -19,13 +19,13 @@ class Block
 	 *
 	 * @var string
 	 */
-	public $module;
+	public string $module = '';
 
 	//---------------------------------------------------------------------------------------- $title
 	/**
 	 * @var string
 	 */
-	public $title;
+	public string $title = '';
 
 	//----------------------------------------------------------------------------------- $title_link
 	/**
@@ -33,7 +33,7 @@ class Block
 	 *
 	 * @var string
 	 */
-	public $title_link;
+	public string $title_link = '';
 
 	//---------------------------------------------------------------------------- $title_link_target
 	/**
@@ -41,7 +41,7 @@ class Block
 	 *
 	 * @var string
 	 */
-	public $title_link_target;
+	public string $title_link_target = '';
 
 	//------------------------------------------------------------------------------------ __toString
 	/**
@@ -49,7 +49,7 @@ class Block
 	 */
 	public function __toString() : string
 	{
-		return strval($this->title);
+		return $this->title;
 	}
 
 }
