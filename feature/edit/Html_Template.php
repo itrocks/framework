@@ -182,7 +182,7 @@ class Html_Template extends Template
 	 * @param $format_value  boolean
 	 * @return string var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseSingleValue($property_name, $format_value = true)
+	protected function parseSingleValue(string $property_name, bool $format_value = true) : string
 	{
 		$property = $source_object = reset($this->objects);
 		if (
@@ -227,7 +227,7 @@ class Html_Template extends Template
 					$property_prefix = ($property_prefix && $prefix)
 						? (
 							$property_prefix . (
-								strpos($prefix, '[')
+								str_contains($prefix, '[')
 									? ('[' . lParse($prefix, '[') . '][' . rParse($prefix, '['))
 									: ('[' . $prefix . ']')
 							)

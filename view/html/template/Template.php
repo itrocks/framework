@@ -1626,11 +1626,11 @@ class Template
 	 * @param $format_value  boolean
 	 * @return mixed
 	 */
-	protected function parseSingleValue($property_name, $format_value = true)
+	protected function parseSingleValue(string $property_name, bool $format_value = true) : mixed
 	{
 		$add_div       = false;
 		$source_object = $object = reset($this->objects);
-		if (substr($property_name, 0, 1) === '~') {
+		if (str_starts_with($property_name, '~')) {
 			$ignore_undefined_property = true;
 			$property_name             = substr($property_name, 1);
 		}

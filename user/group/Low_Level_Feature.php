@@ -14,22 +14,22 @@ class Low_Level_Feature
 	 *
 	 * @var string
 	 */
-	public $feature;
+	public string $feature;
 
 	//-------------------------------------------------------------------------------------- $options
 	/**
 	 * @var array
 	 */
-	public $options = [];
+	public array $options = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Low-level feature constructor
 	 *
-	 * @param $feature string
-	 * @param $options array
+	 * @param $feature string|null
+	 * @param $options array|null
 	 */
-	public function __construct($feature = null, array $options = null)
+	public function __construct(string $feature = null, array $options = null)
 	{
 		if (isset($feature)) {
 			$this->feature = $feature;
@@ -45,7 +45,7 @@ class Low_Level_Feature
 	 */
 	public function __toString() : string
 	{
-		return strval($this->feature);
+		return $this->feature;
 	}
 
 }

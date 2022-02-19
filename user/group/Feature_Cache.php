@@ -27,7 +27,7 @@ class Feature_Cache
 	 * @param $last_time integer
 	 * @return string[] php/yaml files paths
 	 */
-	public function invalidate($last_time)
+	public function invalidate(int $last_time) : array
 	{
 		/** @var $files_cache string[] ['file/path' => 'last-hash'] The list of cached hashes */
 		$files_cache = [];
@@ -46,16 +46,16 @@ class Feature_Cache
 		$removed_files = $files_cache;
 		foreach ($files as $key => $filename) {
 			$hash = null;
-			if (substr($filename, -4) === '.php') {
+			if (str_ends_with($filename, '.php')) {
 				unset($removed_files[$filename]);
 				if (filemtime($filename) >= $last_time) {
 					$hash = md5(serialize($this->scanPhpFile($filename)));
 				}
 			}
 			elseif (
-				(substr($filename, -5) ===  '.yaml')
-				&& (substr($filename, 0, 38) !== 'itrocks/framework/user/group/defaults/')
-				&& (substr($filename, -16) !== '/exhaustive.yaml')
+				str_ends_with($filename, '.yaml')
+				&& !str_starts_with($filename, 'itrocks/framework/user/group/defaults/')
+				&& !str_ends_with($filename, '/exhaustive.yaml')
 			) {
 				unset($removed_files[$filename]);
 				if (filemtime($filename) >= $last_time) {
@@ -94,9 +94,9 @@ class Feature_Cache
 	 * @param $buffer string A file class header buffer : read by getClassHeader()
 	 * @return boolean true if is a business class
 	 */
-	private function isFeatureClass($buffer)
+	private function isFeatureClass(string $buffer) : bool
 	{
-		return strpos($buffer, '{') && (strpos($buffer, '* @feature') ? true : false);
+		return str_contains($buffer, '{') && str_contains($buffer, '* @feature');
 	}
 
 	//----------------------------------------------------------------------------------- saveToCache
@@ -138,7 +138,7 @@ class Feature_Cache
 	 * @param $class_name string
 	 * @return Feature[]
 	 */
-	private function scanClass($class_name)
+	private function scanClass(string $class_name) : array
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class must be valid */
 		$class               = new Reflection_Class($class_name);
@@ -202,14 +202,14 @@ class Feature_Cache
 	 * @return Feature[]
 	 * @see invalidate
 	 */
-	public function scanFeatures(array $files)
+	public function scanFeatures(array $files) : array
 	{
 		/** @var $php_files_features  Feature[] */
 		/** @var $yaml_files_features Feature[] */
 		$php_files_features  = [];
 		$yaml_files_features = [];
 		foreach ($files as $filename) {
-			if (substr($filename, -4) === '.php') {
+			if (str_ends_with($filename, '.php')) {
 				$php_files_features = array_merge($php_files_features, $this->scanPhpFile($filename));
 			}
 			else {
@@ -224,7 +224,7 @@ class Feature_Cache
 	 * @param $filename string
 	 * @return Feature[]
 	 */
-	private function scanPhpFile($filename)
+	private function scanPhpFile(string $filename) : array
 	{
 		/** @var $features Feature[] */
 		$features = [];
@@ -241,7 +241,7 @@ class Feature_Cache
 	 * @param $filename string
 	 * @return Feature[]
 	 */
-	private function scanYamlFile($filename)
+	private function scanYamlFile(string $filename) : array
 	{
 		/** @var $features Feature[] */
 		$features = [];
