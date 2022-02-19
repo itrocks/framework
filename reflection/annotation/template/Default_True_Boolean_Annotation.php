@@ -20,9 +20,9 @@ class Default_True_Boolean_Annotation extends Boolean_Annotation
 	 *
 	 * If a boolean annotation has no value or is not 'false' or zero, annotation's value will be true
 	 *
-	 * @param $value ?string
+	 * @param $value bool|null|string
 	 */
-	public function __construct(?string $value)
+	public function __construct(bool|null|string $value)
 	{
 		parent::__construct($value);
 		if (is_null($value)) {

@@ -87,10 +87,10 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 	 * The object must be of a class compatible with the property class, or it may crash.
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $object object
+	 * @param $object ?object
 	 * @return boolean
 	 */
-	public function applyTo(object $object) : bool
+	public function applyTo(?object $object) : bool
 	{
 		if (!$object) {
 			return false;

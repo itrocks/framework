@@ -21,12 +21,12 @@ class Boolean_Annotation extends Annotation
 	 *
 	 * If a boolean annotation has no value or is not 'false' or zero, annotation's value will be true
 	 *
-	 * @param $value ?string
+	 * @param $value bool|null|string
 	 */
-	public function __construct(?string $value)
+	public function __construct(bool|null|string $value)
 	{
 		parent::__construct($value);
-		$this->value = ($value !== _FALSE) && !empty($value);
+		$this->value = ($value !== false) && ($value !== _FALSE) && !empty($value);
 	}
 
 }

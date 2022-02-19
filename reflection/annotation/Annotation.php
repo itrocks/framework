@@ -32,9 +32,9 @@ class Annotation
 	 * Annotation class will have to parse it ie for several parameters or specific syntax,
 	 * or if they want to store specific typed or calculated value
 	 *
-	 * @param $value ?string
+	 * @param $value bool|string|null
 	 */
-	public function __construct(?string $value)
+	public function __construct(bool|null|string $value)
 	{
 		$this->value = $value;
 	}

@@ -17,10 +17,10 @@ class Unique_Annotation extends Boolean_Annotation implements Property_Context_A
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value    ?string
+	 * @param $value    bool|null|string
 	 * @param $property Reflection_Property ie the contextual Reflection_Property object
 	 */
-	public function __construct(?string $value, Reflection_Property $property)
+	public function __construct(bool|null|string $value, Reflection_Property $property)
 	{
 		parent::__construct($value);
 		$this->property = $property;
