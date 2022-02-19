@@ -8,6 +8,7 @@ use ITRocks\Framework\Component\Button;
 use ITRocks\Framework\Component\Button\Has_General_Buttons;
 use ITRocks\Framework\Component\Button\Has_Selection_Buttons;
 use ITRocks\Framework\Component\Menu;
+use ITRocks\Framework\Component\Menu\Block;
 use ITRocks\Framework\Component\Menu\Construct_Item;
 use ITRocks\Framework\Component\Menu\Item;
 use ITRocks\Framework\Controller;
@@ -365,11 +366,13 @@ class Access_Control implements Configurable, Registerable
 
 	//------------------------------------------------------------------------------- menuCheckAccess
 	/**
-	 * @return boolean|null null if should call the original method, false to simply return false
+	 * @param $result ?Block
 	 */
-	public function menuCheckAccess() : bool|null
+	public function menuCheckAccess(?Block &$result = null)
 	{
-		return User::current() ? null : false;
+		if (!User::current()) {
+			$result = null;
+		}
 	}
 
 	//-------------------------------------------------------------------- overridePropertyDocComment
