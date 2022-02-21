@@ -12,8 +12,11 @@ article.list > form {
 		overflow: hidden;
 		white-space: nowrap;
 
+		> tfoot > tr {
+			height: 32px;
+		}
+
 		tr {
-			height: 33px;
 
 			> td, > th {
 				border-bottom: 1px solid #d8d8d8;

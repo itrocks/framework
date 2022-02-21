@@ -11,7 +11,8 @@ textarea {
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
   select:not([type=file]):not(select):not(textarea),
   textarea:not([type=file]):not(select):not(textarea) {
-    height: 10px;
+    box-sizing: border-box;
+    height: 30px;
     padding: 10px; }
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],
   select[readonly],

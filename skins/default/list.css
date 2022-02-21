@@ -6,17 +6,17 @@ article.list > form {
     border-top: 1px solid #ccc;
     overflow: hidden;
     white-space: nowrap; }
-    article.list > form > table tr {
-      height: 33px; }
-      article.list > form > table tr > td, article.list > form > table tr > th {
-        border-bottom: 1px solid #d8d8d8;
-        vertical-align: middle; }
-        article.list > form > table tr > td:first-child:hover, article.list > form > table tr > th:first-child:hover {
-          background: #d2f1f9; }
-        article.list > form > table tr > td.insert-right, article.list > form > table tr > th.insert-right {
-          border-right: 1px solid black; }
-      article.list > form > table tr > td {
-        box-sizing: border-box; }
+    article.list > form > table > tfoot > tr {
+      height: 32px; }
+    article.list > form > table tr > td, article.list > form > table tr > th {
+      border-bottom: 1px solid #d8d8d8;
+      vertical-align: middle; }
+      article.list > form > table tr > td:first-child:hover, article.list > form > table tr > th:first-child:hover {
+        background: #d2f1f9; }
+      article.list > form > table tr > td.insert-right, article.list > form > table tr > th.insert-right {
+        border-right: 1px solid black; }
+    article.list > form > table tr > td {
+      box-sizing: border-box; }
 
 article.list > form {
   position: relative; }

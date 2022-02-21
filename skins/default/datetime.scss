@@ -23,14 +23,14 @@ input.datetime {
 li.date_time.object {
 
 	&:not(.show-seconds):not(.show-time) input.datetime {
-		width: 82px;
+		width: 102px;
 	}
 
 	&.show-seconds input.datetime {
-		width: 136px;
+		width: 156px;
 	}
 
 	&.show-time:not(.show-seconds) input.datetime {
-		width: 118px;
+		width: 138px;
 	}
 }

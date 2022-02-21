@@ -13,7 +13,8 @@ textarea {
 	}
 
 	&:not([type=file]):not(select):not(textarea) {
-		height: $input-height - ($input-padding * 2);
+		box-sizing: border-box;
+		height: $input-height;
 		padding: $input-padding;
 	}
 
