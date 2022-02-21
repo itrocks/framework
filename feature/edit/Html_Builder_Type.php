@@ -530,7 +530,7 @@ class Html_Builder_Type
 					$hidden = new Input($this->getFieldName(), $this->value);
 					$hidden->setAttribute('readonly');
 					$hidden->setAttribute('type', 'hidden');
-					$input = new Input(null, Loc::tr($this->value));
+					$input = new Input(null, $this->value ? Loc::tr($this->value) : '');
 					$input->prepend[] = $hidden;
 				}
 			}

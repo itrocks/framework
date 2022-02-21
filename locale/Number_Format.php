@@ -131,7 +131,9 @@ class Number_Format
 	 */
 	public function integerToLocale(?int $integer) : string
 	{
-		return number_format($integer, 0, $this->decimal_separator, $this->thousand_separator);
+		return is_null($integer)
+			? ''
+			: number_format($integer, 0, $this->decimal_separator, $this->thousand_separator);
 	}
 
 	//---------------------------------------------------------------------------- throwUserException

@@ -145,7 +145,7 @@ class File
 		) {
 			$this->temporary_file_name = Application::current()->getTemporaryFilesPath() . SL
 				. uniqid() . '_' . $this->name;
-			if (strpos($this->temporary_file_name, SL) !== false) {
+			if (str_contains($this->temporary_file_name, SL)) {
 				Files::mkdir(lLastParse($this->temporary_file_name, SL));
 			}
 			file_put_contents($this->temporary_file_name, $this->content);
@@ -172,7 +172,7 @@ class File
 	 */
 	public function getType()
 	{
-		return Type_Builder::build($this->name);
+		return Type_Builder::build($this->name ?: '');
 	}
 
 	//------------------------------------------------------------------------------------------ link
@@ -206,7 +206,7 @@ class File
 	 */
 	public function nameHash()
 	{
-		return sha1($this->name ?: $this->temporary_file_name);
+		return sha1($this->name ?: $this->temporary_file_name ?: '');
 	}
 
 	//----------------------------------------------------------------------------------- previewLink

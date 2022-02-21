@@ -205,8 +205,9 @@ class Html_Builder_Property extends Html_Builder_Type
 					$property->final_class, $property->name, $this->value, true
 				);
 			}
-			$value = strlen($this->value) ? $this->value : null;
-			$this->value = (!$this->null || strlen($this->value)) ? $property->format() : null;
+			$length      = strlen($this->value ?? '');
+			$value       = $length ? $this->value : null;
+			$this->value = (!$this->null || $length) ? $property->format() : null;
 		}
 		$element = parent::buildFloat(false);
 		if (isset($value)) {

@@ -180,9 +180,9 @@ class Html_Template extends Template
 	 * @noinspection PhpDocMissingThrowsInspection Builder::create with valid parameters
 	 * @param $property_name string can be an unique var or path.of.vars
 	 * @param $format_value  boolean
-	 * @return string var value after reading value / executing specs (can be an object)
+	 * @return mixed var value after reading value / executing specs (can be an object)
 	 */
-	protected function parseSingleValue(string $property_name, bool $format_value = true) : string
+	protected function parseSingleValue(string $property_name, bool $format_value = true) : mixed
 	{
 		$property = $source_object = reset($this->objects);
 		if (
