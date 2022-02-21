@@ -1,7 +1,6 @@
 <?php
 namespace ITRocks\Framework\Address;
 
-use ITRocks\Framework\Dao;
 use ITRocks\Framework\Traits\Has_Code_And_Name;
 
 /**
@@ -17,18 +16,9 @@ class Civility
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
-		return strval($this->code);
-	}
-
-	//---------------------------------------------------------------------------------------- getAll
-	/**
-	 * @return static[]
-	 */
-	public static function getAll()
-	{
-		return Dao::readAll(static::class);
+		return $this->code ?? '';
 	}
 
 }

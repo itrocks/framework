@@ -23,13 +23,15 @@ trait Has_Civility
 	//-------------------------------------------------------------------------------- initCivilities
 	/**
 	 * Called when the civilities feature is installed
+	 *
+	 * @noinspection PhpUnused @feature_install
 	 */
 	public static function initCivilities()
 	{
 		if (!Dao::count(Civility::class)) {
 			Dao::begin();
 			foreach (['Mr' => 'mister', 'Mrs' => 'mistress'] as $code => $name) {
-				$civility = new Civility();
+				$civility       = new Civility();
 				$civility->code = Loc::tr($code);
 				$civility->name = Loc::tr($name);
 				Dao::write($civility);
