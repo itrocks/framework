@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Traits;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 
 /**
@@ -17,24 +18,35 @@ trait Has_Code_And_Name
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return trim($this->code . SP . $this->name);
 	}
 
 	//------------------------------------------------------------------------------------ fromString
 	/**
-	 * Returns the Codes that match a string
+	 * Returns the Code that match a string
 	 * - first get all codes matching the string as static::$code
-	 * - If none found, get all codes matching the string as static::$name
+	 * - If none found, get the code matching the string as static::$name
+	 * - If none found, create a new code
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $value string
-	 * @return static
+	 * @return ?static
 	 */
-	public static function fromString($value)
+	public static function fromString(string $value) : ?static
 	{
-		$values = static::fromStringMultiple($value);
-		return reset($values);
+		$objects = static::fromStringMultiple($value);
+		if (!$objects) {
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$object = Builder::create(static::class);
+			$object->code = lParse(trim($value), SP);
+			if (str_contains($value, SP)) {
+				$object->name = trim(substr($value, strlen($object->code) + 1));
+			}
+			$objects = [$object];
+		}
+		return reset($objects);
 	}
 
 	//---------------------------------------------------------------------------- fromStringMultiple
@@ -46,7 +58,7 @@ trait Has_Code_And_Name
 	 * @param $value string
 	 * @return static[]
 	 */
-	public static function fromStringMultiple($value)
+	public static function fromStringMultiple(string $value) : array
 	{
 		/** @var $values static[] */
 		$values = Dao::search(['code' => $value], static::class);
@@ -63,12 +75,12 @@ trait Has_Code_And_Name
 	 * - if at least one of them has a code and the codes are equal : it is the same
 	 * - else if they have no code and the names are equal : it is the same
 	 *
-	 * @param $object static
+	 * @param $object object
 	 * @return boolean
 	 */
-	public function sameAs($object)
+	public function sameAs(object $object) : bool
 	{
-		return ($object->code || $this->code)
+		return (isA($object, static::class) && ($object->code || $this->code))
 			? ($object->code === $this->code)
 			: ($object->name === $this->name);
 	}
