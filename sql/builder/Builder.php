@@ -115,22 +115,49 @@ abstract class Builder
 	/**
 	 * Build a SQL INSERT query
 	 *
-	 * @param $class Reflection_Class|string
-	 * @param $write string[] the data to write for each column : key is the column name
+	 * @param $class            string|Reflection_Class
+	 * @param $write            string[] the data to write for each column : key is the column name
+	 * @param $write_properties Reflection_Property[] key is the column name
 	 * @return string
 	 */
-	public static function buildInsert($class, array $write)
+	public static function buildInsert(
+		string|Reflection_Class $class, array $write, array $write_properties = []
+	) : string
 	{
-		$sql_insert = self::INSERT . ' INTO ' . BQ . Dao::current()->storeNameOf($class) . BQ
-			. LF . 'SET' . SP;
-		$i = 0;
+		return self::INSERT . ' INTO ' . static::buildSet($class, $write, $write_properties);
+	}
+
+	//-------------------------------------------------------------------------------------- buildSet
+	/**
+	 * Build the SET part of a SQL INSERT or UPDATE query
+	 *
+	 * @param $class            string|Reflection_Class
+	 * @param $write            array the data to write for each column : key is the column name
+	 * @param $write_properties Reflection_Property[] key is the column name
+	 * @return string
+	 */
+	protected static function buildSet(
+		string|Reflection_Class $class, array $write, array $write_properties
+	) : string
+	{
+		$sql     = BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET' . SP;
+		$already = 0;
 		foreach ($write as $key => $value) {
-			if ($i++) {
-				$sql_insert .= ', ';
+			$property = $write_properties[$key] ?? null;
+			if ($already ++) {
+				$sql .= ', ';
 			}
-			$sql_insert .= BQ . $key . BQ . ' = ' . Value::escape($value);
+			if (
+				$property
+				&& $property->getType()->isMultipleString()
+				&& !Values_Annotation::of($property)->value
+				&& !Store_Annotation::of($property)->isString()
+			) {
+				$value = join(LF, $value);
+			}
+			$sql .= BQ . $key . BQ . ' = ' . Value::escape($value, false, $property);
 		}
-		return $sql_insert;
+		return $sql;
 	}
 
 	//----------------------------------------------------------------------------------- buildUpdate
@@ -143,25 +170,11 @@ abstract class Builder
 	 * @param $write_properties Reflection_Property[] key is the column name
 	 * @return string
 	 */
-	public static function buildUpdate($class, array $write, $id, array $write_properties)
+	public static function buildUpdate(
+		string|Reflection_Class $class, array $write, $id, array $write_properties = []
+	) : string
 	{
-		$sql_update = self::UPDATE . SP . BQ . Dao::current()->storeNameOf($class) . BQ . LF . 'SET ';
-		$i = 0;
-		foreach ($write as $key => $value) {
-			$property = $write_properties[$key] ?? null;
-			if ($i++) {
-				$sql_update .= ', ';
-			}
-			if (
-				$property
-				&& $property->getType()->isMultipleString()
-				&& !Values_Annotation::of($property)->value
-				&& !Store_Annotation::of($property)->isString()
-			) {
-				$value = join(LF, $value);
-			}
-			$sql_update .= BQ . $key . BQ . ' = ' . Value::escape($value, false, $property);
-		}
+		$sql_update  = static::UPDATE . SP . static::buildSet($class, $write, $write_properties);
 		$sql_update .= LF . 'WHERE';
 		if (is_numeric($id)) {
 			$sql_update .= ' id = ' . $id;

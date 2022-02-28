@@ -364,13 +364,13 @@ class Write extends Data_Link\Write
 				}
 			}
 			$mysqli = $this->link->getConnection();
-			array_push($mysqli->contexts, $class->name);
+			$mysqli->contexts[] = $class->name;
 			if (empty($id) || isset($this->force_add)) {
 				$this->link->disconnect($this->object);
 				if (isset($this->force_add) && !empty($id)) {
 					$write['id'] = $id;
 				}
-				$id = $this->link->query(Sql\Builder::buildInsert($class->name, $write));
+				$id = $this->link->query(Sql\Builder::buildInsert($class->name, $write, $write_properties));
 				if (!empty($id)) {
 					$this->link->setObjectIdentifier($this->object, $id);
 				}
