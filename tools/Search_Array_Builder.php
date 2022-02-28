@@ -25,7 +25,7 @@ class Search_Array_Builder
 	 *
 	 * @var string
 	 */
-	public $and = SP;
+	public string $and = SP;
 
 	//------------------------------------------------------------------------------------------- $or
 	/**
@@ -33,7 +33,7 @@ class Search_Array_Builder
 	 *
 	 * @var string
 	 */
-	public $or = ',';
+	public string $or = ',';
 
 	//----------------------------------------------------------------------------------------- build
 	/**
@@ -43,15 +43,17 @@ class Search_Array_Builder
 	 * @param $append        string
 	 * @return array|string
 	 */
-	public function build($property_name, $search_phrase, $prepend = '', $append = '')
+	public function build(
+		string $property_name, string $search_phrase, string $prepend = '', string $append = ''
+	) : array|string
 	{
 		$search_phrase = trim($search_phrase);
 		// search phrase contains OR
-		if (strpos($search_phrase, $this->or) !== false) {
+		if (str_contains($search_phrase, $this->or)) {
 			$result = [];
 			foreach (explode($this->or, $search_phrase) as $search) {
 				$sub_result = $this->build('', $search, $prepend, $append);
-				if ((!is_array($sub_result)) || (count($sub_result) > 1)) {
+				if (is_string($sub_result) || (count($sub_result) > 1)) {
 					$result[$property_name][] = $sub_result;
 				}
 				elseif (isset($result[$property_name])) {
@@ -64,7 +66,7 @@ class Search_Array_Builder
 			return $property_name ? $result : reset($result);
 		}
 		// search phrase contains AND
-		elseif (strpos($search_phrase, $this->and) !== false) {
+		elseif (str_contains($search_phrase, $this->and)) {
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
 				$and[]   = $this->build('', $search, $prepend, $append);
@@ -91,8 +93,10 @@ class Search_Array_Builder
 	 * @return Logical|array
 	 */
 	public function buildMultiple(
-		$property_names_or_class, $search_phrase, $prepend = '', $append = '', $translated = []
-	) {
+		array|Reflection_Class $property_names_or_class, string $search_phrase, string $prepend = '',
+		string $append = '', array $translated = []
+	) : array|Logical
+	{
 		$search_phrase  = str_replace(['*', '?'], ['%', '_'], $search_phrase);
 		$property_names = ($property_names_or_class instanceof Reflection_Class)
 			? $this->classRepresentativeProperties($property_names_or_class)
@@ -101,7 +105,7 @@ class Search_Array_Builder
 			? $this->buildWithReverseTranslation($property_names_or_class, $search_phrase)
 			: $translated;
 		// search phrase contains OR
-		if (strpos($search_phrase, $this->or) !== false) {
+		if (str_contains($search_phrase, $this->or)) {
 			$or = [];
 			foreach ($property_names as $property_name) {
 				$or[$property_name] = $this->build('', $search_phrase, $prepend, $append);
@@ -109,7 +113,7 @@ class Search_Array_Builder
 			$result = Func::orOp($or);
 		}
 		// search phrase contains AND
-		elseif (strpos($search_phrase, $this->and) !== false) {
+		elseif (str_contains($search_phrase, $this->and)) {
 			$and = [];
 			foreach (explode($this->and, $search_phrase) as $search) {
 				$and[]   = $this->buildMultiple($property_names, $search, $prepend, $append, $translated);
@@ -140,7 +144,7 @@ class Search_Array_Builder
 	 * @param $search string
 	 * @return array $text string[$property_name][]
 	 */
-	protected function buildWithReverseTranslation(Reflection_Class $class, $search)
+	protected function buildWithReverseTranslation(Reflection_Class $class, string $search) : array
 	{
 		$found = [];
 		foreach ($this->classRepresentativeProperties($class) as $property_name) {
@@ -190,6 +194,7 @@ class Search_Array_Builder
 	 * @return string[]
 	 */
 	private function classRepresentativeProperties(Reflection_Class $class, array $already = [])
+		: array
 	{
 		$property_names = Representative_Annotation::of($class)->values();
 		foreach ($property_names as $key => $property_name) {

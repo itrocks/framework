@@ -32,7 +32,7 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * @var Reflection_Class
 	 */
-	public $class;
+	public Reflection_Class $class;
 
 	//----------------------------------------------------------------------------------- $properties
 	/**
@@ -40,22 +40,23 @@ class Controller implements Default_Feature_Controller
 	 *
 	 * @var Reflection_Property[]
 	 */
-	public $properties;
+	public array $properties;
 
 	//------------------------------------------------------------------------------- $property_names
 	/**
 	 * @var string[]
 	 */
-	public $property_names = [];
+	public array $property_names = [];
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
 	 * @param $search  array|object
 	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
 	 */
-	protected function applyFiltersToSearch(&$search, array $filters)
+	protected function applyFiltersToSearch(array|object &$search, array $filters)
 	{
 		if (!(is_object($search) && $search->isAnd())) {
+			/** @noinspection PhpConditionAlreadyCheckedInspection Inspector bug : may be [] */
 			$search = Func::andOp($search ? [$search] : []);
 		}
 		foreach ($filters as $filter_name => $filter_value) {
@@ -64,15 +65,15 @@ class Controller implements Default_Feature_Controller
 					? Func::isNotNull()
 					: Func::notEqual(substr($filter_value, 1));
 			}
-			elseif (substr($filter_name, -1) === '<') {
+			elseif (str_ends_with($filter_name, '<')) {
 				$filter_name  = substr($filter_name, 0, -1);
 				$filter_value = Func::lessOrEqual($filter_value);
 			}
-			elseif (substr($filter_name, -1) === '>') {
+			elseif (str_ends_with($filter_name, '>')) {
 				$filter_name  = substr($filter_name, 0, -1);
 				$filter_value = Func::greaterOrEqual($filter_value);
 			}
-			elseif (substr($filter_name, -1) === '!') {
+			elseif (str_ends_with($filter_name, '!')) {
 				$filter_name  = substr($filter_name, 0, -1);
 				$filter_value = $this->isMultipleValues($filter_name)
 					? Func::notInSet($filter_value)
@@ -111,7 +112,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $class_name string
 	 * @return string
 	 */
-	protected function buildJson($objects, string $class_name) : string
+	protected function buildJson(array|object $objects, string $class_name) : string
 	{
 		if ($this->property_names && $objects) {
 			$first_object = is_object($objects) ? $objects : reset($objects);
@@ -141,7 +142,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $is_abstract boolean
 	 * @return Autocomplete_Entry
 	 */
-	protected function buildJsonEntry($object, bool $is_abstract) : Autocomplete_Entry
+	protected function buildJsonEntry(object $object, bool $is_abstract) : Autocomplete_Entry
 	{
 		$identifier = Dao::getObjectIdentifier($object);
 		$value      = strval($object);
@@ -227,7 +228,7 @@ class Controller implements Default_Feature_Controller
 	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	protected function search($what, $class_name, array $options)
+	protected function search(array|object $what, string $class_name, array $options) : array
 	{
 		if (!Sort::in($options)) {
 			$options[] = Dao::sort();
@@ -268,7 +269,7 @@ class Controller implements Default_Feature_Controller
 	 * @return array|object[]
 	 * @throws Exception
 	 */
-	protected function searchObjects($class_name, $parameters)
+	protected function searchObjects(string $class_name, array $parameters) : array
 	{
 		$search               = [];
 		$search_array_builder = new Search_Array_Builder();
@@ -306,46 +307,47 @@ class Controller implements Default_Feature_Controller
 	 * @param $parameters array
 	 * @return string
 	 */
-	protected function searchObjectsForAutoCompleteCombo($class_name, array $parameters)
+	protected function searchObjectsForAutoCompleteCombo(string $class_name, array $parameters)
+		: string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection verified class name */
-		$this->class   = new Reflection_Class($class_name);
-		$first_search  = null;
-		$search        = null;
-		$second_search = null;
+		$this->class = new Reflection_Class($class_name);
+		$search_1    = null;
+		$search_2    = null;
+		$search_3    = null;
 		if (!empty($parameters['term'])) {
 			$search_array_builder = new Search_Array_Builder();
-			$search = $search_array_builder->buildMultiple(
-				$this->class, $parameters['term'], '', '%'
-			);
-			$second_search = $search_array_builder->buildMultiple(
+			$search_2 = $search_array_builder->buildMultiple(
 				$this->class, str_replace(' ', '%', $parameters['term']), '', '%'
 			);
+			$search_3 = $search_array_builder->buildMultiple(
+				$this->class, $parameters['term'], '', '%'
+			);
 			$search_array_builder->and = '¤no-and-separator¤';
-			$first_search = $search_array_builder->buildMultiple(
+			$search_1 = $search_array_builder->buildMultiple(
 				$this->class, $parameters['term'], '', '%'
 			);
 		}
 		if (!empty($parameters['filters'])) {
-			$this->applyFiltersToSearch($first_search,  $parameters['filters']);
-			$this->applyFiltersToSearch($search,        $parameters['filters']);
-			$this->applyFiltersToSearch($second_search, $parameters['filters']);
+			$this->applyFiltersToSearch($search_1, $parameters['filters']);
+			$this->applyFiltersToSearch($search_2, $parameters['filters']);
+			$this->applyFiltersToSearch($search_3, $parameters['filters']);
 		}
 		$search_options = [];
 		if (
 			$filters = Filter_Annotation::apply($class_name, $search_options, Filter_Annotation::FOR_USE)
 		) {
-			$first_search  = $first_search  ? Func::andOp([$filters, $first_search])  : $filters;
-			$search        = $search        ? Func::andOp([$filters, $search])        : $filters;
-			$second_search = $second_search ? Func::andOp([$filters, $second_search]) : $filters;
+			$search_1 = $search_1 ? Func::andOp([$filters, $search_1]) : $filters;
+			$search_2 = $search_2 ? Func::andOp([$filters, $search_2]) : $filters;
+			$search_3 = $search_3 ? Func::andOp([$filters, $search_3]) : $filters;
 		}
 
 		// first object only
 		if (!empty($parameters['first'])) {
 			$search_options[] = Dao::limit(1);
-			$objects = $this->search($first_search, $class_name, $search_options)
-				?: $this->search($second_search, $class_name, $search_options)
-				?: $this->search($search, $class_name, $search_options);
+			$objects = $this->search($search_1, $class_name, $search_options)
+				?: $this->search($search_2, $class_name, $search_options)
+				?: $this->search($search_3, $class_name, $search_options);
 			/** @noinspection PhpUnhandledExceptionInspection verified class name */
 			$source_object = $objects
 				? reset($objects)
@@ -357,20 +359,20 @@ class Controller implements Default_Feature_Controller
 			if (isset($parameters['limit'])) {
 				$search_options[] = Dao::limit($parameters['limit']);
 			}
-			if (is_array($search)) {
-				foreach ($search as $property_name => $value) {
+			if (is_array($search_3)) {
+				foreach ($search_3 as $property_name => $value) {
 					/** @noinspection PhpUnhandledExceptionInspection property of the class */
 					if (
 						!strlen($value)
 						&& (new Reflection_Property($class_name, $property_name))->getType()->isClass()
 					) {
-						$search[$property_name] = Func::isNull();
+						$search_3[$property_name] = Func::isNull();
 					}
 				}
 			}
-			$objects = $this->search($first_search, $class_name, $search_options)
-				?: $this->search($second_search, $class_name, $search_options)
-				?: $this->search($search, $class_name, $search_options);
+			$objects = $this->search($search_1, $class_name, $search_options)
+				?: $this->search($search_2, $class_name, $search_options)
+				?: $this->search($search_3, $class_name, $search_options);
 			return $this->buildJson($objects, $class_name);
 		}
 	}
