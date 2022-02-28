@@ -50,10 +50,10 @@ class Controller implements Default_Feature_Controller
 
 	//-------------------------------------------------------------------------- applyFiltersToSearch
 	/**
-	 * @param $search  array|object
+	 * @param $search  array|object|null
 	 * @param $filters array[]|string[] list of filters to apply (most of times string[])
 	 */
-	protected function applyFiltersToSearch(array|object &$search, array $filters)
+	protected function applyFiltersToSearch(array|object|null &$search, array $filters)
 	{
 		if (!(is_object($search) && $search->isAnd())) {
 			/** @noinspection PhpConditionAlreadyCheckedInspection Inspector bug : may be [] */
@@ -222,13 +222,13 @@ class Controller implements Default_Feature_Controller
 	/**
 	 * Optimized search : if OR, it's best launching multiple fast searches than one slow one
 	 *
-	 * @param $what       object|array source object for filter, only set properties will be used for
-	 *                    search
+	 * @param $what       object|array|null source object for filter, only set properties will be used
+	 *                    for search
 	 * @param $class_name string must be set if is $what is a filter array instead of a filter object
 	 * @param $options    Option[] some options for advanced search
 	 * @return object[] a collection of read objects
 	 */
-	protected function search(array|object $what, string $class_name, array $options) : array
+	protected function search(array|object|null $what, string $class_name, array $options) : array
 	{
 		if (!Sort::in($options)) {
 			$options[] = Dao::sort();
