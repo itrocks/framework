@@ -34,7 +34,7 @@ input[type=checkbox], input[type=radio] {
 textarea {
 	height: 21px;
 	line-height: 1.5em;
-	padding: $input-padding;
+	padding: 4px $input-padding 3px;
 }
 
 .quill.string,
