@@ -11,6 +11,7 @@ use ITRocks\Framework\PHP\ICompiler;
 use ITRocks\Framework\PHP\Reflection_Class;
 use ITRocks\Framework\PHP\Reflection_Source;
 use ITRocks\Framework\Tools\Namespaces;
+use phpDocumentor\Reflection\Types\Boolean;
 
 /**
  * This compiles child classes that extend classes replaced by built classes :
@@ -22,10 +23,10 @@ class Linked_Classes_Compiler implements ICompiler
 	//--------------------------------------------------------------------------------------- compile
 	/**
 	 * @param $source   Reflection_Source the PHP source file object
-	 * @param $compiler PHP\Compiler the main compiler
+	 * @param $compiler PHP\Compiler|null the main compiler
 	 * @return boolean true if compilation process did something, else false
 	 */
-	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null)
+	public function compile(Reflection_Source $source, PHP\Compiler $compiler = null) : bool
 	{
 		$builder  = Builder::current();
 		$compiled = false;
@@ -38,7 +39,7 @@ class Linked_Classes_Compiler implements ICompiler
 				$replacement_class_name = Builder::className($parent_class_name);
 				if (is_array($replacement_class_name)) {
 					trigger_error('Replacement classes should all be compiled', E_USER_ERROR);
-					$compiler->addSource($source);
+					//$compiler->addSource($source);
 				}
 				elseif (
 					($parent_class_name !== $replacement_class_name)
@@ -53,23 +54,24 @@ class Linked_Classes_Compiler implements ICompiler
 				}
 			}
 			foreach ($class->getTraitNames() as $trait_name) {
-				if (!Class_Builder::isBuilt($trait_name)) {
-					$replacement_trait_name = Builder::className($trait_name);
-					if (is_array($replacement_trait_name)) {
-						trigger_error('Replacement traits should all be compiled', E_USER_ERROR);
-						$compiler->addSource($source);
-					}
-					elseif (
-						($trait_name !== $replacement_trait_name)
-						&& (
-							Class_Builder::isBuilt($replacement_trait_name)
-							|| $builder->isReplacement($replacement_trait_name)
-						)
-						&& !$this->recursiveReplacement($class, $trait_name, $replacement_trait_name)
-					) {
-						$this->compileUse($class, $trait_name, $replacement_trait_name);
-						$compiled = true;
-					}
+				if (Class_Builder::isBuilt($trait_name)) {
+					continue;
+				}
+				$replacement_trait_name = Builder::className($trait_name);
+				if (is_array($replacement_trait_name)) {
+					trigger_error('Replacement traits should all be compiled', E_USER_ERROR);
+					//$compiler->addSource($source);
+				}
+				elseif (
+					($trait_name !== $replacement_trait_name)
+					&& (
+						Class_Builder::isBuilt($replacement_trait_name)
+						|| $builder->isReplacement($replacement_trait_name)
+					)
+					&& !$this->recursiveReplacement($class, $trait_name, $replacement_trait_name)
+				) {
+					$this->compileUse($class, $trait_name, $replacement_trait_name);
+					$compiled = true;
 				}
 			}
 		}
@@ -83,7 +85,7 @@ class Linked_Classes_Compiler implements ICompiler
 	 * @param $class                  Reflection_Class
 	 * @param $replacement_class_name string
 	 */
-	protected function compileClass(Reflection_Class $class, $replacement_class_name)
+	protected function compileClass(Reflection_Class $class, string $replacement_class_name)
 	{
 		$extended         = null;
 		$buffer           = $class->source->getSource();
@@ -116,12 +118,11 @@ class Linked_Classes_Compiler implements ICompiler
 	 * @param $trait_name             string
 	 * @param $replacement_trait_name string
 	 */
-	protected function compileUse(Reflection_Class $class, $trait_name, $replacement_trait_name)
-	{
+	protected function compileUse(
+		Reflection_Class $class, string $trait_name, string $replacement_trait_name
+	) {
 		$buffer           = $class->source->getSource();
-		$short_trait_name = isset($class->short_trait_names[$trait_name])
-			? $class->short_trait_names[$trait_name]
-			: BS . $trait_name;
+		$short_trait_name = $class->short_trait_names[$trait_name] ?? (BS . $trait_name);
 		$buffer = preg_replace_callback(
 			'%(\s+use\s+)(' . str_replace(BS, BS . BS, $short_trait_name) . ')([;\s])%',
 			function($match) use ($replacement_trait_name) {
@@ -134,7 +135,7 @@ class Linked_Classes_Compiler implements ICompiler
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile
 	/**
-	 * When a class is compiled, all classes that extends it must be compiled too
+	 * When a class is compiled, all classes that extend it must be compiled too
 	 *
 	 * @param $more_sources More_Sources
 	 */
@@ -144,21 +145,22 @@ class Linked_Classes_Compiler implements ICompiler
 		$search = ['type' => [Dependency::T_EXTENDS, Dependency::T_USE]];
 		foreach ($more_sources->sources as $source) {
 			foreach ($source->getClasses() as $class) {
-				if (!Class_Builder::isBuilt($class->name)) {
-					// add all classes that extend source classes
-					$search['dependency_name'] = Func::equal($class->name);
-					foreach (Dao::search($search, Dependency::class) as $dependency) {
-						/** @var $dependency Dependency */
-						if (
-							!isset($more_sources->sources[$dependency->file_name])
-							&& !isset($more_sources->sources[$dependency->class_name])
-							&& !Class_Builder::isBuilt($dependency->class_name)
-						) {
-							$more_sources->add(
-								Reflection_Source::ofFile($dependency->file_name, $dependency->class_name),
-								$dependency->class_name
-							);
-						}
+				if (Class_Builder::isBuilt($class->name)) {
+					continue;
+				}
+				// add all classes that extend source classes
+				$search['dependency_name'] = Func::equal($class->name);
+				foreach (Dao::search($search, Dependency::class) as $dependency) {
+					/** @var $dependency Dependency */
+					if (
+						!isset($more_sources->sources[$dependency->file_name])
+						&& !isset($more_sources->sources[$dependency->class_name])
+						&& !Class_Builder::isBuilt($dependency->class_name)
+					) {
+						$more_sources->add(
+							Reflection_Source::ofFile($dependency->file_name, $dependency->class_name),
+							$dependency->class_name
+						);
 					}
 				}
 			}
@@ -175,8 +177,9 @@ class Linked_Classes_Compiler implements ICompiler
 	 * @return boolean
 	 */
 	protected function recursiveReplacement(
-		Reflection_Class $class, $parent_class_name, $replacement_class_name
-	) {
+		Reflection_Class $class, string $parent_class_name, string $replacement_class_name
+	) : bool
+	{
 		if ($replacement_class_name !== $parent_class_name) {
 			return Reflection_Source::ofClass($replacement_class_name)
 				->getClass($replacement_class_name)

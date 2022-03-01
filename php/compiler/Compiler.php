@@ -39,8 +39,8 @@ use Serializable;
  * We have direct reverse to class name!
  * To reverse source file we just have to check existence of both case file.
  */
-class Compiler extends Cache implements
-	Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
+class Compiler extends Cache
+	implements Class_File_Name_Getter, Configurable, Needs_Main, Registerable, Serializable, Updatable
 {
 
 	//-------------------------------------------------------------------------------- CACHE_DIR_NAME
@@ -127,7 +127,7 @@ class Compiler extends Cache implements
 	 *
 	 * @var Reflection_Source[]
 	 */
-	private $sources;
+	private array $sources;
 
 	//---------------------------------------------------------------------------------- $text_output
 	/**
@@ -286,10 +286,10 @@ class Compiler extends Cache implements
 	 * eg. a-class-name-like-This into a/class/name/like/This.php or a/class/name/like/this/This.php
 	 *
 	 * @param $path string
-	 * @return string|boolean false if source file not found
+	 * @return string|false false if source file not found
 	 * @see Compiler::sourceFileToPath()
 	 */
-	public static function cacheFileNameToSourceFile($path)
+	public static function cacheFileNameToSourceFile(string $path) : string|false
 	{
 		return Names::classToFilePath(self::cacheFileNameToClass($path));
 	}
@@ -347,7 +347,7 @@ class Compiler extends Cache implements
 				}
 			}
 		}
-		$this->sources = null;
+		$this->sources = [];
 
 		(new Dependency\Cache)->generate();
 
@@ -372,7 +372,8 @@ class Compiler extends Cache implements
 				continue;
 			}
 			/** @var $compilers ICompiler[] */
-			foreach ($compilers as $compiler_key => $compiler) {
+			foreach ($compilers as $compiler) {
+				$this->compiler = $compiler;
 				if (isset($GLOBALS['D'])) {
 					echo get_class($compiler) . ' : Compile source file ' . $source->file_name
 						. ' class ' . $class_name . BRLF;
@@ -434,7 +435,7 @@ class Compiler extends Cache implements
 	//------------------------------------------------------------------------------ getClassFileName
 	/**
 	 * Gets a Reflection_Source knowing its class _name.
-	 * Uses sources cache, or router's getClassFileName() and fill-in cache.
+	 * Use sources cache, or router's getClassFileName() and fill-in cache.
 	 *
 	 * @param $class_name string
 	 * @return Reflection_Source
@@ -444,17 +445,10 @@ class Compiler extends Cache implements
 		if (isset($this->saved_sources[$class_name])) {
 			return $this->saved_sources[$class_name];
 		}
-		else {
-			/** @var $router Router */
-			$router = Session::current()->plugins->get(Router::class);
-			if (Class_Builder::isBuilt($class_name)) {
-				$file_name = self::classToCacheFilePath($class_name);
-			}
-			else {
-				$file_name = $router->getClassFileName($class_name);
-			}
-			return Reflection_Source::ofFile($file_name, $class_name);
-		}
+		$file_name = Class_Builder::isBuilt($class_name)
+			? self::classToCacheFilePath($class_name)
+			: Session::current()->plugins->get(Router::class)->getClassFileName($class_name);
+		return Reflection_Source::ofFile($file_name, $class_name);
 	}
 
 	//----------------------------------------------------------------------------- getFilesToCompile
@@ -608,9 +602,9 @@ class Compiler extends Cache implements
 		$by_parents_count = [];
 		foreach ($this->sources as $source_class_name => $source) {
 			// -1 : no class in source, 0 : no parent, 1 : one parent, etc.
-			$parents_count = -1;
-			$parent_class  = $source->getClasses();
-			$parent_class  = reset($parent_class);
+			$parents_count  = -1;
+			$parent_classes = $source->getClasses();
+			$parent_class   = reset($parent_classes);
 			while (
 				$parent_class
 				&& ($parent_class instanceof Reflection_Class)
@@ -620,8 +614,8 @@ class Compiler extends Cache implements
 				$parent_name = $parent_class->getParentName();
 				if ($parent_name) {
 					if (isset($this->saved_sources[$parent_name])) {
-						$parent_class = $this->saved_sources[$parent_name]->getClasses();
-						$parent_class = reset($parent_class);
+						$parent_classes = $this->saved_sources[$parent_name]->getClasses();
+						$parent_class   = reset($parent_classes);
 					}
 					else {
 						$file_name = $this->getClassFileName($parent_name);
@@ -632,8 +626,8 @@ class Compiler extends Cache implements
 							$file_name = $file_name->file_name;
 						}
 						if (isset($this->saved_sources[$file_name])) {
-							$parent_class = $this->saved_sources[$file_name]->getClasses();
-							$parent_class = reset($parent_class);
+							$parent_classes = $this->saved_sources[$file_name]->getClasses();
+							$parent_class   = reset($parent_classes);
 						}
 						else {
 							$parent_class = $parent_class->getParentClass();

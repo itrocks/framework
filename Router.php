@@ -274,7 +274,7 @@ class Router implements
 	 * Checks, searches, and gets the file path for a class name
 	 *
 	 * @param $class_name string
-	 * @return string
+	 * @return ?string
 	 */
 	public function getClassFileName($class_name)
 	{
@@ -283,37 +283,19 @@ class Router implements
 			if (!file_exists($class_path)) {
 				$class_path = $this->addClassPath($class_name);
 			}
-			if ($class_path) {
-				/** @noinspection PhpIncludeInspection */
-				/*
-				include_once Include_Filter::file($class_path);
-				if (
-					!class_exists($class_name, false)
-					&& !interface_exists($class_name, false)
-					&& !trait_exists($class_name, false)
-				) {
-					$class_path = $this->addClassPath($class_name);
-				}
-				*/
-				return $class_path;
-			}
-			return null;
+			return $class_path ?: null;
 		}
-		else {
-			return $this->addClassPath($class_name);
-		}
+		return $this->addClassPath($class_name);
 	}
 
 	//------------------------------------------------------------------------- getElementClassNameOf
 	/**
 	 * @param $class_name string
-	 * @return string
+	 * @return ?string
 	 */
-	public function getElementClassNameOf($class_name)
+	public function getElementClassNameOf(string $class_name) : ?string
 	{
-		return isset($this->element_class_names[$class_name])
-			? $this->element_class_names[$class_name]
-			: null;
+		return $this->element_class_names[$class_name] ?? null;
 	}
 
 	//------------------------------------------------------------------------------ getFullClassName
