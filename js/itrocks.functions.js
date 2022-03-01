@@ -2,7 +2,7 @@
 //------------------------------------------------------------------------------- copyCssPropertyTo
 copyCssPropertyTo = function(context, element)
 {
-	var tab = [
+	const tab = [
 		'font-size',
 		'font',
 		'font-family',
@@ -16,6 +16,7 @@ copyCssPropertyTo = function(context, element)
 		'border-top-width',
 		'border-right-width',
 		'border-color',
+		'box-sizing',
 		'margin',
 		'margin-bottom',
 		'margin-left',
@@ -24,115 +25,115 @@ copyCssPropertyTo = function(context, element)
 		'text-rendering',
 		'word-spacing',
 		'word-wrap'
-	];
-	for (var i = 0; i < tab.length; i++) {
-		element.css(tab[i], context.css(tab[i]));
+	]
+	for (let i = 0; i < tab.length; i++) {
+		element.css(tab[i], context.css(tab[i]))
 	}
-	element.css('width', context.css('width') ? context.css('width') : context.width() + 'px');
-};
+	element.css('width', context.css('width') ? context.css('width') : context.width() + 'px')
+}
 
 //-------------------------------------------------------------------------- dateFormatToDatepicker
 dateFormatToDatepicker = function(text)
 {
-	return text.repl('d', 'dd').repl('m', 'mm').repl('Y', 'yy');
-};
+	return text.repl('d', 'dd').repl('m', 'mm').repl('Y', 'yy')
+}
 
 //------------------------------------------------------------------------------ getInputTextHeight
 getInputTextHeight = function($context, additional_text)
 {
 	if (additional_text === undefined) {
-		additional_text = '';
+		additional_text = ''
 	}
-	return getTextHeight($context, 0, additional_text);
-};
+	return getTextHeight($context, 0, additional_text)
+}
 
 //------------------------------------------------------------------------------- getInputTextWidth
 getInputTextWidth = function($context, additional_text)
 {
 	if (additional_text === undefined) {
-		additional_text = '';
+		additional_text = ''
 	}
-	return Math.max(40, getTextWidth($context, 0, additional_text));
-};
+	return Math.max(40, getTextWidth($context, 0, additional_text))
+}
 
 //--------------------------------------------------------------------------- getTextContentAsArray
 getTextContentAsArray = function($context, additional_text)
 {
 	if (additional_text === undefined) {
-		additional_text = '';
+		additional_text = ''
 	}
-	var text = $context.is('div')
+	const text = $context.is('div')
 		? $context.html().repl('<br>', "\n").repl('<p>', "\n\n")
-		: ($context.val() + additional_text);
-	return text.repl('<', '&lt;').repl('>', '&gt;').split("\n");
-};
+		: ($context.val() + additional_text)
+	return text.repl('<', '&lt;').repl('>', '&gt;').split("\n")
+}
 
 //----------------------------------------------------------------------------------- getTextHeight
 getTextHeight = function($context, extra_height, additional_text)
 {
 	if (additional_text === undefined) {
-		additional_text = '';
+		additional_text = ''
 	}
-	var content = getTextContentAsArray($context, additional_text);
+	const content = getTextContentAsArray($context, additional_text)
 	// If the last element is empty, need put a character to prevent the browser ignores the character
-	var $last_index = content.length -1;
+	const $last_index = content.length -1
 	if (!content[$last_index]) {
-		content[$last_index] = 'X';
+		content[$last_index] = 'X'
 	}
-	var $height = $('<div class="hidden">').html(content.join('<br>'));
-	$height.appendTo($context.parent());
-	copyCssPropertyTo($context, $height);
-	$height.css('position', 'absolute');
-	var $width = getInputTextWidth($context, additional_text);
-	$height.width($width);
-	var height = $height.height();
+	const $height = $('<div class="hidden">').html(content.join('<br>'))
+	$height.appendTo($context.parent())
+	copyCssPropertyTo($context, $height)
+	$height.css('position', 'absolute')
+	const $width = getInputTextWidth($context, additional_text)
+	$height.width($width)
+	let height = $height.height()
 	if (extra_height !== undefined) {
-		height += extra_height;
+		height += extra_height
 	}
-	$height.remove();
-	return height;
-};
+	$height.remove()
+	return height
+}
 
 //------------------------------------------------------------------------------------ getTextWidth
-var get_text_width_cache = [];
+let get_text_width_cache = []
 getTextWidth = function($context, extra_width, additional_text)
 {
 	if (additional_text === undefined) {
-		additional_text = '';
+		additional_text = ''
 	}
 	if (get_text_width_cache.length > 1000) {
-		get_text_width_cache = [];
+		get_text_width_cache = []
 	}
-	var width = get_text_width_cache[$context.val() + additional_text];
+	let width = get_text_width_cache[$context.val() + additional_text]
 	if (width !== undefined) {
-		return width;
+		return width
 	}
 	else {
-		var content = getTextContentAsArray($context, additional_text);
-		var $width  = $('<span>');
-		$width.append(content.join('<br>')).appendTo('body');
-		copyCssPropertyTo($context, $width);
-		$width.css('position', 'absolute');
-		var $pos = $context.position();
-		$width.css('top', $pos.top);
-		$width.css('left', $pos.left);
-		width = $width.width() + extra_width;
-		var $parent  = $context.parent();
-		var $margins = parseInt($parent.css('margin-right'))
+		const content = getTextContentAsArray($context, additional_text)
+		const $width  = $('<span>')
+		$width.append(content.join('<br>')).appendTo('body')
+		copyCssPropertyTo($context, $width)
+		$width.css('position', 'absolute')
+		const $pos = $context.position()
+		$width.css('top', $pos.top)
+		$width.css('left', $pos.left)
+		width = $width.width() + extra_width
+		const $parent  = $context.parent()
+		const $margins = parseInt($parent.css('margin-right'))
 			+ parseInt($parent.css('padding-right'))
-			+ parseInt($context.css('margin-right'));
-		var ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()));
-		ending_right_parent += $margins;
-		var ending_right = $(window).width() - ($width.offset().left + $width.outerWidth())
-			- extra_width;
+			+ parseInt($context.css('margin-right'))
+		let ending_right_parent = ($(window).width() - ($parent.offset().left + $parent.outerWidth()))
+		ending_right_parent += $margins
+		const ending_right = $(window).width() - ($width.offset().left + $width.outerWidth())
+			- extra_width
 		if (ending_right < ending_right_parent) {
-			width = width - (ending_right_parent - ending_right);
+			width = width - (ending_right_parent - ending_right)
 		}
-		$width.remove();
-		get_text_width_cache[$context.val() + additional_text] = width;
-		return width;
+		$width.remove()
+		get_text_width_cache[$context.val() + additional_text] = width
+		return width
 	}
-};
+}
 
 //---------------------------------------------------------------------------------------- redirect
 /**
@@ -147,25 +148,25 @@ getTextWidth = function($context, extra_width, additional_text)
 redirect = function(uri, target, after, callback, history)
 {
 	//noinspection JSUnresolvedVariable
-	var app = window.app;
-	var more = (
+	const app = window.app
+	const more = (
 		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
-	) ? 'as_widget' : '';
+	) ? 'as_widget' : ''
 	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
-		uri = app.uri_base + uri;
+		uri = app.uri_base + uri
 	}
 	if (!more) {
-		window.location = app.addSID(uri);
+		window.location = app.addSID(uri)
 	}
 	else {
-		var close_function;
-		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		let close_function
+		let $target = (target && (typeof target === 'object')) ? target : $(target)
 		if (target && target.endsWith('main') && !$target.length) {
-			$target = $(target.startsWith('#') ? 'main' : '#main');
+			$target = $(target.startsWith('#') ? 'main' : '#main')
 		}
 		if (!$target.length) {
-			var z_index = zIndexInc();
-			var $after  = (after && (typeof after === 'object')) ? after : $(after);
+			const z_index = zIndexInc()
+			const $after  = (after && (typeof after === 'object')) ? after : $(after)
 			$target     = $('<div>')
 				.addClass('popup')
 				.attr('id', 'window' + ++window.id_index)
@@ -173,58 +174,58 @@ redirect = function(uri, target, after, callback, history)
 				.css('position', 'absolute')
 				.css('top',      $after.length ? ($after.offset().top + $after.outerHeight()) : 10)
 				.css('z-index',  z_index)
-				.appendTo('body');
+				.appendTo('body')
 			close_function = function(event)
 			{
-				event.preventDefault();
-				event.stopImmediatePropagation();
-				$(this).closest('div.popup').remove();
+				event.preventDefault()
+				event.stopImmediatePropagation()
+				$(this).closest('div.popup').remove()
 				if (uri.indexOf('fill_combo=') > -1) {
-					var fill_combo = uri.rParse('fill_combo=').lParse('&');
-					$('[name=' + DQ + fill_combo + DQ + ']').next().focus();
+					const fill_combo = uri.rParse('fill_combo=').lParse('&')
+					$('[name=' + DQ + fill_combo + DQ + ']').next().focus()
 				}
 			}
 		}
 		$.ajax({
 			url:     app.addSID(app.askAnd(uri, more)),
 			success: function(data) {
-				var keep_scroll = new Keep_Scroll($target);
-				keep_scroll.keep();
-				$target = $target.htmlTarget(data);
+				const keep_scroll = new Keep_Scroll($target)
+				keep_scroll.keep()
+				$target = $target.htmlTarget(data)
 				if (close_function) {
 					// do it before build, in order to disable xtarget on .close button
-					$target.find('.actions .close a').click(close_function);
+					$target.find('.actions .close a').click(close_function)
 					$target.find('a').each(function() {
-						var $this = $(this);
-						var href = $this.attr('href');
+						const $this = $(this)
+						const href = $this.attr('href')
 						if (!href.startsWith('#')) {
-							var close_link = app.askAnd(href, 'close=window' + window.id_index);
-							$this.attr('href', close_link);
+							const close_link = app.askAnd(href, 'close=window' + window.id_index)
+							$this.attr('href', close_link)
 						}
-					});
+					})
 				}
-				$target.build();
-				keep_scroll.serve();
+				$target.build()
+				keep_scroll.serve()
 				if (!close_function) {
-					var title = $target.find('h2').first().text();
+					let title = $target.find('h2').first().text()
 					if (!title.length) {
-						title = uri;
+						title = uri
 					}
-					document.title = title;
+					document.title = title
 					if ((history === undefined) || history) {
 						uri = uri.repl('?as_widget=true', '').repl('&as_widget=true', '')
 							.repl('?as_widget=1', '').repl('&as_widget=1', '')
 							.repl('?as_widget', '').repl('&as_widget', '')
-						window.history.pushState({reload: true}, title, uri);
+						window.history.pushState({reload: true}, title, uri)
 					}
 				}
 				if ((callback !== undefined) && callback) {
-					callback.call($target, $target);
+					callback.call($target, $target)
 				}
 			}
-		});
+		})
 	}
-};
+}
 
 //----------------------------------------------------------------------------------- redirectLight
 /**
@@ -240,56 +241,56 @@ redirect = function(uri, target, after, callback, history)
 redirectLight = function(uri, target, condition)
 {
 	//noinspection JSUnresolvedVariable
-	var app  = window.app;
-	var more = (
+	const app  = window.app
+	const more = (
 		(typeof target !== 'object') && (target !== undefined) && (target !== '') && (target[0] === '#')
-	) ? (((uri.indexOf('?') > -1) ? '&' : '?') + 'as_widget') : '';
+	) ? (((uri.indexOf('?') > -1) ? '&' : '?') + 'as_widget') : ''
 	if (uri.substr(0, app.uri_base.length) !== app.uri_base) {
-		uri = app.uri_base + uri;
+		uri = app.uri_base + uri
 	}
 	if (more) {
-		var $target = (target && (typeof target === 'object')) ? target : $(target);
+		let $target = (target && (typeof target === 'object')) ? target : $(target)
 		if (target && target.endsWith('main') && !$target.length) {
-			$target = $(target.startsWith('#') ? 'main' : '#main');
+			$target = $(target.startsWith('#') ? 'main' : '#main')
 		}
 		$.ajax({
 			url:     app.addSID(uri + more),
 			success: function(data) {
 				if (!condition || condition()) {
-					var keep_scroll = new Keep_Scroll($target);
-					keep_scroll.keep();
-					$target.html(data).build();
-					keep_scroll.serve();
+					const keep_scroll = new Keep_Scroll($target)
+					keep_scroll.keep()
+					$target.html(data).build()
+					keep_scroll.serve()
 				}
 			}
-		});
+		})
 	}
-};
+}
 
 //----------------------------------------------------------------------------------------- refresh
 /**
  * Refresh a window embedding data-class, and optionally data-feature and/or data-id
  *
- * @example refresh('main'); refresh('#main'); refresh('#responses'); refresh($('main');
+ * @example refresh('main'); refresh('#main'); refresh('#responses'); refresh($('main')
  * @param target string|jQuery
  */
 refresh = function(target)
 {
-	var uri = refreshLink(target);
+	const uri = refreshLink(target)
 	if (!uri) {
-		return;
+		return
 	}
 	$.ajax({
 		url: app.askAnd(uri, 'as_widget'),
 		success: function(data) {
-			var $target     = refreshTarget(target);
-			var keep_scroll = new Keep_Scroll($target);
-			keep_scroll.keep();
-			$target.html(data).build();
-			keep_scroll.serve();
+			const $target     = refreshTarget(target)
+			const keep_scroll = new Keep_Scroll($target)
+			keep_scroll.keep()
+			$target.html(data).build()
+			keep_scroll.serve()
 		}
-	});
-};
+	})
+}
 
 //------------------------------------------------------------------------------------- refreshLink
 /**
@@ -299,25 +300,25 @@ refresh = function(target)
  */
 refreshLink = function(target)
 {
-	var $target = refreshTarget(target);
-	var $window = $target.children('[data-class]');
+	const $target = refreshTarget(target)
+	let   $window = $target.children('[data-class]')
 	if (!$window.length) {
-		$window = $target.filter('[data-class]');
+		$window = $target.filter('[data-class]')
 	}
 	if (!$window.length) {
-		return '';
+		return ''
 	}
-	var feature = $window.data('feature');
-	var id      = $window.data('id');
-	var uri     = SL + $window.data('class').repl(BS, SL);
+	const feature = $window.data('feature')
+	const id      = $window.data('id')
+	let   uri     = SL + $window.data('class').repl(BS, SL)
 	if (id) {
-		uri += SL + id;
+		uri += SL + id
 	}
 	if (feature) {
-		uri += SL + feature;
+		uri += SL + feature
 	}
-	return app.addSID(app.uri_base + uri);
-};
+	return app.addSID(app.uri_base + uri)
+}
 
 //----------------------------------------------------------------------------------- refreshTarget
 /**
@@ -326,9 +327,9 @@ refreshLink = function(target)
  */
 refreshTarget = function(target)
 {
-	var $target = $(target);
+	let $target = $(target)
 	if (((typeof target) === 'string') && target.endsWith('main') && !$target.length) {
-		$target = $(target.startsWith('#') ? 'main' : '#main');
+		$target = $(target.startsWith('#') ? 'main' : '#main')
 	}
-	return $target;
-};
+	return $target
+}
