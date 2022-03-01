@@ -3,6 +3,7 @@
 copyCssPropertyTo = function(context, element)
 {
 	const tab = [
+		'box-sizing',
 		'font-size',
 		'font',
 		'font-family',

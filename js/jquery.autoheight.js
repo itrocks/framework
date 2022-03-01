@@ -6,7 +6,7 @@
 
 		//------------------------------------------------------------------------------------ settings
 		const settings = $.extend({
-			minimum: 21,
+			minimum: 23,
 			maximum: 280
 		}, options)
 
@@ -18,30 +18,14 @@
 			}
 			const $this           = $(this)
 			const previous_height = parseInt($this.data('ui-text-height'))
-			let   new_height      = Math.min(getInputTextHeight($this, additional_text), settings.maximum)
-
-			const line_height = function($element)
-			{
-				const font_size   = parseInt($element.css('font-size'))
-				const line_height = $element.css('line-height')
-				if (line_height.endsWith('px')) {
-					return parseInt(line_height)
-				}
-				else if (parseInt(line_height).toString() === line_height) {
-					return font_size * line_height
-				}
-			}($this)
-
-			new_height = Math.max(
-				Math.round(new_height / line_height) * line_height + 1, settings.minimum
+			const new_height      = Math.min(Math.max(
+				getInputTextHeight($this, additional_text),
+				settings.minimum), settings.maximum
 			)
 
 			$this.data('ui-text-height', new_height)
 			if (new_height !== previous_height) {
 				$this.height(new_height)
-				if ($this.parent().is('li') && $this.height() < $this.parent().height()) {
-					$this.height($this.parent().height())
-				}
 			}
 		}
 
