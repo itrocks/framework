@@ -68,17 +68,10 @@ $config['ITRocks/Framework'] = [
 	Priority::NORMAL => [
 		Cleaner::class,
 		Compiler::class => [
-			1 => [
-				Router::class,
-				Builder\Compiler::class
-			],
-			2 => [
-				Builder\Linked_Classes_Compiler::class,
-				AOP\Compiler::class
-			],
-			3 => [
-				Mysql\Compiler::class
-			]
+			1 => [Router::class, Builder\Compiler::class],
+			2 => [Builder\Linked_Classes_Compiler::class],
+			3 => [AOP\Compiler::class],
+			4 => [Mysql\Compiler::class]
 		],
 		Dao::class => [
 			Configuration::CLASS_NAME => Link::class,
