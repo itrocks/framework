@@ -118,10 +118,6 @@ ul.properties:not(.tiny) > *.multiline.string > div,
 .property:not(a):not(span):not(th):not(td):not(.tiny).multiline.string > div {
   white-space: pre-line; }
 
-ol.properties.tiny,
-ul.properties.tiny {
-  padding: 10px; }
-
 ol.properties.tiny > *,
 ul.properties.tiny > *,
 .property.tiny {

@@ -80,11 +80,6 @@ ul.selection.actions {
     ul.selection.actions > li > ul > li {
       border-left: none; }
 
-ol.properties.tiny + ul.actions,
-ul.properties.tiny + ul.actions {
-  background: transparent;
-  padding: 0 10px 10px; }
-
 ol.properties > .action > a,
 ul.properties > .action > a {
   border: 1px solid #d8d8d8;
