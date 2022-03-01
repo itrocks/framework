@@ -70,7 +70,7 @@ article.user.register {
       article.user.register > form > ul.properties > li > input,
       article.user.register > form > ul.properties > li > label {
         display: block;
-        width: calc(100% - 22px) !important; }
+        width: 100% !important; }
       article.password.reset > form > ol.properties > li > label,
       article.password.reset > form > ul.properties > li > label,
       article.user.login > form > ol.properties > li > label,
