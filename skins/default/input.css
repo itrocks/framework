@@ -8,27 +8,25 @@ textarea {
   select:not(select):not(.auto_width):not(.datetime),
   textarea:not(select):not(.auto_width):not(.datetime) {
     width: 100px; }
-  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select):not(textarea),
-  select:not([type=file]):not(select):not(textarea),
-  textarea:not([type=file]):not(select):not(textarea) {
+  input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit]):not([type=file]):not(select),
+  select:not([type=file]):not(select),
+  textarea:not([type=file]):not(select) {
     box-sizing: border-box;
     height: 30px;
-    padding: 10px; }
+    padding: 4px 10px 3px; }
   input:not([type=button]):not([type=checkbox]):not([type=color]):not([type=radio]):not([type=submit])[readonly],
   select[readonly],
   textarea[readonly] {
     background: transparent; }
 
-select {
-  height: 30px; }
-
 input[type=checkbox], input[type=radio] {
   margin: 8px 4px 8px 0; }
 
+select {
+  height: 30px; }
+
 textarea {
-  height: 21px;
-  line-height: 1.5em;
-  padding: 4px 10px 3px; }
+  line-height: 18px; }
 
 .quill.string,
 .ql.string {

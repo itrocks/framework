@@ -19,6 +19,7 @@ ul.component-objects, ol.component-objects, table.component-objects,
           vertical-align: top; }
         ul.component-objects > * > * > * textarea, ol.component-objects > * > * > * textarea, table.component-objects > * > * > * textarea,
         .component-objects > ul > * > * > * textarea, .component-objects > ol > * > * > * textarea, .component-objects > table > * > * > * textarea {
+          line-height: 24px;
           margin: 0; }
 
 .component-objects {
@@ -71,17 +72,6 @@ ul.component-objects, ol.component-objects, table.component-objects,
     box-sizing: border-box;
     color: black;
     width: 100%; }
-    .component-objects > * > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]), .component-objects > * > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
-    .component-objects > li:not(.head) > * > * > input:not([type=checkbox]):not([type=radio]),
-    .component-objects > li:not(.head) > * > * > select:not([type=checkbox]):not([type=radio]),
-    .component-objects > li:not(.head) > * > * > textarea:not([type=checkbox]):not([type=radio]),
-    .component-objects > table > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
-    .component-objects > table > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
-    .component-objects > table > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]),
-    .component-objects > tbody > * > * > input:not([type=checkbox]):not([type=radio]),
-    .component-objects > tbody > * > * > select:not([type=checkbox]):not([type=radio]),
-    .component-objects > tbody > * > * > textarea:not([type=checkbox]):not([type=radio]) {
-      min-height: 30px; }
     .component-objects > * > li:not(.head) > * > * > input[readonly], .component-objects > * > li:not(.head) > * > * > select[readonly], .component-objects > * > li:not(.head) > * > * > textarea[readonly],
     .component-objects > li:not(.head) > * > * > input[readonly],
     .component-objects > li:not(.head) > * > * > select[readonly],

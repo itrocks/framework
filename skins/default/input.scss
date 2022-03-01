@@ -12,10 +12,10 @@ textarea {
 		width: 100px;
 	}
 
-	&:not([type=file]):not(select):not(textarea) {
+	&:not([type=file]):not(select) {
 		box-sizing: border-box;
 		height: $input-height;
-		padding: $input-padding;
+		padding: 4px $input-padding 3px;
 	}
 
 	&[readonly] {
@@ -23,18 +23,16 @@ textarea {
 	}
 }
 
-select {
-	height: $input-height;
-}
-
 input[type=checkbox], input[type=radio] {
 	margin: 8px 4px 8px 0;
 }
 
+select {
+	height: $input-height;
+}
+
 textarea {
-	height: 21px;
-	line-height: 1.5em;
-	padding: 4px $input-padding 3px;
+	line-height: 18px;
 }
 
 .quill.string,
