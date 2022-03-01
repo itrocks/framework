@@ -62,7 +62,11 @@
 			return
 		}
 		$cell.data('max-width', width)
-		const calc = width + parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'))
+		let calc = width
+		if ($cell.css('box-sizing') !== 'border-box') {
+			calc += parseInt($cell.css('padding-left')) + parseInt($cell.css('padding-right'))
+				+ parseInt($cell.css('border-left')) + parseInt($cell.css('border-right'))
+		}
 		const setting = $cell.parent().hasClass('auto_width') ? 'simple' : 'multiple'
 		if (!$cell.data('max-width') || !$cell.data('min-width')) {
 			$cell.data('max-width', $cell.css('max-width'))
@@ -93,8 +97,13 @@
 		const calculate = function()
 		{
 			const previous_width = parseInt($element.data('text-width'))
-			const new_width      = getTextWidth(settings, $element, false, true, additional_text)
-				+ parseInt($element.css('padding-left')) + parseInt($element.css('padding-right'))
+			let   new_width      = getTextWidth(settings, $element, false, true, additional_text)
+			if ($element.css('box-sizing') !== 'border-box') {
+				new_width += parseInt($element.css('padding-left'))
+					+ parseInt($element.css('padding-right'))
+					+ parseInt($element.css('border-left'))
+					+ parseInt($element.css('border-right'))
+			}
 			if (new_width !== previous_width) {
 				$element.data('text-width', new_width)
 				const $parent = $element.parent()
@@ -242,7 +251,13 @@
 		}
 		read_cache  = (read_cache  === undefined) || read_cache
 		write_cache = (write_cache === undefined) || write_cache
-		const $span = $('<span>').css({ left: 0, position: 'absolute', top: 0, 'white-space': 'pre' })
+		const $span = $('<span>').css({
+			'box-sizing':  $elements.css('box-sizing'),
+			left:          0,
+			position:      'absolute',
+			top:           0,
+			'white-space': 'pre'
+		})
 		let   max_width = 0
 		cssCopy($elements, $span)
 		$span.appendTo('body')
@@ -333,9 +348,9 @@
 			return
 		}
 		const $input = $element
-		let   min    = parseInt(
-			$element.css('padding-left') + $element.css('border-left')
-			+ $element.css('padding-right') + $element.css('border-right')
+		let   min    = ($element.css('box-sizing') !== 'border-box') ? 0 : parseInt(
+			$element.css('padding-left') + $element.css('padding-right')
+			+ $element.css('border-left') + $element.css('border-right')
 		)
 		while ($element.css('overflow').lParse(SP).toString() !== 'hidden') {
 			$element = $element.parent()
@@ -343,9 +358,9 @@
 				$input.data('max-calculated-width', 9999)
 				return
 			}
-			min += parseInt(
-				$element.css('padding-left') + $element.css('border-left')
-				+ $element.css('padding-right') + $element.css('border-right')
+			min += ($element.css('box-sizing') !== 'border-box') ? 0 : parseInt(
+				$element.css('padding-left') + $element.css('padding-right')
+				+ $element.css('border-left') + $element.css('border-right')
 			)
 		}
 		const max_width = $element.innerWidth() - ($input.offset().left - $element.offset().left) - min
@@ -361,9 +376,9 @@
 		const settings = $.extend({
 			margin_right: {
 				'input':     0,
-				'textarea':  16,
-				'.combo':    26,
-				'.datetime': 26
+				'textarea':  6,
+				'.combo':    16,
+				'.datetime': 16
 			},
 			multiple: {
 				maximum: 300,
