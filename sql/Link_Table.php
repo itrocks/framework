@@ -123,11 +123,10 @@ class Link_Table
 			$foreign_property      = $this->property->getType()->asReflectionClass()->getProperty(
 				$foreign_property_name
 			);
-			$master_column = Names::setToSingle(
-				$foreign_property
-					? Foreignlink_Annotation::of($foreign_property)->value
-					: $foreign_property_name
-			);
+			$foreign_link = $foreign_property
+				? Foreignlink_Annotation::of($foreign_property)->value
+				: null;
+			$master_column       = Names::setToSingle($foreign_link ?: $foreign_property_name);
 			$this->master_column = 'id_' . $master_column;
 		}
 		return $this->master_column;
