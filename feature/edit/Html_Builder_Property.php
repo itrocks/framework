@@ -26,6 +26,7 @@ use ITRocks\Framework\Tools\Encryption\Sensitive_Data;
 use ITRocks\Framework\Tools\Names;
 use ITRocks\Framework\Tools\Password;
 use ITRocks\Framework\View\Html\Dom\Element;
+use ITRocks\Framework\View\Html\Dom\Select;
 
 /**
  * Builds a standard form input matching a given property and value
@@ -346,6 +347,13 @@ class Html_Builder_Property extends Html_Builder_Type
 			$values_captions,
 			$ordered_values
 		);
+		if (
+			($element instanceof Select)
+			&& isset($element->values[''])
+			&& !$this->property->getAnnotation('user_empty_value')->value
+		) {
+			unset($element->values['']);
+		}
 		if ($this->property->getAnnotation('editor')->value) {
 			// @TODO Low : When declaring a editor, it would have to be a default multiline
 			$editor_name = $this->property->getAnnotation('editor')->value;
@@ -353,7 +361,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 		if (
 			Encrypt_Annotation::of($this->property)->value
-				?: Password_Annotation::of($this->property)->value
+			|| Password_Annotation::of($this->property)->value
 		) {
 			if (Encrypt_Annotation::of($this->property)->value === Encryption::SENSITIVE_DATA) {
 				if ($value = (new Sensitive_Data)->decrypt($this->value, $this->property)) {

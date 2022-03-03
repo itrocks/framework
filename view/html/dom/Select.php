@@ -26,7 +26,7 @@ class Select extends Element
 	/**
 	 * @var string[]
 	 */
-	private $values = [];
+	public $values = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
