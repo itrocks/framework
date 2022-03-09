@@ -75,7 +75,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @var string The name of the class
 	 */
-	public $name;
+	public $name = null;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
@@ -188,11 +188,23 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$this->source = $source;
 
 		unset($this->line);
-		unset($this->name);
 		unset($this->stop);
+		$this->name = null;
 
-		if (isset($name)) {
-			$this->name = (substr($name, 0, 1) === BS) ? substr($name, 1) : $name;
+		if (!$name && $this->name) {
+			$this->scanUntilClassName();
+			if ($this->name) {
+				$name = $this->name;
+			}
+		}
+		if ($name) {
+			$this->name = str_starts_with($name, BS) ? substr($name, 1) : $name;
+			if (!isset(Reflection_Source::$class_cache[$name])) {
+				Reflection_Source::$class_cache[$name] = $this;
+			}
+			else {
+				echo "! Already cached class $name 1" . BRLF;
+			}
 		}
 	}
 
@@ -228,29 +240,17 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 * This can be called to be sure that if parent data changed, current data will change too.
 	 * Set $all to true if you change anything into the source, to ensure that every source cache
 	 * has been reset.
-	 *
-	 * @param $all boolean if true, reset the reflection class as if it is just loaded
 	 */
-	public function free($all = false)
+	public function free()
 	{
-		if ($all) {
-			$property_defaults = get_class_vars(get_class($this));
-			unset($property_defaults['annotations_cache']);
-			unset($property_defaults['name']);
-			unset($property_defaults['source']);
-			foreach ($property_defaults as $property_name => $default_value) {
-				if (!isset(static::$$property_name)) {
-					$this->$property_name = $default_value;
-				}
+		$property_defaults = get_class_vars(get_class($this));
+		unset($property_defaults['annotations_cache']);
+		unset($property_defaults['name']);
+		unset($property_defaults['source']);
+		foreach ($property_defaults as $property_name => $default_value) {
+			if (!isset(static::$$property_name)) {
+				$this->$property_name = $default_value;
 			}
-		}
-		else {
-			// parent may have been changed into a built class, more traits may have been added to them
-			$this->parent_methods    = null;
-			$this->parent_properties = null;
-			// more traits may have been added
-			$this->traits_methods    = null;
-			$this->traits_properties = null;
 		}
 	}
 
@@ -972,6 +972,12 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	public static function of($class_name)
 	{
+		if (str_starts_with($class_name, BS)) {
+			$class_name = substr($class_name, 1);
+		}
+		if (isset(Reflection_Source::$class_cache[$class_name])) {
+			return Reflection_Source::$class_cache[$class_name];
+		}
 		return Reflection_Source::ofClass($class_name)->getClass($class_name);
 	}
 
@@ -1229,78 +1235,79 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	 */
 	private function scanUntilClassName()
 	{
-		if (!isset($this->use)) {
-			$this->getTokens();
-			if (!$this->tokens) return;
-			$token = $this->tokens[$this->token_key = 0];
-
-			$this->namespace = '';
-			$this->use       = [];
-			do {
-
-				$this->doc_comment = '';
-				$this->is_abstract = false;
-				$this->is_final    = false;
-
-				while (!is_array($token) || !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT])) {
-					if (is_array($token)) {
-						switch ($token[0]) {
-
-							case T_NAMESPACE:
-								$this->namespace = $this->scanClassName();
-								$this->use = [];
-								break;
-
-							case T_USE:
-								foreach ($this->scanClassNames() as $used => $line) {
-									$this->use[$used] = $used;
-								}
-								break;
-
-							case T_DOC_COMMENT:
-								$this->doc_comment .= $token[1];
-								break;
-
-							case T_ABSTRACT:
-								$this->is_abstract = true;
-								break;
-
-							case T_FINAL:
-								$this->is_final = true;
-								break;
-
-							case T_COMMENT: case T_WHITESPACE:
-								break;
-
-							default:
-								$this->doc_comment = '';
-
-						}
-					}
-					else {
-						$this->doc_comment = '';
-					}
-					$token = $this->tokens[++$this->token_key];
-				}
-
-				$this->line = $token[2];
-				$this->type = $token[0];
-				if($this->type !== T_CLASS) {
-					$this->is_abstract = true;
-				}
-
-				$class_name = $this->fullClassName($this->scanClassName(), false);
-
-				if (
-					($class_name !== $this->name) && (strtolower($class_name) === strtolower($this->name))
-				) {
-					$this->wrongCaseError($class_name, $this->name);
-				}
-
-			} while (!isset($this->name) || ($class_name !== $this->name));
-			$this->name = $class_name;
-
+		if (isset($this->use)) {
+			return;
 		}
+		$this->getTokens();
+		if (!$this->tokens) return;
+		$token = $this->tokens[$this->token_key = 0];
+
+		$this->namespace = '';
+		$this->use       = [];
+		do {
+
+			$this->doc_comment = '';
+			$this->is_abstract = false;
+			$this->is_final    = false;
+
+			while (!is_array($token) || !in_array($token[0], [T_CLASS, T_INTERFACE, T_TRAIT])) {
+				if (is_array($token)) {
+					switch ($token[0]) {
+
+						case T_NAMESPACE:
+							$this->namespace = $this->scanClassName();
+							$this->use = [];
+							break;
+
+						case T_USE:
+							foreach ($this->scanClassNames() as $used => $line) {
+								$this->use[$used] = $used;
+							}
+							break;
+
+						case T_DOC_COMMENT:
+							$this->doc_comment .= $token[1];
+							break;
+
+						case T_ABSTRACT:
+							$this->is_abstract = true;
+							break;
+
+						case T_FINAL:
+							$this->is_final = true;
+							break;
+
+						case T_COMMENT: case T_WHITESPACE:
+							break;
+
+						default:
+							$this->doc_comment = '';
+
+					}
+				}
+				else {
+					$this->doc_comment = '';
+				}
+				$token = $this->tokens[++$this->token_key];
+			}
+
+			$this->line = $token[2];
+			$this->type = $token[0];
+			if($this->type !== T_CLASS) {
+				$this->is_abstract = true;
+			}
+
+			$class_name = $this->fullClassName($this->scanClassName(), false);
+
+			if (
+				isset($this->name) && ($class_name !== $this->name)
+				&& (strtolower($class_name) === strtolower($this->name))
+			) {
+				$this->wrongCaseError($class_name, $this->name);
+			}
+
+		} while (!isset($this->name) || ($class_name !== $this->name));
+		$this->name = $class_name;
 	}
 
 	//-------------------------------------------------------------------------------- wrongCaseError

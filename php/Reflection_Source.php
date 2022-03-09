@@ -52,7 +52,13 @@ class Reflection_Source
 	 *
 	 * @var boolean
 	 */
-	private bool $changed;
+	private bool $changed = false;
+
+	//---------------------------------------------------------------------------------- $class_cache
+	/**
+	 * @var Reflection_Class[]
+	 */
+	public static array $class_cache = [];
 
 	//-------------------------------------------------------------------------------------- $classes
 	/**
@@ -139,7 +145,8 @@ class Reflection_Source
 			}
 		}
 		if ($this->internal = (!$file_name && $class_name)) {
-			$this->classes = [$class_name => new Reflection_Class($this, $class_name)];
+			$class = static::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
+			$this->classes = [$class_name => $class];
 		}
 		$source_class_name = $this->getFirstClassName();
 		if ($class_name && ($class_name !== $source_class_name)) {
@@ -151,33 +158,6 @@ class Reflection_Source
 		}
 		if ($class_name && !isset(self::$cache[$class_name])) self::$cache[$class_name] = $this;
 		if ($file_name  && !isset(self::$cache[$file_name ])) self::$cache[$file_name ] = $this;
-	}
-
-	//------------------------------------------------------------------------------------ clearCache
-	/**
-	 * Clear all cache access to this class or file name
-	 * - both caches accessible with class or file name will be cleared
-	 * - if the first class name into the file differs from $class_or_file_name, both will be cleared
-	 *
-	 * @param $class_or_file_name string|null If null, then clear the entire cache
-	 */
-	public static function clearCache(string $class_or_file_name = null)
-	{
-		if (!isset($class_or_file_name)) {
-			self::$cache = [];
-		}
-		elseif (isset(self::$cache[$class_or_file_name])) {
-			$source = self::$cache[$class_or_file_name];
-			if ($source->file_name) {
-				unset(self::$cache[$source->file_name]);
-			}
-			if ($class_name = $source->getFirstClassName()) {
-				unset(self::$cache[$class_name]);
-			}
-			if (isset(self::$cache[$class_or_file_name])) {
-				unset(self::$cache[$class_or_file_name]);
-			}
-		}
 	}
 
 	//------------------------------------------------------------------------------------------ free
@@ -199,17 +179,28 @@ class Reflection_Source
 	{
 		if (isset($this->classes)) {
 			foreach ($this->classes as $class) {
-				$class->free(true);
+				$class->free();
 			}
 		}
 
-		if (!$bigger_than || (count($this->classes)      > $bigger_than)) $this->classes      = null;
-		if (!$bigger_than || (count($this->dependencies) > $bigger_than)) $this->dependencies = null;
-		if (!$bigger_than || (count($this->instantiates) > $bigger_than)) $this->instantiates = null;
-		if (!$bigger_than || (count($this->namespaces)   > $bigger_than)) $this->namespaces   = null;
-		if (!$bigger_than || (count($this->requires)     > $bigger_than)) $this->requires     = null;
-		if (!$bigger_than || (count($this->use)          > $bigger_than)) $this->use          = null;
-
+		if (isset($this->classes) && (!$bigger_than || (count($this->classes) > $bigger_than))) {
+			$this->classes = null;
+		}
+		if (isset($this->dependencies) && (!$bigger_than || (count($this->dependencies) > $bigger_than))) {
+			$this->dependencies = null;
+		}
+		if (isset($this->instantiates) && (!$bigger_than || (count($this->instantiates) > $bigger_than))) {
+			$this->instantiates = null;
+		}
+		if (isset($this->namespaces) && (!$bigger_than || (count($this->namespaces) > $bigger_than))) {
+			$this->namespaces = null;
+		}
+		if (isset($this->requires) && (!$bigger_than || (count($this->requires) > $bigger_than))) {
+			$this->requires = null;
+		}
+		if (isset($this->use) && (!$bigger_than || (count($this->use) > $bigger_than))) {
+			$this->use = null;
+		}
 		if (isset($this->file_name) && is_file($this->file_name) && !$this->changed) {
 			$this->source = null;
 		}
@@ -395,7 +386,7 @@ class Reflection_Source
 						E_USER_ERROR
 					);
 				}
-				$class = new Reflection_Class($this, $class_name);
+				$class = static::$class_cache[$class_name] ?? new Reflection_Class($this, $class_name);
 				$class->line = $token[2];
 				$class->type = $token_id;
 				$class_depth = $depth;
@@ -671,7 +662,9 @@ class Reflection_Source
 	public function getClass(string $class_name) : Reflection_Class
 	{
 		$classes = $this->getClasses();
-		return $classes[$class_name] ?? new Reflection_Class($this, $class_name);
+		return $classes[$class_name]
+			?? static::$class_cache[$class_name]
+			?? new Reflection_Class($this, $class_name);
 	}
 
 	//-------------------------------------------------------------------------- getClassDependencies
@@ -941,12 +934,7 @@ class Reflection_Source
 			$result = self::$cache[$file_name];
 		}
 		elseif ($class_name) {
-			if (isset(self::$cache[$class_name])) {
-				$result = self::$cache[$class_name];
-			}
-			else {
-				$result = new Reflection_Source($file_name, $class_name);
-			}
+			$result = self::$cache[$class_name] ?? new Reflection_Source($file_name, $class_name);
 			self::$cache[$file_name] = $result;
 		}
 		else {
