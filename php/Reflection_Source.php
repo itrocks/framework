@@ -135,7 +135,7 @@ class Reflection_Source
 	{
 		$this->accept_compiled_source = !empty($file_name);
 		if (isset($file_name)) {
-			if (substr($file_name, 0, 5) === '<?php') {
+			if (str_starts_with($file_name, '<?php')) {
 				$this->source  = $file_name;
 				$this->changed = true;
 			}
@@ -155,6 +155,9 @@ class Reflection_Source
 				. SP . "has non-matching class $source_class_name into source",
 				E_USER_ERROR
 			);
+		}
+		if ($source_class_name) {
+			$class_name = $source_class_name;
 		}
 		if ($class_name && !isset(self::$cache[$class_name])) self::$cache[$class_name] = $this;
 		if ($file_name  && !isset(self::$cache[$file_name ])) self::$cache[$file_name ] = $this;
@@ -754,8 +757,7 @@ class Reflection_Source
 	 */
 	public function getFirstClassName() : ?string
 	{
-		$class = $this->getFirstClass();
-		return $class ? $class->name : null;
+		return $this->getFirstClass()?->name;
 	}
 
 	//------------------------------------------------------------------------------- getInstantiates
@@ -808,7 +810,7 @@ class Reflection_Source
 			$filename = Names::classToFilePath($class_name);
 			// consider vendor classes like internal classes : we don't work with their sources
 			$source = beginsWith($filename, 'vendor/')
-				? new Reflection_Source(null, $class_name)
+				? (self::$cache[$class_name] ?? new Reflection_Source(null, $class_name))
 				: Reflection_Source::ofFile($filename, $class_name);
 			self::$cache[$class_name] = $source;
 			if (!empty($filename)) {
@@ -908,18 +910,17 @@ class Reflection_Source
 	public static function ofClass(string $class_name) : Reflection_Source
 	{
 		if (isset(self::$cache[$class_name])) {
-			$result = self::$cache[$class_name];
+			return self::$cache[$class_name];
 		}
-		else {
-			$file_name = Class_Builder::isBuilt($class_name)
-				? Compiler::classToCacheFilePath($class_name)
-				: Names::classToFilePath($class_name);
-			if (!file_exists($file_name)) {
-				$file_name = null;
-			}
-			$result = new Reflection_Source($file_name, $class_name);
+		$file_name = Class_Builder::isBuilt($class_name)
+			? Compiler::classToCacheFilePath($class_name)
+			: Names::classToFilePath($class_name);
+		if (!file_exists($file_name)) {
+			$file_name = null;
 		}
-		return $result;
+		return ($file_name && isset(self::$cache[$file_name]))
+			? self::$cache[$file_name]
+			: new Reflection_Source($file_name, $class_name);
 	}
 
 	//---------------------------------------------------------------------------------------- ofFile
@@ -987,7 +988,9 @@ class Reflection_Source
 		}
 
 		foreach ($files as $file_name) {
-			$source = new Reflection_Source($file_name);
+			$source = self::$cache[$file_name]
+				?? self::$cache[$class_name]
+				?? new Reflection_Source($file_name);
 			if ($this->searchFile($class_name, array_keys($source->getRequires()))) {
 				$already = [];
 				return true;
@@ -1018,7 +1021,14 @@ class Reflection_Source
 		}
 		$this->source = $source;
 		if ($class_name = $this->getFirstClassName()) {
-			self::$cache[$class_name] = $this;
+			if (isset(self::$cache[$class_name])) {
+				return (self::$cache[$class_name] === $this)
+					? $this
+					: self::$cache[$class_name]->setSource($source, $reset);
+			}
+			else {
+				self::$cache[$class_name] = $this;
+			}
 		}
 		return $this;
 	}

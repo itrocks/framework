@@ -172,7 +172,7 @@ class Compiler implements Done_Compiler, ICompiler, Needs_Main
 				flush();
 			}
 
-			$class->source->setSource(
+			$class->source = $class->source->setSource(
 				substr(trim($class->source->getSource()), 0, -1)
 				. TAB . '//' . str_repeat('#', 91) . ' AOP' . LF
 				. join('', $methods_code)

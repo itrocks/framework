@@ -237,7 +237,7 @@ class Method
 				. $indent . '}' . LF;
 		}
 
-		$this->class->source->setSource(preg_replace(
+		$this->class->source = $this->class->source->setSource(preg_replace(
 			$preg_expr,
 			'$1$2/* $4 */ private $5function $6$7_' . $count . '$8$9',
 			$buffer

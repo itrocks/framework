@@ -107,7 +107,7 @@ class Linked_Classes_Compiler implements ICompiler
 				$buffer
 			);
 		}
-		$class->source->setSource($buffer);
+		$class->source = $class->source->setSource($buffer);
 	}
 
 	//------------------------------------------------------------------------------------ compileUse
@@ -130,7 +130,7 @@ class Linked_Classes_Compiler implements ICompiler
 			},
 			$buffer
 		);
-		$class->source->setSource($buffer);
+		$class->source = $class->source->setSource($buffer);
 	}
 
 	//-------------------------------------------------------------------------- moreSourcesToCompile

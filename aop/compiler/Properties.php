@@ -672,7 +672,7 @@ class Properties
 		foreach ($this->actions as $method_name => $action) {
 			if ($action == 'rename') {
 				$regexp = Reflection_Method::regex($method_name);
-				$this->class->source->setSource(preg_replace(
+				$this->class->source = $this->class->source->setSource(preg_replace(
 					$regexp,
 					'$1$2/* $4 */ private $5function $6$7_0$8$9',
 					$this->class->source->getSource())

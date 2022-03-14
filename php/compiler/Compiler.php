@@ -375,7 +375,8 @@ class Compiler extends Cache
 			foreach ($compilers as $compiler) {
 				$this->compiler = $compiler;
 				if (isset($GLOBALS['D'])) {
-					echo get_class($compiler) . ' : Compile source file ' . $source->file_name
+					echo $compilers_position . ' '
+						. get_class($compiler) . ' : Compile source file ' . $source->file_name
 						. ' class ' . $class_name . BRLF;
 				}
 				$compiler->compile($source, $this);
@@ -388,8 +389,13 @@ class Compiler extends Cache
 		$file_name = Files::isInPath($source->file_name, $cache_dir)
 			? $source->file_name
 			: ($cache_dir . SL . self::sourceFileToCacheFileName($source->file_name));
+		if (isset($GLOBALS['D'])) {
+			echo "size $file_name " . strlen($source->getSource()) . " changed " . $source->hasChanged()
+				. BRLF;
+		}
 		if ($source->hasChanged()) {
 			$this->has_changed[$source->file_name] = true;
+			if (isset($GLOBALS['D'])) echo "script_put_contents($file_name)" . BRLF;
 			script_put_contents($file_name, $source->getSource());
 			$this->replaceDependencies($source);
 		}
