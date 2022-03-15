@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Application;
 use ITRocks\Framework\Email;
 
 /**
@@ -11,23 +12,29 @@ class File
 
 	//---------------------------------------------------------------------------------------- $email
 	/**
-	 * @var Email
+	 * @var ?Email
 	 */
-	public $email;
+	protected ?Email $email = null;
 
+	//--------------------------------------------------------------------------------- $file_content
+	/**
+	 * @var ?string Email file content
+	 */
+	protected ?string $file_content = null;
+	
 	//------------------------------------------------------------------------------------- $filename
 	/**
-	 * @var string
+	 * @var ?string File name
 	 */
-	public $filename;
+	protected ?string $filename = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * Can be initialized with a filename or an Email object
+	 * Can be initialized with a filename, an email file content, or an Email object
 	 *
 	 * @param $email string|Email
 	 */
-	public function __construct($email)
+	public function __construct(string|Email $email)
 	{
 		if ($email instanceof Email) {
 			$this->email = $email;
@@ -36,7 +43,7 @@ class File
 			$this->filename = $email;
 		}
 		else {
-			trigger_error('Need a valid email or filename', E_USER_ERROR);
+			$this->file_content = $email;
 		}
 	}
 
@@ -44,26 +51,22 @@ class File
 	/**
 	 * @return Email
 	 */
-	public function email()
+	public function email() : Email
 	{
-		if ($this->email) {
-			return $this->email;
+		if ($this->file_content && !$this->filename) {
+			$this->filename = Application::current()->getTemporaryFilesPath()
+				. SL . uniqid('', true) . '.eml';
+			file_put_contents($this->filename, $this->file_content);
+			$temporary = true;
 		}
-		return $this->email = (new Decoder)->decodeFile($this->filename);
-	}
-
-	//------------------------------------------------------------------------------------------ file
-	/**
-	 * @param $directory string The directory where to store the file into
-	 * @return string The full path of the generated file
-	 */
-	public function file($directory)
-	{
-		if ($this->filename) {
-			return $this->filename;
+		if ($this->filename && !$this->email) {
+			$this->email = (new Decoder)->decodeFile($this->filename);
+			if (isset($temporary)) {
+				unlink($this->filename);
+				$this->filename = null;
+			}
 		}
-		// TODO use Sender\File when merged
-		return '';
+		return $this->email;
 	}
 
 }

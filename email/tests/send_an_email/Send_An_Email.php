@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Tests;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Recipient;
 use ITRocks\Framework\Email\Sender\Smtp;
@@ -24,23 +25,32 @@ class Send_An_Email
 {
 
 	//------------------------------------------------------------------------------------------ send
-	public function send()
+	/**
+	 * @noinspection PhpDocMissingThrowsInspection
+	 * @return string
+	 */
+	public function send() : string
 	{
 		$smtp = Smtp::get(false);
 		if (!$smtp) {
 			return 'No smtp plugin';
 		}
-		$email = new Email();
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$email          = Builder::create(Email::class);
 		$email->content = file_get_contents(__DIR__ . '/send_an_email.html');
 		$email->from    = new Recipient('sender@itrocks.org', 'Bàptistè Pïllôt');
 		$email->subject = 'The mail with quotes and accent : "accentué"';
 		$email->to      = [new Recipient('baptiste@pillot.fr', 'Bàptisté Pîllöt')];
 
-		$email->attachments[] = new Email\Attachment(
-			'texte attaché.txt', file_get_contents(__DIR__ . '/texte attaché.txt')
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$email->attachments[] = Builder::create(
+			Email\Attachment::class,
+			['texte attaché.txt', file_get_contents(__DIR__ . '/texte attaché.txt')]
 		);
-		$email->attachments[] = new Email\Attachment(
-			'itr attaché.png', file_get_contents(__DIR__ . '/itr.png')
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$email->attachments[] = Builder::create(
+			Email\Attachment::class,
+			['itr attaché.png', file_get_contents(__DIR__ . '/itr.png')]
 		);
 		$smtp->working_directory = __DIR__;
 		$smtp->send($email);

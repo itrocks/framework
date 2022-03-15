@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email\Tests;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Email\Encoder;
 use ITRocks\Framework\Email\Recipient;
@@ -23,7 +24,8 @@ class Encoder_Test extends Test
 	protected function setUp() : void
 	{
 		parent::setUp();
-		$this->email = new Email();
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$this->email = Builder::create(Email::class);
 		$this->email->content
 			= '<p>Image: <img alt="" src="itrocks/framework/skins/default/img/delete.png"></p>';
 		$this->email->from = new Recipient('test@email.co', 'Test recipient');

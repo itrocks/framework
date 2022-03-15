@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Password;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
 use ITRocks\Framework\Email;
@@ -27,7 +28,7 @@ trait Reset
 	 * @param $token string
 	 * @return boolean
 	 */
-	public function apply($token)
+	public function apply(string $token) : bool
 	{
 		$applied = 0;
 		Dao::begin();
@@ -47,20 +48,22 @@ trait Reset
 	/**
 	 * Send the token identifier to the user
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $user       User
 	 * @param $identifier string
 	 * @return Email
 	 */
-	protected function prepareEmail(User $user, $identifier)
+	protected function prepareEmail(User $user, string $identifier) : Email
 	{
-		$email    = new Email();
-		$name     = 'No-reply';
-		$noreply  = 'noreply@' . Session::current()->domainName();
-		$template = new Template($this, __DIR__ . '/email.html');
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$email     = Builder::create(Email::class);
+		$name      = 'No-reply';
+		$no_reply  = 'noreply@' . Session::current()->domainName();
+		$template  = new Template($this, __DIR__ . '/email.html');
 		$template->setParameters(['identifier' => $identifier]);
 		$email->content = $template->parse();
-		$email->from    = Dao::searchOne(['name' => $name, 'email' => $noreply], Recipient::class)
-			?: new Recipient($noreply, $name);
+		$email->from    = Dao::searchOne(['name' => $name, 'email' => $no_reply], Recipient::class)
+			?: new Recipient($no_reply, $name);
 		$email->subject = Loc::tr('Password reset');
 		$email->to      = [new Recipient($user->email)];
 		Dao::write($email);

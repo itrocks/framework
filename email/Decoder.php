@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Email;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Email;
 use ITRocks\Framework\Tools\Date_Time;
@@ -18,7 +19,7 @@ class Decoder
 	 * @param $email   Email
 	 * @param $content string
 	 */
-	protected function content(Email $email, $content)
+	protected function content(Email $email, string $content)
 	{
 		$email->content = $content;
 	}
@@ -29,16 +30,19 @@ class Decoder
 	 *
 	 * In its conception, this can only decode files saved using ITRocks. Other uses may crash.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $filename string The path of an .eml file containing full MIME headers and parts
 	 * @return Email
 	 */
-	public function decodeFile($filename)
+	public function decodeFile(string $filename) : Email
 	{
-		$email = new Email();
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$email = Builder::create(Email::class);
 
 		$html_headers  = $html_content  = null;
 		$main_headers  = $main_content  = null;
 		$plain_headers = $plain_content = null;
+		$top_headers                    = null;
 
 		$mime  = mailparse_msg_parse_file($filename);
 		$parts = mailparse_msg_get_structure($mime);
@@ -51,9 +55,14 @@ class Decoder
 			$content = ob_get_contents();
 			ob_end_clean();
 
+			if (!$top_headers) {
+				$top_headers = $data['headers'];
+			}
+
 			switch ($data['content-type']) {
 				case 'multipart/alternative':
 				case 'multipart/mixed':
+				case 'multipart/related':
 					if (!$main_headers && !$main_content) {
 						$main_headers = $data['headers'];
 						$main_content = $content;
@@ -77,8 +86,8 @@ class Decoder
 		mailparse_msg_free($mime);
 
 		Dao::begin();
-		$this->content($email, $html_content ?: $plain_content ?: $main_content);
-		$this->headers($email, $main_headers ?: $html_headers ?: $plain_headers);
+		$this->content($email, $html_content ?: $plain_content ?: $main_content ?: $content);
+		$this->headers($email, $top_headers);
 		Dao::commit();
 
 		return $email;
@@ -89,9 +98,9 @@ class Decoder
 	 * @param $string string
 	 * @return Recipient
 	 */
-	protected function headerToRecipient($string)
+	protected function headerToRecipient(string $string) : Recipient
 	{
-		if (strpos($string, '<') === false) {
+		if (!str_contains($string, '<')) {
 			$address[0] = '';
 			$address[1] = noQuotes($string);
 		}
@@ -113,7 +122,7 @@ class Decoder
 	protected function headers(Email $email, array $headers)
 	{
 		/** @noinspection PhpUnhandledExceptionInspection must be valid */
-		$email->date    = new Date_Time($headers['date']);
+		$email->date    = new Date_Time(lParse($headers['date'], ' ('));
 		$email->from    = $this->headerToRecipient($headers['from']);
 		$email->subject = iconv_mime_decode($headers['subject'], 0, 'UTF-8');
 		$email->to      = [$this->headerToRecipient($headers['to'])];
