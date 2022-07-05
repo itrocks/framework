@@ -2,7 +2,7 @@
 namespace ITRocks\Framework\Sql;
 
 use ITRocks\Framework\Dao;
-use ITRocks\Framework\Feature\Validate\Property\Values_Annotation;
+use ITRocks\Framework\Reflection\Annotation\Property\Values_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
@@ -20,13 +20,13 @@ abstract class Value
 	 *
 	 * @param $value            mixed
 	 * @param $double_backquote boolean
-	 * @param $property         Reflection_Property
+	 * @param $property         Reflection_Property|null
 	 * @return string
 	 */
 	public static function escape(
 		$value, $double_backquote = false, Reflection_Property $property = null
 	) {
-		$type = $property ? $property->getType() : null;
+		$type = $property?->getType();
 		// no is_numeric(), as sql numeric search make numeric conversion of string fields
 		// eg WHERE NAME = 500 instead of '500' will give you '500' and '500L', which is not correct
 		if (
@@ -50,7 +50,7 @@ abstract class Value
 				if (is_null($object_value)) {
 					continue;
 				}
-				if (strpos($object_value, ',') !== false) {
+				if (str_contains($object_value, ',')) {
 					$has_quotes = true;
 				}
 				$strings[] = Dao::current()->escapeString($object_value);
@@ -86,10 +86,10 @@ abstract class Value
 	 *
 	 * Checks if value contains non-escaped '%' or '_'.
 	 *
-	 * @param $value mixed
-	 * @return string
+	 * @param $value string
+	 * @return boolean
 	 */
-	public static function isLike($value)
+	public static function isLike(string $value) : bool
 	{
 		return (substr_count($value, '%') > substr_count($value, BS . '%'))
 			|| (substr_count($value, '_') > substr_count($value, BS . '_'));
