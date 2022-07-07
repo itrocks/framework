@@ -8,10 +8,8 @@ use ITRocks\Framework\Locale\Loc;
 
 /**
  * Boolean search parameters parser
- *
- * @extends Search_Parameter_Parser
  */
-trait Type_Boolean
+abstract class Type_Boolean
 {
 
 	//----------------------------------------------------------------------------- applyBooleanValue
@@ -37,7 +35,7 @@ trait Type_Boolean
 			// only wildcard on a boolean means any value (even if we'd rather do no search on field)
 			return Func::orOp([1, 0]);
 		}
-		if (($search = self::applyBooleanWord($search_value)) !== false) {
+		if (($search = static::applyBooleanWord($search_value)) !== false) {
 			return $search;
 		}
 		if (is_numeric($search_value)) {
@@ -60,10 +58,10 @@ trait Type_Boolean
 	{
 		$word = Words::getCompressedWords([$expression])[0];
 
-		if (in_array($word, self::getBooleanWordsTrueToCompare())) {
+		if (in_array($word, static::getBooleanWordsTrueToCompare())) {
 			return Func::equal('1');
 		}
-		elseif (in_array($word, self::getBooleanWordsFalseToCompare())) {
+		elseif (in_array($word, static::getBooleanWordsFalseToCompare())) {
 			return Func::equal('0');
 		}
 		return false;
@@ -109,7 +107,7 @@ trait Type_Boolean
 			}
 			// We can not translate directly 'n' that is confusing
 			$words_references[] = 'n';
-			$words_localized[]  = self::getBooleanLetters(false);
+			$words_localized[]  = static::getBooleanLetters(false);
 			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
 		return $words;
@@ -132,7 +130,7 @@ trait Type_Boolean
 			}
 			// We can not translate directly 'y' that is confusing
 			$words_references[] = 'y';
-			$words_localized[]  = self::getBooleanLetters(true);
+			$words_localized[]  = static::getBooleanLetters(true);
 			$words = Words::getCompressedWords(array_merge($words_references, $words_localized));
 		}
 		return $words;
