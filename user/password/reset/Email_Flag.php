@@ -30,6 +30,9 @@ class Email_Flag implements Configurable, Registerable
 	 */
 	public function __construct($configuration = null)
 	{
+		if (!$configuration) {
+			return;
+		}
 		if (is_string($configuration)) {
 			$configuration = ['file_path' => $configuration];
 		}
