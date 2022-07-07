@@ -2414,7 +2414,7 @@ class Template
 	 * @param $uri string
 	 * @return string updated uri
 	 */
-	protected function replaceUri($uri)
+	protected function replaceUri(string $uri) : string
 	{
 		if (Uri::startsWithProtocol($uri)) {
 			return str_starts_with($uri, SL) ? substr($uri, 1) : $uri;
@@ -2430,7 +2430,7 @@ class Template
 			? substr($uri, $position + 1)
 			: substr($uri, strrpos($uri, SL) + 1);
 		$file_path = null;
-		if (substr($file_name, -4) == '.css') {
+		if (str_ends_with($file_name, '.css')) {
 			$file_path = static::getCssPath($this->css) . SL . $file_name;
 			if (!file_exists(Paths::$file_root . $file_path)) {
 				$file_path = null;
@@ -2447,7 +2447,7 @@ class Template
 		if (is_file(Paths::$file_root . $file_path)) {
 			$file_path .= '?' . md5_file(Paths::$file_root . $file_path);
 		}
-		return $file_path ? ($this->getUriRoot() . $file_path) : null;
+		return $file_path ? ($this->getUriRoot() . $file_path) : '';
 	}
 
 	//----------------------------------------------------------------------------------- replaceUris
