@@ -676,12 +676,13 @@ class Reflection_Property extends ReflectionProperty
 	 * Return true if the both objects match.
 	 * If one is an object and the other is a string identifier, compare $objectX->id with $objectY
 	 *
-	 * @param $object1 object|string
-	 * @param $object2 object|string
+	 * @param $object1 object|string|null
+	 * @param $object2 object|string|null
 	 * @return boolean
 	 * @throws Exception You compare a Date_Time with stuff that could not be converted to a Date_Time
 	 */
-	private function isEquivalentObject(object|string $object1, object|string $object2) : bool
+	private function isEquivalentObject(object|string|null $object1, object|string|null $object2)
+		: bool
 	{
 		if (is_object($object1) && isset($object1->id)) {
 			$object1 = strval($object1->id);
