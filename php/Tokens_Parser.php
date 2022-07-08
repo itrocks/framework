@@ -43,7 +43,7 @@ trait Tokens_Parser
 	 * @see token_get_all()
 	 * @var array
 	 */
-	private array $tokens;
+	private array $tokens = [];
 
 	//------------------------------------------------------------------------------------------ $use
 	/**

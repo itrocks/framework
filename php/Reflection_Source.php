@@ -209,7 +209,7 @@ class Reflection_Source
 		}
 
 		unset($this->lines);
-		unset($this->tokens);
+		$this->tokens = [];
 	}
 
 	//------------------------------------------------------------------------------------------- get
@@ -866,7 +866,7 @@ class Reflection_Source
 	 */
 	public function & getTokens() : array
 	{
-		if (!isset($this->tokens)) {
+		if (!$this->tokens) {
 			$this->tokens = token_get_all($this->getSource());
 		}
 		return $this->tokens;
