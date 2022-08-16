@@ -20,21 +20,21 @@ class Contextual_Mysqli extends mysqli
 	 * Elements can be a table_name[property_names] too
 	 *
 	 * @example [Order::class, Salesman::class, 'orders_salesmen' => ['id_order', 'id_salesman']]
-	 * @var array each element is a array|string|string[]
+	 * @var array each element is an array|string|string[]
 	 */
-	public $contexts = [];
+	public array $contexts = [];
 
 	//------------------------------------------------------------------------------------- $database
 	/**
 	 * @var string
 	 */
-	public $database;
+	public string $database;
 
 	//----------------------------------------------------------------------------------------- $host
 	/**
 	 * @var string
 	 */
-	public $host;
+	public string $host;
 
 	//----------------------------------------------------------------------------------- $last_errno
 	/**
@@ -43,7 +43,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @var integer
 	 */
-	public $last_errno;
+	public int $last_errno;
 
 	//----------------------------------------------------------------------------------- $last_error
 	/**
@@ -52,7 +52,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @var string
 	 */
-	public $last_error;
+	public string $last_error;
 
 	//----------------------------------------------------------------------------------------- $lock
 	/**
@@ -60,39 +60,39 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @var boolean
 	 */
-	public $lock = false;
+	public bool $lock = false;
 
 	//------------------------------------------------------------------------------------- $password
 	/**
 	 * @var string
 	 */
-	public $password;
+	public string $password;
 
 	//----------------------------------------------------------------------------------------- $port
 	/**
 	 * @var integer
 	 */
-	public $port;
+	public int $port;
 
 	//------------------------------------------------------------------------ $queries_when_unlocked
 	/**
-	 * Queries than are gonna be called when unlock() is called
+	 * Queries to execute when unlock() is called
 	 *
 	 * @var string[]
 	 */
-	protected $queries_when_unlocked = [];
+	protected array $queries_when_unlocked = [];
 
 	//--------------------------------------------------------------------------------------- $socket
 	/**
 	 * @var integer
 	 */
-	public $socket;
+	public int $socket;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
 	 * @var string
 	 */
-	public $user;
+	public string $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -120,10 +120,10 @@ class Contextual_Mysqli extends mysqli
 
 	//-------------------------------------------------------------------------------- databaseExists
 	/**
-	 * @param $database_name string default is current database
+	 * @param $database_name string|null default is current database
 	 * @return boolean
 	 */
-	public function databaseExists($database_name = null)
+	public function databaseExists(string $database_name = null) : bool
 	{
 		if (!$database_name) {
 			$database_name = $this->database;
@@ -142,7 +142,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $column_name string|null If set, drop this column instead of the table
 	 * @return boolean true if dropped, false if was not already existing
 	 */
-	public function drop($table_name, $column_name = null)
+	public function drop(string $table_name, string $column_name = null) : bool
 	{
 		if ($this->exists($table_name, $column_name)) {
 			/** @noinspection SqlResolve dynamic */
@@ -161,7 +161,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $database_name string
 	 * @return boolean true if was existing and has been removed, false if there was no visible db
 	 */
-	public function dropDatabase($database_name)
+	public function dropDatabase(string $database_name) : bool
 	{
 		if ($this->databaseExists($database_name)) {
 			$this->query("DROP DATABASE `$database_name`");
@@ -175,10 +175,10 @@ class Contextual_Mysqli extends mysqli
 	 * Checks if a table or column exists
 	 *
 	 * @param $table_name  string
-	 * @param $column_name string
+	 * @param $column_name string|null
 	 * @return boolean true if the object exists in current database
 	 */
-	public function exists($table_name, $column_name = null)
+	public function exists(string $table_name, string $column_name = null) : bool
 	{
 		if (isset($column_name)) {
 			$table = Table_Builder_Mysqli::build($this, $table_name);
@@ -203,7 +203,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @return string[]
 	 */
-	public function getDatabases()
+	public function getDatabases() : array
 	{
 		$databases = [];
 		$res       = $this->query('SHOW DATABASES');
@@ -220,7 +220,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @return string[]
 	 */
-	public function getTables()
+	public function getTables() : array
 	{
 		$tables = [];
 		$res    = $this->query('SHOW TABLES');
@@ -237,7 +237,7 @@ class Contextual_Mysqli extends mysqli
 	 *
 	 * @return string[]
 	 */
-	public function getViews()
+	public function getViews() : array
 	{
 		$views = [];
 		$res   = $this->query('SHOW FULL TABLES WHERE TABLE_TYPE LIKE ' . DQ . 'VIEW' . DQ);
@@ -255,7 +255,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $mysqli Contextual_Mysqli
 	 * @return boolean
 	 */
-	public function is(Contextual_Mysqli $mysqli)
+	public function is(Contextual_Mysqli $mysqli) : bool
 	{
 		return ($mysqli->thread_id === $this->thread_id) && ($mysqli->host_info === $this->host_info);
 	}
@@ -267,7 +267,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isDelete($query)
+	public function isDelete(string $query) : bool
 	{
 		return (strtoupper(substr(trim($query), 0, 6)) === 'DELETE');
 	}
@@ -279,7 +279,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isExplainSelect($query)
+	public function isExplainSelect(string $query) : bool
 	{
 		return strtoupper(substr(trim($query), 0, 14)) === 'EXPLAIN SELECT';
 	}
@@ -291,7 +291,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isInsert($query)
+	public function isInsert(string $query) : bool
 	{
 		return (strtoupper(substr(trim($query), 0, 11)) === 'INSERT INTO');
 	}
@@ -303,7 +303,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isSelect($query)
+	public function isSelect(string $query) : bool
 	{
 		return (strtoupper(substr(trim($query), 0, 6)) === 'SELECT');
 	}
@@ -315,7 +315,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isTruncate($query)
+	public function isTruncate(string $query) : bool
 	{
 		return (strtoupper(substr(trim($query), 0, 8)) === 'TRUNCATE');
 	}
@@ -327,7 +327,7 @@ class Contextual_Mysqli extends mysqli
 	 * @param $query string
 	 * @return boolean
 	 */
-	public function isUpdate($query)
+	public function isUpdate(string $query) : bool
 	{
 		return (strtoupper(substr(trim($query), 0, 6)) === 'UPDATE');
 	}
@@ -340,9 +340,9 @@ class Contextual_Mysqli extends mysqli
 	 * Returns null if the information cannot be retrieved.
 	 *
 	 * @param $class_name string The name of the class.
-	 * @return string|null ISO date
+	 * @return ?string ISO date
 	 */
-	public function lastUpdate($class_name)
+	public function lastUpdate(string $class_name) : ?string
 	{
 		$table_name = Dao::current()->storeNameOf($class_name);
 		/** @noinspection SqlResolve dynamic */
@@ -350,15 +350,13 @@ class Contextual_Mysqli extends mysqli
 SELECT `UPDATE_TIME`
 FROM `information_schema`.`TABLES`
 WHERE `TABLE_NAME` = '$table_name'
-AND `TABLE_SCHEMA` = '{$this->database}'
+AND `TABLE_SCHEMA` = '$this->database'
 AND `UPDATE_TIME` IS NOT NULL
 		";
 
 		$information = $this->query($query)->fetch_assoc();
 
-		return isset($information['UPDATE_TIME'])
-			? $information['UPDATE_TIME']
-			: null;
+		return $information['UPDATE_TIME'] ?? null;
 	}
 
 	//----------------------------------------------------------------------------------------- query
@@ -366,10 +364,10 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $query       string the SQL query
 	 * @param $result_mode integer one of MYSQLI_*_RESULT constants
-	 * @return mysqli_result|boolean false on failure, true or mysqli_result on success
+	 * @return boolean|mysqli_result false on failure, true or mysqli_result on success
 	 * @see mysqli::query
 	 */
-	public function query($query, $result_mode = MYSQLI_STORE_RESULT)
+	public function query(string $query, int $result_mode = MYSQLI_STORE_RESULT) : bool|mysqli_result
 	{
 		// error_reporting patch to disable 'warning Error while sending QUERY packet' when mysql
 		// disconnects. This may disable other warnings, but you always will have error / errno if
@@ -388,10 +386,10 @@ AND `UPDATE_TIME` IS NOT NULL
 			// Caught by low-level procedures
 			$result = $this->queryError($query);
 		}
-		elseif (substr($query, 0, 11) === 'LOCK TABLES') {
+		elseif (str_starts_with($query, 'LOCK TABLES')) {
 			$this->lock = true;
 		}
-		elseif (substr($query, 0, 13) === 'UNLOCK TABLES') {
+		elseif (str_starts_with($query, 'UNLOCK TABLES')) {
 			$this->lock = false;
 			foreach ($this->queries_when_unlocked as $query) {
 				$this->query($query);
@@ -404,10 +402,10 @@ AND `UPDATE_TIME` IS NOT NULL
 	//------------------------------------------------------------------------------------ queryError
 	/**
 	 * @param $query string
-	 * @return mysqli_result|boolean false, but other errors managers may change this
+	 * @return boolean|mysqli_result false, but other errors managers may change this
 	 * @throws Mysql_Error_Exception
 	 */
-	protected function queryError($query)
+	protected function queryError(string $query) : bool|mysqli_result
 	{
 		if (error_reporting()) {
 			throw new Mysql_Error_Exception($this->last_errno, $this->last_error, $query);
@@ -421,7 +419,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 *
 	 * @param $query string
 	 */
-	public function queryWhenUnlocked($query)
+	public function queryWhenUnlocked(string $query)
 	{
 		if ($this->lock) {
 			$this->queries_when_unlocked[] = $query;
@@ -439,7 +437,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 *
 	 * @return boolean true if reconnect worked, false in case of connect error
 	 */
-	public function reconnect()
+	public function reconnect() : bool
 	{
 		$this->connect(
 			$this->host, $this->user, $this->password, $this->database, $this->port, $this->socket
@@ -452,7 +450,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 * @param $old_name string
 	 * @param $new_name string
 	 */
-	public function renameTable($old_name, $new_name)
+	public function renameTable(string $old_name, string $new_name)
 	{
 		$this->query("RENAME TABLE `$old_name` TO `$new_name`");
 	}
@@ -463,7 +461,7 @@ AND `UPDATE_TIME` IS NOT NULL
 	 *
 	 * @return string
 	 */
-	public function selectedDatabase()
+	public function selectedDatabase() : string
 	{
 		$result   = $this->query('SELECT DATABASE()');
 		$database = $result->fetch_row()[0];

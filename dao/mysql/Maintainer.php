@@ -495,7 +495,7 @@ class Maintainer implements Configurable, Registerable
 					$joinpoint->stop = true;
 				}
 			}
-			// the error has not be cleaned : reset original errors codes
+			// the error has not been cleaned : reset original errors codes
 			if (!$joinpoint->stop) {
 				$mysqli->last_errno = $last_errno;
 				$mysqli->last_error = $last_error;
@@ -624,7 +624,7 @@ class Maintainer implements Configurable, Registerable
 					echo 'Simulation : ' . $query . BRLF;
 					break;
 				case self::WARNING:
-					trigger_error('Simulation : ' . $query, E_USER_NOTICE);
+					trigger_error('Simulation : ' . $query);
 			}
 			return true;
 		}
@@ -816,7 +816,7 @@ class Maintainer implements Configurable, Registerable
 			));
 		}
 
-		// do not create empty implicit table if does not already exist
+		// do not create empty implicit table if it does not already exist
 		// will be automatically created on first needed use
 		if ($this->create_empty_tables || $mysqli->exists($table_name)) {
 			$mysqli->contexts[] = [$class_name, $foreign_class_name];
@@ -968,7 +968,7 @@ class Maintainer implements Configurable, Registerable
 								echo $message . BRLF;
 								break;
 							case self::WARNING:
-								trigger_error($message, E_USER_NOTICE);
+								trigger_error($message);
 						}
 					}
 					$builder->alterColumn($column_name, $column);
@@ -1003,7 +1003,7 @@ class Maintainer implements Configurable, Registerable
 								echo $message . BRLF;
 								break;
 							case self::WARNING:
-								trigger_error($message, E_USER_NOTICE);
+								trigger_error($message);
 						}
 					}
 					$builder->alterForeignKey($foreign_key);
@@ -1015,7 +1015,7 @@ class Maintainer implements Configurable, Registerable
 				}
 			}
 			if ($builder->isReady()) {
-				$mysqli->contexts = $class_name
+				$mysqli->contexts[] = $class_name
 					? array_merge($table_builder_class->dependencies_context, [$class_name])
 					: $table_builder_class->dependencies_context;
 				if ($builder->check($mysqli, $this->notice)) {
