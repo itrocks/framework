@@ -26,9 +26,9 @@ class Contextual_Mysqli extends mysqli
 
 	//------------------------------------------------------------------------------------- $database
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public string $database;
+	public ?string $database;
 
 	//----------------------------------------------------------------------------------------- $host
 	/**
@@ -64,9 +64,9 @@ class Contextual_Mysqli extends mysqli
 
 	//------------------------------------------------------------------------------------- $password
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public string $password;
+	public ?string $password;
 
 	//----------------------------------------------------------------------------------------- $port
 	/**
@@ -84,30 +84,30 @@ class Contextual_Mysqli extends mysqli
 
 	//--------------------------------------------------------------------------------------- $socket
 	/**
-	 * @var integer
+	 * @var ?integer
 	 */
-	public int $socket;
+	public ?int $socket;
 
 	//----------------------------------------------------------------------------------------- $user
 	/**
-	 * @var string
+	 * @var ?string
 	 */
-	public string $user;
+	public ?string $user;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * Opens a new connection to the MySQL server
 	 *
 	 * @param $host     string
-	 * @param $user     string
-	 * @param $password string
-	 * @param $database string
+	 * @param $user     string|null
+	 * @param $password string|null
+	 * @param $database string|null
 	 * @param $port     integer
-	 * @param $socket   string
+	 * @param $socket   string|null
 	 */
 	public function __construct(
-		$host = '127.0.0.1', $user = null, $password = null, $database = null, $port = 3306,
-		$socket = null
+		string $host = '127.0.0.1', string $user = null, string $password = null,
+		string $database = null, int $port = 3306, string $socket = null
 	) {
 		parent::__construct($host, $user, $password, $database, $port, $socket);
 		$this->host     = $host;
