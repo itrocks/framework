@@ -2337,7 +2337,7 @@ class Template
 	 * @param $link string
 	 * @return string
 	 */
-	protected function replaceLink($link)
+	protected function replaceLink(string $link) : string
 	{
 		if (Uri::startsWithProtocol($link)) {
 			return str_starts_with($link, SL) ? substr($link, 1) : $link;

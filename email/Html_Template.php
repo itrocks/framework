@@ -15,7 +15,7 @@ class Html_Template extends Template
 	 * @param $uri string
 	 * @return string
 	 */
-	protected function replaceLink($uri)
+	protected function replaceLink(string $uri) : string
 	{
 		return strpos($uri, '://')
 			? $uri
@@ -30,7 +30,7 @@ class Html_Template extends Template
 	 * @param $uri string
 	 * @return string updated uri
 	 */
-	protected function replaceUri($uri)
+	protected function replaceUri(string $uri) : string
 	{
 		if (strpos($uri, '://') || !in_array(substr($uri, -4), ['.gif', '.jpg', '.png'])) {
 			$final_uri = $uri;
