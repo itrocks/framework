@@ -126,7 +126,7 @@ class Iteration extends Element
 	public function sortElementsByY()
 	{
 		usort($this->elements, function(Field $element1, Field $element2) {
-			return (abs($element1->top - $element2->top) >= Generator::$precision)
+			return (abs($element1->top - $element2->top) > Generator::$precision)
 				? cmp($element1->top, $element2->top)
 				: cmp($element1->hotX(), $element2->hotX());
 		});

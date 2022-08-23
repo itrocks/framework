@@ -156,7 +156,7 @@ class Empty_Columns_Remover implements Registerable
 				prev($properties);
 				$element = prev($elements);
 			}
-			while ($element && (abs($element_top - $element->top) < Generator::$precision));
+			while ($element && (abs($element_top - $element->top) <= Generator::$precision));
 			if ($alter) {
 				$group->page->elements = $elements;
 			}
@@ -166,7 +166,6 @@ class Empty_Columns_Remover implements Registerable
 
 	//------------------------------------------------------------------------------------ properties
 	/**
-	 * @noinspection PhpDocSignatureInspection @return inspector bug
 	 * @param $group Group
 	 * @return Element[]|Property[]
 	 */
@@ -175,12 +174,12 @@ class Empty_Columns_Remover implements Registerable
 		$properties = [];
 		$top        = reset($group->properties)->top;
 		foreach ($group->properties as $column => $property) {
-			if (abs($property->top - $top) < Generator::$precision) {
+			if (abs($property->top - $top) <= Generator::$precision) {
 				$properties[$column] = $property;
 			}
 		}
 		foreach ($group->elements as $element) {
-			if (abs($element->top - $top) < Generator::$precision) {
+			if (abs($element->top - $top) <= Generator::$precision) {
 				$properties[]   = $element;
 				$added_elements = true;
 			}

@@ -167,7 +167,7 @@ class Generator
 	protected function sortElements(array &$elements)
 	{
 		usort($elements, function(Element $element1, Element $element2) {
-			return (abs($element1->top - $element2->top) >= Generator::$precision)
+			return (abs($element1->top - $element2->top) > Generator::$precision)
 				? cmp($element1->top, $element2->top)
 				: cmp($element1->hotX(), $element2->hotX());
 		});
