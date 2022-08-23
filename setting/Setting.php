@@ -11,6 +11,7 @@ use ITRocks\Framework\Tools\Names;
  * An application setting
  *
  * @before_write invalidateValueSetting
+ * @feature admin
  */
 class Setting implements Validate\Except
 {
