@@ -32,7 +32,9 @@ class Identical_Columns_Remover implements Configurable, Registerable
 	public function __construct($configuration = null)
 	{
 		if (isset($configuration)) {
-			$this->rename = $configuration;
+			foreach ($configuration as $key => $value) {
+				$this->rename[strtoupper($key)] = $value;
+			}
 		}
 	}
 
