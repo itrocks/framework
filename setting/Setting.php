@@ -10,6 +10,7 @@ use ITRocks\Framework\Tools\Names;
 /**
  * An application setting
  *
+ * @before_delete unlinkUserSettings
  * @before_write invalidateValueSetting
  * @feature admin
  */
@@ -32,10 +33,10 @@ class Setting implements Validate\Except
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $code  string
-	 * @param $value string|object
+	 * @param $code  string|null
+	 * @param $value string|Custom\Set|null
 	 */
-	public function __construct($code = null, $value = null)
+	public function __construct(string $code = null, string|Custom\Set $value = null)
 	{
 		if (isset($code))  $this->code = $code;
 		if (isset($value)) $this->value = $value;
@@ -45,7 +46,7 @@ class Setting implements Validate\Except
 	/**
 	 * @return string
 	 */
-	public function __toString()
+	public function __toString() : string
 	{
 		return (rLastParse($this->code, DOT) ?: $this->code)
 			?: Loc::tr(Names::classToDisplay(get_class($this)));
@@ -55,7 +56,7 @@ class Setting implements Validate\Except
 	/**
 	 * @return string
 	 */
-	public function getClass()
+	public function getClass() : string
 	{
 		return explode(DOT, $this->code)[0];
 	}
@@ -64,7 +65,7 @@ class Setting implements Validate\Except
 	/**
 	 * @return string
 	 */
-	public function getFeature()
+	public function getFeature() : string
 	{
 		return explode(DOT, $this->code)[1];
 	}
@@ -72,16 +73,16 @@ class Setting implements Validate\Except
 	//-------------------------------------------------------------------------------------- getValue
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @return string|object
+	 * @return object|string
 	 */
-	protected function getValue()
+	protected function getValue() : object|string
 	{
 		$value = $this->value;
 		if (
 			isset($value)
 			&& is_string($value)
-			&& (substr($value, 0, 2) == 'O:')
-			&& (substr($value, -1) === '}')
+			&& str_starts_with($value, 'O:')
+			&& str_ends_with($value, '}')
 		) {
 			$this->value = unserialize($value);
 			// // A patch for retro-compatibility with protected / private $class_name
@@ -121,6 +122,18 @@ class Setting implements Validate\Except
 			&& ($setting instanceof Setting\User)
 		) {
 			$setting->invalidateObjects();
+		}
+	}
+
+	//---------------------------------------------------------------------------- unlinkUserSettings
+	/**
+	 * @noinspection PhpUnused @before_delete
+	 */
+	public function unlinkUserSettings()
+	{
+		foreach (Dao::search(['setting' => $this], Setting\User::class) as $user_setting) {
+			$user_setting->setting = null;
+			Dao::write($user_setting, Dao::only('setting'));
 		}
 	}
 

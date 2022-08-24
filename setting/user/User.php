@@ -18,8 +18,8 @@ class User extends Setting
 
 	//-------------------------------------------------------------------------------------- $setting
 	/**
-	 * The saved setting that was loaded by the user, if exists
-	 * If null, then the user setting has been build "from scratch" (default setting)
+	 * The saved setting that was loaded by the user, if exists.
+	 * If null, then the user setting has been build "from scratch" (default setting).
 	 *
 	 * @link Object
 	 * @var Setting
@@ -37,12 +37,13 @@ class User extends Setting
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $code    string
-	 * @param $value   string
-	 * @param $setting Setting
+	 * @param $code    string|null
+	 * @param $value   string|Custom\Set|null
+	 * @param $setting Setting|null
 	 */
-	public function __construct($code = null, $value = null, $setting = null)
-	{
+	public function __construct(
+		string $code = null, string|Custom\Set $value = null, Setting $setting = null
+	) {
 		parent::__construct($code, $value);
 		if (isset($setting)) {
 			$this->setting = $setting;

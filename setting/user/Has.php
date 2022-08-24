@@ -3,6 +3,7 @@ namespace ITRocks\Framework\Setting\User;
 
 use ITRocks\Framework;
 use ITRocks\Framework\Setting;
+use ITRocks\Framework\Setting\Has_Settings;
 
 /**
  * For users that have settings
