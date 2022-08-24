@@ -230,7 +230,7 @@ abstract class Set
 	 */
 	public function save($save_name = null)
 	{
-		if ($save_name && ($this->setting->value instanceof Set)) {
+		if (strlen($save_name) && ($this->setting->value instanceof Set)) {
 			$this->setting->value->name = $save_name;
 		}
 		Dao::write($this->setting);
