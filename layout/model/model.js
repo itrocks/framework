@@ -59,7 +59,8 @@ $(document).ready(function()
 	{
 		const $selected  = this
 		const $editor    = $selected.closest('.layout-model')
-		const $tools     = $editor.find('.selected.tools')
+		const $toolbox   = $editor.find('.toolbox')
+		const $tools     = $toolbox.find('.selected.tools')
 		const $free_text = $tools.find('#free-text')
 		const old_text   = $free_text.val()
 		// draw field
@@ -93,6 +94,18 @@ $(document).ready(function()
 		}
 		$title.text(title)
 		$title.attr('title', $selected.attr('title'))
+		// copy button caption depends on how many elements are selected
+		const $copy_button    = $toolbox.find('.copy-page')
+		const selected_length = $selected.closest('.designer').find('.selected').length
+		if (selected_length > 1) {
+			$copy_button.attr('title', tr('Copy $1 selected elements to clipboard', '', selected_length))
+		}
+		else if (selected_length === 1) {
+			$copy_button.attr('title', tr('Copy 1 selected element to clipboard'))
+		}
+		else {
+			$copy_button.attr('title', tr('Copy all elements to clipboard'))
+		}
 	}
 
 	//----------------------------------------------- article.layout-model .designer documentDesigner
@@ -351,31 +364,34 @@ $(document).ready(function()
 	//------------------------------------------------------- article.layout-model li.copy-page click
 	$body.build('click', 'article.layout-model li.copy-page', function()
 	{
-		const $editor      = $(this).closest('article.layout-model')
-		const $active_page = $editor.find('.active.page')
-		$editor.data('$copy_page', $active_page)
+		const $editor   = $(this).closest('article.layout-model')
+		const $active   = $editor.find('.active.page .designer')
+		let   $selected = $active.children('.selected')
+		if (!$selected.length) {
+			$selected = $active.children()
+		}
+		$(window).data('$document_designer_copy_items', $selected.clone().removeClass('selected'))
 	})
 
 	//------------------------------------------------------ article.layout-model li.paste-page click
 	$body.build('click', 'article.layout-model li.paste-page', function()
 	{
-		const $editor      = $(this).closest('article.layout-model')
-		const $source_page = $editor.data('$copy_page')
-
-		if (!$source_page) {
-			confirm(tr('Unable to paste') + ' : ' + tr('You must copy a page first'))
+		const $editor = $(this).closest('article.layout-model')
+		const $source = $(window).data('$document_designer_copy_items')
+		if (!$source) {
+			confirm(tr('Unable to paste') + ' : ' + tr('You must copy some elements first'))
 			return
 		}
 		if (!confirm(
 			tr('Warning') + ' : '
-			+ tr('this action will erase all your drawing elements in the current page')
+			+ tr('this action will paste $1 elements in the current page', '', $source.length)
 		)) {
 			return
 		}
-		const $active_page     = $editor.find('.active.page')
-		const $source_designer = $source_page.find('.designer')
-		const $target_designer = $active_page.find('.designer')
-		$target_designer.empty().append($source_designer.children().clone())
+		const $target_designer = $editor.find('.active.page .designer')
+		const $paste_elements  = $source.clone()
+		$target_designer.append($paste_elements)
+		$paste_elements.build()
 	})
 
 	//------------------------------------------------------ article.layout-model li.empty-page click
