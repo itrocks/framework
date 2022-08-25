@@ -1,6 +1,6 @@
 (function() {
 
-	var cache = {};
+	const cache = {}
 
 	//-------------------------------------------------------------------------------------------- tr
 	/**
@@ -20,60 +20,70 @@
 	 */
 	window.tr = function(text, context, options, callback)
 	{
+		let result
+
 		if (context === undefined) {
-			context = '';
+			context = ''
 		}
 
 		// numeric option : replaces the $1 element in the text
 		if (!isNaN(options)) {
-			text = text.repl('$1', options);
 			if (options > 1) {
-				context += '*';
+				context += '*'
 			}
 		}
 
 		if (cache[context] === undefined) {
-			cache[context] = {};
+			cache[context] = {}
 		}
 		else if (cache[context][text] !== undefined) {
 			if (callback === undefined) {
-				return cache[context][text];
+				result = cache[context][text]
+				if (!isNaN(options)) {
+					result = result.repl('$1', options)
+				}
+				return result
 			}
 			else {
-				callback(cache[context][text]);
+				callback(cache[context][text])
 			}
 		}
 
 		// common call settings
-		var call_settings = {
+		const call_settings = {
 			data: { 'text': text, 'context': context },
 			url:  window.app.uri_base + '/ITRocks/Framework/Locale/translate'
-		};
-		var result = undefined;
+		}
 
 		// no callback => synchronous call
 		if (callback === undefined) {
-			call_settings['async']   = false;
-			call_settings['error']   = function()     { result = text; };
-			call_settings['success'] = function(data) { result = data; cache[context][text] = result; };
+			call_settings['async']   = false
+			call_settings['error']   = function()     { result = text; }
+			call_settings['success'] = function(data) { result = data; cache[context][text] = result; }
 		}
 
 		// callback is set => asynchronous call
 		else {
-			call_settings['error']   = function() { callback(text); };
+			call_settings['error']   = function() { callback(text); }
 			call_settings['success'] = function(result) {
-				cache[context][text] = result;
-				callback(result);
-			};
+				cache[context][text] = result
+				if (!isNaN(options)) {
+					result = result.repl('$1', options)
+				}
+				callback(result)
+			}
 		}
 
 		// call
-		$.post(call_settings);
+		$.post(call_settings)
 
 		// no callback => return result
 		if (callback === undefined) {
-			return result;
+			if (!isNaN(options)) {
+				result = result.repl('$1', options)
+			}
+			return result
 		}
-	};
+	}
 
-})();
+})()
