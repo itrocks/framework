@@ -6,7 +6,9 @@ use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\Controller\Uri;
+use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
+use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\Paths;
 use ITRocks\Framework\User;
 use ITRocks\Framework\View;
@@ -51,9 +53,18 @@ class Controller implements Feature_Controller
 				Authentication::disconnect();
 			}
 			$user = Authentication::login($form['login'], $form['password']);
-			if (isset($user)) {
+			if ($user) {
 				Authentication::authenticate($user);
-				if (isset($form['refresh']) && $form['refresh']) {
+				if ($form['newToken'] ?? false) {
+					$token                    = new Token();
+					$token->code              = uniqid('nt', true);
+					$token->single_use        = false;
+					$token->user              = $user;
+					$token->validity_end_date = Date_Time::max();
+					Dao::write($token);
+					return '[' . $token->code . ']';
+				}
+				if ($form['refresh'] ?? false) {
 					header('Location: ' . Paths::$uri_base . Uri::previous());
 				}
 				else {
