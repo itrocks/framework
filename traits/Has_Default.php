@@ -55,7 +55,7 @@ trait Has_Default
 	 * @return static|null
 	 * @return_constant
 	 */
-	public static function getDefault()
+	public static function getDefault() : static|null
 	{
 		return Dao::searchOne(['default' => true], static::class);
 	}
@@ -64,6 +64,8 @@ trait Has_Default
 	/**
 	 * Called at each write : if default turned to true, reset default to false for all other stored
 	 * objects
+	 *
+	 * @noinspection PhpUnused @after_write
 	 */
 	public function onlyOneDefault()
 	{
