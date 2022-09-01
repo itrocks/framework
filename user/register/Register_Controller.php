@@ -21,13 +21,14 @@ class Register_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $class_name string
-	 * @return mixed[]
+	 * @return array
 	 */
 	protected function getViewParameters(
 		Parameters $parameters,
 		/** @noinspection PhpUnusedParameterInspection */ array $form,
-		$class_name
-	) {
+		string $class_name
+	) : array
+	{
 		$parameters = $parameters->getObjects();
 		$object = reset($parameters);
 		if (empty($object) || !is_object($object) || !is_a($object, $class_name, true)) {
@@ -45,7 +46,7 @@ class Register_Controller implements Feature_Controller
 	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : mixed
 	{
 		$current = User::current();
 		if ($current) {
@@ -57,27 +58,28 @@ class Register_Controller implements Feature_Controller
 			&& isset($form['password']) && is_string($form['password'])
 		) {
 			$user = null;
-			$errors_messages = Authentication::controlRegisterFormParameters($form);
-			if (!$errors_messages && empty($errors_messages)) {
+			$error_messages = Authentication::controlRegisterFormParameters($form);
+			if (!$error_messages) {
 				if (Authentication::controlNameNotUsed($form['login'])) {
 					$user = Authentication::register($form);
+				}
+				else {
+					$error_messages[] = ['name' => 'Login already used', 'message' => 'Please choose another nickname for login'];
 				}
 			}
 			if ($user) {
 				$parameters[User::class]        = $user;
 				$parameters[Template::TEMPLATE] = 'confirm';
-				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 			else {
-				$parameters['errors'] = $errors_messages;
+				$parameters['errors'] = $error_messages;
 				$parameters[Template::TEMPLATE] = 'error';
-				return View::run($parameters, $form, $files, User::class, 'register');
 			}
 		}
 		else {
 			$parameters['inputs'] = Authentication::getRegisterInputs();
-			return View::run($parameters, $form, $files, User::class, 'register');
 		}
+		return View::run($parameters, $form, $files, User::class, 'register');
 	}
 
 }
