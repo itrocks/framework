@@ -30,6 +30,15 @@ class Token
 	 */
 	public $user;
 
+	//------------------------------------------------------------------------------------ __toString
+	/**
+	 * @return string
+	 */
+	public function __toString() : string
+	{
+		return $this->code;
+	}
+	
 	//------------------------------------------------------------------------ defaultValidityEndDate
 	/**
 	 * The default lifetime of a token is 1 minute for single-use tokens, 1 month if multiple-use
