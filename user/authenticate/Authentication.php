@@ -5,14 +5,17 @@ use ITRocks\Framework\Builder;
 use ITRocks\Framework\Component\Input;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
+use ITRocks\Framework\Locale\Has_Language;
+use ITRocks\Framework\Locale\Language;
 use ITRocks\Framework\Mapper\Search_Object;
 use ITRocks\Framework\Reflection\Annotation\Property\Password_Annotation;
 use ITRocks\Framework\Reflection\Reflection_Property;
 use ITRocks\Framework\Session;
 use ITRocks\Framework\Tools\Password;
+use ITRocks\Framework\Traits\Has_Default;
 use ITRocks\Framework\User;
+use ITRocks\Framework\User\Active\Has_Active;
 use ITRocks\Framework\User\Group;
-use ITRocks\Framework\User\Group\Has_Default;
 use ITRocks\Framework\User\Group\Has_Groups;
 use ITRocks\Framework\User\Group\Low_Level_Features_Cache;
 
@@ -177,6 +180,28 @@ abstract class Authentication
 		if (isA(Builder::className(Group::class), Has_Default::class) && isA($user, Has_Groups::class)) {
 			/** @var $user User|Has_Groups */
 			$user->groups = Dao::search(['default' => true], Group::class);
+		}
+		if (isA($user, Has_Active::class)) {
+			/** @var $user User|Has_Active */
+			$user->active = true;
+		}
+		if (isA($user, Has_Language::class)) {
+			/** @var $user User|Has_Language */
+			$language_code = lParse(lParse($_SERVER['HTTP_ACCEPT_LANGUAGE'] ?? '', ','), ';');
+			$language      = $language_code
+				? Dao::searchOne(['code' => $language_code], Language::class)
+				: null;
+			if (!$language && str_contains($language_code, '-')) {
+				$language_code = lParse($language_code, '-');
+				$language      = Dao::searchOne(['code' => lParse($language_code, '-')], Language::class);
+			}
+			if (!$language && isA(Language::class, Has_Default::class)) {
+				$language = Dao::searchOne(['default' => true], Language::class);
+			}
+			if (!$language) {
+				$language = Dao::searchOne(['code' => 'en'], Language::class);
+			}
+			$user->language = $language;
 		}
 		return Dao::write($user);
 	}
