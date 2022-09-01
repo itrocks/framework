@@ -32,14 +32,14 @@ class Token
 
 	//------------------------------------------------------------------------ defaultValidityEndDate
 	/**
-	 * The default lifetime of a token is 1 minute
+	 * The default lifetime of a token is 1 minute for single-use tokens, 1 month if multiple-use
 	 *
 	 * @noinspection PhpUnused @default
 	 * @return Date_Time
 	 */
 	public function defaultValidityEndDate()
 	{
-		return Date_Time::now()->add(1, Date_Time::MINUTE);
+		return Date_Time::now()->add(1, $this->single_use ? Date_Time::MINUTE : Date_Time::MONTH);
 	}
 
 }
