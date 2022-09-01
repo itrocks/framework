@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Main;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Func;
@@ -11,7 +12,7 @@ use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\User;
 
 /**
- * Allow authenticate using a short-life token given by a previous process
+ * Allow to authenticate using a short-life token given by a previous process
  */
 class By_Token implements Registerable
 {
@@ -26,10 +27,10 @@ class By_Token implements Registerable
 	/**
 	 * Apply a token sent to the main controller to authenticate the matching user
 	 *
-	 * @param $get  array
-	 * @param $post array
+	 * @param $get  string[]
+	 * @param $post string[]
 	 */
-	public function apply(&$get, &$post)
+	public function apply(array &$get, array &$post)
 	{
 		if ($get[static::TOKEN] ?? false) {
 			$token = $get[static::TOKEN];
@@ -62,17 +63,18 @@ class By_Token implements Registerable
 	 * @param $user   User|null
 	 * @param $prefix string
 	 * @return Token
+	 * @noinspection PhpDocMissingThrowsInspection
 	 */
-	public function newToken(User $user = null, $prefix = '')
+	public function newToken(User $user = null, string $prefix = '') : Token
 	{
 		if (!$user) {
 			$user = User::current();
 		}
-		$token       = new Token();
+		/** @noinspection PhpUnhandledExceptionInspection class */
+		$token       = Builder::create(Token::class);
 		$token->code = uniqid($prefix, true);
 		$token->user = $user;
-		Dao::write($token);
-		return $token;
+		return Dao::write($token);
 	}
 
 	//----------------------------------------------------------------------------------------- purge
