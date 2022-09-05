@@ -198,7 +198,8 @@ class Integrated_Properties
 			as $sub_property_name => $sub_property
 		) {
 			if (
-				!$sub_property->isStatic()
+				$sub_property->isPublic()
+				&& !$sub_property->isStatic()
 				&& (
 					!$property->getAnnotation('component')->value
 					|| !$sub_property->getAnnotation('composite')->value
