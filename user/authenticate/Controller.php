@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\User\Authenticate;
 
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Controller\Feature;
 use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Main;
@@ -24,7 +25,7 @@ class Controller implements Feature_Controller
 	 * @param $uri string
 	 * @return boolean
 	 */
-	protected function reserved($uri)
+	protected function reserved(string $uri) : bool
 	{
 		return (
 			beginsWith($uri, View::link(User::class, Feature::F_AUTHENTICATE))
@@ -37,12 +38,13 @@ class Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array an authentication form result with keys 'login' and 'password'
 	 * @param $files      array[]
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : mixed
 	{
 		if (
 			isset($form['login']) && is_string($form['login'])
@@ -56,13 +58,14 @@ class Controller implements Feature_Controller
 			if ($user) {
 				Authentication::authenticate($user);
 				if ($form['newToken'] ?? false) {
-					$token                    = new Token();
-					$token->code              = uniqid('nt', true);
+					/** @noinspection PhpUnhandledExceptionInspection class */
+					$token                    = Builder::create(Token::class);
+					$token->code              = 'nt' . sha1(sha1(uniqid('', true)));
 					$token->single_use        = false;
 					$token->user              = $user;
 					$token->validity_end_date = Date_Time::max();
 					Dao::write($token);
-					return '[' . $token->code . ']';
+					return 'OK:TOKEN:[' . $token->code . ']';
 				}
 				if ($form['refresh'] ?? false) {
 					header('Location: ' . Paths::$uri_base . Uri::previous());
