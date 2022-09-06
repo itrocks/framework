@@ -56,6 +56,10 @@ class By_Token implements Registerable
 		if ($get[static::SID] ?? $post[static::SID] ?? false) {
 			echo '[' . Session::sid() . ']';
 		}
+		if ($post['checkToken'] ?? false) {
+			$get['as_widget'] = true;
+			echo 'OK:TOKEN:[' . $token->code . ']';
+		}
 	}
 
 	//-------------------------------------------------------------------------------------- newToken
