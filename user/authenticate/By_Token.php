@@ -60,20 +60,25 @@ class By_Token implements Registerable
 
 	//-------------------------------------------------------------------------------------- newToken
 	/**
-	 * @param $user   User|null
-	 * @param $prefix string
+	 * @param $user      User|null
+	 * @param $prefix    string
+	 * @param $long_term boolean 1 minute single use or infinite duration multiple uses token
 	 * @return Token
 	 * @noinspection PhpDocMissingThrowsInspection
 	 */
-	public function newToken(User $user = null, string $prefix = '') : Token
+	public function newToken(User $user = null, string $prefix = '', bool $long_term = false) : Token
 	{
 		if (!$user) {
 			$user = User::current();
 		}
 		/** @noinspection PhpUnhandledExceptionInspection class */
 		$token       = Builder::create(Token::class);
-		$token->code = uniqid($prefix, true);
+		$token->code = $prefix . sha1(sha1(uniqid('', true)));
 		$token->user = $user;
+		if ($long_term) {
+			$token->single_use        = false;
+			$token->validity_end_date = Date_Time::max();
+		}
 		return Dao::write($token);
 	}
 

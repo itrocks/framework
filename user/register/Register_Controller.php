@@ -6,6 +6,7 @@ use ITRocks\Framework\Controller\Feature_Controller;
 use ITRocks\Framework\Controller\Parameters;
 use ITRocks\Framework\User;
 use ITRocks\Framework\User\Authenticate\Authentication;
+use ITRocks\Framework\User\Authenticate\By_Token;
 use ITRocks\Framework\View;
 use ITRocks\Framework\View\Html\Template;
 
@@ -41,6 +42,7 @@ class Register_Controller implements Feature_Controller
 
 	//------------------------------------------------------------------------------------------- run
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
@@ -62,6 +64,11 @@ class Register_Controller implements Feature_Controller
 			if (!$error_messages) {
 				if (Authentication::controlNameNotUsed($form['login'])) {
 					$user = Authentication::register($form);
+					if ($form['newToken'] ?? false) {
+						/** @noinspection PhpUnhandledExceptionInspection class */
+						$token = Builder::create(By_Token::class)->newToken($user, 'rt', true);
+						return 'OK:TOKEN:[' . $token->code . ']';
+					}
 				}
 				else {
 					$error_messages[] = ['name' => 'Login already used', 'message' => 'Please choose another nickname for login'];

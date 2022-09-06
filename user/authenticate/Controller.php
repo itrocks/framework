@@ -59,12 +59,7 @@ class Controller implements Feature_Controller
 				Authentication::authenticate($user);
 				if ($form['newToken'] ?? false) {
 					/** @noinspection PhpUnhandledExceptionInspection class */
-					$token                    = Builder::create(Token::class);
-					$token->code              = 'nt' . sha1(sha1(uniqid('', true)));
-					$token->single_use        = false;
-					$token->user              = $user;
-					$token->validity_end_date = Date_Time::max();
-					Dao::write($token);
+					$token = Builder::create(By_Token::class)->newToken($user, 'nt', true);
 					return 'OK:TOKEN:[' . $token->code . ']';
 				}
 				if ($form['refresh'] ?? false) {
