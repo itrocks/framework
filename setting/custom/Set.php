@@ -226,11 +226,11 @@ abstract class Set
 	 * In all cases : saves the Setting\Custom\Set object for current user and session
 	 * If $save_name is set : saves the Setting\Custom\Set object into the Settings set
 	 *
-	 * @param $save_name string
+	 * @param $save_name string|null
 	 */
-	public function save($save_name = null)
+	public function save(string $save_name = null)
 	{
-		if (strlen($save_name) && ($this->setting->value instanceof Set)) {
+		if (strlen(strval($save_name)) && ($this->setting->value instanceof Set)) {
 			$this->setting->value->name = $save_name;
 		}
 		Dao::write($this->setting);
