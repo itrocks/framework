@@ -289,12 +289,12 @@ class Manager implements IManager
 	 *
 	 * @param $class_name    string
 	 * @param $level         string
-	 * @param $configuration array|boolean
+	 * @param $configuration mixed
 	 * @param $register      boolean
 	 * @return Plugin
 	 */
 	public function register(
-		string $class_name, string $level, array|bool $configuration = true, bool $register = true
+		string $class_name, string $level, mixed $configuration = true, bool $register = true
 	) : Plugin
 	{
 		if (!isset($this->plugins[$class_name])) {
