@@ -21,7 +21,7 @@ class Weaver implements IWeaver, Plugin
 	 * @see loadJoinpoints
 	 * @var string
 	 */
-	private string $file_name;
+	private string $file_name = '';
 
 	//----------------------------------------------------------------------------------- $joinpoints
 	/**
