@@ -163,7 +163,7 @@ class Entry implements Validate\Except
 					$arguments,
 					$form,
 					$files,
-					isset($_SERVER['HTTP_X_REQUEST_ID']) ? $_SERVER['HTTP_X_REQUEST_ID'] : null
+					$_SERVER['HTTP_X_REQUEST_ID'] ?? null
 				);
 			}
 			if (!isset($this->memory_usage)) {
@@ -194,6 +194,19 @@ class Entry implements Validate\Except
 	public function __toString() : string
 	{
 		return trim(Loc::dateToLocale($this->start) . SP . $this->uri);
+	}
+
+	//----------------------------------------------------------------------------------- rawPostData
+	/**
+	 * @param $data string
+	 */
+	public function rawPostData(string $data)
+	{
+		if (!$this->data) {
+			$this->data = new Data();
+		}
+		$this->data->rawFormData($data);
+		Dao::write($this->data, Dao::only('form'));
 	}
 
 	//---------------------------------------------------------------------------------------- resume

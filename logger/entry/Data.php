@@ -98,6 +98,15 @@ class Data implements Validate\Except
 		return json_encode($this, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 	}
 
+	//----------------------------------------------------------------------------------- rawFormData
+	/**
+	 * @param $data string
+	 */
+	public function rawFormData(string $data)
+	{
+		$this->form = $this->serialize(['RAW' => $data]);
+	}
+
 	//------------------------------------------------------------------------------------- serialize
 	/**
 	 * @param $value array
