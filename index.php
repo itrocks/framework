@@ -19,6 +19,7 @@ ini_set( 'xdebug.max_nesting_level',        255     );
 ini_set( 'xdebug.var_display_max_children', 10      );
 ini_set( 'xdebug.var_display_max_data',     150     );
 ini_set( 'xdebug.var_display_max_depth',    3       );
+mysqli_report(MYSQLI_REPORT_OFF);
 putenv('LANG=fr_FR.UTF-8');
 set_time_limit(30);
 
