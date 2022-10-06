@@ -26,9 +26,9 @@ class Logger extends File_Logger implements Registerable
 
 	//------------------------------------------------------------------------------ onMainController
 	/**
-	 * @param $result string
+	 * @param $result string|null
 	 */
-	public function onMainController($result)
+	public function onMainController(string|null $result)
 	{
 		if ((new Call_Stack)->methodCount([Main::class, 'run']) > 1) {
 			return;
@@ -36,7 +36,7 @@ class Logger extends File_Logger implements Registerable
 		if ($file = $this->file()) {
 			$buffer = '#' . lParse(rLastParse($this->fileName(), SL), DOT) . LF . '<P>' . LF;
 			gzputs($file, $buffer);
-			gzputs($file, $result);
+			gzputs($file, strval($result));
 		}
 	}
 
