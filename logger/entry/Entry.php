@@ -206,7 +206,8 @@ class Entry implements Validate\Except
 			return;
 		}
 		if (!$this->data) {
-			$this->data = new Data();
+			$this->data        = new Data();
+			$this->data->entry = $this;
 		}
 		$this->data->rawFormData($data);
 		Dao::write($this->data, Dao::only('form'));
