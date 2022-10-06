@@ -21,7 +21,7 @@ class Var_Annotation extends Reflection\Annotation\Property\Var_Annotation
 	/**
 	 * @var string
 	 */
-	protected string $report_message;
+	protected string $report_message = '';
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
