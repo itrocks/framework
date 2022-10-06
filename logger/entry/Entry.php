@@ -198,10 +198,13 @@ class Entry implements Validate\Except
 
 	//----------------------------------------------------------------------------------- rawPostData
 	/**
-	 * @param $data string
+	 * @param $data mixed
 	 */
-	public function rawPostData(string $data)
+	public function rawPostData(mixed $data)
 	{
+		if (!$data) {
+			return;
+		}
 		if (!$this->data) {
 			$this->data = new Data();
 		}

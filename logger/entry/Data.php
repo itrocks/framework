@@ -100,9 +100,9 @@ class Data implements Validate\Except
 
 	//----------------------------------------------------------------------------------- rawFormData
 	/**
-	 * @param $data string
+	 * @param $data mixed
 	 */
-	public function rawFormData(string $data)
+	public function rawFormData(mixed $data)
 	{
 		$this->form = $this->serialize(['RAW' => $data]);
 	}
