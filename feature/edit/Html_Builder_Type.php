@@ -251,7 +251,7 @@ class Html_Builder_Type
 	 */
 	protected function buildBoolean()
 	{
-		$value = strlen($this->value) ? $this->value : ($this->null ? null : 0);
+		$value = strlen(strval($this->value)) ? $this->value : ($this->null ? null : 0);
 		if ($this->null) {
 			$input = new Select($this->getFieldName(), ['' => '', '0' => NO, '1' => YES], $value);
 			$this->commonAttributes($input);

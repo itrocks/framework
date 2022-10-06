@@ -28,7 +28,7 @@ class Path
 	 * @param $class_name    string
 	 * @param $property_path string property path, reverse joins allowed
 	 */
-	public function __construct($class_name, $property_path = null)
+	public function __construct(string $class_name, string $property_path = '')
 	{
 		$this->class_name    = $class_name;
 		$this->property_path = $property_path;

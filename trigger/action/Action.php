@@ -26,7 +26,7 @@ class Action
 	 * @max_length 50000
 	 * @var string
 	 */
-	public $action;
+	public $action = '';
 
 	//-------------------------------------------------------------------------------------- $as_user
 	/**
