@@ -600,10 +600,7 @@ class Validator implements Registerable
 				continue;
 			}
 			// if value is not set and is a link (component or not), then we validate only mandatory
-			if (
-				!isset($object->{$property->name})
-				&& Reflection\Annotation\Class_\Link_Annotation::of($property)->value
-			) {
+			if (!isset($object->{$property->name}) && Link_Annotation::of($property)->value) {
 				$result = Result::andResult($result, $this->validateAnnotations(
 					$object, [Mandatory_Annotation::of($property), Validate_Annotation::allOf($property)]
 				));
