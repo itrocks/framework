@@ -2,6 +2,7 @@
 namespace ITRocks\Framework\Logger;
 
 use ITRocks\Framework;
+use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Dao\Mysql\Link;
 use ITRocks\Framework\Feature\Validate;
@@ -198,6 +199,7 @@ class Entry implements Validate\Except
 
 	//----------------------------------------------------------------------------------- rawPostData
 	/**
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $data mixed
 	 */
 	public function rawPostData(mixed $data)
@@ -206,11 +208,12 @@ class Entry implements Validate\Except
 			return;
 		}
 		if (!$this->data) {
-			$this->data        = new Data();
+			/** @noinspection PhpUnhandledExceptionInspection class */
+			$this->data        = Builder::create(Data::class);
 			$this->data->entry = $this;
 		}
 		$this->data->rawFormData($data);
-		Dao::write($this->data, Dao::only('form'));
+		Dao::write($this->data, Dao::getObjectIdentifier($this->data) ? Dao::only('form') : []);
 	}
 
 	//---------------------------------------------------------------------------------------- resume
