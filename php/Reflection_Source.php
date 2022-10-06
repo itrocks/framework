@@ -380,12 +380,16 @@ class Reflection_Source
 			}
 
 			// class, interface or trait
-			elseif (in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])) {
+			elseif (
+				in_array($token_id, [T_CLASS, T_INTERFACE, T_TRAIT])
+				&& (($this->tokens[$this->token_key - 2][0] ?? null) !== T_NEW)
+			) {
 				$use_what   = T_CLASS;
 				$class_name = $this->fullClassName($this->scanClassName(), false);
 				if (substr($class_name, -1) === BS) {
 					trigger_error(
-						'bad class name ' . $class_name . SP . print_r($token, true),
+						'bad class name ' . $class_name . SP . print_r($token, true)
+						. ' in file ' . $this->file_name . ' line ' . $token[2],
 						E_USER_ERROR
 					);
 				}
