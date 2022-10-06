@@ -24,7 +24,7 @@ class Plugin extends Trigger\Plugin
 	 *
 	 * @var array Feature[][]
 	 */
-	protected $no_feature_cache = [];
+	protected array $no_feature_cache = [];
 
 	//------------------------------------------------------------------------ afterExecuteController
 	/**
@@ -92,7 +92,7 @@ class Plugin extends Trigger\Plugin
 	 * @param $object object
 	 * @return Feature[]
 	 */
-	protected function featureTriggers($object)
+	protected function featureTriggers(object $object)
 	{
 		$class_name = Builder::current()->sourceClassName(get_class($object));
 		if (!isset($this->no_feature_cache[$class_name])) {
