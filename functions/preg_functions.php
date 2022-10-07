@@ -15,7 +15,9 @@
  * @param $delimiter string implicit delimiter. Default is ~
  * @return boolean true if $needle matches any of regular expressions into $haystack
  */
-function pregMatchArray(array $haystack, $needle, $complete = true, $delimiter = '~')
+function pregMatchArray(
+	array $haystack, string $needle, bool $complete = true, string $delimiter = '~'
+) : bool
 {
 	if ($complete && !strlen($delimiter)) {
 		trigger_error('$delimiter must be set if $complete is true', E_USER_ERROR);

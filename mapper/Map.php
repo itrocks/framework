@@ -154,12 +154,12 @@ class Map
 					$reverse = isset($sort->reverse[strval($sort_column)]);
 					while (($i = strpos($sort_column, DOT)) !== false) {
 						$column  = substr($sort_column, 0, $i);
-						$object1 = isset($object1) ? $object1->$column : null;
-						$object2 = isset($object2) ? $object2->$column : null;
+						$object1 = $object1?->$column;
+						$object2 = $object2?->$column;
 						$sort_column = substr($sort_column, $i + 1);
 					}
-					$value1  = isset($object1) ? $object1->$sort_column : null;
-					$value2  = isset($object2) ? $object2->$sort_column : null;
+					$value1  = $object1?->$sort_column;
+					$value2  = $object2?->$sort_column;
 					$compare = $reverse ? -strnatcasecmp($value1, $value2) : strnatcasecmp($value1, $value2);
 					if ($compare) {
 						return $compare;

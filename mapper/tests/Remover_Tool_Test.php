@@ -16,12 +16,9 @@ class Remover_Tool_Test extends Test
 	//----------------------------------------------------------------- testRemoveObjectFromComposite
 	/**
 	 * Test Remover_Tool::removeObjectFromComposite
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
 	 */
 	public function testRemoveObjectFromComposite()
 	{
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$order = new Order(new Date_Time('2017-01-26 12:34:00'), '0001');
 		$line1 = new Order_Line(1);
 		$line2 = new Order_Line(2);
@@ -29,7 +26,6 @@ class Remover_Tool_Test extends Test
 		$order->addLines([$line1, $line2, $line3]);
 		Remover_Tool::removeObjectFromComposite($order, $line2);
 
-		/** @noinspection PhpUnhandledExceptionInspection valid constant */
 		$assume = new Order(new Date_Time('2017-01-26 12:34:00'), '0001');
 		$assume->setLines([0 => $line1, 2 => $line3]);
 

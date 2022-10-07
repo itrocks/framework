@@ -62,7 +62,7 @@ class IP implements Configurable, Registerable
 	 *
 	 * @var array string[][] [string $free_group_name => string[]]
 	 */
-	public $remote_addresses;
+	public array $remote_addresses = [];
 
 	//----------------------------------------------------------------------------------------- $uris
 	/**
@@ -70,7 +70,7 @@ class IP implements Configurable, Registerable
 	 *
 	 * @var array string[][] [string $free_group_name => string[]]
 	 */
-	public $uris;
+	public array $uris = [];
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -121,7 +121,7 @@ class IP implements Configurable, Registerable
 	{
 		$ok = true;
 		foreach ($this->uris as $group_name => $uris) {
-			if (pregMatchArray($uris, $uri, true)) {
+			if (pregMatchArray($uris, $uri)) {
 				if ($this->checkIP($_SERVER['REMOTE_ADDR'], $group_name)) {
 					return;
 				}
