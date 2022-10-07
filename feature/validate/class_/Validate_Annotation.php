@@ -23,7 +23,7 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 	public function validate(object $object) : ?bool
 	{
 		$result        = $this->call($object);
-		$this->message = is_string($result) ? $result : null;
+		$this->message = is_string($result) ? $result : '';
 		return is_string($result) ? false : $result;
 	}
 

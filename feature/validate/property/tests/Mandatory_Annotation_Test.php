@@ -95,18 +95,4 @@ class Mandatory_Annotation_Test extends Test
 		static::assertTrue($actual);
 	}
 
-	//------------------------------------------------------------------------------ testValidateNull
-	/**
-	 * Tests Mandatory_Annotation::validate() expecting null result.
-	 */
-	public function testValidateNull()
-	{
-		$annotation = Mandatory_Annotation::of($this->reflection_object->getProperty('empty_property'));
-		$annotation->property = 'foo';
-		$foo_param            = new stdClass();
-
-		$actual = $annotation->validate($foo_param);
-		static::assertNull($actual);
-	}
-
 }

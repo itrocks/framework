@@ -41,12 +41,13 @@ class Method_Annotation extends Annotation implements Reflection_Context_Annotat
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $value           ?string
+	 * @param $value           bool|null|string
 	 * @param $class_property  Reflection
 	 * @param $annotation_name string
 	 */
-	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
-	{
+	public function __construct(
+		bool|null|string $value, Reflection $class_property, string $annotation_name
+	) {
 		if (!empty($value)) {
 			$value = $this->completeValue($value, $class_property, $annotation_name);
 		}

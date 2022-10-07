@@ -244,6 +244,15 @@ class Reflection_Property implements Interfaces\Has_Doc_Comment, Interfaces\Refl
 		return $this->parent ?: null;
 	}
 
+	//---------------------------------------------------------------------------------- getRootClass
+	/**
+	 * @return Reflection_Class
+	 */
+	public function getRootClass() : Reflection_Class
+	{
+		return $this->getFinalClass();
+	}
+
 	//--------------------------------------------------------------------------------------- getType
 	/**
 	 * Gets the type of the property, as defined by its var annotation

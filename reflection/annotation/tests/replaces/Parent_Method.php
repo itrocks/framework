@@ -12,14 +12,14 @@ class Parent_Method
 	 * @getter getReplacedObject
 	 * @var Parent_Class
 	 */
-	public $replaced_object;
+	public Parent_Class $replaced_object;
 
 	//------------------------------------------------------------------------------ $replaced_string
 	/**
 	 * @getter getReplacedString
 	 * @var string
 	 */
-	public $replaced_string;
+	public string $replaced_string;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**

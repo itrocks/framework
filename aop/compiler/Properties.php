@@ -738,7 +738,7 @@ class Properties
 	 */
 	private function overrideMethod($method_name, $needs_return = true, array $advices = [])
 	{
-		$over       = ['cases' => []];
+		$over       = [];
 		$parameters = '';
 		// the method exists into the class
 		$methods = $this->class->getMethods();
@@ -801,6 +801,22 @@ class Properties
 			$over['method'] = false;
 			if (!$over['call']) {
 				$parameters = '$property_name';
+				// Prepending $accessible to $over['call'] is not properly implemented for now :
+				// - with property_exists(), all properties unset for AOP are not tested for accessibility
+				// - without property_exists(), all accesses to dynamic properties like id will crash
+				/**
+				$accessible = '$calling_class = debug_backtrace()[1][\'class\'];
+			if (property_exists($this, $property_name) && (get_class($this) !== $calling_class)) {
+				$reflection_property = new \ReflectionProperty($this, $property_name);
+				if ($reflection_property->isPrivate()) {
+					throw new \ReflectionException(\'Could not access private property \' . get_class($this) . "::$property_name");
+				}
+				elseif ($reflection_property->isProtected() && !is_a($this, $calling_class)) {
+					throw new \ReflectionException(\'Could not access protected property \' . get_class($this) . "::$property_name");
+				}
+			}
+			';
+				 */
 				switch ($method_name) {
 					case '__get':
 						$over['call'] = 'return $this->$property_name;';

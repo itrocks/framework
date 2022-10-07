@@ -45,7 +45,7 @@ class Options_Properties_Annotation extends List_Annotation
 	 */
 	public function __construct(?string $value)
 	{
-		if ($value && strlen($value)) {
+		if (isset($value)) {
 			if ($value) {
 				$excluded = [];
 				$values   = [];

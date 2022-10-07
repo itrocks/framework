@@ -461,11 +461,16 @@ class Reflection_Method implements Has_Doc_Comment, Interfaces\Reflection_Method
 	public function returnsReference() : bool
 	{
 		if (!isset($this->returns_reference)) {
-			$tokens    =& $this->class->source->getTokens();
-			$token_key =  $this->token_key;
-			/** @noinspection PhpStatementHasEmptyBodyInspection ++ in condition */
-			while (is_array($token = $tokens[++$token_key]));
-			$this->returns_reference = ($token === '&');
+			$tokens     =& $this->class->source->getTokens();
+			$token_key  =  $this->token_key + 1;
+			$ampersands = [
+				T_AMPERSAND_FOLLOWED_BY_VAR_OR_VARARG,
+				T_AMPERSAND_NOT_FOLLOWED_BY_VAR_OR_VARARG
+			];
+			while (is_array($token = $tokens[$token_key]) && !in_array($token[0], $ampersands)) {
+				$token_key ++;
+			}
+			$this->returns_reference = is_array($token) || ($token === '&');
 		}
 		return $this->returns_reference;
 	}

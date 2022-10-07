@@ -37,9 +37,6 @@ class Reflection_Property extends ReflectionProperty
 {
 	use Annoted;
 
-	//----------------------------------------------------------------------------------- EMPTY_VALUE
-	const EMPTY_VALUE = '~~EMPTY~VALUE~~';
-
 	//---------------------------------------------------------------------------------------- $alias
 	/**
 	 * Aliased name
@@ -304,7 +301,7 @@ class Reflection_Property extends ReflectionProperty
 	 * This is not optimized and could be slower than getting the class's default values one time
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
+	 * @param $use_annotation boolean|string Set this to false disables interpretation of @default
 	 *                        Set this to 'constant' to accept @default if @return_constant is set
 	 * @param $default_object object|null INTERNAL, DO NOT USE ! Empty object for optimization purpose
 	 * @return mixed
@@ -654,7 +651,7 @@ class Reflection_Property extends ReflectionProperty
 
 	//------------------------------------------------------------------------- isComponentObjectHtml
 	/**
-	 * An helper that returns information about the property containing a component, objects, etc.
+	 * A helper that returns information about the property containing a component, objects, etc.
 	 *
 	 * @return string @values component-object, component-objects, object, objects
 	 */

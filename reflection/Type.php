@@ -68,7 +68,16 @@ class Type extends ReflectionType
 	 *
 	 * @var boolean
 	 */
-	private $absolute;
+	private bool $absolute = false;
+
+	//---------------------------------------------------------------------------------- $allows_null
+	/**
+	 * true if the type accepts null values
+	 *
+	 * @example for @var object|null or @var ?object type definition
+	 * @var boolean
+	 */
+	private bool $allows_null = false;
 
 	//--------------------------------------------------------------------------------- $alternatives
 	/**
@@ -76,16 +85,7 @@ class Type extends ReflectionType
 	 *
 	 * @var static[]
 	 */
-	public $alternatives = [];
-
-	//---------------------------------------------------------------------------------- $can_be_null
-	/**
-	 * true if the type accepts null values
-	 *
-	 * @example for @var object|null type definition
-	 * @var boolean
-	 */
-	private $can_be_null = false;
+	public array $alternatives = [];
 
 	//-------------------------------------------------------------------------------- $numeric_types
 	/**
@@ -93,7 +93,7 @@ class Type extends ReflectionType
 	 *
 	 * @var string[]
 	 */
-	private static $numeric_types = [self::FLOAT, self::INTEGER];
+	private static array $numeric_types = [self::FLOAT, self::INTEGER];
 
 	//---------------------------------------------------------------------------------- $sized_types
 	/**
@@ -101,7 +101,7 @@ class Type extends ReflectionType
 	 *
 	 * @var string[]
 	 */
-	private static $sized_types = [self::FLOAT, self::INTEGER, self::STRING];
+	private static array $sized_types = [self::FLOAT, self::INTEGER, self::STRING];
 
 	//------------------------------------------------------------------------- $strictly_basic_types
 	/**
@@ -109,7 +109,7 @@ class Type extends ReflectionType
 	 *
 	 * @var string[]
 	 */
-	private static $strictly_basic_types = [
+	private static array $strictly_basic_types = [
 		self::_ARRAY, self::BOOLEAN, self::_CALLABLE, self::FLOAT, self::INTEGER,
 		self::NULL, self::null, self::RESOURCE, self::STRING
 	];
@@ -122,33 +122,35 @@ class Type extends ReflectionType
 	 *
 	 * @var string
 	 */
-	private $type;
+	private string $type;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $type_string string
-	 * @param $can_be_null boolean
+	 * @param $type_string string|null
+	 * @param $allows_null boolean|null
 	 */
-	public function __construct($type_string = null, $can_be_null = null)
+	public function __construct(string $type_string = null, bool $allows_null = null)
 	{
 		if (isset($type_string)) {
 			if (($i = strpos($type_string, '|')) !== false) {
-				if (!isset($can_be_null)) {
-					$this->can_be_null = strpos($type_string, '|' . self::null);
+				if (!isset($allows_null)) {
+					$this->allows_null = strpos($type_string, '|' . self::null);
 				}
 				$this->type = substr($type_string, 0, $i);
 			}
 			else {
 				$this->type = $type_string;
 			}
+			if (str_starts_with($this->type, '?')) {
+				$this->allows_null = true;
+				$this->type        = substr($this->type, 1);
+			}
 			foreach (array_slice(explode('|', $type_string), 1) as $alternative) {
-				$this->alternatives[] = new static(
-					trim($alternative), isset($can_be_null) ? $can_be_null : $this->can_be_null
-				);
+				$this->alternatives[] = new static(trim($alternative), $allows_null ?? $this->allows_null);
 			}
 		}
-		if (isset($can_be_null)) {
-			$this->can_be_null = $can_be_null;
+		if (isset($allows_null)) {
+			$this->allows_null = $allows_null;
 		}
 		if (!empty($this->type) && ($this->type[0] === BS)) {
 			$this->absolute = true;
@@ -166,6 +168,17 @@ class Type extends ReflectionType
 	public function __toString() : string
 	{
 		return $this->type;
+	}
+
+	//------------------------------------------------------------------------------------ allowsNull
+	/**
+	 * Returns true if the type accepts null values
+	 *
+	 * @return boolean
+	 */
+	public function allowsNull() : bool
+	{
+		return $this->allows_null;
 	}
 
 	//-------------------------------------------------------------------------------- applyNamespace
@@ -217,10 +230,11 @@ class Type extends ReflectionType
 	 * Gets a single or multiple class type as its Reflection_Class
 	 *
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $reflection_class_name string Any reflection class name that implements Reflection_Class
+	 * @param $reflection_class_name string|null Reflection class name implementing Reflection_Class
 	 * @return Interfaces\Reflection_Class|Link_Class|PHP\Reflection_Class|Reflection_Class
 	 */
-	public function asReflectionClass($reflection_class_name = null) : Interfaces\Reflection_Class
+	public function asReflectionClass(string $reflection_class_name = null)
+		: Interfaces\Reflection_Class|Link_Class|PHP\Reflection_Class|Reflection_Class
 	{
 		if ($reflection_class_name) {
 			/** @noinspection PhpUnhandledExceptionInspection reflection class name must be valid */
@@ -251,17 +265,6 @@ class Type extends ReflectionType
 		return $this->type;
 	}
 
-	//------------------------------------------------------------------------------------- canBeNull
-	/**
-	 * Returns true if the type accepts null values
-	 *
-	 * @return boolean
-	 */
-	public function canBeNull() : bool
-	{
-		return $this->can_be_null;
-	}
-
 	//------------------------------------------------------------------------------------ floatEqual
 	/**
 	 * @param $float1 ?float
@@ -282,9 +285,9 @@ class Type extends ReflectionType
 	 *
 	 * @return mixed
 	 */
-	public function getDefaultValue()
+	public function getDefaultValue() : mixed
 	{
-		if ($this->canBeNull()) {
+		if ($this->allowsNull()) {
 			return null;
 		}
 		if ($this->isMultiple()) {
@@ -471,7 +474,7 @@ class Type extends ReflectionType
 	 */
 	public function isMultiple()
 	{
-		return ((substr($this->type, -2) === '[]') || $this->isArray()) ? self::MULTIPLE : false;
+		return (str_ends_with($this->type, '[]') || $this->isArray()) ? self::MULTIPLE : false;
 	}
 
 	//------------------------------------------------------------------------------- isMultipleClass
@@ -588,12 +591,12 @@ class Type extends ReflectionType
 	/**
 	 * Returns the multiple type for given type
 	 *
-	 * @param $can_be_null boolean
+	 * @param $allows_null boolean
 	 * @return Type
 	 */
-	public function multiple(bool $can_be_null = false) : Type
+	public function multiple(bool $allows_null = false) : Type
 	{
-		return new Type($this->type . '[]', $can_be_null);
+		return new Type($this->type . '[]', $allows_null);
 	}
 
 	//------------------------------------------------------------------------------------- usesTrait

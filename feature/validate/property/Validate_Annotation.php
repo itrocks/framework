@@ -50,7 +50,7 @@ class Validate_Annotation extends Validate\Annotation\Validate_Annotation
 			return true;
 		}
 		$result        = $this->call($object, [$this->property]);
-		$this->message = is_string($result) ? $result : null;
+		$this->message = is_string($result) ? $result : '';
 		return is_string($result) ? false : $result;
 	}
 

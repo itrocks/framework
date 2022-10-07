@@ -37,7 +37,7 @@ class Mandatory_Annotation extends Property\Mandatory_Annotation
 	{
 		if ($this->property instanceof Reflection_Property) {
 			/** @noinspection PhpUnhandledExceptionInspection $object of class containing $property */
-			$value = $this->property->getValue($object);
+			$value = $this->property->isInitialized($object) ? $this->property->getValue($object) : null;
 			return $this->property->isValueEmpty($value) && !($value instanceof Has_History);
 		}
 		return false;
@@ -64,13 +64,11 @@ class Mandatory_Annotation extends Property\Mandatory_Annotation
 	 * Validates the property value within this object context
 	 *
 	 * @param $object object
-	 * @return ?boolean
+	 * @return boolean
 	 */
-	public function validate(object $object) : ?bool
+	public function validate(object $object) : bool
 	{
-		return ($this->property instanceof Reflection_Property)
-			? (!$this->value || !$this->isEmpty($object))
-			: null;
+		return !$this->value || !$this->isEmpty($object);
 	}
 
 }

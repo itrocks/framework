@@ -37,7 +37,7 @@ class Warning_Annotation extends Validate\Annotation\Warning_Annotation
 	public function validate(object $object) : ?bool
 	{
 		$result        = $this->call($object, [$this->property]);
-		$this->message = is_string($result) ? $result : null;
+		$this->message = is_string($result) ? $result : '';
 		return is_string($result) ? false : $result;
 	}
 
