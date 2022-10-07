@@ -36,21 +36,21 @@ class Html_Builder_Property extends Html_Builder_Type
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
-	 * @var object
+	 * @var ?object
 	 */
-	public $object;
+	public ?object $object = null;
 
 	//------------------------------------------------------------------------------------- $property
 	/**
 	 * @var Reflection_Property
 	 */
-	protected $property;
+	protected Reflection_Property $property;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $property Reflection_Property
+	 * @param $property Reflection_Property|null
 	 * @param $value    mixed
-	 * @param $prefix   string prefix to property name
+	 * @param $prefix   string|null prefix to property name
 	 */
 	public function __construct(Reflection_Property $property = null, $value = null, $prefix = null)
 	{
@@ -220,7 +220,7 @@ class Html_Builder_Property extends Html_Builder_Type
 	/**
 	 * @return string
 	 */
-	private function buildMap()
+	private function buildMap() : string
 	{
 		if (!isset($this->template)) {
 			$this->template = new Html_Template();
@@ -245,12 +245,10 @@ class Html_Builder_Property extends Html_Builder_Type
 		if (!isset($filters)) {
 			$filters = Filters_Annotation::of($this->property)->parse($this->object);
 		}
-		$as_string = isset($as_string)
-			? $as_string
-			: (
-				$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
-				=== Store_Annotation::STRING
-			);
+		$as_string = $as_string ?? (
+			$this->property->getAnnotation(Store_Annotation::ANNOTATION)->value
+			=== Store_Annotation::STRING
+		);
 		return parent::buildObject($filters, $as_string);
 	}
 

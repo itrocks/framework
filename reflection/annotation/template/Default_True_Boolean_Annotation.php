@@ -25,7 +25,7 @@ class Default_True_Boolean_Annotation extends Boolean_Annotation
 	public function __construct(bool|null|string $value)
 	{
 		parent::__construct($value);
-		if ($value === '') {
+		if (is_null($value)) {
 			$this->value = true;
 		}
 	}

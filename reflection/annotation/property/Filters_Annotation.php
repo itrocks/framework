@@ -32,10 +32,10 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 	//----------------------------------------------------------------------------------------- parse
 	/**
 	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $final_object object The referent object where to take values from (property path root)
+	 * @param $final_object ?object The referent object where to take values from (property path root)
 	 * @return string[]
 	 */
-	public function parse(object $final_object) : array
+	public function parse(?object $final_object) : array
 	{
 		$filters        = [];
 		$filters_values = $this->values();

@@ -681,7 +681,7 @@ class Reflection_Property extends ReflectionProperty
 	 * @return boolean
 	 * @throws Exception You compare a Date_Time with stuff that could not be converted to a Date_Time
 	 */
-	private function isEquivalentObject(object|string|null $object1, object|string|null $object2)
+	private function isEquivalentObject(mixed $object1, mixed $object2)
 		: bool
 	{
 		if (is_object($object1) && isset($object1->id)) {
