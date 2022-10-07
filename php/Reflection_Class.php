@@ -75,7 +75,7 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 	/**
 	 * @var ?string The name of the class
 	 */
-	public ?string $name;
+	public ?string $name = null;
 
 	//--------------------------------------------------------------------------------------- $parent
 	/**
@@ -188,7 +188,6 @@ class Reflection_Class implements Has_Doc_Comment, Interfaces\Reflection_Class
 		$this->source = $source;
 
 		unset($this->line);
-		unset($this->name);
 		unset($this->stop);
 		$this->name = null;
 

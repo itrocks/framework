@@ -490,7 +490,7 @@ class Reflection_Class extends ReflectionClass
 	public function getProperties(
 		$flags = null, ?string $final_class = null, int $visibility_flags = null
 	) : array
-	) {
+	{
 		if (!isset($flags)) {
 			$flags = [T_EXTENDS, T_USE];
 		}
