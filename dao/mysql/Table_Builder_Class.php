@@ -77,7 +77,7 @@ class Table_Builder_Class
 		}
 		else {
 			/** @var $properties Reflection_Property[] */
-			$properties = Replaces_Annotations::removeReplacedProperties($class->accessProperties());
+			$properties = Replaces_Annotations::removeReplacedProperties($class->getProperties());
 			foreach ($properties as $property) {
 				if ($this->filterProperty($property)) {
 					$table->addColumn(Column::buildProperty($property));

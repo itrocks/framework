@@ -170,7 +170,7 @@ class Object_To_Write_Array
 		$exclude_properties  = $link->value
 			? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 			: [];
-		$properties        = $this->class->accessProperties();
+		$properties        = $this->class->getProperties();
 		$properties        = Replaces_Annotations::removeReplacedProperties($properties);
 		$aop_getter_ignore = Getter::$ignore;
 		foreach ($properties as $property) {

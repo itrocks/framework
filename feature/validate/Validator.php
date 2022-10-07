@@ -120,7 +120,6 @@ class Validator implements Registerable
 		if (is_object($object) && $this->validator_on) {
 			/** @noinspection PhpUnhandledExceptionInspection object, valid property */
 			$property = new Reflection\Reflection_Property($joinpoint->object, 'options');
-			$property->setAccessible(true);
 			/** @noinspection PhpUnhandledExceptionInspection property is of object and accessible */
 			$options = $property->getValue($joinpoint->object);
 			if (!Null_Object::isNull($object)) {
@@ -406,7 +405,7 @@ class Validator implements Registerable
 		$properties = Replaces_Annotations::removeReplacedProperties(
 			Reflection\Annotation\Class_\Link_Annotation::of($class)->value
 				? $class->getLinkProperties()
-				: $class->accessProperties()
+				: $class->getProperties()
 		);
 
 		$this->valid = Result::andResult(

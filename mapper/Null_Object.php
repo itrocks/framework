@@ -25,7 +25,7 @@ abstract class Null_Object
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$object = Builder::create($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 			if (!$property->isStatic()) {
 				$property->setValue($object, null);
 			}
@@ -53,7 +53,7 @@ abstract class Null_Object
 		$getter_ignore = Getter::$ignore;
 		$is_empty      = true;
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 			if (
 				!$property->isStatic()
 				&& !$property->getAnnotation('composite')->value
@@ -100,7 +100,7 @@ abstract class Null_Object
 		}
 		$is_null = true;
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
-		$properties = (new Reflection_Class($object))->accessProperties();
+		$properties = (new Reflection_Class($object))->getProperties();
 		if ($properties_filter) {
 			$properties = call_user_func($properties_filter, $properties);
 		}

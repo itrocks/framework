@@ -66,7 +66,7 @@ class Controller extends Edit\Controller
 	{
 		$object = $parameters->getMainObject($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
-		$properties = (new Reflection_Class($class_name))->accessProperties();
+		$properties = (new Reflection_Class($class_name))->getProperties();
 		$this->initializeSubObjects($object, $properties);
 		$objects    = $parameters->getObjects();
 		if ((count($objects) > 1) || $form) {

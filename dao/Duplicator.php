@@ -52,7 +52,7 @@ class Duplicator
 			$exclude_properties = $link->value
 				? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 				: [];
-			foreach ($class->accessProperties() as $property) {
+			foreach ($class->getProperties() as $property) {
 				if (!$property->getAnnotation('duplicate')->value) {
 					$property->setValue($object, $property->getDefaultValue());
 				}

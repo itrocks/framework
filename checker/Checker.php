@@ -27,7 +27,7 @@ abstract class Checker
 	{
 		$check_report = new Report();
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		foreach ((new Reflection_Class($object))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			/** @noinspection PhpUnhandledExceptionInspection $property from $object */
 			$check_report->add(self::checkProperty($property, $property->getValue($object)));
 		}

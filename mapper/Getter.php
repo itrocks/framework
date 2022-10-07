@@ -144,15 +144,8 @@ abstract class Getter
 					// when element class is not a component and a property name was found
 					elseif ($property_name) {
 						/** @noinspection PhpUnhandledExceptionInspection get_class(...), $property_name */
-						$property   = new Reflection_Property($search_element, $property_name);
-						$accessible = $property->isPublic();
-						if (!$accessible) {
-							$property->setAccessible(true);
-						}
+						$property = new Reflection_Property($search_element, $property_name);
 						$property->setValue($search_element, $object);
-						if (!$accessible) {
-							$property->setAccessible(false);
-						}
 						$stored = $dao->search($search_element, null, Dao::sort());
 					}
 					else {

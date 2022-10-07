@@ -89,14 +89,12 @@ class Setting implements Validate\Except
 			if (!$this->value->getClassName()) {
 				/** @noinspection PhpUnhandledExceptionInspection constant property from valid object */
 				$class_name = new Reflection_Property($this->value, 'class_name');
-				$class_name->setAccessible(true);
 				$class_name->setValue(
 					$this->value,
 					Builder::current()->sourceClassName(
 						lParse(rParse(rParse($value, '"class_name";s:'), DQ), DQ)
 					)
 				);
-				$class_name->setAccessible(false);
 			}
 			if (is_object($this->value)) {
 				$this->value->setting->code = str_replace(

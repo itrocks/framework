@@ -22,7 +22,7 @@ abstract class Remover_Tool
 	{
 		$count = 0;
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		foreach ((new Reflection_Class($composite))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($composite))->getProperties() as $property) {
 			$type = $property->getType();
 			if ($type->isClass() && isA($object, $type->getElementTypeAsString())) {
 				$property_name = $property->name;

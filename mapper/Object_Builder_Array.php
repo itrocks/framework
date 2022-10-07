@@ -874,7 +874,7 @@ class Object_Builder_Array
 		elseif ($objects) {
 			$new_object = reset($objects);
 			/** @noinspection PhpUnhandledExceptionInspection object */
-			foreach ((new Reflection_Class($object))->accessProperties() as $property) {
+			foreach ((new Reflection_Class($object))->getProperties() as $property) {
 				$property_name = $property->name;
 				if (isset($object->$property_name) && !isset($read_properties[$property->name])) {
 					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
@@ -913,7 +913,7 @@ class Object_Builder_Array
 			$this->stop();
 		}
 		$this->built_objects = [];
-		$this->properties    = $this->class->accessProperties();
+		$this->properties    = $this->class->getProperties();
 		$this->started       = true;
 	}
 

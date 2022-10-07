@@ -32,7 +32,7 @@ abstract class Search_Object extends Null_Object
 		/** @noinspection PhpUnhandledExceptionInspection $class_name must be valid */
 		$object = Builder::create($class_name);
 		/** @noinspection PhpUnhandledExceptionInspection object */
-		foreach ((new Reflection_Class($object))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($object))->getProperties() as $property) {
 			if (!$property->isStatic()) {
 				if ($property->isPublic()) {
 					$name = $property->name;

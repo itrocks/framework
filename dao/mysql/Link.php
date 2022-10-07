@@ -343,7 +343,7 @@ class Link extends Dao\Sql\Link
 					? array_keys((new Reflection_Class($link->value))->getProperties([T_EXTENDS, T_USE]))
 					: [];
 				$this->begin();
-				foreach ($class->accessProperties() as $property) {
+				foreach ($class->getProperties() as $property) {
 					if (!$property->isStatic() && !in_array($property->name, $exclude_properties)) {
 						if (Link_Annotation::of($property)->isCollection()) {
 							if ($property->getType()->isMultiple()) {

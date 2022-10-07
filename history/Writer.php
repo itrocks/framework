@@ -60,13 +60,12 @@ abstract class Writer
 		Dao::begin();
 		if (($link instanceof Identifier_Map) && ($identifier = $link->getObjectIdentifier($object))) {
 			$class_name = Builder::className(get_class($object));
-			/** @noinspection PhpUndefinedFieldInspection */
 			self::$before_write[$class_name][$identifier] = $before = $link->read(
 				$identifier, $class_name
 			);
 			// call getter for collections and maps in order to get the full value before write
 			/** @noinspection PhpUnhandledExceptionInspection from object */
-			foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+			foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 				if ($property->getType()->isMultiple()) {
 					/** @noinspection PhpUnhandledExceptionInspection $property from class and accessible */
 					$property->getValue($before);
@@ -89,7 +88,7 @@ abstract class Writer
 		$history       = [];
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($before);
-		foreach ($class->accessProperties() as $property) {
+		foreach ($class->getProperties() as $property) {
 			$type = $property->getType();
 			if (
 				!($type->isSingleClass() && $property->getAnnotation('component')->value)

@@ -160,7 +160,7 @@ class Builder implements Activable
 				unset($clone->_);
 			}
 			// copy official properties values from the source object
-			$properties = (new Reflection_Class($source_class_name))->accessProperties();
+			$properties = (new Reflection_Class($source_class_name))->getProperties();
 			foreach ($properties as $property) {
 				if (!isset($save_aop[$property->name])) {
 					$property->setValue($clone, $property->getValue($object));
@@ -220,7 +220,7 @@ class Builder implements Activable
 		}
 		// copy added properties values to the cloned object
 		if ($properties_values) {
-			$properties = (new Reflection_Class($class_name))->accessProperties();
+			$properties = (new Reflection_Class($class_name))->getProperties();
 			foreach ($properties_values as $property_name => $value) {
 				$properties[$property_name]->setValue($clone, $value);
 			}
@@ -376,13 +376,11 @@ class Builder implements Activable
 		/** @noinspection PhpUnhandledExceptionInspection Class of an object is always valid */
 		$class    = new Reflection_Class($object);
 		$defaults = $class->getDefaultProperties([T_EXTENDS]);
-		foreach ($class->accessProperties() as $property) if (!$property->isStatic()) {
+		foreach ($class->getProperties() as $property) if (!$property->isStatic()) {
 			/** @noinspection PhpUnhandledExceptionInspection $property comes from $object */
 			$value = $property->getValue($object);
 			if (isset($value)) {
-				$default = isset($defaults[$property->name])
-					? $defaults[$property->name]
-					: ($property->getType()->getDefaultValue());
+				$default = $defaults[$property->name] ?? ($property->getType()->getDefaultValue());
 				if (is_object($value) && !self::isObjectSet($value)) {
 					$value = null;
 				}

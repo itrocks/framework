@@ -68,7 +68,7 @@ class View_Builder_Class
 		$view_name = Dao::current()->storeNameOf($class->name);
 		$view      = new View($view_name);
 		/** @var $properties Reflection_Property[] */
-		$properties = $class->accessProperties();
+		$properties = $class->getProperties();
 		foreach ($properties as $property_name => $property) {
 			if (in_array($property->name, $this->excluded_properties)) {
 				unset($properties[$property_name]);
@@ -90,7 +90,7 @@ class View_Builder_Class
 			$representative = Representative_Annotation::of($sub_class)->values();
 			$source_class_name = Builder::current()->sourceClassName($sub_class->name);
 			/** @var $sub_properties Reflection_Property[] */
-			$sub_properties     = $sub_class->accessProperties();
+			$sub_properties     = $sub_class->getProperties();
 			$sub_property_names = ['id', 'class' => Dao\Func::value($source_class_name)];
 			foreach ($properties as $property_name => $property) {
 				$sub_property = $sub_properties[$property_name];

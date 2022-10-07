@@ -369,7 +369,7 @@ class Select
 				if (!isset($his_j)) {
 					/** @noinspection PhpUnhandledExceptionInspection should be valid here */
 					$class = new Reflection_Class($this->path_classes[$main_property]);
-					$class->accessProperties();
+					$class->getProperties();
 					$his_j                         = $j;
 					$this->classes[$his_j]         = $class;
 					$classes_index[$main_property] = $j;

@@ -264,16 +264,8 @@ class Dao implements Configurable
 				unset($object->$property);
 			}
 			else {
-				if (!$property->isPublic()) {
-					$property->setAccessible(true);
-					$set_accessible_false = true;
-				}
 				/** @noinspection PhpUnhandledExceptionInspection comes from getProperties, is accessible */
 				$value = $property->getValue($object);
-				if ($set_accessible_false) {
-					$property->setAccessible(false);
-					$set_accessible_false = false;
-				}
 				if ($property->isComponent()) {
 					static::exhaust($value, $keep_composite, $disconnect);
 				}

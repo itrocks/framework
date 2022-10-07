@@ -234,7 +234,7 @@ class Summary_Builder
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($object);
 		foreach (
-			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
+			Replaces_Annotations::removeReplacedProperties($class->getProperties())
 			as $property_name => $property
 		) {
 			if (isset($object->$property_name)) {

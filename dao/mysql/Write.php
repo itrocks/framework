@@ -200,7 +200,7 @@ class Write extends Data_Link\Write
 				$write_objects     = $object_to_write_array->objects;
 				$write_properties  = $object_to_write_array->properties;
 
-				$properties = $class->accessProperties();
+				$properties = $class->getProperties();
 				$properties = Replaces_Annotations::removeReplacedProperties($properties);
 				if ($write) {
 					$this->writeArray($write, $properties, $class);

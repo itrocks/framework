@@ -87,7 +87,7 @@ class Loc implements Registerable
 			if (is_array($value) && !empty($value)) {
 				if (Link_Annotation::of($property)->isCollection()) {
 					$class      = new Reflection_Class($property->getType()->getElementTypeAsString());
-					$properties = $class->accessProperties();
+					$properties = $class->getProperties();
 					reset($value);
 					if (!is_numeric(key($value))) {
 						$value = arrayFormRevert($value);

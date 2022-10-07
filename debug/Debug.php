@@ -48,16 +48,8 @@ abstract class Debug
 			/** @noinspection PhpUnhandledExceptionInspection $class from call stack */
 			foreach ((new Reflection_Class($class))->getProperties([T_EXTENDS, T_USE]) as $property) {
 				if ($property->isStatic()) {
-					if (!$property->isPublic()) {
-						$property->setAccessible(true);
-						$not_accessible = true;
-					}
 					/** @noinspection PhpUnhandledExceptionInspection accessible static property */
 					$dump['STATIC'][$class][$property->name] = $property->getValue();
-					if ($not_accessible) {
-						$property->setAccessible(false);
-						$not_accessible = false;
-					}
 				}
 			}
 		}

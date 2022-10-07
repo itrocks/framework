@@ -36,7 +36,7 @@ abstract class Empty_Object
 	public static function create($class_name)
 	{
 		$object = Builder::create($class_name);
-		foreach ((new Reflection_Class($class_name))->accessProperties() as $property) {
+		foreach ((new Reflection_Class($class_name))->getProperties() as $property) {
 			if (!$property->isStatic()) {
 				$type_string = $property->getType()->asString();
 				$value = array_key_exists($type_string, static::CAST) ? static::CAST[$type_string] : null;
@@ -66,7 +66,7 @@ abstract class Empty_Object
 			/** @noinspection PhpUnhandledExceptionInspection object */
 			$class   = new Reflection_Class($object);
 			$default = get_class_vars($class->name);
-			foreach ($class->accessProperties() as $property) {
+			foreach ($class->getProperties() as $property) {
 				$is_composite = $property->getAnnotation('composite')->value
 					|| $property->getAnnotation('link_composite')->value;
 				if (

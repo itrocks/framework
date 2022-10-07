@@ -54,11 +54,6 @@ class Around_Method extends Method_Joinpoint
 			/** @noinspection PhpUnhandledExceptionInspection class and method must be valid */
 			$method = (new ReflectionMethod($this->class_name, $this->process_method));
 		}
-		// the method must be accessible to invoke it
-		if (!$method->isPublic()) {
-			$not_accessible = true;
-			$method->setAccessible(true);
-		}
 		// if this is a static method : invoked object is null
 		$object = $this->pointcut[0];
 		if (!is_object($object)) {
@@ -74,10 +69,6 @@ class Around_Method extends Method_Joinpoint
 		}
 		else {
 			$result = $method->invoke($object);
-		}
-		// the method must be not accessible again
-		if (isset($not_accessible)) {
-			$method->setAccessible(false);
 		}
 		return $result;
 	}

@@ -257,7 +257,7 @@ class Where implements With_Build_Column
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		$class = new Reflection_Class($object);
 		foreach (
-			Replaces_Annotations::removeReplacedProperties($class->accessProperties())
+			Replaces_Annotations::removeReplacedProperties($class->getProperties())
 			as $property_name => $property
 		) {
 			$id_property_name = 'id_' . $property_name;

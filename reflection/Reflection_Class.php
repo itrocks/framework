@@ -36,47 +36,6 @@ class Reflection_Class extends ReflectionClass
 		return $this->name;
 	}
 
-	//------------------------------------------------------------------------------ accessProperties
-	/**
-	 * Change all properties accessibility to true for a given class, and return all class and parents
-	 * properties list
-	 *
-	 * Done for class properties and its parents.
-	 * Accessibility should be set back with a call to done() after use.
-	 * If class properties are set to accessible several times, they will become non-accessible after
-	 * the same number of done() calls.
-	 *
-	 * @param $flags string[]|null @values self::T_SORT, T_EXTENDS, T_USE
-	 * @return Reflection_Property[]
-	 */
-	public function accessProperties(array $flags = null) : array
-	{
-		$properties = $this->getProperties($flags);
-		foreach ($properties as $property) {
-			if (!$property->isPublic()) {
-				$property->setAccessible(true);
-			}
-		}
-		return $properties;
-	}
-
-	//-------------------------------------------------------------------------- accessPropertiesDone
-	/**
-	 * Reset properties accessibility to false when they are not public
-	 *
-	 * @return Reflection_Property[]
-	 */
-	public function accessPropertiesDone() : array
-	{
-		$properties = $this->getProperties([T_EXTENDS, T_USE]);
-		foreach ($properties as $property) {
-			if (!$property->isPublic()) {
-				$property->setAccessible(false);
-			}
-		}
-		return $properties;
-	}
-
 	//------------------------------------------------------------------------------------ fromString
 	/**
 	 * @param $string string

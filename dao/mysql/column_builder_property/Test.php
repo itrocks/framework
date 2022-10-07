@@ -287,7 +287,6 @@ class Test extends Tests\Test
 		$property_type_to_mysql = (new Reflection_Method(
 			Column_Builder_Property::class, 'propertyTypeToMysql'
 		));
-		$property_type_to_mysql->setAccessible(true);
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties([]) as $property) {
 			if (beginsWith($property->name, $property_prefix)) {

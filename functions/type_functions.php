@@ -134,31 +134,16 @@ function isA($object, $class_name)
  * @noinspection PhpDocMissingThrowsInspection
  * @param $object        object
  * @param $property_name string
- * @param $access        boolean if true, force accessibility to true to avoid exception
  * @return boolean
  */
-function isInitialized(object $object, string $property_name, bool $access = false) : bool
+function isInitialized(object $object, string $property_name) : bool
 {
 	if (isset($object->_[$property_name])) {
 		return property_exists($object, $property_name . '_');
 	}
 	/** @noinspection PhpUnhandledExceptionInspection should be called with a valid property */
 	$property = new ReflectionProperty($object, $property_name);
-	if ($access) {
-		if ($property->isPublic()) {
-			$access = false;
-		}
-		else {
-			/** @noinspection PhpExpressionResultUnusedInspection isInitialized needs this */
-			$property->setAccessible(true);
-		}
-	}
-	$is_initialized = $property->isInitialized($object);
-	if ($access) {
-		/** @noinspection PhpExpressionResultUnusedInspection isInitialized needs this */
-		$property->setAccessible(false);
-	}
-	return $is_initialized;
+	return $property->isInitialized($object);
 }
 
 //--------------------------------------------------------------------------------- isStrictInteger
