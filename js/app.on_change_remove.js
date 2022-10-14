@@ -11,7 +11,7 @@ $(document).ready(() =>
 		let   target = '#responses'
 		const uri    = $this.data(event)
 		$.each(uri.split(','), (key, uri) => {
-			if (uri.indexOf(SP) > -1) {
+			if (uri.includes(SP)) {
 				target = uri.rParse(SP)
 				uri    = uri.lParse(SP)
 			}
@@ -30,9 +30,9 @@ $(document).ready(() =>
 			$.post(uri, $form.formSerialize(), (data) =>
 			{
 				if (data) {
-					if (['{', '['].indexOf(data.substr(0, 1)) > -1) {
+					if (['{', '['].includes(data.substring(0, 1))) {
 						$.each(JSON.parse(data), (name, value) => {
-							if ((name.indexOf('#') > -1) || (name.indexOf('.') > -1)) {
+							if (name.includes('#') || name.includes('.')) {
 								$(name).html(value).build()
 							}
 							else {
@@ -99,14 +99,20 @@ $(document).ready(() =>
 	 */
 	const setFieldValue = ($form, field_name, value) =>
 	{
-		if (field_name.substr(0, 1) === '?') {
-			modalWindow(value.title, value.text, value.choices, (choice) =>
-			{
-				if (choice === 'confirm') {
-					setFieldValue($form, field_name.substr(1), value.value)
-				}
-			})
-			return
+		let only_if_empty = false
+		if (field_name.startsWith('?')) {
+			if ((typeof value) === 'string') {
+				field_name    = field_name.substring(1)
+				only_if_empty = true
+			}
+			else {
+				modalWindow(value.title, value.text, value.choices, (choice) => {
+					if (choice === 'confirm') {
+						setFieldValue($form, field_name.substring(1), value.value)
+					}
+				})
+				return
+			}
 		}
 		const search = 'input[name=' + DQ + field_name + DQ + ']'
 			+ ', input[data-name=' + DQ + field_name + DQ + ']'
@@ -156,7 +162,7 @@ $(document).ready(() =>
 			$.each(value, (attribute, value) => {
 				const $what = $input.next('input').attr(attribute) ? $input.next() : $input
 				if (attribute.startsWith('data-')) {
-					$what.removeData(attribute.substr(5))
+					$what.removeData(attribute.substring(5))
 				}
 				$what.attr(attribute, value)
 				if (attribute === 'value') {
@@ -173,12 +179,12 @@ $(document).ready(() =>
 		}
 
 		// todo comment what is this case about (value starting with ':') ?
-		if (((typeof value) === 'string') && (value.substr(0, 1) === ':')) {
-			if (!$input.val().length) {
-				value = value.substr(1)
-			}
-			else {
+		if (only_if_empty || (((typeof value) === 'string') && value.startsWith(':'))) {
+			if ($input.val().length) {
 				do_change = false
+			}
+			else if (!only_if_empty) {
+				value = value.substring(1)
 			}
 		}
 
