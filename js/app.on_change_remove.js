@@ -189,7 +189,7 @@ $(document).ready(() =>
 		}
 
 		if (
-			($input.val().length || $input.text().trim().length)
+			$input.val().length
 			&& ($input.is(':focus') || $input.next().is(':focus'))
 			&& ($input.is(':visible') || $input.next().is(':visible'))
 			&& (!$input.is('[readonly]') && !$input.next().is('[readonly]'))
@@ -199,7 +199,7 @@ $(document).ready(() =>
 
 		if (do_change) {
 			if ($input.is('textarea')) {
-				$input.text(value)
+				$input.val(value)
 			}
 			else {
 				$input.attr('value', value).val(value)
