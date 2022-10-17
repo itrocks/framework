@@ -190,7 +190,7 @@ file_put_contents($composer_file, <<<EOT
 	"repositories":      [{ "type": "composer", "url": "https://hub.itrocks.org" }],
 	"require":           {
 		"itrocks/framework": "dev-master",
-		"php":               "^7.1"
+		"php":               "^8.1"
 	},
 	"type": "itrocks-final"
 }
