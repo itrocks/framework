@@ -45,7 +45,7 @@ $(document).ready(function()
 		const classes = $element.attr('class').split(/\s+/)
 		for (let i = 0; i < classes.length; i++) {
 			if (classes[i].startsWith('quill-')) {
-				return classes[i].substr(6)
+				return classes[i].substring(6)
 			}
 		}
 		return 'standard'
@@ -70,7 +70,11 @@ $(document).ready(function()
 		quill.on('text-change', () =>
 		{
 			$this.data('quill-text-change', true)
-			$this.text($quill.find('.ql-editor').html())
+			let text = $quill.find('.ql-editor').html()
+			if (!text.replace(/<(p|br|\/p)>/g, '').trim().length) {
+				text = ''
+			}
+			$this.text(text)
 			$this.removeData('quill-text-change')
 		})
 
@@ -78,10 +82,11 @@ $(document).ready(function()
 		$this.change(function()
 		{
 			const $this = $(this)
+
 			if ($this.data('quill-text-change')) {
 				return
 			}
-			quill.root.innerHTML = $(this).text()
+			quill.root.innerHTML = $this.text()
 		})
 
 		if ($this.text().startsWith('{')) {
