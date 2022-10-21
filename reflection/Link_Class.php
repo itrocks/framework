@@ -20,9 +20,9 @@ class Link_Class extends Reflection_Class
 	/**
 	 * Set to force the property name which value is the linked object (to avoid conflicts)
 	 *
-	 * @var string
+	 * @var ?string
 	 */
-	public string $link_property_name;
+	public ?string $link_property_name = null;
 
 	//------------------------------------------------------------------------ getCompositeProperties
 	/**
