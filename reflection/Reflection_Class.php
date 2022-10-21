@@ -198,6 +198,7 @@ class Reflection_Class extends ReflectionClass
 	 * Public and protected properties defaults are taken even without T_EXTENDS.
 	 * Private properties defaults are taken only if you set T_EXTENDS to true.
 	 *
+	 * @noinspection PhpDocMissingThrowsInspection
 	 * @param $flags          integer[] T_EXTENDS. T_USE is implicit
 	 * @param $use_annotation boolean|string Set this to false to disable interpretation of @default
 	 *                        Set this to 'constant' to accept @default if @return_constant is set
@@ -224,11 +225,14 @@ class Reflection_Class extends ReflectionClass
 		}
 		// if only one property asked
 		if ($property_name) {
-			$defaults = [$property_name => $defaults[$property_name] ?? null];
+			$defaults = isset($defaults[$property_name])
+				? [$property_name => $defaults[$property_name]]
+				: [];
 		}
 		// scan for @default and use them
 		if ($use_annotation) {
 			foreach ($defaults as $default_property_name => $value) {
+				/** @noinspection PhpUnhandledExceptionInspection all using getDefaultProperties */
 				$property = $this->getProperty($default_property_name);
 				/** @var $default_annotation Method_Annotation */
 				if (
@@ -499,37 +503,27 @@ class Reflection_Class extends ReflectionClass
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
+
 	/**
 	 * Retrieves reflected properties
 	 *
 	 * Only a property visible for current class can be retrieved, not the privates ones from parent
 	 * classes or traits.
 	 *
-	 * @noinspection PhpDocMissingThrowsInspection $property from parent::getProperty()
 	 * @param $name string The name of the property to get, or a property.path
-	 * @return ?Reflection_Property
+	 * @return Reflection_Property
+	 * @throws ReflectionException
 	 */
 	#[ReturnTypeWillChange]
-	public function getProperty(string $name) : ?Reflection_Property
+	public function getProperty(string $name) : Reflection_Property
 	{
 		// property.path
-		if (strpos($name, DOT)) {
-			try {
-				return new Reflection_Property($this->name, $name);
-			}
-			catch (ReflectionException) {
-				return null;
-			}
+		if (str_contains($name, DOT)) {
+			return new Reflection_Property($this->name, $name);
 		}
 		// property_name
-		/** @noinspection PhpUnhandledExceptionInspection property_exists */
-		$property = property_exists($this->name, $name) ? parent::getProperty($name) : null;
-		// TODO Remove null test case if it never happens
-		//if (!$property) {
-			//trigger_error("Property does not exist $this->name.$name", E_USER_WARNING);
-		//}
-		/** @noinspection PhpUnhandledExceptionInspection $property from parent::getProperty() */
-		return $property ? new Reflection_Property($this->name, $property->name) : null;
+		$property = parent::getProperty($name);
+		return new Reflection_Property($this->name, $property->name);
 	}
 
 	//------------------------------------------------------------------------------------- getTraits

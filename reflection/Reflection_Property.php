@@ -84,9 +84,9 @@ class Reflection_Property extends ReflectionProperty
 	 * Only if the property is declared into a parent class as well as into the child class.
 	 * If not, this will be false.
 	 *
-	 * @var Reflection_Property|false
+	 * @var ?Reflection_Property
 	 */
-	private Reflection_Property|false $overridden_property;
+	private ?Reflection_Property $overridden_property;
 
 	//----------------------------------------------------------------------------------------- $path
 	/**
@@ -319,14 +319,14 @@ class Reflection_Property extends ReflectionProperty
 				|| $default_annotation->getReflectionMethod()->getAnnotation('return_constant')->value
 			)
 		) {
-			if (!isset($default_object)) {
+			if (!$default_object) {
 				/** @noinspection PhpUnhandledExceptionInspection final class name always valid */
 				$default_object = Builder::create($this->getFinalClassName());
 			}
 			return $default_annotation->call($default_object, [$this]);
 		}
 		return $this->getFinalClass()
-			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name];
+			->getDefaultProperties([T_EXTENDS], $use_annotation, $this->name)[$this->name] ?? null;
 	}
 
 	//--------------------------------------------------------------------------------- getDocComment
@@ -347,7 +347,7 @@ class Reflection_Property extends ReflectionProperty
 				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
 				. parent::getDocComment()
 				. LF . Parser::DOC_COMMENT_IN . $declaring_trait_name . LF
-				. ((isset($overridden_property)) ? $overridden_property->getDocComment() : '');
+				. $overridden_property?->getDocComment();
 			if ($cache) {
 				$this->doc_comment = $doc_comment;
 			}
@@ -425,11 +425,16 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getOverriddenProperty() : ?Reflection_Property
 	{
-		if (!isset($this->overridden_property)) {
-			$parent                    = $this->getDeclaringClass()->getParentClass();
-			$this->overridden_property = $parent ? ($parent->getProperty($this->name) ?: false) : false;
+		if (!isInitialized($this, 'overridden_property')) {
+			$parent = $this->getDeclaringClass()->getParentClass();
+			try {
+				$this->overridden_property = $parent?->getProperty($this->name);
+			}
+			catch (ReflectionException) {
+				$this->overridden_property = null;
+			}
 		}
-		return $this->overridden_property ?: null;
+		return $this->overridden_property;
 	}
 
 	//------------------------------------------------------------------------- getOverrideDocComment

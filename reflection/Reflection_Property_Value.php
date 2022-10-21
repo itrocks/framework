@@ -108,27 +108,6 @@ class Reflection_Property_Value extends Reflection_Property
 		$this->user = $user;
 	}
 
-	//----------------------------------------------------------------------------------------- __get
-	/**
-	 * Sets additional properties to matching Reflection_Property
-	 * (common for all instances of this property)
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $key string
-	 * @return mixed
-	 */
-	public function __get(string $key) : mixed
-	{
-		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
-		$property = new Reflection_Property($this->class, $this->name);
-		$value    = $property->$key ?? null;
-		trigger_error(
-			'Reflection_Property_Value::__get(' . $key . ') = ' . $value . ' MAY CRASH !',
-			E_USER_WARNING
-		);
-		return $value;
-	}
-
 	//--------------------------------------------------------------------------------------- display
 	/**
 	 * Returns the reflection property name display, translated
