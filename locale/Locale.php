@@ -277,20 +277,24 @@ class Locale implements Configurable, Registerable, Updatable
 	 * Change a locale value into an ISO formatted value, knowing its data type
 	 *
 	 * @param $value string
-	 * @param $type  Type
-	 * @return string|integer|float
+	 * @param $type  Type|null
+	 * @return float|integer|string
 	 */
-	public function toIso($value, Type $type = null)
+	public function toIso(string $value, Type $type = null) : float|int|string
 	{
 		if (isset($type)) {
 			if ($type->isDateTime()) {
 				return $this->date_format->toIso($value);
 			}
 			elseif ($type->isFloat()) {
-				return $this->number_format->floatToIso($value);
+				return (($value === '') && !$type->allowsNull())
+					? .0
+					: $this->number_format->floatToIso($value);
 			}
 			elseif ($type->isInteger()) {
-				return $this->number_format->integerToIso($value);
+				return (($value === '') && !$type->allowsNull())
+					? 0
+					: $this->number_format->integerToIso($value);
 			}
 		}
 		return $value;
