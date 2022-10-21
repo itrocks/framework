@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Reflection;
 
+use Error;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Dao;
 use ITRocks\Framework\Locale\Loc;
@@ -11,7 +12,7 @@ use ITRocks\Framework\Tools\Names;
 use ReflectionException;
 
 /**
- * A reflection property value is a reflection property enriched with it's display label and a value
+ * A reflection property value is a reflection property enriched with its display label and a value
  */
 class Reflection_Property_Value extends Reflection_Property
 {
@@ -128,26 +129,6 @@ class Reflection_Property_Value extends Reflection_Property
 		return $value;
 	}
 
-	//----------------------------------------------------------------------------------------- __set
-	/**
-	 * Sets additional properties to matching Reflection_Property
-	 * (common for all instances of this property)
-	 *
-	 * @noinspection PhpDocMissingThrowsInspection
-	 * @param $key   string
-	 * @param $value mixed
-	 */
-	public function __set(string $key, mixed $value)
-	{
-		trigger_error(
-			'Reflection_Property_Value::__set(' . $key . ') = ' . $value . ' MAY CRASH !',
-			E_USER_WARNING
-		);
-		/** @noinspection PhpUnhandledExceptionInspection $this is a valid Reflection_Property */
-		$property = new Reflection_Property($this->class, $this->name);
-		$property->$key = $value;
-	}
-
 	//--------------------------------------------------------------------------------------- display
 	/**
 	 * Returns the reflection property name display, translated
@@ -258,7 +239,13 @@ class Reflection_Property_Value extends Reflection_Property
 				return $this->userGetterValue($user_getter);
 			}
 		}
-		return parent::getValue($object, $with_default);
+		try {
+			$value = parent::getValue($object, $with_default);
+		}
+		catch (Error) {
+			$value = null;
+		}
+		return $value;
 	}
 
 	//------------------------------------------------------------------------ getWidgetClassesString
@@ -276,13 +263,13 @@ class Reflection_Property_Value extends Reflection_Property
 
 	//-------------------------------------------------------------------------------------- isHidden
 	/**
-	 * @return string|false 'hidden' if user annotation has 'hidden', else false
+	 * @return string 'hidden' if user annotation has 'hidden', else ''
 	 */
-	public function isHidden() : string|false
+	public function isHidden() : string
 	{
 		return $this->getListAnnotation(User_Annotation::ANNOTATION)->has(User_Annotation::HIDDEN)
 			? 'hidden'
-			: false;
+			: '';
 	}
 
 	//---------------------------------------------------------------------------------- isValueEmpty
