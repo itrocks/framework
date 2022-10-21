@@ -9,9 +9,10 @@ class Callback_Error_Handler implements Error_Handler
 
 	//---------------------------------------------------------------------------- $callback_function
 	/**
+	 * @noinspection PhpDocFieldTypeMismatchInspection callable
 	 * @var callable
 	 */
-	private $callback_function;
+	private array|string $callback_function;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -27,11 +28,11 @@ class Callback_Error_Handler implements Error_Handler
 	/**
 	 * Call error handled callback function using handled error object
 	 *
-	 * @param $handled_error Handled_Error
+	 * @param $error Handled_Error
 	 */
-	public function handle(Handled_Error $handled_error)
+	public function handle(Handled_Error $error)
 	{
-		call_user_func($this->callback_function, $handled_error);
+		call_user_func($this->callback_function, $error);
 	}
 
 }

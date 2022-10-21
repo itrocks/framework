@@ -13,7 +13,7 @@ abstract class Function_Joinpoint extends Joinpoint
 	/**
 	 * @var array
 	 */
-	public $parameters;
+	public array $parameters;
 
 	//--------------------------------------------------------------------------------------- $result
 	/**
@@ -22,17 +22,18 @@ abstract class Function_Joinpoint extends Joinpoint
 	 *
 	 * @var mixed
 	 */
-	public $result;
+	public mixed $result;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $pointcut    string
 	 * @param $parameters  array
 	 * @param $result      mixed
-	 * @param $advice      string[]|object[]|string
+	 * @param $advice      object[]|string[]|string
 	 */
-	public function __construct($pointcut, array $parameters, &$result, $advice)
-	{
+	public function __construct(
+		string $pointcut, array $parameters, mixed &$result, array|string $advice
+	) {
 		$this->advice     =  $advice;
 		$this->parameters =  $parameters;
 		$this->pointcut   =  $pointcut;

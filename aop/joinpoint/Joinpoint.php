@@ -9,15 +9,17 @@ abstract class Joinpoint
 
 	//--------------------------------------------------------------------------------------- $advice
 	/**
+	 * @noinspection PhpDocFieldTypeMismatchInspection callable is stored as array|string
 	 * @var callable
 	 */
-	public $advice;
+	public array|string $advice;
 
 	//------------------------------------------------------------------------------------- $pointcut
 	/**
+	 * @noinspection PhpDocFieldTypeMismatchInspection callable is stored as array|string
 	 * @var callable
 	 */
-	public $pointcut;
+	public array|string $pointcut;
 
 	//----------------------------------------------------------------------------------------- $stop
 	/**
@@ -26,6 +28,6 @@ abstract class Joinpoint
 	 *
 	 * @var boolean
 	 */
-	public $stop = false;
+	public bool $stop = false;
 
 }

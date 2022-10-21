@@ -14,7 +14,7 @@ abstract class Property_Joinpoint extends Joinpoint
 	/**
 	 * @var string
 	 */
-	public $class_name;
+	public string $class_name;
 
 	//-------------------------------------------------------------------------------------- $disable
 	/**
@@ -24,49 +24,50 @@ abstract class Property_Joinpoint extends Joinpoint
 	 *
 	 * @var boolean
 	 */
-	public $disable = false;
+	public bool $disable = false;
 
 	//--------------------------------------------------------------------------------------- $object
 	/**
 	 * @var object
 	 */
-	public $object;
+	public object $object;
 
 	//-------------------------------------------------------------------------------- $property_name
 	/**
 	 * @var string
 	 */
-	public $property_name;
+	public string $property_name;
 
 	//--------------------------------------------------------------------------------------- $stored
 	/**
 	 * @var mixed
 	 */
-	public $stored;
+	public mixed $stored;
 
 	//---------------------------------------------------------------------------------------- $value
 	/**
 	 * @var mixed
 	 */
-	public $value;
+	public mixed $value;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $class_name string
-	 * @param $pointcut   string[]|object[]
+	 * @param $pointcut   object[]|string[]
 	 * @param $value      mixed
 	 * @param $stored     mixed
 	 * @param $advice     callable
 	 */
-	public function __construct($class_name, array $pointcut, &$value, &$stored, callable $advice)
-	{
-		$this->advice        = $advice;
-		$this->class_name    = $class_name;
-		$this->object        = is_object($pointcut[0]) ? $pointcut[0] : null;
-		$this->pointcut      = $pointcut;
-		$this->property_name = $pointcut[1];
-		$this->stored        = &$stored;
-		$this->value         = &$value;
+	public function __construct(
+		string $class_name, array $pointcut, mixed &$value, mixed &$stored, callable $advice
+	) {
+		$this->advice        =  $advice;
+		$this->class_name    =  $class_name;
+		$this->object        =  is_object($pointcut[0]) ? $pointcut[0] : null;
+		$this->pointcut      =  $pointcut;
+		$this->property_name =  $pointcut[1];
+		$this->stored        =& $stored;
+		$this->value         =& $value;
 	}
 
 	//----------------------------------------------------------------------------------- getProperty
@@ -74,7 +75,7 @@ abstract class Property_Joinpoint extends Joinpoint
 	 * @noinspection PhpDocMissingThrowsInspection
 	 * @return Reflection_Property
 	 */
-	public function getProperty()
+	public function getProperty() : Reflection_Property
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $pointcut must be a valid property */
 		return new Reflection_Property(

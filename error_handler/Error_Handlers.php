@@ -16,13 +16,13 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * @var array Error_Handler[][][]
 	 */
-	private $error_handlers = [];
+	private array $error_handlers = [];
 
 	//------------------------------------------------------------------------------------- $instance
 	/**
 	 * @var Error_Handlers
 	 */
-	private static $instance;
+	private static Error_Handlers $instance;
 
 	//------------------------------------------------------------------- $last_handled_error_message
 	/**
@@ -40,10 +40,10 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * @param $configuration array
 	 */
-	public function __construct($configuration = [])
+	public function __construct(mixed $configuration = [])
 	{
 		foreach ($configuration as $handle) {
-			list($err_no, $error_handler_class) = $handle;
+			[$err_no, $error_handler_class] = $handle;
 			$this->addHandler($err_no, new $error_handler_class());
 		}
 	}
@@ -61,7 +61,7 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $error_types   integer
 	 * @param $error_handler Error_Handler
 	 */
-	public static function add($error_types, Error_Handler $error_handler)
+	public static function add(int $error_types, Error_Handler $error_handler)
 	{
 		Error_Handlers::getInstance()->addHandler($error_types, $error_handler);
 	}
@@ -75,11 +75,12 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $err_no        integer
 	 * @param $error_handler Error_Handler
 	 * @param $priority      integer
-	 * @return Error_Handlers
+	 * @return static
 	 */
 	public function addHandler(
-		$err_no, Error_Handler $error_handler, $priority = Error_Handler_Priority::NORMAL
-	) {
+		int $err_no, Error_Handler $error_handler, int $priority = Error_Handler_Priority::NORMAL
+	) : static
+	{
 		$this->error_handlers[$err_no][$priority][] = $error_handler;
 		ksort($this->error_handlers[$err_no]);
 		return $this;
@@ -87,11 +88,12 @@ class Error_Handlers implements Activable, Configurable
 
 	//--------------------------------------------------------------------------------------- current
 	/**
-	 * @param $set_current Error_Handlers
-	 * @return Error_Handlers
+	 * @param $set_current self|null
+	 * @return ?self
 	 */
-	public static function current(Error_Handlers $set_current = null)
+	public static function current(self $set_current = null) : ?self
 	{
+		/** @noinspection PhpIncompatibleReturnTypeInspection inspector error : more restrictive */
 		return self::pCurrent($set_current);
 	}
 
@@ -101,7 +103,7 @@ class Error_Handlers implements Activable, Configurable
 	 *
 	 * @return integer[]
 	 */
-	public function getHandledErrorTypes()
+	public function getHandledErrorTypes() : array
 	{
 		return array_keys($this->error_handlers);
 	}
@@ -112,7 +114,7 @@ class Error_Handlers implements Activable, Configurable
 	 *
 	 * @return integer
 	 */
-	public function getHandledErrorTypesAsInt()
+	public function getHandledErrorTypesAsInt() : int
 	{
 		$error_types = 0;
 		foreach (array_keys($this->error_handlers) as $error_type) {
@@ -125,9 +127,9 @@ class Error_Handlers implements Activable, Configurable
 	/**
 	 * Get the unique error handlers instance
 	 *
-	 * @return Error_Handlers
+	 * @return self
 	 */
-	public static function getInstance()
+	public static function getInstance() : self
 	{
 		return self::$instance;
 	}
@@ -143,9 +145,11 @@ class Error_Handlers implements Activable, Configurable
 	 * @param $vars     array
 	 * @return boolean
 	 */
-	public function handle($err_no, $err_msg, $filename, $line_num, array $vars = [])
+	public function handle(
+		int $err_no, string $err_msg, string $filename, int $line_num, array $vars = []
+	) : bool
 	{
-		if ((error_reporting() & $err_no) == $err_no) {
+		if ((error_reporting() & $err_no) === $err_no) {
 			if (!class_exists(Handled_Error::class)) {
 				trigger_error(
 					'CRASH : Class Handled_Error not found : ' . LF
@@ -156,7 +160,7 @@ class Error_Handlers implements Activable, Configurable
 			}
 			$handled_error = new Handled_Error($err_no, $err_msg, $filename, $line_num, $vars);
 			foreach ($this->error_handlers as $err_no_filter => $handlers) {
-				if (($err_no_filter & $err_no) == $err_no) {
+				if (($err_no_filter & $err_no) === $err_no) {
 					foreach ($handlers as $priority_handler) {
 						/** @var $priority_handler Error_Handler[] */
 						foreach ($priority_handler as $handler) {
@@ -208,10 +212,10 @@ class Error_Handlers implements Activable, Configurable
 			&& in_array($error['type'], [E_CORE_ERROR, E_COMPILE_ERROR, E_ERROR, E_PARSE])
 		) {
 			// increase memory / time limit to manage the error
-			if (substr($error['message'], 0, 22) === 'Allowed memory size of') {
+			if (str_starts_with($error['message'], 'Allowed memory size of')) {
 				ini_set('memory_limit', memory_get_peak_usage(true) + 10000000);
 			}
-			elseif (substr($error['message'], 0, 25) === 'Maximum execution time of') {
+			elseif (str_starts_with($error['message'], 'Maximum execution time of')) {
 				set_time_limit(10);
 			}
 			(new Report_Call_Stack_Error_Handler())->handle(

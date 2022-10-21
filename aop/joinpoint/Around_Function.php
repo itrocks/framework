@@ -11,7 +11,7 @@ class Around_Function extends Function_Joinpoint
 	/**
 	 * @var string
 	 */
-	private $process_function;
+	private string $process_function;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -21,8 +21,10 @@ class Around_Function extends Function_Joinpoint
 	 * @param $advice           string[]|object[]|string
 	 * @param $process_function string
 	 */
-	public function __construct($pointcut, array $parameters, &$result, $advice, $process_function)
-	{
+	public function __construct(
+		string $pointcut, array $parameters, mixed &$result, array|string $advice,
+		string $process_function
+	) {
 		parent::__construct($pointcut, $parameters, $result, $advice);
 		$this->process_function = $process_function;
 	}
@@ -34,7 +36,7 @@ class Around_Function extends Function_Joinpoint
 	 * @param $args mixed The arguments the original function was expected to receive
 	 * @return mixed
 	 */
-	public function process($args = null)
+	public function process(mixed $args = null) : mixed
 	{
 		return call_user_func_array($this->process_function, func_get_args());
 	}

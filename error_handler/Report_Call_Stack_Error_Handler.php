@@ -22,15 +22,15 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//----------------------------------------------------------------------------------- $call_stack
 	/**
-	 * @var Call_Stack
+	 * @var ?Call_Stack
 	 */
-	public $call_stack = null;
+	public ?Call_Stack $call_stack = null;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $call_stack Call_Stack
+	 * @param $call_stack Call_Stack|null
 	 */
-	public function __construct($call_stack = null)
+	public function __construct(Call_Stack $call_stack = null)
 	{
 		if (isset($call_stack)) {
 			$this->call_stack = $call_stack;
@@ -51,7 +51,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 				$this->logError($error, self::STDOUT);
 			}
 			elseif (Engine::acceptJson()) {
-				$this->logError($error, null, self::TEXT);
+				$this->logError($error);
 			}
 			else {
 				echo LF . '<div class="' . htmlentities($code->caption()) . ' handler">' . LF;
@@ -65,7 +65,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	/**
 	 * @return string
 	 */
-	private function formData()
+	private function formData() : string
 	{
 		$get  = $_GET;
 		$post = $_POST;
@@ -82,7 +82,7 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	 * @param $as   string @values html, text
 	 * @return string
 	 */
-	private function format($text, $as)
+	private function format(string $text, string $as) : string
 	{
 		return ($as === self::HTML) ? htmlentities($text) : $text;
 	}
@@ -154,10 +154,10 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	//-------------------------------------------------------------------------------------- logError
 	/**
 	 * @param $error    Handled_Error
-	 * @param $log_file string
+	 * @param $log_file string|null
 	 * @param $as       string @values html, text
 	 */
-	public function logError(Handled_Error $error, $log_file = null, $as = self::TEXT)
+	public function logError(Handled_Error $error, string $log_file = null, string $as = self::TEXT)
 	{
 		$code = new Error_Code($error->getErrorNumber());
 		if (!$log_file) {
@@ -170,8 +170,8 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 			$error_message = $this->format($error->getErrorMessage(), $as);
 			$f = ($log_file === self::STDOUT) ? null : fopen($log_file, 'ab');
 			$lf            = ($as === self::HTML) ? BRLF : LF;
-			$referer       = isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
-			$request_uri   = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : 'No REQUEST_URI';
+			$referer       = $_SERVER['HTTP_REFERER'] ?? '';
+			$request_uri   = $_SERVER['REQUEST_URI']  ?? 'No REQUEST_URI';
 
 			if ((Engine::acceptJson() && $f) || !Engine::acceptJson()) {
 				$this->out($f, $date . SP . $code_caption . ':' . SP . $error_message . $lf);
@@ -191,10 +191,11 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//------------------------------------------------------------------------------------------- out
 	/**
-	 * @param $f    resource If null : output
+	 * @noinspection PhpDocSignatureInspection a file resource is always stored as an integer
+	 * @param $f    ?resource If null : output
 	 * @param $text string
 	 */
-	private function out($f, $text)
+	private function out(?int $f, string $text)
 	{
 		if ($f) {
 			fputs($f, $text);
@@ -208,13 +209,13 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 	/**
 	 * @return string
 	 */
-	private function processIdentification()
+	private function processIdentification() : string
 	{
 		$result = 'PID = ' . posix_getpid();
-		$link = Dao::current();
+		$link   = Dao::current();
 		if ($link instanceof Link) {
 			/** $link Link */
-			$result .= ' ; mysql-thread-id = ' . ($link->getConnection()->thread_id ?? null);
+			$result .= ' ; mysql-thread-id = ' . ($link->getConnection()->thread_id ?? '-');
 		}
 		$result .= ' ; ' . session_name() . ' = ' . session_id();
 		return $result . LF;

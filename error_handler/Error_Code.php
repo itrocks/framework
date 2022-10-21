@@ -15,10 +15,9 @@ class Error_Code
 	/**
 	 * Captions constants
 	 *
-	 * @todo move this to functions / constant (?) when full-php-7.1-compliant
 	 * @var string[]
 	 */
-	private static $CAPTIONS = [
+	private const CAPTIONS = [
 		E_ALL               => 'all',
 		E_COMPILE_ERROR     => 'compile error',
 		E_COMPILE_WARNING   => 'compile warning',
@@ -42,13 +41,13 @@ class Error_Code
 	/**
 	 * @var integer
 	 */
-	public $code;
+	public int $code;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
 	 * @param $code integer
 	 */
-	public function __construct($code)
+	public function __construct(int $code)
 	{
 		$this->code = $code;
 	}
@@ -57,16 +56,16 @@ class Error_Code
 	/**
 	 * @return string
 	 */
-	public function caption()
+	public function caption() : string
 	{
-		return isset(self::$CAPTIONS[$this->code]) ? self::$CAPTIONS[$this->code] : self::UNKNOWN;
+		return self::CAPTIONS[$this->code] ?? self::UNKNOWN;
 	}
 
 	//--------------------------------------------------------------------------------------- isFatal
 	/**
 	 * @return boolean
 	 */
-	public function isFatal()
+	public function isFatal() : bool
 	{
 		return in_array(
 			$this->code,

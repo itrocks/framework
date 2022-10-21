@@ -5,7 +5,6 @@ use ITRocks\Framework\Reflection\Annotation\Property\Mandatory_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tests\Test;
-use stdClass;
 
 /**
  * Validate widget mandatory annotation test
@@ -90,6 +89,7 @@ class Mandatory_Annotation_Test extends Test
 		$annotation = Mandatory_Annotation::of(
 			$this->reflection_object->getProperty('empty_property')
 		);
+		/** @noinspection PhpPossiblePolymorphicInvocationInspection not polymorphic */
 		$actual = $annotation->isEmpty($this);
 
 		static::assertTrue($actual);

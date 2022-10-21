@@ -16,7 +16,7 @@ class Handled_Error
 	 *
 	 * @var boolean
 	 */
-	private $call_next_error_handlers = true;
+	private bool $call_next_error_handlers = true;
 
 	//-------------------------------------------------------------------------------------- $err_msg
 	/**
@@ -24,7 +24,7 @@ class Handled_Error
 	 *
 	 * @var string
 	 */
-	private $err_msg;
+	private string $err_msg;
 
 	//--------------------------------------------------------------------------------------- $err_no
 	/**
@@ -32,7 +32,7 @@ class Handled_Error
 	 *
 	 * @var integer
 	 */
-	private $err_no;
+	private int $err_no;
 
 	//------------------------------------------------------------------------------------- $filename
 	/**
@@ -40,7 +40,7 @@ class Handled_Error
 	 *
 	 * @var string
 	 */
-	private $filename;
+	private string $filename;
 
 	//------------------------------------------------------------------------------------- $line_num
 	/**
@@ -48,7 +48,7 @@ class Handled_Error
 	 *
 	 * @var integer
 	 */
-	private $line_num;
+	private int $line_num;
 
 	//-------------------------------------------------------------- $standard_php_error_handler_call
 	/**
@@ -57,7 +57,7 @@ class Handled_Error
 	 *
 	 * @var boolean
 	 */
-	private $standard_php_error_handler_call = false;
+	private bool $standard_php_error_handler_call = false;
 
 	//----------------------------------------------------------------------------------------- $vars
 	/**
@@ -66,7 +66,7 @@ class Handled_Error
 	 *
 	 * @var array
 	 */
-	private $vars;
+	private array $vars;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -79,8 +79,9 @@ class Handled_Error
 	 * @param $vars     array   error context : all active variables and their values when the error
 	 *                  occurred
 	 */
-	public function __construct($err_no, $err_msg, $filename, $line_num, array $vars = [])
-	{
+	public function __construct(
+		int $err_no, string $err_msg, string $filename, int $line_num, array $vars = []
+	) {
 		$this->err_no   = $err_no;
 		$this->err_msg  = $err_msg;
 		$this->filename = $filename;
@@ -96,7 +97,7 @@ class Handled_Error
 	 *
 	 * @return boolean
 	 */
-	public function areNextErrorHandlersCalled()
+	public function areNextErrorHandlersCalled() : bool
 	{
 		return $this->call_next_error_handlers;
 	}
@@ -108,9 +109,9 @@ class Handled_Error
 	 * Default behaviour is to don't call php error handler for handled errors.
 	 *
 	 * @param $call boolean set this to false if you don't want php error handler to be called anymore
-	 * @return Handled_Error
+	 * @return static
 	 */
-	public function callStandardPhpErrorHandler($call = true)
+	public function callStandardPhpErrorHandler(bool $call = true) : static
 	{
 		$this->standard_php_error_handler_call = $call;
 		return $this;
@@ -123,9 +124,9 @@ class Handled_Error
 	 * An error handler will call this if it wants other error handlers not to be called after it.
 	 * Default behaviour is to call all error handlers.
 	 *
-	 * @return Handled_Error
+	 * @return static
 	 */
-	public function dontCallNextErrorHandlers()
+	public function dontCallNextErrorHandlers() : static
 	{
 		$this->call_next_error_handlers = false;
 		return $this;
@@ -137,7 +138,7 @@ class Handled_Error
 	 *
 	 * @return string
 	 */
-	public function getErrorMessage()
+	public function getErrorMessage() : string
 	{
 		return $this->err_msg;
 	}
@@ -148,7 +149,7 @@ class Handled_Error
 	 *
 	 * @return integer
 	 */
-	public function getErrorNumber()
+	public function getErrorNumber() : int
 	{
 		return $this->err_no;
 	}
@@ -159,7 +160,7 @@ class Handled_Error
 	 *
 	 * @return string
 	 */
-	public function getFilename()
+	public function getFilename() : string
 	{
 		return $this->filename;
 	}
@@ -170,7 +171,7 @@ class Handled_Error
 	 *
 	 * @return integer
 	 */
-	public function getLineNumber()
+	public function getLineNumber() : int
 	{
 		return $this->line_num;
 	}
@@ -181,7 +182,7 @@ class Handled_Error
 	 *
 	 * @return integer
 	 */
-	public function getUserErrorNumber()
+	public function getUserErrorNumber() : int
 	{
 		switch ($this->err_no) {
 			case E_DEPRECATED:
@@ -205,13 +206,24 @@ class Handled_Error
 
 	//---------------------------------------------------------------------------------- getVariables
 	/**
-	 * Gets the variables active when the error occured
+	 * Gets the variables active when the error occurred
 	 *
 	 * @return array
 	 */
-	public function getVariables()
+	public function getVariables() : array
 	{
 		return Debug::globalDump(false);
+	}
+
+	//--------------------------------------------------------------------------------------- getVars
+	/**
+	 * Gets the variables that existed in the scope the error was triggered in
+	 *
+	 * @return array
+	 */
+	public function getVars() : array
+	{
+		return $this->vars;
 	}
 
 	//--------------------------------------------------------------- isStandardPhpErrorHandlerCalled
@@ -222,7 +234,7 @@ class Handled_Error
 	 *
 	 * @return boolean
 	 */
-	public function isStandardPhpErrorHandlerCalled()
+	public function isStandardPhpErrorHandlerCalled() : bool
 	{
 		return $this->standard_php_error_handler_call;
 	}

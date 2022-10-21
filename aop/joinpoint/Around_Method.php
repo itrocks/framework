@@ -13,7 +13,7 @@ class Around_Method extends Method_Joinpoint
 	/**
 	 * @var string
 	 */
-	private $process_method;
+	private string $process_method;
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
@@ -25,7 +25,8 @@ class Around_Method extends Method_Joinpoint
 	 * @param $process_method string
 	 */
 	public function __construct(
-		$class_name, array $pointcut, array $parameters, &$result, $advice, $process_method
+		string $class_name, array $pointcut, array $parameters, mixed &$result, array|string $advice,
+		string $process_method
 	) {
 		parent::__construct($class_name, $pointcut, $parameters, $result, $advice);
 		$this->process_method = $process_method;
@@ -39,7 +40,7 @@ class Around_Method extends Method_Joinpoint
 	 * @param $args mixed The arguments the original method was expected to receive
 	 * @return mixed
 	 */
-	public function process($args = null)
+	public function process(mixed ...$args) : mixed
 	{
 		$class_name = is_string($this->pointcut[0]) ? $this->pointcut[0] : get_class($this->pointcut[0]);
 
@@ -60,14 +61,17 @@ class Around_Method extends Method_Joinpoint
 			$object = null;
 		}
 		// invoke
-		if (func_num_args()) {
-			$result = $method->invokeArgs($object, func_get_args());
+		if (count($args)) {
+			/** @noinspection PhpUnhandledExceptionInspection method must be declared */
+			$result = $method->invokeArgs($object, $args);
 		}
 		elseif ($this->parameters) {
 			$parameters = array_slice($this->parameters, 0, count($this->parameters) / 2);
-			$result     = $method->invokeArgs($object, $parameters);
+			/** @noinspection PhpUnhandledExceptionInspection method must be declared */
+			$result = $method->invokeArgs($object, $parameters);
 		}
 		else {
+			/** @noinspection PhpUnhandledExceptionInspection method must be declared */
 			$result = $method->invoke($object);
 		}
 		return $result;
