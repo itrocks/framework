@@ -5,6 +5,7 @@ use ITRocks\Framework\Feature\Validate;
 use ITRocks\Framework\Reflection;
 use ITRocks\Framework\Reflection\Annotation\Template\Property_Context_Annotation;
 use ITRocks\Framework\Reflection\Interfaces\Reflection_Property;
+use TypeError;
 
 /**
  * Common to all property annotations : includes the property context
@@ -35,10 +36,16 @@ trait Annotation
 	public function getPropertyValue() : mixed
 	{
 		$property = $this->property;
-		/** @noinspection PhpUnhandledExceptionInspection property is always valid for object */
-		return (isset($this->object) && ($property instanceof Reflection\Reflection_Property))
-			? $property->getValue($this->object)
-			: null;
+		try {
+			/** @noinspection PhpUnhandledExceptionInspection property is always valid for object */
+			return (isset($this->object) && ($property instanceof Reflection\Reflection_Property))
+				? $property->getValue($this->object)
+				: null;
+		}
+		// We could read uninitialized values as validating means object is not guaranteed complete
+		catch (TypeError) {
+			return null;
+		}
 	}
 
 }
