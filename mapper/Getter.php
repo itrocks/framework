@@ -47,9 +47,10 @@ abstract class Getter
 		$objects = [];
 		$class_names = self::getFinalClasses($class_name);
 		foreach ($class_names as $class_name) {
-			$stored = null;
-			self::getCollection($stored, $class_name, $object, $property);
-			$objects = array_merge($objects, $stored);
+			$stored  = null;
+			$objects = array_merge(
+				$objects, self::getCollection($stored, $class_name, $object, $property)
+			);
 		}
 		return $objects;
 	}

@@ -126,8 +126,7 @@ class Default_List_Row implements List_Row
 	 */
 	public function getObject() : object
 	{
-		Getter::getObject($this->object, $this->class_name);
-		return $this->object;
+		return Getter::getObject($this->object, $this->class_name);
 	}
 
 	//--------------------------------------------------------------------------- getObjectIdentifier
