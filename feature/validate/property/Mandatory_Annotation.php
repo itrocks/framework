@@ -1,6 +1,7 @@
 <?php
 namespace ITRocks\Framework\Feature\Validate\Property;
 
+use Error;
 use ITRocks\Framework\Feature\Validate\Result;
 use ITRocks\Framework\History\Has_History;
 use ITRocks\Framework\Reflection\Annotation\Property;
@@ -36,8 +37,14 @@ class Mandatory_Annotation extends Property\Mandatory_Annotation
 	public function isEmpty(object $object) : bool
 	{
 		if ($this->property instanceof Reflection_Property) {
-			/** @noinspection PhpUnhandledExceptionInspection $object of class containing $property */
-			$value = $this->property->isInitialized($object) ? $this->property->getValue($object) : null;
+			try {
+				/** @noinspection PhpUnhandledExceptionInspection $object of class containing $property */
+				$value = $this->property->getValue($object);
+			}
+			catch (Error) {
+				// if uninitialized property value error, then it is empty
+				return true;
+			}
 			return $this->property->isValueEmpty($value) && !($value instanceof Has_History);
 		}
 		return false;
