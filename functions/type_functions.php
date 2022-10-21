@@ -131,7 +131,6 @@ function isA($object, $class_name)
 
 //----------------------------------------------------------------------------------- isInitialized
 /**
- * @noinspection PhpDocMissingThrowsInspection
  * @param $object        object
  * @param $property_name string
  * @return boolean
@@ -141,9 +140,12 @@ function isInitialized(object $object, string $property_name) : bool
 	if (isset($object->_[$property_name])) {
 		return property_exists($object, $property_name . '_');
 	}
-	/** @noinspection PhpUnhandledExceptionInspection should be called with a valid property */
-	$property = new ReflectionProperty($object, $property_name);
-	return $property->isInitialized($object);
+	try {
+		return (new ReflectionProperty($object, $property_name))->isInitialized($object);
+	}
+	catch (ReflectionException) {
+		return property_exists($object, $property_name);
+	}
 }
 
 //--------------------------------------------------------------------------------- isStrictInteger
@@ -152,10 +154,10 @@ function isInitialized(object $object, string $property_name) : bool
  * Same as isStrictNumeric, but :
  * - must not have decimal char
  *
- * @param $value string
+ * @param $value mixed
  * @return boolean
  */
-function isStrictInteger($value)
+function isStrictInteger(mixed $value)
 {
 	return isStrictNumeric($value, false);
 }
