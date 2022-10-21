@@ -307,7 +307,7 @@ class Object_Builder_Array
 			|| !isset($object->$real_property_name->id)
 			|| ($value != $object->$real_property_name->id)
 		)) {
-			$object->$real_property_name = null;
+			unset($object->$real_property_name);
 		}
 		if ($property->getType()->isAbstractClass() && strpos($value, ':')) {
 			$class_property_name = $property_name . '_class';

@@ -585,25 +585,7 @@ class Reflection_Property extends ReflectionProperty
 			}
 			return $object;
 		}
-		// TODO Remove this patch, done because PHP 7.1 sometimes crash with no valid reason for this
-		//return $object ? parent::getValue($object) : null;
-		if ($object) {
-			try {
-				return parent::getValue($object);
-			}
-			catch (Exception $exception) {
-				if (
-					$exception->getMessage()
-					=== 'Given object is not an instance of the class this property was declared in'
-				) {
-					$property_name = $this->name;
-					return $object->$property_name;
-				}
-				/** @var $exception ReflectionException Only valid exception can be this (accessibility) */
-				throw $exception;
-			}
-		}
-		return null;
+		return $object ? parent::getValue($object) : null;
 	}
 
 	//------------------------------------------------------------------------------------- getValues

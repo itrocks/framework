@@ -4,6 +4,7 @@ namespace ITRocks\Framework\Mapper;
 use ITRocks\Framework\Builder;
 use ITRocks\Framework\Reflection\Reflection_Class;
 use ITRocks\Framework\Tools\Date_Time;
+use TypeError;
 
 /**
  * A null object is an object which all properties have a null value
@@ -112,8 +113,13 @@ abstract class Null_Object
 				&& $property->getAnnotation('empty_check')->value
 			) {
 				Getter::$ignore = true;
-				/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
-				$value          = $property->getValue($object);
+				try {
+					/** @noinspection PhpUnhandledExceptionInspection $property from $object and accessible */
+					$value = $property->getValue($object);
+				}
+				catch (TypeError) {
+					$value = null;
+				}
 				Getter::$ignore = $getter_ignore;
 				if (
 					(($value instanceof Date_Time) && !$value->isEmpty())

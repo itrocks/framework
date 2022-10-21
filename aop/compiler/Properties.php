@@ -127,11 +127,19 @@ class Properties
 				$advice_parameters_string = str_replace('$object', '$this', $advice_parameters_string);
 			}
 			if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
-				$init['1.stored'] = '$stored =& $this->' . $property_name . ';';
+				$init['1.stored'] =
+		'if (isset($this->' . $property_name . ')) {
+			$stored =& $this->' . $property_name . ';
+		}
+		else {
+			$get_stored_value_back = true;
+			$stored = null;
+		}';
 			}
 			if (isset($advice_parameters['joinpoint'])) {
 				$pointcut_string = '[$this, ' . Q . $property_name . Q . ']';
-				$init[self::INIT_JOINPOINT] = '$joinpoint = new \ITRocks\Framework\AOP\Joinpoint' . BS . ucfirst($type) . '_Property('
+				$init[self::INIT_JOINPOINT]
+					= '$joinpoint = new \ITRocks\Framework\AOP\Joinpoint' . BS . ucfirst($type) . '_Property('
 					. LF . TAB . TAB . '__CLASS__, ' . $pointcut_string . ', $value, $stored, ' . $advice_string
 					. ');';
 			}
@@ -159,18 +167,28 @@ class Properties
 				$init['7.element_type_name'] = '$element_type_name = $type->getElementTypeAsString();';
 			}
 			if (isset($advice_parameters['class_name'])) {
-				$init['7.class_name'] = '$class_name = $type->getElementTypeAsString();';
+				$init['8.class_name'] = '$class_name = $type->getElementTypeAsString();';
 			}
 		}
 		else {
 			$advice_parameters_string = '';
 		}
 
-		return $this->generateAdviceCode(
+		$advice_code = $this->generateAdviceCode(
 			$advice, $advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters_string, $advice_has_return, $is_advice_static, $joinpoint_code,
 			LF . TAB . TAB, '$value'
 		);
+
+		if (isset($advice_parameters['stored']) || isset($advice_parameters['joinpoint'])) {
+			$advice_code .= '
+		if (isset($get_stored_value_back) && isset($stored)) {
+			unset($get_stored_value_back);
+			$this->' . $property_name . ' = $stored; 
+		}';
+		}
+
+		return $advice_code;
 	}
 
 	//------------------------------------------------------------------------------------ compileAop
@@ -596,7 +614,7 @@ class Properties
 		}
 		return $code . '
 		$property_name .= \'_\';
-		$this->$property_name = null;
+		unset($this->$property_name);
 	}
 ';
 	}
@@ -724,7 +742,7 @@ class Properties
 			unset($init['7.element_type_name']);
 		}
 		ksort($init);
-		return $init ? (LF . TAB . TAB . join(LF . TAB . TAB, $init) . LF) : '';
+		return $init ? (LF . TAB . TAB . join(LF . TAB . TAB, $init)) : '';
 	}
 
 	//-------------------------------------------------------------------------------- overrideMethod
