@@ -19,9 +19,9 @@ class Background_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed The image data for display (headers are set too), or null if no image
+	 * @return ?string The image data for display (headers are set too), or null if no image
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		/** @var $page Page */
 		$page = $parameters->getMainObject();

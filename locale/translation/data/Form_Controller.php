@@ -35,9 +35,9 @@ class Form_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$object        = $parameters->getMainObject();
 		$property_name = $parameters->getRawParameter('property') ?: $parameters->shiftUnnamed();

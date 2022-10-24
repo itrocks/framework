@@ -31,13 +31,13 @@ class Select_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$environment = Session::current()->get(Environment::class, true);
 		$objects     = $parameters->getObjects();
-		$set_value   = isset($objects['']) ? $objects[''] : (isset($objects[1]) ? $objects[1] : null);
+		$set_value   = $objects[''] ?? $objects[1] ?? null;
 		$name        = $objects[0];
 		/** @noinspection PhpUnhandledExceptionInspection valid $environment */
 		$this->property = (new Reflection_Class($environment))->getProperty($name);

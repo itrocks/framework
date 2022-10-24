@@ -23,7 +23,7 @@ class Download_Controller implements Feature_Controller
 	const FEATURE = 'download';
 
 	//------------------------------------------------------------------------------------------- run
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$print_models = Client::get()->download($form);
 		Main::$current->redirect(View::link(Print_Model::class, Feature::F_LIST), Target::MAIN);

@@ -18,15 +18,15 @@ class Set_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		Session::current()->get(Settings::class, true)->add(
 			$parameters->getRawParameter('code'),
 			$parameters->getRawParameter('value')
 		);
-		return;
+		return null;
 	}
 
 }

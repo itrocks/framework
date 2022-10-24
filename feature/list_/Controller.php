@@ -1044,9 +1044,10 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
 		if (Session::current()->get(Navigation::class)) {
 			Session::current()->remove(Navigation::class);

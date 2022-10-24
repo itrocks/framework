@@ -22,10 +22,11 @@ class Set_Save_Controller extends Save\Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return string
+	 * @return ?string
 	 * @throws View_Exception
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
 		/** @var $data_set Set */
 		$data_set = $parameters->getMainObject();
@@ -33,6 +34,7 @@ class Set_Save_Controller extends Save\Controller
 
 		$data_set->object        = Dao::read(reset($form), Names::pathToClass(key($form)));
 		$data_set->property_name = $form['property_name'];
+		/** @noinspection PhpExpressionResultUnusedInspection for calling @getter */
 		$data_set->elements;
 
 		foreach ($form['translation'] as $language_code => $translation) {

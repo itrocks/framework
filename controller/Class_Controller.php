@@ -19,8 +19,9 @@ interface Class_Controller extends Controller
 	 * @param $form         array
 	 * @param $files        array[]
 	 * @param $feature_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $feature_name);
+	public function run(Parameters $parameters, array $form, array $files, string $feature_name)
+		: ?string;
 
 }

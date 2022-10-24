@@ -27,9 +27,9 @@ class Output_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return null
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$raw_parameters = $parameters->getRawParameters();
 		if (is_numeric(reset($raw_parameters)) && ctype_upper(substr(key($raw_parameters), 0, 1))) {
@@ -56,9 +56,9 @@ class Output_Controller implements Feature_Controller
 		if (isset($file)) {
 			header('Content-Disposition: inline; filename=' . DQ . $file->name . DQ);
 			header('Content-Type: ' . $file->getType());
-			$height = isset($raw_parameters['height']) ? $raw_parameters['height'] : null;
-			$rotate = isset($raw_parameters['rotate']) ? $raw_parameters['rotate'] : null;
-			$width  = isset($raw_parameters['width'])  ? $raw_parameters['width']  : null;
+			$height = $raw_parameters['height'] ?? null;
+			$rotate = $raw_parameters['rotate'] ?? null;
+			$width  = $raw_parameters['width'] ?? null;
 			if ($height || $width || $rotate) {
 				$image = Image::createFromString($file->content);
 				if ($height || $width) {
@@ -70,9 +70,7 @@ class Output_Controller implements Feature_Controller
 				$image->display();
 			}
 			else {
-				$size = isset($raw_parameters['size'])
-					? $raw_parameters['size']
-					: array_shift($raw_parameters);
+				$size = $raw_parameters['size'] ?? array_shift($raw_parameters);
 				if ($size && !$file->getType()->is('svg')) {
 					$image = Image::createFromString($file->content);
 					$image->resize($size, $size)->display();
@@ -82,7 +80,7 @@ class Output_Controller implements Feature_Controller
 				}
 			}
 		}
-		return;
+		return null;
 	}
 
 }

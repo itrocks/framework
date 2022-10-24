@@ -25,9 +25,9 @@ class Start_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return string 'OK'
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		(new Asynchronous)->call(View::link(Server::class, Run_Controller::FEATURE), null, false, false);
 		return 'OK';

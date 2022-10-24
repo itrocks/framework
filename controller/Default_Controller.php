@@ -27,9 +27,11 @@ class Default_Controller implements Controller
 	 * @param $files        array[]
 	 * @param $class_name   string
 	 * @param $feature_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name, $feature_name)
+	public function run(
+		Parameters $parameters, array $form, array $files, string $class_name, string $feature_name
+	) : ?string
 	{
 		/** @noinspection PhpUnhandledExceptionInspection class_exists */
 		$constructor = class_exists($class_name)

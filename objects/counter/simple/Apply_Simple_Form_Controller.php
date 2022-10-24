@@ -21,9 +21,9 @@ class Apply_Simple_Form_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$counter = $parameters->getMainObject();
 		(new Object_Builder_Array())->build($form, $counter);

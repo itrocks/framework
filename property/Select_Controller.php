@@ -211,10 +211,10 @@ class Select_Controller implements Feature_Controller
 	 * - property_path : replace second if set : property path (used for Reverse\Join\Class(property))
 	 * @param $form  array not used
 	 * @param $files array[] not used
-	 * @return mixed
+	 * @return ?string
 	 * @throws ReflectionException
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$class_name = Set::elementClassNameOf(
 			$parameters->getRawParameter('class_name') ?: $parameters->shiftUnnamed()

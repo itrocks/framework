@@ -21,9 +21,9 @@ class Generate_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		$display_model = $parameters->getMainObject(Display_Model::class);
 		$exporter      = Builder::create(Output_Exporter::class);

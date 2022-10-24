@@ -21,14 +21,14 @@ class Is_Opened_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$objects = $parameters->getObjects();
 		foreach ($objects as $object) {
 			if (is_object($object) && !($object instanceof Opened_Document)) {
-				return Opened_Document::openedObject($object) ? true : false;
+				return (bool)Opened_Document::openedObject($object);
 			}
 		}
 		return false;

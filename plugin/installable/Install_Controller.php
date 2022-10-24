@@ -23,7 +23,7 @@ class Install_Controller implements Feature_Controller
 	 * @param $files      array[]
 	 * @return string 'Installed'
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		/** @var $plugin Installable */
 		$plugin    = $parameters->getMainObject();

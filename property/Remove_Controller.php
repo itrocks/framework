@@ -52,9 +52,9 @@ class Remove_Controller extends Remove\Controller
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form  array not used
 	 * @param $files array[] not used
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$objects = $parameters->getObjects();
 		$objects['class_name'] = $parameters->getRawParameter('class_name')

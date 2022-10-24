@@ -20,11 +20,10 @@ class Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
-		/** @noinspection PhpUnhandledExceptionInspection not a stored object */
 		$parameters->getMainObject(Func_Select::class);
 		return View::run($parameters->getObjects(), $form, $files, Func::class, Feature::F_SELECT);
 	}

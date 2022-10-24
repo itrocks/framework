@@ -136,11 +136,11 @@ class Asynchronous
 	 * Calls a command line asynchronously
 	 *
 	 * @param $command       string The command line to run
-	 * @param $then          callable|array A callback called when the job is done
+	 * @param $then          array A callback called when the job is done
 	 * @param $needs_session boolean true to automatically clone current session (authenticated call)
 	 * @return Process
 	 */
-	public function run($command, array $then = null, $needs_session = false)
+	public function run(string $command, array $then = [], bool $needs_session = false) : Process
 	{
 		$process = new Process($command, $then);
 		if ($needs_session) {

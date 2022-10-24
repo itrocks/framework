@@ -64,9 +64,10 @@ class Edit_Controller extends Edit\Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: string
 	{
 		/** @var $button Button */
 		$button = $parameters->getMainObject($class_name);

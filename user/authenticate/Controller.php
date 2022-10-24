@@ -40,9 +40,9 @@ class Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array an authentication form result with keys 'login' and 'password'
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files) : mixed
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		if (
 			isset($form['login']) && is_string($form['login'])

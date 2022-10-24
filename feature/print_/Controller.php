@@ -42,9 +42,10 @@ class Controller implements Default_Feature_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
 		$layout_model = $parameters->getObject(Print_Model::class);
 		$parameters->remove(Print_Model::class);

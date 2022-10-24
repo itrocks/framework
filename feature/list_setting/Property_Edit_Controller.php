@@ -21,15 +21,13 @@ class Property_Edit_Controller implements Feature_Controller
 	 * @param $property_path string The property
 	 * @return Property
 	 */
-	private function customSettingsProperty($class_name, $property_path)
+	private function customSettingsProperty(string $class_name, string $property_path) : Property
 	{
 		$list_settings = Set::current($class_name);
 		$list_settings->cleanup();
 		/** @noinspection PhpUnhandledExceptionInspection constant */
-		$property = isset($list_settings->properties[$property_path])
-			? $list_settings->properties[$property_path]
-			: Builder::create(Property::class, [$class_name, $property_path]);
-		return $property;
+		return $list_settings->properties[$property_path]
+			?? Builder::create(Property::class, [$class_name, $property_path]);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -39,9 +37,9 @@ class Property_Edit_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		if ($parameters->getMainObject(Property::class)->isEmpty()) {
 			[$class_name, $property_path] = $parameters->getRawParameters();

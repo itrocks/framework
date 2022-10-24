@@ -79,9 +79,11 @@ class Default_View implements IView
 	 * @param $files        array[]
 	 * @param $class_name   string
 	 * @param $feature_name string
-	 * @return string
+	 * @return ?string
 	 */
-	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
+	public function run(
+		array $parameters, array $form, array $files, string $class_name, string $feature_name
+	) : ?string
 	{
 		$feature_names
 			= (isset($parameters[Feature::FEATURE]) && ($parameters[Feature::FEATURE] !== $feature_name))
@@ -90,7 +92,7 @@ class Default_View implements IView
 		$template_file = Engine::getTemplateFile(
 			$class_name ?: Engine::class,
 			$feature_names,
-			isset($parameters[Template::TEMPLATE]) ? $parameters[Template::TEMPLATE] : null
+			$parameters[Template::TEMPLATE] ?? null
 		);
 		return $this->executeTemplate($template_file, $parameters, $feature_name);
 	}

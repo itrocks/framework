@@ -21,6 +21,7 @@ interface Default_Class_Controller extends Controller
 	 * @param $class_name string
 	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name) : ?string;
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string;
 
 }

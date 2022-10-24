@@ -50,10 +50,10 @@ class Save_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 * @throws Exception
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$button = $parameters->getMainObject(Button::class);
 		/** @noinspection PhpUnhandledExceptionInspection constant */

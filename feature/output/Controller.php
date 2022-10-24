@@ -531,9 +531,10 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, string $class_name)
+		: ?string
 	{
 		if ($parameters->has('next', true) && Dao::getObjectIdentifier($parameters->getMainObject())) {
 			/** @noinspection PhpUnhandledExceptionInspection class */

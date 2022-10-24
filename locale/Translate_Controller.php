@@ -78,7 +78,7 @@ class Translate_Controller implements Feature_Controller
 	 * @param $files      array[]
 	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		$this->parseParameters($parameters, $form);
 		$old_language = $this->setLanguage($this->language);

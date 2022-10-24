@@ -24,9 +24,9 @@ class Stop_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return string 'OK'
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		Dao::write(new Action(Server::STOP, Date_Time::now()));
 		return 'OK';

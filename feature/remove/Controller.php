@@ -24,9 +24,9 @@ class Controller implements Feature_Controller
 	 * - keys 2 and more : the identifiers of the removed elements (ie property names)
 	 * @param $form       array not used
 	 * @param $files      array[] not used
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$parameters = $parameters->getObjects();
 		$parameters['class_name']   = array_shift($objects);

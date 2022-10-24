@@ -24,9 +24,9 @@ class Append_Controller implements Feature_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return string
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files) : string
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$setting = $parameters->getObject(Setting::class);
 		if (!$setting) {

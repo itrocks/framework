@@ -527,9 +527,9 @@ class Main
 	 * @param $get   array
 	 * @param $post  array
 	 * @param $files array[]
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run($uri, array $get, array $post, array $files)
+	public function run(string $uri, array $get, array $post, array $files) : ?string
 	{
 		$result = null;
 		try {

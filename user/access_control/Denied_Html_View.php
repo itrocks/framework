@@ -21,9 +21,11 @@ class Denied_Html_View extends Default_View
 	 * @param $files        array[]
 	 * @param $class_name   string
 	 * @param $feature_name string
-	 * @return mixed
+	 * @return ?string
 	 */
-	public function run(array $parameters, array $form, array $files, $class_name, $feature_name)
+	public function run(
+		array $parameters, array $form, array $files, string $class_name, string $feature_name
+	) : ?string
 	{
 		$parameters['host'] = $_SERVER['HTTP_HOST'] ?? 'console';
 

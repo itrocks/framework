@@ -53,11 +53,10 @@ class Translations_Controller implements Feature_Controller
 	 * @param $files      array[]
 	 * @return string
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : string
 	{
 		$this->parseParameters($parameters, $form);
-		$translation = $this->translations();
-		return $translation;
+		return $this->translations();
 	}
 
 	//---------------------------------------------------------------------------------- translations
@@ -65,7 +64,7 @@ class Translations_Controller implements Feature_Controller
 	 * @input $this->context, $this->text
 	 * @return string
 	 */
-	protected function translations()
+	protected function translations() : string
 	{
 		$translator   = new Translator($this->language);
 		$translations = $translator->translations($this->text, true);

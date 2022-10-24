@@ -91,10 +91,10 @@ class Process
 
 	//----------------------------------------------------------------------------------- __construct
 	/**
-	 * @param $command  string
-	 * @param $callback callable|array
+	 * @param $command  string|null
+	 * @param $callback array|null
 	 */
-	public function __construct($command = null, array $callback = null)
+	public function __construct(string $command = null, array $callback = null)
 	{
 		if (isset($command)) {
 			$this->command = $command;
@@ -122,7 +122,7 @@ class Process
 			: 'no-resource';
 		proc_close($this->process);
 		$this->process = null;
-		if (isset($this->callback)) {
+		if ($this->callback) {
 			call_user_func_array(
 				array_slice($this->callback, 0, 2),
 				array_merge(array_slice($this->callback, 2), [$this])

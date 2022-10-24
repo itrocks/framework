@@ -28,10 +28,10 @@ class Search_Controller extends Select_Controller
 	 * @param $parameters Parameters
 	 * @param $form       array
 	 * @param $files      array[]
-	 * @return mixed
+	 * @return ?string
 	 * @throws ReflectionException
 	 */
-	public function run(Parameters $parameters, array $form, array $files)
+	public function run(Parameters $parameters, array $form, array $files) : ?string
 	{
 		$parameters->set(Parameter::CONTAINER, 'inside_tree');
 		$search = $parameters->getRawParameter('search');
