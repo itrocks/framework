@@ -42,6 +42,10 @@
 		else if (this.is('.popup')) {
 			this.remove();
 		}
+		else {
+			this.html('');
+			$targets = this.add($targets);
+		}
 		return $targets;
 	}
 
