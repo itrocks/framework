@@ -191,11 +191,10 @@ class Report_Call_Stack_Error_Handler implements Error_Handler
 
 	//------------------------------------------------------------------------------------------- out
 	/**
-	 * @noinspection PhpDocSignatureInspection a file resource is always stored as an integer
 	 * @param $f    ?resource If null : output
 	 * @param $text string
 	 */
-	private function out(?int $f, string $text)
+	private function out(mixed $f, string $text)
 	{
 		if ($f) {
 			fputs($f, $text);
