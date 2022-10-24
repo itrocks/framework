@@ -34,7 +34,7 @@ function base64_encode_url_safe($string)
 function cleanSpaces($string)
 {
 	$string = str_replace(TAB, SP, trim($string));
-	while (strpos($string, SP . SP)) {
+	while (str_contains($string, SP . SP)) {
 		$string = str_replace(SP . SP, SP, $string);
 	}
 	return $string;
@@ -50,7 +50,7 @@ function cleanSpaces($string)
  */
 function contains($string, $substring_to_search)
 {
-	return (strpos($string, $substring_to_search) !== false);
+	return str_contains($string, $substring_to_search);
 }
 
 //------------------------------------------------------------------------- htmlSpecialCharsRecurse
@@ -378,7 +378,7 @@ function strIsCapitals($string)
 	for ($i = 0; $i < strlen($string); $i ++) {
 		if (
 			(($string[$i] < 'A') || ($string[$i] > 'Z'))
-			&& (strpos('ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ', $string[$i]) === false)
+			&& !str_contains('ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÒÓÔÕÖÙÚÛÜÝŸ', $string[$i])
 		) {
 			return false;
 		}
@@ -440,7 +440,7 @@ function strReplaceLoop(array $search_replace, $subject)
 	do {
 		$found = false;
 		foreach ($search_replace as $search => $replace) {
-			if (!$found && (strpos($subject, $search) !== false)) {
+			if (!$found && str_contains($subject, $search)) {
 				$found = true;
 				break;
 			}
@@ -487,7 +487,7 @@ function strSimplify($string, $extended = false, $joker = null)
 		$c = $string[$i];
 		if (
 			(($c >= 'a') && ($c <= 'z')) || (($c >= 'A') && ($c <= 'Z')) || (($c >= '0') && ($c <= '9'))
-			|| ($extended && (strpos($extended, $c) !== false))
+			|| ($extended && str_contains($extended, $c))
 		) {
 			$result .= $c;
 		}
@@ -533,7 +533,7 @@ function strUri($string, $joker = null)
 	$uri = strtolower(strSimplify(
 		str_replace([BS, Q, SP, ',', ':', ';'], '-', $string), '/-_{}.', $joker
 	));
-	while (strpos($uri, '--')) {
+	while (str_contains($uri, '--')) {
 		$uri = str_replace('--', '-', $uri);
 	}
 	return $uri;

@@ -142,7 +142,7 @@ class PDF extends Fpdi
 			$signature = file_get_contents($tempsign);
 			// extract signature
 			$signature = substr($signature, $pdfdoc_length);
-			$signature = substr($signature, (strpos($signature, "%%EOF\n\n------") + 13));
+			$signature = substr($signature, strpos($signature, "%%EOF\n\n------") + 13);
 			$tmparr = explode("\n\n", $signature);
 			$signature = $tmparr[1];
 			// decode signature
@@ -195,7 +195,7 @@ class PDF extends Fpdi
 				header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 				header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 				// force download dialog
-				if (strpos(php_sapi_name(), 'cgi') === false) {
+				if (!str_contains(php_sapi_name(), 'cgi')) {
 					header('Content-Type: application/force-download');
 					header('Content-Type: application/octet-stream', false);
 					header('Content-Type: application/download', false);
@@ -243,7 +243,7 @@ class PDF extends Fpdi
 					header('Expires: Sat, 26 Jul 1997 05:00:00 GMT'); // Date in the past
 					header('Last-Modified: '.gmdate('D, d M Y H:i:s').' GMT');
 					// force download dialog
-					if (strpos(php_sapi_name(), 'cgi') === false) {
+					if (!str_contains(php_sapi_name(), 'cgi')) {
 						header('Content-Type: application/force-download');
 						header('Content-Type: application/octet-stream', false);
 						header('Content-Type: application/download', false);

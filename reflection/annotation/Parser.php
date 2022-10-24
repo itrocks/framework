@@ -123,7 +123,7 @@ class Parser
 		if (
 			is_a($annotation_class, Property_Context_Annotation::class, true)
 			&& ($reflection_object instanceof Reflection_Property)
-			&& strpos($reflection_object->path, DOT)
+			&& str_contains($reflection_object->path, DOT)
 		) {
 			$reflection_object = $reflection_object->getFinalProperty();
 		}

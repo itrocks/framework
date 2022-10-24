@@ -156,7 +156,7 @@ class Yaml
 			}
 			elseif (is_array($feature_data)) {
 				$yaml_path = str_replace(BS, SL, $yaml_path);
-				if (!empty($yaml_path) && (strpos($yaml_path, SL) === false)) {
+				if (!empty($yaml_path) && !str_contains($yaml_path, SL)) {
 					$yaml_path = $default_path . SL . $yaml_path;
 				}
 				if ($yaml_path === $path) {
@@ -189,7 +189,7 @@ class Yaml
 			}
 			elseif (is_array($feature_data)) {
 				$path = str_replace(BS, SL, $path);
-				if (!empty($path) && (strpos($path, SL) === false)) {
+				if (!empty($path) && !str_contains($path, SL)) {
 					$path = lLastParse($yaml->getPath(), SL) . SL . $path;
 				}
 				$result_yaml = new Yaml();
@@ -225,7 +225,7 @@ class Yaml
 						E_USER_ERROR
 					);
 				}
-				if (!strpos($feature, SL)) {
+				if (!str_contains($feature, SL)) {
 					$feature = $default_path . SL . $feature;
 				}
 				$features[$feature] = new Low_Level_Feature($feature, $feature_detail);
@@ -268,7 +268,7 @@ class Yaml
 		$includes = [];
 		if (isset($this->data[self::INCLUDES])) {
 			foreach ($this->data[self::INCLUDES] as $feature) {
-				if (strpos($feature, SL) === false) {
+				if (!str_contains($feature, SL)) {
 					$feature = lLastParse($default_path, SL) . SL . $feature;
 				}
 				$includes[$feature] = new Feature($feature);
@@ -298,7 +298,7 @@ class Yaml
 	{
 		if (isset($this->data[self::PATH])) {
 			$path = $this->data[self::PATH];
-			if (!strpos($path, SL)) {
+			if (!str_contains($path, SL)) {
 				$path = lLastParse($this->getFilenamePath(), SL) . SL . $path;
 			}
 		}

@@ -65,7 +65,7 @@ class Xdebug implements Registerable
 	 */
 	protected function append($uri, $key, $value)
 	{
-		return $uri . (strpos($uri, '?') !== false ? '&' : '?') . $key . '=' . $value;
+		return $uri . (str_contains($uri, '?') ? '&' : '?') . $key . '=' . $value;
 	}
 
 	//--------------------------------------------------------------------------------------- cleanup

@@ -385,7 +385,7 @@ abstract class Getter
 			// Looking for default controller for each application
 			if (empty($class) && $suffix) {
 				// $suffix == 'Html_View' => $sub = 'View/Html', $suffix = 'View'
-				if (strpos($suffix, '_')) {
+				if (str_contains($suffix, '_')) {
 					$elements = explode('_', $suffix);
 					$sub      = join(SL, array_reverse($elements));
 					$suffix   = end($elements);

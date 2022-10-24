@@ -172,7 +172,7 @@ class Feature_Cache
 				}
 				$path = lParse($annotation->value, SP);
 				$name = rParse($annotation->value, SP);
-				if (!strpos($path, SL)) {
+				if (!str_contains($path, SL)) {
 					$path = str_replace(BS, SL, $class_name) . SL . $path;
 				}
 				$features[$path] = new Feature($path, $name);

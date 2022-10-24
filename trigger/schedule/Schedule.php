@@ -212,7 +212,7 @@ class Schedule extends Trigger
 		$values     = [];
 
 		foreach ($list as $element) {
-			if (strpos($element, '-') === false) {
+			if (!str_contains($element, '-')) {
 				$value          = str_pad($element, $max_length, '0', STR_PAD_LEFT);
 				$values[$value] = $value;
 			}

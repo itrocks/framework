@@ -217,7 +217,7 @@ class Collection
 		}
 		if (
 			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
-			&& (strpos($value, '|') !== false)
+			&& str_contains($value, '|')
 		) {
 			$value = str_replace('|', '&#124;', $value);
 		}

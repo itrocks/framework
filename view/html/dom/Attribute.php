@@ -72,10 +72,10 @@ class Attribute
 	 */
 	public static function escapeValue($value)
 	{
-		if (strpos($value, DQ) === false) {
+		if (!str_contains($value, DQ)) {
 			return DQ . $value . DQ;
 		}
-		elseif (strpos($value, Q) === false) {
+		elseif (!str_contains($value, Q)) {
 			return Q . $value . Q;
 		}
 		return DQ . htmlspecialchars($value) . DQ;

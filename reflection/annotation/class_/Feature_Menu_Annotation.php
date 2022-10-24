@@ -62,13 +62,13 @@ class Feature_Menu_Annotation extends Annotation
 		[$link, $value] = explode(SP, $value, 2);
 		parent::__construct($link);
 		$value = trim($value);
-		if (strpos($value, ',')) {
+		if (str_contains($value, ',')) {
 			$value = str_replace(',', '>', $value);
 		}
-		if (strpos($value, '/')) {
+		if (str_contains($value, '/')) {
 			$value = str_replace('/', '>', $value);
 		}
-		if (strpos($value, '>')) {
+		if (str_contains($value, '>')) {
 			[$this->block_caption, $this->item_caption] = explode('>', $value, 2);
 			$this->block_caption = trim($this->block_caption);
 			$this->item_caption  = trim($this->item_caption);

@@ -17,7 +17,7 @@ trait Serialized
 	 */
 	public function replace(&$value, $search, $replace, $prefix = 'O')
 	{
-		if (!strpos($value, $search)) {
+		if (!str_contains($value, $search)) {
 			return false;
 		}
 		$value = str_replace($search, $replace, $value);

@@ -126,7 +126,7 @@ class Menu implements Configurable
 					$configuration_items[$object_link] = ucfirst(Names::classToDisplay($class_name));
 				}
 				// class name : change it to a menu item
-				elseif (strpos($class_name, BS))  {
+				elseif (str_contains($class_name, BS))  {
 					$link_class_name = in_array($feature, Feature::ON_SET)
 						? Names::classToSet($class_name)
 						: $class_name;

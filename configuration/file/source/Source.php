@@ -237,7 +237,7 @@ class Source extends File
 	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
 	{
 		$final_class_name = parent::shortClassNameOf($class_name, $maximum_use_depth);
-		if (strpos($final_class_name, BS) && (lLastParse($class_name, BS) === $this->namespace)) {
+		if (str_contains($final_class_name, BS) && (lLastParse($class_name, BS) === $this->namespace)) {
 			$final_class_name = rLastParse($class_name, BS);
 		}
 		return $final_class_name;

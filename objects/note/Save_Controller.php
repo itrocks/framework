@@ -19,9 +19,9 @@ class Save_Controller extends Save\Controller
 	 * @param $class_name string
 	 * @return mixed
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name) : ?string
 	{
-		if (isset($form['object']) && strpos($form['object'], ':')) {
+		if (isset($form['object']) && str_contains($form['object'], ':')) {
 			$form['object'] = Dao::read(rParse($form['object'], ':'), lParse($form['object'], ':'));
 		}
 		return parent::run($parameters, $form, $files, $class_name);

@@ -63,7 +63,7 @@ class Comparison implements Negate, Where
 		if (isset($than_value)) $this->than_value = $than_value;
 		if (isset($this->than_value) && !isset($this->sign)) {
 			$this->sign =
-				((strpos($this->than_value, '_') !== false) || (strpos($this->than_value, '%') !== false))
+				(str_contains($this->than_value, '_') || str_contains($this->than_value, '%'))
 					? self::LIKE
 					: self::EQUAL;
 		}
@@ -174,7 +174,7 @@ class Comparison implements Negate, Where
 			return $column . SP . $this->sign . SP . $identifier;
 		}
 		$sql = $column . SP . $this->sign
-			. SP . Value::escape($this->than_value, strpos($this->sign, 'LIKE') !== false);
+			. SP . Value::escape($this->than_value, str_contains($this->sign, 'LIKE'));
 		if (
 			str_contains($property_path, DOT)
 			&& in_array($this->sign, [static::NOT_EQUAL, static::NOT_LIKE])

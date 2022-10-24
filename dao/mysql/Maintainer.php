@@ -308,7 +308,7 @@ class Maintainer implements Configurable, Registerable
 				);
 			}
 			elseif ($mysqli->isInsert($query)) {
-				if (strpos($query, BQ . ' SET ')) {
+				if (str_contains($query, BQ . ' SET ')) {
 					$column_names = explode(',', str_replace([BQ, SP], '', rParse($query, BQ . ' SET ')));
 					foreach ($column_names as &$column_name) {
 						$column_name = trim(lParse($column_name, '='));
@@ -398,7 +398,7 @@ class Maintainer implements Configurable, Registerable
 		}
 		if ($table_name) {
 			foreach (Dao::classNamesOf($table_name) as $class_name) {
-				if (strpos($class_name, BS)) {
+				if (str_contains($class_name, BS)) {
 					$context[] = $class_name;
 				}
 			}
@@ -411,7 +411,7 @@ class Maintainer implements Configurable, Registerable
 			if ($table_name) {
 				$class_names = Dao::classNamesOf($table_name);
 				foreach ($class_names as $class_name) {
-					if (strpos($class_name, BS)) {
+					if (str_contains($class_name, BS)) {
 						$context[] = $class_name;
 					}
 				}
@@ -475,7 +475,7 @@ class Maintainer implements Configurable, Registerable
 					$retry = $this->updateContextTables($mysqli);
 				}
 				elseif (
-					($last_errno == Errors::ER_CANT_CREATE_TABLE) && strpos($last_error, '(errno: 150)')
+					($last_errno == Errors::ER_CANT_CREATE_TABLE) && str_contains($last_error, '(errno: 150)')
 				) {
 					$retry = $this->onCantCreateTableError($mysqli, $query);
 				}
@@ -576,10 +576,10 @@ class Maintainer implements Configurable, Registerable
 		$i    = strpos($error, Q) + 1;
 		$j    = strpos($error, Q, $i);
 		$name = substr($error, $i, $j - $i);
-		if (strpos($name, DOT)) {
+		if (str_contains($name, DOT)) {
 			$name = substr($name, strrpos($name, DOT) + 1);
 		}
-		if ((substr($name, 0, 1) == BQ) && (substr($name, -1) == BQ)) {
+		if (str_starts_with($name, BQ) && str_ends_with($name, BQ)) {
 			$name = substr($name, 1, -1);
 		}
 		return $name;
@@ -939,7 +939,7 @@ class Maintainer implements Configurable, Registerable
 			$row    = $result->fetch_row();
 			$result->free();
 			$create_table = end($row);
-			if (!strpos($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
+			if (!str_contains($create_table, 'DEFAULT CHARSET=' . Database::CHARACTER_SET)) {
 				$builder->setCharacterSet(Database::CHARACTER_SET, Database::COLLATE);
 			}
 			else {

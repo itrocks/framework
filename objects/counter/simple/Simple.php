@@ -92,9 +92,9 @@ class Simple extends Counter
 	public function formatToSimple()
 	{
 		$this->prefix                 = lParse(lParse($this->format, '%'), '{');
-		$this->yearly_reset           = (strpos($this->format, '{YEAR') !== false);
-		$this->year_with_4_characters = (strpos($this->format, '{YEAR4}') !== false);
-		$this->complete_with_zeros    = (strpos($this->format, '%0') !== false);
+		$this->yearly_reset           = str_contains($this->format, '{YEAR');
+		$this->year_with_4_characters = str_contains($this->format, '{YEAR4}');
+		$this->complete_with_zeros    = str_contains($this->format, '%0');
 		$this->documents_count        = '1' . sprintf(
 			'%0' . (intval(mParse($this->format, '%', 'd')) - 1) . 's', 0
 		);

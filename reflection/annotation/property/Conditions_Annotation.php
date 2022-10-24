@@ -46,7 +46,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 				elseif ($position = strpos($condition, '<')) {
 					$operator = (($condition[$position + 1] === '=') ? '<=' : '<');
 				}
-				elseif (strpos($condition, '=')) {
+				elseif (str_contains($condition, '=')) {
 					$operator = '=';
 				}
 				else {

@@ -29,7 +29,7 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 	{
 		parent::__construct($value);
 		if (count($this->values()) === 1) {
-			if (strpos($value = reset($this->value), '::')) {
+			if (str_contains($value = reset($this->value), '::')) {
 				$this->importValues($value, $property);
 			}
 		}
@@ -53,7 +53,7 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 	 */
 	private function importValues(string $from, Reflection_Property $property)
 	{
-		[$value, $option]    = strpos($from, SP) ? explode(SP, $from, 2) : [$from, null];
+		[$value, $option]    = str_contains($from, SP) ? explode(SP, $from, 2) : [$from, null];
 		[$class_name, $what] = explode(
 			'::', (new Method_Annotation($value, $property, 'values'))->value
 		);

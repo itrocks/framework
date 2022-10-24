@@ -303,7 +303,7 @@ class Reflection_Source
 						);
 					}
 					$guard = 10;
-					while (strpos($require_name, '/../') && $guard--) {
+					while (str_contains($require_name, '/../') && $guard--) {
 						$require_name = preg_replace('%\\w+/../%', '', $require_name);
 					}
 					if (!$guard) {
@@ -554,7 +554,7 @@ class Reflection_Source
 							$title = $this->fullClassName($title);
 						}
 						elseif (!$declaration) {
-							if (strpos($title, SP)) {
+							if (str_contains($title, SP)) {
 								$declaration = Declaration::INSTALLABLE;
 							}
 							else {
@@ -566,7 +566,7 @@ class Reflection_Source
 								}
 								$title           = $this->fullClassName($title);
 								$this->namespace = $namespace;
-								$declaration     = strpos($title, BS)
+								$declaration     = str_contains($title, BS)
 									? Declaration::ASSIGNED
 									: Declaration::INSTALLABLE;
 							}
@@ -982,7 +982,7 @@ class Reflection_Source
 			}
 			else {
 				$buffer = file_get_contents($file_name);
-				if (strpos($buffer, 'class ' . $class_name)) {
+				if (str_contains($buffer, 'class ' . $class_name)) {
 					$this->file_name = $file_name;
 					$already = [];
 					return true;

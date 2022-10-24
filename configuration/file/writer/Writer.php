@@ -42,7 +42,7 @@ abstract class Writer
 	 */
 	protected function removeMultipleWhiteLines(string &$buffer)
 	{
-		while (strpos($buffer, LF . LF . LF)) {
+		while (str_contains($buffer, LF . LF . LF)) {
 			$buffer = str_replace(LF . LF . LF, LF . LF, $buffer);
 		}
 	}

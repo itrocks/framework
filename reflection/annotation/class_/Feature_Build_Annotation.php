@@ -53,7 +53,7 @@ class Feature_Build_Annotation extends Template\List_Annotation
 		if (static::$context) {
 			$class = static::$context;
 		}
-		if (strpos($value, '+')) {
+		if (str_contains($value, '+')) {
 			$this->build_first = true;
 			$value             = str_replace('+', ',', $value);
 		}

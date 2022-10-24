@@ -954,7 +954,7 @@ class Functions
 			elseif (is_array($object)) {
 				$value = reset($template->objects);
 				if (is_numeric($value)) {
-					return (strpos($value, DOT) !== false)
+					return str_contains($value, DOT)
 						? Loc::floatToLocale($value)
 						: Loc::integerToLocale($value);
 				}
@@ -1118,7 +1118,7 @@ class Functions
 						$property->tooltip = $properties_tooltip[$property_path];
 					}
 					$result_properties[$property_path] = $property;
-					if (strpos($property_path, DOT)) {
+					if (str_contains($property_path, DOT)) {
 						Group_Annotation::local($property)->replaceByClass($class, $property_path);
 					}
 				}
@@ -1212,7 +1212,7 @@ class Functions
 	{
 		$prefix = reset($template->properties_prefix);
 		while ($next = next($template->properties_prefix)) {
-			$next = ((strpos($next, BS) !== false) && class_exists($next))
+			$next = (str_contains($next, BS) && class_exists($next))
 				? Names::classToDisplay($next)
 				: $this->escapeName($next);
 			// reverse : name.num => num[name], needed by standard form structure

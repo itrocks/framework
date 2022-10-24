@@ -32,7 +32,7 @@ trait Has_Build_Column
 	 */
 	public function buildColumn($path, $as = true, $resolve_objects = false, Join $join = null)
 	{
-		if (strpos($path, BQ) !== false) {
+		if (str_contains($path, BQ)) {
 			// already built (called twice on Expression)
 			return $path;
 		}

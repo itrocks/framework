@@ -355,7 +355,7 @@ class Select
 				continue;
 			}
 			$this->column_names[$i] = $column_name;
-			if (strpos($column_name, ':') == false) {
+			if (!strpos($column_name, ':')) {
 				$this->i_to_j[$i] = $j++;
 			}
 			else {
@@ -365,7 +365,7 @@ class Select
 				}
 				$this->column_names[$i] = $column_name = $split[1];
 				$main_property          = $split[0];
-				$his_j = isset($classes_index[$main_property]) ? $classes_index[$main_property] : null;
+				$his_j = $classes_index[$main_property] ?? null;
 				if (!isset($his_j)) {
 					/** @noinspection PhpUnhandledExceptionInspection should be valid here */
 					$class = new Reflection_Class($this->path_classes[$main_property]);

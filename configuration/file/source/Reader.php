@@ -72,13 +72,13 @@ class Reader extends File\Reader
 						$end_lines = [];
 					}
 					$next_line_use = false;
-					if (strpos($line, '{')) {
+					if (str_contains($line, '{')) {
 						$parse_char = '{';
 					}
-					elseif (strpos($line, ';')) {
+					elseif (str_contains($line, ';')) {
 						$parse_char = ';';
 					}
-					elseif (strpos($line, ',')) {
+					elseif (str_contains($line, ',')) {
 						$next_line_use = true;
 						$parse_char    = ',';
 					}
@@ -88,12 +88,12 @@ class Reader extends File\Reader
 					}
 					if ($parse_char) {
 						$use = $this->file->fullClassNameOf(trim(
-							(strpos($line, 'use') !== false)
-							? mParse($line, 'use ', $parse_char)
-							: lParse($line, $parse_char)
+							str_contains($line, 'use')
+								? mParse($line, 'use ', $parse_char)
+								: lParse($line, $parse_char)
 						));
 						$class_use = new Class_Use($use, $parse_char . rParse($line, $parse_char));
-						if (($parse_char !== '{') || strpos($line, '}')) {
+						if (($parse_char !== '{') || str_contains($line, '}')) {
 							$this->file->class_use[] = $class_use;
 							$class_use               = null;
 						}
@@ -101,7 +101,7 @@ class Reader extends File\Reader
 				}
 				elseif ($class_use) {
 					$class_use->rules .= LF . $line;
-					if (strpos($line, '}')) {
+					if (str_contains($line, '}')) {
 						$this->file->class_use[] = $class_use;
 						$class_use               = null;
 					}

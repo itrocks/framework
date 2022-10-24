@@ -73,7 +73,7 @@ class Logger implements Configurable, Registerable
 			$this->continue = $configuration[self::CONTINUE_LOG];
 			if (isset($configuration[self::EXCLUDE])) {
 				foreach ($configuration[self::EXCLUDE] as $exclude) {
-					if (strpos(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
+					if (str_contains(SL . $_SERVER['REQUEST_URI'] . SL, SL . $exclude . SL)) {
 						$this->continue = false;
 						break;
 					}

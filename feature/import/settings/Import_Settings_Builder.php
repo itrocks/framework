@@ -28,7 +28,7 @@ abstract class Import_Settings_Builder
 	private static function autoIdentify(string $class_name, array $properties_path) : array
 	{
 		foreach ($properties_path as $property_path) {
-			if (strpos($property_path, '*') !== false) {
+			if (str_contains($property_path, '*')) {
 				return [];
 			}
 		}

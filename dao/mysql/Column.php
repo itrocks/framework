@@ -299,10 +299,10 @@ class Column implements Sql\Column
 		$type1 = $column->Type;
 		$type2 = $this->Type;
 		if ($type1 !== $type2) {
-			if (strpos($type1, '(') && !strpos($type2, '(')) {
+			if (str_contains($type1, '(') && !str_contains($type2, '(')) {
 				$type1 = lParse($type1, '(') . rParse($type1, ')');
 			}
-			elseif (strpos($type2, '(') && !strpos($type1, '(')) {
+			elseif (str_contains($type2, '(') && !str_contains($type1, '(')) {
 				$type2 = lParse($type2, '(') . rParse($type2, ')');
 			}
 		}

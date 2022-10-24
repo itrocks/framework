@@ -199,7 +199,7 @@ class Search_Array_Builder
 		$property_names = Representative_Annotation::of($class)->values();
 		foreach ($property_names as $key => $property_name) {
 			/** @noinspection PhpUnhandledExceptionInspection @representative properties should be good */
-			$property = strpos($property_name, DOT)
+			$property = str_contains($property_name, DOT)
 				? new Reflection_Property($class->name, $property_name)
 				: $class->getProperty($property_name);
 			$type        = $property->getType();

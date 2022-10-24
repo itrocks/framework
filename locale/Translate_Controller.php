@@ -126,7 +126,7 @@ class Translate_Controller implements Feature_Controller
 	 */
 	protected function translate()
 	{
-		if (strpos($this->text, PIPE)) {
+		if (str_contains($this->text, PIPE)) {
 			$translator  = new Html_Translator();
 			$translation = $translator->translateContent($this->text, $this->context);
 		}

@@ -286,7 +286,7 @@ class Counter
 		if (!$identifier) {
 			return '';
 		}
-		if (!strpos($identifier, BS)) {
+		if (!str_contains($identifier, BS)) {
 			return Loc::tr($identifier);
 		}
 		if (str_contains($identifier, '[')) {

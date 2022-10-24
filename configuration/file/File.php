@@ -68,7 +68,7 @@ abstract class File
 	 */
 	protected function addUseForClassName($use)
 	{
-		while (strpos($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
+		while (str_contains($use, BS) && !in_array($use, $this->use) && $this->useConflict($use)) {
 			$use = lParse($use, BS);
 		}
 		if (!in_array($use, $this->use) && !$this->useConflict($use)) {

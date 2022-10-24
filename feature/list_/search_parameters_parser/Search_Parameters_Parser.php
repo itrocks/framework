@@ -126,7 +126,7 @@ class Search_Parameters_Parser
 	 */
 	protected function applyAnd(string $search_value, ?Reflection_Property $property)
 	{
-		if (strpos($search_value, '&') !== false) {
+		if (str_contains($search_value, '&')) {
 			$and = [];
 			foreach (explode('&', $search_value) as $search) {
 				$and[] = $this->applyNot($search, $property);
@@ -256,7 +256,7 @@ class Search_Parameters_Parser
 	 */
 	protected function applyOr(string $search_value, ?Reflection_Property $property)
 	{
-		if (strpos($search_value, ',') === false) {
+		if (!str_contains($search_value, ',')) {
 			return $this->applyAnd($search_value, $property);
 		}
 		if ($property && $property->getType()->isFloat()) {
@@ -266,7 +266,7 @@ class Search_Parameters_Parser
 				return $this->applyAnd($search_value, $property);
 			}
 			$is_decimal_float = ($number_format->decimal_separator === ',');
-			if ($is_decimal_float && !strpos($search_value, DOT)) {
+			if ($is_decimal_float && !str_contains($search_value, DOT)) {
 				$decimal  = true;
 				$position = -1;
 				while (($position = strpos($search_value, ',', $position + 1)) !== false) {
@@ -276,7 +276,7 @@ class Search_Parameters_Parser
 					$decimal = !$decimal;
 				}
 			}
-			if (strpos($search_value, ',') === false) {
+			if (!str_contains($search_value, ',')) {
 				return $this->applyAnd($search_value, $property);
 			}
 		}

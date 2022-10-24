@@ -72,7 +72,7 @@ class Translation_String_Composer implements Registerable
 		while (($i = strpos($text, '!', $i)) !== false) {
 			$i ++;
 			$j = strpos($text, '!', $i);
-			if (($j > $i) && (strpos(SP . TAB . CR . LF, $text[$i]) === false)) {
+			if (($j > $i) && !str_contains(SP . TAB . CR . LF, $text[$i])) {
 				$hex_number = '!' . dechex(++$number);
 				$elements['$' . $hex_number] = substr($text, $i, $j - $i);
 				$text = substr($text, 0, $i - 1) . '$' . $hex_number . substr($text, $j + 1);
@@ -104,7 +104,7 @@ class Translation_String_Composer implements Registerable
 			$i ++;
 			if (ctype_alpha($text[$i]) || ($text[$i] === SL)) {
 				$j = strpos($text, '>', $i);
-				if (($j > $i) && (strpos(SP . TAB . CR . LF, $text[$i]) === false)) {
+				if (($j > $i) && !str_contains(SP . TAB . CR . LF, $text[$i])) {
 					$hex_number = (($text[$i] === SL) ? '>' : '<')
 						. dechex(($text[$i] === SL) ? ++$close_number : ++$open_number);
 					$elements['$' . $hex_number] = substr($text, $i - 1, $j - $i + 2);

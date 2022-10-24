@@ -35,7 +35,7 @@ class Reader extends File\Reader
 				// menu item level
 				if (str_starts_with($line, TAB . TAB)) {
 					if ($block instanceof Block) {
-						if (strStartsWith(trim($line), ['//', '/*']) || !strpos($line, '=>')) {
+						if (strStartsWith(trim($line), ['//', '/*']) || !str_contains($line, '=>')) {
 							$block->items[] = $line;
 						}
 						else {
@@ -66,13 +66,13 @@ class Reader extends File\Reader
 					else {
 						$title = trim(trim(lParse($line, '=>')), Q . DQ);
 						// 'Menu block title' => [
-						if (strpos($line, '=>') && strpos($line, '[')) {
+						if (str_contains($line, '=>') && str_contains($line, '[')) {
 							/** @noinspection PhpUnhandledExceptionInspection class */
 							$block                = Builder::create(Block::class);
 							$block->title         = $title;
 							$this->file->blocks[] = $block;
 							// '/Full/Class/Path' => [Menu::ALL => Menu::CLEAR]
-							if (strpos($line, ']')) {
+							if (str_contains($line, ']')) {
 								$block->items[] = mParse($line, '[', ']');
 								$block          = null;
 							}

@@ -157,7 +157,7 @@ class Joins
 			// new Class_Name(property_name)
 			str_ends_with($master_property_name, ')')
 			// @deprecated Class_Name->property_name
-			|| strpos($master_property_name, '->')
+			|| str_contains($master_property_name, '->')
 		) {
 			$foreign_class_name = $this->addReverseJoin(
 				$join, $master_path, $master_property_name, $path

@@ -154,7 +154,7 @@ class Reflection_Property_Value extends Reflection_Property
 			return null;
 		}
 		$object = $this->object;
-		if (strpos($this->path, DOT)) {
+		if (str_contains($this->path, DOT)) {
 			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
 				if (!$object) {
 					if ($with_default && isset($previous_object) && isset($previous_property_name)) {
@@ -312,7 +312,7 @@ class Reflection_Property_Value extends Reflection_Property
 	{
 		$path = Names::propertyPathToField($this->view_path ?: $this->path);
 		if ($class_with_id && $this->getType()->isClass()) {
-			if (strpos($path, DOT)) {
+			if (str_contains($path, DOT)) {
 				$path .= '[id]';
 			}
 			else {
@@ -346,7 +346,7 @@ class Reflection_Property_Value extends Reflection_Property
 			$user_getter = $this->getAnnotation('user_getter');
 		}
 		$object = $this->object;
-		if (strpos($this->path, DOT)) {
+		if (str_contains($this->path, DOT)) {
 			foreach (array_slice(explode(DOT, $this->path), 0, -1) as $property_name) {
 				$object = $object->$property_name;
 			}

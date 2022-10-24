@@ -32,7 +32,7 @@ trait Templating
 		if (isset($this->property_paths)) {
 			return $this->property_paths;
 		}
-		if (strpos($this->text, '{') === false) {
+		if (!str_contains($this->text, '{')) {
 			return $this->property_paths = [];
 		}
 		$this->property_paths = [];

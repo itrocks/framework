@@ -89,7 +89,7 @@ class Generate_Groups
 		foreach ($page->elements as $element_key => $element) {
 			if (
 				($element instanceof Text)
-				&& (strpos($element->text, '{') !== false)
+				&& str_contains($element->text, '{')
 				&& $this->text($element)
 			) {
 				unset($page->elements[$element_key]);

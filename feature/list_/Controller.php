@@ -151,7 +151,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 			$user_getter = null;
 			if (
 				$link_annotation
-				&& !strpos($property->path, DOT)
+				&& !str_contains($property->path, DOT)
 				&& !$link_annotation->isCollection()
 				&& !$link_annotation->isMap()
 				&& (

@@ -353,7 +353,7 @@ class Proxy
 			// parse and write request
 			$data = $this->dataEncode($this->data);
 			if ($this->method === Http::GET) {
-				if ($data && !strpos($url['path'], '?')) {
+				if ($data && !str_contains($url['path'], '?')) {
 					$data = '?' . $data;
 				}
 				fputs($f, 'GET ' . $url['path'] . ($data ? $data : '') . ' HTTP/1.1' . CR . LF);

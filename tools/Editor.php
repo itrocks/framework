@@ -49,7 +49,7 @@ class Editor implements Configurable
 	{
 		$settings = Session::current()->plugins->get(Editor::class)->settings;
 		$version  = trim($version);
-		if (strpos($version, SP)) {
+		if (str_contains($version, SP)) {
 			$build_name    = trim(lLastParse($version, SP));
 			$build_version = trim(rLastParse($version, SP));
 		}

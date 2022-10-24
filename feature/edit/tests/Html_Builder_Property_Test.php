@@ -24,7 +24,7 @@ class Html_Builder_Property_Test extends Test
 	{
 		$result = [];
 		foreach (explode('>', $text) as $line) {
-			if ((strpos($line, '<input') !== false) && (strpos($line, SP . 'name=' . DQ) !== false)) {
+			if (str_contains($line, '<input') && str_contains($line, SP . 'name=' . DQ)) {
 				$result[] = mParse($line, SP . 'name=' . DQ, DQ);
 			}
 		}

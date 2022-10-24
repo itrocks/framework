@@ -43,7 +43,7 @@ class Filters_Annotation extends List_Annotation implements Property_Context_Ann
 			$property   = $this->property;
 			$class_name = $property->getFinalClassName();
 			foreach ($filters_values as $filter) {
-				if (strpos($filter, '=')) {
+				if (str_contains($filter, '=')) {
 					[$filter, $filter_value_name] = explode('=', $filter);
 					$filter = trim($filter);
 					while (

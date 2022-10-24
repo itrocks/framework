@@ -114,7 +114,7 @@ class Image
 	 */
 	public static function createFromString($image)
 	{
-		if (strpos($image, '<svg') === false) {
+		if (!str_contains($image, '<svg')) {
 			$size = getimagesizefromstring($image);
 			return new static($size[0], $size[1], imagecreatefromstring($image), $size[2]);
 		}

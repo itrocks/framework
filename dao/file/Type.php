@@ -155,7 +155,7 @@ class Type
 		if ($type instanceof Type) {
 			return $this->equals($type);
 		}
-		elseif (strpos(SL, $type)) {
+		elseif (str_contains(SL, $type)) {
 			return ($type === strval($this));
 		}
 		else {
@@ -165,8 +165,8 @@ class Type
 			}
 			else {
 				return ($this->type === $type) || ($this->subtype === $type)
-					|| (($type === 'x') && (strpos($this->subtype, 'x-') === 0))
-					|| (($type === 'vnd') && (strpos($this->subtype, 'vnd.') === 0));
+					|| (($type === 'x') && str_starts_with($this->subtype, 'x-'))
+					|| (($type === 'vnd') && str_starts_with($this->subtype, 'vnd.'));
 			}
 		}
 	}

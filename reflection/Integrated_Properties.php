@@ -122,7 +122,7 @@ class Integrated_Properties
 		if (
 			$integrated->value
 			&& !$property->isStatic()
-			&& (!$integrated->has(Integrated_Annotation::FINAL_) || !strpos($property->path, DOT))
+			&& (!$integrated->has(Integrated_Annotation::FINAL_) || !str_contains($property->path, DOT))
 		) {
 			if ($integrated->has(Integrated_Annotation::BLOCK)) {
 				$blocks[$property->path] = $property->path;

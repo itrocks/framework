@@ -60,8 +60,8 @@ class Select_Test extends Test
 				if (
 					!$class->isAbstract()
 					&& $class->getAnnotation('business')->value
-					&& !strpos($class->name, BS . 'Sub0')
-					&& !strpos($class->name, BS . 'Tests' . BS)
+					&& !str_contains($class->name, BS . 'Sub0')
+					&& !str_contains($class->name, BS . 'Tests' . BS)
 					&& $this->testConditions($class)
 				) {
 					$properties = $this->propertyNames($class);

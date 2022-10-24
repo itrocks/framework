@@ -1034,12 +1034,12 @@ class Link extends Dao\Sql\Link
 			return null;
 		}
 		$class_name = Builder::className($class_name);
-		array_push($this->connection->contexts, $class_name);
+		$this->connection->contexts[] = $class_name;
 		/** @noinspection PhpUnhandledExceptionInspection class name must be valid */
 		if (Class_\Link_Annotation::of(new Reflection_Class($class_name))->value) {
 			$what = [];
 			foreach (explode(Link_Class::ID_SEPARATOR, $identifier) as $identify) {
-				if (!strpos($identify, '=')) {
+				if (!str_contains($identify, '=')) {
 					trigger_error(
 						'Bad link object identifier ' . $identifier . ' for link class ' . $class_name,
 						E_USER_ERROR

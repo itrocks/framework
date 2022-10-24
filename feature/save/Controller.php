@@ -110,9 +110,9 @@ class Controller implements Default_Class_Controller
 	 * @param $form       array
 	 * @param $files      array[]
 	 * @param $class_name string
-	 * @return string
+	 * @return ?string
 	 */
-	public function run(Parameters $parameters, array $form, array $files, $class_name)
+	public function run(Parameters $parameters, array $form, array $files, $class_name) : ?string
 	{
 		$parameters->set(
 			'then_target',

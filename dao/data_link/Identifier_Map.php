@@ -173,7 +173,7 @@ abstract class Identifier_Map extends Data_Link
 		}
 		else {
 			// link class identifiers
-			if ($id && strpos($id, Link_Class::ID_SEPARATOR)) {
+			if ($id && str_contains($id, Link_Class::ID_SEPARATOR)) {
 				foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
 					[$property_name, $id] = explode('=', $property);
 					if (is_numeric($id)) {

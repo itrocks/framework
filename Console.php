@@ -130,7 +130,7 @@ class Console
 		$this->already_running = [];
 		exec("ps -aux | grep $this->uri | grep -v grep", $outputs);
 		foreach ($outputs as $output) {
-			if (($pos = strpos($output, $this->uri)) && strpos($output, self::PHP_PATH)) {
+			if (($pos = strpos($output, $this->uri)) && str_contains($output, self::PHP_PATH)) {
 				$pid = intval(trim(substr($output, strpos($output, ' '))));
 				if (
 					in_array(substr($output, $pos + strlen($this->uri), 1), ['', ' ', "\n", "\r", "\t"])
@@ -158,7 +158,7 @@ class Console
 				$var = $argument;
 			}
 			else {
-				[$name, $value] = strpos($argument, '=')
+				[$name, $value] = str_contains($argument, '=')
 					? explode('=', $argument, 2)
 					: [$argument, false];
 				if ($var === '-h') {

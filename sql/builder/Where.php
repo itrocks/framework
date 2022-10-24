@@ -363,7 +363,7 @@ class Where implements With_Build_Column
 		}
 		$property_path = strval($path);
 		try {
-			$property = (!strpos($property_path, '->') && !strpos($property_path, ')'))
+			$property = (!str_contains($property_path, '->') && !str_contains($property_path, ')'))
 				? $this->joins->getStartingClass()->getProperty($property_path)
 				: null;
 		}

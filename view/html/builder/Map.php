@@ -108,7 +108,7 @@ class Map
 		}
 		else {
 			$value = strval($object);
-			if (strpos($value, '|') !== false) {
+			if (str_contains($value, '|')) {
 				$value = str_replace('|', '&#124;', $value);
 			}
 			$element = new Anchor(View::link($object), $value);

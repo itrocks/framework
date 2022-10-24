@@ -118,7 +118,7 @@ class Reflection_Property extends ReflectionProperty
 			$object     = $class_name;
 			$class_name = get_class($class_name);
 		}
-		if (strpos($property_name, ')')) {
+		if (str_contains($property_name, ')')) {
 			$class_property = (new Path($class_name, $property_name))->toPropertyClassName();
 			if (count($class_property) === 2) {
 				[$class_name, $property_name] = $class_property;
@@ -355,7 +355,7 @@ class Reflection_Property extends ReflectionProperty
 		else {
 			$doc_comment = $this->doc_comment;
 		}
-		if (strpos($this->path, DOT)) {
+		if (str_contains($this->path, DOT)) {
 			$doc_comment = LF . Parser::DOC_COMMENT_IN . $this->root_class . LF
 				. $this->getOverrideRootDocComment()
 				. $doc_comment;
@@ -414,7 +414,7 @@ class Reflection_Property extends ReflectionProperty
 	public function getFinalProperty() : Reflection_Property
 	{
 		/** @noinspection PhpUnhandledExceptionInspection $this is valid */
-		return strpos($this->path, DOT) ? new static($this->final_class, $this->name) : $this;
+		return str_contains($this->path, DOT) ? new static($this->final_class, $this->name) : $this;
 	}
 
 	//------------------------------------------------------------------------- getOverriddenProperty
@@ -559,7 +559,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function getValue($object = null, bool $with_default = false) : mixed
 	{
-		if (isset($this->root_class) && strpos($this->path, DOT)) {
+		if (isset($this->root_class) && str_contains($this->path, DOT)) {
 			$class = $this->root_class;
 			$path  = explode(DOT, $this->path);
 			/** @var $property Reflection_Property */
@@ -793,7 +793,7 @@ class Reflection_Property extends ReflectionProperty
 	{
 		$path = Names::propertyPathToField($this->path);
 		if ($class_with_id && ($type = $this->getType()) && $type->isClass() && !$type->isDateTime()) {
-			if (strpos($path, DOT)) {
+			if (str_contains($path, DOT)) {
 				$path .= '[id]';
 			}
 			else {
@@ -822,7 +822,7 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public function setValue(mixed $object, mixed $value = null) : void
 	{
-		if (isset($this->root_class) && strpos($this->path, DOT)) {
+		if (isset($this->root_class) && str_contains($this->path, DOT)) {
 			$path = explode(DOT, $this->path);
 			/** @noinspection PhpUnhandledExceptionInspection $this->root_class and $path are valid */
 			$property = new Reflection_Property($this->root_class, array_shift($path));

@@ -392,7 +392,7 @@ class Template
 	{
 		$main_template = $this->getMainTemplateFile();
 		return $main_template
-			? file_get_contents($file_name, !strpos($main_template, SL))
+			? file_get_contents($file_name, !str_contains($main_template, SL))
 			: '{@content}';
 	}
 
@@ -404,7 +404,7 @@ class Template
 	public static function getCssPath($css)
 	{
 		static $css_path = [];
-		$path = isset($css_path[$css]) ? $css_path[$css] : null;
+		$path = $css_path[$css] ?? null;
 		if (!isset($path)) {
 			$path = str_replace(BS, SL, stream_resolve_include_path($css . '/html.css'));
 			if ($i = strrpos($path, SL)) {
@@ -686,16 +686,9 @@ class Template
 	 */
 	protected function parseClassName($class_name)
 	{
-		if (!strpos($class_name, BS)) {
-			if (isset($this->use[$class_name])) {
-				$class_name = $this->use[$class_name];
-			}
-			else {
-				$class_name = Namespaces::defaultFullClassName(
-					$class_name,
-					get_class($this->getRootObject())
-				);
-			}
+		if (!str_contains($class_name, BS)) {
+			$class_name = $this->use[$class_name]
+				?? Namespaces::defaultFullClassName($class_name, get_class($this->getRootObject()));
 		}
 		return Builder::className($class_name);
 	}
@@ -830,7 +823,7 @@ class Template
 				$title     = $this->getHeadTitle($content);
 
 				$root_begin = (is_object($this->getObject())) ? '<!--@rootObject-->' : '';
-				$root_end   = (!$root_begin || (strpos($container . $content, '<!--end-->') === false))
+				$root_end   = (!$root_begin || !str_contains($container . $content, '<!--end-->'))
 					? $root_begin
 					: '<!--end-->';
 
@@ -956,10 +949,10 @@ class Template
 	 */
 	protected function parseIncludeClassName($include_uri)
 	{
-		if (ctype_lower($include_uri[0]) && strpos($include_uri, SL)) {
+		if (ctype_lower($include_uri[0]) && str_contains($include_uri, SL)) {
 			return '';
 		}
-		return strpos($include_uri, SL)
+		return str_contains($include_uri, SL)
 			? Names::pathToClass(lLastParse($include_uri, SL))
 			: get_class(reset($this->objects));
 	}
@@ -1351,7 +1344,7 @@ class Template
 			$loop->var_name = substr($loop->var_name, 0, -1);
 		}
 
-		if (strpos($loop->var_name, ':')) {
+		if (str_contains($loop->var_name, ':')) {
 			[$loop->var_name, $loop->has_expr] = explode(':', $loop->var_name);
 			$search_var_name                   = lParse($search_var_name, ':');
 			if (($sep = strpos($loop->has_expr, '-')) !== false) {
@@ -1535,7 +1528,7 @@ class Template
 				$parenthesis   = '';
 			}
 			if (
-				strpos($property_name, '(')
+				str_contains($property_name, '(')
 				&& (substr_count($property_name, '(') > substr_count($property_name, ')'))
 			) {
 				$parenthesis = $property_name;
@@ -1646,7 +1639,7 @@ class Template
 		elseif ($property_name === '#') {
 			$object = reset($this->var_names);
 		}
-		elseif (strpos($property_name, '?')) {
+		elseif (str_contains($property_name, '?')) {
 			$object = $this->parseConditional($property_name);
 		}
 		elseif (
@@ -1680,7 +1673,7 @@ class Template
 			elseif (
 				(strlen($property_name) > 1) && (
 					(($property_name[1] >= 'a') && ($property_name[1] <= 'z'))
-					|| (strpos($property_name, BS) !== false)
+					|| str_contains($property_name, BS)
 				)
 			) {
 				$this->parse_class_name = $this->parseClassName($property_name);
@@ -1818,7 +1811,7 @@ class Template
 		$value = $property->isStatic() ? $class_name::$$property_name : $property;
 		if (
 			(is_string($value) || (is_object($value) && method_exists($value, '__toString')))
-			&& (strpos($value, '|') !== false)
+			&& str_contains($value, '|')
 		) {
 			$value = str_replace('|', '&#124;', $value);
 		}
@@ -1884,7 +1877,7 @@ class Template
 				ctype_upper($c)
 				&& (substr($content, $i, 6) != 'BEGIN:') && (substr($content, $i, 4) != 'END:')
 			)
-			|| (strpos('#@§/.-+?!~|="' . Q, $c) !== false);
+			|| str_contains('#@§/.-+?!~|="' . Q, $c);
 	}
 
 	//-------------------------------------------------------------------------------------- parseUse
@@ -2274,7 +2267,7 @@ class Template
 					}
 					$content = substr($content, 0, $j) . substr($content, $k);
 				}
-				if (strpos($element, '=' . DQ . DQ)) {
+				if (str_contains($element, '=' . DQ . DQ)) {
 					unset($elements[$element_key]);
 				}
 			}
@@ -2286,7 +2279,7 @@ class Template
 			$j            = strpos($content, '</head>', $i);
 			$head_content = substr($content, $i, $j - $i);
 			foreach ($elements as $element_key => $element) {
-				if (strpos($element, '=' . DQ . DQ) || (strpos($head_content, $element) !== false)) {
+				if (str_contains($element, '=' . DQ . DQ) || str_contains($head_content, $element)) {
 					unset($elements[$element_key]);
 				}
 			}

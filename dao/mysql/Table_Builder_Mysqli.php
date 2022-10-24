@@ -40,7 +40,7 @@ abstract class Table_Builder_Mysqli
 		}
 		$result->free();
 
-		$unique = isset($table_name) && (strpos($table_name, '%') === false);
+		$unique = isset($table_name) && !str_contains($table_name, '%');
 
 		return $unique ? reset($tables) : $tables;
 	}

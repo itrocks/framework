@@ -483,7 +483,7 @@ class Feature
 	private function resolveName($name)
 	{
 		// name can contain $class and $feature
-		if (strpos($name, '$') !== false) {
+		if (str_contains($name, '$')) {
 			$class_name    = $this->getClassName();
 			$feature_name  = $this->getFeatureName();
 			$name = Loc::tr(

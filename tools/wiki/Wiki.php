@@ -60,7 +60,7 @@ class Wiki implements Registerable
 			$j = strpos($string, $lf, $i);
 			if (($j !== false) && ($j < strpos($string, SP, $i))) {
 				$language = substr($string, $i, $j - $i);
-				if (trim($language) && !strpos($language, AT)) {
+				if (trim($language) && !str_contains($language, AT)) {
 					$cr = strpos($language, CR) ? CR : '';
 					$k  = strpos($string . $cr . $lf, $lf . AT . $cr . $lf, $j);
 					if ($k !== false) {
@@ -149,7 +149,7 @@ class Wiki implements Registerable
 			if (isset($property->getAnnotation('geshi')->value)) {
 				$programming_language = $property->getAnnotation('geshi')->value ?: 'php';
 				if ($programming_language === 'auto') {
-					$programming_language = (strpos($result, '<?php') === false) ? 'html' : 'php';
+					$programming_language = str_contains($result, '<?php') ? 'php' : 'html';
 				}
 				$wiki   = new Wiki();
 				$result = $wiki->geshi('@' . $programming_language . LF . $result . LF . '@');

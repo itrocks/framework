@@ -156,7 +156,7 @@ class Alter_Table
 			$alter .= TAB . $this->set_character_set;
 		}
 		$queries = [];
-		if ($lock && strpos($lock_tables, ',')) {
+		if ($lock && str_contains($lock_tables, ',')) {
 			$queries['lock'] = 'LOCK TABLES ' . $lock_tables;
 		}
 		if ($alter) {
@@ -218,7 +218,7 @@ class Alter_Table
 			$row    = $result->fetch_row();
 			$create = end($row);
 			$result->free();
-			if (!strpos($create, ') ENGINE=InnoDB')) {
+			if (!str_contains($create, ') ENGINE=InnoDB')) {
 				$error_message = "Could not add foreign key from $table_name"
 					. " to non-InnoDB $foreign_table table";
 				switch ($notice) {
@@ -278,13 +278,13 @@ class Alter_Table
 
 		$result = $mysqli->query("SHOW CREATE TABLE `$table_name`");
 		$row    = $result->fetch_assoc();
-		$create = isset($row['Create Table']) ? $row['Create Table'] : '';
+		$create = $row['Create Table'] ?? '';
 		$result->free();
-		if ($create && !strpos($create, ') ENGINE=InnoDB')) {
+		if ($create && !str_contains($create, ') ENGINE=InnoDB')) {
 			$error_message = "Could not add foreign key from $table_name non-InnoDB table";
 			switch ($notice) {
 				case 'output':  echo '! ' . $error_message . BRLF; break;
-				case 'warning': trigger_error($error_message, E_USER_NOTICE);
+				case 'warning': trigger_error($error_message);
 			}
 			$orphans_count ++;
 		}
@@ -376,7 +376,7 @@ class Alter_Table
 	 */
 	protected function sqlAddLockTable(&$lock_tables, $table)
 	{
-		if (strpos($lock_tables, BQ . $table . BQ) === false) {
+		if (!str_contains($lock_tables, BQ . $table . BQ)) {
 			$lock_tables .= ', ' . BQ . $table . BQ . ' WRITE';
 		}
 	}

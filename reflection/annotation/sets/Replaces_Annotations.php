@@ -44,7 +44,7 @@ abstract class Replaces_Annotations
 			$property = reset($properties);
 			$replaced = false;
 			foreach ($property->getFinalClass()->getProperties([T_EXTENDS, T_USE]) as $property) {
-				if (!strpos($property, DOT)) {
+				if (!str_contains($property, DOT)) {
 					$replaced_property_name = $property->getAnnotation('replaces')->value;
 					if (!empty($replaced_property_name) && isset($properties[$replaced_property_name])) {
 						$properties[$replaced_property_name] = $property;
@@ -56,7 +56,9 @@ abstract class Replaces_Annotations
 			if ($replaced) {
 				$new_properties = [];
 				foreach ($properties as $property_name => $property) {
-					$property_name = strpos($property_name, DOT) ? $property_name : $property->getName();
+					$property_name = str_contains($property_name, DOT)
+						? $property_name
+						: $property->getName();
 					$new_properties[$property_name] = $property;
 				}
 				$properties = $new_properties;

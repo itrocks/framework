@@ -191,7 +191,7 @@ class Access_Control implements Configurable, Registerable
 		if (!$user || !isA($user, Has_Groups::class)) {
 			return;
 		}
-		[$uri, $arguments] = strpos($result, '?') ? explode('?', $result, 2) : [$result, null];
+		[$uri, $arguments] = str_contains($result, '?') ? explode('?', $result, 2) : [$result, null];
 		if ($this->checkFeatures($uri)) {
 			$result = $uri;
 			if (!is_null($arguments)) {

@@ -398,7 +398,7 @@ abstract class Link extends Identifier_Map implements Transactional
 					if (is_object($column) && is_string($column_key)) {
 						$column = $column_key;
 					}
-					if (is_string($column) && strpos($column, DOT)) {
+					if (is_string($column) && str_contains($column, DOT)) {
 						$double_pass = true;
 						break;
 					}

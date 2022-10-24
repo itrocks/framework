@@ -72,12 +72,12 @@ class Writer extends File\Writer
 				$class_prototype .= SP . $class_implements;
 			}
 			while (
-				strpos($class_prototype, ', ')
+				str_contains($class_prototype, ', ')
 				&& ($this->lineLength($class_prototype) > static::MAX_LINE_LENGTH)
 			) {
 				$next_lines = '';
 				while (
-					strpos($class_prototype, ', ')
+					str_contains($class_prototype, ', ')
 					&& ($this->lineLength($class_prototype) > static::MAX_LINE_LENGTH)
 				) {
 					$next_lines      = rLastParse($class_prototype, ', ');

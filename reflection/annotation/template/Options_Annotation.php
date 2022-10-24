@@ -24,7 +24,7 @@ trait Options_Annotation
 	 */
 	protected function constructOptions(?string &$value)
 	{
-		if (isset($value) && strpos($value, SP)) {
+		if (isset($value) && str_contains($value, SP)) {
 			[$value, $options] = explode(SP, $value, 2);
 			$this->parseOptions(explode(',', $options));
 		}
@@ -60,7 +60,7 @@ trait Options_Annotation
 	protected function parseOptions(array $options)
 	{
 		foreach ($options as $option) if (strlen($option = trim($option))) {
-			if (strpos($option, '=')) {
+			if (str_contains($option, '=')) {
 				[$key, $val] = explode('=', $option);
 			}
 			else {

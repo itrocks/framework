@@ -33,7 +33,7 @@ class Reader extends File\Reader
 			}
 			else {
 				// add assembled built class components
-				if ($built_on_next_line && strpos($line, '=>')) {
+				if ($built_on_next_line && str_contains($line, '=>')) {
 					$built_on_next_line = false;
 					$line               = TAB . $class_name . $line;
 				}
@@ -98,9 +98,9 @@ class Reader extends File\Reader
 					else {
 						$class_name = $this->file->fullClassNameOf(lParse($line, '=>'));
 						// Class_Name::class =>
-						if (strpos($line, '=>')) {
+						if (str_contains($line, '=>')) {
 							// Class_Name::class => [
-							if (strpos($line, '[')) {
+							if (str_contains($line, '[')) {
 								$built = new Assembled($class_name);
 								// Class_Name::class => [ Class_Name::class, ...
 								// Class_Name::class => [ Class_Name::class, ... ]

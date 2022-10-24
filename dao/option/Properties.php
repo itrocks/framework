@@ -49,7 +49,7 @@ abstract class Properties implements Option
 				}
 			}
 			elseif (is_string($properties)) {
-				if (strpos($properties, DOT)) {
+				if (str_contains($properties, DOT)) {
 					$property = '';
 					foreach (explode(DOT, $properties) as $property_element) {
 						$property .= ($property ? DOT : '') . $property_element;

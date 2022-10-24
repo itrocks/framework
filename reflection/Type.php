@@ -134,7 +134,7 @@ class Type extends ReflectionType
 		if (isset($type_string)) {
 			if (($i = strpos($type_string, '|')) !== false) {
 				if (!isset($allows_null)) {
-					$this->allows_null = strpos($type_string, '|' . self::null);
+					$this->allows_null = str_contains($type_string, '|' . self::null);
 				}
 				$this->type = substr($type_string, 0, $i);
 			}
@@ -200,7 +200,8 @@ class Type extends ReflectionType
 			foreach ($use as $u) {
 				if (substr(BS . $u, -$length) === $search) {
 					$found      = true;
-					$class_name = $u . (strpos($class_name, BS) ? (BS . substr($class_name, $length)) : '');
+					$class_name = $u
+						. (str_contains($class_name, BS) ? (BS . substr($class_name, $length)) : '');
 					break;
 				}
 			}

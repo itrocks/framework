@@ -65,7 +65,7 @@ class Server
 		if ($action->as_user) {
 			/** @noinspection PhpUnhandledExceptionInspection class */
 			$token = Builder::create(By_Token::class)->newToken($action->as_user);
-			$uri  .= (strpos($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token->code;
+			$uri  .= (str_contains($uri, '?') ? '&' : '?') . By_Token::TOKEN . '=' . $token->code;
 		}
 		/** @see afterAction */
 		/** @var $callback callable */

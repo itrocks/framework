@@ -293,7 +293,7 @@ class Html_Template extends Template
 
 			$inside   = substr($content, $outside_i, $inside_i - $outside_i);
 			$position = $outside_i + 1;
-			if (strpos($inside, 'data-class=') && strpos($inside, 'class=')) {
+			if (str_contains($inside, 'data-class=')) {
 				$classes = array_flip(explode(SP, mParse($inside, 'class=' . DQ, DQ)));
 				if (isset($classes['edit'])) {
 					$identifier    = Dao::getObjectIdentifier(reset($this->objects));

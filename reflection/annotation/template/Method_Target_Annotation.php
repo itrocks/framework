@@ -27,7 +27,7 @@ class Method_Target_Annotation extends Method_Annotation
 	 */
 	public function __construct(?string $value, Reflection $class_property, string $annotation_name)
 	{
-		if (strpos($value, SP)) {
+		if (str_contains($value, SP)) {
 			[$value, $this->target] = explode(SP, $value, 2);
 		}
 		parent::__construct($value, $class_property, $annotation_name);
@@ -40,7 +40,7 @@ class Method_Target_Annotation extends Method_Annotation
 	 */
 	public function asHtmlData(object $object = null) : string
 	{
-		if (strpos($this->value, SL) && !strpos($this->value, '::')) {
+		if (str_contains($this->value, SL) && !str_contains($this->value, '::')) {
 			return $this->value;
 		}
 		$identifier                 = $object ? Dao::getObjectIdentifier($object) : null;

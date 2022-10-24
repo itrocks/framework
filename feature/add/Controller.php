@@ -121,7 +121,7 @@ class Controller extends Edit\Controller
 			}
 			// the value is an object, and the property name a Full\Class\Name :
 			// initialize the first matching property (beware : this is art)
-			elseif (is_object($value) && is_string($property_name) && strpos($property_name, BS)) {
+			elseif (is_object($value) && is_string($property_name) && str_contains($property_name, BS)) {
 				$property_name = $this->matchingProperty($property_name, $properties);
 			}
 			// the property is a single string : it may be the name of the property for the next object

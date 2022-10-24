@@ -90,7 +90,7 @@ abstract class Element
 		}
 		if ($this->attributes) {
 			$class = $this->getAttribute('class');
-			if ($class && strpos($class->value, SP)) {
+			if ($class && str_contains($class->value, SP)) {
 				$classes = explode(SP, $class->value);
 				sort($classes);
 				$class->value = join(SP, $classes);
@@ -116,7 +116,7 @@ abstract class Element
 		if (!isset($class)) {
 			return $this->setAttribute('class', $class_name);
 		}
-		elseif (strpos(SP . $class->value . SP, SP . $class_name . SP) === false) {
+		elseif (!str_contains(SP . $class->value . SP, SP . $class_name . SP)) {
 			$class->value .= SP . $class_name;
 		}
 		return $class;

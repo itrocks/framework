@@ -56,7 +56,7 @@ class Recipient implements Fast_Add
 		}
 		$string    = cleanSpaces($string);
 		$recipient = Search_Object::create(static::class);
-		if (str_contains($string, '<') && strpos($string, '>')) {
+		if (str_contains($string, '<') && str_contains($string, '>')) {
 			$recipient->name  = noQuotes(trim(lParse($string, '<')));
 			$recipient->email = trim(mParse($string, '<', '>'));
 		}

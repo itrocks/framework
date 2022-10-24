@@ -189,7 +189,7 @@ class File_Logger extends Framework\Logger\File_Logger implements Registerable
 		$now = date('H:i:s', (int)$time) . DOT . str_pad(substr($ms, 0, 3), 3, '0');
 		// the query duration
 		$duration = $microtime - $this->time;
-		$duration = strpos($duration, 'E-')
+		$duration = str_contains($duration, 'E-')
 			? 0
 			: (str_starts_with($duration, '0.') ? substr($duration, 1, 4) : substr($duration, 0, 5));
 		if (Type::floatEqual($duration, .0)) {

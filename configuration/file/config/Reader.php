@@ -92,7 +92,7 @@ class Reader extends File\Reader
 						$plugin->class_name    = $this->file->fullClassNameOf(lParse($line, '=>'));
 						$plugin->configuration = trim(rParse($line, '=>'));
 						$priority->plugins[]   = $plugin;
-						if (!$plugin->configuration && !strpos($line, '=>')) {
+						if (!$plugin->configuration && !str_contains($line, '=>')) {
 							$plugin->configuration = null;
 							$plugin                = null;
 						}

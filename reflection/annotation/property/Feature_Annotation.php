@@ -55,7 +55,7 @@ class Feature_Annotation
 		// path : The/Full/Class/Name/featureName
 		$position   = strpos($value, SP);
 		$this->path = substr($value, 0, $position);
-		if (!strpos($this->path, SL)) {
+		if (!str_contains($this->path, SL)) {
 			$this->path = str_replace(BS, SL, $property->getFinalClassName()) . SL . $this->path;
 		}
 		$value = trim(substr($value, $position + 1));
@@ -106,7 +106,7 @@ class Feature_Annotation
 		if (empty($this->value)) {
 			$this->value = [];
 			foreach (explode(LF . '* @', $this->value_as_string) as $override_annotation) {
-				if (strpos($override_annotation, SP)) {
+				if (str_contains($override_annotation, SP)) {
 					[$annotation_name, $annotation_value] = explode(SP, $override_annotation, 2);
 				}
 				else {

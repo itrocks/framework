@@ -42,7 +42,7 @@ abstract class Range
 		if ($property && $property->getType()->isDateTime() && (substr_count($expression, '-') > 1)) {
 			if (
 				preg_match('/[a-z]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
-				?: preg_match('/[0-9]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
+				|| preg_match('/[0-9]\s*(-)\s*[a-z]/', $expression, $match, PREG_OFFSET_CAPTURE)
 			) {
 				$split_position = $match[1][1];
 			}
@@ -120,14 +120,14 @@ abstract class Range
 					is_string($expression)
 					// take care of formula that may contains char '-'
 					&& !$is_date_expression
-					&& (strpos($expression, '-') !== false)
+					&& str_contains($expression, '-')
 				) {
 					return true;
 				}
 				break;
 			}
 			default: {
-				if (is_string($expression) && (strpos($expression, '-') !== false)) {
+				if (is_string($expression) && str_contains($expression, '-')) {
 					return true;
 				}
 				break;

@@ -149,7 +149,7 @@ class Date_Format
 			elseif ($joker) {
 				$date .= SP . $joker . $joker . ':' . $joker . $joker . ':' . $joker . $joker;
 			}
-			elseif (strpos($date, '-') === false) {
+			elseif (!str_contains($date, '-')) {
 				$datetime = DateTime::createFromFormat($this->format, $date);
 				return $datetime ? $datetime->format('Y-m-d') : $date;
 			}
@@ -161,7 +161,7 @@ class Date_Format
 				);
 			}
 		}
-		elseif (strpos($date, SP)) {
+		elseif (str_contains($date, SP)) {
 			[$date, $time] = explode(SP, $date);
 			$time          = explode(':', $time);
 			foreach ($time as &$t) {
@@ -202,7 +202,7 @@ class Date_Format
 				return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
 			}
 			else {
-				[$date, $time] = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
+				[$date, $time] = str_contains($date, SP) ? explode(SP, $date) : [$date, ''];
 				if ($this->show_time === self::TIME_NEVER) {
 					$time = '';
 				}

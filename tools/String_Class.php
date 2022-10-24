@@ -87,7 +87,7 @@ class String_Class
 	public function first()
 	{
 		foreach ([':', DOT, '-', ','] as $char) {
-			if (strpos($this->value, $char) !== false) {
+			if (str_contains($this->value, $char)) {
 				return new String_Class(substr($this->value, 0, strpos($this->value, $char)));
 			}
 		}
@@ -104,7 +104,7 @@ class String_Class
 	public function geshi($programming_language = 'php')
 	{
 		$wiki = new Wiki();
-		if ($programming_language === 'php' && (strpos($this->value, '<?php') === false)) {
+		if ($programming_language === 'php' && !str_contains($this->value, '<?php')) {
 			$programming_language = 'html';
 		}
 		$text = $wiki->geshi('@' . $programming_language . LF . $this->value . LF . '@');

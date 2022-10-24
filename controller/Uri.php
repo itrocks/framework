@@ -102,7 +102,7 @@ class Uri
 	 */
 	public function isClassName($parameter)
 	{
-		return $parameter && ctype_upper($parameter[0]) && (strpos($parameter, DOT) === false);
+		return $parameter && ctype_upper($parameter[0]) && !str_contains($parameter, DOT);
 	}
 
 	//-------------------------------------------------------------------------------------- parseGet
@@ -190,7 +190,7 @@ class Uri
 				if (is_numeric($uri_element)) {
 					$this->parameters->set(
 						join(BS, $controller_elements),
-						(strpos($uri_element, DOT) !== false) ? floatval($uri_element) : intval($uri_element)
+						str_contains($uri_element, DOT) ? floatval($uri_element) : intval($uri_element)
 					);
 				}
 				else {

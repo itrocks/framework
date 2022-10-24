@@ -62,7 +62,7 @@ class Filter_Annotation extends Method_Annotation
 		Interfaces\Reflection|Interfaces\Reflection_Class $class,
 		string $annotation_name = ''
 	) {
-		if (strpos($value, SP)) {
+		if (str_contains($value, SP)) {
 			[$value, $options] = explode(SP, $value, 2);
 		}
 		parent::__construct($value, $class, $annotation_name ?: static::ANNOTATION);

@@ -49,7 +49,7 @@ class Performance_Analyzer
 	//------------------------------------------------------------------------------------------- run
 	public function run()
 	{
-		$start  = 0;
+		$start = 0;
 		while ($stop = strpos($this->sql_log, LF, $start)) {
 			$this->parseLine(substr($this->sql_log, $start, $stop - $start));
 			$start = $stop + 1;

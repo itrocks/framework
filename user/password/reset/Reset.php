@@ -80,7 +80,8 @@ trait Reset
 			return;
 		}
 		/** @var $users User[] */
-		$users = (strpos($this->login, AT) ? Dao::search(['email' => $this->login], User::class) : null)
+		$users =
+			(str_contains($this->login, AT) ? Dao::search(['email' => $this->login], User::class) : null)
 			?: Dao::search(['login' => $this->login], User::class);
 		if (!$users) {
 			return;

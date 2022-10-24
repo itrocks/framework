@@ -105,7 +105,7 @@ abstract class Data_Link
 				Names::setToClass(str_replace(SP, '_', ucwords(str_replace('_', SP, $store_name))), false),
 				false
 			);
-			if (strpos($class_name, BS) === false) {
+			if (!str_contains($class_name, BS)) {
 				$class_name = explode('_', $class_name);
 				foreach ($class_name as $key => $class_name_part) {
 					$class_name[$key] = Names::setToClass($class_name_part, false);

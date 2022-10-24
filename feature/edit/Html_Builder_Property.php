@@ -125,11 +125,11 @@ class Html_Builder_Property extends Html_Builder_Type
 
 		// if name contains [...], recalculate name and prefix. TODO explain those rules
 		$name = $property->pathAsField();
-		if (strpos($name, '[')) {
+		if (str_contains($name, '[')) {
 			$prefix2 = lLastParse($name, '[');
 			$prefix  = ($prefix && !is_numeric($prefix))
 				? (
-					strpos($prefix2, '[')
+					str_contains($prefix2, '[')
 					? ($prefix . '[' . lParse($prefix2, '[') . '][' . rParse($prefix2, '['))
 					: ($prefix . '[' . $prefix2 . ']')
 				)
@@ -262,7 +262,7 @@ class Html_Builder_Property extends Html_Builder_Type
 			if (!$annotation->value) {
 				break;
 			}
-			if (strpos($annotation->value, '=')) {
+			if (str_contains($annotation->value, '=')) {
 				[$data, $value] = explode('=', $annotation->value);
 				$data  = trim($data);
 				$value = trim($value);
@@ -284,7 +284,7 @@ class Html_Builder_Property extends Html_Builder_Type
 				if ($object && $user_change->is_composite) {
 					/** @var $object Component */
 					$object = $object->getComposite();
-					if ($object && strpos($user_change, '::')) {
+					if ($object && str_contains($user_change, '::')) {
 						$user_change->value = Builder::current()->sourceClassName(get_class($object))
 							. '::' . rParse($user_change->value, '::');
 					}
@@ -307,7 +307,7 @@ class Html_Builder_Property extends Html_Builder_Type
 		}
 		if ($data_entries = $this->property->getListAnnotation('data')->value) {
 			foreach ($data_entries as $data) {
-				if (!strpos($data, '=')) {
+				if (!str_contains($data, '=')) {
 					$data .= '=' . $data;
 				}
 				$this->data[lParse($data, '=')] = rParse($data, '=');

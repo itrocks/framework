@@ -51,7 +51,7 @@ class Options_Properties_Annotation extends List_Annotation
 				$values   = [];
 				foreach (explode(SP, $value) AS $element) {
 					if (
-						strpos($element, ',')
+						str_contains($element, ',')
 						|| in_array($element, $excluded)
 						|| in_array($element, $values)
 						|| !in_array($element, static::RESERVED_WORDS)

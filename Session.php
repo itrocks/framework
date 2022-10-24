@@ -159,7 +159,7 @@ class Session
 	 */
 	public function domainName()
 	{
-		return strpos($this->domain, '://') ? parse_url($this->domain)['host'] : $this->domain;
+		return str_contains($this->domain, '://') ? parse_url($this->domain)['host'] : $this->domain;
 	}
 
 	//------------------------------------------------------------------------------------ domainPath
@@ -169,7 +169,7 @@ class Session
 	 */
 	public function domainPath()
 	{
-		return strpos($this->domain, '://') ? parse_url($this->domain)['path'] : '';
+		return str_contains($this->domain, '://') ? parse_url($this->domain)['path'] : '';
 	}
 
 	//---------------------------------------------------------------------------------- domainScheme
@@ -179,7 +179,8 @@ class Session
 	 */
 	public function domainScheme()
 	{
-		return (strpos($this->domain, '://') ? parse_url($this->domain)['scheme'] : null) ?: 'https';
+		return (str_contains($this->domain, '://') ? parse_url($this->domain)['scheme'] : null)
+			?: 'https';
 	}
 
 	//------------------------------------------------------------------------------------------- get

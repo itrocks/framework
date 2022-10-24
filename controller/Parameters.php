@@ -204,7 +204,7 @@ class Parameters
 				&& (strlen($object) >= 2)
 				&& ($object[0] === SL)
 				&& ctype_upper($object[1])
-				&& !strpos($object, '?')
+				&& !str_contains($object, '?')
 			) {
 				$object = new Uri($object);
 			}

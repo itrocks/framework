@@ -17,7 +17,7 @@ class Html_Template extends Template
 	 */
 	protected function replaceLink(string $uri) : string
 	{
-		return strpos($uri, '://')
+		return str_contains($uri, '://')
 			? $uri
 			: (Paths::absoluteBase() . $uri);
 	}
@@ -32,7 +32,7 @@ class Html_Template extends Template
 	 */
 	protected function replaceUri(string $uri) : string
 	{
-		if (strpos($uri, '://') || !in_array(substr($uri, -4), ['.gif', '.jpg', '.png'])) {
+		if (str_contains($uri, '://') || !in_array(substr($uri, -4), ['.gif', '.jpg', '.png'])) {
 			$final_uri = $uri;
 		}
 		else {

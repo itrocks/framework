@@ -123,7 +123,7 @@ class Plugin implements Configurable, Registerable
 	{
 		clearstatcache();
 		foreach (Dao::readAll(File::class) as $file) {
-			if (strpos($file->file_path, '*') === false) {
+			if (!str_contains($file->file_path, '*')) {
 				if (file_exists($file->file_path)) {
 					$this->singleFile($file);
 				}

@@ -43,7 +43,7 @@ abstract class Wildcard
 	 */
 	public static function containsWildcards($string)
 	{
-		return strpos(strtr($string, '?_%', '***'), '*') !== false;
+		return str_contains(strtr($string, '?_%', '***'), '*');
 	}
 
 	//----------------------------------------------------------------------------------- hasWildcard
@@ -53,11 +53,9 @@ abstract class Wildcard
 	 * @param $search_value string
 	 * @return boolean
 	 */
-	public static function hasWildcard($search_value)
+	public static function hasWildcard(string $search_value) : bool
 	{
-		return preg_match('/[*?%_]/', $search_value)
-			? true
-			: false;
+		return preg_match('/[*?%_]/', $search_value);
 	}
 
 }

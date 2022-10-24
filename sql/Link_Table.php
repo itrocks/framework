@@ -57,14 +57,14 @@ class Link_Table
 	 */
 	private function applyTableNameDefinitions($table)
 	{
-		if (strpos($table, '{') !== false) {
+		if (str_contains($table, '{')) {
 			$master_table  = Dao::storeNameOf($this->property->final_class);
 			$foreign_table = Dao::storeNameOf($this->property->getType()->getElementTypeAsString());
 			$definitions   = [
 				'{master}'  => $master_table,
 				'{foreign}' => $foreign_table
 			];
-			if (strpos($table, '{default}') !== false) {
+			if (str_contains($table, '{default}')) {
 				$definitions['{default}'] = $this->defaultStoreName($master_table, $foreign_table);
 			}
 			foreach ($definitions as $def => $value) {

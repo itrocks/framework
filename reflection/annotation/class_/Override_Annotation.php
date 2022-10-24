@@ -34,7 +34,7 @@ class Override_Annotation extends Template\List_Annotation implements Multiple_A
 				$this->property_name = $override_annotation;
 			}
 			else {
-				if (strpos($override_annotation, SP)) {
+				if (str_contains($override_annotation, SP)) {
 					[$annotation_name, $annotation_value] = explode(SP, $override_annotation, 2);
 				}
 				else {

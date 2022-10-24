@@ -23,7 +23,7 @@ class Spreadsheet_File
 	protected function cleanupIncomingData(&$data)
 	{
 		foreach (['…' => '...', ' ' => ' ', '  ' => ' '] as $search => $replace) {
-			while (strpos($data, $search) !== false) {
+			while (str_contains($data, $search)) {
 				$data = str_replace($search, $replace, $data);
 			}
 		}

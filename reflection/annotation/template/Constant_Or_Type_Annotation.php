@@ -16,7 +16,7 @@ class Constant_Or_Type_Annotation extends Type_Annotation implements Class_Conte
 	 */
 	public function __construct(?string $value, Reflection_Class $class)
 	{
-		if (strpos($value, '::')) {
+		if (str_contains($value, '::')) {
 			[$scope, $constant_name] = explode('::', $value);
 			if (in_array($scope, ['self', 'static'])) {
 				$value = BS . $class->getConstant($constant_name);

@@ -221,7 +221,7 @@ class Set extends Setting\Custom\Set
 				}
 				foreach (Group_Annotation::allOf($class) as $group_annotation) {
 					foreach ($group_annotation->values() as $property_path) {
-						if (strpos($property_path, DOT)) {
+						if (str_contains($property_path, DOT)) {
 							/** @noinspection PhpUnhandledExceptionInspection constant */
 							$this->properties[$property_path] = Builder::create(
 								Property::class, [$class_name, $property_path]

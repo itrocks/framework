@@ -69,7 +69,7 @@ class Weaver implements IWeaver, Plugin
 	 */
 	public function afterMethod($joinpoint, $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
 		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AFTER, $advice];
@@ -116,7 +116,7 @@ class Weaver implements IWeaver, Plugin
 	 */
 	public function aroundMethod($joinpoint, $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
 		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::AROUND, $advice];
@@ -179,7 +179,7 @@ class Weaver implements IWeaver, Plugin
 	 */
 	public function beforeMethod($joinpoint, $advice) : IHandler
 	{
-		if ((is_string($joinpoint) && !strpos($joinpoint, '::')) || !is_array($joinpoint)) {
+		if ((is_string($joinpoint) && !str_contains($joinpoint, '::')) || !is_array($joinpoint)) {
 			trigger_error('Joinpoint must be Class::method or [Class, method]', E_USER_ERROR);
 		}
 		$this->joinpoints[$joinpoint[0]][$joinpoint[1]][] = [Handler::BEFORE, $advice];

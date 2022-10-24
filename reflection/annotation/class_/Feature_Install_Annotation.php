@@ -37,7 +37,7 @@ class Feature_Install_Annotation extends Method_Annotation implements Do_Not_Inh
 	public function __construct(
 		?string $value, Reflection|Reflection_Class $class, string $annotation_name
 	) {
-		if (strpos($value, SP)) {
+		if (str_contains($value, SP)) {
 			[$value, $delay] = explode(SP, $value);
 			$this->delay = intval($delay);
 		}
