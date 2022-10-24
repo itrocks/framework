@@ -219,7 +219,7 @@ class Proxy
 		if (isset($this->request_headers['Cookie'])) {
 			foreach (explode('; ', $this->request_headers['Cookie']) as $text) {
 				$cookie = new Cookie();
-				list($cookie->name, $cookie->value) = explode('=', $text);
+				[$cookie->name, $cookie->value] = explode('=', $text);
 				if ($deleted || !($cookie->value == 'deleted')) {
 					$cookies[] = $cookie;
 				}
@@ -391,8 +391,8 @@ class Proxy
 				$result .= @fgets($f, 128);
 			}
 			fclose($f);
-			if (strpos($result, CR . LF . CR . LF) !== false) {
-				list($headers, $response) = explode(CR . LF . CR . LF, $result, 2);
+			if (str_contains($result, CR . LF . CR . LF)) {
+				[$headers, $response] = explode(CR . LF . CR . LF, $result, 2);
 			}
 			else {
 				$headers = $response = '';

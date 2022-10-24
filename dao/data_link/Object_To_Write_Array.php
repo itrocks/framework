@@ -200,7 +200,7 @@ class Object_To_Write_Array
 				}
 				// write a property that matches a stored property (a table column name)
 				if (in_array($property_name, $table_columns_names)) {
-					list($column_name, $value, $write_property, $class_name) = $this->propertyTableColumnName(
+					[$column_name, $value, $write_property, $class_name] = $this->propertyTableColumnName(
 						$property, $value
 					);
 					if ($value !== self::DO_NOT_WRITE) {
@@ -222,7 +222,7 @@ class Object_To_Write_Array
 					$this->maps[] = [$property, $this->propertyMapValue($property, $value)];
 				}
 				elseif (is_array($value) && $this->json_encoding) {
-					list($column_name, $value) = $this->propertyTableColumnName($property, $value);
+					[$column_name, $value]     = $this->propertyTableColumnName($property, $value);
 					$this->array[$column_name] = $value;
 				}
 				// write object

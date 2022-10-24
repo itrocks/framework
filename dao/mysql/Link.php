@@ -1045,8 +1045,8 @@ class Link extends Dao\Sql\Link
 						E_USER_ERROR
 					);
 				}
-				list($column, $value) = explode('=', $identify);
-				$what[$column]        = $value;
+				[$column, $value] = explode('=', $identify);
+				$what[$column]    = $value;
 			}
 			$object = $this->searchOne($what, $class_name);
 		}

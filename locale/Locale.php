@@ -186,10 +186,10 @@ class Locale implements Configurable, Registerable, Updatable
 					$this->number_format->decimal_minimal_count,
 					$this->number_format->decimal_maximal_count
 				];
-				list(
+				[
 					$this->number_format->decimal_minimal_count,
 					$this->number_format->decimal_maximal_count
-				) = $decimals;
+				] = $decimals;
 			}
 		}
 		if (is_null($value) && Null_Annotation::of($property)->value) {
@@ -221,10 +221,10 @@ class Locale implements Configurable, Registerable, Updatable
 			$result = $value;
 		}
 		if (isset($save_decimals)) {
-			list(
+			[
 				$this->number_format->decimal_minimal_count,
 				$this->number_format->decimal_maximal_count
-			) = $save_decimals;
+			] = $save_decimals;
 		}
 		return $result;
 	}

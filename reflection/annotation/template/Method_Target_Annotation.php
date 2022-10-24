@@ -43,9 +43,9 @@ class Method_Target_Annotation extends Method_Annotation
 		if (strpos($this->value, SL) && !strpos($this->value, '::')) {
 			return $this->value;
 		}
-		$identifier = $object ? Dao::getObjectIdentifier($object) : null;
-		list($class_name, $method_name) = explode('::', $this->value);
-		$class_name = Builder::current()->sourceClassName($class_name);
+		$identifier                 = $object ? Dao::getObjectIdentifier($object) : null;
+		[$class_name, $method_name] = explode('::', $this->value);
+		$class_name                 = Builder::current()->sourceClassName($class_name);
 		return str_replace(BS, SL, $class_name)
 			. ($identifier ? (SL . $identifier) : '')
 			. SL . $method_name

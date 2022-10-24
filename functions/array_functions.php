@@ -437,8 +437,8 @@ function arrayToTree(array $array, $recurse = true)
 	$result     = [];
 	$sub_arrays = [];
 	foreach ($array as $key => $value) {
-		if (strpos($key, DOT) !== false) {
-			list($super_key, $sub_key) = explode(DOT, $key, 2);
+		if (str_contains($key, DOT)) {
+			[$super_key, $sub_key]            = explode(DOT, $key, 2);
 			$sub_arrays[$super_key][$sub_key] = $value;
 		}
 		else {

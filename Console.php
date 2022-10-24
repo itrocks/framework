@@ -158,7 +158,7 @@ class Console
 				$var = $argument;
 			}
 			else {
-				list($name, $value) = strpos($argument, '=')
+				[$name, $value] = strpos($argument, '=')
 					? explode('=', $argument, 2)
 					: [$argument, false];
 				if ($var === '-h') {

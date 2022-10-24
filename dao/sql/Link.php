@@ -228,7 +228,7 @@ abstract class Link extends Identifier_Map implements Transactional
 		if (!is_array($properties)) {
 			$properties = $properties ? [$properties] : [];
 		}
-		list($double_pass, $list) = $this->selectOptions($options, $properties);
+		[$double_pass, $list] = $this->selectOptions($options, $properties);
 		if (!isset($list)) {
 			$list = $this->selectList($object_class, $properties);
 		}

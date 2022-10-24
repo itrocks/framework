@@ -201,7 +201,7 @@ class Summary_Builder
 	 */
 	public function buildColumn($path, $prefix = '', $translate_flag = self::COMPLETE_TRANSLATE)
 	{
-		list($translation_delimiter, $sub_translation_delimiter)
+		[$translation_delimiter, $sub_translation_delimiter]
 			= $this->getTranslationDelimiters($translate_flag);
 		return $translation_delimiter . $sub_translation_delimiter . ($prefix ? $prefix . '.' : '')
 			. $path . $sub_translation_delimiter . $translation_delimiter;
@@ -261,8 +261,8 @@ class Summary_Builder
 	private function buildPath($path, $value, $clause)
 	{
 		if ($value instanceof Func\Where) {
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
-			if ($foreign_column == 'id') {
+			[$master_path, $foreign_column] = Builder::splitPropertyPath($path);
+			if ($foreign_column === 'id') {
 				$prefix = '';
 			}
 			else {
@@ -302,7 +302,7 @@ class Summary_Builder
 		// check if we are on a enum field with @values list of values
 		$values = ($property ? $property->getListAnnotation('values')->values() : []);
 		if (count($values)) {
-			list($translation_delimiter, $sub_translation_delimiter)
+			[$translation_delimiter, $sub_translation_delimiter]
 				= $this->getTranslationDelimiters($translate_flag);
 			return DQ . $translation_delimiter . $sub_translation_delimiter
 				. str_replace('_', SP, $value) . $sub_translation_delimiter . $translation_delimiter . DQ;
@@ -355,9 +355,9 @@ class Summary_Builder
 	{
 		// old way to do. keep for backward compatibility
 		// TODO check if we should keep or if it's buggy and so we could keep only new way to do
-		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+		[$master_path, $foreign_column] = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
-		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		$property   = $properties[$foreign_column] ?? null;
 		// if null, new way to do
 		if (is_null($property)) {
 			// property path can be an Expressions::MARKER or 'representative' view field name

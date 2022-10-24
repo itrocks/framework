@@ -95,7 +95,7 @@ class Builder implements Activable
 	 */
 	public function __unserialize(array $serialized)
 	{
-		list($this->compositions, $this->replacements) = $serialized;
+		[$this->compositions, $this->replacements] = $serialized;
 	}
 
 	//-------------------------------------------------------------------------------------- activate

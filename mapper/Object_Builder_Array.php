@@ -374,7 +374,7 @@ class Object_Builder_Array
 					&& is_numeric(rParse($element, ':'))
 					&& class_exists(lParse($element, ':'))
 				) {
-					list($real_class_name, $element) = explode(':', $element);
+					[$real_class_name, $element] = explode(':', $element);
 					if (!isA($real_class_name, $class_name)) {
 						// this is for security purpose, to disallow unauthorized classes injection
 						trigger_error(

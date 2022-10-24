@@ -85,13 +85,13 @@ class Link_Table
 	 */
 	private function defaultStoreName($master_table, $foreign_table)
 	{
-		list($left, $right) = ($master_table < $foreign_table)
+		[$left, $right] = ($master_table < $foreign_table)
 			? [$master_table, $foreign_table]
 			: [$foreign_table, $master_table];
 		$left  = explode('_', $left);
 		$right = explode('_', $right);
 		$last  = min(count($left), count($right)) - 1;
-		$skip = 0;
+		$skip  = 0;
 		while (($skip < $last) && ($right[$skip] === $left[$skip])) {
 			$skip ++;
 		}

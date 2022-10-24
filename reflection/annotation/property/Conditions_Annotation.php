@@ -53,7 +53,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 					$operator = '';
 				}
 				if ($operator) {
-					list($property_name, $condition) = explode($operator, $condition);
+					[$property_name, $condition] = explode($operator, $condition);
 					$condition = (($operator === '=') ? '' : $operator) . $condition;
 				}
 				else {

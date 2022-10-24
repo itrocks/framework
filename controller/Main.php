@@ -266,7 +266,7 @@ class Main
 		$controller_name = ($main_object instanceof Set)
 			? $main_object->element_class_name
 			: $uri->controller_name;
-		list($class_name, $method_name) = $this->getController(
+		[$class_name, $method_name] = $this->getController(
 			$controller_name, $uri->feature_name, $sub_feature
 		);
 
@@ -328,17 +328,17 @@ class Main
 	public function getController($controller_name, $feature_name, $sub_feature = null)
 	{
 		if (isset($sub_feature)) {
-			list($class, $method) = Getter::get(
+			[$class, $method] = Getter::get(
 				$controller_name, $feature_name, Names::methodToClass($sub_feature) . '_Controller', 'php'
 			);
 		}
 
 		if (!isset($class)) {
-			list($class, $method) = Getter::get($controller_name, $feature_name, 'Controller', 'php');
+			[$class, $method] = Getter::get($controller_name, $feature_name, 'Controller', 'php');
 		}
 
 		if (!isset($class) || !class_exists($class)) {
-			list($class, $method) = [Default_Controller::class, 'run'];
+			[$class, $method] = [Default_Controller::class, 'run'];
 		}
 
 		/** @noinspection PhpUndefinedVariableInspection if $class is set, then $method is set too */

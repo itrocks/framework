@@ -63,7 +63,7 @@ class Cookie implements Stringable
 		$cookie = Builder::create(static::class);
 		$cookie->properties = [];
 		foreach (explode(';', $string) as $element) {
-			list($key, $value) = explode('=', $element);
+			[$key, $value] = explode('=', $element);
 			if (!isset($cookie->name)) {
 				$cookie->name  = trim($key);
 				$cookie->value = trim($value);

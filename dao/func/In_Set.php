@@ -60,7 +60,7 @@ class In_Set implements Negate, Where
 	{
 		$summary = '';
 		if ($this->value) {
-			list($translation_delimiter) = $builder->getTranslationDelimiters();
+			[$translation_delimiter] = $builder->getTranslationDelimiters();
 
 			$summary = $translation_delimiter . sprintf(
 				Loc::tr($this->not ? '%s does not contain %s' : '%s contains %s'),

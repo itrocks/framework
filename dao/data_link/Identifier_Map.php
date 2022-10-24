@@ -175,7 +175,7 @@ abstract class Identifier_Map extends Data_Link
 			// link class identifiers
 			if ($id && strpos($id, Link_Class::ID_SEPARATOR)) {
 				foreach (explode(Link_Class::ID_SEPARATOR, $id) as $property) {
-					list($property_name, $id) = explode('=', $property);
+					[$property_name, $id] = explode('=', $property);
 					if (is_numeric($id)) {
 						$id_property_name = 'id_' . $property_name;
 						$object->$id_property_name = $id;

@@ -293,13 +293,13 @@ class Where implements With_Build_Column
 
 		if ($value instanceof Func\Where) {
 			$this->joins->add($property_path);
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($property_path);
+			[$master_path, $foreign_column] = Builder::splitPropertyPath($property_path);
 			if ($foreign_column === 'id') {
 				$prefix = '';
 			}
 			else {
 				$properties = $this->joins->getProperties($master_path);
-				$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+				$property   = $properties[$foreign_column] ?? null;
 				$id_links   = [Link_Annotation::COLLECTION, Link_Annotation::MAP, Link_Annotation::OBJECT];
 				$prefix     = '';
 
@@ -391,7 +391,7 @@ class Where implements With_Build_Column
 			}
 		}
 		else {
-			list($master_path, $foreign_column) = Builder::splitPropertyPath($property_path);
+			[$master_path, $foreign_column] = Builder::splitPropertyPath($property_path);
 			if (!$master_path && ($foreign_column === 'id')) {
 				$class = $this->joins->getStartingClassName();
 				$i     = 0;
@@ -433,9 +433,9 @@ class Where implements With_Build_Column
 	 */
 	public function getProperty($path)
 	{
-		list($master_path, $foreign_column) = Builder::splitPropertyPath($path);
+		[$master_path, $foreign_column] = Builder::splitPropertyPath($path);
 		$properties = $this->joins->getProperties($master_path);
-		$property   = isset($properties[$foreign_column]) ? $properties[$foreign_column] : null;
+		$property   = $properties[$foreign_column] ?? null;
 		return $property;
 	}
 

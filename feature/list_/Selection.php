@@ -269,8 +269,8 @@ class Selection
 		$options = $this->getSearchOptions(is_array($options) ? $options : [$options]);
 
 		if (empty($properties_path)) {
-			$properties                     = array_keys($this->getListSettings()->properties);
-			list($properties_path, $search) = $this->getListController()->removeInvisibleProperties(
+			$properties                 = array_keys($this->getListSettings()->properties);
+			[$properties_path, $search] = $this->getListController()->removeInvisibleProperties(
 				$this->class_name, $properties, $search
 			);
 		}

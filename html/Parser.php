@@ -532,12 +532,12 @@ class Parser
 		$begin = 0;
 		$ignore = false;
 		for ($pos = 0; $pos < $length; $pos++) {
-			if (strpos('#.:[]', $selector[$pos]) !== false) {
+			if (str_contains('#.:[]', $selector[$pos])) {
 				if ($pos) {
 					$content = substr($selector, $begin, $pos - $begin);
 					if ($what === '[') {
 						if ($selector[$pos] == ']') {
-							list($key, $value) = explode('=', $content);
+							[$key, $value] = explode('=', $content);
 							if (
 								(($value[0] == Q) && ($value[strlen($value) - 1] == Q))
 								|| (($value[0] == DQ) && ($value[strlen($value) - 1] == DQ))

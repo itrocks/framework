@@ -139,7 +139,7 @@ class Joins
 		if (isset($this->joins[$path]) || array_key_exists($path, $this->joins)) {
 			return $this->joins[$path];
 		}
-		list($master_path, $master_property_name) = Sql\Builder::splitPropertyPath($path);
+		[$master_path, $master_property_name] = Sql\Builder::splitPropertyPath($path);
 		if ($master_path && !isset($this->joins[$master_path])) {
 			$this->add($master_path, $depth + 1);
 		}
@@ -155,7 +155,7 @@ class Joins
 		$join = new Join();
 		if (
 			// new Class_Name(property_name)
-			(substr($master_property_name, -1) === ')')
+			str_ends_with($master_property_name, ')')
 			// @deprecated Class_Name->property_name
 			|| strpos($master_property_name, '->')
 		) {
@@ -396,21 +396,21 @@ class Joins
 		Join $join, &$master_path, $master_property_name, $foreign_path
 	) {
 		// new Class_Name(property_name)
-		if (strpos($master_property_name, ')')) {
-			list($foreign_class_name, $foreign_property_name) = explode('(', $master_property_name);
+		if (str_contains($master_property_name, ')')) {
+			[$foreign_class_name, $foreign_property_name] = explode('(', $master_property_name);
 			$foreign_property_name = substr($foreign_property_name, 0, -1);
 		}
 		// @deprecated Class_Name->property_name
 		else {
-			list($foreign_class_name, $foreign_property_name) = explode('->', $master_property_name);
+			[$foreign_class_name, $foreign_property_name] = explode('->', $master_property_name);
 		}
 		$master_class_name  = $this->classes[$master_path];
 		$foreign_class_name = Namespaces::defaultFullClassName(
 			Builder::className($foreign_class_name), $master_class_name
 		);
-		if (strpos($foreign_property_name, ',')) {
+		if (str_contains($foreign_property_name, ',')) {
 			foreach (explode(',', rParse($foreign_property_name, ',')) as $secondary_link) {
-				list($secondary_foreign, $secondary_master) = explode('=', $secondary_link);
+				[$secondary_foreign, $secondary_master] = explode('=', $secondary_link);
 				if ($secondary_master[0] === '~') {
 					$join->like[$secondary_foreign] = true;
 					$secondary_master               = substr($secondary_master, 1);
@@ -419,16 +419,16 @@ class Joins
 			}
 			$foreign_property_name = lParse($foreign_property_name, ',');
 		}
-		if (strpos($foreign_property_name, '=')) {
-			list($foreign_property_name, $master_property_name) = explode('=', $foreign_property_name);
+		if (str_contains($foreign_property_name, '=')) {
+			[$foreign_property_name, $master_property_name] = explode('=', $foreign_property_name);
 			if ($master_property_name[0] === '~') {
 				$join->like[0]        = true;
 				$master_property_name = substr($master_property_name, 1);
 			}
 			/** @noinspection PhpUnhandledExceptionInspection master property must be valid in class */
 			$master_property = new Reflection_Property($master_class_name, $master_property_name);
-			if (strpos($master_property_name, DOT)) {
-				list($sub_master, $master_property_name) = Sql\Builder::splitPropertyPath(
+			if (str_contains($master_property_name, DOT)) {
+				[$sub_master, $master_property_name] = Sql\Builder::splitPropertyPath(
 					$master_property_name
 				);
 				if (!isset($this->joins[$sub_master])) {
@@ -722,10 +722,10 @@ class Joins
 	public function getProperty($master_path, $property_name = null)
 	{
 		if (!$property_name) {
-			list($master_path, $property_name) = Sql\Builder::splitPropertyPath($master_path);
+			[$master_path, $property_name] = Sql\Builder::splitPropertyPath($master_path);
 		}
 		$properties = $this->getProperties($master_path);
-		return isset($properties[$property_name]) ? $properties[$property_name] : null;
+		return $properties[$property_name] ?? null;
 	}
 
 	//------------------------------------------------------------------------------ getStartingClass

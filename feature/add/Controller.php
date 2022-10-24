@@ -36,8 +36,8 @@ class Controller extends Edit\Controller
 	{
 		$buttons = parent::getGeneralButtons($object, $parameters, $settings);
 
-		$close_link = View::link(Names::classToSet(get_class($object)));
-		list($close_link) = $this->prepareThen($object, $parameters, $close_link);
+		$close_link   = View::link(Names::classToSet(get_class($object)));
+		[$close_link] = $this->prepareThen($object, $parameters, $close_link);
 
 		return array_merge($buttons, [
 			Feature::F_CLOSE => new Button(

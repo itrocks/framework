@@ -45,7 +45,7 @@ abstract class Getter
 			$without = substr($class_name, strpos($class_name, BS) + 1);
 		}
 		else {
-			list($vendor, $project, $class_sub_path) = explode(BS, $class_name, 3);
+			[$vendor, $project, $class_sub_path] = explode(BS, $class_name, 3);
 			$without = class_exists($vendor . BS . $project . BS . 'Application')
 				? $class_sub_path
 				: ($project . ($class_sub_path ? (BS . $class_sub_path) : ''));

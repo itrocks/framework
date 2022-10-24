@@ -202,7 +202,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 */
 	public function getGeneralButtons($object, array $parameters, Setting\Custom\Set $settings = null)
 	{
-		list($close_link, $follows) = $this->prepareThen($object, $parameters);
+		[$close_link, $follows]    = $this->prepareThen($object, $parameters);
 		$buttons[Feature::F_CLOSE] = new Button(
 			'Close', $close_link, Feature::F_CLOSE
 		);
@@ -499,7 +499,7 @@ class Controller implements Default_Feature_Controller, Has_General_Buttons
 	 * Prepare close link and follows links for buttons
 	 *
 	 * @example Call this from getGeneralButtons() :
-	 * list($close_link, $follows) = $this->prepareThen($object, $parameters);
+	 * [$close_link, $follows] = $this->prepareThen($object, $parameters);
 	 * Then use $close_link and $follows as needed
 	 * @param $object             object|string object or class name
 	 * @param $parameters         array

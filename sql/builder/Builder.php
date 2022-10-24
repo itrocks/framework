@@ -233,7 +233,7 @@ abstract class Builder
 	 * If path is ony a single property name like 'this', master will be empty and foreign = property.
 	 * You can change the foreign property name into a column name using buildColumnName().
 	 *
-	 * @example list($master_path, $foreign_property) = Sql_Builder::splitPropertyPath('a.full.path');
+	 * @example [$master_path, $foreign_property] = Sql_Builder::splitPropertyPath('a.full.path');
 	 * $master_path will be 'a.full' and $foreign_property 'path'
 	 * @param $path string
 	 * @return array First element is the master property path, second element is the foreign property name

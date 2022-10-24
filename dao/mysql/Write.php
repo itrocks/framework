@@ -206,18 +206,18 @@ class Write extends Data_Link\Write
 					$this->writeArray($write, $properties, $class);
 				}
 				foreach ($write_collections as $write) {
-					list($property, $value) = $write;
+					[$property, $value] = $write;
 					$this->writeCollection($property, $value);
 				}
 				foreach ($write_maps as $write) {
-					list($property, $value) = $write;
+					[$property, $value] = $write;
 					$this->spreadExcludeAndOnly(
 						$this->spread_options, $property->name, $this->exclude, $this->only
 					);
 					$this->writeMap($property, $value);
 				}
 				foreach ($write_objects as $write) {
-					list($property, $value) = $write;
+					[$property, $value] = $write;
 					$this->spreadExcludeAndOnly(
 						$this->spread_options, $property->name, $this->exclude, $this->only
 					);
@@ -225,7 +225,7 @@ class Write extends Data_Link\Write
 				}
 				foreach ($write_properties as $write) {
 					/** @var $dao Data_Link */
-					list($property, $value, $dao) = $write;
+					[$property, $value, $dao] = $write;
 					$dao->writeProperty($this->object, $property, $value);
 				}
 				// if link class : write linked object too

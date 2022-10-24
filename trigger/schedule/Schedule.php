@@ -185,11 +185,11 @@ class Schedule extends Trigger
 
 		foreach ($list as $element) {
 			$hour_range = new Hour_Range();
-			if (strpos($element, '-') === false) {
+			if (!str_contains($element, '-')) {
 				$hour_range->from = $hour_range->until = $element;
 			}
 			else {
-				list($hour_range->from, $hour_range->until) = explode('-', $element);
+				[$hour_range->from, $hour_range->until] = explode('-', $element);
 			}
 			$hour_range->schedule = $this;
 			$hour_range->normalize('00:00:00');
@@ -217,7 +217,7 @@ class Schedule extends Trigger
 				$values[$value] = $value;
 			}
 			else {
-				list($start, $stop) = explode('-', $element);
+				[$start, $stop] = explode('-', $element);
 				$start = intval($start) ?: 1;
 				$stop  = intval($stop) ?: $max_value;
 				for ($element = $start; $element <= $stop; $element++) {

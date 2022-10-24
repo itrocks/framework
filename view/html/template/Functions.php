@@ -441,9 +441,7 @@ class Functions
 	) {
 		$class_name    = $object->element_class_name;
 		$property_name = prev($template->var_names);
-		list($property, $property_path, $value) = $this->toEditPropertyExtra(
-			$class_name, $property_name
-		);
+		[$property, $property_path, $value] = $this->toEditPropertyExtra($class_name, $property_name);
 		$property_edit             = new Html_Builder_Property($property, $value);
 		$property_edit->conditions = [];
 		$property_edit->name       = $name ?: $property_path;

@@ -32,7 +32,7 @@ class Map_Delete
 	 */
 	public function buildQuery($object, $foreign_object)
 	{
-		list($table, $field1, $field2, $id1, $id2) = Map::sqlElementsOf(
+		[$table, $field1, $field2, $id1, $id2] = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
 		return 'DELETE FROM' . SP . BQ . $table . BQ . LF

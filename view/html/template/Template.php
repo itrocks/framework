@@ -1346,14 +1346,14 @@ class Template
 			$loop->var_name = substr($loop->var_name, 1);
 		}
 
-		$loop->force_condition = (substr($loop->var_name, -1) === '?');
+		$loop->force_condition = str_ends_with($loop->var_name, '?');
 		if ($loop->force_condition) {
 			$loop->var_name = substr($loop->var_name, 0, -1);
 		}
 
 		if (strpos($loop->var_name, ':')) {
-			list($loop->var_name, $loop->has_expr) = explode(':', $loop->var_name);
-			$search_var_name                       = lParse($search_var_name, ':');
+			[$loop->var_name, $loop->has_expr] = explode(':', $loop->var_name);
+			$search_var_name                   = lParse($search_var_name, ':');
 			if (($sep = strpos($loop->has_expr, '-')) !== false) {
 				$loop->from = substr($loop->has_expr, 0, $sep);
 				$loop->to   = substr($loop->has_expr, $sep + 1);
@@ -1370,7 +1370,7 @@ class Template
 
 		if ($loop->use_end) {
 			$length2 = 3;
-			list($else_j, $end_j) = $this->parseLoopSearchEnd($content, $end_j);
+			[$else_j, $end_j] = $this->parseLoopSearchEnd($content, $end_j);
 		}
 		else {
 			$length2         = strlen($search_var_name);
@@ -1454,7 +1454,7 @@ class Template
 	protected function parseNavigate($var_name)
 	{
 		while ($var_name[0] === '-') {
-			list($descendant_name, $descendant) = $this->shift();
+			[$descendant_name, $descendant] = $this->shift();
 			array_unshift($this->descendants_names, $descendant_name);
 			array_unshift($this->descendants,       $descendant);
 			$var_name = substr($var_name, 1);
@@ -1940,7 +1940,7 @@ class Template
 			if (!isset($context)) {
 				$context = $this->backupContext();
 			}
-			list($object, $property_name) = $this->parsePath($var_name);
+			[$object, $property_name] = $this->parsePath($var_name);
 		}
 		else {
 			$object = $this->parseSingleValue($var_name);
@@ -2519,7 +2519,7 @@ class Template
 	 */
 	protected function restoreContext(array $context)
 	{
-		list($this->var_names, $this->objects, Loc::$contexts_stack) = $context;
+		[$this->var_names, $this->objects, Loc::$contexts_stack] = $context;
 	}
 
 	//---------------------------------------------------------------------------- restoreDescendants
@@ -2529,7 +2529,7 @@ class Template
 	 */
 	protected function restoreDescendants(array $descendants)
 	{
-		list($this->descendants_names, $this->descendants) = $descendants;
+		[$this->descendants_names, $this->descendants] = $descendants;
 	}
 
 	//------------------------------------------------------------------------------------ setContent

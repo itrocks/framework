@@ -98,10 +98,10 @@ class Properties
 		/** @var $advice_string string [$object_, 'methodName'] | 'functionName' */
 		/** @var $advice_has_return boolean */
 		/** @var $is_advice_static boolean */
-		list(
+		[
 			$advice_class_name, $advice_method_name, $advice_function_name,
 			$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
-		) = $this->decodeAdvice($advice, $class_name);
+		] = $this->decodeAdvice($advice, $class_name);
 
 		// $advice_parameters_string, $joinpoint_code
 		$joinpoint_code = '';
@@ -305,7 +305,7 @@ class Properties
 		$code = '';
 		foreach ($advices as $property_name => $property_advices) {
 			if (isset($property_advices['default'])) {
-				list($object, $method) = $property_advices['default'];
+				[$object, $method] = $property_advices['default'];
 				$operator              = ($object === '$this') ? '->' : '::';
 				$code .= "if (!isset(\$this->$property_name)) {
 			\$this->$property_name = $object$operator$method(
@@ -448,7 +448,7 @@ class Properties
 			}
 		}
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
-			list($type, $advice) = $aspect;
+			[$type, $advice] = $aspect;
 			if ($type === Handler::READ) {
 				if (!isset($prototype)) {
 					$prototype = '
@@ -651,7 +651,7 @@ class Properties
 		$code = '';
 		$init = [];
 		foreach ($advices as $key => $aspect) if (is_numeric($key)) {
-			list($type, $advice) = $aspect;
+			[$type, $advice] = $aspect;
 			if ($type === Handler::WRITE) {
 				if (!isset($prototype)) {
 					$prototype = '

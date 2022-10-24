@@ -39,7 +39,7 @@ trait Has_Build_Column
 		if (!isset($join)) {
 			$join = $this->joins->add($path);
 		}
-		list($master_path, $column_name) = Sql\Builder::splitPropertyPath($path);
+		[$master_path, $column_name] = Sql\Builder::splitPropertyPath($path);
 		if (!isset($join)) {
 			$join = $this->joins->getJoin($master_path);
 		}

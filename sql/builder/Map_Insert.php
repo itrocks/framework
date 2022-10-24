@@ -33,7 +33,7 @@ class Map_Insert
 	 */
 	public function buildQuery($object, $foreign_object)
 	{
-		list($table, $field1, $field2, $id1, $id2) = Map::sqlElementsOf(
+		[$table, $field1, $field2, $id1, $id2] = Map::sqlElementsOf(
 			$object, $this->property, $foreign_object
 		);
 		if ($this->property->getType()->getElementTypeAsString() == 'object') {

@@ -49,7 +49,7 @@ class Type
 			$this->subtype = $subtype;
 		}
 		else {
-			list($this->type, $this->subtype) = explode(SL, $type);
+			[$this->type, $this->subtype] = explode(SL, $type);
 		}
 	}
 

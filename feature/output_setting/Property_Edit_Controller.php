@@ -26,10 +26,8 @@ class Property_Edit_Controller implements Feature_Controller
 		$output_settings = Set::current($class_name, $feature);
 		$output_settings->cleanup();
 		/** @noinspection PhpUnhandledExceptionInspection constant */
-		$property = isset($output_settings->properties[$property_path])
-			? $output_settings->properties[$property_path]
-			: Builder::create(Property::class, [$class_name, $property_path]);
-		return $property;
+		return $output_settings->properties[$property_path]
+			?? Builder::create(Property::class, [$class_name, $property_path]);
 	}
 
 	//------------------------------------------------------------------------------------------- run
@@ -44,7 +42,7 @@ class Property_Edit_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		if ($parameters->getMainObject(Property::class)->isEmpty()) {
-			list($class_name, $feature, $property_path) = $parameters->getRawParameters();
+			[$class_name, $feature, $property_path] = $parameters->getRawParameters();
 			$property = $this->customSettingsProperty($class_name, $feature, $property_path);
 			$parameters->unshift($property);
 		}

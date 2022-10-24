@@ -69,7 +69,7 @@ class Loc implements Registerable
 		/** @var $property      Reflection_Property */
 		/** @var $property_path string */
 		/** @var $value         mixed */
-		list($property, $property_path, $value) = $result;
+		[$property, $property_path, $value] = $result;
 		$value = self::propertyToLocale($property, $value);
 		return [$property, $property_path, $value];
 	}

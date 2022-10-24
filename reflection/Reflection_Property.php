@@ -176,8 +176,8 @@ class Reflection_Property extends ReflectionProperty
 	 */
 	public static function exists(string $class_name, string $property_name) : bool
 	{
-		if (strpos($property_name, ')')) {
-			list($class_name, $property_name)
+		if (str_contains($property_name, ')')) {
+			[$class_name, $property_name]
 				= (new Path($class_name, $property_name))->toPropertyClassName();
 		}
 		if (str_contains($property_name, DOT)) {

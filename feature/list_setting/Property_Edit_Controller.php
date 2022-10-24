@@ -44,7 +44,7 @@ class Property_Edit_Controller implements Feature_Controller
 	public function run(Parameters $parameters, array $form, array $files)
 	{
 		if ($parameters->getMainObject(Property::class)->isEmpty()) {
-			list($class_name, $property_path) = $parameters->getRawParameters();
+			[$class_name, $property_path] = $parameters->getRawParameters();
 			$class_name = Names::setToClass($class_name);
 			$property   = $this->customSettingsProperty($class_name, $property_path);
 			$parameters->unshift($property);

@@ -76,7 +76,7 @@ class Date_Format
 	{
 		// two values with a middle slash
 		if (substr_count($date, SL) == 1) {
-			list($one, $two) = explode(SL, $date);
+			[$one, $two] = explode(SL, $date);
 			// the first number is a year : year/month
 			if (strlen($one) > 2) {
 				$date = sprintf('%04s-%02s-' . ($joker ? ($joker . $joker) : '01'), $one, $two);
@@ -86,7 +86,7 @@ class Date_Format
 				$date = sprintf('%04s-%02s-' . ($joker ? ($joker . $joker) : '01'), $two, $one);
 			}
 			// these are small numbers : day/month or month/day, depending on the locale format
-			elseif (strpos($this->format, 'd/m') !== false) {
+			elseif (str_contains($this->format, 'd/m')) {
 				$date = sprintf(date('Y') . '-%02s-%02s', $two, $one);
 			}
 			else {
@@ -162,8 +162,8 @@ class Date_Format
 			}
 		}
 		elseif (strpos($date, SP)) {
-			list($date, $time) = explode(SP, $date);
-			$time = explode(':', $time);
+			[$date, $time] = explode(SP, $date);
+			$time          = explode(':', $time);
 			foreach ($time as &$t) {
 				if (strlen($t) < 2) {
 					$t = '0' . $t;
@@ -202,7 +202,7 @@ class Date_Format
 				return DateTime::createFromFormat('Y-m-d', $date)->format($this->format);
 			}
 			else {
-				list($date, $time) = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
+				[$date, $time] = strpos($date, SP) ? explode(SP, $date) : [$date, ''];
 				if ($this->show_time === self::TIME_NEVER) {
 					$time = '';
 				}
@@ -214,10 +214,9 @@ class Date_Format
 						$time = substr($time, 0, 5);
 					}
 				}
-				$result = ($date_time = DateTime::createFromFormat('Y-m-d', $date))
+				return ($date_time = DateTime::createFromFormat('Y-m-d', $date))
 					? ($date_time->format($this->format) . (strlen($time) ? (SP . $time) : ''))
 					: $date;
-				return $result;
 			}
 		}
 		catch (Exception $e) {

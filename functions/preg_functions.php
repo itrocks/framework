@@ -22,7 +22,7 @@ function pregMatchArray(
 	if ($complete && !strlen($delimiter)) {
 		trigger_error('$delimiter must be set if $complete is true', E_USER_ERROR);
 	}
-	list($start, $stop) = $complete ? ['^', '$'] : ['', ''];
+	[$start, $stop] = $complete ? ['^', '$'] : ['', ''];
 	if (strlen($delimiter)) {
 		$start = $delimiter . $start;
 		$stop .= $delimiter;

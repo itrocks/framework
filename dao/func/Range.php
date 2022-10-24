@@ -72,12 +72,12 @@ class Range implements Negate, Where
 
 		$property = $builder->getProperty($property_path);
 		if ($property->getType()->isDateTime()) {
-			list($date_from, $time_from) = explode(SP, $from);
-			list($date_to, $time_to) = explode(SP, $to);
+			[$date_from, $time_from] = explode(SP, $from);
+			[$date_to, $time_to]     = explode(SP, $to);
 			//if we check full day, we remove time parts
 			if ($time_from == '00:00:00' && $time_to == '23:59:59') {
 				$from = $date_from;
-				$to = $date_to;
+				$to   = $date_to;
 			}
 			else {
 				//if we check full minute or full hour, we remove seconds

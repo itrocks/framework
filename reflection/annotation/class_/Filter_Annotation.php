@@ -63,7 +63,7 @@ class Filter_Annotation extends Method_Annotation
 		string $annotation_name = ''
 	) {
 		if (strpos($value, SP)) {
-			list($value, $options) = explode(SP, $value, 2);
+			[$value, $options] = explode(SP, $value, 2);
 		}
 		parent::__construct($value, $class, $annotation_name ?: static::ANNOTATION);
 		// set options

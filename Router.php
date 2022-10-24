@@ -474,7 +474,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 	public function setPossibleControllerCall(Uri $uri, string $controller, string $method_name)
 	{
 		if (isset($this->controller_calls[$uri->controller_name][$uri->feature_name])) {
-			list($check_controller, $check_method_name)
+			[$check_controller, $check_method_name]
 				= $this->controller_calls[$uri->controller_name][$uri->feature_name];
 			$changes = (($check_controller != $controller) || ($check_method_name != $method_name));
 		}
@@ -524,7 +524,7 @@ class Router implements Class_File_Name_Getter, Configurable, IAutoloader, IComp
 			? ($parameters[Feature::FEATURE] . DOT . $feature_name)
 			: $feature_name;
 		if (isset($this->view_calls[$class_name][$features])) {
-			list($check_view, $check_view_method_name) = $this->view_calls[$class_name][$features];
+			[$check_view, $check_view_method_name] = $this->view_calls[$class_name][$features];
 			$changes = (($check_view != $view) || ($check_view_method_name != $view_method_name));
 		}
 		else {

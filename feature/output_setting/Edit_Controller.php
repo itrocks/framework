@@ -36,8 +36,8 @@ class Edit_Controller implements Feature_Controller
 	 */
 	public function run(Parameters $parameters, array $form, array $files)
 	{
-		list($class_name, $feature) = $parameters->getRawParameters();
-		$output_settings = $this->applyCustomSettingsToOutputSettings($class_name, $feature);
+		[$class_name, $feature] = $parameters->getRawParameters();
+		$output_settings        = $this->applyCustomSettingsToOutputSettings($class_name, $feature);
 		$parameters->unshift($output_settings);
 		$parameters = $parameters->getObjects();
 		return View::run($parameters, $form, $files, Set::class, Feature::F_EDIT);

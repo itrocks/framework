@@ -346,7 +346,7 @@ class Import_Array
 		if (isset($class_name)) {
 			$this->class_name = $class_name;
 		}
-		list($this->properties_link, $this->properties_column) = self::getPropertiesLinkAndColumn(
+		[$this->properties_link, $this->properties_column] = self::getPropertiesLinkAndColumn(
 			$this->class_name, self::getPropertiesFromArray($array, $this->class_name)
 		);
 		$key = key($array);

@@ -59,7 +59,7 @@ class Feature_Menu_Annotation extends Annotation
 				Displays_Annotation::of(new Reflection\Reflection_Class($class_name))
 			);
 		}
-		list($link, $value) = explode(SP, $value, 2);
+		[$link, $value] = explode(SP, $value, 2);
 		parent::__construct($link);
 		$value = trim($value);
 		if (strpos($value, ',')) {
@@ -69,7 +69,7 @@ class Feature_Menu_Annotation extends Annotation
 			$value = str_replace('/', '>', $value);
 		}
 		if (strpos($value, '>')) {
-			list($this->block_caption, $this->item_caption) = explode('>', $value, 2);
+			[$this->block_caption, $this->item_caption] = explode('>', $value, 2);
 			$this->block_caption = trim($this->block_caption);
 			$this->item_caption  = trim($this->item_caption);
 		}

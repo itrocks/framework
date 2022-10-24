@@ -54,13 +54,13 @@ class Next_Calculation
 		if (!trim($this->schedule->days_of_month)) {
 			return $forward;
 		}
-		list($date_year, $date_month, $date_day) = explode('-', $this->date->format('Y-m-d'));
+		[$date_year, $date_month, $date_day] = explode('-', $this->date->format('Y-m-d'));
 		$days_of_month = $this->schedule->getDaysOfMonth();
 		// last day exceeded : next month
 		if ($date_day > end($days_of_month)) {
 			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
 			$this->date = new Date_Time(mktime(
-				0, 0, 0, $date_month + 1, reset($days_of_month), $date_year
+				0, 0, 0, intval($date_month) + 1, reset($days_of_month), $date_year
 			));
 			$this->nextDayOfMonth();
 			return true;
@@ -133,12 +133,12 @@ class Next_Calculation
 		if (!trim($this->schedule->months)) {
 			return $forward;
 		}
-		list($date_year, $date_month) = explode('-', $this->date->format('Y-m'));
+		[$date_year, $date_month] = explode('-', $this->date->format('Y-m'));
 		$months = $this->schedule->getMonths();
 		// last month exceeded : next year
 		if ($date_month > end($months)) {
 			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
-			$this->date = new Date_Time(mktime(0, 0, 0, reset($months), 1, $date_year + 1));
+			$this->date = new Date_Time(mktime(0, 0, 0, reset($months), 1, intval($date_year) + 1));
 			$this->nextMonth();
 			return true;
 		}
@@ -173,13 +173,13 @@ class Next_Calculation
 		if (!trim($this->schedule->hours) && !$this->schedule->hour_ranges) {
 			$this->schedule->hours = '00:00:00';
 		}
-		list($date_year, $date_month, $date_day, $date_time)
+		[$date_year, $date_month, $date_day, $date_time]
 			= explode('-', $this->date->format('Y-m-d-H:i:s'));
 		$hour_ranges = $this->schedule->getExtendedHourRanges();
 		// last time exceeded : next day
 		if ($date_time > end($hour_ranges)->until) {
 			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
-			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, $date_day + 1, $date_year));
+			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, intval($date_day) + 1, $date_year));
 			$this->nextDayOfWeek();
 			$this->nextTime();
 			return true;
@@ -218,7 +218,7 @@ class Next_Calculation
 		}
 		if (!$possible_dates) {
 			/** @noinspection PhpUnhandledExceptionInspection mktime result is valid */
-			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, $date_day + 1, $date_year));
+			$this->date = new Date_Time(mktime(0, 0, 0, $date_month, intval($date_day) + 1, $date_year));
 			$this->nextDayOfWeek();
 			$this->nextTime();
 			return true;

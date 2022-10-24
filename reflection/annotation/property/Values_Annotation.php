@@ -53,8 +53,8 @@ class Values_Annotation extends List_Annotation implements Property_Context_Anno
 	 */
 	private function importValues(string $from, Reflection_Property $property)
 	{
-		list($value, $option)    = strpos($from, SP) ? explode(SP, $from, 2) : [$from, null];
-		list($class_name, $what) = explode(
+		[$value, $option]    = strpos($from, SP) ? explode(SP, $from, 2) : [$from, null];
+		[$class_name, $what] = explode(
 			'::', (new Method_Annotation($value, $property, 'values'))->value
 		);
 		$reflection_class = get_class($property->getDeclaringClass());

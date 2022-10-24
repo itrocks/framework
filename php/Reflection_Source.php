@@ -451,9 +451,9 @@ class Reflection_Source
 					);
 
 					foreach ($matches as $match) {
-						list($class_names, $pos) = $match[2];
+						[$class_names, $pos] = $match[2];
 						if ($class_names[0] === '$') {
-							list($class_names, $pos) = $match[3] ?? ['', $match[2][1]];
+							[$class_names, $pos] = $match[3] ?? ['', $match[2][1]];
 						}
 						$line = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
 						if (strlen($class_names)) {
@@ -507,7 +507,7 @@ class Reflection_Source
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 					);
 					foreach ($matches as $match) {
-						list($compatibility_value, $pos) = $match[2];
+						[$compatibility_value, $pos] = $match[2];
 						$type        = $match[1][0];
 						$declaration = ($type === Dependency::T_BRIDGE_FEATURE ? Declaration::INSTALLABLE : '');
 						$line        = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
@@ -536,10 +536,10 @@ class Reflection_Source
 						PREG_OFFSET_CAPTURE | PREG_SET_ORDER
 					);
 					foreach ($matches as $match) {
-						$type              = $match[1][0];
-						list($title, $pos) = $match[2];
-						$line              = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
-						$declaration       = str_replace('_', '-', lParse($type, '_feature', 1, false));
+						$type          = $match[1][0];
+						[$title, $pos] = $match[2];
+						$line          = $token[2] + substr_count(substr($doc_comment, 0, $pos), LF);
+						$declaration   = str_replace('_', '-', lParse($type, '_feature', 1, false));
 						if (in_array(substr($title, 0, 10), ['@built_in ', '@built-in '])) {
 							$title       = trim(substr($title, 10));
 							$declaration = Declaration::BUILT_IN;

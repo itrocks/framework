@@ -19,6 +19,6 @@ interface Configurable extends Plugin
 	/**
 	 * @param $configuration mixed
 	 */
-	public function __construct($configuration);
+	public function __construct(mixed $configuration);
 
 }

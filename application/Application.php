@@ -76,8 +76,8 @@ class Application
 	 */
 	public function __construct($name)
 	{
-		if (strpos($name, SL)) {
-			list($this->vendor, $this->name) = explode(SL, $name);
+		if (str_contains($name, SL)) {
+			[$this->vendor, $this->name] = explode(SL, $name);
 		}
 		else {
 			$this->name   = $name;

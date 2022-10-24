@@ -776,7 +776,7 @@ class Controller extends Output\Controller implements Has_Selection_Buttons
 		Method_Annotation::callAll($class->getAnnotations('on_list'), $class->name, [&$search]);
 
 		$properties = array_keys($list_settings->properties);
-		list($properties_path, $search) = $this->removeInvisibleProperties(
+		[$properties_path, $search] = $this->removeInvisibleProperties(
 			$class_name, $properties, $search
 		);
 

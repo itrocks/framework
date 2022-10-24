@@ -136,10 +136,10 @@ class Method
 			/** @var $advice_string string [$object_, 'methodName') | 'functionName' */
 			/** @var $advice_has_return boolean */
 			/** @var $is_advice_static boolean */
-			list(
+			[
 				$advice_class_name, $advice_method_name, $advice_function_name,
 				$advice_parameters, $advice_string, $advice_has_return, $is_advice_static
-			) = $this->decodeAdvice($advice[1], $class_name);
+			] = $this->decodeAdvice($advice[1], $class_name);
 
 			// $advice_parameters_string, $joinpoint_code
 			$joinpoint_code = '';
