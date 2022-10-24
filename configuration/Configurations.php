@@ -64,7 +64,7 @@ class Configurations
 				);
 			}
 			if ($match) {
-				if (endsWith($match['project'], '-final')) {
+				if (str_ends_with($match['project'], '-final')) {
 					$match['project'] = lLastParse($match['project'], '-final');
 				}
 				$file_name = $match['vendor'] . SL . $match['project'] . SL . 'config.php';

@@ -138,7 +138,7 @@ class Installer
 			$added_interfaces_traits = [$added_interfaces_traits];
 		}
 		foreach ($added_interfaces_traits as $added_interface_trait) {
-			if (!beginsWith($added_interface_trait, AT)) {
+			if (!str_starts_with($added_interface_trait, AT)) {
 				(new Installed\Builder($this->plugin_class_name))
 					->add($base_class_name, $added_interface_trait);
 				Post::get()->willInstallProperties($base_class_name, $added_interface_trait);

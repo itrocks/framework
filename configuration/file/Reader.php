@@ -132,14 +132,14 @@ abstract class Reader
 		$this->file->namespace = null;
 		$this->file->use       = [];
 		for ($line = reset($this->lines); $line !== false; $line = next($this->lines)) {
-			if (beginsWith($line, '<?php')) {
+			if (str_starts_with($line, '<?php')) {
 				$php = true;
 			}
 			elseif ($php) {
-				if (beginsWith($line, 'namespace ')) {
+				if (str_starts_with($line, 'namespace ')) {
 					$this->file->namespace = mParse($line, 'namespace ', ';');
 				}
-				elseif (beginsWith($line, 'use ')) {
+				elseif (str_starts_with($line, 'use ')) {
 					$this->file->use[] = mParse($line, 'use ', ';');
 				}
 				elseif ($line) {

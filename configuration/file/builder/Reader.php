@@ -53,7 +53,7 @@ class Reader extends File\Reader
 							$built->components[] = $line;
 							$in_comment          = true;
 						}
-						elseif (beginsWith($trim_line, [DQ, Q])) {
+						elseif (strStartsWith($trim_line, [DQ, Q])) {
 							$component = trim(rtrim($line, ','));
 							if (substr($component, 1, 1) === AT) {
 								$component = trim($component, DQ . Q);

@@ -37,14 +37,14 @@ class Writer extends File\Writer
 					$component_count = count($built_class->components);
 					foreach ($built_class->components as $component) {
 						$component_count --;
-						if (beginsWith(trim($component), ['//', '/*'])) {
+						if (strStartsWith(trim($component), ['//', '/*'])) {
 							$this->lines[] = $component;
 							continue;
 						}
-						if (beginsWith($component, AT)) {
+						if (str_starts_with($component, AT)) {
 							$component = Q . $component . Q;
 						}
-						$line = beginsWith(trim($component), [DQ, Q])
+						$line = strStartsWith(trim($component), [DQ, Q])
 							? $component
 							: ($this->file->shortClassNameOf($component) . '::class');
 						$this->lines[] = TAB . TAB . $line . ($component_count ? ',' : '');

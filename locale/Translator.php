@@ -149,7 +149,7 @@ class Translator
 	 */
 	private function defaultTranslation($text)
 	{
-		return endsWith($text, AT) ? strUri(rtrim($text, AT)) : str_replace('_', SP, $text);
+		return str_ends_with($text, AT) ? strUri(rtrim($text, AT)) : str_replace('_', SP, $text);
 	}
 
 	//----------------------------------------------------------------------------------- deleteEmpty
@@ -436,7 +436,7 @@ class Translator
 	 */
 	public function translations($text, $objects = false)
 	{
-		if (endsWith($text, AT)) {
+		if (str_ends_with($text, AT)) {
 			$str_uri = true;
 			$text    = rtrim($text, AT);
 		}

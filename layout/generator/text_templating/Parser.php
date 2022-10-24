@@ -87,7 +87,7 @@ class Parser
 			}
 			$object = $this->object;
 			if ($this->property_path) {
-				if (beginsWith($property_path, $this->property_path . DOT)) {
+				if (str_starts_with($property_path, $this->property_path . DOT)) {
 					$property_path = substr($property_path, strlen($this->property_path) + 1);
 				}
 				else {

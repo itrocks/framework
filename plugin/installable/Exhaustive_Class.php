@@ -146,7 +146,7 @@ class Exhaustive_Class
 			}
 			if ($assembly instanceof Assembled) {
 				foreach ($assembly->components as $component) {
-					if (!beginsWith($component, AT)) {
+					if (!str_starts_with($component, AT)) {
 						$components[] = $component;
 					}
 				}

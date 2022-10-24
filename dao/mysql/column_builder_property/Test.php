@@ -289,7 +289,7 @@ class Test extends Tests\Test
 		));
 		/** @noinspection PhpUnhandledExceptionInspection object */
 		foreach ((new Reflection_Class($this))->getProperties([]) as $property) {
-			if (beginsWith($property->name, $property_prefix)) {
+			if (str_starts_with($property->name, $property_prefix)) {
 				$assume = $property->getAnnotation('assume')->value;
 				if (isset($assume)) {
 					$check = $property_type_to_mysql->invoke(null, $property);

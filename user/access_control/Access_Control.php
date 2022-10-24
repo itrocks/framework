@@ -131,7 +131,7 @@ class Access_Control implements Configurable, Registerable
 	 */
 	public function afterTemplateReplaceLink(string &$result)
 	{
-		if (!beginsWith($result, Paths::$uri_base)) {
+		if (!str_starts_with($result, Paths::$uri_base)) {
 			return;
 		}
 		$position = strlen(Paths::$uri_base);

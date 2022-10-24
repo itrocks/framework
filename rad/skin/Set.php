@@ -17,7 +17,7 @@ class Set
 	{
 		$skins = [];
 		foreach (scandir(__DIR__ . '../../skins') as $file_name) {
-			if (!beginsWith($file_name, DOT)) {
+			if (!str_starts_with($file_name, DOT)) {
 				$skins[] = new Skin($file_name);
 			}
 		}

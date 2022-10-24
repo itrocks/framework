@@ -25,12 +25,11 @@ class Http
 	 */
 	public function getProtocol()
 	{
-		// REQUEST_SCHEME is not 100% proof then use HTTPS
-		// HTTPS is set only when https is used
-		return (!empty($_SERVER['HTTPS']) && ($_SERVER['HTTPS'] !== 'off')
+		// REQUEST_SCHEME is not 100% proof then use HTTPS.
+		// HTTPS is set only when https is used.
+		return (!empty($_SERVER['HTTPS']) && (strtolower($_SERVER['HTTPS']) !== 'off'))
 			? self::HTTPS
-			: self::HTTP
-		);
+			: self::HTTP;
 	}
 
 	//------------------------------------------------------------------------------------------ post
@@ -41,7 +40,7 @@ class Http
 	 */
 	public function post(string $uri, array $data) : string
 	{
-		if (!beginsWith($uri, 'http')) {
+		if (!str_starts_with($uri, 'http')) {
 			$uri = Paths::absoluteBase() . ltrim($uri, SL);
 		}
 		$proxy = new Proxy(static::POST);

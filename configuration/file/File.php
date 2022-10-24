@@ -127,14 +127,14 @@ abstract class File
 	 */
 	public function shortClassNameOf($class_name, $maximum_use_depth = 999)
 	{
-		if (beginsWith($class_name, AT)) {
+		if (str_starts_with($class_name, AT)) {
 			return $class_name;
 		}
 		$final_class_name = null;
 		$used             = '';
 		foreach ($this->use as $use) {
 			if (
-				beginsWith($class_name, $use)
+				str_starts_with($class_name, $use)
 				&& (strlen($use) > strlen($used))
 				&& (substr_count($use, BS) < $maximum_use_depth)
 			) {
@@ -143,7 +143,7 @@ abstract class File
 			}
 		}
 		if (
-			beginsWith($class_name, $this->namespace)
+			str_starts_with($class_name, $this->namespace)
 			&& (strlen($this->namespace) > strlen($used))
 		) {
 			$final_class_name = substr($class_name, strlen($this->namespace) + 1);

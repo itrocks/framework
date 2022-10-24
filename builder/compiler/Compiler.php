@@ -47,13 +47,13 @@ class Compiler implements ICompiler, Needs_Main
 			}
 		}
 		$builder->build = true;
-		if (endsWith($source->file_name, '/builder.php')) {
+		if (str_ends_with($source->file_name, '/builder.php')) {
 			(new Compiler\Configuration\Builder)->compile($source);
 		}
-		if (endsWith($source->file_name, '/config.php')) {
+		if (str_ends_with($source->file_name, '/config.php')) {
 			(new Compiler\Configuration\Config)->compile($source);
 		}
-		if (endsWith($source->file_name, '/menu.php')) {
+		if (str_ends_with($source->file_name, '/menu.php')) {
 			(new Compiler\Configuration\Menu)->compile($source);
 		}
 		return $compiled;

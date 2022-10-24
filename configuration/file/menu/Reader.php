@@ -33,9 +33,9 @@ class Reader extends File\Reader
 			}
 			else {
 				// menu item level
-				if (beginsWith($line, TAB . TAB)) {
+				if (str_starts_with($line, TAB . TAB)) {
 					if ($block instanceof Block) {
-						if (beginsWith(trim($line), ['//', '/*']) || !strpos($line, '=>')) {
+						if (strStartsWith(trim($line), ['//', '/*']) || !strpos($line, '=>')) {
 							$block->items[] = $line;
 						}
 						else {
@@ -56,8 +56,8 @@ class Reader extends File\Reader
 					}
 				}
 				// menu block level
-				elseif (beginsWith($line, TAB)) {
-					if (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+				elseif (str_starts_with($line, TAB)) {
+					if (strStartsWith(trim($line), ['//', '/*']) || !trim($line)) {
 						$this->file->blocks[] = $line;
 					}
 					elseif (in_array(trim($line), [']', '],'])) {

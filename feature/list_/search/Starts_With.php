@@ -39,7 +39,7 @@ class Starts_With implements Registerable
 			in_array($type_string, [Type::STRING, Type::STRING_ARRAY], true)
 			|| ($type->isClass() && !$type->isDateTime())
 		) {
-			$search_value = beginsWith($search_value, '=')
+			$search_value = str_starts_with($search_value, '=')
 				? substr($search_value, 1)
 				: str_replace('**', '*', ($search_value . '*'));
 		}

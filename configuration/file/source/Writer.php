@@ -97,7 +97,7 @@ class Writer extends File\Writer
 		foreach ($this->file->class_use as $class_use) {
 			if (is_object($class_use)) {
 				$this->lines[] = TAB . 'use' . SP . $this->file->shortClassNameOf($class_use->trait_name)
-					. (beginsWith($class_use->rules, '{') ? SP : '')
+					. (str_starts_with($class_use->rules, '{') ? SP : '')
 					. $class_use->rules;
 			}
 			else {

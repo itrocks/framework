@@ -58,7 +58,7 @@ class Conditions_Annotation extends List_Annotation implements Property_Context_
 				}
 				else {
 					$property_name = $condition;
-					if (beginsWith($property_name, '!')) {
+					if (str_starts_with($property_name, '!')) {
 						$condition     = static::EMPTY;
 						$property_name = substr($property_name, 1);
 					}

@@ -50,7 +50,7 @@ class Expressions
 	 */
 	public static function isFunction($property_path)
 	{
-		return beginsWith($property_path, static::MARKER);
+		return str_starts_with($property_path, static::MARKER);
 	}
 
 }

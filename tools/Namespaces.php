@@ -32,7 +32,7 @@ abstract class Namespaces
 		sort($application_namespaces);
 		foreach (array_reverse($application_namespaces) as $application_namespace) {
 			if (
-				beginsWith($class_name, $application_namespace . BS)
+				str_starts_with($class_name, $application_namespace . BS)
 				|| ($class_name === $application_namespace)
 			) {
 				return $application_namespace;

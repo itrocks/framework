@@ -976,7 +976,7 @@ class Template
 			$options[self::TEMPLATE_CLASS] = get_class($this);
 		}
 		// relative controller : on current object
-		if (beginsWith($include_uri, SL) && ctype_lower(substr($include_uri, 1, 1))) {
+		if (str_starts_with($include_uri, SL) && ctype_lower(substr($include_uri, 1, 1))) {
 			$include_uri = Framework\View::link($this->functions->getObject($this)) . $include_uri;
 		}
 		return (new Main)->runController($include_uri, $options);
@@ -1015,7 +1015,7 @@ class Template
 	{
 		if (isset($GLOBALS['D'])) echo '- include ' . $include_uri . BR;
 		// includes html template
-		if (beginsWith($include_uri, SL)) {
+		if (str_starts_with($include_uri, SL)) {
 			$include_uri = substr($include_uri, 1);
 		}
 		$class_name = $this->parseIncludeClassName($include_uri);

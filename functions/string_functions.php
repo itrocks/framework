@@ -24,28 +24,6 @@ function base64_encode_url_safe($string)
 	return strtr(base64_encode($string), ['+' => '-', '/' => '_', '=' => '.']);
 }
 
-//-------------------------------------------------------------------------------------- beginsWith
-/**
- * Returns true if $haystack begins with $needle
- * If any (or both) parameter is an array, returns true if any $haystack begins with any $needle
- *
- * @param $haystack string|string[]
- * @param $needle   string|string[]
- * @return boolean
- */
-function beginsWith($haystack, $needle)
-{
-	if (is_array($haystack)) {
-		foreach ($haystack as $choice) if (beginsWith($choice, $needle)) return true;
-		return false;
-	}
-	if (is_array($needle)) {
-		foreach ($needle as $choice) if (beginsWith($haystack, $choice)) return true;
-		return false;
-	}
-	return str_starts_with($haystack, $needle);
-}
-
 //------------------------------------------------------------------------------------- cleanSpaces
 /**
  * trim spaces, remove double-spaces, replace tabs by spaces
@@ -73,28 +51,6 @@ function cleanSpaces($string)
 function contains($string, $substring_to_search)
 {
 	return (strpos($string, $substring_to_search) !== false);
-}
-
-//---------------------------------------------------------------------------------------- endsWith
-/**
- * Returns true if $haystack ends with $needle
- * If any (or both) parameter is an array, returns true if any $haystack ends with any $needle
- *
- * @param $haystack string|string[]
- * @param $needle   string|string[]
- * @return boolean
- */
-function endsWith($haystack, $needle)
-{
-	if (is_array($haystack)) {
-		foreach ($haystack as $choice) if (endsWith($choice, $needle)) return true;
-		return false;
-	}
-	if (is_array($needle)) {
-		foreach ($needle as $choice) if (endsWith($haystack, $choice)) return true;
-		return false;
-	}
-	return str_ends_with($haystack, $needle);
 }
 
 //------------------------------------------------------------------------- htmlSpecialCharsRecurse
@@ -347,6 +303,28 @@ function rParse($string, $separator, $count = 1, $complete_if_not = false)
 		: substr($string, $i + strlen($separator));
 }
 
+//------------------------------------------------------------------------------------- strEndsWith
+/**
+ * Returns true if $haystack ends with $needle
+ * If any (or both) parameter is an array, returns true if any $haystack ends with any $needle
+ *
+ * @param $haystack string|string[]
+ * @param $needle   string|string[]
+ * @return boolean
+ */
+function strEndsWith(array|string $haystack, array|string $needle) : bool
+{
+	if (is_array($haystack)) {
+		foreach ($haystack as $choice) if (strEndsWith($choice, $needle)) return true;
+		return false;
+	}
+	if (is_array($needle)) {
+		foreach ($needle as $choice) if (str_ends_with($haystack, $choice)) return true;
+		return false;
+	}
+	return str_ends_with($haystack, $needle);
+}
+
 //-------------------------------------------------------------------------------------- strFlexCmp
 /**
  * Compare two strings, replace accents by the equivalent non-accentuated character
@@ -518,6 +496,28 @@ function strSimplify($string, $extended = false, $joker = null)
 		}
 	}
 	return $result;
+}
+
+//----------------------------------------------------------------------------------- strStartsWith
+/**
+ * Returns true if $haystack begins with $needle
+ * If any (or both) parameter is an array, returns true if any $haystack begins with any $needle
+ *
+ * @param $haystack string|string[]
+ * @param $needle   string|string[]
+ * @return boolean
+ */
+function strStartsWith(array|string $haystack, array|string $needle) : bool
+{
+	if (is_array($haystack)) {
+		foreach ($haystack as $choice) if (strStartsWith($choice, $needle)) return true;
+		return false;
+	}
+	if (is_array($needle)) {
+		foreach ($needle as $choice) if (str_starts_with($haystack, $choice)) return true;
+		return false;
+	}
+	return str_starts_with($haystack, $needle);
 }
 
 //------------------------------------------------------------------------------------------ strUri

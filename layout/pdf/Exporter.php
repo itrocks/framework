@@ -92,10 +92,10 @@ class Exporter implements Output
 			[$left, $top, $width, $height] = $image->resizeData($element->width, $element->height);
 			$left += $element->left;
 			$top  += $element->top;
-			if (endsWith(strtolower($file->name), '.eps')) {
+			if (str_ends_with(strtolower($file->name), '.eps')) {
 				$pdf->ImageEps($file->temporary_file_name, $left, $top, $width, $height);
 			}
-			elseif (endsWith(strtolower($file->name), '.svg')) {
+			elseif (str_ends_with(strtolower($file->name), '.svg')) {
 				$pdf->ImageSVG($file->temporary_file_name, $left, $top, $width, $height);
 			}
 			else {

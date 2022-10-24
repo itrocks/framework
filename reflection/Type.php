@@ -350,8 +350,8 @@ class Type extends ReflectionType
 	 */
 	public function isAbstractClass() : bool
 	{
-		return beginsWith($this->type, static::MIXED)
-			|| beginsWith($this->type, static::OBJECT)
+		return str_starts_with($this->type, static::MIXED)
+			|| str_starts_with($this->type, static::OBJECT)
 			|| $this->asReflectionClass()->isAbstract();
 	}
 

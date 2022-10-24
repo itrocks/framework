@@ -161,7 +161,7 @@ class Source extends File
 	public static function create($class_extends)
 	{
 		$namespace = Application::current()->getNamespace();
-		if (beginsWith($class_extends, $namespace . BS)) {
+		if (str_starts_with($class_extends, $namespace . BS)) {
 			trigger_error(
 				'You cannot create a final class from an existing final class ' . $class_extends,
 				E_USER_ERROR

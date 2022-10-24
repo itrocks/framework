@@ -813,7 +813,7 @@ class Reflection_Source
 		else {
 			$filename = Names::classToFilePath($class_name);
 			// consider vendor classes like internal classes : we don't work with their sources
-			$source = beginsWith($filename, 'vendor/')
+			$source = str_starts_with($filename, 'vendor/')
 				? (self::$cache[$class_name] ?? new Reflection_Source(null, $class_name))
 				: Reflection_Source::ofFile($filename, $class_name);
 			self::$cache[$class_name] = $source;

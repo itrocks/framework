@@ -20,7 +20,7 @@ class Reader extends File\Reader
 	 */
 	public function isStartLine($line)
 	{
-		$start = beginsWith($line, '$config[') && endsWith($line, '] = [');
+		$start = str_starts_with($line, '$config[') && str_ends_with($line, '] = [');
 		if ($start) {
 			$begin_lines =& $this->file->begin_lines;
 			if ($begin_lines && !strlen(end($begin_lines))) {
@@ -50,7 +50,7 @@ class Reader extends File\Reader
 				$ended = true;
 			}
 			// comment line
-			elseif (beginsWith(trim($line), ['//', '/*']) || !trim($line)) {
+			elseif (strStartsWith(trim($line), ['//', '/*']) || !trim($line)) {
 				if ($plugin) {
 					$plugin->configuration .= LF . $line;
 				}
@@ -63,7 +63,7 @@ class Reader extends File\Reader
 			}
 			else {
 				// plugin configuration flow level
-				if (beginsWith($line, TAB . TAB . TAB)) {
+				if (str_starts_with($line, TAB . TAB . TAB)) {
 					if ($plugin instanceof Plugin) {
 						$plugin->configuration .= LF . $line;
 					}
@@ -77,7 +77,7 @@ class Reader extends File\Reader
 					}
 				}
 				// plugin configuration begin level
-				elseif (beginsWith($line, TAB . TAB)) {
+				elseif (str_starts_with($line, TAB . TAB)) {
 					if (in_array(trim($line), [']', '],', ')', '),'])) {
 						if ($plugin instanceof Plugin) {
 							$plugin->configuration .= LF . substr($line, 0, 3);
@@ -85,7 +85,7 @@ class Reader extends File\Reader
 						$plugin = null;
 					}
 					elseif ($priority instanceof Priority) {
-						if (($plugin instanceof Plugin) && endsWith($plugin->configuration, ',')) {
+						if (($plugin instanceof Plugin) && str_ends_with($plugin->configuration, ',')) {
 							$plugin->configuration = substr($plugin->configuration, 0, -1);
 						}
 						$plugin                = new Plugin();
@@ -96,7 +96,7 @@ class Reader extends File\Reader
 							$plugin->configuration = null;
 							$plugin                = null;
 						}
-						elseif (endsWith($plugin->configuration, ',')) {
+						elseif (str_ends_with($plugin->configuration, ',')) {
 							$plugin->configuration = trim(substr($plugin->configuration, 0, -1));
 							$plugin                = null;
 						}
@@ -111,9 +111,9 @@ class Reader extends File\Reader
 					}
 				}
 				// priority level
-				elseif (beginsWith($line, TAB)) {
+				elseif (str_starts_with($line, TAB)) {
 					if (in_array(trim($line), [']', '],'])) {
-						if (($plugin instanceof Plugin) && endsWith($plugin->configuration, ',')) {
+						if (($plugin instanceof Plugin) && str_ends_with($plugin->configuration, ',')) {
 							$plugin->configuration = substr($plugin->configuration, 0, -1);
 						}
 						$plugin   = null;

@@ -46,10 +46,10 @@ class Assembled extends Built
 		foreach ($interfaces_traits as $interface_trait) {
 			if (!isset($all_components[$interface_trait])) {
 				$all_components[$interface_trait] = $interface_trait;
-				if (beginsWith($interface_trait, AT) && !beginsWith($interface_trait, '@override')) {
+				if (str_starts_with($interface_trait, AT) && !str_starts_with($interface_trait, '@override')) {
 					$annotation_name = lParse($interface_trait, SP);
 					foreach ($this->components as $key => $component) {
-						if (beginsWith($component, $annotation_name)) {
+						if (str_starts_with($component, $annotation_name)) {
 							unset($this->components[$key]);
 						}
 					}
@@ -83,8 +83,8 @@ class Assembled extends Built
 			function($class1, $class2) use ($builder) {
 				$class1 = $builder->shortClassNameOf($class1);
 				$class2 = $builder->shortClassNameOf($class2);
-				if (beginsWith($class1, AT)) $class1 = SP . $class1;
-				if (beginsWith($class2, AT)) $class2 = SP . $class2;
+				if (str_starts_with($class1, AT)) $class1 = SP . $class1;
+				if (str_starts_with($class2, AT)) $class2 = SP . $class2;
 				return strcmp($class1, $class2);
 			}
 		);

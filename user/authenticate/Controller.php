@@ -26,9 +26,9 @@ class Controller implements Feature_Controller
 	protected function reserved(string $uri) : bool
 	{
 		return (
-			beginsWith($uri, View::link(User::class, Feature::F_AUTHENTICATE))
-			|| beginsWith($uri, View::link(User::class, Feature::F_DISCONNECT))
-			|| beginsWith($uri, View::link(User::class, Feature::F_LOGIN))
+			str_starts_with($uri, View::link(User::class, Feature::F_AUTHENTICATE))
+			|| str_starts_with($uri, View::link(User::class, Feature::F_DISCONNECT))
+			|| str_starts_with($uri, View::link(User::class, Feature::F_LOGIN))
 		)
 			? SL
 			: $uri;

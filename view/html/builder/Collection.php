@@ -336,7 +336,7 @@ class Collection
 				}
 				foreach ($expand as $expand_property_path => $expand_property) {
 					if (
-						beginsWith($expand_property_path, $property_path . DOT)
+						str_starts_with($expand_property_path, $property_path . DOT)
 						&& $this->isPropertyVisible($expand_property)
 					) {
 						$expand_properties[$expand_property_path] = $expand_property;

@@ -197,7 +197,7 @@ class Engine implements Configurable, Framework\View\Engine
 		if (is_array($link)) {
 			[$link, $data] = $link;
 		}
-		$link = beginsWith($link, 'http')
+		$link = str_starts_with($link, 'http')
 			? str_replace('&amp;', '&', $link)
 			: Paths::$uri_base . str_replace('&amp;', '&', $link);
 		if (!is_array($options)) {

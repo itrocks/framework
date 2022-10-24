@@ -64,7 +64,7 @@ class Reader extends File\Reader
 		$opened_class  = false;
 		while (($line !== false) && !$this->isEndLine($line)) {
 			if ($opened_class) {
-				if ($next_line_use || beginsWith(lParse(trim($line), SP), 'use')) {
+				if ($next_line_use || str_starts_with(lParse(trim($line), SP), 'use')) {
 					if ($end_lines) {
 						foreach ($end_lines as $end_line) {
 							$this->file->class_use[] = $end_line;

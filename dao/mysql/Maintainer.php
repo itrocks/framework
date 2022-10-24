@@ -628,9 +628,9 @@ class Maintainer implements Configurable, Registerable
 			}
 			return true;
 		}
-		if (beginsWith($query, ['ALTER TABLE', 'CREATE TABLE'])) {
+		if (strStartsWith($query, ['ALTER TABLE', 'CREATE TABLE'])) {
 			foreach ($mysqli->getViews() as $view_name) {
-				if (endsWith($view_name, '_view')) {
+				if (str_ends_with($view_name, '_view')) {
 					$mysqli->queryWhenUnlocked('DROP VIEW' . SP . BQ . $view_name . BQ);
 				}
 			}
@@ -732,7 +732,7 @@ class Maintainer implements Configurable, Registerable
 	private function updateContextAfterCreate(
 		Contextual_Mysqli $mysqli, string $query, string $class_name
 	) {
-		if (!$query || beginsWith(trim($query), 'ALTER TABLE')) {
+		if (!$query || str_starts_with(trim($query), 'ALTER TABLE')) {
 			if ($context = end($mysqli->contexts)) foreach ($context as $context_class_name) {
 				$same_table = false;
 				if ($context_class_name === $class_name) {
