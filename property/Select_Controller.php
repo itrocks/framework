@@ -226,11 +226,9 @@ class Select_Controller implements Feature_Controller
 			return Loc::tr('You are not allowed to customize this list');
 		}
 		$property_path = $parameters->getRawParameter('property_path') ?: $parameters->shiftUnnamed();
-		$top_property_class = (new Path($class_name, $property_path))->toPropertyClass();
+		$top_property_class = (new Path($class_name, strval($property_path)))->toPropertyClass();
 		if ($top_property_class instanceof Reflection_Class) {
-			$top_property        = new Property();
-			$top_property->class = $class_name;
-			$properties          = $this->getProperties($top_property_class);
+			$properties = $this->getProperties($top_property_class);
 		}
 		elseif ($top_property_class->getType()->isClass()) {
 			/** @noinspection PhpUnhandledExceptionInspection $top_property already tested */
