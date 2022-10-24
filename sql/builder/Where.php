@@ -22,6 +22,7 @@ use ITRocks\Framework\Sql\Join\Joins;
 use ITRocks\Framework\Sql\Value;
 use ITRocks\Framework\Tools\Date_Time;
 use ITRocks\Framework\Tools\String_Class;
+use ReflectionException;
 
 /**
  * The SQL where section of SQL queries builder
@@ -361,9 +362,14 @@ class Where implements With_Build_Column
 			$path = Expressions::$current->cache[$path];
 		}
 		$property_path = strval($path);
-		$property      = (!strpos($property_path, '->') && !strpos($property_path, ')'))
-			? $this->joins->getStartingClass()->getProperty($property_path)
-			: null;
+		try {
+			$property = (!strpos($property_path, '->') && !strpos($property_path, ')'))
+				? $this->joins->getStartingClass()->getProperty($property_path)
+				: null;
+		}
+		catch (ReflectionException) {
+			$property = null;
+		}
 
 		$join = ($property && ($property->getType()->asString() === 'object'))
 			? null
